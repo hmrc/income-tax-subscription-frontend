@@ -29,42 +29,42 @@
 )
 @(postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@principalMainTemplate(title = messages("claimConfirm.title")) {
+@principalMainTemplate(title = messages("claim-enrolment.confirmation.title")) {
 
     <div id="confirmation-panel" class="govuk-panel govuk-panel--confirmation govuk-!-margin-bottom-8">
-        <h1 class="govuk-panel__title">@messages("claimConfirm.title")</h1>
+        <h1 class="govuk-panel__title">@messages("claim-enrolment.confirmation.title")</h1>
     </div>
 
     @form(action = postAction) {
         <section class="govuk-form-group" id="whatHappensNow">
-            <h2 class="govuk-heading-m">@messages("claimConfirm.heading")</h2>
+            <h2 class="govuk-heading-m">@messages("claim-enrolment.confirmation.heading")</h2>
 
-            <p class="govuk-body">@messages("claimConfirm.content.line1")</p>
+            <p class="govuk-body">@messages("claim-enrolment.confirmation.content.line1")</p>
 
             <ol id="actionList" class="govuk-list govuk-list--number govuk-!-margin-2">
                 <li>
-                    @hmrcNewTabLinkHelper(NewTabLinkHelper(messages("claimConfirm.content.checklist.item1.link"), Some(appConfig.softwareUrl)))
+                    @hmrcNewTabLinkHelper(NewTabLinkHelper(messages("claim-enrolment.confirmation.content.checklist.item1.link"), Some(appConfig.softwareUrl)))
                     @messages(
-                        key = "claimConfirm.content.checklist.item1.suffix"
+                        key = "claim-enrolment.confirmation.content.checklist.item1.suffix"
                     )
                 </li>
                 <li>
-                    @messages("claimConfirm.content.checklist.item2")
+                    @messages("claim-enrolment.confirmation.content.checklist.item2")
                 </li>
                 <li>
-                    @messages("claimConfirm.content.checklist.item3")
+                    @messages("claim-enrolment.confirmation.content.checklist.item3")
                 </li>
             </ol>
 
             <p class="govuk-body">
                 @Html(messages(
-                    key = "claimConfirm.content.line2",
-                    args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("claimConfirm.content.line2.link"), Some(appConfig.incomeTaxViewChangeUrl)))
+                    key = "claim-enrolment.confirmation.content.line2",
+                    args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("claim-enrolment.confirmation.content.line2.link"), Some(appConfig.incomeTaxViewChangeUrl)))
                 ))
             </p>
 
-            <p class="govuk-body govuk-!-margin-bottom-6">@messages("claimConfirm.content.line3")</p>
-            @buttonHelper(messages("claimConfirm.continueButton"), classes = Some("govuk-!-display-block"))
+            <p class="govuk-body govuk-!-margin-bottom-6">@messages("claim-enrolment.confirmation.content.line3")</p>
+            @buttonHelper(messages("claim-enrolment.confirmation.continue-button"), classes = Some("govuk-!-display-block"))
             @signOutLink()
         </section>
     }

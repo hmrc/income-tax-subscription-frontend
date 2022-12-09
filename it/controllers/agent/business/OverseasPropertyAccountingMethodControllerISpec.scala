@@ -38,7 +38,7 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
         When("GET /business/overseas-property-accounting-method is called")
         val res = IncomeTaxSubscriptionFrontend.overseasPropertyAccountingMethod()
 
-        val expectedText = removeHtmlMarkup(messages("agent.overseas.property.accounting-method.radio.cash"))
+        val expectedText = removeHtmlMarkup(messages("base.accounting-method.cash"))
 
         val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
 

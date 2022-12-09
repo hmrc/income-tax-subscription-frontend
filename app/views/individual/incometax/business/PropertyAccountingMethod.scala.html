@@ -63,12 +63,12 @@
             hint = None,
             radioItems = Seq(
                 RadioItem(
-                    content = Text(messages("summary.income_type.cash")),
+                    content = Text(messages("base.accounting-method.cash")),
                     hint = Some(Hint(content = HtmlContent(messages("property.accounting-method.cash")))),
                     value = Some(AccountingMethodMapping.option_cash)
                 ),
                 RadioItem(
-                    content = Text(messages("summary.income_type.accruals")),
+                    content = Text(messages("base.accounting-method.accruals")),
                     hint = Some(Hint(content = HtmlContent(messages("property.accounting-method.accruals")))),
                     value = Some(AccountingMethodMapping.option_accruals)
                 )

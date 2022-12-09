@@ -31,39 +31,39 @@
 
 @()(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("agent.cannot_take_part.title"), backLink = Some("javascript:history.back()")) {
+@mainTemplate(title = messages("agent.cannot-take-part.title"), backLink = Some("javascript:history.back()")) {
 
-    <h1 class="govuk-heading-l">@messages("agent.cannot_take_part.heading")</h1>
+    <h1 class="govuk-heading-l">@messages("agent.cannot-take-part.heading")</h1>
 
-    <p class="govuk-body">@messages("agent.cannot_take_part.income")</p>
+    <p class="govuk-body">@messages("agent.cannot-take-part.income")</p>
 
     <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("agent.cannot_take_part.income.point1")</li>
-        <li>@messages("agent.cannot_take_part.income.point2")</li>
-        <li>@messages("agent.cannot_take_part.income.point3")</li>
-        <li>@messages("agent.cannot_take_part.income.point4")</li>
-        <li>@messages("agent.cannot_take_part.income.point5")</li>
+        <li>@messages("agent.cannot-take-part.income.point1")</li>
+        <li>@messages("agent.cannot-take-part.income.point2")</li>
+        <li>@messages("agent.cannot-take-part.income.point3")</li>
+        <li>@messages("agent.cannot-take-part.income.point4")</li>
+        <li>@messages("agent.cannot-take-part.income.point5")</li>
     </ul>
 
-    <p class="govuk-body">@messages("agent.cannot_take_part.other")</p>
+    <p class="govuk-body">@messages("agent.cannot-take-part.other")</p>
 
     <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("agent.cannot_take_part.other.point1")</li>
-        <li>@messages("agent.cannot_take_part.other.point2")</li>
-        <li>@messages("agent.cannot_take_part.other.point3")</li>
-        <li>@messages("agent.cannot_take_part.other.point4")</li>
+        <li>@messages("agent.cannot-take-part.other.point1")</li>
+        <li>@messages("agent.cannot-take-part.other.point2")</li>
+        <li>@messages("agent.cannot-take-part.other.point3")</li>
+        <li>@messages("agent.cannot-take-part.other.point4")</li>
     </ul>
 
     <p class="govuk-body">
         @Html(messages(
-            "agent.cannot_take_part.alternative",
-                <a class="govuk-link" href="https://www.gov.uk/self-assessment-tax-returns/sending-return">{messages("agent.cannot_take_part.alternative.link")}</a>
+            "agent.cannot-take-part.alternative",
+                <a class="govuk-link" href="https://www.gov.uk/self-assessment-tax-returns/sending-return">{messages("agent.cannot-take-part.alternative.link")}</a>
         ))
     </p>
 
     @form(action = controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show) {
         <div class="govuk-form-group">
-            <div>@continueButton(Some(messages("agent.base.sign_up_another_client")))</div>
+            <div>@continueButton(Some(messages("agent.base.sign-up-another-client")))</div>
             <div>@signOutLink()</div>
         </div>
     }

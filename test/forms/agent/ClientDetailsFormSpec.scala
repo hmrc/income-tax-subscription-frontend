@@ -50,7 +50,7 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
     )
   }
 
-  val dateErrorContext: String = "agent.error.dob_date"
+  val dateErrorContext: String = "agent.error.client-details.date-of-birth"
 
   "The clientDetailsForm" should {
 
@@ -67,21 +67,21 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
       "when testing the first name" should {
 
         "error if no name is supplied" in {
-          val errors = "agent.error.client_details.first_name.empty"
+          val errors = "agent.error.client-details.first-name.empty"
 
           val testInput = setupTestData(fname = "")
           clientDetailsForm.bind(testInput).errors must contain(FormError(clientFirstName, errors))
         }
 
         "error if an invalid name is supplied" in {
-          val errors = "agent.error.client_details.first_name.invalid"
+          val errors = "agent.error.client-details.first-name.invalid"
 
           val testInput = setupTestData(fname = "␢")
           clientDetailsForm.bind(testInput).errors must contain(FormError(clientFirstName, errors))
         }
 
         "error if a name which is too long is supplied" in {
-          val errors = "agent.error.client_details.first_name.maxLength"
+          val errors = "agent.error.client-details.first-name.max-length"
 
           val testInput = setupTestData(fname = "abc" * 100)
           clientDetailsForm.bind(testInput).errors must contain(FormError(clientFirstName, errors))
@@ -92,21 +92,21 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
       "when testing the last name" should {
 
         "Error if no last name is supplied" in {
-          val errors = "agent.error.client_details.last_name.empty"
+          val errors = "agent.error.client-details.last-name.empty"
 
           val testInput = setupTestData(lname = "")
           clientDetailsForm.bind(testInput).errors must contain(FormError(clientLastName, errors))
         }
 
         "Error if an invalid last name is supplied" in {
-          val errors = "agent.error.client_details.last_name.invalid"
+          val errors = "agent.error.client-details.last-name.invalid"
 
           val testInput = setupTestData(lname = "␢")
           clientDetailsForm.bind(testInput).errors must contain(FormError(clientLastName, errors))
         }
 
         "error if a name which is too long is supplied" in {
-          val errors = "agent.error.client_details.last_name.maxLength"
+          val errors = "agent.error.client-details.last-name.max-length"
 
           val testInput = setupTestData(lname = "abc" * 100)
           clientDetailsForm.bind(testInput).errors must contain(FormError(clientLastName, errors))
@@ -212,7 +212,7 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
         }
 
         "error if a date not in the past is supplied" in {
-          val errors = "agent.error.dob_date.day-month-year.not_in_past"
+          val errors = "agent.error.client-details.date-of-birth.day-month-year.not-in-past"
           val futureDate: LocalDate = LocalDate.now
 
           val testInput = setupTestData(dob = DateModel.dateConvert(futureDate))

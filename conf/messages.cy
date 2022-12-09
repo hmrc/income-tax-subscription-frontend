@@ -1,5 +1,7 @@
 ## Base ##
 base.service-name                                               = Defnyddio meddalwedd i anfon diweddariadau Treth Incwm
+base.title-pattern                                              = {0} - Defnyddio meddalwedd i anfon diweddariadau Treth Incwm - GOV.UK
+base.title-pattern.error                                        = Gwall: {0} - Defnyddio meddalwedd i anfon diweddariadau Treth Incwm - GOV.UK
 base.back                                                       = Yn ôl
 base.continue                                                   = Yn eich blaen
 base.continue-sign-up                                           = Parhau i gofrestru
@@ -33,12 +35,18 @@ base.minute                                                     = munud
 base.minutes                                                    = munudau
 base.second                                                     = eiliad
 base.seconds                                                    = eiliadau
+base.accounting-method.cash                                     = Cyfrifyddu ar sail arian parod
+base.accounting-method.accruals                                 = Cyfrifyddu traddodiadol
+
+## Language switching
+language-selector.change-to-language                            = Change the language to English
+language-selector.nav-label                                     = Cyfnewidydd iaith
 
 ## Client details CYA
-userdetail.cya.change.firstname                                 = Newid enw cyntaf
-userdetail.cya.change.lastname                                  = Newid enw olaf
-userdetail.cya.change.nationalinsurance                         = Newid rhif Yswiriant Gwladol
-userdetail.cya.change.dateofbirth                               = Newid Dyddiad Geni
+check-your-details.change.first-name                            = Newid enw cyntaf
+check-your-details.change.last-name                             = Newid enw olaf
+check-your-details.change.national-insurance                    = Newid rhif Yswiriant Gwladol
+check-your-details.change.date-of-birth                         = Newid Dyddiad Geni
 
 ## Preferences call back page
 preferences-callback.title                                      = Ydych chi am fynd yn eich blaen?
@@ -59,9 +67,9 @@ income-source.heading                           = Pa ffynhonnell incwm ydych chi
 income-source.para1                             = Os ydych yn hunangyflogedig, mae’n rhaid i chi ychwanegu bob un o’ch busnesau unig fasnachwr os oes gennych fwy nag un. Os oes gennych incwm o eiddo mae’n rhaid i chi ei ychwanegu, ond mae hyn wedi’i gyfyngu i un busnes eiddo yn y DU.
 income-source.para1-overseas                    = Os ydych yn hunangyflogedig, mae’n rhaid i chi ychwanegu bob un o’ch busnesau unig fasnachwr os oes gennych fwy nag un. Os oes gennych incwm o eiddo mae’n rhaid i chi ei ychwanegu. Mae hyn wedi’i gyfyngu i un busnes eiddo yn y DU ac un busnes eiddo tramor y gallwch ei gael.
 income-source.para2                             = Mae rhoi eiddo ar osod yn cynnwys defnyddio asiantaeth gosod eiddo.
-income-source.self-employed                      = Busnes unig fasnachwr
-income-source.ukProperty                        = Busnes eiddo yn y DU
-income-source.foreignProperty                   = Busnes eiddo tramor
+income-source.self-employed                     = Busnes unig fasnachwr
+income-source.uk-property                       = Busnes eiddo yn y DU
+income-source.foreign-property                  = Busnes eiddo tramor
 
 error.business-income-source.all-sources                        = Dewiswch ‘Busnes unig fasnachwr’, ‘Eiddo rhent yn y DU’ neu ‘Eiddo rhent tramor’
 error.business-income-source.self-employed-uk-property          = Mae angen i chi ddewis Busnes unig fasnachwr neu Eiddo rhent yn y DU
@@ -76,7 +84,7 @@ cannot-use-service.title                                        = Ni allwch ddef
 cannot-use-service.heading                                      = Ni allwch ddefnyddio’r gwasanaeth hwn
 cannot-use-service.line1                                        = Gallwch ond cofrestru os ydych yn weinyddwr.
 
-# What year to sign up
+# What tax year to sign up
 business.what-year-to-sign-up.title                             = Ar gyfer pa flwyddyn dreth yr ydych am ddechrau defnyddio meddalwedd i gyflwyno diweddariadau?
 business.what-year-to-sign-up.heading                           = Ar gyfer pa flwyddyn dreth yr ydych am ddechrau defnyddio meddalwedd i gyflwyno diweddariadau?
 business.what-year-to-sign-up.line-1                            = Gallwch ddechrau anfon diweddariadau treth incwm yn ystod y flwyddyn dreth bresennol neu’r flwyddyn dreth nesaf. Ni fydd yn effeithio ar faint o dreth y byddwch yn ei thalu.
@@ -136,20 +144,6 @@ error.property.day-year.invalid                                 = Rhaid i’r dy
 error.property.month-year.invalid                               = Rhaid i’r dyddiad fod yn ddyddiad go iawn
 error.property.year.length                                      = Mae’n rhaid i flwyddyn fod yn bedwar digid. Er enghraifft, 2020.
 
-##ADD MTDIT Overview
-
-mtdit-overview.heading                                          = Ychwanegwch Troi Treth yn Ddigidol ar gyfer Treth Incwm i’ch cyfrif treth busnes
-mtdit-overview.paragraph1                                       = Mae’ch asiant wedi’ch cofrestru ar gyfer {0}
-mtdit-overview.link_text                                        = Troi Treth yn Ddigidol ar gyfer Treth Incwm
-mtdit-overview.paragraph2                                       = Mae ychwanegu hyn at eich cyfrif treth busnes yn eich galluogi i’w reoli ar-lein gyda’ch trethi eraill.
-mtdit-overview.inset                                            = Mae angen i chi ddefnyddio’ch Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth. Gallwch wirio manylion eich cyfrif presennol ar eich {0}
-mtdit-overview.link_text2                                       = cyfrif treth busnes
-mtdit-overview.heading2                                         = Eich cyfrifoldebau
-mtdit-overview.paragraph3                                       = Mae Troi Treth yn Ddigidol ar gyfer Treth Incwm yn disodli Hunanasesiad. Gallwch atal y dreth hon ar unrhyw adeg a mynd yn ôl i Hunanasesiad.
-mtdit-overview.paragraph4                                       = Bydd yn dal i fod yn rhaid i chi anfon Ffurflen Dreth Hunanasesiad i CThEM ar gyfer y flwyddyn dreth cyn i chi gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
-mtdit-overview.paragraph5                                       = I ychwanegu’r dreth hon, mae’n bosibl y bydd angen i chi ddarparu dogfennau sy’n profi pwy ydych.
-
-
 # Agent Property Start Date Date
 agent.property.name.heading                                     = Pryd y dechreuodd busnes eiddo yn y DU eich cleient fasnachu?
 agent.property.line-1                                           = Dyma’r dyddiad y dechreuodd roi unrhyw eiddo ar osod yn y lle cyntaf.
@@ -173,52 +167,6 @@ agent.error.property.day-month.invalid                          = Rhaid i’r dy
 agent.error.property.day-year.invalid                           = Rhaid i’r dyddiad fod yn ddyddiad go iawn
 agent.error.property.month-year.invalid                         = Rhaid i’r dyddiad fod yn ddyddiad go iawn
 agent.error.property.year.length                                = Mae’n rhaid i flwyddyn fod yn bedwar digid. Er enghraifft, 2020.
-
-## agent Tax Year Check Your Answers
-agent.business.check-your-answers.heading                             = Gwiriwch eich atebion
-agent.business.check-your-answers.content.tax-year.title              = Gwirio’ch atebion – blwyddyn dreth
-agent.business.check-your-answers.content.tax-year.question           = Y flwyddyn dreth rydych yn cofrestru ar ei chyfer
-agent.business.check-your-answers.content.tax-year.question.hidden    = Newid y flwyddyn dreth rydych yn cofrestru ar ei chyfer
-agent.business.check-your-answers.content.tax-year.current-tax-year   = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
-agent.business.check-your-answers.content.tax-year.next-tax-year      = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
-agent.business.check-your-answers.content.tax-year.caption    = Y flwyddyn dreth rydych yn cofrestru’ch cleient ar ei chyfer
-
-
-## Agent UK property check your answers
-agent.business.check-your-answers.content.uk-property.title = Gwirio’ch atebion – busnes eiddo yn y DU
-agent.business.check-your-answers.content.uk-property.caption = Manylion y busnes eiddo yn y DU a nodwyd gennych
-agent.business.check-your-answers.content.uk-property-start-date.question = Dyddiad dechrau masnachu’r busnes eiddo yn y DU
-agent.business.check-your-answers.content.uk-property-start-date.add  = Ychwanegu dyddiad dechrau masnachu’r busnes eiddo yn y DU
-agent.business.check-your-answers.content.uk-property-start-date.change = Newid dyddiad dechrau masnachu’r busnes eiddo yn y DU
-agent.business.check-your-answers.content.uk-property-accounting-method.question = Dull cyfrifyddu’r busnes eiddo yn y DU
-agent.business.check-your-answers.content.uk-property-accounting-method.add = Ychwanegu dull cyfrifyddu’r busnes eiddo yn y DU
-agent.business.check-your-answers.content.uk-property-accounting-method.change = Newid dull cyfrifyddu’r busnes eiddo yn y DU
-
-## Agent Overseas property check your answers
-agent.business.check-your-answers.content.overseas-property.title = Gwirio’ch atebion – busnes eiddo tramor
-agent.business.check-your-answers.content.overseas-property.caption = Manylion y busnes eiddo tramor a nodwyd gennych
-agent.business.check-your-answers.content.overseas-property-start-date.question = Dyddiad dechrau masnachu’r busnes eiddo tramor
-agent.business.check-your-answers.content.overseas-property-start-date.add  = Ychwanegu dyddiad dechrau masnachu’r busnes eiddo tramor
-agent.business.check-your-answers.content.overseas-property-start-date.change = Newid dyddiad dechrau masnachu’r busnes eiddo tramor
-agent.business.check-your-answers.content.overseas-property-accounting-method.question = Dull cyfrifyddu’r busnes eiddo tramor
-agent.business.check-your-answers.content.overseas-property-accounting-method.add = Ychwanegu dull cyfrifyddu’r busnes eiddo tramor
-agent.business.check-your-answers.content.overseas-property-accounting-method.change = Newid dull cyfrifyddu’r busnes eiddo tramor
-
-## Agent remove business
-agent.business.remove-sole-trader-business.heading                  = A ydych yn siŵr eich bod am ddileu {0}{1}?
-agent.business.remove-sole-trader-business.unnamed                  = A ydych yn siŵr eich bod am ddileu’r busnes hwn{0}?
-agent.business.remove-sole-trader-business.paragraph                = Mae angen ychwanegu pob un o fusnesau unig fasnachwr a busnesau eiddo presennol eich cleient at y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar yr un pryd. Bydd angen i chi ailnodi’r wybodaeth hon os byddwch yn ei dileu ar gam.
-agent.error.remove-sole-trader-business.invalid                     = Dewiswch ‘Iawn’ os ydych am ddileu’r busnes
-
-## Agent progress saved
-agent.business.progress-saved.title                                   = Mae eich cynnydd hyd yma wedi ei gadw
-agent.business.progress-saved.content.summary                         = Byddwn yn cadw eich gwybodaeth tan {0}.
-agent.business.progress-saved.content.subheading                      = Yr hyn sy’n digwydd nesaf
-agent.business.progress-saved.content.paragraph1                      = Gallwch wneud y canlynol:
-agent.business.progress-saved.content.paragraph2                      = Os byddwch yn allgofnodi, bydd angen i chi ddod yn ôl at i’ch manylion {0} i barhau. Rydym yn awgrymu eich bod yn nodi’r dudalen hon i’w gwneud yn haws dod o hyd iddi pan fyddwch yn dod yn ôl.
-agent.business.progress-saved.content.sign-up-link                    = dychwelyd i gofrestru busnes eich cleient ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-agent.business.progress-saved.content.sign-out-link                   = allgofnodi a dod yn ôl yn nes ymlaen
-agent.business.progress-saved.content.sign-in-link                    = mewngofnodi Porth y Llywodraeth
 
 ## Overseas Property Start Date
 overseas.property.name.title                                     = Pryd y dechreuodd eich busnes eiddo tramor fasnachu?
@@ -250,13 +198,10 @@ error.overseas.property.day-year.invalid                         = Rhaid i’r d
 error.overseas.property.month-year.invalid                       = Rhaid i’r dyddiad fod yn ddyddiad go iawn
 error.overseas.property.year.length                              = Mae’n rhaid i flwyddyn fod yn bedwar digid. Er enghraifft, 2020.
 
-## Email Preferences ##
-preferences.returnLinkText                                      = Yn eich blaen
-
 ## Timeout page ##
 timeout.title                                                   = Mae’ch sesiwn wedi cyrraedd y terfyn amser
 timeout.heading                                                 = Mae’ch sesiwn wedi cyrraedd y terfyn amser
-timeout.returnToHome                                            = I gofrestru ar gyfer hysbysu chwarterol, rhaid i chi <a href="{0}" rel="external">fewngofnodi</a> gan ddefnyddio’ch Dynodydd Defnyddiwr (ID) Porth y Llywodraeth.
+timeout.return-to-home                                          = I gofrestru ar gyfer hysbysu chwarterol, rhaid i chi <a href="{0}" rel="external">fewngofnodi</a> gan ddefnyddio’ch Dynodydd Defnyddiwr (ID) Porth y Llywodraeth.
 
 ## Already enrolled page ##
 already-enrolled.title                                          = Rydych chi eisoes wedi cofrestru
@@ -266,47 +211,36 @@ already-enrolled.line1                                          = Mae’ch manyl
 ## Claim subscription page ##
 claim-subscription.title                                        = Rydych chi eisoes wedi cofrestru ar gyfer hysbysu chwarterol
 claim-subscription.heading                                      = Rydych chi eisoes wedi cofrestru ar gyfer hysbysu chwarterol
+claim-subscription.what-happens-next.heading                    = Yr hyn sy’n digwydd nesaf
+claim-subscription.what-happens-next.para1                      = Rhaid i chi ddefnyddio meddalwedd cyfrifyddu i gofnodi’ch incwm a’ch treuliau ac anfon adroddiad i Gyllid a Thollau EM bob chwarter, o leiaf.
+claim-subscription.what-happens-next.para2                      = Ar ôl i chi anfon adroddiad, byddwch yn cael amcangyfrif o’ch Treth Incwm. Gallwch weld eich amcangyfrif a dyddiadau cau’ch adroddiadau yn eich:
+claim-subscription.what-happens-next.bullet1                    = <a id="accountingSoftware" href="{0}">meddalwedd cyfrifyddu</a>
+claim-subscription.what-happens-next.bullet2                    = <a id="bta" href="{0}">cyfrif treth busnes</a>
+claim-subscription.what-happens-next.para4                      = Gall gymryd rhai oriau cyn eu bod i gyd i’w gweld.
 
+## Claim Enrolment Confirmation
+claim-enrolment.confirmation.title                                              = Rydych wedi ychwanegu Troi Treth yn Ddigidol ar gyfer Treth Incwm i’ch cyfrif
+claim-enrolment.confirmation.heading                                            = Yr hyn sy’n digwydd nawr {0}
+claim-enrolment.confirmation.content.line1                                      = Os nad ydych yn defnyddio asiant i reoli’ch materion treth, bydd angen i chi wneud y canlynol:
+claim-enrolment.confirmation.content.checklist.item1.link                       = Dewch o hyd i feddalwedd sy’n cydweddu
+claim-enrolment.confirmation.content.checklist.item1.suffix                     = a chaniatáu iddi ryngweithio â CThEM, os nad ydych eisoes wedi gwneud hynny.
+claim-enrolment.confirmation.content.checklist.item2                            = Anfonwch ddiweddariadau chwarterol nesaf gan ddefnyddio’ch meddalwedd pan fo angen drwy gydol y flwyddyn dreth.
+claim-enrolment.confirmation.content.checklist.item3                            = Cyflwynwch eich diweddariadau blynyddol a gwnewch ddatganiad ar gyfer y flwyddyn dreth.
+claim-enrolment.confirmation.content.line2                                      = Ar ôl i chi anfon diweddariad, byddwch yn cael amcangyfrif o’ch Treth Incwm ar gyfer y flwyddyn hyd yn hyn. Gallwch fwrw golwg dros eich amcangyfrifon a’ch dyddiadau cyflwyno drwy’ch meddalwedd neu drwy’ch cyfrif Troi Treth yn {0}
+claim-enrolment.confirmation.content.line2.link                                 = cyfrif Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+claim-enrolment.confirmation.content.line3                                      = Gall gymryd ychydig oriau cyn i wybodaeth newydd ymddangos.
+claim-enrolment.confirmation.continue-button                                    = Yn eich blaen i’ch cyfrif treth busnes
 
-## Summary page ##
-summary.title                                                   = Gwiriwch eich atebion
-summary.heading                                                 = Gwiriwch eich atebion
-summary.heading_hidden                                          = cyn cofrestru
-summary.confirm_and_sign_up                                     = Cadarnhau a chofrestru
-summary.line-1                                                  = Gallwch olygu’ch atebion, os oes angen.<br>Pan fyddwch chi’n barod, cyflwynwch eich atebion er mwyn cofrestru i anfon diweddariadau digidol i CThEM ynglŷn ag incwm a gwariant.
-summary.rent_uk_property_1                                      = Rydych yn gosod eiddo yn y DU
-summary.rent_uk_property_2                                      = Rydych ond yn cael incwm o hunan-gyflogaeth
-summary.income_source                                           = Incwm a gafwyd o
-summary.are_you_selfemployed                                    = Rydych yn hunangyflogedig
-summary.income_source.business                                  = Hunangyflogaeth
-summary.income_source.property                                  = Eiddo yn y DU
-summary.income_source.foreign_property                          = Incwm a gafwyd o
-summary.income_source.both                                      = Busnes fel unig fasnachwr ac eiddo
-summary.match_tax_year                                          = Mae’ch cyfnod cyfrifyddu yn paru â’r flwyddyn dreth
-summary.accounting_period                                       = Dyddiadau’ch cyfnod cyfrifyddu
-summary.accounting_period.registration                          = Pryd y mae’ch cyfnod cyfrifyddu presennol?
-summary.business_name                                           = Enw eich busnes
-summary.income_type                                             = Dull cyfrifyddu ar gyfer eich incwm o hunangyflogaeth
-summary.income_type.cash                                        = Cyfrifyddu ar sail arian parod
-summary.income_type.accruals                                    = Cyfrifyddu traddodiadol
-summary.accounting-method_property                              = Dull cyfrifyddu ar gyfer incwm o eiddo yn y DU
-summary.selected_year                                           = Y flwyddyn dreth yr ydych wedi cofrestru ar ei chyfer
-summary.selected_year.current                                   = Y flwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
-summary.selected_year.next                                      = Y flwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
-summary.property_start-date                                     = Dyddiad dechrau masnachu busnes eiddo yn y DU
-summary.self_employments                                        = Nifer y busnesau sydd wedi’u cofrestru
-summary.overseas_property_start-date                            = Dyddiad dechrau masnachu busnes eiddo tramor
-summary.accounting-method_foreign_property                      = Dull cyfrifyddu ar gyfer incwm o eiddo tramor
+# Claim Enrolment Not Subscribed
+claim-enrolment.not-subscribed.heading                          = Mae’n ddrwg gennym – mae problem gyda’r gwasanaeth
+claim-enrolment.not-subscribed.info                             = Nid ydych wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm. Yn ôl i’ch
+claim-enrolment.not-subscribed.info.link-text                   = cyfrif treth busnes.
 
-## Confirmation page ##
-confirmation.title                                              = Tudalen gadarnhau
-confirmation.heading                                            = Rydych wedi gorffen cofrestru
-confirmation.whatHappensNext.heading                            = Yr hyn sy’n digwydd nesaf
-confirmation.whatHappensNext.para1                              = Rhaid i chi ddefnyddio meddalwedd cyfrifyddu i gofnodi’ch incwm a’ch treuliau ac anfon adroddiad i Gyllid a Thollau EM bob chwarter, o leiaf.
-confirmation.whatHappensNext.para2                              = Ar ôl i chi anfon adroddiad, byddwch yn cael amcangyfrif o’ch Treth Incwm. Gallwch weld eich amcangyfrif a dyddiadau cau’ch adroddiadau yn eich:
-confirmation.whatHappensNext.bullet1                            = <a id="accountingSoftware" href="{0}">meddalwedd cyfrifyddu</a>
-confirmation.whatHappensNext.bullet2                            = <a id="bta" href="{0}">cyfrif treth busnes</a>
-confirmation.whatHappensNext.para4                              = Gall gymryd rhai oriau cyn eu bod i gyd i’w gweld.
+## Claim Enrolment Already Signed Up
+claim-enrolment.claim-already-signed-up.title                      = Rydych eisoes wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+claim-enrolment.claim-already-signed-up.content                    = Os na allwch ddod o hyd i fanylion eich cyfrif Hunanasesiad, mae’n bosibl eu bod yn eich cyfrif ar-lein arall gan CThEM.
+claim-enrolment.claim-already-signed-up.content.link1              = Gwiriwch a yw’ch Hunanasesiad mewn cyfrif arall
+claim-enrolment.claim-already-signed-up.content.link2              = Adfer manylion mewngofnodi ar gyfer eich cyfrif arall
 
 ## Sign Up Complete page ##
 sign-up-complete.heading                                        = Rydych wedi’ch cofrestru i ddefnyddio meddalwedd i anfon diweddariadau ynghylch Treth Incwm
@@ -314,19 +248,11 @@ sign-up-complete.can-use-software                               = Gallwch nawr d
 sign-up-complete.what-now.heading                               = Yr hyn sy’n digwydd nawr
 sign-up-complete.what-now.find-software                         = Os nad ydych eisoes wedi gwneud hynny, {0} a chaniatáu iddi ryngweithio â CThEM.
 sign-up-complete.what-now.find-software.link                    = dewch o hyd i feddalwedd sy’n cydweddu
-sign-up-complete.what-now.sendPreviousUpdates                   = Mae’n rhaid i chi ychwanegu’r holl incwm a threuliau ar gyfer y diweddariadau blaenorol gan ddefnyddio’ch meddalwedd ar gyfer:
-sign-up-complete.what-now.sendQuarterly                         = Anfonwch ddiweddariadau chwarterol nesaf gan ddefnyddio’ch meddalwedd erbyn:
-sign-up-complete.whatHappensNext.sendQuarterly                  = Bydd yn rhaid i chi anfon diweddariadau chwarterol gan ddefnyddio’ch meddalwedd erbyn:
-sign-up-complete.what-now.submitAnnualUpdates                   = Cyflwynwch eich diweddariadau blynyddol a gwnewch ddatganiad ar gyfer y flwyddyn dreth erbyn 31 Ionawr {0}.
 sign-up-complete.quarter-table-caption                          = Cyflwynwch ddiweddariadau chwarterol erbyn y dyddiad cau
-sign-up.complete.julyUpdate                                     = 5 Gorffennaf {0}
-sign-up.complete.octoberUpdate                                  = 5 Hydref {0}
-sign-up.complete.januaryUpdate                                  = 5 Ionawr {0}
-sign-up.complete.aprilUpdate                                    = 5 Ebrill {0}
 sign-up-complete.what-now.para                                  = Ar ôl i chi anfon diweddariad, byddwch yn cael amcangyfrif o’ch Treth Incwm ar gyfer y flwyddyn hyd yn hyn. Gallwch fwrw golwg dros eich amcangyfrifon a’ch dyddiadau cyflwyno drwy’ch meddalwedd neu drwy’ch {0}.
 sign-up-complete.what-now.para.link                             = cyfrif Treth Busnes
 sign-up-complete.what-now.para2                                 = Gall gymryd rhai oriau cyn i wybodaeth newydd ymddangos.
-sign-up-complete.what-now.signOut                               = Gorffen ac allgofnodi
+sign-up-complete.what-now.sign-out                              = Gorffen ac allgofnodi
 sign-up-complete.what-now.previous-updates                      = Mae angen i chi gyflwyno diweddariadau chwarterol gan ddefnyddio’ch meddalwedd:
 sign-up-complete.what-now.updates-table.update-heading          = Cyflwyno chwarterol
 sign-up-complete.what-now.updates-table.deadline-heading        = Dyddiad cau
@@ -343,19 +269,17 @@ sign-up-confirmation.heading.panel.next                            = is signed u
 
 sign-up-confirmation.section1.heading                              = What you will have to do
 
-sign-up-confirmation.section1.hint                                 = Continue to submit your Self Assessment tax return, as normal, until 2024.
-
-sign-up-confirmation.section1.quarterly-updates.next-year.heading    = 1. Then update us every quarter
+sign-up-confirmation.section1.hint                                   = Continue to submit your Self Assessment tax return, as normal, until 2024.
 sign-up-confirmation.section1.quarterly-updates.table-caption        = Quarterly updates by the deadline
 sign-up-confirmation.section1.quarterly-updates.paragraph            = You can file as many updates as you want but you must submit them on time, each quarter.
-sign-up-confirmation.section1.quarterly-updates.next-year.paragraph1 = You can start sending quarterly updates during the next tax year. It will not affect the amount you pay.
-sign-up-confirmation.section1.quarterly-updates.next-year.paragraph2 = After you have sent an update you will get a year-to-date Income Tax estimate.
-sign-up-confirmation.section1.quarterly-updates.next-year.paragraph3 = There is no penalty if you start making updates mid-way through the next tax year but you will need to make updates for the quarters you’ve missed.
-
 sign-up-confirmation.section1.quarterly-updates.this-year.heading    = 1. Update us every quarter
 sign-up-confirmation.section1.quarterly-updates.this-year.paragraph1 = You can start sending quarterly updates during the current tax year. It will not affect the amount you pay.
 sign-up-confirmation.section1.quarterly-updates.this-year.paragraph2 = After you have sent an update you will get a year-to-date Income Tax estimate.
 sign-up-confirmation.section1.quarterly-updates.this-year.paragraph3 = There is no penalty if you start making updates mid-way through the current tax year but you will need to make updates for the quarters you’ve missed.
+sign-up-confirmation.section1.quarterly-updates.next-year.heading    = 1. Then update us every quarter
+sign-up-confirmation.section1.quarterly-updates.next-year.paragraph1 = You can start sending quarterly updates during the next tax year. It will not affect the amount you pay.
+sign-up-confirmation.section1.quarterly-updates.next-year.paragraph2 = After you have sent an update you will get a year-to-date Income Tax estimate.
+sign-up-confirmation.section1.quarterly-updates.next-year.paragraph3 = There is no penalty if you start making updates mid-way through the next tax year but you will need to make updates for the quarters you’ve missed.
 
 sign-up-confirmation.section2.heading                              = Find software and check your account
 
@@ -375,19 +299,9 @@ sign-up-confirmation.section2.getting-prepared.para-1              = You can not
 sign-up-confirmation.section2.getting-prepared.link                = Find software ... but in Welsh
 
 ## Errors ##
-error.back_to_preferences.empty                                 = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 
 error.what-year.empty                                           = Dewiswch y flwyddyn dreth yr ydych am gofrestru ar ei chyfer
 error.what-year.invalid                                         = Dewiswch y flwyddyn dreth yr ydych am gofrestru ar ei chyfer
-
-error.income_source.empty                                       = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
-error.income_source.invalid                                     = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
-
-error.are_you_selfemployed.empty                                = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
-error.are_you_selfemployed.invalid                              = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
-
-error.business.sole_trader.empty                                = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
-error.business.sole_trader.invalid                              = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 
 error.property.income.empty                                     = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 error.property.income.invalid                                   = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
@@ -395,121 +309,57 @@ error.property.income.invalid                                   = Rhaid i chi dd
 error.date.empty                                                = Rhaid i chi nodi dyddiad
 error.date.invalid                                              = Rhaid i chi nodi dyddiad dilys
 
-error.business_accounting_period.minStartDate                   = Mae’n rhaid i ddyddiad dechrau eich cyfnod cyfrifyddu fod yn y dyfodol.
-
-error.business_name.empty                                       = Rhaid i chi nodi enw’ch busnes
-error.business_name.maxLength                                   = Ni allwch nodi mwy na 105 o gymeriadau ar gyfer enw’ch busnes
-error.business_name.invalid                                     = Mae enw’r busnes yn cynnwys cymeriadau annilys
-
-
-error.contact_email.empty                                       = Nodwch e-bost cyswllt
-error.contact_email.maxLength                                   = Mae’r e-bost yn rhy hir
-error.contact_email.invalid                                     = Mae’r e-bost yn annilys
-
 error.accounting-method.empty                                   = Dewiswch sut rydych chi’n cofnodi’ch incwm a’ch treuliau ar gyfer eich busnes hunangyflogedig
 error.accounting-method-property.empty                          = Dewiswch a ydych yn defnyddio cyfrifyddu ar sail arian parod neu gyfrifyddu traddodiadol
 error.accounting-method.invalid                                 = Dewiswch sut rydych chi’n cofnodi’ch incwm a’ch treuliau ar gyfer eich busnes hunangyflogedig
 error.accounting-method-property.invalid                        = Dewiswch a ydych yn defnyddio cyfrifyddu ar sail arian parod neu gyfrifyddu traddodiadol
 
 #Overseas Property accounting method errors
-error.overseas_property_accounting-method.invalid               = Dewiswch a ydych yn defnyddio cyfrifyddu ar sail arian parod neu gyfrifyddu traddodiadol
-error.overseas_property_accounting-method.empty                 = Dewiswch a ydych yn defnyddio cyfrifyddu ar sail arian parod neu gyfrifyddu traddodiadol
+error.overseas-property-accounting-method.invalid               = Dewiswch a ydych yn defnyddio cyfrifyddu ar sail arian parod neu gyfrifyddu traddodiadol
+error.overseas-property-accounting-method.empty                 = Dewiswch a ydych yn defnyddio cyfrifyddu ar sail arian parod neu gyfrifyddu traddodiadol
 
 #Agent Overseas Property accounting method errors
-error.agent.overseas_property_accounting-method.empty           = Dewiswch a yw’ch cleient yn defnyddio cyfrifyddu ar sail arian parod neu gyfrifyddu traddodiadol
+error.agent.overseas-property-accounting-method.empty           = Dewiswch a yw’ch cleient yn defnyddio cyfrifyddu ar sail arian parod neu gyfrifyddu traddodiadol
 
-error.user_details.first_name.empty                             = Nodwch eich enw cyntaf
-error.user_details.last_name.empty                              = Nodwch eich enw olaf
-error.user_details.first_name.invalid                           = Nodwch enw cyntaf dilys
-error.user_details.last_name.invalid                            = Nodwch enw olaf dilys
-error.user_details.first_name.maxLength                         = Nodwch enw cyntaf sy’n 105 o gymeriadau neu lai
-error.user_details.last_name.maxLength                          = Nodwch enw olaf sy’n 105 o gymeriadau neu lai
+error.user-details.first-name.empty                             = Nodwch eich enw cyntaf
+error.user-details.last-name.empty                              = Nodwch eich enw olaf
+error.user-details.first-name.invalid                           = Nodwch enw cyntaf dilys
+error.user-details.last-name.invalid                            = Nodwch enw olaf dilys
+error.user-details.first-name.max-length                        = Nodwch enw cyntaf sy’n 105 o gymeriadau neu lai
+error.user-details.last-name.max-length                         = Nodwch enw olaf sy’n 105 o gymeriadau neu lai
 
 error.nino.invalid                                              = Nodwch rif Yswiriant Gwladol yn y fformat cywir
 error.nino.empty                                                = Nodwch eich rhif Yswiriant Gwladol
 
-error.user_details.date_of_birth.day-month-year.empty           = Nodwch eich dyddiad geni
-error.user_details.date_of_birth.day.empty                      = Mae’n rhaid i’ch dyddiad geni gynnwys diwrnod
-error.user_details.date_of_birth.month.empty                    = Mae’n rhaid i’ch dyddiad geni gynnwys mis
-error.user_details.date_of_birth.year.empty                     = Mae’n rhaid i’ch dyddiad geni gynnwys blwyddyn
-error.user_details.date_of_birth.day-month.empty                = Mae’n rhaid i’ch dyddiad geni gynnwys diwrnod a mis
-error.user_details.date_of_birth.day-year.empty                 = Mae’n rhaid i’ch dyddiad geni gynnwys diwrnod a blwyddyn
-error.user_details.date_of_birth.month-year.empty               = Mae’n rhaid i’ch dyddiad geni gynnwys mis a blwyddyn
-error.user_details.date_of_birth.day-month-year.not_in_past     = Mae’n rhaid i’ch dyddiad geni fod yn y gorffennol
-error.user_details.date_of_birth.day-month-year.invalid         = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.user_details.date_of_birth.day.invalid                    = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.user_details.date_of_birth.month.invalid                  = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.user_details.date_of_birth.year.invalid                   = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.user_details.date_of_birth.day-month.invalid              = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.user_details.date_of_birth.day-year.invalid               = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.user_details.date_of_birth.month-year.invalid             = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.user_details.date_of_birth.year.length                    = Mae’n rhaid i flwyddyn fod yn bedwar digid. Er enghraifft, 2020.
-
-error.not-eligible.empty                                        = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
-error.not-eligible.invalid                                      = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
-
-error.rent-uk-property.empty                                    = Dewiswch ‘Iawn’ os ydych yn gosod eiddo yn y DU
-error.rent-uk-property.invalid                                  = Dewiswch ‘Iawn’ os ydych yn gosod eiddo yn y DU
-error.rent-uk-property.only-source-empty                        = Dewiswch ‘Iawn’ os mai dyma’ch unig ffynhonnell o incwm hunangyflogedig
-error.rent-uk-property.only-source-invalid                      = Dewiswch ‘Iawn’ os mai dyma’ch unig ffynhonnell o incwm hunangyflogedig
-
-error.survey-feedback.maxLength                                 = Ni allwch nodi mwy na 1200 o gymeriadau ar gyfer eich adborth
-
-error.confirm-agent.empty                                       = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
-error.confirm-agent.invalid                                     = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
-
-error.property_accounting_period.minStartDate                   = Mae’n rhaid i’r dyddiad y dechreuodd y busnes fasnachu fod ar neu cyn {0}
-
-## Eligible page ##
-eligible.title                                                  = Gallwch anfon diweddariadau digidol
-eligible.heading                                                = Gallwch anfon diweddariadau digidol
-eligible.line-1                                                 = Mae’ch atebion yn golygu y dylech allu dechrau anfon diweddariadau digidol i CThEM ar ôl i chi gofrestru.
-eligible.line_2                                                 = Dim ond ychydig o fanylion eraill sydd angen i chi eu rhoi.
+error.user-details.date-of-birth.day-month-year.empty           = Nodwch eich dyddiad geni
+error.user-details.date-of-birth.day.empty                      = Mae’n rhaid i’ch dyddiad geni gynnwys diwrnod
+error.user-details.date-of-birth.month.empty                    = Mae’n rhaid i’ch dyddiad geni gynnwys mis
+error.user-details.date-of-birth.year.empty                     = Mae’n rhaid i’ch dyddiad geni gynnwys blwyddyn
+error.user-details.date-of-birth.day-month.empty                = Mae’n rhaid i’ch dyddiad geni gynnwys diwrnod a mis
+error.user-details.date-of-birth.day-year.empty                 = Mae’n rhaid i’ch dyddiad geni gynnwys diwrnod a blwyddyn
+error.user-details.date-of-birth.month-year.empty               = Mae’n rhaid i’ch dyddiad geni gynnwys mis a blwyddyn
+error.user-details.date-of-birth.day-month-year.not-in-past     = Mae’n rhaid i’ch dyddiad geni fod yn y gorffennol
+error.user-details.date-of-birth.day-month-year.invalid         = Rhaid i’r dyddiad fod yn ddyddiad go iawn
+error.user-details.date-of-birth.day.invalid                    = Rhaid i’r dyddiad fod yn ddyddiad go iawn
+error.user-details.date-of-birth.month.invalid                  = Rhaid i’r dyddiad fod yn ddyddiad go iawn
+error.user-details.date-of-birth.year.invalid                   = Rhaid i’r dyddiad fod yn ddyddiad go iawn
+error.user-details.date-of-birth.day-month.invalid              = Rhaid i’r dyddiad fod yn ddyddiad go iawn
+error.user-details.date-of-birth.day-year.invalid               = Rhaid i’r dyddiad fod yn ddyddiad go iawn
+error.user-details.date-of-birth.month-year.invalid             = Rhaid i’r dyddiad fod yn ddyddiad go iawn
+error.user-details.date-of-birth.year.length                    = Mae’n rhaid i flwyddyn fod yn bedwar digid. Er enghraifft, 2020.
 
 ## Stub User Details ##
 stub.user.details.title                                         = User stubbing service - Use software to send Income Tax updates - GOV.UK
 stub.user.details.heading                                       = User stubbing service
 stub.user.details.line-1                                        = We will check these details with information we currently have.
-stub.user.details.field_1                                       = First name
-stub.user.details.field_2                                       = Last name
-stub.user.details.field_3                                       = National Insurance number
-stub.user.details.field_4                                       = Self Assessment Unique Tax Reference
-stub.user.details.field_5                                       = Date of birth
+stub.user.details.field-1                                       = First name
+stub.user.details.field-2                                       = Last name
+stub.user.details.field-3                                       = National Insurance number
+stub.user.details.field-4                                       = Self Assessment Unique Tax Reference
+stub.user.details.field-5                                       = Date of birth
 stub.user.details.formhint.1.line-1                             = It’s on your National Insurance card, benefit letter, payslip or P60. For example, ‘QQ 12 34 56 C’.
 stub.user.details.formhint.2                                    = For example, 17 2 1990.
 stub.user.details.formhint.3                                    = For example, ’1234546734’.
-
-## User Details ##
-user-details.title                                              = Cadarnhau’ch manylion
-user-details.heading                                            = Cadarnhau’ch manylion
-user-details.line-1                                             = Byddwn yn gwirio’r manylion hyn yn ôl yr wybodaeth sydd gennym ar hyn o bryd
-user-details.field_1                                            = Enw cyntaf
-user-details.field_2                                            = Enw olaf
-user-details.field_3                                            = Rhif Yswiriant Gwladol
-user-details.field_4                                            = Dyddiad geni
-user_details.formhint.1.line-1                                  = Mae hwn ar eich cerdyn Yswiriant Gwladol, llythyr ynghylch budd-daliadau, slip cyflog neu P60. Er enghraifft, ‘QQ 12 34 56 C’.
-user-details.formhint.2                                         = Er enghraifft, 17 2 1990.
-
-
-# User details page
-user-details-error.title                                        = Gwall paru defnyddiwr
-user-details-error.heading                                      = Ni allem gadarnhau’ch manylion
-user-details-error.line-1                                       = Nid yw’r manylion rydych wedi’u nodi ar ein system.
-
-# User Details Lockout
-user-details-lockout.title                                      = Rydych wedi cael eich cloi allan
-user-details-lockout.heading                                    = Rydych wedi cael eich cloi allan
-user-details-lockout.line-1                                     = I gofrestru ar gyfer hysbysu chwarterol, rhaid i chi roi cynnig arall arni ymhen {0}.
-
-# Check your details page
-user-details.summary.title                                      = Gwiriwch eich atebion
-user-details.summary.caption                                    = Y manylion rydych yn eu defnyddio i gofrestru
-user-details.summary.heading                                    = Gwiriwch eich atebion
-user-details.summary.first_name                                 = Enw cyntaf
-user-details.summary.last_name                                  = Enw olaf
-user-details.summary.nino                                       = Rhif Yswiriant Gwladol
-user-details.summary.dob                                        = Dyddiad geni
-
 
 ## No SA page ##
 no-sa.title                                                     = Rhaid i chi gofrestru ar gyfer Hunanasesiad
@@ -558,11 +408,25 @@ affinity-group-error.line1                                      = Gallwch ond de
 affinity-group-error.line2                                      = I gofrestru ar gyfer hysbysu chwarterol, rhaid i chi <a id="sign-out" href="{0}">fewngofnodi gan ddefnyddio math gwahanol o gyfrif.</a>
 affinity-group-error.agent.line1                                = I gofrestru ar gyfer hysbysu chwarterol gyda’r manylion mewngofnodi hyn, rhaid i chi <a id="agent-service" href="{0}">ddefnyddio ein gwasanaeth asiant.</a>
 
-## Base ##
+## ADD MTDIT Overview
+mtdit-overview.heading                                          = Ychwanegwch Troi Treth yn Ddigidol ar gyfer Treth Incwm i’ch cyfrif treth busnes
+mtdit-overview.paragraph1                                       = Mae’ch asiant wedi’ch cofrestru ar gyfer {0}
+mtdit-overview.link1                                            = Troi Treth yn Ddigidol ar gyfer Treth Incwm
+mtdit-overview.paragraph2                                       = Mae ychwanegu hyn at eich cyfrif treth busnes yn eich galluogi i’w reoli ar-lein gyda’ch trethi eraill.
+mtdit-overview.inset                                            = Mae angen i chi ddefnyddio’ch Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth. Gallwch wirio manylion eich cyfrif presennol ar eich {0}
+mtdit-overview.link2                                            = cyfrif treth busnes
+mtdit-overview.heading2                                         = Eich cyfrifoldebau
+mtdit-overview.paragraph3                                       = Mae Troi Treth yn Ddigidol ar gyfer Treth Incwm yn disodli Hunanasesiad. Gallwch atal y dreth hon ar unrhyw adeg a mynd yn ôl i Hunanasesiad.
+mtdit-overview.paragraph4                                       = Bydd yn dal i fod yn rhaid i chi anfon Ffurflen Dreth Hunanasesiad i CThEM ar gyfer y flwyddyn dreth cyn i chi gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+mtdit-overview.paragraph5                                       = I ychwanegu’r dreth hon, mae’n bosibl y bydd angen i chi ddarparu dogfennau sy’n profi pwy ydych.
+
+## Agent Base ##
 agent.base.service-name                                         = Defnyddiwch feddalwedd i roi gwybod am Dreth Incwm eich cleient
+agent.base.title-pattern                                        = {0} - Defnyddiwch feddalwedd i roi gwybod am Dreth Incwm eich cleient - GOV.UK
+agent.base.title-pattern.error                                  = Gwall: {0} - Defnyddiwch feddalwedd i roi gwybod am Dreth Incwm eich cleient - GOV.UK
 agent.base.back                                                 = Yn ôl
 agent.base.continue                                             = Yn eich blaen
-agent.base.sign_up_another_client                               = Cofrestru cleient arall
+agent.base.sign-up-another-client                               = Cofrestru cleient arall
 agent.base.update                                               = Diweddaru
 agent.base.sign-out                                             = Allgofnodi
 agent.base.sign-up                                              = Cofrestru
@@ -575,58 +439,36 @@ agent.base.change                                               = Newid
 agent.base.yes                                                  = Iawn
 agent.base.no                                                   = Na
 
-# Agent front page
-agent.frontpage.title                                           = Cofrestru i roi gwybod am incwm a threuliau’ch cleient bob chwarter
-agent.frontpage.heading                                         = Cofrestru i roi gwybod am incwm a threuliau’ch cleient bob chwarter
-agent.frontpage.para_1                                          = Drwy gofrestru ar gyfer gwasanaeth diogel Cyllid a Thollau EM, rydych yn helpu i brofi ffordd newydd o gyfrifo treth eich cleient. Byddwch yn gwneud hyn drwy:
-agent.frontpage.bullet_1                                        = defnyddio’ch meddalwedd cyfrifyddu i gofnodi incwm a threuliau’ch cleient
-agent.frontpage.bullet_2                                        = anfon manylion atom yn rheolaidd o fis Gorffennaf 2017 ymlaen
-agent.frontpage.para_2                                          = Gallwch gofrestru’ch cleient os yw ei gyfnod cyfrifyddu presennol yn dechrau ar ôl 5 Ebrill 2017 ac os yw’n un o’r canlynol:
-agent.frontpage.bullet_3                                        = unig fasnachwr sydd ag incwm o un busnes
-agent.frontpage.bullet_4                                        = rhywun sy’n gosod eiddo yn y DU
-agent.frontpage.bullet_5                                        = unig fasnachwr sydd ag incwm o un busnes ac mae’n gosod eiddo yn y DU
-agent.frontpage.para_3                                          = Os oes gan eich cleient incwm heblaw’r rhai a restrir uchod, ni allwch roi gwybod amdano gan ddefnyddio’r gwasanaeth hwn ar hyn o bryd.
-agent.frontpage.sub_heading_1                                   = Cofrestru gan ddefnyddio Porth y Llywodraeth
-agent.frontpage.para_4                                          = Rhaid i chi nodi’r Dynodydd Defnyddiwr (ID) a’r cyfrinair a gawsoch wrth greu’ch cyfrif Gwasanaethau’r Asiant.
-agent.frontpage.sub_heading_2                                   = Cyn i chi ddechrau
-agent.frontpage.para_5                                          = Bydd angen manylion canlynol eich cleient arnoch:
-agent.frontpage.bullet_6                                        = enw llawn
-agent.frontpage.bullet_7                                        = dyddiad geni
-agent.frontpage.bullet_8                                        = Rhif Yswiriant Gwladol
-agent.frontpage.para_6                                          = I ddefnyddio’r gwasanaeth hwn:
-agent.frontpage.bullet_9                                        = rhaid i chi <a href="{0}">greu cyfrif Gwasanaethau’r Asiant</a>
-agent.frontpage.bullet_10                                       = rhaid i’ch cleient <a href="{0}">eich awdurdodi chi fel ei asiant</a>
-
 # Agent other sources of income page
-agent.other_sources_of_income.title                             = Ar wahân i hunangyflogaeth neu roi eiddo ar osod, a oes gan eich cleient unrhyw ffynonellau eraill o incwm?
-agent.other_sources_of_income.heading                           = Ar wahân i hunangyflogaeth neu roi eiddo ar osod, a oes gan eich cleient unrhyw ffynonellau eraill o incwm?
-agent.other_sources_of_income.include                           = Gallai hyn gynnwys:
-agent.other_sources_of_income.includePoint1                     = TWE fel cyflogai
-agent.other_sources_of_income.includePoint2                     = pensiynau neu flwydd-daliadau’r DU
-agent.other_sources_of_income.includePoint3                     = buddsoddiadau y tu allan i’r DU
-agent.other_sources_of_income.includePoint4                     = enillion cyfalaf
-agent.other_sources_of_income.includePoint5                     = budd-daliadau trethadwy’r Wladwriaeth
-agent.other_sources_of_income.notInclude                        = Nid yw hyn yn cynnwys:
-agent.other_sources_of_income.notIncludePoint1                  = llog banc neu gymdeithas adeiladu
-agent.other_sources_of_income.notIncludePoint2                  = difidendau
-agent.other_sources_of_income.invalid                           = Dewiswch ‘Iawn’ os oes gan eich cleient ffynonellau incwm heblaw hunangyflogaeth neu incwm o eiddo
+agent.other-sources-of-income.title                             = Ar wahân i hunangyflogaeth neu roi eiddo ar osod, a oes gan eich cleient unrhyw ffynonellau eraill o incwm?
+agent.other-sources-of-income.heading                           = Ar wahân i hunangyflogaeth neu roi eiddo ar osod, a oes gan eich cleient unrhyw ffynonellau eraill o incwm?
+agent.other-sources-of-income.include                           = Gallai hyn gynnwys:
+agent.other-sources-of-income.include-point1                    = TWE fel cyflogai
+agent.other-sources-of-income.include-point2                    = pensiynau neu flwydd-daliadau’r DU
+agent.other-sources-of-income.include-point3                    = buddsoddiadau y tu allan i’r DU
+agent.other-sources-of-income.include-point4                    = enillion cyfalaf
+agent.other-sources-of-income.include-point5                    = budd-daliadau trethadwy’r Wladwriaeth
+agent.other-sources-of-income.not-include                       = Nid yw hyn yn cynnwys:
+agent.other-sources-of-income.not-include-point1                = llog banc neu gymdeithas adeiladu
+agent.other-sources-of-income.not-include-point2                = difidendau
+agent.other-sources-of-income.invalid                           = Dewiswch ‘Iawn’ os oes gan eich cleient ffynonellau incwm heblaw hunangyflogaeth neu incwm o eiddo
 
 # Agent cannot take part page
-agent.cannot_take_part.title                                    = Ni all eich cleient gymryd rhan yn y cynllun peilot hwn
-agent.cannot_take_part.heading                                  = Ni all eich cleient gymryd rhan yn y cynllun peilot hwn
-agent.cannot_take_part.income                                   = Ni allwch gofrestru’ch cleient ar gyfer y cynllun peilot hwn os yw’n cael incwm o’r canlynol:
-agent.cannot_take_part.income.point1                            = incwm TWE fel cyflogai
-agent.cannot_take_part.income.point2                            = pensiynau neu flwydd-daliadau’r DU
-agent.cannot_take_part.income.point3                            = buddsoddiadau y tu allan i’r DU
-agent.cannot_take_part.income.point4                            = enillion cyfalaf
-agent.cannot_take_part.income.point5                            = budd-daliadau trethadwy’r Wladwriaeth
-agent.cannot_take_part.other                                    = Hefyd, ni all eich cleient gymryd rhan os yw’r canlynol yn wir:
-agent.cannot_take_part.other.point1                             = nid yw ei flwyddyn dreth yn cyd-fynd â’r flwyddyn dreth safonol
-agent.cannot_take_part.other.point2                             = dechreuodd ei fusnes fel unig fasnachwr o fewn y ddwy flynedd ddiwethaf
-agent.cannot_take_part.other.point3                             = dechreuodd ei fusnes eiddo o fewn y flwyddyn ddiwethaf
-agent.cannot_take_part.other.point4                             = nid yw ei gyfnod cyfrifyddu yn cyd-fynd â’r flwyddyn dreth safonol
-agent.cannot_take_part.alternative                              = Bydd yn rhaid i’ch cleient anfon {0} yn lle hynny. Mae’n bosibl y gallwch ddefnyddio’r gwasanaeth ‘Defnyddio meddalwedd i roi gwybod am Dreth Incwm eich cleient’ ar gyfer eich cleient yn y dyfodol.
-agent.cannot_take_part.alternative.link                         = Ffurflen Dreth Hunanasesiad
+agent.cannot-take-part.title                                    = Ni all eich cleient gymryd rhan yn y cynllun peilot hwn
+agent.cannot-take-part.heading                                  = Ni all eich cleient gymryd rhan yn y cynllun peilot hwn
+agent.cannot-take-part.income                                   = Ni allwch gofrestru’ch cleient ar gyfer y cynllun peilot hwn os yw’n cael incwm o’r canlynol:
+agent.cannot-take-part.income.point1                            = incwm TWE fel cyflogai
+agent.cannot-take-part.income.point2                            = pensiynau neu flwydd-daliadau’r DU
+agent.cannot-take-part.income.point3                            = buddsoddiadau y tu allan i’r DU
+agent.cannot-take-part.income.point4                            = enillion cyfalaf
+agent.cannot-take-part.income.point5                            = budd-daliadau trethadwy’r Wladwriaeth
+agent.cannot-take-part.other                                    = Hefyd, ni all eich cleient gymryd rhan os yw’r canlynol yn wir:
+agent.cannot-take-part.other.point1                             = nid yw ei flwyddyn dreth yn cyd-fynd â’r flwyddyn dreth safonol
+agent.cannot-take-part.other.point2                             = dechreuodd ei fusnes fel unig fasnachwr o fewn y ddwy flynedd ddiwethaf
+agent.cannot-take-part.other.point3                             = dechreuodd ei fusnes eiddo o fewn y flwyddyn ddiwethaf
+agent.cannot-take-part.other.point4                             = nid yw ei gyfnod cyfrifyddu yn cyd-fynd â’r flwyddyn dreth safonol
+agent.cannot-take-part.alternative                              = Bydd yn rhaid i’ch cleient anfon {0} yn lle hynny. Mae’n bosibl y gallwch ddefnyddio’r gwasanaeth ‘Defnyddio meddalwedd i roi gwybod am Dreth Incwm eich cleient’ ar gyfer eich cleient yn y dyfodol.
+agent.cannot-take-part.alternative.link                         = Ffurflen Dreth Hunanasesiad
 
 # Agent accounting period check page
 agent.accounting-period-check.title                             = A yw holl gyfnodau cyfrifyddu busnes eich cleient yn rhedeg o 6 Ebrill i 5 Ebrill?
@@ -635,16 +477,16 @@ agent.accounting-period-check.hint                              = Mae’r flwydd
 agent.accounting-period-check.invalid                           = Dewiswch ‘Iawn’ os yw holl gyfnodau cyfrifyddu busnes eich cleient o 6 Ebrill i 5 Ebrill
 
 # Agent property trading after date page
-agent.property_trading_after.title                              = A wnaeth eich cleient ddechrau busnes eiddo ar neu ôl {0}?
-agent.property_trading_after.heading                            = A wnaeth eich cleient ddechrau busnes eiddo ar neu ôl {0}?
-agent.property_trading_after.line                               = Mae hyn yn cynnwys bod yn landlord neu ddefnyddio asiantaeth gosod ar gyfer y canlynol:
-agent.property_trading_after.line.point1                        = eiddo yn y DU
-agent.property_trading_after.line.point2                        = eiddo tramor
-agent.property_trading_after.line.point3                        = llety gwyliau
-agent.property_trading_after.line2                              = Nid yw hyn yn cynnwys rhoi’r canlynol ar osod:
-agent.property_trading_after.line2.point1                       = ystafell
-agent.property_trading_after.line2.point2                       = rhan o’ch eiddo
-agent.property_trading_after.error.summary                      = Dewiswch ‘Iawn’ os yw’ch cleient yn berchen ar fusnes eiddo a ddechreuodd fasnachu ar neu ar ôl {0}
+agent.property-trading-after.title                              = A wnaeth eich cleient ddechrau busnes eiddo ar neu ôl {0}?
+agent.property-trading-after.heading                            = A wnaeth eich cleient ddechrau busnes eiddo ar neu ôl {0}?
+agent.property-trading-after.line                               = Mae hyn yn cynnwys bod yn landlord neu ddefnyddio asiantaeth gosod ar gyfer y canlynol:
+agent.property-trading-after.line.point1                        = eiddo yn y DU
+agent.property-trading-after.line.point2                        = eiddo tramor
+agent.property-trading-after.line.point3                        = llety gwyliau
+agent.property-trading-after.line2                              = Nid yw hyn yn cynnwys rhoi’r canlynol ar osod:
+agent.property-trading-after.line2.point1                       = ystafell
+agent.property-trading-after.line2.point2                       = rhan o’ch eiddo
+agent.property-trading-after.error.summary                      = Dewiswch ‘Iawn’ os yw’ch cleient yn berchen ar fusnes eiddo a ddechreuodd fasnachu ar neu ar ôl {0}
 
 # Client details page
 agent.client-details-error.title                                = Mae problem wedi codi
@@ -660,8 +502,8 @@ agent.client-details-lockout.line-1                             = I gofrestru’
 agent.client-details.summary.title                              = Gwirio’ch atebion – manylion y cleient
 agent.client-details.summary.caption                            = Y manylion rydych yn eu defnyddio i gofrestru’ch cleient
 agent.client-details.summary.heading                            = Gwiriwch eich atebion
-agent.client-details.summary.first_name                         = Enw cyntaf
-agent.client-details.summary.last_name                          = Enw olaf
+agent.client-details.summary.first-name                         = Enw cyntaf
+agent.client-details.summary.last-name                          = Enw olaf
 agent.client-details.summary.nino                               = Rhif Yswiriant Gwladol
 agent.client-details.summary.dob                                = Dyddiad geni
 
@@ -670,9 +512,9 @@ agent.income-source.heading                     = Pa ffynhonnell incwm ydych chi
 agent.income-source.paragraph1                  = Os yw’ch cleient yn hunangyflogedig, mae’n rhaid i chi ychwanegu bob un o’i fusnesau unig fasnachwr os oes ganddo fwy nag un. Os oes ganddo incwm o eiddo mae’n rhaid i chi ei ychwanegu, ond mae hyn wedi’i gyfyngu i un busnes eiddo yn y DU.
 agent.income-source.paragraph1-overseas         = Gall eich cleient gael hyd at {0} o fusnesau unig fasnachwr. Fodd bynnag, dim ond un busnes eiddo yn y DU ac un eiddo ar osod dramor y gellir ei gael.
 agent.income-source.paragraph2                  = Mae rhoi eiddo ar osod yn cynnwys defnyddio asiantaeth gosod eiddo.
-agent.income-source.self-employed                = Busnes unig fasnachwr
-agent.income-source.uk-property                  = Busnes eiddo yn y DU
-agent.income-source.foreign-property             = Busnes eiddo tramor
+agent.income-source.self-employed               = Busnes unig fasnachwr
+agent.income-source.uk-property                 = Busnes eiddo yn y DU
+agent.income-source.foreign-property            = Busnes eiddo tramor
 agent.income-source.error                       = Dewiswch ffynhonnell incwm eich cleient
 
 # Property income page
@@ -692,8 +534,8 @@ agent.business.what-year-to-sign-up.option-2                  = Blwyddyn dreth n
 agent.business.what-year-to-sign-up.option-current-hint       = Bydd yn rhaid i chi anfon datganiad terfynol erbyn 31 Ionawr {0}.
 agent.business.what-year-to-sign-up.option-next-hint          = Bydd yn rhaid i chi anfon datganiad terfynol erbyn 31 Ionawr {0}, a llenwi Ffurflen Dreth Hunanasesiad ar gyfer y flwyddyn dreth gyfredol yn ôl yr arfer.
 
-# Sole trader page
-agent.eligibility.sole_trader.heading                           = A ddechreuodd busnes unig fasnachwr eich cleient fasnachu ar neu ar ôl {0}?
+# Agent Sole trader page
+agent.eligibility.sole-trader.heading                           = A ddechreuodd busnes unig fasnachwr eich cleient fasnachu ar neu ar ôl {0}?
 
 # Agent Property Accounting Method Page
 agent.property.accounting-method.title                          = Pa ddull cyfrifo y mae’ch cleient yn ei ddefnyddio ar gyfer ei fusnes eiddo yn y DU?
@@ -702,26 +544,16 @@ agent.property.accounting-method.radio.accruals                 = Cyfrifyddu tra
 
 # Agent Overseas Property Accounting Method Page
 agent.overseas.property.accounting-method.title                 = Pa ddull cyfrifo y mae’ch cleient yn ei ddefnyddio ar gyfer ei fusnes eiddo tramor?
-agent.overseas.property.accounting-method.radio.cash            = Cyfrifyddu ar sail arian parod
-agent.overseas.property.accounting-method.radio.accruals        = Cyfrifyddu traddodiadol
 
 ## Business Name
 agent.business.name.title                                       = Enw’r busnes
 agent.business.name.heading                                     = Beth yw enw busnes eich cleient?
 agent.business.name.line-1                                      = Dyma enw’r busnes a ddefnyddiodd i gofrestru ar gyfer Hunanasesiad. Os nad oes enw ar ei fusnes, nodwch enw’ch cleient.
 
-## Contact Email Address page ##
-agent.contact_email.title                                       = Nodwch eich cyfeiriad e-bost
-agent.contact_email.heading                                     = Nodwch eich cyfeiriad e-bost
-agent.contact_email.line-1                                      = Byddwn yn defnyddio hwn i gysylltu â chi er mwyn rhoi gwybod beth yw’r diweddaraf ynglŷn â’ch cyfrifiadau Treth Incwm amcangyfrifedig.
-
-## Email Preferences ##
-agent.preferences.returnLinkText                                = Yn eich blaen
-
 ## Timeout page ##
 agent.timeout.title                                             = Mae’ch sesiwn wedi cyrraedd y terfyn amser
 agent.timeout.heading                                           = Mae’ch sesiwn wedi cyrraedd y terfyn amser
-agent.timeout.returnToHome                                      = I gofrestru’ch cleient ar gyfer hysbysu chwarterol, rhaid i chi <a href="{0}" rel="external">fewngofnodi</a> gan ddefnyddio’ch Dynodydd Defnyddiwr (ID) Porth y Llywodraeth.
+agent.timeout.return-to-home                                    = I gofrestru’ch cleient ar gyfer hysbysu chwarterol, rhaid i chi <a href="{0}" rel="external">fewngofnodi</a> gan ddefnyddio’ch Dynodydd Defnyddiwr (ID) Porth y Llywodraeth.
 
 ## Client already subscribed page ##
 agent.client-already-subscribed.title                           = Mae’ch cleient eisoes wedi cofrestru
@@ -746,31 +578,6 @@ agent.cannot-report-yet.heading                                 = Ni all eich cl
 agent.cannot-report-yet.para1                                   = Mae dal yn bosibl i chi gofrestru’r cleient hwn a defnyddio meddalwedd i gofnodi’i incwm a’i dreuliau, ond ni fydd yn gallu cyflwyno adroddiad tan {0}.
 agent.cannot-report-yet.para2                                   = Mae dal yn rhaid i’ch cleient <a id="sa" href="{0}">anfon Ffurflen Dreth Hunanasesiad</a>.
 
-## Summary page ##
-agent.summary.title                                             = Gwiriwch eich atebion
-agent.summary.heading                                           = Gwiriwch eich atebion
-agent.summary.heading_hidden                                    = Gwiriwch eich atebion cyn cofrestru
-agent.summary.confirm_and_sign_up                               = Cadarnhau a chofrestru
-agent.summary.line-1                                            = Gallwch olygu’ch atebion, os oes angen.<br>Pan fyddwch chi’n barod, cyflwynwch eich atebion er mwyn cofrestru i anfon diweddariadau digidol i CThEM ynglŷn ag incwm a gwariant.
-agent.summary.income_source                                     = Incwm a gafwyd o
-agent.summary.income_source.business                            = Busnes fel unig fasnachwr
-agent.summary.income_source.uk_property                         = Eiddo yn y DU
-agent.summary.income_source.overseas_property                   = Eiddo tramor
-agent.summary.accounting_period                                 = Dyddiadau cyfnod cyfrifyddu’ch cleient
-agent.summary.business_name                                     = Beth yw enw busnes eich cleient?
-agent.summary.income_type                                       = Dull cyfrifyddu ar gyfer busnes fel unig fasnachwr
-agent.summary.income_type_property                              = Dull cyfrifyddu ar gyfer ei DU eiddo
-agent.summary.income_type.cash                                  = Cyfrifyddu ar sail arian parod
-agent.summary.income_type.accruals                              = Cyfrifyddu traddodiadol
-agent.summary.match_tax_year                                    = Mae’r cyfnod cyfrifyddu yn paru â’r flwyddyn dreth
-agent.summary.selected_year                                     = Blwyddyn dreth i ddechrau cyflwyno diweddariadau
-agent.summary.selected_year.current                             = Y flwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
-agent.summary.selected_year.next                                = Y flwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
-agent.summary.property_start-date                               = Dyddiad dechrau masnachu ar gyfer eiddo yn y DU
-agent.summary.overseas_property_start-date                      = Dyddiad dechrau masnachu ar gyfer eiddo tramor
-agent.summary.income_type_overseas_property                     = Dull cyfrifyddu ar gyfer incwm o eiddo tramor
-agent.summary.self_employments                                  = Nifer y busnesau sydd wedi’u cofrestru
-
 ## Agent Sign Up Complete page
 agent.sign-up-complete.title                                    = Rydych wedi cofrestru {0} {1} i ddefnyddio meddalwedd i anfon diweddariadau ynghylch Treth Incwm
 agent.sign-up-complete.heading                                  = Cleient wedi’i gofrestru’n llwyddiannus
@@ -791,72 +598,45 @@ agent.sign-up-complete.what-now.agent-services-account          = Gallai gymryd 
 agent.sign-up-complete.what-now.agent-services-account.link     = cyfrif gwasanaethau asiant
 agent.sign-up-complete.what-now.send-quarterly                  = Bydd yn rhaid i chi anfon diweddariadau chwarterol gan ddefnyddio’ch meddalwedd erbyn:
 
-agent.sign-up-complete.whatNow.para2                            = Ar ôl i chi anfon diweddariad, bydd eich cleient yn cael amcangyfrif o’i Dreth Incwm ar gyfer y flwyddyn hyd yn hyn. Gall weld yr hyn sydd arno ar gyfer y flwyddyn dreth ar ôl i chi anfon ei ddiweddariad terfynol.
-
 ## Errors ##
-agent.error.back_to_preferences.empty                           = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 
-agent.error.dob_date.invalid_chars                              = Nodwch ddyddiad geni gan ddefnyddio’r rhifau 0 i 9
-agent.error.dob_date.day-month-year.empty                       = Nodwch ddyddiad geni’ch cleient
-agent.error.dob_date.date.empty                                 = Nodwch ddyddiad geni’ch cleient
-agent.error.dob_date.day.empty                                  = Rhaid i’w dyddiad geni gynnwys diwrnod
-agent.error.dob_date.month.empty                                = Rhaid i’w dyddiad geni gynnwys mis
-agent.error.dob_date.year.empty                                 = Rhaid i’w dyddiad geni gynnwys blwyddyn
-agent.error.dob_date.day-month.empty                            = Rhaid i’w dyddiad geni gynnwys diwrnod a mis
-agent.error.dob_date.day-year.empty                             = Rhaid i’w dyddiad geni gynnwys diwrnod a blwyddyn
-agent.error.dob_date.month-year.empty                           = Rhaid i’w dyddiad geni gynnwys mis a blwyddyn
-agent.error.dob_date.day-month-year.not_in_past                 = Rhaid i’w dyddiad geni fod yn y gorffennol
-agent.error.dob_date.day-month-year.invalid                     = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.dob_date.date.invalid                               = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.dob_date.day.invalid                                = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.dob_date.month.invalid                              = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.dob_date.year.invalid                               = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.dob_date.day-month.invalid                          = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.dob_date.day-year.invalid                           = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.dob_date.month-year.invalid                         = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.dob_date.year.length                                = Mae’n rhaid i flwyddyn fod yn bedwar digid. Er enghraifft, 2020.
+agent.error.client-details.date-of-birth.invalid-chars                              = Nodwch ddyddiad geni gan ddefnyddio’r rhifau 0 i 9
+agent.error.client-details.date-of-birth.day-month-year.empty                       = Nodwch ddyddiad geni’ch cleient
+agent.error.client-details.date-of-birth.date.empty                                 = Nodwch ddyddiad geni’ch cleient
+agent.error.client-details.date-of-birth.day.empty                                  = Rhaid i’w dyddiad geni gynnwys diwrnod
+agent.error.client-details.date-of-birth.month.empty                                = Rhaid i’w dyddiad geni gynnwys mis
+agent.error.client-details.date-of-birth.year.empty                                 = Rhaid i’w dyddiad geni gynnwys blwyddyn
+agent.error.client-details.date-of-birth.day-month.empty                            = Rhaid i’w dyddiad geni gynnwys diwrnod a mis
+agent.error.client-details.date-of-birth.day-year.empty                             = Rhaid i’w dyddiad geni gynnwys diwrnod a blwyddyn
+agent.error.client-details.date-of-birth.month-year.empty                           = Rhaid i’w dyddiad geni gynnwys mis a blwyddyn
+agent.error.client-details.date-of-birth.day-month-year.not-in-past                 = Rhaid i’w dyddiad geni fod yn y gorffennol
+agent.error.client-details.date-of-birth.day-month-year.invalid                     = Rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.client-details.date-of-birth.date.invalid                               = Rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.client-details.date-of-birth.day.invalid                                = Rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.client-details.date-of-birth.month.invalid                              = Rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.client-details.date-of-birth.year.invalid                               = Rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.client-details.date-of-birth.day-month.invalid                          = Rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.client-details.date-of-birth.day-year.invalid                           = Rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.client-details.date-of-birth.month-year.invalid                         = Rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.client-details.date-of-birth.year.length                                = Mae’n rhaid i flwyddyn fod yn bedwar digid. Er enghraifft, 2020.
 
-agent.error.match_tax_year.empty                                = Dewiswch ‘iawn’ os yw cyfnod cyfrifyddu eich cleient yn paru â’r flwyddyn dreth
-agent.error.match_tax_year.invalid                              = Dewiswch ‘iawn’ os yw cyfnod cyfrifyddu eich cleient yn paru â’r flwyddyn dreth
+# Sole Trader Eligibility invalid
+agent.error.eligibility.sole-trader.invalid                     = Dewiswch ‘Iawn’ os ydych yn unig fasnachwr a ddechreuodd fasnachu ar neu ar ôl {0}
 
 agent.error.what-year.empty                                     = Dewiswch pa flwyddyn dreth yr ydych am gofrestru eich cleient ar ei chyfer
 agent.error.what-year.invalid                                   = Dewiswch pa flwyddyn dreth yr ydych am gofrestru eich cleient ar ei chyfer
-
-agent.error.start-date.empty                                    = Nodwch ddyddiad dechrau
-agent.error.start-date.invalid_chars                            = Nodwch ddyddiad dechrau gan ddefnyddio’r rhifau 0 i 9
-agent.error.start-date.invalid                                  = Nodwch ddyddiad dechrau go iawn
-
-agent.error.end_date.empty                                      = Nodwch ddyddiad dod i ben
-agent.error.end_date.invalid_chars                              = Nodwch ddyddiad dod i ben gan ddefnyddio’r rhifau 0 i 9
-agent.error.end_date.invalid                                    = Nodwch ddyddiad dod i ben go iawn
-agent.error.end_date_violation                                  = Nodwch ddyddiad dod i ben sydd ar ôl y dyddiad dechrau
-agent.error.end_date_past                                       = Nodwch ddyddiad dod i ben, sef dyddiad heddiw neu ddyddiad yn y dyfodol
-
-agent.error.business_accounting_period.minStartDate             = Mae’n rhaid i ddyddiad dechrau eich cyfnod cyfrifyddu fod yn y dyfodol.
-agent.error.business_accounting_period.maxEndDate               = Nodwch ddyddiad dod i ben sy’n llai na 24 mis ar ôl eich dyddiad dechrau
-
-agent.error.business_name.empty                                 = Nodwch enw busnes eich cleient
-agent.error.business_name.maxLength                             = Nodwch enw busnes sy’n 105 o gymeriadau neu lai
-agent.error.business_name.invalid                               = Nodwch enw busnes dilys
-
-agent.error.contact_email.empty                                 = Nodwch e-bost cyswllt
-agent.error.contact_email.maxLength                             = Mae’r e-bost yn rhy hir
-agent.error.contact_email.invalid                               = Mae’r e-bost yn annilys
-
-agent.error.accounting-method.empty                             = Dewiswch ddull cyfrifyddu
-agent.error.accounting-method.invalid                           = Dewiswch ddull cyfrifyddu
 
 agent.error.accounting-method-property.invalid                  = Dewiswch a yw’ch cleient yn defnyddio cyfrifyddu ar sail arian parod neu gyfrifyddu traddodiadol
 
 agent.error.not-eligible.empty                                  = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 agent.error.not-eligible.invalid                                = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 
-agent.error.client_details.first_name.empty                     = Nodwch enw cyntaf eich cleient
-agent.error.client_details.last_name.empty                      = Nodwch enw olaf eich cleient
-agent.error.client_details.first_name.invalid                   = Nodwch enw cyntaf dilys
-agent.error.client_details.last_name.invalid                    = Nodwch enw olaf dilys
-agent.error.client_details.first_name.maxLength                 = Nodwch enw cyntaf sy’n 105 o gymeriadau neu lai
-agent.error.client_details.last_name.maxLength                  = Nodwch enw olaf sy’n 105 o gymeriadau neu lai
+agent.error.client-details.first-name.empty                     = Nodwch enw cyntaf eich cleient
+agent.error.client-details.last-name.empty                      = Nodwch enw olaf eich cleient
+agent.error.client-details.first-name.invalid                   = Nodwch enw cyntaf dilys
+agent.error.client-details.last-name.invalid                    = Nodwch enw olaf dilys
+agent.error.client-details.first-name.max-length                = Nodwch enw cyntaf sy’n 105 o gymeriadau neu lai
+agent.error.client-details.last-name.max-length                 = Nodwch enw olaf sy’n 105 o gymeriadau neu lai
 
 agent.error.nino.invalid                                        = Nodwch rif Yswiriant Gwladol yn y fformat cywir
 agent.error.nino.empty                                          = Nodwch rif Yswiriant Gwladol eich cleient
@@ -865,14 +645,14 @@ agent.error.nino.empty                                          = Nodwch rif Ysw
 agent.eligible.title                                            = Gallwch anfon diweddariadau digidol
 agent.eligible.heading                                          = Gallwch anfon diweddariadau digidol
 agent.eligible.line-1                                           = Mae’ch atebion yn golygu y dylech allu dechrau anfon diweddariadau digidol i CThEM ar ôl i chi gofrestru.
-agent.eligible.line_2                                           = Dim ond ychydig o fanylion eraill sydd angen i chi eu rhoi.
+agent.eligible.line-2                                           = Dim ond ychydig o fanylion eraill sydd angen i chi eu rhoi.
 
 ## Not eligible page ##
 agent.not-eligible.title                                        = Ni allwch anfon diweddariadau digidol ar hyn o bryd
 agent.not-eligible.heading                                      = Ni allwch anfon diweddariadau digidol ar hyn o bryd
 agent.not-eligible.line-1                                       = Mae’ch atebion yn golygu nad ydych yn gymwys i anfon diweddariadau digidol i CThEM ar hyn o bryd.
-agent.not-eligible.line_2                                       = Mae dal yn bosibl i chi gofrestru ar gyfer y gwasanaeth. Mae CThEM yn gweithio i wneud diweddariadau digidol ar gael i bob unig fasnachwr dros y misoedd nesaf. Os ydych yn cofrestru nawr, byddwch yn gallu anfon diweddariadau digidol i CThEM pan fyddwch yn gymwys.
-agent.not-eligible.line_3                                       = Os dewiswch gofrestru, byddwn yn gofyn ychydig o gwestiynau i chi am eich incwm a’ch manylion cyswllt.
+agent.not-eligible.line-2                                       = Mae dal yn bosibl i chi gofrestru ar gyfer y gwasanaeth. Mae CThEM yn gweithio i wneud diweddariadau digidol ar gael i bob unig fasnachwr dros y misoedd nesaf. Os ydych yn cofrestru nawr, byddwch yn gallu anfon diweddariadau digidol i CThEM pan fyddwch yn gymwys.
+agent.not-eligible.line-3                                       = Os dewiswch gofrestru, byddwn yn gofyn ychydig o gwestiynau i chi am eich incwm a’ch manylion cyswllt.
 agent.not-eligible.question                                     = Dewiswch beth hoffech ei wneud nesaf
 agent.not-eligible.signup                                       = Rydw i eisiau cofrestru
 agent.not-eligible.signout                                      = Dydw i ddim eisiau cofrestru - rwyf eisiau allgofnodi
@@ -883,51 +663,24 @@ agent.no-nino.heading                                           = Ni all eich cl
 agent.no-nino.line-1                                            = Gallwch gofrestru nes ymlaen yn y flwyddyn pan fydd y gwasanaeth hwn ar gael i chi.
 
 ## Not Enrolled to Agent Services
-agent.not_enrolled_agent_services.title                         = Ni allwch ddefnyddio’r gwasanaeth hwn ar hyn o bryd
-agent.not_enrolled_agent_services.heading                       = Ni allwch ddefnyddio’r gwasanaeth hwn ar hyn o bryd
-agent.not_enrolled_agent_services.para1                         = I ddefnyddio’r gwasanaeth hwn, rhaid i chi <a href="{0}">greu cyfrif gwasanaethau’r asiant</a>.
+agent.not-enrolled-agent-services.title                         = Ni allwch ddefnyddio’r gwasanaeth hwn ar hyn o bryd
+agent.not-enrolled-agent-services.heading                       = Ni allwch ddefnyddio’r gwasanaeth hwn ar hyn o bryd
+agent.not-enrolled-agent-services.para1                         = I ddefnyddio’r gwasanaeth hwn, rhaid i chi <a href="{0}">greu cyfrif gwasanaethau’r asiant</a>.
 
 ## Client Details ##
 agent.client-details.title                                      = Nodwch fanylion eich cleient
 agent.client-details.heading                                    = Nodwch fanylion eich cleient
 agent.client-details.line-1                                     = Byddwn yn ceisio paru’r manylion hyn â gwybodaeth sydd gennym ar hyn o bryd am eich cleient.
-agent.client-details.field_1                                    = Enw cyntaf
-agent.client-details.field_2                                    = Enw olaf
-agent.client-details.field_3                                    = Rhif Yswiriant Gwladol
-agent.client-details.field_4                                    = Dyddiad geni
-agent.client_details.formhint.1.line-1                          = Er enghraifft, ‘QQ 12 34 56 C’.
-agent.client-details.formhint.2                                 = Er enghraifft, 17 2 1990.
+agent.client-details.field-1                                    = Enw cyntaf
+agent.client-details.field-2                                    = Enw olaf
+agent.client-details.field-3                                    = Rhif Yswiriant Gwladol
+agent.client-details.field-4                                    = Dyddiad geni
+agent.client-details.form-hint1.line-1                          = Er enghraifft, ‘QQ 12 34 56 C’.
+agent.client-details.form-hint2                                 = Er enghraifft, 17 2 1990.
 
 agent.no-sa.title                                               = Nid yw’ch cleient wedi cofrestru ar gyfer Hunanasesiad
 agent.no-sa.heading                                             = Nid yw’ch cleient wedi cofrestru ar gyfer Hunanasesiad
 agent.no-sa.line-1                                              = I ddefnyddio’r gwasanaeth hwn, rhaid i’ch cleient <a id="sa-signup" href="{0}">gofrestru ar gyfer Hunanasesiad</a>.
-
-# Not eligible for income tax
-not_eligible_for_income_tax.title                               = Ni allwch ddefnyddio’r gwasanaeth hwn eto
-not_eligible_for_income_tax.heading                             = Ni allwch ddefnyddio’r gwasanaeth hwn eto
-not_eligible_for_income_tax.para1                               = Mae hwn yn wasanaeth sy’n cael ei brofi. Efallai y gallwch ddefnyddio’r gwasanaeth ‘Rhoi gwybod am eich incwm a’ch treuliau bob chwarter’ yn y dyfodol.
-
-# Sole Trader Eligibility invalid
-agent.error.eligibility.sole_trader.invalid                     = Dewiswch ‘Iawn’ os ydych yn unig fasnachwr a ddechreuodd fasnachu ar neu ar ôl {0}
-
-# Agent Overseas Property Start Date Page errors
-agent.error.overseas.property.day-month-year.empty              = Nodwch y dyddiad y dechreuodd busnes eiddo tramor eich cleient fasnachu
-agent.error.overseas.property.month-year.empty                  = Mae’n rhaid i’r dyddiad gynnwys mis a blwyddyn
-agent.error.overseas.property.day-month.empty                   = Mae’n rhaid i’r dyddiad gynnwys diwrnod a mis
-agent.error.overseas.property.day-year.empty                    = Mae’n rhaid i’r dyddiad gynnwys diwrnod a blwyddyn
-agent.error.overseas.property.year.empty                        = Mae’n rhaid i’r dyddiad gynnwys blwyddyn
-agent.error.overseas.property.day.empty                         = Mae’n rhaid i’r dyddiad gynnwys diwrnod
-agent.error.overseas.property.month.empty                       = Mae’n rhaid i’r dyddiad gynnwys mis
-agent.error.overseas.property.day-month-year.max-date           = Nodwch y dyddiad y dechreuodd busnes eiddo tramor eich cleient fasnachu
-agent.error.overseas.property.day-month-year.min-date           = Rhaid i’r dyddiad y dechreuodd busnes eiddo eich cleient fasnachu fod ar neu ar ôl {0}
-agent.error.overseas.property.day-month-year.invalid            = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.overseas.property.month-year.invalid                = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.overseas.property.day-month.invalid                 = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.overseas.property.day-year.invalid                  = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.overseas.property.year.invalid                      = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.overseas.property.day.invalid                       = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.overseas.property.month.invalid                     = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.overseas.property.year.length                       = Mae’n rhaid i flwyddyn fod yn bedwar digid. Er enghraifft, 2020.
 
 # Agent Task List
 agent.business.task-list.title                                        = Manylion eich cleient
@@ -956,43 +709,75 @@ agent.business.task-list.status.incomplete                            = Heb ei g
 agent.business.task-list.status.in-progress                           = Ar waith
 agent.business.task-list.status.not-started                           = Heb ddechrau
 
-## Title pattern
-titlePattern.serviceName.govUk                                  = {0} - Defnyddio meddalwedd i anfon diweddariadau Treth Incwm - GOV.UK
-agentTitlePattern.serviceName.govUk                             = {0} - Defnyddiwch feddalwedd i roi gwybod am Dreth Incwm eich cleient - GOV.UK
 
-## Title Errors
-base.title.error                                                = Gwall: {0} - Defnyddio meddalwedd i anfon diweddariadau Treth Incwm - GOV.UK
-agentBase.title.error                                           = Gwall: {0} - Defnyddiwch feddalwedd i roi gwybod am Dreth Incwm eich cleient - GOV.UK
+# Not eligible for income tax
+not-eligible-for-income-tax.title                               = Ni allwch ddefnyddio’r gwasanaeth hwn eto
+not-eligible-for-income-tax.heading                             = Ni allwch ddefnyddio’r gwasanaeth hwn eto
+not-eligible-for-income-tax.para1                               = Mae hwn yn wasanaeth sy’n cael ei brofi. Efallai y gallwch ddefnyddio’r gwasanaeth ‘Rhoi gwybod am eich incwm a’ch treuliau bob chwarter’ yn y dyfodol.
 
-## Language switching
-language-selector.change-to-language                            = Change the language to English
-language-selector.nav-label                                     = Cyfnewidydd iaith
+# Agent Overseas Property Start Date Page errors
+agent.error.overseas.property.day-month-year.empty              = Nodwch y dyddiad y dechreuodd busnes eiddo tramor eich cleient fasnachu
+agent.error.overseas.property.month-year.empty                  = Mae’n rhaid i’r dyddiad gynnwys mis a blwyddyn
+agent.error.overseas.property.day-month.empty                   = Mae’n rhaid i’r dyddiad gynnwys diwrnod a mis
+agent.error.overseas.property.day-year.empty                    = Mae’n rhaid i’r dyddiad gynnwys diwrnod a blwyddyn
+agent.error.overseas.property.year.empty                        = Mae’n rhaid i’r dyddiad gynnwys blwyddyn
+agent.error.overseas.property.day.empty                         = Mae’n rhaid i’r dyddiad gynnwys diwrnod
+agent.error.overseas.property.month.empty                       = Mae’n rhaid i’r dyddiad gynnwys mis
+agent.error.overseas.property.day-month-year.max-date           = Nodwch y dyddiad y dechreuodd busnes eiddo tramor eich cleient fasnachu
+agent.error.overseas.property.day-month-year.min-date           = Rhaid i’r dyddiad y dechreuodd busnes eiddo eich cleient fasnachu fod ar neu ar ôl {0}
+agent.error.overseas.property.day-month-year.invalid            = Rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.overseas.property.month-year.invalid                = Rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.overseas.property.day-month.invalid                 = Rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.overseas.property.day-year.invalid                  = Rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.overseas.property.year.invalid                      = Rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.overseas.property.day.invalid                       = Rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.overseas.property.month.invalid                     = Rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.overseas.property.year.length                       = Mae’n rhaid i flwyddyn fod yn bedwar digid. Er enghraifft, 2020.
 
-## Claim Confirm
-claimConfirm.title                                              = Rydych wedi ychwanegu Troi Treth yn Ddigidol ar gyfer Treth Incwm i’ch cyfrif
-claimConfirm.heading                                            = Yr hyn sy’n digwydd nawr {0}
-claimConfirm.content.line1                                      = Os nad ydych yn defnyddio asiant i reoli’ch materion treth, bydd angen i chi wneud y canlynol:
-claimConfirm.content.checklist.item1.link                       = Dewch o hyd i feddalwedd sy’n cydweddu
-claimConfirm.content.checklist.item1.suffix                     = a chaniatáu iddi ryngweithio â CThEM, os nad ydych eisoes wedi gwneud hynny.
-claimConfirm.content.checklist.item2                            = Anfonwch ddiweddariadau chwarterol nesaf gan ddefnyddio’ch meddalwedd pan fo angen drwy gydol y flwyddyn dreth.
-claimConfirm.content.checklist.item3                            = Cyflwynwch eich diweddariadau blynyddol a gwnewch ddatganiad ar gyfer y flwyddyn dreth.
-claimConfirm.content.line2                                      = Ar ôl i chi anfon diweddariad, byddwch yn cael amcangyfrif o’ch Treth Incwm ar gyfer y flwyddyn hyd yn hyn. Gallwch fwrw golwg dros eich amcangyfrifon a’ch dyddiadau cyflwyno drwy’ch meddalwedd neu drwy’ch cyfrif Troi Treth yn {0}
-claimConfirm.content.line2.link                                 = cyfrif Troi Treth yn Ddigidol ar gyfer Treth Incwm.
-claimConfirm.content.line3                                      = Gall gymryd ychydig oriau cyn i wybodaeth newydd ymddangos.
-claimConfirm.continueButton                                     = Yn eich blaen i’ch cyfrif treth busnes
+## agent Tax Year Check Your Answers
+agent.business.check-your-answers.heading                             = Gwiriwch eich atebion
+agent.business.check-your-answers.content.tax-year.title              = Gwirio’ch atebion – blwyddyn dreth
+agent.business.check-your-answers.content.tax-year.question           = Y flwyddyn dreth rydych yn cofrestru ar ei chyfer
+agent.business.check-your-answers.content.tax-year.question.hidden    = Newid y flwyddyn dreth rydych yn cofrestru ar ei chyfer
+agent.business.check-your-answers.content.tax-year.current-tax-year   = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
+agent.business.check-your-answers.content.tax-year.next-tax-year      = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
+agent.business.check-your-answers.content.tax-year.caption            = Y flwyddyn dreth rydych yn cofrestru’ch cleient ar ei chyfer
 
+## Agent UK property check your answers
+agent.business.check-your-answers.content.uk-property.title                      = Gwirio’ch atebion – busnes eiddo yn y DU
+agent.business.check-your-answers.content.uk-property.caption                    = Manylion y busnes eiddo yn y DU a nodwyd gennych
+agent.business.check-your-answers.content.uk-property-start-date.question        = Dyddiad dechrau masnachu’r busnes eiddo yn y DU
+agent.business.check-your-answers.content.uk-property-start-date.add             = Ychwanegu dyddiad dechrau masnachu’r busnes eiddo yn y DU
+agent.business.check-your-answers.content.uk-property-start-date.change          = Newid dyddiad dechrau masnachu’r busnes eiddo yn y DU
+agent.business.check-your-answers.content.uk-property-accounting-method.question = Dull cyfrifyddu’r busnes eiddo yn y DU
+agent.business.check-your-answers.content.uk-property-accounting-method.add      = Ychwanegu dull cyfrifyddu’r busnes eiddo yn y DU
+agent.business.check-your-answers.content.uk-property-accounting-method.change   = Newid dull cyfrifyddu’r busnes eiddo yn y DU
 
-# Claim enrolment not subscribed
-claim-enrolment.not-subscribed.heading                          = Mae’n ddrwg gennym – mae problem gyda’r gwasanaeth
-claim-enrolment.not-subscribed.info                             = Nid ydych wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm. Yn ôl i’ch
-claim-enrolment.not-subscribed.info.link-text                   = cyfrif treth busnes.
+## Agent Overseas property check your answers
+agent.business.check-your-answers.content.overseas-property.title                      = Gwirio’ch atebion – busnes eiddo tramor
+agent.business.check-your-answers.content.overseas-property.caption                    = Manylion y busnes eiddo tramor a nodwyd gennych
+agent.business.check-your-answers.content.overseas-property-start-date.question        = Dyddiad dechrau masnachu’r busnes eiddo tramor
+agent.business.check-your-answers.content.overseas-property-start-date.add             = Ychwanegu dyddiad dechrau masnachu’r busnes eiddo tramor
+agent.business.check-your-answers.content.overseas-property-start-date.change          = Newid dyddiad dechrau masnachu’r busnes eiddo tramor
+agent.business.check-your-answers.content.overseas-property-accounting-method.question = Dull cyfrifyddu’r busnes eiddo tramor
+agent.business.check-your-answers.content.overseas-property-accounting-method.add      = Ychwanegu dull cyfrifyddu’r busnes eiddo tramor
+agent.business.check-your-answers.content.overseas-property-accounting-method.change   = Newid dull cyfrifyddu’r busnes eiddo tramor
 
+## Agent remove business
+agent.business.remove-sole-trader-business.heading                  = A ydych yn siŵr eich bod am ddileu {0}{1}?
+agent.business.remove-sole-trader-business.unnamed                  = A ydych yn siŵr eich bod am ddileu’r busnes hwn{0}?
+agent.business.remove-sole-trader-business.paragraph                = Mae angen ychwanegu pob un o fusnesau unig fasnachwr a busnesau eiddo presennol eich cleient at y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar yr un pryd. Bydd angen i chi ailnodi’r wybodaeth hon os byddwch yn ei dileu ar gam.
+agent.error.remove-sole-trader-business.invalid                     = Dewiswch ‘Iawn’ os ydych am ddileu’r busnes
 
-## Claim Enrolment Already Signed Up
-claim-enrolment.claimAlreadySignedUp.title                      = Rydych eisoes wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-claim-enrolment.claimAlreadySignedUp.content                    = Os na allwch ddod o hyd i fanylion eich cyfrif Hunanasesiad, mae’n bosibl eu bod yn eich cyfrif ar-lein arall gan CThEM.
-claim-enrolment.claimAlreadySignedUp.content.link1              = Gwiriwch a yw’ch Hunanasesiad mewn cyfrif arall
-claim-enrolment.claimAlreadySignedUp.content.link2              = Adfer manylion mewngofnodi ar gyfer eich cyfrif arall
+## Agent progress saved
+agent.business.progress-saved.title                                   = Mae eich cynnydd hyd yma wedi ei gadw
+agent.business.progress-saved.content.summary                         = Byddwn yn cadw eich gwybodaeth tan {0}.
+agent.business.progress-saved.content.subheading                      = Yr hyn sy’n digwydd nesaf
+agent.business.progress-saved.content.paragraph1                      = Gallwch wneud y canlynol:
+agent.business.progress-saved.content.paragraph2                      = Os byddwch yn allgofnodi, bydd angen i chi ddod yn ôl at i’ch manylion {0} i barhau. Rydym yn awgrymu eich bod yn nodi’r dudalen hon i’w gwneud yn haws dod o hyd iddi pan fyddwch yn dod yn ôl.
+agent.business.progress-saved.content.sign-up-link                    = dychwelyd i gofrestru busnes eich cleient ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+agent.business.progress-saved.content.sign-out-link                   = allgofnodi a dod yn ôl yn nes ymlaen
+agent.business.progress-saved.content.sign-in-link                    = mewngofnodi Porth y Llywodraeth
 
 ## Task List
 business.task-list.title                                        = Eich manylion
@@ -1038,24 +823,24 @@ business.check-your-answers.content.accounting-method.accruals  = Cyfrifyddu tra
 
 
 ## UK property check your answers
-business.check-your-answers.content.uk-property.title = Gwirio’ch atebion – busnes eiddo yn y DU
-business.check-your-answers.content.uk-property.caption = Manylion y busnes eiddo yn y DU a nodwyd gennych
-business.check-your-answers.content.uk-property-start-date.question = Dyddiad dechrau masnachu’r busnes eiddo yn y DU
-business.check-your-answers.content.uk-property-start-date.add  = Ychwanegu dyddiad dechrau masnachu’r busnes eiddo yn y DU
-business.check-your-answers.content.uk-property-start-date.change = Newid dyddiad dechrau masnachu’r busnes eiddo yn y DU
+business.check-your-answers.content.uk-property.title                      = Gwirio’ch atebion – busnes eiddo yn y DU
+business.check-your-answers.content.uk-property.caption                    = Manylion y busnes eiddo yn y DU a nodwyd gennych
+business.check-your-answers.content.uk-property-start-date.question        = Dyddiad dechrau masnachu’r busnes eiddo yn y DU
+business.check-your-answers.content.uk-property-start-date.add             = Ychwanegu dyddiad dechrau masnachu’r busnes eiddo yn y DU
+business.check-your-answers.content.uk-property-start-date.change          = Newid dyddiad dechrau masnachu’r busnes eiddo yn y DU
 business.check-your-answers.content.uk-property-accounting-method.question = Dull cyfrifyddu’r busnes eiddo yn y DU
-business.check-your-answers.content.uk-property-accounting-method.add = Ychwanegu dull cyfrifyddu’r busnes eiddo yn y DU
-business.check-your-answers.content.uk-property-accounting-method.change = Newid dull cyfrifyddu’r busnes eiddo yn y DU
+business.check-your-answers.content.uk-property-accounting-method.add      = Ychwanegu dull cyfrifyddu’r busnes eiddo yn y DU
+business.check-your-answers.content.uk-property-accounting-method.change   = Newid dull cyfrifyddu’r busnes eiddo yn y DU
 
 ## Overseas property check your answers
-business.check-your-answers.content.overseas-property.title = Gwirio’ch atebion – busnes eiddo tramor
-business.check-your-answers.content.overseas-property.caption = Manylion y busnes eiddo tramor a nodwyd gennych
-business.check-your-answers.content.overseas-property-start-date.question = Dyddiad dechrau masnachu’r busnes eiddo tramor
-business.check-your-answers.content.overseas-property-start-date.add  = Ychwanegu dyddiad dechrau masnachu’r busnes eiddo tramor
-business.check-your-answers.content.overseas-property-start-date.change = Newid dyddiad dechrau masnachu’r busnes eiddo tramor
+business.check-your-answers.content.overseas-property.title                      = Gwirio’ch atebion – busnes eiddo tramor
+business.check-your-answers.content.overseas-property.caption                    = Manylion y busnes eiddo tramor a nodwyd gennych
+business.check-your-answers.content.overseas-property-start-date.question        = Dyddiad dechrau masnachu’r busnes eiddo tramor
+business.check-your-answers.content.overseas-property-start-date.add             = Ychwanegu dyddiad dechrau masnachu’r busnes eiddo tramor
+business.check-your-answers.content.overseas-property-start-date.change          = Newid dyddiad dechrau masnachu’r busnes eiddo tramor
 business.check-your-answers.content.overseas-property-accounting-method.question = Dull cyfrifyddu’r busnes eiddo tramor
-business.check-your-answers.content.overseas-property-accounting-method.add = Ychwanegu dull cyfrifyddu’r busnes eiddo tramor
-business.check-your-answers.content.overseas-property-accounting-method.change = Newid dull cyfrifyddu’r busnes eiddo tramor
+business.check-your-answers.content.overseas-property-accounting-method.add      = Ychwanegu dull cyfrifyddu’r busnes eiddo tramor
+business.check-your-answers.content.overseas-property-accounting-method.change   = Newid dull cyfrifyddu’r busnes eiddo tramor
 
 ## Remove business
 business.remove-sole-trader-business.heading      = A ydych yn siŵr eich bod am ddileu {0}{1}?
@@ -1093,8 +878,8 @@ agent.error.remove-overseas-property-business.invalid          = Dewiswch ‘Iaw
 throttle.title                                                 = Ni ellir cwblhau’ch cofrestriad ar hyn o bryd
 throttle.heading                                               = Ni ellir cwblhau’ch cofrestriad ar hyn o bryd
 throttle.line-1                                                = Rydym yn gweld nifer fawr o geisiadau ar gyfer y gwasanaeth hwn ac ni allwn gwblhau eich cofrestriad ar hyn o bryd. Peidiwch â phoeni – bydd y manylion rydych wedi’u nodi yn cael eu cadw am 30 diwrnod.
-throttle.line_2                                                = I orffen cofrestru, rhowch gynnig arni neu allgofnodwch a dod yn ôl yn hwyrach.
+throttle.line-2                                                = I orffen cofrestru, rhowch gynnig arni neu allgofnodwch a dod yn ôl yn hwyrach.
 agent.throttle.title                                           = Ni ellir cwblhau’ch cofrestriad ar hyn o bryd
 agent.throttle.heading                                         = Ni ellir cwblhau’ch cofrestriad ar hyn o bryd
 agent.throttle.line-1                                          = Rydym yn gweld nifer fawr o geisiadau ar gyfer y gwasanaeth hwn ac ni allwn gwblhau cofrestriad eich cleient ar hyn o bryd. Peidiwch â phoeni – bydd y manylion rydych wedi’u nodi yn cael eu cadw am 30 diwrnod.
-agent.throttle.line_2                                          = I orffen cofrestru’ch cleient, rhowch gynnig arall arni neu allgofnodwch a dod yn ôl yn nes ymlaen.
+agent.throttle.line-2                                          = I orffen cofrestru’ch cleient, rhowch gynnig arall arni neu allgofnodwch a dod yn ôl yn nes ymlaen.

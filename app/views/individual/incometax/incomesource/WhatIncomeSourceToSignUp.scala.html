@@ -50,7 +50,7 @@
 @optionalUkPropertyRadio = @{
     if(incomeSourcesStatus.ukPropertyAvailable) {
         Some(RadioItem(
-            content = Text(messages("income-source.ukProperty")),
+            content = Text(messages("income-source.uk-property")),
             value = Some(UK_PROPERTY)
         ))
     } else {
@@ -61,7 +61,7 @@
 @optionalOverseasPropertyRadio = @{
     if(incomeSourcesStatus.overseasPropertyAvailable) {
         Some(RadioItem(
-            content = Text(messages("income-source.foreignProperty")),
+            content = Text(messages("income-source.foreign-property")),
             value = Some(OVERSEAS_PROPERTY)
         ))
     } else {

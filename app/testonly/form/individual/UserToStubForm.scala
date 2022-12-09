@@ -38,14 +38,14 @@ object UserToStubForm {
 
   val nameMaxLength = 105
 
-  val firstNameNonEmpty: Constraint[String] = nonEmpty("error.user_details.first_name.empty")
-  val lastNameNonEmpty: Constraint[String] = nonEmpty("error.user_details.last_name.empty")
+  val firstNameNonEmpty: Constraint[String] = nonEmpty("error.user-details.first-name.empty")
+  val lastNameNonEmpty: Constraint[String] = nonEmpty("error.user-details.last-name.empty")
 
-  val firstNameInvalid: Constraint[String] = invalidFormat("error.user_details.first_name.invalid")
-  val lastNameInvalid: Constraint[String] = invalidFormat("error.user_details.last_name.invalid")
+  val firstNameInvalid: Constraint[String] = invalidFormat("error.user-details.first-name.invalid")
+  val lastNameInvalid: Constraint[String] = invalidFormat("error.user-details.last-name.invalid")
 
-  val firstNameMaxLength: Constraint[String] = maxLength(nameMaxLength, "error.user_details.first_name.maxLength")
-  val lastNameMaxLength: Constraint[String] = maxLength(nameMaxLength, "error.user_details.last_name.maxLength")
+  val firstNameMaxLength: Constraint[String] = maxLength(nameMaxLength, "error.user-details.first-name.max-length")
+  val lastNameMaxLength: Constraint[String] = maxLength(nameMaxLength, "error.user-details.last-name.max-length")
 
   val emptyUtr: Constraint[String] = nonEmpty("You must enter an SA UTR")
 
@@ -59,29 +59,13 @@ object UserToStubForm {
       case _ => Valid
     }
 
-  val dobEmpty: Constraint[DateModel] = constraint[DateModel](
-    date => {
-      lazy val emptyDate = Invalid("error.dob_date.empty")
-      if (date.day.trim.isEmpty && date.month.trim.isEmpty && date.year.trim.isEmpty) emptyDate else Valid
-    }
-  )
-
-  val dobValidation: Constraint[DateModel] = constraint[DateModel](
-    date => {
-      Try[ValidationResult] {
-        date.toLocalDate
-        Valid
-      }.getOrElse(Invalid("error.dob_date.invalid"))
-    }
-  )
-
   val userDetailsForm: Form[UserToStubModel] = Form(
     mapping(
       userFirstName -> oText.toText.verifying(firstNameNonEmpty andThen firstNameMaxLength andThen firstNameInvalid),
       userLastName -> oText.toText.verifying(lastNameNonEmpty andThen lastNameMaxLength andThen lastNameInvalid),
       userNino -> oText.toText.verifying(emptyNino andThen validateNino),
       userSautr -> oText.verifying(validateUtr),
-      userDateOfBirth -> DateModelMapping.dateModelMapping(isAgent = false, "user_details.date_of_birth", None, None, None).verifying(dobEmpty andThen dobValidation)
+      userDateOfBirth -> DateModelMapping.dateModelMapping(isAgent = false, "user-details.date-of-birth", None, None, None)
     )(UserToStubModel.apply)(UserToStubModel.unapply)
   )
 

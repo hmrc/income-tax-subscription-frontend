@@ -35,7 +35,7 @@ class ClaimEnrolmentConfirmationControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the confirmation page")
         res must have(
           httpStatus(OK),
-          pageTitle(messages("claimConfirm.title") + serviceNameGovUk)
+          pageTitle(messages("claim-enrolment.confirmation.title") + serviceNameGovUk)
         )
       }
     }

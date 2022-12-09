@@ -38,9 +38,9 @@ class MessagesSpec extends PlaySpec with MessagesMatcher  {
       messageKeysWelsh must containUniqueKeys
     }
 
-//    "contain only permitted characters" in {
-//      messageKeysWelsh must containOnlyPermittedCharacters
-//    }
+    "contain only permitted characters" in {
+      messageKeysWelsh must containOnlyPermittedCharacters
+    }
   }
 
   "Messages present in English (conf/messages)" should {
@@ -52,9 +52,9 @@ class MessagesSpec extends PlaySpec with MessagesMatcher  {
       messageKeysEnglish must containUniqueKeys
     }
 
-//    "contain only permitted characters" in {
-//      messageKeysEnglish must containOnlyPermittedCharacters
-//    }
+    "contain only permitted characters" in {
+      messageKeysEnglish must containOnlyPermittedCharacters
+    }
   }
 
   private def getMessageKeys(fileName: String) = {

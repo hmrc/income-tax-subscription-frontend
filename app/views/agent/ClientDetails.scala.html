@@ -43,7 +43,7 @@
 
     @inputHelper(
         field = clientDetailsForm(clientFirstName),
-        label = messages("agent.client-details.field_1"),
+        label = messages("agent.client-details.field-1"),
         isLabelHidden = false,
         isPageHeading = false,
         classes = Some("govuk-!-width-one-half"),
@@ -53,7 +53,7 @@
 
     @inputHelper(
         field = clientDetailsForm(clientLastName),
-        label = messages("agent.client-details.field_2"),
+        label = messages("agent.client-details.field-2"),
         isLabelHidden = false,
         isPageHeading = false,
         classes = Some("govuk-!-width-one-half"),
@@ -63,18 +63,18 @@
 
     @inputHelper(
         field = clientDetailsForm(clientNino),
-        label = messages("agent.client-details.field_3"),
+        label = messages("agent.client-details.field-3"),
         isLabelHidden = false,
         isPageHeading = false,
         classes = Some("govuk-!-width-one-half"),
-        hint = Some(messages("agent.client_details.formhint.1.line-1"))
+        hint = Some(messages("agent.client-details.form-hint1.line-1"))
     )
 
 
     @dateHelper(
         field = clientDetailsForm(clientDateOfBirth),
-        legendContent = messages("agent.client-details.field_4"),
-        hintText = Some(messages("agent.client-details.formhint.2")),
+        legendContent = messages("agent.client-details.field-4"),
+        hintText = Some(messages("agent.client-details.form-hint2")),
         parentForm = clientDetailsForm,
         isPageHeading = false,
         isLegendVisible = true,

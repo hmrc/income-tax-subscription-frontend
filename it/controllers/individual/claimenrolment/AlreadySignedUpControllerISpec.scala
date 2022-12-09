@@ -34,7 +34,7 @@ class AlreadySignedUpControllerISpec extends ComponentSpecBase {
       Then("Should return a OK with the already Signed Up page")
       res must have(
         httpStatus(OK),
-        pageTitle(messages("claim-enrolment.claimAlreadySignedUp.title") + serviceNameGovUk)
+        pageTitle(messages("claim-enrolment.claim-already-signed-up.title") + serviceNameGovUk)
       )
     }
   }

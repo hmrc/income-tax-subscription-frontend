@@ -45,7 +45,7 @@ class IVFailureControllerISpec extends ComponentSpecBase {
 
         res must have(
           httpStatus(OK),
-          pageTitle(messages("titlePattern.serviceName.govUk", messages("iv-failure.heading")))
+          pageTitle(messages("base.title-pattern", messages("iv-failure.heading")))
         )
       }
     }
