@@ -23,7 +23,8 @@ import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel, CredentialRole, En
 abstract class PostSubmissionController @Inject()(implicit mcc: MessagesControllerComponents) extends BaseFrontendController {
 
   object Authenticated extends AuthenticatedActions[IncomeTaxSAUser] {
-    override def userApply: (Enrolments, Option[AffinityGroup], Option[CredentialRole], ConfidenceLevel, String) => IncomeTaxSAUser = IncomeTaxSAUser.apply
+    override def getUser: (Enrolments, Option[AffinityGroup], Option[CredentialRole], ConfidenceLevel, String) => IncomeTaxSAUser =
+      (enrolments, affinity, credentials, confidence, userId) => new IncomeTaxSAUser(enrolments, affinity, credentials, confidence, userId)
 
     override val async: AuthenticatedAction[IncomeTaxSAUser] = asyncInternal(enrolledPredicates)
   }

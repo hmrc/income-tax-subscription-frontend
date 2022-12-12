@@ -22,12 +22,12 @@ import org.scalatestplus.play.guice.GuiceOneServerPerTest
 import uk.gov.hmrc.auth.core.{ConfidenceLevel, Enrolment, EnrolmentIdentifier, Enrolments}
 import utilities.agent.TestConstants
 
-class IncomeTaxSAUserSpec extends PlaySpec with GuiceOneServerPerTest {
+class IncomeTaxAgentUserSpec extends PlaySpec with GuiceOneServerPerTest {
 
-  "IncomeTaxSAUser" must {
+  "IncomeTaxAgentUser" must {
     val confidenceLevel = ConfidenceLevel.L50
 
-    lazy val user = IncomeTaxAgentUser(
+    lazy val user = new IncomeTaxAgentUser(
       Enrolments(Set(
         Enrolment(Constants.hmrcAsAgent,
           Seq(EnrolmentIdentifier(Constants.agentServiceIdentifierKey, TestConstants.testARN)),

@@ -63,10 +63,7 @@ lazy val microservice = Project(AppDependencies.appName, file("."))
     IntegrationTest / javaOptions += "-Dlogger.resource=logback-test.xml",
     IntegrationTest / parallelExecution := false)
   .settings(majorVersion := 1)
-  .settings(resolvers ++= Seq(
-    Resolver.bintrayRepo("hmrc", "releases"),
-    Resolver.jcenterRepo
-  ))
+  .settings(resolvers += Resolver.jcenterRepo)
 
 TwirlKeys.templateImports ++= Seq(
   "uk.gov.hmrc.govukfrontend.views.html.components._",

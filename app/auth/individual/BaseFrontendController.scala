@@ -43,7 +43,7 @@ abstract class BaseFrontendController @Inject()(implicit val mcc: MessagesContro
 
   protected trait AuthenticatedActions[User <: IncomeTaxUser] {
 
-    def userApply: (Enrolments, Option[AffinityGroup], Option[CredentialRole], ConfidenceLevel, String) => User
+    def getUser: (Enrolments, Option[AffinityGroup], Option[CredentialRole], ConfidenceLevel, String) => User
 
     def apply(action: Request[AnyContent] => User => Result): Action[AnyContent] = async(action andThen (_ andThen Future.successful))
 
@@ -51,7 +51,7 @@ abstract class BaseFrontendController @Inject()(implicit val mcc: MessagesContro
       Action.async { implicit request =>
         authService.authorised().retrieve(allEnrolments and affinityGroup and credentialRole and confidenceLevel and credentials) {
           case enrolments ~ affinity ~ role ~ confidence ~ credentials=>
-            implicit val user: User = userApply(enrolments, affinity, role, confidence,
+            implicit val user: User = getUser(enrolments, affinity, role, confidence,
               credentials.map(_.providerId).getOrElse(throw UnsupportedAuthProvider()))
 
             predicate.apply(request)(user) match {

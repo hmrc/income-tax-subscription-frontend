@@ -28,11 +28,12 @@ trait IncomeTaxUser {
 
 case class UserIdentifiers(ninoMaybe: Option[String], utrMaybe: Option[String], nameMaybe: Option[String], entityIdMaybe: Option[String])
 
-case class IncomeTaxSAUser(enrolments: Enrolments,
-                           affinityGroup: Option[AffinityGroup],
-                           credentialRole: Option[CredentialRole],
-                           confidenceLevel: ConfidenceLevel,
-                           userId: String) extends IncomeTaxUser {
+
+class IncomeTaxSAUser(val enrolments: Enrolments,
+                      val affinityGroup: Option[AffinityGroup],
+                      val credentialRole: Option[CredentialRole],
+                      val confidenceLevel: ConfidenceLevel,
+                      val userId: String) extends IncomeTaxUser {
 
 
   def nino(implicit request: Request[AnyContent]): Option[String] = {

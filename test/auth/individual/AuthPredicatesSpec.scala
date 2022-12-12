@@ -57,7 +57,7 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
   import authPredicates._
 
   private def testUser(affinityGroup: Option[AffinityGroup], credentialRole: Option[CredentialRole], confidenceLevel: ConfidenceLevel, userId: String,
-                       enrolments: Enrolment*): IncomeTaxSAUser = IncomeTaxSAUser(
+                       enrolments: Enrolment*): IncomeTaxSAUser = new IncomeTaxSAUser(
     enrolments = Enrolments(enrolments.toSet),
     affinityGroup = affinityGroup,
     credentialRole = credentialRole,
@@ -79,6 +79,7 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
   val userWithOrganisationAffinity: IncomeTaxSAUser = testUser(Some(AffinityGroup.Organisation))
 
   val defaultPredicateUser: IncomeTaxSAUser = testUser(Some(AffinityGroup.Individual), ninoEnrolment)
+  val predicateUserConfidence50: IncomeTaxSAUser = testUser(Some(AffinityGroup.Individual), Some(User), ConfidenceLevel.L50, testCredId, ninoEnrolment)
   val enrolledPredicateUser: IncomeTaxSAUser = testUser(Some(AffinityGroup.Individual), ninoEnrolment, mtdidEnrolment)
 
   lazy val authorisedRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
@@ -183,7 +184,7 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
           }
 
           val result = await(authPredicates.defaultPredicates(authorisedRequest)(
-            defaultPredicateUser.copy(confidenceLevel = ConfidenceLevel.L50)).left.value
+            predicateUserConfidence50).left.value
           )
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(confidenceLevelAppConfig.identityVerificationURL)
@@ -218,7 +219,7 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
           }
 
           val result = await(authPredicates.subscriptionPredicates(authorisedRequest)(
-            defaultPredicateUser.copy(confidenceLevel = ConfidenceLevel.L50)).left.value
+            predicateUserConfidence50).left.value
           )
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(confidenceLevelAppConfig.identityVerificationURL)
@@ -247,7 +248,7 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
           }
 
           val result = await(authPredicates.claimEnrolmentPredicates(authorisedRequest)(
-            defaultPredicateUser.copy(confidenceLevel = ConfidenceLevel.L50)).left.value
+            predicateUserConfidence50).left.value
           )
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(confidenceLevelAppConfig.identityVerificationURL)
@@ -279,7 +280,7 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
       homePredicates(homelessAuthorisedRequest)(userWithUtrButNoNino).value mustBe AuthPredicateSuccess
     }
     "redirect to iv when the user doesn't have high enough confidence level" in {
-      val result = await(homePredicates(homelessAuthorisedRequest)(defaultPredicateUser.copy(confidenceLevel = ConfidenceLevel.L50)).left.value)
+      val result = await(homePredicates(homelessAuthorisedRequest)(predicateUserConfidence50).left.value)
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(injectedConfig.identityVerificationURL)
     }

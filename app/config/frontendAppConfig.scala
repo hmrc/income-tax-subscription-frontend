@@ -271,7 +271,7 @@ class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Con
   *  matching.
   */
   override lazy val hasEnabledTestOnlyRoutes: Boolean =
-    config.getString("application.router") == "testOnlyDoNotUseInAppConf.Routes"
+    config.getString("play.http.router") == "testOnlyDoNotUseInAppConf.Routes"
 
   override lazy val matchingAttempts: Int = config.getString("lockout.maxAttempts").toInt
 
