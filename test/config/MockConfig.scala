@@ -95,6 +95,8 @@ trait MockConfig extends UnitTestTrait with AppConfig {
 
   override lazy val agentAccountUrl = "https://www.gov.uk/guidance/self-assessment-for-agents-online-service"
 
+  override val agentIncomeTaxEligibilityFrontendTermsUrl: String = "/report-quarterly/income-and-expenses/sign-up/eligibility/client/what-you-need-to-do"
+
   override lazy val sendSAReturnLink = "https://www.gov.uk/self-assessment-tax-returns/sending-return"
 
   override lazy val backendFeatureSwitchUrl = "income-tax-subscription/"

@@ -125,10 +125,13 @@ trait AppConfig {
   def incomeTaxSelfEmploymentsFrontendBusinessAccountingMethodUrl: String
 
   def incomeTaxSelfEmploymentsFrontendClientInitialiseUrl: String
+  def agentIncomeTaxEligibilityFrontendTermsUrl: String
 
   val incomeTaxViewChangeUrl: String
 
   val eligibilityFeatureSwitchUrl: String
+
+
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),
@@ -294,6 +297,10 @@ class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Con
     s"${config.getString("income-tax-subscription-eligibility-frontend.url")}/report-quarterly/income-and-expenses/sign-up/eligibility"
   }
 
+  override val agentIncomeTaxEligibilityFrontendTermsUrl: String = {
+    s"${config.getString("income-tax-subscription-eligibility-frontend.url")}/report-quarterly/income-and-expenses/sign-up/eligibility/client/what-you-need-to-do"
+  }
+
   override val incomeTaxSelfEmploymentsFrontendUrl: String = {
     s"${config.getString("income-tax-subscription-self-employed-frontend.url")}/report-quarterly/income-and-expenses/sign-up/self-employments"
   }
@@ -309,7 +316,6 @@ class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Con
   override val agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl: String = {
     s"${config.getString("income-tax-subscription-self-employed-frontend.url")}/report-quarterly/income-and-expenses/sign-up/self-employments/client/details/business-check-your-answers"
   }
-
 
   override val incomeTaxSelfEmploymentsFrontendInitialiseUrl: String = {
     s"$incomeTaxSelfEmploymentsFrontendUrl/details"
