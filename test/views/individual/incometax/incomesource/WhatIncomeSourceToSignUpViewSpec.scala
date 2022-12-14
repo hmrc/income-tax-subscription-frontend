@@ -16,6 +16,7 @@
 
 package views.individual.incometax.incomesource
 
+import assets.MessageLookup.PropertyStartDateMessages.hint
 import config.featureswitch.FeatureSwitch.ForeignProperty
 import forms.individual.incomesource.BusinessIncomeSourceForm
 import forms.individual.incomesource.BusinessIncomeSourceForm.incomeSourceKey
@@ -38,16 +39,16 @@ class WhatIncomeSourceToSignUpViewSpec extends ViewSpec {
   }
 
   object IndividualIncomeSource {
-    val title = "What source of income do you want to sign up?"
+    val title = "Add an income source"
     val heading: String = title
-    val paragraph1: String = "If you are self-employed, you must add all of your sole trader businesses if you have more than one. " +
-      "If you have income from property you must add it, but this is limited to one UK property business."
-    val paragraph1Overseas: String = "If you are self-employed, you must add all of your sole trader businesses if you have more than one. " +
-      "If you have income from property you must add it. This is limited to one UK property business and one overseas property business."
-    val paragraph2: String = "Renting out a property includes using a letting agency."
+    val paragraph1: String = "You can add your other sole trader businesses if you have more than one. If you have income from property, you can also add it."
+    val paragraph1Overseas: String = "You must add all of your sole trader businesses if you have more than one. If you have income from property, you must also add it. You can add one UK property business and one overseas property business."
     val business = "Sole trader business"
+    val businessHint = "A business you run as an individual. If you have other sole trader businesses, you can add them."
     val ukProperty = "UK property business"
+    val ukPropertyHint = "Income from property in the UK. This includes money you earn through a lettings or rental agency.You can have incomes from multiple properties in a single UK property business."
     val foreignProperty = "Overseas property business"
+    val foreignPropertyHint = "Income from renting property abroad. This includes money you earn through a lettings or rental agency. You can have incomes from multiple properties in a single overseas property business."
     val errorHeading = "There is a problem"
     val errorSummary = "Select Sole trader business, UK property rental or Overseas property rental"
   }
@@ -128,10 +129,6 @@ class WhatIncomeSourceToSignUpViewSpec extends ViewSpec {
       }
     }
 
-    "have paragraph 2" in new ViewTest {
-      document.selectHead(".govuk-inset-text").selectNth("p", 2).text mustBe IndividualIncomeSource.paragraph2
-    }
-
     "have a form to submit the checkboxes" in new ViewTest {
       val form: Element = document.selectHead("form")
       form.attr("method") mustBe testCall.method
@@ -163,7 +160,7 @@ class WhatIncomeSourceToSignUpViewSpec extends ViewSpec {
     }
 
     "have a checkbox for self employments" in new ViewTest {
-      testRadioButton(document, index = 1, SelfEmployed.toString, IndividualIncomeSource.business)
+      testRadioButton(document, index = 1, SelfEmployed.toString, IndividualIncomeSource.business, IndividualIncomeSource.businessHint)
     }
 
     "have no checkbox for self employments" when {
@@ -177,7 +174,7 @@ class WhatIncomeSourceToSignUpViewSpec extends ViewSpec {
     }
 
     "have a checkbox for uk property" in new ViewTest {
-      testRadioButton(document, index = 2, UkProperty.toString, IndividualIncomeSource.ukProperty)
+      testRadioButton(document, index = 2, UkProperty.toString, IndividualIncomeSource.ukProperty, IndividualIncomeSource.ukPropertyHint)
     }
 
     "have no checkbox for uk property" when {
@@ -192,7 +189,7 @@ class WhatIncomeSourceToSignUpViewSpec extends ViewSpec {
 
     "have a checkbox for overseas property" when {
       "the overseas property flag is set to true" in new ViewTest {
-        testRadioButton(document, index = 3, OverseasProperty.toString, IndividualIncomeSource.foreignProperty)
+        testRadioButton(document, index = 3, OverseasProperty.toString, IndividualIncomeSource.foreignProperty, IndividualIncomeSource.foreignPropertyHint)
       }
     }
 
@@ -211,7 +208,7 @@ class WhatIncomeSourceToSignUpViewSpec extends ViewSpec {
     }
   }
 
-  private def testRadioButton(document: Document, index: Int, key: String, label: String): Unit = {
+  private def testRadioButton(document: Document, index: Int, key: String, label: String, hint: String): Unit = {
     val radioButtonElement: Element = document.selectHead(".govuk-radios").selectNth(".govuk-radios__item", index)
 
     val radioButtonInput: Element = radioButtonElement.selectHead("input")
@@ -227,5 +224,8 @@ class WhatIncomeSourceToSignUpViewSpec extends ViewSpec {
       if (index == 1) "" else s"-$index"
     }
     radioButtonLabel.text mustBe label
+
+    val radioButtonHint: Element = radioButtonElement.selectHead(".govuk-radios__hint")
+    radioButtonHint.text mustBe hint
   }
 }

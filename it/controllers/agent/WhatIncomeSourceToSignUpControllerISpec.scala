@@ -145,7 +145,7 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         Then(s"Should return $BAD_REQUEST with the income source page plus error")
         res must have(
           httpStatus(BAD_REQUEST),
-          pageTitle(s"Error: ${messages("income-source.title")} - $serviceNameGovUk")
+          pageTitle(s"Error: ${messages("agent.income-source.heading")} - $serviceNameGovUk")
         )
       }
 
@@ -171,7 +171,7 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         Then(s"Should return $BAD_REQUEST with the income source page plus error")
         res must have(
           httpStatus(BAD_REQUEST),
-          pageTitle(s"Error: ${messages("income-source.title")} - $serviceNameGovUk")
+          pageTitle(s"Error: ${messages("agent.income-source.heading")} - $serviceNameGovUk")
         )
       }
 
@@ -195,7 +195,7 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         Then(s"Should return $BAD_REQUEST with the income source page plus error")
         res must have(
           httpStatus(BAD_REQUEST),
-          pageTitle(s"Error: ${messages("income-source.title")} - $serviceNameGovUk")
+          pageTitle(s"Error: ${messages("agent.income-source.heading")} - $serviceNameGovUk")
         )
       }
 
@@ -219,7 +219,7 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         Then(s"Should return $BAD_REQUEST with the income source page plus error")
         res must have(
           httpStatus(BAD_REQUEST),
-          pageTitle(s"Error: ${messages("income-source.title")} - $serviceNameGovUk")
+          pageTitle(s"Error: ${messages("agent.income-source.heading")} - $serviceNameGovUk")
         )
       }
 
@@ -239,7 +239,7 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         Then(s"Should return $BAD_REQUEST with the income source page plus error")
         res must have(
           httpStatus(BAD_REQUEST),
-          pageTitle(s"Error: ${messages("income-source.title")} - $serviceNameGovUk")
+          pageTitle(s"Error: ${messages("agent.income-source.heading")} - $serviceNameGovUk")
         )
       }
     }

@@ -62,14 +62,17 @@ iv-failure.failed-questions                                     = you have faile
 iv-failure.could-not-match-details                              = we could not match your details to our system
 
 ## Individual what income source to sign up page
-income-source.title                             = What source of income do you want to sign up?
-income-source.heading                           = What source of income do you want to sign up?
-income-source.para1                             = If you are self-employed, you must add all of your sole trader businesses if you have more than one. If you have income from property you must add it, but this is limited to one UK property business.
-income-source.para1-overseas                    = If you are self-employed, you must add all of your sole trader businesses if you have more than one. If you have income from property you must add it. This is limited to one UK property business and one overseas property business.
+income-source.title                             = Add an income source
+income-source.heading                           = Add an income source
+income-source.para1                             = You can add your other sole trader businesses if you have more than one. If you have income from property, you can also add it.
+income-source.para1-overseas                    = You must add all of your sole trader businesses if you have more than one. If you have income from property, you must also add it. You can add one UK property business and one overseas property business.
 income-source.para2                             = Renting out a property includes using a letting agency.
 income-source.self-employed                     = Sole trader business
+income-source.self-employed-hint                = A business you run as an individual. If you have other sole trader businesses, you can add them.
 income-source.uk-property                       = UK property business
+income-source.uk-property-hint                  = Income from property in the UK. This includes money you earn through a lettings or rental agency.You can have incomes from multiple properties in a single UK property business.
 income-source.foreign-property                  = Overseas property business
+income-source.foreign-property-hint             = Income from renting property abroad. This includes money you earn through a lettings or rental agency. You can have incomes from multiple properties in a single overseas property business.
 
 error.business-income-source.all-sources                        = Select Sole trader business, UK property rental or Overseas property rental
 error.business-income-source.self-employed-uk-property          = You need to select Sole trader business or UK property rental
