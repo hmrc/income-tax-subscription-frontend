@@ -21,7 +21,7 @@
         govukWrapper: GovUkWrapper
 )
 
-@(title: String, optForm: Option[Form[_]] = None, backLink: Option[String]= None, showSignOutLink: Boolean = true, fullWidth: Boolean = false)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
+@(title: String, optForm: Option[Form[_]] = None, backLink: Option[String]= None, showSignOutLink: Boolean = true, fullWidth: Boolean = false, additionalScripts: Option[Html] = None)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
 
 @prefixedTitle = @{
     optForm match {
@@ -37,5 +37,6 @@
     optForm = optForm,
     backLink = backLink,
     showSignOutLink = showSignOutLink,
-    fullWidth = fullWidth
+    fullWidth = fullWidth,
+    additionalScripts = additionalScripts
 )(contentBlock)
