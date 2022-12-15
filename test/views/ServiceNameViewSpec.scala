@@ -20,44 +20,39 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.test.FakeRequest
 import play.twirl.api.{Html, HtmlFormat}
-import views.html.templates.GovUkWrapper
+import views.html.templates.{AgentMainTemplate, GovUkWrapper, PrincipalMainTemplate}
 
 class ServiceNameViewSpec extends ViewSpecTrait {
+  private val individualLayout: PrincipalMainTemplate = app.injector.instanceOf[PrincipalMainTemplate]
+  private val agentLayout: AgentMainTemplate = app.injector.instanceOf[AgentMainTemplate]
 
-
-  val layout: GovUkWrapper = app.injector.instanceOf[GovUkWrapper]
-
-  class Setup(serviceName: String, serviceUrl: String) {
-
-    val page: HtmlFormat.Appendable = layout(
-      title = "title",
-      serviceName = serviceName,
-      serviceUrl = serviceUrl,
-      optForm = None,
-      backLink = Some("backUrl"),
-      showSignOutLink = false
+  private def page(isAgent: Boolean): HtmlFormat.Appendable = if(isAgent) {
+    agentLayout(
+      title = "title"
     )(Html(""))(FakeRequest(), implicitly, appConfig)
-
-    val document: Document = Jsoup.parse(page.body)
+  } else {
+    individualLayout(
+      title = "title"
+    )(Html(""))(FakeRequest(), implicitly)
   }
+
+  private def document(isAgent: Boolean): Document = Jsoup.parse(page(isAgent).body)
 
   "layout" must {
     "have a service name" when {
-      "passing in an individual service name" in new Setup("Use software to send Income Tax updates",
-        appConfig.govukGuidanceITSASignUpIndivLink) {
+      "passing in an individual service name" in {
         val serviceName = "Use software to send Income Tax updates"
         val serviceUrl = appConfig.govukGuidanceITSASignUpIndivLink
-        document.getElementsByClass("hmrc-header__service-name").text() mustBe serviceName
-        document.getElementsByClass("hmrc-header__service-name--linked").attr("href") mustBe serviceUrl
+        document(isAgent = false).getElementsByClass("hmrc-header__service-name").text() mustBe serviceName
+        document(isAgent = false).getElementsByClass("hmrc-header__service-name--linked").attr("href") mustBe serviceUrl
 
       }
 
-      "passing in an agent service name" in new Setup("Use software to report your client’s Income Tax",
-        appConfig.govukGuidanceITSASignUpAgentLink) {
+      "passing in an agent service name" in {
         val serviceName = "Use software to report your client’s Income Tax"
         val serviceUrl = appConfig.govukGuidanceITSASignUpAgentLink
-        document.getElementsByClass("hmrc-header__service-name").text() mustBe serviceName
-        document.getElementsByClass("hmrc-header__service-name--linked").attr("href") mustBe serviceUrl
+        document(isAgent = true).getElementsByClass("hmrc-header__service-name").text() mustBe serviceName
+        document(isAgent = true).getElementsByClass("hmrc-header__service-name--linked").attr("href") mustBe serviceUrl
       }
     }
   }

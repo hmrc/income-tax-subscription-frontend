@@ -54,8 +54,8 @@ trait MockConfig extends UnitTestTrait with AppConfig {
   override lazy val ggUrl = ""
   override lazy val urBannerUrl: String = " "
   override lazy val govukGuidanceLink: String = " "
-  override lazy val govukGuidanceITSASignUpIndivLink: String = " "
-  override lazy val govukGuidanceITSASignUpAgentLink: String = " "
+  override lazy val govukGuidanceITSASignUpIndivLink: String = "https://www.gov.uk/guidance/sign-up-your-business-for-making-tax-digital-for-income-tax"
+  override lazy val govukGuidanceITSASignUpAgentLink: String = "https://www.gov.uk/guidance/sign-up-your-client-for-making-tax-digital-for-income-tax"
 
 
   override def ggSignOutUrl(redirectionUrl: String = ggSignInContinueUrl): String = s"$ggUrl/bas-gateway/sign-out-without-state?continue=$redirectionUrl"
