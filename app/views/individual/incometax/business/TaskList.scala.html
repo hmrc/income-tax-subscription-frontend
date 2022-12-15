@@ -31,6 +31,10 @@
 
 @(postAction: Call, viewModel: TaskListModel, accountingPeriodService: AccountingPeriodService, individualUserNino: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
+@taskListScripts = {
+  <script src='@controllers.routes.Assets.versioned("javascripts/task-list.js")'></script>
+}
+
 @messagePrefix = @{"business.task-list"}
 
 @signUpSectionContent = @{
@@ -180,7 +184,7 @@
   </ul>
 }}
 
-@mainTemplate(title = messages(s"${messagePrefix}.title")) {
+@mainTemplate(title = messages(s"${messagePrefix}.title"), additionalScripts = Some(taskListScripts)) {
   <h1 class="govuk-heading-xl">@messages(s"${messagePrefix}.title")</h1>
 
 <ol class = "app-task-list">

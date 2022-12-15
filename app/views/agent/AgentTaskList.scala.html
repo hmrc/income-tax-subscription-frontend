@@ -32,6 +32,10 @@
 
 @(postAction: Call, viewModel: TaskListModel, clientName: String, clientNino: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
+@taskListScripts = {
+  <script src='@controllers.routes.Assets.versioned("javascripts/task-list.js")'></script>
+}
+
 @messagePrefix = @{"agent.business.task-list"}
 
 @signUpSectionContent = @{
@@ -181,7 +185,7 @@
   </ul>
 }}
 
-@mainTemplate(title = messages(s"${messagePrefix}.title")) {
+@mainTemplate(title = messages(s"${messagePrefix}.title"), additionalScripts = Some(taskListScripts)) {
   <h1 class="govuk-heading-xl">@messages(s"${messagePrefix}.title")</h1>
 
   <p class="govuk-body client-details govuk-!-padding-5 govuk-!-border-0" id ="userNameNino">

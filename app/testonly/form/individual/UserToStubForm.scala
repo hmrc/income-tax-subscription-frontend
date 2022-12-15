@@ -20,13 +20,10 @@ import forms.formatters.DateModelMapping
 import forms.validation.Constraints._
 import forms.validation.utils.ConstraintUtil._
 import forms.validation.utils.MappingUtil._
-import models.DateModel
 import play.api.data.Form
 import play.api.data.Forms.mapping
-import play.api.data.validation.{Constraint, Invalid, Valid, ValidationResult}
+import play.api.data.validation.{Constraint, Invalid, Valid}
 import testonly.models.UserToStubModel
-
-import scala.util.Try
 
 object UserToStubForm {
 
