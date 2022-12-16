@@ -36,9 +36,4 @@ trait MockAccountingPeriodService extends BeforeAndAfterEach with MockitoSugar {
   def mockCheckEligibleAccountingPeriod(startDate: LocalDate, endDate: LocalDate, hasPropertyIncomeSource: Boolean)(eligible: Boolean): Unit =
     when(mockAccountingPeriodService.checkEligibleAccountingPeriod(startDate, endDate, hasPropertyIncomeSource)).thenReturn(eligible)
 
-  def mockUpdateDateBefore(eligible: List[(String, String)]): Unit =
-    when(mockAccountingPeriodService.updateDatesBefore()).thenReturn(eligible)
-
-  def mockUpdateDateAfter(eligible: List[(String, String)]): Unit =
-    when(mockAccountingPeriodService.updateDatesAfter()).thenReturn(eligible)
 }
