@@ -78,9 +78,6 @@ class ConfirmationAgentControllerSpec extends AgentControllerBaseSpec
       "return OK" in {
         mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
 
-        mockUpdateDateBefore(List(taxQuarter1, taxQuarter2))
-        mockUpdateDateAfter(List(taxQuarter3, taxQuarter4))
-
         mockCall()
         val result = TestConfirmationAgentController$.show(subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "any").buildRequest(Some(userDetails)))
         status(result) mustBe OK
@@ -89,8 +86,6 @@ class ConfirmationAgentControllerSpec extends AgentControllerBaseSpec
 
     "no client details in session" should {
       "return an exception" in {
-        mockUpdateDateBefore(List(taxQuarter1, taxQuarter2))
-        mockUpdateDateAfter(List(taxQuarter3, taxQuarter4))
         mockCall()
 
 
@@ -102,9 +97,7 @@ class ConfirmationAgentControllerSpec extends AgentControllerBaseSpec
     "submitted is in session and new Confirmation content applies" should {
       "return OK" in {
         mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
-
-        mockUpdateDateBefore(List(taxQuarter1, taxQuarter2))
-        mockUpdateDateAfter(List(taxQuarter3, taxQuarter4))
+        
         mockCall()
 
         val result = TestConfirmationAgentController$.show(

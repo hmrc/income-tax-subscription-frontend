@@ -36,10 +36,7 @@ class AccountingPeriodTestAccountingPeriodServiceSpec extends AnyWordSpecLike wi
   class SetupUpdateDates(date: LocalDate) {
     val currentDate: LocalDate = date
     val currentTaxYear: Int = TestAccountingPeriodService.currentTaxYear
-    val taxQuarter1: (String, String) = ("agent.sign-up.complete.augustUpdate", "2020")
-    val taxQuarter2: (String, String) = ("agent.sign-up.complete.novemberUpdate", "2020")
-    val taxQuarter3: (String, String) = ("agent.sign-up.complete.februaryUpdate", "2021")
-    val taxQuarter4: (String, String) = ("agent.sign-up.complete.mayUpdate", "2021")
+
 
     case object TestAccountingPeriodService extends AccountingPeriodService(mockCurrentDateProvider)
 
@@ -156,49 +153,6 @@ class AccountingPeriodTestAccountingPeriodServiceSpec extends AnyWordSpecLike wi
         mockCurrentDate(currentDate)
 
         TestAccountingPeriodService.checkEligibleAccountingPeriod(testStart, testEnd, hasPropertyType = false) shouldBe true
-      }
-    }
-  }
-  "agent Update Dates" should {
-    "return Quarterly Update Dates before & after the current date" when {
-      "the current date is in Q1" in new SetupUpdateDates(LocalDate.of(2020, 5, 6)) {
-
-        mockCurrentDate(currentDate)
-        val expectedResultBefore: Seq[(String, String)] = List[(String, String)]()
-        val expectedResultAfter: Seq[(String, String)] = List(taxQuarter1, taxQuarter2, taxQuarter3, taxQuarter4)
-
-        TestAccountingPeriodService.updateDatesBefore() shouldBe expectedResultBefore
-        TestAccountingPeriodService.updateDatesAfter() shouldBe expectedResultAfter
-      }
-
-      "the current date is in Q2" in new SetupUpdateDates(LocalDate.of(2020, 8, 6)) {
-
-        mockCurrentDate(currentDate)
-        val expectedResultBefore: Seq[(String, String)] = List(taxQuarter1)
-        val expectedResultAfter: Seq[(String, String)] = List(taxQuarter2, taxQuarter3, taxQuarter4)
-
-        TestAccountingPeriodService.updateDatesBefore() shouldBe expectedResultBefore
-        TestAccountingPeriodService.updateDatesAfter() shouldBe expectedResultAfter
-      }
-
-      "the current date is in Q3" in new SetupUpdateDates(LocalDate.of(2020, 12, 6)) {
-
-        mockCurrentDate(currentDate)
-        val expectedResultBefore: Seq[(String, String)] = List(taxQuarter1, taxQuarter2)
-        val expectedResultAfter: Seq[(String, String)] = List(taxQuarter3, taxQuarter4)
-
-        TestAccountingPeriodService.updateDatesBefore() shouldBe expectedResultBefore
-        TestAccountingPeriodService.updateDatesAfter() shouldBe expectedResultAfter
-      }
-
-      "the current date is in Q4" in new SetupUpdateDates(LocalDate.of(2021, 3, 6)) {
-
-        mockCurrentDate(currentDate)
-        val expectedResultBefore: Seq[(String, String)] = List(taxQuarter1, taxQuarter2, taxQuarter3)
-        val expectedResultAfter: Seq[(String, String)] = List(taxQuarter4)
-
-        TestAccountingPeriodService.updateDatesBefore() shouldBe expectedResultBefore
-        TestAccountingPeriodService.updateDatesAfter() shouldBe expectedResultAfter
       }
     }
   }
