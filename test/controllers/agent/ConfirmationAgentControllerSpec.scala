@@ -28,6 +28,7 @@ import services.mocks._
 import utilities.TestModels
 import utilities.agent.TestModels._
 import views.html.agent.SignUpComplete
+import views.html.agent.SignUpConfirmation
 
 
 class ConfirmationAgentControllerSpec extends AgentControllerBaseSpec
@@ -38,12 +39,14 @@ class ConfirmationAgentControllerSpec extends AgentControllerBaseSpec
   with MockSpsService {
 
   val mockSignUpComplete: SignUpComplete = mock[SignUpComplete]
+  val mockSignUpConfirmation: SignUpConfirmation = mock[SignUpConfirmation]
 
 
   object TestConfirmationAgentController$ extends ConfirmationAgentController(
     mockAuditingService,
     mockAuthService,
     mockSignUpComplete,
+    mockSignUpConfirmation,
     MockSubscriptionDetailsService
   )(executionContext, appConfig, mockMessagesControllerComponents)
 

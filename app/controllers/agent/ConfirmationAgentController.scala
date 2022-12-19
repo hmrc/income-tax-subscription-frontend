@@ -17,12 +17,16 @@
 package controllers.agent
 
 import auth.agent.PostSubmissionController
+import auth.individual.IncomeTaxSAUser
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.ConfirmationPage
 import controllers.utils.ReferenceRetrieval
+import models.Next
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.SignUpComplete
+import views.html.agent.SignUpConfirmation
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -32,6 +36,7 @@ import scala.util.matching.Regex
 class ConfirmationAgentController @Inject()(val auditingService: AuditingService,
                                             val authService: AuthService,
                                             signUpComplete: SignUpComplete,
+                                            signUpConfirmation: SignUpConfirmation,
                                             val subscriptionDetailsService: SubscriptionDetailsService)
                                            (implicit val ec: ExecutionContext,
                                             val appConfig: AppConfig,
@@ -61,7 +66,11 @@ class ConfirmationAgentController @Inject()(val auditingService: AuditingService
 
       withAgentReference { reference =>
         subscriptionDetailsService.fetchSelectedTaxYear(reference) map { taxYearSelection =>
-          Ok(signUpComplete(taxYearSelection.map(_.accountingYear), clientName, formattedClientNino, postAction, signOutAction))
+          if(isEnabled(ConfirmationPage)){
+            Ok(signUpConfirmation(taxYearSelection.map(_.accountingYear).contains(Next), Some(clientName), clientNino))
+          } else {
+            Ok(signUpComplete(taxYearSelection.map(_.accountingYear), clientName, formattedClientNino, postAction, signOutAction))
+          }
         }
       }
   }

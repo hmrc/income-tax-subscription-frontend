@@ -261,13 +261,16 @@ sign-up-complete.what-now.next-updates                          = Anfonwch ddiwe
 sign-up-complete.what-now.no-penalty                            = Does dim cosb os byddwch yn dechrau gwneud diweddariadau hanner ffordd drwy’r flwyddyn dreth gyfredol.
 sign-up-complete.what-now.submit-annual                         = Cyflwynwch eich diweddariadau blynyddol a gwnewch ddatganiad ar gyfer y flwyddyn dreth erbyn 31 Ionawr {0}.
 
+## Agent Sign Up Confirmation Page ##
+agent.sign-up-confirmation.section1.heading                        = What you will have to do.. but in Welsh
+
 ## Sign Up Confirmation page ##
 
 sign-up-confirmation.heading                                       = Sign up complete
 sign-up-confirmation.heading.panel.current                         = is signed up for Making Tax Digital for Income Tax for the current tax year
 sign-up-confirmation.heading.panel.next                            = is signed up for Making Tax Digital for Income Tax for the next tax year
 
-sign-up-confirmation.section1.heading                              = What you will have to do
+sign-up-confirmation.section1.heading                                = What you will have to do
 
 sign-up-confirmation.section1.hint                                   = Continue to submit your Self Assessment tax return, as normal, until 2024.
 sign-up-confirmation.section1.quarterly-updates.table-caption        = Quarterly updates by the deadline
