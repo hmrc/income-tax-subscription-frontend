@@ -18,17 +18,49 @@
 @import services.AccountingPeriodService
 @import views.html.helpers.injected.UpdateDeadlineTable
 @import views.html.templates.AgentMainTemplate
+@import models.common.AccountingPeriodModel
+@import uk.gov.hmrc.play.language.LanguageUtils
 
 @this(
-agentMainTemplate: AgentMainTemplate
+    agentMainTemplate: AgentMainTemplate,
+    govukPanel: GovukPanel,
+    languageUtils: LanguageUtils
 )
 
-@(selectedTaxYearIsNext : Boolean, userNameMaybe: Option[String], individualUserNino: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(taxYearSelectionIsNext : Boolean, userNameMaybe: Option[String], individualUserNino: String, accountingPeriodModel: AccountingPeriodModel)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@userDetails = @{
+    userNameMaybe match {
+        case Some(name) => s"$name &vert; $individualUserNino"
+        case None => individualUserNino
+    }
+}
+
+
+
+@headingPanelContent = {
+    <p>
+        <strong>@Html(userDetails)</strong>
+    </p>
+    <p>
+        @if(taxYearSelectionIsNext) {
+          @messages("agent.sign-up-confirmation.heading.panel.next", languageUtils.Dates.formatDateRange(accountingPeriodModel.startDate.toLocalDate, accountingPeriodModel.endDate.toLocalDate))
+        } else {
+          @messages("agent.sign-up-confirmation.heading.panel.current", languageUtils.Dates.formatDateRange(accountingPeriodModel.startDate.toLocalDate, accountingPeriodModel.endDate.toLocalDate))
+        }
+    </p>
+}
 
 @agentMainTemplate(title = messages("agent.sign-up-confirmation.heading"), fullWidth = true) {
 
- <h2 class="govuk-heading-l">@messages("sign-up-confirmation.section1.heading")</h2>
+@govukPanel(Panel(
+  title = Text(messages("agent.sign-up-confirmation.heading")),
+  content = HtmlContent(headingPanelContent),
+  classes = "govuk-!-margin-bottom-6"
+))
 
+
+  <h2 class="govuk-heading-l">@messages("agent.sign-up-confirmation.section1.heading")</h2>
 }
 
 

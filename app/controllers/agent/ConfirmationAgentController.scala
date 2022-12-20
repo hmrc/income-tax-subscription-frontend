@@ -17,16 +17,16 @@
 package controllers.agent
 
 import auth.agent.PostSubmissionController
-import auth.individual.IncomeTaxSAUser
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.ConfirmationPage
 import controllers.utils.ReferenceRetrieval
 import models.Next
+import models.common.AccountingPeriodModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import utilities.AccountingPeriodUtil
 import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
-import views.html.agent.SignUpComplete
-import views.html.agent.SignUpConfirmation
+import views.html.agent.{SignUpComplete, SignUpConfirmation}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -66,8 +66,10 @@ class ConfirmationAgentController @Inject()(val auditingService: AuditingService
 
       withAgentReference { reference =>
         subscriptionDetailsService.fetchSelectedTaxYear(reference) map { taxYearSelection =>
-          if(isEnabled(ConfirmationPage)){
-            Ok(signUpConfirmation(taxYearSelection.map(_.accountingYear).contains(Next), Some(clientName), clientNino))
+          if (isEnabled(ConfirmationPage)) {
+            val isNextYear = taxYearSelection.map(_.accountingYear).contains(Next)
+            val accountingPeriodModel: AccountingPeriodModel = if (isNextYear) AccountingPeriodUtil.getNextTaxYear else AccountingPeriodUtil.getCurrentTaxYear
+            Ok(signUpConfirmation(isNextYear, Some(clientName), clientNino, accountingPeriodModel))
           } else {
             Ok(signUpComplete(taxYearSelection.map(_.accountingYear), clientName, formattedClientNino, postAction, signOutAction))
           }
