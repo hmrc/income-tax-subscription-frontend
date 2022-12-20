@@ -263,6 +263,9 @@ sign-up-complete.what-now.submit-annual                         = Submit your an
 
 ## Agent Sign Up Confirmation Page ##
 agent.sign-up-confirmation.section1.heading                         = What you will have to do
+agent.sign-up-confirmation.heading                                  = Client sign up complete
+agent.sign-up-confirmation.heading.panel.current                    = is now signed up for Making Tax Digital for Income Tax for the current tax year ({0})
+agent.sign-up-confirmation.heading.panel.next                       = is now signed up for Making Tax Digital for Income Tax for the next tax year ({0})
 
 ## Sign Up Confirmation page ##
 

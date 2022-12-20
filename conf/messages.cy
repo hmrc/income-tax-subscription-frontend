@@ -263,12 +263,15 @@ sign-up-complete.what-now.submit-annual                         = Cyflwynwch eic
 
 ## Agent Sign Up Confirmation Page ##
 agent.sign-up-confirmation.section1.heading                        = What you will have to do.. but in Welsh
+agent.sign-up-confirmation.heading                                 = Client sign up complete.. but in Welsh
+agent.sign-up-confirmation.heading.panel.current                   = is now signed up for Making Tax Digital for Income Tax for the current tax year ({0}).. but in Welsh
+agent.sign-up-confirmation.heading.panel.next                      = is now signed up for Making Tax Digital for Income Tax for the next tax year ({0}).. but in Welsh
 
 ## Sign Up Confirmation page ##
 
-sign-up-confirmation.heading                                       = Sign up complete
-sign-up-confirmation.heading.panel.current                         = is signed up for Making Tax Digital for Income Tax for the current tax year
-sign-up-confirmation.heading.panel.next                            = is signed up for Making Tax Digital for Income Tax for the next tax year
+sign-up-confirmation.heading                                       = Sign up complete.. but in Welsh
+sign-up-confirmation.heading.panel.current                         = is signed up for Making Tax Digital for Income Tax for the current tax year.. but in Welsh
+sign-up-confirmation.heading.panel.next                            = is signed up for Making Tax Digital for Income Tax for the next tax year.. but in Welsh
 
 sign-up-confirmation.section1.heading                                = What you will have to do
 
