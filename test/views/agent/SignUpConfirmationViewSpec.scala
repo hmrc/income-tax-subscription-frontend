@@ -74,6 +74,22 @@ class SignUpConfirmationViewSpec extends ViewSpec {
               .text() mustBe SignUpConfirmationMessages.panelDescription(yearIsNext)
           }
         }
+        "have a check client details panel" which {
+          "contains the check client details heading" in {
+            testMainContent.select(".client-details").select("h2").text() mustBe SignUpConfirmationMessages.checkClientDetailsHeading
+          }
+          "contains the check client details text" in {
+            testMainContent.select(".client-details")
+              .select("p")
+              .text() mustBe SignUpConfirmationMessages.checkClientDetailsText
+          }
+          "contains the check client details link" in {
+            testMainContent.select(".client-details")
+              .select("p")
+              .select("a")
+              .attr("href") mustBe appConfig.agentServicesAccountHomeUrl
+          }
+        }
       }
     }
 
@@ -87,5 +103,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val panelDescriptionThis = s"is now signed up for Making Tax Digital for Income Tax for the current tax year (${startDate.day} April 2010 to ${endDate.day} April 2011)"
     val panelDescriptionNext = s"is now signed up for Making Tax Digital for Income Tax for the next tax year (${startDate.day} April 2010 to ${endDate.day} April 2011)"
     def panelDescription(yearIsNext: Boolean) = if (yearIsNext) SignUpConfirmationMessages.panelDescriptionNext else SignUpConfirmationMessages.panelDescriptionThis
+    val checkClientDetailsHeading = "Check your client’s account"
+    val checkClientDetailsText = "Go to your agent service account to review or change the answers you have entered, and to get updates."
   }
 }
