@@ -16,17 +16,23 @@
 
 package views.agent
 
-import models.DateModel
+import models.{DateModel, UpdateDeadline}
 import models.common.AccountingPeriodModel
 import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
+import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.Html
 import utilities.{ImplicitDateFormatter, ImplicitDateFormatterImpl, ViewSpec}
 import views.html.agent.SignUpConfirmation
 
+import java.time.LocalDate
+import java.time.Month._
+import scala.util.Random
+
 class SignUpConfirmationViewSpec extends ViewSpec {
 
   val implicitDateFormatter: ImplicitDateFormatter = app.injector.instanceOf[ImplicitDateFormatterImpl]
+
+  import implicitDateFormatter.LongDate
 
   private val signUpConfirmation = app.injector.instanceOf[SignUpConfirmation]
 
@@ -53,6 +59,39 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         "have a section 1" which {
           "contains a heading" in {
             testMainContent.selectNth("h2", 1).text() mustBe SignUpConfirmationMessages.section1heading
+          }
+
+          "contains the quarterly updates section" which {
+            def quarterlyUpdates: Element = testMainContent.selectHead(".row")
+
+            if (yearIsNext) {
+              "contains a heading" in {
+
+              }
+              "contains Quarterly Updates initial paragraph" in {
+
+              }
+            } else {
+              "contains a heading" in {
+                quarterlyUpdates.selectNth("h3", 1).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesThisYearHeading
+              }
+              "contains Quarterly Updates initial paragraph" in {
+                quarterlyUpdates.selectNth("p", 1).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesThisYearParagraph
+              }
+              "contains a table" in {
+                quarterlyUpdates.mustHaveTable(
+                  tableHeads = List(SignUpConfirmationMessages.quarterlyUpdate, SignUpConfirmationMessages.deadline),
+                  tableRows = List(
+                    List(q1Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q1Update.deadline.toLongDateNoYear),
+                    List(q2Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q2Update.deadline.toLongDateNoYear),
+                    List(q3Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q3Update.deadline.toLongDateNoYear),
+                    List(q4Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q4Update.deadline.toLongDateNoYear)
+                  ),
+                  maybeCaption = Some(SignUpConfirmationMessages.quarterlyUpdatesTableCaption),
+                  hiddenTableCaption = false
+                )
+              }
+            }
           }
         }
         "have a header panel" which {
@@ -92,8 +131,6 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
       }
     }
-
-
   }
 
   private object SignUpConfirmationMessages {
@@ -105,5 +142,18 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     def panelDescription(yearIsNext: Boolean) = if (yearIsNext) SignUpConfirmationMessages.panelDescriptionNext else SignUpConfirmationMessages.panelDescriptionThis
     val checkClientDetailsHeading = "Check your client’s account"
     val checkClientDetailsText = "Go to your agent service account to review or change the answers you have entered, and to get updates."
+    val quarterlyUpdatesThisYearHeading = "1. Update us every quarter"
+    val quarterlyUpdatesThisYearParagraph = "Your client will not face a penalty if you start making updates mid-way through the current tax year but you will need to make updates for the quarter’s you have missed."
+    val quarterlyUpdate = "Quarterly update"
+    val deadline = "Deadline"
+    val quarterlyUpdatesTableCaption = "Quarterly updates by the deadline"
   }
+
+  private val CURRENT_TAX_YEAR: Int = Random.between(1900, 2100)
+  private val FIFTH: Int = 5
+  private val SIXTH: Int = 6
+  private val q1Update: UpdateDeadline = UpdateDeadline(LocalDate.of(CURRENT_TAX_YEAR - 1, APRIL, SIXTH), LocalDate.of(CURRENT_TAX_YEAR - 1, JULY, FIFTH), LocalDate.of(CURRENT_TAX_YEAR - 1, AUGUST, FIFTH))
+  private val q2Update: UpdateDeadline = UpdateDeadline(LocalDate.of(CURRENT_TAX_YEAR - 1, JULY, SIXTH), LocalDate.of(CURRENT_TAX_YEAR - 1, OCTOBER, FIFTH), LocalDate.of(CURRENT_TAX_YEAR - 1, NOVEMBER, FIFTH))
+  private val q3Update: UpdateDeadline = UpdateDeadline(LocalDate.of(CURRENT_TAX_YEAR - 1, OCTOBER, SIXTH), LocalDate.of(CURRENT_TAX_YEAR - 1, JANUARY, FIFTH), LocalDate.of(CURRENT_TAX_YEAR - 1, FEBRUARY, FIFTH))
+  private val q4Update: UpdateDeadline = UpdateDeadline(LocalDate.of(CURRENT_TAX_YEAR - 1, JANUARY, SIXTH), LocalDate.of(CURRENT_TAX_YEAR - 1, APRIL, FIFTH), LocalDate.of(CURRENT_TAX_YEAR - 1, MAY, FIFTH))
 }

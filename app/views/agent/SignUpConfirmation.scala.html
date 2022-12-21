@@ -24,7 +24,9 @@
 @this(
     agentMainTemplate: AgentMainTemplate,
     govukPanel: GovukPanel,
-    languageUtils: LanguageUtils
+    languageUtils: LanguageUtils,
+    table: UpdateDeadlineTable,
+    accountingPeriodService: AccountingPeriodService
 )
 
 @(taxYearSelectionIsNext : Boolean, userNameMaybe: Option[String], individualUserNino: String, accountingPeriodModel: AccountingPeriodModel)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -51,6 +53,25 @@
     </p>
 }
 
+@quarterlyUpdates = {
+    <div>
+        @if(taxYearSelectionIsNext) {
+
+        } else {
+            <h3 class="govuk-heading-m">@messages("agent.sign-up-confirmation.section1.quarterly-updates.this-year.heading")</h3>
+            <p class="govuk-body">
+                @messages("agent.sign-up-confirmation.section1.quarterly-updates.this-year.paragraph")
+            </p>
+        }
+
+        @table(
+        updateAndDeadlineDates = accountingPeriodService.getAllUpdateAndDeadlineDates(Next),
+        tableCaption = messages("sign-up-confirmation.section1.quarterly-updates.table-caption"),
+        fromToFormat = s"%s ${messages("base.to")} %s"
+        )
+    </div>
+}
+
 @checkClientDetails = {
     <div class="govuk-body client-details govuk-!-padding-3 govuk-!-border-0">
         <h2>
@@ -74,6 +95,10 @@
 
 
   <h2 class="govuk-heading-l">@messages("agent.sign-up-confirmation.section1.heading")</h2>
+
+  <div class="row govuk-!-margin-bottom-2">
+    @quarterlyUpdates
+  </div>
 
   @checkClientDetails
 }

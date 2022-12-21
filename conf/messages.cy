@@ -268,6 +268,9 @@ agent.sign-up-confirmation.heading.panel.current                   = is now sign
 agent.sign-up-confirmation.heading.panel.next                      = is now signed up for Making Tax Digital for Income Tax for the next tax year ({0}).. but in Welsh
 agent.sign-up-confirmation.check.heading                           = Check your client’s account.. but in Welsh
 agent.sign-up-confirmation.check.description                       = Go to your <a href="{0}">agent service account</a> to review or change the answers you have entered, and to get updates... but in Welsh
+agent.sign-up-confirmation.section1.quarterly-updates.table-caption         = Quarterly updates by the deadline... but in Welsh
+agent.sign-up-confirmation.section1.quarterly-updates.this-year.heading     = 1. Update us every quarter... but in Welsh
+agent.sign-up-confirmation.section1.quarterly-updates.this-year.paragraph   = Your client will not face a penalty if you start making updates mid-way through the current tax year but you will need to make updates for the quarter’s you have missed. ...but in Welsh
 
 ## Sign Up Confirmation page ##
 
