@@ -51,6 +51,19 @@
     </p>
 }
 
+@checkClientDetails = {
+    <div class="govuk-body client-details govuk-!-padding-3 govuk-!-border-0">
+        <h2>
+            @{messages("agent.sign-up-confirmation.check.heading")}
+        </h2>
+        <p>
+            @{Html(messages("agent.sign-up-confirmation.check.description", appConfig.agentServicesAccountHomeUrl))}
+        </p>
+    </div>
+}
+
+
+
 @agentMainTemplate(title = messages("agent.sign-up-confirmation.heading"), fullWidth = true) {
 
 @govukPanel(Panel(
@@ -61,6 +74,8 @@
 
 
   <h2 class="govuk-heading-l">@messages("agent.sign-up-confirmation.section1.heading")</h2>
+
+  @checkClientDetails
 }
 
 
