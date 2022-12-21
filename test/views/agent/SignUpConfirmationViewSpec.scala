@@ -129,6 +129,10 @@ class SignUpConfirmationViewSpec extends ViewSpec {
               .attr("href") mustBe appConfig.agentServicesAccountHomeUrl
           }
         }
+        "have a button" in {
+          testMainContent.selectHead(".govuk-button").text() mustBe SignUpConfirmationMessages.signUpAnotherClient
+          testMainContent.selectHead(".govuk-button").attr("href") mustBe controllers.agent.routes.AddAnotherClientController.addAnother().url
+        }
       }
     }
   }
@@ -140,6 +144,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val panelDescriptionThis = s"is now signed up for Making Tax Digital for Income Tax for the current tax year (${startDate.day} April 2010 to ${endDate.day} April 2011)"
     val panelDescriptionNext = s"is now signed up for Making Tax Digital for Income Tax for the next tax year (${startDate.day} April 2010 to ${endDate.day} April 2011)"
     def panelDescription(yearIsNext: Boolean) = if (yearIsNext) SignUpConfirmationMessages.panelDescriptionNext else SignUpConfirmationMessages.panelDescriptionThis
+    val signUpAnotherClient = "Sign up another client"
     val checkClientDetailsHeading = "Check your client’s account"
     val checkClientDetailsText = "Go to your agent service account to review or change the answers you have entered, and to get updates."
     val quarterlyUpdatesThisYearHeading = "1. Update us every quarter"
