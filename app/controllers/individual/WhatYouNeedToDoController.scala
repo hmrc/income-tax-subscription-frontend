@@ -43,7 +43,7 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo)
 
   val submit: Action[AnyContent] = Authenticated { _ =>
     _ =>
-      Redirect(controllers.individual.business.routes.TaskListController.show())
+      Redirect(controllers.individual.tasklist.routes.TaskListController.show())
   }
 
 }

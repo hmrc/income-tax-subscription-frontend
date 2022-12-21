@@ -18,7 +18,7 @@ package controllers.individual.claimenrolment
 
 import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
 import common.Constants.ITSASessionKeys
-import controllers.ControllerBaseSpec
+import controllers.individual.ControllerBaseSpec
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

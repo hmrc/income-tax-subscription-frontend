@@ -68,16 +68,16 @@ class AccountingPeriodCheckController @Inject()(val auditingService: AuditingSer
     implicit user =>
       val clientName = request.fetchClientName.get
       val clientNino = user.clientNino.get
-      val nextYearOnly  = request.session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY).contains("true")
+      val nextYearOnly = request.session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY).contains("true")
       accountingPeriodCheckForm.bindFromRequest().fold(
         formWithErrors => BadRequest(accountingPeriodCheck(formWithErrors, routes.AccountingPeriodCheckController.submit, clientName, clientNino, backLink)),
         {
           case Yes =>
             auditingService.audit(EligibilityAnswerAuditModel(eligible = true, "yes", "standardAccountingPeriod", user.arn))
-            if(nextYearOnly)
+            if (nextYearOnly)
               Redirect(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show)
             else
-              Redirect(controllers.agent.routes.HomeController.home)
+              Redirect(controllers.agent.matching.routes.HomeController.home)
           case No =>
             auditingService.audit(EligibilityAnswerAuditModel(eligible = false, "no", "standardAccountingPeriod", user.arn))
             Redirect(routes.CannotTakePartController.show)

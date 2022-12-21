@@ -21,7 +21,7 @@ import play.api.mvc.Results._
 import play.api.mvc.{Request, RequestHeader, Result}
 import play.api.{Configuration, Environment, Logging}
 import play.twirl.api.Html
-import uk.gov.hmrc.auth.core.{AuthorisationException, BearerTokenExpired, InsufficientEnrolments}
+import uk.gov.hmrc.auth.core.{AuthorisationException, InsufficientEnrolments}
 import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
@@ -49,9 +49,6 @@ class ErrorHandler @Inject()(val errorTemplate: ErrorTemplate,
       case _: InsufficientEnrolments =>
         logger.debug("[AuthenticationPredicate][async] No HMRC-MTD-IT Enrolment and/or No NINO.")
         super.resolveError(rh, ex)
-      case _: BearerTokenExpired =>
-        logger.debug("[AuthenticationPredicate][async] Bearer Token Timed Out.")
-        Redirect(controllers.routes.SessionTimeoutController.show)
       case _: AuthorisationException =>
         logger.debug("[AuthenticationPredicate][async] Unauthorised request. Redirect to Sign In.")
         toGGLogin(rh.path)

@@ -30,7 +30,9 @@ class MultipleIncomeSourcesSubscriptionConnector @Inject()(val appConfig: AppCon
                                                            val http: HttpClient)
                                                           (implicit ec: ExecutionContext) {
 
-  private def signUpUrl(nino: String, taxYear: String): String = appConfig.signUpIncomeSourcesUrl + MultipleIncomeSourcesSubscriptionConnector.signUpUri(nino, taxYear)
+  private def signUpUrl(nino: String, taxYear: String): String = {
+    appConfig.signUpIncomeSourcesUrl + MultipleIncomeSourcesSubscriptionConnector.signUpUri(nino, taxYear)
+  }
 
   private def createIncomeSourcesUrl(mtdbsa: String): String = appConfig.createIncomeSourcesUrl +
     MultipleIncomeSourcesSubscriptionConnector.createIncomeSourcesUri(mtdbsa)

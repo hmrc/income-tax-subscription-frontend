@@ -40,7 +40,7 @@ import utilities.UserMatchingSessionUtil
 import utilities.agent.TestModels.testClientDetails
 import utilities.agent.{TestConstants, TestModels}
 import utilities.individual.TestConstants.testReference
-import views.html.agent.CheckYourClientDetails
+import views.html.agent.matching.CheckYourClientDetails
 
 import scala.concurrent.Future
 
@@ -185,27 +185,27 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
       }
 
       "AgentQualificationService returned ClientAlreadySubscribed" should {
-        s"redirect user to ${controllers.agent.routes.ClientAlreadySubscribedController.show.url}" in withController { controller =>
+        s"redirect user to ${controllers.agent.matching.routes.ClientAlreadySubscribedController.show.url}" in withController { controller =>
           mockOrchestrateAgentQualificationFailure(arn, ClientAlreadySubscribed)
           setupMockNotLockedOut(arn)
 
           val result = await(callSubmit(controller))
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.agent.routes.ClientAlreadySubscribedController.show.url)
+          redirectLocation(result) mustBe Some(controllers.agent.matching.routes.ClientAlreadySubscribedController.show.url)
           verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 0, lockedOut = false))
         }
       }
 
       "AgentQualificationService returned UnQualifiedAgent" should {
-        s"redirect user to ${controllers.agent.routes.NoClientRelationshipController.show.url}" in withController { controller =>
+        s"redirect user to ${controllers.agent.matching.routes.NoClientRelationshipController.show.url}" in withController { controller =>
           mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr), preExistingRelationship = false)
           setupMockNotLockedOut(arn)
 
           val result = await(callSubmit(controller))
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.agent.routes.NoClientRelationshipController.show.url)
+          redirectLocation(result) mustBe Some(controllers.agent.matching.routes.NoClientRelationshipController.show.url)
           verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 0, lockedOut = false))
         }
       }
@@ -243,7 +243,8 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
             }
 
             "the client has prepop data, prepop and ITSA mandation status are on" should {
-              s"redirect user to ${controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show.url} after saving prepop data" in withController { controller =>
+              s"redirect user to ${controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show.url}" +
+                s" after saving prepop data" in withController { controller =>
                 mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
                 mockGetEligibilityStatus(utr)(Future.successful(Right(eligibleWithPrePop)))
                 mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
@@ -271,21 +272,46 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
                 verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 0, lockedOut = false))
               }
             }
-
-
           }
 
           "the client is ineligible only for the current year" when {
-              "the client has no prepop" when {
+            "the client has no prepop" when {
+
+              s"redirect user to ${controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url}" in withController { controller =>
+                mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
+                mockGetEligibilityStatus(utr)(Future.successful(Right(ineligibleForCurrentYearWithoutPrePop)))
+                setupMockPrePopulateSave(testReference)
+                mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
+                setupMockNotLockedOut(arn)
+                mockGetMandationStatus(Voluntary, Voluntary)
+
+
+                val result = await(callSubmit(controller))
+
+                status(result) mustBe SEE_OTHER
+                redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show.url)
+
+                val session = result.session(request)
+
+                session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
+                session.get(ITSASessionKeys.NINO) mustBe Some(nino)
+                session.get(ITSASessionKeys.UTR) mustBe Some(utr)
+                session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY) mustBe Some("true")
+
+                verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 0, lockedOut = false))
+              }
+            }
+            "the client has prepop" when {
+              "prepop feature switch is on" should {
 
                 s"redirect user to ${controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url}" in withController { controller =>
                   mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
-                  mockGetEligibilityStatus(utr)(Future.successful(Right(ineligibleForCurrentYearWithoutPrePop)))
+                  mockGetEligibilityStatus(utr)(Future.successful(Right(ineligibleForCurrentYearWithPrePop)))
                   setupMockPrePopulateSave(testReference)
                   mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
                   setupMockNotLockedOut(arn)
-                  mockGetMandationStatus(Voluntary,Voluntary)
-
+                  enable(PrePopulate)
+                  mockGetMandationStatus(Voluntary, Voluntary)
 
                   val result = await(callSubmit(controller))
 
@@ -299,65 +325,38 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
                   session.get(ITSASessionKeys.UTR) mustBe Some(utr)
                   session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY) mustBe Some("true")
 
+                  verifyPrePopulationSave(1, testReference)
                   verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 0, lockedOut = false))
                 }
               }
-              "the client has prepop" when {
-                "prepop feature switch is on" should {
+              "prepop feature switch is off" should {
+                s"redirect user to ${controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url}" in withController { controller =>
+                  mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
+                  mockGetEligibilityStatus(utr)(Future.successful(Right(ineligibleForCurrentYearWithPrePop)))
+                  setupMockPrePopulateSave(testReference)
+                  mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
+                  setupMockNotLockedOut(arn)
+                  disable(PrePopulate)
+                  mockGetMandationStatus(Voluntary, Voluntary)
 
-                  s"redirect user to ${controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url}" in withController { controller =>
-                    mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
-                    mockGetEligibilityStatus(utr)(Future.successful(Right(ineligibleForCurrentYearWithPrePop)))
-                    setupMockPrePopulateSave(testReference)
-                    mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
-                    setupMockNotLockedOut(arn)
-                    enable(PrePopulate)
-                    mockGetMandationStatus(Voluntary,Voluntary)
+                  val result = await(callSubmit(controller))
 
-                    val result = await(callSubmit(controller))
+                  status(result) mustBe SEE_OTHER
+                  redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show.url)
 
-                    status(result) mustBe SEE_OTHER
-                    redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show.url)
+                  val session = result.session(request)
 
-                    val session = result.session(request)
+                  session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
+                  session.get(ITSASessionKeys.NINO) mustBe Some(nino)
+                  session.get(ITSASessionKeys.UTR) mustBe Some(utr)
+                  session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY) mustBe Some("true")
 
-                    session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
-                    session.get(ITSASessionKeys.NINO) mustBe Some(nino)
-                    session.get(ITSASessionKeys.UTR) mustBe Some(utr)
-                    session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY) mustBe Some("true")
-
-                    verifyPrePopulationSave(1, testReference)
-                    verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 0, lockedOut = false))
-                  }
-                }
-                "prepop feature switch is off" should {
-                  s"redirect user to ${controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url}" in withController { controller =>
-                    mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
-                    mockGetEligibilityStatus(utr)(Future.successful(Right(ineligibleForCurrentYearWithPrePop)))
-                    setupMockPrePopulateSave(testReference)
-                    mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
-                    setupMockNotLockedOut(arn)
-                    disable(PrePopulate)
-                    mockGetMandationStatus(Voluntary,Voluntary)
-
-                    val result = await(callSubmit(controller))
-
-                    status(result) mustBe SEE_OTHER
-                    redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show.url)
-
-                    val session = result.session(request)
-
-                    session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
-                    session.get(ITSASessionKeys.NINO) mustBe Some(nino)
-                    session.get(ITSASessionKeys.UTR) mustBe Some(utr)
-                    session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY) mustBe Some("true")
-
-                    verifyPrePopulationSave(0, testReference)
-                    verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 0, lockedOut = false))
-                  }
+                  verifyPrePopulationSave(0, testReference)
+                  verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 0, lockedOut = false))
                 }
               }
             }
+          }
 
 
           "the client is ineligible" should {
@@ -398,7 +397,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
             val result = await(callSubmit(controller))
 
             status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(controllers.agent.routes.HomeController.index.url)
+            redirectLocation(result) mustBe Some(controllers.agent.matching.routes.HomeController.index.url)
 
             val session = result.session(userMatchingRequest.withSession(ITSASessionKeys.UTR -> "this will be deleted"))
             session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
@@ -468,7 +467,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
         mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
         mockGetEligibilityStatus(utr)(Future.successful(Right(eligibleWithoutPrePop)))
         setupMockNotLockedOut(arn)
-        mockGetMandationStatus(Mandated,Voluntary)
+        mockGetMandationStatus(Mandated, Voluntary)
 
         val result = await(controller.submit()(request.withSession(ITSASessionKeys.FailedClientMatching -> 1.toString)))
 
@@ -515,7 +514,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
 
   private def withController(testCode: ConfirmClientController => Any): Unit = {
     val checkYourClientDetailsView = mock[CheckYourClientDetails]
-    when(checkYourClientDetailsView(any(), any())(any(), any(), any()))
+    when(checkYourClientDetailsView(any(), any())(any(), any()))
       .thenReturn(HtmlFormat.empty)
     val controller = createTestConfirmClientController(checkYourClientDetailsView)
     testCode(controller)

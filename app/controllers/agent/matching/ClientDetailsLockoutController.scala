@@ -23,7 +23,7 @@ import play.api.i18n.Messages
 import play.api.mvc._
 import services.{AuditingService, AuthService, UserLockoutService}
 import uk.gov.hmrc.http.InternalServerException
-import views.html.agent.ClientDetailsLockout
+import views.html.agent.matching.ClientDetailsLockout
 
 import java.time.{Duration, LocalTime}
 import javax.inject.{Inject, Singleton}
@@ -33,8 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class ClientDetailsLockoutController @Inject()(val auditingService: AuditingService,
                                                val authService: AuthService,
                                                lockoutService: UserLockoutService,
-                                               clientDetailsLockOut: ClientDetailsLockout
-                                              )
+                                               clientDetailsLockOut: ClientDetailsLockout)
                                               (implicit val ec: ExecutionContext,
                                                val appConfig: AppConfig,
                                                mcc: MessagesControllerComponents) extends UserMatchingController {

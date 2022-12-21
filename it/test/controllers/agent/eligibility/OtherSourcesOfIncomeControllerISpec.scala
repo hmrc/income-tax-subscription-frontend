@@ -17,9 +17,8 @@
 package controllers.agent.eligibility
 
 import forms.agent.OtherSourcesOfIncomeForm
-import helpers.IntegrationTestConstants.testFullName
+import helpers.IntegrationTestConstants.{testFormattedNino, testFullName}
 import helpers.agent.ComponentSpecBase
-import helpers.IntegrationTestConstants.testFormattedNino
 import helpers.agent.servicemocks.AuthStub
 import helpers.servicemocks.AuditStub.verifyAudit
 import models.{No, Yes, YesNo}
@@ -79,7 +78,7 @@ class OtherSourcesOfIncomeControllerISpec extends ComponentSpecBase {
 
     "have a view with back link" in new GetSetup {
       val backLink: Element = doc.getGovukBackLink
-      backLink.attr("href").mustBe(controllers.agent.routes.ReturnToClientDetailsController.show.url)
+      backLink.attr("href").mustBe(controllers.agent.matching.routes.ReturnToClientDetailsController.show.url)
       backLink.text mustBe OtherSourcesOfIncomeMessages.back
     }
 

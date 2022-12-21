@@ -15,7 +15,7 @@
  *@
 
 @import config.AppConfig
-@import views.html.helpers.injected.{ButtonHelper, SignOutLink}
+@import views.html.helpers.{ButtonHelper, SignOutLink}
 @import views.html.templates.PrincipalMainTemplate
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcNewTabLinkHelper
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
@@ -27,7 +27,7 @@
         signOutLink: SignOutLink,
         form: FormWithCSRF
 )
-@(postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(postAction: Call)(implicit request: Request[_], messages: Messages)
 
 @principalMainTemplate(title = messages("claim-enrolment.confirmation.title")) {
 

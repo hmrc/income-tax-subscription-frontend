@@ -29,57 +29,58 @@ import scala.concurrent.Future
 
 object AuthPredicates extends Results {
 
-  lazy val noArnRoute: Result = Redirect(controllers.agent.routes.NotEnrolledAgentServicesController.show)
+  lazy val noArnRoute: Result = Redirect(controllers.agent.matching.routes.NotEnrolledAgentServicesController.show)
 
-  lazy val confirmationRoute: Result = Redirect(controllers.agent.routes.ConfirmationAgentController.show)
+  lazy val confirmationRoute: Result = Redirect(controllers.agent.routes.ConfirmationController.show)
 
-  lazy val timeoutRoute = Redirect(controllers.agent.routes.SessionTimeoutController.show)
+  lazy val timeoutRoute: Result = Redirect(controllers.agent.routes.SessionTimeoutController.show)
 
-  lazy val homeRoute = Redirect(controllers.agent.routes.HomeController.index)
+  lazy val homeRoute: Result = Redirect(controllers.agent.matching.routes.HomeController.index)
 
-  val notSubmitted: AuthPredicate[IncomeTaxAgentUser] = request => user =>
+  val notSubmitted: AuthPredicate[IncomeTaxAgentUser] = request => _ =>
     if (request.session.get(ITSASessionKeys.MTDITID).isEmpty) Right(AuthPredicateSuccess)
     else Left(Future.successful(confirmationRoute))
 
-  val hasSubmitted: AuthPredicate[IncomeTaxAgentUser] = request => user =>
+  val hasSubmitted: AuthPredicate[IncomeTaxAgentUser] = request => _ =>
     if (request.session.get(ITSASessionKeys.MTDITID).nonEmpty) Right(AuthPredicateSuccess)
     else Left(Future.failed(new NotFoundException("auth.AuthPredicates.hasSubmitted")))
 
-  val hasClientDetails: AuthPredicate[IncomeTaxAgentUser] = request => user =>
+  val hasClientDetails: AuthPredicate[IncomeTaxAgentUser] = request => _ =>
     if (request.session.get(ITSASessionKeys.UTR).isDefined) Right(AuthPredicateSuccess)
-    else Left(Future.successful(Redirect(controllers.agent.routes.CannotGoBackToPreviousClientController.show)))
+    else Left(Future.successful(Redirect(controllers.agent.matching.routes.CannotGoBackToPreviousClientController.show)))
 
-  val timeoutPredicate: AuthPredicate[IncomeTaxAgentUser] = request => user =>
+  val timeoutPredicate: AuthPredicate[IncomeTaxAgentUser] = request => _ =>
     if (request.session.get(lastRequestTimestamp).nonEmpty && request.session.get(authToken).isEmpty) {
       Left(Future.successful(timeoutRoute))
     }
     else Right(AuthPredicateSuccess)
 
-  val signUpJourneyPredicate: AuthPredicate[IncomeTaxAgentUser] = request => user =>
+  val signUpJourneyPredicate: AuthPredicate[IncomeTaxAgentUser] = request => _ =>
     if (request.session.isInState(AgentSignUp)) Right(AuthPredicateSuccess)
     else Left(Future.successful(homeRoute))
 
-  val userMatchingJourneyPredicate: AuthPredicate[IncomeTaxAgentUser] = request => user =>
+  val userMatchingJourneyPredicate: AuthPredicate[IncomeTaxAgentUser] = request => _ =>
     if (request.session.isInState(AgentUserMatching)) Right(AuthPredicateSuccess)
     else Left(Future.successful(homeRoute))
 
-  val userMatchedJourneyPredicate: AuthPredicate[IncomeTaxAgentUser] = request => user =>
+  val userMatchedJourneyPredicate: AuthPredicate[IncomeTaxAgentUser] = request => _ =>
     if (request.session.isInState(AgentUserMatched)) Right(AuthPredicateSuccess)
     else Left(Future.successful(homeRoute))
 
-  val arnPredicate: AuthPredicate[IncomeTaxAgentUser] = request => user =>
+  val arnPredicate: AuthPredicate[IncomeTaxAgentUser] = _ => user =>
     if (user.enrolments.getEnrolment(Constants.hmrcAsAgent).nonEmpty) Right(AuthPredicateSuccess)
     else Left(Future.successful(noArnRoute))
 
-  val defaultPredicates = timeoutPredicate |+| arnPredicate
+  val defaultPredicates: AuthPredicate[IncomeTaxAgentUser] = timeoutPredicate |+| arnPredicate
 
-  val homePredicates = defaultPredicates |+| notSubmitted
+  val homePredicates: AuthPredicate[IncomeTaxAgentUser] = defaultPredicates |+| notSubmitted
 
-  val userMatchingPredicates = homePredicates |+| userMatchingJourneyPredicate
+  val userMatchingPredicates: AuthPredicate[IncomeTaxAgentUser] = homePredicates |+| userMatchingJourneyPredicate
 
-  val subscriptionPredicates = homePredicates |+| hasClientDetails |+| signUpJourneyPredicate
+  val preSignUpPredicates: AuthPredicate[IncomeTaxAgentUser] = homePredicates |+| hasClientDetails
 
-  val preSignUpPredicates = homePredicates |+| hasClientDetails
+  val subscriptionPredicates: AuthPredicate[IncomeTaxAgentUser] = homePredicates |+| hasClientDetails |+| signUpJourneyPredicate
 
-  val confirmationPredicates = defaultPredicates |+| hasClientDetails |+| hasSubmitted
+  val confirmationPredicates: AuthPredicate[IncomeTaxAgentUser] = defaultPredicates |+| hasClientDetails |+| hasSubmitted
+
 }

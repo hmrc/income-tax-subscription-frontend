@@ -1,0 +1,128 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import services.AccountingPeriodService
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcNewTabLinkHelper
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
+@import utilities.ImplicitDateFormatterImpl
+@import views.html.helpers.{ButtonHelper, UpdateDeadlineTable}
+@import views.html.templates.PrincipalMainTemplate
+
+@this(
+        principalMainTemplate: PrincipalMainTemplate,
+        buttonHelper: ButtonHelper,
+        hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
+        form: FormWithCSRF,
+        govukPanel: GovukPanel,
+        implicitDateFormatter: ImplicitDateFormatterImpl,
+        table: UpdateDeadlineTable,
+        accountingPeriodService: AccountingPeriodService
+)(
+	implicit appConfig: AppConfig
+)
+
+@(taxYearSelectionIsNext: Boolean, postAction: Call)(implicit request: Request[_], messages: Messages)
+
+@import implicitDateFormatter.LongDate
+
+@headingPanelContent = {
+    <p>
+        @messages("sign-up-complete.can-use-software")
+    </p>
+}
+
+@headingPanel = @{
+    govukPanel(Panel(
+        title = Text(messages("sign-up-complete.heading")),
+        content = HtmlContent(headingPanelContent)
+    ))
+}
+
+@previousUpdates(previous: List[UpdateDeadline]) = {
+    @if(previous.nonEmpty) {
+        <li>
+            <p class="govuk-body">@messages("sign-up-complete.what-now.previous-updates")</p>
+            @table(
+              updateAndDeadlineDates = previous,
+              tableCaption = messages("sign-up-complete.quarter-table-caption"),
+              fromToFormat = Some("%s - %s"),
+              showTableCaption = false,
+              includeYearInDates = true
+            )
+            <p class="govuk-body">@messages("sign-up-complete.what-now.no-penalty")</p>
+        </li>
+    }
+}
+
+@nextUpdates(next: List[UpdateDeadline], isNextYear: Boolean = false) = {
+    <li>
+        @if(isNextYear) {
+            <p class="govuk-body">@messages("sign-up-complete.what-now.send-quarterly")</p>
+        } else {
+            <p class="govuk-body">@messages("sign-up-complete.what-now.next-updates")</p>
+        }
+        @table(
+          updateAndDeadlineDates = next,
+          tableCaption = messages("sign-up-complete.quarter-table-caption"),
+          fromToFormat = Some("%s - %s"),
+          showTableCaption = false,
+          includeYearInDates = true
+        )
+    </li>
+}
+
+@whatHappensNow = {
+    <h2 class="govuk-heading-m">@messages("sign-up-complete.what-now.heading")</h2>
+
+    <ol class="govuk-list govuk-list--number govuk-!-margin-2">
+        <li>
+            @Html(messages(
+                key = "sign-up-complete.what-now.find-software",
+                args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("sign-up-complete.what-now.find-software.link"), Some(appConfig.softwareUrl)))
+            ))
+        </li>
+        @if(taxYearSelectionIsNext) {
+            @nextUpdates(accountingPeriodService.getAllUpdateAndDeadlineDates(Next), isNextYear = true)
+            <li>@messages("sign-up-complete.what-now.submit-annual", (accountingPeriodService.currentTaxYear + 2).toString)</li>
+        } else {
+            @previousUpdates(accountingPeriodService.getCurrentYearUpdateDates.previous)
+            @nextUpdates(accountingPeriodService.getCurrentYearUpdateDates.next)
+            <li>@messages("sign-up-complete.what-now.submit-annual", (accountingPeriodService.currentTaxYear + 1).toString)</li>
+        }
+    </ol>
+}
+
+@principalMainTemplate(title = messages("sign-up-complete.heading")) {
+
+    @headingPanel
+
+    @whatHappensNow
+
+    <p class="govuk-body">
+        @Html(messages(
+            key = "sign-up-complete.what-now.para",
+            args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("sign-up-complete.what-now.para.link"), Some(appConfig.btaUrl)))
+        ))
+    </p>
+
+    <p class="govuk-body">@messages("sign-up-complete.what-now.para2")</p>
+
+    @form(action = postAction) {
+        @buttonHelper(messages("sign-up-complete.what-now.sign-out"))
+    }
+
+}

@@ -16,23 +16,22 @@
 
 package controllers.agent.matching
 
-import agent.assets.MessageLookup.{ClientDetails => messages}
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.ClientDetailsForm
+import messagelookup.agent.MessageLookup.{ClientDetails => messages}
 import models.DateModel
 import models.usermatching.UserDetailsModel
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc._
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{await, contentAsString, contentType, _}
+import play.api.test.Helpers._
 import services.mocks.{MockAuditingService, MockSubscriptionDetailsService, MockUserLockoutService}
 import uk.gov.hmrc.http.{HttpResponse, InternalServerException}
 import utilities.agent.TestConstants
-import views.html.agent.ClientDetails
+import views.html.agent.matching.ClientDetails
 
 import scala.concurrent.Future
-
 
 class ClientDetailsControllerSpec extends AgentControllerBaseSpec
   with MockSubscriptionDetailsService

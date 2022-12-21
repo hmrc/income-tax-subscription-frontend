@@ -24,7 +24,7 @@ import play.api.mvc.{Action, AnyContent, Codec}
 import play.api.test.Helpers.{HTML, charset, contentType, defaultAwaitTimeout, status}
 import play.twirl.api.HtmlFormat
 import services.mocks.MockAuditingService
-import views.html.agent.{ThrottleEndOfJourney, ThrottleStartOfJourney}
+import views.html.agent.throttling.{ThrottleEndOfJourney, ThrottleStartOfJourney}
 
 
 class ThrottlingControllerSpec extends AgentControllerBaseSpec with MockAuditingService {
@@ -56,16 +56,16 @@ class ThrottlingControllerSpec extends AgentControllerBaseSpec with MockAuditing
     val startOfJourneyView = mock[ThrottleStartOfJourney]
 
     when(startOfJourneyView(
-      ArgumentMatchers.eq(controllers.agent.routes.HomeController.index.url),
-      ArgumentMatchers.eq(controllers.agent.routes.HomeController.index)
-    )(any(),any(),any())).thenReturn(HtmlFormat.empty)
+      ArgumentMatchers.eq(controllers.agent.matching.routes.HomeController.index.url),
+      ArgumentMatchers.eq(controllers.agent.matching.routes.HomeController.index)
+    )(any(), any())).thenReturn(HtmlFormat.empty)
 
     val endOfJourneyView = mock[ThrottleEndOfJourney]
 
     when(endOfJourneyView(
-      ArgumentMatchers.eq(controllers.agent.routes.HomeController.index.url),
-      ArgumentMatchers.eq(controllers.agent.routes.TaskListController.show())
-    )(any(),any(),any())).thenReturn(HtmlFormat.empty)
+      ArgumentMatchers.eq(controllers.agent.matching.routes.HomeController.index.url),
+      ArgumentMatchers.eq(controllers.agent.tasklist.routes.TaskListController.show())
+    )(any(), any())).thenReturn(HtmlFormat.empty)
 
     val controller = new ThrottlingController(
       mockAuditingService,

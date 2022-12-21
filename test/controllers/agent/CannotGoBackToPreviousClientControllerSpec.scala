@@ -16,6 +16,7 @@
 
 package controllers.agent
 
+import controllers.agent.matching.CannotGoBackToPreviousClientController
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._

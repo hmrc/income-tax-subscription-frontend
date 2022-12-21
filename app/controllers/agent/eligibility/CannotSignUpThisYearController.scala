@@ -43,7 +43,7 @@ class CannotSignUpThisYearController @Inject()(val auditingService: AuditingServ
   }
 
   def submit: Action[AnyContent] = Authenticated { implicit request =>
-    implicit user =>
+    _ =>
       form.bindFromRequest().fold(
         hasErrors => BadRequest(view(form = hasErrors)), {
           case Yes => Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())

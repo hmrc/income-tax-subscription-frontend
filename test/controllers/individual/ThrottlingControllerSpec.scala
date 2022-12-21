@@ -16,7 +16,6 @@
 
 package controllers.individual
 
-import controllers.ControllerBaseSpec
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -25,10 +24,10 @@ import play.api.mvc.{Action, AnyContent, Codec}
 import play.api.test.Helpers.{HTML, charset, contentType, defaultAwaitTimeout, status}
 import play.twirl.api.HtmlFormat
 import services.mocks.MockAuditingService
-import views.html.individual.{ThrottleEndOfJourney, ThrottleStartOfJourney}
+import views.html.individual.throttling.{ThrottleEndOfJourney, ThrottleStartOfJourney}
 
 class ThrottlingControllerSpec extends ControllerBaseSpec with MockAuditingService {
-override val controllerName: String = "CheckYourAnswersController"
+  override val controllerName: String = "CheckYourAnswersController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
   "start" should {
@@ -56,16 +55,16 @@ override val controllerName: String = "CheckYourAnswersController"
     val startOfJourneyView = mock[ThrottleStartOfJourney]
 
     when(startOfJourneyView(
-      ArgumentMatchers.eq(controllers.usermatching.routes.HomeController.index.url),
-      ArgumentMatchers.eq(controllers.usermatching.routes.HomeController.index)
-    )(any(),any())).thenReturn(HtmlFormat.empty)
+      ArgumentMatchers.eq(controllers.individual.matching.routes.HomeController.index.url),
+      ArgumentMatchers.eq(controllers.individual.matching.routes.HomeController.index)
+    )(any(), any())).thenReturn(HtmlFormat.empty)
 
     val endOfJourneyView = mock[ThrottleEndOfJourney]
 
     when(endOfJourneyView(
-      ArgumentMatchers.eq(controllers.usermatching.routes.HomeController.index.url),
-      ArgumentMatchers.eq( controllers.individual.business.routes.TaskListController.show())
-    )(any(),any())).thenReturn(HtmlFormat.empty)
+      ArgumentMatchers.eq(controllers.individual.matching.routes.HomeController.index.url),
+      ArgumentMatchers.eq(controllers.individual.tasklist.routes.TaskListController.show())
+    )(any(), any())).thenReturn(HtmlFormat.empty)
 
     val controller = new ThrottlingController(
       mockAuditingService,

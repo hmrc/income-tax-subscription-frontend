@@ -22,7 +22,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import play.twirl.api.HtmlFormat
-import views.html.individual.incometax.business.WhatYearToSignUp
+import views.html.individual.tasklist.taxyear.WhatYearToSignUp
 
 trait MockWhatYearToSignUp extends PlaySpec with MockitoSugar with BeforeAndAfterEach {
 

@@ -1,0 +1,52 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import views.html.templates.AgentMainTemplate
+@import views.html.helpers.{ContinueButton, SignOutLink}
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcNewTabLinkHelper
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
+
+@this(
+    mainTemplate: AgentMainTemplate,
+    form: FormWithCSRF,
+    continueButton: ContinueButton,
+    hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
+    signOutLink: SignOutLink
+)
+
+@(postAction: Call)(implicit request: Request[_], messages: Messages)
+
+@mainTemplate(title = Messages("agent.no-client-relationship.title")) {
+
+    <h1 class="govuk-heading-l">@Messages("agent.no-client-relationship.heading")</h1>
+
+    <p class="govuk-body">
+        @Html(messages(
+        key = "agent.no-client-relationship.para1",
+        args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("agent.no-client-relationship.link"), Some("https://www.gov.uk/guidance/client-authorisation-an-overview")))
+        ))
+    </p>
+
+    @form(action = postAction) {
+
+        <div class="govuk-form-group">
+                <div>@continueButton(alternateText = Some(Messages("agent.base.sign-up-another-client")))</div>
+                <div>@signOutLink()</div>
+        </div>
+
+    }
+
+}

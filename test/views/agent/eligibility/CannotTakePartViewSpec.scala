@@ -16,9 +16,7 @@
 
 package views.agent.eligibility
 
-import models.common.AccountingPeriodModel
 import org.jsoup.Jsoup
-import org.jsoup.nodes.Element
 import utilities.ViewSpec
 import views.html.agent.eligibility.CannotTakePart
 

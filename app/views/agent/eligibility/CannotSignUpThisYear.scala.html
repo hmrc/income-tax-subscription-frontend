@@ -15,48 +15,47 @@
  *@
 
 @import views.html.templates.AgentMainTemplate
-@import config.AppConfig
-@import views.html.helpers.injected.ButtonHelper
+@import views.html.helpers.ButtonHelper
 @import models.common.AccountingPeriodModel
 @import uk.gov.hmrc.play.language.LanguageUtils
-@import views.html.helpers.injected.ContinueButton
+@import views.html.helpers.ContinueButton
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 @import utilities.AccountingPeriodUtil
 @import forms.agent.CannotSignUpThisYearForm.yesNo
-@import views.html.helpers.injected.YesNoRadioHelper
+@import views.html.helpers.YesNoRadioHelper
 
 @this(
-mainTemplate: AgentMainTemplate,
-buttonHelper: ButtonHelper,
-hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
-languageUtils: LanguageUtils,
-yesNoRadioHelper: YesNoRadioHelper,
-continueButton: ContinueButton,
-form: FormWithCSRF
-)(
-implicit appConfig: AppConfig
+    mainTemplate: AgentMainTemplate,
+    buttonHelper: ButtonHelper,
+    hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
+    languageUtils: LanguageUtils,
+    yesNoRadioHelper: YesNoRadioHelper,
+    continueButton: ContinueButton,
+    form: FormWithCSRF
 )
 
 @(yesNoForm: Form[YesNo], postAction: Call)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = messages("agent.cannot-sign-up.heading"), optForm = Some(yesNoForm)) {
 
-<h1 class="govuk-heading-l">@messages("agent.cannot-sign-up.heading")</h1>
+    <h1 class="govuk-heading-l">@messages("agent.cannot-sign-up.heading")</h1>
 
-<p class="govuk-body">@messages("agent.cannot-sign-up.paragraph1",
-    languageUtils.Dates.formatDate(AccountingPeriodUtil.getNextTaxYear.startDate.toLocalDate),
-    languageUtils.Dates.formatDate(AccountingPeriodUtil.getNextTaxYear.endDate.toLocalDate))</p>
+    <p class="govuk-body">
+        @messages(
+            "agent.cannot-sign-up.paragraph1",
+            languageUtils.Dates.formatDate(AccountingPeriodUtil.getNextTaxYear.startDate.toLocalDate),
+            languageUtils.Dates.formatDate(AccountingPeriodUtil.getNextTaxYear.endDate.toLocalDate)
+        )
+    </p>
 
-@form(action = postAction) {
-@yesNoRadioHelper(
-field = yesNoForm(yesNo),
-legend = messages("agent.cannot-sign-up.yes-no-radio-helper.heading"),
-headingClasses = "govuk-fieldset__legend--m",
-isPageHeading = false
-)
+    @form(action = postAction) {
+        @yesNoRadioHelper(
+            field = yesNoForm(yesNo),
+            legend = messages("agent.cannot-sign-up.yes-no-radio-helper.heading"),
+            headingClasses = "govuk-fieldset__legend--m",
+            isPageHeading = false
+        )
 
-@continueButton()
-
-}
-
+        @continueButton()
+    }
 }

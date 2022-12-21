@@ -17,7 +17,7 @@
 package controllers.individual.sps
 
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.{basGatewaySignIn, IndividualURI}
+import helpers.IntegrationTestConstants.{IndividualURI, basGatewaySignIn}
 import helpers.servicemocks.AuthStub
 import play.api.http.Status._
 

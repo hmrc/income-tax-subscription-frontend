@@ -17,16 +17,17 @@
 package controllers.agent
 
 import config.AppConfig
-import javax.inject.{Inject, Singleton}
 import play.api.i18n.Lang
 import play.api.mvc.MessagesControllerComponents
 import uk.gov.hmrc.play.language.{LanguageController, LanguageUtils}
 
+import javax.inject.{Inject, Singleton}
+
 @Singleton
 class LanguageSwitchController @Inject()(mcc: MessagesControllerComponents, appConfig: AppConfig, languageUtils: LanguageUtils)
-  extends LanguageController(languageUtils, mcc){
+  extends LanguageController(languageUtils, mcc) {
 
-  override def fallbackURL: String = controllers.agent.routes.HomeController.home.url
+  override def fallbackURL: String = controllers.agent.matching.routes.HomeController.home.url
 
   override protected def languageMap: Map[String, Lang] = appConfig.languageMap
 

@@ -16,9 +16,9 @@
 
 package views
 
-import assets.MessageLookup
-import assets.MessageLookup.{Base => common}
 import controllers.SignOutController
+import messagelookup.individual.MessageLookup
+import messagelookup.individual.MessageLookup.{Base => common}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
@@ -28,9 +28,9 @@ import play.api.test.FakeRequest
 import play.twirl.api.Html
 import play.twirl.api.TwirlHelperImports.twirlJavaCollectionToScala
 import utilities.UnitTestTrait
-import scala.language.implicitConversions
 
 import scala.jdk.CollectionConverters._
+import scala.language.implicitConversions
 
 
 trait ViewSpecTrait extends UnitTestTrait {
@@ -350,11 +350,11 @@ trait ViewSpecTrait extends UnitTestTrait {
         case Some(origin) => mustHaveALink(id, text, SignOutController.signOut.url)
         case _ =>
           s"$name have a link with text '$text' pointed to 'Sign Out'" in {
-        Option(element.getElementById(id)) match {
-          case None => fail(s"Unable to locate $id")
-          case Some(link) if (!link.tagName().equals("a")) => fail(s"The element with id=$id is not a link")
-          case Some(link) => link.text() mustBe text
-        }
+            Option(element.getElementById(id)) match {
+              case None => fail(s"Unable to locate $id")
+              case Some(link) if (!link.tagName().equals("a")) => fail(s"The element with id=$id is not a link")
+              case Some(link) => link.text() mustBe text
+            }
           }
       }
     }

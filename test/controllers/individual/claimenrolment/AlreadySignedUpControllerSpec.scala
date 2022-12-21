@@ -16,7 +16,7 @@
 
 package controllers.individual.claimenrolment
 
-import controllers.ControllerBaseSpec
+import controllers.individual.ControllerBaseSpec
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers._
 import services.mocks.MockAuditingService

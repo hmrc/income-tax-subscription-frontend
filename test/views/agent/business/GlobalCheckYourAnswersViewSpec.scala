@@ -16,16 +16,14 @@
 
 package views.agent.business
 
-import forms.submapping.YesNoMapping
 import models._
 import models.common.business.Address
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
-import play.api.data.{Form, FormError}
 import play.twirl.api.Html
 import services.GetCompleteDetailsService._
 import utilities.{AccountingPeriodUtil, ViewSpec}
-import views.html.agent.business.GlobalCheckYourAnswers
+import views.html.agent.GlobalCheckYourAnswers
 
 import java.time.LocalDate
 
@@ -33,16 +31,16 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
   "GlobalCheckYourAnswers" must {
 
-    "use the correct template" in new TemplateViewTest (
-        view = page(
-          completeDetails = completeDetails()
-        ),
-        title = GlobalCheckYourAnswersMessages.heading,
-        isAgent = true,
-        backLink = Some(testBackUrl),
-        hasSignOutLink = true,
-        error = None
-      )
+    "use the correct template" in new TemplateViewTest(
+      view = page(
+        completeDetails = completeDetails()
+      ),
+      title = GlobalCheckYourAnswersMessages.heading,
+      isAgent = true,
+      backLink = Some(testBackUrl),
+      hasSignOutLink = true,
+      error = None
+    )
 
 
     "have a heading" in {
@@ -386,7 +384,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
       "has a I need to change something hyper link and have redirection link to Tasklist" in {
         form.selectHead("a").text mustBe GlobalCheckYourAnswersMessages.needToChange
-        form.selectHead("a").attr("href").matches(controllers.agent.routes.TaskListController.show().url)
+        form.selectHead("a").attr("href").matches(controllers.agent.tasklist.routes.TaskListController.show().url)
       }
     }
 

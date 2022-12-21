@@ -22,7 +22,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import play.twirl.api.HtmlFormat
-import views.html.agent.business.WhatYearToSignUp
+import views.html.agent.tasklist.taxyear.WhatYearToSignUp
 
 trait MockWhatYearToSignUp extends PlaySpec with MockitoSugar with BeforeAndAfterEach {
 
@@ -34,7 +34,7 @@ trait MockWhatYearToSignUp extends PlaySpec with MockitoSugar with BeforeAndAfte
   }
 
   def mockView(): Unit = {
-    when(whatYearToSignUp(any(), any(), any(), any(), any(), any(), any())(any(), any(), any()))
+    when(whatYearToSignUp(any(), any(), any(), any(), any(), any(), any())(any(), any()))
       .thenReturn(HtmlFormat.empty)
   }
 

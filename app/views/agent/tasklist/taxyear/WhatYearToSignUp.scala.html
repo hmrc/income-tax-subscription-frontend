@@ -1,0 +1,101 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import forms.agent.AccountingYearForm
+@import services.AccountingPeriodService
+@import views.html.helpers.{ContinueButton, RadioHelper}
+@import views.html.templates.AgentMainTemplate
+@import views.html.helpers.ReturnDeadlineTable
+
+@this(
+    mainTemplate: AgentMainTemplate,
+    radioHelper: RadioHelper,
+    govukWarningText: GovukWarningText,
+    continueButton: ContinueButton,
+    accountingPeriodService: AccountingPeriodService,
+    table: ReturnDeadlineTable,
+    form : FormWithCSRF,
+    govukDetails : GovukDetails
+)
+
+@(accountingYearForm: Form[AccountingYear], postAction: Call, clientName: String, clientNino: String, backUrl: Option[String], endYearOfCurrentTaxPeriod: Int, isEditMode: Boolean)(implicit request: Request[_], messages: Messages)
+
+@quarterDayTb = {
+@table(accountingPeriodService.getAllUpdateAndDeadlineDates(Current), false)
+<p class="govuk-body" id="para1">
+    @messages("agent.business.what-year-to-sign-up.table.details.p1")</p>
+<p class="govuk-body" id="para2">@messages("agent.business.what-year-to-sign-up.table.details.p2")</p>
+
+}
+
+@optionCurrentContent = {
+  <p>@messages("agent.business.what-year-to-sign-up.option-current-hint", (endYearOfCurrentTaxPeriod + 1).toString)</p>
+}
+
+@optionNextContent = {
+  <p>@messages("agent.business.what-year-to-sign-up.option-next-hint", (endYearOfCurrentTaxPeriod + 2).toString)</p>
+}
+
+
+@mainTemplate(title = messages("agent.business.what-year-to-sign-up.title"), optForm = Some(accountingYearForm), backLink = backUrl) {
+  @form(action = postAction) {
+
+    <span class="govuk-caption-l">
+      @messages("agent.business.what-year-to-sign-up.caption", clientName, clientNino)
+    </span>
+    <h1 class="govuk-heading-l">@messages("agent.business.what-year-to-sign-up.heading")</h1>
+
+    <p class="govuk-body">
+        @messages(
+            key = "agent.business.what-year-to-sign-up.para",
+            args = Seq(
+                (endYearOfCurrentTaxPeriod - 1).toString,
+                endYearOfCurrentTaxPeriod.toString,
+                (endYearOfCurrentTaxPeriod + 1).toString
+            ): _*
+        )
+    </p>
+
+@govukWarningText(WarningText(
+content = Text(Messages("agent.business.what-year-to-sign-up.warning-text"))
+))
+
+@govukDetails(Details(
+summary = Text(messages("agent.business.what-year-to-sign-up.table.title")),
+content = HtmlContent(quarterDayTb)
+))
+
+    @radioHelper(
+      field = accountingYearForm(AccountingYearForm.accountingYear),
+      legend = messages("agent.business.what-year-to-sign-up.radio-option-heading"),
+      isPageHeading = false,
+      headingClasses = "govuk-fieldset__legend--m",
+      radioItems = Seq(
+        RadioItem(
+          content = Text(messages("agent.business.what-year-to-sign-up.option-1", (endYearOfCurrentTaxPeriod - 1).toString, endYearOfCurrentTaxPeriod.toString)),
+          value = Some(Current.toString),
+          hint = Some(Hint(content = HtmlContent(optionCurrentContent))),
+        ),
+        RadioItem(
+          content = Text(messages("agent.business.what-year-to-sign-up.option-2", endYearOfCurrentTaxPeriod.toString, (endYearOfCurrentTaxPeriod + 1).toString)),
+          value = Some(Next.toString),
+          hint = Some(Hint(content = HtmlContent(optionNextContent))),
+        )
+      )
+    )
+    @continueButton(isEditMode = isEditMode)
+  }
+}

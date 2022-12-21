@@ -16,12 +16,12 @@
 
 package controllers.individual.claimenrolment
 
+import _root_.common.Constants.ITSASessionKeys
 import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
 import helpers.IntegrationTestConstants.IndividualURI
 import helpers.servicemocks.AuthStub
 import helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import play.api.http.Status.{OK, SEE_OTHER}
-import _root_.common.Constants.ITSASessionKeys
 
 class AddMTDITOverviewControllerISpec extends ComponentSpecBase  with SessionCookieCrumbler {
 

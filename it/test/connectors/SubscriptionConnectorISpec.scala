@@ -29,27 +29,27 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 class SubscriptionConnectorISpec extends ComponentSpecBase {
 
-  implicit val hc = HeaderCarrier()
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   val TestSubscriptionConnector: SubscriptionConnector = app.injector.instanceOf[SubscriptionConnector]
 
-  val testSubscriptionRequest = SubscriptionRequest(
+  val testSubscriptionRequest: SubscriptionRequest = SubscriptionRequest(
     nino = testNino,
     arn = None,
     businessIncome = None,
     propertyIncome = None
   )
 
-  val testStartDate = DateModel("6", "4", "2017")
-  val testEndDate = DateModel("5", "4", "2018")
+  val testStartDate: DateModel = DateModel("6", "4", "2017")
+  val testEndDate: DateModel = DateModel("5", "4", "2018")
 
-  val testBusinessIncome = BusinessIncomeModel(
+  val testBusinessIncome: BusinessIncomeModel = BusinessIncomeModel(
     tradingName = Some("Test trading name"),
     accountingPeriod = AccountingPeriodModel(testStartDate, testEndDate),
     accountingMethod = Cash
   )
 
-  val testPropertyIncome = PropertyIncomeModel(
+  val testPropertyIncome: PropertyIncomeModel = PropertyIncomeModel(
     accountingMethod = Some(Cash)
   )
 

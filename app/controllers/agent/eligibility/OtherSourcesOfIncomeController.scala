@@ -49,7 +49,7 @@ class OtherSourcesOfIncomeController @Inject()(otherSourcesOfIncome: OtherSource
     }
   }
 
-  def backUrl: String = controllers.agent.routes.ReturnToClientDetailsController.show.url
+  def backUrl: String = controllers.agent.matching.routes.ReturnToClientDetailsController.show.url
 
   def show: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>

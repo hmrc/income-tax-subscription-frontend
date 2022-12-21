@@ -17,21 +17,15 @@
 package views.agent
 
 import config.featureswitch.FeatureSwitch.ForeignProperty
-import forms.agent.BusinessIncomeSourceForm
-import forms.agent.BusinessIncomeSourceForm.incomeSourceKey
 import forms.agent.HaveYouCompletedThisSectionForm
-import models.IncomeSourcesStatus
 import models.common.business.{BusinessNameModel, BusinessTradeNameModel, SelfEmploymentData}
-import models.common.{OverseasProperty, OverseasPropertyModel, PropertyModel, SelfEmployed, UkProperty}
+import models.common.{OverseasPropertyModel, PropertyModel}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
-import play.api.data.FormError
-import play.api.mvc.Call
 import play.twirl.api.Html
 import utilities.UserMatchingSessionUtil.ClientDetails
 import utilities.ViewSpec
-import views.ViewSpecTrait
-import views.html.agent.YourIncomeSourceToSignUp
+import views.html.agent.tasklist.addbusiness.YourIncomeSourceToSignUp
 
 class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
@@ -49,14 +43,14 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     val paragraph2 = "Renting out a property includes using a letting agency."
     val soleTrader = "Sole trader"
     val soleTraderLinkText = "Add sole trader income source"
-    val soleTraderLink = appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl
+    val soleTraderLink: String = appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl
     val ukProperty = "UK property"
     val ukPropertyLinkText = "Add UK property income source"
-    val ukPropertyLink = controllers.agent.business.routes.PropertyStartDateController.show().url
+    val ukPropertyLink: String = controllers.agent.tasklist.ukproperty.routes.PropertyStartDateController.show().url
     val foreignPropertyHeading = "Foreign property"
     val foreignPropertyLabel = "Foreign property income source"
     val foreignPropertyLinkText = "Add foreign property business"
-    val foreignPropertyLink = controllers.agent.business.routes.OverseasPropertyStartDateController.show().url
+    val foreignPropertyLink: String = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show().url
     val foreignPropertyChange = "Change foreign property income source"
     val foreignPropertyRemove = "Remove foreign property income source"
     val errorHeading = "There is a problem"
@@ -69,8 +63,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     val change: String = "Change"
     val remove: String = "Remove"
   }
-
-  val action: Call = ViewSpecTrait.testCall
 
   private val incomeSourceView = app.injector.instanceOf[YourIncomeSourceToSignUp]
 
@@ -134,19 +126,19 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       document.mainContent.selectHead("h2").text mustBe AgentIncomeSource.soleTrader
     }
 
-    "have a  Sole trader link" in new ViewTest{
-      val link = document.mainContent.getElementById("add-self-employment").selectHead("a")
+    "have a  Sole trader link" in new ViewTest {
+      val link: Element = document.mainContent.getElementById("add-self-employment").selectHead("a")
       link.text mustBe AgentIncomeSource.soleTraderLinkText
       link.attr("href") mustBe AgentIncomeSource.soleTraderLink
 
     }
 
     "have a section on UK property" in new ViewTest {
-      document.mainContent.selectNth("h2",2).text mustBe AgentIncomeSource.ukProperty
+      document.mainContent.selectNth("h2", 2).text mustBe AgentIncomeSource.ukProperty
     }
 
-    "have a  UK property  link" in  new ViewTest{
-      val link = document.mainContent.getElementById("add-uk-property").selectHead("a")
+    "have a  UK property  link" in new ViewTest {
+      val link: Element = document.mainContent.getElementById("add-uk-property").selectHead("a")
       link.text mustBe AgentIncomeSource.ukPropertyLinkText
       link.attr("href") mustBe AgentIncomeSource.ukPropertyLink
     }

@@ -16,8 +16,8 @@
 
 package controllers.agent.matching
 
-import helpers.agent.ComponentSpecBase
 import helpers.IntegrationTestConstants.{AgentURI, testARN}
+import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.{AgentLockoutStub, AuthStub}
 import play.api.http.Status.{OK, SEE_OTHER}
 

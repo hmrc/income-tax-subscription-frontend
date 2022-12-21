@@ -26,7 +26,7 @@ import uk.gov.hmrc.play.language.{LanguageController, LanguageUtils}
 class LanguageSwitchController @Inject()(mcc: MessagesControllerComponents, appConfig: AppConfig, languageUtils: LanguageUtils)
                                          extends LanguageController(languageUtils, mcc){
 
-  override def fallbackURL: String = controllers.usermatching.routes.HomeController.home.url
+  override def fallbackURL: String = controllers.individual.matching.routes.HomeController.home.url
 
   override protected def languageMap: Map[String, Lang] = appConfig.languageMap
 

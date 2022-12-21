@@ -3,8 +3,8 @@
 GET         /assets/*file                                        controllers.Assets.versioned(path="/public", file: Asset)
 
 # Home controller
-GET         /                                                    controllers.usermatching.HomeController.home
-GET         /index                                               controllers.usermatching.HomeController.index
+GET         /                                                    controllers.individual.matching.HomeController.home
+GET         /index                                               controllers.individual.matching.HomeController.index
 
 # SignOut Controller
 GET         /logout                                              controllers.SignOutController.signOut
@@ -13,37 +13,37 @@ GET         /logout                                              controllers.Sig
 GET         /sps-handoff                                         controllers.individual.sps.SPSHandoffController.redirectToSPS
 GET         /sps-callback                                        controllers.individual.sps.SPSCallbackController.callback(entityId: Option[String] ?= None)
 
-GET         /details/income-source                              controllers.individual.incomesource.WhatIncomeSourceToSignUpController.show()
-POST        /details/income-source                              controllers.individual.incomesource.WhatIncomeSourceToSignUpController.submit()
+GET         /details/income-source                               controllers.individual.tasklist.addbusiness.WhatIncomeSourceToSignUpController.show()
+POST        /details/income-source                               controllers.individual.tasklist.addbusiness.WhatIncomeSourceToSignUpController.submit()
 
 # Confirmation Routes
-GET         /confirmation                                        controllers.individual.subscription.ConfirmationController.show
-POST        /confirmation                                        controllers.individual.subscription.ConfirmationController.submit
+GET         /confirmation                                        controllers.individual.ConfirmationController.show
+POST        /confirmation                                        controllers.individual.ConfirmationController.submit
 
 # Session Timeout Route
-GET         /session-timeout                                     controllers.SessionTimeoutController.show
+GET         /session-timeout                                     controllers.individual.SessionTimeoutController.show
 
 # Already enrolled
-GET         /already-enrolled                                    controllers.individual.subscription.AlreadyEnrolledController.show
+GET         /already-enrolled                                    controllers.individual.matching.AlreadyEnrolledController.show
 
 # No NINO Routes
-GET         /register-for-SA                                     controllers.usermatching.NoSAController.show
+GET         /register-for-SA                                     controllers.individual.matching.NoSAController.show
 
 # Affinity Group Error
-GET         /error/affinity-group                                controllers.usermatching.AffinityGroupErrorController.show
+GET         /error/affinity-group                                controllers.individual.matching.AffinityGroupErrorController.show
 
 # Cannot Use Service
-GET         /error/cannot-use-service                            controllers.individual.incomesource.CannotUseServiceController.show()
+GET         /error/cannot-use-service                            controllers.individual.matching.CannotUseServiceController.show()
 
 # Cannot use service because not eligible
-GET         /cannot-use-service-yet                              controllers.individual.eligibility.NotEligibleForIncomeTaxController.show()
+GET         /cannot-use-service-yet                              controllers.individual.controllist.NotEligibleForIncomeTaxController.show()
 
 # Can only use service next year
-GET         /error/cannot-sign-up-for-current-year               controllers.individual.eligibility.CannotSignUpThisYearController.show
-POST        /error/cannot-sign-up-for-current-year               controllers.individual.eligibility.CannotSignUpThisYearController.submit
+GET         /error/cannot-sign-up-for-current-year               controllers.individual.controllist.CannotSignUpThisYearController.show
+POST        /error/cannot-sign-up-for-current-year               controllers.individual.controllist.CannotSignUpThisYearController.submit
 
 # Declined sign up next year
-GET         /declined-sign-up-next-year                          controllers.individual.eligibility.DeclinedSignUpNextYearController.show
+GET         /declined-sign-up-next-year                          controllers.individual.controllist.DeclinedSignUpNextYearController.show
 
 # What you need to do
 GET         /what-you-need-to-do                                 controllers.individual.WhatYouNeedToDoController.show
@@ -52,39 +52,34 @@ POST         /what-you-need-to-do                                controllers.ind
 #Language
 GET         /language/:lang                                      controllers.individual.LanguageSwitchController.switchToLanguage(lang: String)
 
-# Feedback Routes
-GET         /feedback                                            controllers.FeedbackController.show
-POST        /feedback                                            controllers.FeedbackController.submit
-GET         /thank-you                                           controllers.FeedbackController.thankyou
-
 ################## Business Routes
 
 #What Tax Year To Sign Up Routes
-GET         /business/what-year-to-sign-up                       controllers.individual.business.WhatYearToSignUpController.show(editMode: Boolean ?= false)
-POST        /business/what-year-to-sign-up                       controllers.individual.business.WhatYearToSignUpController.submit(editMode: Boolean ?= false)
+GET         /business/what-year-to-sign-up                       controllers.individual.tasklist.taxyear.WhatYearToSignUpController.show(editMode: Boolean ?= false)
+POST        /business/what-year-to-sign-up                       controllers.individual.tasklist.taxyear.WhatYearToSignUpController.submit(editMode: Boolean ?= false)
 
 #Property Accounting Method Routes
-GET         /business/accounting-method-property                 controllers.individual.business.PropertyAccountingMethodController.show(editMode: Boolean ?= false)
-POST        /business/accounting-method-property                 controllers.individual.business.PropertyAccountingMethodController.submit(editMode: Boolean ?= false)
+GET         /business/accounting-method-property                 controllers.individual.tasklist.ukproperty.PropertyAccountingMethodController.show(editMode: Boolean ?= false)
+POST        /business/accounting-method-property                 controllers.individual.tasklist.ukproperty.PropertyAccountingMethodController.submit(editMode: Boolean ?= false)
 
 #Foreign Property Accounting Method Routes
-GET         /business/overseas-property-accounting-method        controllers.individual.business.OverseasPropertyAccountingMethodController.show(editMode: Boolean ?= false)
-POST        /business/overseas-property-accounting-method        controllers.individual.business.OverseasPropertyAccountingMethodController.submit(editMode: Boolean ?= false)
+GET         /business/overseas-property-accounting-method        controllers.individual.tasklist.overseasproperty.OverseasPropertyAccountingMethodController.show(editMode: Boolean ?= false)
+POST        /business/overseas-property-accounting-method        controllers.individual.tasklist.overseasproperty.OverseasPropertyAccountingMethodController.submit(editMode: Boolean ?= false)
 
 #Property Start Date Routes
-GET         /business/property-commencement-date                 controllers.individual.business.PropertyStartDateController.show(editMode: Boolean ?= false)
-POST        /business/property-commencement-date                 controllers.individual.business.PropertyStartDateController.submit(editMode: Boolean ?= false)
+GET         /business/property-commencement-date                 controllers.individual.tasklist.ukproperty.PropertyStartDateController.show(editMode: Boolean ?= false)
+POST        /business/property-commencement-date                 controllers.individual.tasklist.ukproperty.PropertyStartDateController.submit(editMode: Boolean ?= false)
 
 #Foreign Property Start Date Routes
-GET         /business/overseas-property-start-date               controllers.individual.business.OverseasPropertyStartDateController.show(editMode: Boolean ?= false)
-POST        /business/overseas-property-start-date               controllers.individual.business.OverseasPropertyStartDateController.submit(editMode: Boolean ?= false)
+GET         /business/overseas-property-start-date               controllers.individual.tasklist.overseasproperty.OverseasPropertyStartDateController.show(editMode: Boolean ?= false)
+POST        /business/overseas-property-start-date               controllers.individual.tasklist.overseasproperty.OverseasPropertyStartDateController.submit(editMode: Boolean ?= false)
 
 # Identity Verification return routes
 GET         /iv-success                                          controllers.individual.iv.IVSuccessController.success
 GET         /iv-failure                                          controllers.individual.iv.IVFailureController.failure
 
-GET         /keep-alive                                          controllers.SessionTimeoutController.keepAlive
-GET         /timeout                                             controllers.SessionTimeoutController.timeout
+GET         /keep-alive                                          controllers.individual.SessionTimeoutController.keepAlive
+GET         /timeout                                             controllers.individual.SessionTimeoutController.timeout
 
 # MTDIT Overview
 GET         /claim-enrolment/overview                            controllers.individual.claimenrolment.AddMTDITOverviewController.show
@@ -101,46 +96,46 @@ POST        /claim-enrolment/confirmation                        controllers.ind
 GET         /claim-enrolment/already-signed-up                   controllers.individual.claimenrolment.ClaimEnrolmentAlreadySignedUpController.show
 
 #Claim enrolment SPS
-GET         /claim-enrolment/sps-handoff                         controllers.individual.claimenrolment.spsClaimEnrol.SPSHandoffForClaimEnrolController.redirectToSPS
-GET         /claim-enrolment/sps-callback                        controllers.individual.claimenrolment.spsClaimEnrol.SPSCallbackForClaimEnrolController.callback
+GET         /claim-enrolment/sps-handoff                         controllers.individual.claimenrolment.sps.SPSHandoffForClaimEnrolController.redirectToSPS
+GET         /claim-enrolment/sps-callback                        controllers.individual.claimenrolment.sps.SPSCallbackForClaimEnrolController.callback
 
 #Task List Routes
-GET         /business/task-list                                  controllers.individual.business.TaskListController.show()
-POST        /business/task-list                                  controllers.individual.business.TaskListController.submit()
+GET         /business/task-list                                  controllers.individual.tasklist.TaskListController.show()
+POST        /business/task-list                                  controllers.individual.tasklist.TaskListController.submit()
 
 # Teax Year Check Your Answers Routes
-GET         /business/tax-year-check-your-answers                controllers.individual.business.TaxYearCheckYourAnswersController.show(editMode: Boolean ?= false)
-POST        /business/tax-year-check-your-answers                controllers.individual.business.TaxYearCheckYourAnswersController.submit()
+GET         /business/tax-year-check-your-answers                controllers.individual.tasklist.taxyear.TaxYearCheckYourAnswersController.show(editMode: Boolean ?= false)
+POST        /business/tax-year-check-your-answers                controllers.individual.tasklist.taxyear.TaxYearCheckYourAnswersController.submit()
 
 
-GET         /business/uk-property-check-your-answers             controllers.individual.business.PropertyCheckYourAnswersController.show(editMode: Boolean ?= false)
-POST        /business/uk-property-check-your-answers             controllers.individual.business.PropertyCheckYourAnswersController.submit()
+GET         /business/uk-property-check-your-answers             controllers.individual.tasklist.ukproperty.PropertyCheckYourAnswersController.show(editMode: Boolean ?= false)
+POST        /business/uk-property-check-your-answers             controllers.individual.tasklist.ukproperty.PropertyCheckYourAnswersController.submit()
 
-GET         /business/overseas-property-check-your-answers       controllers.individual.business.OverseasPropertyCheckYourAnswersController.show(editMode: Boolean ?= false)
-POST        /business/overseas-property-check-your-answers       controllers.individual.business.OverseasPropertyCheckYourAnswersController.submit()
+GET         /business/overseas-property-check-your-answers       controllers.individual.tasklist.overseasproperty.OverseasPropertyCheckYourAnswersController.show(editMode: Boolean ?= false)
+POST        /business/overseas-property-check-your-answers       controllers.individual.tasklist.overseasproperty.OverseasPropertyCheckYourAnswersController.submit()
 
-GET         /business/remove-sole-trader-business                controllers.individual.business.RemoveBusinessController.show(id: String)
-POST        /business/remove-sole-trader-business                controllers.individual.business.RemoveBusinessController.submit(id: String)
+GET         /business/remove-sole-trader-business                controllers.individual.tasklist.selfemployment.RemoveSelfEmploymentBusinessController.show(id: String)
+POST        /business/remove-sole-trader-business                controllers.individual.tasklist.selfemployment.RemoveSelfEmploymentBusinessController.submit(id: String)
 
 # Progress saved
-GET         /business/progress-saved                             controllers.individual.business.ProgressSavedController.show(location: Option[String] ?= None)
+GET         /business/progress-saved                             controllers.individual.tasklist.ProgressSavedController.show(location: Option[String] ?= None)
 
 # Remove overseas property business
-GET         /business/remove-overseas-property-business          controllers.individual.business.RemoveOverseasPropertyController.show
-POST        /business/remove-overseas-property-business          controllers.individual.business.RemoveOverseasPropertyController.submit
+GET         /business/remove-overseas-property-business          controllers.individual.tasklist.overseasproperty.RemoveOverseasPropertyController.show
+POST        /business/remove-overseas-property-business          controllers.individual.tasklist.overseasproperty.RemoveOverseasPropertyController.submit
 
 # remove UK property buisness confirmation page
-GET         /business/remove-uk-property-business                controllers.individual.business.RemoveUkPropertyController.show
-POST        /business/remove-uk-property-business                controllers.individual.business.RemoveUkPropertyController.submit
+GET         /business/remove-uk-property-business                controllers.individual.tasklist.ukproperty.RemoveUkPropertyController.show
+POST        /business/remove-uk-property-business                controllers.individual.tasklist.ukproperty.RemoveUkPropertyController.submit
 
 # Throttle
 GET         /throttle-start                                      controllers.individual.ThrottlingController.start()
 GET         /throttle-end                                        controllers.individual.ThrottlingController.end()
 
-#Your Income Source behind Feature switch
-GET         /details/your-income-source                          controllers.individual.incomesource.YourIncomeSourceToSignUpController.show
-POST        /details/your-income-source                          controllers.individual.incomesource.YourIncomeSourceToSignUpController.submit
+# Your Income Sources
+GET         /details/your-income-source                          controllers.individual.tasklist.addbusiness.YourIncomeSourceToSignUpController.show
+POST        /details/your-income-source                          controllers.individual.tasklist.addbusiness.YourIncomeSourceToSignUpController.submit
 
 # Global Check Your Answers
-GET         /final-check-your-answers                            controllers.individual.business.GlobalCheckYourAnswersController.show
-POST        /final-check-your-answers                            controllers.individual.business.GlobalCheckYourAnswersController.submit
+GET         /final-check-your-answers                            controllers.individual.GlobalCheckYourAnswersController.show
+POST        /final-check-your-answers                            controllers.individual.GlobalCheckYourAnswersController.submit

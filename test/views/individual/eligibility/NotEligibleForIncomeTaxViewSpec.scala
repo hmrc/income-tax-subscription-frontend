@@ -18,7 +18,7 @@ package views.individual.eligibility
 
 import org.jsoup.Jsoup
 import utilities.ViewSpec
-import views.html.individual.incometax.eligibility.NotEligibleForIncomeTax
+import views.html.individual.matching.NotEligibleForIncomeTax
 
 class NotEligibleForIncomeTaxViewSpec extends ViewSpec {
   private val view = app.injector.instanceOf[NotEligibleForIncomeTax]
@@ -36,7 +36,7 @@ class NotEligibleForIncomeTaxViewSpec extends ViewSpec {
       document.mainContent.selectFirst("p").text() mustBe CannotTakePartMessages.paragraph1
     }
 
-     "have paragraph 2" in {
+    "have paragraph 2" in {
       document.mainContent.selectNth("p", 2).text() mustBe CannotTakePartMessages.paragraph2
     }
 
@@ -51,9 +51,9 @@ class NotEligibleForIncomeTaxViewSpec extends ViewSpec {
     }
 
 
-      "has a sign out button" in {
-        document.mainContent.selectHead(".govuk-button").text mustBe CannotTakePartMessages.signoutButton
-      }
+    "has a sign out button" in {
+      document.mainContent.selectHead(".govuk-button").text mustBe CannotTakePartMessages.signoutButton
+    }
 
   }
 

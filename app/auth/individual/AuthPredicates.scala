@@ -40,7 +40,7 @@ trait AuthPredicates extends Results with FrontendHeaderCarrierProvider with Log
 
   val emptyPredicate: AuthPredicate[IncomeTaxSAUser] = _ => _ => Right(AuthPredicateSuccess)
 
-  lazy val alreadyEnrolled: Result = Redirect(controllers.individual.subscription.routes.AlreadyEnrolledController.show)
+  lazy val alreadyEnrolled: Result = Redirect(controllers.individual.matching.routes.AlreadyEnrolledController.show)
 
   val mtdidPredicate: AuthPredicate[IncomeTaxSAUser] = _ => user =>
     if (user.mtdItsaRef.isEmpty) Right(AuthPredicateSuccess)
@@ -50,13 +50,13 @@ trait AuthPredicates extends Results with FrontendHeaderCarrierProvider with Log
     if (user.mtdItsaRef.nonEmpty) Right(AuthPredicateSuccess)
     else Left(Future.failed(new NotFoundException("AuthPredicates.enrolledPredicate")))
 
-  lazy val homeRoute: Result = Redirect(controllers.usermatching.routes.HomeController.index)
+  lazy val homeRoute: Result = Redirect(controllers.individual.matching.routes.HomeController.index)
 
   lazy val claimEnrolmentRoute: Result = Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show)
 
-  lazy val cannotUseServiceRoute: Result = Redirect(controllers.individual.incomesource.routes.CannotUseServiceController.show())
+  lazy val cannotUseServiceRoute: Result = Redirect(controllers.individual.matching.routes.CannotUseServiceController.show())
 
-  lazy val timeoutRoute: Result = Redirect(controllers.routes.SessionTimeoutController.show)
+  lazy val timeoutRoute: Result = Redirect(controllers.individual.routes.SessionTimeoutController.show)
 
   val timeoutPredicate: AuthPredicate[IncomeTaxSAUser] = request => _ =>
     if (request.session.get(lastRequestTimestamp).nonEmpty && request.session.get(authToken).isEmpty) {
@@ -64,7 +64,7 @@ trait AuthPredicates extends Results with FrontendHeaderCarrierProvider with Log
     }
     else Right(AuthPredicateSuccess)
 
-  lazy val wrongAffinity: Result = Redirect(controllers.usermatching.routes.AffinityGroupErrorController.show)
+  lazy val wrongAffinity: Result = Redirect(controllers.individual.matching.routes.AffinityGroupErrorController.show)
 
   val affinityPredicate: AuthPredicate[IncomeTaxSAUser] = _ => user =>
     user.affinityGroup match {
@@ -148,17 +148,17 @@ object AuthPredicates extends Results {
 
   val emptyPredicate: AuthPredicate[IncomeTaxSAUser] = _ => _ => Right(AuthPredicateSuccess)
 
-  lazy val alreadyEnrolledRoute: Result = Redirect(controllers.individual.subscription.routes.AlreadyEnrolledController.show)
+  lazy val alreadyEnrolledRoute: Result = Redirect(controllers.individual.matching.routes.AlreadyEnrolledController.show)
 
   lazy val notEnrolledPredicate: AuthPredicate[IncomeTaxSAUser] = _ => user =>
     if (user.mtdItsaRef.isEmpty) Right(AuthPredicateSuccess)
     else Left(Future.successful(alreadyEnrolledRoute))
 
-  lazy val homeRoute: Result = Redirect(controllers.usermatching.routes.HomeController.index)
+  lazy val homeRoute: Result = Redirect(controllers.individual.matching.routes.HomeController.index)
 
-  lazy val timeoutRoute: Result = Redirect(controllers.routes.SessionTimeoutController.show)
+  lazy val timeoutRoute: Result = Redirect(controllers.individual.routes.SessionTimeoutController.show)
 
-  lazy val wrongAffinity: Result = Redirect(controllers.usermatching.routes.AffinityGroupErrorController.show)
+  lazy val wrongAffinity: Result = Redirect(controllers.individual.matching.routes.AffinityGroupErrorController.show)
 
   val timeoutPredicate: AuthPredicate[IncomeTaxSAUser] = request => _ =>
     if (request.session.get(lastRequestTimestamp).nonEmpty && request.session.get(authToken).isEmpty) {

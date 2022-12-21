@@ -16,6 +16,7 @@
 
 package controllers
 
+import controllers.individual.ControllerBaseSpec
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AffinityGroup

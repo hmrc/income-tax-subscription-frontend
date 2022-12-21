@@ -16,12 +16,10 @@
 
 package helpers
 
-
-import helpers.IntegrationTestConstants.AgentURI.baseURI
+import models._
 import models.common.AccountingPeriodModel
 import models.common.business._
 import models.common.subscription.{OverseasProperty, SoleTraderBusinesses, UkProperty}
-import models.{AccountingMethod, AccountingYear, Cash, Current, DateModel}
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
 import utilities.AccountingPeriodUtil
@@ -81,17 +79,19 @@ object IntegrationTestConstants {
     AccountingPeriodModel(startDate, endDate)
 
   def testSoleTraderBusinesses(accountingYear: AccountingYear = Current): SoleTraderBusinesses = SoleTraderBusinesses(
-    if(accountingYear == Current) AccountingPeriodUtil.getCurrentTaxYear else AccountingPeriodUtil.getNextTaxYear,
+    if (accountingYear == Current) AccountingPeriodUtil.getCurrentTaxYear else AccountingPeriodUtil.getNextTaxYear,
     testAccountMethod,
     testSelfEmploymentData
   )
+
   def testUkProperty(accountingYear: AccountingYear = Current): UkProperty = UkProperty(
-    if(accountingYear == Current) AccountingPeriodUtil.getCurrentTaxYear else AccountingPeriodUtil.getNextTaxYear,
+    if (accountingYear == Current) AccountingPeriodUtil.getCurrentTaxYear else AccountingPeriodUtil.getNextTaxYear,
     tradingStartDate,
     testAccountMethod
   )
+
   def testOverseasProperty(accountingYear: AccountingYear = Current): OverseasProperty = OverseasProperty(
-    if(accountingYear == Current) AccountingPeriodUtil.getCurrentTaxYear else AccountingPeriodUtil.getNextTaxYear,
+    if (accountingYear == Current) AccountingPeriodUtil.getCurrentTaxYear else AccountingPeriodUtil.getNextTaxYear,
     tradingStartDate,
     testAccountMethod
   )
@@ -107,8 +107,7 @@ object IntegrationTestConstants {
     )
     )
 
- object IndividualURI
-  {
+  object IndividualURI {
     val baseURI = "/report-quarterly/income-and-expenses/sign-up"
     val indexURI = s"$baseURI/index"
     val notEligibleURI = "/cannot-use-service-yet"
@@ -154,8 +153,7 @@ object IntegrationTestConstants {
     val yourIncomeSourcesURI = s"$baseURI/details/your-income-source"
   }
 
-  object AgentURI
-  {
+  object AgentURI {
     val baseURI = "/report-quarterly/income-and-expenses/sign-up/client"
     val baseSEURI = "http://localhost:9563/report-quarterly/income-and-expenses/sign-up/self-employments/client"
     val indexURI = s"$baseURI/index"

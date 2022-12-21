@@ -35,7 +35,7 @@ import play.twirl.api.Html
 import services._
 import services.agent._
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
-import views.html.agent.CheckYourClientDetails
+import views.html.agent.matching.CheckYourClientDetails
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -139,7 +139,7 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
   private def handleClientAlreadySubscribed(arn: String, clientDetails: UserDetailsModel)
                                            (implicit request: Request[AnyContent]): Result = {
     auditDetailsEntered(arn, clientDetails, getCurrentFailureCount(), lockedOut = false)
-    Redirect(controllers.agent.routes.ClientAlreadySubscribedController.show).removingFromSession(FailedClientMatching)
+    Redirect(controllers.agent.matching.routes.ClientAlreadySubscribedController.show).removingFromSession(FailedClientMatching)
   }
 
   private def handleUnexpectedFailure(arn: String, clientDetails: UserDetailsModel)
@@ -151,17 +151,16 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
   private def handleUnapprovedAgent(arn: String, clientDetails: UserDetailsModel)
                                    (implicit request: Request[AnyContent]): Result = {
     auditDetailsEntered(arn, clientDetails, getCurrentFailureCount(), lockedOut = false)
-    Redirect(controllers.agent.routes.NoClientRelationshipController.show).removingFromSession(FailedClientMatching)
+    Redirect(controllers.agent.matching.routes.NoClientRelationshipController.show).removingFromSession(FailedClientMatching)
   }
 
   private def handleApprovedAgentWithoutClientUTR(arn: String, nino: String, clientDetails: UserDetailsModel)
                                                  (implicit request: Request[AnyContent]): Result = {
     auditDetailsEntered(arn, clientDetails, getCurrentFailureCount(), lockedOut = false)
-    Redirect(controllers.agent.routes.HomeController.index)
+    Redirect(controllers.agent.matching.routes.HomeController.index)
       .withJourneyState(AgentUserMatched)
       .addingToSession(ITSASessionKeys.NINO -> nino)
       .removingFromSession(FailedClientMatching)
-      .clearUserDetailsExceptName
   }
 
   private def withEligibilityResult(utr: String)(f: EligibilityStatus => Future[Result])
@@ -179,12 +178,12 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
   private def withMandationStatus(nino: String, utr: String)
                                  (f: MandationStatusModel => Result)
                                  (implicit request: Request[AnyContent]): Future[Result] = {
-      mandationStatusConnector.getMandationStatus(nino, utr) map {
-        case Left(_) =>
-          throw new InternalServerException("[ConfirmClientController][withMandationStatus] - Unexpected failure when receiving mandation status")
-        case Right(model) =>
-          f(model)
-      }
+    mandationStatusConnector.getMandationStatus(nino, utr) map {
+      case Left(_) =>
+        throw new InternalServerException("[ConfirmClientController][withMandationStatus] - Unexpected failure when receiving mandation status")
+      case Right(model) =>
+        f(model)
+    }
   }
 
   private def handleApprovedAgent(arn: String, nino: String, utr: String, clientDetails: UserDetailsModel)
@@ -221,7 +220,6 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
   private def goToSignUpClient(): Result = {
       Redirect(controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show)
   }
-
 
   private def goToCannotTakePart: Result =
     Redirect(controllers.agent.eligibility.routes.CannotTakePartController.show)

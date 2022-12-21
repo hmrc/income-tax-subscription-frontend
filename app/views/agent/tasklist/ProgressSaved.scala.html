@@ -1,0 +1,62 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import views.html.templates.AgentMainTemplate
+@import utilities.UserMatchingSessionUtil.ClientDetails
+
+@this(
+  mainTemplate: AgentMainTemplate
+)
+
+@(
+  expirationDate: String,
+  signInUrl: String,
+  clientDetails: ClientDetails
+)(implicit request: Request[_], messages: Messages)
+
+@signInLink = {
+  <a href="@signInUrl" class="govuk-link sign-in-link">@messages("agent.business.progress-saved.content.sign-in-link")</a>
+}
+
+@mainTemplate(title = messages("agent.business.progress-saved.title")) {
+  <div class="govuk-panel govuk-panel--confirmation">
+    <h1 class="govuk-panel__title">
+      @messages("agent.business.progress-saved.title")
+    </h1>
+    <div class="govuk-panel__body">
+      @messages("agent.business.progress-saved.content.summary", clientDetails.name, expirationDate)
+    </div>
+  </div>
+
+  <h2 class="govuk-heading-m">@messages("agent.business.progress-saved.content.subheading")</h2>
+
+  <p class="govuk-body">
+  @messages("agent.business.progress-saved.content.paragraph1")
+  </p>
+
+  <ul class="govuk-list govuk-list--bullet">
+    <li>
+      <a href="@controllers.agent.tasklist.routes.TaskListController.show().url" class="govuk-link sign-up-link">@messages("agent.business.progress-saved.content.sign-up-link")</a>
+    </li>
+    <li>
+      <a href="@controllers.agent.routes.AddAnotherClientController.addAnother().url" class="govuk-link sign-out-link">@messages("agent.business.progress-saved.content.sign-up-another-client-link")</a>
+    </li>
+  </ul>
+
+  <p class="govuk-body">
+    @Html(messages("agent.business.progress-saved.content.paragraph2", signInLink))
+  </p>
+}
