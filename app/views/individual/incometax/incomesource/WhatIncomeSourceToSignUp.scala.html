@@ -26,6 +26,7 @@
 @import views.html.helpers.injected.{ContinueButton, RadioHelper}
 @import views.html.templates.PrincipalMainTemplate
 
+
 @this(
         mainTemplate: PrincipalMainTemplate,
         form: FormWithCSRF,
@@ -40,7 +41,8 @@
     if(incomeSourcesStatus.selfEmploymentAvailable) {
         Some(RadioItem(
             content = Text(messages("income-source.self-employed")),
-            value = Some(SELF_EMPLOYED)
+            value = Some(SELF_EMPLOYED),
+            hint = Some(Hint(content = Text(messages("income-source.self-employed-hint"))))
         ))
     } else {
         None
@@ -51,7 +53,8 @@
     if(incomeSourcesStatus.ukPropertyAvailable) {
         Some(RadioItem(
             content = Text(messages("income-source.uk-property")),
-            value = Some(UK_PROPERTY)
+            value = Some(UK_PROPERTY),
+            hint = Some(Hint(content = Text(messages("income-source.uk-property-hint"))))
         ))
     } else {
         None
@@ -62,7 +65,8 @@
     if(incomeSourcesStatus.overseasPropertyAvailable) {
         Some(RadioItem(
             content = Text(messages("income-source.foreign-property")),
-            value = Some(OVERSEAS_PROPERTY)
+            value = Some(OVERSEAS_PROPERTY),
+            hint = Some(Hint(content = Text(messages("income-source.foreign-property-hint"))))
         ))
     } else {
         None
@@ -78,14 +82,13 @@
     <h1 class="govuk-heading-l">@messages("income-source.heading")</h1>
 
     <div class="govuk-inset-text">
-        <p class="govuk-body govuk-!-margin-bottom-6">
+        <p class="govuk-body">
           @if(featureSwitching.isEnabled(ForeignProperty)) {
             @messages("income-source.para1-overseas", appConfig.maxSelfEmployments)
           } else {
             @messages("income-source.para1")
           }
         </p>
-        <p class="govuk-body">@messages("income-source.para2")</p>
     </div>
 
     @form(action = postAction) {

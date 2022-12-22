@@ -64,12 +64,15 @@ iv-failure.could-not-match-details                              = nid oeddem yn 
 ## Individual what income source to sign up page
 income-source.title                             = Pa ffynhonnell incwm ydych chi am ei chofrestru?
 income-source.heading                           = Pa ffynhonnell incwm ydych chi am ei chofrestru?
-income-source.para1                             = Os ydych yn hunangyflogedig, mae’n rhaid i chi ychwanegu bob un o’ch busnesau unig fasnachwr os oes gennych fwy nag un. Os oes gennych incwm o eiddo mae’n rhaid i chi ei ychwanegu, ond mae hyn wedi’i gyfyngu i un busnes eiddo yn y DU.
+income-source.para1                             = Gallwch ychwanegu eich busnesau unig fasnachwr eraill os oes gennych chi fwy nag un. Os oes gennych chi incwm o eiddo, gallwch ei ychwanegu hefyd.
 income-source.para1-overseas                    = Os ydych yn hunangyflogedig, mae’n rhaid i chi ychwanegu bob un o’ch busnesau unig fasnachwr os oes gennych fwy nag un. Os oes gennych incwm o eiddo mae’n rhaid i chi ei ychwanegu. Mae hyn wedi’i gyfyngu i un busnes eiddo yn y DU ac un busnes eiddo tramor y gallwch ei gael.
 income-source.para2                             = Mae rhoi eiddo ar osod yn cynnwys defnyddio asiantaeth gosod eiddo.
 income-source.self-employed                     = Busnes unig fasnachwr
+income-source.self-employed-hint                = Busnes rydych chi’n ei redeg fel unigolyn. Os oes gennych chi fusnesau eraill fel unig fasnachwr, gallwch eu hychwanegu.
 income-source.uk-property                       = Busnes eiddo yn y DU
+income-source.uk-property-hint                  = Incwm o eiddo yn y DU. Mae hyn yn cynnwys arian rydych chi’n ei ennill drwy asiantaeth gosod eiddo. Gallwch chi fod ag incwm o sawl eiddo mewn un busnes eiddo yn y DU.
 income-source.foreign-property                  = Busnes eiddo tramor
+income-source.foreign-property-hint             = Incwm o roi eiddo ar osod dramor. Mae hyn yn cynnwys arian rydych chi’n ei ennill drwy asiantaeth gosod eiddo. Gallwch chi fod ag incwm o sawl eiddo mewn un busnes eiddo tramor.
 
 error.business-income-source.all-sources                        = Dewiswch ‘Busnes unig fasnachwr’, ‘Eiddo rhent yn y DU’ neu ‘Eiddo rhent tramor’
 error.business-income-source.self-employed-uk-property          = Mae angen i chi ddewis Busnes unig fasnachwr neu Eiddo rhent yn y DU
