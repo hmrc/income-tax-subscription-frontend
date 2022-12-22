@@ -20,10 +20,12 @@
 @import views.html.templates.AgentMainTemplate
 @import models.common.AccountingPeriodModel
 @import uk.gov.hmrc.play.language.LanguageUtils
+@import views.html.helpers.injected.ButtonHelper
 
 @this(
     agentMainTemplate: AgentMainTemplate,
     govukPanel: GovukPanel,
+    buttonHelper: ButtonHelper,
     languageUtils: LanguageUtils,
     table: UpdateDeadlineTable,
     accountingPeriodService: AccountingPeriodService
@@ -101,6 +103,13 @@
   </div>
 
   @checkClientDetails
+
+  <div>
+    @buttonHelper(
+      buttonText = messages("agent.base.sign-up-another-client"),
+      href = Some(controllers.agent.routes.AddAnotherClientController.addAnother().url)
+    )
+  </div>
 }
 
 
