@@ -274,6 +274,8 @@ agent.sign-up-confirmation.check.description                       = Go to your 
 agent.sign-up-confirmation.section1.quarterly-updates.table-caption         = Quarterly updates by the deadline... but in Welsh
 agent.sign-up-confirmation.section1.quarterly-updates.this-year.heading     = 1. Update us every quarter... but in Welsh
 agent.sign-up-confirmation.section1.quarterly-updates.this-year.paragraph   = Your client will not face a penalty if you start making updates mid-way through the current tax year but you will need to make updates for the quarter’s you have missed. ...but in Welsh
+agent.sign-up-confirmation.section2.quarterly-updates.next-year.heading     = 2. Update us every quarter... but in Welsh
+agent.sign-up-confirmation.section2.quarterly-updates.next-year.paragraph   = You can start sending your client’s quarterly updates during the next tax year. It will not affect the amount they pay. ...but in Welsh
 
 ## Sign Up Confirmation page ##
 

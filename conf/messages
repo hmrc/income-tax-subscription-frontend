@@ -265,15 +265,17 @@ sign-up-complete.what-now.no-penalty                            = There is no pe
 sign-up-complete.what-now.submit-annual                         = Submit your annual updates and declare for the tax year by 31 January {0}.
 
 ## Agent Sign Up Confirmation Page ##
-agent.sign-up-confirmation.section1.heading                             = What you will have to do
-agent.sign-up-confirmation.heading                                      = Client sign up complete
-agent.sign-up-confirmation.heading.panel.current                        = is now signed up for Making Tax Digital for Income Tax for the current tax year ({0})
-agent.sign-up-confirmation.heading.panel.next                           = is now signed up for Making Tax Digital for Income Tax for the next tax year ({0})
-agent.sign-up-confirmation.check.heading                                = Check your client’s account
-agent.sign-up-confirmation.check.description                            = Go to your <a href="{0}">agent service account</a> to review or change the answers you have entered, and to get updates.
-agent.sign-up-confirmation.section1.quarterly-updates.table-caption     = Quarterly updates by the deadline
+agent.sign-up-confirmation.section1.heading                                 = What you will have to do
+agent.sign-up-confirmation.heading                                          = Client sign up complete
+agent.sign-up-confirmation.heading.panel.current                            = is now signed up for Making Tax Digital for Income Tax for the current tax year ({0})
+agent.sign-up-confirmation.heading.panel.next                               = is now signed up for Making Tax Digital for Income Tax for the next tax year ({0})
+agent.sign-up-confirmation.check.heading                                    = Check your client’s account
+agent.sign-up-confirmation.check.description                                = Go to your <a href="{0}">agent service account</a> to review or change the answers you have entered, and to get updates.
+agent.sign-up-confirmation.section1.quarterly-updates.table-caption         = Quarterly updates by the deadline
 agent.sign-up-confirmation.section1.quarterly-updates.this-year.heading     = 1. Update us every quarter
 agent.sign-up-confirmation.section1.quarterly-updates.this-year.paragraph   = Your client will not face a penalty if you start making updates mid-way through the current tax year but you will need to make updates for the quarter’s you have missed.
+agent.sign-up-confirmation.section2.quarterly-updates.next-year.heading     = 2. Update us every quarter
+agent.sign-up-confirmation.section2.quarterly-updates.next-year.paragraph   = You can start sending your client’s quarterly updates during the next tax year. It will not affect the amount they pay.
 
 
 ## Sign Up Confirmation page ##
