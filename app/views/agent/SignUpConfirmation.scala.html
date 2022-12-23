@@ -58,18 +58,17 @@
 @quarterlyUpdates = {
     <div>
         @if(taxYearSelectionIsNext) {
-
+            <h3 class="govuk-heading-m">@messages("agent.sign-up-confirmation.section2.quarterly-updates.next-year.heading")</h3>
+            <p class="govuk-body">@messages("agent.sign-up-confirmation.section2.quarterly-updates.next-year.paragraph")</p>
         } else {
             <h3 class="govuk-heading-m">@messages("agent.sign-up-confirmation.section1.quarterly-updates.this-year.heading")</h3>
-            <p class="govuk-body">
-                @messages("agent.sign-up-confirmation.section1.quarterly-updates.this-year.paragraph")
-            </p>
+            <p class="govuk-body">@messages("agent.sign-up-confirmation.section1.quarterly-updates.this-year.paragraph")</p>
         }
 
         @table(
-        updateAndDeadlineDates = accountingPeriodService.getAllUpdateAndDeadlineDates(Next),
-        tableCaption = messages("sign-up-confirmation.section1.quarterly-updates.table-caption"),
-        fromToFormat = s"%s ${messages("base.to")} %s"
+          updateAndDeadlineDates = accountingPeriodService.getAllUpdateAndDeadlineDates(Next),
+          tableCaption = messages("sign-up-confirmation.section1.quarterly-updates.table-caption"),
+          fromToFormat = s"%s ${messages("base.to")} %s"
         )
     </div>
 }

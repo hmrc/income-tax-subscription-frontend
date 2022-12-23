@@ -62,24 +62,36 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           }
 
           "contains the quarterly updates section" which {
-            def quarterlyUpdates: Element = testMainContent.selectHead(".row")
 
             if (yearIsNext) {
               "contains a heading" in {
-
+                testMainContent.selectNth(".row", 1).selectHead("h3").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesNextYearHeading
               }
               "contains Quarterly Updates initial paragraph" in {
-
+                testMainContent.selectNth(".row", 1).selectHead("p").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesNextYearParagraph
+              }
+              "contains a table" in {
+                testMainContent.selectNth(".row", 1).mustHaveTable(
+                  tableHeads = List(SignUpConfirmationMessages.quarterlyUpdate, SignUpConfirmationMessages.deadline),
+                  tableRows = List(
+                    List(q1Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q1Update.deadline.toLongDateNoYear),
+                    List(q2Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q2Update.deadline.toLongDateNoYear),
+                    List(q3Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q3Update.deadline.toLongDateNoYear),
+                    List(q4Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q4Update.deadline.toLongDateNoYear)
+                  ),
+                  maybeCaption = Some(SignUpConfirmationMessages.quarterlyUpdatesTableCaption),
+                  hiddenTableCaption = false
+                )
               }
             } else {
               "contains a heading" in {
-                quarterlyUpdates.selectNth("h3", 1).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesThisYearHeading
+                testMainContent.selectHead(".row").selectHead("h3").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesThisYearHeading
               }
               "contains Quarterly Updates initial paragraph" in {
-                quarterlyUpdates.selectNth("p", 1).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesThisYearParagraph
+                testMainContent.selectHead(".row").selectHead("p").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesThisYearParagraph
               }
               "contains a table" in {
-                quarterlyUpdates.mustHaveTable(
+                testMainContent.selectHead(".row").mustHaveTable(
                   tableHeads = List(SignUpConfirmationMessages.quarterlyUpdate, SignUpConfirmationMessages.deadline),
                   tableRows = List(
                     List(q1Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q1Update.deadline.toLongDateNoYear),
@@ -148,7 +160,9 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val checkClientDetailsHeading = "Check your client’s account"
     val checkClientDetailsText = "Go to your agent service account to review or change the answers you have entered, and to get updates."
     val quarterlyUpdatesThisYearHeading = "1. Update us every quarter"
+    val quarterlyUpdatesNextYearHeading = "2. Update us every quarter"
     val quarterlyUpdatesThisYearParagraph = "Your client will not face a penalty if you start making updates mid-way through the current tax year but you will need to make updates for the quarter’s you have missed."
+    val quarterlyUpdatesNextYearParagraph = "You can start sending your client’s quarterly updates during the next tax year. It will not affect the amount they pay."
     val quarterlyUpdate = "Quarterly update"
     val deadline = "Deadline"
     val quarterlyUpdatesTableCaption = "Quarterly updates by the deadline"
