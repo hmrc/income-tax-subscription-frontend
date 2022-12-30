@@ -239,6 +239,10 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           }
 
         }
+        "has a link to print the page" in {
+          testMainContent.selectHead(".print-link").text() mustBe SignUpConfirmationMessages.printPage
+          testMainContent.selectHead(".print-link").attr("href") mustBe "javascript:window.print()"
+        }
       }
     }
   }
@@ -284,6 +288,8 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       "You can not sign up to Making Tax Digital for Income Tax until next year 2024. But, to help you get prepared, " +
         "we made a service to help you find the right software - so you are ready when you can sign up."
     val section2GettingPreparedLink = "Find software"
+
+    val printPage = "Print this page"
   }
 
   private val CURRENT_TAX_YEAR: Int = Random.between(1900, 2100)

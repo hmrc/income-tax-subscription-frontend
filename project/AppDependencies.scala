@@ -9,9 +9,9 @@ object AppDependencies {
   private val testScope = "test"
   private val integrationTestScope = "it"
 
-  private val bootstrapPlayVersion     = "7.7.0"
+  private val bootstrapPlayVersion     = "7.12.0"
   private val playPartialsVersion      = "8.3.0-play-28"
-  private val playHmrcFrontendVersion  = "3.29.0-play-28"
+  private val playHmrcFrontendVersion  = "5.3.0-play-28"
   private val domainVersion            = "8.1.0-play-28"
   private val catsVersion              = "2.0.0"
 
@@ -22,7 +22,7 @@ object AppDependencies {
   private val jacksonModuleVersion     = "2.13.2"
   private val jsoupVersion             = "1.14.3"
 
-  val compile = Seq(
+  val compile: Seq[ModuleID] = Seq(
     ws,
     "uk.gov.hmrc"   %% "bootstrap-frontend-play-28" % bootstrapPlayVersion,
     "uk.gov.hmrc"   %% "play-partials"              % playPartialsVersion,
@@ -31,7 +31,7 @@ object AppDependencies {
     "org.typelevel" %% "cats-core"                  % catsVersion
   )
 
-  val test = Seq(
+  val test: Seq[ModuleID] = Seq(
     "org.scalatest"                %% "scalatest"            % scalaTestVersion     % testScope,
     "org.scalatestplus"            %% "mockito-3-12"         % "3.2.10.0"           % testScope,
     "org.scalatestplus.play"       %% "scalatestplus-play"   % scalaTestPlusVersion % testScope,
@@ -42,7 +42,7 @@ object AppDependencies {
     "com.fasterxml.jackson.module" %% "jackson-module-scala" % jacksonModuleVersion % testScope
   )
 
-  val integrationTest = Seq(
+  val integrationTest: Seq[ModuleID] = Seq(
     "org.scalatest"                %% "scalatest"            % scalaTestVersion     % integrationTestScope,
     "com.typesafe.play"            %% "play-test"            % PlayVersion.current  % integrationTestScope,
     "org.scalatestplus.play"       %% "scalatestplus-play"   % scalaTestPlusVersion % integrationTestScope,

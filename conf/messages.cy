@@ -37,6 +37,7 @@ base.second                                                     = eiliad
 base.seconds                                                    = eiliadau
 base.accounting-method.cash                                     = Cyfrifyddu ar sail arian parod
 base.accounting-method.accruals                                 = Cyfrifyddu traddodiadol
+base.print-this-page                                            = Print this page ... but in Welsh
 
 ## Language switching
 language-selector.change-to-language                            = Change the language to English

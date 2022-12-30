@@ -16,10 +16,10 @@
 
 package views.agent
 
-import models.{DateModel, UpdateDeadline}
 import models.common.AccountingPeriodModel
+import models.{DateModel, UpdateDeadline}
 import org.jsoup.Jsoup
-import org.jsoup.nodes.{Document, Element}
+import org.jsoup.nodes.Document
 import play.twirl.api.Html
 import utilities.{ImplicitDateFormatter, ImplicitDateFormatterImpl, ViewSpec}
 import views.html.agent.SignUpConfirmation
@@ -43,7 +43,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
   private def getRandomDate = (Math.random() * 10 + 1).toInt.toString
 
   private val endDate: DateModel = DateModel(getRandomDate, "4", "2011")
-  val testAccountingPeriodModel = AccountingPeriodModel(startDate, endDate)
+  val testAccountingPeriodModel: AccountingPeriodModel = AccountingPeriodModel(startDate, endDate)
 
   def page(selectedTaxYearIsNext: Boolean, userNameMaybe: Option[String]): Html =
     signUpConfirmation(selectedTaxYearIsNext, userNameMaybe, testNino, testAccountingPeriodModel)
@@ -52,7 +52,6 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     Jsoup.parse(page(selectedTaxYearIsNext, userNameMaybe).body)
 
   "The sign up confirmation view" when {
-
     for (yearIsNext <- Seq(true, false)) {
       val testMainContent = document(yearIsNext).mainContent
       s"nextYear flag is $yearIsNext" must {
@@ -141,7 +140,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
               .attr("href") mustBe appConfig.agentServicesAccountHomeUrl
           }
         }
-        "have a button" in {
+        "have a button to sign up another client" in {
           testMainContent.selectHead(".govuk-button").text() mustBe SignUpConfirmationMessages.signUpAnotherClient
           testMainContent.selectHead(".govuk-button").attr("href") mustBe controllers.agent.routes.AddAnotherClientController.addAnother().url
         }
@@ -155,7 +154,12 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val panelUserDetails = s"$testName | $testNino"
     val panelDescriptionThis = s"is now signed up for Making Tax Digital for Income Tax for the current tax year (${startDate.day} April 2010 to ${endDate.day} April 2011)"
     val panelDescriptionNext = s"is now signed up for Making Tax Digital for Income Tax for the next tax year (${startDate.day} April 2010 to ${endDate.day} April 2011)"
-    def panelDescription(yearIsNext: Boolean) = if (yearIsNext) SignUpConfirmationMessages.panelDescriptionNext else SignUpConfirmationMessages.panelDescriptionThis
+
+    def panelDescription(yearIsNext: Boolean): String = if (yearIsNext)
+      SignUpConfirmationMessages.panelDescriptionNext
+    else
+      SignUpConfirmationMessages.panelDescriptionThis
+
     val signUpAnotherClient = "Sign up another client"
     val checkClientDetailsHeading = "Check your client’s account"
     val checkClientDetailsText = "Go to your agent service account to review or change the answers you have entered, and to get updates."

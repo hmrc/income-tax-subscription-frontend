@@ -36,7 +36,7 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase  {
   object NoClientRelationshipMessages {
     val title: String = "You’re not authorised for this client"
     val heading: String = "You’re not authorised for this client"
-    val para1: String = "To authorise you as their agent, your client needs to sign into this service (opens in a new tab) " +
+    val para1: String = "To authorise you as their agent, your client needs to sign into this service (opens in new tab) " +
       "using their own Government Gateway details. Once they have done this, you can come back to sign up your client."
     val button: String = "Sign up another client"
     val signOut: String = "Sign out"
