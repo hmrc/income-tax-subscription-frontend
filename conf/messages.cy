@@ -796,7 +796,7 @@ agent.business.progress-saved.content.sign-out-link                   = allgofno
 agent.business.progress-saved.content.sign-in-link                    = mewngofnodi Porth y Llywodraeth
 
 ## Task List
-business.task-list.title                                        = Eich manylion
+business.task-list.title                                        = Cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 business.task-list.heading.incomplete                           = Cais heb ei gwblhau
 business.task-list.heading.complete                             = Cais wedi’i gwblhau
 business.task-list.content.summary                              = Rydych wedi llenwi {0} allan o {1} adran.
