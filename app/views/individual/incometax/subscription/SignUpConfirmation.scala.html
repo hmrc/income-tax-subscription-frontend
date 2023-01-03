@@ -173,10 +173,14 @@
 
   <h2 class="govuk-heading-l">@messages("sign-up-confirmation.section2.heading")</h2>
 
-  <div class="row">
+  <div class="row govuk-!-margin-bottom-2">
     @findSoftware
     @checkOnlineServices
     @gettingPrepared
+  </div>
+
+  <div class="govuk-!-display-none-print">
+    <a href="javascript:window.print()" class="govuk-link govuk-link--no-underline print-link">@messages("base.print-this-page")</a>
   </div>
 
 }

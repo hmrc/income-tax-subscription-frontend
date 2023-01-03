@@ -131,20 +131,17 @@ trait CustomMatchers {
       }
     }
 
-  def errorDisplayed(): HavePropertyMatcher[WSResponse, String] =
-    new HavePropertyMatcher[WSResponse, String] {
-      def apply(response: WSResponse): HavePropertyMatchResult[String] = {
-        val body = Jsoup.parse(response.body)
-        val errorHeader = Option(body.getElementById("error-summary-title")).getOrElse(body.getElementById("error-summary-heading"))
+  def errorDisplayed(): HavePropertyMatcher[WSResponse, String] = (response: WSResponse) => {
+    val body = Jsoup.parse(response.body)
+    val errorHeader = Option(body.getElementsByClass("govuk-error-summary__title").first()).get
 
-        HavePropertyMatchResult(
-          errorHeader != null,
-          "errorDisplayed",
-          "error heading found",
-          "no error heading found"
-        )
-      }
-    }
+    HavePropertyMatchResult(
+      errorHeader != null,
+      "errorDisplayed",
+      "error heading found",
+      "no error heading found"
+    )
+  }
 
   def elementValueByID(id: String)(expectedValue: String): HavePropertyMatcher[WSResponse, String] =
     new HavePropertyMatcher[WSResponse, String] {

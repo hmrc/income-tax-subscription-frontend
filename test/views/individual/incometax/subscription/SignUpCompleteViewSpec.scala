@@ -68,7 +68,7 @@ class SignUpCompleteViewSpec extends ViewSpec {
     val heading = "You have signed up to use software to send Income Tax updates"
     val whatNowHeading = "What happens now"
 
-    val findSoftwareLinkText = "find software that’s compatible (opens in a new tab)"
+    val findSoftwareLinkText = "find software that’s compatible (opens in new tab)"
     val findSoftwareText = s"If you have not already done so, $findSoftwareLinkText and allow it to interact with HMRC."
 
     val fileQuarterly = "You need to file quarterly updates using your software:"
@@ -82,7 +82,7 @@ class SignUpCompleteViewSpec extends ViewSpec {
 
     def submitAnnualBy(year: String): String = s"Submit your annual updates and declare for the tax year by 31 January $year."
 
-    val btaLinkText = "Business Tax account (opens in a new tab)"
+    val btaLinkText = "Business Tax account (opens in new tab)"
     val para1 = s"After you have sent an update you will get an year-to-date Income Tax estimate. You can view your estimates and submission dates in your software or your $btaLinkText."
     val para2 = "It may take a few hours before new information is displayed."
 

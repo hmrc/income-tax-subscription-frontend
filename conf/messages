@@ -37,6 +37,7 @@ base.second                                                     = second
 base.seconds                                                    = seconds
 base.accounting-method.cash                                     = Cash basis accounting
 base.accounting-method.accruals                                 = Traditional accounting
+base.print-this-page                                            = Print this page
 
 ## Language switching
 language-selector.change-to-language                            = Newid yr iaith ir Gymraeg

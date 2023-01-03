@@ -20,7 +20,7 @@ $hmrc-assets-path: "/report-quarterly/income-and-expenses/sign-up/assets/lib/hmr
 }
 
 body:not(.js-enabled) {
-  a.govuk-back-link[href*="javascript"] {
+  a.govuk-back-link[href*="javascript"], a.govuk-link[href*="javascript:"] {
     display: none;
   }
 }
@@ -35,9 +35,6 @@ body:not(.js-enabled) {
   border-width: thin;
   padding: govuk-spacing(3);
   margin-bottom: govuk-spacing(2);
-}
-@media (min-width: 40.0625em) {
-
 }
 
 .boxout:first-child {
@@ -54,4 +51,22 @@ body:not(.js-enabled) {
     .col {
       flex: 1;
     }
+}
+
+.print-link::before {
+    content: url(../images/print-icon.svg);
+    padding-right: 0.5em;
+}
+
+.print-link {
+    border-style: solid;
+    border-color: #0b0c0c;
+    border-width: thin;
+    padding: govuk-spacing(2);
+    margin-bottom: govuk-spacing(2);
+    display: table;
+}
+
+.print-link:focus {
+    box-shadow: 0 0 #fd0, 0 4px #0b0c0c;
 }
