@@ -798,6 +798,9 @@ agent.business.progress-saved.content.sign-in-link                    = mewngofn
 
 ## Task List
 business.task-list.title                                        = Cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+business.task-list.user-information.heading                     = Eich gwybodaeth
+business.task-list.user-information.nino                        = Rhif Yswiriant Gwladol:
+business.task-list.user-information.name                        = Enw llawn:
 business.task-list.heading.incomplete                           = Cais heb ei gwblhau
 business.task-list.heading.complete                             = Cais wedi’i gwblhau
 business.task-list.content.summary                              = Rydych wedi llenwi {0} allan o {1} adran.

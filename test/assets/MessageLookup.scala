@@ -289,6 +289,11 @@ object MessageLookup {
     val heading = "Sign up for Making Tax Digital for Income Tax"
     val title = s"$heading - Use software to send Income Tax updates - GOV.UK"
     val agentHeading = "Your client’s details"
+
+    val userInfoHeading = "Your information"
+    val userInfoContent = "National Insurance number: individualUserNino Full name: individualUserFullName"
+    val userInfoPartialContent = "National Insurance number: individualUserNino"
+
     val subHeadingComplete = "Application complete"
     val subHeadingIncomplete = "Application incomplete"
 

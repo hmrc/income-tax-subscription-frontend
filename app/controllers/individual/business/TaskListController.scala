@@ -58,7 +58,8 @@ class TaskListController @Inject()(val taskListView: TaskList,
               postAction = controllers.individual.business.routes.TaskListController.submit(),
               viewModel = viewModel,
               accountingPeriodService = accountingPeriodService,
-              individualUserNino = user.nino.get
+              individualUserNino = user.nino.get,
+              IncomeTaxSAUser.fullName
             ))
         }
       }
