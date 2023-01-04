@@ -21,6 +21,7 @@
 @import models.common.AccountingPeriodModel
 @import uk.gov.hmrc.play.language.LanguageUtils
 @import views.html.helpers.injected.ButtonHelper
+@import utilities.AccountingPeriodUtil
 
 @this(
     agentMainTemplate: AgentMainTemplate,
@@ -30,6 +31,7 @@
     table: UpdateDeadlineTable,
     accountingPeriodService: AccountingPeriodService
 )
+
 
 @(taxYearSelectionIsNext : Boolean, userNameMaybe: Option[String], individualUserNino: String, accountingPeriodModel: AccountingPeriodModel)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
@@ -55,6 +57,15 @@
     </p>
 }
 
+
+@continuingTaxReturn = {
+  <div>
+    <h3 class="govuk-heading-m">@messages("agent.sign-up-confirmation.section1.quarterly-updates.next-year.heading")</h3>
+    <p class="govuk-body">@messages("agent.sign-up-confirmation.section1.quarterly-updates.next-year.paragraph")</p>
+  </div>
+}
+
+
 @quarterlyUpdates = {
     <div>
         @if(taxYearSelectionIsNext) {
@@ -73,17 +84,44 @@
     </div>
 }
 
-@checkClientDetails = {
-    <div class="govuk-body client-details govuk-!-padding-3 govuk-!-border-0">
-        <h2>
-            @{messages("agent.sign-up-confirmation.check.heading")}
-        </h2>
-        <p>
-            @{Html(messages("agent.sign-up-confirmation.check.description", appConfig.agentServicesAccountHomeUrl))}
-        </p>
+@periodStatement = {
+  <div> @{
+    val statementDueDate = languageUtils.Dates.formatDate(AccountingPeriodUtil.getEndOfPeriodStatementDate(taxYearSelectionIsNext))
+    if(taxYearSelectionIsNext) {
+        <h3 class="govuk-heading-m">{messages("agent.sign-up-confirmation.send.end-of-period-statement.next-year.heading")}</h3>
+        <p class="govuk-body">{messages("agent.sign-up-confirmation.send.end-of-period-statement.next-year.paragraph", statementDueDate)}</p>
+    } else {
+        <h3 class="govuk-heading-m">{messages("agent.sign-up-confirmation.send.end-of-period-statement.this-year.heading")}</h3>
+        <p class="govuk-body">{messages("agent.sign-up-confirmation.send.end-of-period-statement.this-year.paragraph", statementDueDate)}</p>
+    }
+  }
+  </div>
+}
+
+@finalDeclaration = {
+    <div> @{
+      val finalDeclarationDate = languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(taxYearSelectionIsNext))
+      if(taxYearSelectionIsNext) {
+          <h3 class="govuk-heading-m">{messages("agent.sign-up-confirmation.send.final.declaration.next-year.heading")}</h3>
+          <p class="govuk-body">{messages("agent.sign-up-confirmation.send.final.declaration.next-year.paragraph", finalDeclarationDate)}</p>
+      } else {
+          <h3 class="govuk-heading-m">{messages("agent.sign-up-confirmation.send.final.declaration.this-year.heading")}</h3>
+          <p class="govuk-body">{messages("agent.sign-up-confirmation.send.final.declaration.this-year.paragraph", finalDeclarationDate)}</p>
+      }
+    }
     </div>
 }
 
+@checkClientDetails = {
+  <div class="govuk-body client-details govuk-!-padding-3 govuk-!-border-0">
+    <h2>
+    @{messages("agent.sign-up-confirmation.check.heading")}
+    </h2>
+    <p>
+    @{Html(messages("agent.sign-up-confirmation.check.description", appConfig.agentServicesAccountHomeUrl))}
+    </p>
+  </div>
+}
 
 
 @agentMainTemplate(title = messages("agent.sign-up-confirmation.heading"), fullWidth = true) {
@@ -97,11 +135,27 @@
 
   <h2 class="govuk-heading-l">@messages("agent.sign-up-confirmation.section1.heading")</h2>
 
-  <div class="row govuk-!-margin-bottom-2">
+  @if(taxYearSelectionIsNext) {
+    <div class="row govuk-!-margin-bottom-2 govuk-section-break--visible govuk-!-padding-top-2">
+    @continuingTaxReturn
+    </div>
+  }
+
+  <div class="row govuk-!-margin-bottom-2 govuk-section-break--visible govuk-!-padding-top-2">
     @quarterlyUpdates
   </div>
 
-  @checkClientDetails
+  <div class="row govuk-!-margin-bottom-2 govuk-section-break--visible govuk-!-padding-top-2">
+    @periodStatement
+  </div>
+
+  <div class="row govuk-!-margin-bottom-2 govuk-section-break--visible govuk-!-padding-top-2">
+    @finalDeclaration
+  </div>
+
+  <div class="row govuk-!-margin-bottom-2 govuk-!-padding-top-2">
+    @checkClientDetails
+  </div>
 
   <div>
     @buttonHelper(
