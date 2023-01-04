@@ -36,13 +36,13 @@ class ClientDetailsViewSpec extends ViewSpec {
 
   val clientDetailsForm: Form[UserDetailsModel] = ClientDetailsForm.clientDetailsForm
 
-  val testError: FormError = FormError("startDate", "testError")
+  val testError: FormError = FormError("startDate", "agent.error.client-details.date-of-birth.day-month-year.empty")
 
   private def page(isEditMode: Boolean): HtmlFormat.Appendable = clientDetails(
     clientDetailsForm = ClientDetailsForm.clientDetailsForm,
     postAction = action,
     isEditMode = isEditMode
-  )(FakeRequest(), mockMessages, appConfig)
+  )(FakeRequest(), wrappedMessages, appConfig)
 
   private def document(editMode: Boolean = false): Document =
     Jsoup.parse(page(isEditMode = editMode).body)

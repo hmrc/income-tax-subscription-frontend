@@ -31,7 +31,7 @@ import views.html.agent.business.OverseasPropertyAccountingMethod
 class OverseasPropertyAccountingMethodViewSpec extends ViewSpec {
 
   val overseasPropertyAccountingMethod: OverseasPropertyAccountingMethod = app.injector.instanceOf[OverseasPropertyAccountingMethod]
-  val testError: FormError = FormError(AccountingMethodOverseasPropertyForm.accountingMethodOverseasProperty, "testError")
+  val testError: FormError = FormError(AccountingMethodOverseasPropertyForm.accountingMethodOverseasProperty, "error.agent.overseas-property-accounting-method.empty")
 
   def page(form: Form[AccountingMethod] = AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm,
            isEditMode: Boolean = false): Html = {

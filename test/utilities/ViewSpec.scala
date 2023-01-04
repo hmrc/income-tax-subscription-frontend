@@ -27,7 +27,7 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.{Assertion, BeforeAndAfterEach}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.data.FormError
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.mvc.{Call, Request}
 import play.api.test.FakeRequest
 import play.twirl.api.Html
@@ -42,7 +42,7 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
 
   implicit lazy val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
 
-  implicit lazy val mockMessages: Messages = messagesApi.preferred(FakeRequest())
+  implicit lazy val wrappedMessages: Messages = MessagesWrapper(Lang("en"), messagesApi)
 
   val testBackUrl = "/test-back-url"
   val testCall: Call = Call("POST", "/test-url")
@@ -85,7 +85,7 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
       val errorSummary: Element = document.selectHead(".govuk-error-summary")
       errorSummary.selectHead("h2").text mustBe "There is a problem"
       val errorLink: Element = errorSummary.selectHead("div > ul > li > a")
-      errorLink.text mustBe formError.message
+      errorLink.text mustBe wrappedMessages(formError.message)
       errorLink.attr("href") mustBe s"#${formError.key}"
     }
 

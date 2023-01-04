@@ -37,8 +37,8 @@ class AccountingYearFormSpec extends PlaySpec with GuiceOneAppPerTest {
     }
 
     "validate accounting year correctly" when {
-      val empty = "error.what-year.empty"
-      val invalid = "error.what-year.invalid"
+      val empty = "error.business.what-year-to-sign-up.empty"
+      val invalid = "error.business.what-year-to-sign-up.invalid"
 
       "the map be empty" in {
         val emptyInput0 = DataMap.EmptyMap

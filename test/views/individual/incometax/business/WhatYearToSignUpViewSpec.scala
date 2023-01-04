@@ -34,7 +34,7 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
 
   val whatYearToSignUp: WhatYearToSignUp = app.injector.instanceOf[WhatYearToSignUp]
 
-  val testFormError: FormError = FormError(AccountingYearForm.accountingYear, "test error")
+  val testFormError: FormError = FormError(AccountingYearForm.accountingYear, "error.business.what-year-to-sign-up.empty")
 
   "what year to sign up" must {
     "have the correct template details" when {

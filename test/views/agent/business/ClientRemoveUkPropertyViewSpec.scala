@@ -53,7 +53,7 @@ class ClientRemoveUkPropertyViewSpec extends ViewSpec {
 
   val removeUkProperty: ClientRemoveUkProperty = app.injector.instanceOf[ClientRemoveUkProperty]
 
-  val testFormError: FormError = FormError(yesNo, "Select yes if you want to remove business")
+  val testFormError: FormError = FormError(yesNo, "agent.error.remove-uk-property-business.invalid")
 
   def view(hasError: Boolean = false): Html = {
     removeUkProperty(

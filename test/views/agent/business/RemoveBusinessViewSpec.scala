@@ -41,6 +41,8 @@ class RemoveBusinessViewSpec extends ViewSpec {
   private val maybeBusinessName = Some("BusyBusiness")
   private val maybeBusinessTradeName = Some("Consulting")
 
+  private val formError = FormError("startDate", "agent.error.remove-sole-trader-business.invalid")
+
   "Remove business view" must {
     "have the correct template" when {
       "there is no error" in new TemplateViewTest(
@@ -53,13 +55,13 @@ class RemoveBusinessViewSpec extends ViewSpec {
 
       "there is an error" in new TemplateViewTest(
         view = page(
-          form = RemoveBusinessForm.removeBusinessForm().withError(FormError("startDate", "testError"))
+          form = RemoveBusinessForm.removeBusinessForm().withError(formError)
         ),
         title = RemoveBusiness.title,
         isAgent = true,
         backLink = Some(testBackUrl),
         hasSignOutLink = true,
-        error = Some(FormError("startDate", "testError"))
+        error = Some(formError)
       )
     }
 

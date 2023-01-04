@@ -28,7 +28,7 @@ import views.html.agent.business.PropertyAccountingMethod
 
 class UkPropertyAccountingMethodViewSpec extends ViewSpec {
 
-  val testError: FormError = FormError("startDate", "testError")
+  val testError: FormError = FormError("startDate", "agent.error.accounting-method-property.invalid")
   val propertyAccountingMethod: PropertyAccountingMethod = app.injector.instanceOf[PropertyAccountingMethod]
 
   class Setup(isEditMode: Boolean = false,
