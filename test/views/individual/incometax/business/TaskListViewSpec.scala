@@ -81,15 +81,19 @@ class TaskListViewSpec extends ViewSpec {
   )
 
 
-  def page(taskList: TaskListModel = customTaskListModel()): Html = taskListView(
+  def page(taskList: TaskListModel = customTaskListModel(), maybeIndividualUserFullName: Option[String]): Html = taskListView(
     postAction = postAction,
     viewModel = taskList,
     accountingPeriodService = accountingPeriodService,
-    individualUserNino = "individualUserNino"
+    individualUserNino = "individualUserNino",
+    maybeIndividualUserFullName = maybeIndividualUserFullName
   )(request, implicitly, appConfig)
 
 
-  def document(taskList: TaskListModel = customTaskListModel()): Document = Jsoup.parse(page(taskList).body)
+  def document(
+                taskList: TaskListModel = customTaskListModel(),
+                maybeIndividualUserFullName: Option[String] = Some("individualUserFullName")
+              ): Document = Jsoup.parse(page(taskList, maybeIndividualUserFullName).body)
 
   "business task list view" must {
     "have a title" in {
@@ -100,12 +104,18 @@ class TaskListViewSpec extends ViewSpec {
       document().select("h1").text mustBe heading
     }
 
-    "have a user name and user nino" in {
-      document().mainContent.getElementById("userNameNino").text mustBe "individualUserNino"
-    }
+    "have user information" which {
+      "includes a heading" in {
+        document().mainContent.selectHead(".app-task-list").selectHead("h2").text mustBe userInfoHeading
+      }
 
-    "have a paragraph for accounting period confirm" in {
-      document().mainContent.getElementById("accountingPeriodConfirm").text mustBe "Accounting period confirmed: 6 April to 5 April"
+      "includes a user nino" in {
+        document(maybeIndividualUserFullName = None).mainContent.selectHead(".app-task-list").selectHead("p").text mustBe userInfoPartialContent
+      }
+
+      "includes a user name and user nino" in {
+        document().mainContent.selectHead(".app-task-list").selectHead("p").text mustBe userInfoContent
+      }
     }
 
     "have a contents list" in {

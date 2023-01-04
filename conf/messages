@@ -800,6 +800,9 @@ agent.business.progress-saved.content.sign-in-link                    = Governme
 
 ## Task List
 business.task-list.title                                        = Sign up for Making Tax Digital for Income Tax
+business.task-list.user-information.heading                     = Your information
+business.task-list.user-information.nino                        = National Insurance number:
+business.task-list.user-information.name                        = Full name:
 business.task-list.heading.incomplete                           = Application incomplete
 business.task-list.heading.complete                             = Application complete
 business.task-list.content.summary                              = You have completed {0} of {1} sections.
