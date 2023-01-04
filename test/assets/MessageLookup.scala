@@ -285,9 +285,9 @@ object MessageLookup {
   }
 
   object TaskList {
-    val title = "Your details - Use software to send Income Tax updates - GOV.UK"
     val agentTitle = "Your client’s details - Use software to report your client’s Income Tax - GOV.UK"
-    val heading = "Your details"
+    val heading = "Sign up for Making Tax Digital for Income Tax"
+    val title = s"$heading - Use software to send Income Tax updates - GOV.UK"
     val agentHeading = "Your client’s details"
     val subHeadingComplete = "Application complete"
     val subHeadingIncomplete = "Application incomplete"
