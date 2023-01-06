@@ -273,10 +273,22 @@ agent.sign-up-confirmation.heading.panel.next                      = is now sign
 agent.sign-up-confirmation.check.heading                           = Check your client’s account.. but in Welsh
 agent.sign-up-confirmation.check.description                       = Go to your <a href="{0}">agent service account</a> to review or change the answers you have entered, and to get updates... but in Welsh
 agent.sign-up-confirmation.section1.quarterly-updates.table-caption         = Quarterly updates by the deadline... but in Welsh
+agent.sign-up-confirmation.section1.quarterly-updates.next-year.heading     = 1. Continuing to submit your tax return... but in Welsh
+agent.sign-up-confirmation.section1.quarterly-updates.next-year.paragraph   = Continue to submit your Self Assessment tax return, as normal, until 2025... but in Welsh
 agent.sign-up-confirmation.section1.quarterly-updates.this-year.heading     = 1. Update us every quarter... but in Welsh
-agent.sign-up-confirmation.section1.quarterly-updates.this-year.paragraph   = Your client will not face a penalty if you start making updates mid-way through the current tax year but you will need to make updates for the quarter’s you have missed. ...but in Welsh
+agent.sign-up-confirmation.section1.quarterly-updates.this-year.paragraph   = Your client will not face a penalty if you start making updates mid-way through the current tax year but you will need to make updates for the quarter’s you have missed.... but in Welsh
 agent.sign-up-confirmation.section2.quarterly-updates.next-year.heading     = 2. Update us every quarter... but in Welsh
-agent.sign-up-confirmation.section2.quarterly-updates.next-year.paragraph   = You can start sending your client’s quarterly updates during the next tax year. It will not affect the amount they pay. ...but in Welsh
+agent.sign-up-confirmation.section2.quarterly-updates.next-year.paragraph   = You can start sending your client’s quarterly updates during the next tax year. It will not affect the amount they pay.... but in Welsh
+agent.sign-up-confirmation.send.end-of-period-statement.this-year.heading   = 2. Send us an end of period statement... but in Welsh
+agent.sign-up-confirmation.send.end-of-period-statement.next-year.heading   = 3. Send us an end of period statement... but in Welsh
+agent.sign-up-confirmation.send.end-of-period-statement.this-year.paragraph = Use your software to send us an end of period statement, by {0}. ... but in Welsh
+agent.sign-up-confirmation.send.end-of-period-statement.next-year.paragraph = Use your software to send us an end of period statement, by {0}. ... but in Welsh
+agent.sign-up-confirmation.send.final.declaration.this-year.heading         = 3. Submit a final declaration... but in Welsh
+agent.sign-up-confirmation.send.final.declaration.next-year.heading         = 4. Submit a final declaration... but in Welsh
+agent.sign-up-confirmation.send.final.declaration.this-year.paragraph       = You must submit your client’s final declaration and they must pay the tax they owe by {0}. ... but in Welsh
+agent.sign-up-confirmation.send.final.declaration.next-year.paragraph       = You must submit your client’s final declaration and they must pay the tax they owe by {0}. ... but in Welsh
+
+
 
 ## Sign Up Confirmation page ##
 

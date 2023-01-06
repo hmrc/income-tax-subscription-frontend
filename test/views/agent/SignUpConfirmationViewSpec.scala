@@ -21,11 +21,12 @@ import models.{DateModel, UpdateDeadline}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.twirl.api.Html
-import utilities.{ImplicitDateFormatter, ImplicitDateFormatterImpl, ViewSpec}
+import utilities.{AccountingPeriodUtil, ImplicitDateFormatter, ImplicitDateFormatterImpl, ViewSpec}
 import views.html.agent.SignUpConfirmation
 
 import java.time.LocalDate
 import java.time.Month._
+import java.time.format.DateTimeFormatter
 import scala.util.Random
 
 class SignUpConfirmationViewSpec extends ViewSpec {
@@ -54,57 +55,9 @@ class SignUpConfirmationViewSpec extends ViewSpec {
   "The sign up confirmation view" when {
     for (yearIsNext <- Seq(true, false)) {
       val testMainContent = document(yearIsNext).mainContent
+
       s"nextYear flag is $yearIsNext" must {
-        "have a section 1" which {
-          "contains a heading" in {
-            testMainContent.selectNth("h2", 1).text() mustBe SignUpConfirmationMessages.section1heading
-          }
 
-          "contains the quarterly updates section" which {
-
-            if (yearIsNext) {
-              "contains a heading" in {
-                testMainContent.selectNth(".row", 1).selectHead("h3").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesNextYearHeading
-              }
-              "contains Quarterly Updates initial paragraph" in {
-                testMainContent.selectNth(".row", 1).selectHead("p").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesNextYearParagraph
-              }
-              "contains a table" in {
-                testMainContent.selectNth(".row", 1).mustHaveTable(
-                  tableHeads = List(SignUpConfirmationMessages.quarterlyUpdate, SignUpConfirmationMessages.deadline),
-                  tableRows = List(
-                    List(q1Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q1Update.deadline.toLongDateNoYear),
-                    List(q2Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q2Update.deadline.toLongDateNoYear),
-                    List(q3Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q3Update.deadline.toLongDateNoYear),
-                    List(q4Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q4Update.deadline.toLongDateNoYear)
-                  ),
-                  maybeCaption = Some(SignUpConfirmationMessages.quarterlyUpdatesTableCaption),
-                  hiddenTableCaption = false
-                )
-              }
-            } else {
-              "contains a heading" in {
-                testMainContent.selectHead(".row").selectHead("h3").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesThisYearHeading
-              }
-              "contains Quarterly Updates initial paragraph" in {
-                testMainContent.selectHead(".row").selectHead("p").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesThisYearParagraph
-              }
-              "contains a table" in {
-                testMainContent.selectHead(".row").mustHaveTable(
-                  tableHeads = List(SignUpConfirmationMessages.quarterlyUpdate, SignUpConfirmationMessages.deadline),
-                  tableRows = List(
-                    List(q1Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q1Update.deadline.toLongDateNoYear),
-                    List(q2Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q2Update.deadline.toLongDateNoYear),
-                    List(q3Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q3Update.deadline.toLongDateNoYear),
-                    List(q4Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q4Update.deadline.toLongDateNoYear)
-                  ),
-                  maybeCaption = Some(SignUpConfirmationMessages.quarterlyUpdatesTableCaption),
-                  hiddenTableCaption = false
-                )
-              }
-            }
-          }
-        }
         "have a header panel" which {
           "contains the panel heading" in {
             testMainContent.select(".govuk-panel").select("h1").text() mustBe SignUpConfirmationMessages.panelHeading
@@ -124,6 +77,105 @@ class SignUpConfirmationViewSpec extends ViewSpec {
               .text() mustBe SignUpConfirmationMessages.panelDescription(yearIsNext)
           }
         }
+
+        "contains a sub heading" in {
+          testMainContent.selectNth("h2", 1).text() mustBe SignUpConfirmationMessages.whatToDoHeading
+        }
+
+        "have a section 1" which {
+          if (yearIsNext) {
+            "contains a heading" in {
+              testMainContent.selectNth(".row", 1).selectHead("h3").text() mustBe SignUpConfirmationMessages.taxReturnSubmissionHeading
+            }
+            "contains Quarterly Updates initial paragraph" in {
+              testMainContent.selectNth(".row", 1).selectHead("p").text() mustBe SignUpConfirmationMessages.taxReturnSubmissionParagraph
+            }
+          }
+          else {
+            "contains a heading" in {
+              testMainContent.selectNth(".row", 1).selectHead("h3").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesThisYearHeading
+            }
+            "contains Quarterly Updates initial paragraph" in {
+              testMainContent.selectNth(".row", 1).selectHead("p").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesThisYearParagraph
+            }
+            "contains a table" in {
+              testMainContent.selectNth(".row", 1).mustHaveTable(
+                tableHeads = List(SignUpConfirmationMessages.quarterlyUpdate, SignUpConfirmationMessages.deadline),
+                tableRows = List(
+                  List(q1Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q1Update.deadline.toLongDateNoYear),
+                  List(q2Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q2Update.deadline.toLongDateNoYear),
+                  List(q3Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q3Update.deadline.toLongDateNoYear),
+                  List(q4Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q4Update.deadline.toLongDateNoYear)
+                ),
+                maybeCaption = Some(SignUpConfirmationMessages.quarterlyUpdatesTableCaption),
+                hiddenTableCaption = false
+              )
+            }
+          }
+        }
+
+        "have a section 2" which {
+          if (yearIsNext){
+            "contains a heading" in {
+              testMainContent.selectNth(".row", 2).selectHead("h3").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesNextYearHeading
+            }
+            "contains Quarterly Updates initial paragraph" in {
+              testMainContent.selectNth(".row", 2).selectHead("p").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesNextYearParagraph
+            }
+            "contains a table" in {
+              testMainContent.selectNth(".row", 2).mustHaveTable(
+                tableHeads = List(SignUpConfirmationMessages.quarterlyUpdate, SignUpConfirmationMessages.deadline),
+                tableRows = List(
+                  List(q1Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q1Update.deadline.toLongDateNoYear),
+                  List(q2Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q2Update.deadline.toLongDateNoYear),
+                  List(q3Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q3Update.deadline.toLongDateNoYear),
+                  List(q4Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q4Update.deadline.toLongDateNoYear)
+                ),
+                maybeCaption = Some(SignUpConfirmationMessages.quarterlyUpdatesTableCaption),
+                hiddenTableCaption = false
+              )
+            }
+          }
+          else {
+            "contains a heading" in {
+              testMainContent.selectNth(".row", 2).selectHead("h3").text() mustBe SignUpConfirmationMessages.endOfPeriodStatementThisYearHeading
+            }
+            "contains a paragraph" in {
+              testMainContent.selectNth(".row", 2).selectHead("p").text() mustBe SignUpConfirmationMessages.endOfPeriodStatementThisYearParagraph
+            }
+          }
+        }
+
+        "have a section 3" which {
+          if(yearIsNext){
+            "contains a heading" in {
+              testMainContent.selectNth(".row", 3).selectHead("h3").text() mustBe SignUpConfirmationMessages.endOfPeriodStatementNextYearHeading
+            }
+            "contains a paragraph" in {
+              testMainContent.selectNth(".row", 3).selectHead("p").text() mustBe SignUpConfirmationMessages.endOfPeriodStatementNextYearParagraph
+            }
+          }
+          else {
+            "contains a heading" in {
+              testMainContent.selectNth(".row", 3).selectHead("h3").text() mustBe SignUpConfirmationMessages.finalDeclarationThisYearHeading
+            }
+            "contains a paragraph" in {
+              testMainContent.selectNth(".row", 3).selectHead("p").text() mustBe SignUpConfirmationMessages.finalDeclarationThisYearParagraph
+            }
+          }
+        }
+
+        if(yearIsNext) {
+         "have a section 4" which {
+            "contains a heading" in {
+              testMainContent.selectNth(".row", 4).selectHead("h3").text() mustBe SignUpConfirmationMessages.finalDeclarationNextYearHeading
+            }
+            "contains a paragraph" in {
+              testMainContent.selectNth(".row", 4).selectHead("p").text() mustBe SignUpConfirmationMessages.finalDeclarationNextYearParagraph
+            }
+          }
+        }
+
         "have a check client details panel" which {
           "contains the check client details heading" in {
             testMainContent.select(".client-details").select("h2").text() mustBe SignUpConfirmationMessages.checkClientDetailsHeading
@@ -149,7 +201,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
   }
 
   private object SignUpConfirmationMessages {
-    val section1heading = "What you will have to do"
+    val whatToDoHeading = "What you will have to do"
     val panelHeading = "Client sign up complete"
     val panelUserDetails = s"$testName | $testNino"
     val panelDescriptionThis = s"is now signed up for Making Tax Digital for Income Tax for the current tax year (${startDate.day} April 2010 to ${endDate.day} April 2011)"
@@ -167,6 +219,20 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val quarterlyUpdatesNextYearHeading = "2. Update us every quarter"
     val quarterlyUpdatesThisYearParagraph = "Your client will not face a penalty if you start making updates mid-way through the current tax year but you will need to make updates for the quarter’s you have missed."
     val quarterlyUpdatesNextYearParagraph = "You can start sending your client’s quarterly updates during the next tax year. It will not affect the amount they pay."
+    val taxReturnSubmissionHeading = "1. Continuing to submit your tax return"
+    val taxReturnSubmissionParagraph = "Continue to submit your Self Assessment tax return, as normal, until 2025"
+    val endOfPeriodStatementThisYearHeading = "2. Send us an end of period statement"
+    val endOfPeriodStatementNextYearHeading = "3. Send us an end of period statement"
+    val endOfPeriodStatementThisYearDate = AccountingPeriodUtil.getEndOfPeriodStatementDate(false).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
+    val endOfPeriodStatementNextYearDate = AccountingPeriodUtil.getEndOfPeriodStatementDate(true).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
+    val endOfPeriodStatementThisYearParagraph = s"Use your software to send us an end of period statement, by $endOfPeriodStatementThisYearDate."
+    val endOfPeriodStatementNextYearParagraph = s"Use your software to send us an end of period statement, by $endOfPeriodStatementNextYearDate."
+    val finalDeclarationThisYearHeading = "3. Submit a final declaration"
+    val finalDeclarationNextYearHeading = "4. Submit a final declaration"
+    val finalDeclarationThisYearDate = AccountingPeriodUtil.getFinalDeclarationDate(false).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
+    val finalDeclarationNextYearDate = AccountingPeriodUtil.getFinalDeclarationDate(true).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
+    val finalDeclarationThisYearParagraph = s"You must submit your client’s final declaration and they must pay the tax they owe by $finalDeclarationThisYearDate."
+    val finalDeclarationNextYearParagraph = s"You must submit your client’s final declaration and they must pay the tax they owe by $finalDeclarationNextYearDate."
     val quarterlyUpdate = "Quarterly update"
     val deadline = "Deadline"
     val quarterlyUpdatesTableCaption = "Quarterly updates by the deadline"
