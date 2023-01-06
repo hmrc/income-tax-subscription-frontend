@@ -17,6 +17,7 @@
 package services
 
 import models._
+import models.common.AccountingPeriodModel
 import utilities.AccountingPeriodUtil._
 import utilities.{AccountingPeriodUtil, CurrentDateProvider}
 
@@ -66,23 +67,30 @@ class AccountingPeriodService @Inject()(currentDateProvider: CurrentDateProvider
     }
     List(
       UpdateDeadline(
-        updateFrom = LocalDate.of(taxYear - 1, APRIL, SIXTH),
-        updateTo = LocalDate.of(taxYear - 1, JULY, FIFTH),
+        AccountingPeriodModel(
+          updateFrom = LocalDate.of(taxYear - 1, APRIL, SIXTH),
+          updateTo = LocalDate.of(taxYear - 1, JULY, FIFTH),
+        ),
         deadline = LocalDate.of(taxYear - 1, AUGUST, FIFTH)
       ),
-      UpdateDeadline(
+      UpdateDeadline(AccountingPeriodModel(
         updateFrom = LocalDate.of(taxYear - 1, JULY, SIXTH),
-        updateTo = LocalDate.of(taxYear - 1, OCTOBER, FIFTH),
+        updateTo = LocalDate.of(taxYear - 1, OCTOBER, FIFTH)
+      ),
         deadline = LocalDate.of(taxYear - 1, NOVEMBER, FIFTH)
       ),
       UpdateDeadline(
-        updateFrom = LocalDate.of(taxYear - 1, OCTOBER, SIXTH),
-        updateTo = LocalDate.of(taxYear, JANUARY, FIFTH),
+        AccountingPeriodModel(
+          updateFrom = LocalDate.of(taxYear - 1, OCTOBER, SIXTH),
+          updateTo = LocalDate.of(taxYear, JANUARY, FIFTH)
+        ),
         deadline = LocalDate.of(taxYear, FEBRUARY, FIFTH)
       ),
       UpdateDeadline(
-        updateFrom = LocalDate.of(taxYear, JANUARY, SIXTH),
-        updateTo = LocalDate.of(taxYear, APRIL, FIFTH),
+        AccountingPeriodModel(
+          updateFrom = LocalDate.of(taxYear, JANUARY, SIXTH),
+          updateTo = LocalDate.of(taxYear, APRIL, FIFTH)
+        ),
         deadline = LocalDate.of(taxYear, MAY, FIFTH)
       )
     )
@@ -91,8 +99,8 @@ class AccountingPeriodService @Inject()(currentDateProvider: CurrentDateProvider
   def getCurrentYearUpdateDates: UpdateDeadlineDates = {
     val allUpdateAndDeadlineDates: List[UpdateDeadline] = getAllUpdateAndDeadlineDates(Current)
     UpdateDeadlineDates(
-      previous = allUpdateAndDeadlineDates.filter(_.updateTo <= AgentUpdateDates.currentDate),
-      next = allUpdateAndDeadlineDates.filter(_.updateTo > AgentUpdateDates.currentDate)
+      previous = allUpdateAndDeadlineDates.filter(_.accountingPeriodModel.endDate.toLocalDate <= AgentUpdateDates.currentDate),
+      next = allUpdateAndDeadlineDates.filter(_.accountingPeriodModel.endDate.toLocalDate > AgentUpdateDates.currentDate)
     )
   }
 

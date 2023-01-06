@@ -16,7 +16,6 @@
 
 package views.individual.incometax.incomesource
 
-import assets.MessageLookup.PropertyStartDateMessages.hint
 import config.featureswitch.FeatureSwitch.ForeignProperty
 import forms.individual.incomesource.BusinessIncomeSourceForm
 import forms.individual.incomesource.BusinessIncomeSourceForm.incomeSourceKey

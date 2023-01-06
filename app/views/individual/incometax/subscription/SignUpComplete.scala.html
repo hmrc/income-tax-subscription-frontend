@@ -59,7 +59,7 @@
             @table(
               updateAndDeadlineDates = previous,
               tableCaption = messages("sign-up-complete.quarter-table-caption"),
-              fromToFormat = "%s - %s",
+              fromToFormat = Some("%s - %s"),
               showTableCaption = false,
               includeYearInDates = true
             )
@@ -78,7 +78,7 @@
         @table(
           updateAndDeadlineDates = next,
           tableCaption = messages("sign-up-complete.quarter-table-caption"),
-          fromToFormat = "%s - %s",
+          fromToFormat = Some("%s - %s"),
           showTableCaption = false,
           includeYearInDates = true
         )

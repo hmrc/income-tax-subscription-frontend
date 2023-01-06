@@ -18,13 +18,14 @@
 
 @this(
   govukTable: GovukTable,
+  accountingPeriodHelper: AccountingPeriodHelper,
   implicitDateFormatter: ImplicitDateFormatterImpl
 )
 
 @(
   updateAndDeadlineDates: List[UpdateDeadline],
   tableCaption: String,
-  fromToFormat: String,
+  fromToFormat: Option[String] = None,
   showTableCaption: Boolean = true,
   includeYearInDates: Boolean = false
 )(implicit messages: Messages)
@@ -34,13 +35,9 @@
 @govukTable(Table(
   rows = updateAndDeadlineDates.map { updateDeadline =>
     Seq(
-      TableRow(content = Text(
-        if (includeYearInDates) {
-          fromToFormat.format(updateDeadline.updateFrom.toLongDate, updateDeadline.updateTo.toLongDate)
-        } else {
-          fromToFormat.format(updateDeadline.updateFrom.toLongDateNoYear, updateDeadline.updateTo.toLongDateNoYear)
-        }
-      )),
+      TableRow(content =
+        HtmlContent(accountingPeriodHelper(updateDeadline.accountingPeriodModel, fromToFormat = fromToFormat, includeYearInDates = includeYearInDates))
+      ),
       TableRow(content = Text(
         if (includeYearInDates) {
           updateDeadline.deadline.toLongDate
