@@ -317,6 +317,13 @@ sign-up-confirmation.section1.end-of-period.next-year.bullet1        = make any 
 sign-up-confirmation.section1.end-of-period.next-year.bullet2        = claim any tax reliefs ... but in Welsh
 sign-up-confirmation.section1.end-of-period.next-year.bullet3        = confirm that the information you’ve sent is correct and complete ... but in Welsh
 
+sign-up-confirmation.section1.final-declaration.next-year.heading       = 3. Submit a final declaration and pay tax ... but in Welsh
+sign-up-confirmation.section1.final-declaration.next-year.paragraph1    = The declaration replaces your Self Assessment tax return. ... but in Welsh
+sign-up-confirmation.section1.final-declaration.next-year.paragraph2    = You must submit your final declaration and pay the tax you owe by {0}. ... but in Welsh
+sign-up-confirmation.section1.final-declaration.next-year.paragraph3    = You may need to pay a penalty if you: ... but in Welsh
+sign-up-confirmation.section1.final-declaration.next-year.bullet1       = miss the deadline for your final declaration ... but in Welsh
+sign-up-confirmation.section1.final-declaration.next-year.bullet2       = do not pay the tax you owe by the deadline ... but in Welsh
+
 sign-up-confirmation.section2.heading                              = Find software and check your account
 
 sign-up-confirmation.section2.online-services.heading              = Check HMRC online services
