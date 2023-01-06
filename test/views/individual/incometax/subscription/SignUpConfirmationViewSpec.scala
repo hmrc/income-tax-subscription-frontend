@@ -20,7 +20,7 @@ import models.UpdateDeadline
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.Html
-import utilities.{ImplicitDateFormatter, ImplicitDateFormatterImpl, ViewSpec}
+import utilities.{AccountingPeriodUtil, ImplicitDateFormatter, ImplicitDateFormatterImpl, ViewSpec}
 import views.html.individual.incometax.subscription.SignUpConfirmation
 
 import java.time.LocalDate
@@ -38,7 +38,19 @@ class SignUpConfirmationViewSpec extends ViewSpec {
   val testName = "Lisa Khan"
   val testNino = "QQ123456L"
 
-  def page(selectedTaxYearIsNext: Boolean, userNameMaybe: Option[String]): Html = signUpConfirmation(selectedTaxYearIsNext, userNameMaybe, testNino)
+  private val quarterlyUpdateRowNumber = 1
+  private val endOfPeriodRowNumber = quarterlyUpdateRowNumber + 1
+  private val onlineHmrcServicesRowNumber = endOfPeriodRowNumber + 1
+  private val gettingPreparedRowNumber = endOfPeriodRowNumber + 1
+  private val findSoftwareRowNumber = endOfPeriodRowNumber + 1
+
+  private val onlineHmrcServicesColNumberNextYear = 1
+  private val onlineHmrcServicesColNumberThisYear = 2
+  private val findSoftwareColNumber = 1
+  private val gettingPreparedColNumber = 2
+
+  def page(selectedTaxYearIsNext: Boolean, userNameMaybe: Option[String]): Html =
+    signUpConfirmation(selectedTaxYearIsNext, userNameMaybe, testNino)
 
   def document(selectedTaxYearIsNext: Boolean, userNameMaybe: Option[String] = Some(testName)): Document =
     Jsoup.parse(page(selectedTaxYearIsNext, userNameMaybe).body)
@@ -95,7 +107,9 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           }
 
           "contains the quarterly updates section" which {
-            def quarterlyUpdates: Element = testMainContent.selectNth(".row", 1).selectNth(".col", 1)
+            def quarterlyUpdates: Element = {
+              testMainContent.selectNth(".row", quarterlyUpdateRowNumber).selectHead(".col")
+            }
 
             if (yearIsNext) {
               "contains a heading" in {
@@ -146,10 +160,40 @@ class SignUpConfirmationViewSpec extends ViewSpec {
                 quarterlyUpdates.selectNth("p", 3).text() mustBe SignUpConfirmationMessages.section1QuarterlyUpdatesThisYearParagraph2
               }
 
-               "contains this year paragraph 3" in {
-                 quarterlyUpdates.selectNth("p", 4).text() mustBe SignUpConfirmationMessages.section1QuarterlyUpdatesThisYearParagraph3
-               }
+              "contains this year paragraph 3" in {
+                quarterlyUpdates.selectNth("p", 4).text() mustBe SignUpConfirmationMessages.section1QuarterlyUpdatesThisYearParagraph3
+              }
             }
+          }
+
+          "contains the end-of-period section" which {
+            def endOfPeriod: Element = {
+              testMainContent.selectNth(".row", endOfPeriodRowNumber).selectHead(".col")
+            }
+
+            if (yearIsNext) {
+              "contains a heading" in {
+                endOfPeriod.selectHead("h3").text() mustBe SignUpConfirmationMessages.section1EndOfPeriodNextYearHeading
+              }
+              "contains paragraph 1" in {
+                endOfPeriod.selectNth("p", 1).text() mustBe SignUpConfirmationMessages.section1EndOfPeriodNextYearParagraph1
+              }
+              "contains paragraph 2" in {
+                endOfPeriod.selectNth("p", 2).text() mustBe SignUpConfirmationMessages.section1EndOfPeriodNextYearParagraph2
+              }
+              "contains bullet 1" in {
+                endOfPeriod.selectHead("ul").selectNth("li", 1).text() mustBe SignUpConfirmationMessages.section1EndOfPeriodNextYearBullet1
+              }
+              "contains bullet 2" in {
+                endOfPeriod.selectHead("ul").selectNth("li", 2).text() mustBe SignUpConfirmationMessages.section1EndOfPeriodNextYearBullet2
+              }
+              "contains bullet 3" in {
+                endOfPeriod.selectHead("ul").selectNth("li", 3).text() mustBe SignUpConfirmationMessages.section1EndOfPeriodNextYearBullet3
+              }
+            } else {
+              // this year tests to come here
+            }
+
           }
         }
 
@@ -159,9 +203,11 @@ class SignUpConfirmationViewSpec extends ViewSpec {
             testMainContent.selectNth("h2", 2).text() mustBe SignUpConfirmationMessages.section2heading
           }
 
-          if(yearIsNext) {
+          if (yearIsNext) {
             "contains the online HMRC services section in first position" which {
-              def onlineHmrcServices: Element = testMainContent.selectNth(".row", 2).selectNth(".col", 1)
+              def onlineHmrcServices: Element = {
+                testMainContent.selectNth(".row", onlineHmrcServicesRowNumber).selectNth(".col", onlineHmrcServicesColNumberNextYear)
+              }
 
               "contains a heading" in {
                 onlineHmrcServices.selectHead("h3").text() mustBe SignUpConfirmationMessages.section2onlineServicesHeading
@@ -182,7 +228,9 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
             }
             "contains the getting prepared section in second position" which {
-              def gettingPrepared: Element = testMainContent.selectNth(".row", 2).selectNth(".col", 2)
+              def gettingPrepared: Element = {
+                testMainContent.selectNth(".row", gettingPreparedRowNumber).selectNth(".col", gettingPreparedColNumber)
+              }
 
               "contains a heading" in {
                 gettingPrepared.selectHead("h3").text() mustBe SignUpConfirmationMessages.section2GettingPreparedHeading
@@ -202,7 +250,9 @@ class SignUpConfirmationViewSpec extends ViewSpec {
             }
           } else {
             "contains the find software section in first position" which {
-              def findSoftware: Element = testMainContent.selectNth(".row", 2).selectNth(".col", 1)
+              def findSoftware: Element = {
+                testMainContent.selectNth(".row", findSoftwareRowNumber).selectNth(".col", findSoftwareColNumber)
+              }
 
               "contains a heading" in {
                 findSoftware.selectHead("h3").text() mustBe SignUpConfirmationMessages.section2FindSoftwareHeading
@@ -220,7 +270,9 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
             }
             "contains the online HMRC services section in second position" which {
-              def onlineHmrcServices: Element = testMainContent.selectNth(".row", 2).selectNth(".col", 2)
+              def onlineHmrcServices: Element = {
+                testMainContent.selectNth(".row", onlineHmrcServicesRowNumber).selectNth(".col", onlineHmrcServicesColNumberThisYear)
+              }
 
               "contains a heading" in {
                 onlineHmrcServices.selectHead("h3").text() mustBe SignUpConfirmationMessages.section2onlineServicesHeading
@@ -269,6 +321,16 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val section1QuarterlyUpdatesThisYearParagraph1 = "You can start sending quarterly updates during the current tax year. It will not affect the amount you pay."
     val section1QuarterlyUpdatesThisYearParagraph2 = "After you have sent an update you will get a year-to-date Income Tax estimate."
     val section1QuarterlyUpdatesThisYearParagraph3 = "There is no penalty if you start making updates mid-way through the current tax year but you will need to make updates for the quarters you’ve missed."
+
+    val section1EndOfPeriodNextYearHeading = "2. Send us an end of period statement"
+    val section1EndOfPeriodNextYearParagraph1 = {
+      val year = AccountingPeriodUtil.getNextTaxYear.endDate.year
+      s"Use your software to send us an end of period statement, by 31 January $year."
+    }
+    val section1EndOfPeriodNextYearParagraph2 = "For each income source, you must:"
+    val section1EndOfPeriodNextYearBullet1 = "make any accounting adjustments"
+    val section1EndOfPeriodNextYearBullet2 = "claim any tax reliefs"
+    val section1EndOfPeriodNextYearBullet3 = "confirm that the information you’ve sent is correct and complete"
 
     val section2onlineServicesHeading = "Check HMRC online services"
     val section2onlineServicesThisYearParagraph = "You can review or change the answers you have just entered, and to get updates."

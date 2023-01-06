@@ -18,11 +18,14 @@
 @import services.AccountingPeriodService
 @import views.html.helpers.injected.UpdateDeadlineTable
 @import views.html.templates.PrincipalMainTemplate
+@import uk.gov.hmrc.play.language.LanguageUtils
+@import utilities.AccountingPeriodUtil
 
 @this(
   principalMainTemplate: PrincipalMainTemplate,
   govukPanel: GovukPanel,
   govukWarningText : GovukWarningText,
+  languageUtils: LanguageUtils,
   table: UpdateDeadlineTable,
   accountingPeriodService: AccountingPeriodService
 )
@@ -94,6 +97,24 @@
    }
   </div>
  }
+
+@endOfPeriod = {
+  @{
+    val statementDueDate = languageUtils.Dates.formatDate(AccountingPeriodUtil.getEndOfPeriodStatementDate(taxYearSelectionIsNext))
+    if (taxYearSelectionIsNext) {
+      <div class="boxout col">
+        <h3 class="govuk-heading-m">{messages("sign-up-confirmation.section1.end-of-period.next-year.heading")}</h3>
+        <p class="govuk-body">{messages("sign-up-confirmation.section1.end-of-period.next-year.paragraph1", statementDueDate)}</p>
+        <p class="govuk-body">{messages("sign-up-confirmation.section1.end-of-period.next-year.paragraph2")}</p>
+        <ul class="govuk-list govuk-list--bullet">
+          <li>{messages("sign-up-confirmation.section1.end-of-period.next-year.bullet1")}</li>
+          <li>{messages("sign-up-confirmation.section1.end-of-period.next-year.bullet2")}</li>
+          <li>{messages("sign-up-confirmation.section1.end-of-period.next-year.bullet3")}</li>
+        </ul>
+      </div>
+    }
+  }
+}
 
 @findSoftware = {
   @if(!taxYearSelectionIsNext) {
@@ -169,6 +190,10 @@
 
   <div class="row govuk-!-margin-bottom-2">
     @quarterlyUpdates
+  </div>
+
+  <div class="row govuk-!-margin-bottom-2">
+    @endOfPeriod
   </div>
 
   <h2 class="govuk-heading-l">@messages("sign-up-confirmation.section2.heading")</h2>
