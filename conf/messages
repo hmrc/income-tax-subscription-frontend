@@ -336,8 +336,8 @@ sign-up-confirmation.section2.getting-prepared.link                = Find softwa
 
 ## Errors ##
 
-error.what-year.empty                                           = Select the tax year you want to sign up for
-error.what-year.invalid                                         = Select the tax year you want to sign up for
+error.business.what-year-to-sign-up.empty                                           = Select the tax year you want to sign up for
+error.business.what-year-to-sign-up.invalid                                         = Select the tax year you want to sign up for
 
 error.property.income.empty                                     = You must select an option to continue
 error.property.income.invalid                                   = You must select an option to continue
@@ -660,8 +660,8 @@ agent.error.client-details.date-of-birth.year.length                            
 # Sole Trader Eligibility invalid
 agent.error.eligibility.sole-trader.invalid                     = Select yes if your client is a sole trader that began trading on or after {0}?
 
-agent.error.what-year.empty                                     = Select the tax year you want to sign your client up for
-agent.error.what-year.invalid                                   = Select the tax year you want to sign your client up for
+agent.error.business.what-year-to-sign-up.empty                                     = Select the tax year you want to sign your client up for
+agent.error.business.what-year-to-sign-up.invalid                                   = Select the tax year you want to sign your client up for
 
 agent.error.accounting-method-property.invalid                  = Select if your client uses cash basis accounting or traditional accounting
 

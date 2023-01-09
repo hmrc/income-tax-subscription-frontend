@@ -336,8 +336,8 @@ sign-up-confirmation.section2.getting-prepared.link                = Find softwa
 
 ## Errors ##
 
-error.what-year.empty                                           = Dewiswch y flwyddyn dreth yr ydych am gofrestru ar ei chyfer
-error.what-year.invalid                                         = Dewiswch y flwyddyn dreth yr ydych am gofrestru ar ei chyfer
+error.business.what-year-to-sign-up.empty                                           = Dewiswch y flwyddyn dreth yr ydych am gofrestru ar ei chyfer
+error.business.what-year-to-sign-up.invalid                                         = Dewiswch y flwyddyn dreth yr ydych am gofrestru ar ei chyfer
 
 error.property.income.empty                                     = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 error.property.income.invalid                                   = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
@@ -659,8 +659,8 @@ agent.error.client-details.date-of-birth.year.length                            
 # Sole Trader Eligibility invalid
 agent.error.eligibility.sole-trader.invalid                     = Dewiswch ‘Iawn’ os ydych yn unig fasnachwr a ddechreuodd fasnachu ar neu ar ôl {0}
 
-agent.error.what-year.empty                                     = Dewiswch pa flwyddyn dreth yr ydych am gofrestru eich cleient ar ei chyfer
-agent.error.what-year.invalid                                   = Dewiswch pa flwyddyn dreth yr ydych am gofrestru eich cleient ar ei chyfer
+agent.error.business.what-year-to-sign-up.empty                                     = Dewiswch pa flwyddyn dreth yr ydych am gofrestru eich cleient ar ei chyfer
+agent.error.business.what-year-to-sign-up.invalid                                   = Dewiswch pa flwyddyn dreth yr ydych am gofrestru eich cleient ar ei chyfer
 
 agent.error.accounting-method-property.invalid                  = Dewiswch a yw’ch cleient yn defnyddio cyfrifyddu ar sail arian parod neu gyfrifyddu traddodiadol
 

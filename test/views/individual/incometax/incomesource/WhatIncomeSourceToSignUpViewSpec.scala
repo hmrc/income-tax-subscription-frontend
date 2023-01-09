@@ -16,7 +16,6 @@
 
 package views.individual.incometax.incomesource
 
-import assets.MessageLookup.PropertyStartDateMessages.hint
 import config.featureswitch.FeatureSwitch.ForeignProperty
 import forms.individual.incomesource.BusinessIncomeSourceForm
 import forms.individual.incomesource.BusinessIncomeSourceForm.incomeSourceKey
@@ -59,7 +58,7 @@ class WhatIncomeSourceToSignUpViewSpec extends ViewSpec {
 
   val incomeSource: WhatIncomeSourceToSignUp = app.injector.instanceOf[WhatIncomeSourceToSignUp]
 
-  val testFormError: FormError = FormError(incomeSourceKey, "test message")
+  val testFormError: FormError = FormError(incomeSourceKey, "error.business-income-source.all-sources")
 
   def view(incomeSourcesStatus: IncomeSourcesStatus, hasError: Boolean = false): Html = {
     incomeSource(
@@ -149,7 +148,7 @@ class WhatIncomeSourceToSignUpViewSpec extends ViewSpec {
 
     "have an error" when {
       "there is an error" in new ViewTest(hasError = true) {
-        document.selectHead("fieldset").selectHead(".govuk-error-message").text mustBe s"Error: ${testFormError.message}"
+        document.selectHead("fieldset").selectHead(".govuk-error-message").text mustBe s"Error: ${wrappedMessages(testFormError.message)}"
       }
     }
 

@@ -29,8 +29,8 @@ object AccountingYearForm {
   val accountingYearForm: Form[AccountingYear] = Form(
     single(
       accountingYear -> AccountingYearMapping(
-        errInvalid = Invalid("agent.error.what-year.invalid"),
-        errEmpty = Some(Invalid("agent.error.what-year.empty"))
+        errInvalid = Invalid("agent.error.business.what-year-to-sign-up.invalid"),
+        errEmpty = Some(Invalid("agent.error.business.what-year-to-sign-up.empty"))
       ))
   )
 }

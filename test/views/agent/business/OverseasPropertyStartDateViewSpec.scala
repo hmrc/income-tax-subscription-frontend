@@ -44,7 +44,7 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
   val backUrl: String = testBackUrl
   val action: Call = testCall
   val taxYearEnd: Int = 2020
-  val testError: FormError = FormError("startDate", "testError")
+  val testError: FormError = FormError("startDate", "error.overseas.property.day-month-year.empty")
   val titleSuffix = " - Use software to report your client’s Income Tax - GOV.UK"
 
   private val defaultForm: Form[DateModel] = OverseasPropertyStartDateForm.overseasPropertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString)

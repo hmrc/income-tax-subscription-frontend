@@ -33,7 +33,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec  {
   val backUrl: String = testBackUrl
   val action: Call = testCall
   val taxYearEnd: Int = 2020
-  val testError: FormError = FormError("startDate", "testError")
+  val testError: FormError = FormError("startDate", "agent.error.property.day-month-year.empty")
   private val propertyStartDateView = app.injector.instanceOf[PropertyStartDate]
 
   private val defaultForm = PropertyStartDateForm.propertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString)

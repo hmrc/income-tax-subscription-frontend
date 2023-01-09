@@ -37,7 +37,7 @@ class RemoveClientOverseasPropertyViewSpec extends ViewSpec {
 
   val removeOverseasProperty: RemoveClientOverseasProperty = app.injector.instanceOf[RemoveClientOverseasProperty]
 
-  val testFormError: FormError = FormError(yesNo, "Select yes if you want to remove business")
+  val testFormError: FormError = FormError(yesNo, "error.remove-overseas-property-business.invalid")
 
   def view(hasError: Boolean = false): Html = {
     removeOverseasProperty(

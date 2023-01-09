@@ -58,7 +58,7 @@ class WhatIncomeSourceToSignUpViewSpec extends ViewSpec {
 
   private val incomeSourceView = app.injector.instanceOf[WhatIncomeSourceToSignUp]
 
-  private val testFormError: FormError = FormError(incomeSourceKey, "test message")
+  private val testFormError: FormError = FormError(incomeSourceKey, "agent.income-source.error")
 
   "What Income Source To Sign Up View" should {
     "display the template correctly" when {
