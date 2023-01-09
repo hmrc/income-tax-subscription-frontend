@@ -40,9 +40,10 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
   private val quarterlyUpdateRowNumber = 1
   private val endOfPeriodRowNumber = quarterlyUpdateRowNumber + 1
-  private val onlineHmrcServicesRowNumber = endOfPeriodRowNumber + 1
-  private val gettingPreparedRowNumber = endOfPeriodRowNumber + 1
-  private val findSoftwareRowNumber = endOfPeriodRowNumber + 1
+  private val finalDeclarationRowNumber = endOfPeriodRowNumber + 1
+  private val onlineHmrcServicesRowNumber = finalDeclarationRowNumber + 1
+  private val gettingPreparedRowNumber = finalDeclarationRowNumber + 1
+  private val findSoftwareRowNumber = finalDeclarationRowNumber + 1
 
   private val onlineHmrcServicesColNumberNextYear = 1
   private val onlineHmrcServicesColNumberThisYear = 2
@@ -212,6 +213,52 @@ class SignUpConfirmationViewSpec extends ViewSpec {
             }
 
           }
+
+          "contains the final declaration section in third position" which {
+            def finalDeclaration: Element = {
+              testMainContent.selectNth(".row", finalDeclarationRowNumber).selectHead(".col")
+            }
+
+            if (yearIsNext) {
+              "contains a heading" in {
+                finalDeclaration.selectHead("h3").text() mustBe SignUpConfirmationMessages.section1FinalDeclarationNextYearHeading
+              }
+              "contains paragraph 1" in {
+                finalDeclaration.selectNth("p", 1).text() mustBe SignUpConfirmationMessages.section1FinalDeclarationNextYearParagraph1
+              }
+              "contains paragraph 2" in {
+                finalDeclaration.selectNth("p", 2).text() mustBe SignUpConfirmationMessages.section1FinalDeclarationNextYearParagraph2
+              }
+              "contains paragraph 3" in {
+                finalDeclaration.selectNth("p", 3).text() mustBe SignUpConfirmationMessages.section1FinalDeclarationNextYearParagraph3
+              }
+              "contains bullet 1" in {
+                finalDeclaration.selectHead("ul").selectNth("li", 1).text() mustBe SignUpConfirmationMessages.section1FinalDeclarationNextYearBullet1
+              }
+              "contains bullet 2" in {
+                finalDeclaration.selectHead("ul").selectNth("li", 2).text() mustBe SignUpConfirmationMessages.section1FinalDeclarationNextYearBullet2
+              }
+            } else {
+              "contains a heading" in {
+                finalDeclaration.selectHead("h3").text() mustBe SignUpConfirmationMessages.section1FinalDeclarationThisYearHeading
+              }
+              "contains paragraph 1" in {
+                finalDeclaration.selectNth("p", 1).text() mustBe SignUpConfirmationMessages.section1FinalDeclarationThisYearParagraph1
+              }
+              "contains paragraph 2" in {
+                finalDeclaration.selectNth("p", 2).text() mustBe SignUpConfirmationMessages.section1FinalDeclarationThisYearParagraph2
+              }
+              "contains paragraph 3" in {
+                finalDeclaration.selectNth("p", 3).text() mustBe SignUpConfirmationMessages.section1FinalDeclarationThisYearParagraph3
+              }
+              "contains bullet 1" in {
+                finalDeclaration.selectHead("ul").selectNth("li", 1).text() mustBe SignUpConfirmationMessages.section1FinalDeclarationThisYearBullet1
+              }
+              "contains bullet 2" in {
+                finalDeclaration.selectHead("ul").selectNth("li", 2).text() mustBe SignUpConfirmationMessages.section1FinalDeclarationThisYearBullet2
+              }
+            }
+          }
         }
 
         "have a section 2" which {
@@ -358,6 +405,26 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val section1EndOfPeriodNextYearBullet1 = "make any accounting adjustments"
     val section1EndOfPeriodNextYearBullet2 = "claim any tax reliefs"
     val section1EndOfPeriodNextYearBullet3 = "confirm that the information you’ve sent is correct and complete"
+
+    val section1FinalDeclarationNextYearHeading = "3. Submit a final declaration and pay tax"
+    val section1FinalDeclarationNextYearParagraph1 = "The declaration replaces your Self Assessment tax return."
+    val section1FinalDeclarationNextYearParagraph2 = {
+      val year = AccountingPeriodUtil.getNextTaxYear.endDate.year
+      s"You must submit your final declaration and pay the tax you owe by 31 January $year."
+    }
+    val section1FinalDeclarationNextYearParagraph3 = "You may need to pay a penalty if you:"
+    val section1FinalDeclarationNextYearBullet1 = "miss the deadline for your final declaration"
+    val section1FinalDeclarationNextYearBullet2 = "do not pay the tax you owe by the deadline"
+
+    val section1FinalDeclarationThisYearHeading = "3. Submit a final declaration and pay tax"
+    val section1FinalDeclarationThisYearParagraph1 = "The declaration replaces your Self Assessment tax return."
+    val section1FinalDeclarationThisYearParagraph2 = {
+      val year = AccountingPeriodUtil.getCurrentTaxYear.endDate.year
+      s"You must submit your final declaration and pay the tax you owe by 31 January $year."
+    }
+    val section1FinalDeclarationThisYearParagraph3 = "You may need to pay a penalty if you:"
+    val section1FinalDeclarationThisYearBullet1 = "miss the deadline for your final declaration"
+    val section1FinalDeclarationThisYearBullet2 = "do not pay the tax you owe by the deadline"
 
     val section2onlineServicesHeading = "Check HMRC online services"
     val section2onlineServicesThisYearParagraph = "You can review or change the answers you have just entered, and to get updates."
