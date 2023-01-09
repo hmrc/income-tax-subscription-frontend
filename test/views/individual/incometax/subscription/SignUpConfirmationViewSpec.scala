@@ -106,7 +106,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
             }
           }
 
-          "contains the quarterly updates section" which {
+          "contains the quarterly updates section in first position" which {
             def quarterlyUpdates: Element = {
               testMainContent.selectNth(".row", quarterlyUpdateRowNumber).selectHead(".col")
             }
@@ -166,7 +166,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
             }
           }
 
-          "contains the end-of-period section" which {
+          "contains the end-of-period section in second position" which {
             def endOfPeriod: Element = {
               testMainContent.selectNth(".row", endOfPeriodRowNumber).selectHead(".col")
             }
@@ -191,7 +191,24 @@ class SignUpConfirmationViewSpec extends ViewSpec {
                 endOfPeriod.selectHead("ul").selectNth("li", 3).text() mustBe SignUpConfirmationMessages.section1EndOfPeriodNextYearBullet3
               }
             } else {
-              // this year tests to come here
+              "contains a heading" in {
+                endOfPeriod.selectHead("h3").text() mustBe SignUpConfirmationMessages.section1EndOfPeriodThisYearHeading
+              }
+              "contains paragraph 1" in {
+                endOfPeriod.selectNth("p", 1).text() mustBe SignUpConfirmationMessages.section1EndOfPeriodThisYearParagraph1
+              }
+              "contains paragraph 2" in {
+                endOfPeriod.selectNth("p", 2).text() mustBe SignUpConfirmationMessages.section1EndOfPeriodThisYearParagraph2
+              }
+              "contains bullet 1" in {
+                endOfPeriod.selectHead("ul").selectNth("li", 1).text() mustBe SignUpConfirmationMessages.section1EndOfPeriodThisYearBullet1
+              }
+              "contains bullet 2" in {
+                endOfPeriod.selectHead("ul").selectNth("li", 2).text() mustBe SignUpConfirmationMessages.section1EndOfPeriodThisYearBullet2
+              }
+              "contains bullet 3" in {
+                endOfPeriod.selectHead("ul").selectNth("li", 3).text() mustBe SignUpConfirmationMessages.section1EndOfPeriodThisYearBullet3
+              }
             }
 
           }
@@ -321,6 +338,16 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val section1QuarterlyUpdatesThisYearParagraph1 = "You can start sending quarterly updates during the current tax year. It will not affect the amount you pay."
     val section1QuarterlyUpdatesThisYearParagraph2 = "After you have sent an update you will get a year-to-date Income Tax estimate."
     val section1QuarterlyUpdatesThisYearParagraph3 = "There is no penalty if you start making updates mid-way through the current tax year but you will need to make updates for the quarters you’ve missed."
+
+    val section1EndOfPeriodThisYearHeading = "2. Send us an end of period statement"
+    val section1EndOfPeriodThisYearParagraph1 = {
+      val year = AccountingPeriodUtil.getCurrentTaxYear.endDate.year
+      s"Use your software to send us an end of period statement, by 31 January $year."
+    }
+    val section1EndOfPeriodThisYearParagraph2 = "For each income source, you must:"
+    val section1EndOfPeriodThisYearBullet1 = "make any accounting adjustments"
+    val section1EndOfPeriodThisYearBullet2 = "claim any tax reliefs"
+    val section1EndOfPeriodThisYearBullet3 = "confirm that the information you’ve sent is correct and complete"
 
     val section1EndOfPeriodNextYearHeading = "2. Send us an end of period statement"
     val section1EndOfPeriodNextYearParagraph1 = {

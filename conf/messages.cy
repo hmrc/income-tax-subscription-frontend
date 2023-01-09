@@ -310,6 +310,13 @@ sign-up-confirmation.section1.quarterly-updates.next-year.paragraph1 = You can s
 sign-up-confirmation.section1.quarterly-updates.next-year.paragraph2 = After you have sent an update you will get a year-to-date Income Tax estimate.
 sign-up-confirmation.section1.quarterly-updates.next-year.paragraph3 = There is no penalty if you start making updates mid-way through the next tax year but you will need to make updates for the quarters you’ve missed.
 
+sign-up-confirmation.section1.end-of-period.this-year.heading        = 2. Send us an end of period statement ... but in Welsh
+sign-up-confirmation.section1.end-of-period.this-year.paragraph1     = Use your software to send us an end of period statement, by {0}. ... but in Welsh
+sign-up-confirmation.section1.end-of-period.this-year.paragraph2     = For each income source, you must: ... but in Welsh
+sign-up-confirmation.section1.end-of-period.this-year.bullet1        = make any accounting adjustments ... but in Welsh
+sign-up-confirmation.section1.end-of-period.this-year.bullet2        = claim any tax reliefs ... but in Welsh
+sign-up-confirmation.section1.end-of-period.this-year.bullet3        = confirm that the information you’ve sent is correct and complete ... but in Welsh
+
 sign-up-confirmation.section1.end-of-period.next-year.heading        = 2. Send us an end of period statement ... but in Welsh
 sign-up-confirmation.section1.end-of-period.next-year.paragraph1     = Use your software to send us an end of period statement, by {0}. ... but in Welsh
 sign-up-confirmation.section1.end-of-period.next-year.paragraph2     = For each income source, you must: ... but in Welsh
