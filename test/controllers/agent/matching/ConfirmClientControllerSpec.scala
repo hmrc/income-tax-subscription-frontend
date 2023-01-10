@@ -322,6 +322,9 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
             s"redirect user to ${controllers.agent.eligibility.routes.CannotTakePartController.show.url}" in withController { controller =>
               mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
               mockGetEligibilityStatus(utr)(Future.successful(Right(ineligible)))
+              setupMockPrePopulateSave(testReference)
+              mockSaveEligibilityStatusYearMap(testReference)
+              mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
               setupMockNotLockedOut(arn)
 
               val result = await(callSubmit(controller))
@@ -336,7 +339,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
           }
 
           "the GetEligibilityStatus call fails" should {
-            "through an exception" in withController { controller =>
+            "throw an exception" in withController { controller =>
               mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
               mockGetEligibilityStatus(utr)(Future.successful(Left(HttpConnectorError(HttpResponse(500, "")))))
               setupMockNotLockedOut(arn)

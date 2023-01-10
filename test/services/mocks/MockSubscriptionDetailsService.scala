@@ -66,6 +66,9 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
   def mockSavePrePopFlag(reference: String) =
     setupMockSubscriptionDetailsSaveFunctions(reference, SubscriptionDataKeys.PrePopFlag)
 
+  def mockSaveEligibilityStatusYearMap(reference: String) =
+    setupMockSubscriptionDetailsSaveFunctions(reference, SubscriptionDataKeys.EligibilityStatusYearMap)
+
   def verifySaveOverseasProperty(count: Int, reference: String, overseasPropertyModel: OverseasPropertyModel) =
     verifySubscriptionDetailsSaveWithField[OverseasPropertyModel](reference, count, SubscriptionDataKeys.OverseasProperty, overseasPropertyModel)
 
@@ -220,10 +223,9 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
       ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(Left(UnexpectedStatusFailure(500))))
   }
 
-  protected final def setupMockSubscriptionDetailsSaveFunctions(reference: String, id: String): Unit = {
-    when(mockConnector.saveSubscriptionDetails(ArgumentMatchers.eq(reference), ArgumentMatchers.any(), ArgumentMatchers.any())(
+  protected final def setupMockSubscriptionDetailsSaveFunctions(reference: String, id: String): Unit =
+    when(mockConnector.saveSubscriptionDetails(ArgumentMatchers.eq(reference), ArgumentMatchers.eq(id), ArgumentMatchers.any())(
       ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(Right(PostSubscriptionDetailsSuccessResponse)))
-  }
 
   protected final def mockFetchBusinessName(fetchBusinessName: Option[BusinessNameModel]): Unit = {
     when(mockConnector.getSubscriptionDetails[BusinessNameModel](ArgumentMatchers.any(), ArgumentMatchers.eq(SubscriptionDataKeys.BusinessName))
