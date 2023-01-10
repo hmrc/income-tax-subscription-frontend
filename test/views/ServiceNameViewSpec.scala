@@ -20,7 +20,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.test.FakeRequest
 import play.twirl.api.{Html, HtmlFormat}
-import views.html.templates.{AgentMainTemplate, GovUkWrapper, PrincipalMainTemplate}
+import views.html.templates.{AgentMainTemplate, PrincipalMainTemplate}
 
 class ServiceNameViewSpec extends ViewSpecTrait {
   private val individualLayout: PrincipalMainTemplate = app.injector.instanceOf[PrincipalMainTemplate]

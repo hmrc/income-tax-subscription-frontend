@@ -18,7 +18,7 @@ package utilities
 
 import config.AppConfig
 import config.featureswitch.FeatureSwitching
-import models.{No, Yes}
+import models.{No, UpdateDeadline, Yes}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
@@ -34,6 +34,7 @@ import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
+import java.time.LocalDate
 import scala.jdk.CollectionConverters._
 
 trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with BeforeAndAfterEach with FeatureSwitching {
@@ -409,4 +410,10 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
     }
   }
 
+  implicit class DateRangeString(val updateDeadline: UpdateDeadline) {
+    def toRangeString(dateFormatter: LocalDate => String, fromToFormat: String = "%s - %s"): String =
+      fromToFormat.format(dateFormatter(updateDeadline.accountingPeriodModel.startDate.toLocalDate), dateFormatter(updateDeadline.accountingPeriodModel.endDate.toLocalDate))
+
+
+  }
 }

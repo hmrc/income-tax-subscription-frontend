@@ -17,6 +17,7 @@
 package views.individual.incometax.subscription
 
 import models._
+import models.common.AccountingPeriodModel
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.mockito.ArgumentMatchers
@@ -48,10 +49,30 @@ class SignUpCompleteViewSpec extends ViewSpec {
   val FIFTH: Int = 5
   val SIXTH: Int = 6
 
-  val q1Update: UpdateDeadline = UpdateDeadline(LocalDate.of(CURRENT_TAX_YEAR - 1, APRIL, SIXTH), LocalDate.of(CURRENT_TAX_YEAR - 1, JULY, FIFTH), LocalDate.of(CURRENT_TAX_YEAR - 1, AUGUST, FIFTH))
-  val q2Update: UpdateDeadline = UpdateDeadline(LocalDate.of(CURRENT_TAX_YEAR - 1, APRIL, SIXTH), LocalDate.of(CURRENT_TAX_YEAR - 1, JULY, FIFTH), LocalDate.of(CURRENT_TAX_YEAR - 1, AUGUST, FIFTH))
-  val q3Update: UpdateDeadline = UpdateDeadline(LocalDate.of(CURRENT_TAX_YEAR - 1, APRIL, SIXTH), LocalDate.of(CURRENT_TAX_YEAR - 1, JULY, FIFTH), LocalDate.of(CURRENT_TAX_YEAR - 1, AUGUST, FIFTH))
-  val q4Update: UpdateDeadline = UpdateDeadline(LocalDate.of(CURRENT_TAX_YEAR - 1, APRIL, SIXTH), LocalDate.of(CURRENT_TAX_YEAR - 1, JULY, FIFTH), LocalDate.of(CURRENT_TAX_YEAR - 1, AUGUST, FIFTH))
+  val q1Update: UpdateDeadline = UpdateDeadline(
+    AccountingPeriodModel(
+      LocalDate.of(CURRENT_TAX_YEAR - 1, APRIL, SIXTH),
+      LocalDate.of(CURRENT_TAX_YEAR - 1, JULY, FIFTH)
+    ),
+    LocalDate.of(CURRENT_TAX_YEAR - 1, AUGUST, FIFTH))
+  val q2Update: UpdateDeadline = UpdateDeadline(
+    AccountingPeriodModel(
+      LocalDate.of(CURRENT_TAX_YEAR - 1, APRIL, SIXTH),
+      LocalDate.of(CURRENT_TAX_YEAR - 1, JULY, FIFTH)
+    ),
+    LocalDate.of(CURRENT_TAX_YEAR - 1, AUGUST, FIFTH))
+  val q3Update: UpdateDeadline = UpdateDeadline(
+    AccountingPeriodModel(
+      LocalDate.of(CURRENT_TAX_YEAR - 1, APRIL, SIXTH),
+      LocalDate.of(CURRENT_TAX_YEAR - 1, JULY, FIFTH)
+    ),
+    LocalDate.of(CURRENT_TAX_YEAR - 1, AUGUST, FIFTH))
+  val q4Update: UpdateDeadline = UpdateDeadline(
+    AccountingPeriodModel(
+      LocalDate.of(CURRENT_TAX_YEAR - 1, APRIL, SIXTH),
+      LocalDate.of(CURRENT_TAX_YEAR - 1, JULY, FIFTH)
+    ),
+    LocalDate.of(CURRENT_TAX_YEAR - 1, AUGUST, FIFTH))
 
   val signUpComplete: SignUpComplete = GuiceApplicationBuilder()
     .overrides(inject.bind[AccountingPeriodService].to(mockAccountingPeriodService))

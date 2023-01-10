@@ -54,6 +54,8 @@ object AccountingPeriodUtil {
 
   def getNextTaxYear: AccountingPeriodModel = AccountingPeriodModel(getCurrentTaxYearStartDate.plusYears(1), getCurrentTaxYearEndDate.plusYears(1))
 
+  def getTaxYear(next: Boolean): AccountingPeriodModel = if (next) getNextTaxYear else getCurrentTaxYear
+
   implicit object LocalDateOrdering extends Ordering[LocalDate] {
     override def compare(x: LocalDate, y: LocalDate): Int = x.compareTo(y)
   }

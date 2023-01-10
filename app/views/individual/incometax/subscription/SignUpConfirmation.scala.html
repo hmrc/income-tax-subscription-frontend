@@ -17,6 +17,7 @@
 @import config.AppConfig
 @import services.AccountingPeriodService
 @import views.html.helpers.injected.UpdateDeadlineTable
+@import views.html.helpers.injected.AccountingPeriodHelper
 @import views.html.templates.PrincipalMainTemplate
 @import uk.gov.hmrc.play.language.LanguageUtils
 @import utilities.AccountingPeriodUtil
@@ -27,6 +28,7 @@
   govukWarningText : GovukWarningText,
   languageUtils: LanguageUtils,
   table: UpdateDeadlineTable,
+  accountingPeriodHelper: AccountingPeriodHelper,
   accountingPeriodService: AccountingPeriodService
 )
 
@@ -44,11 +46,14 @@
     <strong>@Html(userDetails)</strong>
   </p>
   <p>
-    @if(taxYearSelectionIsNext) {
-      @messages("sign-up-confirmation.heading.panel.next")
-    } else {
-      @messages("sign-up-confirmation.heading.panel.current")
-    }
+      @{
+        val signUpTaxYear = accountingPeriodHelper(AccountingPeriodUtil.getTaxYear(taxYearSelectionIsNext))
+        if(taxYearSelectionIsNext) {
+          messages("sign-up-confirmation.heading.panel.next", signUpTaxYear)
+        } else {
+          messages("sign-up-confirmation.heading.panel.current", signUpTaxYear)
+        }
+      }
   </p>
 }
 
@@ -66,8 +71,7 @@
 
    @table(
      updateAndDeadlineDates = accountingPeriodService.getAllUpdateAndDeadlineDates(Next),
-     tableCaption = messages("sign-up-confirmation.section1.quarterly-updates.table-caption"),
-     fromToFormat = s"%s ${messages("base.to")} %s"
+     tableCaption = messages("sign-up-confirmation.section1.quarterly-updates.table-caption")
    )
 
    @if(taxYearSelectionIsNext) {

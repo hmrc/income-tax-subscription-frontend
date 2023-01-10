@@ -17,6 +17,7 @@
 package views.individual.incometax.subscription
 
 import models.UpdateDeadline
+import models.common.AccountingPeriodModel
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.Html
@@ -365,8 +366,16 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
   private object SignUpConfirmationMessages {
     val heading = "Sign up complete"
-    val headingPanelBodyCurrent = "is signed up for Making Tax Digital for Income Tax for the current tax year"
-    val headingPanelBodyNext = "is signed up for Making Tax Digital for Income Tax for the next tax year"
+    val headingPanelBodyCurrent = {
+      val yearStart = AccountingPeriodUtil.getCurrentTaxYear.startDate.year
+      val yearEnd = AccountingPeriodUtil.getCurrentTaxYear.endDate.year
+      s"is signed up for Making Tax Digital for Income Tax for the current tax year (6 April $yearStart to 5 April $yearEnd)"
+    }
+    val headingPanelBodyNext = {
+      val yearStart = AccountingPeriodUtil.getNextTaxYear.startDate.year
+      val yearEnd = AccountingPeriodUtil.getNextTaxYear.endDate.year
+      s"is signed up for Making Tax Digital for Income Tax for the next tax year (6 April $yearStart to 5 April $yearEnd)"
+    }
     val section1heading = "What you will have to do"
     val section1hint = "Warning Continue to submit your Self Assessment tax return, as normal, until 2024."
     val section2heading = "Find software and check your account"
@@ -451,9 +460,28 @@ class SignUpConfirmationViewSpec extends ViewSpec {
   private val CURRENT_TAX_YEAR: Int = Random.between(1900, 2100)
   private val FIFTH: Int = 5
   private val SIXTH: Int = 6
-  private val q1Update: UpdateDeadline = UpdateDeadline(LocalDate.of(CURRENT_TAX_YEAR - 1, APRIL, SIXTH), LocalDate.of(CURRENT_TAX_YEAR - 1, JULY, FIFTH), LocalDate.of(CURRENT_TAX_YEAR - 1, AUGUST, FIFTH))
-  private val q2Update: UpdateDeadline = UpdateDeadline(LocalDate.of(CURRENT_TAX_YEAR - 1, JULY, SIXTH), LocalDate.of(CURRENT_TAX_YEAR - 1, OCTOBER, FIFTH), LocalDate.of(CURRENT_TAX_YEAR - 1, NOVEMBER, FIFTH))
-  private val q3Update: UpdateDeadline = UpdateDeadline(LocalDate.of(CURRENT_TAX_YEAR - 1, OCTOBER, SIXTH), LocalDate.of(CURRENT_TAX_YEAR - 1, JANUARY, FIFTH), LocalDate.of(CURRENT_TAX_YEAR - 1, FEBRUARY, FIFTH))
-  private val q4Update: UpdateDeadline = UpdateDeadline(LocalDate.of(CURRENT_TAX_YEAR - 1, JANUARY, SIXTH), LocalDate.of(CURRENT_TAX_YEAR - 1, APRIL, FIFTH), LocalDate.of(CURRENT_TAX_YEAR - 1, MAY, FIFTH))
-
+  private val q1Update: UpdateDeadline = UpdateDeadline(
+    AccountingPeriodModel(
+      LocalDate.of(CURRENT_TAX_YEAR - 1, APRIL, SIXTH),
+      LocalDate.of(CURRENT_TAX_YEAR - 1, JULY, FIFTH)
+    ),
+    LocalDate.of(CURRENT_TAX_YEAR - 1, AUGUST, FIFTH))
+  private val q2Update: UpdateDeadline = UpdateDeadline(
+    AccountingPeriodModel(
+      LocalDate.of(CURRENT_TAX_YEAR - 1, JULY, SIXTH),
+      LocalDate.of(CURRENT_TAX_YEAR - 1, OCTOBER, FIFTH)
+    ),
+    LocalDate.of(CURRENT_TAX_YEAR - 1, NOVEMBER, FIFTH))
+  private val q3Update: UpdateDeadline = UpdateDeadline(
+    AccountingPeriodModel(
+      LocalDate.of(CURRENT_TAX_YEAR - 1, OCTOBER, SIXTH),
+      LocalDate.of(CURRENT_TAX_YEAR - 1, JANUARY, FIFTH)
+    ),
+    LocalDate.of(CURRENT_TAX_YEAR - 1, FEBRUARY, FIFTH))
+  private val q4Update: UpdateDeadline = UpdateDeadline(
+    AccountingPeriodModel(
+      LocalDate.of(CURRENT_TAX_YEAR - 1, JANUARY, SIXTH),
+      LocalDate.of(CURRENT_TAX_YEAR - 1, APRIL, FIFTH)
+    ),
+    LocalDate.of(CURRENT_TAX_YEAR - 1, MAY, FIFTH))
 }

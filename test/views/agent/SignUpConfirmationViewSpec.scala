@@ -115,7 +115,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "have a section 2" which {
-          if (yearIsNext){
+          if (yearIsNext) {
             "contains a heading" in {
               testMainContent.selectNth(".row", 2).selectHead("h3").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesNextYearHeading
             }
@@ -147,7 +147,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "have a section 3" which {
-          if(yearIsNext){
+          if (yearIsNext) {
             "contains a heading" in {
               testMainContent.selectNth(".row", 3).selectHead("h3").text() mustBe SignUpConfirmationMessages.endOfPeriodStatementNextYearHeading
             }
@@ -165,8 +165,8 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           }
         }
 
-        if(yearIsNext) {
-         "have a section 4" which {
+        if (yearIsNext) {
+          "have a section 4" which {
             "contains a heading" in {
               testMainContent.selectNth(".row", 4).selectHead("h3").text() mustBe SignUpConfirmationMessages.finalDeclarationNextYearHeading
             }
@@ -241,8 +241,28 @@ class SignUpConfirmationViewSpec extends ViewSpec {
   private val CURRENT_TAX_YEAR: Int = Random.between(1900, 2100)
   private val FIFTH: Int = 5
   private val SIXTH: Int = 6
-  private val q1Update: UpdateDeadline = UpdateDeadline(LocalDate.of(CURRENT_TAX_YEAR - 1, APRIL, SIXTH), LocalDate.of(CURRENT_TAX_YEAR - 1, JULY, FIFTH), LocalDate.of(CURRENT_TAX_YEAR - 1, AUGUST, FIFTH))
-  private val q2Update: UpdateDeadline = UpdateDeadline(LocalDate.of(CURRENT_TAX_YEAR - 1, JULY, SIXTH), LocalDate.of(CURRENT_TAX_YEAR - 1, OCTOBER, FIFTH), LocalDate.of(CURRENT_TAX_YEAR - 1, NOVEMBER, FIFTH))
-  private val q3Update: UpdateDeadline = UpdateDeadline(LocalDate.of(CURRENT_TAX_YEAR - 1, OCTOBER, SIXTH), LocalDate.of(CURRENT_TAX_YEAR - 1, JANUARY, FIFTH), LocalDate.of(CURRENT_TAX_YEAR - 1, FEBRUARY, FIFTH))
-  private val q4Update: UpdateDeadline = UpdateDeadline(LocalDate.of(CURRENT_TAX_YEAR - 1, JANUARY, SIXTH), LocalDate.of(CURRENT_TAX_YEAR - 1, APRIL, FIFTH), LocalDate.of(CURRENT_TAX_YEAR - 1, MAY, FIFTH))
+  private val q1Update: UpdateDeadline = UpdateDeadline(
+    AccountingPeriodModel(
+      LocalDate.of(CURRENT_TAX_YEAR - 1, APRIL, SIXTH),
+      LocalDate.of(CURRENT_TAX_YEAR - 1, JULY, FIFTH)
+    ),
+    LocalDate.of(CURRENT_TAX_YEAR - 1, AUGUST, FIFTH))
+  private val q2Update: UpdateDeadline = UpdateDeadline(
+    AccountingPeriodModel(
+      LocalDate.of(CURRENT_TAX_YEAR - 1, JULY, SIXTH),
+      LocalDate.of(CURRENT_TAX_YEAR - 1, OCTOBER, FIFTH)
+    ),
+    LocalDate.of(CURRENT_TAX_YEAR - 1, NOVEMBER, FIFTH))
+  private val q3Update: UpdateDeadline = UpdateDeadline(
+    AccountingPeriodModel(
+      LocalDate.of(CURRENT_TAX_YEAR - 1, OCTOBER, SIXTH),
+      LocalDate.of(CURRENT_TAX_YEAR - 1, JANUARY, FIFTH)
+    ),
+    LocalDate.of(CURRENT_TAX_YEAR - 1, FEBRUARY, FIFTH))
+  private val q4Update: UpdateDeadline = UpdateDeadline(
+    AccountingPeriodModel(
+      LocalDate.of(CURRENT_TAX_YEAR - 1, JANUARY, SIXTH),
+      LocalDate.of(CURRENT_TAX_YEAR - 1, APRIL, FIFTH)
+    ),
+    LocalDate.of(CURRENT_TAX_YEAR - 1, MAY, FIFTH))
 }

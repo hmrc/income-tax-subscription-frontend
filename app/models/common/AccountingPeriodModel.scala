@@ -20,6 +20,8 @@ import models.DateModel
 import play.api.libs.json.{Json, OFormat}
 import utilities.AccountingPeriodUtil
 
+import java.time.LocalDate
+
 
 case class AccountingPeriodModel(startDate: DateModel, endDate: DateModel) {
   lazy val taxEndYear: Int = AccountingPeriodUtil.getTaxEndYear(this)
@@ -34,5 +36,8 @@ case class AccountingPeriodModel(startDate: DateModel, endDate: DateModel) {
 }
 
 object AccountingPeriodModel {
+  def apply(updateFrom: LocalDate, updateTo: LocalDate): AccountingPeriodModel =
+    new AccountingPeriodModel(DateModel.dateConvert(updateFrom), DateModel.dateConvert(updateTo))
+
   implicit val format: OFormat[AccountingPeriodModel] = Json.format[AccountingPeriodModel]
 }
