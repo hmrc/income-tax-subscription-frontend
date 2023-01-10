@@ -62,8 +62,8 @@ iv-failure.failed-questions                                     = rydych wedi me
 iv-failure.could-not-match-details                              = nid oeddem yn gallu paru’ch manylion â’r hyn sydd ar ein system
 
 ## Individual what income source to sign up page
-income-source.title                             = Pa ffynhonnell incwm ydych chi am ei chofrestru?
-income-source.heading                           = Pa ffynhonnell incwm ydych chi am ei chofrestru?
+income-source.title                             = Ychwanegu ffynhonnell incwm
+income-source.heading                           = Ychwanegu ffynhonnell incwm
 income-source.para1                             = Gallwch ychwanegu eich busnesau unig fasnachwr eraill os oes gennych chi fwy nag un. Os oes gennych chi incwm o eiddo, gallwch ei ychwanegu hefyd.
 income-source.para1-overseas                    = Os ydych yn hunangyflogedig, mae’n rhaid i chi ychwanegu bob un o’ch busnesau unig fasnachwr os oes gennych fwy nag un. Os oes gennych incwm o eiddo mae’n rhaid i chi ei ychwanegu. Mae hyn wedi’i gyfyngu i un busnes eiddo yn y DU ac un busnes eiddo tramor y gallwch ei gael.
 income-source.para2                             = Mae rhoi eiddo ar osod yn cynnwys defnyddio asiantaeth gosod eiddo.
