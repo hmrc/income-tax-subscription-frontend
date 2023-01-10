@@ -274,7 +274,7 @@ agent.sign-up-confirmation.check.heading                           = Check your 
 agent.sign-up-confirmation.check.description                       = Go to your <a href="{0}">agent service account</a> to review or change the answers you have entered, and to get updates... but in Welsh
 agent.sign-up-confirmation.section1.quarterly-updates.table-caption         = Quarterly updates by the deadline... but in Welsh
 agent.sign-up-confirmation.section1.quarterly-updates.next-year.heading     = 1. Continuing to submit your tax return... but in Welsh
-agent.sign-up-confirmation.section1.quarterly-updates.next-year.paragraph   = Continue to submit your Self Assessment tax return, as normal, until 2025... but in Welsh
+agent.sign-up-confirmation.section1.quarterly-updates.next-year.paragraph   = Continue to submit your Self Assessment tax return, as normal, until {0}. ... but in Welsh
 agent.sign-up-confirmation.section1.quarterly-updates.this-year.heading     = 1. Update us every quarter... but in Welsh
 agent.sign-up-confirmation.section1.quarterly-updates.this-year.paragraph   = Your client will not face a penalty if you start making updates mid-way through the current tax year but you will need to make updates for the quarter’s you have missed.... but in Welsh
 agent.sign-up-confirmation.section2.quarterly-updates.next-year.heading     = 2. Update us every quarter... but in Welsh

@@ -22,6 +22,8 @@ import org.scalatest.OptionValues
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
+import java.time.LocalDate
+
 
 class AccountingPeriodUtilSpec extends AnyWordSpecLike with Matchers with OptionValues {
 
@@ -60,6 +62,40 @@ class AccountingPeriodUtilSpec extends AnyWordSpecLike with Matchers with Option
   "AccountingPeriodUtil.getCurrentTaxYearEndDate" should {
     "return the end date for the current tax year" in {
       AccountingPeriodUtil.getCurrentTaxYearEndDate shouldBe DateModel("5", "4", AccountingPeriodUtil.getCurrentTaxEndYear.toString)
+    }
+  }
+
+  "AccountingPeriodUtil.getEndOfPeriodStatementDate" when {
+    "for current tax year" should {
+      "return the end of period statement date for the current tax year" in {
+        val now: LocalDate = LocalDate.now
+        val endOfPeriodStatementYear: Int = AccountingPeriodUtil.getTaxEndYear(now) + 1
+        AccountingPeriodUtil.getEndOfPeriodStatementDate(false) shouldBe LocalDate.of(endOfPeriodStatementYear, 1, 31)
+      }
+    }
+    "for next tax year" should {
+      "return the end of period statement date for the next tax year" in {
+        val now: LocalDate = LocalDate.now
+        val endOfPeriodStatementYear: Int = AccountingPeriodUtil.getTaxEndYear(now) + 2
+        AccountingPeriodUtil.getEndOfPeriodStatementDate(true) shouldBe LocalDate.of(endOfPeriodStatementYear, 1, 31)
+      }
+    }
+  }
+
+  "AccountingPeriodUtil.getFinalDeclarationDate" when {
+    "for current tax year" should {
+      "return the final declaration date for the current tax year" in {
+        val now: LocalDate = LocalDate.now
+        val finalDeclarationYear: Int = AccountingPeriodUtil.getTaxEndYear(now) + 1
+        AccountingPeriodUtil.getFinalDeclarationDate(false) shouldBe LocalDate.of(finalDeclarationYear, 1, 31)
+      }
+    }
+    "for next tax year" should {
+      "return the final declaration date for the next tax year" in {
+        val now: LocalDate = LocalDate.now
+        val finalDeclarationYear: Int = AccountingPeriodUtil.getTaxEndYear(now) + 2
+        AccountingPeriodUtil.getFinalDeclarationDate(true) shouldBe LocalDate.of(finalDeclarationYear, 1, 31)
+      }
     }
   }
 

@@ -26,6 +26,7 @@ import views.html.individual.incometax.subscription.SignUpConfirmation
 
 import java.time.LocalDate
 import java.time.Month._
+import java.time.format.DateTimeFormatter
 import scala.util.Random
 
 class SignUpConfirmationViewSpec extends ViewSpec {
@@ -396,9 +397,9 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val section1QuarterlyUpdatesThisYearParagraph3 = "There is no penalty if you start making updates mid-way through the current tax year but you will need to make updates for the quarters you’ve missed."
 
     val section1EndOfPeriodThisYearHeading = "2. Send us an end of period statement"
-    val section1EndOfPeriodThisYearParagraph1 = {
-      val year = AccountingPeriodUtil.getCurrentTaxYear.endDate.year
-      s"Use your software to send us an end of period statement, by 31 January $year."
+    val section1EndOfPeriodThisYearParagraph1: String = {
+      val date = AccountingPeriodUtil.getEndOfPeriodStatementDate(false).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
+      s"Use your software to send us an end of period statement, by $date."
     }
     val section1EndOfPeriodThisYearParagraph2 = "For each income source, you must:"
     val section1EndOfPeriodThisYearBullet1 = "make any accounting adjustments"
@@ -406,9 +407,9 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val section1EndOfPeriodThisYearBullet3 = "confirm that the information you’ve sent is correct and complete"
 
     val section1EndOfPeriodNextYearHeading = "2. Send us an end of period statement"
-    val section1EndOfPeriodNextYearParagraph1 = {
-      val year = AccountingPeriodUtil.getNextTaxYear.endDate.year
-      s"Use your software to send us an end of period statement, by 31 January $year."
+    val section1EndOfPeriodNextYearParagraph1: String = {
+      val date = AccountingPeriodUtil.getEndOfPeriodStatementDate(true).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
+      s"Use your software to send us an end of period statement, by $date."
     }
     val section1EndOfPeriodNextYearParagraph2 = "For each income source, you must:"
     val section1EndOfPeriodNextYearBullet1 = "make any accounting adjustments"
@@ -417,9 +418,9 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
     val section1FinalDeclarationNextYearHeading = "3. Submit a final declaration and pay tax"
     val section1FinalDeclarationNextYearParagraph1 = "The declaration replaces your Self Assessment tax return."
-    val section1FinalDeclarationNextYearParagraph2 = {
-      val year = AccountingPeriodUtil.getNextTaxYear.endDate.year
-      s"You must submit your final declaration and pay the tax you owe by 31 January $year."
+    val section1FinalDeclarationNextYearParagraph2: String = {
+      val date = AccountingPeriodUtil.getFinalDeclarationDate(true).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
+      s"You must submit your final declaration and pay the tax you owe by $date."
     }
     val section1FinalDeclarationNextYearParagraph3 = "You may need to pay a penalty if you:"
     val section1FinalDeclarationNextYearBullet1 = "miss the deadline for your final declaration"
@@ -427,9 +428,9 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
     val section1FinalDeclarationThisYearHeading = "3. Submit a final declaration and pay tax"
     val section1FinalDeclarationThisYearParagraph1 = "The declaration replaces your Self Assessment tax return."
-    val section1FinalDeclarationThisYearParagraph2 = {
-      val year = AccountingPeriodUtil.getCurrentTaxYear.endDate.year
-      s"You must submit your final declaration and pay the tax you owe by 31 January $year."
+    val section1FinalDeclarationThisYearParagraph2: String = {
+      val date = AccountingPeriodUtil.getFinalDeclarationDate(false).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
+      s"You must submit your final declaration and pay the tax you owe by $date."
     }
     val section1FinalDeclarationThisYearParagraph3 = "You may need to pay a penalty if you:"
     val section1FinalDeclarationThisYearBullet1 = "miss the deadline for your final declaration"
