@@ -220,7 +220,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val quarterlyUpdatesThisYearParagraph = "Your client will not face a penalty if you start making updates mid-way through the current tax year but you will need to make updates for the quarter’s you have missed."
     val quarterlyUpdatesNextYearParagraph = "You can start sending your client’s quarterly updates during the next tax year. It will not affect the amount they pay."
     val taxReturnSubmissionHeading = "1. Continuing to submit your tax return"
-    val taxReturnSubmissionParagraph = "Continue to submit your Self Assessment tax return, as normal, until 2025"
+    val taxReturnSubmissionParagraph = s"Continue to submit your Self Assessment tax return, as normal, until ${AccountingPeriodUtil.getNextTaxEndYear + 1}."
     val endOfPeriodStatementThisYearHeading = "2. Send us an end of period statement"
     val endOfPeriodStatementNextYearHeading = "3. Send us an end of period statement"
     val endOfPeriodStatementThisYearDate = AccountingPeriodUtil.getEndOfPeriodStatementDate(false).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))

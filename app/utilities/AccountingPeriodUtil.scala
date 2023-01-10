@@ -35,14 +35,15 @@ object AccountingPeriodUtil {
   def getTaxEndYear(accountingPeriodModel: AccountingPeriodModel): Int = getTaxEndYear(accountingPeriodModel.endDate.toLocalDate)
 
   def getCurrentTaxEndYear: Int = getTaxEndYear(LocalDate.now())
+  def getNextTaxEndYear: Int = getTaxEndYear(LocalDate.now().plusYears(1))
 
   def getEndOfPeriodStatementDate(isNextTaxYear: Boolean): LocalDate = {
-    val year = if (isNextTaxYear) getCurrentTaxEndYear + 1 else getCurrentTaxEndYear
+    val year = if (isNextTaxYear) getNextTaxEndYear + 1 else getCurrentTaxEndYear + 1
     LocalDate.of(year, JANUARY, thirtyFirst)
   }
 
   def getFinalDeclarationDate(isNextTaxYear: Boolean): LocalDate = {
-    val year = if (isNextTaxYear) getCurrentTaxEndYear + 1 else getCurrentTaxEndYear
+    val year = if (isNextTaxYear) getNextTaxEndYear + 1 else getCurrentTaxEndYear + 1
     LocalDate.of(year, JANUARY, thirtyFirst)
   }
 

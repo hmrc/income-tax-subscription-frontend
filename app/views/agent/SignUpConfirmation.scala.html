@@ -61,7 +61,7 @@
 @continuingTaxReturn = {
   <div>
     <h3 class="govuk-heading-m">@messages("agent.sign-up-confirmation.section1.quarterly-updates.next-year.heading")</h3>
-    <p class="govuk-body">@messages("agent.sign-up-confirmation.section1.quarterly-updates.next-year.paragraph")</p>
+    <p class="govuk-body">@messages("agent.sign-up-confirmation.section1.quarterly-updates.next-year.paragraph", (AccountingPeriodUtil.getNextTaxEndYear + 1).toString)</p>
   </div>
 }
 
