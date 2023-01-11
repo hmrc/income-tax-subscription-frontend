@@ -521,6 +521,23 @@ agent.cannot-take-part.other.point4                             = nid yw ei gyfn
 agent.cannot-take-part.alternative                              = Bydd yn rhaid i’ch cleient anfon {0} yn lle hynny. Mae’n bosibl y gallwch ddefnyddio’r gwasanaeth ‘Defnyddio meddalwedd i roi gwybod am Dreth Incwm eich cleient’ ar gyfer eich cleient yn y dyfodol.
 agent.cannot-take-part.alternative.link                         = Ffurflen Dreth Hunanasesiad
 
+# Agent cannot sign up page
+agent.cannot-sign-up.heading                                    = Gall eich cleient gofrestru ar gyfer y cynllun peilot hwn o {0}
+agent.cannot-sign-up.paragraph1                                 = Ni all eich cleient gofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm eto. Mae hyn oherwydd nad yw’r cynllun ar gael ar hyn o bryd i bobl sydd â mathau penodol o:
+agent.cannot-sign-up.bullet1                                    = incwm
+agent.cannot-sign-up.bullet2                                    = didyniadau
+agent.cannot-sign-up.paragraph2                                 = Gall eich cleient gofrestru o hyd ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm ar gyfer y flwyddyn dreth nesaf, sy’n dechrau ar {0}.
+agent.cannot-sign-up.paragraph3                                 = Efallai y bydd eich cleient yn gallu ymuno â’r cynllun peilot o hyd os yw’ch amgylchiadau wedi newid yn ddiweddar. Gwiriwch {0}, er mwyn gweld a all eich cleient gofrestru.
+agent.cannot-sign-up.link1                                      = pwy sy’n gallu defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+agent.cannot-sign-up.subheading                                 = Pryd mae’n rhaid i’ch cleient ddefnyddio’r gwasanaeth hwn
+agent.cannot-sign-up.paragraph4                                 = O 6 Ebrill 2026 ymlaen, bydd yn rhaid i’ch cleient ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm os bydd cyfanswm ei {0} dros £10,000 ar gyfer:
+agent.cannot-sign-up.link2                                      = incwm cymwys
+agent.cannot-sign-up.bullet3                                    = hunangyflogaeth
+agent.cannot-sign-up.bullet4                                    = eiddo
+agent.cannot-sign-up.paragraph5                                 = Bydd yn dal i fod yn rhaid i’ch cleient {0} ar gyfer y flwyddyn dreth cyn i’ch cleient gofrestru i ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+agent.cannot-sign-up.link3                                      = anfon Ffurflen Dreth Hunanasesiad i CThEF
+agent.cannot-sign-up.continue-button                            = Yn eich blaen i gofrestru cleient ar gyfer mis {0}
+
 # Agent accounting period check page
 agent.accounting-period-check.title                             = A yw holl gyfnodau cyfrifyddu busnes eich cleient yn rhedeg o 6 Ebrill i 5 Ebrill?
 agent.accounting-period-check.heading                           = A yw holl gyfnodau cyfrifyddu busnes eich cleient yn rhedeg o 6 Ebrill i 5 Ebrill?

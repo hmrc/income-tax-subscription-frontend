@@ -522,6 +522,23 @@ agent.cannot-take-part.other.point4                             = accounting per
 agent.cannot-take-part.alternative                              = Your client will need to send a {0} instead. You may be able to ‘Use software to report your client’s Income Tax’ service for your client in the future.
 agent.cannot-take-part.alternative.link                         = self assessment tax return
 
+# Agent cannot sign up page
+agent.cannot-sign-up.heading                                    = Your client can sign up to this pilot from {0}
+agent.cannot-sign-up.paragraph1                                 = Your client cannot sign up to Making Tax Digital for Income tax yet. This is because it’s not currently available to people with certain types of:
+agent.cannot-sign-up.bullet1                                    = Income
+agent.cannot-sign-up.bullet2                                    = Deductions
+agent.cannot-sign-up.paragraph2                                 = Your client can still sign up for Making Tax Digital for Income Tax for the next tax year, which starts on {0}.
+agent.cannot-sign-up.paragraph3                                 = Your client may still be able to join the pilot if their circumstances have recently changed. Check {0} to see if they can sign up.
+agent.cannot-sign-up.link1                                      = Who can use Making Tax Digital for Income Tax
+agent.cannot-sign-up.subheading                                 = When your client must use this service
+agent.cannot-sign-up.paragraph4                                 = From 6 April 2026, your client must use Making Tax Digital for Income Tax if their total {0} is above £50,000 for:
+agent.cannot-sign-up.link2                                      = qualifying income
+agent.cannot-sign-up.bullet3                                    = Self-employment
+agent.cannot-sign-up.bullet4                                    = Property
+agent.cannot-sign-up.paragraph5                                 = Your client still needs to {0} for the tax year before your client signs up to use Making Tax Digital for Income Tax.
+agent.cannot-sign-up.link3                                      = send HMRC a Self Assessment tax return
+agent.cannot-sign-up.continue-button                            = Continue to sign up client for {0}
+
 # Agent accounting period check page
 agent.accounting-period-check.title                             = Do your client’s business accounting periods all run from 6 April to 5 April?
 agent.accounting-period-check.heading                           = Do your client’s business accounting periods all run from 6 April to 5 April?

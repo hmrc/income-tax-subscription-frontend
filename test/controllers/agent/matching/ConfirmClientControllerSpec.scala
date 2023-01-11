@@ -54,6 +54,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
 
   private val eligibleWithoutPrePop = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, None)
   private val eligibleWithPrePop = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, Some(mock[PrePopData]))
+  private val ineligibleForCurrentYear = EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, None)
   private val ineligible = EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = false, None)
 
   override val controllerName: String = "ConfirmClientController"
@@ -318,12 +319,30 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
             }
           }
 
+          "the client is ineligible only for the current year" should {
+            s"redirect user to ${controllers.agent.eligibility.routes.CannotTakePartController.show.url}" in withController { controller =>
+              mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
+              mockGetEligibilityStatus(utr)(Future.successful(Right(ineligibleForCurrentYear)))
+              setupMockPrePopulateSave(testReference)
+              mockSaveEligibilityStatusYearMap(testReference)
+              mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
+              setupMockNotLockedOut(arn)
+
+              val result = await(callSubmit(controller))
+
+              status(result) mustBe SEE_OTHER
+              redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
+
+              result.verifyStoredUserDetailsIs(None)(request)
+
+              verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), testClientDetails, 0, lockedOut = false))
+            }
+          }
+
           "the client is ineligible" should {
             s"redirect user to ${controllers.agent.eligibility.routes.CannotTakePartController.show.url}" in withController { controller =>
               mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
               mockGetEligibilityStatus(utr)(Future.successful(Right(ineligible)))
-              setupMockPrePopulateSave(testReference)
-              mockSaveEligibilityStatusYearMap(testReference)
               mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
               setupMockNotLockedOut(arn)
 
