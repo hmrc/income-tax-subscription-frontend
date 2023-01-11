@@ -24,36 +24,21 @@ import models.common._
 import models.common.business._
 import models.common.subscription.EnrolmentKey
 import models.usermatching.UserDetailsModel
-import uk.gov.hmrc.domain.Generator
-import utilities.AccountingPeriodUtil
 
 import java.time.LocalDate
 
 object IntegrationTestModels {
 
-  /*
-   * this function returns a random nino each time it is called, if you need a constant nino use TestConstants.testNino
-   */
-  def newNino: String = new Generator().nextNino.nino
-
   val testStartDate: DateModel = DateModel.dateConvert(LocalDate.now)
-  val testOneDayAgo: DateModel = DateModel.dateConvert(LocalDate.now.minusDays(1))
+  private val testOneDayAgo: DateModel = DateModel.dateConvert(LocalDate.now.minusDays(1))
   val testEndDate: DateModel = DateModel.dateConvert(LocalDate.now.plusYears(1).plusDays(-1))
-  val testEndDateNext: DateModel = AccountingPeriodUtil.getCurrentTaxYearEndDate.plusYears(1).plusDays(-1)
-  val testEndDatePlus1Y: DateModel = AccountingPeriodUtil.getCurrentTaxYearEndDate.plusYears(1)
   val testAccountingYearCurrent: AccountingYearModel = AccountingYearModel(Current)
   val testAccountingYearCurrentConfirmed: AccountingYearModel = AccountingYearModel(Current, confirmed = true)
   val testAccountingYearNext: AccountingYearModel = AccountingYearModel(Next)
-  val testAccountingPeriod: AccountingPeriodModel =
-    testAccountingPeriod(testStartDate, testEndDate)
 
-  def testAccountingPeriod(startDate: DateModel = testStartDate,
-                           endDate: DateModel = testEndDate): AccountingPeriodModel =
-    AccountingPeriodModel(startDate, endDate)
-
-  val testBusinessName: BusinessNameModel = BusinessNameModel("test business")
-  val testBusinessTrade: BusinessTradeNameModel = BusinessTradeNameModel("test trade")
-  val testBusinessAddress: BusinessAddressModel = BusinessAddressModel(
+  private val testBusinessName: BusinessNameModel = BusinessNameModel("test business")
+  private val testBusinessTrade: BusinessTradeNameModel = BusinessTradeNameModel("test trade")
+  private val testBusinessAddress: BusinessAddressModel = BusinessAddressModel(
     "",
     Address(
       lines = Seq(
@@ -65,15 +50,13 @@ object IntegrationTestModels {
     )
   )
   val testAccountingMethod: AccountingMethodModel = AccountingMethodModel(Cash)
-  val testAccountingMethodProperty: AccountingMethodPropertyModel = AccountingMethodPropertyModel(Cash)
-  val testAccountingMethodForeignProperty: OverseasAccountingMethodPropertyModel = OverseasAccountingMethodPropertyModel(Cash)
+  private val testAccountingMethodProperty: AccountingMethodPropertyModel = AccountingMethodPropertyModel(Cash)
   val testValidStartDate: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(1))
   val testValidStartDate2: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(2))
+  //noinspection ScalaStyle
   val testInvalidStartDate: DateModel = DateModel.dateConvert(LocalDate.now.minusDays(364))
   val testPropertyStartDate: PropertyStartDateModel = PropertyStartDateModel(testValidStartDate)
-  val testPropertyStartDateModel: PropertyStartDateModel = PropertyStartDateModel(DateModel("05", "04", "2017"))
-  val testOverseasPropertyStartDate: OverseasPropertyStartDateModel = OverseasPropertyStartDateModel(testValidStartDate)
-  val testOverseasPropertyStartDateModel: OverseasPropertyStartDateModel = OverseasPropertyStartDateModel(DateModel("05", "04", "2017"))
+  private val testPropertyStartDateModel: PropertyStartDateModel = PropertyStartDateModel(DateModel("05", "04", "2017"))
   val testInvalidPropertyStartDate: PropertyStartDateModel = PropertyStartDateModel(testInvalidStartDate)
   val testBusinesses: Option[Seq[SelfEmploymentData]] = Some(Seq(SelfEmploymentData(
     id = "12345",
@@ -82,15 +65,15 @@ object IntegrationTestModels {
     businessTradeName = Some(testBusinessTrade),
     businessAddress = Some(testBusinessAddress)
   )))
-  val testTooManyBusinesses: Seq[SelfEmploymentData] = Array.range(1, 51).map( i =>
+  private val tooManyBusinesses = 51
+  val testTooManyBusinesses: Seq[SelfEmploymentData] = Array.range(1, tooManyBusinesses).map(i =>
     SelfEmploymentData(
-    id = i.toString,
-    businessStartDate = Some(BusinessStartDate(DateModel("05", "04", "2017"))),
-    businessName = Some(BusinessNameModel(s"${testBusinessName.businessName} $i")),
-    businessTradeName = Some(testBusinessTrade),
-    businessAddress = Some(testBusinessAddress)
-  )).toSeq
-  val testInvalidOverseasPropertyStartDate: OverseasPropertyStartDateModel = OverseasPropertyStartDateModel(testInvalidStartDate)
+      id = i.toString,
+      businessStartDate = Some(BusinessStartDate(DateModel("05", "04", "2017"))),
+      businessName = Some(BusinessNameModel(s"${testBusinessName.businessName} $i")),
+      businessTradeName = Some(testBusinessTrade),
+      businessAddress = Some(testBusinessAddress)
+    )).toSeq
   val testFullPropertyModel: PropertyModel = PropertyModel(
     accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
     startDate = Some(testPropertyStartDate.startDate),
@@ -103,17 +86,16 @@ object IntegrationTestModels {
     confirmed = true
   )
 
-  val testBusinessTradeName: BusinessTradeNameModel = BusinessTradeNameModel("test trade name")
-  val testBusinessStartDate: BusinessStartDate = BusinessStartDate(DateModel("05", "04", "2018"))
-  val testBusinessAddressModel: BusinessAddressModel = BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), Some("TF2 1PF")))
-  val testId = "testId"
+  private val testBusinessTradeName: BusinessTradeNameModel = BusinessTradeNameModel("test trade name")
+  private val testBusinessStartDate: BusinessStartDate = BusinessStartDate(DateModel("05", "04", "2018"))
+  private val testId = "testId"
 
   lazy val testUserDetails: UserDetailsModel = UserDetailsModel(testFirstName, testLastName, testNino, testOneDayAgo)
 
   lazy val testMTDITEnrolmentKey: EnrolmentKey = EnrolmentKey(mtdItsaEnrolmentName, MTDITID -> testMtdId)
   lazy val testIRSAEnrolmentKey: EnrolmentKey = EnrolmentKey(utrEnrolmentName, utrEnrolmentIdentifierKey -> testUtr)
 
-  lazy val testSummaryDataSelfEmploymentData =
+  lazy val testSummaryDataSelfEmploymentData: Seq[SelfEmploymentData] =
     Seq(SelfEmploymentData(
       id = testId,
       businessStartDate = Some(testBusinessStartDate),

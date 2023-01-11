@@ -17,13 +17,7 @@
 package utilities
 
 object SubscriptionDataKeys {
-  val BusiStartDate = "BusinessStartDate"
-  val PropertyIncome = "PropertyIncome"
-  val SoleTrader = "SoleTrader"
   val BusinessName = "BusinessName"
-  val BusiTradeName = "BusinessTradeName"
-  val BusinessPhoneNumber = "BusinessPhoneNumber"
-  val BusinessAddress = "BusinessAddress"
   val SelectedTaxYear = "SelectedTaxYear"
   val AccountingMethod = "AccountingMethod"
   val EligibilityStatusYearMap = "EligibilityStatusYearMap"

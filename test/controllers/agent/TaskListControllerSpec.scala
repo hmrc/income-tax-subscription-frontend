@@ -20,7 +20,7 @@ import config.featureswitch.FeatureSwitch.ThrottlingFeature
 import models.common.business._
 import models.common.subscription.SubscriptionFailureResponse
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
-import models.{Cash, DateModel, Next}
+import models.{Cash, Current, DateModel, Next}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import play.api.http.Status
@@ -32,6 +32,7 @@ import services.AccountingPeriodService
 import services.agent.mocks.MockSubscriptionOrchestrationService
 import services.mocks.{MockAuditingService, MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
+import utilities.AccountingPeriodUtil
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import utilities.TestModels.{testAccountingMethod, testSelectedTaxYearCurrent, testValidStartDate}
 import utilities.agent.TestConstants.{testARN, testCreateIncomeSources, testNino, testUtr}
@@ -101,6 +102,8 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
       )))
       mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
 
+      mockFetchEligibilityStatusYearMap(None)
+
       val result: Future[Result] = TestTaskListController.show()(subscriptionRequestWithName)
 
       status(result) mustBe OK
@@ -160,6 +163,49 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
         intercept[InternalServerException](await(result)).message must include(
           s"[TaskListController][submit] - failure response received from submission: ${SubscriptionFailureResponse(INTERNAL_SERVER_ERROR)}"
         )
+      }
+    }
+  }
+
+  "TaskListController.isTaxYearChangePermitted" should {
+    "return true" when {
+      "no year specified" in {
+        TaskListController.isTaxYearChangePermitted(
+          None,
+          None) mustBe true
+      }
+      "no eligibility found" in {
+        TaskListController.isTaxYearChangePermitted(
+          Some(AccountingYearModel(Current, confirmed = true)),
+          None) mustBe true
+      }
+      "eligibility found but no eligibility specified" in {
+        TaskListController.isTaxYearChangePermitted(
+          Some(AccountingYearModel(Current, confirmed = true)),
+          Some(Map.empty)) mustBe true
+      }
+      "any other eligibility specified as allowed" in {
+        TaskListController.isTaxYearChangePermitted(
+          Some(AccountingYearModel(Current, confirmed = true)),
+          Some(Map(
+            AccountingPeriodUtil.getCurrentTaxYear.taxEndYear.toString -> true,
+            AccountingPeriodUtil.getNextTaxYear.taxEndYear.toString -> true))
+        ) mustBe true
+      }
+    }
+    "return false" when {
+      "all other eligibility specified as not allowed" in {
+        TaskListController.isTaxYearChangePermitted(
+          Some(AccountingYearModel(Current, confirmed = true)),
+          Some(Map(
+            AccountingPeriodUtil.getCurrentTaxYear.taxEndYear.toString -> true,
+            AccountingPeriodUtil.getNextTaxYear.taxEndYear.toString -> false))
+        ) mustBe false
+      }
+      "no other eligibility specified" in {
+        TaskListController.isTaxYearChangePermitted(
+          Some(AccountingYearModel(Current, confirmed = true)),
+          Some(Map(AccountingPeriodUtil.getCurrentTaxYear.taxEndYear.toString -> true))) mustBe false
       }
     }
   }
