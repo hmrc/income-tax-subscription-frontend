@@ -51,6 +51,15 @@ trait MessagesMatcher {
     )
   }
 
+  def includeCorrectClassOnLinks: Matcher[Seq[String]] = (left: Seq[String]) => {
+    val badLines = left.filter(_.contains("<a")).filterNot(_.contains("""class="govuk-link""""))
+    MatchResult(
+      badLines.isEmpty,
+      s"${badLines.size} bad line(s): ${badLines.mkString("\n  ", "\n  ", "\n")}",
+      ""
+    )
+  }
+
   // Only print the warning once by using a lazy fetch and check
   private lazy val getExcludedKeys = {
     if (excludedKeys.nonEmpty) {

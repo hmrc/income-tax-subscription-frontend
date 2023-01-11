@@ -205,7 +205,7 @@ error.overseas.property.year.length                              = Mae’n rhaid
 ## Timeout page ##
 timeout.title                                                   = Mae’ch sesiwn wedi cyrraedd y terfyn amser
 timeout.heading                                                 = Mae’ch sesiwn wedi cyrraedd y terfyn amser
-timeout.return-to-home                                          = I gofrestru ar gyfer hysbysu chwarterol, rhaid i chi <a href="{0}" rel="external">fewngofnodi</a> gan ddefnyddio’ch Dynodydd Defnyddiwr (ID) Porth y Llywodraeth.
+timeout.return-to-home                                          = I gofrestru ar gyfer hysbysu chwarterol, rhaid i chi <a class="govuk-link" href="{0}" rel="external">fewngofnodi</a> gan ddefnyddio’ch Dynodydd Defnyddiwr (ID) Porth y Llywodraeth.
 
 ## Already enrolled page ##
 already-enrolled.title                                          = Rydych chi eisoes wedi cofrestru
@@ -218,8 +218,8 @@ claim-subscription.heading                                      = Rydych chi eis
 claim-subscription.what-happens-next.heading                    = Yr hyn sy’n digwydd nesaf
 claim-subscription.what-happens-next.para1                      = Rhaid i chi ddefnyddio meddalwedd cyfrifyddu i gofnodi’ch incwm a’ch treuliau ac anfon adroddiad i Gyllid a Thollau EM bob chwarter, o leiaf.
 claim-subscription.what-happens-next.para2                      = Ar ôl i chi anfon adroddiad, byddwch yn cael amcangyfrif o’ch Treth Incwm. Gallwch weld eich amcangyfrif a dyddiadau cau’ch adroddiadau yn eich:
-claim-subscription.what-happens-next.bullet1                    = <a id="accountingSoftware" href="{0}">meddalwedd cyfrifyddu</a>
-claim-subscription.what-happens-next.bullet2                    = <a id="bta" href="{0}">cyfrif treth busnes</a>
+claim-subscription.what-happens-next.bullet1                    = <a class="govuk-link" id="accountingSoftware" href="{0}">meddalwedd cyfrifyddu</a>
+claim-subscription.what-happens-next.bullet2                    = <a class="govuk-link" id="bta" href="{0}">cyfrif treth busnes</a>
 claim-subscription.what-happens-next.para4                      = Gall gymryd rhai oriau cyn eu bod i gyd i’w gweld.
 
 ## Claim Enrolment Confirmation
@@ -271,7 +271,7 @@ agent.sign-up-confirmation.heading                                 = Client sign
 agent.sign-up-confirmation.heading.panel.current                   = is now signed up for Making Tax Digital for Income Tax for the current tax year ({0}).. but in Welsh
 agent.sign-up-confirmation.heading.panel.next                      = is now signed up for Making Tax Digital for Income Tax for the next tax year ({0}).. but in Welsh
 agent.sign-up-confirmation.check.heading                           = Check your client’s account.. but in Welsh
-agent.sign-up-confirmation.check.description                       = Go to your <a href="{0}">agent service account</a> to review or change the answers you have entered, and to get updates... but in Welsh
+agent.sign-up-confirmation.check.description                       = Go to your <a class="govuk-link" href="{0}">agent service account</a> to review or change the answers you have entered, and to get updates... but in Welsh
 agent.sign-up-confirmation.section1.quarterly-updates.table-caption         = Quarterly updates by the deadline... but in Welsh
 agent.sign-up-confirmation.section1.quarterly-updates.next-year.heading     = 1. Continuing to submit your tax return... but in Welsh
 agent.sign-up-confirmation.section1.quarterly-updates.next-year.paragraph   = Continue to submit your Self Assessment tax return, as normal, until {0}. ... but in Welsh
@@ -421,13 +421,13 @@ no-sa.info.link-text                                            = gofrestru ar g
 cannot-report-yet.title                                         = Ni allwch ddefnyddio meddalwedd i roi gwybod am eich Treth Incwm ar hyn o bryd
 cannot-report-yet.heading                                       = Ni allwch ddefnyddio meddalwedd i roi gwybod am eich Treth Incwm ar hyn o bryd
 cannot-report-yet.para1                                         = Gallwch gofrestru a defnyddio meddalwedd i gofnodi’ch incwm a’ch treuliau, ond ni allwch anfon adroddiadau tan {0}.
-cannot-report-yet.para2                                         = Rhaid i chi anfon <a id="sa" href="{0}">Ffurflen Dreth Hunanasesiad</a> yn lle hynny.
+cannot-report-yet.para2                                         = Rhaid i chi anfon <a class="govuk-link" id="sa" href="{0}">Ffurflen Dreth Hunanasesiad</a> yn lle hynny.
 
 ## can report business but not property yet page ##
 cannot-report-property-yet.title                                = Ni allwch ddefnyddio meddalwedd i roi gwybod am eich incwm o eiddo ar hyn o bryd
 cannot-report-property-yet.heading                              = Ni allwch ddefnyddio meddalwedd i roi gwybod am eich incwm o eiddo ar hyn o bryd
 cannot-report-property-yet.para1                                = Gallwch ddefnyddio meddalwedd i roi gwybod am y gwaith rydych yn ei wneud dros eich hun.
-cannot-report-property-yet.para2                                = Ni allwch ddefnyddio meddalwedd i gyflwyno adroddiad ar gyfer eich incwm o eiddo tan 6 Ebrill 2018. Rhaid i chi <a id="sa" href="{0}">anfon Ffurflen Dreth Hunanasesiad</a> yn lle hynny.
+cannot-report-property-yet.para2                                = Ni allwch ddefnyddio meddalwedd i gyflwyno adroddiad ar gyfer eich incwm o eiddo tan 6 Ebrill 2018. Rhaid i chi <a class="govuk-link" id="sa" href="{0}">anfon Ffurflen Dreth Hunanasesiad</a> yn lle hynny.
 
 ## cannot report yet both misaligned page ##
 cannot-report-yet-both-misaligned.title                         = Ni allwch ddefnyddio meddalwedd i roi gwybod am eich Treth Incwm ar hyn o bryd
@@ -435,7 +435,7 @@ cannot-report-yet-both-misaligned.heading                       = Ni allwch ddef
 cannot-report-yet-both-misaligned.para1                         = Gallwch gofrestru a defnyddio meddalwedd i gofnodi’ch incwm a’ch treuliau, ond ni fyddwch yn gallu cyflwyno adroddiad ar gyfer:
 cannot-report-yet-both-misaligned.bullet1                       = incwm o eiddo tan 6 Ebrill 2018
 cannot-report-yet-both-misaligned.bullet2                       = incwm fel unig fasnachwr tan {0}
-cannot-report-yet-both-misaligned.para2                         = Rhaid i chi <a id="sa" href="{0}">anfon Ffurflen Dreth Hunanasesiad</a> yn lle hynny.
+cannot-report-yet-both-misaligned.para2                         = Rhaid i chi <a class="govuk-link" id="sa" href="{0}">anfon Ffurflen Dreth Hunanasesiad</a> yn lle hynny.
 
 ## agent cannot report yet both misaligned page ##
 agent-cannot-report-yet-both-misaligned.title                   = Ni all eich cleient ddefnyddio meddalwedd i roi gwybod am ei Dreth Incwm ar hyn o bryd
@@ -443,7 +443,7 @@ agent-cannot-report-yet-both-misaligned.heading                 = Ni all eich cl
 agent-cannot-report-yet-both-misaligned.para1                   = Mae dal yn bosibl i chi gofrestru’r cleient hwn a defnyddio meddalwedd i gofnodi ei incwm a’i dreuliau, ond ni fydd yn gallu cyflwyno adroddiad ar gyfer ei:
 agent-cannot-report-yet-both-misaligned.bullet1                 = incwm o eiddo tan 6 Ebrill 2018
 agent-cannot-report-yet-both-misaligned.bullet2                 = incwm fel unig fasnachwr tan {0}
-agent-cannot-report-yet-both-misaligned.para2                   = Mae dal yn rhaid i’ch cleient <a id="sa" href="{0}">anfon Ffurflen Dreth Hunanasesiad</a>.
+agent-cannot-report-yet-both-misaligned.para2                   = Mae dal yn rhaid i’ch cleient <a class="govuk-link" id="sa" href="{0}">anfon Ffurflen Dreth Hunanasesiad</a>.
 
 # Send your feedback
 feedback.title                                                  = Anfon eich adborth
@@ -455,8 +455,8 @@ feedback.thankyou.title                                         = Adborth wedi d
 affinity-group-error.title                                      = Ni allwch ddefnyddio’r gwasanaeth hwn
 affinity-group-error.heading                                    = Ni allwch ddefnyddio’r gwasanaeth hwn
 affinity-group-error.line1                                      = Gallwch ond defnyddio’r gwasanaeth hwn os oes gennych gyfrif Porth y Llywodraeth fel unigolyn.
-affinity-group-error.line2                                      = I gofrestru ar gyfer hysbysu chwarterol, rhaid i chi <a id="sign-out" href="{0}">fewngofnodi gan ddefnyddio math gwahanol o gyfrif.</a>
-affinity-group-error.agent.line1                                = I gofrestru ar gyfer hysbysu chwarterol gyda’r manylion mewngofnodi hyn, rhaid i chi <a id="agent-service" href="{0}">ddefnyddio ein gwasanaeth asiant.</a>
+affinity-group-error.line2                                      = I gofrestru ar gyfer hysbysu chwarterol, rhaid i chi <a class="govuk-link" id="sign-out" href="{0}">fewngofnodi gan ddefnyddio math gwahanol o gyfrif.</a>
+affinity-group-error.agent.line1                                = I gofrestru ar gyfer hysbysu chwarterol gyda’r manylion mewngofnodi hyn, rhaid i chi <a class="govuk-link" id="agent-service" href="{0}">ddefnyddio ein gwasanaeth asiant.</a>
 
 ## ADD MTDIT Overview
 mtdit-overview.heading                                          = Ychwanegwch Troi Treth yn Ddigidol ar gyfer Treth Incwm i’ch cyfrif treth busnes
@@ -603,7 +603,7 @@ agent.business.name.line-1                                      = Dyma enw’r b
 ## Timeout page ##
 agent.timeout.title                                             = Mae’ch sesiwn wedi cyrraedd y terfyn amser
 agent.timeout.heading                                           = Mae’ch sesiwn wedi cyrraedd y terfyn amser
-agent.timeout.return-to-home                                    = I gofrestru’ch cleient ar gyfer hysbysu chwarterol, rhaid i chi <a href="{0}" rel="external">fewngofnodi</a> gan ddefnyddio’ch Dynodydd Defnyddiwr (ID) Porth y Llywodraeth.
+agent.timeout.return-to-home                                    = I gofrestru’ch cleient ar gyfer hysbysu chwarterol, rhaid i chi <a class="govuk-link" href="{0}" rel="external">fewngofnodi</a> gan ddefnyddio’ch Dynodydd Defnyddiwr (ID) Porth y Llywodraeth.
 
 ## Client already subscribed page ##
 agent.client-already-subscribed.title                           = Mae’ch cleient eisoes wedi cofrestru
@@ -620,13 +620,13 @@ agent.no-client-relationship.link                               = fewngofnodi i�
 agent.cannot-report-property-yet.title                          = Ni allwch ddefnyddio meddalwedd i roi gwybod am incwm eich cleient o eiddo ar hyn o bryd
 agent.cannot-report-property-yet.heading                        = Ni allwch ddefnyddio meddalwedd i roi gwybod am incwm eich cleient o eiddo ar hyn o bryd
 agent.cannot-report-property-yet.para1                          = Gallwch ddefnyddio meddalwedd i roi gwybod am incwm eich cleient fel unig fasnachwr.
-agent.cannot-report-property-yet.para2                          = Ni fydd yn gallu cyflwyno adroddiad ar gyfer ei incwm o eiddo tan 6 Ebrill 2018. Mae dal yn rhaid i’ch cleient <a id="sa" href="{0}>anfon Ffurflen Dreth Hunanasesiad</a>.
+agent.cannot-report-property-yet.para2                          = Ni fydd yn gallu cyflwyno adroddiad ar gyfer ei incwm o eiddo tan 6 Ebrill 2018. Mae dal yn rhaid i’ch cleient <a class="govuk-link" id="sa" href="{0}>anfon Ffurflen Dreth Hunanasesiad</a>.
 
 ## Client cannot report before 6 April 2018 page ##
 agent.cannot-report-yet.title                                   = Ni all eich cleient ddefnyddio meddalwedd i roi gwybod am ei Dreth Incwm ar hyn o bryd
 agent.cannot-report-yet.heading                                 = Ni all eich cleient ddefnyddio meddalwedd i roi gwybod am ei Dreth Incwm ar hyn o bryd
 agent.cannot-report-yet.para1                                   = Mae dal yn bosibl i chi gofrestru’r cleient hwn a defnyddio meddalwedd i gofnodi’i incwm a’i dreuliau, ond ni fydd yn gallu cyflwyno adroddiad tan {0}.
-agent.cannot-report-yet.para2                                   = Mae dal yn rhaid i’ch cleient <a id="sa" href="{0}">anfon Ffurflen Dreth Hunanasesiad</a>.
+agent.cannot-report-yet.para2                                   = Mae dal yn rhaid i’ch cleient <a class="govuk-link" id="sa" href="{0}">anfon Ffurflen Dreth Hunanasesiad</a>.
 
 ## Agent Sign Up Complete page
 agent.sign-up-complete.title                                    = Rydych wedi cofrestru {0} {1} i ddefnyddio meddalwedd i anfon diweddariadau ynghylch Treth Incwm
@@ -715,7 +715,7 @@ agent.no-nino.line-1                                            = Gallwch gofres
 ## Not Enrolled to Agent Services
 agent.not-enrolled-agent-services.title                         = Ni allwch ddefnyddio’r gwasanaeth hwn ar hyn o bryd
 agent.not-enrolled-agent-services.heading                       = Ni allwch ddefnyddio’r gwasanaeth hwn ar hyn o bryd
-agent.not-enrolled-agent-services.para1                         = I ddefnyddio’r gwasanaeth hwn, rhaid i chi <a href="{0}">greu cyfrif gwasanaethau’r asiant</a>.
+agent.not-enrolled-agent-services.para1                         = I ddefnyddio’r gwasanaeth hwn, rhaid i chi <a class="govuk-link" href="{0}">greu cyfrif gwasanaethau’r asiant</a>.
 
 ## Client Details ##
 agent.client-details.title                                      = Nodwch fanylion eich cleient
@@ -730,7 +730,7 @@ agent.client-details.form-hint2                                 = Er enghraifft,
 
 agent.no-sa.title                                               = Nid yw’ch cleient wedi cofrestru ar gyfer Hunanasesiad
 agent.no-sa.heading                                             = Nid yw’ch cleient wedi cofrestru ar gyfer Hunanasesiad
-agent.no-sa.line-1                                              = I ddefnyddio’r gwasanaeth hwn, rhaid i’ch cleient <a id="sa-signup" href="{0}">gofrestru ar gyfer Hunanasesiad</a>.
+agent.no-sa.line-1                                              = I ddefnyddio’r gwasanaeth hwn, rhaid i’ch cleient <a class="govuk-link" id="sa-signup" href="{0}">gofrestru ar gyfer Hunanasesiad</a>.
 
 # Agent Task List
 agent.business.task-list.title                                        = Manylion eich cleient

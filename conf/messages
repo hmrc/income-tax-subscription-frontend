@@ -205,7 +205,7 @@ error.overseas.property.year.length                             = The year must 
 ## Timeout page ##
 timeout.title                                                   = Your session has timed out
 timeout.heading                                                 = Your session has timed out
-timeout.return-to-home                                            = To sign up for quarterly reporting, you’ll have to <a href="{0}" rel="external">sign in</a> using your Government Gateway ID.
+timeout.return-to-home                                            = To sign up for quarterly reporting, you’ll have to <a class="govuk-link" href="{0}" rel="external">sign in</a> using your Government Gateway ID.
 
 ## Already enrolled page ##
 already-enrolled.title                                          = You’ve already signed up
@@ -218,8 +218,8 @@ claim-subscription.heading                                      = You’ve alrea
 claim-subscription.what-happens-next.heading                    = What happens next
 claim-subscription.what-happens-next.para1                      = You must use accounting software to record your income and expenses and send a report to HM Revenue and Customs at least every quarter.
 claim-subscription.what-happens-next.para2                      = After you send a report you’ll get an Income Tax estimate. You can view your estimate and report deadlines in your:
-claim-subscription.what-happens-next.bullet1                    = <a id="accountingSoftware" href="{0}">accounting software</a>
-claim-subscription.what-happens-next.bullet2                    = <a id="bta" href="{0}">business tax account</a>
+claim-subscription.what-happens-next.bullet1                    = <a class="govuk-link" id="accountingSoftware" href="{0}">accounting software</a>
+claim-subscription.what-happens-next.bullet2                    = <a class="govuk-link" id="bta" href="{0}">business tax account</a>
 claim-subscription.what-happens-next.para4                      = It may take a few hours for them all to appear.
 
 ## Claim Enrolment Confirmation
@@ -271,7 +271,7 @@ agent.sign-up-confirmation.heading                                          = Cl
 agent.sign-up-confirmation.heading.panel.current                            = is now signed up for Making Tax Digital for Income Tax for the current tax year ({0})
 agent.sign-up-confirmation.heading.panel.next                               = is now signed up for Making Tax Digital for Income Tax for the next tax year ({0})
 agent.sign-up-confirmation.check.heading                                    = Check your client’s account
-agent.sign-up-confirmation.check.description                                = Go to your <a href="{0}">agent service account</a> to review or change the answers you have entered, and to get updates.
+agent.sign-up-confirmation.check.description                                = Go to your <a class="govuk-link" href="{0}">agent service account</a> to review or change the answers you have entered, and to get updates.
 agent.sign-up-confirmation.section1.quarterly-updates.table-caption         = Quarterly updates by the deadline
 agent.sign-up-confirmation.section1.quarterly-updates.next-year.heading     = 1. Continuing to submit your tax return
 agent.sign-up-confirmation.section1.quarterly-updates.next-year.paragraph   = Continue to submit your Self Assessment tax return, as normal, until {0}.
@@ -421,13 +421,13 @@ no-sa.info.link-text                                            = register for S
 cannot-report-yet.title                                         = You can’t use software to report your Income Tax yet
 cannot-report-yet.heading                                       = You can’t use software to report your Income Tax yet
 cannot-report-yet.para1                                         = You can sign up and use software to record your income and expenses, but you can’t send any reports until {0}.
-cannot-report-yet.para2                                         = You need to send a <a id="sa" href="{0}">Self Assessment tax return</a> instead.
+cannot-report-yet.para2                                         = You need to send a <a class="govuk-link" id="sa" href="{0}">Self Assessment tax return</a> instead.
 
 ## can report business but not property yet page ##
 cannot-report-property-yet.title                                = You can’t use software to report your property income yet
 cannot-report-property-yet.heading                              = You can’t use software to report your property income yet
 cannot-report-property-yet.para1                                = You can use software to report the work you do for yourself.
-cannot-report-property-yet.para2                                = You can’t use software to submit a report for your property income until 6 April 2018. You need to <a id="sa" href="{0}">send a Self Assessment tax return</a> instead.
+cannot-report-property-yet.para2                                = You can’t use software to submit a report for your property income until 6 April 2018. You need to <a class="govuk-link" id="sa" href="{0}">send a Self Assessment tax return</a> instead.
 
 ## cannot report yet both misaligned page ##
 cannot-report-yet-both-misaligned.title                         = You can’t use software to report your Income Tax yet
@@ -435,7 +435,7 @@ cannot-report-yet-both-misaligned.heading                       = You can’t us
 cannot-report-yet-both-misaligned.para1                         = You can sign up and use software to record your income and expenses, but you won’t be able to submit a report for:
 cannot-report-yet-both-misaligned.bullet1                       = property income until 6 April 2018
 cannot-report-yet-both-misaligned.bullet2                       = sole trader income until {0}
-cannot-report-yet-both-misaligned.para2                         = You need to <a id="sa" href="{0}">send a Self Assessment tax return</a> instead.
+cannot-report-yet-both-misaligned.para2                         = You need to <a class="govuk-link" id="sa" href="{0}">send a Self Assessment tax return</a> instead.
 
 ## agent cannot report yet both misaligned page ##
 agent-cannot-report-yet-both-misaligned.title                   = Your client can’t use software to report their Income Tax yet
@@ -443,7 +443,7 @@ agent-cannot-report-yet-both-misaligned.heading                 = Your client ca
 agent-cannot-report-yet-both-misaligned.para1                   = You can still sign this client up and use software to record their income and expenses, but they won’t be able to submit a report for their:
 agent-cannot-report-yet-both-misaligned.bullet1                 = property income until 6 April 2018
 agent-cannot-report-yet-both-misaligned.bullet2                 = sole trader income until {0}
-agent-cannot-report-yet-both-misaligned.para2                   = Your client still needs to <a id="sa" href="{0}">send a Self Assessment tax return</a>.
+agent-cannot-report-yet-both-misaligned.para2                   = Your client still needs to <a class="govuk-link" id="sa" href="{0}">send a Self Assessment tax return</a>.
 
 # Send your feedback
 feedback.title                                                  = Send your feedback
@@ -455,8 +455,8 @@ feedback.thankyou.title                                         = Feedback recei
 affinity-group-error.title                                      = You can’t use this service
 affinity-group-error.heading                                    = You can’t use this service
 affinity-group-error.line1                                      = You can only use this service if you have an individual Government Gateway account.
-affinity-group-error.line2                                      = To sign up for quarterly reporting, you’ll need to <a id="sign-out" href="{0}">sign in using a different type of account.</a>
-affinity-group-error.agent.line1                                = To sign up for quarterly reporting with these sign in details, you need to <a id="agent-service" href="{0}">use our agent service.</a>
+affinity-group-error.line2                                      = To sign up for quarterly reporting, you’ll need to <a class="govuk-link" id="sign-out" href="{0}">sign in using a different type of account.</a>
+affinity-group-error.agent.line1                                = To sign up for quarterly reporting with these sign in details, you need to <a class="govuk-link" id="agent-service" href="{0}">use our agent service.</a>
 
 ## ADD MTDIT Overview
 
@@ -604,7 +604,7 @@ agent.business.name.line-1                                      = This is the bu
 ## Timeout page ##
 agent.timeout.title                                             = Your session has timed out
 agent.timeout.heading                                           = Your session has timed out
-agent.timeout.return-to-home                                      = To sign your client up for quarterly reporting, you’ll have to <a href="{0}" rel="external">sign in</a> using your Government Gateway ID.
+agent.timeout.return-to-home                                      = To sign your client up for quarterly reporting, you’ll have to <a class="govuk-link" href="{0}" rel="external">sign in</a> using your Government Gateway ID.
 
 ## Client already subscribed page ##
 agent.client-already-subscribed.title                           = Your client has already signed up
@@ -621,13 +621,13 @@ agent.no-client-relationship.link                               = sign into this
 agent.cannot-report-property-yet.title                          = You can’t use software to report your client’s property income yet
 agent.cannot-report-property-yet.heading                        = You can’t use software to report your client’s property income yet
 agent.cannot-report-property-yet.para1                          = You can use software to report your client’s sole trader income.
-agent.cannot-report-property-yet.para2                          = They won’t be able to submit a report for their property income until 6 April 2018. Your client still needs to <a id="sa" href="{0}">send a Self Assessment tax return</a>.
+agent.cannot-report-property-yet.para2                          = They won’t be able to submit a report for their property income until 6 April 2018. Your client still needs to <a class="govuk-link" id="sa" href="{0}">send a Self Assessment tax return</a>.
 
 ## Client cannot report before 6 April 2018 page ##
 agent.cannot-report-yet.title                                   = Your client can’t use software to report their Income Tax yet
 agent.cannot-report-yet.heading                                 = Your client can’t use software to report their Income Tax yet
 agent.cannot-report-yet.para1                                   = You can still sign this client up and use software to record their income and expenses, but they won’t be able to submit a report until {0}.
-agent.cannot-report-yet.para2                                   = Your client still needs to <a id="sa" href="{0}">send a Self Assessment tax return</a>.
+agent.cannot-report-yet.para2                                   = Your client still needs to <a class="govuk-link" id="sa" href="{0}">send a Self Assessment tax return</a>.
 
 ## Agent Sign Up Complete page
 agent.sign-up-complete.title                                    = You have signed up {0} {1} to use software to send Income Tax updates
@@ -731,7 +731,7 @@ agent.client-details.form-hint2                                 = For example, 1
 
 agent.no-sa.title                                               = Your client is not registered for Self Assessment
 agent.no-sa.heading                                             = Your client is not registered for Self Assessment
-agent.no-sa.line-1                                              = To use this service, your client needs to <a id="sa-signup" href="{0}">register for Self Assessment</a>.
+agent.no-sa.line-1                                              = To use this service, your client needs to <a class="govuk-link" id="sa-signup" href="{0}">register for Self Assessment</a>.
 
 # Agent Task List
 agent.business.task-list.title                                        = Your client’s details
