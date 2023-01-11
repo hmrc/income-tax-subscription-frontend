@@ -23,10 +23,12 @@ import scala.io.Source
 
 class MessagesSpec extends PlaySpec with MessagesMatcher  {
 
-  private val messageKeysEnglish: List[String] = getMessageKeys("messages").toList
+  private val messageLinesEnglish: List[String] = getMessageLines("messages").toList
+  private val messageKeysEnglish: List[String] = messageLinesEnglish map toKey
   private lazy val messageKeySetEnglish = messageKeysEnglish.toSet
 
-  private val messageKeysWelsh: List[String] = getMessageKeys("messages.cy").toList
+  private val messageLinesWelsh: List[String] = getMessageLines("messages.cy").toList
+  private val messageKeysWelsh: List[String] = messageLinesWelsh map toKey
   private lazy val messageKeySetWelsh = messageKeysWelsh.toSet
 
   "Messages present in Welsh (conf/messages.cy)" should {
@@ -40,6 +42,10 @@ class MessagesSpec extends PlaySpec with MessagesMatcher  {
 
     "contain only permitted characters" in {
       messageKeysWelsh must containOnlyPermittedCharacters
+    }
+
+    "contain a govuk-link class when a link is present" in {
+      messageLinesWelsh must includeCorrectClassOnLinks
     }
   }
 
@@ -55,14 +61,22 @@ class MessagesSpec extends PlaySpec with MessagesMatcher  {
     "contain only permitted characters" in {
       messageKeysEnglish must containOnlyPermittedCharacters
     }
+
+    "contain a govuk-link class when a link is present" in {
+      messageLinesEnglish must includeCorrectClassOnLinks
+    }
   }
 
-  private def getMessageKeys(fileName: String) = {
+  private def getMessageLines(fileName: String) = {
     Source.fromResource(fileName)
       .getLines()
       .map(_.trim)
-      .filter(!_.startsWith("#"))
+      .filterNot(_.startsWith("#"))
       .filter(_.nonEmpty)
-      .map(_.split(' ').head)
   }
+
+  private def toKey(line: String) = {
+    line.split(' ').head
+  }
+
 }
