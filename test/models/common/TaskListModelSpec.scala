@@ -43,12 +43,15 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
     businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line1"), Some("Postcode"))))
   )
 
+  private val confirmedEditableYearNext = Some(AccountingYearModel(Next, confirmed = true))
+  private val unconfirmedEditableYearNext = Some(AccountingYearModel(Next))
+
   "Task List " should {
 
     "provided income summary data with a uk property, ukPropertyComplete returns true" in {
 
       val summary = TaskListModel(
-        taxYearSelection = Some(AccountingYearModel((Next), confirmed = true)),
+        taxYearSelection = confirmedEditableYearNext,
         selfEmployments = Seq(completeSeModel),
         selfEmploymentAccountingMethod = None,
         ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
@@ -61,7 +64,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
     "provided income summary data without a uk property, ukPropertyComplete returns false" in {
 
       val summary = TaskListModel(
-        taxYearSelection = Some(AccountingYearModel((Next), confirmed = true)),
+        taxYearSelection = confirmedEditableYearNext,
         selfEmployments = Seq(completeSeModel),
         selfEmploymentAccountingMethod = None,
         ukProperty = Some(PropertyModel(None, Some(DateModel("1", "2", "1980")))),
@@ -74,7 +77,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
     "provided income summary data with a completed self-employment, selfEmploymentsComplete returns true" in {
 
       val summary = TaskListModel(
-        taxYearSelection = Some(AccountingYearModel((Next), confirmed = true)),
+        taxYearSelection = confirmedEditableYearNext,
         selfEmployments = Seq(completeSeModel),
         selfEmploymentAccountingMethod = Some(Cash),
         ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
@@ -87,7 +90,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
     "provided income summary data with an incomplete self-employment, selfEmploymentsComplete returns false" in {
 
       val summary = TaskListModel(
-        taxYearSelection = Some(AccountingYearModel((Next), confirmed = true)),
+        taxYearSelection = confirmedEditableYearNext,
         selfEmployments = Seq(incompleteSeModel),
         selfEmploymentAccountingMethod = Some(Cash),
         ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
@@ -100,7 +103,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
     "provided income summary data with an incomplete self-employment accounting method, selfEmploymentsComplete returns false" in {
 
       val summary = TaskListModel(
-        taxYearSelection = Some(AccountingYearModel((Next), confirmed = true)),
+        taxYearSelection = confirmedEditableYearNext,
         selfEmployments = Seq(completeSeModel),
         selfEmploymentAccountingMethod = None,
         ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
@@ -114,7 +117,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
     "provided income summary data with a foreign property, overseasPropertyComplete returns true" in {
 
       val summary = TaskListModel(
-        taxYearSelection = Some(AccountingYearModel((Next), confirmed = true)),
+        taxYearSelection = confirmedEditableYearNext,
         selfEmployments = Seq(completeSeModel),
         selfEmploymentAccountingMethod = None,
         ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
@@ -127,7 +130,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
     "provided income summary data without a foreign property, overseasPropertyComplete returns false" in {
 
       val summary = TaskListModel(
-        taxYearSelection = Some(AccountingYearModel((Next), confirmed = true)),
+        taxYearSelection = confirmedEditableYearNext,
         selfEmployments = Seq(completeSeModel),
         selfEmploymentAccountingMethod = None,
         ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
@@ -140,7 +143,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
     "provided income summary data with a foreign property, ukProperty and a complete self employment, sectionsTotal returns 4" in {
 
       val summary = TaskListModel(
-        taxYearSelection = Some(AccountingYearModel((Next), confirmed = true)),
+        taxYearSelection = confirmedEditableYearNext,
         selfEmployments = Seq(completeSeModel),
         selfEmploymentAccountingMethod = Some(Cash),
         ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
@@ -153,7 +156,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
     "provided income summary data with a foreign property, ukProperty and an incomplete self employment, sectionsCompleted returns 3" in {
 
       val summary = TaskListModel(
-        taxYearSelection = Some(AccountingYearModel((Next), confirmed = true)),
+        taxYearSelection = confirmedEditableYearNext,
         selfEmployments = Seq(incompleteSeModel),
         selfEmploymentAccountingMethod = None,
         ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
@@ -166,7 +169,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
     "provided income summary data with a foreign property, ukProperty and a complete self employment, taskListComplete returns true" in {
 
       val summary = TaskListModel(
-        taxYearSelection = Some(AccountingYearModel((Next), confirmed = true)),
+        taxYearSelection = confirmedEditableYearNext,
         selfEmployments = Seq(completeSeModel),
         selfEmploymentAccountingMethod = Some(Cash),
         ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
@@ -179,11 +182,11 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
     "taskListComplete returns false" when {
       "income summary data with an unfinished foreign property, a complete ukProperty and a complete self employment" in {
         val summary = TaskListModel(
-          taxYearSelection = Some(AccountingYearModel((Next), confirmed = true)),
+          taxYearSelection = confirmedEditableYearNext,
           selfEmployments = Seq(completeSeModel),
           selfEmploymentAccountingMethod = Some(Cash),
           ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
-          overseasProperty = Some(OverseasPropertyModel(None, Some(date), confirmed = false))
+          overseasProperty = Some(OverseasPropertyModel(None, Some(date)))
         )
 
         summary.taskListComplete shouldBe false
@@ -193,7 +196,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
     "taskListComplete returns false" when {
       "income summary data with a complete foreign property, an unfinished ukProperty and a complete self employment" in {
         val summary = TaskListModel(
-          taxYearSelection = Some(AccountingYearModel((Next))),
+          taxYearSelection = unconfirmedEditableYearNext,
           selfEmployments = Seq(completeSeModel),
           selfEmploymentAccountingMethod = Some(Cash),
           ukProperty = Some(PropertyModel(None, Some(DateModel("1", "2", "1980")))),
@@ -208,10 +211,10 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
       "income summary data with a complete foreign property, a complete ukProperty and an incomplete self employment" in {
 
         val summary = TaskListModel(
-          taxYearSelection = Some(AccountingYearModel((Next), true)),
+          taxYearSelection = confirmedEditableYearNext,
           selfEmployments = Seq(incompleteSeModel),
           selfEmploymentAccountingMethod = None,
-          ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), true)),
+          ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
           overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
         )
 
@@ -219,11 +222,12 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
       }
     }
 
+    val maxSelfEmployments = 50
     "canAddMoreBusinesses returns true" when {
       "provided income summary data with a foreign property, ukProperty and with less than 50 complete self employment summaries, " in {
         val summary = TaskListModel(
-          taxYearSelection = Some(AccountingYearModel((Next), confirmed = true)),
-          selfEmployments = (1 to 30).toSeq.map { _ =>
+          taxYearSelection = confirmedEditableYearNext,
+          selfEmployments = (1 to 30).map { _ =>
             SelfEmploymentData(
               id = "",
               businessStartDate = Some(BusinessStartDate(date)),
@@ -237,15 +241,15 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
           overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
         )
 
-        summary.canAddMoreBusinesses(maxSelfEmployments = 50) shouldBe true
+        summary.canAddMoreBusinesses(maxSelfEmployments = maxSelfEmployments) shouldBe true
       }
     }
 
     "provided income summary data with a foreign property and with 50 complete self employment summaries, canAddMoreBusinesses returns true" in {
 
       val summary = TaskListModel(
-        taxYearSelection = Some(AccountingYearModel((Next), confirmed = true)),
-        selfEmployments = (1 to 50).toSeq.map { _ =>
+        taxYearSelection = confirmedEditableYearNext,
+        selfEmployments = (1 to maxSelfEmployments).map { _ =>
           SelfEmploymentData(
             id = "",
             businessStartDate = Some(BusinessStartDate(date)),
@@ -259,15 +263,15 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
         overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
       )
 
-      summary.canAddMoreBusinesses(maxSelfEmployments = 50) shouldBe true
+      summary.canAddMoreBusinesses(maxSelfEmployments = maxSelfEmployments) shouldBe true
 
     }
 
     "provided income summary data with a ukProperty and with 50 complete self employment summaries, canAddMoreBusinesses returns true" in {
 
       val summary = TaskListModel(
-        taxYearSelection = Some(AccountingYearModel((Next), confirmed = true)),
-        selfEmployments = (1 to 50).toSeq.map { _ =>
+        taxYearSelection = confirmedEditableYearNext,
+        selfEmployments = (1 to maxSelfEmployments).map { _ =>
           SelfEmploymentData(
             id = "",
             businessStartDate = Some(BusinessStartDate(date)),
@@ -282,15 +286,15 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
         overseasProperty = None
       )
 
-      summary.canAddMoreBusinesses(maxSelfEmployments = 50) shouldBe true
+      summary.canAddMoreBusinesses(maxSelfEmployments = maxSelfEmployments) shouldBe true
 
     }
 
     "provided income summary data with a foreign property, ukProperty and with 50 complete self employment summaries, canAddMoreBusinesses returns false" in {
 
       val summary = TaskListModel(
-        taxYearSelection = Some(AccountingYearModel((Next), confirmed = true)),
-        selfEmployments = (1 to 50).toSeq.map { _ =>
+        taxYearSelection = confirmedEditableYearNext,
+        selfEmployments = (1 to maxSelfEmployments).map { _ =>
           SelfEmploymentData(
             id = "",
             businessStartDate = Some(BusinessStartDate(date)),
@@ -304,7 +308,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
         overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
       )
 
-      summary.canAddMoreBusinesses(maxSelfEmployments = 50) shouldBe false
+      summary.canAddMoreBusinesses(maxSelfEmployments = maxSelfEmployments) shouldBe false
 
     }
 
@@ -315,7 +319,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
 
 
         val summary = TaskListModel(
-          taxYearSelection = Some(AccountingYearModel((Next), confirmed = true)),
+          taxYearSelection = confirmedEditableYearNext,
           selfEmployments = Seq(completeSeModel),
           selfEmploymentAccountingMethod = Some(Cash),
           ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
@@ -324,7 +328,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
 
         summary.sectionsTotal shouldBe 4
         summary.sectionsComplete shouldBe 4
-        summary.canAddMoreBusinesses(maxSelfEmployments = 50) shouldBe true
+        summary.canAddMoreBusinesses(maxSelfEmployments = maxSelfEmployments) shouldBe true
         summary.taskListComplete shouldBe true
         summary.taxYearSelectedAndConfirmed shouldBe true
 
@@ -338,7 +342,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
 
 
         val summary = TaskListModel(
-          taxYearSelection = Some(AccountingYearModel((Next))),
+          taxYearSelection = unconfirmedEditableYearNext,
           selfEmployments = Seq(completeSeModel),
           selfEmploymentAccountingMethod = Some(Cash),
           ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
@@ -347,7 +351,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
 
         summary.sectionsTotal shouldBe 4
         summary.sectionsComplete shouldBe 3
-        summary.canAddMoreBusinesses(maxSelfEmployments = 50) shouldBe true
+        summary.canAddMoreBusinesses(maxSelfEmployments = maxSelfEmployments) shouldBe true
         summary.taskListComplete shouldBe false
         summary.taxYearSelectedNotConfirmed shouldBe true
 
@@ -371,7 +375,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
 
         summary.sectionsTotal shouldBe 4
         summary.sectionsComplete shouldBe 3
-        summary.canAddMoreBusinesses(maxSelfEmployments = 50) shouldBe true
+        summary.canAddMoreBusinesses(maxSelfEmployments = maxSelfEmployments) shouldBe true
         summary.taskListComplete shouldBe false
         summary.taxYearSelectedNotConfirmed shouldBe false
         summary.taxYearSelectedAndConfirmed shouldBe false

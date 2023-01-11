@@ -66,7 +66,7 @@ class TaskListViewSpec extends ViewSpec {
   )
 
   private val completedTaskListComplete = TaskListModel(
-    taxYearSelection = Some(AccountingYearModel(Next, confirmed = true)),
+    taxYearSelection = Some(AccountingYearModel(Next, confirmed = true, editable = true)),
     selfEmployments = Seq(SelfEmploymentData(
       id = "id1",
       businessStartDate = Some(BusinessStartDate(DateModel("1", "2", "1980"))),

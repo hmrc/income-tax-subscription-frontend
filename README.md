@@ -86,7 +86,14 @@ To connect to the mongo db provided by docker (recommended) please use
 docker exec -it mongo-db mongosh
 ```
 
-Various commands are available.  Start with `show dbs` to see which databases are populated.
+Various commands are available.  Start with `show dbs` to see which databases are populated. Eg
+
+ * show dbs
+ * use <db>
+ * show tables
+ * db['<tablename>'].countDocuments()
+ * db['<tablename>'].find()
+ * exit
 
 ### License.
  
