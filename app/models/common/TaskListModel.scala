@@ -29,7 +29,7 @@ case class TaskListModel(taxYearSelection: Option[AccountingYearModel],
 
   val taxYearSelectedNotConfirmed: Boolean = taxYearSelection.exists(taxYear => taxYear.editable && !taxYear.confirmed)
 
-  val permitTaxYearChange: Boolean = taxYearSelection.exists(_.editable)
+  val permitTaxYearChange: Boolean = taxYearSelection.exists(taxYear => taxYear.editable)
 
   val ukPropertyComplete: Boolean = ukProperty.exists(_.confirmed)
 
