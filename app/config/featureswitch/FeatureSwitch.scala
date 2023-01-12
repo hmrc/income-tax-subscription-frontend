@@ -29,7 +29,8 @@ object FeatureSwitch {
     PrePopulate,
     ThrottlingFeature,
     ItsaMandationStatus,
-    ConfirmationPage
+    ConfirmationPage,
+    SignUpEligibility
   )
 
   def apply(str: String): FeatureSwitch =
@@ -63,5 +64,10 @@ object FeatureSwitch {
   case object ConfirmationPage extends FeatureSwitch {
     override val name: String = s"$prefix.enable-confirmation-page"
     override val displayText: String = "Sign up confirmation page"
+  }
+
+  case object SignUpEligibility extends FeatureSwitch {
+    override val name: String = s"$prefix.sign-up-eligibility"
+    override val displayText: String = "Sign up eligibility"
   }
 }
