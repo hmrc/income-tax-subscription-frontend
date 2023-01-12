@@ -16,51 +16,71 @@
 
 package models
 
-import play.api.libs.json.{Json, OFormat}
+import models.EligibilityStatus.EligibilityStatusYearMap
+import play.api.libs.json._
+import utilities.AccountingPeriodUtil
+
+import scala.util.Try
 
 case class PrePopSelfEmployment(
-  businessName: Option[String],
-  businessTradeName: String,
-  businessAddressFirstLine: Option[String],
-  businessAddressPostCode: Option[String],
-  businessStartDate: Option[DateModel],
-  businessAccountingMethod: Option[AccountingMethod]
-)
+                                 businessName: Option[String],
+                                 businessTradeName: String,
+                                 businessAddressFirstLine: Option[String],
+                                 businessAddressPostCode: Option[String],
+                                 businessStartDate: Option[DateModel],
+                                 businessAccountingMethod: Option[AccountingMethod]
+                               )
 
 object PrePopSelfEmployment {
   implicit val format: OFormat[PrePopSelfEmployment] = Json.format[PrePopSelfEmployment]
 }
 
 case class PrePopUkProperty(
-  ukPropertyStartDate: Option[DateModel],
-  ukPropertyAccountingMethod: Option[AccountingMethod]
-)
+                             ukPropertyStartDate: Option[DateModel],
+                             ukPropertyAccountingMethod: Option[AccountingMethod]
+                           )
 
 object PrePopUkProperty {
   implicit val format: OFormat[PrePopUkProperty] = Json.format[PrePopUkProperty]
 }
 
 case class PrePopOverseasProperty(
-  overseasPropertyStartDate: Option[DateModel],
-  overseasPropertyAccountingMethod: Option[AccountingMethod]
-)
+                                   overseasPropertyStartDate: Option[DateModel],
+                                   overseasPropertyAccountingMethod: Option[AccountingMethod]
+                                 )
 
 object PrePopOverseasProperty {
   implicit val format: OFormat[PrePopOverseasProperty] = Json.format[PrePopOverseasProperty]
 }
 
 case class PrePopData(
-  selfEmployments: Option[List[PrePopSelfEmployment]],
-  ukProperty: Option[PrePopUkProperty],
-  overseasProperty: Option[PrePopOverseasProperty]
-)
+                       selfEmployments: Option[List[PrePopSelfEmployment]],
+                       ukProperty: Option[PrePopUkProperty],
+                       overseasProperty: Option[PrePopOverseasProperty]
+                     )
 
 object PrePopData {
   implicit val format: OFormat[PrePopData] = Json.format[PrePopData]
 }
 
-case class EligibilityStatus(eligibleCurrentYear: Boolean, eligibleNextYear: Boolean, prepopData: Option[PrePopData])
+
+case class EligibilityStatus(eligibleCurrentYear: Boolean, eligibleNextYear: Boolean, prepopData: Option[PrePopData]) {
+  def toYearMap: EligibilityStatusYearMap = Map(
+    AccountingPeriodUtil.getCurrentTaxYear.taxEndYear.toString -> eligibleCurrentYear,
+    AccountingPeriodUtil.getNextTaxYear.taxEndYear.toString -> eligibleNextYear)
+}
 
 object EligibilityStatus {
   implicit val format: OFormat[EligibilityStatus] = Json.format[EligibilityStatus]
+
+  type EligibilityStatusYearMap = Map[String, Boolean]
+
+  import play.api.libs.json.MapWrites.mapWrites
+  import play.api.libs.json.Reads.mapReads
+
+  implicit val eligibilityStatusYearMapReads: Reads[Map[String, Boolean]] =
+    mapReads[String, Boolean](s => JsResult.fromTry(Try(s)))
+
+  implicit val eligibilityStatusYearMapWrites: Writes[Map[String, Boolean]] =
+    mapWrites[String].contramap(_.map { case (k, v) => k -> v.toString })
 }

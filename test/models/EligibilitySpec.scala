@@ -16,6 +16,7 @@
 
 package models
 
+import models.EligibilityStatus.EligibilityStatusYearMap
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.libs.json.{JsSuccess, Json}
@@ -160,5 +161,22 @@ class EligibilitySpec extends PlaySpec with GuiceOneServerPerSuite {
       )
     }
 
+  }
+
+  "the EligibilityStatusYearMap model" should {
+    val yearValue1 = (Math.random()*2000).toInt.toString
+    val yearValue2 = (Math.random()*2000).toInt.toString
+    val booleanValue1 = Math.random()>0.5
+    val booleanValue2 = Math.random()>0.5
+    "serialise" in {
+      val eligibilityStatusYearMap = Map(yearValue1->booleanValue1, yearValue2 -> booleanValue2)
+      Json.toJson(eligibilityStatusYearMap).toString() mustBe s"""{"$yearValue1":$booleanValue1,"$yearValue2":$booleanValue2}"""
+    }
+    "deserialise" in {
+      val mapAsString = s"""{"$yearValue1":$booleanValue1,"$yearValue2":$booleanValue2}"""
+      val parseResult = Json.parse(mapAsString).validate[EligibilityStatusYearMap]
+      parseResult.isSuccess mustBe true
+      parseResult.get mustBe Map(yearValue1 -> booleanValue1, yearValue2 -> booleanValue2)
+    }
   }
 }
