@@ -38,6 +38,7 @@ base.seconds                                                    = eiliadau
 base.accounting-method.cash                                     = Cyfrifyddu ar sail arian parod
 base.accounting-method.accruals                                 = Cyfrifyddu traddodiadol
 base.print-this-page                                            = Print this page ... but in Welsh
+base.warning                                                    = Rhybudd
 
 ## Language switching
 language-selector.change-to-language                            = Change the language to English
@@ -298,7 +299,7 @@ sign-up-confirmation.heading.panel.next                            = is signed u
 
 sign-up-confirmation.section1.heading                                = What you will have to do
 
-sign-up-confirmation.section1.hint                                   = Continue to submit your Self Assessment tax return, as normal, until 2024.
+sign-up-confirmation.section1.hint                                   = Continue to submit your Self Assessment tax return, as normal, until {0}.
 sign-up-confirmation.section1.quarterly-updates.table-caption        = Quarterly updates by the deadline
 sign-up-confirmation.section1.quarterly-updates.paragraph            = You can file as many updates as you want but you must submit them on time, each quarter.
 sign-up-confirmation.section1.quarterly-updates.this-year.heading    = 1. Update us every quarter
@@ -345,7 +346,7 @@ sign-up-confirmation.section2.find-software.para-1              = Before you can
 sign-up-confirmation.section2.find-software.link                = Find software ... but in Welsh
 
 sign-up-confirmation.section2.getting-prepared.heading             = Getting prepared ... but in Welsh
-sign-up-confirmation.section2.getting-prepared.para-1              = You can not sign up to Making Tax Digital for Income Tax until next year 2024. But, to help you get prepared, we made a service to help you find the right software - so you are ready when you can sign up. ... but in Welsh
+sign-up-confirmation.section2.getting-prepared.para-1              = You can not sign up to Making Tax Digital for Income Tax until next year {0}. But, to help you get prepared, we made a service to help you find the right software - so you are ready when you can sign up. ... but in Welsh
 sign-up-confirmation.section2.getting-prepared.link                = Find software ... but in Welsh
 
 ## Errors ##

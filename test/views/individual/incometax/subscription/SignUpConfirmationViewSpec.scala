@@ -378,7 +378,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       s"is signed up for Making Tax Digital for Income Tax for the next tax year (6 April $yearStart to 5 April $yearEnd)"
     }
     val section1heading = "What you will have to do"
-    val section1hint = "Warning Continue to submit your Self Assessment tax return, as normal, until 2024."
+    val section1hint = s"Warning Continue to submit your Self Assessment tax return, as normal, until ${AccountingPeriodUtil.getNextTaxEndYear}."
     val section2heading = "Find software and check your account"
 
     val quarterlyUpdate = "Quarterly update"
@@ -451,7 +451,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
     val section2GettingPreparedHeading = "Getting prepared"
     val section2GettingPreparedParagraph: String =
-      "You can not sign up to Making Tax Digital for Income Tax until next year 2024. But, to help you get prepared, " +
+      s"You can not sign up to Making Tax Digital for Income Tax until next year ${AccountingPeriodUtil.getNextTaxEndYear}. But, to help you get prepared, " +
         "we made a service to help you find the right software - so you are ready when you can sign up."
     val section2GettingPreparedLink = "Find software"
 

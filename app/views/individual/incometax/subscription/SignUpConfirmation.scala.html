@@ -193,7 +193,7 @@
     <div class="col boxout">
       <h3 class="govuk-heading-m">@messages("sign-up-confirmation.section2.getting-prepared.heading")</h3>
       <p class="govuk-body">
-        @messages("sign-up-confirmation.section2.getting-prepared.para-1")
+        @messages("sign-up-confirmation.section2.getting-prepared.para-1", AccountingPeriodUtil.getNextTaxEndYear.toString)
       </p>
       <p>
         <a class="govuk-link" href="@{appConfig.softwareUrl}">@messages("sign-up-confirmation.section2.getting-prepared.link")</a>
@@ -214,8 +214,8 @@
 
   @if(taxYearSelectionIsNext) {
     @govukWarningText(WarningText(
-      iconFallbackText = "Warning",
-      content = Text(messages("sign-up-confirmation.section1.hint"))
+      iconFallbackText = messages("base.warning"),
+      content = Text(messages("sign-up-confirmation.section1.hint", AccountingPeriodUtil.getNextTaxEndYear.toString))
     ))
   }
 
