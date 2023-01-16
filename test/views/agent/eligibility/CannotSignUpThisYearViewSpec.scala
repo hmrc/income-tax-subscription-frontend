@@ -19,6 +19,7 @@ package views.agent.eligibility
 import models.DateModel
 import models.common.AccountingPeriodModel
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Element
 import utilities.ViewSpec
 import views.html.agent.eligibility.CannotSignUpThisYear
 
@@ -96,20 +97,27 @@ class CannotSignUpThisYearViewSpec extends ViewSpec {
       link.attr("href") mustBe "https://www.gov.uk/self-assessment-tax-returns/sending-return"
     }
 
-    "have a continue button" in {
-      val link = document.mainContent.selectNth("a", 4)
-      link.text() mustBe CannotSignUpMessages.continueButton
-      link.attr("href") mustBe "/report-quarterly/income-and-expenses/sign-up/client/business/task-list"
+    "have a form" which {
+      def form: Element = document.mainContent.selectHead("form")
+      "has the correct attributes" in {
+        form.attr("method") mustBe testCall.method
+        form.attr("action") mustBe testCall.url
+      }
+
+      "has a submit button" in {
+        form.selectHead("button").text mustBe CannotSignUpMessages.continueButton
+      }
+
     }
 
     "have a sign up another client link" in {
-      val link = document.mainContent.selectNth("a", 5)
+      val link = document.mainContent.selectNth("a", 4)
       link.text() mustBe CannotSignUpMessages.signUpAnotherClientLink
       link.attr("href") mustBe controllers.agent.routes.AddAnotherClientController.addAnother().url
     }
   }
 
-  private def document = Jsoup.parse(view(nextTaxYear).body)
+  private def document = Jsoup.parse(view(testCall, nextTaxYear).body)
 
   object CannotSignUpMessages {
     val heading = "Your client can sign up to this pilot from 6 April 2023"

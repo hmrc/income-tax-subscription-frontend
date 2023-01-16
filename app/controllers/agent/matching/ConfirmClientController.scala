@@ -21,7 +21,8 @@ import auth.agent.{AgentUserMatched, IncomeTaxAgentUser, UserMatchingController}
 import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.FailedClientMatching
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.{ItsaMandationStatus, PrePopulate}
+import config.featureswitch.FeatureSwitch.{ControlListYears, ItsaMandationStatus, PrePopulate}
+import config.featureswitch.FeatureSwitching
 import controllers.utils.ReferenceRetrieval
 import models.EligibilityStatus
 import models.audits.EnterDetailsAuditing
@@ -51,7 +52,7 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
                                         val subscriptionDetailsService: SubscriptionDetailsService)
                                        (implicit val ec: ExecutionContext,
                                         val appConfig: AppConfig,
-                                        mcc: MessagesControllerComponents) extends UserMatchingController with ReferenceRetrieval {
+                                        mcc: MessagesControllerComponents) extends UserMatchingController with ReferenceRetrieval with FeatureSwitching {
 
   def view(userDetailsModel: UserDetailsModel)(implicit request: Request[_]): Html =
     checkYourClientDetails(
@@ -136,22 +137,22 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
     auditingService.audit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), clientDetails, currentCount, lockedOut = false))
     getEligibilityStatusService.getEligibilityStatus(utr) flatMap {
       case Left(error: HttpConnectorError) =>
-        throw new InternalServerException(s"Call to eligibility service failed with ${error.httpResponse}")
+        throw new InternalServerException(s"Call to eligibility service failed with status: ${error.httpResponse.status}")
       case Right(result) =>
         withAgentReference(utr) { reference =>
           result match {
             case EligibilityStatus(true, _, Some(prepop)) if isEnabled(PrePopulate) =>
               for {
                 _ <- prePopulationService.prePopulate(reference, prepop)
-                _ <- handleMandationStatus(reference, arn, nino, utr)
-              } yield (goToHome(nino, utr))
+                _ <- handleMandationStatus(reference, nino, utr)
+              } yield goToHome(nino, utr)
             case EligibilityStatus(true, _, _) =>
-              handleMandationStatus(reference, arn, nino, utr).map { _ =>
+              handleMandationStatus(reference, nino, utr).map { _ =>
                 goToHome(nino, utr)
               }
-            case eligibilityStatus@EligibilityStatus(false, true, _) =>
+            case eligibilityStatus@EligibilityStatus(false, true, _) if isEnabled(ControlListYears)  =>
               subscriptionDetailsService.saveEligibilityStatusYearMap(reference, eligibilityStatus.toYearMap).map { _ =>
-                goToCannotSignUpForCurrentYear
+                goToCannotSignUpForCurrentYear(nino, utr)
               }
             case EligibilityStatus(false, _, _) => Future.successful(goToCannotTakePart)
           }
@@ -159,10 +160,13 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
     }
   }
 
-  private def goToCannotSignUpForCurrentYear(implicit request: Request[AnyContent]): Result =
+  private def goToCannotSignUpForCurrentYear(nino: String, utr: String)(implicit request: Request[AnyContent]): Result =
     Redirect(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show)
+      .withJourneyState(AgentUserMatched)
+      .addingToSession(ITSASessionKeys.NINO -> nino)
+      .addingToSession(ITSASessionKeys.UTR -> utr)
       .removingFromSession(FailedClientMatching)
-      .clearAllUserDetails
+      .clearUserDetailsExceptName
 
   private def goToCannotTakePart(implicit request: Request[AnyContent]): Result =
     Redirect(controllers.agent.eligibility.routes.CannotTakePartController.show)
@@ -190,7 +194,7 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
     successful(Redirect(controllers.agent.routes.ClientAlreadySubscribedController.show).removingFromSession(FailedClientMatching))
   }
 
-  private def handleMandationStatus(reference: String, arn: String, nino: String, utr: String)(implicit request: Request[AnyContent]): Future[Unit] = {
+  private def handleMandationStatus(reference: String, nino: String, utr: String)(implicit request: Request[AnyContent]): Future[Unit] = {
     if (isEnabled(ItsaMandationStatus)) {
       mandationStatusService.retrieveMandationStatus(reference, nino, utr)
     } else {

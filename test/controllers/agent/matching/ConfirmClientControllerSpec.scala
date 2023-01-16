@@ -18,10 +18,11 @@ package controllers.agent.matching
 
 import auth.agent.AgentUserMatched
 import common.Constants.ITSASessionKeys
-import config.featureswitch.FeatureSwitch.{ItsaMandationStatus, PrePopulate}
+import config.featureswitch.FeatureSwitch.{ControlListYears, ItsaMandationStatus, PrePopulate}
 import controllers.agent.AgentControllerBaseSpec
 import models.audits.EnterDetailsAuditing
 import models.audits.EnterDetailsAuditing.EnterDetailsAuditModel
+import models.usermatching.UserDetailsModel
 import models.{EligibilityStatus, PrePopData}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -37,6 +38,7 @@ import services.mocks._
 import uk.gov.hmrc.http.{HttpResponse, InternalServerException}
 import utilities.HttpResult.HttpConnectorError
 import utilities.UserMatchingSessionUtil
+import utilities.UserMatchingSessionUtil.{firstName, lastName}
 import utilities.agent.TestModels.testClientDetails
 import utilities.agent.{TestConstants, TestModels}
 import utilities.individual.TestConstants.testReference
@@ -319,23 +321,30 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
             }
           }
 
-          "the client is ineligible only for the current year" should {
-            s"redirect user to ${controllers.agent.eligibility.routes.CannotTakePartController.show.url}" in withController { controller =>
-              mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
-              mockGetEligibilityStatus(utr)(Future.successful(Right(ineligibleForCurrentYear)))
-              setupMockPrePopulateSave(testReference)
-              mockSaveEligibilityStatusYearMap(testReference)
-              mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
-              setupMockNotLockedOut(arn)
+          "the client is ineligible only for the current year" when {
+            "the control list years feature switch is enabled" should {
+              s"redirect user to ${controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url}" in withController { controller =>
+                mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
+                mockGetEligibilityStatus(utr)(Future.successful(Right(ineligibleForCurrentYear)))
+                setupMockPrePopulateSave(testReference)
+                mockSaveEligibilityStatusYearMap(testReference)
+                mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
+                setupMockNotLockedOut(arn)
+                enable(ControlListYears)
 
-              val result = await(callSubmit(controller))
+                val result = await(callSubmit(controller))
 
-              status(result) mustBe SEE_OTHER
-              redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
+                status(result) mustBe SEE_OTHER
+                redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
 
-              result.verifyStoredUserDetailsIs(None)(request)
+                val session = result.session(request)
 
-              verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), testClientDetails, 0, lockedOut = false))
+                session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
+                session.get(ITSASessionKeys.NINO) mustBe Some(nino)
+                session.get(ITSASessionKeys.UTR) mustBe Some(utr)
+
+                verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), testClientDetails, 0, lockedOut = false))
+              }
             }
           }
 
