@@ -149,14 +149,20 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
               handleMandationStatus(reference, arn, nino, utr).map { _ =>
                 goToHome(nino, utr)
               }
-            case eligibilityStatus@EligibilityStatus(false, _, _) =>
+            case eligibilityStatus@EligibilityStatus(false, true, _) =>
               subscriptionDetailsService.saveEligibilityStatusYearMap(reference, eligibilityStatus.toYearMap).map { _ =>
-                goToCannotTakePart
+                goToCannotSignUpForCurrentYear
               }
+            case EligibilityStatus(false, _, _) => Future.successful(goToCannotTakePart)
           }
         }
     }
   }
+
+  private def goToCannotSignUpForCurrentYear(implicit request: Request[AnyContent]): Result =
+    Redirect(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show)
+      .removingFromSession(FailedClientMatching)
+      .clearAllUserDetails
 
   private def goToCannotTakePart(implicit request: Request[AnyContent]): Result =
     Redirect(controllers.agent.eligibility.routes.CannotTakePartController.show)

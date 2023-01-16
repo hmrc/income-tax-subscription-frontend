@@ -196,6 +196,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     )
 
     def showCannotTakePart: WSResponse = get("/error/cannot-sign-up")
+    def showCannotSignUpThisYear: WSResponse = get("/error/cannot-sign-up-for-current-year")
 
     def showSoleTrader(): WSResponse = get("/eligibility/sole-trader-start-date")
 
