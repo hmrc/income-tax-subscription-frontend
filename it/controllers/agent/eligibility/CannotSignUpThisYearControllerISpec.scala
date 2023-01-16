@@ -22,6 +22,7 @@ import play.api.libs.ws.WSResponse
 import play.api.test.Helpers._
 
 class CannotSignUpThisYearControllerISpec extends ComponentSpecBase {
+
   "GET /client/error/cannot-sign-up-for-current-year" should {
 
     "return a status of OK" in {
@@ -36,4 +37,24 @@ class CannotSignUpThisYearControllerISpec extends ComponentSpecBase {
     }
 
   }
+
+  "POST /client/error/cannot-sign-up-for-current-year" should {
+
+    s"return a redirect to ${controllers.agent.routes.HomeController.home.url}" in {
+      Given("I setup the wiremock stubs")
+      AuthStub.stubAuthSuccess()
+
+      When("POST /client/error/cannot-sign-up-for-current-year is called")
+      val result: WSResponse = IncomeTaxSubscriptionFrontend.submitCannotSignUpThisYear
+
+      Then("Should return SEE_OTHER to the home controller")
+
+      result must have(
+        httpStatus(SEE_OTHER),
+        redirectURI(controllers.agent.routes.HomeController.home.url)
+      )
+    }
+
+  }
+
 }

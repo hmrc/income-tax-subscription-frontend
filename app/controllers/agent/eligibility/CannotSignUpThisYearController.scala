@@ -34,6 +34,11 @@ class CannotSignUpThisYearController @Inject()(val auditingService: AuditingServ
                                       val ec: ExecutionContext) extends StatelessController  {
   def show: Action[AnyContent] = Authenticated { implicit request =>
     _ =>
-      Ok(cannotSignUp(AccountingPeriodUtil.getNextTaxYear))
+      Ok(cannotSignUp(routes.CannotSignUpThisYearController.submit, AccountingPeriodUtil.getNextTaxYear))
+  }
+
+  def submit: Action[AnyContent] = Authenticated { implicit request =>
+    _ =>
+      Redirect(controllers.agent.routes.HomeController.home)
   }
 }

@@ -21,7 +21,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
-import play.api.test.Helpers.{await, defaultAwaitTimeout, status}
+import play.api.test.Helpers.{await, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockAuditingService, MockSubscriptionDetailsService}
 import views.html.agent.eligibility.CannotSignUpThisYear
@@ -42,7 +42,7 @@ class CannotSignUpThisYearControllerSpec extends AgentControllerBaseSpec
 
   "show" should {
     "display the property accounting method view and return OK (200)" in {
-      when(view(any())(any(), any()))
+      when(view(any(), any())(any(), any()))
         .thenReturn(HtmlFormat.empty)
 
       val result: Result = await(TestCannotSignUpThisYearController.show()(subscriptionRequest))
@@ -50,4 +50,14 @@ class CannotSignUpThisYearControllerSpec extends AgentControllerBaseSpec
       status(result) must be(Status.OK)
     }
   }
+
+  "submit" should {
+    "redirect to the home controller" in {
+      val result: Result = await(TestCannotSignUpThisYearController.submit()(subscriptionRequest))
+
+      status(result) must be(Status.SEE_OTHER)
+      redirectLocation(result) must be(Some(controllers.agent.routes.HomeController.home.url))
+    }
+  }
+
 }
