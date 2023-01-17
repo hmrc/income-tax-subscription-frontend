@@ -20,7 +20,6 @@ import connectors.IncomeTaxSubscriptionConnector
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.{PostSubscriptionDetailsSuccessResponse, UnexpectedStatusFailure}
 import connectors.httpparser.RetrieveReferenceHttpParser
 import connectors.httpparser.RetrieveReferenceHttpParser.{Created, Existence, RetrieveReferenceResponse}
-import models.EligibilityStatus.EligibilityStatusYearMap
 import models.common._
 import models.common.business.{AccountingMethodModel, BusinessNameModel, SelfEmploymentData}
 import models.status.MandationStatusModel
@@ -66,9 +65,6 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
 
   def mockSavePrePopFlag(reference: String) =
     setupMockSubscriptionDetailsSaveFunctions(reference, SubscriptionDataKeys.PrePopFlag)
-
-  def mockSaveEligibilityStatusYearMap(reference: String) =
-    setupMockSubscriptionDetailsSaveFunctions(reference, SubscriptionDataKeys.EligibilityStatusYearMap)
 
   def verifySaveOverseasProperty(count: Int, reference: String, overseasPropertyModel: OverseasPropertyModel) =
     verifySubscriptionDetailsSaveWithField[OverseasPropertyModel](reference, count, SubscriptionDataKeys.OverseasProperty, overseasPropertyModel)
@@ -252,10 +248,6 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
     when(mockConnector.getSubscriptionDetails[PropertyModel](ArgumentMatchers.any(), ArgumentMatchers.eq(SubscriptionDataKeys.Property))
       (ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(property))
   }
-
-  def mockFetchEligibilityStatusYearMap(eligibilityStatusYearMap: Option[EligibilityStatusYearMap]): Unit =
-    when(mockConnector.getSubscriptionDetails[EligibilityStatusYearMap](ArgumentMatchers.any(), ArgumentMatchers.eq(SubscriptionDataKeys.EligibilityStatusYearMap))
-      (ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(eligibilityStatusYearMap))
 
   protected final def verifyPropertySave(maybePropertyModel: Option[PropertyModel], maybeReference: Option[String] = None): Unit =
     verify(mockConnector, times(maybePropertyModel.size))

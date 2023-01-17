@@ -150,10 +150,8 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
               handleMandationStatus(reference, nino, utr).map { _ =>
                 goToHome(nino, utr)
               }
-            case eligibilityStatus@EligibilityStatus(false, true, _) if isEnabled(ControlListYears)  =>
-              subscriptionDetailsService.saveEligibilityStatusYearMap(reference, eligibilityStatus.toYearMap).map { _ =>
-                goToCannotSignUpForCurrentYear(nino, utr)
-              }
+            case EligibilityStatus(false, true, _) if isEnabled(ControlListYears) =>
+              Future.successful(goToCannotSignUpForCurrentYear(nino, utr))
             case EligibilityStatus(false, _, _) => Future.successful(goToCannotTakePart)
           }
         }
@@ -165,6 +163,7 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
       .withJourneyState(AgentUserMatched)
       .addingToSession(ITSASessionKeys.NINO -> nino)
       .addingToSession(ITSASessionKeys.UTR -> utr)
+      .addingToSession(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> true.toString)
       .removingFromSession(FailedClientMatching)
       .clearUserDetailsExceptName
 

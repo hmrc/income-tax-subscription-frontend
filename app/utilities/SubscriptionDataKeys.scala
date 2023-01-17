@@ -20,7 +20,6 @@ object SubscriptionDataKeys {
   val BusinessName = "BusinessName"
   val SelectedTaxYear = "SelectedTaxYear"
   val AccountingMethod = "AccountingMethod"
-  val EligibilityStatusYearMap = "EligibilityStatusYearMap"
   val PropertyAccountingMethod = "PropertyAccountingMethod"
   val OverseasPropertyAccountingMethod = "OverseasPropertyAccountingMethod"
   val MtditId = "MtditId"

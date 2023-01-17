@@ -48,6 +48,7 @@ object Constants {
     val UTR = "UTR"
     val FULLNAME: String = "FULLNAME"
     val REFERENCE = "reference"
+    val ELIGIBLE_NEXT_YEAR_ONLY = "ELIGIBLE_NEXT_YEAR_ONLY"
 
     val sessionId = "sessionId"
 

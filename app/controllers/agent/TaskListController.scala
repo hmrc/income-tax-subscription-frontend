@@ -20,10 +20,9 @@ import auth.agent.{AuthenticatedController, IncomeTaxAgentUser}
 import common.Constants.ITSASessionKeys
 import config.AppConfig
 import connectors.IncomeTaxSubscriptionConnector
-import controllers.agent.TaskListController.isTaxYearChangePermitted
+import controllers.agent.TaskListController.interpretTaxYearAsEditableOrNot
 import controllers.utils.ReferenceRetrieval
-import models.Current
-import models.EligibilityStatus.EligibilityStatusYearMap
+import models.Next
 import models.common.business.{AccountingMethodModel, SelfEmploymentData}
 import models.common.subscription.CreateIncomeSourcesModel.createIncomeSources
 import models.common.subscription.{CreateIncomeSourcesModel, SubscriptionSuccess}
@@ -33,7 +32,6 @@ import play.api.mvc._
 import services._
 import services.agent.SubscriptionOrchestrationService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
-import utilities.AccountingPeriodUtil
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.AgentTaskList
@@ -85,22 +83,21 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
     }
   }
 
-  private def getTaskListModel(reference: String)(implicit hc: HeaderCarrier): Future[TaskListModel] = {
+  private def getTaskListModel(reference: String)(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[TaskListModel] = {
     for {
       selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
       businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
       businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
       property <- subscriptionDetailsService.fetchProperty(reference)
       overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
-      eligibilityYearMap <- subscriptionDetailsService.fetchEligibility(reference)
+      eligibilityNextYearOnly = request.session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY).exists(_.toBoolean)
     } yield {
       TaskListModel(
-        selectedTaxYear,
+        interpretTaxYearAsEditableOrNot(selectedTaxYear, eligibilityNextYearOnly),
         businesses,
         businessAccountingMethod.map(_.accountingMethod),
         property,
-        overseasProperty,
-        isTaxYearChangePermitted(selectedTaxYear, eligibilityYearMap)
+        overseasProperty
       )
     }
   }
@@ -143,13 +140,17 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
 }
 
 object TaskListController {
-  private[agent] def isTaxYearChangePermitted(selectedTaxYear: Option[AccountingYearModel], eligibilityYearMap: Option[EligibilityStatusYearMap]): Boolean = {
-    (selectedTaxYear, eligibilityYearMap) match {
-      case (None, _) | (_, None) => true // Change allowed if year not specified
-      case (_, Some(map)) if map.isEmpty => true // Change allowed if eligibility not specified
-      case (Some(AccountingYearModel(year, _)), Some(map)) =>
-        val accountingYear = if (year == Current) AccountingPeriodUtil.getCurrentTaxYear else AccountingPeriodUtil.getNextTaxYear
-        map.exists { case (k, v) => k != accountingYear.taxEndYear.toString && v } // ie if any other year is permitted
-    }
-  }
+  /*
+  Note 1, no matter what has been retrieved from storage, the editable value will always be newly set.
+
+  Note 2, the business rules state that "allowed this year" will always imply "allowed next year" so we only
+  have to deal with the cases where (1) this year is not allowed but next year is, or (2) both are allowed.  If
+  neither are allowed the user is not permitted to go to the task list at all.
+   */
+  private[agent] def interpretTaxYearAsEditableOrNot(
+                                                      selectedTaxYear: Option[AccountingYearModel],
+                                                      eligibilityNextYearOnly: Boolean): Option[AccountingYearModel] =
+    if (eligibilityNextYearOnly) Some(AccountingYearModel(Next, editable = false))
+    else selectedTaxYear.map(_.copy(editable = true)) // whatever year was previously specified, and editing must be allowed
+
 }

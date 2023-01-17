@@ -16,10 +16,7 @@
 
 package models
 
-import models.EligibilityStatus.EligibilityStatusYearMap
 import play.api.libs.json._
-import utilities.AccountingPeriodUtil
-
 import scala.util.Try
 
 case class PrePopSelfEmployment(
@@ -64,16 +61,10 @@ object PrePopData {
 }
 
 
-case class EligibilityStatus(eligibleCurrentYear: Boolean, eligibleNextYear: Boolean, prepopData: Option[PrePopData]) {
-  def toYearMap: EligibilityStatusYearMap = Map(
-    AccountingPeriodUtil.getCurrentTaxYear.taxEndYear.toString -> eligibleCurrentYear,
-    AccountingPeriodUtil.getNextTaxYear.taxEndYear.toString -> eligibleNextYear)
-}
+case class EligibilityStatus(eligibleCurrentYear: Boolean, eligibleNextYear: Boolean, prepopData: Option[PrePopData])
 
 object EligibilityStatus {
   implicit val format: OFormat[EligibilityStatus] = Json.format[EligibilityStatus]
-
-  type EligibilityStatusYearMap = Map[String, Boolean]
 
   import play.api.libs.json.MapWrites.mapWrites
   import play.api.libs.json.Reads.mapReads

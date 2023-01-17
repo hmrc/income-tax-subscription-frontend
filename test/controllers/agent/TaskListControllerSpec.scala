@@ -32,7 +32,6 @@ import services.AccountingPeriodService
 import services.agent.mocks.MockSubscriptionOrchestrationService
 import services.mocks.{MockAuditingService, MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
-import utilities.AccountingPeriodUtil
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import utilities.TestModels.{testAccountingMethod, testSelectedTaxYearCurrent, testValidStartDate}
 import utilities.agent.TestConstants.{testARN, testCreateIncomeSources, testNino, testUtr}
@@ -102,8 +101,6 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
       )))
       mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
 
-      mockFetchEligibilityStatusYearMap(None)
-
       val result: Future[Result] = TestTaskListController.show()(subscriptionRequestWithName)
 
       status(result) mustBe OK
@@ -167,45 +164,52 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
     }
   }
 
-  "TaskListController.isTaxYearChangePermitted" should {
-    "return true" when {
-      "no year specified" in {
-        TaskListController.isTaxYearChangePermitted(
-          None,
-          None) mustBe true
-      }
-      "no eligibility found" in {
-        TaskListController.isTaxYearChangePermitted(
-          Some(AccountingYearModel(Current, confirmed = true)),
-          None) mustBe true
-      }
-      "eligibility found but no eligibility specified" in {
-        TaskListController.isTaxYearChangePermitted(
-          Some(AccountingYearModel(Current, confirmed = true)),
-          Some(Map.empty)) mustBe true
-      }
-      "any other eligibility specified as allowed" in {
-        TaskListController.isTaxYearChangePermitted(
-          Some(AccountingYearModel(Current, confirmed = true)),
-          Some(Map(
-            AccountingPeriodUtil.getCurrentTaxYear.taxEndYear.toString -> true,
-            AccountingPeriodUtil.getNextTaxYear.taxEndYear.toString -> true))
-        ) mustBe true
-      }
-    }
-    "return false" when {
-      "all other eligibility specified as not allowed" in {
-        TaskListController.isTaxYearChangePermitted(
-          Some(AccountingYearModel(Current, confirmed = true)),
-          Some(Map(
-            AccountingPeriodUtil.getCurrentTaxYear.taxEndYear.toString -> true,
-            AccountingPeriodUtil.getNextTaxYear.taxEndYear.toString -> false))
-        ) mustBe false
-      }
-      "no other eligibility specified" in {
-        TaskListController.isTaxYearChangePermitted(
-          Some(AccountingYearModel(Current, confirmed = true)),
-          Some(Map(AccountingPeriodUtil.getCurrentTaxYear.taxEndYear.toString -> true))) mustBe false
+  "TaskListController.interpretTaxYearAsEditableOrNot" when {
+    for (eligibilityNextYearOnly <- Seq(true, false)) {
+      s"eligibility restricted to next year is $eligibilityNextYearOnly" when {
+        "no year provided" should {
+          val year = None
+          val response = TaskListController.interpretTaxYearAsEditableOrNot(year, eligibilityNextYearOnly)
+          if (eligibilityNextYearOnly) {
+            "return next year, uneditable" in {
+              response.isEmpty mustBe false
+              response.get.accountingYear mustBe Next
+              response.get.editable mustBe false
+              response.get.confirmed mustBe false
+            }
+          }
+          else {
+            "return None" in {
+              response mustBe None
+            }
+          }
+        }
+        for (specifiedYear <- Seq(Current, Next)) {
+          for (specifiedConfirmed <- Seq(true, false)) {
+            for (specifiedEditable <- Seq(true, false)) {
+              s"$specifiedYear, $specifiedConfirmed and $specifiedEditable provided" should {
+                val year = Some(AccountingYearModel(specifiedYear, confirmed = specifiedConfirmed, editable = specifiedEditable))
+                val response = TaskListController.interpretTaxYearAsEditableOrNot(year, eligibilityNextYearOnly)
+                if (eligibilityNextYearOnly) {
+                  "return next year, uneditable" in {
+                    response.isEmpty mustBe false
+                    response.get.accountingYear mustBe Next
+                    response.get.editable mustBe false
+                    response.get.confirmed mustBe false
+                  }
+                }
+                else {
+                  s"return $specifiedYear, confirmed=false, editable=false" in {
+                    response.isEmpty mustBe false
+                    response.get.accountingYear mustBe specifiedYear
+                    response.get.confirmed mustBe specifiedConfirmed
+                    response.get.editable mustBe true
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
   }
