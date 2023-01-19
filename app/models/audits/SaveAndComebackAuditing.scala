@@ -73,8 +73,8 @@ object SaveAndComebackAuditing {
       "saveAndRetrieveLocation" -> saveAndRetrieveLocation,
       "income" -> JsArray(income)
     ) ++ selectedTaxYear.fold(Json.obj()) {
-      case AccountingYearModel(Next, _) => Json.obj("taxYear" -> s"$currentTaxYear-${currentTaxYear + 1}")
-      case AccountingYearModel(Current, _) => Json.obj("taxYear" -> s"${currentTaxYear - 1}-$currentTaxYear")
+      case AccountingYearModel(Next, _, _) => Json.obj("taxYear" -> s"$currentTaxYear-${currentTaxYear + 1}")
+      case AccountingYearModel(Current, _, _) => Json.obj("taxYear" -> s"${currentTaxYear - 1}-$currentTaxYear")
     } ++ maybeAgentReferenceNumber.fold(Json.obj())(agentReferenceNumber => Json.obj("agentReferenceNumber" -> agentReferenceNumber))
   }
 

@@ -77,10 +77,10 @@ object CreateIncomeSourcesModel {
       accountingYear match {
         case None =>
           throw new InternalServerException("[SubscriptionDataUtil][createIncomeSource] - Could not create the create income sources model due to missing selected tax year")
-        case Some(AccountingYearModel(_, false)) =>
+        case Some(AccountingYearModel(_, false, _)) =>
           throw new InternalServerException("[SubscriptionDataUtil][createIncomeSources] - Could not create the create income sources model as the user has not confirmed their selected tax year")
-        case Some(AccountingYearModel(Next, _)) => getNextTaxYear
-        case Some(AccountingYearModel(Current, _)) => getCurrentTaxYear
+        case Some(AccountingYearModel(Next, _, _)) => getNextTaxYear
+        case Some(AccountingYearModel(Current, _, _)) => getCurrentTaxYear
       }
     }
 

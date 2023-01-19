@@ -18,19 +18,20 @@ package models.common
 
 import models.AccountingMethod
 import models.common.business.SelfEmploymentData
-import play.api.libs.json.{Format, Json}
 
 case class TaskListModel(taxYearSelection: Option[AccountingYearModel],
                          selfEmployments: Seq[SelfEmploymentData],
                          selfEmploymentAccountingMethod: Option[AccountingMethod],
-                         ukProperty:  Option[PropertyModel],
+                         ukProperty: Option[PropertyModel],
                          overseasProperty: Option[OverseasPropertyModel]) {
 
-  val taxYearSelectedAndConfirmed: Boolean = taxYearSelection.exists(_.confirmed)
+  val taxYearSelectedAndConfirmed: Boolean = taxYearSelection.exists(taxYear => !taxYear.editable || taxYear.confirmed)
 
-  val taxYearSelectedNotConfirmed: Boolean = taxYearSelection.exists(!_.confirmed)
+  val taxYearSelectedNotConfirmed: Boolean = taxYearSelection.exists(taxYear => taxYear.editable && !taxYear.confirmed)
 
-  val ukPropertyComplete: Boolean =  ukProperty.exists(_.confirmed)
+  val permitTaxYearChange: Boolean = taxYearSelection.exists(_.editable)
+
+  val ukPropertyComplete: Boolean = ukProperty.exists(_.confirmed)
 
   val selfEmploymentsComplete: Boolean = selfEmployments.forall(_.confirmed) && selfEmploymentAccountingMethod.isDefined
 
@@ -38,20 +39,16 @@ case class TaskListModel(taxYearSelection: Option[AccountingYearModel],
 
   val sectionsTotal: Int = Math.max(2, 1 + selfEmployments.size + ukProperty.size + overseasProperty.size)
 
-  val sectionsComplete: Int = (if(taxYearSelectedAndConfirmed) 1 else 0) +
-    selfEmployments.count { business => business.confirmed && selfEmploymentAccountingMethod.isDefined} +
-    (if(ukPropertyComplete) 1 else 0) +
-    (if(overseasPropertyComplete)1 else 0)
+  val sectionsComplete: Int = (if (taxYearSelectedAndConfirmed) 1 else 0) +
+    selfEmployments.count { business => business.confirmed && selfEmploymentAccountingMethod.isDefined } +
+    (if (ukPropertyComplete) 1 else 0) +
+    (if (overseasPropertyComplete) 1 else 0)
 
   def canAddMoreBusinesses(maxSelfEmployments: Int): Boolean =
-    selfEmployments.size < maxSelfEmployments||
+    selfEmployments.size < maxSelfEmployments ||
       ukProperty.isEmpty ||
       overseasProperty.isEmpty
 
   def taskListComplete: Boolean = sectionsComplete == sectionsTotal
 
-}
-
-object TaskListModel {
-  implicit val format: Format[TaskListModel] = Json.format[TaskListModel]
 }

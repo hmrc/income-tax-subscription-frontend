@@ -69,18 +69,26 @@
   }
 }
 
+@taxYearText = @{
+  viewModel.taxYearSelection.map(_.accountingYear) match {
+      case Some(Current) => messages(s"${messagePrefix}.content.section1.current-tax-year", (accountingPeriodService.currentTaxYear - 1).toString, accountingPeriodService.currentTaxYear.toString)
+      case Some(Next) => messages(s"${messagePrefix}.content.section1.next-tax-year", accountingPeriodService.currentTaxYear.toString, (accountingPeriodService.currentTaxYear + 1).toString)
+      case None => messages(s"${messagePrefix}.content.section1.action")
+  }
+}
+
 @selectTaxYear = @{
 <ul class="app-task-list__items">
   <li class="app-task-list__item">
     <span class="app-task-list__task-name">
       {if(viewModel.taxYearSelectedAndConfirmed) {
-      <a href={controllers.agent.routes.TaxYearCheckYourAnswersController.show(editMode=true).url} aria-describedby="section_1_thing_1_status" id="select_tax_year_check_your_answer">
-          {viewModel.taxYearSelection.map(_.accountingYear) match {
-              case Some(Current) => messages(s"${messagePrefix}.content.section1.current-tax-year", (accountingPeriodService.currentTaxYear - 1).toString, accountingPeriodService.currentTaxYear.toString)
-              case Some(Next) => messages(s"${messagePrefix}.content.section1.next-tax-year", accountingPeriodService.currentTaxYear.toString, (accountingPeriodService.currentTaxYear + 1).toString)
-              case None => messages(s"${messagePrefix}.content.section1.action")
-          }}
-      </a>
+        if(!viewModel.permitTaxYearChange)
+          taxYearText
+        else {
+          <a href={controllers.agent.routes.TaxYearCheckYourAnswersController.show(editMode=true).url} aria-describedby="section_1_thing_1_status" id="select_tax_year_check_your_answer">
+            {taxYearText}
+          </a>
+        }
       } else if (viewModel.taxYearSelectedNotConfirmed) {
       <a href={controllers.agent.routes.WhatYearToSignUpController.show().url} aria-describedby="section_1_thing_1_status" id="select_tax_year_not_confirmed">
           {messages(s"${messagePrefix}.content.section1.action")}
