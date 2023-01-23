@@ -37,7 +37,7 @@ class CannotSignUpThisYearController @Inject()(val auditingService: AuditingServ
       Ok(cannotSignUp(routes.CannotSignUpThisYearController.submit, AccountingPeriodUtil.getNextTaxYear))
   }
 
-  def submit: Action[AnyContent] = Authenticated { implicit request =>
+  def submit: Action[AnyContent] = Authenticated { _ =>
     _ =>
       Redirect(controllers.agent.routes.HomeController.home)
   }

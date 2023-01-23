@@ -26,7 +26,7 @@ class ServiceNameViewSpec extends ViewSpecTrait {
   private val individualLayout: PrincipalMainTemplate = app.injector.instanceOf[PrincipalMainTemplate]
   private val agentLayout: AgentMainTemplate = app.injector.instanceOf[AgentMainTemplate]
 
-  private def page(isAgent: Boolean): HtmlFormat.Appendable = if(isAgent) {
+  private def page(isAgent: Boolean): HtmlFormat.Appendable = if (isAgent) {
     agentLayout(
       title = "title"
     )(Html(""))(FakeRequest(), implicitly, appConfig)
@@ -58,4 +58,4 @@ class ServiceNameViewSpec extends ViewSpecTrait {
   }
 
 
-  }
+}

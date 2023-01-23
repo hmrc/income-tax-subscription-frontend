@@ -20,11 +20,13 @@ import auth.agent.{AuthenticatedController, IncomeTaxAgentUser}
 import common.Constants.ITSASessionKeys
 import config.AppConfig
 import connectors.IncomeTaxSubscriptionConnector
+import controllers.agent.TaskListController.interpretTaxYearAsEditableOrNot
 import controllers.utils.ReferenceRetrieval
-import models.common.TaskListModel
+import models.Next
 import models.common.business.{AccountingMethodModel, SelfEmploymentData}
 import models.common.subscription.CreateIncomeSourcesModel.createIncomeSources
 import models.common.subscription.{CreateIncomeSourcesModel, SubscriptionSuccess}
+import models.common.{AccountingYearModel, TaskListModel}
 import play.api.Logging
 import play.api.mvc._
 import services._
@@ -81,16 +83,17 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
     }
   }
 
-  private def getTaskListModel(reference: String)(implicit hc: HeaderCarrier): Future[TaskListModel] = {
+  private def getTaskListModel(reference: String)(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[TaskListModel] = {
     for {
+      selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
       businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
       businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
       property <- subscriptionDetailsService.fetchProperty(reference)
       overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
-      selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
+      eligibilityNextYearOnly = request.session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY).exists(_.toBoolean)
     } yield {
       TaskListModel(
-        selectedTaxYear,
+        interpretTaxYearAsEditableOrNot(selectedTaxYear, eligibilityNextYearOnly),
         businesses,
         businessAccountingMethod.map(_.accountingMethod),
         property,
@@ -133,5 +136,21 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
           }
         }
     }
+
+}
+
+object TaskListController {
+  /*
+  Note 1, no matter what has been retrieved from storage, the editable value will always be newly set.
+
+  Note 2, the business rules state that "allowed this year" will always imply "allowed next year" so we only
+  have to deal with the cases where (1) this year is not allowed but next year is, or (2) both are allowed.  If
+  neither are allowed the user is not permitted to go to the task list at all.
+   */
+  private[agent] def interpretTaxYearAsEditableOrNot(
+                                                      selectedTaxYear: Option[AccountingYearModel],
+                                                      eligibilityNextYearOnly: Boolean): Option[AccountingYearModel] =
+    if (eligibilityNextYearOnly) Some(AccountingYearModel(Next, editable = false))
+    else selectedTaxYear.map(_.copy(editable = true)) // whatever year was previously specified, and editing must be allowed
 
 }

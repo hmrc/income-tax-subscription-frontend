@@ -19,7 +19,6 @@ package services
 import connectors.IncomeTaxSubscriptionConnector
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsResponse
 import connectors.httpparser.RetrieveReferenceHttpParser.RetrieveReferenceResponse
-import models.EligibilityStatus.EligibilityStatusYearMap
 import models.common._
 import models.common.business._
 import models.status.MandationStatusModel
@@ -55,12 +54,6 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
 
   def saveSelectedTaxYear(reference: String, selectedTaxYear: AccountingYearModel)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] =
     incomeTaxSubscriptionConnector.saveSubscriptionDetails[AccountingYearModel](reference, SelectedTaxYear, selectedTaxYear)
-
-  def fetchEligibility(reference: String)(implicit hc: HeaderCarrier): Future[Option[EligibilityStatusYearMap]] =
-    incomeTaxSubscriptionConnector.getSubscriptionDetails[EligibilityStatusYearMap](reference, SubscriptionDataKeys.EligibilityStatusYearMap)
-
-  def saveEligibilityStatusYearMap(reference: String, eligibilityYearMap: EligibilityStatusYearMap)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] =
-    incomeTaxSubscriptionConnector.saveSubscriptionDetails[EligibilityStatusYearMap](reference, EligibilityStatusYearMap, eligibilityYearMap)
 
   def fetchSubscriptionId(reference: String)(implicit hc: HeaderCarrier): Future[Option[String]] =
     incomeTaxSubscriptionConnector.getSubscriptionDetails[String](reference, MtditId)

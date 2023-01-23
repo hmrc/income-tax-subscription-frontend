@@ -66,9 +66,6 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
   def mockSavePrePopFlag(reference: String) =
     setupMockSubscriptionDetailsSaveFunctions(reference, SubscriptionDataKeys.PrePopFlag)
 
-  def mockSaveEligibilityStatusYearMap(reference: String) =
-    setupMockSubscriptionDetailsSaveFunctions(reference, SubscriptionDataKeys.EligibilityStatusYearMap)
-
   def verifySaveOverseasProperty(count: Int, reference: String, overseasPropertyModel: OverseasPropertyModel) =
     verifySubscriptionDetailsSaveWithField[OverseasPropertyModel](reference, count, SubscriptionDataKeys.OverseasProperty, overseasPropertyModel)
 

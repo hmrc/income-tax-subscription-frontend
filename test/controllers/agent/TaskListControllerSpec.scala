@@ -20,7 +20,7 @@ import config.featureswitch.FeatureSwitch.ThrottlingFeature
 import models.common.business._
 import models.common.subscription.SubscriptionFailureResponse
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
-import models.{Cash, DateModel, Next}
+import models.{Cash, Current, DateModel, Next}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import play.api.http.Status
@@ -160,6 +160,56 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
         intercept[InternalServerException](await(result)).message must include(
           s"[TaskListController][submit] - failure response received from submission: ${SubscriptionFailureResponse(INTERNAL_SERVER_ERROR)}"
         )
+      }
+    }
+  }
+
+  "TaskListController.interpretTaxYearAsEditableOrNot" when {
+    for (eligibilityNextYearOnly <- Seq(true, false)) {
+      s"eligibility restricted to next year is $eligibilityNextYearOnly" when {
+        "no year provided" should {
+          val year = None
+          val response = TaskListController.interpretTaxYearAsEditableOrNot(year, eligibilityNextYearOnly)
+          if (eligibilityNextYearOnly) {
+            "return next year, uneditable" in {
+              response.isEmpty mustBe false
+              response.get.accountingYear mustBe Next
+              response.get.editable mustBe false
+              response.get.confirmed mustBe false
+            }
+          }
+          else {
+            "return None" in {
+              response mustBe None
+            }
+          }
+        }
+        for (specifiedYear <- Seq(Current, Next)) {
+          for (specifiedConfirmed <- Seq(true, false)) {
+            for (specifiedEditable <- Seq(true, false)) {
+              s"$specifiedYear, $specifiedConfirmed and $specifiedEditable provided" should {
+                val year = Some(AccountingYearModel(specifiedYear, confirmed = specifiedConfirmed, editable = specifiedEditable))
+                val response = TaskListController.interpretTaxYearAsEditableOrNot(year, eligibilityNextYearOnly)
+                if (eligibilityNextYearOnly) {
+                  "return next year, uneditable" in {
+                    response.isEmpty mustBe false
+                    response.get.accountingYear mustBe Next
+                    response.get.editable mustBe false
+                    response.get.confirmed mustBe false
+                  }
+                }
+                else {
+                  s"return $specifiedYear, confirmed=false, editable=false" in {
+                    response.isEmpty mustBe false
+                    response.get.accountingYear mustBe specifiedYear
+                    response.get.confirmed mustBe specifiedConfirmed
+                    response.get.editable mustBe true
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
   }

@@ -22,7 +22,6 @@ import config.featureswitch.FeatureSwitch.{ControlListYears, ItsaMandationStatus
 import controllers.agent.AgentControllerBaseSpec
 import models.audits.EnterDetailsAuditing
 import models.audits.EnterDetailsAuditing.EnterDetailsAuditModel
-import models.usermatching.UserDetailsModel
 import models.{EligibilityStatus, PrePopData}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -38,7 +37,6 @@ import services.mocks._
 import uk.gov.hmrc.http.{HttpResponse, InternalServerException}
 import utilities.HttpResult.HttpConnectorError
 import utilities.UserMatchingSessionUtil
-import utilities.UserMatchingSessionUtil.{firstName, lastName}
 import utilities.agent.TestModels.testClientDetails
 import utilities.agent.{TestConstants, TestModels}
 import utilities.individual.TestConstants.testReference
@@ -327,7 +325,6 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
                 mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
                 mockGetEligibilityStatus(utr)(Future.successful(Right(ineligibleForCurrentYear)))
                 setupMockPrePopulateSave(testReference)
-                mockSaveEligibilityStatusYearMap(testReference)
                 mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
                 setupMockNotLockedOut(arn)
                 enable(ControlListYears)
@@ -342,6 +339,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
                 session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
                 session.get(ITSASessionKeys.NINO) mustBe Some(nino)
                 session.get(ITSASessionKeys.UTR) mustBe Some(utr)
+                session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY) mustBe Some("true")
 
                 verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), testClientDetails, 0, lockedOut = false))
               }
