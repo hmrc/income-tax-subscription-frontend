@@ -34,7 +34,7 @@ import services.mocks.{MockAuditingService, MockIncomeTaxSubscriptionConnector, 
 import uk.gov.hmrc.http.InternalServerException
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import utilities.TestModels.{testAccountingMethod, testSelectedTaxYearCurrent, testValidStartDate}
-import utilities.agent.TestConstants.{testARN, testCreateIncomeSources, testNino, testUtr}
+import utilities.agent.TestConstants.{testARN, testCreateIncomeSourcesNextYear, testCreateIncomeSourcesThisYear, testNino, testUtr}
 import views.html.agent.AgentTaskList
 
 import scala.concurrent.Future
@@ -127,10 +127,37 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
         )))
         mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
 
-        val testIncomeSourceModel = testCreateIncomeSources.copy(soleTraderBusinesses = None)
+        val testIncomeSourceModel = testCreateIncomeSourcesThisYear.copy(soleTraderBusinesses = None)
         mockCreateSubscriptionFromTaskListSuccess(testARN, testNino, testUtr, testIncomeSourceModel)
 
         val result: Future[Result] = TestTaskListController.submit()(subscriptionRequestWithName)
+
+        status(result) must be(Status.SEE_OTHER)
+        redirectLocation(result) mustBe Some(controllers.agent.routes.ConfirmationAgentController.show.url)
+      }
+    }
+
+    "sign up income source is successful but tax year has been enforced" should {
+      "return status (SEE_OTHER - 303) and redirect to the confirmation page" in {
+        setupMockSubscriptionDetailsSaveFunctions()
+        mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(Seq.empty)
+        mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(None)
+        mockFetchProperty(Some(PropertyModel(
+          accountingMethod = Some(testAccountingMethod.accountingMethod),
+          startDate = Some(testValidStartDate),
+          confirmed = true
+        )))
+        mockFetchOverseasProperty(Some(OverseasPropertyModel(
+          accountingMethod = Some(testAccountingMethod.accountingMethod),
+          startDate = Some(testValidStartDate),
+          confirmed = true
+        )))
+        // NB Do NOT mock fetch selected tax year.
+
+        val testIncomeSourceModel = testCreateIncomeSourcesNextYear.copy(soleTraderBusinesses = None)
+        mockCreateSubscriptionFromTaskListSuccess(testARN, testNino, testUtr, testIncomeSourceModel)
+
+        val result: Future[Result] = TestTaskListController.submit()(subscriptionRequestWithNameNextYearOnly)
 
         status(result) must be(Status.SEE_OTHER)
         redirectLocation(result) mustBe Some(controllers.agent.routes.ConfirmationAgentController.show.url)
@@ -153,7 +180,7 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
         )))
         mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
 
-        val testIncomeSourceModel = testCreateIncomeSources.copy(soleTraderBusinesses = None)
+        val testIncomeSourceModel = testCreateIncomeSourcesThisYear.copy(soleTraderBusinesses = None)
         mockCreateSubscriptionFromTaskListFailure(testARN, testNino, testUtr, testIncomeSourceModel)
 
         val result: Future[Result] = TestTaskListController.submit()(subscriptionRequestWithName)

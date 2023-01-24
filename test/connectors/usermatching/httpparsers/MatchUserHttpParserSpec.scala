@@ -36,7 +36,7 @@ class MatchUserHttpParserSpec extends UnitTestTrait with EitherValues {
         val testUserDetailsMatch = UserMatchSuccessResponseModel(
           firstName = testFirstName,
           lastName = testLastName,
-          dateOfBirth = testStartDate.toString,
+          dateOfBirth = testStartDateThisYear.toString,
           nino = testNino,
           saUtr = None
         )

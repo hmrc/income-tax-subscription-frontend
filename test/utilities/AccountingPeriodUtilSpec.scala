@@ -29,25 +29,25 @@ class AccountingPeriodUtilSpec extends AnyWordSpecLike with Matchers with Option
 
   "AccountingPeriodUtil.getTaxEndYear" should {
     "return 2018 if the tax year ends between 6th April 2017 and 5th April 2018" in {
-      val testPeriodLowBound = AccountingPeriodModel(TestModels.testStartDate, DateModel("6", "4", "2017"))
-      val testPeriodBelowLowBound = AccountingPeriodModel(TestModels.testStartDate, DateModel("5", "4", "2017"))
+      val testPeriodLowBound = AccountingPeriodModel(TestModels.testStartDateThisYear, DateModel("6", "4", "2017"))
+      val testPeriodBelowLowBound = AccountingPeriodModel(TestModels.testStartDateThisYear, DateModel("5", "4", "2017"))
       AccountingPeriodUtil.getTaxEndYear(testPeriodLowBound) shouldBe 2018
       AccountingPeriodUtil.getTaxEndYear(testPeriodBelowLowBound) shouldBe 2017
 
-      val testPeriodUpperBound = AccountingPeriodModel(TestModels.testStartDate, DateModel("5", "4", "2018"))
-      val testPeriodAboveUpperBound = AccountingPeriodModel(TestModels.testStartDate, DateModel("6", "4", "2018"))
+      val testPeriodUpperBound = AccountingPeriodModel(TestModels.testStartDateThisYear, DateModel("5", "4", "2018"))
+      val testPeriodAboveUpperBound = AccountingPeriodModel(TestModels.testStartDateThisYear, DateModel("6", "4", "2018"))
       AccountingPeriodUtil.getTaxEndYear(testPeriodUpperBound) shouldBe 2018
       AccountingPeriodUtil.getTaxEndYear(testPeriodAboveUpperBound) shouldBe 2019
     }
 
     "return 2019 if the tax year ends between 6th April 2018 and 5th April 2019" in {
-      val testPeriodLowBound = AccountingPeriodModel(TestModels.testStartDate, DateModel("6", "4", "2018"))
-      val testPeriodBelowLowBound = AccountingPeriodModel(TestModels.testStartDate, DateModel("5", "4", "2018"))
+      val testPeriodLowBound = AccountingPeriodModel(TestModels.testStartDateThisYear, DateModel("6", "4", "2018"))
+      val testPeriodBelowLowBound = AccountingPeriodModel(TestModels.testStartDateThisYear, DateModel("5", "4", "2018"))
       AccountingPeriodUtil.getTaxEndYear(testPeriodLowBound) shouldBe 2019
       AccountingPeriodUtil.getTaxEndYear(testPeriodBelowLowBound) shouldBe 2018
 
-      val testPeriodUpperBound = AccountingPeriodModel(TestModels.testStartDate, DateModel("5", "4", "2019"))
-      val testPeriodAboveUpperBound = AccountingPeriodModel(TestModels.testStartDate, DateModel("6", "4", "2019"))
+      val testPeriodUpperBound = AccountingPeriodModel(TestModels.testStartDateThisYear, DateModel("5", "4", "2019"))
+      val testPeriodAboveUpperBound = AccountingPeriodModel(TestModels.testStartDateThisYear, DateModel("6", "4", "2019"))
       AccountingPeriodUtil.getTaxEndYear(testPeriodUpperBound) shouldBe 2019
       AccountingPeriodUtil.getTaxEndYear(testPeriodAboveUpperBound) shouldBe 2020
     }
@@ -55,13 +55,13 @@ class AccountingPeriodUtilSpec extends AnyWordSpecLike with Matchers with Option
 
   "AccountingPeriodUtil.getCurrentTaxYearStartDate" should {
     "return the start date for the current tax year" in {
-      AccountingPeriodUtil.getCurrentTaxYearStartDate shouldBe DateModel("6", "4", (AccountingPeriodUtil.getCurrentTaxEndYear -1).toString)
+      AccountingPeriodUtil.getCurrentTaxYear.startDate shouldBe DateModel("6", "4", (AccountingPeriodUtil.getCurrentTaxEndYear -1).toString)
     }
   }
 
   "AccountingPeriodUtil.getCurrentTaxYearEndDate" should {
     "return the end date for the current tax year" in {
-      AccountingPeriodUtil.getCurrentTaxYearEndDate shouldBe DateModel("5", "4", AccountingPeriodUtil.getCurrentTaxEndYear.toString)
+      AccountingPeriodUtil.getCurrentTaxYear.endDate shouldBe DateModel("5", "4", AccountingPeriodUtil.getCurrentTaxEndYear.toString)
     }
   }
 

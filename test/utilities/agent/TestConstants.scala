@@ -44,9 +44,12 @@ object TestConstants {
   lazy val agentServiceName: String = hmrcAsAgent
   lazy val testARN: String = new Generator().nextAtedUtr.utr //Not a valid ARN, for test purposes only
 
-  val testSoleTraderBusinesses = SoleTraderBusinesses(testAccountingPeriod, testAccountMethod, testSelfEmploymentData)
-  val testUkProperty = UkProperty(testAccountingPeriod, testValidStartDate, testAccountMethod)
-  val testOverseasProperty = OverseasProperty(testAccountingPeriod, testValidStartDate, testAccountMethod)
+  val testSoleTraderBusinessesThisYear = SoleTraderBusinesses(testAccountingPeriodThisYear, testAccountMethod, testSelfEmploymentData)
+  val testSoleTraderBusinessesNextYear = SoleTraderBusinesses(testAccountingPeriodNextYear, testAccountMethod, testSelfEmploymentData)
+  val testUkPropertyThisYear = UkProperty(testAccountingPeriodThisYear, testValidStartDate, testAccountMethod)
+  val testUkPropertyNextYear = UkProperty(testAccountingPeriodNextYear, testValidStartDate, testAccountMethod)
+  val testOverseasPropertyThisYear = OverseasProperty(testAccountingPeriodThisYear, testValidStartDate, testAccountMethod)
+  val testOverseasPropertyNextYear = OverseasProperty(testAccountingPeriodNextYear, testValidStartDate, testAccountMethod)
   lazy val businessStartDate = BusinessStartDate(DateModel("05", "04", "2017"))
 
   lazy val knownFactsRequest = KnownFactsRequest(
@@ -79,12 +82,20 @@ object TestConstants {
 
   lazy val testLockoutResponse: LockedOut = individual.TestConstants.testLockoutResponse
 
-  lazy val testCreateIncomeSources: CreateIncomeSourcesModel =
+  lazy val testCreateIncomeSourcesThisYear: CreateIncomeSourcesModel =
     CreateIncomeSourcesModel(
       testNino,
-      Some(testSoleTraderBusinesses),
-      Some(testUkProperty),
-      Some(testOverseasProperty)
+      Some(testSoleTraderBusinessesThisYear),
+      Some(testUkPropertyThisYear),
+      Some(testOverseasPropertyThisYear)
+    )
+
+  lazy val testCreateIncomeSourcesNextYear: CreateIncomeSourcesModel =
+    CreateIncomeSourcesModel(
+      testNino,
+      Some(testSoleTraderBusinessesThisYear),
+      Some(testUkPropertyNextYear),
+      Some(testOverseasPropertyNextYear)
     )
 
   lazy val testSelfEmploymentData: Seq[SelfEmploymentData] =

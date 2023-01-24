@@ -56,8 +56,8 @@ object IntegrationTestConstants {
   private val tradingStartDate = DateModel("05", "04", "2017")
   val testBusinessName: BusinessNameModel = BusinessNameModel("test business")
   private val testBusinessTradeName = BusinessTradeNameModel("test trade")
-  private val testStartDate = AccountingPeriodUtil.getCurrentTaxYearStartDate
-  private val testEndDate = AccountingPeriodUtil.getCurrentTaxYearEndDate
+  private val testStartDate = AccountingPeriodUtil.getCurrentTaxYear.startDate
+  private val testEndDate = AccountingPeriodUtil.getCurrentTaxYear.endDate
   val testAccountMethod: AccountingMethod = Cash
 
   val testAccountingPeriod: AccountingPeriodModel = testAccountingPeriod(testStartDate, testEndDate)
