@@ -73,12 +73,6 @@ class CannotSignUpThisYearViewSpec extends ViewSpec {
       document.mainContent.selectNth("p", 4).text() mustBe CannotSignUpMessages.paragraph4
     }
 
-    "have link 2" in {
-      val link = document.mainContent.selectNth("a", 2)
-      link.text() mustBe CannotSignUpMessages.link2
-      link.attr("href") mustBe "https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax#find-out-about-qualifying-income"
-    }
-
     "have bullet 3" in {
       document.mainContent.selectNth("ul li", 3).text() mustBe CannotSignUpMessages.bullet3
     }
@@ -87,13 +81,34 @@ class CannotSignUpThisYearViewSpec extends ViewSpec {
       document.mainContent.selectNth("ul li", 4).text() mustBe CannotSignUpMessages.bullet4
     }
 
+    "have bullet 5" in {
+      document.mainContent.selectNth("ul li", 5).text() mustBe CannotSignUpMessages.bullet5
+    }
+
     "have paragraph 5" in {
       document.mainContent.selectNth("p", 5).text() mustBe CannotSignUpMessages.paragraph5
     }
 
-    "have link 3" in {
-      val link = document.mainContent.selectNth("a", 3)
-      link.text() mustBe CannotSignUpMessages.link3
+    "have bullet 6" in {
+      document.mainContent.selectNth("ul li", 6).text() mustBe CannotSignUpMessages.bullet6
+    }
+
+    "have bullet 7" in {
+      document.mainContent.selectNth("ul li", 7).text() mustBe CannotSignUpMessages.bullet7
+    }
+
+    "have bullet 8" in {
+      document.mainContent.selectNth("ul li", 8).text() mustBe CannotSignUpMessages.bullet8
+    }
+
+    "have paragraph 6" in {
+      document.mainContent.selectNth("p", 6).text() mustBe CannotSignUpMessages.paragraph6
+    }
+
+
+    "have link 2" in {
+      val link = document.mainContent.selectNth("a", 2)
+      link.text() mustBe CannotSignUpMessages.link2
       link.attr("href") mustBe "https://www.gov.uk/self-assessment-tax-returns/sending-return"
     }
 
@@ -111,7 +126,7 @@ class CannotSignUpThisYearViewSpec extends ViewSpec {
     }
 
     "have a sign up another client link" in {
-      val link = document.mainContent.selectNth("a", 4)
+      val link = document.mainContent.selectNth("a", 3)
       link.text() mustBe CannotSignUpMessages.signUpAnotherClientLink
       link.attr("href") mustBe controllers.agent.routes.AddAnotherClientController.addAnother().url
     }
@@ -130,14 +145,17 @@ class CannotSignUpThisYearViewSpec extends ViewSpec {
       "Check Who can use Making Tax Digital for Income Tax to see if they can sign up."
     val link1 = "Who can use Making Tax Digital for Income Tax"
     val subheading = "When your client must use this service"
-    val paragraph4 = "From 6 April 2026, your client must use Making Tax Digital for Income Tax" +
-      " if their total qualifying income (opens in new tab) is above £50,000 for:"
-    val link2 = "qualifying income (opens in new tab)"
-    val bullet3 = "Self-employment"
-    val bullet4 = "Property"
-    val paragraph5 = "Your client still needs to send HMRC a Self Assessment tax return for the tax year" +
-      " before your client signs up to use Making Tax Digital for Income Tax."
-    val link3 = "send HMRC a Self Assessment tax return"
+    val paragraph4 = "Your client must meet the Making Tax Digital for Income Tax requirements for 6 April 2026, if all the following apply:"
+    val bullet3 = "they are registered for Self Assessment"
+    val bullet4 = "they get income from self-employment or property, or both"
+    val bullet5 = "their total qualifying income is more than £50,000"
+    val paragraph5 = "Your client must meet the Making Tax Digital for Income Tax requirements for 6 April 2027, if all the following apply:"
+    val bullet6 = "they are registered for Self Assessment"
+    val bullet7 = "they get income from self-employment or property, or both"
+    val bullet8 = "their total qualifying income is more than £30,000"
+    val paragraph6 = "Your client will still need to send HMRC a Self Assessment tax return " +
+      "for the tax year before your client signs up to use Making Tax Digital for Income Tax."
+    val link2 = "send HMRC a Self Assessment tax return"
     val continueButton = "Continue to sign up client for 6 April 2023"
     val signUpAnotherClientLink = "Sign up another client"
   }

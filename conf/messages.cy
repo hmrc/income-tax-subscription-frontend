@@ -530,11 +530,17 @@ agent.cannot-sign-up.paragraph2                                 = Gall eich clei
 agent.cannot-sign-up.paragraph3                                 = Efallai y bydd eich cleient yn gallu ymuno â’r cynllun peilot o hyd os yw’ch amgylchiadau wedi newid yn ddiweddar. Gwiriwch {0}, er mwyn gweld a all eich cleient gofrestru.
 agent.cannot-sign-up.link1                                      = pwy sy’n gallu defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 agent.cannot-sign-up.subheading                                 = Pryd mae’n rhaid i’ch cleient ddefnyddio’r gwasanaeth hwn
-agent.cannot-sign-up.paragraph4                                 = O 6 Ebrill 2026 ymlaen, bydd yn rhaid i’ch cleient ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm os bydd cyfanswm ei {0} dros £10,000 ar gyfer:
+agent.cannot-sign-up.paragraph4                                 = Your client must meet the Making Tax Digital for Income Tax requirements for 6 April 2026, if all the following apply:   ......In Welsh
 agent.cannot-sign-up.link2                                      = incwm cymwys
-agent.cannot-sign-up.bullet3                                    = hunangyflogaeth
-agent.cannot-sign-up.bullet4                                    = eiddo
-agent.cannot-sign-up.paragraph5                                 = Bydd yn dal i fod yn rhaid i’ch cleient {0} ar gyfer y flwyddyn dreth cyn i’ch cleient gofrestru i ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+agent.cannot-sign-up.bullet3                                    = they are registered for Self Assessment  ......In Welsh
+agent.cannot-sign-up.bullet4                                    = they get income from self-employment or property, or both  ......In Welsh
+agent.cannot-sign-up.bullet5                                    = their total qualifying income is more than £50,000  ......In Welsh
+agent.cannot-sign-up.bullet6                                    = they are registered for Self Assessment  ......In Welsh
+agent.cannot-sign-up.bullet7                                    = they get income from self-employment or property, or both  ......In Welsh
+agent.cannot-sign-up.bullet8                                    = their total qualifying income is more than £30,000  ......In Welsh
+agent.cannot-sign-up.paragraph5                                 = Your client must meet the Making Tax Digital for Income Tax requirements for 6 April 2027, if all the following apply:  ......In Welsh
+
+agent.cannot-sign-up.paragraph6                                 = Bydd yn dal i fod yn rhaid i’ch cleient {0} ar gyfer y flwyddyn dreth cyn i’ch cleient gofrestru i ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
 agent.cannot-sign-up.link3                                      = anfon Ffurflen Dreth Hunanasesiad i CThEF
 agent.cannot-sign-up.continue-button                            = Yn eich blaen i gofrestru cleient ar gyfer mis {0}
 
