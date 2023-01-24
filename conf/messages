@@ -531,11 +531,18 @@ agent.cannot-sign-up.paragraph2                                 = Your client ca
 agent.cannot-sign-up.paragraph3                                 = Your client may still be able to join the pilot if their circumstances have recently changed. Check {0} to see if they can sign up.
 agent.cannot-sign-up.link1                                      = Who can use Making Tax Digital for Income Tax
 agent.cannot-sign-up.subheading                                 = When your client must use this service
-agent.cannot-sign-up.paragraph4                                 = From 6 April 2026, your client must use Making Tax Digital for Income Tax if their total {0} is above £50,000 for:
+agent.cannot-sign-up.paragraph4                                 = Your client must meet the Making Tax Digital for Income Tax requirements for 6 April 2026, if all the following apply:
 agent.cannot-sign-up.link2                                      = qualifying income
-agent.cannot-sign-up.bullet3                                    = Self-employment
-agent.cannot-sign-up.bullet4                                    = Property
-agent.cannot-sign-up.paragraph5                                 = Your client still needs to {0} for the tax year before your client signs up to use Making Tax Digital for Income Tax.
+agent.cannot-sign-up.bullet3                                    = they are registered for Self Assessment
+agent.cannot-sign-up.bullet4                                    = they get income from self-employment or property, or both
+agent.cannot-sign-up.bullet5                                    = their total qualifying income is more than £50,000
+agent.cannot-sign-up.paragraph5                                 = Your client must meet the Making Tax Digital for Income Tax requirements for 6 April 2027, if all the following apply:
+agent.cannot-sign-up.bullet6                                    = they are registered for Self Assessment
+agent.cannot-sign-up.bullet7                                    = they get income from self-employment or property, or both
+agent.cannot-sign-up.bullet8                                    = their total qualifying income is more than £30,000
+
+
+agent.cannot-sign-up.paragraph6                                 = Your client will still need to {0} for the tax year before your client signs up to use Making Tax Digital for Income Tax.
 agent.cannot-sign-up.link3                                      = send HMRC a Self Assessment tax return
 agent.cannot-sign-up.continue-button                            = Continue to sign up client for {0}
 
