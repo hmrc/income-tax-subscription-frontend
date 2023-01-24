@@ -52,7 +52,8 @@ object Constants {
 
     val sessionId = "sessionId"
 
-    val clientData: Seq[String] = Seq(MTDITID, NINO, UTR)
+    // Data specific to the client that the agent is currently working with.
+    val clientData: Seq[String] = Seq(MTDITID, NINO, UTR, ELIGIBLE_NEXT_YEAR_ONLY)
 
     val StartTime = "StartTime"
     val ConfirmedAgent = "Confirmed-Agent"

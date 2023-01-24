@@ -16,33 +16,73 @@
 
 package services
 
+import common.Constants.ITSASessionKeys
+import models.Next
+import models.common.AccountingYearModel
 import models.common.business.BusinessNameModel
 import org.scalatest.matchers.should.Matchers._
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.MockSubscriptionDetailsService
-import utilities.UnitTestTrait
+import uk.gov.hmrc.http.HeaderCarrier
+import utilities.{SubscriptionDataKeys, UnitTestTrait}
 
 class SubscriptionDetailsServiceSpec extends UnitTestTrait
   with MockSubscriptionDetailsService {
 
-  "mock Subscription Details  service" should {
-    object TestSubscriptionDetails {
-      val subscriptionDetailsService: SubscriptionDetailsService = MockSubscriptionDetailsService
-    }
+  val subscriptionDetailsService: SubscriptionDetailsService = MockSubscriptionDetailsService
+  val testReference = "test-reference"
 
-    val testReference = "test-reference"
+  "mock Subscription Details  service" should {
+
     "configure and verify fetch and save business name as specified" in {
       val testBusinessName = BusinessNameModel("my business name")
       setupMockSubscriptionDetailsSaveFunctions()
       mockFetchBusinessName(Some(testBusinessName))
 
-      val businessName = await(TestSubscriptionDetails.subscriptionDetailsService.fetchBusinessName(testReference))
+      val businessName = await(subscriptionDetailsService.fetchBusinessName(testReference))
 
       businessName shouldBe Some(testBusinessName)
 
       verifyFetchBusinessName(1, testReference)
     }
 
+    "return next year when the ELIGIBLE_NEXT_YEAR_ONLY session variable is set" in {
+      val request = FakeRequest().withSession(
+        ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "true"
+      )
+      val testResultEventually = subscriptionDetailsService.fetchSelectedTaxYear(testReference)(request, mock[HeaderCarrier])
+      testResultEventually.map(testResult => {
+        testResult.isEmpty mustBe false
+        testResult.get.confirmed mustBe true
+        testResult.get.editable mustBe false
+        testResult.get.accountingYear mustBe Next
+      })
+      verifySubscriptionDetailsFetchWithField(testReference, 0, SubscriptionDataKeys.SelectedTaxYear)
+    }
+
+    "return empty db value when the ELIGIBLE_NEXT_YEAR_ONLY session variable is not set and no value found" in {
+      val request = FakeRequest()
+      mockFetchSelectedTaxYear(None)
+      val testResultEventually = subscriptionDetailsService.fetchSelectedTaxYear(testReference)(request, mock[HeaderCarrier])
+      testResultEventually.map(testResult => {
+        testResult.isEmpty mustBe true
+      })
+      verifySubscriptionDetailsFetchWithField(testReference, 1, SubscriptionDataKeys.SelectedTaxYear)
+    }
+
+    "return editable db value when the ELIGIBLE_NEXT_YEAR_ONLY session variable is not set" in {
+      val request = FakeRequest()
+      mockFetchSelectedTaxYear(Some(AccountingYearModel(Next, confirmed = true, editable = false)))
+      val testResultEventually = subscriptionDetailsService.fetchSelectedTaxYear(testReference)(request, mock[HeaderCarrier])
+      testResultEventually.map(testResult => {
+        testResult.isEmpty mustBe false
+        testResult.get.confirmed mustBe true
+        testResult.get.editable mustBe true
+        testResult.get.accountingYear mustBe Next
+      })
+      verifySubscriptionDetailsFetchWithField(testReference, 1, SubscriptionDataKeys.SelectedTaxYear)
+    }
   }
 
 }

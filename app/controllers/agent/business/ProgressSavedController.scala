@@ -23,7 +23,7 @@ import controllers.utils.ReferenceRetrieval
 import models.audits.SaveAndComebackAuditing
 import models.audits.SaveAndComebackAuditing.SaveAndComeBackAuditModel
 import models.common.business.{AccountingMethodModel, SelfEmploymentData}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.api.{Configuration, Environment}
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
@@ -74,7 +74,7 @@ class ProgressSavedController @Inject()(val progressSavedView: ProgressSaved,
                          maybeUtr: Option[String],
                          maybeNino: Option[String],
                          location: String
-                       )(implicit hc: HeaderCarrier): Future[SaveAndComeBackAuditModel] = {
+                       )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[SaveAndComeBackAuditModel] = {
     for {
       businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
       businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
