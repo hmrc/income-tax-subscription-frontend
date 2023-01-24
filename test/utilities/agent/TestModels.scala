@@ -30,8 +30,8 @@ object TestModels {
    */
   def newNino: String = new Generator().nextNino.nino
 
-  val testStartDate: DateModel = utilities.TestModels.testStartDate
-  val testEndDate: DateModel = utilities.TestModels.testEndDate
+  val testStartDate: DateModel = utilities.TestModels.testStartDateThisYear
+  val testEndDate: DateModel = utilities.TestModels.testEndDateThisYear
   val testAccountingPeriod: AccountingPeriodModel =
     testAccountingPeriod(testStartDate, testEndDate)
 

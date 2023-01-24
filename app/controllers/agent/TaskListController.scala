@@ -90,7 +90,7 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
       businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
       property <- subscriptionDetailsService.fetchProperty(reference)
       overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
-      eligibilityNextYearOnly = request.session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY).exists(_.toBoolean)
+      eligibilityNextYearOnly = getEligibilityNextYearOnlyFromSession
     } yield {
       TaskListModel(
         interpretTaxYearAsEditableOrNot(selectedTaxYear, eligibilityNextYearOnly),
@@ -101,6 +101,9 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
       )
     }
   }
+
+  private def getEligibilityNextYearOnlyFromSession(implicit request: Request[AnyContent]) =
+    request.session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY).exists(_.toBoolean)
 
   def submit: Action[AnyContent] = journeySafeGuard { implicit user =>
     implicit request =>
@@ -127,7 +130,7 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
             selfEmploymentsAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
             property <- subscriptionDetailsService.fetchProperty(reference)
             overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
-            selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
+            selectedTaxYear <- fetchSelectedTaxYear(reference)
           } yield {
             createIncomeSources(user.clientNino.get, selfEmployments, selfEmploymentsAccountingMethod, property, overseasProperty, accountingYear = selectedTaxYear)
           }
@@ -136,6 +139,12 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
           }
         }
     }
+
+  def fetchSelectedTaxYear(reference: String)(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Option[AccountingYearModel]] =
+    if (getEligibilityNextYearOnlyFromSession) {
+      Future.successful(Some(AccountingYearModel(Next, confirmed = true, editable = false)))
+    } else
+      subscriptionDetailsService.fetchSelectedTaxYear(reference)
 
 }
 

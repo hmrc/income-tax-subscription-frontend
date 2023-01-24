@@ -36,15 +36,15 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with 
 
   "createSubscriptionFromTaskList" should {
     def res: Future[Either[ConnectorError, SubscriptionSuccess]] = {
-      TestSubscriptionOrchestrationService.createSubscriptionFromTaskList(testARN, testNino, testUtr, testCreateIncomeSources)
+      TestSubscriptionOrchestrationService.createSubscriptionFromTaskList(testARN, testNino, testUtr, testCreateIncomeSourcesThisYear)
     }
 
     "return a success" when {
       "all services succeed" in {
         mockSignUpIncomeSourcesSuccess(testNino)
-        mockCreateIncomeSourcesFromTaskListSuccess(testMTDID, testCreateIncomeSources)
+        mockCreateIncomeSourcesFromTaskListSuccess(testMTDID, testCreateIncomeSourcesThisYear)
         mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(Right(AutoEnrolmentService.EnrolmentAssigned))
-        val res = TestSubscriptionOrchestrationService.createSubscriptionFromTaskList(testARN, testNino, testUtr, testCreateIncomeSources)
+        val res = TestSubscriptionOrchestrationService.createSubscriptionFromTaskList(testARN, testNino, testUtr, testCreateIncomeSourcesThisYear)
 
         await(res) mustBe testSubscriptionSuccess
         verifyAgentSpsConnector(testARN, testUtr, testNino, testMTDID, 1)
@@ -60,7 +60,7 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with 
 
       "create income sources from task list request fail and returns an error" in {
         mockSignUpIncomeSourcesSuccess(testNino)
-        mockCreateIncomeSourcesFromTaskListFailure(testMTDID, testCreateIncomeSources)
+        mockCreateIncomeSourcesFromTaskListFailure(testMTDID, testCreateIncomeSourcesThisYear)
 
         whenReady(res)(_ mustBe testCreateSubscriptionFromTaskListFailure)
       }

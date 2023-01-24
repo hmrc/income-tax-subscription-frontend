@@ -33,17 +33,21 @@ object TestModels {
    */
   def newNino: String = new Generator().nextNino.nino
 
-  val testStartDate = AccountingPeriodUtil.getCurrentTaxYearStartDate
-  val testEndDate = AccountingPeriodUtil.getCurrentTaxYearEndDate
+  val testStartDateThisYear = AccountingPeriodUtil.getCurrentTaxYear.startDate
+  val testEndDateThisYear = AccountingPeriodUtil.getCurrentTaxYear.endDate
 
-  val testAccountingPeriod: AccountingPeriodModel = testAccountingPeriod(testStartDate, testEndDate)
+  val testStartDateNextYear = AccountingPeriodUtil.getNextTaxYear.startDate
+  val testEndDateNextYear = AccountingPeriodUtil.getNextTaxYear.endDate
+
+  val testAccountingPeriodThisYear: AccountingPeriodModel = testAccountingPeriod(testStartDateThisYear, testEndDateThisYear)
+  val testAccountingPeriodNextYear: AccountingPeriodModel = testAccountingPeriod(testStartDateNextYear, testEndDateNextYear)
   val adjustedTestAccountingPeriod: AccountingPeriodModel =
-    testAccountingPeriod(testStartDate, testEndDate.plusDays(1))
+    testAccountingPeriod(testStartDateThisYear, testEndDateThisYear.plusDays(1))
 
-  val testAccountingPeriodMatched = AccountingPeriodModel(testStartDate, DateModel("05", "04", "2018"))
+  val testAccountingPeriodMatched = AccountingPeriodModel(testStartDateThisYear, DateModel("05", "04", "2018"))
 
-  def testAccountingPeriod(startDate: DateModel = testStartDate,
-                           endDate: DateModel = testEndDate): AccountingPeriodModel =
+  def testAccountingPeriod(startDate: DateModel = testStartDateThisYear,
+                           endDate: DateModel = testEndDateThisYear): AccountingPeriodModel =
     AccountingPeriodModel(startDate, endDate)
 
   val testBusinessName = BusinessNameModel("test business")
@@ -76,7 +80,7 @@ object TestModels {
   )
 
 
-  lazy val testUserDetails = UserDetailsModel(testFirstName, testLastName, TestConstants.testNino, testStartDate)
+  lazy val testUserDetails = UserDetailsModel(testFirstName, testLastName, TestConstants.testNino, testStartDateThisYear)
 
   lazy val testMatchSuccessModel = UserMatchSuccessResponseModel(testFirstName, testLastName, TestConstants.testNino, testNino, Some(testUtr))
 

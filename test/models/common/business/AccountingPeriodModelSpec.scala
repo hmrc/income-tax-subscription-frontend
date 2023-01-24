@@ -27,16 +27,16 @@ class AccountingPeriodModelSpec extends PlaySpec {
   "the AccountingPeriodModel.adjustedTaxYear" when {
     "the end date is before 6 April 2018" should {
       "return the next tax year" in {
-        val testAccountingPeriod = TestModels.testAccountingPeriod.copy(endDate = DateModel("5", "4", "2018"))
+        val testAccountingPeriod = TestModels.testAccountingPeriodThisYear.copy(endDate = DateModel("5", "4", "2018"))
         testAccountingPeriod.adjustedTaxYear shouldBe AccountingPeriodModel(DateModel("6", "4", "2018"), DateModel("5", "4", "2019"))
       }
     }
 
     "the end date is on or after 6 April 2018" should {
       "return itself" in {
-        val testAccountingPeriod = TestModels.testAccountingPeriod.copy(endDate = DateModel("6", "4", "2018"))
+        val testAccountingPeriod = TestModels.testAccountingPeriodThisYear.copy(endDate = DateModel("6", "4", "2018"))
         testAccountingPeriod.adjustedTaxYear shouldBe testAccountingPeriod
-        val testAccountingPeriod2 = TestModels.testAccountingPeriod.copy(endDate = DateModel("7", "4", "2018"))
+        val testAccountingPeriod2 = TestModels.testAccountingPeriodThisYear.copy(endDate = DateModel("7", "4", "2018"))
         testAccountingPeriod2.adjustedTaxYear shouldBe testAccountingPeriod2
       }
     }

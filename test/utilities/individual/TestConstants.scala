@@ -64,9 +64,9 @@ object TestConstants {
   val testLastName = "Name"
 
   val testPhoneNumber = "000 000 0000"
-  val testSoleTraderBusinesses = SoleTraderBusinesses(testAccountingPeriod, testAccountMethod, testSelfEmploymentData)
-  val testUkProperty = UkProperty(testAccountingPeriod, testValidStartDate, testAccountMethod)
-  val testOverseasProperty = OverseasProperty(testAccountingPeriod, testValidStartDate, testAccountMethod)
+  val testSoleTraderBusinesses = SoleTraderBusinesses(testAccountingPeriodThisYear, testAccountMethod, testSelfEmploymentData)
+  val testUkProperty = UkProperty(testAccountingPeriodThisYear, testValidStartDate, testAccountMethod)
+  val testOverseasProperty = OverseasProperty(testAccountingPeriodThisYear, testValidStartDate, testAccountMethod)
   val testUrl = "/test/url/"
 
   lazy val knownFactsRequest = KnownFactsRequest(

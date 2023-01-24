@@ -36,7 +36,7 @@ class CheckYourClientDetailsViewSpec extends ViewSpec {
   val testFirstName = "Test"
   val testLastName = "User"
   val testNino: String = TestConstants.testNino
-  val testDob: DateModel = TestModels.testStartDate
+  val testDob: DateModel = TestModels.testStartDateThisYear
   val testClientDetails = UserDetailsModel(
     testFirstName,
     testLastName,

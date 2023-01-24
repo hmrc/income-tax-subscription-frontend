@@ -12,8 +12,8 @@ import java.time.LocalDate
 object IntegrationTestModels {
   val testStartDate: DateModel = DateModel.dateConvert(LocalDate.now)
   val testEndDate: DateModel = helpers.IntegrationTestModels.testEndDate
-  val testEndDateNext: DateModel = AccountingPeriodUtil.getCurrentTaxYearEndDate.plusYears(1).plusDays(-1)
-  val testEndDatePlus1Y: DateModel = AccountingPeriodUtil.getCurrentTaxYearEndDate.plusYears(1)
+  val testEndDateNext: DateModel = AccountingPeriodUtil.getCurrentTaxYear.endDate.plusYears(1).plusDays(-1)
+  val testEndDatePlus1Y: DateModel = AccountingPeriodUtil.getCurrentTaxYear.endDate.plusYears(1)
   val testAccountingYearNext: AccountingYearModel = AccountingYearModel(Next)
   val testAccountingYearCurrent: AccountingYearModel = AccountingYearModel(Current)
   val testAccountingPeriod: AccountingPeriodModel =
