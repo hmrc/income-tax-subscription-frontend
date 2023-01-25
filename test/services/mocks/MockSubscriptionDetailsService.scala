@@ -146,11 +146,10 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
       ArgumentMatchers.any()
     )(ArgumentMatchers.any(), ArgumentMatchers.any())
 
-  protected final def verifySubscriptionDetailsFetch[T](key: String, someCount: Option[Int]): Unit =
-    someCount map (count => verify(mockConnector, times(count))
-      .getSubscriptionDetails[T](ArgumentMatchers.any(), ArgumentMatchers.eq(SubscriptionDataKeys.subscriptionId))(
+  protected final def verifySubscriptionDetailsFetchWithField[T](reference: String, count: Int, field: String): Unit =
+    verify(mockConnector, times(count))
+      .getSubscriptionDetails[T](ArgumentMatchers.eq(reference), ArgumentMatchers.eq(field))(
         ArgumentMatchers.any(), ArgumentMatchers.any())
-      )
 
   case class SelfEmploymentListMatcher(wanted: List[SelfEmploymentData]) extends ArgumentMatcher[List[SelfEmploymentData]] {
     def matches(offered: List[SelfEmploymentData]): Boolean = {

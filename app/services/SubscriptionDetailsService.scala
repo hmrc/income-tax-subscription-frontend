@@ -16,13 +16,15 @@
 
 package services
 
+import common.Constants.ITSASessionKeys
 import connectors.IncomeTaxSubscriptionConnector
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsResponse
 import connectors.httpparser.RetrieveReferenceHttpParser.RetrieveReferenceResponse
 import models.common._
 import models.common.business._
 import models.status.MandationStatusModel
-import models.{AccountingMethod, DateModel}
+import models.{AccountingMethod, DateModel, Next}
+import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import utilities.SubscriptionDataKeys
 import utilities.SubscriptionDataKeys._
@@ -49,8 +51,20 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
   def fetchBusinessName(reference: String)(implicit hc: HeaderCarrier): Future[Option[BusinessNameModel]] =
     incomeTaxSubscriptionConnector.getSubscriptionDetails[BusinessNameModel](reference, SubscriptionDataKeys.BusinessName)
 
-  def fetchSelectedTaxYear(reference: String)(implicit hc: HeaderCarrier): Future[Option[AccountingYearModel]] =
-    incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingYearModel](reference, SubscriptionDataKeys.SelectedTaxYear)
+  private def getEligibilityNextYearOnlyFromSession(implicit request: Request[AnyContent]) =
+    request.session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY).exists(_.toBoolean)
+
+  /*
+  Note 1, no matter what has been retrieved from storage, the editable value will always be newly set.
+
+  Note 2, the business rules state that "allowed this year" will always imply "allowed next year" so we only
+  have to deal with the cases where (1) this year is not allowed but next year is, or (2) both are allowed.
+   */
+  def fetchSelectedTaxYear(reference: String)(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Option[AccountingYearModel]] =
+    if (getEligibilityNextYearOnlyFromSession)
+      Future.successful(Some(AccountingYearModel(Next, confirmed = true, editable = false)))
+    else
+      incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingYearModel](reference, SubscriptionDataKeys.SelectedTaxYear).map(_.map(_.copy(editable = true)))
 
   def saveSelectedTaxYear(reference: String, selectedTaxYear: AccountingYearModel)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] =
     incomeTaxSubscriptionConnector.saveSubscriptionDetails[AccountingYearModel](reference, SelectedTaxYear, selectedTaxYear)
@@ -146,4 +160,3 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
     incomeTaxSubscriptionConnector.saveSubscriptionDetails[MandationStatusModel](reference, MandationStatus, mandationStatus)
 
 }
-

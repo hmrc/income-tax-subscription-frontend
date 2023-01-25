@@ -20,13 +20,11 @@ import auth.agent.{AuthenticatedController, IncomeTaxAgentUser}
 import common.Constants.ITSASessionKeys
 import config.AppConfig
 import connectors.IncomeTaxSubscriptionConnector
-import controllers.agent.TaskListController.interpretTaxYearAsEditableOrNot
 import controllers.utils.ReferenceRetrieval
-import models.Next
+import models.common.TaskListModel
 import models.common.business.{AccountingMethodModel, SelfEmploymentData}
 import models.common.subscription.CreateIncomeSourcesModel.createIncomeSources
 import models.common.subscription.{CreateIncomeSourcesModel, SubscriptionSuccess}
-import models.common.{AccountingYearModel, TaskListModel}
 import play.api.Logging
 import play.api.mvc._
 import services._
@@ -90,10 +88,9 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
       businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
       property <- subscriptionDetailsService.fetchProperty(reference)
       overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
-      eligibilityNextYearOnly = getEligibilityNextYearOnlyFromSession
     } yield {
       TaskListModel(
-        interpretTaxYearAsEditableOrNot(selectedTaxYear, eligibilityNextYearOnly),
+        selectedTaxYear,
         businesses,
         businessAccountingMethod.map(_.accountingMethod),
         property,
@@ -101,9 +98,6 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
       )
     }
   }
-
-  private def getEligibilityNextYearOnlyFromSession(implicit request: Request[AnyContent]) =
-    request.session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY).exists(_.toBoolean)
 
   def submit: Action[AnyContent] = journeySafeGuard { implicit user =>
     implicit request =>
@@ -130,7 +124,7 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
             selfEmploymentsAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
             property <- subscriptionDetailsService.fetchProperty(reference)
             overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
-            selectedTaxYear <- fetchSelectedTaxYear(reference)
+            selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
           } yield {
             createIncomeSources(user.clientNino.get, selfEmployments, selfEmploymentsAccountingMethod, property, overseasProperty, accountingYear = selectedTaxYear)
           }
@@ -140,26 +134,5 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
         }
     }
 
-  def fetchSelectedTaxYear(reference: String)(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Option[AccountingYearModel]] =
-    if (getEligibilityNextYearOnlyFromSession) {
-      Future.successful(Some(AccountingYearModel(Next, confirmed = true, editable = false)))
-    } else
-      subscriptionDetailsService.fetchSelectedTaxYear(reference)
-
 }
 
-object TaskListController {
-  /*
-  Note 1, no matter what has been retrieved from storage, the editable value will always be newly set.
-
-  Note 2, the business rules state that "allowed this year" will always imply "allowed next year" so we only
-  have to deal with the cases where (1) this year is not allowed but next year is, or (2) both are allowed.  If
-  neither are allowed the user is not permitted to go to the task list at all.
-   */
-  private[agent] def interpretTaxYearAsEditableOrNot(
-                                                      selectedTaxYear: Option[AccountingYearModel],
-                                                      eligibilityNextYearOnly: Boolean): Option[AccountingYearModel] =
-    if (eligibilityNextYearOnly) Some(AccountingYearModel(Next, editable = false))
-    else selectedTaxYear.map(_.copy(editable = true)) // whatever year was previously specified, and editing must be allowed
-
-}
