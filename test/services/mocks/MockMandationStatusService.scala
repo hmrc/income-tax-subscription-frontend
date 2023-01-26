@@ -35,7 +35,7 @@ trait MockMandationStatusService extends UnitTestTrait with MockitoSugar with Be
   }
 
   def mockRetrieveMandationStatus(result: Future[Unit] = Future.successful(())): Unit = {
-    when(mockMandationStatusService.retrieveMandationStatus(
+    when(mockMandationStatusService.copyMandationStatus(
       ArgumentMatchers.any(),
       ArgumentMatchers.any(),
       ArgumentMatchers.any()

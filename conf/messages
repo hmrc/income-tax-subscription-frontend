@@ -289,8 +289,6 @@ agent.sign-up-confirmation.send.final.declaration.next-year.heading         = 4.
 agent.sign-up-confirmation.send.final.declaration.this-year.paragraph       = You must submit your client’s final declaration and they must pay the tax they owe by {0}.
 agent.sign-up-confirmation.send.final.declaration.next-year.paragraph       = You must submit your client’s final declaration and they must pay the tax they owe by {0}.
 
-
-
 ## Sign Up Confirmation page ##
 
 sign-up-confirmation.heading                                         = Sign up complete
@@ -524,12 +522,12 @@ agent.cannot-take-part.alternative.link                         = self assessmen
 
 # Agent cannot sign up page
 agent.cannot-sign-up.heading                                    = Your client can sign up to this pilot from {0}
-agent.cannot-sign-up.paragraph1                                 = Your client cannot sign up to Making Tax Digital for Income tax yet. This is because it’s not currently available to people with certain types of:
+agent.cannot-sign-up.paragraph1                                 = Your client cannot sign up to Making Tax Digital for Income Tax yet. This is because it’s not currently available to people with certain types of:
 agent.cannot-sign-up.bullet1                                    = Income
 agent.cannot-sign-up.bullet2                                    = Deductions
 agent.cannot-sign-up.paragraph2                                 = Your client can still sign up for Making Tax Digital for Income Tax for the next tax year, which starts on {0}.
 agent.cannot-sign-up.paragraph3                                 = Your client may still be able to join the pilot if their circumstances have recently changed. Check {0} to see if they can sign up.
-agent.cannot-sign-up.link1                                      = Who can use Making Tax Digital for Income Tax
+agent.cannot-sign-up.link1                                      = who can use Making Tax Digital for Income Tax
 agent.cannot-sign-up.subheading                                 = When your client must use this service
 agent.cannot-sign-up.paragraph4                                 = Your client must meet the Making Tax Digital for Income Tax requirements for 6 April 2026, if all the following apply:
 agent.cannot-sign-up.link2                                      = qualifying income
@@ -545,6 +543,28 @@ agent.cannot-sign-up.bullet8                                    = their total qu
 agent.cannot-sign-up.paragraph6                                 = Your client will still need to {0} for the tax year before your client signs up to use Making Tax Digital for Income Tax.
 agent.cannot-sign-up.link3                                      = send HMRC a Self Assessment tax return
 agent.cannot-sign-up.continue-button                            = Continue to sign up client for {0}
+
+# Individual cannot sign up page
+cannot-sign-up.heading                                          = You can sign up to this pilot from {0}
+cannot-sign-up.paragraph1                                       = You cannot sign up to Making Tax Digital for Income Tax this year as it is not currently available to those who have certain types of:
+cannot-sign-up.bullet1                                          = Income
+cannot-sign-up.bullet2                                          = Deductions
+cannot-sign-up.paragraph2                                       = However, you can still sign up for this service in the next tax year, starting {0}.
+cannot-sign-up.paragraph3                                       = You may still be able to use the pilot if your circumstances have recently changed. Check {0} to see if you can sign up.
+cannot-sign-up.link1                                            = who can use Making Tax Digital for Income Tax
+cannot-sign-up.subheading                                       = When you must use this service
+cannot-sign-up.paragraph4                                       = You must meet the Making Tax Digital for Income Tax requirements for 6 April 2026, if all of the following apply:
+cannot-sign-up.bullet3                                          = you are registered for Self Assessment ({0})
+cannot-sign-up.link2                                            = find out more about registering and sending a Self Assessment tax return
+cannot-sign-up.bullet4                                          = you get income from self-employment or property, or both
+cannot-sign-up.bullet5                                          = your total qualifying income is more than £50,000
+cannot-sign-up.paragraph5                                       = You must meet the Making Tax Digital for Income Tax requirements for 6 April 2027, if all of the following apply:
+cannot-sign-up.bullet6                                          = you are registered for Self Assessment
+cannot-sign-up.bullet7                                          = you get income from self-employment or property, or both
+cannot-sign-up.bullet8                                          = your total qualifying income is more than £30,000
+cannot-sign-up.paragraph6                                       = You’ll still need to {0} for the tax year before you signed up to use Making Tax Digital for Income Tax.
+cannot-sign-up.link3                                            = send HMRC a Self Assessment tax return
+cannot-sign-up.continue-button                                  = Continue to sign up for next year
 
 # Agent accounting period check page
 agent.accounting-period-check.title                             = Do your client’s business accounting periods all run from 6 April to 5 April?

@@ -33,7 +33,7 @@
 
 @(postAction: Call, nextTaxYear: AccountingPeriodModel)(implicit request: Request[_], messages: Messages)
 
-@guidnaceLink = {
+@guidanceLink = {
   <a href="@{appConfig.govukGuidanceITSAUsingMTDLink}" class="govuk-link">@messages("agent.cannot-sign-up.link1")</a>
 }
 
@@ -58,7 +58,7 @@
 
   <p class="govuk-body">@messages("agent.cannot-sign-up.paragraph2", languageUtils.Dates.formatDate(nextTaxYear.startDate.toLocalDate))</p>
 
-  <p class="govuk-body">@Html(messages("agent.cannot-sign-up.paragraph3", guidnaceLink))</p>
+  <p class="govuk-body">@Html(messages("agent.cannot-sign-up.paragraph3", guidanceLink))</p>
 
   <h2 class="govuk-heading-s">@messages("agent.cannot-sign-up.subheading")</h2>
 

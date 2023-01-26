@@ -1,0 +1,97 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import views.html.templates.PrincipalMainTemplate
+@import config.AppConfig
+@import views.html.helpers.injected.ButtonHelper
+@import views.html.helpers.injected.SignOutLink
+@import models.common.AccountingPeriodModel
+@import uk.gov.hmrc.play.language.LanguageUtils
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
+
+@this(
+  mainTemplate: PrincipalMainTemplate,
+  buttonHelper: ButtonHelper,
+  signOutLink: SignOutLink,
+  hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
+  languageUtils: LanguageUtils,
+  form: FormWithCSRF
+)(
+  implicit appConfig: AppConfig
+)
+
+
+@(postAction: Call, nextTaxYear: AccountingPeriodModel)(implicit request: Request[_], messages: Messages)
+
+@guidanceLink = {
+  <a href="@{appConfig.govukGuidanceITSAUsingMTDLink}" class="govuk-link">@messages("cannot-sign-up.link1")</a>
+}
+
+@qualifyingIncomeLink = @{
+  hmrcNewTabLinkHelper(NewTabLinkHelper(messages("cannot-sign-up.link2"), Some(appConfig.govukGuidanceITSAQualifyingIncomeLink))).trim
+}
+
+@sendingReturnLink = {
+  <a href="@{appConfig.sendSAReturnLink}" class="govuk-link">@messages("cannot-sign-up.link3")</a>
+}
+
+@mainTemplate(title = messages("cannot-sign-up.heading", languageUtils.Dates.formatDate(nextTaxYear.startDate.toLocalDate))) {
+
+  <h1 class="govuk-heading-l">@messages("cannot-sign-up.heading", languageUtils.Dates.formatDate(nextTaxYear.startDate.toLocalDate))</h1>
+
+  <p class="govuk-body">@messages("cannot-sign-up.paragraph1")</p>
+
+  <ul class="govuk-list govuk-list--bullet">
+    <li>@messages("cannot-sign-up.bullet1")</li>
+    <li>@messages("cannot-sign-up.bullet2")</li>
+  </ul>
+
+  <p class="govuk-body">@messages("cannot-sign-up.paragraph2", languageUtils.Dates.formatDate(nextTaxYear.startDate.toLocalDate))</p>
+
+  <p class="govuk-body">@Html(messages("cannot-sign-up.paragraph3", guidanceLink))</p>
+
+  <h2 class="govuk-heading-s">@messages("cannot-sign-up.subheading")</h2>
+
+  <p class="govuk-body">@Html(messages("cannot-sign-up.paragraph4"))</p>
+
+  <ul class="govuk-list govuk-list--bullet">
+    <li>@Html(messages("cannot-sign-up.bullet3", qualifyingIncomeLink))</li>
+    <li>@messages("cannot-sign-up.bullet4")</li>
+    <li>@messages("cannot-sign-up.bullet5")</li>
+  </ul>
+
+  <p class="govuk-body">@Html(messages("cannot-sign-up.paragraph5"))</p>
+
+  <ul class="govuk-list govuk-list--bullet">
+    <li>@messages("cannot-sign-up.bullet6")</li>
+    <li>@messages("cannot-sign-up.bullet7")</li>
+    <li>@messages("cannot-sign-up.bullet8")</li>
+  </ul>
+
+  <p class="govuk-body">@Html(messages("cannot-sign-up.paragraph6", sendingReturnLink))  </p>
+
+  @form(action = postAction) {
+    <div class="govuk-button-group govuk-!-margin-top-8">
+
+      @buttonHelper(
+        buttonText = messages("cannot-sign-up.continue-button", languageUtils.Dates.formatDate(nextTaxYear.startDate.toLocalDate)),
+      )
+      @signOutLink()
+    </div>
+
+  }
+}
+

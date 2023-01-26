@@ -9,18 +9,20 @@ object AppDependencies {
   private val testScope = "test"
   private val integrationTestScope = "it"
 
-  private val bootstrapPlayVersion     = "7.12.0"
+  private val bootstrapPlayVersion     = "7.13.0"
   private val playPartialsVersion      = "8.3.0-play-28"
   private val playHmrcFrontendVersion  = "5.3.0-play-28"
   private val domainVersion            = "8.1.0-play-28"
   private val catsVersion              = "2.0.0"
 
-  private val scalaTestVersion         = "3.2.11"
+  private val scalaTestVersion         = "3.2.15"
   private val scalaTestPlusVersion     = "5.1.0"
-  private val wiremockVersion          = "2.32.0"
+  private val wiremockVersion          = "2.35.0"
+
+  // Last version supporting our Java runtime
   private val flexmarkVersion          = "0.62.2"
-  private val jacksonModuleVersion     = "2.13.2"
-  private val jsoupVersion             = "1.14.3"
+  private val jacksonModuleVersion     = "2.14.2"
+  private val jsoupVersion             = "1.15.3"
 
   val compile: Seq[ModuleID] = Seq(
     ws,
@@ -46,7 +48,7 @@ object AppDependencies {
     "org.scalatest"                %% "scalatest"            % scalaTestVersion     % integrationTestScope,
     "com.typesafe.play"            %% "play-test"            % PlayVersion.current  % integrationTestScope,
     "org.scalatestplus.play"       %% "scalatestplus-play"   % scalaTestPlusVersion % integrationTestScope,
-    "com.github.fge"               % "json-schema-validator" % "2.2.6"              % integrationTestScope,
+    "com.github.fge"               % "json-schema-validator" % "2.2.14"             % integrationTestScope,
     "org.jsoup"                    % "jsoup"                 % jsoupVersion         % integrationTestScope,
     "com.github.tomakehurst"       % "wiremock-jre8"         % wiremockVersion      % integrationTestScope,
     "com.vladsch.flexmark"         % "flexmark-all"          % flexmarkVersion      % integrationTestScope,

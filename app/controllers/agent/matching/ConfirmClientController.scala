@@ -195,7 +195,7 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
 
   private def handleMandationStatus(reference: String, nino: String, utr: String)(implicit request: Request[AnyContent]): Future[Unit] = {
     if (isEnabled(ItsaMandationStatus)) {
-      mandationStatusService.retrieveMandationStatus(reference, nino, utr)
+      mandationStatusService.copyMandationStatus(reference, nino, utr)
     } else {
       Future.successful(())
     }

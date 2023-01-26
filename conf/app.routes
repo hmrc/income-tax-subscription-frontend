@@ -43,6 +43,10 @@ GET         /error/cannot-use-service                            controllers.ind
 # Cannot use service because not eligible
 GET         /cannot-use-service-yet                              controllers.individual.eligibility.NotEligibleForIncomeTaxController.show()
 
+# Can only use service next year
+GET         /error/cannot-sign-up-for-current-year               controllers.individual.eligibility.CannotSignUpThisYearController.show
+POST        /error/cannot-sign-up-for-current-year               controllers.individual.eligibility.CannotSignUpThisYearController.submit
+
 #Language
 GET         /language/:lang                                      controllers.individual.LanguageSwitchController.switchToLanguage(lang: String)
 
