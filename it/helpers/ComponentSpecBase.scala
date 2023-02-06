@@ -194,6 +194,10 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
     def cannotSignUp(): WSResponse = get("/error/cannot-sign-up")
 
+    def showCannotSignUpThisYear: WSResponse = get("/error/cannot-sign-up-for-current-year")
+
+    def submitCannotSignUpThisYear: WSResponse = post("/error/cannot-sign-up-for-current-year")(Map.empty)
+
     def cannotUseService(): WSResponse = get("/error/cannot-use-service")
 
     def notEligibleForIncomeTax(): WSResponse = get("/cannot-use-service-yet")

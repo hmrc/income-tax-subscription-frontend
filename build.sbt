@@ -36,7 +36,6 @@ lazy val microservice = Project(AppDependencies.appName, file("."))
   .disablePlugins(JUnitXmlReportPlugin)
   .settings(scoverageSettings: _*)
   .settings(scalaSettings: _*)
-  .settings(publishingSettings: _*)
   .settings(defaultSettings(): _*)
   .settings(
     Test / Keys.fork := true,

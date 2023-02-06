@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package views.agent.eligibility
+package views.individual.eligibility
 
 import models.DateModel
 import models.common.AccountingPeriodModel
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
-import utilities.ViewSpec
-import views.html.agent.eligibility.CannotSignUpThisYear
+import utilities.{AccountingPeriodUtil, ViewSpec}
+import views.html.individual.eligibility.CannotSignUpThisYear
 
 class CannotSignUpThisYearViewSpec extends ViewSpec {
   private val view = app.injector.instanceOf[CannotSignUpThisYear]
@@ -32,7 +32,7 @@ class CannotSignUpThisYearViewSpec extends ViewSpec {
 
   "Cannot Sign Up View" should {
     "have a title" in {
-      document.title mustBe s"${CannotSignUpMessages.heading} - Use software to report your client’s Income Tax - GOV.UK"
+      document.title mustBe s"${CannotSignUpMessages.heading} - Use software to send Income Tax updates - GOV.UK"
     }
 
     "have a heading" in {
@@ -40,7 +40,7 @@ class CannotSignUpThisYearViewSpec extends ViewSpec {
     }
 
     "have paragraph 1" in {
-      document.mainContent.selectNth("p", 1).text() mustBe CannotSignUpMessages.paragraph1
+      document.mainContent.selectFirst("p").text() mustBe CannotSignUpMessages.paragraph1
     }
 
     "have bullet 1" in {
@@ -59,8 +59,8 @@ class CannotSignUpThisYearViewSpec extends ViewSpec {
       document.mainContent.selectNth("p", 3).text() mustBe CannotSignUpMessages.paragraph3
     }
 
-    "have link 1" in {
-      val link = document.mainContent.selectNth("a", 1)
+    "have link 1 in paragraph 3" in {
+      val link = document.mainContent.selectNth("p", 3).selectFirst("a")
       link.text() mustBe CannotSignUpMessages.link1
       link.attr("href") mustBe "https://www.gov.uk/guidance/using-making-tax-digital-for-income-tax#who-can-use-making-tax-digital-for-income-tax"
     }
@@ -75,6 +75,12 @@ class CannotSignUpThisYearViewSpec extends ViewSpec {
 
     "have bullet 3" in {
       document.mainContent.selectNth("ul li", 3).text() mustBe CannotSignUpMessages.bullet3
+    }
+
+    "have link 2 in bullet 3" in {
+      val link = document.mainContent.selectNth("ul li", 3).selectNth("a", 1)
+      link.text() mustBe CannotSignUpMessages.link2
+      link.attr("href") mustBe "https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax#find-out-about-qualifying-income"
     }
 
     "have bullet 4" in {
@@ -105,16 +111,14 @@ class CannotSignUpThisYearViewSpec extends ViewSpec {
       document.mainContent.selectNth("p", 6).text() mustBe CannotSignUpMessages.paragraph6
     }
 
-
-    "have link 2" in {
-      val link = document.mainContent.selectNth("a", 2)
-      link.text() mustBe CannotSignUpMessages.link2
+    "have link 3 in paragrpah 6" in {
+      val link = document.mainContent.selectNth("p", 6).selectFirst("a")
+      link.text() mustBe CannotSignUpMessages.link3
       link.attr("href") mustBe "https://www.gov.uk/self-assessment-tax-returns/sending-return"
     }
 
     "have a form" which {
       def form: Element = document.mainContent.selectHead("form")
-
       "has the correct attributes" in {
         form.attr("method") mustBe testCall.method
         form.attr("action") mustBe testCall.url
@@ -126,38 +130,30 @@ class CannotSignUpThisYearViewSpec extends ViewSpec {
 
     }
 
-    "have a sign up another client link" in {
-      val link = document.mainContent.selectNth("a", 3)
-      link.text() mustBe CannotSignUpMessages.signUpAnotherClientLink
-      link.attr("href") mustBe controllers.agent.routes.AddAnotherClientController.addAnother().url
-    }
   }
 
   private def document = Jsoup.parse(view(testCall, nextTaxYear).body)
 
   object CannotSignUpMessages {
-    val heading = "Your client can sign up to this pilot from 6 April 2023"
-    val paragraph1 = "Your client cannot sign up to Making Tax Digital for Income Tax yet." +
-      " This is because it’s not currently available to people with certain types of:"
+    val heading = "You can sign up to this pilot from 6 April 2023"
+    val paragraph1 = "You cannot sign up to Making Tax Digital for Income Tax this year as it is not currently available to those who have certain types of:"
     val bullet1 = "Income"
     val bullet2 = "Deductions"
-    val paragraph2 = "Your client can still sign up for Making Tax Digital for Income Tax for the next tax year, which starts on 6 April 2023."
-    val paragraph3 = "Your client may still be able to join the pilot if their circumstances have recently changed. " +
-      "Check who can use Making Tax Digital for Income Tax to see if they can sign up."
+    val paragraph2 = s"However, you can still sign up for this service in the next tax year, starting 6 April ${AccountingPeriodUtil.getCurrentTaxYear.taxEndYear}."
+    val paragraph3 = "You may still be able to use the pilot if your circumstances have recently changed. Check who can use Making Tax Digital for Income Tax to see if you can sign up."
     val link1 = "who can use Making Tax Digital for Income Tax"
-    val subheading = "When your client must use this service"
-    val paragraph4 = "Your client must meet the Making Tax Digital for Income Tax requirements for 6 April 2026, if all the following apply:"
-    val bullet3 = "they are registered for Self Assessment"
-    val bullet4 = "they get income from self-employment or property, or both"
-    val bullet5 = "their total qualifying income is more than £50,000"
-    val paragraph5 = "Your client must meet the Making Tax Digital for Income Tax requirements for 6 April 2027, if all the following apply:"
-    val bullet6 = "they are registered for Self Assessment"
-    val bullet7 = "they get income from self-employment or property, or both"
-    val bullet8 = "their total qualifying income is more than £30,000"
-    val paragraph6 = "Your client will still need to send HMRC a Self Assessment tax return " +
-      "for the tax year before your client signs up to use Making Tax Digital for Income Tax."
-    val link2 = "send HMRC a Self Assessment tax return"
-    val continueButton = "Continue to sign up client for 6 April 2023"
-    val signUpAnotherClientLink = "Sign up another client"
+    val subheading = "When you must use this service"
+    val paragraph4 = "You must meet the Making Tax Digital for Income Tax requirements for 6 April 2026, if all of the following apply:"
+    val link2 = "find out more about registering and sending a Self Assessment tax return (opens in new tab)"
+    val bullet3 = s"you are registered for Self Assessment ($link2)"
+    val bullet4 = "you get income from self-employment or property, or both"
+    val bullet5 = "your total qualifying income is more than £50,000"
+    val paragraph5 = "You must meet the Making Tax Digital for Income Tax requirements for 6 April 2027, if all of the following apply:"
+    val bullet6 = "you are registered for Self Assessment"
+    val bullet7 = "you get income from self-employment or property, or both"
+    val bullet8 = "your total qualifying income is more than £30,000"
+    val link3 = "send HMRC a Self Assessment tax return"
+    val paragraph6 = s"You’ll still need to ${link3} for the tax year before you signed up to use Making Tax Digital for Income Tax."
+    val continueButton = "Continue to sign up for next year"
   }
 }

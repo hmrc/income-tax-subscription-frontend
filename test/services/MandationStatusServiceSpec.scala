@@ -33,7 +33,7 @@ class MandationStatusServiceSpec extends MockSubscriptionDetailsService with Moc
         mockGetMandationStatus()
         mockSaveMandationStatus("test-reference")
 
-        await(TestMandationStatusService.retrieveMandationStatus("test-reference", "test-nino", "test-utr"))
+        await(TestMandationStatusService.copyMandationStatus("test-reference", "test-nino", "test-utr"))
 
         verifySaveMandationStatus(1, "test-reference")
       }
@@ -43,7 +43,7 @@ class MandationStatusServiceSpec extends MockSubscriptionDetailsService with Moc
       "the backend returns a failure" in {
         mockFailedGetMandationStatus()
 
-        await(TestMandationStatusService.retrieveMandationStatus("test-reference", "test-nino", "test-utr"))
+        await(TestMandationStatusService.copyMandationStatus("test-reference", "test-nino", "test-utr"))
 
         verifySaveMandationStatus(0, "test-reference")
       }

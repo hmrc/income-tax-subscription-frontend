@@ -20,12 +20,12 @@ import auth.individual.JourneyState._
 import auth.individual.{IncomeTaxSAUser, SignUp, StatelessController, UserIdentifiers}
 import common.Constants.ITSASessionKeys._
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.{ItsaMandationStatus, PrePopulate}
+import config.featureswitch.FeatureSwitch.{ControlListYears, ItsaMandationStatus, PrePopulate}
 import controllers.individual.eligibility.{routes => eligibilityRoutes}
 import controllers.utils.ReferenceRetrieval
-import models.EligibilityStatus
 import models.common.subscription.SubscriptionSuccess
 import models.usermatching.CitizenDetails
+import models.{EligibilityStatus, PrePopData}
 import play.api.mvc._
 import services._
 import services.individual._
@@ -96,23 +96,20 @@ class HomeController @Inject()(val auditingService: AuditingService,
                                        (implicit hc: HeaderCarrier, user: IncomeTaxSAUser, request: Request[AnyContent]) = {
     getEligibilityStatusService.getEligibilityStatus(utr) flatMap {
       // Check eligibility (this is complete, and gives us the control list response including pre-pop information)
-      case Right(EligibilityStatus(true, _, Some(prepop))) if isEnabled(PrePopulate) =>
-        withReference(utr) { reference =>
-          for {
-            _ <- prePopulationService.prePopulate(reference, prepop)
-            _ <- handleMandationStatus(reference, nino, utr)
-          } yield goToSignUp(utr, timestamp, nino)
-        }
-      case Right(EligibilityStatus(true, _, _)) =>
-        withReference(utr) { reference =>
-          handleMandationStatus(reference, nino, utr).map { _ =>
-            goToSignUp(utr, timestamp, nino)
-          }
-        }
-      case Right(EligibilityStatus(false, _, _)) =>
-        Future.successful(Redirect(eligibilityRoutes.NotEligibleForIncomeTaxController.show()))
       case Left(_) =>
         throw new InternalServerException(s"[HomeController] [index] Could not retrieve eligibility status")
+      case Right(result) =>
+        withReference(utr) { reference =>
+          result match {
+            case EligibilityStatus(false, nextYear, _) if !(nextYear && isEnabled(ControlListYears)) =>
+              Future.successful(Redirect(eligibilityRoutes.NotEligibleForIncomeTaxController.show()))
+            case EligibilityStatus(thisYear, _, prepopMaybe) =>
+              for {
+                _ <- handlePrepop(reference, prepopMaybe)
+                _ <- handleMandationStatus(reference, nino, utr)
+              } yield goToSignUp(thisYear, utr, timestamp, nino)
+          }
+        }
     }
   }
 
@@ -122,12 +119,17 @@ class HomeController @Inject()(val auditingService: AuditingService,
       case Left(err) => throw new InternalServerException(s"HomeController.index: unexpected error calling the subscription service:\n$err")
     }
 
-  private def goToSignUp(utr: String, timestamp: String, nino: String)(implicit request: Request[AnyContent]): Result =
-    Redirect(controllers.individual.sps.routes.SPSHandoffController.redirectToSPS)
+  private def goToSignUp(thisYear: Boolean, utr: String, timestamp: String, nino: String)(implicit request: Request[AnyContent]): Result =
+    Redirect(
+      if (thisYear)
+        controllers.individual.sps.routes.SPSHandoffController.redirectToSPS
+      else
+        controllers.individual.eligibility.routes.CannotSignUpThisYearController.show)
       .addingToSession(StartTime -> timestamp)
       .withJourneyState(SignUp)
       .addingToSession(UTR -> utr)
       .addingToSession(NINO -> nino)
+      .addingToSession(ELIGIBLE_NEXT_YEAR_ONLY -> (!thisYear).toString)
 
   private def claimSubscription(mtditId: String, nino: String, utr: String)
                                (implicit user: IncomeTaxSAUser, request: Request[AnyContent]): Future[Result] =
@@ -144,9 +146,15 @@ class HomeController @Inject()(val auditingService: AuditingService,
         }
     }
 
-  private def handleMandationStatus(reference: String, nino: String, utr: String)(implicit request: Request[AnyContent]): Future[Unit] = {
+  private def handlePrepop(reference: String, prepopMaybe: Option[PrePopData])(implicit hc: HeaderCarrier) =
+    prepopMaybe match {
+      case Some(prepop) if isEnabled(PrePopulate) => prePopulationService.prePopulate(reference, prepop)
+      case _ => Future.successful(())
+    }
+
+  private def handleMandationStatus(reference: String, nino: String, utr: String)(implicit request: Request[AnyContent]) = {
     if (isEnabled(ItsaMandationStatus)) {
-      mandationStatusService.retrieveMandationStatus(reference, nino, utr)
+      mandationStatusService.copyMandationStatus(reference, nino, utr)
     } else {
       Future.successful(())
     }

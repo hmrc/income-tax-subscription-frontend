@@ -27,8 +27,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class MandationStatusService @Inject()(val mandationStatusConnector: MandationStatusConnector,
                                        val subscriptionDetailsService: SubscriptionDetailsService) {
 
-  def retrieveMandationStatus(reference: String, nino: String, utr: String)
-                             (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
+  def copyMandationStatus(reference: String, nino: String, utr: String)
+                         (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
     for {
       mandationStatus <- mandationStatusConnector.getMandationStatus(nino, utr)
       _ = saveMandationStatus(reference, mandationStatus)
