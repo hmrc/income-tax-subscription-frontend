@@ -30,8 +30,9 @@ class CannotSignUpThisYearController @Inject()(val auditingService: AuditingServ
                                                val authService: AuthService,
                                                cannotSignUp: CannotSignUpThisYear)
                                               (implicit val appConfig: AppConfig,
-                                      mcc: MessagesControllerComponents,
-                                      val ec: ExecutionContext) extends StatelessController  {
+                                               mcc: MessagesControllerComponents,
+                                               val ec: ExecutionContext) extends StatelessController {
+
   def show: Action[AnyContent] = Authenticated { implicit request =>
     _ =>
       Ok(cannotSignUp(routes.CannotSignUpThisYearController.submit, AccountingPeriodUtil.getNextTaxYear))
@@ -39,6 +40,6 @@ class CannotSignUpThisYearController @Inject()(val auditingService: AuditingServ
 
   def submit: Action[AnyContent] = Authenticated { _ =>
     _ =>
-      Redirect(controllers.usermatching.routes.HomeController.home)
+      Redirect(controllers.individual.sps.routes.SPSHandoffController.redirectToSPS)
   }
 }
