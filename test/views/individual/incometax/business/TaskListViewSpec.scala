@@ -18,6 +18,7 @@ package views.individual.incometax.business
 
 import assets.MessageLookup.Summary.SelectedTaxYear
 import assets.MessageLookup.TaskList._
+import assets.MessageLookup.TaxYearCheckYourAnswers.next
 import models._
 import models.common.business._
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel, TaskListModel}
@@ -26,6 +27,7 @@ import org.jsoup.nodes.Document
 import play.api.mvc.Call
 import play.twirl.api.Html
 import services.AccountingPeriodService
+import utilities.AccountingPeriodUtil.getCurrentTaxEndYear
 import utilities.ViewSpec
 import views.html.individual.incometax.business.TaskList
 
@@ -54,6 +56,10 @@ class TaskListViewSpec extends ViewSpec {
     )
 
   }
+
+  private val forcedYearTaskList = customTaskListModel(
+    taxYearSelection = Some(AccountingYearModel(Next, editable = false))
+  )
 
   private val partialTaskListComplete = customTaskListModel(
     taxYearSelection = Some(AccountingYearModel(Current)),
@@ -336,6 +342,19 @@ class TaskListViewSpec extends ViewSpec {
         "do not display the sign up incomplete text" in {
           document(completedTaskListComplete).mainContent.selectHead(selectorForFirstParaOfSignup).selectOptionally("span") mustBe None
         }
+      }
+    }
+  }
+
+  "given a forced year in the task list model" must {
+    val doc = document(forcedYearTaskList)
+    "display the select tax year with status complete and no link" when {
+      "the user has not selected any tax year to sign up" in {
+        val selectTaxYearSection = doc.mainContent.selectNth("ul", 1)
+        val selectTaxYearText = selectTaxYearSection.selectNth("span", 1)
+        selectTaxYearText.text mustBe next(getCurrentTaxEndYear, getCurrentTaxEndYear + 1)
+        selectTaxYearSection.selectNth("span", 2).text mustBe complete
+        selectTaxYearText.select("a").size() mustBe 0
       }
     }
   }

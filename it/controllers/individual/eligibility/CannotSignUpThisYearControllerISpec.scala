@@ -40,18 +40,18 @@ class CannotSignUpThisYearControllerISpec extends ComponentSpecBase {
 
   "POST /error/cannot-sign-up-for-current-year" should {
 
-    s"return a redirect to ${controllers.usermatching.routes.HomeController.home.url}" in {
+    s"return a redirect to ${controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url}" in {
       Given("I setup the wiremock stubs")
       AuthStub.stubAuthSuccess()
 
       When("POST /error/cannot-sign-up-for-current-year is called")
       val result: WSResponse = IncomeTaxSubscriptionFrontend.submitCannotSignUpThisYear
 
-      Then("Should return SEE_OTHER to the home controller")
+      Then("Should return SEE_OTHER to the sps handoff")
 
       result must have(
         httpStatus(SEE_OTHER),
-        redirectURI(controllers.usermatching.routes.HomeController.home.url)
+        redirectURI(controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url)
       )
     }
 
