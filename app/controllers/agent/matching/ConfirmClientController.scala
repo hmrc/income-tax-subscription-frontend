@@ -24,7 +24,7 @@ import config.AppConfig
 import config.featureswitch.FeatureSwitch.{ControlListYears, ItsaMandationStatus, PrePopulate}
 import config.featureswitch.FeatureSwitching
 import controllers.utils.ReferenceRetrieval
-import models.EligibilityStatus
+import models.{EligibilityStatus, PrePopData}
 import models.audits.EnterDetailsAuditing
 import models.audits.EnterDetailsAuditing.EnterDetailsAuditModel
 import models.usermatching.{LockedOut, NotLockedOut, UserDetailsModel}
@@ -32,7 +32,7 @@ import play.api.mvc._
 import play.twirl.api.Html
 import services._
 import services.agent._
-import uk.gov.hmrc.http.InternalServerException
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.HttpResult.HttpConnectorError
 import views.html.agent.CheckYourClientDetails
 
@@ -141,45 +141,35 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
       case Right(result) =>
         withAgentReference(utr) { reference =>
           result match {
-            case EligibilityStatus(true, _, Some(prepop)) if isEnabled(PrePopulate) =>
+            case EligibilityStatus(false, nextYear, _) if !(nextYear && isEnabled(ControlListYears)) =>
+              Future.successful(goToCannotTakePart)
+            case EligibilityStatus(thisYear, _, prepopMaybe) =>
               for {
-                _ <- prePopulationService.prePopulate(reference, prepop)
+                _ <- handlePrepop(reference, prepopMaybe)
                 _ <- handleMandationStatus(reference, nino, utr)
-              } yield goToHome(nino, utr)
-            case EligibilityStatus(true, _, _) =>
-              handleMandationStatus(reference, nino, utr).map { _ =>
-                goToHome(nino, utr)
-              }
-            case EligibilityStatus(false, true, _) if isEnabled(ControlListYears) =>
-              Future.successful(goToCannotSignUpForCurrentYear(nino, utr))
-            case EligibilityStatus(false, _, _) => Future.successful(goToCannotTakePart)
+              } yield goToSignUpClient(thisYear, utr, nino)
           }
         }
     }
   }
 
-  private def goToCannotSignUpForCurrentYear(nino: String, utr: String)(implicit request: Request[AnyContent]): Result =
-    Redirect(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show)
+  private def goToSignUpClient(thisYear: Boolean, utr: String, nino: String)(implicit request: Request[AnyContent]): Result =
+    (if (thisYear)
+      Redirect(controllers.agent.routes.HomeController.index)
+    else
+      Redirect(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show))
       .withJourneyState(AgentUserMatched)
       .addingToSession(ITSASessionKeys.NINO -> nino)
       .addingToSession(ITSASessionKeys.UTR -> utr)
-      .addingToSession(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> true.toString)
+      .addingToSession(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> (!thisYear).toString)
       .removingFromSession(FailedClientMatching)
       .clearUserDetailsExceptName
+
 
   private def goToCannotTakePart(implicit request: Request[AnyContent]): Result =
     Redirect(controllers.agent.eligibility.routes.CannotTakePartController.show)
       .removingFromSession(FailedClientMatching)
       .clearAllUserDetails
-
-  private def goToHome(nino: String, utr: String)(implicit request: Request[AnyContent]) = {
-    Redirect(controllers.agent.routes.HomeController.index)
-      .withJourneyState(AgentUserMatched)
-      .addingToSession(ITSASessionKeys.NINO -> nino)
-      .addingToSession(ITSASessionKeys.UTR -> utr)
-      .removingFromSession(FailedClientMatching)
-      .clearUserDetailsExceptName
-  }
 
   private def handleFailure(arn: String, currentCount: Int, clientDetails: UserDetailsModel)
                            (implicit request: Request[AnyContent]): Future[Result] = {
@@ -192,6 +182,12 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
     auditingService.audit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), clientDetails, currentCount, lockedOut = false))
     successful(Redirect(controllers.agent.routes.ClientAlreadySubscribedController.show).removingFromSession(FailedClientMatching))
   }
+
+  private def handlePrepop(reference: String, prepopMaybe: Option[PrePopData])(implicit hc: HeaderCarrier) =
+    prepopMaybe match {
+      case Some(prepop) if isEnabled(PrePopulate) => prePopulationService.prePopulate(reference, prepop)
+      case _ => Future.successful(())
+    }
 
   private def handleMandationStatus(reference: String, nino: String, utr: String)(implicit request: Request[AnyContent]): Future[Unit] = {
     if (isEnabled(ItsaMandationStatus)) {

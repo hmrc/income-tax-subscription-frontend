@@ -54,7 +54,8 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
 
   private val eligibleWithoutPrePop = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, None)
   private val eligibleWithPrePop = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, Some(mock[PrePopData]))
-  private val ineligibleForCurrentYear = EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, None)
+  private val ineligibleForCurrentYearWithoutPrePop = EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, None)
+  private val ineligibleForCurrentYearWithPrePop = EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, Some(mock[PrePopData]))
   private val ineligible = EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = false, None)
 
   override val controllerName: String = "ConfirmClientController"
@@ -321,27 +322,85 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
 
           "the client is ineligible only for the current year" when {
             "the control list years feature switch is enabled" should {
-              s"redirect user to ${controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url}" in withController { controller =>
-                mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
-                mockGetEligibilityStatus(utr)(Future.successful(Right(ineligibleForCurrentYear)))
-                setupMockPrePopulateSave(testReference)
-                mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
-                setupMockNotLockedOut(arn)
-                enable(ControlListYears)
+              "the client has no prepop" when {
 
-                val result = await(callSubmit(controller))
+                s"redirect user to ${controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url}" in withController { controller =>
+                  mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
+                  mockGetEligibilityStatus(utr)(Future.successful(Right(ineligibleForCurrentYearWithoutPrePop)))
+                  setupMockPrePopulateSave(testReference)
+                  mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
+                  setupMockNotLockedOut(arn)
+                  enable(ControlListYears)
 
-                status(result) mustBe SEE_OTHER
-                redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
+                  val result = await(callSubmit(controller))
 
-                val session = result.session(request)
+                  status(result) mustBe SEE_OTHER
+                  redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
 
-                session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
-                session.get(ITSASessionKeys.NINO) mustBe Some(nino)
-                session.get(ITSASessionKeys.UTR) mustBe Some(utr)
-                session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY) mustBe Some("true")
+                  val session = result.session(request)
 
-                verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), testClientDetails, 0, lockedOut = false))
+                  session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
+                  session.get(ITSASessionKeys.NINO) mustBe Some(nino)
+                  session.get(ITSASessionKeys.UTR) mustBe Some(utr)
+                  session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY) mustBe Some("true")
+
+                  verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), testClientDetails, 0, lockedOut = false))
+                }
+              }
+              "the client has prepop" when {
+                "prepop feature switch is on" should {
+
+                  s"redirect user to ${controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url}" in withController { controller =>
+                    mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
+                    mockGetEligibilityStatus(utr)(Future.successful(Right(ineligibleForCurrentYearWithPrePop)))
+                    setupMockPrePopulateSave(testReference)
+                    mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
+                    setupMockNotLockedOut(arn)
+                    enable(ControlListYears)
+                    enable(PrePopulate)
+
+                    val result = await(callSubmit(controller))
+
+                    status(result) mustBe SEE_OTHER
+                    redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
+
+                    val session = result.session(request)
+
+                    session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
+                    session.get(ITSASessionKeys.NINO) mustBe Some(nino)
+                    session.get(ITSASessionKeys.UTR) mustBe Some(utr)
+                    session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY) mustBe Some("true")
+
+                    verifyPrePopulationSave(1, testReference)
+                    verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), testClientDetails, 0, lockedOut = false))
+                  }
+                }
+                "prepop feature switch is off" should {
+                  s"redirect user to ${controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url}" in withController { controller =>
+                    mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
+                    mockGetEligibilityStatus(utr)(Future.successful(Right(ineligibleForCurrentYearWithPrePop)))
+                    setupMockPrePopulateSave(testReference)
+                    mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
+                    setupMockNotLockedOut(arn)
+                    enable(ControlListYears)
+                    disable(PrePopulate)
+
+                    val result = await(callSubmit(controller))
+
+                    status(result) mustBe SEE_OTHER
+                    redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
+
+                    val session = result.session(request)
+
+                    session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
+                    session.get(ITSASessionKeys.NINO) mustBe Some(nino)
+                    session.get(ITSASessionKeys.UTR) mustBe Some(utr)
+                    session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY) mustBe Some("true")
+
+                    verifyPrePopulationSave(0, testReference)
+                    verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), testClientDetails, 0, lockedOut = false))
+                  }
+                }
               }
             }
           }
@@ -392,6 +451,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
             session.get(ITSASessionKeys.UTR) mustBe None
 
             verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), testClientDetails, 0, lockedOut = false))
+            session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY) mustBe None
           }
         }
       }
