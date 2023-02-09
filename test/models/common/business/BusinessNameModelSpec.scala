@@ -21,11 +21,15 @@ import org.scalatestplus.play.PlaySpec
 class BusinessNameModelSpec extends PlaySpec {
   "BusinessNameModel" should {
     "not remove wanted characters" in {
-      BusinessNameModel("Test business name").businessName mustBe "Test business name"
+      BusinessNameModel("Test business name").toCleanOption.map(_.businessName mustBe "Test business name")
     }
 
     "remove unwanted characters" in {
-      BusinessNameModel("Test busine$$ name").businessName mustBe "Test busine  name"
+      BusinessNameModel("Test busine$$ name").toCleanOption.map(_.businessName mustBe "Test busine name")
+    }
+
+    "return None when all characters are bad" in {
+      BusinessNameModel("$$$$$$").toCleanOption mustBe None
     }
   }
 }
