@@ -34,24 +34,26 @@ object AppDependencies {
   )
 
   val test: Seq[ModuleID] = Seq(
-    "org.scalatest"                %% "scalatest"            % scalaTestVersion     % testScope,
-    "org.scalatestplus"            %% "mockito-3-12"         % "3.2.10.0"           % testScope,
-    "org.scalatestplus.play"       %% "scalatestplus-play"   % scalaTestPlusVersion % testScope,
-    "com.typesafe.play"            %% "play-test"            % PlayVersion.current  % testScope,
-    "org.mockito"                  % "mockito-core"          % "3.12.4"             % testScope,
-    "org.jsoup"                    % "jsoup"                 % jsoupVersion         % testScope,
-    "com.vladsch.flexmark"         % "flexmark-all"          % flexmarkVersion      % testScope,
-    "com.fasterxml.jackson.module" %% "jackson-module-scala" % jacksonModuleVersion % testScope
+    "uk.gov.hmrc"                  %% "bootstrap-test-play-28" % bootstrapPlayVersion % testScope,
+    "org.scalatest"                %% "scalatest"              % scalaTestVersion     % testScope,
+    "org.scalatestplus"            %% "mockito-3-12"           % "3.2.10.0"           % testScope,
+    "org.scalatestplus.play"       %% "scalatestplus-play"     % scalaTestPlusVersion % testScope,
+    "com.typesafe.play"            %% "play-test"              % PlayVersion.current  % testScope,
+    "org.mockito"                  % "mockito-core"            % "3.12.4"             % testScope,
+    "org.jsoup"                    % "jsoup"                   % jsoupVersion         % testScope,
+    "com.vladsch.flexmark"         % "flexmark-all"            % flexmarkVersion      % testScope,
+    "com.fasterxml.jackson.module" %% "jackson-module-scala"   % jacksonModuleVersion % testScope
   )
 
   val integrationTest: Seq[ModuleID] = Seq(
-    "org.scalatest"                %% "scalatest"            % scalaTestVersion     % integrationTestScope,
-    "com.typesafe.play"            %% "play-test"            % PlayVersion.current  % integrationTestScope,
-    "org.scalatestplus.play"       %% "scalatestplus-play"   % scalaTestPlusVersion % integrationTestScope,
-    "com.github.fge"               % "json-schema-validator" % "2.2.14"             % integrationTestScope,
-    "org.jsoup"                    % "jsoup"                 % jsoupVersion         % integrationTestScope,
-    "com.github.tomakehurst"       % "wiremock-jre8"         % wiremockVersion      % integrationTestScope,
-    "com.vladsch.flexmark"         % "flexmark-all"          % flexmarkVersion      % integrationTestScope,
-    "com.fasterxml.jackson.module" %% "jackson-module-scala" % jacksonModuleVersion % integrationTestScope
+    "uk.gov.hmrc"                  %% "bootstrap-test-play-28" % bootstrapPlayVersion % integrationTestScope,
+    "org.scalatest"                %% "scalatest"              % scalaTestVersion     % integrationTestScope,
+    "com.typesafe.play"            %% "play-test"              % PlayVersion.current  % integrationTestScope,
+    "org.scalatestplus.play"       %% "scalatestplus-play"     % scalaTestPlusVersion % integrationTestScope,
+    "com.github.fge"               % "json-schema-validator"   % "2.2.14"             % integrationTestScope,
+    "org.jsoup"                    % "jsoup"                   % jsoupVersion         % integrationTestScope,
+    "com.github.tomakehurst"       % "wiremock-jre8"           % wiremockVersion      % integrationTestScope,
+    "com.vladsch.flexmark"         % "flexmark-all"            % flexmarkVersion      % integrationTestScope,
+    "com.fasterxml.jackson.module" %% "jackson-module-scala"   % jacksonModuleVersion % integrationTestScope
   )
 }

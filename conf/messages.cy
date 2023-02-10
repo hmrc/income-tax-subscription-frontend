@@ -564,7 +564,7 @@ cannot-sign-up.bullet7                                          = rydych yn cael
 cannot-sign-up.bullet8                                          = mae cyfanswm eich incwm cymwys yn fwy na £30,000
 cannot-sign-up.paragraph6                                       = Bydd yn dal i fod yn rhaid i chi {0} ar gyfer y flwyddyn dreth cyn i chi gofrestru i ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
 cannot-sign-up.link3                                            = anfon Ffurflen Dreth Hunanasesiad i CThEF
-cannot-sign-up.continue-button                                  = Parhau i gofrestru ar gyfer y flwyddyn nesaf
+cannot-sign-up.continue-button                                  = Parhewch i gofrestru ar gyfer blwyddyn nesaf
 
 # Agent accounting period check page
 agent.accounting-period-check.title                             = A yw holl gyfnodau cyfrifyddu busnes eich cleient yn rhedeg o 6 Ebrill i 5 Ebrill?
