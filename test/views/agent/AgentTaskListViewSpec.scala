@@ -154,6 +154,7 @@ class AgentTaskListViewSpec extends ViewSpec {
               val selectTaxYearLink = selectTaxYearSection.selectNth("span", 1).selectHead("a")
               selectTaxYearLink.text mustBe selectTaxYear
               selectTaxYearSection.selectNth("span", 2).text mustBe notStarted
+              selectTaxYearSection.selectHead("strong").attr("class") mustBe "govuk-tag govuk-tag--grey"
               selectTaxYearLink.attr("href") mustBe controllers.agent.routes.WhatYearToSignUpController.show().url
             }
           }
@@ -194,6 +195,7 @@ class AgentTaskListViewSpec extends ViewSpec {
           val selectTaxYearLink = selectTaxYearSection.selectNth("span", 1).selectHead("a")
           selectTaxYearLink.text mustBe selectTaxYear
           selectTaxYearSection.selectNth("span", 2).text mustBe inProgress
+          selectTaxYearSection.selectHead("strong").attr("class") mustBe "govuk-tag govuk-tag--grey"
           selectTaxYearLink.attr("href") mustBe controllers.agent.routes.WhatYearToSignUpController.show().url
         }
       }
@@ -204,6 +206,7 @@ class AgentTaskListViewSpec extends ViewSpec {
         selfEmploymentLink.text mustBe "Name1"
         selfEmploymentLink.attr("href") mustBe s"""${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=id1&isEditMode=true"""
         selfEmploymentSection.selectNth("span", 2).text mustBe incomplete
+        selfEmploymentSection.selectHead("strong").attr("class") mustBe "govuk-tag govuk-tag--grey"
       }
 
       "display an incomplete self employment" which {
@@ -214,6 +217,7 @@ class AgentTaskListViewSpec extends ViewSpec {
           selfEmploymentLink.text mustBe "Name2 TradeName"
           selfEmploymentLink.attr("href") mustBe s"""${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=id2&isEditMode=true"""
           selfEmploymentSection.selectNth("span", 2).text mustBe incomplete
+          selfEmploymentSection.selectHead("strong").attr("class") mustBe "govuk-tag govuk-tag--grey"
         }
 
         "contains a remove link" in {
@@ -232,6 +236,7 @@ class AgentTaskListViewSpec extends ViewSpec {
           ukPropertyIncomeLink.text() mustBe ukPropertyBusiness
           ukPropertyIncomeLink.attr("href") mustBe controllers.agent.business.routes.PropertyCheckYourAnswersController.show(editMode = true).url
           ukPropertyIncomeSection.selectNth("span", 2).text mustBe incomplete
+          ukPropertyIncomeSection.selectHead("strong").attr("class") mustBe "govuk-tag govuk-tag--grey"
         }
 
         "contains a remove link" in {
@@ -254,6 +259,7 @@ class AgentTaskListViewSpec extends ViewSpec {
           overseasPropertyLink.text mustBe overseasPropertyBusiness
           overseasPropertyLink.attr("href") mustBe controllers.agent.business.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
           overseasPropertySection.selectNth("span", 2).text mustBe incomplete
+          overseasPropertySection.selectHead("strong").attr("class") mustBe "govuk-tag govuk-tag--grey"
         }
 
         "contains a remove link" in {
@@ -300,6 +306,7 @@ class AgentTaskListViewSpec extends ViewSpec {
           val selectTaxYearLink = selectTaxYearSection.selectNth("span", 1).selectHead("a")
           selectTaxYearLink.text mustBe SelectedTaxYear.next(accountingPeriodService.currentTaxYear, accountingPeriodService.currentTaxYear + 1)
           selectTaxYearSection.selectNth("span", 2).text mustBe complete
+          selectTaxYearSection.selectHead("strong").attr("class") mustBe "govuk-tag"
           selectTaxYearLink.attr("href") mustBe controllers.agent.routes.TaxYearCheckYourAnswersController.show(editMode = true).url
         }
       }
@@ -310,6 +317,7 @@ class AgentTaskListViewSpec extends ViewSpec {
         selfEmploymentLink.text mustBe "Name1 TradeName"
         selfEmploymentLink.attr("href") mustBe s"""${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=id1&isEditMode=true"""
         selfEmploymentSection.selectNth("span", 2).text mustBe complete
+        selfEmploymentSection.selectHead("strong").attr("class") mustBe "govuk-tag"
       }
 
       "display a complete uk property income" in {
@@ -318,6 +326,7 @@ class AgentTaskListViewSpec extends ViewSpec {
         ukPropertyIncomeLink.text() mustBe ukPropertyBusiness
         ukPropertyIncomeLink.attr("href") mustBe controllers.agent.business.routes.PropertyCheckYourAnswersController.show(editMode = true).url
         ukPropertyIncomeSection.selectNth("span", 2).text mustBe complete
+        ukPropertyIncomeSection.selectHead("strong").attr("class") mustBe "govuk-tag"
       }
 
       "display a complete overseas property income" in {
@@ -326,6 +335,7 @@ class AgentTaskListViewSpec extends ViewSpec {
         overseasPropertyLink.text mustBe overseasPropertyBusiness
         overseasPropertyLink.attr("href") mustBe controllers.agent.business.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
         overseasPropertySection.selectNth("span", 2).text mustBe complete
+        overseasPropertySection.selectHead("strong").attr("class") mustBe "govuk-tag"
       }
 
       "display the add a business link" in {
@@ -352,6 +362,7 @@ class AgentTaskListViewSpec extends ViewSpec {
         val selectTaxYearText = selectTaxYearSection.selectNth("span", 1)
         selectTaxYearText.text mustBe next(getCurrentTaxEndYear, getCurrentTaxEndYear + 1)
         selectTaxYearSection.selectNth("span", 2).text mustBe complete
+        selectTaxYearSection.selectHead("strong").attr("class") mustBe "govuk-tag"
         selectTaxYearText.select("a").size() mustBe 0
       }
     }

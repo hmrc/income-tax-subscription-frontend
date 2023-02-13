@@ -27,6 +27,7 @@
     form: FormWithCSRF,
     continueButton: ContinueButton,
     saveAndContinueButton: ButtonHelper,
+    govukTag : GovukTag
 )
 
 @(postAction: Call, viewModel: TaskListModel, accountingPeriodService: AccountingPeriodService, individualUserNino: String,  maybeIndividualUserFullName: Option[String])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -76,11 +77,12 @@
   }
 }
 
-@selectTaxYear = @{
+
+@selectTaxYear = {
 <ul class="app-task-list__items">
   <li class="app-task-list__item">
     <span class="app-task-list__task-name">
-      {
+      @{
         if(viewModel.taxYearSelectedAndConfirmed) {
           if(!viewModel.permitTaxYearChange)
             taxYearText
@@ -101,17 +103,23 @@
       }
     </span>
     <span class="app-task-list__task-completed" id="section_1_thing_1_status">
-      {if(viewModel.taxYearSelectedAndConfirmed) {
-          messages(s"${messagePrefix}.status.completed")
-      } else if (viewModel.taxYearSelectedNotConfirmed) {
-          messages(s"${messagePrefix}.status.in-progress")
-      } else {
-          messages(s"${messagePrefix}.status.not-started")
-      }}
+      @{if(viewModel.taxYearSelectedAndConfirmed){
+          govukTag(Tag(
+            content = Text(messages(s"${messagePrefix}.status.completed"))
+          ))
+        } else if (viewModel.taxYearSelectedNotConfirmed) {
+          govukTag(Tag(
+            content = Text(messages(s"${messagePrefix}.status.in-progress")), classes = "govuk-tag--grey"
+          ))
+        } else {
+          govukTag(Tag(
+            content = Text(messages(s"${messagePrefix}.status.not-started")), classes = "govuk-tag--grey"
+          ))
+        }
+      }
     </span>
   </li>
 </ul>
-
 }
 
 @addBusiness = @{if(viewModel.canAddMoreBusinesses(appConfig.maxSelfEmployments)) {
@@ -132,11 +140,12 @@
         </a>
       </span>
       <span class="app-task-list__task-completed" id={"section_2_item_1_status"+viewModel.selfEmployments.indexOf(se)}>
-      {if(se.confirmed && viewModel.selfEmploymentAccountingMethod.isDefined) {
-        messages(s"${messagePrefix}.status.completed")
-      } else {
-        messages(s"${messagePrefix}.status.incomplete")
-      }}
+        {if(se.confirmed && viewModel.selfEmploymentAccountingMethod.isDefined) {
+          <strong class = "govuk-tag">{messages(s"${messagePrefix}.status.completed")}</strong>
+        } else {
+          <strong class = "govuk-tag govuk-tag--grey">{messages(s"${messagePrefix}.status.incomplete")}</strong>
+        }
+    }
       </span>
       <span class="govuk-remove-business-link" id={"self_employment_remove"+viewModel.selfEmployments.indexOf(se)}>
         <a class="govuk-link" href={controllers.individual.business.routes.RemoveBusinessController.show(se.id).url}>
@@ -156,10 +165,11 @@
       </span>
       <span class="app-task-list__task-completed" id="uk_property_status">
       {if(viewModel.ukPropertyComplete ) {
-        messages(s"${messagePrefix}.status.completed")
-      } else {
-        messages(s"${messagePrefix}.status.incomplete")
-      }}
+          <strong class = "govuk-tag">{messages(s"${messagePrefix}.status.completed")}</strong>
+        } else {
+          <strong class = "govuk-tag govuk-tag--grey">{messages(s"${messagePrefix}.status.incomplete")}</strong>
+        }
+      }
       </span>
       <span class="govuk-remove-business-link" id="uk_property_remove">
         <a class="govuk-link" href={controllers.individual.business.routes.RemoveUkPropertyController.show.url}>
@@ -177,9 +187,9 @@
       </span>
       <span class="app-task-list__task-completed" id="overseas_property_status">
       {if(viewModel.overseasPropertyComplete) {
-        messages(s"${messagePrefix}.status.completed")
+        <strong class = "govuk-tag">{messages(s"${messagePrefix}.status.completed")}</strong>
       } else {
-        messages(s"${messagePrefix}.status.incomplete")
+        <strong class = "govuk-tag govuk-tag--grey">{messages(s"${messagePrefix}.status.incomplete")}</strong>
       }}
       </span>
       <span class="govuk-remove-business-link" id="overseas_property_remove">
