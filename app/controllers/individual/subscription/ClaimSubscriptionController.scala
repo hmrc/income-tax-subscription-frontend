@@ -16,7 +16,7 @@
 
 package controllers.individual.subscription
 
-import auth.individual.SignUpController
+import auth.individual.StatelessController
 import cats.data.EitherT
 import cats.implicits._
 import config.AppConfig
@@ -40,7 +40,7 @@ class ClaimSubscriptionController @Inject()(val claimSubscriptionView: ClaimSubs
                                             subscriptionOrchestrationService: SubscriptionOrchestrationService)
                                            (implicit val ec: ExecutionContext,
                                             val appConfig: AppConfig,
-                                            mcc: MessagesControllerComponents) extends SignUpController with ReferenceRetrieval {
+                                            mcc: MessagesControllerComponents) extends StatelessController with ReferenceRetrieval {
 
   val claim: Action[AnyContent] = Authenticated.async {
     implicit request =>

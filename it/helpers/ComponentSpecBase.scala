@@ -138,23 +138,27 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
   object IncomeTaxSubscriptionFrontend extends UserMatchingIntegrationRequestSupport {
     val csrfToken: String = UUID.randomUUID().toString
 
-    def get(uri: String, additionalCookies: Map[String, String] = Map.empty): WSResponse =
+    def get(uri: String, additionalCookies: Map[String, String] = Map.empty, includeSPSEntityId: Boolean = true): WSResponse = {
+      val additionalSPSCookie: Map[String, String] = if (includeSPSEntityId) Map(SPSEntityId -> "test-id") else Map.empty
       buildClient(uri)
-        .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(Map(JourneyStateKey -> SignUp.name, REFERENCE -> "test-reference") ++ additionalCookies))
+        .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(Map(JourneyStateKey -> SignUp.name, REFERENCE -> "test-reference") ++ additionalSPSCookie ++ additionalCookies))
         .get()
         .futureValue
+    }
 
-    def post(uri: String, additionalCookies: Map[String, String] = Map.empty)(body: Map[String, Seq[String]]): WSResponse =
+    def post(uri: String, additionalCookies: Map[String, String] = Map.empty, includeSPSEntityId: Boolean = true)(body: Map[String, Seq[String]]): WSResponse = {
+      val additionalSPSCookie: Map[String, String] = if (includeSPSEntityId) Map(SPSEntityId -> "test-id") else Map.empty
       buildClient(uri)
-        .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(Map(JourneyStateKey -> SignUp.name, REFERENCE -> "test-reference") ++ additionalCookies), "Csrf-Token" -> "nocheck")
+        .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(Map(JourneyStateKey -> SignUp.name, REFERENCE -> "test-reference") ++ additionalSPSCookie ++ additionalCookies), "Csrf-Token" -> "nocheck")
         .post(body)
         .futureValue
+    }
 
-    def startPage(): WSResponse = get("/")
+    def startPage(): WSResponse = get("/", includeSPSEntityId = false)
 
     def callback(): WSResponse = get("/callback")
 
-    def indexPage(): WSResponse = get("/index")
+    def indexPage(): WSResponse = get("/index", includeSPSEntityId = false)
 
     def spsHandoff(): WSResponse = get("/sps-handoff")
 
@@ -223,6 +227,10 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
     def signOut: WSResponse = get("/logout")
 
     def alreadyEnrolled(): WSResponse = get("/already-enrolled")
+
+    def whatYouNeedToDo(): WSResponse = get("/what-you-need-to-do")
+
+    def submitWhatYouNeedToDo(): WSResponse = post("/what-you-need-to-do")(Map.empty)
 
     def checkYourAnswers(): WSResponse = get("/check-your-answers")
 

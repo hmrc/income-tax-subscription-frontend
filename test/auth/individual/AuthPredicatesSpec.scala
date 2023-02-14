@@ -85,6 +85,13 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
   lazy val authorisedRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
     authToken -> "",
     lastRequestTimestamp -> "",
+    ITSASessionKeys.JourneyStateKey -> SignUp.name,
+    ITSASessionKeys.SPSEntityId -> "test-id"
+  )
+
+  lazy val authorisedRequestWithoutSPSEntityId: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
+    authToken -> "",
+    lastRequestTimestamp -> "",
     ITSASessionKeys.JourneyStateKey -> SignUp.name
   )
 
@@ -150,7 +157,7 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
   }
 
   "defaultPredicates" should {
-    "return an AuthPredicateSuccess where there is a nino, an individual affinity, and an auth token" in {
+    "return an AuthPredicateSuccess where there is a nino, an individual affinity, an auth token and an sps entity id" in {
       defaultPredicates(authorisedRequest)(defaultPredicateUser).value mustBe AuthPredicateSuccess
     }
 
@@ -225,6 +232,12 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
           redirectLocation(result) mustBe Some(confidenceLevelAppConfig.identityVerificationURL)
         }
       }
+    }
+
+    "redirect to home when the user has no sps entity id" in {
+      val result = subscriptionPredicates(authorisedRequestWithoutSPSEntityId)(defaultPredicateUser).left.value
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.usermatching.routes.HomeController.index.url)
     }
   }
 

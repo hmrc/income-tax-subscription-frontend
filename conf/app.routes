@@ -47,6 +47,10 @@ GET         /cannot-use-service-yet                              controllers.ind
 GET         /error/cannot-sign-up-for-current-year               controllers.individual.eligibility.CannotSignUpThisYearController.show
 POST        /error/cannot-sign-up-for-current-year               controllers.individual.eligibility.CannotSignUpThisYearController.submit
 
+# What you need to do
+GET         /what-you-need-to-do                                 controllers.individual.WhatYouNeedToDoController.show
+POST         /what-you-need-to-do                                controllers.individual.WhatYouNeedToDoController.submit
+
 #Language
 GET         /language/:lang                                      controllers.individual.LanguageSwitchController.switchToLanguage(lang: String)
 
