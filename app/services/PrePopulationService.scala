@@ -17,7 +17,6 @@
 package services
 
 import models.PrePopData
-import models.common.business.BusinessTradeNameModel.getBusinessTradeNameModelMaybe
 import models.common.business._
 import models.common.{OverseasPropertyModel, PropertyModel}
 import play.api.Logging
@@ -49,8 +48,8 @@ class PrePopulationService @Inject()(val subscriptionDetailsService: Subscriptio
         val listSelfEmploymentData = listPrepopSelfEmployment.map(se => SelfEmploymentData(
           UUID.randomUUID().toString,
           se.businessStartDate.map(date => BusinessStartDate(date)),
-          se.businessName.map(name => BusinessNameModel(name)),
-          getBusinessTradeNameModelMaybe(se.businessTradeName),
+          se.businessName.flatMap(name => BusinessNameModel(name).toCleanOption),
+          BusinessTradeNameModel(se.businessTradeName).toCleanOption,
           if (se.businessAddressPostCode.isDefined || se.businessAddressFirstLine.isDefined)
             Some(BusinessAddressModel(UUID.randomUUID().toString, address = Address(se.businessAddressFirstLine.toList, se.businessAddressPostCode)))
           else

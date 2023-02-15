@@ -16,17 +16,22 @@
 
 package models.common.business
 
+import models.common.business.BusinessNameModel.businessNameRegex
 import play.api.libs.json.{Json, OFormat}
 
 import scala.language.postfixOps
 
-case class BusinessNameModel(businessName: String)
+case class BusinessNameModel(businessName: String) {
+  def toCleanOption: Option[BusinessNameModel] = {
+    val cleanName = businessNameRegex.findAllIn(businessName).matchData.mkString(" ")
+    if (cleanName.isEmpty)
+      None
+    else
+      Some(BusinessNameModel(cleanName))
+  }
+}
 
 object BusinessNameModel {
   implicit val format: OFormat[BusinessNameModel] = Json.format[BusinessNameModel]
-  private val businessNameRegex = """[A-Za-z0-9 ,.&'\\/-]+"""r
-
-  def apply(businessName: String): BusinessNameModel = {
-    new BusinessNameModel(businessNameRegex.findAllIn(businessName).matchData.mkString(" "))
-  }
+  private val businessNameRegex = """[A-Za-z0-9,.&'\\/-]+""" r
 }

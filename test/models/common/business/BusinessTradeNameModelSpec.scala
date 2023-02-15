@@ -16,7 +16,7 @@
 
 package models.common.business
 
-import models.common.business.BusinessTradeNameModel.{MaximumLengthOfBusinessTradeName, getBusinessTradeNameModelMaybe}
+import models.common.business.BusinessTradeNameModel.MaximumLengthOfBusinessTradeName
 import org.scalatest.matchers.should.Matchers._
 import org.scalatestplus.play.PlaySpec
 
@@ -26,18 +26,42 @@ class BusinessTradeNameModelSpec extends PlaySpec {
   private val tooLong = shortEnough + 1
   private val oneChar = "x"
 
-  "getBusinessTradeNameModelMaybe" when {
-
+  "toCleanOption" when {
     "the string is short enough" should {
       "return the value, wrapped up" in {
         val acceptableTradeName = oneChar * shortEnough
-        getBusinessTradeNameModelMaybe(acceptableTradeName) should be(Some(BusinessTradeNameModel(acceptableTradeName)))
+        BusinessTradeNameModel(acceptableTradeName).toCleanOption shouldBe Some(BusinessTradeNameModel(acceptableTradeName))
       }
     }
     "the string is too long" should {
       "return None" in {
         val unacceptableTradeName = oneChar * tooLong
-        getBusinessTradeNameModelMaybe(unacceptableTradeName) should be(None)
+        BusinessTradeNameModel(unacceptableTradeName).toCleanOption shouldBe None
+      }
+    }
+
+    "the string has some bad characters, adjacent to spaces, which should be reduced to a single space" should {
+      "return None" in {
+        val unacceptableTradeName = s"this    is    good    +    that plus    is    bad"
+        BusinessTradeNameModel(unacceptableTradeName).toCleanOption shouldBe Some(BusinessTradeNameModel("this is good that plus is bad"))
+      }
+    }
+    "the string has some bad characters, and only one letter" should {
+      "return None" in {
+        val unacceptableTradeName = s"!!!!!!!!!!$oneChar!!!!!!!!!"
+        BusinessTradeNameModel(unacceptableTradeName).toCleanOption shouldBe None
+      }
+    }
+    "the string has all good characters, but only one letter" should {
+      "return None" in {
+        val unacceptableTradeName = s"1 2 3 4 5 $oneChar 6 7 8 9 0"
+        BusinessTradeNameModel(unacceptableTradeName).toCleanOption shouldBe None
+      }
+    }
+    "the string has some bad characters, and two letters" should {
+      "return None" in {
+        val acceptableTradeName = s"!!!!!!!!!!$oneChar!!!!!!!!!!$oneChar!!!!!!!!!"
+        BusinessTradeNameModel(acceptableTradeName).toCleanOption shouldBe Some(BusinessTradeNameModel(s"$oneChar $oneChar"))
       }
     }
   }
