@@ -115,10 +115,10 @@ class HomeControllerSpec extends AgentControllerBaseSpec
 
         def result: Future[Result] = testHomeController().index()(request)
 
-        s"redirect user to ${controllers.agent.routes.TaskListController.show().url}" in {
+        s"redirect user to ${controllers.agent.routes.WhatYouNeedToDoController.show().url}" in {
           status(result) must be(Status.SEE_OTHER)
 
-          redirectLocation(result).get mustBe controllers.agent.routes.TaskListController.show().url
+          redirectLocation(result).get mustBe controllers.agent.routes.WhatYouNeedToDoController.show().url
 
           await(result).session(request).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
         }
@@ -131,10 +131,10 @@ class HomeControllerSpec extends AgentControllerBaseSpec
 
         def result: Future[Result] = testHomeController().index()(request)
 
-        s"redirect user to ${controllers.agent.routes.TaskListController.show().url}" in {
+        s"redirect user to ${controllers.agent.routes.WhatYouNeedToDoController.show().url}" in {
           status(result) must be(Status.SEE_OTHER)
 
-          redirectLocation(result).get mustBe controllers.agent.routes.TaskListController.show().url
+          redirectLocation(result).get mustBe controllers.agent.routes.WhatYouNeedToDoController.show().url
 
           await(result).session(request).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
         }
