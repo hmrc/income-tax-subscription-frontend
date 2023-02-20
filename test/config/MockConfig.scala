@@ -59,6 +59,7 @@ trait MockConfig extends UnitTestTrait with AppConfig {
   override lazy val govukGuidanceITSAQualifyingIncomeLink: String = "https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax#find-out-about-qualifying-income"
   override lazy val govukGuidanceITSAUsingMTDLink: String = s"https://www.gov.uk/guidance/using-making-tax-digital-for-income-tax#who-can-use-making-tax-digital-for-income-tax"
 
+  override lazy val govUkSendingReturnsUrl: String = "https://www.gov.uk/self-assessment-tax-returns/sending-return"
 
   override def ggSignOutUrl(redirectionUrl: String = ggSignInContinueUrl): String = s"$ggUrl/bas-gateway/sign-out-without-state?continue=$redirectionUrl"
 

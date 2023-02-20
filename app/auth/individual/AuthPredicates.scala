@@ -77,6 +77,11 @@ trait AuthPredicates extends Results with FrontendHeaderCarrierProvider with Log
       Right(AuthPredicateSuccess)
     else Left(Future.successful(homeRoute))
 
+  val spsEntityIdPredicate: AuthPredicate[IncomeTaxSAUser] = request => _ =>
+    if (request.session.get(ITSASessionKeys.SPSEntityId).isDefined)
+      Right(AuthPredicateSuccess)
+    else Left(Future.successful(homeRoute))
+
   val claimEnrolmentJourneyPredicate: AuthPredicate[IncomeTaxSAUser] = request => _ =>
     if (request.session.isInState(ClaimEnrolment))
       Right(AuthPredicateSuccess)
@@ -127,7 +132,7 @@ trait AuthPredicates extends Results with FrontendHeaderCarrierProvider with Log
   val homePredicates: AuthPredicate[IncomeTaxSAUser] = administratorRolePredicate |+| timeoutPredicate |+| affinityPredicate |+| mtdidPredicate |+| ivPredicate
 
   val subscriptionPredicates: AuthPredicate[IncomeTaxSAUser] = administratorRolePredicate |+|
-    defaultPredicates |+| mtdidPredicate |+| signUpJourneyPredicate
+    defaultPredicates |+| mtdidPredicate |+| signUpJourneyPredicate |+| spsEntityIdPredicate
 
   val claimEnrolmentPredicates: AuthPredicate[IncomeTaxSAUser] = administratorRolePredicate |+| affinityPredicate |+|
     ivPredicate |+| claimEnrolmentJourneyPredicate

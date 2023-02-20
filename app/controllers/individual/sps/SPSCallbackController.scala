@@ -16,7 +16,7 @@
 
 package controllers.individual.sps
 
-import auth.individual.SignUpController
+import auth.individual.StatelessController
 import common.Constants.ITSASessionKeys
 import config.AppConfig
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -31,17 +31,16 @@ class SPSCallbackController @Inject()(val auditingService: AuditingService,
                                       val authService: AuthService)
                                      (implicit val appConfig: AppConfig,
                                       val ec: ExecutionContext,
-                                      mcc: MessagesControllerComponents) extends SignUpController {
+                                      mcc: MessagesControllerComponents) extends StatelessController {
 
   def callback(entityId: Option[String]): Action[AnyContent] = Authenticated { implicit request =>
     _ =>
       entityId match {
-        case Some(entityId) => {
-          val result = Redirect(controllers.individual.business.routes.TaskListController.show())
+        case Some(entityId) =>
+          val result = Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
           result.addingToSession(
             ITSASessionKeys.SPSEntityId -> entityId
           )
-        }
         case None => throw new InternalServerException("[SPSCallbackController][callback] - Entity Id was not found")
       }
   }

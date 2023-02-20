@@ -39,6 +39,7 @@ base.accounting-method.cash                                     = Cash basis acc
 base.accounting-method.accruals                                 = Traditional accounting
 base.print-this-page                                            = Print this page
 base.warning                                                    = Warning
+base.accept-and-continue                                        = Accept and continue
 
 ## Language switching
 language-selector.change-to-language                            = Newid yr iaith ir Gymraeg
@@ -88,6 +89,21 @@ error.business-income-source.overseas-property                  = You need to se
 cannot-use-service.title                                        = You cannot use this service
 cannot-use-service.heading                                      = You cannot use this service
 cannot-use-service.line1                                        = You can only sign up if you are an administrator.
+
+##  What You Need To Do  ##
+what-you-need-to-do.heading                                     = What you need to do
+what-you-need-to-do.para-1                                      = You can choose to stop using Making Tax Digital for Income Tax at any time until 6 April 2026. You do not have to let us know and you can ignore any secure message from the service. But you must file your Self Assessment tax return at the end of the year as normal.
+what-you-need-to-do.2026.para                                   = You must meet the Making Tax Digital for Income Tax requirements for 6 April 2026, if all of the following apply:
+what-you-need-to-do.2026.bullet-1                               = you are registered for Self Assessment - {0}
+what-you-need-to-do.2026.bullet-1.link-text                     = find out more about registering and sending a Self Assessment tax return
+what-you-need-to-do.2026.bullet-2                               = you get income from self-employment or property, or both
+what-you-need-to-do.2026.bullet-3                               = your total qualifying income is more than £50,000
+what-you-need-to-do.2027.para                                   = You must meet the Making Tax Digital for Income Tax requirements for 6 April 2027, if all of the following apply:
+what-you-need-to-do.2027.bullet-1                               = you are registered for Self Assessment
+what-you-need-to-do.2027.bullet-2                               = you get income from self-employment or property, or both
+what-you-need-to-do.2027.bullet-3                               = your total qualifying income is more than £30,000
+what-you-need-to-do.para-2                                      = You can stop using Making Tax Digital for Income Tax when the pilot ends on 5 April 2026 if your income is less than £50,000.
+
 
 # What tax year to sign up
 business.what-year-to-sign-up.title                             = Which tax year do you want to start using software to file updates for?

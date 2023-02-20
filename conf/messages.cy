@@ -39,6 +39,7 @@ base.accounting-method.cash                                     = Cyfrifyddu ar 
 base.accounting-method.accruals                                 = Cyfrifyddu traddodiadol
 base.print-this-page                                            = Print this page ... but in Welsh
 base.warning                                                    = Rhybudd
+base.accept-and-continue                                        = Derbyn ac yn eich blaen
 
 ## Language switching
 language-selector.change-to-language                            = Change the language to English
@@ -88,6 +89,20 @@ error.business-income-source.overseas-property                  = Mae angen i ch
 cannot-use-service.title                                        = Ni allwch ddefnyddio’r gwasanaeth hwn
 cannot-use-service.heading                                      = Ni allwch ddefnyddio’r gwasanaeth hwn
 cannot-use-service.line1                                        = Gallwch ond cofrestru os ydych yn weinyddwr.
+
+## What You Need To Do ##
+what-you-need-to-do.heading                                     = Beth y mae angen i chi ei wneud
+what-you-need-to-do.para-1                                      = Gallwch ddewis rhoi’r gorau i ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar unrhyw adeg hyd at 6 Ebrill 2026. Does dim rhaid i chi roi gwybod i ni, a gallwch anwybyddu unrhyw neges ddiogel oddi wrth y gwasanaeth. Ond, mae’n rhaid i chi gyflwyno’ch Ffurflen Dreth Hunanasesiad ar ddiwedd y flwyddyn dreth yn ôl yr arfer.
+what-you-need-to-do.2026.para                                   = Mae’n rhaid i chi fodloni’r gofynion ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar gyfer 6 Ebrill 2026, os yw pob un o’r canlynol yn berthnasol:
+what-you-need-to-do.2026.bullet-1                               = rydych wedi cofrestru ar gyfer Hunanasesiad - {0}
+what-you-need-to-do.2026.bullet-1.link-text                     = dysgwch ragor am gofrestru ac anfon Ffurflen Dreth Hunanasesiad
+what-you-need-to-do.2026.bullet-2                               = rydych yn cael incwm o hunangyflogaeth neu o eiddo, neu o’r ddau
+what-you-need-to-do.2026.bullet-3                               = mae cyfanswm eich incwm cymwys yn fwy na £50,000
+what-you-need-to-do.2027.para                                   = Mae’n rhaid i chi fodloni’r gofynion ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm ar gyfer 6 Ebrill 2027, os yw pob un o’r canlynol yn berthnasol:
+what-you-need-to-do.2027.bullet-1                               = rydych wedi cofrestru ar gyfer Hunanasesiad
+what-you-need-to-do.2027.bullet-2                               = rydych yn cael incwm o hunangyflogaeth neu o eiddo, neu o’r ddau
+what-you-need-to-do.2027.bullet-3                               = mae cyfanswm eich incwm cymwys yn fwy na £30,000
+what-you-need-to-do.para-2                                      = Gallwch roi’r gorau i ddefnyddio Treth Incwm pan ddaw’r peilot i ben ar 5 Ebrill 2026 os yw’ch incwm yn llai na £50,000.
 
 # What tax year to sign up
 business.what-year-to-sign-up.title                             = Ar gyfer pa flwyddyn dreth yr ydych am ddechrau defnyddio meddalwedd i gyflwyno diweddariadau?

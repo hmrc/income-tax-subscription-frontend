@@ -81,6 +81,7 @@ trait AppConfig {
   val govukGuidanceITSASignUpAgentLink: String
   val govukGuidanceITSAQualifyingIncomeLink: String
   val govukGuidanceITSAUsingMTDLink: String
+  val govUkSendingReturnsUrl: String
   val citizenDetailsURL: String
   val matchingAttempts: Int
   val matchingLockOutSeconds: Int
@@ -259,6 +260,8 @@ class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Con
   override lazy val govukGuidanceITSASignUpAgentLink: String = s"$govukGuidanceLink/sign-up-your-client-for-making-tax-digital-for-income-tax"
   override lazy val govukGuidanceITSAQualifyingIncomeLink: String = s"$govukGuidanceLink/check-if-youre-eligible-for-making-tax-digital-for-income-tax#find-out-about-qualifying-income"
   override lazy val govukGuidanceITSAUsingMTDLink: String = s"$govukGuidanceLink/using-making-tax-digital-for-income-tax#who-can-use-making-tax-digital-for-income-tax"
+
+  override lazy val govUkSendingReturnsUrl: String = s"https://www.gov.uk/self-assessment-tax-returns/sending-return"
 
   override lazy val citizenDetailsURL: String = config.baseUrl("citizen-details")
 
