@@ -807,9 +807,20 @@ agent.business.task-list.status.not-started                           = Not star
 
 
 # Not eligible for income tax
-not-eligible-for-income-tax.title                               = You cannot use this service yet
-not-eligible-for-income-tax.heading                             = You cannot use this service yet
-not-eligible-for-income-tax.para1                               = This is a trial service. You may be able to use the ‘Report your income and expenses quarterly’ service in the future.
+not-eligible-for-income-tax.title                               = You cannot take part in this pilot yet
+not-eligible-for-income-tax.heading                             = You cannot take part in this pilot yet
+not-eligible-for-income-tax.para1                               = You cannot sign up to Making Tax Digital for Income Tax this year as it’s currently unavailable to people with certain types of:
+not-eligible-for-income-tax.bullet1                             = incomes
+not-eligible-for-income-tax.bullet2                             = deductions
+not-eligible-for-income-tax.para2                               = You must submit your Self Assessment tax return until the end of the tax year 2026 as normal.
+not-eligible-for-income-tax.para3                               = You may still be able to use the pilot if your circumstances have recently changed. {0} to see if you can sign up.
+not-eligible-for-income-tax.para3.link                          = Check who can use Making Tax Digital for Income Tax
+not-eligible-for-income-tax.subheading1                         = When you have to use Making Tax Digital for Income Tax
+not-eligible-for-income-tax.para4                               = If you get income from self employment or property, you’ll need to use Making Tax Digital for Income Tax to submit your records if you earn:
+not-eligible-for-income-tax.bullet3                             = £50,000 or more from the tax year starting 6 April 2026
+not-eligible-for-income-tax.bullet4                             = £30,000 or more from the tax year starting 6 April 2027
+not-eligible-for-income-tax.para5                               = You may be penalised if you don’t use Making Tax Digital for Income Tax if your income meets these thresholds.
+
 
 # Agent Overseas Property Start Date Page errors
 agent.error.overseas.property.day-month-year.empty              = Enter the date your client’s overseas property business started trading

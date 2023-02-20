@@ -805,11 +805,20 @@ agent.business.task-list.status.incomplete                            = Heb ei g
 agent.business.task-list.status.in-progress                           = Ar waith
 agent.business.task-list.status.not-started                           = Heb ddechrau
 
-
 # Not eligible for income tax
-not-eligible-for-income-tax.title                               = Ni allwch ddefnyddio’r gwasanaeth hwn eto
-not-eligible-for-income-tax.heading                             = Ni allwch ddefnyddio’r gwasanaeth hwn eto
-not-eligible-for-income-tax.para1                               = Mae hwn yn wasanaeth sy’n cael ei brofi. Efallai y gallwch ddefnyddio’r gwasanaeth ‘Rhoi gwybod am eich incwm a’ch treuliau bob chwarter’ yn y dyfodol.
+not-eligible-for-income-tax.title                               = You cannot take part in this pilot yet ...but in welsh
+not-eligible-for-income-tax.heading                             = You cannot take part in this pilot yet ...but in welsh
+not-eligible-for-income-tax.para1                               = You cannot sign up to Making Tax Digital for Income Tax this year as it’s currently unavailable to people with certain types of: ...but in welsh
+not-eligible-for-income-tax.bullet1                             = Incomes ...but in welsh
+not-eligible-for-income-tax.bullet2                             = Deductions ...but in welsh
+not-eligible-for-income-tax.para2                               = You must submit your Self Assessment tax return until the end of the tax year 2026 as normal. ...but in welsh
+not-eligible-for-income-tax.para3                               = You may still be able to use the pilot if your circumstances have recently changed. {0} to see if you can sign up. ...but in welsh
+not-eligible-for-income-tax.para3.link                          = Check who can use Making Tax Digital for Income Tax ...but in welsh
+not-eligible-for-income-tax.subheading1                         = When you have to use Making Tax Digital for Income Tax ...but in welsh
+not-eligible-for-income-tax.para4                               = If you get income from self employment or property, you’ll need to use Making Tax Digital for Income Tax to submit your records if you earn: ...but in welsh
+not-eligible-for-income-tax.bullet3                             = £50,000 or more from the tax year starting 6 April 2026 ...but in welsh
+not-eligible-for-income-tax.bullet4                             = £30,000 or more from the tax year starting 6 April 2027 ...but in welsh
+not-eligible-for-income-tax.para5                               = You may be penalised if you don’t use Making Tax Digital for Income Tax if your income meets these thresholds. ...but in welsh
 
 # Agent Overseas Property Start Date Page errors
 agent.error.overseas.property.day-month-year.empty              = Nodwch y dyddiad y dechreuodd busnes eiddo tramor eich cleient fasnachu

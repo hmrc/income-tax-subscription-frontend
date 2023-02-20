@@ -16,22 +16,57 @@
 
 @import views.html.helpers.injected.SignOutButton
 @import views.html.templates.PrincipalMainTemplate
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
+@import config.AppConfig
 
 @this(
     mainTemplate: PrincipalMainTemplate,
-    signOutButton: SignOutButton
-)
+        govukNotificationBanner : GovukNotificationBanner,
+    signOutButton: SignOutButton,
+        govukInsetText : GovukInsetText,
+        hmrcNewTabLinkHelper: HmrcNewTabLinkHelper
+)(implicit appConfig: AppConfig)
 
 @()(implicit request: Request[_], messages: Messages)
+
+
+@qualifyingIncomeLink = {
+@hmrcNewTabLinkHelper(NewTabLinkHelper(messages("not-eligible-for-income-tax.para3.link"), Some(appConfig.govukGuidanceITSAQualifyingIncomeLink)))
+}
 
 @mainTemplate(title = messages("not-eligible-for-income-tax.title"), backLink = Some("javascript:history.back()")) {
 
     <h1 class="govuk-heading-l">@Messages("not-eligible-for-income-tax.heading")</h1>
     <div class="govuk-form-group">
         <p class="govuk-body">@Messages("not-eligible-for-income-tax.para1")</p>
+
+      <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("not-eligible-for-income-tax.bullet1")</li>
+        <li>@messages("not-eligible-for-income-tax.bullet2")</li>
+        </ul>
+
+      @govukInsetText(InsetText(
+        content = Text(Messages("not-eligible-for-income-tax.para2"))
+      ))
+
+        <p class="govuk-body">@Html(Messages("not-eligible-for-income-tax.para3", qualifyingIncomeLink))</p>
+
+        <h2 class="govuk-heading-s">@Messages("not-eligible-for-income-tax.subheading1")</h2>
     </div>
+
+  @govukNotificationBanner(NotificationBanner(content = HtmlContent(html)))
 
     <div class="govuk-form-group">
         @signOutButton()
     </div>
+}
+@html = {
+  <p class="govuk-body">
+    @Messages("not-eligible-for-income-tax.para4")
+  </p>
+<ul class="govuk-list govuk-list--bullet">
+  <li>@messages("not-eligible-for-income-tax.bullet3")</li>
+  <li>@messages("not-eligible-for-income-tax.bullet4")</li>
+</ul>
 }
