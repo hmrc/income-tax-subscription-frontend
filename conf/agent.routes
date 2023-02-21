@@ -76,6 +76,10 @@ GET         /language/:lang                         controllers.agent.LanguageSw
 GET         /business/what-year-to-sign-up                      controllers.agent.WhatYearToSignUpController.show(editMode: Boolean ?= false)
 POST        /business/what-year-to-sign-up                      controllers.agent.WhatYearToSignUpController.submit(editMode: Boolean ?= false)
 
+# What you need to do
+GET         /what-you-need-to-do                                controllers.agent.WhatYouNeedToDoController.show()
+POST        /what-you-need-to-do                                controllers.agent.WhatYouNeedToDoController.submit
+
 #Property Income Type Routes
 GET         /business/accounting-method-property                controllers.agent.business.PropertyAccountingMethodController.show(editMode: Boolean ?= false)
 POST        /business/accounting-method-property                controllers.agent.business.PropertyAccountingMethodController.submit(editMode: Boolean ?= false)

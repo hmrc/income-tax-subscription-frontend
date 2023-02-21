@@ -1,0 +1,87 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import views.html.templates.AgentMainTemplate
+@import views.html.helpers.injected.ContinueButton
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
+
+@this(
+mainTemplate: AgentMainTemplate,
+form: FormWithCSRF,
+continueButton: ContinueButton,
+hmrcNewTabLinkHelper: HmrcNewTabLinkHelper
+)(
+implicit appConfig: AppConfig
+)
+
+
+@(postAction:Call)(implicit request: Request[_], messages: Messages)
+
+
+
+@mainTemplate(title = messages("agent.what-you-need-to-do.heading")) {
+
+<h1 class="govuk-heading-l">@messages("agent.what-you-need-to-do.heading")</h1>
+
+<div class="govuk-form-group">
+    <p class="govuk-body">@messages("agent.what-you-need-to-do.paragraph1")</p>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("agent.what-you-need-to-do.bullet1")</li>
+        <li>@messages("agent.what-you-need-to-do.bullet2")</li>
+        <li>@messages("agent.what-you-need-to-do.bullet3")</li>
+        <li>@messages("agent.what-you-need-to-do.bullet4")</li>
+    </ul>
+    <p class="govuk-heading-s">@messages("agent.what-you-need-to-do.subheading")</p>
+    <p class="govuk-body">@messages("agent.what-you-need-to-do.paragraph2")</p>
+    <p class="govuk-body">@messages("agent.what-you-need-to-do.paragraph3")</p>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@Html(messages(
+            "agent.what-you-need-to-do.bullet5",
+            hmrcNewTabLinkHelper(NewTabLinkHelper(
+            text = messages("agent.what-you-need-to-do.sa-tax-return-link"),
+            href = Some(appConfig.sendSAReturnLink)
+            ))
+            ))</li>
+        <li>@messages("agent.what-you-need-to-do.bullet6")</li>
+        <li>@Html(messages(
+            "agent.what-you-need-to-do.bullet7",
+            hmrcNewTabLinkHelper(NewTabLinkHelper(
+            text = messages("agent.what-you-need-to-do.qualifying-income-link"),
+            href = Some(appConfig.govukGuidanceITSAQualifyingIncomeLink)
+            ))
+            ))</li>
+    </ul>
+    <p class="govuk-body">@messages("agent.what-you-need-to-do.paragraph4")</p>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("agent.what-you-need-to-do.bullet8")</li>
+        <li>@messages("agent.what-you-need-to-do.bullet9")</li>
+        <li>@Html(messages(
+            "agent.what-you-need-to-do.bullet10",
+            hmrcNewTabLinkHelper(NewTabLinkHelper(
+            text = messages("agent.what-you-need-to-do.qualifying-income-link"),
+            href = Some(appConfig.govukGuidanceITSAQualifyingIncomeLink)
+            ))
+            ))</li>
+    </ul>
+    <p class="govuk-body">@messages("agent.what-you-need-to-do.paragraph5")</p>
+</div>
+
+@form(action = postAction) {
+@continueButton(alternateText = Some(messages("base.accept-and-continue")))
+}
+
+}

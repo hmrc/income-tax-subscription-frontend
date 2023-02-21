@@ -47,11 +47,11 @@ class HomeController @Inject()(val auditingService: AuditingService,
       val arnMaybe = user.arn
       (alreadyInSignUp, ninoPresent, utrPresent, arnMaybe) match {
         // this session has already passed through the throttle
-        case (true, _, _, _) => Future.successful(Redirect(controllers.agent.routes.TaskListController.show()))
+        case (true, _, _, _) => Future.successful(Redirect(controllers.agent.routes.WhatYouNeedToDoController.show()))
         // this session is new, has full data
         case (_, true, true, _) =>
           throttlingService.throttled(AgentStartOfJourneyThrottle) {
-            Future.successful(Redirect(controllers.agent.routes.TaskListController.show()).withJourneyState(AgentSignUp))
+            Future.successful(Redirect(controllers.agent.routes.WhatYouNeedToDoController.show()).withJourneyState(AgentSignUp))
           }
         // this session has missing data
         case (_, true, _, _) =>

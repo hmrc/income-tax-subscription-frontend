@@ -30,6 +30,7 @@ object IntegrationTestConstants {
   val indexURI = s"$baseURI/index"
   val userDetailsURI = "/user-details"
   val confirmDetailsURI = "/confirm-details"
+  val whatYouNeedToDoURI = s"$baseURI/what-you-need-to-do"
   val clientDetailsURI = s"$baseURI/client-details"
   val clientDetailsErrorURI = s"$baseURI/error/client-details"
   val agentLockedOutURI = s"$baseURI/error/lockout"

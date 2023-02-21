@@ -83,17 +83,17 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler  
       "journey state is UserMatched" when {
         "the matched user has a utr" should {
           "redirect to client details" should {
-            "redirect to task list page" in {
+            "redirect to what you need to do page" in {
               Given("I setup the wiremock stubs")
               AuthStub.stubAuthSuccess()
 
               When("I call GET /index")
               val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentUserMatched), Map(ITSASessionKeys.NINO -> testNino, ITSASessionKeys.UTR -> testUtr))
 
-              Then("the result must have a status of SEE_OTHER and a redirect location of /task-list")
+              Then("the result must have a status of SEE_OTHER and a redirect location of /what-you-need-to-do")
               res must have(
                 httpStatus(SEE_OTHER),
-                redirectURI(taskListURI)
+                redirectURI(whatYouNeedToDoURI)
               )
 
               Then("the JourneyStateKey should be changed to AgentSignUp")
