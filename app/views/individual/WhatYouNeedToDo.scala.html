@@ -22,8 +22,9 @@
 @this(
         mainTemplate: PrincipalMainTemplate,
         continueButton: ContinueButton,
-        form: FormWithCSRF,
-        hmrcNewTabLinkHelper: HmrcNewTabLinkHelper
+        govukNotificationBanner : GovukNotificationBanner,
+        govukInsetText : GovukInsetText,
+        form: FormWithCSRF
 )(
         implicit appConfig: AppConfig
 )
@@ -36,31 +37,26 @@
 
     <p class="govuk-body">@messages("what-you-need-to-do.para-1")</p>
 
-    <p class="govuk-body">@messages("what-you-need-to-do.2026.para")</p>
+    @govukNotificationBanner(NotificationBanner(content = HtmlContent(notificationContent)))
 
-    <ul class="govuk-list govuk-list--bullet">
-      <li>
-        @Html(messages(
-          key = "what-you-need-to-do.2026.bullet-1",
-          args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("what-you-need-to-do.2026.bullet-1.link-text"), Some(appConfig.govUkSendingReturnsUrl)))
-        ))
-      </li>
-      <li>@messages("what-you-need-to-do.2026.bullet-2")</li>
-      <li>@messages("what-you-need-to-do.2026.bullet-3")</li>
-    </ul>
-
-    <p class="govuk-body">@messages("what-you-need-to-do.2027.para")</p>
-
-    <ul class="govuk-list govuk-list--bullet">
-      <li>@messages("what-you-need-to-do.2027.bullet-1")</li>
-      <li>@messages("what-you-need-to-do.2027.bullet-2")</li>
-      <li>@messages("what-you-need-to-do.2027.bullet-3")</li>
-    </ul>
-
-    <p class="govuk-body">@messages("what-you-need-to-do.para-2")</p>
+    @govukInsetText(InsetText(
+      content = Text(Messages("what-you-need-to-do.inset.para"))
+    ))
 
     @form(action = postAction) {
         @continueButton(alternateText = Some(messages("base.accept-and-continue")))
     }
 
 }
+
+@notificationContent = {
+  <ul class="govuk-list govuk-list--bullet">
+    <li>@messages("what-you-need-to-do.notification.bullet-1")</li>
+    <li>@messages("what-you-need-to-do.notification.bullet-2")</li>
+    <li>@messages("what-you-need-to-do.notification.bullet-3")</li>
+    <li>@messages("what-you-need-to-do.notification.bullet-4")</li>
+    <li>@messages("what-you-need-to-do.notification.bullet-5")</li>
+  </ul>
+}
+
+
