@@ -90,19 +90,15 @@ cannot-use-service.title                                        = Ni allwch ddef
 cannot-use-service.heading                                      = Ni allwch ddefnyddio’r gwasanaeth hwn
 cannot-use-service.line1                                        = Gallwch ond cofrestru os ydych yn weinyddwr.
 
-## What You Need To Do ##
-what-you-need-to-do.heading                                     = Beth y mae angen i chi ei wneud
-what-you-need-to-do.para-1                                      = Gallwch ddewis rhoi’r gorau i ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar unrhyw adeg hyd at 6 Ebrill 2026. Does dim rhaid i chi roi gwybod i ni, a gallwch anwybyddu unrhyw neges ddiogel oddi wrth y gwasanaeth. Ond, mae’n rhaid i chi gyflwyno’ch Ffurflen Dreth Hunanasesiad ar ddiwedd y flwyddyn dreth yn ôl yr arfer.
-what-you-need-to-do.2026.para                                   = Mae’n rhaid i chi fodloni’r gofynion ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar gyfer 6 Ebrill 2026, os yw pob un o’r canlynol yn berthnasol:
-what-you-need-to-do.2026.bullet-1                               = rydych wedi cofrestru ar gyfer Hunanasesiad - {0}
-what-you-need-to-do.2026.bullet-1.link-text                     = dysgwch ragor am gofrestru ac anfon Ffurflen Dreth Hunanasesiad
-what-you-need-to-do.2026.bullet-2                               = rydych yn cael incwm o hunangyflogaeth neu o eiddo, neu o’r ddau
-what-you-need-to-do.2026.bullet-3                               = mae cyfanswm eich incwm cymwys yn fwy na £50,000
-what-you-need-to-do.2027.para                                   = Mae’n rhaid i chi fodloni’r gofynion ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm ar gyfer 6 Ebrill 2027, os yw pob un o’r canlynol yn berthnasol:
-what-you-need-to-do.2027.bullet-1                               = rydych wedi cofrestru ar gyfer Hunanasesiad
-what-you-need-to-do.2027.bullet-2                               = rydych yn cael incwm o hunangyflogaeth neu o eiddo, neu o’r ddau
-what-you-need-to-do.2027.bullet-3                               = mae cyfanswm eich incwm cymwys yn fwy na £30,000
-what-you-need-to-do.para-2                                      = Gallwch roi’r gorau i ddefnyddio Treth Incwm pan ddaw’r peilot i ben ar 5 Ebrill 2026 os yw’ch incwm yn llai na £50,000.
+##  What You Need To Do  ##
+what-you-need-to-do.heading                                     = What you need to do ... but in Welsh
+what-you-need-to-do.para-1                                      = By taking part in this pilot you agree that you’ll: ... but in Welsh
+what-you-need-to-do.notification.bullet-1                       = get compatible software to record your income and expenses ... but in Welsh
+what-you-need-to-do.notification.bullet-2                       = complete any missing quarterly updates (if you’ve chosen to sign up for the current tax year) ... but in Welsh
+what-you-need-to-do.notification.bullet-3                       = send an end of period statement using your software by 31 January following the tax year you’ve chosen to start using Making Tax Digital For Income Tax ... but in Welsh
+what-you-need-to-do.notification.bullet-4                       = submit your final declaration by 31 January following the tax year you’ve started using Making Tax Digital for Income Tax ... but in Welsh
+what-you-need-to-do.notification.bullet-5                       = tell HMRC if you stop trading or start a new business ... but in Welsh
+what-you-need-to-do.inset.para                                  = You can stop using Making Tax Digital for Income Tax at any time until 6 April 2026. If you stop, you must send your Self Assessment tax return at the end of the tax year as normal. ... but in Welsh
 
 # What tax year to sign up
 business.what-year-to-sign-up.title                             = Ar gyfer pa flwyddyn dreth yr ydych am ddechrau defnyddio meddalwedd i gyflwyno diweddariadau?

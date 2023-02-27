@@ -32,29 +32,25 @@ class WhatYouNeedToDoSpec extends ViewSpec {
 
   object WhatYouNeedToDoMessages {
     val heading: String = "What you need to do"
-    val paraOne: String = "You can choose to stop using Making Tax Digital for Income Tax at any time until 6 April 2026." +
-      " You do not have to let us know and you can ignore any secure message from the service." +
-      " But you must file your Self Assessment tax return at the end of the year as normal."
+    val paraOne: String = "By taking part in this pilot you agree that you’ll:"
 
-    object MandationYear {
-      val paraOne: String = "You must meet the Making Tax Digital for Income Tax requirements for 6 April 2026, if all of the following apply:"
-      val bulletOneLinkText: String = "find out more about registering and sending a Self Assessment tax return (opens in new tab)"
-      val bulletOne: String = s"you are registered for Self Assessment - $bulletOneLinkText"
-      val bulletTwo: String = "you get income from self-employment or property, or both"
-      val bulletThree: String = "your total qualifying income is more than £50,000"
+    object NotificationBanner {
+      val heading: String = "Important"
+      val bulletOne: String = "get compatible software to record your income and expenses"
+      val bulletTwo: String = "complete any missing quarterly updates (if you’ve chosen to sign up for the current tax year)"
+      val bulletThree: String = "send an end of period statement using your software by 31 January following the tax year you’ve chosen to start using Making Tax Digital For Income Tax"
+      val bulletFour: String = "submit your final declaration by 31 January following the tax year you’ve started using Making Tax Digital for Income Tax"
+      val bulletFive: String = "tell HMRC if you stop trading or start a new business"
     }
 
-    object MandationPlusOneYear {
-      val paraOne: String = "You must meet the Making Tax Digital for Income Tax requirements for 6 April 2027, if all of the following apply:"
-      val bulletOne: String = "you are registered for Self Assessment"
-      val bulletTwo: String = "you get income from self-employment or property, or both"
-      val bulletThree: String = "your total qualifying income is more than £30,000"
+    object InsetText {
+      val para: String = "You can stop using Making Tax Digital for Income Tax at any time until 6 April 2026. If you stop, you must send your Self Assessment tax return at the end of the tax year as normal."
     }
 
-    val paraTwo: String = "You can stop using Making Tax Digital for Income Tax when the pilot ends on 5 April 2026 if your income is less than £50,000."
   }
 
   "WhatYouNeedToDo" must {
+
     "use the correct template details" in new TemplateViewTest(
       view = page,
       title = WhatYouNeedToDoMessages.heading,
@@ -62,35 +58,51 @@ class WhatYouNeedToDoSpec extends ViewSpec {
       backLink = None,
       hasSignOutLink = true
     )
-    "has a page heading" in {
+
+    "have a page heading" in {
       document.mainContent.selectHead("h1").text mustBe WhatYouNeedToDoMessages.heading
     }
-    "has a first paragraph" in {
+
+    "have a first paragraph" in {
       document.mainContent.selectNth("p", 1).text mustBe WhatYouNeedToDoMessages.paraOne
     }
-    "for the 2026 year" must {
-      "have a paragraph" in {
-        document.mainContent.selectNth("p", 2).text mustBe WhatYouNeedToDoMessages.MandationYear.paraOne
-      }
-      "have a bullet list" which {
-        def list: Element = document.mainContent.selectNth("ul", 1)
 
-        "has a first bullet with a link that opens in a new tab" in {
-          val listItem = list.selectNth("li", 1)
-          listItem.text mustBe WhatYouNeedToDoMessages.MandationYear.bulletOne
-          val link = listItem.selectHead("a")
-          link.text mustBe WhatYouNeedToDoMessages.MandationYear.bulletOneLinkText
-          link.attr("href") mustBe appConfig.govUkSendingReturnsUrl
-          link.attr("target") mustBe "_blank"
+    "has a notification banner" which {
+      def notificationBanner: Element = document.mainContent.selectHead(".govuk-notification-banner")
+
+      "has a heading" in {
+        notificationBanner.selectHead(".govuk-notification-banner__header").text mustBe WhatYouNeedToDoMessages.NotificationBanner.heading
+      }
+
+      "has a bullet list" which {
+        def bulletList: Element = notificationBanner.selectHead("ul")
+
+        "has a first bullet" in {
+          bulletList.selectNth("li", 1).text mustBe WhatYouNeedToDoMessages.NotificationBanner.bulletOne
         }
+
         "has a second bullet" in {
-          list.selectNth("li", 2).text mustBe WhatYouNeedToDoMessages.MandationYear.bulletTwo
+          bulletList.selectNth("li", 2).text mustBe WhatYouNeedToDoMessages.NotificationBanner.bulletTwo
         }
+
         "has a third bullet" in {
-          list.selectNth("li", 3).text mustBe WhatYouNeedToDoMessages.MandationYear.bulletThree
+          bulletList.selectNth("li", 3).text mustBe WhatYouNeedToDoMessages.NotificationBanner.bulletThree
+        }
+
+        "has a forth bullet" in {
+          bulletList.selectNth("li", 4).text mustBe WhatYouNeedToDoMessages.NotificationBanner.bulletFour
+        }
+
+        "has a fifth bullet" in {
+          bulletList.selectNth("li", 5).text mustBe WhatYouNeedToDoMessages.NotificationBanner.bulletFive
         }
       }
     }
+
+    "has an inset text" in {
+      document.selectHead(".govuk-inset-text").text mustBe WhatYouNeedToDoMessages.InsetText.para
+    }
+
   }
 
 }
