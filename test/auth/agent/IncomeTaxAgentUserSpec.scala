@@ -39,7 +39,7 @@ class IncomeTaxAgentUserSpec extends PlaySpec with GuiceOneServerPerTest {
     )
 
     s"have the expected ARN '${TestConstants.testARN}'" in {
-      user.arn mustBe Some(TestConstants.testARN)
+      user.arn mustBe TestConstants.testARN
     }
 
   }

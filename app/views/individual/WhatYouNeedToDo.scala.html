@@ -25,8 +25,6 @@
         govukNotificationBanner : GovukNotificationBanner,
         govukInsetText : GovukInsetText,
         form: FormWithCSRF
-)(
-        implicit appConfig: AppConfig
 )
 
 @(postAction:Call)(implicit request: Request[_], messages: Messages)

@@ -103,7 +103,7 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
     implicit request =>
       incomeSourceModel =>
         val nino = user.clientNino.get
-        val arn = user.arn.get
+        val arn = user.arn
         val utr = user.clientUtr.get
         val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
 

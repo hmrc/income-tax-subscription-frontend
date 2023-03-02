@@ -49,6 +49,8 @@ object Constants {
     val FULLNAME: String = "FULLNAME"
     val REFERENCE = "reference"
     val ELIGIBLE_NEXT_YEAR_ONLY = "ELIGIBLE_NEXT_YEAR_ONLY"
+    val MANDATED_CURRENT_YEAR = "MANDATED_CURRENT_YEAR"
+    val MANDATED_NEXT_YEAR = "MANDATED_NEXT_YEAR"
 
     val sessionId = "sessionId"
 

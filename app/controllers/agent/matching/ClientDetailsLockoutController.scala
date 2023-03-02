@@ -40,7 +40,7 @@ class ClientDetailsLockoutController @Inject()(val auditingService: AuditingServ
                                                mcc: MessagesControllerComponents) extends UserMatchingController {
 
   private def handleLockOut(f: => Future[Result])(implicit user: IncomeTaxAgentUser, request: Request[_]): Future[Result] = {
-    lockoutService.getLockoutStatus(user.arn.get) flatMap {
+    lockoutService.getLockoutStatus(user.arn) flatMap {
       case Right(_: LockedOut) => f
       case Right(NotLockedOut) => Future.successful(Redirect(controllers.agent.matching.routes.ClientDetailsController.show()))
       case Left(_) => throw new InternalServerException("[ClientDetailsLockoutController][handleLockOut] lockout status failure")

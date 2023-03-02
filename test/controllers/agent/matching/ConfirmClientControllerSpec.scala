@@ -20,8 +20,8 @@ import auth.agent.AgentUserMatched
 import common.Constants.ITSASessionKeys
 import config.featureswitch.FeatureSwitch.{ControlListYears, ItsaMandationStatus, PrePopulate}
 import controllers.agent.AgentControllerBaseSpec
-import models.audits.EnterDetailsAuditing
 import models.audits.EnterDetailsAuditing.EnterDetailsAuditModel
+import models.status.MandationStatus.{Mandated, Voluntary}
 import models.{EligibilityStatus, PrePopData}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -50,7 +50,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
   with MockPrePopulationService
   with MockSubscriptionDetailsService
   with MockGetEligibilityStatusService
-  with MockMandationStatusService {
+  with MockMandationStatusConnector {
 
   private val eligibleWithoutPrePop = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, None)
   private val eligibleWithPrePop = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, Some(mock[PrePopData]))
@@ -167,7 +167,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
           val result = callSubmit(controller)
 
           intercept[InternalServerException](await(result))
-          verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), testClientDetails, 0, lockedOut = false))
+          verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 0, lockedOut = false))
         }
       }
 
@@ -181,7 +181,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.agent.matching.routes.ClientDetailsErrorController.show.url)
-          verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), testClientDetails, 1, lockedOut = false))
+          verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 1, lockedOut = false))
         }
       }
 
@@ -194,7 +194,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.agent.routes.ClientAlreadySubscribedController.show.url)
-          verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), testClientDetails, 0, lockedOut = false))
+          verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 0, lockedOut = false))
         }
       }
 
@@ -207,7 +207,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.agent.routes.NoClientRelationshipController.show.url)
-          verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), testClientDetails, 0, lockedOut = false))
+          verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 0, lockedOut = false))
         }
       }
 
@@ -219,7 +219,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
                 mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
                 mockGetEligibilityStatus(utr)(Future.successful(Right(eligibleWithoutPrePop)))
                 mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
-                mockRetrieveMandationStatus()
+                mockGetMandationStatus(Voluntary, Mandated)
                 setupMockNotLockedOut(arn)
 
                 enable(PrePopulate)
@@ -235,9 +235,11 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
                 session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
                 session.get(ITSASessionKeys.NINO) mustBe Some(nino)
                 session.get(ITSASessionKeys.UTR) mustBe Some(utr)
+                session.get(ITSASessionKeys.MANDATED_CURRENT_YEAR) mustBe Some("false")
+                session.get(ITSASessionKeys.MANDATED_NEXT_YEAR) mustBe Some("true")
 
                 verifyPrePopulationSave(0, testReference)
-                verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), testClientDetails, 0, lockedOut = false))
+                verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 0, lockedOut = false))
               }
             }
 
@@ -247,7 +249,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
                 mockGetEligibilityStatus(utr)(Future.successful(Right(eligibleWithPrePop)))
                 mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
                 setupMockPrePopulateSave(testReference)
-                mockRetrieveMandationStatus()
+                mockGetMandationStatus(Mandated, Voluntary)
                 setupMockNotLockedOut(arn)
 
                 enable(PrePopulate)
@@ -263,9 +265,11 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
                 session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
                 session.get(ITSASessionKeys.NINO) mustBe Some(nino)
                 session.get(ITSASessionKeys.UTR) mustBe Some(utr)
+                session.get(ITSASessionKeys.MANDATED_CURRENT_YEAR) mustBe Some("true")
+                session.get(ITSASessionKeys.MANDATED_NEXT_YEAR) mustBe Some("false")
 
                 verifyPrePopulationSave(1, testReference)
-                verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), testClientDetails, 0, lockedOut = false))
+                verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 0, lockedOut = false))
               }
             }
 
@@ -291,7 +295,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
                 session.get(ITSASessionKeys.UTR) mustBe Some(utr)
 
                 verifyPrePopulationSave(1, testReference)
-                verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), testClientDetails, 0, lockedOut = false))
+                verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 0, lockedOut = false))
               }
             }
 
@@ -315,7 +319,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
                 session.get(ITSASessionKeys.UTR) mustBe Some(utr)
 
                 verifyPrePopulationSave(0, testReference)
-                verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), testClientDetails, 0, lockedOut = false))
+                verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 0, lockedOut = false))
               }
             }
           }
@@ -344,7 +348,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
                   session.get(ITSASessionKeys.UTR) mustBe Some(utr)
                   session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY) mustBe Some("true")
 
-                  verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), testClientDetails, 0, lockedOut = false))
+                  verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 0, lockedOut = false))
                 }
               }
               "the client has prepop" when {
@@ -372,7 +376,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
                     session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY) mustBe Some("true")
 
                     verifyPrePopulationSave(1, testReference)
-                    verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), testClientDetails, 0, lockedOut = false))
+                    verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 0, lockedOut = false))
                   }
                 }
                 "prepop feature switch is off" should {
@@ -398,7 +402,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
                     session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY) mustBe Some("true")
 
                     verifyPrePopulationSave(0, testReference)
-                    verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), testClientDetails, 0, lockedOut = false))
+                    verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 0, lockedOut = false))
                   }
                 }
               }
@@ -419,14 +423,14 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
 
               result.verifyStoredUserDetailsIs(None)(request)
 
-              verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), testClientDetails, 0, lockedOut = false))
+              verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 0, lockedOut = false))
             }
           }
 
           "the GetEligibilityStatus call fails" should {
             "throw an exception" in withController { controller =>
               mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
-              mockGetEligibilityStatus(utr)(Future.successful(Left(HttpConnectorError(HttpResponse(500, "")))))
+              mockGetEligibilityStatus(utr)(Future.successful(Left(HttpConnectorError(HttpResponse(INTERNAL_SERVER_ERROR, "")))))
               setupMockNotLockedOut(arn)
 
               val result = callSubmit(controller)
@@ -450,7 +454,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
             session.get(ITSASessionKeys.NINO) mustBe Some(nino)
             session.get(ITSASessionKeys.UTR) mustBe None
 
-            verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), testClientDetails, 0, lockedOut = false))
+            verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 0, lockedOut = false))
             session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY) mustBe None
           }
         }
@@ -489,12 +493,12 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
 
         val result = await(controller.submit()(request))
 
-        result.session(request).get(ITSASessionKeys.FailedClientMatching) mustBe Some(1.toString)
+        session(result).get(ITSASessionKeys.FailedClientMatching) mustBe Some(1.toString)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.agent.matching.routes.ClientDetailsErrorController.show.url)
 
-        verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), testClientDetails, 1, lockedOut = false))
+        verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 1, lockedOut = false))
       }
 
       "throw an exception if incrementLockout fails" in withController { controller =>
@@ -521,7 +525,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
         status(result) mustBe SEE_OTHER
         redirectLocation(result) must not be Some(controllers.agent.matching.routes.ClientDetailsLockoutController.show.url)
 
-        verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), testClientDetails, 1, lockedOut = false))
+        verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 1, lockedOut = false))
       }
     }
 
@@ -550,7 +554,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
         ).foreach(session.get(_) mustBe None)
 
         verifyIncrementLockout(arn, 1)
-        verifyAudit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), testClientDetails, 0, lockedOut = true))
+        verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 0, lockedOut = true))
       }
     }
   }
@@ -571,7 +575,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
     mockAuthService,
     mockAgentQualificationService,
     mockGetEligibilityStatusService,
-    mockMandationStatusService,
+    mockMandationStatusConnector,
     mockUserLockoutService,
     mockPrePopulationService,
     MockSubscriptionDetailsService

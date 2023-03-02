@@ -18,8 +18,7 @@ package services.mocks
 
 import connectors.MandationStatusConnector
 import models.ErrorModel
-import models.status.MandationStatus.Voluntary
-import models.status.MandationStatusModel
+import models.status.{MandationStatus, MandationStatusModel}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
@@ -28,6 +27,7 @@ import play.api.http.Status.INTERNAL_SERVER_ERROR
 import utilities.UnitTestTrait
 
 trait MockMandationStatusConnector extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
+
   val mockMandationStatusConnector: MandationStatusConnector = mock[MandationStatusConnector]
 
   override def beforeEach(): Unit = {
@@ -35,13 +35,14 @@ trait MockMandationStatusConnector extends UnitTestTrait with MockitoSugar with 
     reset(mockMandationStatusConnector)
   }
 
-  def mockGetMandationStatus(): Unit = {
+  def mockGetMandationStatus(current: MandationStatus, next: MandationStatus): Unit = {
     when(mockMandationStatusConnector.getMandationStatus(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any()))
-      .thenReturn(Right(MandationStatusModel(Voluntary, Voluntary)))
+      .thenReturn(Right(MandationStatusModel(current, next)))
   }
 
   def mockFailedGetMandationStatus(): Unit = {
     when(mockMandationStatusConnector.getMandationStatus(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any()))
       .thenReturn(Left(ErrorModel(INTERNAL_SERVER_ERROR, "Something went wrong")))
   }
+
 }

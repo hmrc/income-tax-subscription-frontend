@@ -21,23 +21,21 @@ import services.AuditModel
 object EligibilityAnswerAuditing {
 
   val eligibilityAnswerAuditType: String = "Eligibility"
-  val eligibilityAnswerIndividual: String = "individual"
-  val eligibilityAnswerAgent: String = "agent"
 
-  case class EligibilityAnswerAuditModel(userType: String,
-                                         eligible: Boolean,
+  case class EligibilityAnswerAuditModel(eligible: Boolean,
                                          answer: String,
                                          question: String,
-                                         agentReferenceNumber: Option[String]) extends AuditModel {
+                                         agentReferenceNumber: String) extends AuditModel {
 
     override val transactionName: Option[String] = None
 
     override val detail: Map[String, String] = Map(
-      "userType" -> userType,
+      "agentReferenceNumber" -> agentReferenceNumber,
+      "userType" -> "agent",
       "eligible" -> eligible.toString,
       "answer" -> answer,
       "question" -> question
-    ) ++ agentReferenceNumber.map(arn => "agentReferenceNumber" -> arn)
+    )
 
     override val auditType: String = eligibilityAnswerAuditType
 

@@ -20,7 +20,6 @@ import auth.agent.StatelessController
 import config.AppConfig
 import forms.agent.SoleTraderForm.soleTraderForm
 import models._
-import models.audits.EligibilityAnswerAuditing
 import models.audits.EligibilityAnswerAuditing.EligibilityAnswerAuditModel
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -47,6 +46,7 @@ class SoleTraderController @Inject()(val auditingService: AuditingService,
   private def startDateLimit: LocalDate = LocalDate.now.minusYears(2)
 
   def backUrl: String = routes.OtherSourcesOfIncomeController.show.url
+
   def view(form: Form[YesNo], startDateLimit: LocalDate)(implicit request: Request[_]): Html = {
     areYouASoleTrader(
       soleTraderForm = form,
@@ -55,6 +55,7 @@ class SoleTraderController @Inject()(val auditingService: AuditingService,
       backUrl = backUrl
     )
   }
+
   def show: Action[AnyContent] = Authenticated { implicit request =>
     _ =>
       Ok(view(
@@ -65,19 +66,16 @@ class SoleTraderController @Inject()(val auditingService: AuditingService,
 
   def submit(): Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
-      val arn: Option[String] = user.arn
       soleTraderForm(startDateLimit.toLongDate).bindFromRequest().fold(
         formWithErrors => BadRequest(view(
           form = formWithErrors,
           startDateLimit = startDateLimit
-        )),{
+        )), {
           case Yes =>
-            auditingService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, eligible = false, "yes",
-              "soleTraderBusinessStartDate", arn))
+            auditingService.audit(EligibilityAnswerAuditModel(eligible = false, "yes", "soleTraderBusinessStartDate", user.arn))
             Redirect(routes.CannotTakePartController.show)
           case No =>
-            auditingService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, eligible = true, "no",
-              "soleTraderBusinessStartDate", arn))
+            auditingService.audit(EligibilityAnswerAuditModel(eligible = true, "no", "soleTraderBusinessStartDate", user.arn))
             Redirect(routes.PropertyTradingStartAfterController.show())
         }
       )

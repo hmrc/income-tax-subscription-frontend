@@ -19,7 +19,6 @@ package controllers.agent.eligibility
 import auth.agent.StatelessController
 import config.AppConfig
 import forms.agent.PropertyTradingStartDateForm.propertyTradingStartDateForm
-import models.audits.EligibilityAnswerAuditing
 import models.audits.EligibilityAnswerAuditing.EligibilityAnswerAuditModel
 import models.{No, Yes, YesNo}
 import play.api.data.Form
@@ -66,19 +65,16 @@ class PropertyTradingStartAfterController @Inject()(val auditingService: Auditin
 
   def submit(): Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
-      val arn: Option[String] = user.arn
       propertyTradingStartDateForm(startDateLimit.toLongDate).bindFromRequest().fold(
         formWithErrors => BadRequest(view(
           form = formWithErrors,
           startDateLimit = startDateLimit
         )), {
           case Yes =>
-            auditingService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, eligible = false, "yes",
-              "propertyBusinessStartDate", arn))
+            auditingService.audit(EligibilityAnswerAuditModel(eligible = false, "yes", "propertyBusinessStartDate", user.arn))
             Redirect(routes.CannotTakePartController.show)
           case No =>
-            auditingService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, eligible = true, "no",
-              "propertyBusinessStartDate", arn))
+            auditingService.audit(EligibilityAnswerAuditModel(eligible = true, "no", "propertyBusinessStartDate", user.arn))
             Redirect(routes.AccountingPeriodCheckController.show)
         }
       )
