@@ -19,7 +19,6 @@ package controllers.agent.eligibility
 import auth.agent.StatelessController
 import config.AppConfig
 import forms.agent.OtherSourcesOfIncomeForm.otherSourcesOfIncomeForm
-import models.audits.EligibilityAnswerAuditing
 import models.audits.EligibilityAnswerAuditing.EligibilityAnswerAuditModel
 import models.{No, Yes}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -31,11 +30,11 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class OtherSourcesOfIncomeController @Inject()(otherSourcesOfIncome: OtherSourcesOfIncome,
-                                                val auditingService: AuditingService,
+                                               val auditingService: AuditingService,
                                                val authService: AuthService)
                                               (implicit val appConfig: AppConfig,
                                                mcc: MessagesControllerComponents,
-                                               val ec: ExecutionContext) extends StatelessController  {
+                                               val ec: ExecutionContext) extends StatelessController {
 
   def backUrl: String = appConfig.agentIncomeTaxEligibilityFrontendTermsUrl
 
@@ -46,17 +45,14 @@ class OtherSourcesOfIncomeController @Inject()(otherSourcesOfIncome: OtherSource
 
   def submit: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
-      val arn: Option[String] = user.arn
       otherSourcesOfIncomeForm.bindFromRequest().fold(
         formWithErrors => BadRequest(otherSourcesOfIncome(formWithErrors, routes.OtherSourcesOfIncomeController.submit, backUrl)),
         {
           case Yes =>
-            auditingService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, eligible = false, "yes",
-              "otherIncomeSource", arn))
+            auditingService.audit(EligibilityAnswerAuditModel(eligible = false, "yes", "otherIncomeSource", user.arn))
             Redirect(controllers.agent.eligibility.routes.CannotTakePartController.show)
           case No =>
-            auditingService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, eligible = true, "no",
-              "otherIncomeSource", arn))
+            auditingService.audit(EligibilityAnswerAuditModel(eligible = true, "no", "otherIncomeSource", user.arn))
             Redirect(controllers.agent.eligibility.routes.SoleTraderController.show())
         }
       )

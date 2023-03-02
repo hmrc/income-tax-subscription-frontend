@@ -70,7 +70,7 @@ class ProgressSavedController @Inject()(val progressSavedView: ProgressSaved,
 
   private def retrieveAuditData(
                          reference: String,
-                         maybeArn: Option[String],
+                         arn: String,
                          maybeUtr: Option[String],
                          maybeNino: Option[String],
                          location: String
@@ -84,7 +84,7 @@ class ProgressSavedController @Inject()(val progressSavedView: ProgressSaved,
     } yield {
       SaveAndComeBackAuditModel(
         userType = SaveAndComebackAuditing.agentUserType,
-        maybeAgentReferenceNumber = Some(maybeArn.getOrElse(throw new Exception("[ProgressSavedController][show] - could not retrieve arn from session"))),
+        maybeAgentReferenceNumber = Some(arn),
         utr = maybeUtr.getOrElse(throw new Exception("[ProgressSavedController][show] - could not retrieve utr from session")),
         saveAndRetrieveLocation = location,
         nino = maybeNino.getOrElse(throw new Exception("[ProgressSavedController][show] - could not retrieve nino from session")),

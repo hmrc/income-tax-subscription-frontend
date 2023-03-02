@@ -19,7 +19,6 @@ package controllers.agent
 import auth.agent.AgentJourneyState._
 import auth.agent.{AgentJourneyState, AgentSignUp, AgentUserMatching, StatelessController}
 import common.Constants.ITSASessionKeys
-import common.Constants.ITSASessionKeys.ArnKey
 import config.AppConfig
 import play.api.mvc._
 import services.{AgentStartOfJourneyThrottle, AuditingService, AuthService, ThrottlingService}
@@ -57,12 +56,8 @@ class HomeController @Inject()(val auditingService: AuditingService,
         case (_, true, _, _) =>
           Future.successful(Redirect(controllers.agent.matching.routes.NoSAController.show).removingFromSession(ITSASessionKeys.JourneyStateKey))
         // Got an agent enrolment only - no user data at all
-        case (_, _, _, Some(arn)) =>
-          Future.successful(Redirect(controllers.agent.matching.routes.ClientDetailsController.show())
-            .addingToSession(ArnKey -> arn)
-            .withJourneyState(AgentUserMatching))
-        // Got nothing. Are you even enrolled?
-        case (_, _, _, _) => Future.successful(Redirect(controllers.agent.routes.NotEnrolledAgentServicesController.show))
+        case (_, _, _, _) =>
+          Future.successful(Redirect(controllers.agent.matching.routes.ClientDetailsController.show()).withJourneyState(AgentUserMatching))
       }
   }
 
