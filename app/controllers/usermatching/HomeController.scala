@@ -99,6 +99,7 @@ class HomeController @Inject()(val auditingService: AuditingService,
       case Left(_) =>
         throw new InternalServerException(s"[HomeController] [index] Could not retrieve eligibility status")
       case Right(result) =>
+        logger.error(s"${result}, ${isEnabled(ControlListYears)}")
         withReference(utr) { reference =>
           result match {
             case EligibilityStatus(false, nextYear, _) if !(nextYear && isEnabled(ControlListYears)) =>

@@ -17,6 +17,7 @@
 package controllers.individual
 
 import auth.individual.SignUpController
+import common.Constants.ITSASessionKeys
 import config.AppConfig
 import play.api.mvc._
 import services.{AuditingService, AuthService}
@@ -34,7 +35,8 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo)
 
   val show: Action[AnyContent] = Authenticated { implicit request =>
     _ =>
-      Ok(whatYouNeedToDo(postAction = routes.WhatYouNeedToDoController.submit))
+      val nextYearOnly = request.session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY).contains("true")
+      Ok(whatYouNeedToDo(postAction = routes.WhatYouNeedToDoController.submit, nextYearOnly))
   }
 
   val submit: Action[AnyContent] = Authenticated { _ =>
