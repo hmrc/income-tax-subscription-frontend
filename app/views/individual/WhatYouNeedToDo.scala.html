@@ -14,86 +14,112 @@
  * limitations under the License.
  *@
 
-@import views.html.templates.PrincipalMainTemplate
-@import views.html.helpers.injected.ContinueButton
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 @import config.AppConfig
-@import utilities.AccountingPeriodUtil
 @import uk.gov.hmrc.play.language.LanguageUtils
+@import utilities.AccountingPeriodUtil
+@import views.html.helpers.injected.ContinueButton
+@import views.html.templates.PrincipalMainTemplate
 
 @this(
-mainTemplate: PrincipalMainTemplate,
-continueButton: ContinueButton,
-govukNotificationBanner : GovukNotificationBanner,
-govukInsetText : GovukInsetText,
-form: FormWithCSRF,
-languageUtils: LanguageUtils
+        mainTemplate: PrincipalMainTemplate,
+        continueButton: ContinueButton,
+        govukNotificationBanner: GovukNotificationBanner,
+        govukInsetText: GovukInsetText,
+        form: FormWithCSRF,
+        languageUtils: LanguageUtils,
+        govukWarningText: GovukWarningText
 )(
-implicit appConfig: AppConfig
+        implicit appConfig: AppConfig
 )
 
-@(postAction:Call, onlyNextYear:Boolean)(implicit request: Request[_], messages: Messages)
+@(postAction: Call, onlyNextYear: Boolean, mandatedCurrentYear: Boolean)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = messages("what-you-need-to-do.heading"), backLink = None) {
 
 
-<h1 class="govuk-heading-l">@messages("what-you-need-to-do.heading")</h1>
+  <h1 class="govuk-heading-xl">@messages("what-you-need-to-do.heading")</h1>
 
-@if(onlyNextYear == true){
-@nonMandatedNextYear
-}else{
-@nonMandatedEitherYear
-}
+  @if(onlyNextYear) {
+    @nonMandatedNextYear
+  } else if (mandatedCurrentYear){
+  @currentYearMandated
+  } else{
+  @nonMandatedEitherYear
+  }
 
-@form(action = postAction) {
-@continueButton(alternateText = Some(messages("base.accept-and-continue")))
-}
+  @form(action = postAction) {
+    @continueButton(alternateText = Some(messages("base.accept-and-continue")))
+  }
 
 }
 
 @nonMandatedNextYear = {
-<p class="govuk-body">@messages("what-you-need-to-do.next-year-only.para-1",
+  <p class="govuk-body">@messages("what-you-need-to-do.next-year-only.para-1",
     AccountingPeriodUtil.getCurrentTaxEndYear.toString)</p>
-<p class="govuk-body">@messages("what-you-need-to-do.next-year-only.para-2")</p>
+  <p class="govuk-body">@messages("what-you-need-to-do.next-year-only.para-2")</p>
 @govukNotificationBanner(NotificationBanner(content = HtmlContent(nonMandatedNextYearOnlyNotificationContent)))
 
 @govukInsetText(InsetText(
-content = Text(Messages("what-you-need-to-do.next-year-only.inset.para"))
+  content = Text(Messages("what-you-need-to-do.next-year-only.inset.para"))
 ))
 }
 
 
 @nonMandatedEitherYear = {
-<p class="govuk-body">@messages("what-you-need-to-do.para-1")</p>
+  <p class="govuk-body">@messages("what-you-need-to-do.para-1")</p>
 
 @govukNotificationBanner(NotificationBanner(content = HtmlContent(nonMandatedEitherYearNotificationContent)))
 
 @govukInsetText(InsetText(
-content = Text(Messages("what-you-need-to-do.inset.para"))
+  content = Text(Messages("what-you-need-to-do.inset.para"))
 ))
 }
 
 @nonMandatedNextYearOnlyNotificationContent = {
 @{
-val finalDeclarationDate = languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(true))
-<ul class="govuk-list govuk-list--bullet">
-    <li>{messages("what-you-need-to-do.next-year-only.notification.bullet-1",
-        AccountingPeriodUtil.getCurrentTaxEndYear.toString)}
+  val finalDeclarationDate = languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(true))
+    <ul class="govuk-list govuk-list--bullet">
+    <li>
+    {messages("what-you-need-to-do.next-year-only.notification.bullet-1",
+      AccountingPeriodUtil.getCurrentTaxEndYear.toString)}
     </li>
     <li>{messages("what-you-need-to-do.next-year-only.notification.bullet-2")}</li>
     <li>{messages("what-you-need-to-do.next-year-only.notification.bullet-3", finalDeclarationDate)}</li>
     <li>{messages("what-you-need-to-do.next-year-only.notification.bullet-4")}</li>
-</ul>
+    </ul>
 }
 }
 @nonMandatedEitherYearNotificationContent = {
-<ul class="govuk-list govuk-list--bullet">
+  <ul class="govuk-list govuk-list--bullet">
     <li>@messages("what-you-need-to-do.notification.bullet-1")</li>
     <li>@messages("what-you-need-to-do.notification.bullet-2")</li>
     <li>@messages("what-you-need-to-do.notification.bullet-3")</li>
     <li>@messages("what-you-need-to-do.notification.bullet-4")</li>
     <li>@messages("what-you-need-to-do.notification.bullet-5")</li>
-</ul>
+  </ul>
 }
+
+@currentYearMandated = {
+  <p class="govuk-body">@messages("what-you-need-to-do-current.para-1")</p>
+  <p class="govuk-body">@messages("what-you-need-to-do-current.para-2")</p>
+@govukNotificationBanner(NotificationBanner(content = HtmlContent(currentYearMandatedNotificationContent)))
+
+@govukWarningText(WarningText(
+  content = Text(Messages("what-you-need-to-do-current.inset.para"))
+))
+}
+
+@currentYearMandatedNotificationContent = {
+  <ul class="govuk-list govuk-list--bullet">
+    <li>@messages("what-you-need-to-do-current.notification.bullet-1")</li>
+    <li>@messages("what-you-need-to-do-current.notification.bullet-2")</li>
+    <li>@messages("what-you-need-to-do-current.notification.bullet-3", languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(false)))</li>
+  </ul>
+}
+
+
+
+
+
 
 

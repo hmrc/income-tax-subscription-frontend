@@ -18,6 +18,7 @@ package controllers.usermatching
 
 import auth.individual.JourneyState._
 import auth.individual.{IncomeTaxSAUser, SignUp, StatelessController, UserIdentifiers}
+import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys._
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.{ControlListYears, ItsaMandationStatus, PrePopulate}
@@ -25,6 +26,8 @@ import connectors.MandationStatusConnector
 import controllers.individual.eligibility.{routes => eligibilityRoutes}
 import controllers.utils.ReferenceRetrieval
 import models.common.subscription.SubscriptionSuccess
+import models.status.MandationStatus.{Mandated, Voluntary}
+import models.status.MandationStatusModel
 import models.usermatching.CitizenDetails
 import models.{EligibilityStatus, PrePopData}
 import play.api.mvc._
@@ -106,12 +109,35 @@ class HomeController @Inject()(val auditingService: AuditingService,
             case EligibilityStatus(false, nextYear, _) if !(nextYear && isEnabled(ControlListYears)) =>
               Future.successful(Redirect(eligibilityRoutes.NotEligibleForIncomeTaxController.show()))
             case EligibilityStatus(thisYear, _, prepopMaybe) =>
-              for {
-                _ <- handlePrepop(reference, prepopMaybe)
-                _ <- handleMandationStatus(nino, utr)
-              } yield goToSignUp(thisYear, utr, timestamp, nino)
+              handlePrepop(reference, prepopMaybe) flatMap { _ =>
+                withMandationStatus(nino, utr) { mandationStatus =>
+                  goToSignUp(thisYear, utr, timestamp, nino)
+                    .addingToSession(StartTime -> timestamp)
+                    .withJourneyState(SignUp)
+                    .addingToSession(UTR -> utr)
+                    .addingToSession(NINO -> nino)
+                    .addingToSession(ITSASessionKeys.MANDATED_CURRENT_YEAR -> (mandationStatus.currentYearStatus == Mandated).toString)
+                    .addingToSession(ITSASessionKeys.MANDATED_NEXT_YEAR -> (mandationStatus.nextYearStatus == Mandated).toString)
+                    .addingToSession(ELIGIBLE_NEXT_YEAR_ONLY -> (!thisYear).toString)
+                }
+              }
           }
         }
+    }
+  }
+
+  private def withMandationStatus(nino: String, utr: String)
+                                 (f: MandationStatusModel => Result)
+                                 (implicit request: Request[AnyContent]): Future[Result] = {
+    if (isEnabled(ItsaMandationStatus)) {
+      mandationStatusConnector.getMandationStatus(nino, utr) map {
+        case Left(_) =>
+          throw new InternalServerException("[HomeController][withMandationStatus] - Unexpected failure when receiving mandation status")
+        case Right(model) =>
+          f(model)
+      }
+    } else {
+      Future.successful(f(MandationStatusModel(Voluntary, Voluntary)))
     }
   }
 
@@ -127,11 +153,6 @@ class HomeController @Inject()(val auditingService: AuditingService,
     else
       controllers.individual.eligibility.routes.CannotSignUpThisYearController.show
     Redirect(location)
-      .addingToSession(StartTime -> timestamp)
-      .withJourneyState(SignUp)
-      .addingToSession(UTR -> utr)
-      .addingToSession(NINO -> nino)
-      .addingToSession(ELIGIBLE_NEXT_YEAR_ONLY -> (!thisYear).toString)
   }
 
   private def claimSubscription(mtditId: String, nino: String, utr: String)
@@ -154,13 +175,4 @@ class HomeController @Inject()(val auditingService: AuditingService,
       case Some(prepop) if isEnabled(PrePopulate) => prePopulationService.prePopulate(reference, prepop)
       case _ => Future.successful(())
     }
-
-  private def handleMandationStatus(nino: String, utr: String)(implicit request: Request[AnyContent]): Future[Unit] = {
-    if (isEnabled(ItsaMandationStatus)) {
-      mandationStatusConnector.getMandationStatus(nino, utr).map(_ => ()) // to be replaced when we start using it's result
-    } else {
-      Future.successful(())
-    }
-  }
-
 }

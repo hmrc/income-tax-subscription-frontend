@@ -109,6 +109,15 @@ what-you-need-to-do.next-year-only.notification.bullet-3                 = send 
 what-you-need-to-do.next-year-only.notification.bullet-4                 = tell HMRC if you stop trading or start a new business ... but in Welsh
 what-you-need-to-do.next-year-only.inset.para                            = You must submit your normal Self Assessment tax return at the end of this tax year as normal. ... but in Welsh
 
+##  What You Need To Do Current  ##
+what-you-need-to-do-current.heading                                     = What you need to do
+what-you-need-to-do-current.para-1                                      = Based on your previous returns, you need to sign up for Making Tax Digital for Income Tax to submit your records. ... but in Welsh
+what-you-need-to-do-current.para-2                                      = By signing up you agree that you will: ... but in Welsh
+what-you-need-to-do-current.notification.bullet-1                       = get compatible software to record your income and expenses ... but in Welsh
+what-you-need-to-do-current.notification.bullet-2                       = use your compatible software to send us quarterly updates ... but in Welsh
+what-you-need-to-do-current.notification.bullet-3                       = send an end of period statement using your software and submit your final declaration by {0} ... but in Welsh
+what-you-need-to-do-current.inset.para                                  = You can stop using Making Tax Digital for Income Tax at any time until 6 April 2026. If you stop, you must send your Self Assessment tax return at the end of the tax year as normal. ... but in Welsh
+
 # What tax year to sign up
 business.what-year-to-sign-up.title                             = Ar gyfer pa flwyddyn dreth yr ydych am ddechrau defnyddio meddalwedd i gyflwyno diweddariadau?
 business.what-year-to-sign-up.heading                           = Ar gyfer pa flwyddyn dreth yr ydych am ddechrau defnyddio meddalwedd i gyflwyno diweddariadau?

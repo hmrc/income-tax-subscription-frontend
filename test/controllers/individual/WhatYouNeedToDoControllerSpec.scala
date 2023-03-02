@@ -18,6 +18,7 @@ package controllers.individual
 
 import common.Constants.ITSASessionKeys
 import controllers.ControllerBaseSpec
+import org.mockito
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -58,7 +59,7 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec with MockAuditing
   "show" must {
     "return OK with the page content" when {
       "the session contains a eligible only next year flag of false" in new Setup {
-        when(whatYouNeedToDo(ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit), ArgumentMatchers.eq(false))(any(), any()))
+        when(whatYouNeedToDo(ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit), ArgumentMatchers.eq(false), ArgumentMatchers.eq(false))(any(), any()))
           .thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(subscriptionRequest.withSession(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "false"))
@@ -67,7 +68,7 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec with MockAuditing
         contentType(result) mustBe Some(HTML)
       }
       "the session contains a eligible only next year flag of true" in new Setup {
-        when(whatYouNeedToDo(ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit), ArgumentMatchers.eq(true))(any(), any()))
+        when(whatYouNeedToDo(ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit), ArgumentMatchers.eq(true), ArgumentMatchers.eq(false))(any(), any()))
           .thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(subscriptionRequest.withSession(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "true"))
@@ -75,16 +76,25 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec with MockAuditing
         status(result) mustBe OK
         contentType(result) mustBe Some(HTML)
       }
+      "the session contains a mandated current year flag of true" in new Setup {
+        when(whatYouNeedToDo(ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit), ArgumentMatchers.eq(false), ArgumentMatchers.eq(true))(any(), any()))
+          .thenReturn(HtmlFormat.empty)
+
+        val result: Future[Result] = controller.show(subscriptionRequest.withSession(ITSASessionKeys.MANDATED_CURRENT_YEAR -> "true"))
+
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+      }
     }
-  }
 
-  "submit" must {
-    "return SEE_OTHER to the task list page" in new Setup {
-      val result: Future[Result] = controller.submit(subscriptionRequest)
+    "submit" must {
+      "return SEE_OTHER to the task list page" in new Setup {
+        val result: Future[Result] = controller.submit(subscriptionRequest)
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.individual.business.routes.TaskListController.show().url)
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.individual.business.routes.TaskListController.show().url)
+      }
     }
-  }
 
+  }
 }

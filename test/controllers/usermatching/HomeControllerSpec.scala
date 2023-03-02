@@ -17,7 +17,7 @@
 package controllers.usermatching
 
 import _root_.common.Constants.ITSASessionKeys
-import common.Constants.ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY
+import common.Constants.ITSASessionKeys.{ELIGIBLE_NEXT_YEAR_ONLY, MANDATED_CURRENT_YEAR, MANDATED_NEXT_YEAR}
 import config.MockConfig
 import config.featureswitch.FeatureSwitch.{ControlListYears, ItsaMandationStatus, PrePopulate, ThrottlingFeature}
 import controllers.ControllerBaseSpec
@@ -174,7 +174,9 @@ class HomeControllerSpec extends ControllerBaseSpec
 
                   verifyPrePopulationSave(0, testReference)
                   verifyGetThrottleStatusCalls(times(1))
-                  result.session(fakeRequest).data must not contain (ELIGIBLE_NEXT_YEAR_ONLY -> "true")
+                  result.session(fakeRequest).data must contain (ELIGIBLE_NEXT_YEAR_ONLY -> "false")
+                  result.session(fakeRequest).data must contain (MANDATED_CURRENT_YEAR -> "false")
+                  result.session(fakeRequest).data must contain (MANDATED_NEXT_YEAR -> "true")
                 }
               }
 
@@ -198,7 +200,9 @@ class HomeControllerSpec extends ControllerBaseSpec
 
                   verifyPrePopulationSave(1, testReference)
                   verifyGetThrottleStatusCalls(times(1))
-                  result.session(fakeRequest).data must not contain (ELIGIBLE_NEXT_YEAR_ONLY -> "true")
+                  result.session(fakeRequest).data must contain (ELIGIBLE_NEXT_YEAR_ONLY -> "false")
+                  result.session(fakeRequest).data must contain(MANDATED_CURRENT_YEAR -> "true")
+                  result.session(fakeRequest).data must contain(MANDATED_NEXT_YEAR -> "false")
                 }
               }
 
@@ -220,7 +224,9 @@ class HomeControllerSpec extends ControllerBaseSpec
 
                   verifyPrePopulationSave(1, testReference)
                   verifyGetThrottleStatusCalls(times(1))
-                  result.session(fakeRequest).data must not contain (ELIGIBLE_NEXT_YEAR_ONLY -> "true")
+                  result.session(fakeRequest).data must contain (ELIGIBLE_NEXT_YEAR_ONLY -> "false")
+                  result.session(fakeRequest).data must contain(MANDATED_CURRENT_YEAR -> "false")
+                  result.session(fakeRequest).data must contain(MANDATED_NEXT_YEAR -> "false")
                 }
               }
 
@@ -242,7 +248,9 @@ class HomeControllerSpec extends ControllerBaseSpec
                   verifySubscriptionDetailsSaveWithField(0, BusinessAccountingMethod)
                   verifySubscriptionDetailsSaveWithField(0, subscriptionId)
                   verifyGetThrottleStatusCalls(times(1))
-                  result.session(fakeRequest).data must not contain (ELIGIBLE_NEXT_YEAR_ONLY -> "true")
+                  result.session(fakeRequest).data must contain (ELIGIBLE_NEXT_YEAR_ONLY -> "false")
+                  result.session(fakeRequest).data must contain(MANDATED_CURRENT_YEAR -> "false")
+                  result.session(fakeRequest).data must contain(MANDATED_NEXT_YEAR -> "false")
                 }
               }
             }
@@ -267,7 +275,9 @@ class HomeControllerSpec extends ControllerBaseSpec
                 session(result).get(ITSASessionKeys.FULLNAME) mustBe Some(testFullName)
 
                 verifyGetThrottleStatusCalls(times(1))
-                result.session(fakeRequest).data must not contain (ELIGIBLE_NEXT_YEAR_ONLY -> "true")
+                result.session(fakeRequest).data must contain (ELIGIBLE_NEXT_YEAR_ONLY -> "false")
+                result.session(fakeRequest).data must contain(MANDATED_CURRENT_YEAR -> "false")
+                result.session(fakeRequest).data must contain(MANDATED_NEXT_YEAR -> "false")
               }
             }
 
@@ -311,6 +321,8 @@ class HomeControllerSpec extends ControllerBaseSpec
                 verifyGetThrottleStatusCalls(times(1))
                 verifyPrePopulationSave(1, testReference)
                 result.session(fakeRequest).data must contain(ELIGIBLE_NEXT_YEAR_ONLY -> "true")
+                result.session(fakeRequest).data must contain(MANDATED_CURRENT_YEAR -> "false")
+                result.session(fakeRequest).data must contain(MANDATED_NEXT_YEAR -> "false")
               }
             }
             "user has no prepop and prepop is enabled" should {
@@ -328,6 +340,8 @@ class HomeControllerSpec extends ControllerBaseSpec
                 verifyGetThrottleStatusCalls(times(1))
                 verifyPrePopulationSave(0, testReference)
                 result.session(fakeRequest).data must contain(ELIGIBLE_NEXT_YEAR_ONLY -> "true")
+                result.session(fakeRequest).data must contain(MANDATED_CURRENT_YEAR -> "false")
+                result.session(fakeRequest).data must contain(MANDATED_NEXT_YEAR -> "false")
               }
             }
           }

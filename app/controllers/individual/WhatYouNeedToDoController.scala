@@ -36,7 +36,8 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo)
   val show: Action[AnyContent] = Authenticated { implicit request =>
     _ =>
       val nextYearOnly = request.session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY).contains("true")
-      Ok(whatYouNeedToDo(postAction = routes.WhatYouNeedToDoController.submit, nextYearOnly))
+      val mandatedCurrentYear = request.session.get(ITSASessionKeys.MANDATED_CURRENT_YEAR).contains("true")
+      Ok(whatYouNeedToDo(postAction = routes.WhatYouNeedToDoController.submit, nextYearOnly, mandatedCurrentYear))
   }
 
   val submit: Action[AnyContent] = Authenticated { _ =>

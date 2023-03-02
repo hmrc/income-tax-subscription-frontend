@@ -28,9 +28,14 @@ class WhatYouNeedToDoSpec extends ViewSpec {
 
   val whatYouNeedToDo: WhatYouNeedToDo = app.injector.instanceOf[WhatYouNeedToDo]
 
-  def page(onlyNextYear : Boolean): HtmlFormat.Appendable = whatYouNeedToDo(testCall, onlyNextYear)
+  def page(onlyNextYear : Boolean): HtmlFormat.Appendable = whatYouNeedToDo(testCall, onlyNextYear, mandatedCurrentYear = false)
 
   def document(onlyNextYear : Boolean): Document = Jsoup.parse(page(onlyNextYear).body)
+
+
+  def pageCurrentMandated(currentYearMandated: Boolean): HtmlFormat.Appendable = whatYouNeedToDo(testCall, onlyNextYear = false, mandatedCurrentYear = currentYearMandated)
+
+  def documentCurrentMandated(currentYearMandated : Boolean): Document = Jsoup.parse(pageCurrentMandated(currentYearMandated).body)
 
   object WhatYouNeedToDoMessages {
     val heading: String = "What you need to do"
@@ -68,6 +73,28 @@ class WhatYouNeedToDoSpec extends ViewSpec {
 
     object InsetText {
       val para: String = "You must submit your normal Self Assessment tax return at the end of this tax year as normal."
+    }
+
+  }
+
+
+  object WhatYouNeedToDoMandatedCurrent {
+    val heading: String = "What you need to do"
+    val paraOne: String = "Based on your previous returns, you need to sign up for Making Tax Digital for Income Tax to submit your records."
+    val paraTwo: String = "By signing up you agree that you will:"
+
+    object NotificationBanner {
+      val heading: String = "Important"
+      val bulletOne: String = "get compatible software to record your income and expenses"
+      val bulletTwo: String = "use your compatible software to send us quarterly updates"
+      val bulletThree: String = {
+        val date = AccountingPeriodUtil.getFinalDeclarationDate(false).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
+        s"send an end of period statement using your software and submit your final declaration by $date"
+      }
+    }
+
+    object WarningText {
+      val para: String = "You may be penalised if you don’t meet the requirements for Making Tax Digital for Income tax."
     }
 
   }
@@ -186,6 +213,57 @@ class WhatYouNeedToDoSpec extends ViewSpec {
     }
 
   }
+
+  "WhatYouNeedToDoMandatedCurrent" must {
+
+    "use the correct template details" in new TemplateViewTest(
+      view = pageCurrentMandated(true),
+      title = WhatYouNeedToDoMandatedCurrent.heading,
+      isAgent = false,
+      backLink = None,
+      hasSignOutLink = true
+    )
+
+    "have a page heading" in {
+      documentCurrentMandated(true).mainContent.selectHead("h1").text mustBe WhatYouNeedToDoMandatedCurrent.heading
+    }
+
+    "have a first paragraph" in {
+      documentCurrentMandated(true).mainContent.selectNth("p", 1).text mustBe WhatYouNeedToDoMandatedCurrent.paraOne
+    }
+
+    "have a second paragraph" in {
+      documentCurrentMandated(true).mainContent.selectNth("p", 2).text mustBe WhatYouNeedToDoMandatedCurrent.paraTwo
+    }
+
+    "has a notification banner" which {
+      def notificationBanner: Element = documentCurrentMandated(true).mainContent.selectHead(".govuk-notification-banner")
+
+      "has a heading" in {
+        notificationBanner.selectHead(".govuk-notification-banner__header").text mustBe WhatYouNeedToDoMandatedCurrent.NotificationBanner.heading
+      }
+
+      "has a bullet list" which {
+        def bulletList: Element = notificationBanner.selectHead("ul")
+
+        "has a first bullet" in {
+          bulletList.selectNth("li", 1).text mustBe WhatYouNeedToDoMandatedCurrent.NotificationBanner.bulletOne
+        }
+
+        "has a second bullet" in {
+          bulletList.selectNth("li", 2).text mustBe WhatYouNeedToDoMandatedCurrent.NotificationBanner.bulletTwo
+        }
+
+        "has a third bullet" in {
+          bulletList.selectNth("li", 3).text mustBe WhatYouNeedToDoMandatedCurrent.NotificationBanner.bulletThree
+        }
+        }
+      }
+    }
+
+    "has an warning text" in {
+      documentCurrentMandated(true).selectHead(".govuk-warning-text__text").text mustBe WhatYouNeedToDoMandatedCurrent.WarningText.para
+    }
 
 
 }
