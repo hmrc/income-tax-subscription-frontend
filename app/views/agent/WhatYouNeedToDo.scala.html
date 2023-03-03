@@ -20,68 +20,78 @@
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 
 @this(
-mainTemplate: AgentMainTemplate,
-form: FormWithCSRF,
-continueButton: ContinueButton,
-hmrcNewTabLinkHelper: HmrcNewTabLinkHelper
+  mainTemplate: AgentMainTemplate,
+  form: FormWithCSRF,
+  continueButton: ContinueButton,
+  hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
+  govukNotificationBanner : GovukNotificationBanner,
+  govukInsetText : GovukInsetText
 )(
-implicit appConfig: AppConfig
+  implicit appConfig: AppConfig
 )
 
-
-@(postAction:Call)(implicit request: Request[_], messages: Messages)
-
-
+@(postAction:Call, eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean, mandatedNextYear: Boolean)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = messages("agent.what-you-need-to-do.heading")) {
 
-<h1 class="govuk-heading-l">@messages("agent.what-you-need-to-do.heading")</h1>
+  <h1 class="govuk-heading-xl">@messages("agent.what-you-need-to-do.heading")</h1>
 
-<div class="govuk-form-group">
-    <p class="govuk-body">@messages("agent.what-you-need-to-do.paragraph1")</p>
-    <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("agent.what-you-need-to-do.bullet1")</li>
-        <li>@messages("agent.what-you-need-to-do.bullet2")</li>
-        <li>@messages("agent.what-you-need-to-do.bullet3")</li>
-        <li>@messages("agent.what-you-need-to-do.bullet4")</li>
-    </ul>
-    <p class="govuk-heading-s">@messages("agent.what-you-need-to-do.subheading")</p>
-    <p class="govuk-body">@messages("agent.what-you-need-to-do.paragraph2")</p>
-    <p class="govuk-body">@messages("agent.what-you-need-to-do.paragraph3")</p>
-    <ul class="govuk-list govuk-list--bullet">
-        <li>@Html(messages(
-            "agent.what-you-need-to-do.bullet5",
-            hmrcNewTabLinkHelper(NewTabLinkHelper(
-            text = messages("agent.what-you-need-to-do.sa-tax-return-link"),
-            href = Some(appConfig.sendSAReturnLink)
-            ))
-            ))</li>
-        <li>@messages("agent.what-you-need-to-do.bullet6")</li>
-        <li>@Html(messages(
-            "agent.what-you-need-to-do.bullet7",
-            hmrcNewTabLinkHelper(NewTabLinkHelper(
-            text = messages("agent.what-you-need-to-do.qualifying-income-link"),
-            href = Some(appConfig.govukGuidanceITSAQualifyingIncomeLink)
-            ))
-            ))</li>
-    </ul>
-    <p class="govuk-body">@messages("agent.what-you-need-to-do.paragraph4")</p>
-    <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("agent.what-you-need-to-do.bullet8")</li>
-        <li>@messages("agent.what-you-need-to-do.bullet9")</li>
-        <li>@Html(messages(
-            "agent.what-you-need-to-do.bullet10",
-            hmrcNewTabLinkHelper(NewTabLinkHelper(
-            text = messages("agent.what-you-need-to-do.qualifying-income-link"),
-            href = Some(appConfig.govukGuidanceITSAQualifyingIncomeLink)
-            ))
-            ))</li>
-    </ul>
-    <p class="govuk-body">@messages("agent.what-you-need-to-do.paragraph5")</p>
-</div>
+  @if(mandatedCurrentYear) {
+    @mandatedCurrentYearContent
+  } else if (mandatedNextYear && eligibleNextYearOnly) {
+    @mandatedAndOnlyEligibleNextYearOnlyContent
+  } else if (eligibleNextYearOnly) {
+    @voluntaryAndEligibleNextYearOnlyContent
+  } else {
+    @voluntaryAndEligibleBothYearsContent
+  }
 
-@form(action = postAction) {
-@continueButton(alternateText = Some(messages("base.accept-and-continue")))
+  @form(action = postAction) {
+    @continueButton(alternateText = Some(messages("base.accept-and-continue")))
+  }
+
 }
 
+@mandatedCurrentYearContent = {
+
+}
+
+@mandatedCurrentYearNotificationBanner = {
+
+}
+
+@mandatedAndOnlyEligibleNextYearOnlyContent = {
+
+}
+
+@mandatedAndOnlyEligibleNextYearOnlyNotificationBanner = {
+
+}
+
+@voluntaryAndEligibleNextYearOnlyContent = {
+
+}
+
+@voluntaryAndEligibleNextYearOnlyNotificationBanner = {
+
+}
+
+@voluntaryAndEligibleBothYearsContent = {
+  <p class="govuk-body">@messages("agent.what-you-need-to-do.voluntary-and-eligible.para-1")</p>
+
+  @govukNotificationBanner(NotificationBanner(content = HtmlContent(voluntaryAndEligibleBothYearsNotificationBanner)))
+
+  @govukInsetText(InsetText(content = Text(messages("agent.what-you-need-to-do.voluntary-and-eligible.inset-text.para"))))
+
+  <p class="govuk-body">@messages("agent.what-you-need-to-do.voluntary-and-eligible.para-2")</p>
+}
+
+@voluntaryAndEligibleBothYearsNotificationBanner = {
+  <ul class="govuk-list govuk-list--bullet">
+    <li>@messages("agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-1")</li>
+    <li>@messages("agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-2")</li>
+    <li>@messages("agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-3")</li>
+    <li>@messages("agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-4")</li>
+    <li>@messages("agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-5")</li>
+  </ul>
 }
