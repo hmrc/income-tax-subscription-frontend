@@ -578,25 +578,15 @@ cannot-sign-up.link3                                            = send HMRC a Se
 cannot-sign-up.continue-button                                  = Continue to sign up for next year
 
 ## Agent what you need to do page ##
-agent.what-you-need-to-do.heading                               = What you need to do
-agent.what-you-need-to-do.paragraph1                            = By taking part in this pilot you agree that you will:
-agent.what-you-need-to-do.bullet1                               = use compatible software to record your client’s income and expenses
-agent.what-you-need-to-do.bullet2                               = send quarterly updates from the start of their accounting period
-agent.what-you-need-to-do.bullet3                               = submit their final declaration by 31 January following their current tax year
-agent.what-you-need-to-do.bullet4                               = tell HMRC if they stop trading or start a new business
-agent.what-you-need-to-do.subheading                            = Your client can stop using this pilot at any time
-agent.what-you-need-to-do.paragraph2                            = Your client can choose to stop using Making Tax Digital for Income Tax at any time until 6 April 2026. You do not have to let us know and they can ignore any secure messages from the service. But they must file their Self Assessment by 31 January following the end of the tax year as normal.
-agent.what-you-need-to-do.paragraph3                            = Your client must meet the Making Tax Digital for Income Tax requirements for 6 April 2026, if all of the following apply:
-agent.what-you-need-to-do.bullet5                               = they are registered for Self Assessment ({0})
-agent.what-you-need-to-do.bullet6                               = they get income from self-employment or property, or both
-agent.what-you-need-to-do.bullet7                               = their total {0} is more than £50,000
-agent.what-you-need-to-do.paragraph4                            = Your client must meet the Making Tax Digital for Income Tax requirements for 6 April 2027, if all of the following apply:
-agent.what-you-need-to-do.bullet8                               = they are registered for Self Assessment
-agent.what-you-need-to-do.bullet9                               = they get income from self-employment or property, or both
-agent.what-you-need-to-do.bullet10                              = their total {0} is more than £30,000
-agent.what-you-need-to-do.paragraph5                            = Your client can stop using Making Tax Digital for Income Tax after the pilot ends on 5 April 2026, if their qualifying income is less than £50,000.
-agent.what-you-need-to-do.qualifying-income-link                = qualifying income
-agent.what-you-need-to-do.sa-tax-return-link                    = find out more about registering and sending a Self Assessment tax return
+agent.what-you-need-to-do.heading                                                   = What you need to do
+agent.what-you-need-to-do.voluntary-and-eligible.para-1                             = By taking part in this pilot you agree that either you or your client will:
+agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-1       = record income and expenses using compatible software
+agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-2       = use software to send us quarterly updates
+agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-3       = complete any missing quarterly updates (if you’ve chosen to sign up for the current tax year)
+agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-4       = send an end of period statement and submit a final declaration by 31 January following the end of the tax year
+agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-5       = tell HMRC if they stop trading or start a new business
+agent.what-you-need-to-do.voluntary-and-eligible.inset-text.para                    = Using Making Tax Digital for Income Tax is currently voluntary. Your client can opt out and go back to Self Assessment at any time.
+agent.what-you-need-to-do.voluntary-and-eligible.para-2                             = It will be compulsory for some people to use Making Tax Digital for Income Tax from April 2026, depending on their total qualifying income. If this applies to your client, we’ll send them a letter.
 
 # Agent accounting period check page
 agent.accounting-period-check.title                             = Do your client’s business accounting periods all run from 6 April to 5 April?

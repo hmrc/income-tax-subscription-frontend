@@ -16,9 +16,10 @@
 
 package controllers.agent
 
-import play.api.mvc._
 import auth.agent.AuthenticatedController
+import common.Constants.ITSASessionKeys
 import config.AppConfig
+import play.api.mvc._
 import services.{AuditingService, AuthService}
 import views.html.agent.WhatYouNeedToDo
 
@@ -32,12 +33,22 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo)
                                           val authService: AuthService)
                                          (implicit mcc: MessagesControllerComponents, val ec: ExecutionContext) extends AuthenticatedController {
 
-  val show: Action[AnyContent] = Authenticated { implicit request => _ =>
-    Ok(whatYouNeedToDo(postAction = controllers.agent.routes.WhatYouNeedToDoController.submit))
+  def show: Action[AnyContent] = Authenticated { implicit request =>
+    _ =>
+      val eligibleNextYearOnly: Boolean = request.session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY).contains("true")
+      val mandatedCurrentYear: Boolean = request.session.get(ITSASessionKeys.MANDATED_CURRENT_YEAR).contains("true")
+      val mandatedNextYear: Boolean = request.session.get(ITSASessionKeys.MANDATED_NEXT_YEAR).contains("true")
+      Ok(whatYouNeedToDo(
+        postAction = routes.WhatYouNeedToDoController.submit,
+        eligibleNextYearOnly = eligibleNextYearOnly,
+        mandatedCurrentYear = mandatedCurrentYear,
+        mandatedNextYear = mandatedNextYear
+      ))
   }
 
-  val submit: Action[AnyContent] = Authenticated { _ => _ =>
-    Redirect(controllers.agent.routes.TaskListController.show())
+  def submit: Action[AnyContent] = Authenticated { _ =>
+    _ =>
+      Redirect(controllers.agent.routes.TaskListController.show())
   }
 
 }
