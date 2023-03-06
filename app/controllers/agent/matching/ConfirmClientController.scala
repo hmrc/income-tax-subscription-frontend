@@ -23,21 +23,21 @@ import common.Constants.ITSASessionKeys.FailedClientMatching
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.{ControlListYears, ItsaMandationStatus, PrePopulate}
 import config.featureswitch.FeatureSwitching
+import connectors.MandationStatusConnector
 import controllers.utils.ReferenceRetrieval
-import models.{EligibilityStatus, PrePopData}
-import models.audits.EnterDetailsAuditing
 import models.audits.EnterDetailsAuditing.EnterDetailsAuditModel
+import models.status.MandationStatus.{Mandated, Voluntary}
+import models.status.MandationStatusModel
 import models.usermatching.{LockedOut, NotLockedOut, UserDetailsModel}
+import models.{EligibilityStatus, PrePopData}
 import play.api.mvc._
 import play.twirl.api.Html
 import services._
 import services.agent._
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
-import utilities.HttpResult.HttpConnectorError
 import views.html.agent.CheckYourClientDetails
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future.{failed, successful}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -46,27 +46,13 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
                                         val authService: AuthService,
                                         val agentQualificationService: AgentQualificationService,
                                         val getEligibilityStatusService: GetEligibilityStatusService,
-                                        val mandationStatusService: MandationStatusService,
+                                        val mandationStatusConnector: MandationStatusConnector,
                                         val lockOutService: UserLockoutService,
                                         val prePopulationService: PrePopulationService,
                                         val subscriptionDetailsService: SubscriptionDetailsService)
                                        (implicit val ec: ExecutionContext,
                                         val appConfig: AppConfig,
                                         mcc: MessagesControllerComponents) extends UserMatchingController with ReferenceRetrieval with FeatureSwitching {
-
-  def view(userDetailsModel: UserDetailsModel)(implicit request: Request[_]): Html =
-    checkYourClientDetails(
-      userDetailsModel,
-      routes.ConfirmClientController.submit()
-    )
-
-  private def withLockOutCheck(f: => Future[Result])(implicit user: IncomeTaxAgentUser, request: Request[_]): Future[Result] = {
-    lockOutService.getLockoutStatus(user.arn.get) flatMap {
-      case Right(NotLockedOut) => f
-      case Right(_: LockedOut) => Future.successful(Redirect(controllers.agent.matching.routes.ClientDetailsLockoutController.show.url))
-      case Left(_) => throw new InternalServerException("[ClientDetailsLockoutController][handleLockOut] lockout status failure")
-    }
-  }
 
   def show(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
@@ -81,107 +67,172 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
   def submit(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       withLockOutCheck {
-        val arn = user.arn.get // Will fail if no ARN in user
-
-        import ITSASessionKeys.FailedClientMatching
-
-        val currentCount = request.session.get(FailedClientMatching).fold(0)(_.toInt)
-
-        request.fetchUserDetails match {
-          case Some(clientDetails) => agentQualificationService.orchestrateAgentQualification(clientDetails, arn).flatMap {
-            case Left(NoClientMatched) => handleFailedMatch(clientDetails, arn)
-            case Left(ClientAlreadySubscribed) => handleAlreadySubscribed(arn, currentCount, clientDetails)
-            case Left(UnexpectedFailure) => handleFailure(arn, currentCount, clientDetails)
-            case Right(_: UnApprovedAgent) => handleUnapproved(arn, currentCount, clientDetails)
-            case Right(ApprovedAgent(nino, Some(utr))) => handleApprovedWithReference(arn, nino, currentCount, clientDetails, utr)
-            case Right(ApprovedAgent(nino, None)) => handleApprovedWithoutReference(arn, currentCount, clientDetails, nino)
+        withClientDetails { clientDetails =>
+          agentQualificationService.orchestrateAgentQualification(clientDetails, user.arn) flatMap {
+            case Left(NoClientMatched) => handleFailedClientMatch(user.arn, clientDetails)
+            case Left(ClientAlreadySubscribed) => Future.successful(handleClientAlreadySubscribed(user.arn, clientDetails))
+            case Left(UnexpectedFailure) => Future.successful(handleUnexpectedFailure(user.arn, clientDetails))
+            case Right(_: UnApprovedAgent) => Future.successful(handleUnapprovedAgent(user.arn, clientDetails))
+            case Right(ApprovedAgent(nino, None)) => Future.successful(handleApprovedAgentWithoutClientUTR(user.arn, nino, clientDetails))
+            case Right(ApprovedAgent(nino, Some(utr))) => handleApprovedAgent(user.arn, nino, utr, clientDetails)
           }
-          case None => successful(Redirect(routes.ClientDetailsController.show()))
         }
       }
   }
 
-  private def handleFailedMatch(userDetails: UserDetailsModel, arn: String)(implicit request: Request[AnyContent]) = {
-    val currentCount = request.session.get(FailedClientMatching).fold(0)(_.toInt)
-    lockOutService.incrementLockout(arn, currentCount).flatMap {
+  def view(userDetailsModel: UserDetailsModel)(implicit request: Request[_]): Html = {
+    checkYourClientDetails(
+      userDetailsModel,
+      routes.ConfirmClientController.submit()
+    )
+  }
+
+  private def auditDetailsEntered(arn: String, clientDetails: UserDetailsModel, numberOfAttempts: Int, lockedOut: Boolean)
+                                 (implicit request: Request[AnyContent]): Unit = {
+    auditingService.audit(EnterDetailsAuditModel(
+      agentReferenceNumber = arn,
+      userDetails = clientDetails,
+      numberOfAttempts = numberOfAttempts,
+      lockedOut = lockedOut
+    ))
+  }
+
+  private def getCurrentFailureCount()(implicit request: Request[AnyContent]): Int = {
+    request.session.get(FailedClientMatching).fold(0)(_.toInt)
+  }
+
+  private def withLockOutCheck(f: => Future[Result])
+                              (implicit user: IncomeTaxAgentUser, request: Request[_]): Future[Result] = {
+    lockOutService.getLockoutStatus(user.arn) flatMap {
+      case Right(NotLockedOut) => f
+      case Right(_: LockedOut) => Future.successful(Redirect(controllers.agent.matching.routes.ClientDetailsLockoutController.show.url))
+      case Left(_) => throw new InternalServerException("[ClientDetailsLockoutController][handleLockOut] lockout status failure")
+    }
+  }
+
+  private def withClientDetails(f: UserDetailsModel => Future[Result])
+                               (implicit request: Request[AnyContent]): Future[Result] = {
+    request.fetchUserDetails match {
+      case Some(clientDetails) => f(clientDetails)
+      case None => Future.successful(Redirect(routes.ClientDetailsController.show()))
+    }
+  }
+
+  private def handleFailedClientMatch(arn: String, clientDetails: UserDetailsModel)
+                                     (implicit request: Request[AnyContent]): Future[Result] = {
+    val currentFailureCount = request.session.get(FailedClientMatching).fold(0)(_.toInt)
+
+    lockOutService.incrementLockout(arn, currentFailureCount) map {
       case Right(LockoutUpdate(NotLockedOut, Some(newCount))) =>
-        auditingService.audit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), userDetails, newCount, lockedOut = false))
-        successful(Redirect(controllers.agent.matching.routes.ClientDetailsErrorController.show)
-          .addingToSession(FailedClientMatching -> newCount.toString))
+        auditDetailsEntered(arn, clientDetails, newCount, lockedOut = false)
+        Redirect(controllers.agent.matching.routes.ClientDetailsErrorController.show)
+          .addingToSession(FailedClientMatching -> newCount.toString)
       case Right(LockoutUpdate(_: LockedOut, None)) =>
-        auditingService.audit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), userDetails, 0, lockedOut = true))
-        successful(Redirect(controllers.agent.matching.routes.ClientDetailsLockoutController.show)
-          .removingFromSession(FailedClientMatching).clearAllUserDetails)
-      case _ => failed(new InternalServerException("ConfirmClientController.lockUser failure"))
+        auditDetailsEntered(arn, clientDetails, 0, lockedOut = true)
+        Redirect(controllers.agent.matching.routes.ClientDetailsLockoutController.show)
+          .removingFromSession(FailedClientMatching)
+          .clearAllUserDetails
+      case _ => throw new InternalServerException("ConfirmClientController.lockUser failure")
     }
   }
 
-  private def handleUnapproved(arn: String, currentCount: Int, clientDetails: UserDetailsModel)
-                              (implicit request: Request[AnyContent]) = {
-    auditingService.audit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), clientDetails, currentCount, lockedOut = false))
-    successful(Redirect(controllers.agent.routes.NoClientRelationshipController.show).removingFromSession(FailedClientMatching))
+  private def handleClientAlreadySubscribed(arn: String, clientDetails: UserDetailsModel)
+                                           (implicit request: Request[AnyContent]): Result = {
+    auditDetailsEntered(arn, clientDetails, getCurrentFailureCount(), lockedOut = false)
+    Redirect(controllers.agent.routes.ClientAlreadySubscribedController.show).removingFromSession(FailedClientMatching)
   }
 
-  private def handleApprovedWithoutReference(arn: String, currentCount: Int, clientDetails: UserDetailsModel, nino: String)
-                                            (implicit request: Request[AnyContent]) = {
-    auditingService.audit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), clientDetails, currentCount, lockedOut = false))
-    Future.successful(Redirect(controllers.agent.routes.HomeController.index)
+  private def handleUnexpectedFailure(arn: String, clientDetails: UserDetailsModel)
+                                     (implicit request: Request[AnyContent]): Result = {
+    auditDetailsEntered(arn, clientDetails, getCurrentFailureCount(), lockedOut = false)
+    throw new InternalServerException("[ConfirmClientController][handleUnexpectedFailure] - orchestrate agent qualification failed with an unexpected failure")
+  }
+
+  private def handleUnapprovedAgent(arn: String, clientDetails: UserDetailsModel)
+                                   (implicit request: Request[AnyContent]): Result = {
+    auditDetailsEntered(arn, clientDetails, getCurrentFailureCount(), lockedOut = false)
+    Redirect(controllers.agent.routes.NoClientRelationshipController.show).removingFromSession(FailedClientMatching)
+  }
+
+  private def handleApprovedAgentWithoutClientUTR(arn: String, nino: String, clientDetails: UserDetailsModel)
+                                                 (implicit request: Request[AnyContent]): Result = {
+    auditDetailsEntered(arn, clientDetails, getCurrentFailureCount(), lockedOut = false)
+    Redirect(controllers.agent.routes.HomeController.index)
       .withJourneyState(AgentUserMatched)
       .addingToSession(ITSASessionKeys.NINO -> nino)
-      .removingFromSession(FailedClientMatching)
-      .clearUserDetailsExceptName)
-  }
-
-  private def handleApprovedWithReference(arn: String, nino: String, currentCount: Int, clientDetails: UserDetailsModel, utr: String)
-                                         (implicit request: Request[AnyContent], user: IncomeTaxAgentUser): Future[Result] = {
-    auditingService.audit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), clientDetails, currentCount, lockedOut = false))
-    getEligibilityStatusService.getEligibilityStatus(utr) flatMap {
-      case Left(error: HttpConnectorError) =>
-        throw new InternalServerException(s"Call to eligibility service failed with status: ${error.httpResponse.status}")
-      case Right(result) =>
-        withAgentReference(utr) { reference =>
-          result match {
-            case EligibilityStatus(false, nextYear, _) if !(nextYear && isEnabled(ControlListYears)) =>
-              Future.successful(goToCannotTakePart)
-            case EligibilityStatus(thisYear, _, prepopMaybe) =>
-              for {
-                _ <- handlePrepop(reference, prepopMaybe)
-                _ <- handleMandationStatus(reference, nino, utr)
-              } yield goToSignUpClient(thisYear, utr, nino)
-          }
-        }
-    }
-  }
-
-  private def goToSignUpClient(thisYear: Boolean, utr: String, nino: String)(implicit request: Request[AnyContent]): Result =
-    (if (thisYear)
-      Redirect(controllers.agent.routes.HomeController.index)
-    else
-      Redirect(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show))
-      .withJourneyState(AgentUserMatched)
-      .addingToSession(ITSASessionKeys.NINO -> nino)
-      .addingToSession(ITSASessionKeys.UTR -> utr)
-      .addingToSession(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> (!thisYear).toString)
       .removingFromSession(FailedClientMatching)
       .clearUserDetailsExceptName
+  }
+
+  private def withEligibilityResult(utr: String)(f: EligibilityStatus => Future[Result])
+                                   (implicit request: Request[AnyContent]): Future[Result] = {
+    getEligibilityStatusService.getEligibilityStatus(utr) flatMap {
+      case Left(value) =>
+        throw new InternalServerException(
+          s"[ConfirmClientController][withEligibilityResult] - call to control list failed with status: ${value.httpResponse.status}"
+        )
+      case Right(result) =>
+        f(result)
+    }
+  }
+
+  private def withMandationStatus(nino: String, utr: String)
+                                 (f: MandationStatusModel => Result)
+                                 (implicit request: Request[AnyContent]): Future[Result] = {
+    if (isEnabled(ItsaMandationStatus)) {
+      mandationStatusConnector.getMandationStatus(nino, utr) map {
+        case Left(_) =>
+          throw new InternalServerException("[ConfirmClientController][withMandationStatus] - Unexpected failure when receiving mandation status")
+        case Right(model) =>
+          f(model)
+      }
+    } else {
+      Future.successful(f(MandationStatusModel(Voluntary, Voluntary)))
+    }
+  }
+
+  private def handleApprovedAgent(arn: String, nino: String, utr: String, clientDetails: UserDetailsModel)
+                                 (implicit request: Request[AnyContent], user: IncomeTaxAgentUser): Future[Result] = {
+    auditDetailsEntered(arn, clientDetails, getCurrentFailureCount(), lockedOut = false)
+    withEligibilityResult(utr) { eligibilityResult =>
+      withAgentReference(utr) { reference =>
+        eligibilityResult match {
+          case EligibilityStatus(false, nextYear, _) if !(nextYear && isEnabled(ControlListYears)) =>
+            Future.successful(
+              goToCannotTakePart
+                .removingFromSession(FailedClientMatching)
+                .clearAllUserDetails
+            )
+          case EligibilityStatus(thisYear, _, prepop) =>
+            handlePrepop(reference, prepop) flatMap { _ =>
+              withMandationStatus(nino, utr) { mandationStatus =>
+                goToSignUpClient(thisYear)
+                  .withJourneyState(AgentUserMatched)
+                  .addingToSession(ITSASessionKeys.NINO -> nino)
+                  .addingToSession(ITSASessionKeys.UTR -> utr)
+                  .addingToSession(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> (!thisYear).toString)
+                  .addingToSession(ITSASessionKeys.MANDATED_CURRENT_YEAR -> (mandationStatus.currentYearStatus == Mandated).toString)
+                  .addingToSession(ITSASessionKeys.MANDATED_NEXT_YEAR -> (mandationStatus.nextYearStatus == Mandated).toString)
+                  .removingFromSession(FailedClientMatching)
+                  .clearUserDetailsExceptName
+              }
+            }
+        }
+      }
+    }
+  }
+
+  private def goToSignUpClient(thisYear: Boolean): Result = {
+    if (thisYear) {
+      Redirect(controllers.agent.routes.HomeController.index)
+    } else {
+      Redirect(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show)
+    }
+  }
 
 
-  private def goToCannotTakePart(implicit request: Request[AnyContent]): Result =
+  private def goToCannotTakePart: Result =
     Redirect(controllers.agent.eligibility.routes.CannotTakePartController.show)
-      .removingFromSession(FailedClientMatching)
-      .clearAllUserDetails
-
-  private def handleFailure(arn: String, currentCount: Int, clientDetails: UserDetailsModel)
-                           (implicit request: Request[AnyContent]): Future[Result] = {
-    auditingService.audit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), clientDetails, currentCount, lockedOut = false))
-    throw new InternalServerException("[ConfirmClientController][submit] orchestrate agent qualification failed with an unexpected failure")
-  }
-
-  private def handleAlreadySubscribed(arn: String, currentCount: Int, clientDetails: UserDetailsModel)
-                                     (implicit request: Request[AnyContent]): Future[Result] = {
-    auditingService.audit(EnterDetailsAuditModel(EnterDetailsAuditing.enterDetailsAgent, Some(arn), clientDetails, currentCount, lockedOut = false))
-    successful(Redirect(controllers.agent.routes.ClientAlreadySubscribedController.show).removingFromSession(FailedClientMatching))
-  }
 
   private def handlePrepop(reference: String, prepopMaybe: Option[PrePopData])(implicit hc: HeaderCarrier) =
     prepopMaybe match {
@@ -189,11 +240,4 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
       case _ => Future.successful(())
     }
 
-  private def handleMandationStatus(reference: String, nino: String, utr: String)(implicit request: Request[AnyContent]): Future[Unit] = {
-    if (isEnabled(ItsaMandationStatus)) {
-      mandationStatusService.copyMandationStatus(reference, nino, utr)
-    } else {
-      Future.successful(())
-    }
-  }
 }

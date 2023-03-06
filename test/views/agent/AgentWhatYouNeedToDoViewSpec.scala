@@ -26,124 +26,208 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
 
   val whatYouNeedToDo: WhatYouNeedToDo = app.injector.instanceOf[WhatYouNeedToDo]
 
-  def page: HtmlFormat.Appendable = whatYouNeedToDo(testCall)
+  "WhatYouNeedToDo" when {
+    "the user is mandated for the current year" should {
+      def mainContent: Element = document(eligibleNextYearOnly = false, mandatedCurrentYear = true, mandatedNextYear = false).mainContent
 
-  def document: Document = Jsoup.parse(page.body)
+      "use the correct template details" in new TemplateViewTest(
+        view = page(eligibleNextYearOnly = false, mandatedCurrentYear = true, mandatedNextYear = false),
+        title = WhatYouNeedToDoMessages.heading,
+        isAgent = true,
+        backLink = None,
+        hasSignOutLink = true
+      )
+
+      // rest of the tests here for mandated current year content
+
+      "have a form" which {
+        def form: Element = mainContent.selectHead("form")
+
+        "has the correct attributes" in {
+          form.attr("method") mustBe testCall.method
+          form.attr("action") mustBe testCall.url
+        }
+
+        "has an accept and continue button to submit the form" in {
+          form.selectHead("button").text mustBe WhatYouNeedToDoMessages.acceptAndContinue
+        }
+      }
+    }
+    "the user is mandated for next tax year and only eligible for the next tax year" should {
+      def mainContent: Element = document(eligibleNextYearOnly = true, mandatedCurrentYear = false, mandatedNextYear = true).mainContent
+
+      "use the correct template details" in new TemplateViewTest(
+        view = page(eligibleNextYearOnly = true, mandatedCurrentYear = false, mandatedNextYear = true),
+        title = WhatYouNeedToDoMessages.heading,
+        isAgent = true,
+        backLink = None,
+        hasSignOutLink = true
+      )
+
+      // rest of the tests here for mandated next year and eligible next year content
+
+      "have a form" which {
+        def form: Element = mainContent.selectHead("form")
+
+        "has the correct attributes" in {
+          form.attr("method") mustBe testCall.method
+          form.attr("action") mustBe testCall.url
+        }
+
+        "has an accept and continue button to submit the form" in {
+          form.selectHead("button").text mustBe WhatYouNeedToDoMessages.acceptAndContinue
+        }
+      }
+    }
+    "the user is voluntary for both years but only eligible for next year" should {
+      def mainContent: Element = document(eligibleNextYearOnly = true, mandatedCurrentYear = false, mandatedNextYear = false).mainContent
+
+      "use the correct template details" in new TemplateViewTest(
+        view = page(eligibleNextYearOnly = true, mandatedCurrentYear = false, mandatedNextYear = false),
+        title = WhatYouNeedToDoMessages.heading,
+        isAgent = true,
+        backLink = None,
+        hasSignOutLink = true
+      )
+
+      // rest of the tests here for the voluntary but eligible for next year only content
+
+      "have a form" which {
+        def form: Element = mainContent.selectHead("form")
+
+        "has the correct attributes" in {
+          form.attr("method") mustBe testCall.method
+          form.attr("action") mustBe testCall.url
+        }
+
+        "has an accept and continue button to submit the form" in {
+          form.selectHead("button").text mustBe WhatYouNeedToDoMessages.acceptAndContinue
+        }
+      }
+    }
+    "the user is voluntary and eligible for both years" should {
+      def mainContent: Element = document(eligibleNextYearOnly = false, mandatedCurrentYear = false, mandatedNextYear = false).mainContent
+
+      "use the correct template details" in new TemplateViewTest(
+        view = page(eligibleNextYearOnly = false, mandatedCurrentYear = false, mandatedNextYear = false),
+        title = WhatYouNeedToDoMessages.heading,
+        isAgent = true,
+        backLink = None,
+        hasSignOutLink = true
+      )
+
+      "have a first paragraph" in {
+        mainContent.selectNth("p", 1).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.paraOne
+      }
+
+      "have a notification banner" which {
+        def notificationBanner: Element = mainContent.selectHead(".govuk-notification-banner")
+
+        "has a heading" in {
+          notificationBanner.selectHead(".govuk-notification-banner__header").text mustBe WhatYouNeedToDoMessages.NotificationBanner.heading
+        }
+
+        "has a bullet list" which {
+          def bulletList: Element = notificationBanner.selectHead("ul")
+
+          "has a first bullet" in {
+            bulletList.selectNth("li", 1).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.NotificationBanner.bulletOne
+          }
+
+          "has a second bullet" in {
+            bulletList.selectNth("li", 2).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.NotificationBanner.bulletTwo
+          }
+
+          "has a third bullet" in {
+            bulletList.selectNth("li", 3).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.NotificationBanner.bulletThree
+          }
+
+          "has a forth bullet" in {
+            bulletList.selectNth("li", 4).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.NotificationBanner.bulletFour
+          }
+
+          "has a fifth bullet" in {
+            bulletList.selectNth("li", 5).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.NotificationBanner.bulletFive
+          }
+        }
+      }
+
+      "have an inset text" in {
+        mainContent.selectHead(".govuk-inset-text").text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.InsetText.para
+      }
+
+      "have a second paragraph" in {
+        mainContent.selectNth("p", 2).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.paraTwo
+      }
+
+      "have a form" which {
+        def form: Element = mainContent.selectHead("form")
+
+        "has the correct attributes" in {
+          form.attr("method") mustBe testCall.method
+          form.attr("action") mustBe testCall.url
+        }
+
+        "has an accept and continue button to submit the form" in {
+          form.selectHead("button").text mustBe WhatYouNeedToDoMessages.acceptAndContinue
+        }
+      }
+    }
+  }
+
+  def page(eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean, mandatedNextYear: Boolean): HtmlFormat.Appendable = {
+    whatYouNeedToDo(
+      postAction = testCall,
+      eligibleNextYearOnly = eligibleNextYearOnly,
+      mandatedCurrentYear = mandatedCurrentYear,
+      mandatedNextYear = mandatedNextYear
+    )
+  }
+
+  def document(eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean, mandatedNextYear: Boolean): Document = {
+    Jsoup.parse(page(eligibleNextYearOnly, mandatedCurrentYear, mandatedNextYear).body)
+  }
 
   object WhatYouNeedToDoMessages {
     val heading: String = "What you need to do"
-    val paraOne: String = "By taking part in this pilot you agree that you will:"
-    val bulletOne: String = "use compatible software to record your client’s income and expenses"
-    val bulletTwo: String = "send quarterly updates from the start of their accounting period"
-    val bulletThree: String = "submit their final declaration by 31 January following their current tax year"
-    val bulletFour: String = "tell HMRC if they stop trading or start a new business"
 
-    val subHeading: String = "Your client can stop using this pilot at any time"
-    val paraTwo: String = "Your client can choose to stop using Making Tax Digital for Income Tax at any time until 6 April 2026." +
-      " You do not have to let us know and they can ignore any secure messages from the service."+
-      " But they must file their Self Assessment by 31 January following the end of the tax year as normal."
+    object NotificationBanner {
+      val heading: String = "Important"
+    }
 
-    val openNewTab: String = "(opens in new tab)"
-    val qualifyingIncomeLink = "qualifying income"
-    val saTaxReturnLinkText = s" find out more about registering and sending a Self Assessment tax return $openNewTab"
-    val saTaxReturnLink: String = "find out more about registering and sending a Self Assessment tax return"
+    object MandatedCurrentYear {
+      // add messages here
+    }
 
-    val paraThree: String = "Your client must meet the Making Tax Digital for Income Tax requirements for 6 April 2026, if all of the following apply:"
-    val bulletFive: String = s"they are registered for Self Assessment ($saTaxReturnLinkText)"
-    val bulletSix: String = "they get income from self-employment or property, or both"
-    val bulletSeven: String = s"their total $qualifyingIncomeLink" + s" $openNewTab is more than £50,000"
+    object MandatedAndEligibleNextYearOnly {
+      // add messages here
+    }
 
-    val paraFour: String = "Your client must meet the Making Tax Digital for Income Tax requirements for 6 April 2027, if all of the following apply:"
-    val bulletEight: String = "they are registered for Self Assessment"
-    val bulletNine: String = "they get income from self-employment or property, or both"
-    val bulletTen: String = s"their total $qualifyingIncomeLink" +s" $openNewTab is more than £30,000"
+    object EligibleNextYearOnly {
+      // add messages here
+    }
 
-    val paraFive: String = "Your client can stop using Making Tax Digital for Income Tax after the pilot ends on 5 April 2026, if their qualifying income is less than £50,000."
+    object VoluntaryAndEligible {
+      val paraOne: String = "By taking part in this pilot you agree that either you or your client will:"
+
+      object NotificationBanner {
+        val bulletOne: String = "record income and expenses using compatible software"
+        val bulletTwo: String = "use software to send us quarterly updates"
+        val bulletThree: String = "complete any missing quarterly updates (if you’ve chosen to sign up for the current tax year)"
+        val bulletFour: String = "send an end of period statement and submit a final declaration by 31 January following the end of the tax year"
+        val bulletFive: String = "tell HMRC if they stop trading or start a new business"
+      }
+
+      object InsetText {
+        val para: String = "Using Making Tax Digital for Income Tax is currently voluntary. Your client can opt out and go back to Self Assessment at any time."
+      }
+
+      val paraTwo: String = "It will be compulsory for some people to use Making Tax Digital for Income Tax from April 2026," +
+        " depending on their total qualifying income. If this applies to your client, we’ll send them a letter."
+    }
 
     val acceptAndContinue: String = "Accept and continue"
 
-  }
-
-  "WhatYouNeedToDo" must {
-    "use the correct template details" in new TemplateViewTest(
-      view = page,
-      title = WhatYouNeedToDoMessages.heading,
-      isAgent = true,
-      backLink = None,
-      hasSignOutLink = true
-    )
-
-    "has a page heading" in {
-      document.mainContent.selectHead("h1").text mustBe WhatYouNeedToDoMessages.heading
-    }
-
-    "has a first paragraph" in {
-      document.mainContent.selectNth("p", 1).text mustBe WhatYouNeedToDoMessages.paraOne
-    }
-
-    "has a first bullet point" in {
-      document.mainContent.selectNth("ul", 1).selectNth("li", 1).text mustBe WhatYouNeedToDoMessages.bulletOne
-    }
-
-    "has a second bullet point" in {
-      document.mainContent.selectNth("ul", 1).selectNth("li", 2).text mustBe WhatYouNeedToDoMessages.bulletTwo
-    }
-
-    "has a third bullet point" in {
-      document.mainContent.selectNth("ul", 1).selectNth("li", 3).text mustBe WhatYouNeedToDoMessages.bulletThree
-    }
-
-    "has a four bullet point" in {
-      document.mainContent.selectNth("ul", 1).selectNth("li", 4).text mustBe WhatYouNeedToDoMessages.bulletFour
-    }
-
-    "has a subheading" in {
-      document.mainContent.selectNth("p", 2).text mustBe WhatYouNeedToDoMessages.subHeading
-    }
-
-    "has a second paragraph" in {
-      document.mainContent.selectNth("p", 3).text mustBe WhatYouNeedToDoMessages.paraTwo
-    }
-
-    "has a thrid paragraph" in {
-      document.mainContent.selectNth("p", 4).text mustBe WhatYouNeedToDoMessages.paraThree
-    }
-
-    "has a fifth bullet point" in {
-      document.mainContent.selectNth("ul", 2).selectNth("li", 1).text mustBe WhatYouNeedToDoMessages.bulletFive
-    }
-
-    "has a sixth bullet point" in {
-      document.mainContent.selectNth("ul", 2).selectNth("li", 2).text mustBe WhatYouNeedToDoMessages.bulletSix
-    }
-
-    "has a seventh bullet point" in {
-      document.mainContent.selectNth("ul", 2).selectNth("li", 3).text mustBe WhatYouNeedToDoMessages.bulletSeven
-    }
-
-    "has a fourth paragraph" in {
-      document.mainContent.selectNth("p", 5).text mustBe WhatYouNeedToDoMessages.paraFour
-    }
-
-    "has a eighth bullet point" in {
-      document.mainContent.selectNth("ul", 3).selectNth("li", 1).text mustBe WhatYouNeedToDoMessages.bulletEight
-    }
-
-    "has a ninth bullet point" in {
-      document.mainContent.selectNth("ul", 3).selectNth("li", 2).text mustBe WhatYouNeedToDoMessages.bulletNine
-    }
-
-    "has a tenth bullet point" in {
-      document.mainContent.selectNth("ul", 3).selectNth("li", 3).text mustBe WhatYouNeedToDoMessages.bulletTen
-    }
-
-    "has a fifth paragraph" in {
-      document.mainContent.selectNth("p", 6).text mustBe WhatYouNeedToDoMessages.paraFive
-    }
-
-    "has a accept and continue button" in {
-      document.mainContent.selectHead("button").text mustBe WhatYouNeedToDoMessages.acceptAndContinue
-    }
   }
 
 }

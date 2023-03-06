@@ -22,11 +22,8 @@ import services.AuditModel
 object EnterDetailsAuditing {
 
   val enterDetailsAuditType: String = "EnterDetails"
-  val enterDetailsIndividual: String = "individual"
-  val enterDetailsAgent: String = "agent"
 
-  case class EnterDetailsAuditModel(userType: String,
-                                    agentReferenceNumber: Option[String],
+  case class EnterDetailsAuditModel(agentReferenceNumber: String,
                                     userDetails: UserDetailsModel,
                                     numberOfAttempts: Int,
                                     lockedOut: Boolean) extends AuditModel {
@@ -34,14 +31,15 @@ object EnterDetailsAuditing {
     override val transactionName: Option[String] = None
 
     override val detail: Map[String, String] = Map(
-      "userType" -> userType,
+      "agentReferenceNumber" -> agentReferenceNumber,
+      "userType" -> "agent",
       "firstName" -> userDetails.firstName,
       "lastName" -> userDetails.lastName,
       "dateOfBirth" -> userDetails.dateOfBirth.toDesDateFormat,
       "nino" -> userDetails.nino,
       "numberOfAttempts" -> numberOfAttempts.toString,
       "lockedOut" -> lockedOut.toString
-    ) ++ agentReferenceNumber.map(arn => "agentReferenceNumber" -> arn)
+    )
 
     override val auditType: String = enterDetailsAuditType
 

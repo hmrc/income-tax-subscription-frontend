@@ -21,6 +21,7 @@ import common.Constants.ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY
 import config.MockConfig
 import config.featureswitch.FeatureSwitch.{ControlListYears, ItsaMandationStatus, PrePopulate, ThrottlingFeature}
 import controllers.ControllerBaseSpec
+import models.status.MandationStatus.{Mandated, Voluntary}
 import models.{EligibilityStatus, PrePopData}
 import org.mockito.Mockito.{never, reset, times}
 import play.api.http.Status
@@ -43,7 +44,7 @@ class HomeControllerSpec extends ControllerBaseSpec
   with MockPrePopulationService
   with MockAuditingService
   with MockThrottlingConnector
-  with MockMandationStatusService {
+  with MockMandationStatusConnector {
 
   private val eligibleWithoutPrepopData = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, None)
   private val eligibleWithPrepopData = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, Some(mock[PrePopData]))
@@ -77,7 +78,7 @@ class HomeControllerSpec extends ControllerBaseSpec
     mockPrePopulationService,
     mockSubscriptionService,
     new ThrottlingService(mockThrottlingConnector, appConfig),
-    mockMandationStatusService
+    mockMandationStatusConnector
   )(implicitly, MockConfig, mockMessagesControllerComponents)
 
   import TestConstants.{testNino, testReference, testUtr}
@@ -162,7 +163,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                   setupMockGetSubscriptionNotFound(testNino)
                   mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithoutPrepopData)))
                   mockRetrieveReferenceSuccess(testUtr)(testReference)
-                  mockRetrieveMandationStatus()
+                  mockGetMandationStatus(Voluntary, Mandated)
 
                   enable(PrePopulate)
                   enable(ItsaMandationStatus)
@@ -186,7 +187,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                   mockRetrieveReferenceSuccess(testUtr)(testReference)
                   setupMockSubscriptionDetailsSaveFunctions()
                   setupMockPrePopulateSave(testReference)
-                  mockRetrieveMandationStatus()
+                  mockGetMandationStatus(Mandated, Voluntary)
 
                   enable(PrePopulate)
                   enable(ItsaMandationStatus)
@@ -255,7 +256,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                 setupMockGetSubscriptionNotFound(testNino)
                 mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithoutPrepopData)))
                 mockRetrieveReferenceSuccess(testUtr)(testReference)
-                mockRetrieveMandationStatus()
+                mockGetMandationStatus(Voluntary, Voluntary)
 
                 val result = await(testHomeController().index(fakeRequest))
 
@@ -309,7 +310,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                 redirectLocation(result) mustBe Some(controllers.individual.eligibility.routes.CannotSignUpThisYearController.show.url)
                 verifyGetThrottleStatusCalls(times(1))
                 verifyPrePopulationSave(1, testReference)
-                result.session(fakeRequest).data must contain (ELIGIBLE_NEXT_YEAR_ONLY -> "true")
+                result.session(fakeRequest).data must contain(ELIGIBLE_NEXT_YEAR_ONLY -> "true")
               }
             }
             "user has no prepop and prepop is enabled" should {
@@ -326,7 +327,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                 redirectLocation(result) mustBe Some(controllers.individual.eligibility.routes.CannotSignUpThisYearController.show.url)
                 verifyGetThrottleStatusCalls(times(1))
                 verifyPrePopulationSave(0, testReference)
-                result.session(fakeRequest).data must contain (ELIGIBLE_NEXT_YEAR_ONLY -> "true")
+                result.session(fakeRequest).data must contain(ELIGIBLE_NEXT_YEAR_ONLY -> "true")
               }
             }
           }

@@ -26,7 +26,9 @@ class IncomeTaxAgentUser(val enrolments: Enrolments,
                          val affinityGroup: Option[AffinityGroup],
                          val confidenceLevel: ConfidenceLevel)
   extends IncomeTaxUser with Extractors {
-  lazy val arn: Option[String] = getArnFromEnrolments(enrolments)
+
+
+  lazy val arn: String = getArnFromEnrolments(enrolments).get
 
   def clientNino(implicit request: Request[AnyContent]): Option[String] =
     request.session.get(ITSASessionKeys.NINO)

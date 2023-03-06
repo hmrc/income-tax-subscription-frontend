@@ -93,7 +93,7 @@ trait ReferenceRetrieval {
           case Left(UnexpectedStatusFailure(status)) =>
             throw new InternalServerException(s"[ReferenceRetrieval][withAgentReference] - Unexpected status returned: $status")
           case Right(Existing(value)) =>
-            auditingService.audit(SignupRetrieveAuditModel(userType = "agent", user.arn, clientsUtr, user.clientNino))
+            auditingService.audit(SignupRetrieveAuditModel(userType = "agent", Some(user.arn), clientsUtr, user.clientNino))
             f(value).map(_.addingToSession(ITSASessionKeys.REFERENCE -> value))
           case Right(Created(value)) =>
             f(value).map(_.addingToSession(ITSASessionKeys.REFERENCE -> value))

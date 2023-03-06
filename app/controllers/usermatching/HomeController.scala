@@ -21,6 +21,7 @@ import auth.individual.{IncomeTaxSAUser, SignUp, StatelessController, UserIdenti
 import common.Constants.ITSASessionKeys._
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.{ControlListYears, ItsaMandationStatus, PrePopulate}
+import connectors.MandationStatusConnector
 import controllers.individual.eligibility.{routes => eligibilityRoutes}
 import controllers.utils.ReferenceRetrieval
 import models.common.subscription.SubscriptionSuccess
@@ -43,7 +44,7 @@ class HomeController @Inject()(val auditingService: AuditingService,
                                val prePopulationService: PrePopulationService,
                                subscriptionService: SubscriptionService,
                                throttlingService: ThrottlingService,
-                               val mandationStatusService: MandationStatusService)
+                               val mandationStatusConnector: MandationStatusConnector)
                               (implicit val ec: ExecutionContext,
                                val appConfig: AppConfig,
                                mcc: MessagesControllerComponents) extends StatelessController with ReferenceRetrieval {
@@ -107,7 +108,7 @@ class HomeController @Inject()(val auditingService: AuditingService,
             case EligibilityStatus(thisYear, _, prepopMaybe) =>
               for {
                 _ <- handlePrepop(reference, prepopMaybe)
-                _ <- handleMandationStatus(reference, nino, utr)
+                _ <- handleMandationStatus(nino, utr)
               } yield goToSignUp(thisYear, utr, timestamp, nino)
           }
         }
@@ -120,17 +121,18 @@ class HomeController @Inject()(val auditingService: AuditingService,
       case Left(err) => throw new InternalServerException(s"HomeController.index: unexpected error calling the subscription service:\n$err")
     }
 
-  private def goToSignUp(thisYear: Boolean, utr: String, timestamp: String, nino: String)(implicit request: Request[AnyContent]): Result =
-    Redirect(
-      if (thisYear)
-        controllers.individual.sps.routes.SPSHandoffController.redirectToSPS
-      else
-        controllers.individual.eligibility.routes.CannotSignUpThisYearController.show)
+  private def goToSignUp(thisYear: Boolean, utr: String, timestamp: String, nino: String)(implicit request: Request[AnyContent]): Result = {
+    val location: Call = if (thisYear)
+      controllers.individual.sps.routes.SPSHandoffController.redirectToSPS
+    else
+      controllers.individual.eligibility.routes.CannotSignUpThisYearController.show
+    Redirect(location)
       .addingToSession(StartTime -> timestamp)
       .withJourneyState(SignUp)
       .addingToSession(UTR -> utr)
       .addingToSession(NINO -> nino)
       .addingToSession(ELIGIBLE_NEXT_YEAR_ONLY -> (!thisYear).toString)
+  }
 
   private def claimSubscription(mtditId: String, nino: String, utr: String)
                                (implicit user: IncomeTaxSAUser, request: Request[AnyContent]): Future[Result] =
@@ -153,11 +155,12 @@ class HomeController @Inject()(val auditingService: AuditingService,
       case _ => Future.successful(())
     }
 
-  private def handleMandationStatus(reference: String, nino: String, utr: String)(implicit request: Request[AnyContent]) = {
+  private def handleMandationStatus(nino: String, utr: String)(implicit request: Request[AnyContent]): Future[Unit] = {
     if (isEnabled(ItsaMandationStatus)) {
-      mandationStatusService.copyMandationStatus(reference, nino, utr)
+      mandationStatusConnector.getMandationStatus(nino, utr).map(_ => ()) // to be replaced when we start using it's result
     } else {
       Future.successful(())
     }
   }
+
 }

@@ -19,7 +19,6 @@ package controllers.agent.eligibility
 import auth.agent.StatelessController
 import config.AppConfig
 import forms.agent.AccountingPeriodCheckForm.accountingPeriodCheckForm
-import models.audits.EligibilityAnswerAuditing
 import models.audits.EligibilityAnswerAuditing.EligibilityAnswerAuditModel
 import models.{No, Yes}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -44,17 +43,14 @@ class AccountingPeriodCheckController @Inject()(val auditingService: AuditingSer
 
   def submit: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
-      val arn: Option[String] = user.arn
       accountingPeriodCheckForm.bindFromRequest().fold(
         formWithErrors => BadRequest(accountingPeriodCheck(formWithErrors, routes.AccountingPeriodCheckController.submit, backLink)),
         {
           case Yes =>
-            auditingService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, eligible = true, "yes",
-              "standardAccountingPeriod", arn))
+            auditingService.audit(EligibilityAnswerAuditModel(eligible = true, "yes", "standardAccountingPeriod", user.arn))
             Redirect(controllers.agent.matching.routes.ClientDetailsController.show())
           case No =>
-            auditingService.audit(EligibilityAnswerAuditModel(EligibilityAnswerAuditing.eligibilityAnswerAgent, eligible = false, "no",
-              "standardAccountingPeriod", arn))
+            auditingService.audit(EligibilityAnswerAuditModel(eligible = false, "no", "standardAccountingPeriod", user.arn))
             Redirect(routes.CannotTakePartController.show)
         }
       )

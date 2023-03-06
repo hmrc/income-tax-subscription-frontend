@@ -16,7 +16,7 @@
 
 package controllers.agent
 
-import controllers.agent.AgentControllerBaseSpec
+import common.Constants.ITSASessionKeys
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -55,14 +55,84 @@ class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec with Mo
   )
 
   "show" must {
-    "return OK with the page content" in new Setup {
-      when(whatYouNeedToDo(ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit))(any(), any()))
-        .thenReturn(HtmlFormat.empty)
+    "return OK with the page content" when {
+      "the user is completely voluntary and is eligible for both years" in new Setup {
+        when(whatYouNeedToDo(
+          ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
+          ArgumentMatchers.eq(false),
+          ArgumentMatchers.eq(false),
+          ArgumentMatchers.eq(false)
+        )(any(), any())).thenReturn(HtmlFormat.empty)
 
-      val result: Future[Result] = controller.show(subscriptionRequest)
+        val result: Future[Result] = controller.show(
+          subscriptionRequest.withSession(
+            ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "false",
+            ITSASessionKeys.MANDATED_CURRENT_YEAR -> "false",
+            ITSASessionKeys.MANDATED_NEXT_YEAR -> "false"
+          )
+        )
 
-      status(result) mustBe OK
-      contentType(result) mustBe Some(HTML)
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+      }
+
+      "the user is voluntary but only eligibile for next year" in new Setup {
+        when(whatYouNeedToDo(
+          ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
+          ArgumentMatchers.eq(true),
+          ArgumentMatchers.eq(false),
+          ArgumentMatchers.eq(false)
+        )(any(), any())).thenReturn(HtmlFormat.empty)
+
+        val result: Future[Result] = controller.show(
+          subscriptionRequest.withSession(
+            ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "true",
+            ITSASessionKeys.MANDATED_CURRENT_YEAR -> "false",
+            ITSASessionKeys.MANDATED_NEXT_YEAR -> "false"
+          )
+        )
+
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+      }
+      "the user is mandated for the current year and eligible for all" in new Setup {
+        when(whatYouNeedToDo(
+          ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
+          ArgumentMatchers.eq(false),
+          ArgumentMatchers.eq(true),
+          ArgumentMatchers.eq(false)
+        )(any(), any())).thenReturn(HtmlFormat.empty)
+
+        val result: Future[Result] = controller.show(
+          subscriptionRequest.withSession(
+            ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "false",
+            ITSASessionKeys.MANDATED_CURRENT_YEAR -> "true",
+            ITSASessionKeys.MANDATED_NEXT_YEAR -> "false"
+          )
+        )
+
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+      }
+      "the user is mandated for the next year and eligible for all" in new Setup {
+        when(whatYouNeedToDo(
+          ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
+          ArgumentMatchers.eq(false),
+          ArgumentMatchers.eq(false),
+          ArgumentMatchers.eq(true)
+        )(any(), any())).thenReturn(HtmlFormat.empty)
+
+        val result: Future[Result] = controller.show(
+          subscriptionRequest.withSession(
+            ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "false",
+            ITSASessionKeys.MANDATED_CURRENT_YEAR -> "false",
+            ITSASessionKeys.MANDATED_NEXT_YEAR -> "true"
+          )
+        )
+
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+      }
     }
   }
 
