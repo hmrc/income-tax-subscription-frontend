@@ -17,7 +17,6 @@
 package utilities
 
 import java.time.LocalDate
-
 import models.DateModel
 import models.common.AccountingPeriodModel
 import java.time.Month.JANUARY

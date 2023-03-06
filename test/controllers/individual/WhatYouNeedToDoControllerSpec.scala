@@ -16,6 +16,7 @@
 
 package controllers.individual
 
+import common.Constants.ITSASessionKeys
 import controllers.ControllerBaseSpec
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -55,14 +56,25 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec with MockAuditing
   )
 
   "show" must {
-    "return OK with the page content" in new Setup {
-      when(whatYouNeedToDo(ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit))(any(), any()))
-        .thenReturn(HtmlFormat.empty)
+    "return OK with the page content" when {
+      "the session contains a eligible only next year flag of false" in new Setup {
+        when(whatYouNeedToDo(ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit), ArgumentMatchers.eq(false))(any(), any()))
+          .thenReturn(HtmlFormat.empty)
 
-      val result: Future[Result] = controller.show(subscriptionRequest)
+        val result: Future[Result] = controller.show(subscriptionRequest.withSession(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "false"))
 
-      status(result) mustBe OK
-      contentType(result) mustBe Some(HTML)
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+      }
+      "the session contains a eligible only next year flag of true" in new Setup {
+        when(whatYouNeedToDo(ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit), ArgumentMatchers.eq(true))(any(), any()))
+          .thenReturn(HtmlFormat.empty)
+
+        val result: Future[Result] = controller.show(subscriptionRequest.withSession(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "true"))
+
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+      }
     }
   }
 
