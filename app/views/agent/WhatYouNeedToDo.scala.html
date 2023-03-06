@@ -18,6 +18,8 @@
 @import views.html.templates.AgentMainTemplate
 @import views.html.helpers.injected.ContinueButton
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
+@import utilities.AccountingPeriodUtil
+@import uk.gov.hmrc.play.language.LanguageUtils
 
 @this(
   mainTemplate: AgentMainTemplate,
@@ -25,7 +27,8 @@
   continueButton: ContinueButton,
   hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
   govukNotificationBanner : GovukNotificationBanner,
-  govukInsetText : GovukInsetText
+  govukInsetText : GovukInsetText,
+  languageUtils: LanguageUtils
 )(
   implicit appConfig: AppConfig
 )
@@ -69,20 +72,25 @@
 }
 
 @voluntaryAndEligibleNextYearOnlyContent = {
-
+  <p class="govuk-body">@messages("agent.what-you-need-to-do.voluntary-eligible-next-year-only.para-1", AccountingPeriodUtil.getCurrentTaxEndYear.toString)</p>
+  <p class="govuk-body">@messages("agent.what-you-need-to-do.voluntary-eligible-next-year-only.para-2")</p>
+  @govukNotificationBanner(NotificationBanner(content = HtmlContent(voluntaryAndEligibleNextYearOnlyNotificationBanner)))
+  @govukInsetText(InsetText(content = Text(messages("agent.what-you-need-to-do.voluntary-eligible-next-year-only.inset-text.para", AccountingPeriodUtil.getCurrentTaxEndYear.toString))))
 }
 
 @voluntaryAndEligibleNextYearOnlyNotificationBanner = {
-
+  <ul class="govuk-list govuk-list--bullet">
+    <li>@messages("agent.what-you-need-to-do.voluntary-eligible-next-year-only.notification-banner.bullet-1")</li>
+    <li>@messages("agent.what-you-need-to-do.voluntary-eligible-next-year-only.notification-banner.bullet-2")</li>
+    <li>@messages("agent.what-you-need-to-do.voluntary-eligible-next-year-only.notification-banner.bullet-3", languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(true)))</li>
+    <li>@messages("agent.what-you-need-to-do.voluntary-eligible-next-year-only.notification-banner.bullet-4")</li>
+  </ul>
 }
 
 @voluntaryAndEligibleBothYearsContent = {
   <p class="govuk-body">@messages("agent.what-you-need-to-do.voluntary-and-eligible.para-1")</p>
-
   @govukNotificationBanner(NotificationBanner(content = HtmlContent(voluntaryAndEligibleBothYearsNotificationBanner)))
-
   @govukInsetText(InsetText(content = Text(messages("agent.what-you-need-to-do.voluntary-and-eligible.inset-text.para"))))
-
   <p class="govuk-body">@messages("agent.what-you-need-to-do.voluntary-and-eligible.para-2")</p>
 }
 

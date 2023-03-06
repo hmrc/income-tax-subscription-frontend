@@ -604,15 +604,23 @@ cannot-sign-up.link3                                            = anfon Ffurflen
 cannot-sign-up.continue-button                                  = Parhewch i gofrestru ar gyfer blwyddyn nesaf
 
 ## Agent what you need to do page ##
-agent.what-you-need-to-do.heading                                                   = Beth y mae angen i chi ei wneud
-agent.what-you-need-to-do.voluntary-and-eligible.para-1                             = By taking part in this pilot you agree that either you or your client will: ... but in Welsh
-agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-1       = record income and expenses using compatible software ... but in Welsh
-agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-2       = use software to send us quarterly updates ... but in Welsh
-agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-3       = complete any missing quarterly updates (if you’ve chosen to sign up for the current tax year) ... but in Welsh
-agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-4       = send an end of period statement and submit a final declaration by 31 January following the end of the tax year ... but in Welsh
-agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-5       = tell HMRC if they stop trading or start a new business ... but in Welsh
-agent.what-you-need-to-do.voluntary-and-eligible.inset-text.para                    = Using Making Tax Digital for Income Tax is currently voluntary. Your client can opt out and go back to Self Assessment at any time. ... but in Welsh
-agent.what-you-need-to-do.voluntary-and-eligible.para-2                             = It will be compulsory for some people to use Making Tax Digital for Income Tax from April 2026, depending on their total qualifying income. If this applies to your client, we’ll send them a letter. ... but in Welsh
+agent.what-you-need-to-do.heading                                                        = Beth y mae angen i chi ei wneud
+agent.what-you-need-to-do.voluntary-and-eligible.para-1                                  = By taking part in this pilot you agree that either you or your client will: ... but in Welsh
+agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-1            = record income and expenses using compatible software ... but in Welsh
+agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-2            = use software to send us quarterly updates ... but in Welsh
+agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-3            = complete any missing quarterly updates (if you’ve chosen to sign up for the current tax year) ... but in Welsh
+agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-4            = send an end of period statement and submit a final declaration by 31 January following the end of the tax year ... but in Welsh
+agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-5            = tell HMRC if they stop trading or start a new business ... but in Welsh
+agent.what-you-need-to-do.voluntary-and-eligible.inset-text.para                         = Using Making Tax Digital for Income Tax is currently voluntary. Your client can opt out and go back to Self Assessment at any time. ... but in Welsh
+agent.what-you-need-to-do.voluntary-and-eligible.para-2                                  = It will be compulsory for some people to use Making Tax Digital for Income Tax from April 2026, depending on their total qualifying income. If this applies to your client, we’ll send them a letter. ... but in Welsh
+
+agent.what-you-need-to-do.voluntary-eligible-next-year-only.para-1                       = Your client can sign up to use Making Tax Digital for Income Tax from 6 April {0}. ... but in Welsh
+agent.what-you-need-to-do.voluntary-eligible-next-year-only.para-2                       = By signing up you agree that either you or your client will: ... but in Welsh
+agent.what-you-need-to-do.voluntary-eligible-next-year-only.notification-banner.bullet-1 = record income and expenses using compatible software ... but in Welsh
+agent.what-you-need-to-do.voluntary-eligible-next-year-only.notification-banner.bullet-2 = use software to send us quarterly update ... but in Welsh
+agent.what-you-need-to-do.voluntary-eligible-next-year-only.notification-banner.bullet-3 = send an end of period statement and submit a final declaration by {0} ... but in Welsh
+agent.what-you-need-to-do.voluntary-eligible-next-year-only.notification-banner.bullet-4 = tell HMRC if they stop trading or start a new business ... but in Welsh
+agent.what-you-need-to-do.voluntary-eligible-next-year-only.inset-text.para              = Your client’s Self Assessment tax return must be submitted at the end of the {0} tax year as normal. ... but in Welsh
 
 # Agent accounting period check page
 agent.accounting-period-check.title                             = A yw holl gyfnodau cyfrifyddu busnes eich cleient yn rhedeg o 6 Ebrill i 5 Ebrill?
