@@ -32,19 +32,21 @@
         implicit appConfig: AppConfig
 )
 
-@(postAction: Call, onlyNextYear: Boolean, mandatedCurrentYear: Boolean)(implicit request: Request[_], messages: Messages)
+@(postAction: Call, onlyNextYear: Boolean, mandatedCurrentYear: Boolean, mandatedNextYear: Boolean)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = messages("what-you-need-to-do.heading"), backLink = None) {
 
 
   <h1 class="govuk-heading-xl">@messages("what-you-need-to-do.heading")</h1>
 
-  @if(onlyNextYear) {
-    @nonMandatedNextYear
+  @if(mandatedNextYear && onlyNextYear) {
+    @nextYearMandated
   } else if (mandatedCurrentYear){
-  @currentYearMandated
+    @currentYearMandated
+  } else if (onlyNextYear){
+    @nonMandatedNextYear
   } else{
-  @nonMandatedEitherYear
+    @nonMandatedEitherYear
   }
 
   @form(action = postAction) {
@@ -114,6 +116,29 @@
     <li>@messages("what-you-need-to-do-current.notification.bullet-1")</li>
     <li>@messages("what-you-need-to-do-current.notification.bullet-2")</li>
     <li>@messages("what-you-need-to-do-current.notification.bullet-3", languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(false)))</li>
+  </ul>
+}
+
+@nextYearMandated = {
+  <p class="govuk-body">@messages("what-you-need-to-do.next-year-mandated.para-1",
+      AccountingPeriodUtil.getCurrentTaxEndYear.toString)</p>
+  <p class="govuk-body">@messages("what-you-need-to-do.next-year-mandated.para-2")</p>
+
+  @govukNotificationBanner(NotificationBanner(content = HtmlContent(nextYearMandatedNotificationContent)))
+
+  @govukInsetText(InsetText(
+    content = Text(Messages("what-you-need-to-do.next-year-mandated.inset-text.para"))
+  ))
+
+
+}
+
+@nextYearMandatedNotificationContent = {
+  <ul class="govuk-list govuk-list--bullet">
+    <li>@messages("what-you-need-to-do.next-year-mandated.notification.bullet-1",
+        AccountingPeriodUtil.getCurrentTaxEndYear.toString)</li>
+    <li>@messages("what-you-need-to-do.next-year-mandated.notification.bullet-2")</li>
+    <li>@messages("what-you-need-to-do.next-year-mandated.notification.bullet-3", languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(false)))</li>
   </ul>
 }
 

@@ -58,8 +58,17 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec with MockAuditing
 
   "show" must {
     "return OK with the page content" when {
+      "the session contains mandated and eligible for next year only flag of true" in new Setup {
+        when(whatYouNeedToDo(ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit), ArgumentMatchers.eq(true), ArgumentMatchers.eq(false), ArgumentMatchers.eq(true))(any(), any()))
+          .thenReturn(HtmlFormat.empty)
+
+        val result: Future[Result] = controller.show(subscriptionRequest.withSession(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "true", ITSASessionKeys.MANDATED_NEXT_YEAR -> "true"))
+
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+      }
       "the session contains a eligible only next year flag of false" in new Setup {
-        when(whatYouNeedToDo(ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit), ArgumentMatchers.eq(false), ArgumentMatchers.eq(false))(any(), any()))
+        when(whatYouNeedToDo(ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit), ArgumentMatchers.eq(false), ArgumentMatchers.eq(false), ArgumentMatchers.eq(false))(any(), any()))
           .thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(subscriptionRequest.withSession(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "false"))
@@ -68,7 +77,7 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec with MockAuditing
         contentType(result) mustBe Some(HTML)
       }
       "the session contains a eligible only next year flag of true" in new Setup {
-        when(whatYouNeedToDo(ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit), ArgumentMatchers.eq(true), ArgumentMatchers.eq(false))(any(), any()))
+        when(whatYouNeedToDo(ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit), ArgumentMatchers.eq(true), ArgumentMatchers.eq(false),ArgumentMatchers.eq(false))(any(), any()))
           .thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(subscriptionRequest.withSession(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "true"))
@@ -77,7 +86,7 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec with MockAuditing
         contentType(result) mustBe Some(HTML)
       }
       "the session contains a mandated current year flag of true" in new Setup {
-        when(whatYouNeedToDo(ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit), ArgumentMatchers.eq(false), ArgumentMatchers.eq(true))(any(), any()))
+        when(whatYouNeedToDo(ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit), ArgumentMatchers.eq(false), ArgumentMatchers.eq(true), ArgumentMatchers.eq(false))(any(), any()))
           .thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(subscriptionRequest.withSession(ITSASessionKeys.MANDATED_CURRENT_YEAR -> "true"))
