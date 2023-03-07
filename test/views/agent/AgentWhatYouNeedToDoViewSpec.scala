@@ -19,8 +19,10 @@ package views.agent
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.HtmlFormat
-import utilities.ViewSpec
+import utilities.{AccountingPeriodUtil, ViewSpec}
 import views.html.agent.WhatYouNeedToDo
+
+import java.time.format.DateTimeFormatter
 
 class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
 
@@ -90,7 +92,46 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
         hasSignOutLink = true
       )
 
-      // rest of the tests here for the voluntary but eligible for next year only content
+      "have a first paragraph" in {
+        mainContent.selectNth("p", 1).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.paraOne
+      }
+
+      "have a second paragraph" in {
+        mainContent.selectNth("p", 2).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.paraTwo
+      }
+
+      "have a notification banner" which {
+        def notificationBanner: Element = mainContent.selectHead(".govuk-notification-banner")
+
+        "has a heading" in {
+          notificationBanner.selectHead(".govuk-notification-banner__header").text mustBe WhatYouNeedToDoMessages.NotificationBanner.heading
+        }
+
+        "has a bullet list" which {
+          def bulletList: Element = notificationBanner.selectHead("ul")
+
+          "has a first bullet" in {
+            bulletList.selectNth("li", 1).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.NotificationBanner.bulletOne
+          }
+
+          "has a second bullet" in {
+            bulletList.selectNth("li", 2).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.NotificationBanner.bulletTwo
+          }
+
+          "has a third bullet" in {
+            bulletList.selectNth("li", 3).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.NotificationBanner.bulletThree
+          }
+
+          "has a forth bullet" in {
+            bulletList.selectNth("li", 4).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.NotificationBanner.bulletFour
+          }
+        }
+
+      }
+
+      "have an inset text" in {
+        mainContent.selectHead(".govuk-inset-text").text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.InsetText.para
+      }
 
       "have a form" which {
         def form: Element = mainContent.selectHead("form")
@@ -204,7 +245,28 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
     }
 
     object EligibleNextYearOnly {
-      // add messages here
+      val paraOne: String = {
+        val year: Int = AccountingPeriodUtil.getCurrentTaxEndYear
+        s"Your client can sign up to use Making Tax Digital for Income Tax from 6 April $year."
+      }
+      val paraTwo: String = "By signing up you agree that either you or your client will:"
+
+      object NotificationBanner {
+        val bulletOne: String = "record income and expenses using compatible software"
+        val bulletTwo: String = "use software to send us quarterly update"
+        val bulletThree: String = {
+          val date: String = AccountingPeriodUtil.getFinalDeclarationDate(true).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
+          s"send an end of period statement and submit a final declaration by $date"
+        }
+        val bulletFour: String = "tell HMRC if they stop trading or start a new business"
+      }
+
+      object InsetText {
+        val para: String = {
+          val year: Int = AccountingPeriodUtil.getCurrentTaxEndYear
+          s"Your client’s Self Assessment tax return must be submitted at the end of the $year tax year as normal."
+        }
+      }
     }
 
     object VoluntaryAndEligible {
