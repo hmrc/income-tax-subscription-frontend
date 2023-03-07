@@ -109,6 +109,14 @@ what-you-need-to-do.next-year-only.notification.bullet-3         = send an end o
 what-you-need-to-do.next-year-only.notification.bullet-4         = tell HMRC if you stop trading or start a new business
 what-you-need-to-do.next-year-only.inset.para                    = You must submit your normal Self Assessment tax return at the end of this tax year as normal.
 
+##  What You Need To Do Current  ##
+what-you-need-to-do-current.heading                                     = What you need to do
+what-you-need-to-do-current.para-1                                      = Based on your previous returns, you need to sign up for Making Tax Digital for Income Tax to submit your records.
+what-you-need-to-do-current.para-2                                      = By signing up you agree that you will:
+what-you-need-to-do-current.notification.bullet-1                       = get compatible software to record your income and expenses
+what-you-need-to-do-current.notification.bullet-2                       = use your compatible software to send us quarterly updates
+what-you-need-to-do-current.notification.bullet-3                       = send an end of period statement using your software and submit your final declaration by {0}
+what-you-need-to-do-current.inset.para                                  = You may be penalised if you don’t meet the requirements for Making Tax Digital for Income tax.
 
 # What tax year to sign up
 business.what-year-to-sign-up.title                             = Which tax year do you want to start using software to file updates for?
