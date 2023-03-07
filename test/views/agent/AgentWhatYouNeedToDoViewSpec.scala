@@ -101,6 +101,37 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
       )
 
       // rest of the tests here for mandated next year and eligible next year content
+      "have a first paragraph" in {
+        mainContent.selectNth("p", 1).text mustBe WhatYouNeedToDoMessages.MandatedAndEligibleForNextYearOnly.paraOne
+      }
+
+      "have a second paragraph" in {
+        mainContent.selectNth("p", 2).text mustBe WhatYouNeedToDoMessages.MandatedAndEligibleForNextYearOnly.paraTwo
+      }
+
+      "have a notification banner" which {
+        def notificationBanner: Element = mainContent.selectHead(".govuk-notification-banner")
+
+        "has a heading" in {
+          notificationBanner.selectHead(".govuk-notification-banner__header").text mustBe WhatYouNeedToDoMessages.NotificationBanner.heading
+        }
+
+        "has a bullet list" which {
+          def bulletList: Element = notificationBanner.selectHead("ul")
+
+          "has a first bullet" in {
+            bulletList.selectNth("li", 1).text mustBe WhatYouNeedToDoMessages.MandatedAndEligibleForNextYearOnly.NotificationBanner.bulletOne
+          }
+
+          "has a second bullet" in {
+            bulletList.selectNth("li", 2).text mustBe WhatYouNeedToDoMessages.MandatedAndEligibleForNextYearOnly.NotificationBanner.bulletTwo
+          }
+
+          "has a third bullet" in {
+            bulletList.selectNth("li", 3).text mustBe WhatYouNeedToDoMessages.MandatedAndEligibleForNextYearOnly.NotificationBanner.bulletThree
+          }
+        }
+      }
 
       "have a form" which {
         def form: Element = mainContent.selectHead("form")
@@ -332,6 +363,22 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
 
       val paraTwo: String = "It will be compulsory for some people to use Making Tax Digital for Income Tax from April 2026," +
         " depending on their total qualifying income. If this applies to your client, we’ll send them a letter."
+    }
+
+    object MandatedAndEligibleForNextYearOnly {
+      val currentYearDate = AccountingPeriodUtil.getCurrentTaxEndYear
+      val paraOne: String = s"You can sign up your client to use Making Tax Digital for Income Tax from 6 April $currentYearDate."
+      val paraTwo: String = "By signing up you agree that either you or your client will:"
+
+      object NotificationBanner {
+        val bulletOne: String = "get compatible software to record your income and expenses"
+        val bulletTwo: String = "use your compatible software to send us quarterly updates"
+        val bulletThree: String = {
+          val finalDeclarationDate = AccountingPeriodUtil.getFinalDeclarationDate(true).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
+          s"send an end of period statement and submit your final declaration by $finalDeclarationDate"
+        }
+      }
+
     }
 
     val acceptAndContinue: String = "Accept and continue"

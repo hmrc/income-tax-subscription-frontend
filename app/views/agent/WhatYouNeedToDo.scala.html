@@ -43,7 +43,7 @@
   @if(mandatedCurrentYear) {
     @mandatedCurrentYearContent
   } else if (mandatedNextYear && eligibleNextYearOnly) {
-    @mandatedAndOnlyEligibleNextYearOnlyContent
+    @mandatedAndEligibleNextYearOnlyContent
   } else if (eligibleNextYearOnly) {
     @voluntaryAndEligibleNextYearOnlyContent
   } else {
@@ -74,12 +74,20 @@ content = Text(Messages("agent.what-you-need-to-do-current.warning.para"))
 </ul>
 }
 
-@mandatedAndOnlyEligibleNextYearOnlyContent = {
+@mandatedAndEligibleNextYearOnlyContent = {
+  <p class="govuk-body">@messages("agent.what-you-need-to-do.mandated-and-eligible-next-year-only.para-1",
+      AccountingPeriodUtil.getCurrentTaxEndYear.toString)</p>
+  <p class="govuk-body">@messages("agent.what-you-need-to-do.mandated-and-eligible-next-year-only.para-2")</p>
 
+  @govukNotificationBanner(NotificationBanner(content = HtmlContent(mandatedAndEligibleNextYearOnlyNotificationBanner)))
 }
 
-@mandatedAndOnlyEligibleNextYearOnlyNotificationBanner = {
-
+@mandatedAndEligibleNextYearOnlyNotificationBanner = {
+  <ul class="govuk-list govuk-list--bullet">
+    <li>@messages("agent.what-you-need-to-do.mandated-and-eligible-next-year-only.notification-banner.bullet-1")</li>
+    <li>@messages("agent.what-you-need-to-do.mandated-and-eligible-next-year-only.notification-banner.bullet-2")</li>
+    <li>@messages("agent.what-you-need-to-do.mandated-and-eligible-next-year-only.notification-banner.bullet-3", languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(true)))</li>
+  </ul>
 }
 
 @voluntaryAndEligibleNextYearOnlyContent = {
