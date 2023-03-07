@@ -92,39 +92,38 @@ cannot-use-service.line1                                        = Gallwch ond co
 
 ##  What You Need To Do (pre-mandation either tax year)  ##
 what-you-need-to-do.heading                                     = What you need to do ... but in Welsh
-what-you-need-to-do.para-1                                      = By taking part in this pilot you agree that you’ll: ... but in Welsh
+what-you-need-to-do.para-1                                      = By taking part in this pilot you agree to: ... but in Welsh
 what-you-need-to-do.notification.bullet-1                       = get compatible software to record your income and expenses ... but in Welsh
-what-you-need-to-do.notification.bullet-2                       = complete any missing quarterly updates (if you’ve chosen to sign up for the current tax year) ... but in Welsh
-what-you-need-to-do.notification.bullet-3                       = send an end of period statement using your software by 31 January following the tax year you’ve chosen to start using Making Tax Digital For Income Tax ... but in Welsh
-what-you-need-to-do.notification.bullet-4                       = submit your final declaration by 31 January following the tax year you’ve started using Making Tax Digital for Income Tax ... but in Welsh
+what-you-need-to-do.notification.bullet-2                       = use your software to send us quarterly updates ... but in Welsh
+what-you-need-to-do.notification.bullet-3                       = complete any missing quarterly updates (if you’ve chosen to sign up for the current tax year) ... but in Welsh
+what-you-need-to-do.notification.bullet-4                       = send an end of period statement and submit your final declaration by 31 January following the end of the tax year ... but in Welsh
 what-you-need-to-do.notification.bullet-5                       = tell HMRC if you stop trading or start a new business ... but in Welsh
-what-you-need-to-do.inset.para                                  = You can stop using Making Tax Digital for Income Tax at any time until 6 April 2026. If you stop, you must send your Self Assessment tax return at the end of the tax year as normal. ... but in Welsh
+what-you-need-to-do.inset.para                                  = Signing up to Making Tax Digital for Income Tax is currently voluntary. You can opt out and go back to Self Assessment at any time. ... but in Welsh
+what-you-need-to-do.para-2                                      = It will be compulsory for some people to use Making Tax Digital for Income Tax from April 2026, depending on their total qualifying income. We’ll send you a letter if this applies to you. ... but in Welsh
 
 ##  What You Need To Do (pre-mandation next tax year only)  ##
-what-you-need-to-do.next-year-only.para-1                                = You can sign up to use Making Tax Digital for Income Tax to submit your records from 6 April {0} ... but in Welsh
-what-you-need-to-do.next-year-only.para-2                                = By taking part in this pilot you agree to: ... but in Welsh
-what-you-need-to-do.next-year-only.notification.bullet-1                 = get compatible software to record your income and expenses from 6 April {0} ... but in Welsh
-what-you-need-to-do.next-year-only.notification.bullet-2                 = use your compatible software to send us quarterly updates ... but in Welsh
-what-you-need-to-do.next-year-only.notification.bullet-3                 = send an end of period statement using your software and send your final declaration by {0} ... but in Welsh
-what-you-need-to-do.next-year-only.notification.bullet-4                 = tell HMRC if you stop trading or start a new business ... but in Welsh
-what-you-need-to-do.next-year-only.inset.para                            = You must submit your normal Self Assessment tax return at the end of this tax year as normal. ... but in Welsh
+what-you-need-to-do.next-year-only.para-1                        = You can sign up to use Making Tax Digital for Income Tax from 6 April {0}. ... but in Welsh
+what-you-need-to-do.next-year-only.para-2                        = By taking part in this pilot you agree to: ... but in Welsh
+what-you-need-to-do.next-year-only.notification.bullet-1         = get compatible software to record your income and expenses from 6 April {0} ... but in Welsh
+what-you-need-to-do.next-year-only.notification.bullet-2         = use your software to send us quarterly updates ... but in Welsh
+what-you-need-to-do.next-year-only.notification.bullet-3         = send an end of period statement using your software and send your final declaration by {0} ... but in Welsh
+what-you-need-to-do.next-year-only.notification.bullet-4         = tell HMRC if you stop trading or start a new business ... but in Welsh
+what-you-need-to-do.next-year-only.inset.para                    = You must continue submitting your Self Assessment tax returns as usual until the year you’ve signed up. ... but in Welsh
 
 ##  What You Need To Do Current  ##
-what-you-need-to-do-current.heading                                     = What you need to do
-what-you-need-to-do-current.para-1                                      = Based on your previous returns, you need to sign up for Making Tax Digital for Income Tax to submit your records. ... but in Welsh
-what-you-need-to-do-current.para-2                                      = By signing up you agree that you will: ... but in Welsh
-what-you-need-to-do-current.notification.bullet-1                       = get compatible software to record your income and expenses ... but in Welsh
-what-you-need-to-do-current.notification.bullet-2                       = use your compatible software to send us quarterly updates ... but in Welsh
-what-you-need-to-do-current.notification.bullet-3                       = send an end of period statement using your software and submit your final declaration by {0} ... but in Welsh
-what-you-need-to-do-current.inset.para                                  = You can stop using Making Tax Digital for Income Tax at any time until 6 April 2026. If you stop, you must send your Self Assessment tax return at the end of the tax year as normal. ... but in Welsh
+what-you-need-to-do-current.para-1                               = Based on your previous returns, you need to sign up for Making Tax Digital for Income Tax. ... but in Welsh
+what-you-need-to-do-current.para-2                               = By signing up you agree to: ... but in Welsh
+what-you-need-to-do-current.notification.bullet-1                = get compatible software to record your income and expenses ... but in Welsh
+what-you-need-to-do-current.notification.bullet-2                = use your software to send us quarterly updates ... but in Welsh
+what-you-need-to-do-current.notification.bullet-3                = send an end of period statement and submit your final declaration by {0} ... but in Welsh
+what-you-need-to-do-current.inset.para                           = You may be penalised if you don’t use Making Tax Digital for Income Tax. ... but in Welsh
 
 ## What You Need To Do Next Year Manadated ##
-what-you-need-to-do.next-year-mandated.para-1                   = You can sign up to use Making Tax Digital for Income Tax to submit your records from 6 April {0}. ...but in Welsh
-what-you-need-to-do.next-year-mandated.para-2                   = By signing up you agree that you will:  ...but in Welsh
-what-you-need-to-do.next-year-mandated.notification.bullet-1    = get compatible software to record your income and expenses from 6 April {0}  ...but in Welsh
-what-you-need-to-do.next-year-mandated.notification.bullet-2    = use your software to send us quarterly updates  ...but in Welsh
-what-you-need-to-do.next-year-mandated.notification.bullet-3    = send an end of period statement using your software and submit your final declaration by {0}  ...but in Welsh
-what-you-need-to-do.next-year-mandated.inset-text.para          = You must submit your Self Assessment tax return at the end of this tax year as normal.  ...but in Welsh
+what-you-need-to-do.next-year-mandated.para-1                   = You can sign up to use Making Tax Digital for Income Tax from 6 April {0}. ... but in Welsh
+what-you-need-to-do.next-year-mandated.para-2                   = By signing up you agree to: ... but in Welsh
+what-you-need-to-do.next-year-mandated.notification.bullet-1    = get compatible software to record your income and expenses ... but in Welsh
+what-you-need-to-do.next-year-mandated.notification.bullet-2    = use your compatible software to send us quarterly updates ... but in Welsh
+what-you-need-to-do.next-year-mandated.notification.bullet-3    = send an end of period statement and submit your final declaration by {0} ... but in Welsh
 
 # What tax year to sign up
 business.what-year-to-sign-up.title                             = Ar gyfer pa flwyddyn dreth yr ydych am ddechrau defnyddio meddalwedd i gyflwyno diweddariadau?
