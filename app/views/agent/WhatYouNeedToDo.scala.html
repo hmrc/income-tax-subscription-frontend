@@ -27,8 +27,9 @@
   continueButton: ContinueButton,
   hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
   govukNotificationBanner : GovukNotificationBanner,
+  languageUtils: LanguageUtils,
   govukInsetText : GovukInsetText,
-  languageUtils: LanguageUtils
+  govukWarningText: GovukWarningText
 )(
   implicit appConfig: AppConfig
 )
@@ -56,11 +57,21 @@
 }
 
 @mandatedCurrentYearContent = {
+<p class="govuk-body">@messages("agent.what-you-need-to-do-current.para-1")</p>
+<p class="govuk-body">@messages("agent.what-you-need-to-do-current.para-2")</p>
+@govukNotificationBanner(NotificationBanner(content = HtmlContent(mandatedCurrentYearNotificationBanner)))
 
+@govukWarningText(WarningText(
+content = Text(Messages("agent.what-you-need-to-do-current.warning.para"))
+))
 }
 
 @mandatedCurrentYearNotificationBanner = {
-
+<ul class="govuk-list govuk-list--bullet">
+    <li>@messages("agent.what-you-need-to-do-current.notification.bullet-1")</li>
+    <li>@messages("agent.what-you-need-to-do-current.notification.bullet-2")</li>
+    <li>@messages("agent.what-you-need-to-do-current.notification.bullet-3", languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(false)))</li>
+</ul>
 }
 
 @mandatedAndOnlyEligibleNextYearOnlyContent = {

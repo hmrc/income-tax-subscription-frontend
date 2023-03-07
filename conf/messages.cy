@@ -125,6 +125,14 @@ what-you-need-to-do.next-year-mandated.notification.bullet-1    = get compatible
 what-you-need-to-do.next-year-mandated.notification.bullet-2    = use your compatible software to send us quarterly updates ... but in Welsh
 what-you-need-to-do.next-year-mandated.notification.bullet-3    = send an end of period statement and submit your final declaration by {0} ... but in Welsh
 
+##  Agent What You Need To Do (Current year Mandated)  ##
+agent.what-you-need-to-do-current.para-1                                = Based on your client’s previous tax returns, they must use Making Tax Digital for Income Tax. ... but in Welsh
+agent.what-you-need-to-do-current.para-2                                = Either you or your client must: ... but in Welsh
+agent.what-you-need-to-do-current.notification.bullet-1                 = record income and expenses using compatible software ... but in Welsh
+agent.what-you-need-to-do-current.notification.bullet-2                 = use software to send us quarterly updates ... but in Welsh
+agent.what-you-need-to-do-current.notification.bullet-3                 = send an end of period statement and submit a final declaration by {0} ... but in Welsh
+agent.what-you-need-to-do-current.warning.para                          = Your client may be penalised if they do not use Making Tax Digital for Income Tax. ... but in Welsh
+
 # What tax year to sign up
 business.what-year-to-sign-up.title                             = Ar gyfer pa flwyddyn dreth yr ydych am ddechrau defnyddio meddalwedd i gyflwyno diweddariadau?
 business.what-year-to-sign-up.heading                           = Ar gyfer pa flwyddyn dreth yr ydych am ddechrau defnyddio meddalwedd i gyflwyno diweddariadau?

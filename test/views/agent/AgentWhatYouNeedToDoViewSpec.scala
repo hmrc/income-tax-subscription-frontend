@@ -40,7 +40,41 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
         hasSignOutLink = true
       )
 
-      // rest of the tests here for mandated current year content
+      "have a first paragraph" in {
+        mainContent.selectNth("p", 1).text mustBe WhatYouNeedToDoMessages.MandatedCurrentYear.paraOne
+      }
+
+      "have a second paragraph" in {
+        mainContent.selectNth("p", 2).text mustBe WhatYouNeedToDoMessages.MandatedCurrentYear.paraTwo
+      }
+
+      "have a notification banner" which {
+        def notificationBanner: Element = mainContent.selectHead(".govuk-notification-banner")
+
+        "has a heading" in {
+          notificationBanner.selectHead(".govuk-notification-banner__header").text mustBe WhatYouNeedToDoMessages.NotificationBanner.heading
+        }
+
+        "has a bullet list" which {
+          def bulletList: Element = notificationBanner.selectHead("ul")
+
+          "has a first bullet" in {
+            bulletList.selectNth("li", 1).text mustBe WhatYouNeedToDoMessages.MandatedCurrentYear.NotificationBanner.bulletOne
+          }
+
+          "has a second bullet" in {
+            bulletList.selectNth("li", 2).text mustBe WhatYouNeedToDoMessages.MandatedCurrentYear.NotificationBanner.bulletTwo
+          }
+
+          "has a third bullet" in {
+            bulletList.selectNth("li", 3).text mustBe WhatYouNeedToDoMessages.MandatedCurrentYear.NotificationBanner.bulletThree
+          }
+        }
+      }
+
+      "have a warning text" in {
+        mainContent.selectHead(".govuk-warning-text__text").text mustBe WhatYouNeedToDoMessages.MandatedCurrentYear.WarningText.para
+      }
 
       "have a form" which {
         def form: Element = mainContent.selectHead("form")
@@ -237,7 +271,19 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
     }
 
     object MandatedCurrentYear {
-      // add messages here
+      val paraOne: String = "Based on your client’s previous tax returns, they must use Making Tax Digital for Income Tax."
+      val paraTwo: String = "Either you or your client must:"
+
+      object NotificationBanner {
+        val bulletOne: String = "record income and expenses using compatible software"
+        val bulletTwo: String = "use software to send us quarterly updates"
+        val date = AccountingPeriodUtil.getFinalDeclarationDate(false).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
+        val bulletThree: String = s"send an end of period statement and submit a final declaration by ${date}"
+      }
+      object WarningText {
+        val para: String = "Your client may be penalised if they do not use Making Tax Digital for Income Tax."
+      }
+
     }
 
     object MandatedAndEligibleNextYearOnly {
