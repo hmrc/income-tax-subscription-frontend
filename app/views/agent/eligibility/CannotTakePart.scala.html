@@ -35,36 +35,20 @@
 
     <h1 class="govuk-heading-l">@messages("agent.cannot-take-part.heading")</h1>
 
-    <p class="govuk-body">@messages("agent.cannot-take-part.income")</p>
-
-    <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("agent.cannot-take-part.income.point1")</li>
-        <li>@messages("agent.cannot-take-part.income.point2")</li>
-        <li>@messages("agent.cannot-take-part.income.point3")</li>
-        <li>@messages("agent.cannot-take-part.income.point4")</li>
-        <li>@messages("agent.cannot-take-part.income.point5")</li>
-    </ul>
-
-    <p class="govuk-body">@messages("agent.cannot-take-part.other")</p>
-
-    <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("agent.cannot-take-part.other.point1")</li>
-        <li>@messages("agent.cannot-take-part.other.point2")</li>
-        <li>@messages("agent.cannot-take-part.other.point3")</li>
-        <li>@messages("agent.cannot-take-part.other.point4")</li>
-    </ul>
+    <p class="govuk-body">@messages("agent.cannot-take-part.para1")</p>
 
     <p class="govuk-body">
         @Html(messages(
-            "agent.cannot-take-part.alternative",
-                <a class="govuk-link" href="https://www.gov.uk/self-assessment-tax-returns/sending-return">{messages("agent.cannot-take-part.alternative.link")}</a>
+            "agent.cannot-take-part.para2",
+                <a class="govuk-link" href="https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax">{messages("agent.cannot-take-part.link1")}</a>
         ))
     </p>
+
+    <p class="govuk-inset-text">@messages("agent.cannot-take-part.inset1")</p>
 
     @form(action = controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show) {
         <div class="govuk-form-group">
             <div>@continueButton(Some(messages("agent.base.sign-up-another-client")))</div>
-            <div>@signOutLink()</div>
         </div>
     }
 

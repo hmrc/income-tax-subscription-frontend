@@ -525,21 +525,12 @@ agent.other-sources-of-income.not-include-point2                = difidendau
 agent.other-sources-of-income.invalid                           = Dewiswch ‘Iawn’ os oes gan eich cleient ffynonellau incwm heblaw hunangyflogaeth neu incwm o eiddo
 
 # Agent cannot take part page
-agent.cannot-take-part.title                                    = Ni all eich cleient gymryd rhan yn y cynllun peilot hwn
-agent.cannot-take-part.heading                                  = Ni all eich cleient gymryd rhan yn y cynllun peilot hwn
-agent.cannot-take-part.income                                   = Ni allwch gofrestru’ch cleient ar gyfer y cynllun peilot hwn os yw’n cael incwm o’r canlynol:
-agent.cannot-take-part.income.point1                            = incwm TWE fel cyflogai
-agent.cannot-take-part.income.point2                            = pensiynau neu flwydd-daliadau’r DU
-agent.cannot-take-part.income.point3                            = buddsoddiadau y tu allan i’r DU
-agent.cannot-take-part.income.point4                            = enillion cyfalaf
-agent.cannot-take-part.income.point5                            = budd-daliadau trethadwy’r Wladwriaeth
-agent.cannot-take-part.other                                    = Hefyd, ni all eich cleient gymryd rhan os yw’r canlynol yn wir:
-agent.cannot-take-part.other.point1                             = nid yw ei flwyddyn dreth yn cyd-fynd â’r flwyddyn dreth safonol
-agent.cannot-take-part.other.point2                             = dechreuodd ei fusnes fel unig fasnachwr o fewn y ddwy flynedd ddiwethaf
-agent.cannot-take-part.other.point3                             = dechreuodd ei fusnes eiddo o fewn y flwyddyn ddiwethaf
-agent.cannot-take-part.other.point4                             = nid yw ei gyfnod cyfrifyddu yn cyd-fynd â’r flwyddyn dreth safonol
-agent.cannot-take-part.alternative                              = Bydd yn rhaid i’ch cleient anfon {0} yn lle hynny. Mae’n bosibl y gallwch ddefnyddio’r gwasanaeth ‘Defnyddio meddalwedd i roi gwybod am Dreth Incwm eich cleient’ ar gyfer eich cleient yn y dyfodol.
-agent.cannot-take-part.alternative.link                         = Ffurflen Dreth Hunanasesiad
+agent.cannot-take-part.title                                    = Your client cannot take part in this pilot yet
+agent.cannot-take-part.heading                                  = Your client cannot take part in this pilot yet
+agent.cannot-take-part.para1                                    = The Making Tax Digital For Income Tax pilot is not currently available to people with certain incomes or deductions.
+agent.cannot-take-part.para2                                    = However, your client may be able to sign up to Making Tax Digital for Income Tax in the future. Learn more about {0}.
+agent.cannot-take-part.link1                                    = who’s eligible for Making Tax Digital for Income Tax
+agent.cannot-take-part.inset1                                    = Your client’s Self Assessment tax return must be submitted as normal.
 
 # Agent cannot sign up page
 agent.cannot-sign-up.heading                                    = Gall eich cleient gofrestru ar gyfer y cynllun peilot hwn o {0}
