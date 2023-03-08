@@ -70,11 +70,13 @@
 @nonMandatedEitherYear = {
   <p class="govuk-body">@messages("what-you-need-to-do.para-1")</p>
 
-@govukNotificationBanner(NotificationBanner(content = HtmlContent(nonMandatedEitherYearNotificationContent)))
+  @govukNotificationBanner(NotificationBanner(content = HtmlContent(nonMandatedEitherYearNotificationContent)))
 
-@govukInsetText(InsetText(
-  content = Text(Messages("what-you-need-to-do.inset.para"))
-))
+  @govukInsetText(InsetText(
+    content = Text(Messages("what-you-need-to-do.inset.para"))
+  ))
+
+  <p class="govuk-body">@messages("what-you-need-to-do.para-2")</p>
 }
 
 @nonMandatedNextYearOnlyNotificationContent = {
@@ -125,12 +127,6 @@
   <p class="govuk-body">@messages("what-you-need-to-do.next-year-mandated.para-2")</p>
 
   @govukNotificationBanner(NotificationBanner(content = HtmlContent(nextYearMandatedNotificationContent)))
-
-  @govukInsetText(InsetText(
-    content = Text(Messages("what-you-need-to-do.next-year-mandated.inset-text.para"))
-  ))
-
-
 }
 
 @nextYearMandatedNotificationContent = {
@@ -138,7 +134,7 @@
     <li>@messages("what-you-need-to-do.next-year-mandated.notification.bullet-1",
         AccountingPeriodUtil.getCurrentTaxEndYear.toString)</li>
     <li>@messages("what-you-need-to-do.next-year-mandated.notification.bullet-2")</li>
-    <li>@messages("what-you-need-to-do.next-year-mandated.notification.bullet-3", languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(false)))</li>
+    <li>@messages("what-you-need-to-do.next-year-mandated.notification.bullet-3", languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(true)))</li>
   </ul>
 }
 

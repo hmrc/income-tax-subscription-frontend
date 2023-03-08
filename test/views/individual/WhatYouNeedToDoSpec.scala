@@ -41,31 +41,33 @@ class WhatYouNeedToDoSpec extends ViewSpec {
 
   object WhatYouNeedToDoMessages {
     val heading: String = "What you need to do"
-    val paraOne: String = "By taking part in this pilot you agree that you’ll:"
+    val paraOne: String = "By taking part in this pilot you agree to:"
 
     object NotificationBanner {
       val heading: String = "Important"
       val bulletOne: String = "get compatible software to record your income and expenses"
-      val bulletTwo: String = "complete any missing quarterly updates (if you’ve chosen to sign up for the current tax year)"
-      val bulletThree: String = "send an end of period statement using your software by 31 January following the tax year you’ve chosen to start using Making Tax Digital For Income Tax"
-      val bulletFour: String = "submit your final declaration by 31 January following the tax year you’ve started using Making Tax Digital for Income Tax"
+      val bulletTwo: String = "use your software to send us quarterly updates"
+      val bulletThree: String = "complete any missing quarterly updates (if you’ve chosen to sign up for the current tax year)"
+      val bulletFour: String = "send an end of period statement and submit your final declaration by 31 January following the end of the tax year"
       val bulletFive: String = "tell HMRC if you stop trading or start a new business"
     }
 
     object InsetText {
-      val para: String = "You can stop using Making Tax Digital for Income Tax at any time until 6 April 2026. If you stop, you must send your Self Assessment tax return at the end of the tax year as normal."
+      val para: String = "Signing up to Making Tax Digital for Income Tax is currently voluntary. You can opt out and go back to Self Assessment at any time."
     }
+
+    val paraTwo: String = "It will be compulsory for some people to use Making Tax Digital for Income Tax from April 2026, depending on their total qualifying income. We’ll send you a letter if this applies to you."
   }
 
   object NextYearOnlyWhatYouNeedToDoMessages {
     val heading: String = "What you need to do"
-    val paraOne: String = s"You can sign up to use Making Tax Digital for Income Tax to submit your records from 6 April ${AccountingPeriodUtil.getCurrentTaxEndYear}"
+    val paraOne: String = s"You can sign up to use Making Tax Digital for Income Tax from 6 April ${AccountingPeriodUtil.getCurrentTaxEndYear}."
     val paraTwo: String = "By taking part in this pilot you agree to:"
 
     object NotificationBanner {
       val heading: String = "Important"
       val bulletOne: String = s"get compatible software to record your income and expenses from 6 April ${AccountingPeriodUtil.getCurrentTaxEndYear}"
-      val bulletTwo: String = "use your compatible software to send us quarterly updates"
+      val bulletTwo: String = "use your software to send us quarterly updates"
       val bulletThree: String = {
         val date = AccountingPeriodUtil.getFinalDeclarationDate(true).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
         s"send an end of period statement using your software and send your final declaration by $date"
@@ -74,7 +76,7 @@ class WhatYouNeedToDoSpec extends ViewSpec {
     }
 
     object InsetText {
-      val para: String = "You must submit your normal Self Assessment tax return at the end of this tax year as normal."
+      val para: String = "You must continue submitting your Self Assessment tax returns as usual until the year you’ve signed up."
     }
 
   }
@@ -82,41 +84,37 @@ class WhatYouNeedToDoSpec extends ViewSpec {
 
   object WhatYouNeedToDoMandatedCurrent {
     val heading: String = "What you need to do"
-    val paraOne: String = "Based on your previous returns, you need to sign up for Making Tax Digital for Income Tax to submit your records."
-    val paraTwo: String = "By signing up you agree that you will:"
+    val paraOne: String = "Based on your previous returns, you need to sign up for Making Tax Digital for Income Tax."
+    val paraTwo: String = "By signing up you agree to:"
 
     object NotificationBanner {
       val heading: String = "Important"
       val bulletOne: String = "get compatible software to record your income and expenses"
-      val bulletTwo: String = "use your compatible software to send us quarterly updates"
+      val bulletTwo: String = "use your software to send us quarterly updates"
       val bulletThree: String = {
         val date = AccountingPeriodUtil.getFinalDeclarationDate(false).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
-        s"send an end of period statement using your software and submit your final declaration by $date"
+        s"send an end of period statement and submit your final declaration by $date"
       }
     }
 
     object WarningText {
-      val para: String = "You may be penalised if you don’t meet the requirements for Making Tax Digital for Income tax."
+      val para: String = "You may be penalised if you don’t use Making Tax Digital for Income Tax."
     }
 
   }
 
   object WhatYouNeedToDoMandatedAndEligibleForNextYearOnly {
     val heading: String = "What you need to do"
-    val currentTaxYearEndDate = AccountingPeriodUtil.getCurrentTaxEndYear
-    val paraOne = s"You can sign up to use Making Tax Digital for Income Tax to submit your records from 6 April $currentTaxYearEndDate."
-    val paraTwo = "By signing up you agree that you will:"
+    val currentTaxYearEndDate: Int = AccountingPeriodUtil.getCurrentTaxEndYear
+    val paraOne = s"You can sign up to use Making Tax Digital for Income Tax from 6 April $currentTaxYearEndDate."
+    val paraTwo = "By signing up you agree to:"
 
     object NotificationBanner {
-      val finalDeclarationDate = AccountingPeriodUtil.getFinalDeclarationDate(false).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
+      val finalDeclarationDate: String = AccountingPeriodUtil.getFinalDeclarationDate(true).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
       val heading: String = "Important"
-      val bulletOne: String = s"get compatible software to record your income and expenses from 6 April $currentTaxYearEndDate"
-      val bulletTwo: String = "use your software to send us quarterly updates"
-      val bulletThree: String = s"send an end of period statement using your software and submit your final declaration by $finalDeclarationDate"
-    }
-
-    object InsetText {
-      val para: String = "You must submit your Self Assessment tax return at the end of this tax year as normal."
+      val bulletOne: String = s"get compatible software to record your income and expenses"
+      val bulletTwo: String = "use your compatible software to send us quarterly updates"
+      val bulletThree: String = s"send an end of period statement and submit your final declaration by $finalDeclarationDate"
     }
 
   }
@@ -174,6 +172,10 @@ class WhatYouNeedToDoSpec extends ViewSpec {
 
     "has an inset text" in {
       document(false).selectHead(".govuk-inset-text").text mustBe WhatYouNeedToDoMessages.InsetText.para
+    }
+
+    "have a second paragraph" in {
+      document(false).mainContent.selectNth("p", 2).text mustBe WhatYouNeedToDoMessages.paraTwo
     }
 
   }
