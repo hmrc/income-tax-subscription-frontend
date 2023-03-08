@@ -125,6 +125,15 @@ what-you-need-to-do.next-year-mandated.notification.bullet-1    = get compatible
 what-you-need-to-do.next-year-mandated.notification.bullet-2    = use your compatible software to send us quarterly updates
 what-you-need-to-do.next-year-mandated.notification.bullet-3    = send an end of period statement and submit your final declaration by {0}
 
+##  Agent What You Need To Do (Current year Mandated)  ##
+agent.what-you-need-to-do-current.para-1                                = Based on your client’s previous tax returns, they must use Making Tax Digital for Income Tax.
+agent.what-you-need-to-do-current.para-2                                = Either you or your client must:
+agent.what-you-need-to-do-current.notification.bullet-1                 = record income and expenses using compatible software
+agent.what-you-need-to-do-current.notification.bullet-2                 = use software to send us quarterly updates
+agent.what-you-need-to-do-current.notification.bullet-3                 = send an end of period statement and submit a final declaration by {0}
+agent.what-you-need-to-do-current.warning.para                          = Your client may be penalised if they do not use Making Tax Digital for Income Tax.
+
+
 # What tax year to sign up
 business.what-year-to-sign-up.title                             = Which tax year do you want to start using software to file updates for?
 business.what-year-to-sign-up.heading                           = Which tax year do you want to start using software to file updates for?
