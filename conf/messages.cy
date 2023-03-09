@@ -620,6 +620,13 @@ agent.what-you-need-to-do.voluntary-eligible-next-year-only.notification-banner.
 agent.what-you-need-to-do.voluntary-eligible-next-year-only.notification-banner.bullet-4 = tell HMRC if they stop trading or start a new business ... but in Welsh
 agent.what-you-need-to-do.voluntary-eligible-next-year-only.inset-text.para              = Your client’s Self Assessment tax return must be submitted at the end of the {0} tax year as normal. ... but in Welsh
 
+## Agent what you need to do page post mandation next tax year
+agent.what-you-need-to-do.mandated-and-eligible-next-year-only.para-1                          = You can sign up your client to use Making Tax Digital for Income Tax from 6 April {0}. ...but in Welsh
+agent.what-you-need-to-do.mandated-and-eligible-next-year-only.para-2                          = By signing up you agree that either you or your client will: ...but in Welsh
+agent.what-you-need-to-do.mandated-and-eligible-next-year-only.notification-banner.bullet-1    = get compatible software to record your income and expenses ...but in Welsh
+agent.what-you-need-to-do.mandated-and-eligible-next-year-only.notification-banner.bullet-2    = use your compatible software to send us quarterly updates ...but in Welsh
+agent.what-you-need-to-do.mandated-and-eligible-next-year-only.notification-banner.bullet-3    = send an end of period statement and submit your final declaration by {0} ...but in Welsh
+
 # Agent accounting period check page
 agent.accounting-period-check.title                             = A yw holl gyfnodau cyfrifyddu busnes eich cleient yn rhedeg o 6 Ebrill i 5 Ebrill?
 agent.accounting-period-check.heading                           = A yw holl gyfnodau cyfrifyddu busnes eich cleient yn rhedeg o 6 Ebrill i 5 Ebrill?
