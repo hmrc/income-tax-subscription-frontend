@@ -33,9 +33,9 @@ import views.html.individual.incometax.business.TaskList
 
 class TaskListViewSpec extends ViewSpec {
 
-  val selectorForFirstBusiness = "ol > li:nth-of-type(2) > ul:nth-of-type(2)"
-  val selectorForFirstParaOfBusiness = "ol > li:nth-of-type(2) > ul:nth-of-type(1)"
-  val selectorForFirstParaOfSignup = "ol > li:nth-of-type(3) > ul"
+  val selectorForFirstBusiness = "ol > li:nth-of-type(2) > ul:nth-of-type(1)"
+  val selectorForFirstParaOfBusiness = "ol > li:nth-of-type(2)"
+  val selectorForFirstParaOfSignup = "ol > li:nth-of-type(3)"
 
   val taskListView: TaskList = app.injector.instanceOf[TaskList]
 
@@ -54,7 +54,6 @@ class TaskListViewSpec extends ViewSpec {
       ukProperty,
       overseasProperty
     )
-
   }
 
   private val forcedYearTaskList = customTaskListModel(
@@ -112,15 +111,15 @@ class TaskListViewSpec extends ViewSpec {
 
     "have user information" which {
       "includes a heading" in {
-        document().mainContent.selectHead(".app-task-list").selectHead("h2").text mustBe userInfoHeading
+        document().mainContent.selectNth("h2",1).text mustBe userInfoHeading
       }
 
       "includes a user nino" in {
-        document(maybeIndividualUserFullName = None).mainContent.selectHead(".app-task-list").selectHead("p").text mustBe userInfoPartialContent
+        document(maybeIndividualUserFullName = None).mainContent.selectNth("p", 1).text mustBe userInfoPartialContent
       }
 
       "includes a user name and user nino" in {
-        document().mainContent.selectHead(".app-task-list").selectHead("p").text mustBe userInfoContent
+        document().mainContent.selectNth("p", 1).text mustBe userInfoContent
       }
     }
 
@@ -215,7 +214,7 @@ class TaskListViewSpec extends ViewSpec {
         }
 
         "display an incomplete self employment" which {
-          val selfEmploymentSection = document(partialTaskListComplete).mainContent.selectHead(selectorForFirstBusiness).selectNth("li", 2)
+          def selfEmploymentSection = document(partialTaskListComplete).mainContent.selectHead(selectorForFirstBusiness).selectNth("li", 2)
 
           "contains a change link with a business name and a trade name" in {
             val selfEmploymentLink = selfEmploymentSection.selectNth("span", 1).selectHead("a")
@@ -234,7 +233,7 @@ class TaskListViewSpec extends ViewSpec {
         }
 
         "display an incomplete uk property income" which {
-          val ukPropertyIncomeSection = document(partialTaskListComplete).mainContent.selectHead(selectorForFirstBusiness).selectNth("li", 3)
+          def ukPropertyIncomeSection = document(partialTaskListComplete).mainContent.selectHead(selectorForFirstBusiness).selectNth("li", 3)
 
           "contains a change link" in {
             val ukPropertyIncomeLink = ukPropertyIncomeSection.selectNth("span", 1).selectHead("a")
@@ -253,7 +252,7 @@ class TaskListViewSpec extends ViewSpec {
         }
 
         "display an incomplete overseas property income with remove-link" which {
-          val overseasPropertySection = document(partialTaskListComplete)
+          def overseasPropertySection = document(partialTaskListComplete)
             .mainContent.
             selectHead(selectorForFirstBusiness).
             selectNth("li", 4)
@@ -350,7 +349,7 @@ class TaskListViewSpec extends ViewSpec {
         }
 
         "do not display the sign up incomplete text" in {
-          document(completedTaskListComplete).mainContent.selectHead(selectorForFirstParaOfSignup).selectOptionally("span") mustBe None
+          document(completedTaskListComplete).mainContent.selectHead(selectorForFirstParaOfSignup).selectOptionalNth("span", 2) mustBe None
         }
       }
     }
