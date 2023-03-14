@@ -54,6 +54,7 @@ object IntegrationTestConstants {
   val whatYearToSignUpURI = s"$baseURI/business/what-year-to-sign-up"
   val taxYearCheckYourAnswersURI = s"$baseURI/business/tax-year-check-your-answers"
   val taskListURI = s"$baseURI/business/task-list"
+  val addAnotherClient = s"$baseURI/add-another"
 
   object Auth {
     def authResponseJson(uri: String, userDetailsLink: String, gatewayId: String, idsLink: String): JsValue = Json.parse(

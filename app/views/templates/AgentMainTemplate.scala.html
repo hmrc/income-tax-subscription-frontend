@@ -18,10 +18,12 @@
 @import config.AppConfig
 
 @this(
-        govukWrapper: GovUkWrapper
+    govukWrapper: GovUkWrapper
+)(
+    implicit appConfig: AppConfig
 )
 
-@(title: String, optForm: Option[Form[_]] = None, backLink: Option[String]= None, showSignOutLink: Boolean = true, fullWidth: Boolean = false, additionalScripts: Option[Html] = None)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
+@(title: String, optForm: Option[Form[_]] = None, backLink: Option[String]= None, showSignOutLink: Boolean = true, fullWidth: Boolean = false, additionalScripts: Option[Html] = None)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
 
 @prefixedTitle = @{
     optForm match {

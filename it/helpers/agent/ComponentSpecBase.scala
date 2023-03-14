@@ -215,6 +215,14 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       )
     )
 
+    def whatYouNeedToDo(): WSResponse = get("/what-you-need-to-do")
+
+    def submitWhatYouNeedToDo(): WSResponse = post("/what-you-need-to-do")(Map.empty)
+
+    def declinedSignUpNextYear(): WSResponse = get("/declined-sign-up-next-year")
+
+    def submitDeclinedSignUpNextYear(): WSResponse = post("/declined-sign-up-next-year")(Map.empty)
+
     def income(): WSResponse = get("/income")
 
     def mainIncomeError(): WSResponse = get("/error/main-income")

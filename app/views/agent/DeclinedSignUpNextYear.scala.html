@@ -1,0 +1,46 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import uk.gov.hmrc.play.language.LanguageUtils
+@import utilities.AccountingPeriodUtil
+@import views.html.helpers.injected.ContinueButton
+@import views.html.templates.AgentMainTemplate
+
+@this(
+        mainTemplate: AgentMainTemplate,
+        continueButton: ContinueButton,
+        form: FormWithCSRF,
+        govukInsetText: GovukInsetText
+)
+
+@(postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
+
+@mainTemplate(title = messages("agent.declined-sign-up-next-year.heading"), backLink = Some(backUrl)) {
+
+  <h1 class="govuk-heading-xl">@messages("agent.declined-sign-up-next-year.heading")</h1>
+
+  <p class="govuk-body">@messages("agent.declined-sign-up-next-year.para")</p>
+
+  @govukInsetText(InsetText(
+    content = Text(messages("agent.declined-sign-up-next-year.inset-text.para"))
+  ))
+
+  @form(action = postAction) {
+    @continueButton(alternateText = Some(messages("agent.base.sign-up-another-client")))
+  }
+
+}

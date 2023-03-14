@@ -17,42 +17,42 @@
 package controllers.agent
 
 import helpers.agent.ComponentSpecBase
-import helpers.agent.IntegrationTestConstants.taskListURI
+import helpers.agent.IntegrationTestConstants.addAnotherClient
 import helpers.agent.servicemocks.AuthStub
 import play.api.http.Status.{OK, SEE_OTHER}
 
-class AgentWhatYouNeedToDoControllerISpec extends ComponentSpecBase {
+class DeclinedSignUpNextYearControllerISpec extends ComponentSpecBase {
 
   val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
 
-  s"GET ${routes.WhatYouNeedToDoController.show().url}" must {
+  s"GET ${routes.DeclinedSignUpNextYearController.show.url}" must {
     "return OK with the page content" in {
       Given("I am authenticated")
       AuthStub.stubAuthSuccess()
 
-      When(s"GET ${routes.WhatYouNeedToDoController.show().url} is called")
-      val result = IncomeTaxSubscriptionFrontend.whatYouNeedToDo()
+      When(s"GET ${routes.DeclinedSignUpNextYearController.show.url} is called")
+      val result = IncomeTaxSubscriptionFrontend.declinedSignUpNextYear()
 
       Then("The result should be OK with page content")
       result must have(
         httpStatus(OK),
-        pageTitle(messages("agent.what-you-need-to-do.heading") + serviceNameGovUk)
+        pageTitle(messages("agent.declined-sign-up-next-year.heading") + serviceNameGovUk)
       )
     }
   }
 
-  s"POST ${routes.WhatYouNeedToDoController.submit.url}" must {
-    "return a SEE_OTHER to the task list page" in {
+  s"POST ${routes.DeclinedSignUpNextYearController.submit.url}" must {
+    "return a SEE_OTHER to the add another client route" in {
       Given("I am authenticated")
       AuthStub.stubAuthSuccess()
 
-      When(s"POST ${routes.WhatYouNeedToDoController.submit.url} is called")
-      val result = IncomeTaxSubscriptionFrontend.submitWhatYouNeedToDo()
+      When(s"POST ${routes.DeclinedSignUpNextYearController.submit.url} is called")
+      val result = IncomeTaxSubscriptionFrontend.submitDeclinedSignUpNextYear()
 
       Then("The result should be SEE_OTHER redirecting to the task list page")
       result must have(
         httpStatus(SEE_OTHER),
-        redirectURI(taskListURI)
+        redirectURI(addAnotherClient)
       )
     }
   }
