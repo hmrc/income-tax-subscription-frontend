@@ -576,6 +576,9 @@ agent.cannot-sign-up.bullet6                                    = they are regis
 agent.cannot-sign-up.bullet7                                    = they get income from self-employment or property, or both
 agent.cannot-sign-up.bullet8                                    = their total qualifying income is more than £30,000
 
+agent.declined-sign-up-next-year.heading                        = What you need to do
+agent.declined-sign-up-next-year.para                           = You’ve chosen not to sign up your client for Making Tax Digital for Income Tax.
+agent.declined-sign-up-next-year.inset-text.para                = Your client’s Self Assessment tax return needs to be submitted as normal.
 
 agent.cannot-sign-up.paragraph6                                 = Your client will still need to {0} for the tax year before your client signs up to use Making Tax Digital for Income Tax.
 agent.cannot-sign-up.link3                                      = send HMRC a Self Assessment tax return

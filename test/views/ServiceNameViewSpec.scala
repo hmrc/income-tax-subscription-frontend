@@ -29,7 +29,7 @@ class ServiceNameViewSpec extends ViewSpecTrait {
   private def page(isAgent: Boolean): HtmlFormat.Appendable = if (isAgent) {
     agentLayout(
       title = "title"
-    )(Html(""))(FakeRequest(), implicitly, appConfig)
+    )(Html(""))(FakeRequest(), implicitly)
   } else {
     individualLayout(
       title = "title"

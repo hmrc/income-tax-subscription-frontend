@@ -13,6 +13,10 @@ GET         /error/cannot-sign-up                   controllers.agent.eligibilit
 GET         /error/cannot-sign-up-for-current-year  controllers.agent.eligibility.CannotSignUpThisYearController.show
 POST        /error/cannot-sign-up-for-current-year  controllers.agent.eligibility.CannotSignUpThisYearController.submit
 
+# Declined sign up next year
+GET         /declined-sign-up-next-year       controllers.agent.DeclinedSignUpNextYearController.show
+POST        /declined-sign-up-next-year       controllers.agent.DeclinedSignUpNextYearController.submit
+
 # Accounting period check page
 GET         /eligibility/accounting-period-check    controllers.agent.eligibility.AccountingPeriodCheckController.show
 POST        /eligibility/accounting-period-check    controllers.agent.eligibility.AccountingPeriodCheckController.submit

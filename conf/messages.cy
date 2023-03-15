@@ -91,7 +91,7 @@ cannot-use-service.heading                                      = Ni allwch ddef
 cannot-use-service.line1                                        = Gallwch ond cofrestru os ydych yn weinyddwr.
 
 ##  What You Need To Do (pre-mandation either tax year)  ##
-what-you-need-to-do.heading                                     = What you need to do ... but in Welsh
+what-you-need-to-do.heading                                     = Beth y mae angen i chi ei wneud
 what-you-need-to-do.para-1                                      = By taking part in this pilot you agree to: ... but in Welsh
 what-you-need-to-do.notification.bullet-1                       = get compatible software to record your income and expenses ... but in Welsh
 what-you-need-to-do.notification.bullet-2                       = use your software to send us quarterly updates ... but in Welsh
@@ -578,6 +578,10 @@ agent.cannot-sign-up.paragraph5                                 = Mae’n rhaid 
 agent.cannot-sign-up.paragraph6                                 = Bydd yn dal i fod yn rhaid i’ch cleient {0} ar gyfer y flwyddyn dreth cyn i’ch cleient gofrestru i ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
 agent.cannot-sign-up.link3                                      = anfon Ffurflen Dreth Hunanasesiad i CThEF
 agent.cannot-sign-up.continue-button                            = Yn eich blaen i gofrestru cleient ar gyfer mis {0}
+
+agent.declined-sign-up-next-year.heading                        = Beth y mae angen i chi ei wneud
+agent.declined-sign-up-next-year.para                           = Rydych wedi dewis peidio â chofrestru’ch cleient ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+agent.declined-sign-up-next-year.inset-text.para                = Mae’n rhaid i Ffurflen Dreth Hunanasesiad eich cleient gael ei chyflwyno yn ôl yr arfer.
 
 # Individual cannot sign up page
 cannot-sign-up.heading                                          = Gallwch gofrestru ar gyfer y cynllun peilot hwn o {0}
