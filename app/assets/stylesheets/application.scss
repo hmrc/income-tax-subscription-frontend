@@ -70,3 +70,12 @@ body:not(.js-enabled) {
 .print-link:focus {
     box-shadow: 0 0 #fd0, 0 4px #0b0c0c;
 }
+
+.app-task-list__pre-list {
+  padding-left: 0;
+  list-style: none;
+
+  @include govuk-media-query($from: tablet) {
+    padding-left: govuk-spacing(6);
+  }
+}

@@ -105,6 +105,10 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
       element.select(selector).asScala.headOption
     }
 
+    def selectOptionalNth(selector: String, nth: Int): Option[Element] = {
+      selectSeq(selector).lift(nth - 1)
+    }
+
     def selectSeq(selector: String): Seq[Element] = {
       element.select(selector).asScala.toSeq
     }

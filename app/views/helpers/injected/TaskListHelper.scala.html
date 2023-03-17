@@ -1,0 +1,67 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import views.helpers.models.tasklist._
+
+@this(govukTag : GovukTag)
+
+@(sections : Seq[TaskListSection])
+
+<ol class="app-task-list">
+    @sections.map(taskListSection)
+</ol>
+
+@taskListSection(section : TaskListSection) = {
+    <li>
+        <h2 class="app-task-list__section govuk-heading-m">
+            <span class="app-task-list__section-number">@{section.index}.</span>
+            @section.h2Content
+        </h2>
+        @section.sectionStart.map{para =>
+          <p class = "govuk-body app-task-list__pre-list">@section.sectionStart</p>
+        }
+        @if(section.taskListItems.nonEmpty){
+          <ul class="app-task-list__items @if(section.sectionEnd.isDefined){govuk-!-margin-bottom-3}">
+            @section.taskListItems.zipWithIndex.map{case (item, itemIndex) => @taskListItem(item, itemIndex, section.index)}
+          </ul>
+        }
+          @section.sectionEnd
+    </li>
+}
+
+@taskListItem(item : TaskListItem, itemIndex: Int, sectionIndex: Int) = {
+    <li class="app-task-list__item">
+       <span class="app-task-list__task-name">
+           @item.href.map{link=>
+             <a href="@link" aria-describedby= "@{s"section-$sectionIndex-item-$itemIndex-status"}">@item.content</a>
+           }.getOrElse(item.content)
+       </span>
+        <span class="app-task-list__task-completed" id= "@{s"section-$sectionIndex-item-$itemIndex-status"}">
+            @govukTag(Tag(
+              content = Text(item.tagLabel),
+              classes = if(item.isComplete) "" else "govuk-tag--grey"
+            ))
+        </span>
+        @item.action.map{action =>
+          <span class="govuk-remove-business-link ">
+            <a class="govuk-link" href = "@action.href">
+                <span aria-hidden="true">@action.content</span>
+                <span class="govuk-visually-hidden">@action.hiddenContent</span>
+            </a>
+          </span>
+        }
+    </li>
+}
