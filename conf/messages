@@ -606,6 +606,9 @@ cannot-sign-up.paragraph6                                       = You’ll still
 cannot-sign-up.link3                                            = send HMRC a Self Assessment tax return
 cannot-sign-up.continue-button                                  = Continue to sign up for next year
 
+declined-sign-up-next-year.heading                              = What you need to do
+declined-sign-up-next-year.para                                 = You’ve chosen not to sign up for Making Tax Digital for Income Tax. Continue to submit your annual Self Assessment tax return as normal.
+
 ## Agent what you need to do page ##
 agent.what-you-need-to-do.heading                                                        = What you need to do
 agent.what-you-need-to-do.voluntary-and-eligible.para-1                                  = By taking part in this pilot you agree that either you or your client will:

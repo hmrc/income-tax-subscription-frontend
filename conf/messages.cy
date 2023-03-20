@@ -605,6 +605,9 @@ cannot-sign-up.paragraph6                                       = Bydd yn dal i 
 cannot-sign-up.link3                                            = anfon Ffurflen Dreth Hunanasesiad i CThEF
 cannot-sign-up.continue-button                                  = Parhewch i gofrestru ar gyfer blwyddyn nesaf
 
+declined-sign-up-next-year.heading                              = Beth y mae angen i chi ei wneud
+declined-sign-up-next-year.para                                 = Rydych wedi dewis peidio â chofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm. Parhewch i gyflwyno’ch Ffurflen Dreth Hunanasesiad flynyddol yn ôl yr arfer.
+
 ## Agent what you need to do page ##
 agent.what-you-need-to-do.heading                                                        = Beth y mae angen i chi ei wneud
 agent.what-you-need-to-do.voluntary-and-eligible.para-1                                  = By taking part in this pilot you agree that either you or your client will: ... but in Welsh

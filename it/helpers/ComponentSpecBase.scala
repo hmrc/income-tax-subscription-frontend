@@ -232,6 +232,8 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
     def submitWhatYouNeedToDo(): WSResponse = post("/what-you-need-to-do")(Map.empty)
 
+    def declinedSignUpNextYear(): WSResponse = get("/declined-sign-up-next-year")
+
     def checkYourAnswers(): WSResponse = get("/check-your-answers")
 
     def submitCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse = {
