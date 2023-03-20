@@ -585,26 +585,10 @@ agent.cannot-sign-up.link3                                      = send HMRC a Se
 agent.cannot-sign-up.continue-button                            = Continue to sign up client for {0}
 
 # Individual cannot sign up page
-cannot-sign-up.heading                                          = You can sign up to this pilot from {0}
-cannot-sign-up.paragraph1                                       = You cannot sign up to Making Tax Digital for Income Tax this year as it is not currently available to those who have certain types of:
-cannot-sign-up.bullet1                                          = Income
-cannot-sign-up.bullet2                                          = Deductions
-cannot-sign-up.paragraph2                                       = However, you can still sign up for this service in the next tax year, starting {0}.
-cannot-sign-up.paragraph3                                       = You may still be able to use the pilot if your circumstances have recently changed. Check {0} to see if you can sign up.
-cannot-sign-up.link1                                            = who can use Making Tax Digital for Income Tax
-cannot-sign-up.subheading                                       = When you must use this service
-cannot-sign-up.paragraph4                                       = You must meet the Making Tax Digital for Income Tax requirements for 6 April 2026, if all of the following apply:
-cannot-sign-up.bullet3                                          = you are registered for Self Assessment ({0})
-cannot-sign-up.link2                                            = find out more about registering and sending a Self Assessment tax return
-cannot-sign-up.bullet4                                          = you get income from self-employment or property, or both
-cannot-sign-up.bullet5                                          = your total qualifying income is more than £50,000
-cannot-sign-up.paragraph5                                       = You must meet the Making Tax Digital for Income Tax requirements for 6 April 2027, if all of the following apply:
-cannot-sign-up.bullet6                                          = you are registered for Self Assessment
-cannot-sign-up.bullet7                                          = you get income from self-employment or property, or both
-cannot-sign-up.bullet8                                          = your total qualifying income is more than £30,000
-cannot-sign-up.paragraph6                                       = You’ll still need to {0} for the tax year before you signed up to use Making Tax Digital for Income Tax.
-cannot-sign-up.link3                                            = send HMRC a Self Assessment tax return
-cannot-sign-up.continue-button                                  = Continue to sign up for next year
+cannot-sign-up.heading                                          = You can sign up to this pilot from the next tax year
+cannot-sign-up.paragraph1                                       = You can sign up for Making Tax Digital for Income Tax for the next tax year ({0} to {1}).
+cannot-sign-up.yes-no-radio-helper.heading                      = Would you like to sign up for the next tax year?
+error.cannot-sign-up.invalid                                    = You must select ‘yes’ or ‘no’
 
 declined-sign-up-next-year.heading                              = What you need to do
 declined-sign-up-next-year.para                                 = You’ve chosen not to sign up for Making Tax Digital for Income Tax. Continue to submit your annual Self Assessment tax return as normal.
