@@ -14,13 +14,18 @@
  * limitations under the License.
  *@
 
+@import play.api.data.Form
 @import views.html.templates.PrincipalMainTemplate
 @import config.AppConfig
 @import views.html.helpers.injected.ButtonHelper
 @import views.html.helpers.injected.SignOutLink
+@import views.html.helpers.injected.YesNoRadioHelper
+@import views.html.helpers.injected.ContinueButton
 @import models.common.AccountingPeriodModel
 @import uk.gov.hmrc.play.language.LanguageUtils
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
+@import forms.individual.business.CannotSignUpThisYearForm.yesNo
+@import utilities.AccountingPeriodUtil
 
 @this(
   mainTemplate: PrincipalMainTemplate,
@@ -28,13 +33,15 @@
   signOutLink: SignOutLink,
   hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
   languageUtils: LanguageUtils,
+  yesNoRadioHelper: YesNoRadioHelper,
+  continueButton: ContinueButton,
   form: FormWithCSRF
 )(
   implicit appConfig: AppConfig
 )
 
 
-@(postAction: Call, nextTaxYear: AccountingPeriodModel)(implicit request: Request[_], messages: Messages)
+@(yesNoForm: Form[YesNo], postAction: Call)(implicit request: Request[_], messages: Messages)
 
 @guidanceLink = {
   <a href="@{appConfig.govukGuidanceITSAUsingMTDLink}" class="govuk-link">@messages("cannot-sign-up.link1")</a>
@@ -48,49 +55,22 @@
   <a href="@{appConfig.sendSAReturnLink}" class="govuk-link">@messages("cannot-sign-up.link3")</a>
 }
 
-@mainTemplate(title = messages("cannot-sign-up.heading", languageUtils.Dates.formatDate(nextTaxYear.startDate.toLocalDate))) {
+@mainTemplate(title = messages("cannot-sign-up.heading"), optForm = Some(yesNoForm)) {
 
-  <h1 class="govuk-heading-l">@messages("cannot-sign-up.heading", languageUtils.Dates.formatDate(nextTaxYear.startDate.toLocalDate))</h1>
+  <h1 class="govuk-heading-l">@messages("cannot-sign-up.heading")</h1>
 
-  <p class="govuk-body">@messages("cannot-sign-up.paragraph1")</p>
-
-  <ul class="govuk-list govuk-list--bullet">
-    <li>@messages("cannot-sign-up.bullet1")</li>
-    <li>@messages("cannot-sign-up.bullet2")</li>
-  </ul>
-
-  <p class="govuk-body">@messages("cannot-sign-up.paragraph2", languageUtils.Dates.formatDate(nextTaxYear.startDate.toLocalDate))</p>
-
-  <p class="govuk-body">@Html(messages("cannot-sign-up.paragraph3", guidanceLink))</p>
-
-  <h2 class="govuk-heading-s">@messages("cannot-sign-up.subheading")</h2>
-
-  <p class="govuk-body">@Html(messages("cannot-sign-up.paragraph4"))</p>
-
-  <ul class="govuk-list govuk-list--bullet">
-    <li>@Html(messages("cannot-sign-up.bullet3", qualifyingIncomeLink))</li>
-    <li>@messages("cannot-sign-up.bullet4")</li>
-    <li>@messages("cannot-sign-up.bullet5")</li>
-  </ul>
-
-  <p class="govuk-body">@Html(messages("cannot-sign-up.paragraph5"))</p>
-
-  <ul class="govuk-list govuk-list--bullet">
-    <li>@messages("cannot-sign-up.bullet6")</li>
-    <li>@messages("cannot-sign-up.bullet7")</li>
-    <li>@messages("cannot-sign-up.bullet8")</li>
-  </ul>
-
-  <p class="govuk-body">@Html(messages("cannot-sign-up.paragraph6", sendingReturnLink))  </p>
+  <p class="govuk-body">@messages("cannot-sign-up.paragraph1", languageUtils.Dates.formatDate(AccountingPeriodUtil.getNextTaxYear.startDate.toLocalDate),
+      languageUtils.Dates.formatDate(AccountingPeriodUtil.getNextTaxYear.endDate.toLocalDate))</p>
 
   @form(action = postAction) {
-    <div class="govuk-button-group govuk-!-margin-top-8">
+    @yesNoRadioHelper(
+        field = yesNoForm(yesNo),
+        legend = messages("cannot-sign-up.yes-no-radio-helper.heading"),
+        headingClasses = "govuk-fieldset__legend--m",
+        isPageHeading = false
+        )
 
-      @buttonHelper(
-        buttonText = messages("cannot-sign-up.continue-button", languageUtils.Dates.formatDate(nextTaxYear.startDate.toLocalDate)),
-      )
-      @signOutLink()
-    </div>
+        @continueButton()
 
   }
 }

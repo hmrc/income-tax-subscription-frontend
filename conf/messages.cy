@@ -584,26 +584,10 @@ agent.declined-sign-up-next-year.para                           = Rydych wedi de
 agent.declined-sign-up-next-year.inset-text.para                = Mae’n rhaid i Ffurflen Dreth Hunanasesiad eich cleient gael ei chyflwyno yn ôl yr arfer.
 
 # Individual cannot sign up page
-cannot-sign-up.heading                                          = Gallwch gofrestru ar gyfer y cynllun peilot hwn o {0}
-cannot-sign-up.paragraph1                                       = Ni allwch gofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm eleni gan nad yw’r cynllun ar gael ar hyn o bryd i’r rheiny sydd â mathau penodol o:
-cannot-sign-up.bullet1                                          = incwm
-cannot-sign-up.bullet2                                          = didyniadau
-cannot-sign-up.paragraph2                                       = Fodd bynnag, gallwch gofrestru ar gyfer y flwyddyn dreth nesaf, sy’n dechrau ar {0}.
-cannot-sign-up.paragraph3                                       = Efallai y gallwch ymuno â’r cynllun peilot o hyd os yw’ch amgylchiadau wedi newid yn ddiweddar. Gwiriwch {0} er mwyn gweld a allwch gofrestru.
-cannot-sign-up.link1                                            = pwy sy’n gallu defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-cannot-sign-up.subheading                                       = Pryd y mae’n rhaid i chi ddefnyddio’r gwasanaeth hwn
-cannot-sign-up.paragraph4                                       = Mae’n rhaid i chi fodloni’r gofynion ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar gyfer 6 Ebrill 2026, os yw pob un o’r canlynol yn berthnasol:
-cannot-sign-up.bullet3                                          = rydych wedi’ch cofrestru ar gyfer Hunanasesiad ({0})
-cannot-sign-up.link2                                            = dysgwch ragor am gofrestru ac anfon Ffurflen Dreth Hunanasesiad
-cannot-sign-up.bullet4                                          = rydych yn cael incwm o hunangyflogaeth neu o eiddo, neu o’r ddau
-cannot-sign-up.bullet5                                          = mae cyfanswm eich incwm cymwys yn fwy na £50,000
-cannot-sign-up.paragraph5                                       = Mae’n rhaid i chi fodloni’r gofynion ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar gyfer 6 Ebrill 2027, os yw pob un o’r canlynol yn berthnasol:
-cannot-sign-up.bullet6                                          = rydych wedi’ch cofrestru ar gyfer Hunanasesiad
-cannot-sign-up.bullet7                                          = rydych yn cael incwm o hunangyflogaeth neu o eiddo, neu o’r ddau
-cannot-sign-up.bullet8                                          = mae cyfanswm eich incwm cymwys yn fwy na £30,000
-cannot-sign-up.paragraph6                                       = Bydd yn dal i fod yn rhaid i chi {0} ar gyfer y flwyddyn dreth cyn i chi gofrestru i ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
-cannot-sign-up.link3                                            = anfon Ffurflen Dreth Hunanasesiad i CThEF
-cannot-sign-up.continue-button                                  = Parhewch i gofrestru ar gyfer blwyddyn nesaf
+cannot-sign-up.heading                                          = You can sign up to this pilot from the next tax year ... But in Welsh
+cannot-sign-up.paragraph1                                       = You can sign up for Making Tax Digital for Income Tax for the next tax year ({0} to {1}). ... But in Welsh
+cannot-sign-up.yes-no-radio-helper.heading                      = Would you like to sign up for the next tax year ... But in Welsh
+error.cannot-sign-up.invalid                                    = Mae’n rhaid i chi ddewis ‘iawn’ neu ‘na’
 
 declined-sign-up-next-year.heading                              = Beth y mae angen i chi ei wneud
 declined-sign-up-next-year.para                                 = Rydych wedi dewis peidio â chofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm. Parhewch i gyflwyno’ch Ffurflen Dreth Hunanasesiad flynyddol yn ôl yr arfer.

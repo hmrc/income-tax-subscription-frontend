@@ -18,6 +18,7 @@ package controllers.individual.eligibility
 
 import helpers.ComponentSpecBase
 import helpers.servicemocks.AuthStub
+import models.{No, Yes}
 import play.api.libs.ws.WSResponse
 import play.api.test.Helpers._
 
@@ -38,21 +39,56 @@ class CannotSignUpThisYearControllerISpec extends ComponentSpecBase {
 
   }
 
-  "POST /error/cannot-sign-up-for-current-year" should {
+  "POST /error/cannot-sign-up-for-current-year" when {
 
-    s"return a redirect to ${controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url}" in {
-      Given("I setup the wiremock stubs")
-      AuthStub.stubAuthSuccess()
+    "the user submits 'yes'" should {
 
-      When("POST /error/cannot-sign-up-for-current-year is called")
-      val result: WSResponse = IncomeTaxSubscriptionFrontend.submitCannotSignUpThisYear
+      s"return a redirect to ${controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url}" in {
+        Given("I setup the wiremock stubs")
+        AuthStub.stubAuthSuccess()
 
-      Then("Should return SEE_OTHER to the sps handoff")
+        When("POST /error/cannot-sign-up-for-current-year is called")
+        val result: WSResponse = IncomeTaxSubscriptionFrontend.submitCannotSignUpThisYear(Some(Yes))
 
-      result must have(
-        httpStatus(SEE_OTHER),
-        redirectURI(controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url)
-      )
+        Then("Should return SEE_OTHER to the sps handoff")
+
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url)
+        )
+      }
+    }
+    "the user submits 'no'" should {
+
+      s"return a redirect to ${controllers.individual.eligibility.routes.DeclinedSignUpNextYearController.show.url}" in {
+        Given("I setup the wiremock stubs")
+        AuthStub.stubAuthSuccess()
+
+        When("POST /error/cannot-sign-up-for-current-year is called")
+        val result: WSResponse = IncomeTaxSubscriptionFrontend.submitCannotSignUpThisYear(Some(No))
+
+        Then("Should return SEE_OTHER to the declined sign up next year page")
+
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(controllers.individual.eligibility.routes.DeclinedSignUpNextYearController.show.url)
+        )
+      }
+    }
+    "the user submits no data" should {
+      "return a bad request and an error" in {
+        Given("I setup the wiremock stubs")
+        AuthStub.stubAuthSuccess()
+
+        When("POST /error/cannot-sign-up-for-current-year is called")
+        val result: WSResponse = IncomeTaxSubscriptionFrontend.submitCannotSignUpThisYear(None)
+
+        Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
+        result must have(
+          httpStatus(BAD_REQUEST),
+          errorDisplayed()
+        )
+      }
     }
 
   }
