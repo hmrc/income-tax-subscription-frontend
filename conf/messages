@@ -90,6 +90,14 @@ cannot-use-service.title                                        = You cannot use
 cannot-use-service.heading                                      = You cannot use this service
 cannot-use-service.line1                                        = You can only sign up if you are an administrator.
 
+## Cannot take part page
+cannot-take-part.title                                          = You cannot take part in this pilot yet
+cannot-take-part.heading                                        = You cannot take part in this pilot yet
+cannot-take-part.para1                                          = The Making Tax Digital for Income Tax pilot is not currently available to people.
+cannot-take-part.para2                                          = However, you may be able to sign up to Making Tax Digital for Income Tax in the future. Learn more about {0}.
+cannot-take-part.link1                                          = who’s eligible for Making Tax Digital for Income Tax
+cannot-take-part.inset1                                         = You must submit your Self Assessment tax return as normal.
+
 ##  What You Need To Do (pre-mandation either tax year)  ##
 what-you-need-to-do.heading                                     = What you need to do
 what-you-need-to-do.para-1                                      = By taking part in this pilot you agree to:
@@ -857,22 +865,6 @@ agent.business.task-list.status.completed                             = Complete
 agent.business.task-list.status.incomplete                            = Incomplete
 agent.business.task-list.status.in-progress                           = In progress
 agent.business.task-list.status.not-started                           = Not started
-
-
-# Not eligible for income tax
-not-eligible-for-income-tax.title                               = You cannot take part in this pilot yet
-not-eligible-for-income-tax.heading                             = You cannot take part in this pilot yet
-not-eligible-for-income-tax.para1                               = You cannot sign up to Making Tax Digital for Income Tax this year as it’s currently unavailable to people with certain types of:
-not-eligible-for-income-tax.bullet1                             = incomes
-not-eligible-for-income-tax.bullet2                             = deductions
-not-eligible-for-income-tax.para2                               = You must submit your Self Assessment tax return until the end of the tax year 2026 as normal.
-not-eligible-for-income-tax.para3                               = You may still be able to use the pilot if your circumstances have recently changed. {0} to see if you can sign up.
-not-eligible-for-income-tax.para3.link                          = Check who can use Making Tax Digital for Income Tax
-not-eligible-for-income-tax.subheading1                         = When you have to use Making Tax Digital for Income Tax
-not-eligible-for-income-tax.para4                               = If you get income from self employment or property, you’ll need to use Making Tax Digital for Income Tax to submit your records if you earn:
-not-eligible-for-income-tax.bullet3                             = £50,000 or more from the tax year starting 6 April 2026
-not-eligible-for-income-tax.bullet4                             = £30,000 or more from the tax year starting 6 April 2027
-not-eligible-for-income-tax.para5                               = You may be penalised if you don’t use Making Tax Digital for Income Tax if your income meets these thresholds.
 
 
 # Agent Overseas Property Start Date Page errors

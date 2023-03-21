@@ -90,6 +90,14 @@ cannot-use-service.title                                        = Ni allwch ddef
 cannot-use-service.heading                                      = Ni allwch ddefnyddio’r gwasanaeth hwn
 cannot-use-service.line1                                        = Gallwch ond cofrestru os ydych yn weinyddwr.
 
+## Cannot take part page
+cannot-take-part.title                                          = You cannot take part in this pilot yet  ... but in Welsh
+cannot-take-part.heading                                        = You cannot take part in this pilot yet ... but in Welsh
+cannot-take-part.para1                                          = The Making Tax Digital for Income Tax pilot is not currently available to people. ... but in Welsh
+cannot-take-part.para2                                          = However, you may be able to sign up to Making Tax Digital for Income Tax in the future. Learn more about {0}. ... but in Welsh
+cannot-take-part.link1                                          = who’s eligible for Making Tax Digital for Income Tax ... but in Welsh
+cannot-take-part.inset1                                         = You must submit your Self Assessment tax return as normal. ... but in Welsh
+
 ##  What You Need To Do (pre-mandation either tax year)  ##
 what-you-need-to-do.heading                                     = Beth y mae angen i chi ei wneud
 what-you-need-to-do.para-1                                      = By taking part in this pilot you agree to: ... but in Welsh
@@ -856,21 +864,6 @@ agent.business.task-list.status.completed                             = Wedi’i
 agent.business.task-list.status.incomplete                            = Heb ei gwblhau
 agent.business.task-list.status.in-progress                           = Ar waith
 agent.business.task-list.status.not-started                           = Heb ddechrau
-
-# Not eligible for income tax
-not-eligible-for-income-tax.title                               = You cannot take part in this pilot yet ...but in welsh
-not-eligible-for-income-tax.heading                             = You cannot take part in this pilot yet ...but in welsh
-not-eligible-for-income-tax.para1                               = You cannot sign up to Making Tax Digital for Income Tax this year as it’s currently unavailable to people with certain types of: ...but in welsh
-not-eligible-for-income-tax.bullet1                             = Incomes ...but in welsh
-not-eligible-for-income-tax.bullet2                             = Deductions ...but in welsh
-not-eligible-for-income-tax.para2                               = You must submit your Self Assessment tax return until the end of the tax year 2026 as normal. ...but in welsh
-not-eligible-for-income-tax.para3                               = You may still be able to use the pilot if your circumstances have recently changed. {0} to see if you can sign up. ...but in welsh
-not-eligible-for-income-tax.para3.link                          = Check who can use Making Tax Digital for Income Tax ...but in welsh
-not-eligible-for-income-tax.subheading1                         = When you have to use Making Tax Digital for Income Tax ...but in welsh
-not-eligible-for-income-tax.para4                               = If you get income from self employment or property, you’ll need to use Making Tax Digital for Income Tax to submit your records if you earn: ...but in welsh
-not-eligible-for-income-tax.bullet3                             = £50,000 or more from the tax year starting 6 April 2026 ...but in welsh
-not-eligible-for-income-tax.bullet4                             = £30,000 or more from the tax year starting 6 April 2027 ...but in welsh
-not-eligible-for-income-tax.para5                               = You may be penalised if you don’t use Making Tax Digital for Income Tax if your income meets these thresholds. ...but in welsh
 
 # Agent Overseas Property Start Date Page errors
 agent.error.overseas.property.day-month-year.empty              = Nodwch y dyddiad y dechreuodd busnes eiddo tramor eich cleient fasnachu
