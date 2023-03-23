@@ -36,9 +36,9 @@ import scala.util.Random
 
 class AgentTaskListViewSpec extends ViewSpec {
 
-  val selectorForFirstBusiness = "ol > li:nth-of-type(2) > ul:nth-of-type(2)"
-  val selectorForFirstParaOfBusiness = "ol > li:nth-of-type(2) > ul:nth-of-type(1)"
-  val selectorForFirstParaOfSignup = "ol > li:nth-of-type(3) > ul"
+  val selectorForFirstBusiness = "ol > li:nth-of-type(2) > ul:nth-of-type(1)"
+  val selectorForFirstParaOfBusiness = "ol > li:nth-of-type(2)"
+  val selectorForFirstParaOfSignup = "ol > li:nth-of-type(3)"
 
   val taskListView: AgentTaskList = app.injector.instanceOf[AgentTaskList]
 
@@ -349,7 +349,7 @@ class AgentTaskListViewSpec extends ViewSpec {
       }
 
       "do not display the sign up incomplete text" in {
-        doc.mainContent.selectHead(selectorForFirstParaOfSignup).selectOptionally("span") mustBe None
+        doc.mainContent.selectHead(selectorForFirstParaOfSignup).selectOptionalNth("span", 2) mustBe None
       }
     }
   }
