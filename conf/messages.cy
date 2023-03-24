@@ -91,55 +91,55 @@ cannot-use-service.heading                                      = Ni allwch ddef
 cannot-use-service.line1                                        = Gallwch ond cofrestru os ydych yn weinyddwr.
 
 ## Cannot take part page
-cannot-take-part.title                                          = You cannot take part in this pilot yet  ... but in Welsh
-cannot-take-part.heading                                        = You cannot take part in this pilot yet ... but in Welsh
-cannot-take-part.para1                                          = The Making Tax Digital for Income Tax pilot is not currently available to people. ... but in Welsh
-cannot-take-part.para2                                          = However, you may be able to sign up to Making Tax Digital for Income Tax in the future. Learn more about {0}. ... but in Welsh
-cannot-take-part.link1                                          = who’s eligible for Making Tax Digital for Income Tax ... but in Welsh
-cannot-take-part.inset1                                         = You must submit your Self Assessment tax return as normal. ... but in Welsh
+cannot-take-part.title                                          = Ni allwch gymryd rhan yn y cynllun peilot hwn ar hyn o bryd
+cannot-take-part.heading                                        = Ni allwch gymryd rhan yn y cynllun peilot hwn ar hyn o bryd
+cannot-take-part.para1                                          = Nid yw cynllun peilot Troi Treth yn Ddigidol ar gyfer Treth Incwm ar gael ar hyn o bryd i bobl sydd ag incwm neu ddidyniadau penodol.
+cannot-take-part.para2                                          = Fodd bynnag, mae’n bosibl y byddwch yn gallu cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm yn y dyfodol.
+cannot-take-part.link1                                          = Dysgwch ragor am bwy sy’n gymwys ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+cannot-take-part.inset1                                         = Mae’n rhaid i chi gyflwyno’ch Ffurflen Dreth Hunanasesiad yn ôl yr arfer.
 
 ##  What You Need To Do (pre-mandation either tax year)  ##
 what-you-need-to-do.heading                                     = Beth y mae angen i chi ei wneud
-what-you-need-to-do.para-1                                      = By taking part in this pilot you agree to: ... but in Welsh
-what-you-need-to-do.notification.bullet-1                       = get compatible software to record your income and expenses ... but in Welsh
-what-you-need-to-do.notification.bullet-2                       = use your software to send us quarterly updates ... but in Welsh
-what-you-need-to-do.notification.bullet-3                       = complete any missing quarterly updates (if you’ve chosen to sign up for the current tax year) ... but in Welsh
-what-you-need-to-do.notification.bullet-4                       = send an end of period statement and submit your final declaration by 31 January following the end of the tax year ... but in Welsh
-what-you-need-to-do.notification.bullet-5                       = tell HMRC if you stop trading or start a new business ... but in Welsh
-what-you-need-to-do.inset.para                                  = Signing up to Making Tax Digital for Income Tax is currently voluntary. You can opt out and go back to Self Assessment at any time. ... but in Welsh
-what-you-need-to-do.para-2                                      = It will be compulsory for some people to use Making Tax Digital for Income Tax from April 2026, depending on their total qualifying income. We’ll send you a letter if this applies to you. ... but in Welsh
+what-you-need-to-do.para-1                                      = Drwy gymryd rhan yn y cynllun peilot hwn, rydych yn cytuno i wneud y canlynol:
+what-you-need-to-do.notification.bullet-1                       = bod â meddalwedd sy’n cydweddu i gofnodi’ch incwm a’ch treuliau
+what-you-need-to-do.notification.bullet-2                       = defnyddio’ch meddalwedd i anfon diweddariadau chwarterol atom
+what-you-need-to-do.notification.bullet-3                       = cwblhau unrhyw ddiweddariadau chwarterol sydd ar goll (os ydych wedi dewis cofrestru ar gyfer y flwyddyn dreth bresennol)
+what-you-need-to-do.notification.bullet-4                       = anfon datganiad diwedd cyfnod a chyflwyno’ch datganiad terfynol erbyn 31 Ionawr yn dilyn diwedd y flwyddyn dreth
+what-you-need-to-do.notification.bullet-5                       = rhoi gwybod i CThEF os byddwch yn rhoi’r gorau i fasnachu neu’n dechrau busnes newydd
+what-you-need-to-do.inset.para                                  = Mae cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm yn wirfoddol ar hyn o bryd. Gallwch optio allan a mynd yn ôl i Hunanasesiad ar unrhyw adeg
+what-you-need-to-do.para-2                                      = O fis Ebrill 2026 ymlaen, bydd yn orfodol i rai pobl ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, yn dibynnu ar gyfanswm eu hincwm cymwys. Byddwn yn anfon llythyr atoch os yw hyn yn berthnasol i chi.
 
 ##  What You Need To Do (pre-mandation next tax year only)  ##
-what-you-need-to-do.next-year-only.para-1                        = You can sign up to use Making Tax Digital for Income Tax from 6 April {0}. ... but in Welsh
-what-you-need-to-do.next-year-only.para-2                        = By taking part in this pilot you agree to: ... but in Welsh
-what-you-need-to-do.next-year-only.notification.bullet-1         = get compatible software to record your income and expenses from 6 April {0} ... but in Welsh
-what-you-need-to-do.next-year-only.notification.bullet-2         = use your software to send us quarterly updates ... but in Welsh
-what-you-need-to-do.next-year-only.notification.bullet-3         = send an end of period statement using your software and send your final declaration by {0} ... but in Welsh
-what-you-need-to-do.next-year-only.notification.bullet-4         = tell HMRC if you stop trading or start a new business ... but in Welsh
-what-you-need-to-do.next-year-only.inset.para                    = You must continue submitting your Self Assessment tax returns as usual until the year you’ve signed up. ... but in Welsh
+what-you-need-to-do.next-year-only.para-1                        = Gallwch gofrestru i ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o 6 Ebrill {0} ymlaen
+what-you-need-to-do.next-year-only.para-2                        = Drwy gymryd rhan yn y cynllun peilot hwn, rydych yn cytuno i wneud y canlynol:
+what-you-need-to-do.next-year-only.notification.bullet-1         = cael meddalwedd sy’n cydweddu i gofnodi’ch incwm a’ch treuliau o 6 Ebrill {0} ymlaen
+what-you-need-to-do.next-year-only.notification.bullet-2         = defnyddio’ch meddalwedd i anfon diweddariadau chwarterol atom
+what-you-need-to-do.next-year-only.notification.bullet-3         = anfon datganiad diwedd cyfnod gan ddefnyddio’ch meddalwedd ac anfon eich datganiad terfynol erbyn {0}
+what-you-need-to-do.next-year-only.notification.bullet-4         = rhoi gwybod i CThEF os byddwch yn rhoi’r gorau i fasnachu neu’n dechrau busnes newydd
+what-you-need-to-do.next-year-only.inset.para                    = Mae’n rhaid i chi barhau i gyflwyno’ch Ffurflenni Treth Hunanasesiad yn ôl yr arfer, hyd at y flwyddyn pan wnaethoch gofrestru.
 
 ##  What You Need To Do Current  ##
-what-you-need-to-do-current.para-1                               = Based on your previous returns, you need to sign up for Making Tax Digital for Income Tax. ... but in Welsh
-what-you-need-to-do-current.para-2                               = By signing up you agree to: ... but in Welsh
-what-you-need-to-do-current.notification.bullet-1                = get compatible software to record your income and expenses ... but in Welsh
-what-you-need-to-do-current.notification.bullet-2                = use your software to send us quarterly updates ... but in Welsh
-what-you-need-to-do-current.notification.bullet-3                = send an end of period statement and submit your final declaration by {0} ... but in Welsh
-what-you-need-to-do-current.inset.para                           = You may be penalised if you don’t use Making Tax Digital for Income Tax. ... but in Welsh
+what-you-need-to-do-current.para-1                               = Yn seiliedig ar eich Ffurflenni Treth blaenorol, mae’n rhaid i chi gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+what-you-need-to-do-current.para-2                               = Drwy gofrestru, rydych yn cytuno i wneud y canlynol:
+what-you-need-to-do-current.notification.bullet-1                = cael gafael ar feddalwedd sy’n cydweddu er mwyn cofnodi’ch incwm a’ch treuliau
+what-you-need-to-do-current.notification.bullet-2                = defnyddio’ch meddalwedd i anfon diweddariadau chwarterol atom
+what-you-need-to-do-current.notification.bullet-3                = anfon datganiad diwedd cyfnod a chyflwyno’ch datganiad terfynol erbyn 31 Ionawr 2027
+what-you-need-to-do-current.inset.para                           = Mae’n bosibl y byddwch yn cael eich cosbi os na fyddwch yn defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
 
 ## What You Need To Do Next Year Manadated ##
-what-you-need-to-do.next-year-mandated.para-1                   = You can sign up to use Making Tax Digital for Income Tax from 6 April {0}. ... but in Welsh
-what-you-need-to-do.next-year-mandated.para-2                   = By signing up you agree to: ... but in Welsh
-what-you-need-to-do.next-year-mandated.notification.bullet-1    = get compatible software to record your income and expenses ... but in Welsh
-what-you-need-to-do.next-year-mandated.notification.bullet-2    = use your compatible software to send us quarterly updates ... but in Welsh
-what-you-need-to-do.next-year-mandated.notification.bullet-3    = send an end of period statement and submit your final declaration by {0} ... but in Welsh
+what-you-need-to-do.next-year-mandated.para-1                   = Gallwch gofrestru i ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o 6 Ebrill {0} ymlaen
+what-you-need-to-do.next-year-mandated.para-2                   = Drwy gofrestru, rydych yn cytuno i wneud y canlynol:
+what-you-need-to-do.next-year-mandated.notification.bullet-1    = cael gafael ar feddalwedd sy’n cydweddu er mwyn cofnodi’ch incwm a’ch treuliau
+what-you-need-to-do.next-year-mandated.notification.bullet-2    = defnyddio’ch meddalwedd i anfon diweddariadau chwarterol atom
+what-you-need-to-do.next-year-mandated.notification.bullet-3    = anfon datganiad diwedd cyfnod a chyflwyno’ch datganiad terfynol erbyn {0}
 
 ##  Agent What You Need To Do (Current year Mandated)  ##
-agent.what-you-need-to-do-current.para-1                                = Based on your client’s previous tax returns, they must use Making Tax Digital for Income Tax. ... but in Welsh
-agent.what-you-need-to-do-current.para-2                                = Either you or your client must: ... but in Welsh
-agent.what-you-need-to-do-current.notification.bullet-1                 = record income and expenses using compatible software ... but in Welsh
-agent.what-you-need-to-do-current.notification.bullet-2                 = use software to send us quarterly updates ... but in Welsh
-agent.what-you-need-to-do-current.notification.bullet-3                 = send an end of period statement and submit a final declaration by {0} ... but in Welsh
-agent.what-you-need-to-do-current.warning.para                          = Your client may be penalised if they do not use Making Tax Digital for Income Tax. ... but in Welsh
+agent.what-you-need-to-do-current.para-1                                = Yn seiliedig ar Ffurflenni Treth blaenorol eich cleient, mae’n rhaid iddo ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+agent.what-you-need-to-do-current.para-2                                = Mae’n rhaid i chi neu’ch cleient wneud y canlynol:
+agent.what-you-need-to-do-current.notification.bullet-1                 = cofnodi incwm a threuliau gan ddefnyddio meddalwedd sy’n cydweddu
+agent.what-you-need-to-do-current.notification.bullet-2                 = defnyddio meddalwedd i anfon diweddariadau chwarterol atom
+agent.what-you-need-to-do-current.notification.bullet-3                 = anfon datganiad diwedd cyfnod a chyflwyno datganiad terfynol {0}
+agent.what-you-need-to-do-current.warning.para                          = Mae’n bosibl y bydd eich cleient yn cael ei gosbi os na fydd yn defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
 
 # What tax year to sign up
 business.what-year-to-sign-up.title                             = Ar gyfer pa flwyddyn dreth yr ydych am ddechrau defnyddio meddalwedd i gyflwyno diweddariadau?
@@ -557,12 +557,12 @@ agent.other-sources-of-income.not-include-point2                = difidendau
 agent.other-sources-of-income.invalid                           = Dewiswch ‘Iawn’ os oes gan eich cleient ffynonellau incwm heblaw hunangyflogaeth neu incwm o eiddo
 
 # Agent cannot take part page
-agent.cannot-take-part.title                                    = Your client cannot take part in this pilot yet
-agent.cannot-take-part.heading                                  = Your client cannot take part in this pilot yet
-agent.cannot-take-part.para1                                    = The Making Tax Digital For Income Tax pilot is not currently available to people with certain incomes or deductions.
-agent.cannot-take-part.para2                                    = However, your client may be able to sign up to Making Tax Digital for Income Tax in the future. Learn more about {0}.
-agent.cannot-take-part.link1                                    = who’s eligible for Making Tax Digital for Income Tax
-agent.cannot-take-part.inset1                                    = Your client’s Self Assessment tax return must be submitted as normal.
+agent.cannot-take-part.title                                    = Ni all eich cleient gymryd rhan yn y cynllun peilot hwn ar hyn o bryd
+agent.cannot-take-part.heading                                  = Ni all eich cleient gymryd rhan yn y cynllun peilot hwn ar hyn o bryd
+agent.cannot-take-part.para1                                    = Nid yw cynllun peilot Troi Treth yn Ddigidol ar gyfer Treth Incwm ar gael ar hyn o bryd i bobl sydd ag incwm neu ddidyniadau penodol.
+agent.cannot-take-part.para2                                    = Fodd bynnag, mae’n bosibl y bydd eich cleient yn gallu cofrestru ar gyfer y cynllun Troi Treth yn
+agent.cannot-take-part.link1                                    = Ddigidol ar gyfer Treth Incwm yn y dyfodol. Dysgwch ragor am bwy sy’n gymwys ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+agent.cannot-take-part.inset1                                   = Mae’n rhaid i Ffurflen Dreth Hunanasesiad eich cleient gael ei chyflwyno yn ôl yr arfer.
 
 # Agent cannot sign up page
 agent.cannot-sign-up.heading                                    = Gall eich cleient gofrestru ar gyfer y cynllun peilot hwn o’r flwyddyn dreth nesaf ymlaen
@@ -587,29 +587,29 @@ declined-sign-up-next-year.para                                 = Rydych wedi de
 
 ## Agent what you need to do page ##
 agent.what-you-need-to-do.heading                                                        = Beth y mae angen i chi ei wneud
-agent.what-you-need-to-do.voluntary-and-eligible.para-1                                  = By taking part in this pilot you agree that either you or your client will: ... but in Welsh
-agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-1            = record income and expenses using compatible software ... but in Welsh
-agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-2            = use software to send us quarterly updates ... but in Welsh
-agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-3            = complete any missing quarterly updates (if you’ve chosen to sign up for the current tax year) ... but in Welsh
-agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-4            = send an end of period statement and submit a final declaration by 31 January following the end of the tax year ... but in Welsh
-agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-5            = tell HMRC if they stop trading or start a new business ... but in Welsh
-agent.what-you-need-to-do.voluntary-and-eligible.inset-text.para                         = Using Making Tax Digital for Income Tax is currently voluntary. Your client can opt out and go back to Self Assessment at any time. ... but in Welsh
-agent.what-you-need-to-do.voluntary-and-eligible.para-2                                  = It will be compulsory for some people to use Making Tax Digital for Income Tax from April 2026, depending on their total qualifying income. If this applies to your client, we’ll send them a letter. ... but in Welsh
+agent.what-you-need-to-do.voluntary-and-eligible.para-1                                  = Drwy gymryd rhan yn y cynllun peilot hwn, rydych yn cytuno y byddwch chi neu’ch cleient yn gwneud y canlynol:
+agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-1            = cofnodi incwm a threuliau gan ddefnyddio meddalwedd sy’n cydweddu
+agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-2            = defnyddio meddalwedd i anfon diweddariadau chwarterol atom
+agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-3            = cwblhau unrhyw ddiweddariadau chwarterol sydd ar goll (os ydych wedi dewis cofrestru ar gyfer y flwyddyn dreth bresennol)
+agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-4            = sanfon datganiad diwedd cyfnod a chyflwyno datganiad terfynol erbyn 31 Ionawr yn dilyn diwedd y flwyddyn dreth
+agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-5            = rhoi gwybod i CThEF os bydd yn rhoi’r gorau i fasnachu neu’n dechrau busnes newydd
+agent.what-you-need-to-do.voluntary-and-eligible.inset-text.para                         = Mae defnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm yn wirfoddol ar hyn o bryd. Gall eich cleient optio allan a mynd yn ôl i Hunanasesiad ar unrhyw adeg.
+agent.what-you-need-to-do.voluntary-and-eligible.para-2                                  = O fis Ebrill 2026 ymlaen, bydd yn orfodol i rai pobl ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, yn dibynnu ar gyfanswm eu hincwm cymwys. Os yw hyn yn berthnasol i’ch cleient, byddwn yn anfon llythyr ato.
 
-agent.what-you-need-to-do.voluntary-eligible-next-year-only.para-1                       = Your client can sign up to use Making Tax Digital for Income Tax from 6 April {0}. ... but in Welsh
-agent.what-you-need-to-do.voluntary-eligible-next-year-only.para-2                       = By signing up you agree that either you or your client will: ... but in Welsh
-agent.what-you-need-to-do.voluntary-eligible-next-year-only.notification-banner.bullet-1 = record income and expenses using compatible software ... but in Welsh
-agent.what-you-need-to-do.voluntary-eligible-next-year-only.notification-banner.bullet-2 = use software to send us quarterly update ... but in Welsh
-agent.what-you-need-to-do.voluntary-eligible-next-year-only.notification-banner.bullet-3 = send an end of period statement and submit a final declaration by {0} ... but in Welsh
-agent.what-you-need-to-do.voluntary-eligible-next-year-only.notification-banner.bullet-4 = tell HMRC if they stop trading or start a new business ... but in Welsh
-agent.what-you-need-to-do.voluntary-eligible-next-year-only.inset-text.para              = Your client’s Self Assessment tax return must be submitted at the end of the {0} tax year as normal. ... but in Welsh
+agent.what-you-need-to-do.voluntary-eligible-next-year-only.para-1                       = Gall eich cleient gofrestru i ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o 6 Ebrill {0} ymlaen
+agent.what-you-need-to-do.voluntary-eligible-next-year-only.para-2                       = Drwy gofrestru, rydych yn cytuno y byddwch chi neu’ch cleient yn gwneud y canlynol:
+agent.what-you-need-to-do.voluntary-eligible-next-year-only.notification-banner.bullet-1 = cofnodi incwm a threuliau gan ddefnyddio meddalwedd sy’n cydweddu
+agent.what-you-need-to-do.voluntary-eligible-next-year-only.notification-banner.bullet-2 = defnyddio meddalwedd i anfon diweddariadau chwarterol atom
+agent.what-you-need-to-do.voluntary-eligible-next-year-only.notification-banner.bullet-3 = anfon datganiad diwedd cyfnod a chyflwyno datganiad terfynol erbyn {0}
+agent.what-you-need-to-do.voluntary-eligible-next-year-only.notification-banner.bullet-4 = rhoi gwybod i CThEF os bydd yn rhoi’r gorau i fasnachu neu’n dechrau busnes newydd
+agent.what-you-need-to-do.voluntary-eligible-next-year-only.inset-text.para              = Mae’n rhaid i Ffurflen Dreth Hunanasesiad eich cleient gael ei chyflwyno erbyn diwedd blwyddyn dreth {0}  yn ôl yr arfer.
 
 ## Agent what you need to do page post mandation next tax year
-agent.what-you-need-to-do.mandated-and-eligible-next-year-only.para-1                          = You can sign up your client to use Making Tax Digital for Income Tax from 6 April {0}. ...but in Welsh
-agent.what-you-need-to-do.mandated-and-eligible-next-year-only.para-2                          = By signing up you agree that either you or your client will: ...but in Welsh
-agent.what-you-need-to-do.mandated-and-eligible-next-year-only.notification-banner.bullet-1    = get compatible software to record your income and expenses ...but in Welsh
-agent.what-you-need-to-do.mandated-and-eligible-next-year-only.notification-banner.bullet-2    = use your compatible software to send us quarterly updates ...but in Welsh
-agent.what-you-need-to-do.mandated-and-eligible-next-year-only.notification-banner.bullet-3    = send an end of period statement and submit your final declaration by {0} ...but in Welsh
+agent.what-you-need-to-do.mandated-and-eligible-next-year-only.para-1                          = Gallwch gofrestru’ch cleient i ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o 6 Ebrill {0} ymlaen
+agent.what-you-need-to-do.mandated-and-eligible-next-year-only.para-2                          = Drwy gofrestru, rydych yn cytuno y byddwch chi neu’ch cleient yn gwneud y canlynol:
+agent.what-you-need-to-do.mandated-and-eligible-next-year-only.notification-banner.bullet-1    = cofnodi incwm a threuliau gan ddefnyddio meddalwedd sy’n cydweddu
+agent.what-you-need-to-do.mandated-and-eligible-next-year-only.notification-banner.bullet-2    = defnyddio meddalwedd i anfon diweddariadau chwarterol atom
+agent.what-you-need-to-do.mandated-and-eligible-next-year-only.notification-banner.bullet-3    = anfon datganiad diwedd cyfnod a chyflwyno’ch datganiad terfynol erbyn {0}
 
 # Agent accounting period check page
 agent.accounting-period-check.title                             = A yw holl gyfnodau cyfrifyddu busnes eich cleient yn rhedeg o 6 Ebrill i 5 Ebrill?
