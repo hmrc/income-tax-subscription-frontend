@@ -565,38 +565,23 @@ agent.cannot-take-part.link1                                    = who’s eligib
 agent.cannot-take-part.inset1                                    = Your client’s Self Assessment tax return must be submitted as normal.
 
 # Agent cannot sign up page
-agent.cannot-sign-up.heading                                    = Gall eich cleient gofrestru ar gyfer y cynllun peilot hwn o {0}
-agent.cannot-sign-up.paragraph1                                 = Ni all eich cleient gofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm eto. Mae hyn oherwydd nad yw’r cynllun ar gael ar hyn o bryd i bobl sydd â mathau penodol o:
-agent.cannot-sign-up.bullet1                                    = incwm
-agent.cannot-sign-up.bullet2                                    = didyniadau
-agent.cannot-sign-up.paragraph2                                 = Gall eich cleient gofrestru o hyd ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm ar gyfer y flwyddyn dreth nesaf, sy’n dechrau ar {0}.
-agent.cannot-sign-up.paragraph3                                 = Efallai y bydd eich cleient yn gallu ymuno â’r cynllun peilot o hyd os yw’ch amgylchiadau wedi newid yn ddiweddar. Gwiriwch {0}, er mwyn gweld a all eich cleient gofrestru.
-agent.cannot-sign-up.link1                                      = pwy sy’n gallu defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-agent.cannot-sign-up.subheading                                 = Pryd mae’n rhaid i’ch cleient ddefnyddio’r gwasanaeth hwn
-agent.cannot-sign-up.paragraph4                                 = Mae’n rhaid i’ch cleient fodloni gofynion y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar gyfer 6 Ebrill 2026, os bydd y canlynol i gyd yn berthnasol:
-agent.cannot-sign-up.link2                                      = incwm cymwys
-agent.cannot-sign-up.bullet3                                    = mae wedi’i gofrestru ar gyfer Hunanasesiad
-agent.cannot-sign-up.bullet4                                    = mae’n cael incwm o hunangyflogaeth neu o eiddo, neu o’r ddau
-agent.cannot-sign-up.bullet5                                    = mae cyfanswm ei incwm cymwys yn fwy na £50,000
-agent.cannot-sign-up.bullet6                                    = mae wedi’i gofrestru ar gyfer Hunanasesiad
-agent.cannot-sign-up.bullet7                                    = mae’n cael incwm o hunangyflogaeth neu o eiddo, neu o’r ddau
-agent.cannot-sign-up.bullet8                                    = mae cyfanswm ei incwm cymwys yn fwy na £30,000
-agent.cannot-sign-up.paragraph5                                 = Mae’n rhaid i’ch cleient fodloni gofynion y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar gyfer 6 Ebrill 2027, os bydd y canlynol i gyd yn berthnasol:
+agent.cannot-sign-up.heading                                    = Gall eich cleient gofrestru ar gyfer y cynllun peilot hwn o’r flwyddyn dreth nesaf ymlaen
+agent.cannot-sign-up.paragraph1                                 = Gall eich cleient gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o’r flwyddyn dreth nesaf ({0} to {1}).
+agent.cannot-sign-up.yes-no-radio-helper.heading                = A hoffech gofrestru ar gyfer y flwyddyn dreth nesaf?
+error.agent.cannot-sign-up.invalid                              = Mae’n rhaid i chi ddewis ‘iawn’ neu ‘na’
 
-agent.cannot-sign-up.paragraph6                                 = Bydd yn dal i fod yn rhaid i’ch cleient {0} ar gyfer y flwyddyn dreth cyn i’ch cleient gofrestru i ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
-agent.cannot-sign-up.link3                                      = anfon Ffurflen Dreth Hunanasesiad i CThEF
-agent.cannot-sign-up.continue-button                            = Yn eich blaen i gofrestru cleient ar gyfer mis {0}
-
+# Agent declined sign up
 agent.declined-sign-up-next-year.heading                        = Beth y mae angen i chi ei wneud
 agent.declined-sign-up-next-year.para                           = Rydych wedi dewis peidio â chofrestru’ch cleient ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
 agent.declined-sign-up-next-year.inset-text.para                = Mae’n rhaid i Ffurflen Dreth Hunanasesiad eich cleient gael ei chyflwyno yn ôl yr arfer.
 
 # Individual cannot sign up page
-cannot-sign-up.heading                                          = You can sign up to this pilot from the next tax year ... But in Welsh
-cannot-sign-up.paragraph1                                       = You can sign up for Making Tax Digital for Income Tax for the next tax year ({0} to {1}). ... But in Welsh
-cannot-sign-up.yes-no-radio-helper.heading                      = Would you like to sign up for the next tax year ... But in Welsh
+cannot-sign-up.heading                                          = Gallwch gofrestru i’r peilot hwn o’r flwyddyn dreth nesaf
+cannot-sign-up.paragraph1                                       = Gallwch gofrestru i’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar gyfer y flwyddyn dreth nesaf ({0} to {1}).
+cannot-sign-up.yes-no-radio-helper.heading                      = A hoffech gofrestru ar gyfer y flwyddyn dreth nesaf?
 error.cannot-sign-up.invalid                                    = Mae’n rhaid i chi ddewis ‘iawn’ neu ‘na’
 
+# Individual declined sign up
 declined-sign-up-next-year.heading                              = Beth y mae angen i chi ei wneud
 declined-sign-up-next-year.para                                 = Rydych wedi dewis peidio â chofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm. Parhewch i gyflwyno’ch Ffurflen Dreth Hunanasesiad flynyddol yn ôl yr arfer.
 

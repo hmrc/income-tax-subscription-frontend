@@ -17,6 +17,8 @@
 package controllers.agent.eligibility
 
 import controllers.agent.AgentControllerBaseSpec
+import forms.agent.CannotSignUpThisYearForm
+import forms.submapping.YesNoMapping
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.http.Status
@@ -28,7 +30,7 @@ import views.html.agent.eligibility.CannotSignUpThisYear
 
 class CannotSignUpThisYearControllerSpec extends AgentControllerBaseSpec
   with MockSubscriptionDetailsService
-  with MockAuditingService  {
+  with MockAuditingService {
   override val controllerName: String = "CannotSignUpController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
@@ -41,7 +43,7 @@ class CannotSignUpThisYearControllerSpec extends AgentControllerBaseSpec
   )
 
   "show" should {
-    "display the property accounting method view and return OK (200)" in {
+    "display the cannot sign up this year view and return OK (200)" in {
       when(view(any(), any())(any(), any()))
         .thenReturn(HtmlFormat.empty)
 
@@ -51,12 +53,39 @@ class CannotSignUpThisYearControllerSpec extends AgentControllerBaseSpec
     }
   }
 
-  "submit" should {
-    "redirect to the home controller" in {
-      val result: Result = await(TestCannotSignUpThisYearController.submit()(subscriptionRequest))
+  "submit" when {
+    "the user selects yes" should {
+      "redirect to the what you need to do controller" in {
+        val result: Result = await(TestCannotSignUpThisYearController.submit()(
+          subscriptionRequest.withFormUrlEncodedBody(
+            CannotSignUpThisYearForm.yesNo -> YesNoMapping.option_yes
+          )
+        ))
 
-      status(result) must be(Status.SEE_OTHER)
-      redirectLocation(result) must be(Some(controllers.agent.routes.HomeController.home.url))
+        status(result) must be(Status.SEE_OTHER)
+        redirectLocation(result) must be(Some(controllers.agent.routes.WhatYouNeedToDoController.show().url))
+      }
+    }
+    "the user selects no" should {
+      "redirect to the declined sign up next year controller" in {
+        val result: Result = await(TestCannotSignUpThisYearController.submit()(
+          subscriptionRequest.withFormUrlEncodedBody(
+            CannotSignUpThisYearForm.yesNo -> YesNoMapping.option_no
+          )
+        ))
+
+        status(result) must be(Status.SEE_OTHER)
+        redirectLocation(result) must be(Some(controllers.agent.routes.DeclinedSignUpNextYearController.show.url))
+      }
+    }
+    "the user selects no option" should {
+      "display the cannot sign up this year view and return BAD_REQUEST (400)" in {
+        when(view(any(), any())(any(), any()))
+          .thenReturn(HtmlFormat.empty)
+        val result: Result = await(TestCannotSignUpThisYearController.submit()(subscriptionRequest))
+
+        status(result) must be(Status.BAD_REQUEST)
+      }
     }
   }
 

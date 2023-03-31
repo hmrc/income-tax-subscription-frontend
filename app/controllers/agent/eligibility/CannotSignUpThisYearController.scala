@@ -18,9 +18,12 @@ package controllers.agent.eligibility
 
 import auth.agent.StatelessController
 import config.AppConfig
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import forms.agent.CannotSignUpThisYearForm
+import models.{No, Yes, YesNo}
+import play.api.data.Form
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
+import play.twirl.api.Html
 import services.{AuditingService, AuthService}
-import utilities.AccountingPeriodUtil
 import views.html.agent.eligibility.CannotSignUpThisYear
 
 import javax.inject.Inject
@@ -32,13 +35,25 @@ class CannotSignUpThisYearController @Inject()(val auditingService: AuditingServ
                                               (implicit val appConfig: AppConfig,
                                       mcc: MessagesControllerComponents,
                                       val ec: ExecutionContext) extends StatelessController  {
+
+  private val form: Form[YesNo] = CannotSignUpThisYearForm.cannotSignUpThisYearForm
   def show: Action[AnyContent] = Authenticated { implicit request =>
     _ =>
-      Ok(cannotSignUp(routes.CannotSignUpThisYearController.submit, AccountingPeriodUtil.getNextTaxYear))
+      Ok(cannotSignUp(form, routes.CannotSignUpThisYearController.submit))
   }
 
-  def submit: Action[AnyContent] = Authenticated { _ =>
-    _ =>
-      Redirect(controllers.agent.routes.HomeController.home)
+  def submit: Action[AnyContent] = Authenticated { implicit request =>
+    implicit user =>
+      form.bindFromRequest().fold(
+        hasErrors => BadRequest(view(form = hasErrors)), {
+          case Yes => Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
+          case No => Redirect(controllers.agent.routes.DeclinedSignUpNextYearController.show)
+        }
+      )
   }
+
+  private def view(form: Form[YesNo])(implicit request: Request[_]): Html = cannotSignUp(
+    yesNoForm = form,
+    postAction = routes.CannotSignUpThisYearController.submit
+  )
 }

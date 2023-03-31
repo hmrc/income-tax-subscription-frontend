@@ -18,6 +18,7 @@ package controllers.agent.eligibility
 
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
+import models.{No, Yes}
 import play.api.libs.ws.WSResponse
 import play.api.test.Helpers._
 
@@ -38,21 +39,51 @@ class CannotSignUpThisYearControllerISpec extends ComponentSpecBase {
 
   }
 
-  "POST /client/error/cannot-sign-up-for-current-year" should {
+  "POST /client/error/cannot-sign-up-for-current-year" when {
 
-    s"return a redirect to ${controllers.agent.routes.HomeController.home.url}" in {
-      Given("I setup the wiremock stubs")
-      AuthStub.stubAuthSuccess()
+    "the user selects yes" should {
+      s"return a redirect to ${controllers.agent.routes.WhatYouNeedToDoController.show().url}" in {
+        Given("I setup the wiremock stubs")
+        AuthStub.stubAuthSuccess()
 
-      When("POST /client/error/cannot-sign-up-for-current-year is called")
-      val result: WSResponse = IncomeTaxSubscriptionFrontend.submitCannotSignUpThisYear
+        When("POST /client/error/cannot-sign-up-for-current-year is called")
+        val result: WSResponse = IncomeTaxSubscriptionFrontend.submitCannotSignUpThisYear(Some(Yes))
 
-      Then("Should return SEE_OTHER to the home controller")
+        Then("Should return SEE_OTHER to the home controller")
 
-      result must have(
-        httpStatus(SEE_OTHER),
-        redirectURI(controllers.agent.routes.HomeController.home.url)
-      )
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(controllers.agent.routes.WhatYouNeedToDoController.show().url)
+        )
+      }
+    }
+    "the user selects no" should {
+      s"return a redirect to ${controllers.agent.routes.DeclinedSignUpNextYearController.show.url}" in {
+        Given("I setup the wiremock stubs")
+        AuthStub.stubAuthSuccess()
+
+        When("POST /client/error/cannot-sign-up-for-current-year is called")
+        val result: WSResponse = IncomeTaxSubscriptionFrontend.submitCannotSignUpThisYear(Some(No))
+
+        Then("Should return SEE_OTHER to the home controller")
+
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(controllers.agent.routes.DeclinedSignUpNextYearController.show.url)
+        )
+      }
+    }
+    "the user selects no option" should {
+      "return a status of BAD_REQUEST" in {
+        Given("I setup the wiremock stubs")
+        AuthStub.stubAuthSuccess()
+
+        When("POST /client/error/cannot-sign-up-for-current-year is called")
+        val result: WSResponse = IncomeTaxSubscriptionFrontend.submitCannotSignUpThisYear(None)
+
+        Then("Should return a BAD_REQUEST")
+        result.status mustBe BAD_REQUEST
+      }
     }
 
   }

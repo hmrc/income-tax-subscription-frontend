@@ -197,7 +197,11 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
     def showCannotTakePart: WSResponse = get("/error/cannot-sign-up")
     def showCannotSignUpThisYear: WSResponse = get("/error/cannot-sign-up-for-current-year")
-    def submitCannotSignUpThisYear: WSResponse = post("/error/cannot-sign-up-for-current-year")(Map.empty)
+    def submitCannotSignUpThisYear(request: Option[YesNo]): WSResponse = post("/error/cannot-sign-up-for-current-year")(
+      request.fold(Map.empty[String, Seq[String]])(
+        model => CannotSignUpThisYearForm.cannotSignUpThisYearForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+      )
+    )
 
     def showSoleTrader(): WSResponse = get("/eligibility/sole-trader-start-date")
 
