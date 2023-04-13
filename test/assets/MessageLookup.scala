@@ -17,6 +17,9 @@
 package assets
 
 import models.DateModel
+import utilities.AccountingPeriodUtil
+
+import java.time.format.DateTimeFormatter
 
 object MessageLookup {
 
@@ -300,6 +303,12 @@ object MessageLookup {
     def contentSummary(numberComplete: Int, numberTotal: Int) = s"You have completed $numberComplete of $numberTotal sections."
 
     val item1 = "1. Choose a tax year to sign up"
+    val item1Unchangeable: String = "1. Tax year you are signed up for"
+    val item1SummaryKey: String = "Tax year"
+    def item1SubmitBy(isNextYear: Boolean): String = {
+      val date: String = AccountingPeriodUtil.getFinalDeclarationDate(isNextYear).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
+      s"Submit a final declaration by $date"
+    }
     val item2 = "2. Tell us about your income"
     val item2Para = "You must add all your sole trader businesses, up to a maximum of 50. You do not need to add your PAYE earnings. But you must add any property businesses you have, which is limited to one UK property business and one overseas property business."
     val agentItem2 = "2. Tell us about your client’s income"

@@ -23,6 +23,8 @@
 @import views.html.helpers.injected.TaskListHelper
 @import views.html.templates.PrincipalMainTemplate
 @import views.helpers.models.tasklist._
+@import utilities.AccountingPeriodUtil
+@import uk.gov.hmrc.play.language.LanguageUtils
 
 @this(
     mainTemplate: PrincipalMainTemplate,
@@ -30,7 +32,9 @@
     continueButton: ContinueButton,
     saveAndContinueButton: ButtonHelper,
     govukTag : GovukTag,
-    taskListHelper : TaskListHelper
+    taskListHelper : TaskListHelper,
+    govukSummaryList : GovukSummaryList,
+    languageUtils: LanguageUtils
 )
 
 @(postAction: Call, viewModel: TaskListModel, accountingPeriodService: AccountingPeriodService, individualUserNino: String,  maybeIndividualUserFullName: Option[String])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -74,33 +78,56 @@
   }
 }
 
+@selectTaxYearUnchangeableContent = {
+    <div class="app-task-list__items">
+        @govukSummaryList(SummaryList(
+            rows = Seq(
+                SummaryListRow(
+                    key = Key(content = Text(messages(s"${messagePrefix}.content.section1.tax-year"))),
+                    value = Value(content = HtmlContent(
+                        s"""
+                            <p class="govuk-body">$taxYearText</p>
+                            <p class="govuk-body-s">${messages("business.task-list.content.section1.submit-final-declaration", languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(viewModel.taxYearSelection.map(_.accountingYear).contains(Next))))}</p>
+                        """
+                    ))
+                )
+            )
+        ))
+    </div>
+}
+
 @selectTaxYear = @{
+    val selectTaxYearItems: Seq[TaskListItem] = Seq(
+        if(!viewModel.permitTaxYearChange) {
+            None
+        } else if(viewModel.taxYearSelectedAndConfirmed) {
+            Some(TaskListItem(
+                content = {taxYearText},
+                href = Some(controllers.individual.business.routes.TaxYearCheckYourAnswersController.show(editMode=true).url),
+                tagLabel = messages(s"${messagePrefix}.status.completed"),
+                isComplete = true
+            ))
+        } else if (viewModel.taxYearSelectedNotConfirmed) {
+            Some(TaskListItem(
+                content = messages(s"${messagePrefix}.content.section1.action"),
+                href = Some(controllers.individual.business.routes.WhatYearToSignUpController.show().url),
+                tagLabel = messages(s"${messagePrefix}.status.in-progress"),
+                isComplete = false
+            ))
+        } else {
+            Some(TaskListItem(
+                content = messages(s"${messagePrefix}.content.section1.action"),
+                href = Some(controllers.individual.business.routes.WhatYearToSignUpController.show().url),
+                tagLabel = messages(s"${messagePrefix}.status.not-started"),
+                isComplete = false
+            ))
+        }
+    ).flatten
     TaskListSection(
       index = 1,
-      h2Content = messages(s"${messagePrefix}.content.section1"),
-      taskListItems = Seq(
-        if(viewModel.taxYearSelectedAndConfirmed) {
-          if(!viewModel.permitTaxYearChange) {
-            TaskListItem(
-               content = {taxYearText},
-               tagLabel = messages(s"${messagePrefix}.status.completed"),
-               isComplete = true)
-          } else {
-            TaskListItem(
-              content = {taxYearText},
-              href = Some(controllers.individual.business.routes.TaxYearCheckYourAnswersController.show(editMode=true).url),
-              tagLabel = messages(s"${messagePrefix}.status.completed"), isComplete = true)
-          }
-        } else if (viewModel.taxYearSelectedNotConfirmed) {
-            TaskListItem(content = messages(s"${messagePrefix}.content.section1.action"),
-              href = Some(controllers.individual.business.routes.WhatYearToSignUpController.show().url),
-              tagLabel = messages(s"${messagePrefix}.status.in-progress"), isComplete = false)
-        } else {
-            TaskListItem(content = messages(s"${messagePrefix}.content.section1.action"),
-              href = Some(controllers.individual.business.routes.WhatYearToSignUpController.show().url),
-              tagLabel = messages(s"${messagePrefix}.status.not-started"), isComplete = false)
-        }
-      )
+      h2Content = if(viewModel.permitTaxYearChange) messages(s"${messagePrefix}.content.section1.heading") else messages(s"${messagePrefix}.content.section1.unchanging-heading"),
+      sectionEnd = if(viewModel.permitTaxYearChange) None else Some(selectTaxYearUnchangeableContent),
+      taskListItems = selectTaxYearItems
     )
 }
 

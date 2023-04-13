@@ -18,7 +18,7 @@ package views.individual.incometax.business
 
 import assets.MessageLookup.Summary.SelectedTaxYear
 import assets.MessageLookup.TaskList._
-import assets.MessageLookup.TaxYearCheckYourAnswers.next
+import assets.MessageLookup.TaxYearCheckYourAnswers.{current, next}
 import models._
 import models.common.business._
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel, TaskListModel}
@@ -56,8 +56,8 @@ class TaskListViewSpec extends ViewSpec {
     )
   }
 
-  private val forcedYearTaskList = customTaskListModel(
-    taxYearSelection = Some(AccountingYearModel(Next, editable = false))
+  private def forcedYearTaskList(year: AccountingYear) = customTaskListModel(
+    taxYearSelection = Some(AccountingYearModel(year, editable = false))
   )
 
   private val partialTaskListComplete = customTaskListModel(
@@ -71,7 +71,7 @@ class TaskListViewSpec extends ViewSpec {
   )
 
   private val completedTaskListComplete = TaskListModel(
-    taxYearSelection = Some(AccountingYearModel(Next, confirmed = true, editable = true)),
+    taxYearSelection = Some(AccountingYearModel(Next, confirmed = true)),
     selfEmployments = Seq(SelfEmploymentData(
       id = "id1",
       businessStartDate = Some(BusinessStartDate(DateModel("1", "2", "1980"))),
@@ -111,7 +111,7 @@ class TaskListViewSpec extends ViewSpec {
 
     "have user information" which {
       "includes a heading" in {
-        document().mainContent.selectNth("h2",1).text mustBe userInfoHeading
+        document().mainContent.selectNth("h2", 1).text mustBe userInfoHeading
       }
 
       "includes a user nino" in {
@@ -140,7 +140,6 @@ class TaskListViewSpec extends ViewSpec {
           document().getElementById("taskListStatus").text mustBe subHeadingIncomplete
         }
 
-
         "display the number of sections complete out of the total" in {
           document().mainContent.getElementById("taskListCompletedSummary").text mustBe contentSummary(0, 2)
         }
@@ -166,7 +165,7 @@ class TaskListViewSpec extends ViewSpec {
         "display the add a business link" in {
           val businessLink = document().mainContent.getElementById("add_business")
           businessLink.text mustBe addBusiness
-          businessLink.classNames() must contain ("govuk-link")
+          businessLink.classNames() must contain("govuk-link")
           businessLink.attr("href") mustBe controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url
         }
 
@@ -238,7 +237,7 @@ class TaskListViewSpec extends ViewSpec {
           "contains a change link" in {
             val ukPropertyIncomeLink = ukPropertyIncomeSection.selectNth("span", 1).selectHead("a")
             ukPropertyIncomeLink.text() mustBe ukPropertyBusiness
-            ukPropertyIncomeLink.attr("href") mustBe controllers.individual.business.routes.PropertyCheckYourAnswersController.show(editMode=true).url
+            ukPropertyIncomeLink.attr("href") mustBe controllers.individual.business.routes.PropertyCheckYourAnswersController.show(editMode = true).url
             ukPropertyIncomeSection.selectNth("span", 2).text mustBe incomplete
             ukPropertyIncomeSection.selectHead("strong").attr("class") mustBe "govuk-tag govuk-tag--grey"
           }
@@ -260,7 +259,7 @@ class TaskListViewSpec extends ViewSpec {
           "contains a change link" in {
             val overseasPropertyLink = overseasPropertySection.selectNth("span", 1).selectHead("a")
             overseasPropertyLink.text mustBe overseasPropertyBusiness
-            overseasPropertyLink.attr("href") mustBe controllers.individual.business.routes.OverseasPropertyCheckYourAnswersController.show(editMode=true).url
+            overseasPropertyLink.attr("href") mustBe controllers.individual.business.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
             overseasPropertySection.selectNth("span", 2).text mustBe incomplete
             overseasPropertySection.selectHead("strong").attr("class") mustBe "govuk-tag govuk-tag--grey"
           }
@@ -324,7 +323,7 @@ class TaskListViewSpec extends ViewSpec {
           val ukPropertyIncomeSection = document(completedTaskListComplete).mainContent.selectHead(selectorForFirstBusiness).selectNth("li", 2)
           val ukPropertyIncomeLink = ukPropertyIncomeSection.selectNth("span", 1).selectHead("a")
           ukPropertyIncomeLink.text() mustBe ukPropertyBusiness
-          ukPropertyIncomeLink.attr("href") mustBe controllers.individual.business.routes.PropertyCheckYourAnswersController.show(editMode=true).url
+          ukPropertyIncomeLink.attr("href") mustBe controllers.individual.business.routes.PropertyCheckYourAnswersController.show(editMode = true).url
           ukPropertyIncomeSection.selectNth("span", 2).text mustBe complete
           ukPropertyIncomeSection.selectHead("strong").attr("class") mustBe "govuk-tag"
         }
@@ -333,7 +332,7 @@ class TaskListViewSpec extends ViewSpec {
           val overseasPropertySection = document(completedTaskListComplete).mainContent.selectHead(selectorForFirstBusiness).selectNth("li", 3)
           val overseasPropertyLink = overseasPropertySection.selectNth("span", 1).selectHead("a")
           overseasPropertyLink.text mustBe overseasPropertyBusiness
-          overseasPropertyLink.attr("href") mustBe controllers.individual.business.routes.OverseasPropertyCheckYourAnswersController.show(editMode=true).url
+          overseasPropertyLink.attr("href") mustBe controllers.individual.business.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
           overseasPropertySection.selectNth("span", 2).text mustBe complete
           overseasPropertySection.selectHead("strong").attr("class") mustBe "govuk-tag"
         }
@@ -355,16 +354,36 @@ class TaskListViewSpec extends ViewSpec {
     }
   }
 
-  "given a forced year in the task list model" must {
-    val doc = document(forcedYearTaskList)
-    "display the select tax year with status complete and no link" when {
-      "the user has not selected any tax year to sign up" in {
-        val selectTaxYearSection = doc.mainContent.selectNth("ul", 1)
-        val selectTaxYearText = selectTaxYearSection.selectNth("span", 1)
-        selectTaxYearText.text mustBe next(getCurrentTaxEndYear, getCurrentTaxEndYear + 1)
-        selectTaxYearSection.selectNth("span", 2).text mustBe complete
-        selectTaxYearSection.selectHead("strong").attr("class") mustBe "govuk-tag"
-        selectTaxYearText.select("a").size() mustBe 0
+  "given a forced year in the task list model" which {
+    "is set to Next" must {
+      def doc: Document = document(forcedYearTaskList(Next))
+
+      "display the select tax year section" which {
+        "has a heading" in {
+          doc.mainContent.selectHead("ol").selectNth("li", 1).selectHead("h2").text mustBe item1Unchangeable
+        }
+        "has a summary list of the tax year they are signing up for" in {
+          val summaryList = doc.mainContent.selectHead("ol").selectNth("li", 1).selectHead(".govuk-summary-list")
+          summaryList.selectHead("dt").text mustBe item1SummaryKey
+          summaryList.selectHead("dd").selectNth("p", 1).text mustBe next(getCurrentTaxEndYear, getCurrentTaxEndYear + 1)
+          summaryList.selectHead("dd").selectNth("p", 2).text mustBe item1SubmitBy(isNextYear = true)
+        }
+      }
+    }
+
+    "is set to Current" must {
+      def doc: Document = document(forcedYearTaskList(Current))
+
+      "display the select tax year section" which {
+        "has a heading" in {
+          doc.mainContent.selectHead("ol").selectNth("li", 1).selectHead("h2").text mustBe item1Unchangeable
+        }
+        "has a summary list of the tax year they are signing up for" in {
+          val summaryList = doc.mainContent.selectHead("ol").selectNth("li", 1).selectHead(".govuk-summary-list")
+          summaryList.selectHead("dt").text mustBe item1SummaryKey
+          summaryList.selectHead("dd").selectNth("p", 1).text mustBe current(getCurrentTaxEndYear - 1, getCurrentTaxEndYear)
+          summaryList.selectHead("dd").selectNth("p", 2).text mustBe item1SubmitBy(isNextYear = false)
+        }
       }
     }
   }
