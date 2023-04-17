@@ -12,14 +12,14 @@ which nc &>/dev/null && nc -vz localhost $MONGO_PORT 2>/dev/null || die "Can't f
 
 SERVICE_PORT=9561
 
-which sm &>/dev/null || die "Can't find Service Manager"
+which sm2 &>/dev/null || die "Can't find Service Manager"
 
 which nc &>/dev/null && nc -vz localhost $SERVICE_PORT 2>/dev/null && die "It appears the service is already running?"
 
-sm --start ITSA_SUBSC_MIN "$@"
+sm2 --start ITSA_SUBSC_MIN "$@"
 sleep 5
 
-sm --stop INCOME_TAX_SUBSCRIPTION_FRONTEND
+sm2 --stop INCOME_TAX_SUBSCRIPTION_FRONTEND
 sleep 5
 
 sbt "run $SERVICE_PORT -Dplay.http.router=testOnlyDoNotUseInAppConf.Routes"

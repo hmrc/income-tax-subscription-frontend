@@ -547,19 +547,19 @@ object MessageLookup {
   }
 
   object ThrottleStartOfJourneyAgent {
-    val title = "Your sign up cannot be completed right now - Use software to report your client’s Income Tax - GOV.UK"
-    val heading = "Your sign up cannot be completed right now"
-    val line1 = "We are experiencing high levels of applications for this service and cannot complete your client’s sign up at the moment. Don’t worry, the details you have entered will be saved for 30 days."
-    val line2 = "To finish and complete signing up your client, try again or sign out and come back later."
+    val title = "We are currently experiencing high levels of demand for this service - Use software to report your client’s Income Tax - GOV.UK"
+    val heading = "We are currently experiencing high levels of demand for this service"
+    val line1 = "You can not sign up your client to the Making Tax Digital for Income Tax service at the moment. If you would still like to access this service, try again shortly or sign out and come back later."
+    val line2 = ""
     val tryAgain = "Try again"
     val signOutText = "Sign out"
   }
 
   object ThrottleStartOfJourneyIndividual {
-    val title = "Your sign up cannot be completed right now"
-    val heading = "Your sign up cannot be completed right now"
-    val line1 = "We are experiencing high levels of applications for this service and cannot complete your sign up at the moment. Don’t worry, the details you have entered will be saved for 30 days."
-    val line2 = "To finish and complete signing up, try again or sign out and come back later."
+    val title = "We are currently experiencing high levels of demand for this service - Use software to send Income Tax updates - GOV.UK"
+    val heading = "We are currently experiencing high levels of demand for this service"
+    val line1 = "You can not sign up to the Making Tax Digital for Income Tax service at the moment. If you would still like to access this service, try again shortly or sign out and come back later."
+    val line2 = ""
     val tryAgain = "Try again"
     val signOutText = "Sign out"
   }

@@ -1013,11 +1013,20 @@ agent.remove-overseas-property-business.hint                   = Mae angen ychwa
 agent.error.remove-overseas-property-business.invalid          = Dewiswch ‘Iawn’ os ydych am ddileu’r busnes
 
 # Throttling
-throttle.title                                                 = Ni ellir cwblhau’ch cofrestriad ar hyn o bryd
-throttle.heading                                               = Ni ellir cwblhau’ch cofrestriad ar hyn o bryd
-throttle.line-1                                                = Rydym yn gweld nifer fawr o geisiadau ar gyfer y gwasanaeth hwn ac ni allwn gwblhau eich cofrestriad ar hyn o bryd. Peidiwch â phoeni – bydd y manylion rydych wedi’u nodi yn cael eu cadw am 30 diwrnod.
-throttle.line-2                                                = I orffen cofrestru, rhowch gynnig arni neu allgofnodwch a dod yn ôl yn hwyrach.
-agent.throttle.title                                           = Ni ellir cwblhau’ch cofrestriad ar hyn o bryd
-agent.throttle.heading                                         = Ni ellir cwblhau’ch cofrestriad ar hyn o bryd
-agent.throttle.line-1                                          = Rydym yn gweld nifer fawr o geisiadau ar gyfer y gwasanaeth hwn ac ni allwn gwblhau cofrestriad eich cleient ar hyn o bryd. Peidiwch â phoeni – bydd y manylion rydych wedi’u nodi yn cael eu cadw am 30 diwrnod.
-agent.throttle.line-2                                          = I orffen cofrestru’ch cleient, rhowch gynnig arall arni neu allgofnodwch a dod yn ôl yn nes ymlaen.
+throttle-start.title                                                 = We are currently experiencing high levels of demand for this service .. but in Welsh
+throttle-start.heading                                               = We are currently experiencing high levels of demand for this service .. but in Welsh
+throttle-start.line-1                                                = You can not sign up to the Making Tax Digital for Income Tax service at the moment. If you would still like to access this service, try again shortly or sign out and come back later..but in Welsh
+throttle-start.line-2                                                =
+agent.throttle-start.title                                           = We are currently experiencing high levels of demand for this service .. but in Welsh
+agent.throttle-start.heading                                         = We are currently experiencing high levels of demand for this service .. but in Welsh
+agent.throttle-start.line-1                                          = You can not sign up your client to the Making Tax Digital for Income Tax service at the moment. If you would still like to access this service, try again shortly or sign out and come back later...but in Welsh
+agent.throttle-start.line-2                                          =
+
+throttle-end.title                                                 = Ni ellir cwblhau’ch cofrestriad ar hyn o bryd
+throttle-end.heading                                               = Ni ellir cwblhau’ch cofrestriad ar hyn o bryd
+throttle-end.line-1                                                = Rydym yn gweld nifer fawr o geisiadau ar gyfer y gwasanaeth hwn ac ni allwn gwblhau eich cofrestriad ar hyn o bryd. Peidiwch â phoeni – bydd y manylion rydych wedi’u nodi yn cael eu cadw am 30 diwrnod.
+throttle-end.line-2                                                = I orffen cofrestru, rhowch gynnig arni neu allgofnodwch a dod yn ôl yn hwyrach.
+agent.throttle-end.title                                           = Ni ellir cwblhau’ch cofrestriad ar hyn o bryd
+agent.throttle-end.heading                                         = Ni ellir cwblhau’ch cofrestriad ar hyn o bryd
+agent.throttle-end.line-1                                          = Rydym yn gweld nifer fawr o geisiadau ar gyfer y gwasanaeth hwn ac ni allwn gwblhau cofrestriad eich cleient ar hyn o bryd. Peidiwch â phoeni – bydd y manylion rydych wedi’u nodi yn cael eu cadw am 30 diwrnod.
+agent.throttle-end.line-2                                          = I orffen cofrestru’ch cleient, rhowch gynnig arall arni neu allgofnodwch a dod yn ôl yn nes ymlaen.
