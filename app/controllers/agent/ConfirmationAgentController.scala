@@ -17,6 +17,7 @@
 package controllers.agent
 
 import auth.agent.PostSubmissionController
+import common.Constants.ITSASessionKeys
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.ConfirmationPage
 import controllers.utils.ReferenceRetrieval
@@ -69,7 +70,17 @@ class ConfirmationAgentController @Inject()(val auditingService: AuditingService
           if (isEnabled(ConfirmationPage)) {
             val isNextYear = taxYearSelection.map(_.accountingYear).contains(Next)
             val accountingPeriodModel: AccountingPeriodModel = if (isNextYear) AccountingPeriodUtil.getNextTaxYear else AccountingPeriodUtil.getCurrentTaxYear
-            Ok(signUpConfirmation(isNextYear, Some(clientName), clientNino, accountingPeriodModel))
+            val eligibleNextYearOnly: Boolean = request.session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY).contains("true")
+            val mandatedCurrentYear: Boolean = request.session.get(ITSASessionKeys.MANDATED_CURRENT_YEAR).contains("true")
+            val mandatedNextYear: Boolean = request.session.get(ITSASessionKeys.MANDATED_NEXT_YEAR).contains("true")
+            Ok(signUpConfirmation(
+              eligibleNextYearOnly = eligibleNextYearOnly,
+              mandatedCurrentYear = mandatedCurrentYear,
+              mandatedNextYear = mandatedNextYear,
+              isNextYear,
+              Some(clientName),
+              clientNino,
+              accountingPeriodModel))
           } else {
             Ok(signUpComplete(taxYearSelection.map(_.accountingYear), clientName, formattedClientNino, postAction, signOutAction))
           }
