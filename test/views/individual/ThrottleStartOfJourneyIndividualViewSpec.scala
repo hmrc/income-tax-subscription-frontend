@@ -16,13 +16,13 @@
 
 package views.individual
 
-import assets.MessageLookup.ThrottleStartOfJourneyAgent._
+import assets.MessageLookup.ThrottleStartOfJourneyIndividual._
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.mvc.Call
 import play.twirl.api.Html
 import utilities.ViewSpec
-import views.html.agent.ThrottleStartOfJourney
+import views.html.individual.ThrottleStartOfJourney
 
 class ThrottleStartOfJourneyIndividualViewSpec extends ViewSpec {
 
@@ -35,7 +35,7 @@ class ThrottleStartOfJourneyIndividualViewSpec extends ViewSpec {
     throttleStartOfJourneyView(
       backLink = backLinkTarget,
       postAction = postAction
-    )(request, implicitly, appConfig)
+    )(request, implicitly)
   }
 
   def document(): Document = Jsoup.parse(page().body)

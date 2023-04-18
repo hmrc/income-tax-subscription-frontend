@@ -25,12 +25,12 @@ continueButton: ContinueButton
 
 @(backLink: String, postAction: Call)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("throttle.title"), backLink = Some(backLink), showSignOutLink = true) {
-   <h1 class="govuk-heading-l">@messages("throttle.heading")</h1>
+@mainTemplate(title = messages("throttle-start.title"), backLink = Some(backLink), showSignOutLink = true) {
+   <h1 class="govuk-heading-l">@messages("throttle-start.heading")</h1>
 
-   <p class="govuk-body">@messages("throttle.line-1")</p>
+   <p class="govuk-body">@messages("throttle-start.line-1")</p>
 
-   <p class="govuk-body">@messages("throttle.line-2")</p>
+   <p class="govuk-body">@messages("throttle-start.line-2")</p>
 
    <div class="form-group">
       @form(action = postAction) {
