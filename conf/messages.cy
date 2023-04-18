@@ -1013,13 +1013,13 @@ agent.remove-overseas-property-business.hint                   = Mae angen ychwa
 agent.error.remove-overseas-property-business.invalid          = Dewiswch ‘Iawn’ os ydych am ddileu’r busnes
 
 # Throttling
-throttle-start.title                                                 = We are currently experiencing high levels of demand for this service .. but in Welsh
-throttle-start.heading                                               = We are currently experiencing high levels of demand for this service .. but in Welsh
-throttle-start.line-1                                                = You can not sign up to the Making Tax Digital for Income Tax service at the moment. If you would still like to access this service, try again shortly or sign out and come back later..but in Welsh
+throttle-start.title                                                 = Mae galw mawr am y gwasanaeth hwn ar hyn o bryd
+throttle-start.heading                                               = Mae galw mawr am y gwasanaeth hwn ar hyn o bryd
+throttle-start.line-1                                                = Ni allwch gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar hyn o bryd. Os hoffech gael mynediad at y gwasanaeth hwn o hyd, rhowch gynnig arall arni yn nes ymlaen.
 throttle-start.line-2                                                =
-agent.throttle-start.title                                           = We are currently experiencing high levels of demand for this service .. but in Welsh
-agent.throttle-start.heading                                         = We are currently experiencing high levels of demand for this service .. but in Welsh
-agent.throttle-start.line-1                                          = You can not sign up your client to the Making Tax Digital for Income Tax service at the moment. If you would still like to access this service, try again shortly or sign out and come back later...but in Welsh
+agent.throttle-start.title                                           = Mae galw mawr am y gwasanaeth hwn ar hyn o bryd
+agent.throttle-start.heading                                         = Mae galw mawr am y gwasanaeth hwn ar hyn o bryd
+agent.throttle-start.line-1                                          = You can not sign up your client to the Making Tax Digital for Income Tax service at the moment. If you would still like to access this service, try again shortly or sign out and come back later. .. but in Welsh
 agent.throttle-start.line-2                                          =
 
 throttle-end.title                                                 = Ni ellir cwblhau’ch cofrestriad ar hyn o bryd
