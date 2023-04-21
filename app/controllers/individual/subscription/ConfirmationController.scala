@@ -17,6 +17,7 @@
 package controllers.individual.subscription
 
 import auth.individual.{IncomeTaxSAUser, PostSubmissionController}
+import common.Constants.ITSASessionKeys
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.ConfirmationPage
 import controllers.utils.ReferenceRetrieval
@@ -46,7 +47,13 @@ class ConfirmationController @Inject()(val auditingService: AuditingService,
           val taxYearSelectionIsNext = selectedTaxYear.map(_.accountingYear).contains(Next)
 
           val view = if (isEnabled(ConfirmationPage)) {
+            val eligibleNextYearOnly: Boolean = request.session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY).contains("true")
+            val mandatedCurrentYear: Boolean = request.session.get(ITSASessionKeys.MANDATED_CURRENT_YEAR).contains("true")
+            val mandatedNextYear: Boolean = request.session.get(ITSASessionKeys.MANDATED_NEXT_YEAR).contains("true")
             signUpConfirmation(
+              eligibleNextYearOnly = eligibleNextYearOnly,
+              mandatedCurrentYear = mandatedCurrentYear,
+              mandatedNextYear = mandatedNextYear,
               taxYearSelectionIsNext = taxYearSelectionIsNext,
               individualUserNameMaybe = IncomeTaxSAUser.fullName,
               individualUserNino = user

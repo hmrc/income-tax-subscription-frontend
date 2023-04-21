@@ -29,10 +29,11 @@
   languageUtils: LanguageUtils,
   table: UpdateDeadlineTable,
   accountingPeriodHelper: AccountingPeriodHelper,
-  accountingPeriodService: AccountingPeriodService
+  accountingPeriodService: AccountingPeriodService,
+        govukNotificationBanner : GovukNotificationBanner,
 )
 
-@(taxYearSelectionIsNext: Boolean, individualUserNameMaybe: Option[String], individualUserNino: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, taxYearSelectionIsNext: Boolean, individualUserNameMaybe: Option[String], individualUserNino: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @userDetails = @{
   individualUserNameMaybe match {
@@ -57,97 +58,127 @@
   </p>
 }
 
-@quarterlyUpdates = {
-  <div class="boxout col">
-   @if(taxYearSelectionIsNext) {
-    <h3 class="govuk-heading-m">@messages("sign-up-confirmation.section1.quarterly-updates.next-year.heading")</h3>
-   } else {
-    <h3 class="govuk-heading-m">@messages("sign-up-confirmation.section1.quarterly-updates.this-year.heading")</h3>
-   }
+  @continuingTaxReturn = {
+    <div class="govuk-!-margin-bottom-2 boxout col">
+      <h3 class="govuk-heading-m">1. @messages("sign-up-confirmation.voluntary-next-year.self-assessment.heading")</h3>
+      <p class="govuk-body">@messages("sign-up-confirmation.voluntary-next-year.self-assessment.para", (AccountingPeriodUtil.getCurrentTaxEndYear +1).toString)</p>
+    </div>
+  }
 
-   <p class="govuk-body">
-    @messages("sign-up-confirmation.section1.quarterly-updates.paragraph")
-   </p>
+  @getPrepared = {
+    <div class="govuk-!-margin-bottom-2 boxout col">
+      <h3 class="govuk-heading-m">2. @messages("sign-up-confirmation.section2.getting-prepared.heading")</h3>
+      <p class="govuk-body">@messages("sign-up-confirmation.section2.getting-prepared.para-1", (AccountingPeriodUtil.getNextTaxEndYear -1).toString)</p>
+      <a class="govuk-link" href="@{appConfig.softwareUrl}"> @messages("sign-up-confirmation.section2.getting-prepared.link")</a>
+    </div>
+  }
+
+@quarterlyUpdates = {
+  <div class="row govuk-!-margin-bottom-2">
+    <div class="boxout col">
+  @if(taxYearSelectionIsNext) {
+    <h3 class="govuk-heading-m">3. @messages("sign-up-confirmation.quarterly-updates.heading")</h3>
+    <p class="govuk-body">@messages("sign-up-confirmation.quarterly-updates.para")</p>
+
+    @table(
+      updateAndDeadlineDates = accountingPeriodService.getAllUpdateAndDeadlineDates(Next),
+      tableCaption = messages("sign-up-confirmation.quarterly-updates.table.caption")
+    )
+  } else {
+    <h3 class="govuk-heading-m">1. @messages("sign-up-confirmation.quarterly-updates.heading")</h3>
+    <p class="govuk-body">@messages("sign-up-confirmation.quarterly-updates.para")</p>
 
    @table(
      updateAndDeadlineDates = accountingPeriodService.getAllUpdateAndDeadlineDates(Next),
-     tableCaption = messages("sign-up-confirmation.section1.quarterly-updates.table-caption")
+     tableCaption = messages("sign-up-confirmation.quarterly-updates.table.caption")
    )
 
-   @if(taxYearSelectionIsNext) {
-     <p class="govuk-body">
-      @messages("sign-up-confirmation.section1.quarterly-updates.next-year.paragraph1")
-     </p>
-
-     <p class="govuk-body">
-      @messages("sign-up-confirmation.section1.quarterly-updates.next-year.paragraph2")
-     </p>
-
-     <p class="govuk-body">
-      @messages("sign-up-confirmation.section1.quarterly-updates.next-year.paragraph3")
-     </p>
-   } else {
-     <p class="govuk-body">
-      @messages("sign-up-confirmation.section1.quarterly-updates.this-year.paragraph1")
-     </p>
-
-     <p class="govuk-body">
-      @messages("sign-up-confirmation.section1.quarterly-updates.this-year.paragraph2")
-     </p>
-
-     <p class="govuk-body">
-      @messages("sign-up-confirmation.section1.quarterly-updates.this-year.paragraph3")
-     </p>
-   }
+    @if(!mandatedCurrentYear){
+      @govukWarningText(WarningText(
+        content = Text(Messages("sign-up-confirmation.warning.para"))
+      ))
+    }
+  }
+  </div>
   </div>
  }
 
 @endOfPeriod = {
+  <div class="row govuk-!-margin-bottom-2">
+    <div class="boxout col">
   @{
     val statementDueDate = languageUtils.Dates.formatDate(AccountingPeriodUtil.getEndOfPeriodStatementDate(taxYearSelectionIsNext))
     if (taxYearSelectionIsNext) {
-      <div class="boxout col">
-        <h3 class="govuk-heading-m">{messages("sign-up-confirmation.section1.end-of-period.next-year.heading")}</h3>
-        <p class="govuk-body">{messages("sign-up-confirmation.section1.end-of-period.next-year.paragraph1", statementDueDate)}</p>
-        <p class="govuk-body">{messages("sign-up-confirmation.section1.end-of-period.next-year.paragraph2")}</p>
-        <ul class="govuk-list govuk-list--bullet">
-          <li>{messages("sign-up-confirmation.section1.end-of-period.next-year.bullet1")}</li>
-          <li>{messages("sign-up-confirmation.section1.end-of-period.next-year.bullet2")}</li>
-          <li>{messages("sign-up-confirmation.section1.end-of-period.next-year.bullet3")}</li>
-        </ul>
-      </div>
+        <h3 class="govuk-heading-m">4. {messages("sign-up-confirmation.end-of-period-statement.heading")}</h3>
+        <p class="govuk-body">{messages("sign-up-confirmation.end-of-period-statement.para", statementDueDate)}</p>
     } else {
-      <div class="boxout col">
-        <h3 class="govuk-heading-m">{messages("sign-up-confirmation.section1.end-of-period.this-year.heading")}</h3>
-        <p class="govuk-body">{messages("sign-up-confirmation.section1.end-of-period.this-year.paragraph1", statementDueDate)}</p>
-        <p class="govuk-body">{messages("sign-up-confirmation.section1.end-of-period.this-year.paragraph2")}</p>
-        <ul class="govuk-list govuk-list--bullet">
-          <li>{messages("sign-up-confirmation.section1.end-of-period.this-year.bullet1")}</li>
-          <li>{messages("sign-up-confirmation.section1.end-of-period.this-year.bullet2")}</li>
-          <li>{messages("sign-up-confirmation.section1.end-of-period.this-year.bullet3")}</li>
-        </ul>
-      </div>
+        <h3 class="govuk-heading-m">2. {messages("sign-up-confirmation.end-of-period-statement.heading")}</h3>
+        <p class="govuk-body">{messages("sign-up-confirmation.end-of-period-statement.para", statementDueDate)}</p>
     }
   }
+  </div>
+  </div>
 }
 
 @finalDeclaration = {
-  @{
-    val finalDeclarationDate = languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(taxYearSelectionIsNext))
+  <div class="row govuk-!-margin-bottom-2">
     <div class="boxout col">
-      <h3 class="govuk-heading-m">{messages("sign-up-confirmation.section1.final-declaration.next-year.heading")}</h3>
-      <p class="govuk-body">{messages("sign-up-confirmation.section1.final-declaration.next-year.paragraph1")}</p>
-      <p class="govuk-body">{messages("sign-up-confirmation.section1.final-declaration.next-year.paragraph2", finalDeclarationDate)}</p>
-      <p class="govuk-body">{messages("sign-up-confirmation.section1.final-declaration.next-year.paragraph3")}</p>
-      <ul class="govuk-list govuk-list--bullet">
-        <li>{messages("sign-up-confirmation.section1.final-declaration.next-year.bullet1")}</li>
-        <li>{messages("sign-up-confirmation.section1.final-declaration.next-year.bullet2")}</li>
-      </ul>
-    </div>
+    @{
+    val finalDeclarationDate = languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(taxYearSelectionIsNext))
+    if(taxYearSelectionIsNext) {
+        <h3 class="govuk-heading-m">5. {messages("sign-up-confirmation.voluntary-next-year.final-declaration.heading")}</h3>
+        <p class="govuk-body">{messages("sign-up-confirmation.final-declaration.para", finalDeclarationDate)}</p>
+    } else {
+        <h3 class="govuk-heading-m">3. {messages("sign-up-confirmation.voluntary-current-year.final-declaration.heading")}</h3>
+        <p class="govuk-body">{messages("sign-up-confirmation.final-declaration.para", finalDeclarationDate)}</p>
+    }
   }
+      @if(mandatedCurrentYear) {
+        @govukNotificationBanner(NotificationBanner(content = HtmlContent(mandatedNotificationBanner)))
+      }
+  </div>
+  </div>
 }
 
-@findSoftware = {
+  @mandatedNotificationBanner = {
+    <p class="govuk-body">@messages("sign-up-confirmation.mandated-notification-banner.para")</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>@messages("sign-up-confirmation.mandated.notification-banner.bullet1")</li>
+      <li>@messages("sign-up-confirmation.mandated.notification-banner.bullet2")</li>
+      <li>@messages("sign-up-confirmation.mandated.notification-banner.bullet3")</li>
+      <li>@messages("sign-up-confirmation.mandated.notification-banner.bullet4")</li>
+    </ul>
+  }
+
+  @voluntaryNextYearContent = {
+    @continuingTaxReturn
+    @getPrepared
+    @quarterlyUpdates
+    @endOfPeriod
+    @finalDeclaration
+  }
+
+  @voluntaryCurrentYearContent = {
+    @quarterlyUpdates
+    @endOfPeriod
+    @finalDeclaration
+  }
+
+  @mandatedCurrentYearContent = {
+    @quarterlyUpdates
+    @endOfPeriod
+      @finalDeclaration
+  }
+
+  @mandatedNextYearContent = {
+    @continuingTaxReturn
+    @quarterlyUpdates
+    @endOfPeriod
+    @finalDeclaration
+  }
+
+
+  @findSoftware = {
   @if(!taxYearSelectionIsNext) {
     <div class="boxout col">
       <h3 class="govuk-heading-m">@messages("sign-up-confirmation.section2.find-software.heading")</h3>
@@ -193,7 +224,7 @@
     <div class="col boxout">
       <h3 class="govuk-heading-m">@messages("sign-up-confirmation.section2.getting-prepared.heading")</h3>
       <p class="govuk-body">
-        @messages("sign-up-confirmation.section2.getting-prepared.para-1", AccountingPeriodUtil.getNextTaxEndYear.toString)
+        @messages("sign-up-confirmation.section2.getting-prepared.para-1", AccountingPeriodUtil.getCurrentTaxEndYear.toString)
       </p>
       <p>
         <a class="govuk-link" href="@{appConfig.softwareUrl}">@messages("sign-up-confirmation.section2.getting-prepared.link")</a>
@@ -210,37 +241,29 @@
     classes = "govuk-!-margin-bottom-4"
   ))
 
-  <h2 class="govuk-heading-l">@messages("sign-up-confirmation.section1.heading")</h2>
+  <h2 class="govuk-heading-l">@messages("sign-up-confirmation.what-you-must-do.heading")</h2>
 
-  @if(taxYearSelectionIsNext) {
-    @govukWarningText(WarningText(
-      iconFallbackText = messages("base.warning"),
-      content = Text(messages("sign-up-confirmation.section1.hint", AccountingPeriodUtil.getNextTaxEndYear.toString))
-    ))
+  @if(mandatedCurrentYear) {
+    @mandatedCurrentYearContent
+  } else if (mandatedNextYear && eligibleNextYearOnly) {
+  @mandatedNextYearContent
+  } else if (eligibleNextYearOnly) {
+  @voluntaryNextYearContent
+  } else {
+  @voluntaryCurrentYearContent
   }
 
-  <div class="row govuk-!-margin-bottom-2">
-    @quarterlyUpdates
-  </div>
-
-  <div class="row govuk-!-margin-bottom-2">
-    @endOfPeriod
-  </div>
-
-  <div class="row govuk-!-margin-bottom-2">
-    @finalDeclaration
+  <div class="govuk-!-margin-bottom-2 govuk-!-display-none-print">
+    <a href="javascript:window.print()" class="govuk-link govuk-link--no-underline print-link">@messages("base.print-this-page")</a>
   </div>
 
   <h2 class="govuk-heading-l">@messages("sign-up-confirmation.section2.heading")</h2>
 
   <div class="row govuk-!-margin-bottom-2">
+    @if(!eligibleNextYearOnly){
     @findSoftware
     @checkOnlineServices
     @gettingPrepared
+  }
   </div>
-
-  <div class="govuk-!-display-none-print">
-    <a href="javascript:window.print()" class="govuk-link govuk-link--no-underline print-link">@messages("base.print-this-page")</a>
-  </div>
-
 }
