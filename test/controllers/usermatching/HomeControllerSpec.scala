@@ -19,7 +19,7 @@ package controllers.usermatching
 import _root_.common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.{ELIGIBLE_NEXT_YEAR_ONLY, MANDATED_CURRENT_YEAR, MANDATED_NEXT_YEAR}
 import config.MockConfig
-import config.featureswitch.FeatureSwitch.{ControlListYears, ItsaMandationStatus, PrePopulate, ThrottlingFeature}
+import config.featureswitch.FeatureSwitch.{ItsaMandationStatus, PrePopulate, ThrottlingFeature}
 import controllers.ControllerBaseSpec
 import models.status.MandationStatus.{Mandated, Voluntary}
 import models.{EligibilityStatus, PrePopData}
@@ -63,7 +63,6 @@ class HomeControllerSpec extends ControllerBaseSpec
     reset(mockAuthService)
     disable(PrePopulate)
     disable(ItsaMandationStatus)
-    disable(ControlListYears)
     enable(ThrottlingFeature)
     notThrottled()
     mockNinoRetrieval()
@@ -303,7 +302,6 @@ class HomeControllerSpec extends ControllerBaseSpec
         }
 
         "the user is not eligible this year, but is eligible next year" when {
-          "feature switch is enabled" when {
             "user has prepop and prepop is enabled" should {
               "redirect to the Cannot Sign Up This Year page" in {
                 mockNinoAndUtrRetrieval()
@@ -312,7 +310,6 @@ class HomeControllerSpec extends ControllerBaseSpec
                 mockRetrieveReferenceSuccess(testUtr)(testReference)
                 mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleNextYearOnlyWithPrepopData)))
                 setupMockPrePopulateSave(testReference)
-                enable(ControlListYears)
                 enable(PrePopulate)
 
                 val result = await(testHomeController().index(fakeRequest))
@@ -332,7 +329,6 @@ class HomeControllerSpec extends ControllerBaseSpec
                 setupMockGetSubscriptionNotFound(testNino)
                 mockRetrieveReferenceSuccess(testUtr)(testReference)
                 mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleNextYearOnly)))
-                enable(ControlListYears)
 
                 val result = await(testHomeController().index(fakeRequest))
                 status(result) mustBe SEE_OTHER
@@ -344,21 +340,6 @@ class HomeControllerSpec extends ControllerBaseSpec
                 result.session(fakeRequest).data must contain(MANDATED_NEXT_YEAR -> "false")
               }
             }
-          }
-          "feature switch is not enabled" should {
-            "redirect to the Not Eligible page" in {
-              mockNinoAndUtrRetrieval()
-              mockLookupUserWithUtr(testNino)(testUtr, testFullName)
-              setupMockGetSubscriptionNotFound(testNino)
-              mockRetrieveReferenceSuccess(testUtr)(testReference)
-              mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleNextYearOnly)))
-
-              val result = await(testHomeController().index(fakeRequest))
-              status(result) mustBe SEE_OTHER
-              redirectLocation(result) mustBe Some(controllers.individual.eligibility.routes.NotEligibleForIncomeTaxController.show().url)
-              verifyGetThrottleStatusCalls(times(1))
-            }
-          }
         }
 
         "the user is not eligible" should {

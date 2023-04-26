@@ -21,7 +21,7 @@ import auth.agent.{AgentUserMatched, IncomeTaxAgentUser, UserMatchingController}
 import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.FailedClientMatching
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.{ControlListYears, ItsaMandationStatus, PrePopulate}
+import config.featureswitch.FeatureSwitch.{ItsaMandationStatus, PrePopulate}
 import config.featureswitch.FeatureSwitching
 import connectors.MandationStatusConnector
 import controllers.utils.ReferenceRetrieval
@@ -197,7 +197,7 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
     withEligibilityResult(utr) { eligibilityResult =>
       withAgentReference(utr) { reference =>
         eligibilityResult match {
-          case EligibilityStatus(false, nextYear, _) if !(nextYear && isEnabled(ControlListYears)) =>
+          case EligibilityStatus(false, false, _) =>
             Future.successful(
               goToCannotTakePart
                 .removingFromSession(FailedClientMatching)
