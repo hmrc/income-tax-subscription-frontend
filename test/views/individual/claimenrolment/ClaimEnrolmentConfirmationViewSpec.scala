@@ -64,6 +64,11 @@ class ClaimEnrolmentConfirmationViewSpec extends ViewSpec {
 
 
     "have a 'What happens now' section" which {
+
+      "has a leading paragraph" in {
+        document.mainContent.selectHead("#whatHappensNow").selectHead("p").text mustBe MessageLookup.ClaimEnrollmentConfirmation.para
+      }
+
       s"has first numbered point '${MessageLookup.ClaimEnrollmentConfirmation.bullet1}'" in {
         val point1 = document.select("ol.govuk-list--number").select("li").first()
         val actual = point1.text

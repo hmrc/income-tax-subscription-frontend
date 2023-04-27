@@ -221,6 +221,7 @@ object MessageLookup {
   object ClaimEnrollmentConfirmation {
     val title = "You have added Making Tax Digital for Income Tax to your account"
     val heading = "What happens now"
+    val para = "If you do not use an agent to manage your tax affairs, you will need to:"
     val bullet1 = "Find software that’s compatible (opens in new tab) and allow it to interact with HMRC, if you have not already done so."
     val bullet2 = "Send next quarterly updates using your software when required throughout the tax year."
     val bullet3 = "Submit your annual updates and declare for the tax year."
