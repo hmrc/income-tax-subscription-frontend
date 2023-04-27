@@ -21,7 +21,7 @@ import auth.individual.{IncomeTaxSAUser, SignUp, StatelessController, UserIdenti
 import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys._
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.{ControlListYears, ItsaMandationStatus, PrePopulate}
+import config.featureswitch.FeatureSwitch.{ItsaMandationStatus, PrePopulate}
 import connectors.MandationStatusConnector
 import controllers.individual.eligibility.{routes => eligibilityRoutes}
 import controllers.utils.ReferenceRetrieval
@@ -105,7 +105,7 @@ class HomeController @Inject()(val auditingService: AuditingService,
       case Right(result) =>
         withReference(utr) { reference =>
           result match {
-            case EligibilityStatus(false, nextYear, _) if !(nextYear && isEnabled(ControlListYears)) =>
+            case EligibilityStatus(false, false , _) =>
               Future.successful(Redirect(eligibilityRoutes.NotEligibleForIncomeTaxController.show()))
             case EligibilityStatus(thisYear, _, prepopMaybe) =>
               handlePrepop(reference, prepopMaybe) flatMap { _ =>

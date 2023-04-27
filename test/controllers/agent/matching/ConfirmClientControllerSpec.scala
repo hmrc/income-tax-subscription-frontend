@@ -18,7 +18,7 @@ package controllers.agent.matching
 
 import auth.agent.AgentUserMatched
 import common.Constants.ITSASessionKeys
-import config.featureswitch.FeatureSwitch.{ControlListYears, ItsaMandationStatus, PrePopulate}
+import config.featureswitch.FeatureSwitch.{ItsaMandationStatus, PrePopulate}
 import controllers.agent.AgentControllerBaseSpec
 import models.audits.EnterDetailsAuditing.EnterDetailsAuditModel
 import models.status.MandationStatus.{Mandated, Voluntary}
@@ -325,7 +325,6 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
           }
 
           "the client is ineligible only for the current year" when {
-            "the control list years feature switch is enabled" should {
               "the client has no prepop" when {
 
                 s"redirect user to ${controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url}" in withController { controller =>
@@ -334,7 +333,6 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
                   setupMockPrePopulateSave(testReference)
                   mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
                   setupMockNotLockedOut(arn)
-                  enable(ControlListYears)
 
                   val result = await(callSubmit(controller))
 
@@ -360,7 +358,6 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
                     setupMockPrePopulateSave(testReference)
                     mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
                     setupMockNotLockedOut(arn)
-                    enable(ControlListYears)
                     enable(PrePopulate)
 
                     val result = await(callSubmit(controller))
@@ -386,7 +383,6 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
                     setupMockPrePopulateSave(testReference)
                     mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
                     setupMockNotLockedOut(arn)
-                    enable(ControlListYears)
                     disable(PrePopulate)
 
                     val result = await(callSubmit(controller))
@@ -407,7 +403,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
                 }
               }
             }
-          }
+
 
           "the client is ineligible" should {
             s"redirect user to ${controllers.agent.eligibility.routes.CannotTakePartController.show.url}" in withController { controller =>
