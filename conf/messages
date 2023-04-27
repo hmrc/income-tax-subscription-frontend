@@ -279,7 +279,7 @@ claim-subscription.what-happens-next.para4                      = It may take a 
 ## Claim Enrolment Confirmation
 claim-enrolment.confirmation.title                                              = You have added Making Tax Digital for Income Tax to your account
 claim-enrolment.confirmation.heading                                            = What happens now
-claim-enrolment.confirmation.content.line1                                      = If you do not use an agent to manage your tax affairs, you will need to: {0}
+claim-enrolment.confirmation.content.line1                                      = If you do not use an agent to manage your tax affairs, you will need to:
 claim-enrolment.confirmation.content.checklist.item1.link                       = Find software that’s compatible
 claim-enrolment.confirmation.content.checklist.item1.suffix                     = and allow it to interact with HMRC, if you have not already done so.
 claim-enrolment.confirmation.content.checklist.item2                            = Send next quarterly updates using your software when required throughout the tax year.
