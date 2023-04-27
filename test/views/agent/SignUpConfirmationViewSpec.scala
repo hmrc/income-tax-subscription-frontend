@@ -46,11 +46,11 @@ class SignUpConfirmationViewSpec extends ViewSpec {
   private val endDate: DateModel = DateModel(getRandomDate, "4", "2011")
   val testAccountingPeriodModel: AccountingPeriodModel = AccountingPeriodModel(startDate, endDate)
 
-  def page(eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, selectedTaxYearIsNext: Boolean, userNameMaybe: Option[String]): Html =
-    signUpConfirmation(eligibleNextYearOnly, mandatedCurrentYear, mandatedNextYear, selectedTaxYearIsNext, userNameMaybe, testNino, testAccountingPeriodModel)
+  def page(mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, selectedTaxYearIsNext: Boolean, userNameMaybe: Option[String]): Html =
+    signUpConfirmation(mandatedCurrentYear, mandatedNextYear, selectedTaxYearIsNext, userNameMaybe, testNino, testAccountingPeriodModel)
 
   def document(eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, selectedTaxYearIsNext: Boolean, userNameMaybe: Option[String] = Some(testName)): Document =
-    Jsoup.parse(page(eligibleNextYearOnly, mandatedCurrentYear, mandatedNextYear,selectedTaxYearIsNext, userNameMaybe).body)
+    Jsoup.parse(page(mandatedCurrentYear, mandatedNextYear,selectedTaxYearIsNext, userNameMaybe).body)
 
   "The sign up confirmation view" when {
     "the user is voluntary and eligible for this year" should {

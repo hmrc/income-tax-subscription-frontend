@@ -35,7 +35,7 @@
 )
 
 
-@(eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, taxYearSelectionIsNext : Boolean, userNameMaybe: Option[String], individualUserNino: String, accountingPeriodModel: AccountingPeriodModel)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, taxYearSelectionIsNext : Boolean, userNameMaybe: Option[String], individualUserNino: String, accountingPeriodModel: AccountingPeriodModel)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @userDetails = @{
     userNameMaybe match {
@@ -203,9 +203,9 @@
 
   @if(mandatedCurrentYear) {
     @mandatedCurrentYearContent
-  } else if (mandatedNextYear && eligibleNextYearOnly) {
+  } else if (mandatedNextYear && taxYearSelectionIsNext) {
     @mandatedNextYearContent
-  } else if (eligibleNextYearOnly) {
+  } else if (taxYearSelectionIsNext) {
     @voluntaryNextYearContent
   } else {
     @voluntaryCurrentYearContent

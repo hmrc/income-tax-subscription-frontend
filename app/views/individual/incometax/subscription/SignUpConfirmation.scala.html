@@ -33,7 +33,7 @@
         govukNotificationBanner : GovukNotificationBanner,
 )
 
-@(eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, taxYearSelectionIsNext: Boolean, individualUserNameMaybe: Option[String], individualUserNino: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(mandatedCurrentYear: Boolean, taxYearSelectionIsNext: Boolean, individualUserNameMaybe: Option[String], individualUserNino: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @userDetails = @{
   individualUserNameMaybe match {
@@ -59,17 +59,21 @@
 }
 
   @continuingTaxReturn = {
-    <div class="govuk-!-margin-bottom-2 boxout col">
+    <div class="row govuk-!-margin-bottom-2">
+      <div class="boxout col">
       <h3 class="govuk-heading-m">1. @messages("sign-up-confirmation.voluntary-next-year.self-assessment.heading")</h3>
       <p class="govuk-body">@messages("sign-up-confirmation.voluntary-next-year.self-assessment.para", (AccountingPeriodUtil.getCurrentTaxEndYear +1).toString)</p>
+      </div>
     </div>
   }
 
   @getPrepared = {
-    <div class="govuk-!-margin-bottom-2 boxout col">
+    <div class="row govuk-!-margin-bottom-2">
+      <div class="boxout col">
       <h3 class="govuk-heading-m">2. @messages("sign-up-confirmation.section2.getting-prepared.heading")</h3>
       <p class="govuk-body">@messages("sign-up-confirmation.section2.getting-prepared.para-1", (AccountingPeriodUtil.getNextTaxEndYear -1).toString)</p>
       <a class="govuk-link" href="@{appConfig.softwareUrl}"> @messages("sign-up-confirmation.section2.getting-prepared.link")</a>
+      </div>
     </div>
   }
 
@@ -170,14 +174,6 @@
       @finalDeclaration
   }
 
-  @mandatedNextYearContent = {
-    @continuingTaxReturn
-    @quarterlyUpdates
-    @endOfPeriod
-    @finalDeclaration
-  }
-
-
   @findSoftware = {
   @if(!taxYearSelectionIsNext) {
     <div class="boxout col">
@@ -245,9 +241,7 @@
 
   @if(mandatedCurrentYear) {
     @mandatedCurrentYearContent
-  } else if (mandatedNextYear && eligibleNextYearOnly) {
-  @mandatedNextYearContent
-  } else if (eligibleNextYearOnly) {
+  } else if (taxYearSelectionIsNext) {
   @voluntaryNextYearContent
   } else {
   @voluntaryCurrentYearContent
@@ -260,7 +254,7 @@
   <h2 class="govuk-heading-l">@messages("sign-up-confirmation.section2.heading")</h2>
 
   <div class="row govuk-!-margin-bottom-2">
-    @if(!eligibleNextYearOnly){
+    @if(!taxYearSelectionIsNext){
     @findSoftware
     @checkOnlineServices
     @gettingPrepared
