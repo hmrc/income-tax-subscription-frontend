@@ -70,11 +70,9 @@ class ConfirmationAgentController @Inject()(val auditingService: AuditingService
           if (isEnabled(ConfirmationPage)) {
             val isNextYear = taxYearSelection.map(_.accountingYear).contains(Next)
             val accountingPeriodModel: AccountingPeriodModel = if (isNextYear) AccountingPeriodUtil.getNextTaxYear else AccountingPeriodUtil.getCurrentTaxYear
-            val eligibleNextYearOnly: Boolean = request.session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY).contains("true")
             val mandatedCurrentYear: Boolean = request.session.get(ITSASessionKeys.MANDATED_CURRENT_YEAR).contains("true")
             val mandatedNextYear: Boolean = request.session.get(ITSASessionKeys.MANDATED_NEXT_YEAR).contains("true")
             Ok(signUpConfirmation(
-              eligibleNextYearOnly = eligibleNextYearOnly,
               mandatedCurrentYear = mandatedCurrentYear,
               mandatedNextYear = mandatedNextYear,
               isNextYear,
