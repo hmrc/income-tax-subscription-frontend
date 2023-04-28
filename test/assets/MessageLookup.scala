@@ -557,19 +557,20 @@ object MessageLookup {
   }
 
   object ThrottleStartOfJourneyIndividual {
-    val title = "We are currently experiencing high levels of demand for this service - Use software to send Income Tax updates - GOV.UK"
-    val heading = "We are currently experiencing high levels of demand for this service"
-    val line1 = "You can not sign up to the Making Tax Digital for Income Tax service at the moment. If you would still like to access this service, try again shortly or sign out and come back later."
-    val line2 = ""
+    val title = "There are currently too many people trying to sign up - Use software to send Income Tax updates - GOV.UK"
+    val heading = "There are currently too many people trying to sign up"
+    val line1 = "You can not finish signing up to the Making Tax Digital for Income Tax at the moment."
+    val line2 = "If you want to continue, try again or sign out and come back later."
     val tryAgain = "Try again"
     val signOutText = "Sign out"
   }
 
   object ThrottleEndofJourney {
-    val title = "Your sign up cannot be completed right now - Use software to send Income Tax updates - GOV.UK"
-    val heading = "Your sign up cannot be completed right now"
-    val line_1 = "We are experiencing high levels of applications for this service and cannot complete your sign up at the moment. Don’t worry, the details you have entered will be saved for 30 days."
-    val line_2 = "To finish and complete signing up, try again or sign out and come back later."
+    val title = "You cannot complete signing-up at the moment - Use software to send Income Tax updates - GOV.UK"
+    val heading = "You cannot complete signing-up at the moment"
+    val line_1 = "There are currently too many people using this service."
+    val line_2 = "To finish signing up, try again or sign out and come back later."
+    val line_3 = "The details you’ve already entered have been saved for 30 days."
     val continueButton = "Try again"
     val signOutText = "Sign out"
   }

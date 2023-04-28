@@ -1001,19 +1001,22 @@ agent.remove-overseas-property-business.hint                   = Mae angen ychwa
 agent.error.remove-overseas-property-business.invalid          = Dewiswch ‘Iawn’ os ydych am ddileu’r busnes
 
 # Throttling
-throttle-start.title                                                 = Mae galw mawr am y gwasanaeth hwn ar hyn o bryd
-throttle-start.heading                                               = Mae galw mawr am y gwasanaeth hwn ar hyn o bryd
-throttle-start.line-1                                                = Ni allwch gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar hyn o bryd. Os hoffech gael mynediad at y gwasanaeth hwn o hyd, rhowch gynnig arall arni yn nes ymlaen.
-throttle-start.line-2                                                =
+throttle-start.title                                                 = Mae gormod o bobl yn ceisio cofrestru ar hyn o bryd
+throttle-start.heading                                               = Mae gormod o bobl yn ceisio cofrestru ar hyn o bryd
+throttle-start.line-1                                                = Ni allwch gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar hyn o bryd.
+throttle-start.line-2                                                = Os hoffech barhau, rhowch gynnig arni neu allgofnodwch a dod yn ôl yn hwyrach.
+
 agent.throttle-start.title                                           = Mae galw mawr am y gwasanaeth hwn ar hyn o bryd
 agent.throttle-start.heading                                         = Mae galw mawr am y gwasanaeth hwn ar hyn o bryd
 agent.throttle-start.line-1                                          = You can not sign up your client to the Making Tax Digital for Income Tax service at the moment. If you would still like to access this service, try again shortly or sign out and come back later. .. but in Welsh
 agent.throttle-start.line-2                                          =
 
-throttle-end.title                                                 = Ni ellir cwblhau’ch cofrestriad ar hyn o bryd
-throttle-end.heading                                               = Ni ellir cwblhau’ch cofrestriad ar hyn o bryd
-throttle-end.line-1                                                = Rydym yn gweld nifer fawr o geisiadau ar gyfer y gwasanaeth hwn ac ni allwn gwblhau eich cofrestriad ar hyn o bryd. Peidiwch â phoeni – bydd y manylion rydych wedi’u nodi yn cael eu cadw am 30 diwrnod.
-throttle-end.line-2                                                = I orffen cofrestru, rhowch gynnig arni neu allgofnodwch a dod yn ôl yn hwyrach.
+throttle-end.title                                                 = Ni allwch orffen cofrestru ar hyn o bryd
+throttle-end.heading                                               = Ni allwch orffen cofrestru ar hyn o bryd
+throttle-end.line-1                                                = Mae gormod o bobl yn ceisio cofrestru ar hyn o bryd
+throttle-end.line-2                                                = I orffen cofrestru, rhowch gynnig arall arni neu allgofnodwch a dod yn ôl yn hwyrach.
+throttle-end.line-3                                                = Mae’r manylion rydych wedi’u nodi hyd yma wedi’u cadw am 30 diwrnod.
+
 agent.throttle-end.title                                           = Ni ellir cwblhau’ch cofrestriad ar hyn o bryd
 agent.throttle-end.heading                                         = Ni ellir cwblhau’ch cofrestriad ar hyn o bryd
 agent.throttle-end.line-1                                          = Rydym yn gweld nifer fawr o geisiadau ar gyfer y gwasanaeth hwn ac ni allwn gwblhau cofrestriad eich cleient ar hyn o bryd. Peidiwch â phoeni – bydd y manylion rydych wedi’u nodi yn cael eu cadw am 30 diwrnod.

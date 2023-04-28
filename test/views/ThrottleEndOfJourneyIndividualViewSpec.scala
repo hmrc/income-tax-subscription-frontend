@@ -24,7 +24,7 @@ import play.twirl.api.Html
 import utilities.ViewSpec
 import views.html.individual.ThrottleEndOfJourney
 
-class ThrottleEndOfJourneyIndividualViewSpecViewSpec extends ViewSpec {
+class ThrottleEndOfJourneyIndividualViewSpec extends ViewSpec {
 
   val throttleEndOfJourneyView: ThrottleEndOfJourney = app.injector.instanceOf[ThrottleEndOfJourney]
   lazy val postAction: Call = controllers.individual.business.routes.TaskListController.show()
@@ -45,16 +45,19 @@ class ThrottleEndOfJourneyIndividualViewSpecViewSpec extends ViewSpec {
       document1.title mustBe title
     }
     "have a heading" in {
-      document1.select("h1").text() mustBe heading
+      document1.getH1Element.text() mustBe heading
     }
     "have a line_1" in {
-      document1.select("main").select("p").first.text() mustBe line_1
+      document1.mainContent.selectNth("p",1).text() mustBe line_1
     }
     "have a line_2" in {
-      document1.select("main").select("p").next().first().text() mustBe line_2
+      document1.mainContent.selectNth("p",2).text() mustBe line_2
+    }
+    "have a line_3" in {
+      document1.mainContent.selectNth("p",3).text() mustBe line_3
     }
     "have a continueButton" in {
-      document1.select("main").select("button").first().text() mustBe continueButton
+      document1.mainContent.selectHead(".form-group").text() mustBe continueButton
     }
     "must have a sign out link in the banner" in {
       val signOut = Option(document1.getElementById("logOutNavHref")).orElse(Option(document1.select(".hmrc-sign-out-nav__link")).filter(e => !e.isEmpty).map(e => e.get(0)))

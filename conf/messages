@@ -1002,19 +1002,20 @@ agent.remove-overseas-property-business.hint                   = All your client
 agent.error.remove-overseas-property-business.invalid          = Select yes if you want to remove business
 
 # Throttling
-throttle-start.title                                                 = We are currently experiencing high levels of demand for this service
-throttle-start.heading                                               = We are currently experiencing high levels of demand for this service
-throttle-start.line-1                                                = You can not sign up to the Making Tax Digital for Income Tax service at the moment. If you would still like to access this service, try again shortly or sign out and come back later.
-throttle-start.line-2                                                =
+throttle-start.title                                                 = There are currently too many people trying to sign up
+throttle-start.heading                                               = There are currently too many people trying to sign up
+throttle-start.line-1                                                = You can not finish signing up to the Making Tax Digital for Income Tax at the moment.
+throttle-start.line-2                                                = If you want to continue, try again or sign out and come back later.
 agent.throttle-start.title                                           = We are currently experiencing high levels of demand for this service
 agent.throttle-start.heading                                         = We are currently experiencing high levels of demand for this service
 agent.throttle-start.line-1                                          = You can not sign up your client to the Making Tax Digital for Income Tax service at the moment. If you would still like to access this service, try again shortly or sign out and come back later.
 agent.throttle-start.line-2                                          =
 
-throttle-end.title                                                 = Your sign up cannot be completed right now
-throttle-end.heading                                               = Your sign up cannot be completed right now
-throttle-end.line-1                                                = We are experiencing high levels of applications for this service and cannot complete your sign up at the moment. Don’t worry, the details you have entered will be saved for 30 days.
-throttle-end.line-2                                                = To finish and complete signing up, try again or sign out and come back later.
+throttle-end.title                                                 = You cannot complete signing-up at the moment
+throttle-end.heading                                               = You cannot complete signing-up at the moment
+throttle-end.line-1                                                = There are currently too many people using this service.
+throttle-end.line-2                                                = To finish signing up, try again or sign out and come back later.
+throttle-end.line-3                                                = The details you’ve already entered have been saved for 30 days.
 agent.throttle-end.title                                           = Your sign up cannot be completed right now
 agent.throttle-end.heading                                         = Your sign up cannot be completed right now
 agent.throttle-end.line-1                                          = We are experiencing high levels of applications for this service and cannot complete your client’s sign up at the moment. Don’t worry, the details you have entered will be saved for 30 days.
