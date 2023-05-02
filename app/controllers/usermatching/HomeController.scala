@@ -21,12 +21,12 @@ import auth.individual.{IncomeTaxSAUser, SignUp, StatelessController, UserIdenti
 import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys._
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.{ItsaMandationStatus, PrePopulate}
+import config.featureswitch.FeatureSwitch.PrePopulate
 import connectors.MandationStatusConnector
 import controllers.individual.eligibility.{routes => eligibilityRoutes}
 import controllers.utils.ReferenceRetrieval
 import models.common.subscription.SubscriptionSuccess
-import models.status.MandationStatus.{Mandated, Voluntary}
+import models.status.MandationStatus.Mandated
 import models.status.MandationStatusModel
 import models.usermatching.CitizenDetails
 import models.{EligibilityStatus, PrePopData}
@@ -128,16 +128,12 @@ class HomeController @Inject()(val auditingService: AuditingService,
   private def withMandationStatus(nino: String, utr: String)
                                  (f: MandationStatusModel => Result)
                                  (implicit request: Request[AnyContent]): Future[Result] = {
-    if (isEnabled(ItsaMandationStatus)) {
-      mandationStatusConnector.getMandationStatus(nino, utr) map {
-        case Left(_) =>
-          throw new InternalServerException("[HomeController][withMandationStatus] - Unexpected failure when receiving mandation status")
-        case Right(model) =>
-          f(model)
-      }
-    } else {
-      Future.successful(f(MandationStatusModel(Voluntary, Voluntary)))
-    }
+          mandationStatusConnector.getMandationStatus(nino, utr) map {
+            case Left(_) =>
+              throw new InternalServerException("[HomeController][withMandationStatus] - Unexpected failure when receiving mandation status")
+            case Right(model) =>
+              f(model)
+          }
   }
 
   private def getSubscription(nino: String)(implicit request: Request[AnyContent]): Future[Option[SubscriptionSuccess]] =

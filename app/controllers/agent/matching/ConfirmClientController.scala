@@ -21,12 +21,12 @@ import auth.agent.{AgentUserMatched, IncomeTaxAgentUser, UserMatchingController}
 import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.FailedClientMatching
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.{ItsaMandationStatus, PrePopulate}
+import config.featureswitch.FeatureSwitch.PrePopulate
 import config.featureswitch.FeatureSwitching
 import connectors.MandationStatusConnector
 import controllers.utils.ReferenceRetrieval
 import models.audits.EnterDetailsAuditing.EnterDetailsAuditModel
-import models.status.MandationStatus.{Mandated, Voluntary}
+import models.status.MandationStatus.Mandated
 import models.status.MandationStatusModel
 import models.usermatching.{LockedOut, NotLockedOut, UserDetailsModel}
 import models.{EligibilityStatus, PrePopData}
@@ -179,16 +179,12 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
   private def withMandationStatus(nino: String, utr: String)
                                  (f: MandationStatusModel => Result)
                                  (implicit request: Request[AnyContent]): Future[Result] = {
-    if (isEnabled(ItsaMandationStatus)) {
       mandationStatusConnector.getMandationStatus(nino, utr) map {
         case Left(_) =>
           throw new InternalServerException("[ConfirmClientController][withMandationStatus] - Unexpected failure when receiving mandation status")
         case Right(model) =>
           f(model)
       }
-    } else {
-      Future.successful(f(MandationStatusModel(Voluntary, Voluntary)))
-    }
   }
 
   private def handleApprovedAgent(arn: String, nino: String, utr: String, clientDetails: UserDetailsModel)
