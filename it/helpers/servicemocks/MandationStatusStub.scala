@@ -17,7 +17,10 @@
 package helpers.servicemocks
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import play.api.libs.json.JsValue
+import models.status.MandationStatus.Voluntary
+import models.status.{MandationStatus, MandationStatusModel, MandationStatusRequest}
+import play.api.http.Status.OK
+import play.api.libs.json.{JsValue, Json}
 
 object MandationStatusStub extends WireMockMethods {
   def stubGetMandationStatus(expectedBody: JsValue)(status: Int, body: JsValue): StubMapping  = {
@@ -26,6 +29,13 @@ object MandationStatusStub extends WireMockMethods {
       uri = "/income-tax-subscription/itsa-status",
       body = expectedBody
     ).thenReturn(status, body)
+
+  }
+
+  def stubGetMandationStatus(nino:String, utr:String)(currentYear:MandationStatus, nextYear: MandationStatus): StubMapping = {
+    stubGetMandationStatus(
+      Json.toJson(MandationStatusRequest(nino, utr))
+    )(OK, Json.toJson(MandationStatusModel(currentYearStatus = Voluntary, nextYearStatus = Voluntary)))
   }
 
   def stubGetMandationStatusInvalidResponse(expectedBody: JsValue)(status: Int, body: String): StubMapping  = {

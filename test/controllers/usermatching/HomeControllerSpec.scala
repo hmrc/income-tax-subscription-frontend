@@ -19,7 +19,7 @@ package controllers.usermatching
 import _root_.common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.{ELIGIBLE_NEXT_YEAR_ONLY, MANDATED_CURRENT_YEAR, MANDATED_NEXT_YEAR}
 import config.MockConfig
-import config.featureswitch.FeatureSwitch.{ItsaMandationStatus, PrePopulate, ThrottlingFeature}
+import config.featureswitch.FeatureSwitch.{PrePopulate, ThrottlingFeature}
 import controllers.ControllerBaseSpec
 import models.status.MandationStatus.{Mandated, Voluntary}
 import models.{EligibilityStatus, PrePopData}
@@ -62,7 +62,6 @@ class HomeControllerSpec extends ControllerBaseSpec
     super.beforeEach()
     reset(mockAuthService)
     disable(PrePopulate)
-    disable(ItsaMandationStatus)
     enable(ThrottlingFeature)
     notThrottled()
     mockNinoRetrieval()
@@ -165,7 +164,6 @@ class HomeControllerSpec extends ControllerBaseSpec
                   mockGetMandationStatus(Voluntary, Mandated)
 
                   enable(PrePopulate)
-                  enable(ItsaMandationStatus)
 
                   val result = await(testHomeController().index(fakeRequest))
                   status(result) must be(Status.SEE_OTHER)
@@ -191,7 +189,6 @@ class HomeControllerSpec extends ControllerBaseSpec
                   mockGetMandationStatus(Mandated, Voluntary)
 
                   enable(PrePopulate)
-                  enable(ItsaMandationStatus)
 
                   val result = await(testHomeController().index(fakeRequest))
                   status(result) must be(Status.SEE_OTHER)
@@ -205,53 +202,6 @@ class HomeControllerSpec extends ControllerBaseSpec
                 }
               }
 
-              "PrePopulate is on, ITSA mandation status is off and there is PrePop data" when {
-                "redirect to SPSHandoff controller after saving prepop informtion" in {
-                  mockNinoAndUtrRetrieval()
-                  mockLookupUserWithUtr(testNino)(testUtr, testFullName)
-                  setupMockGetSubscriptionNotFound(testNino)
-                  mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithPrepopData)))
-                  mockRetrieveReferenceSuccess(testUtr)(testReference)
-                  setupMockSubscriptionDetailsSaveFunctions()
-                  setupMockPrePopulateSave(testReference)
-
-                  enable(PrePopulate)
-
-                  val result = await(testHomeController().index(fakeRequest))
-                  status(result) must be(Status.SEE_OTHER)
-                  redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url
-
-                  verifyPrePopulationSave(1, testReference)
-                  verifyGetThrottleStatusCalls(times(1))
-                  result.session(fakeRequest).data must contain (ELIGIBLE_NEXT_YEAR_ONLY -> "false")
-                  result.session(fakeRequest).data must contain(MANDATED_CURRENT_YEAR -> "false")
-                  result.session(fakeRequest).data must contain(MANDATED_NEXT_YEAR -> "false")
-                }
-              }
-
-              "PrePopulate and ITSA mandation status are off" when {
-                "redirect to SPSHandoff controller" in {
-                  mockNinoAndUtrRetrieval()
-                  mockLookupUserWithUtr(testNino)(testUtr, testFullName)
-                  setupMockGetSubscriptionNotFound(testNino)
-                  mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithPrepopData)))
-                  mockRetrieveReferenceSuccess(testUtr)(testReference)
-
-                  val result = await(testHomeController().index(fakeRequest))
-                  status(result) must be(Status.SEE_OTHER)
-                  redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url
-
-                  verifySubscriptionDetailsSaveWithField(0, OverseasProperty)
-                  verifySubscriptionDetailsSaveWithField(0, Property)
-                  verifySubscriptionDetailsSaveWithField(0, BusinessesKey)
-                  verifySubscriptionDetailsSaveWithField(0, BusinessAccountingMethod)
-                  verifySubscriptionDetailsSaveWithField(0, subscriptionId)
-                  verifyGetThrottleStatusCalls(times(1))
-                  result.session(fakeRequest).data must contain (ELIGIBLE_NEXT_YEAR_ONLY -> "false")
-                  result.session(fakeRequest).data must contain(MANDATED_CURRENT_YEAR -> "false")
-                  result.session(fakeRequest).data must contain(MANDATED_NEXT_YEAR -> "false")
-                }
-              }
             }
           }
 
@@ -311,6 +261,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                 mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleNextYearOnlyWithPrepopData)))
                 setupMockPrePopulateSave(testReference)
                 enable(PrePopulate)
+                mockGetMandationStatus(Voluntary,Voluntary)
 
                 val result = await(testHomeController().index(fakeRequest))
                 status(result) mustBe SEE_OTHER
@@ -329,6 +280,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                 setupMockGetSubscriptionNotFound(testNino)
                 mockRetrieveReferenceSuccess(testUtr)(testReference)
                 mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleNextYearOnly)))
+                mockGetMandationStatus(Voluntary,Voluntary)
 
                 val result = await(testHomeController().index(fakeRequest))
                 status(result) mustBe SEE_OTHER

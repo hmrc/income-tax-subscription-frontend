@@ -28,7 +28,6 @@ object FeatureSwitch {
     ForeignProperty,
     PrePopulate,
     ThrottlingFeature,
-    ItsaMandationStatus,
     ConfirmationPage,
   )
 
@@ -53,11 +52,6 @@ object FeatureSwitch {
   case object ThrottlingFeature extends FeatureSwitch {
     override val name = s"$prefix.throttle"
     override val displayText = "Throttle"
-  }
-
-  case object ItsaMandationStatus extends FeatureSwitch {
-    override val name = s"$prefix.enable-itsa-mandation-status"
-    override val displayText = "ITSA mandation status"
   }
 
   case object ConfirmationPage extends FeatureSwitch {

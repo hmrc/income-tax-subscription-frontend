@@ -19,8 +19,10 @@ package controllers.usermatching
 import common.Constants.ITSASessionKeys
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.IntegrationTestConstants._
+import helpers.agent.IntegrationTestConstants.{testNino, testUtr}
 import helpers.servicemocks._
 import helpers.{ComponentSpecBase, SessionCookieCrumbler}
+import models.status.MandationStatus.Voluntary
 import play.api.http.Status._
 
 class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
@@ -68,7 +70,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
             CitizenDetailsStub.stubCIDUserWithNinoAndUtrAndName(testNino, testUtr, testFirstName, testLastName)
             SubscriptionStub.stubGetNoSubscription()
             EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
-
+            MandationStatusStub.stubGetMandationStatus(testNino,testUtr)(Voluntary,Voluntary)
             When("GET /index is called")
             val res = IncomeTaxSubscriptionFrontend.indexPage()
 
@@ -128,7 +130,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
               SubscriptionStub.stubGetNoSubscription()
               CitizenDetailsStub.stubCIDUserWithNinoAndUtrAndName(testNino, testUtr, testFirstName, testLastName)
               EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
-
+              MandationStatusStub.stubGetMandationStatus(testNino,testUtr)(Voluntary,Voluntary)
               When("GET /index is called")
               val res = IncomeTaxSubscriptionFrontend.indexPage()
 
@@ -152,7 +154,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
                 SubscriptionStub.stubGetNoSubscription()
                 CitizenDetailsStub.stubCIDUserWithNinoAndUtrAndNoName(testNino, testUtr)
                 EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
-
+                MandationStatusStub.stubGetMandationStatus(testNino,testUtr)(Voluntary,Voluntary)
                 When("GET /index is called")
                 val res = IncomeTaxSubscriptionFrontend.indexPage()
 

@@ -24,6 +24,7 @@ import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.servicemocks.{AgentServicesStub, AuthStub}
 import helpers.servicemocks.{AuthStub => _, _}
+import models.status.MandationStatus.Voluntary
 import play.api.http.Status._
 
 
@@ -198,6 +199,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           AgentServicesStub.stubClientRelationship(testARN, testNino, exists = true)
           EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
           UserLockoutStub.stubUserIsNotLocked(testARN)
+          MandationStatusStub.stubGetMandationStatus(testNino,testUtr)(Voluntary,Voluntary)
 
           When("I call POST /confirm-client")
           val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
