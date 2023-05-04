@@ -34,7 +34,7 @@ class CannotTakePartControllerISpec extends ComponentSpecBase {
   }
 
   object CannotTakePartMessages {
-    val title: String = "Your client cannot take part in this pilot yet"
+    val title: String = "Your client cannot take part yet"
   }
 
   "GET /client/other-sources-of-income-error" should {

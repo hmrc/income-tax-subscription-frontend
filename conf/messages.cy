@@ -545,15 +545,15 @@ agent.other-sources-of-income.not-include-point2                = difidendau
 agent.other-sources-of-income.invalid                           = Dewiswch ‘Iawn’ os oes gan eich cleient ffynonellau incwm heblaw hunangyflogaeth neu incwm o eiddo
 
 # Agent cannot take part page
-agent.cannot-take-part.title                                    = Ni all eich cleient gymryd rhan yn y cynllun peilot hwn ar hyn o bryd
-agent.cannot-take-part.heading                                  = Ni all eich cleient gymryd rhan yn y cynllun peilot hwn ar hyn o bryd
-agent.cannot-take-part.para1                                    = Nid yw cynllun peilot Troi Treth yn Ddigidol ar gyfer Treth Incwm ar gael ar hyn o bryd i bobl sydd ag incwm neu ddidyniadau penodol.
+agent.cannot-take-part.title                                    = Ni all eich cleient gymryd rhan eto
+agent.cannot-take-part.heading                                  = Ni all eich cleient gymryd rhan eto
+agent.cannot-take-part.para1                                    = Nid yw cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar gael ar hyn o bryd i bobl sydd ag incwm neu ddidyniadau penodol.
 agent.cannot-take-part.para2                                    = Fodd bynnag, mae’n bosibl y bydd eich cleient yn gallu cofrestru ar gyfer y cynllun Troi Treth yn
 agent.cannot-take-part.link1                                    = Ddigidol ar gyfer Treth Incwm yn y dyfodol. Dysgwch ragor am bwy sy’n gymwys ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
 agent.cannot-take-part.inset1                                   = Mae’n rhaid i Ffurflen Dreth Hunanasesiad eich cleient gael ei chyflwyno yn ôl yr arfer.
 
 # Agent cannot sign up page
-agent.cannot-sign-up.heading                                    = Gall eich cleient gofrestru ar gyfer y cynllun peilot hwn o’r flwyddyn dreth nesaf ymlaen
+agent.cannot-sign-up.heading                                    = Gall eich cleient gofrestru ar gyfer y flwyddyn dreth nesaf
 agent.cannot-sign-up.paragraph1                                 = Gall eich cleient gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o’r flwyddyn dreth nesaf ({0} to {1}).
 agent.cannot-sign-up.yes-no-radio-helper.heading                = A hoffech gofrestru ar gyfer y flwyddyn dreth nesaf?
 error.agent.cannot-sign-up.invalid                              = Mae’n rhaid i chi ddewis ‘iawn’ neu ‘na’
@@ -575,7 +575,7 @@ declined-sign-up-next-year.para                                 = Rydych wedi de
 
 ## Agent what you need to do page ##
 agent.what-you-need-to-do.heading                                                        = Beth y mae angen i chi ei wneud
-agent.what-you-need-to-do.voluntary-and-eligible.para-1                                  = Drwy gymryd rhan yn y cynllun peilot hwn, rydych yn cytuno y byddwch chi neu’ch cleient yn gwneud y canlynol:
+agent.what-you-need-to-do.voluntary-and-eligible.para-1                                  = Drwy gofrestru, rydych yn cytuno y byddwch chi neu’ch cleient yn gwneud y canlynol:
 agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-1            = cofnodi incwm a threuliau gan ddefnyddio meddalwedd sy’n cydweddu
 agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-2            = defnyddio meddalwedd i anfon diweddariadau chwarterol atom
 agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-3            = cwblhau unrhyw ddiweddariadau chwarterol sydd ar goll (os ydych wedi dewis cofrestru ar gyfer y flwyddyn dreth bresennol)

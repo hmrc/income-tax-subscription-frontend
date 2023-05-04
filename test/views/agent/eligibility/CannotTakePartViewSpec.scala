@@ -63,8 +63,8 @@ class CannotTakePartViewSpec extends ViewSpec {
   private def document = Jsoup.parse(view().body)
 
   object CannotTakePartMessages {
-    val heading = "Your client cannot take part in this pilot yet"
-    val paragraph1 = "The Making Tax Digital For Income Tax pilot is not currently available to people with certain incomes or deductions."
+    val heading = "Your client cannot take part yet"
+    val paragraph1 = "Making Tax Digital For Income Tax is not currently available to people with certain incomes or deductions."
     val paragraph2 = "However, your client may be able to sign up to Making Tax Digital for Income Tax in the future. Learn more about who’s eligible for Making Tax Digital for Income Tax."
     val link1 = "who’s eligible for Making Tax Digital for Income Tax"
     val inset1 = "Your client’s Self Assessment tax return must be submitted as normal."

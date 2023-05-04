@@ -347,7 +347,7 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
     }
 
     object VoluntaryAndEligible {
-      val paraOne: String = "By taking part in this pilot you agree that either you or your client will:"
+      val paraOne: String = "By signing up you agree that either you or your client will:"
 
       object NotificationBanner {
         val bulletOne: String = "record income and expenses using compatible software"
