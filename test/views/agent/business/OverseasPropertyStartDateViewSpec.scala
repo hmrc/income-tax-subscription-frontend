@@ -96,12 +96,12 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
     }
 
     "have a heading" in {
-      document().mainContent.getH1Element.text mustBe OverseasPropertyStartDateMessages.heading
+      document().getH1Element.text mustBe OverseasPropertyStartDateMessages.heading
     }
 
     "have a Form" in {
-      document().mainContent.getForm.attr("method") mustBe testCall.method
-      document().mainContent.getForm.attr("action") mustBe testCall.url
+      document().getForm.attr("method") mustBe testCall.method
+      document().getForm.attr("action") mustBe testCall.url
     }
 
     "have a fieldset with dateInputs" in {
@@ -112,7 +112,7 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
     }
 
     "have a save and continue button when not in edit mode" in {
-      document().mainContent.getGovukSubmitButton.text mustBe OverseasPropertyStartDateMessages.saveAndContinue
+      document().getGovukSubmitButton.text mustBe OverseasPropertyStartDateMessages.saveAndContinue
     }
 
     "have a backlink " in {
@@ -123,7 +123,7 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
     "display max date error on page" in {
       val dateValidationError = FormError("startDate", "agent.error.overseas.property.day-month-year.max-date", List("11 April 2021"))
       val doc = document(overseasPropertyStartDateForm = defaultForm.withError(dateValidationError))
-      doc.mainContent.mustHaveGovukDateField(
+      doc.mustHaveGovukDateField(
         "startDate",
         OverseasPropertyStartDateMessages.heading,
         OverseasPropertyStartDateMessages.hint,
@@ -134,7 +134,7 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
     "display min date error on page" in {
       val dateValidationError = FormError("startDate", "agent.error.overseas.property.day-month-year.min-date", List("11 April 2021"))
       val doc = document(overseasPropertyStartDateForm = defaultForm.withError(dateValidationError))
-      doc.mainContent.mustHaveGovukDateField(
+      doc.mustHaveGovukDateField(
         "startDate",
         OverseasPropertyStartDateMessages.heading,
         OverseasPropertyStartDateMessages.hint,

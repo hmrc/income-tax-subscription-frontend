@@ -98,7 +98,7 @@ class WhatYouNeedToDoSpec extends ViewSpec {
     }
 
     object WarningText {
-      val para: String = "Warning You may be penalised if you don’t use Making Tax Digital for Income Tax."
+      val para: String = "You may be penalised if you don’t use Making Tax Digital for Income Tax."
     }
 
   }
@@ -286,7 +286,7 @@ class WhatYouNeedToDoSpec extends ViewSpec {
     }
 
     "has an warning text" in {
-      documentCurrentMandated(true).mainContent.selectHead(".govuk-warning-text__text").text mustBe WhatYouNeedToDoMandatedCurrent.WarningText.para
+      documentCurrentMandated(true).selectHead(".govuk-warning-text__text").text mustBe WhatYouNeedToDoMandatedCurrent.WarningText.para
     }
 
   "WhatYouNeedToDoMandatedAndNextYearOnly" must {

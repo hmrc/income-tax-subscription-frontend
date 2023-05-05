@@ -110,7 +110,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec  {
     }
 
     "have a save & continue button" in {
-      document().mainContent.getGovukSubmitButton.text mustBe PropertyStartDateMessages.saveAndContinue
+      document().getGovukSubmitButton.text mustBe PropertyStartDateMessages.saveAndContinue
     }
 
     "have a backlink " in {
