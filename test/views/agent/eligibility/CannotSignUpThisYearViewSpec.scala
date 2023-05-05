@@ -93,7 +93,7 @@ class CannotSignUpThisYearViewSpec extends ViewSpec {
   }
 
   object CannotSignUpMessages {
-    val heading = "Your client can sign up to this pilot from the next tax year"
+    val heading = "Your client can sign up for the next tax year"
 
     def paragraph1(year: Int, nextYear: Int) = s"Your client can sign up for Making Tax Digital for Income Tax from the next tax year (6 April $year to 5 April $nextYear)."
 

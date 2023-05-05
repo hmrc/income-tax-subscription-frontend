@@ -73,7 +73,7 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
       }
 
       "have a warning text" in {
-        mainContent.selectHead(".govuk-warning-text__text").text mustBe WhatYouNeedToDoMessages.MandatedCurrentYear.WarningText.para
+        mainContent.mainContent.selectHead(".govuk-warning-text__text").text mustBe WhatYouNeedToDoMessages.MandatedCurrentYear.WarningText.para
       }
 
       "have a form" which {
@@ -312,7 +312,7 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
         val bulletThree: String = s"send an end of period statement and submit a final declaration by ${date}"
       }
       object WarningText {
-        val para: String = "Your client may be penalised if they do not use Making Tax Digital for Income Tax."
+        val para: String = "Warning Your client may be penalised if they do not use Making Tax Digital for Income Tax."
       }
 
     }
@@ -347,7 +347,7 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
     }
 
     object VoluntaryAndEligible {
-      val paraOne: String = "By taking part in this pilot you agree that either you or your client will:"
+      val paraOne: String = "By signing up you agree that either you or your client will:"
 
       object NotificationBanner {
         val bulletOne: String = "record income and expenses using compatible software"

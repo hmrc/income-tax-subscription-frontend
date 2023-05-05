@@ -158,7 +158,7 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
 
     def getBackLink: Elements = element.select(s"a[class=link-back]")
 
-    def getGovukBackLink: Elements = element.select("a[class=govuk-back-link]")
+    def getGovukBackLink: Element = element.selectHead("a[class=govuk-back-link]")
 
     def getParagraphNth(index: Int = 0): String = {
       element.select("p").get(index).text()

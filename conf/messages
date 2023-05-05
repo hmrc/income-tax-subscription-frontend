@@ -545,16 +545,16 @@ agent.other-sources-of-income.not-include-point2                = dividends
 agent.other-sources-of-income.invalid                           = Select yes if your client has sources of income other than self employment or property income
 
 # Agent cannot take part page
-agent.cannot-take-part.title                                    = Your client cannot take part in this pilot yet
-agent.cannot-take-part.heading                                  = Your client cannot take part in this pilot yet
-agent.cannot-take-part.para1                                    = The Making Tax Digital For Income Tax pilot is not currently available to people with certain incomes or deductions.
+agent.cannot-take-part.title                                    = Your client cannot take part yet
+agent.cannot-take-part.heading                                  = Your client cannot take part yet
+agent.cannot-take-part.para1                                    = Making Tax Digital For Income Tax is not currently available to people with certain incomes or deductions.
 agent.cannot-take-part.para2                                    = However, your client may be able to sign up to Making Tax Digital for Income Tax in the future. Learn more about {0}.
 agent.cannot-take-part.link1                                    = who’s eligible for Making Tax Digital for Income Tax
 agent.cannot-take-part.inset1                                   = Your client’s Self Assessment tax return must be submitted as normal.
 
 
 # Agent cannot sign up page
-agent.cannot-sign-up.heading                                    = Your client can sign up to this pilot from the next tax year
+agent.cannot-sign-up.heading                                    = Your client can sign up for the next tax year
 agent.cannot-sign-up.paragraph1                                 = Your client can sign up for Making Tax Digital for Income Tax from the next tax year ({0} to {1}).
 agent.cannot-sign-up.yes-no-radio-helper.heading                = Would you like to sign up your client for the next tax year?
 error.agent.cannot-sign-up.invalid                              = You must select ‘yes’ or ‘no’
@@ -576,7 +576,7 @@ declined-sign-up-next-year.para                                 = You’ve chose
 
 ## Agent what you need to do page ##
 agent.what-you-need-to-do.heading                                                        = What you need to do
-agent.what-you-need-to-do.voluntary-and-eligible.para-1                                  = By taking part in this pilot you agree that either you or your client will:
+agent.what-you-need-to-do.voluntary-and-eligible.para-1                                  = By signing up you agree that either you or your client will:
 agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-1            = record income and expenses using compatible software
 agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-2            = use software to send us quarterly updates
 agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-3            = complete any missing quarterly updates (if you’ve chosen to sign up for the current tax year)

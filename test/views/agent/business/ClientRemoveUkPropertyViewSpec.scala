@@ -71,7 +71,7 @@ class ClientRemoveUkPropertyViewSpec extends ViewSpec {
         error = Some(testFormError)
       )
       "there is no error" in new TemplateViewTest(
-        view = view(false),
+        view = view(),
         title = ClientRemoveUkPropertyMessages.title,
         isAgent = true,
         backLink = Some(testBackUrl),
@@ -105,7 +105,7 @@ class ClientRemoveUkPropertyViewSpec extends ViewSpec {
     }
 
     "have a agree and continue button" in new ViewTest {
-      document.selectHead(".govuk-button").text mustBe ClientRemoveUkPropertyMessages.agreeAndContinue
+      document.mainContent.selectHead(".govuk-button").text mustBe ClientRemoveUkPropertyMessages.agreeAndContinue
     }
 
   }
