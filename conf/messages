@@ -531,9 +531,9 @@ agent.base.yes                                                  = Yes
 agent.base.no                                                   = No
 
 # Agent other sources of income page
-agent.other-sources-of-income.title                             = Apart from self employment or renting out property, does your client have any other sources of income?
-agent.other-sources-of-income.heading                           = Apart from self employment or renting out property, does your client have any other sources of income?
-agent.other-sources-of-income.include                           = This could include:
+agent.other-sources-of-income.title                             = Aside from self employment or letting property, does your client have any other sources of income?
+agent.other-sources-of-income.heading                           = Aside from self employment or letting property, does your client have any other sources of income?
+agent.other-sources-of-income.include                           = What are the other income sources?
 agent.other-sources-of-income.include-point1                    = PAYE as an employee
 agent.other-sources-of-income.include-point2                    = UK pensions or annuities
 agent.other-sources-of-income.include-point3                    = investments from outside the UK
@@ -603,17 +603,18 @@ agent.what-you-need-to-do.mandated-and-eligible-next-year-only.notification-bann
 # Agent accounting period check page
 agent.accounting-period-check.title                             = Do your client’s business accounting periods all run from 6 April to 5 April?
 agent.accounting-period-check.heading                           = Do your client’s business accounting periods all run from 6 April to 5 April?
+agent.accounting-period-check.include                           = Tax year dates
 agent.accounting-period-check.hint                              = The tax year runs from 6 April to 5 April. The accounting period for your client’s self-employment or property needs to be the same if you would like to sign them up to this service.
 agent.accounting-period-check.invalid                           = Select yes if all of your client’s business accounting periods are from 6 April to 5 April
 
 # Agent property trading after date page
 agent.property-trading-after.title                              = Did your client start a property business on or after {0}?
 agent.property-trading-after.heading                            = Did your client start a property business on or after {0}?
-agent.property-trading-after.line                               = This includes being a landlord or using a letting agency for:
+agent.property-trading-after.line                               = What's included in letting properties?
 agent.property-trading-after.line.point1                        = UK properties
 agent.property-trading-after.line.point2                        = overseas properties
 agent.property-trading-after.line.point3                        = holiday properties
-agent.property-trading-after.line2                              = This does not include renting out:
+agent.property-trading-after.line2                              = This does not include letting:
 agent.property-trading-after.line2.point1                       = a room
 agent.property-trading-after.line2.point2                       = part of your property
 agent.property-trading-after.error.summary                      = Select yes if your client owns a property business that began trading on or after {0}

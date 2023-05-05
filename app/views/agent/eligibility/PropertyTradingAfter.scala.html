@@ -27,18 +27,15 @@
         mainTemplate: AgentMainTemplate,
         form: FormWithCSRF,
         radioHelper: RadioHelper,
-        continueButton: ContinueButton
+        continueButton: ContinueButton,
+        govukDetails:GovukDetails
 )(
         implicit appConfig: AppConfig
 )
 
 @(propertyTradingBeforeDateForm: Form[YesNo], postAction: Call, startDateLimit: String, backUrl: String)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("agent.property-trading-after.title", startDateLimit), optForm = Some(propertyTradingBeforeDateForm), backLink = Some(backUrl)) {
-
-    <h1 class="govuk-heading-l">@messages("agent.property-trading-after.heading", startDateLimit)</h1>
-
-    <p class="govuk-body">@messages("agent.property-trading-after.line")</p>
+@inputContent = {
 
     <ul class="govuk-list govuk-list--bullet">
         <li>@messages("agent.property-trading-after.line.point1")</li>
@@ -46,12 +43,25 @@
         <li>@messages("agent.property-trading-after.line.point3")</li>
     </ul>
 
-    <p class="govuk-body">@messages("agent.property-trading-after.line2")</p>
+    <p class="govuk-body"><b>@messages("agent.property-trading-after.line2")</b></p>
 
     <ul class="govuk-list govuk-list--bullet">
         <li>@messages("agent.property-trading-after.line2.point1")</li>
         <li>@messages("agent.property-trading-after.line2.point2")</li>
     </ul>
+
+}
+
+
+
+@mainTemplate(title = messages("agent.property-trading-after.title", startDateLimit), optForm = Some(propertyTradingBeforeDateForm), backLink = Some(backUrl)) {
+
+    <h1 class="govuk-heading-l">@messages("agent.property-trading-after.heading", startDateLimit)</h1>
+
+@govukDetails(Details(
+summary = Text(messages("agent.property-trading-after.line")),
+content =HtmlContent(inputContent)
+))
 
 
     @form(action = postAction) {
