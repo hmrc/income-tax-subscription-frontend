@@ -18,4 +18,4 @@ package views.helpers.models.tasklist
 
 import play.twirl.api.Html
 
-case class TaskListSection(index : Int, h2Content : String, sectionStart : Option[String] = None, sectionEnd : Option[Html] = None, taskListItems : Seq[TaskListItem])
+case class TaskListSection(h2Content : String, sectionStart : Option[String] = None, sectionEnd : Option[Html] = None, taskListItems : Seq[TaskListItem])

@@ -33,8 +33,8 @@ import views.html.individual.incometax.business.TaskList
 
 class TaskListViewSpec extends ViewSpec {
 
-  val selectorForFirstBusiness = "ol > li:nth-of-type(2) > ul:nth-of-type(1)"
-  val selectorForFirstParaOfBusiness = "ol > li:nth-of-type(2)"
+  val selectorForFirstBusiness = "ol > li:nth-of-type(1) > ul:nth-of-type(1)"
+  val selectorForFirstParaOfBusiness = "ol > li:nth-of-type(1)"
   val selectorForFirstParaOfSignup = "ol > li:nth-of-type(3)"
 
   val taskListView: TaskList = app.injector.instanceOf[TaskList]
@@ -145,11 +145,9 @@ class TaskListViewSpec extends ViewSpec {
           document().mainContent.getElementById("taskListCompletedSummary").text mustBe contentSummary(0, 2)
         }
 
-        "in the business section: display the information para" should {
-          "display the sign up incomplete text" in {
-            val infoPara = document().mainContent.selectHead(selectorForFirstParaOfBusiness).selectHead("p")
-            infoPara.text mustBe item2Para
-          }
+        "in the business section: display the information para" in {
+          val infoPara = document().mainContent.selectHead(selectorForFirstParaOfBusiness).selectHead("p")
+          infoPara.text mustBe item2Para
         }
 
         "in the select tax year section: display the select tax year link with status incomplete" when {
@@ -194,7 +192,9 @@ class TaskListViewSpec extends ViewSpec {
 
         "in the select tax year section: display the select tax year link with status in progress" when {
           "the user has selected the tax year but not confirmed the answer in tax year CYA page" in {
-            val selectTaxYearSection = document(partialTaskListComplete).mainContent.selectHead("ul.app-task-list__items")
+            val selectTaxYearSection = document(partialTaskListComplete).mainContent
+              .selectHead("ol > li:nth-of-type(2)")
+              .selectHead("ul.app-task-list__items")
             val selectTaxYearLink = selectTaxYearSection.selectNth("span", 1).selectHead("a")
             selectTaxYearLink.text mustBe selectTaxYear
             selectTaxYearSection.selectNth("span", 2).text mustBe inProgress
@@ -302,7 +302,9 @@ class TaskListViewSpec extends ViewSpec {
 
         "display a complete tax year with an edit link to the Tax Year CYA" when {
           "the user has selected the tax year and confirmed the answer in tax year CYA page" in {
-            val selectTaxYearSection = document(completedTaskListComplete).mainContent.selectHead("ul.app-task-list__items")
+            val selectTaxYearSection = document(completedTaskListComplete).mainContent
+              .selectHead("ol > li:nth-of-type(2)")
+              .selectHead("ul.app-task-list__items")
             val selectTaxYearLink = selectTaxYearSection.selectNth("span", 1).selectHead("a")
             selectTaxYearLink.text mustBe SelectedTaxYear.next(accountingPeriodService.currentTaxYear, accountingPeriodService.currentTaxYear + 1)
             selectTaxYearSection.selectNth("span", 2).text mustBe complete

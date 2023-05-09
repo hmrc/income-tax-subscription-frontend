@@ -21,13 +21,15 @@
 @(sections : Seq[TaskListSection])
 
 <ol class="app-task-list">
-    @sections.map(taskListSection)
+    @sections.zip(1 to sections.length).map { case (section, index) =>
+      @taskListSection(section, index)
+    }
 </ol>
 
-@taskListSection(section : TaskListSection) = {
+@taskListSection(section : TaskListSection, index: Int) = {
     <li>
         <h2 class="app-task-list__section govuk-heading-m">
-            <span class="app-task-list__section-number">@{section.index}.</span>
+            <span class="app-task-list__section-number">@index.</span>
             @section.h2Content
         </h2>
         @section.sectionStart.map{para =>
@@ -35,7 +37,7 @@
         }
         @if(section.taskListItems.nonEmpty){
           <ul class="app-task-list__items @if(section.sectionEnd.isDefined){govuk-!-margin-bottom-3}">
-            @section.taskListItems.zipWithIndex.map{case (item, itemIndex) => @taskListItem(item, itemIndex, section.index)}
+            @section.taskListItems.zipWithIndex.map{case (item, itemIndex) => @taskListItem(item, itemIndex, index)}
           </ul>
         }
           @section.sectionEnd

@@ -122,7 +122,7 @@ class AgentTaskListViewSpec extends ViewSpec {
 
       "have a contents list" in {
         val contentList = doc.select("ol").select("h2")
-        contentList.text() must include(item1)
+        contentList.text() must include(agentItem1)
         contentList.text() must include(agentItem2)
         contentList.text() must include(item3)
       }

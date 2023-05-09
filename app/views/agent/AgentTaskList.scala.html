@@ -67,7 +67,6 @@
 
 @selectTaxYear = @{
   TaskListSection(
-    index = 1,
     h2Content = messages(s"${messagePrefix}.content.section1"),
     taskListItems = Seq(
       if(viewModel.taxYearSelectedAndConfirmed) {
@@ -114,7 +113,6 @@
 
 @businesses = @{
   TaskListSection(
-    index = 2,
     h2Content = messages(s"${messagePrefix}.content.section2"),
     sectionStart = Some(messages(s"${messagePrefix}.content.section2.para", appConfig.maxSelfEmployments)),
     sectionEnd = if (viewModel.canAddMoreBusinesses(appConfig.maxSelfEmployments)) Some(addBusiness) else None,
@@ -218,7 +216,6 @@
 
 @signUp = @{
   TaskListSection(
-    index = 3,
     h2Content = messages(s"${messagePrefix}.content.section3"),
     sectionEnd = Some(signUpSectionContent),
     taskListItems = Seq()
