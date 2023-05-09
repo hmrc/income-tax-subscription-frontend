@@ -58,7 +58,7 @@ class AccountingPeriodCheckControllerISpec extends ComponentSpecBase {
     }
 
     "has a hint paragraph to explain what is accounting period check" in new GetSetup {
-      pageMainContent.getElementsByClass("govuk-hint").text mustBe AccountingPeriodCheckMessages.hint
+      pageMainContent.selectNth("p", 1).text mustBe AccountingPeriodCheckMessages.hint
     }
 
     "have a form" which {

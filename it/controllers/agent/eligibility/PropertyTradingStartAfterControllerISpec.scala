@@ -47,8 +47,7 @@ class PropertyTradingStartAfterControllerISpec extends ComponentSpecBase {
 
     def title(date: String) = s"Did your client start a property business on or after $date?"
 
-    val hint = "This includes being a landlord or using a letting agency for:"
-    val hint2 = "This does not include renting out:"
+    val hint = "This does not include letting:"
     val point1 = "UK properties"
     val point2 = "overseas properties"
     val point3 = "holiday properties"
@@ -83,11 +82,10 @@ class PropertyTradingStartAfterControllerISpec extends ComponentSpecBase {
     }
 
     "have a view with the correct hint" in new GetSetup {
-      pageContent.firstOf("p").text mustBe PropertyStartAfterMessage.hint
       pageContent.getNthUnorderedList(1).getNthListItem(1).text mustBe PropertyStartAfterMessage.point1
       pageContent.getNthUnorderedList(1).getNthListItem(2).text mustBe PropertyStartAfterMessage.point2
       pageContent.getNthUnorderedList(1).getNthListItem(3).text mustBe PropertyStartAfterMessage.point3
-      pageContent.selectNth("p", 2).text mustBe PropertyStartAfterMessage.hint2
+      pageContent.selectNth("p", 1).text mustBe PropertyStartAfterMessage.hint
       pageContent.getNthUnorderedList(2).getNthListItem(1).text mustBe PropertyStartAfterMessage.point4
       pageContent.getNthUnorderedList(2).getNthListItem(2).text mustBe PropertyStartAfterMessage.point5
     }

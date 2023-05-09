@@ -24,9 +24,8 @@ class OtherSourcesOfIncomeControllerISpec extends ComponentSpecBase {
   object OtherSourcesOfIncomeMessages {
     val back: String = "Back"
 
-    val title: String = "Apart from self employment or renting out property, does your client have any other sources of income?"
-    val heading: String = "Apart from self employment or renting out property, does your client have any other sources of income?"
-    val include: String = "This could include:"
+    val title: String = "Aside from self employment or letting property, does your client have any other sources of income?"
+    val heading: String = "Aside from self employment or letting property, does your client have any other sources of income?"
     val includePoint1: String = "PAYE as an employee"
     val includePoint2: String = "UK pensions or annuities"
     val includePoint3: String = "investments from outside the UK"
@@ -65,10 +64,6 @@ class OtherSourcesOfIncomeControllerISpec extends ComponentSpecBase {
       pageContent.getH1Element.text mustBe OtherSourcesOfIncomeMessages.heading
     }
 
-    "have a paragraph stating what is included" in new GetSetup {
-      pageContent.getNthParagraph(1).text mustBe OtherSourcesOfIncomeMessages.include
-    }
-
     "have a bullet list of included incomes" in new GetSetup {
       pageContent.getNthUnorderedList(1).getNthListItem(1).text mustBe OtherSourcesOfIncomeMessages.includePoint1
       pageContent.getNthUnorderedList(1).getNthListItem(2).text mustBe OtherSourcesOfIncomeMessages.includePoint2
@@ -78,7 +73,7 @@ class OtherSourcesOfIncomeControllerISpec extends ComponentSpecBase {
     }
 
     "have a paragraph stating what is not included" in new GetSetup {
-      pageContent.getNthParagraph(2).text mustBe OtherSourcesOfIncomeMessages.notInclude
+      pageContent.getNthParagraph(1).text mustBe OtherSourcesOfIncomeMessages.notInclude
     }
 
     "have a bullet list of not included incomes" in new GetSetup {

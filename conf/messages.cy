@@ -602,6 +602,7 @@ agent.what-you-need-to-do.mandated-and-eligible-next-year-only.notification-bann
 # Agent accounting period check page
 agent.accounting-period-check.title                             = A yw holl gyfnodau cyfrifyddu busnes eich cleient yn rhedeg o 6 Ebrill i 5 Ebrill?
 agent.accounting-period-check.heading                           = A yw holl gyfnodau cyfrifyddu busnes eich cleient yn rhedeg o 6 Ebrill i 5 Ebrill?
+agent.accounting-period-check.include                           = Tax year dates ... in Welsh
 agent.accounting-period-check.hint                              = Mae’r flwyddyn dreth yn rhedeg o 6 Ebrill i 5 Ebrill. Mae angen i’r cyfnod cyfrifyddu ar gyfer hunangyflogaeth neu fusnes eiddo’ch cleient gyfateb â hyn os hoffech ei gofrestru ar gyfer y gwasanaeth hwn.
 agent.accounting-period-check.invalid                           = Dewiswch ‘Iawn’ os yw holl gyfnodau cyfrifyddu busnes eich cleient o 6 Ebrill i 5 Ebrill
 
