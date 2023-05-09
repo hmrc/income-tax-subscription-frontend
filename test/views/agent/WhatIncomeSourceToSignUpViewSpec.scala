@@ -85,31 +85,31 @@ class WhatIncomeSourceToSignUpViewSpec extends ViewSpec {
     }
 
     "have the heading for the page" in {
-      document().mainContent.selectHead("h1").text mustBe AgentIncomeSource.heading
+      document().selectHead("h1").text mustBe AgentIncomeSource.heading
     }
 
     "have paragraph 1" which {
       "mentions overseas property when enabled" in {
         enable(ForeignProperty)
-        document().mainContent.selectHead(".govuk-inset-text").selectNth("p", 1).text mustBe AgentIncomeSource.paragraph1Overseas
+        document().selectHead(".govuk-inset-text").selectNth("p", 1).text mustBe AgentIncomeSource.paragraph1Overseas
       }
       "does not mention overseas property when not enabled" in {
-        document().mainContent.selectHead(".govuk-inset-text").selectNth("p", 1).text mustBe AgentIncomeSource.paragraph1
+        document().selectHead(".govuk-inset-text").selectNth("p", 1).text mustBe AgentIncomeSource.paragraph1
       }
     }
 
     "have paragraph 2" in {
-      document().mainContent.selectHead(".govuk-inset-text").selectNth("p", 2).text mustBe AgentIncomeSource.paragraph2
+      document().selectHead(".govuk-inset-text").selectNth("p", 2).text mustBe AgentIncomeSource.paragraph2
     }
 
     "have a form with test call attributes" in {
-      val form: Element = document().mainContent.selectHead("form")
+      val form: Element = document().selectHead("form")
       form.attr("method") mustBe testCall.method
       form.attr("action") mustBe testCall.url
     }
 
     "have a legend with the page heading" in {
-      document().mainContent.selectHead("fieldset").selectHead("legend").text mustBe AgentIncomeSource.heading
+      document().selectHead("fieldset").selectHead("legend").text mustBe AgentIncomeSource.heading
     }
 
     "have a radio button for sole traders" in {
@@ -121,9 +121,9 @@ class WhatIncomeSourceToSignUpViewSpec extends ViewSpec {
         val doc = document(
           incomeSourcesStatus = IncomeSourcesStatus(selfEmploymentAvailable = false, ukPropertyAvailable = true, overseasPropertyAvailable = true)
         )
-        doc.mainContent.selectHead(".govuk-radios").selectNth(".govuk-radios__item", 1).selectHead("input").attr("value") mustBe UkProperty.toString
-        doc.mainContent.selectHead(".govuk-radios").selectNth(".govuk-radios__item", 2).selectHead("input").attr("value") mustBe OverseasProperty.toString
-        doc.mainContent.selectHead(".govuk-radios").selectOptionally(".govuk-radios__item:nth-of-type(3)") mustBe None
+        doc.selectHead(".govuk-radios").selectNth(".govuk-radios__item", 1).selectHead("input").attr("value") mustBe UkProperty.toString
+        doc.selectHead(".govuk-radios").selectNth(".govuk-radios__item", 2).selectHead("input").attr("value") mustBe OverseasProperty.toString
+        doc.selectHead(".govuk-radios").selectOptionally(".govuk-radios__item:nth-of-type(3)") mustBe None
       }
     }
 
@@ -136,9 +136,9 @@ class WhatIncomeSourceToSignUpViewSpec extends ViewSpec {
         val doc = document(
           incomeSourcesStatus = IncomeSourcesStatus(selfEmploymentAvailable = true, ukPropertyAvailable = false, overseasPropertyAvailable = true)
         )
-        doc.mainContent.selectHead(".govuk-radios").selectNth(".govuk-radios__item", 1).selectHead("input").attr("value") mustBe SelfEmployed.toString
-        doc.mainContent.selectHead(".govuk-radios").selectNth(".govuk-radios__item", 2).selectHead("input").attr("value") mustBe OverseasProperty.toString
-        doc.mainContent.selectHead(".govuk-radios").selectOptionally(".govuk-radios__item:nth-of-type(3)") mustBe None
+        doc.selectHead(".govuk-radios").selectNth(".govuk-radios__item", 1).selectHead("input").attr("value") mustBe SelfEmployed.toString
+        doc.selectHead(".govuk-radios").selectNth(".govuk-radios__item", 2).selectHead("input").attr("value") mustBe OverseasProperty.toString
+        doc.selectHead(".govuk-radios").selectOptionally(".govuk-radios__item:nth-of-type(3)") mustBe None
       }
     }
 
@@ -153,14 +153,14 @@ class WhatIncomeSourceToSignUpViewSpec extends ViewSpec {
         val doc = document(
           incomeSourcesStatus = IncomeSourcesStatus(selfEmploymentAvailable = true, ukPropertyAvailable = true, overseasPropertyAvailable = false)
         )
-        doc.mainContent.selectHead(".govuk-radios").selectNth(".govuk-radios__item", 1).selectHead("input").attr("value") mustBe SelfEmployed.toString
-        doc.mainContent.selectHead(".govuk-radios").selectNth(".govuk-radios__item", 2).selectHead("input").attr("value") mustBe UkProperty.toString
-        doc.mainContent.selectHead(".govuk-radios").selectOptionally(".govuk-radios__item:nth-of-type(3)") mustBe None
+        doc.selectHead(".govuk-radios").selectNth(".govuk-radios__item", 1).selectHead("input").attr("value") mustBe SelfEmployed.toString
+        doc.selectHead(".govuk-radios").selectNth(".govuk-radios__item", 2).selectHead("input").attr("value") mustBe UkProperty.toString
+        doc.selectHead(".govuk-radios").selectOptionally(".govuk-radios__item:nth-of-type(3)") mustBe None
       }
     }
 
     "have a continue button" in {
-      document().mainContent.selectHead(".govuk-button").text mustBe "Continue"
+      document().selectHead(".govuk-button").text mustBe "Continue"
     }
   }
 

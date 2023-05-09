@@ -69,16 +69,16 @@
     }
 }
 
-@hmrcLayout(
-  mainContentLayout = if(fullWidth) { Some(fullWidthMainContentLayout(_)) } else { Some(defaultMainContent(_)) },
-  pageTitle = Some(title),
-  additionalHeadBlock = Some(additionalHeadBlock),
-  serviceName = Some(serviceName),
-  isWelshTranslationAvailable = true,
-  serviceUrl = Some(serviceUrl),
-  backLinkUrl = backLink,
-  signOutUrl = if(showSignOutLink) Some(controllers.routes.SignOutController.signOut.url) else None,
-  phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedbackUnauthenticatedUrl)),
-  userResearchBannerUrl = Some(appConfig.urBannerUrl)
-)(content)
+  @hmrcLayout(
+    mainContentLayout = if(fullWidth) { Some(fullWidthMainContentLayout(_)) } else { Some(defaultMainContent(_)) },
+    pageTitle = Some(title),
+    additionalHeadBlock = Some(additionalHeadBlock),
+    serviceName = Some(serviceName),
+    isWelshTranslationAvailable = true,
+    serviceUrl = Some(serviceUrl),
+    backLinkUrl = backLink,
+    signOutUrl = if(showSignOutLink) Some(controllers.routes.SignOutController.signOut.url) else None,
+    phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedbackUnauthenticatedUrl)),
+    userResearchBannerUrl = Some(appConfig.urBannerUrl),
+    nonce = None)(content)
 

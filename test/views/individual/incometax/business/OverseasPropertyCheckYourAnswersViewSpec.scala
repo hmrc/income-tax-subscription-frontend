@@ -106,7 +106,7 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
 
         "have an enabled confirm and continue button" when {
           "all questions have been answered" in {
-            val buttonLink: Element = document(viewModel = completeAccrualsProperty).mainContent.selectHead(".govuk-button")
+            val buttonLink: Element = document(viewModel = completeAccrualsProperty).selectHead(".govuk-button")
             buttonLink.text mustBe OverseasPropertyCheckYourAnswers.confirmedAndContinue
             buttonLink.hasAttr("disabled") mustBe false
           }
@@ -135,7 +135,7 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
 
         "have an enabled confirm and continue button" when {
           "the start day has not been answered" in {
-            val buttonLink: Element = document(viewModel = propertyWithMissingStartDate).mainContent.selectHead(".govuk-button")
+            val buttonLink: Element = document(viewModel = propertyWithMissingStartDate).selectHead(".govuk-button")
             buttonLink.text mustBe OverseasPropertyCheckYourAnswers.confirmedAndContinue
             buttonLink.hasAttr("disabled") mustBe false
           }
@@ -164,7 +164,7 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
 
         "have an enabled confirm and continue button" when {
           "the accounting method has not been answered" in {
-            val buttonLink: Element = document(viewModel = propertyWithMissingAccountingMethod).mainContent.selectHead(".govuk-button")
+            val buttonLink: Element = document(viewModel = propertyWithMissingAccountingMethod).selectHead(".govuk-button")
             buttonLink.text mustBe OverseasPropertyCheckYourAnswers.confirmedAndContinue
             buttonLink.hasAttr("disabled") mustBe false
           }
@@ -173,7 +173,7 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
     }
 
     "have the save and come back later button" in {
-      val buttonLink: Element = document(viewModel = completeCashProperty).mainContent.selectHead(".govuk-button--secondary")
+      val buttonLink: Element = document(viewModel = completeCashProperty).selectHead(".govuk-button--secondary")
       buttonLink.text mustBe OverseasPropertyCheckYourAnswers.saveAndComeBack
       buttonLink.attr("href") mustBe
         controllers.individual.business.routes.ProgressSavedController.show().url + "?location=overseas-property-check-your-answers"
