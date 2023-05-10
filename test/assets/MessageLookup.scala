@@ -300,9 +300,10 @@ object MessageLookup {
 
     def contentSummary(numberComplete: Int, numberTotal: Int) = s"You have completed $numberComplete of $numberTotal sections."
 
-    val item1 = "1. Choose a tax year to sign up"
-    val item2 = "2. Tell us about your income"
+    val item1 = "1. Tell us about your income"
+    val item2 = "2. Choose a tax year to sign up"
     val item2Para = "You must add all your sole trader businesses, up to a maximum of 50. You do not need to add your PAYE earnings. But you must add any property businesses you have, which is limited to one UK property business and one overseas property business."
+    val agentItem1 = "1. Choose a tax year to sign up"
     val agentItem2 = "2. Tell us about your client’s income"
     val agentItem2Para = "You must add all your client’s sole trader businesses, up to a maximum of 50. You do not need to add their PAYE earnings. But you must add any property businesses they have, which is limited to one UK property business and one overseas property business."
     val item3 = "3. Sign up"
