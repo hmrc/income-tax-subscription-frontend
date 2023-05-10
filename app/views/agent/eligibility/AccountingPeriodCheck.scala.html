@@ -24,28 +24,33 @@
 @import forms.submapping.YesNoMapping
 
 @this(
-mainTemplate: AgentMainTemplate,
-form : FormWithCSRF,
-radioHelper: RadioHelper,
-continueButton: ContinueButton,
-govukDetails:GovukDetails
+    mainTemplate: AgentMainTemplate,
+    form : FormWithCSRF,
+    radioHelper: RadioHelper,
+    continueButton: ContinueButton,
+    govukDetails:GovukDetails,
+    hmrcPageHeading: HmrcPageHeading
 )
 
 @(accountingPeriodCheckForm: Form[YesNo], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @inputContent = {
-
-<p class="govuk-body">@messages("agent.accounting-period-check.hint")</p>
+    <p class="govuk-body">@messages("agent.accounting-period-check.hint")</p>
 }
 
 @mainTemplate(title = messages("agent.accounting-period-check.title"), optForm = Some(accountingPeriodCheckForm), backLink = Some(backUrl)) {
 
-    <h1 class="govuk-heading-l">@messages("agent.accounting-period-check.heading")</h1>
+    @hmrcPageHeading(PageHeading(
+        text = messages("agent.accounting-period-check.heading"),
+        section = Some(messages("agent.accounting-period-check.caption")),
+        headingClasses = Some("govuk-heading-l"),
+        captionClasses = Some("govuk-caption-l")
+    ))
 
-@govukDetails(Details(
-summary = Text(messages("agent.accounting-period-check.include")),
-content =HtmlContent(inputContent)
-))
+    @govukDetails(Details(
+        summary = Text(messages("agent.accounting-period-check.include")),
+        content =HtmlContent(inputContent)
+    ))
 
     @form(action = postAction) {
 

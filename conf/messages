@@ -531,8 +531,8 @@ agent.base.yes                                                  = Yes
 agent.base.no                                                   = No
 
 # Agent other sources of income page
-agent.other-sources-of-income.title                             = Aside from self employment or letting property, does your client have any other sources of income?
-agent.other-sources-of-income.heading                           = Aside from self employment or letting property, does your client have any other sources of income?
+agent.other-sources-of-income.title                             = Aside from self employment or letting property, does your client have any other income sources?
+agent.other-sources-of-income.heading                           = Aside from self employment or letting property, does your client have any other income sources?
 agent.other-sources-of-income.include                           = What are the other income sources?
 agent.other-sources-of-income.include-point1                    = PAYE as an employee
 agent.other-sources-of-income.include-point2                    = UK pensions or annuities
@@ -543,6 +543,7 @@ agent.other-sources-of-income.not-include                       = This does not 
 agent.other-sources-of-income.not-include-point1                = bank and building society interest
 agent.other-sources-of-income.not-include-point2                = dividends
 agent.other-sources-of-income.invalid                           = Select yes if your client has sources of income other than self employment or property income
+agent.other-sources-of-income.caption                           = Eligibility questions
 
 # Agent cannot take part page
 agent.cannot-take-part.title                                    = Your client cannot take part yet
@@ -606,10 +607,11 @@ agent.accounting-period-check.heading                           = Do your client
 agent.accounting-period-check.include                           = Tax year dates
 agent.accounting-period-check.hint                              = The tax year runs from 6 April to 5 April. The accounting period for your client’s self-employment or property needs to be the same if you would like to sign them up to this service.
 agent.accounting-period-check.invalid                           = Select yes if all of your client’s business accounting periods are from 6 April to 5 April
+agent.accounting-period-check.caption                           = Eligibility questions
 
 # Agent property trading after date page
-agent.property-trading-after.title                              = Did your client start a property business on or after {0}?
-agent.property-trading-after.heading                            = Did your client start a property business on or after {0}?
+agent.property-trading-after.title                              = Did your client start letting property on or after {0}?
+agent.property-trading-after.heading                            = Did your client start letting property on or after {0}?
 agent.property-trading-after.line                               = What's included in letting properties?
 agent.property-trading-after.line.point1                        = UK properties
 agent.property-trading-after.line.point2                        = overseas properties
@@ -618,6 +620,7 @@ agent.property-trading-after.line2                              = This does not 
 agent.property-trading-after.line2.point1                       = a room
 agent.property-trading-after.line2.point2                       = part of your property
 agent.property-trading-after.error.summary                      = Select yes if your client owns a property business that began trading on or after {0}
+agent.property-trading-after.caption                            = Eligibility questions
 
 # Client details page
 agent.client-details-error.title                                = There is a problem
@@ -666,7 +669,8 @@ agent.business.what-year-to-sign-up.option-current-hint         = You or your cl
 agent.business.what-year-to-sign-up.option-next-hint            = You or your client will need to submit a final declaration by 31 January {0} and will need to complete a Self Assessment return for the current tax year as normal.
 
 # Agent Sole trader page
-agent.eligibility.sole-trader.heading                           = Did your client’s sole trader business start trading on or after {0}?
+agent.eligibility.sole-trader.heading                           = Did your client’s business start trading on or after {0}?
+agent.eligibility.sole-trader.caption                           = Eligibility questions
 
 # Agent Property Accounting Method Page
 agent.property.accounting-method.title                          = What accounting method does your client use for their UK property business?
@@ -1007,10 +1011,10 @@ throttle-start.title                                                 = There are
 throttle-start.heading                                               = There are currently too many people trying to sign up
 throttle-start.line-1                                                = You can not finish signing up to the Making Tax Digital for Income Tax at the moment.
 throttle-start.line-2                                                = If you want to continue, try again or sign out and come back later.
+
 agent.throttle-start.title                                           = We are currently experiencing high levels of demand for this service
 agent.throttle-start.heading                                         = We are currently experiencing high levels of demand for this service
 agent.throttle-start.line-1                                          = You can not sign up your client to the Making Tax Digital for Income Tax service at the moment. If you would still like to access this service, try again shortly or sign out and come back later.
-agent.throttle-start.line-2                                          =
 
 throttle-end.title                                                 = You cannot complete signing-up at the moment
 throttle-end.heading                                               = You cannot complete signing-up at the moment
