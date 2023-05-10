@@ -24,8 +24,8 @@ class OtherSourcesOfIncomeControllerISpec extends ComponentSpecBase {
   object OtherSourcesOfIncomeMessages {
     val back: String = "Back"
 
-    val title: String = "Aside from self employment or letting property, does your client have any other sources of income?"
-    val heading: String = "Aside from self employment or letting property, does your client have any other sources of income?"
+    val title: String = "Aside from self employment or letting property, does your client have any other income sources?"
+    val heading: String = "Aside from self employment or letting property, does your client have any other income sources?"
     val includePoint1: String = "PAYE as an employee"
     val includePoint2: String = "UK pensions or annuities"
     val includePoint3: String = "investments from outside the UK"

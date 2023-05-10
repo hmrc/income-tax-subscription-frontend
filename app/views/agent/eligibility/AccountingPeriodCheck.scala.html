@@ -39,7 +39,7 @@ govukDetails:GovukDetails
 }
 
 @mainTemplate(title = messages("agent.accounting-period-check.title"), optForm = Some(accountingPeriodCheckForm), backLink = Some(backUrl)) {
-
+    <span class="govuk-caption-l">@messages("agent.accounting-period-check.caption")</span>
     <h1 class="govuk-heading-l">@messages("agent.accounting-period-check.heading")</h1>
 
 @govukDetails(Details(

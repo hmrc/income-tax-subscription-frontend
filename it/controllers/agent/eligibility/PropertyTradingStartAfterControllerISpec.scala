@@ -45,7 +45,7 @@ class PropertyTradingStartAfterControllerISpec extends ComponentSpecBase {
 
   object PropertyStartAfterMessage {
 
-    def title(date: String) = s"Did your client start a property business on or after $date?"
+    def title(date: String) = s"Did your client start letting property on or after $date?"
 
     val hint = "This does not include letting:"
     val point1 = "UK properties"

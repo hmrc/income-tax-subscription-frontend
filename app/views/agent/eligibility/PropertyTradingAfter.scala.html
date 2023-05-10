@@ -55,7 +55,7 @@
 
 
 @mainTemplate(title = messages("agent.property-trading-after.title", startDateLimit), optForm = Some(propertyTradingBeforeDateForm), backLink = Some(backUrl)) {
-
+    <span class="govuk-caption-l">@messages("agent.property-trading-after.caption")</span>
     <h1 class="govuk-heading-l">@messages("agent.property-trading-after.heading", startDateLimit)</h1>
 
 @govukDetails(Details(

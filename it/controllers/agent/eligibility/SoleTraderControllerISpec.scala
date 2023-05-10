@@ -31,9 +31,9 @@ class SoleTraderControllerISpec extends ComponentSpecBase {
   object SoleTraderPageMessages {
     val back: String = "Back"
 
-    def title(date: String) = s"Did your client’s sole trader business start trading on or after $date?"
+    def title(date: String) = s"Did your client’s business start trading on or after $date?"
 
-    def heading(date: String) = s"Did your client’s sole trader business start trading on or after $date?"
+    def heading(date: String) = s"Did your client’s business start trading on or after $date?"
 
     def invalidError(date: String) = s"Select yes if your client is a sole trader that began trading on or after $date?"
 
