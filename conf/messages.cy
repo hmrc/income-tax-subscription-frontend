@@ -345,27 +345,27 @@ agent.sign-up-confirmation.manadated.notification-banner.bullet4                
 
 ## Sign Up Confirmation page ##
 
-sign-up-confirmation.heading                                                  = Sign up complete
-sign-up-confirmation.heading.panel.current                                    = is now signed up for Making Tax Digital for Income Tax for the current tax year ({0})
-sign-up-confirmation.heading.panel.next                                       = is now signed up for Making Tax Digital for Income Tax for the next tax year ({0})
-sign-up-confirmation.what-you-must-do.heading                                 = What you must do
-sign-up-confirmation.quarterly-updates.heading                                = Send quarterly updates
-sign-up-confirmation.quarterly-updates.para                                   = You must send quarterly updates of your income and expenses using compatible software by the following deadlines:
-sign-up-confirmation.quarterly-updates.table.caption                          = Quarterly updates by the deadline
-sign-up-confirmation.end-of-period-statement.heading                          = Send an end of period statement
-sign-up-confirmation.end-of-period-statement.para                             = You must submit an end of period statement using your software by {0}.
-sign-up-confirmation.final-declaration.para                                   = You must submit your final declaration and pay the tax you owe by {0}.
-sign-up-confirmation.warning.para                                             = You must make updates for any quarters you’ve missed.
+sign-up-confirmation.heading                                                  = Rydych wedi cofrestru’n llwyddiannus
+sign-up-confirmation.heading.panel.current                                    = Mae wedi llwyddo i gofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm, o ran y flwyddyn dreth bresennol ({0})
+sign-up-confirmation.heading.panel.next                                       = Mae wedi llwyddo i gofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm, o ran y flwyddyn dreth nesaf ({0})
+sign-up-confirmation.what-you-must-do.heading                                 = Yr hyn y mae’n rhaid i chi ei wneud
+sign-up-confirmation.quarterly-updates.heading                                = Anfon diweddariadau chwarterol:
+sign-up-confirmation.quarterly-updates.para                                   = Mae’n rhaid i chi anfon diweddariadau chwarterol o’ch incwm a’ch treuliau, gan ddefnyddio meddalwedd sy’n cydweddu, erbyn y dyddiadau cau canlynol:
+sign-up-confirmation.quarterly-updates.table.caption                          = Diweddariadau chwarterol erbyn y dyddiad cau
+sign-up-confirmation.end-of-period-statement.heading                          = Anfon datganiad diwedd cyfnod
+sign-up-confirmation.end-of-period-statement.para                             = Mae’n rhaid i chi gyflwyno datganiad diwedd cyfnod, gan ddefnyddio’ch meddalwedd, erbyn {0}.
+sign-up-confirmation.final-declaration.para                                   = Mae’n rhaid i chi gyflwyno’ch datganiad terfynol a thalu’r dreth sydd arnoch erbyn {0}.
+sign-up-confirmation.warning.para                                             = Mae’n rhai i chi gyflwyno diweddariadau ar gyfer unrhyw chwarterau rydych wedi’u methu.
 
-sign-up-confirmation.voluntary-next-year.self-assessment.heading              = Submit your Self Assessment tax return for this year
-sign-up-confirmation.voluntary-next-year.self-assessment.para                 = You must submit your Self Assessment tax return as normal until 31 January {0}.
-sign-up-confirmation.voluntary-next-year.final-declaration.heading            = Submit a final declaration and pay your tax
-sign-up-confirmation.voluntary-current-year.final-declaration.heading         = Submit a final declaration and pay your tax
-sign-up-confirmation.mandated-notification-banner.para                        = You may be penalised if you fail to meet the deadlines for your:
-sign-up-confirmation.mandated.notification-banner.bullet1                    = quarterly updates
-sign-up-confirmation.mandated.notification-banner.bullet2                    = end of period statement
-sign-up-confirmation.mandated.notification-banner.bullet3                    = final declaration
-sign-up-confirmation.mandated.notification-banner.bullet4                    = tax payment
+sign-up-confirmation.voluntary-next-year.self-assessment.heading              = Cyflwyno’ch Ffurflen Dreth Hunanasesiad ar gyfer y flwyddyn hon
+sign-up-confirmation.voluntary-next-year.self-assessment.para                 = Mae’n rhaid i chi gyflwyno’ch Ffurflen Dreth Hunanasesiad, yn ôl yr arfer, erbyn 31 Ionawr {0}.
+sign-up-confirmation.voluntary-next-year.final-declaration.heading            = Cyflwyno datganiad terfynol a thalu’ch treth
+sign-up-confirmation.voluntary-current-year.final-declaration.heading         = Cyflwyno datganiad terfynol a thalu’ch treth
+sign-up-confirmation.mandated-notification-banner.para                        = Mae’n bosibl y byddwch yn cael eich cosbi os byddwch yn methu’r dyddiadau cau ar gyfer eich:
+sign-up-confirmation.mandated.notification-banner.bullet1                    = diweddariadau chwarterol
+sign-up-confirmation.mandated.notification-banner.bullet2                    = datganiad diwedd cyfnod
+sign-up-confirmation.mandated.notification-banner.bullet3                    = datganiad terfynol
+sign-up-confirmation.mandated.notification-banner.bullet4                    = taliad treth
 
 
 sign-up-confirmation.section2.heading                                = Find software and check your account
