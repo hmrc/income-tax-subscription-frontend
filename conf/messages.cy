@@ -100,7 +100,7 @@ cannot-take-part.inset1                                         = Mae’n rhaid 
 
 ##  What You Need To Do (pre-mandation either tax year)  ##
 what-you-need-to-do.heading                                     = Beth y mae angen i chi ei wneud
-what-you-need-to-do.para-1                                      = Drwy gymryd rhan yn y cynllun peilot hwn, rydych yn cytuno i wneud y canlynol:
+what-you-need-to-do.para-1                                      = By taking part you agree to: ... but in Welsh
 what-you-need-to-do.notification.bullet-1                       = bod â meddalwedd sy’n cydweddu i gofnodi’ch incwm a’ch treuliau
 what-you-need-to-do.notification.bullet-2                       = defnyddio’ch meddalwedd i anfon diweddariadau chwarterol atom
 what-you-need-to-do.notification.bullet-3                       = cwblhau unrhyw ddiweddariadau chwarterol sydd ar goll (os ydych wedi dewis cofrestru ar gyfer y flwyddyn dreth bresennol)
@@ -111,7 +111,7 @@ what-you-need-to-do.para-2                                      = O fis Ebrill 2
 
 ##  What You Need To Do (pre-mandation next tax year only)  ##
 what-you-need-to-do.next-year-only.para-1                        = Gallwch gofrestru i ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o 6 Ebrill {0} ymlaen
-what-you-need-to-do.next-year-only.para-2                        = Drwy gymryd rhan yn y cynllun peilot hwn, rydych yn cytuno i wneud y canlynol:
+what-you-need-to-do.next-year-only.para-2                        = By taking part you agree to: ... but in Welsh
 what-you-need-to-do.next-year-only.notification.bullet-1         = cael meddalwedd sy’n cydweddu i gofnodi’ch incwm a’ch treuliau o 6 Ebrill {0} ymlaen
 what-you-need-to-do.next-year-only.notification.bullet-2         = defnyddio’ch meddalwedd i anfon diweddariadau chwarterol atom
 what-you-need-to-do.next-year-only.notification.bullet-3         = anfon datganiad diwedd cyfnod gan ddefnyddio’ch meddalwedd ac anfon eich datganiad terfynol erbyn {0}
