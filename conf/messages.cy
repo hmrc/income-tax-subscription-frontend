@@ -319,28 +319,28 @@ sign-up-complete.what-now.no-penalty                            = Does dim cosb 
 sign-up-complete.what-now.submit-annual                         = Cyflwynwch eich diweddariadau blynyddol a gwnewch ddatganiad ar gyfer y flwyddyn dreth erbyn 31 Ionawr {0}.
 
 ## Agent Sign Up Confirmation Page ##
-agent.sign-up-confirmation.heading                                                  = Client sign up complete ... but in Welsh
-agent.sign-up-confirmation.heading.panel.current                                    = is now signed up for Making Tax Digital for Income Tax for the current tax year ({0}) ... but in Welsh
-agent.sign-up-confirmation.heading.panel.next                                       = is now signed up for Making Tax Digital for Income Tax for the next tax year ({0}) ... but in Welsh
+agent.sign-up-confirmation.heading                                                  = Cleient wedi’i gofrestru’n llwyddiannus
+agent.sign-up-confirmation.heading.panel.current                                    = wedi llwyddo i gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, erbyn y flwyddyn dreth bresennol ({0})
+agent.sign-up-confirmation.heading.panel.next                                       = wedi llwyddo i gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, erbyn y flwyddyn dreth nesaf  ({0})
 agent.sign-up-confirmation.what-you-will-have-to-do.heading                         = What you will have to do ... but in Welsh
-agent.sign-up-confirmation.quarterly-updates.heading                                = Send quarterly updates ... but in Welsh
-agent.sign-up-confirmation.quarterly-updates.para                                   = Quarterly updates of your client’s income and expenses must be made using compatible software by the following deadlines: ... but in Welsh
-agent.sign-up-confirmation.quarterly-updates.table.caption                          = Quarterly updates by the deadline ... but in Welsh
-agent.sign-up-confirmation.end-of-period-statement.heading                          = Send an end of period statement ... but in Welsh
-agent.sign-up-confirmation.end-of-period-statement.para                             = Either you or your client must submit an end of period statement using your software by {0}. ... but in Welsh
-agent.sign-up-confirmation.final-declaration.para                                   = A final declaration must be submitted by either you or your client by {0}. They must also pay the tax they owe. ... but in Welsh
-agent.sign-up-confirmation.warning.para                                             = You must make updates for any quarters you've missed. ... but in Welsh
+agent.sign-up-confirmation.quarterly-updates.heading                                = Anfon diweddariadau chwarterol:
+agent.sign-up-confirmation.quarterly-updates.para                                   = Mae’n rhaid cyflwyno diweddariadau chwarterol o incwm a threuliau eich cleient, gan ddefnyddio meddalwedd sy’n cydweddu, erbyn y dyddiadau cau canlynol:
+agent.sign-up-confirmation.quarterly-updates.table.caption                          = Diweddariadau chwarterol erbyn y dyddiad cau
+agent.sign-up-confirmation.end-of-period-statement.heading                          = Anfon datganiad diwedd cyfnod
+agent.sign-up-confirmation.end-of-period-statement.para                             = Mae’n rhaid i chi neu’ch cleient gyflwyno datganiad diwedd cyfnod, gan ddefnyddio’ch meddalwedd, erbyn {0}.
+agent.sign-up-confirmation.final-declaration.para                                   = Mae’n rhaid i chi neu’ch cleient gyflwyno datganiad terfynol erbyn <DATE>. Mae’n rhaid iddo hefyd dalu’r dreth sydd arno.
+agent.sign-up-confirmation.warning.para                                             = Mae’n rhai i chi gyflwyno diweddariadau ar gyfer unrhyw chwarterau rydych wedi’u methu.
 
 
-agent.sign-up-confirmation.voluntary-next-year.self-assessment.heading              = Continue Self Assessment for this year ... but in Welsh
-agent.sign-up-confirmation.voluntary-next-year.self-assessment.para                 = Your client’s Self Assessment tax return must be submitted as normal on 31 January {0}. ... but in Welsh
-agent.sign-up-confirmation.voluntary-next-year.final-declaration.heading            = Submit a final declaration and pay tax ... but in Welsh
+agent.sign-up-confirmation.voluntary-next-year.self-assessment.heading              = Parhau â’r Hunanasesiad ar gyfer y flwyddyn hon
+agent.sign-up-confirmation.voluntary-next-year.self-assessment.para                 = Mae’n rhaid cyflwyno Ffurflen Dreth Hunanasesiad eich cleient, yn ôl yr arfer, erbyn 31 Ionawr  {0}.
+agent.sign-up-confirmation.voluntary-next-year.final-declaration.heading            = Cyflwyno datganiad terfynol a thalu treth
 agent.sign-up-confirmation.voluntary-current-year.final-declaration.heading         = Submit a final declaration and pay your tax ... but in Welsh
-agent.sign-up-confirmation.mandated-notification-banner.para                        = Your client may be penalised if deadlines are missed for their: ... but in Welsh
-agent.sign-up-confirmation.manadated.notification-banner.bullet1                    = quarterly updates ... but in Welsh
-agent.sign-up-confirmation.manadated.notification-banner.bullet2                    = end of period statement ... but in Welsh
-agent.sign-up-confirmation.manadated.notification-banner.bullet3                    = final declaration ... but in Welsh
-agent.sign-up-confirmation.manadated.notification-banner.bullet4                    = tax payment ... but in Welsh
+agent.sign-up-confirmation.mandated-notification-banner.para                        = Mae’n bosibl y codir cosb ar eich cleient os bydd yn methu’r dyddiadau cau ar gyfer y canlynol:
+agent.sign-up-confirmation.manadated.notification-banner.bullet1                    = diweddariadau chwarterol
+agent.sign-up-confirmation.manadated.notification-banner.bullet2                    = datganiad diwedd cyfnod
+agent.sign-up-confirmation.manadated.notification-banner.bullet3                    = datganiad terfynol
+agent.sign-up-confirmation.manadated.notification-banner.bullet4                    = taliad treth
 
 
 ## Sign Up Confirmation page ##
