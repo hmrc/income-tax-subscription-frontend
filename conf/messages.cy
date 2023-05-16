@@ -322,7 +322,7 @@ sign-up-complete.what-now.submit-annual                         = Cyflwynwch eic
 agent.sign-up-confirmation.heading                                                  = Cleient wedi’i gofrestru’n llwyddiannus
 agent.sign-up-confirmation.heading.panel.current                                    = wedi llwyddo i gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, erbyn y flwyddyn dreth bresennol ({0})
 agent.sign-up-confirmation.heading.panel.next                                       = wedi llwyddo i gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, erbyn y flwyddyn dreth nesaf  ({0})
-agent.sign-up-confirmation.what-you-will-have-to-do.heading                         = What you will have to do ... but in Welsh
+agent.sign-up-confirmation.what-you-will-have-to-do.heading                         = Yr hyn y mae’n rhaid i chi ei wneud
 agent.sign-up-confirmation.quarterly-updates.heading                                = Anfon diweddariadau chwarterol:
 agent.sign-up-confirmation.quarterly-updates.para                                   = Mae’n rhaid cyflwyno diweddariadau chwarterol o incwm a threuliau eich cleient, gan ddefnyddio meddalwedd sy’n cydweddu, erbyn y dyddiadau cau canlynol:
 agent.sign-up-confirmation.quarterly-updates.table.caption                          = Diweddariadau chwarterol erbyn y dyddiad cau
@@ -335,7 +335,7 @@ agent.sign-up-confirmation.warning.para                                         
 agent.sign-up-confirmation.voluntary-next-year.self-assessment.heading              = Parhau â’r Hunanasesiad ar gyfer y flwyddyn hon
 agent.sign-up-confirmation.voluntary-next-year.self-assessment.para                 = Mae’n rhaid cyflwyno Ffurflen Dreth Hunanasesiad eich cleient, yn ôl yr arfer, erbyn 31 Ionawr  {0}.
 agent.sign-up-confirmation.voluntary-next-year.final-declaration.heading            = Cyflwyno datganiad terfynol a thalu treth
-agent.sign-up-confirmation.voluntary-current-year.final-declaration.heading         = Submit a final declaration and pay your tax ... but in Welsh
+agent.sign-up-confirmation.voluntary-current-year.final-declaration.heading         = Cyflwyno datganiad terfynol a thalu’ch treth
 agent.sign-up-confirmation.mandated-notification-banner.para                        = Mae’n bosibl y codir cosb ar eich cleient os bydd yn methu’r dyddiadau cau ar gyfer y canlynol:
 agent.sign-up-confirmation.manadated.notification-banner.bullet1                    = diweddariadau chwarterol
 agent.sign-up-confirmation.manadated.notification-banner.bullet2                    = datganiad diwedd cyfnod

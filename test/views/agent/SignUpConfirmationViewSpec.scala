@@ -426,7 +426,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
   }
 
   private object SignUpConfirmationMessages {
-    val whatToDoHeading                         = "What you will have to do"
+    val whatToDoHeading                         = "What you must do"
     val panelHeading                            = "Client sign up complete"
     val panelUserDetails                        = s"$testName | $testNino"
     val panelDescriptionThis                    = s"is now signed up for Making Tax Digital for Income Tax for the current tax year (${startDate.day} April 2010 to ${endDate.day} April 2011)"
