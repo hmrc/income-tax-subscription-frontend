@@ -34,7 +34,7 @@ class NotEligibleForIncomeTaxControllerISpec extends ComponentSpecBase {
       Then("Should return a OK with the cannot use service yet page")
       res must have(
         httpStatus(OK),
-        pageTitle(messages("You cannot take part in this pilot yet") + serviceNameGovUk)
+        pageTitle(messages("You cannot take part yet") + serviceNameGovUk)
       )
     }
   }

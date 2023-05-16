@@ -41,7 +41,7 @@ class WhatYouNeedToDoSpec extends ViewSpec {
 
   object WhatYouNeedToDoMessages {
     val heading: String = "What you need to do"
-    val paraOne: String = "By taking part in this pilot you agree to:"
+    val paraOne: String = "By taking part you agree to:"
 
     object NotificationBanner {
       val heading: String = "Important"
@@ -62,7 +62,7 @@ class WhatYouNeedToDoSpec extends ViewSpec {
   object NextYearOnlyWhatYouNeedToDoMessages {
     val heading: String = "What you need to do"
     val paraOne: String = s"You can sign up to use Making Tax Digital for Income Tax from 6 April ${AccountingPeriodUtil.getCurrentTaxEndYear}."
-    val paraTwo: String = "By taking part in this pilot you agree to:"
+    val paraTwo: String = "By taking part you agree to:"
 
     object NotificationBanner {
       val heading: String = "Important"
