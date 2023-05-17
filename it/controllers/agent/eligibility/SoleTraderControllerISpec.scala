@@ -31,9 +31,9 @@ class SoleTraderControllerISpec extends ComponentSpecBase {
   object SoleTraderPageMessages {
     val back: String = "Back"
 
-    def title(date: String) = s"Did your client’s sole trader business start trading on or after $date?"
+    def heading(date: String) = s"Did your client’s business start trading on or after $date?"
 
-    def heading(date: String) = s"Did your client’s sole trader business start trading on or after $date?"
+    val caption: String = "This section is Eligibility questions"
 
     def invalidError(date: String) = s"Select yes if your client is a sole trader that began trading on or after $date?"
 
@@ -51,7 +51,7 @@ class SoleTraderControllerISpec extends ComponentSpecBase {
 
     "have a view with the correct title" in new GetSetup {
       val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
-       doc.title mustBe s"${SoleTraderPageMessages.heading(date)}" + serviceNameGovUk
+      doc.title mustBe s"${SoleTraderPageMessages.heading(date)}" + serviceNameGovUk
     }
 
     "have a view with a back link" in new GetSetup {
@@ -60,8 +60,10 @@ class SoleTraderControllerISpec extends ComponentSpecBase {
       backLink.text mustBe SoleTraderPageMessages.back
     }
 
-    "have a view with the correct heading" in new GetSetup {
-      pageContent.getH1Element.text mustBe s"${SoleTraderPageMessages.heading(date)}"
+    "have a view with the correct heading and caption" in new GetSetup {
+      val header: Element = pageContent.selectHead(".hmrc-page-heading")
+      header.selectHead("h1.govuk-heading-l").text mustBe SoleTraderPageMessages.heading(date)
+      header.selectHead("p.hmrc-caption.govuk-caption-l").text mustBe SoleTraderPageMessages.caption
     }
 
     "have a form" in new GetSetup {
@@ -78,12 +80,12 @@ class SoleTraderControllerISpec extends ComponentSpecBase {
 
     "have a fieldset containing a yes and no radiobutton" in new GetSetup {
 
-      val form: Element = doc.firstOf("form")
-      val yesRadio: Element = form.selectNth(".govuk-radios__item", 1).firstOf("input")
-      val yesLabel: Element = form.selectNth(".govuk-radios__item", 1).firstOf("label")
+      val form: Element = doc.selectHead("form")
+      val yesRadio: Element = form.selectNth(".govuk-radios__item", 1).selectHead("input")
+      val yesLabel: Element = form.selectNth(".govuk-radios__item", 1).selectHead("label")
 
-      val noRadio: Element = form.selectNth(".govuk-radios__item", 2).firstOf("input")
-      val noLabel: Element = form.selectNth(".govuk-radios__item", 2).firstOf("label")
+      val noRadio: Element = form.selectNth(".govuk-radios__item", 2).selectHead("input")
+      val noLabel: Element = form.selectNth(".govuk-radios__item", 2).selectHead("label")
 
       yesRadio.attr("type") mustBe "radio"
       yesRadio.attr("value") mustBe YesNoMapping.option_yes
@@ -133,8 +135,8 @@ class SoleTraderControllerISpec extends ComponentSpecBase {
 
         val pageContent: Element = Jsoup.parse(response.body).mainContent
 
-        pageContent.firstOf("p[class=govuk-error-message]").text mustBe s"Error: ${SoleTraderPageMessages.invalidError(date)}"
-        pageContent.firstOf(s"a[href=#${SoleTraderForm.fieldName}]").text mustBe s"${SoleTraderPageMessages.invalidError(date)}"
+        pageContent.selectHead("p[class=govuk-error-message]").text mustBe s"Error: ${SoleTraderPageMessages.invalidError(date)}"
+        pageContent.selectHead(s"a[href=#${SoleTraderForm.fieldName}]").text mustBe s"${SoleTraderPageMessages.invalidError(date)}"
       }
 
     }

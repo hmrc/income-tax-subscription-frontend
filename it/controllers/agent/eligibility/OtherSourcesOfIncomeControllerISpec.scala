@@ -24,8 +24,8 @@ class OtherSourcesOfIncomeControllerISpec extends ComponentSpecBase {
   object OtherSourcesOfIncomeMessages {
     val back: String = "Back"
 
-    val title: String = "Aside from self employment or letting property, does your client have any other sources of income?"
-    val heading: String = "Aside from self employment or letting property, does your client have any other sources of income?"
+    val heading: String = "Aside from self employment or letting property, does your client have any other income sources?"
+    val caption: String = "This section is Eligibility questions"
     val includePoint1: String = "PAYE as an employee"
     val includePoint2: String = "UK pensions or annuities"
     val includePoint3: String = "investments from outside the UK"
@@ -51,7 +51,7 @@ class OtherSourcesOfIncomeControllerISpec extends ComponentSpecBase {
 
     "have a view with the correct title" in new GetSetup {
       val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
-      doc.title mustBe OtherSourcesOfIncomeMessages.title + serviceNameGovUk
+      doc.title mustBe OtherSourcesOfIncomeMessages.heading + serviceNameGovUk
     }
 
     "have a view with a back link" in new GetSetup {
@@ -60,8 +60,10 @@ class OtherSourcesOfIncomeControllerISpec extends ComponentSpecBase {
       backLink.text mustBe OtherSourcesOfIncomeMessages.back
     }
 
-    "have a view with the correct heading" in new GetSetup {
-      pageContent.getH1Element.text mustBe OtherSourcesOfIncomeMessages.heading
+    "have a view with the correct heading and caption" in new GetSetup {
+      val header: Element = pageContent.selectHead(".hmrc-page-heading")
+      header.selectHead("h1.govuk-heading-l").text mustBe OtherSourcesOfIncomeMessages.heading
+      header.selectHead("p.hmrc-caption.govuk-caption-l").text mustBe OtherSourcesOfIncomeMessages.caption
     }
 
     "have a bullet list of included incomes" in new GetSetup {
@@ -73,7 +75,7 @@ class OtherSourcesOfIncomeControllerISpec extends ComponentSpecBase {
     }
 
     "have a paragraph stating what is not included" in new GetSetup {
-      pageContent.getNthParagraph(1).text mustBe OtherSourcesOfIncomeMessages.notInclude
+      pageContent.selectNth("p", 2).text mustBe OtherSourcesOfIncomeMessages.notInclude
     }
 
     "have a bullet list of not included incomes" in new GetSetup {
@@ -153,8 +155,8 @@ class OtherSourcesOfIncomeControllerISpec extends ComponentSpecBase {
 
       val pageContent: Element = Jsoup.parse(response.body).mainContent
 
-      pageContent.firstOf("p[class=govuk-error-message]").text mustBe s"Error: ${OtherSourcesOfIncomeMessages.invalidError}"
-      pageContent.firstOf(s"a[href=#${OtherSourcesOfIncomeForm.fieldName}]").text mustBe OtherSourcesOfIncomeMessages.invalidError
+      pageContent.selectHead("p[class=govuk-error-message]").text mustBe s"Error: ${OtherSourcesOfIncomeMessages.invalidError}"
+      pageContent.selectHead(s"a[href=#${OtherSourcesOfIncomeForm.fieldName}]").text mustBe OtherSourcesOfIncomeMessages.invalidError
 
       val form: Element = pageContent.getForm
       form.attr("method") mustBe "POST"

@@ -51,11 +51,8 @@ class ThrottleStartOfJourneyViewSpec extends ViewSpec {
     "have line 1" in {
       document1.select("main").select("p").first().text() mustBe line1
     }
-    "have line 2" in {
-      document1.select("main").select("p").next().first().text() mustBe line2
-    }
     "have a continue button that says try again" in {
-      document1.select("main").select("button").text() mustBe tryAgain
+      document1.mainContent.select("button").text() mustBe tryAgain
     }
     "must have a sign out link in the banner" in {
       val signOut = Option(document1.getElementById("logOutNavHref")).orElse(Option(document1.select(".hmrc-sign-out-nav__link")).filter(e => !e.isEmpty).map(e => e.get(0)))

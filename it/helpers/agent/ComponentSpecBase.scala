@@ -496,36 +496,43 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
   implicit class CustomSelectors(element: Element) {
 
-    def firstOf(selector: String): Element = {
+    def selectHead(selector: String): Element = {
       element.select(selector).asScala.headOption match {
         case Some(element) => element
         case None => fail(s"No elements returned for selector: $selector")
       }
     }
 
+    def selectSeq(selector: String): Seq[Element] = {
+      element.select(selector).asScala.toSeq
+    }
+
     def selectNth(selector: String, nth: Int): Element = {
-      firstOf(s"$selector:nth-of-type($nth)")
+      selectSeq(s"$selector").lift(nth - 1) match {
+        case Some(element) => element
+        case None => fail(s"Could not retrieve $selector number $nth")
+      }
     }
 
     def selectOptionally(selector: String): Option[Element] = {
       element.select(selector).asScala.headOption
     }
 
-    def content: Element = element.firstOf("article")
+    def content: Element = element.selectHead("article")
 
-    def mainContent: Element = element.firstOf("main")
+    def mainContent: Element = element.selectHead("main")
 
     def getParagraphs: Elements = element.getElementsByTag("p")
 
-    def getNthParagraph(nth: Int): Element = element.firstOf(s"p:nth-of-type($nth)")
+    def getNthParagraph(nth: Int): Element = element.selectHead(s"p:nth-of-type($nth)")
 
-    def getNthUnorderedList(nth: Int): Element = element.firstOf(s"ul:nth-of-type($nth)")
+    def getNthUnorderedList(nth: Int): Element = element.selectHead(s"ul:nth-of-type($nth)")
 
-    def getNthListItem(nth: Int): Element = element.firstOf(s"li:nth-of-type($nth)")
+    def getNthListItem(nth: Int): Element = element.selectHead(s"li:nth-of-type($nth)")
 
     def getBulletPoints: Elements = element.getElementsByTag("li")
 
-    def getH1Element: Element = element.firstOf("h1")
+    def getH1Element: Element = element.selectHead("h1")
 
     def getH2Elements: Elements = element.getElementsByTag("h2")
 
@@ -535,19 +542,19 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
     def getErrorSummary: Elements = element.select("#error-summary-display")
 
-    def getSubmitButton: Element = element.firstOf("button[type=submit]")
+    def getSubmitButton: Element = element.selectHead("button[type=submit]")
 
     def getGovUkSubmitButton: Element = element.getElementsByClass("govuk-button").asScala.head
 
     def getHintText: String = element.select(s"""[class=form-hint]""").text()
 
-    def getForm: Element = element.firstOf("form")
+    def getForm: Element = element.selectHead("form")
 
-    def getFieldset: Element = element.firstOf("fieldset")
+    def getFieldset: Element = element.selectHead("fieldset")
 
-    def getBackLink: Element = element.firstOf(s"a[class=link-back]")
+    def getBackLink: Element = element.selectHead(s"a[class=link-back]")
 
-    def getGovukBackLink: Element = element.firstOf("a[class=govuk-back-link]")
+    def getGovukBackLink: Element = element.selectHead("a[class=govuk-back-link]")
 
     def getParagraphNth(index: Int = 0): String = {
       element.select("p").get(index).text()
@@ -557,24 +564,24 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
     def getSpan(id: String): Elements = element.select(s"""span[id=$id]""")
 
-    def getLink(id: String): Element = element.firstOf(s"""a[id=$id]""")
+    def getLink(id: String): Element = element.selectHead(s"""a[id=$id]""")
 
     def getTextFieldInput(id: String): Elements = element.select(s"""input[id=$id]""")
 
     def getFieldErrorMessage(id: String): Elements = element.select(s"""a[id=$id-error-summary]""")
 
     //Check your answers selectors
-    def getSummaryList: Element = element.firstOf("dl.govuk-summary-list")
+    def getSummaryList: Element = element.selectHead("dl.govuk-summary-list")
 
     def getSummaryListRow(nth: Int): Element = {
-      element.firstOf(s"div.govuk-summary-list__row:nth-of-type($nth)")
+      element.selectHead(s"div.govuk-summary-list__row:nth-of-type($nth)")
     }
 
-    def getSummaryListKey: Element = element.firstOf("dt.govuk-summary-list__key")
+    def getSummaryListKey: Element = element.selectHead("dt.govuk-summary-list__key")
 
-    def getSummaryListValue: Element = element.firstOf("dd.govuk-summary-list__value")
+    def getSummaryListValue: Element = element.selectHead("dd.govuk-summary-list__value")
 
-    def getSummaryListActions: Element = element.firstOf("dd.govuk-summary-list__actions")
+    def getSummaryListActions: Element = element.selectHead("dd.govuk-summary-list__actions")
 
   }
 

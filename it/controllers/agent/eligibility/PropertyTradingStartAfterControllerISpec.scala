@@ -45,7 +45,9 @@ class PropertyTradingStartAfterControllerISpec extends ComponentSpecBase {
 
   object PropertyStartAfterMessage {
 
-    def title(date: String) = s"Did your client start a property business on or after $date?"
+    def title(date: String) = s"Did your client start letting property on or after $date?"
+
+    val caption = "This section is Eligibility questions"
 
     val hint = "This does not include letting:"
     val point1 = "UK properties"
@@ -72,20 +74,21 @@ class PropertyTradingStartAfterControllerISpec extends ComponentSpecBase {
     }
 
     "have a view with the correct title" in new GetSetup {
-
       val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
       doc.title mustBe s"${PropertyStartAfterMessage.title(date) + serviceNameGovUk}"
     }
 
-    "have a view with the correct heading" in new GetSetup {
-      pageContent.getH1Element.text mustBe PropertyStartAfterMessage.title(date)
+    "have a view with the correct heading and caption" in new GetSetup {
+      val header: Element = pageContent.selectHead(".hmrc-page-heading")
+      header.selectHead("h1.govuk-heading-l").text mustBe PropertyStartAfterMessage.title(date)
+      header.selectHead("p.hmrc-caption.govuk-caption-l").text mustBe PropertyStartAfterMessage.caption
     }
 
-    "have a view with the correct hint" in new GetSetup {
+    "have a view with the correct info" in new GetSetup {
       pageContent.getNthUnorderedList(1).getNthListItem(1).text mustBe PropertyStartAfterMessage.point1
       pageContent.getNthUnorderedList(1).getNthListItem(2).text mustBe PropertyStartAfterMessage.point2
       pageContent.getNthUnorderedList(1).getNthListItem(3).text mustBe PropertyStartAfterMessage.point3
-      pageContent.selectNth("p", 1).text mustBe PropertyStartAfterMessage.hint
+      pageContent.selectNth("p", 2).text mustBe PropertyStartAfterMessage.hint
       pageContent.getNthUnorderedList(2).getNthListItem(1).text mustBe PropertyStartAfterMessage.point4
       pageContent.getNthUnorderedList(2).getNthListItem(2).text mustBe PropertyStartAfterMessage.point5
     }
@@ -97,13 +100,13 @@ class PropertyTradingStartAfterControllerISpec extends ComponentSpecBase {
     }
 
     "have a form with the correct inputs and values" in new GetSetup {
-      val form: Element = doc.firstOf("form")
+      val form: Element = doc.selectHead("form")
 
-      val yesRadio: Element = form.selectNth(".govuk-radios__item", 1).firstOf("input")
-      val yesLabel: Element = form.selectNth(".govuk-radios__item", 1).firstOf("label")
+      val yesRadio: Element = form.selectNth(".govuk-radios__item", 1).selectHead("input")
+      val yesLabel: Element = form.selectNth(".govuk-radios__item", 1).selectHead("label")
 
-      val noRadio: Element = form.selectNth(".govuk-radios__item", 2).firstOf("input")
-      val noLabel: Element = form.selectNth(".govuk-radios__item", 2).firstOf("label")
+      val noRadio: Element = form.selectNth(".govuk-radios__item", 2).selectHead("input")
+      val noLabel: Element = form.selectNth(".govuk-radios__item", 2).selectHead("label")
 
       yesRadio.attr("type") mustBe "radio"
       yesRadio.attr("value") mustBe YesNoMapping.option_yes
@@ -163,8 +166,8 @@ class PropertyTradingStartAfterControllerISpec extends ComponentSpecBase {
 
       val pageContent: Element = Jsoup.parse(response.body).mainContent
 
-      pageContent.firstOf("p[class=govuk-error-message]").text mustBe s"Error: ${PropertyStartAfterMessage.error(date)}"
-      pageContent.firstOf(s"a[href=#${PropertyTradingStartDateForm.fieldName}]").text mustBe PropertyStartAfterMessage.error(date)
+      pageContent.selectHead("p[class=govuk-error-message]").text mustBe s"Error: ${PropertyStartAfterMessage.error(date)}"
+      pageContent.selectHead(s"a[href=#${PropertyTradingStartDateForm.fieldName}]").text mustBe PropertyStartAfterMessage.error(date)
     }
 
   }

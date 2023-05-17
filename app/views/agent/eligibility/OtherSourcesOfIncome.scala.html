@@ -30,7 +30,8 @@
     radioHelper: RadioHelper,
     continueButton: ContinueButton,
     form: FormWithCSRF,
-    govukDetails:GovukDetails
+    govukDetails:GovukDetails,
+    hmrcPageHeading: HmrcPageHeading
 )
 
 @(otherSourcesOfIncomeForm: Form[YesNo], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -52,19 +53,21 @@
             <li>@messages("agent.other-sources-of-income.not-include-point2")</li>
         </ul>
 
-
 }
 
 @mainTemplate(title = messages("agent.other-sources-of-income.title"), optForm = Some(otherSourcesOfIncomeForm), backLink = Some(backUrl)) {
 
-<h1 class="govuk-heading-l">@messages("agent.other-sources-of-income.title")</h1>
+    @hmrcPageHeading(PageHeading(
+        text = messages("agent.other-sources-of-income.title"),
+        section = Some(messages("agent.other-sources-of-income.caption")),
+        headingClasses = Some("govuk-heading-l"),
+        captionClasses = Some("govuk-caption-l")
+    ))
 
-@govukDetails(Details(
-summary = Text(messages("agent.other-sources-of-income.include")),
-content =HtmlContent(inputContent)
-))
-
-
+    @govukDetails(Details(
+        summary = Text(messages("agent.other-sources-of-income.include")),
+        content =HtmlContent(inputContent)
+    ))
 
     @form(action = postAction) {
 
@@ -82,8 +85,9 @@ content =HtmlContent(inputContent)
                     value = Some(YesNoMapping.option_no)
                 )
             ),
-                inline = true
-            )
+            inline = true
+        )
+
         @continueButton()
 
     }

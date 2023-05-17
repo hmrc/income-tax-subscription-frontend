@@ -24,13 +24,14 @@
 @import views.html.templates.AgentMainTemplate
 
 @this(
-        mainTemplate: AgentMainTemplate,
-        form: FormWithCSRF,
-        radioHelper: RadioHelper,
-        continueButton: ContinueButton,
-        govukDetails:GovukDetails
+    mainTemplate: AgentMainTemplate,
+    form: FormWithCSRF,
+    radioHelper: RadioHelper,
+    continueButton: ContinueButton,
+    govukDetails:GovukDetails,
+    hmrcPageHeading: HmrcPageHeading
 )(
-        implicit appConfig: AppConfig
+    implicit appConfig: AppConfig
 )
 
 @(propertyTradingBeforeDateForm: Form[YesNo], postAction: Call, startDateLimit: String, backUrl: String)(implicit request: Request[_], messages: Messages)
@@ -52,17 +53,19 @@
 
 }
 
-
-
 @mainTemplate(title = messages("agent.property-trading-after.title", startDateLimit), optForm = Some(propertyTradingBeforeDateForm), backLink = Some(backUrl)) {
 
-    <h1 class="govuk-heading-l">@messages("agent.property-trading-after.heading", startDateLimit)</h1>
+    @hmrcPageHeading(PageHeading(
+        text = messages("agent.property-trading-after.heading", startDateLimit),
+        section = Some(messages("agent.property-trading-after.caption")),
+        headingClasses = Some("govuk-heading-l"),
+        captionClasses = Some("govuk-caption-l")
+    ))
 
-@govukDetails(Details(
-summary = Text(messages("agent.property-trading-after.line")),
-content =HtmlContent(inputContent)
-))
-
+    @govukDetails(Details(
+        summary = Text(messages("agent.property-trading-after.line")),
+        content =HtmlContent(inputContent)
+    ))
 
     @form(action = postAction) {
 

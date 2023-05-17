@@ -552,7 +552,6 @@ object MessageLookup {
     val title = "We are currently experiencing high levels of demand for this service - Use software to report your client’s Income Tax - GOV.UK"
     val heading = "We are currently experiencing high levels of demand for this service"
     val line1 = "You can not sign up your client to the Making Tax Digital for Income Tax service at the moment. If you would still like to access this service, try again shortly or sign out and come back later."
-    val line2 = ""
     val tryAgain = "Try again"
     val signOutText = "Sign out"
   }

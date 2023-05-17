@@ -16,8 +16,8 @@ class AccountingPeriodCheckControllerISpec extends ComponentSpecBase {
   object AccountingPeriodCheckMessages {
     val back: String = "Back"
 
-    val title: String = "Do your client’s business accounting periods all run from 6 April to 5 April?"
     val heading: String = "Do your client’s business accounting periods all run from 6 April to 5 April?"
+    val caption: String = "This section is Eligibility questions"
     val hint: String = "The tax year runs from 6 April to 5 April. The accounting period for your client’s self-employment or property needs to be the same if you would like to sign them up to this service."
     val invalidError: String = "Select yes if all of your client’s business accounting periods are from 6 April to 5 April"
 
@@ -44,7 +44,7 @@ class AccountingPeriodCheckControllerISpec extends ComponentSpecBase {
 
     "have a view with the correct title" in new GetSetup {
       val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
-      doc.title mustBe AccountingPeriodCheckMessages.title + serviceNameGovUk
+      doc.title mustBe AccountingPeriodCheckMessages.heading + serviceNameGovUk
     }
 
     "have a view with a back link" in new GetSetup {
@@ -53,12 +53,14 @@ class AccountingPeriodCheckControllerISpec extends ComponentSpecBase {
       backLink.text mustBe AccountingPeriodCheckMessages.back
     }
 
-    "have a view with the correct heading" in new GetSetup {
-      pageMainContent.getH1Element.text mustBe AccountingPeriodCheckMessages.heading
+    "have a view with the correct heading and caption" in new GetSetup {
+      val header: Element = pageMainContent.selectHead(".hmrc-page-heading")
+      header.selectHead("h1.govuk-heading-l").text mustBe AccountingPeriodCheckMessages.heading
+      header.selectHead("p.hmrc-caption.govuk-caption-l").text mustBe AccountingPeriodCheckMessages.caption
     }
 
     "has a hint paragraph to explain what is accounting period check" in new GetSetup {
-      pageMainContent.selectNth("p", 1).text mustBe AccountingPeriodCheckMessages.hint
+      pageMainContent.selectNth("p", 2).text mustBe AccountingPeriodCheckMessages.hint
     }
 
     "have a form" which {
@@ -138,7 +140,7 @@ class AccountingPeriodCheckControllerISpec extends ComponentSpecBase {
       val pageContent: Element = Jsoup.parse(response.body).mainContent
 
       pageContent.select(".govuk-error-message").text mustBe s"Error: ${AccountingPeriodCheckMessages.invalidError}"
-      pageContent.firstOf(s"a[href=#${AccountingPeriodCheckForm.accountingPeriodCheck}]").text mustBe AccountingPeriodCheckMessages.invalidError
+      pageContent.selectHead(s"a[href=#${AccountingPeriodCheckForm.accountingPeriodCheck}]").text mustBe AccountingPeriodCheckMessages.invalidError
 
       val form: Element = pageContent.getForm
       form.attr("method") mustBe "POST"

@@ -28,13 +28,20 @@
     mainTemplate: AgentMainTemplate,
     form: FormWithCSRF,
     radioHelper: RadioHelper,
-    continueButton: ContinueButton
+    continueButton: ContinueButton,
+    hmrcPageHeading: HmrcPageHeading
 )
 
 @(soleTraderForm: Form[YesNo], postAction: Call, startDateLimit: String, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
 @mainTemplate(title = messages("agent.eligibility.sole-trader.heading", startDateLimit), optForm = Some(soleTraderForm), backLink = Some(backUrl)) {
 
-    <h1 class="govuk-heading-l">@messages("agent.eligibility.sole-trader.heading", startDateLimit)</h1>
+    @hmrcPageHeading(PageHeading(
+        text = messages("agent.eligibility.sole-trader.heading", startDateLimit),
+        section = Some(messages("agent.eligibility.sole-trader.caption")),
+        headingClasses = Some("govuk-heading-l"),
+        captionClasses = Some("govuk-caption-l")
+    ))
 
     @form(action = postAction) {
 

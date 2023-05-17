@@ -77,7 +77,7 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase  {
     }
 
     "have a view with a link" in new Setup {
-      doc.mainContent.firstOf("a").attr("href") mustBe "https://www.gov.uk/guidance/client-authorisation-an-overview"
+      doc.mainContent.selectHead("a").attr("href") mustBe "https://www.gov.uk/guidance/client-authorisation-an-overview"
     }
 
     "return SEE_OTHER when selecting clicking sign up another client" in new Setup {
