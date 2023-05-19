@@ -575,7 +575,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val section2GettingPreparedHeading = "Getting prepared"
     val section2GettingPreparedParagraph: String =
       s"You need to get compatible software before you start using Making Tax Digital for Income Tax on April 6 ${AccountingPeriodUtil.getCurrentTaxEndYear}."
-    val section2GettingPreparedLink = "Find software(Opens in a new tab)"
+    val section2GettingPreparedLink = "Find software (opens in new tab)"
 
     val printThisPage = "Print this page"
   }
