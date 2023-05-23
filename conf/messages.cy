@@ -41,10 +41,6 @@ base.print-this-page                                            = Print this pag
 base.warning                                                    = Rhybudd
 base.accept-and-continue                                        = Derbyn ac yn eich blaen
 
-## Language switching
-language-selector.change-to-language                            = Change the language to English
-language-selector.nav-label                                     = Cyfnewidydd iaith
-
 ## Client details CYA
 check-your-details.change.first-name                            = Newid enw cyntaf
 check-your-details.change.last-name                             = Newid enw olaf
@@ -328,7 +324,7 @@ agent.sign-up-confirmation.quarterly-updates.para                               
 agent.sign-up-confirmation.quarterly-updates.table.caption                          = Diweddariadau chwarterol erbyn y dyddiad cau
 agent.sign-up-confirmation.end-of-period-statement.heading                          = Anfon datganiad diwedd cyfnod
 agent.sign-up-confirmation.end-of-period-statement.para                             = Mae’n rhaid i chi neu’ch cleient gyflwyno datganiad diwedd cyfnod, gan ddefnyddio’ch meddalwedd, erbyn {0}.
-agent.sign-up-confirmation.final-declaration.para                                   = Mae’n rhaid i chi neu’ch cleient gyflwyno datganiad terfynol erbyn <DATE>. Mae’n rhaid iddo hefyd dalu’r dreth sydd arno.
+agent.sign-up-confirmation.final-declaration.para                                   = Mae’n rhaid i chi neu’ch cleient gyflwyno datganiad terfynol erbyn {0}. Mae’n rhaid iddo hefyd dalu’r dreth sydd arno.
 agent.sign-up-confirmation.warning.para                                             = Mae’n rhai i chi gyflwyno diweddariadau ar gyfer unrhyw chwarterau rydych wedi’u methu.
 
 
@@ -383,7 +379,7 @@ sign-up-confirmation.section2.find-software.link                   = Find softwa
 
 sign-up-confirmation.section2.getting-prepared.heading             = Getting prepared
 sign-up-confirmation.section2.getting-prepared.para-1              = You need to get compatible software before you start using Making Tax Digital for Income Tax on April 6 {0}.
-sign-up-confirmation.section2.getting-prepared.link                = Find software(Opens in a new tab)
+sign-up-confirmation.section2.getting-prepared.link                = Find software
 
 
 

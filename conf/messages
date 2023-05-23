@@ -41,10 +41,6 @@ base.print-this-page                                            = Print this pag
 base.warning                                                    = Warning
 base.accept-and-continue                                        = Accept and continue
 
-## Language switching
-language-selector.change-to-language                            = Newid yr iaith ir Gymraeg
-language-selector.nav-label                                     = Language switcher
-
 ## Client details CYA
 check-your-details.change.first-name                            = Change first name
 check-your-details.change.last-name                             = Change last name
@@ -385,7 +381,7 @@ sign-up-confirmation.section2.find-software.link                   = Find softwa
 
 sign-up-confirmation.section2.getting-prepared.heading             = Getting prepared
 sign-up-confirmation.section2.getting-prepared.para-1              = You need to get compatible software before you start using Making Tax Digital for Income Tax on April 6 {0}.
-sign-up-confirmation.section2.getting-prepared.link                = Find software(Opens in a new tab)
+sign-up-confirmation.section2.getting-prepared.link                = Find software
 
 
 ## Errors ##

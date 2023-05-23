@@ -21,6 +21,8 @@
 @import views.html.templates.PrincipalMainTemplate
 @import uk.gov.hmrc.play.language.LanguageUtils
 @import utilities.AccountingPeriodUtil
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcNewTabLinkHelper
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 
 @this(
   principalMainTemplate: PrincipalMainTemplate,
@@ -30,7 +32,8 @@
   table: UpdateDeadlineTable,
   accountingPeriodHelper: AccountingPeriodHelper,
   accountingPeriodService: AccountingPeriodService,
-        govukNotificationBanner : GovukNotificationBanner,
+  govukNotificationBanner : GovukNotificationBanner,
+  hmrcNewTabLinkHelper: HmrcNewTabLinkHelper
 )
 
 @(mandatedCurrentYear: Boolean, taxYearSelectionIsNext: Boolean, individualUserNameMaybe: Option[String], individualUserNino: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -70,9 +73,12 @@
   @getPrepared = {
     <div class="row govuk-!-margin-bottom-2">
       <div class="boxout col">
-      <h3 class="govuk-heading-m">2. @messages("sign-up-confirmation.section2.getting-prepared.heading")</h3>
-      <p class="govuk-body">@messages("sign-up-confirmation.section2.getting-prepared.para-1", (AccountingPeriodUtil.getNextTaxEndYear -1).toString)</p>
-      <a class="govuk-link" href="@{appConfig.softwareUrl}"> @messages("sign-up-confirmation.section2.getting-prepared.link")</a>
+        <h3 class="govuk-heading-m">2. @messages("sign-up-confirmation.section2.getting-prepared.heading")</h3>
+        <p class="govuk-body">@messages("sign-up-confirmation.section2.getting-prepared.para-1", (AccountingPeriodUtil.getNextTaxEndYear -1).toString)</p>
+        @hmrcNewTabLinkHelper(NewTabLinkHelper(
+          messages("sign-up-confirmation.section2.getting-prepared.link"),
+          Some(appConfig.softwareUrl)
+        ))
       </div>
     </div>
   }
@@ -223,7 +229,10 @@
         @messages("sign-up-confirmation.section2.getting-prepared.para-1", AccountingPeriodUtil.getCurrentTaxEndYear.toString)
       </p>
       <p>
-        <a class="govuk-link" href="@{appConfig.softwareUrl}">@messages("sign-up-confirmation.section2.getting-prepared.link")</a>
+        @hmrcNewTabLinkHelper(NewTabLinkHelper(
+          messages("sign-up-confirmation.section2.getting-prepared.link"),
+          Some(appConfig.softwareUrl)
+        ))
       </p>
     </div>
   }
@@ -251,13 +260,13 @@
     <a href="javascript:window.print()" class="govuk-link govuk-link--no-underline print-link">@messages("base.print-this-page")</a>
   </div>
 
-  <h2 class="govuk-heading-l">@messages("sign-up-confirmation.section2.heading")</h2>
+  @if(!taxYearSelectionIsNext){
+    <h2 class="govuk-heading-l">@messages("sign-up-confirmation.section2.heading")</h2>
 
-  <div class="row govuk-!-margin-bottom-2">
-    @if(!taxYearSelectionIsNext){
-    @findSoftware
-    @checkOnlineServices
-    @gettingPrepared
+    <div class="row govuk-!-margin-bottom-2">
+      @findSoftware
+      @checkOnlineServices
+      @gettingPrepared
+    </div>
   }
-  </div>
 }
