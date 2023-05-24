@@ -55,24 +55,17 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
     }
 
     "have a body" which {
-      val paragraphs: Elements = document().select(".govuk-body").select("p")
-
-      "has paragraph 1" in {
-        paragraphs.get(0).text() mustBe WhatYearToSignUp.paragraph1
+      "has paragraph" in {
+        document().mainContent.selectHead("p").text mustBe WhatYearToSignUp.paragraph
 
       }
-
-      "has paragraph 2" in {
-        paragraphs.get(1).text() mustBe WhatYearToSignUp.paragraph2
-      }
-
-      "has paragraph 3" in {
-        paragraphs.get(2).text() mustBe WhatYearToSignUp.paragraph3
+      "has a warning text" in {
+        document().mainContent.selectHead(".govuk-warning-text").selectHead("strong").text mustBe WhatYearToSignUp.warningText
       }
     }
 
 
-    "has a caption for the table and it is visually hidden" in {
+    "has a caption for the table" in {
       document()
         .selectHead(".govuk-table")
         .selectHead(".govuk-table__caption").text()  mustBe WhatYearToSignUp.returnTableCaption
@@ -159,9 +152,8 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
         form.attr("action") mustBe testCall.url
       }
 
-      "has a medium size legend for radio options heading" in {
-        document().select(".govuk-fieldset__legend--m").text() mustBe WhatYearToSignUp.radioSectionHeading
-
+      "has a small size legend for radio options heading" in {
+        document().select(".govuk-fieldset__legend").text() mustBe WhatYearToSignUp.heading
       }
 
       "has a current tax year radio button" in {
@@ -213,21 +205,18 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
     Jsoup.parse(page(editMode = editMode, hasBackLink = hasBackLink, hasError).body)
 
   object WhatYearToSignUp {
-    val heading = "Which tax year do you want to start using software to file updates for?"
-    val returnTableCaption = "Example of Quarterly dates"
+    val heading = "Choose when you want to start using Making Tax Digital for Income Tax"
+    val returnTableCaption = "Submit quarterly updates by the deadline"
     val updatesHeader = "Quarterly update"
     val deadlineHeader = "Deadline"
-    val paragraph1 = "You can start sending income tax updates during the current tax year or the next tax year. It will not affect the amount of tax you will pay."
-    val paragraph2 = "There is no penalty if you start making updates mid-way through the current tax year but you will need to make updates for the quarters you’ve missed."
-    val paragraph3 = "You can file as many updates as you want but you must submit them by these deadlines:"
+    val paragraph = "You can start sending quarterly updates during the current tax year (6 April 2023 to 5 April 2024) or the next tax year (6 April 2024 to 5 April 2025)."
+    val warningText = "You won’t be penalised if you start sending updates mid-way through the tax year. However, you will need to make updates for the quarters you’ve missed."
 
     val currentYearOptionHint = s"Send a final declaration by the 31 January ${(taxYearEnd + 1).toString}."
 
     val nextYearOptionHint: String =
       s"Send a final declaration by 31 January ${(taxYearEnd + 2).toString} and " +
         "complete a Self Assessment return for the current tax year as normal."
-
-    val radioSectionHeading: String = "Select tax year"
 
     def currentYearOption(fromYear: String, toYear: String): String = s"Current tax year (6 April $fromYear to 5 April $toYear)"
 

@@ -52,7 +52,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the What Year To Sign Up page")
         res must have(
           httpStatus(200),
-          pageTitle(messages("business.what-year-to-sign-up.title") + serviceNameGovUk),
+          pageTitle(messages("business.what-year-to-sign-up.heading") + serviceNameGovUk),
           radioButtonSet(id = "accountingYear", selectedRadioButton = Some(expectedText)),
           radioButtonSet(id = "accountingYear-2", selectedRadioButton = None)
         )
@@ -72,7 +72,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the What Year To Sign Up page")
         res must have(
           httpStatus(200),
-          pageTitle(messages("business.what-year-to-sign-up.title") + serviceNameGovUk),
+          pageTitle(messages("business.what-year-to-sign-up.heading") + serviceNameGovUk),
           radioButtonSet(id = "accountingYear", selectedRadioButton = None),
           radioButtonSet(id = "accountingYear-2", selectedRadioButton = None)
         )
