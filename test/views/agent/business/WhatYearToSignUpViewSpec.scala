@@ -81,7 +81,7 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
       document().getElementById("accountingYear-2-item-hint").text() mustBe WhatYearToSignUp.nextYearOptionHint
     }
 
-    "has a caption for the table and it is visually hidden" in {
+    "has a caption for the table" in {
       document()
         .selectHead(".govuk-table")
         .selectHead(".govuk-table__caption").text() mustBe WhatYearToSignUp.returnTableCaption
@@ -167,8 +167,8 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
         form.attr("action") mustBe testCall.url
       }
 
-      "has a medium size legend for radio options heading" in {
-        document().select(".govuk-fieldset__legend--m").text() mustBe WhatYearToSignUp.radioSectionHeading
+      "has a small size legend for radio options heading" in {
+        document().selectHead(".govuk-fieldset__legend").text() mustBe WhatYearToSignUp.radioSectionHeading
 
       }
 
@@ -215,7 +215,7 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
 
   private object WhatYearToSignUp {
     val heading = "Which tax year do you want your client to start filing income tax updates for?"
-    val returnTableCaption = "Example of Quarterly dates"
+    val returnTableCaption = "Submit quarterly updates by the deadline"
     val updatesHeader = "Quarterly update"
     val deadlineHeader = "Deadline"
     val paragraph1 = "You can start sending quarterly updates during the current tax year or the next tax year. It will not affect the amount your client pays."

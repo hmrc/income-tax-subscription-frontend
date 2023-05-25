@@ -22,7 +22,7 @@
   implicitDateFormatter: ImplicitDateFormatterImpl
 )
 
-@(updateAndDeadlineDates: List[UpdateDeadline])(implicit messages: Messages)
+@(updateAndDeadlineDates: List[UpdateDeadline], captionHidden: Boolean = true)(implicit messages: Messages)
 
 @import implicitDateFormatter.LongDate
 
@@ -38,6 +38,6 @@
     HeadCell(content = Text(messages("base.deadline-heading")))
   )),
   caption = Some(messages("business.what-year-to-sign-up.table-caption")),
-  captionClasses = "govuk-table__caption--m govuk-visually-hidden",
+  captionClasses = "govuk-table__caption--s" + (if(captionHidden) " govuk-visually-hidden" else ""),
   firstCellIsHeader = true
 ))
