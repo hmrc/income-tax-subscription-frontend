@@ -59,7 +59,8 @@ class TaskListController @Inject()(val taskListView: TaskList,
               viewModel = viewModel,
               accountingPeriodService = accountingPeriodService,
               individualUserNino = user.nino.get,
-              IncomeTaxSAUser.fullName
+              IncomeTaxSAUser.fullName,
+              utrNumber = user.utr.get
             ))
         }
       }

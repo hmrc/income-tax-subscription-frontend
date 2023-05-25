@@ -29,13 +29,15 @@ import play.twirl.api.Html
 import services.AccountingPeriodService
 import utilities.AccountingPeriodUtil.getCurrentTaxEndYear
 import utilities.ViewSpec
+import utilities.individual.TestConstants.testUtr
 import views.html.individual.incometax.business.TaskList
 
 class TaskListViewSpec extends ViewSpec {
 
-  val selectorForFirstBusiness = "ol > li:nth-of-type(1) > ul:nth-of-type(1)"
-  val selectorForFirstParaOfBusiness = "ol > li:nth-of-type(1)"
-  val selectorForFirstParaOfSignup = "ol > li:nth-of-type(3)"
+  val selectorForUserInformation = "ol > li:nth-of-type(1)"
+  val selectorForFirstBusiness = "ol > li:nth-of-type(2) > ul:nth-of-type(1)"
+  val selectorForFirstParaOfBusiness = "ol > li:nth-of-type(2)"
+  val selectorForFirstParaOfSignup = "ol > li:nth-of-type(4)"
 
   val taskListView: TaskList = app.injector.instanceOf[TaskList]
 
@@ -86,19 +88,21 @@ class TaskListViewSpec extends ViewSpec {
   )
 
 
-  def page(taskList: TaskListModel = customTaskListModel(), maybeIndividualUserFullName: Option[String]): Html = taskListView(
+  def page(taskList: TaskListModel = customTaskListModel(), maybeIndividualUserFullName: Option[String], utrNumber: String): Html = taskListView(
     postAction = postAction,
     viewModel = taskList,
     accountingPeriodService = accountingPeriodService,
     individualUserNino = "individualUserNino",
-    maybeIndividualUserFullName = maybeIndividualUserFullName
+    maybeIndividualUserFullName = maybeIndividualUserFullName,
+    utrNumber = utrNumber
   )(request, implicitly, appConfig)
 
 
   def document(
                 taskList: TaskListModel = customTaskListModel(),
-                maybeIndividualUserFullName: Option[String] = Some("individualUserFullName")
-              ): Document = Jsoup.parse(page(taskList, maybeIndividualUserFullName).body)
+                maybeIndividualUserFullName: Option[String] = Some("individualUserFullName"),
+                utrNumber: String = testUtr
+              ): Document = Jsoup.parse(page(taskList, maybeIndividualUserFullName, utrNumber).body)
 
   "business task list view" must {
     "have a title" in {
@@ -109,25 +113,12 @@ class TaskListViewSpec extends ViewSpec {
       document().select("h1").text mustBe heading
     }
 
-    "have user information" which {
-      "includes a heading" in {
-        document().mainContent.selectNth("h2",1).text mustBe userInfoHeading
-      }
-
-      "includes a user nino" in {
-        document(maybeIndividualUserFullName = None).mainContent.selectNth("p", 1).text mustBe userInfoPartialContent
-      }
-
-      "includes a user name and user nino" in {
-        document().mainContent.selectNth("p", 1).text mustBe userInfoContent
-      }
-    }
-
     "have a contents list" in {
       val contentList = document().select("ol").select("h2")
       contentList.text() must include(item1)
       contentList.text() must include(item2)
       contentList.text() must include(item3)
+      contentList.text() must include(item4)
     }
 
     "display the save and come back later button" in {
@@ -145,9 +136,22 @@ class TaskListViewSpec extends ViewSpec {
           document().mainContent.getElementById("taskListCompletedSummary").text mustBe contentSummary(0, 2)
         }
 
+        "in the information section: display heading" in {
+          document().mainContent.selectHead(selectorForUserInformation).selectHead("h2").text mustBe item1
+        }
+
+
+        "in the information section: display a user name" in {
+          document(maybeIndividualUserFullName = None).mainContent.selectHead(selectorForUserInformation).selectHead(".govuk-summary-list").text contains userInfoPartialContent
+        }
+
+        "in the information section: display a user name, user nino and user utr number" in {
+          document().mainContent.selectHead(selectorForUserInformation).selectHead(".govuk-summary-list").text contains userInfoContent
+        }
+
         "in the business section: display the information para" in {
           val infoPara = document().mainContent.selectHead(selectorForFirstParaOfBusiness).selectHead("p")
-          infoPara.text mustBe item2Para
+          infoPara.text mustBe item3Para
         }
 
         "in the select tax year section: display the select tax year link with status incomplete" when {
@@ -190,10 +194,16 @@ class TaskListViewSpec extends ViewSpec {
             contentSummary(numberComplete = 0, numberTotal = 5)
         }
 
+        "in the user information section: display heading, name, nino and utr" in {
+          val userInfo = document().mainContent.selectHead(selectorForUserInformation)
+          userInfo.selectHead("h2").text mustBe item1
+          userInfo.selectHead(".govuk-summary-list").text contains userInfoContent
+        }
+
         "in the select tax year section: display the select tax year link with status in progress" when {
           "the user has selected the tax year but not confirmed the answer in tax year CYA page" in {
             val selectTaxYearSection = document(partialTaskListComplete).mainContent
-              .selectHead("ol > li:nth-of-type(2)")
+              .selectHead("ol > li:nth-of-type(3)")
               .selectHead("ul.app-task-list__items")
             val selectTaxYearLink = selectTaxYearSection.selectNth("span", 1).selectHead("a")
             selectTaxYearLink.text mustBe selectTaxYear
@@ -300,10 +310,16 @@ class TaskListViewSpec extends ViewSpec {
           document(completedTaskListComplete).mainContent.getElementById("taskListCompletedSummary").text mustBe contentSummary(4, 4)
         }
 
+        "in the user information section: display heading, name, nino and utr" in {
+          val userInfo = document().mainContent.selectHead(selectorForUserInformation)
+          userInfo.selectHead("h2").text mustBe item1
+          userInfo.selectHead(".govuk-summary-list").text contains userInfoContent
+        }
+
         "display a complete tax year with an edit link to the Tax Year CYA" when {
           "the user has selected the tax year and confirmed the answer in tax year CYA page" in {
             val selectTaxYearSection = document(completedTaskListComplete).mainContent
-              .selectHead("ol > li:nth-of-type(2)")
+              .selectHead("ol > li:nth-of-type(3)")
               .selectHead("ul.app-task-list__items")
             val selectTaxYearLink = selectTaxYearSection.selectNth("span", 1).selectHead("a")
             selectTaxYearLink.text mustBe SelectedTaxYear.next(accountingPeriodService.currentTaxYear, accountingPeriodService.currentTaxYear + 1)
