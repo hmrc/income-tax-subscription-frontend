@@ -292,21 +292,22 @@ object MessageLookup {
     val agentHeading = "Your client’s details"
 
     val userInfoHeading = "Your information"
-    val userInfoContent = "National Insurance number: individualUserNino Full name: individualUserFullName"
-    val userInfoPartialContent = "National Insurance number: individualUserNino"
+    val userInfoContent = "Full name: individualUserFullName National Insurance number: individualUserNino Unique Taxpayer Reference (UTR): individualUTRNumber"
+    val userInfoPartialContent = "National Insurance number: individualUserNino Unique Taxpayer Reference (UTR): individualUTRNumber"
 
     val subHeadingComplete = "Application complete"
     val subHeadingIncomplete = "Application incomplete"
 
     def contentSummary(numberComplete: Int, numberTotal: Int) = s"You have completed $numberComplete of $numberTotal sections."
 
-    val item1 = "1. Tell us about your income"
-    val item2 = "2. Choose a tax year to sign up"
-    val item2Para = "You must add all your sole trader businesses, up to a maximum of 50. You do not need to add your PAYE earnings. But you must add any property businesses you have, which is limited to one UK property business and one overseas property business."
+    val item1 = "1. Information about you"
+    val item2 = "2. Tell us about your income"
+    val item3 = "3. Choose a tax year to sign up"
+    val item3Para = "You must add all your sole trader businesses, up to a maximum of 50. You do not need to add your PAYE earnings. But you must add any property businesses you have, which is limited to one UK property business and one overseas property business."
     val agentItem2 = "2. Choose a tax year to sign up"
     val agentItem1 = "1. Tell us about your client’s income"
     val agentItem2Para = "You must add all your client’s sole trader businesses, up to a maximum of 50. You do not need to add their PAYE earnings. But you must add any property businesses they have, which is limited to one UK property business and one overseas property business."
-    val item3 = "3. Sign up"
+    val item4 = "4. Sign up"
     val signUp = "3. Sign up"
     val signUpIncompleteText = "You need to complete all sections above before you can confirm and sign up."
     val agentSignUpIncompleteText = "You need to complete all sections above before you can confirm and sign up your client."

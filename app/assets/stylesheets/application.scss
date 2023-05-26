@@ -79,3 +79,25 @@ body:not(.js-enabled) {
     padding-left: govuk-spacing(6);
   }
 }
+
+.app-task-list__post-list {
+    padding-left: 0;
+    margin-bottom: govuk-spacing(9);
+    list-style: none;
+
+    @include govuk-media-query($from: tablet) {
+      padding-left: govuk-spacing(6);
+    }
+}
+
+.app-task-list__post-list > a{
+  font-size: 1rem;
+
+  @include govuk-media-query($from: tablet) {
+    font-size: 1.1875rem;
+  }
+}
+
+.app-task-list__post-list-padding {
+   padding-right: govuk-spacing(6)
+}

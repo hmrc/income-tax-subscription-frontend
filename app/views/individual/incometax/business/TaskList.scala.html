@@ -15,6 +15,7 @@
  *@
 
 @import config.AppConfig
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import models.common.TaskListModel
 @import models.common.business.{BusinessNameModel, BusinessTradeNameModel}
 @import services.AccountingPeriodService
@@ -27,30 +28,61 @@
 @this(
     mainTemplate: PrincipalMainTemplate,
     form: FormWithCSRF,
+    govukSummaryList : GovukSummaryList,
     continueButton: ContinueButton,
     saveAndContinueButton: ButtonHelper,
     govukTag : GovukTag,
     taskListHelper : TaskListHelper
 )
 
-@(postAction: Call, viewModel: TaskListModel, accountingPeriodService: AccountingPeriodService, individualUserNino: String,  maybeIndividualUserFullName: Option[String])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(postAction: Call, viewModel: TaskListModel, accountingPeriodService: AccountingPeriodService, individualUserNino: String,  maybeIndividualUserFullName: Option[String], utrNumber : String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @messagePrefix = @{"business.task-list"}
 
-@taskListHeading = {
-  <div class="client-details govuk-!-padding-right-4 govuk-!-padding-left-4 govuk-!-padding-bottom-2 govuk-!-padding-top-2 govuk-!-border-0">
-    <h2 class="govuk-heading-m govuk-!-margin-bottom-4">
-      @messages(s"${messagePrefix}.user-information.heading")
-    </h2>
-    <p class="govuk-body">
-      @messages(s"${messagePrefix}.user-information.nino") @individualUserNino
-      @maybeIndividualUserFullName.map { individualUserFullName =>
-        <br />
-        @messages(s"${messagePrefix}.user-information.name")
-        @individualUserFullName
-      }
-    </p>
+@userInformation = {
+  <div class="client-details app-task-list__post-list ">
+      @govukSummaryList(SummaryList(
+        rows = Seq(
+        maybeIndividualUserFullName.map { individualUserFullName =>
+          SummaryListRow(
+            key = Key(
+              content = Text(messages(s"${messagePrefix}.user-information.name")),
+              classes = "govuk-!-width-two-thirds"
+            ),
+            value = Value(
+              content = Text(individualUserFullName)
+            )
+          )},
+          Some(SummaryListRow(
+            key = Key(
+              content = Text(messages(s"${messagePrefix}.user-information.nino")),
+              classes = "govuk-!-width-two-thirds"
+            ),
+            value = Value(
+              content = Text(individualUserNino)
+            )
+          )),
+          Some(SummaryListRow(
+            key = Key(
+              content = Text(messages(s"${messagePrefix}.user-information.utr")),
+              classes = "govuk-!-width-two-thirds"
+            ),
+            value = Value(
+              content = Text(utrNumber)
+            )
+          ))
+        ).flatten,
+        classes = "govuk-summary-list--no-border govuk-!-padding-4"
+      ))
   </div>
+}
+
+@informationAboutYou = @{
+  TaskListSection(
+    h2Content = messages(s"${messagePrefix}.user-information.heading"),
+    sectionEnd = Some(userInformation),
+    taskListItems = Seq()
+  )
 }
 
 @taskListApplicationStatus = {
@@ -113,7 +145,7 @@
 }
 
 @addBusiness ={
-  <div class="app-task-list__items">
+  <div class="app-task-list__post-list">
     <a href="@controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url" id="add_business" class="govuk-link">
       @{messages(s"${messagePrefix}.content.section2.add")}
     </a>
@@ -236,10 +268,9 @@
    <h1 class="govuk-heading-xl">@messages(s"${messagePrefix}.title")</h1>
    <div class="govuk-form-group govuk-!-padding-top-7">
       @form(action = postAction){
-        @taskListHeading
         @taskListApplicationStatus
         <div class="govuk-!-padding-top-7">
-          @taskListHelper(Seq(businesses, selectTaxYear, signUp))
+          @taskListHelper(Seq(informationAboutYou, businesses, selectTaxYear, signUp))
         </div>
       }
    </div>

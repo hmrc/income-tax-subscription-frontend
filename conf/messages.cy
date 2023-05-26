@@ -902,14 +902,15 @@ agent.business.progress-saved.content.sign-in-link                    = mewngofn
 
 ## Task List
 business.task-list.title                                        = Cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-business.task-list.user-information.heading                     = Eich gwybodaeth
-business.task-list.user-information.nino                        = Rhif Yswiriant Gwladol:
-business.task-list.user-information.name                        = Enw llawn:
+business.task-list.user-information.heading                     = Gwybodaeth amdanoch chi
+business.task-list.user-information.nino                        = Rhif Yswiriant Gwladol
+business.task-list.user-information.name                        = Enw llawn
+business.task-list.user-information.utr                         = Cyfeirnod Unigryw y Trethdalwr (UTD)
 business.task-list.heading.incomplete                           = Cais heb ei gwblhau
 business.task-list.heading.complete                             = Cais wedi’i gwblhau
 business.task-list.content.summary                              = Rydych wedi llenwi {0} allan o {1} adran.
 business.task-list.content.section1                             = Dewiswch flwyddyn dreth i gofrestru
-business.task-list.content.section1.action                      = Dewiswch y flwyddyn dreth
+business.task-list.content.section1.action                      = Dewiswch flwyddyn dreth
 business.task-list.content.section1.current-tax-year            = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
 business.task-list.content.section1.next-tax-year               = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
 business.task-list.content.section2                             = Rhowch wybod i ni am eich incwm

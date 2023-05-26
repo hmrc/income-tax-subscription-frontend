@@ -124,7 +124,7 @@ class AgentTaskListViewSpec extends ViewSpec {
         val contentList = doc.select("ol").select("h2")
         contentList.text() must include(agentItem1)
         contentList.text() must include(agentItem2)
-        contentList.text() must include(item3)
+        contentList.text() must include(signUp)
       }
 
       "display the save and come back later button" in {
