@@ -812,11 +812,13 @@ agent.no-sa.line-1                                              = To use this se
 
 # Agent Task List
 agent.business.task-list.title                                        = Your client’s details
-agent.business.task-list.client                                       = Client:
 agent.business.task-list.heading.incomplete                           = Application incomplete
 agent.business.task-list.heading.complete                             = Application complete
-agent.business.task-list.accounting-period-confirm                    = Accounting period confirmed: 6 April to 5 April
 agent.business.task-list.content.summary                              = You have completed {0} of {1} sections.
+agent.business.task-list.client-information.heading                   = Your client’s information
+agent.business.task-list.client-information.name                      = Name
+agent.business.task-list.client-information.nino                      = National Insurance number
+agent.business.task-list.client-information.utr                       = Unique Taxpayer Reference (UTR)
 agent.business.task-list.content.section1                             = Choose a tax year to sign up
 agent.business.task-list.content.section1.action                      = Select tax year
 agent.business.task-list.content.section1.current-tax-year            = Current tax year (6 April {0} to 5 April {1})
@@ -906,7 +908,7 @@ agent.business.progress-saved.content.sign-in-link                    = Governme
 business.task-list.title                                        = Sign up for Making Tax Digital for Income Tax
 business.task-list.user-information.heading                     = Information about you
 business.task-list.user-information.nino                        = National Insurance number
-business.task-list.user-information.name                        = Full name
+business.task-list.user-information.name                        = Name
 business.task-list.user-information.utr                         = Unique Taxpayer Reference (UTR)
 business.task-list.heading.incomplete                           = Application incomplete
 business.task-list.heading.complete                             = Application complete
