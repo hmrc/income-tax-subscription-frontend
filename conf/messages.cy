@@ -649,10 +649,10 @@ agent.property.income.heading                                   = Faint oedd eic
 agent.property.income.line-1                                    = Dyma’r swm a wnaethoch cyn didynnu unrhyw dreuliau caniataol.
 
 ## Accounting Year page
-agent.business.what-year-to-sign-up.title                     = Ar gyfer pa flwyddyn dreth ydych am i’ch cleient ddechrau cyflwyno diweddariadau treth incwm?
-agent.business.what-year-to-sign-up.heading                   = Ar gyfer pa flwyddyn dreth ydych am i’ch cleient ddechrau cyflwyno diweddariadau treth incwm?
-agent.business.what-year-to-sign-up.line-1                    = Gallwch ddechrau anfon diweddariadau chwarterol yn ystod y flwyddyn dreth gyfredol neu’r flwyddyn dreth nesaf. Ni fydd yn effeithio ar faint yr ydych yn ei dalu.
-agent.business.what-year-to-sign-up.line-2                    = Does dim cosb os byddwch yn dechrau gwneud diweddariadau hanner ffordd drwy’r flwyddyn dreth gyfredol, ond bydd yn rhaid i chi wneud diweddariadau ar gyfer y chwarteri yr ydych wedi eu methu.
+agent.business.what-year-to-sign-up.title                     = Dewiswch pryd y bydd eich cleient yn dechrau defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+agent.business.what-year-to-sign-up.heading                   = Dewiswch pryd y bydd eich cleient yn dechrau defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+agent.business.what-year-to-sign-up.para                      = Gallwch chi, neu’ch cleient, ddechrau anfon diweddariadau chwarterol yn ystod y flwyddyn dreth gyfredol (6 Ebrill {0} i 5 Ebrill {1}) neu’r flwyddyn dreth nesaf (6 Ebrill {1} i 5 Ebrill {2}).
+agent.business.what-year-to-sign-up.warning-text              = Ni fydd eich cleient yn cael ei gosbi os caiff diweddariadau eu hanfon hanner ffordd drwy’r flwyddyn dreth. Fodd bynnag, bydd yn rhaid gwneud diweddariadau ar gyfer unrhyw chwarteri sydd wedi eu methu.
 agent.business.what-year-to-sign-up.line-3                    = Gallwch gyflwyno cymaint o ddiweddariadau ag y dymunwch, ond mae’n rhaid i chi eu cyflwyno erbyn y dyddiadau cau canlynol:
 agent.business.what-year-to-sign-up.radio-option-heading      = Dewiswch y flwyddyn dreth
 agent.business.what-year-to-sign-up.option-1                  = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})

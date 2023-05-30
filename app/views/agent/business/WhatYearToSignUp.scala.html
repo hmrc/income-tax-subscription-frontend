@@ -24,6 +24,7 @@
 @this(
     mainTemplate: AgentMainTemplate,
     radioHelper: RadioHelper,
+    govukWarningText: GovukWarningText,
     continueButton: ContinueButton,
     accountingPeriodService: AccountingPeriodService,
     table: ReturnDeadlineTable,
@@ -46,11 +47,23 @@
   @form(action = postAction) {
     <h1 class="govuk-heading-l">@messages("agent.business.what-year-to-sign-up.heading")</h1>
 
-    <p class="govuk-body">@messages("agent.business.what-year-to-sign-up.line-1")</p>
-    <p class="govuk-body">@messages("agent.business.what-year-to-sign-up.line-2")</p>
-    <p class="govuk-body">@messages("agent.business.what-year-to-sign-up.line-3")</p>
+    <p class="govuk-body">
+        @messages(
+            key = "agent.business.what-year-to-sign-up.para",
+            args = Seq(
+                (endYearOfCurrentTaxPeriod - 1).toString,
+                endYearOfCurrentTaxPeriod.toString,
+                (endYearOfCurrentTaxPeriod + 1).toString
+            ): _*
+        )
+    </p>
 
-    @quarterDayTb
+@govukWarningText(WarningText(
+content = Text(Messages("agent.business.what-year-to-sign-up.warning-text"))
+))
+
+
+@quarterDayTb
 
     @radioHelper(
       field = accountingYearForm(AccountingYearForm.accountingYear),

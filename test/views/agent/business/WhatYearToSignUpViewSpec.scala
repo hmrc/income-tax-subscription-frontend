@@ -64,12 +64,12 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
         paragraphs.get(0).text() mustBe WhatYearToSignUp.paragraph1
       }
 
-      "has paragraph 2" in {
-        paragraphs.get(1).text() mustBe WhatYearToSignUp.paragraph2
+      "has warning text" in {
+        document().selectHead(".govuk-warning-text").text() mustBe WhatYearToSignUp.warningText
       }
 
-      "has paragraph 3" in {
-        paragraphs.get(2).text() mustBe WhatYearToSignUp.paragraph3
+      "has paragraph 2" in {
+        document().selectHead(".govuk-table__caption").text() mustBe WhatYearToSignUp.paragraph2
       }
     }
 
@@ -214,13 +214,13 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
     Jsoup.parse(page(editMode = editMode, hasBackLink = hasBackLink, hasError).body)
 
   private object WhatYearToSignUp {
-    val heading = "Which tax year do you want your client to start filing income tax updates for?"
+    val heading = "Select when your client will start using Making Tax Digital for Income Tax"
     val returnTableCaption = "Submit quarterly updates by the deadline"
     val updatesHeader = "Quarterly update"
     val deadlineHeader = "Deadline"
-    val paragraph1 = "You can start sending quarterly updates during the current tax year or the next tax year. It will not affect the amount your client pays."
-    val paragraph2 = "There is no penalty if you start making updates for your client mid-way through the current tax year but you will need to make updates for the quarters you’ve missed."
-    val paragraph3 = "You can file as many updates as you want. You must submit them by these deadlines:"
+    val paragraph1 = "You or your client can start sending quarterly updates during the current tax year 6 April 2023 to 5 April 2024 or the next tax year 6 April 2024 to 5 April 2025."
+    val warningText = "! Your client won’t be penalised if updates are sent mid-way through the tax year. However, updates need to be made for any missed quarters."
+    val paragraph2 = "Submit quarterly updates by the deadline"
     val radioSectionHeading: String = "Select tax year"
     val currentYearOptionHint = s"You or your client will need to submit a final declaration by the 31 January ${(taxYearEnd + 1).toString}."
     val nextYearOptionHint: String =
