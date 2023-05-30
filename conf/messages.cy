@@ -811,11 +811,13 @@ agent.no-sa.line-1                                              = I ddefnyddio�
 
 # Agent Task List
 agent.business.task-list.title                                        = Manylion eich cleient
-agent.business.task-list.client                                       = Cleient:
 agent.business.task-list.heading.incomplete                           = Cais heb ei gwblhau
 agent.business.task-list.heading.complete                             = Cais wedi’i gwblhau
-agent.business.task-list.accounting-period-confirm                    = Cyfnod cyfrifyddu wedi'i gadarnhau: 6 Ebrill i 5 Ebrill
 agent.business.task-list.content.summary                              = Rydych wedi llenwi {0} allan o {1} adran.
+agent.business.task-list.client-information.heading                   = Gwybodaeth eich cleient
+agent.business.task-list.client-information.name                      = Enw
+agent.business.task-list.client-information.nino                      = Rhif Yswiriant Gwladol
+agent.business.task-list.client-information.utr                       = Cyfeirnod Unigryw y Trethdalwr (UTR)
 agent.business.task-list.content.section1                             = Dewiswch flwyddyn dreth i gofrestru
 agent.business.task-list.content.section1.action                      = Dewiswch y flwyddyn dreth
 agent.business.task-list.content.section1.current-tax-year            = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
@@ -904,8 +906,8 @@ agent.business.progress-saved.content.sign-in-link                    = mewngofn
 business.task-list.title                                        = Cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 business.task-list.user-information.heading                     = Gwybodaeth amdanoch chi
 business.task-list.user-information.nino                        = Rhif Yswiriant Gwladol
-business.task-list.user-information.name                        = Enw llawn
-business.task-list.user-information.utr                         = Cyfeirnod Unigryw y Trethdalwr (UTD)
+business.task-list.user-information.name                        = Enw
+business.task-list.user-information.utr                         = Cyfeirnod Unigryw y Trethdalwr (UTR)
 business.task-list.heading.incomplete                           = Cais heb ei gwblhau
 business.task-list.heading.complete                             = Cais wedi’i gwblhau
 business.task-list.content.summary                              = Rydych wedi llenwi {0} allan o {1} adran.

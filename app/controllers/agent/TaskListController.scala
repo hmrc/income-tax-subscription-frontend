@@ -74,7 +74,10 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
               ),
               clientNino = formatNino(user.clientNino.getOrElse(
                 throw new InternalServerException("[TaskListController][show] - could not retrieve client nino from session")
-              ))
+              )),
+              clientUtr = user.clientUtr.getOrElse(
+                throw new InternalServerException("[TaskListController][show] - could not retrieve client utr from session")
+              )
             ))
         }
       }
