@@ -61,7 +61,7 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
   }
 
   def mockTaskList(): Unit = {
-    when(taskList(any(), any(), any(), any())(any(), any(), any()))
+    when(taskList(any(), any(), any(), any(), any())(any(), any(), any()))
       .thenReturn(HtmlFormat.empty)
   }
 

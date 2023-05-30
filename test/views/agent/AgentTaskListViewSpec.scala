@@ -36,9 +36,9 @@ import scala.util.Random
 
 class AgentTaskListViewSpec extends ViewSpec {
 
-  val selectorForFirstBusiness = "ol > li:nth-of-type(1) > ul:nth-of-type(1)"
-  val selectorForFirstParaOfBusiness = "ol > li:nth-of-type(1)"
-  val selectorForFirstParaOfSignup = "ol > li:nth-of-type(3)"
+  val selectorForFirstBusiness = "ol > li:nth-of-type(2) > ul:nth-of-type(1)"
+  val selectorForFirstParaOfBusiness = "ol > li:nth-of-type(2)"
+  val selectorForFirstParaOfSignup = "ol > li:nth-of-type(4)"
 
   val taskListView: AgentTaskList = app.injector.instanceOf[AgentTaskList]
 
@@ -92,13 +92,15 @@ class AgentTaskListViewSpec extends ViewSpec {
   private val nameLengthCharacters = 10
   private val clientName = Random.alphanumeric.take(nameLengthCharacters).mkString
   private val clientNino = Random.alphanumeric.take(nameLengthCharacters).mkString
+  private val clientUtr = Random.alphanumeric.take(nameLengthCharacters).mkString
 
   def page(taskList: TaskListModel = customTaskListModel()): Html = {
     taskListView(
       postAction = postAction,
       viewModel = taskList,
       clientName = clientName,
-      clientNino = clientNino
+      clientNino = clientNino,
+      clientUtr = clientUtr
     )(request, implicitly, appConfig)
   }
 
@@ -112,19 +114,13 @@ class AgentTaskListViewSpec extends ViewSpec {
         doc.title mustBe agentTitle
       }
 
-      "have a heading" in {
-        doc.select("h1").text mustBe agentHeading
-      }
-
-      "have a client name and client nino" in {
-        doc.mainContent.getElementById("userNameNino").text mustBe s"Client: $clientName | $clientNino"
-      }
 
       "have a contents list" in {
         val contentList = doc.select("ol").select("h2")
         contentList.text() must include(agentItem1)
         contentList.text() must include(agentItem2)
-        contentList.text() must include(signUp)
+        contentList.text() must include(agentItem3)
+        contentList.text() must include(item4)
       }
 
       "display the save and come back later button" in {
@@ -141,10 +137,14 @@ class AgentTaskListViewSpec extends ViewSpec {
             doc.mainContent.getElementById("taskListCompletedSummary").text mustBe contentSummary(0, 2)
           }
 
+          "in the client information section: have a client name, nino and utr" in {
+            doc.mainContent.getElementsByClass("govuk-summary-list__key").text contains s"Client: $clientName | $clientNino |$clientUtr"
+          }
+
           "in the business section: display the information para" should {
             "display the sign up incomplete text" in {
               val infoPara = doc.mainContent.selectHead(selectorForFirstParaOfBusiness).selectHead("p")
-              infoPara.text mustBe agentItem2Para
+              infoPara.text mustBe agentItem3Para
             }
           }
 
@@ -187,6 +187,10 @@ class AgentTaskListViewSpec extends ViewSpec {
       "display the number of sections complete out of the total" in {
         doc.mainContent.getElementById("taskListCompletedSummary").text mustBe
           contentSummary(numberComplete = 0, numberTotal = 5)
+      }
+
+      "in the client information section: have a client name, nino and utr" in {
+        doc.mainContent.getElementsByClass("govuk-summary-list__key").text contains s"Client: $clientName | $clientNino |$clientUtr"
       }
 
       "in the select tax year section: display the select tax year link with status in progress" when {
@@ -298,6 +302,10 @@ class AgentTaskListViewSpec extends ViewSpec {
 
       "display the number of sections complete out of the total" in {
         doc.mainContent.getElementById("taskListCompletedSummary").text mustBe contentSummary(4, 4)
+      }
+
+      "in the client information section: have a client name, nino and utr" in {
+        doc.mainContent.getElementsByClass("govuk-summary-list__key").text contains s"Client: $clientName | $clientNino |$clientUtr"
       }
 
       "display a complete tax year with an edit link to the Tax Year CYA" when {
