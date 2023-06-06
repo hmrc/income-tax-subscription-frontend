@@ -22,13 +22,14 @@ import org.jsoup.Jsoup
 import play.api.data.{Form, FormError}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
+import utilities.UserMatchingSessionUtil.ClientDetails
 import utilities.ViewSpec
 import views.html.agent.business.PropertyStartDate
 
 import java.time.LocalDate
 
 
-class UkPropertyStartDateViewSpec extends ViewSpec  {
+class UkPropertyStartDateViewSpec extends ViewSpec {
 
   val backUrl: String = testBackUrl
   val action: Call = testCall
@@ -45,15 +46,17 @@ class UkPropertyStartDateViewSpec extends ViewSpec  {
 
   private def page(isEditMode: Boolean, propertyStartDateForm: Form[DateModel]) =
     propertyStartDateView(
-    propertyStartDateForm,
-    testCall,
-    isEditMode,
-    testBackUrl
-  )(FakeRequest(), implicitly, appConfig)
+      propertyStartDateForm,
+      testCall,
+      isEditMode,
+      testBackUrl,
+      ClientDetails("FirstName LastName", "ZZ111111Z")
+    )(FakeRequest(), implicitly, appConfig)
 
   object PropertyStartDateMessages {
     val title = "When did your client’s UK property business start trading?"
     val heading: String = title
+    val caption: String = "FirstName LastName | ZZ 11 11 11 Z"
     val hint = "For example, 17 8 2014."
     val continue = "Continue"
     val saveAndContinue = "Save and continue"
@@ -70,7 +73,8 @@ class UkPropertyStartDateViewSpec extends ViewSpec  {
           defaultForm,
           testCall,
           isEditMode = false,
-          testBackUrl
+          testBackUrl,
+          ClientDetails("FirstName LastName", "ZZ111111Z")
         ),
         title = PropertyStartDateMessages.heading,
         isAgent = true,
@@ -82,7 +86,8 @@ class UkPropertyStartDateViewSpec extends ViewSpec  {
           defaultForm.withError(testError),
           testCall,
           isEditMode = false,
-          testBackUrl
+          testBackUrl,
+          ClientDetails("FirstName LastName", "ZZ111111Z")
         ),
         title = PropertyStartDateMessages.heading,
         isAgent = true,
@@ -91,13 +96,12 @@ class UkPropertyStartDateViewSpec extends ViewSpec  {
       )
     }
 
-    "have a title" in {
-      val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
-      document().title mustBe PropertyStartDateMessages.title + serviceNameGovUk
+    "have a heading" in {
+      document().mainContent.selectHead("h1.govuk-heading-l").text mustBe PropertyStartDateMessages.heading
     }
 
-    "have a heading" in {
-      document().getH1Element.text mustBe PropertyStartDateMessages.heading
+    "have a caption" in {
+      document().mainContent.selectHead("span.govuk-caption-l").text mustBe PropertyStartDateMessages.caption
     }
 
     "have a Form" in {

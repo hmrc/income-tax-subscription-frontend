@@ -18,25 +18,34 @@
 @import forms.agent.PropertyStartDateForm._
 @import views.html.helpers.injected.{DateHelper, SaveAndContinueButtonHelper}
 @import views.html.templates.AgentMainTemplate
+@import utilities.UserMatchingSessionUtil.ClientDetails
 
 @this(
     agentMainTemplate: AgentMainTemplate,
     form: FormWithCSRF,
     dateHelper: DateHelper,
-    saveAndContinueButton: SaveAndContinueButtonHelper
+    saveAndContinueButton: SaveAndContinueButtonHelper,
+    hmrcPageHeading: HmrcPageHeading
 )
 
-@(propertyStartDateForm: Form[DateModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(propertyStartDateForm: Form[DateModel], postAction: Call, isEditMode: Boolean, backUrl: String, clientDetails: ClientDetails)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@agentMainTemplate(title = messages("agent.property.name.heading"), optForm = Some(propertyStartDateForm), backLink = Some(backUrl)) {
-  <h1 class="govuk-heading-l">@messages("agent.property.name.heading")</h1>
+@agentMainTemplate(title = messages("agent.property.start-date.heading"), optForm = Some(propertyStartDateForm), backLink = Some(backUrl)) {
 
-  <p class="govuk-body">@messages("agent.property.line-1")</p>
+  <span class="govuk-caption-l">
+    @messages("agent.property.start-date.heading.caption", clientDetails.name, clientDetails.formattedNino)
+  </span>
+
+  <h1 class="govuk-heading-l">
+    @messages("agent.property.start-date.heading")
+  </h1>
+
+  <p class="govuk-body">@messages("agent.property.start-date.line-1")</p>
 
   @form(action = postAction) {
     @dateHelper(
       field = propertyStartDateForm(startDate),
-      legendContent = messages("agent.property.name.heading"),
+      legendContent = messages("agent.property.start-date.heading"),
       isPageHeading = false,
       isLegendVisible = false,
       parentForm = propertyStartDateForm,
@@ -44,5 +53,6 @@
     )
 
     @saveAndContinueButton(isIndividual = false, saveAndReturnReference = None)
+
   }
 }

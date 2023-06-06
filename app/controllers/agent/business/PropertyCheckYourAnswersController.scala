@@ -27,6 +27,7 @@ import views.html.agent.business.PropertyCheckYourAnswers
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 
 @Singleton
 class PropertyCheckYourAnswersController @Inject()(val propertyCheckYourAnswersView: PropertyCheckYourAnswers,
@@ -36,6 +37,8 @@ class PropertyCheckYourAnswersController @Inject()(val propertyCheckYourAnswersV
                                                   (implicit val ec: ExecutionContext,
                                                    mcc: MessagesControllerComponents,
                                                    val appConfig: AppConfig) extends AuthenticatedController with ReferenceRetrieval {
+
+
   def show(isEditMode: Boolean): Action[AnyContent]  = Authenticated.async { implicit request =>
     implicit user =>
       withAgentReference { reference =>
@@ -44,7 +47,8 @@ class PropertyCheckYourAnswersController @Inject()(val propertyCheckYourAnswersV
             propertyCheckYourAnswersView(
               viewModel = property,
               routes.PropertyCheckYourAnswersController.submit(),
-              backUrl(isEditMode)
+              backUrl(isEditMode),
+              clientDetails = request.clientDetails
             )
           ))
         }

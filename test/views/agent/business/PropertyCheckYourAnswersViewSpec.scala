@@ -20,6 +20,7 @@ import models.common.PropertyModel
 import models.{Accruals, Cash, DateModel}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
+import utilities.UserMatchingSessionUtil.ClientDetails
 import utilities.ViewSpec
 import views.html.agent.business.PropertyCheckYourAnswers
 
@@ -53,7 +54,7 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
   object PropertyCheckYourAnswers {
     val title = "Check your answers - UK property business"
     val heading = "Check your answers"
-    val caption = "This section is UK property business you entered"
+    val caption = "FirstName LastName | ZZ 11 11 11 Z"
     val startDateQuestion = "UK property business trading start date"
     val accountMethodQuestion = "UK property business accounting method"
     val confirmedAndContinue = "Confirm and continue"
@@ -67,7 +68,8 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
       view = propertyCheckYourAnswersView(
         completeCashProperty,
         testCall,
-        testBackUrl
+        testBackUrl,
+        ClientDetails("", "")
       ),
       title = PropertyCheckYourAnswers.title,
       isAgent = true,
@@ -76,13 +78,13 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
 
     "have a heading" in {
       document()
-        .select("h1")
+        .selectHead("h1.govuk-heading-xl")
         .text() mustBe PropertyCheckYourAnswers.heading
     }
 
     "have a caption" in {
-      document()
-        .select(".hmrc-page-heading p")
+      document().mainContent
+        .selectHead(".govuk-caption-xl")
         .text() mustBe PropertyCheckYourAnswers.caption
     }
 
@@ -266,7 +268,8 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
   private def page(viewModel: PropertyModel) = propertyCheckYourAnswersView(
     viewModel,
     postAction = controllers.agent.business.routes.PropertyStartDateController.submit(),
-    backUrl = "test-back-url"
+    backUrl = "test-back-url",
+    ClientDetails("FirstName LastName", "ZZ111111Z")
   )
 
   private def document(viewModel: PropertyModel = completeCashProperty) = Jsoup.parse(page(viewModel).body)

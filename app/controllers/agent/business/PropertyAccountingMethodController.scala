@@ -26,6 +26,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
+import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.business.PropertyAccountingMethod
 
 import javax.inject.{Inject, Singleton}
@@ -38,15 +39,16 @@ class PropertyAccountingMethodController @Inject()(propertyAccountingMethod: Pro
                                                    val subscriptionDetailsService: SubscriptionDetailsService)
                                                   (implicit val ec: ExecutionContext,
                                                    mcc: MessagesControllerComponents,
-                                                   val appConfig: AppConfig) extends AuthenticatedController  with ReferenceRetrieval {
+                                                   val appConfig: AppConfig) extends AuthenticatedController with ReferenceRetrieval {
 
   def view(accountingMethodForm: Form[AccountingMethod], isEditMode: Boolean)
-          (implicit request: Request[_]): Html = {
+          (implicit request: Request[AnyContent]): Html = {
     propertyAccountingMethod(
       accountingMethodForm = accountingMethodForm,
       postAction = controllers.agent.business.routes.PropertyAccountingMethodController.submit(editMode = isEditMode),
       isEditMode = isEditMode,
-      backUrl = backUrl(isEditMode)
+      backUrl = backUrl(isEditMode),
+      clientDetails = request.clientDetails
     )
   }
 
@@ -81,7 +83,7 @@ class PropertyAccountingMethodController @Inject()(propertyAccountingMethod: Pro
   }
 
   def backUrl(isEditMode: Boolean): String = {
-    if(isEditMode) {
+    if (isEditMode) {
       controllers.agent.business.routes.PropertyCheckYourAnswersController.show(isEditMode).url
     } else {
       controllers.agent.business.routes.PropertyStartDateController.show().url

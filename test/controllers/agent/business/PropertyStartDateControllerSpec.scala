@@ -28,6 +28,7 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{await, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockAuditingService, MockSubscriptionDetailsService}
+import uk.gov.hmrc.http.InternalServerException
 import utilities.TestModels.testFullPropertyModel
 import views.html.agent.business.PropertyStartDate
 
@@ -52,8 +53,17 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
   )
 
   "show" should {
+    "throw an InternalServerException" when {
+      "there are no client details in session" in withController { controller =>
+        mockFetchProperty(None)
+
+        intercept[InternalServerException](await(controller.show(isEditMode = false)(subscriptionRequest)))
+          .message mustBe "[IncomeTaxAgentUser][clientDetails] - could not retrieve client details from session"
+      }
+    }
+
     "display the property start date view and return OK (200)" in withController { controller =>
-      lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
+      lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequestWithName))
 
       mockFetchProperty(None)
 
@@ -68,7 +78,7 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
 
     def callSubmit(controller: PropertyStartDateController, isEditMode: Boolean): Future[Result] =
       controller.submit(isEditMode = isEditMode)(
-        subscriptionRequest.post(
+        subscriptionRequestWithName.post(
           PropertyStartDateForm.propertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString),
           testPropertyStartDateModel
         )
@@ -76,7 +86,7 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
 
     def callSubmitWithErrorForm(controller: PropertyStartDateController, isEditMode: Boolean): Future[Result] =
       controller.submit(isEditMode = isEditMode)(
-        subscriptionRequest
+        subscriptionRequestWithName
       )
 
     "redirect to agent uk property accounting method page" when {
@@ -146,7 +156,7 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
   private def withController(testCode: PropertyStartDateController => Any): Unit = {
     val mockView = mock[PropertyStartDate]
 
-    when(mockView(any(), any(), any(), any())(any(), any(), any()))
+    when(mockView(any(), any(), any(), any(), any())(any(), any(), any()))
       .thenReturn(HtmlFormat.empty)
 
     val controller = new PropertyStartDateController(

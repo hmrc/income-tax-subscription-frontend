@@ -30,13 +30,26 @@
         isIndividual: Boolean,
         isConfirmed: Boolean = false,
         saveAndContinue: Boolean = false,
-        saveAndReturnReference: Option[String] = None
+        saveAndReturnReference: Option[String] = None,
+        sectionCaption: Boolean = true
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
-@hmrcPageHeading(PageHeading(
-    text = heading,
-    section = Some(caption)
-))
+@if(sectionCaption) {
+    @hmrcPageHeading(PageHeading(
+        text = heading,
+        section = Some(caption)
+    ))
+} else {
+    <span class="govuk-caption-xl">
+      @caption
+    </span>
+
+    <h1 class="govuk-heading-xl">
+      @heading
+    </h1>
+}
+
+
 
 <dl class="govuk-summary-list govuk-!-margin-bottom-9">
     @contentBlock

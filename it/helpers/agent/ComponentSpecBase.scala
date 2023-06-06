@@ -196,7 +196,9 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     )
 
     def showCannotTakePart: WSResponse = get("/error/cannot-sign-up")
+
     def showCannotSignUpThisYear: WSResponse = get("/error/cannot-sign-up-for-current-year")
+
     def submitCannotSignUpThisYear(request: Option[YesNo]): WSResponse = post("/error/cannot-sign-up-for-current-year")(
       request.fold(Map.empty[String, Seq[String]])(
         model => CannotSignUpThisYearForm.cannotSignUpThisYearForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
@@ -326,17 +328,29 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
     def businessAccountingMethod(): WSResponse = get("/business/accounting-method")
 
-    def propertyAccountingMethod(): WSResponse = get("/business/accounting-method-property")
+    def propertyAccountingMethod(sessionData: Map[String, String] = Map(
+      UserMatchingSessionUtil.firstName -> testFirstName,
+      UserMatchingSessionUtil.lastName -> testLastName,
+      ITSASessionKeys.NINO -> testNino
+    )): WSResponse = get("/business/accounting-method-property", sessionData)
 
     def overseasPropertyAccountingMethod(): WSResponse = get("/business/overseas-property-accounting-method")
 
-    def ukPropertyStartDate(): WSResponse = get("/business/property-commencement-date")
+    def ukPropertyStartDate(sessionData: Map[String, String] = Map(
+      UserMatchingSessionUtil.firstName -> testFirstName,
+      UserMatchingSessionUtil.lastName -> testLastName,
+      ITSASessionKeys.NINO -> testNino
+    )): WSResponse = get("/business/property-commencement-date", sessionData)
 
-    def submitUkPropertyStartDate(isEditMode: Boolean = false, request: Option[DateModel]): WSResponse = {
+    def submitUkPropertyStartDate(isEditMode: Boolean = false, request: Option[DateModel], sessionData: Map[String, String] = Map(
+      UserMatchingSessionUtil.firstName -> testFirstName,
+      UserMatchingSessionUtil.lastName -> testLastName,
+      ITSASessionKeys.NINO -> testNino
+    )): WSResponse = {
       val testValidMaxStartDate = LocalDate.now.minusYears(1)
       val testValidMinStartDate = LocalDate.of(1900, 1, 1)
       val uri = s"/business/property-commencement-date?editMode=$isEditMode"
-      post(uri)(
+      post(uri, sessionData)(
         request.fold(Map.empty[String, Seq[String]])(
           model =>
             PropertyStartDateForm.propertyStartDateForm(testValidMinStartDate, testValidMaxStartDate, d => d.toString)
@@ -346,11 +360,19 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       )
     }
 
-    def getPropertyCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse = {
+    def getPropertyCheckYourAnswers(sessionData: Map[String, String] = Map(
+      UserMatchingSessionUtil.firstName -> testFirstName,
+      UserMatchingSessionUtil.lastName -> testLastName,
+      ITSASessionKeys.NINO -> testNino
+    )): WSResponse = {
       get("/business/uk-property-check-your-answers", sessionData)
     }
 
-    def submitPropertyCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse = {
+    def submitPropertyCheckYourAnswers(sessionData: Map[String, String] = Map(
+      UserMatchingSessionUtil.firstName -> testFirstName,
+      UserMatchingSessionUtil.lastName -> testLastName,
+      ITSASessionKeys.NINO -> testNino
+    )): WSResponse = {
       post("/business/uk-property-check-your-answers", sessionData)(Map.empty)
     }
 
@@ -432,9 +454,13 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       )
     }
 
-    def submitPropertyAccountingMethod(inEditMode: Boolean, request: Option[AccountingMethod]): WSResponse = {
+    def submitPropertyAccountingMethod(inEditMode: Boolean, request: Option[AccountingMethod],sessionData: Map[String, String] = Map(
+      UserMatchingSessionUtil.firstName -> testFirstName,
+      UserMatchingSessionUtil.lastName -> testLastName,
+      ITSASessionKeys.NINO -> testNino
+    )): WSResponse = {
       val uri = s"/business/accounting-method-property?editMode=$inEditMode"
-      post(uri)(
+      post(uri, sessionData)(
         request.fold(Map.empty[String, Seq[String]])(
           model =>
             AccountingMethodPropertyForm.accountingMethodPropertyForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
