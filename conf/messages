@@ -526,6 +526,7 @@ agent.base.no                                                   = No
 # Agent other sources of income page
 agent.other-sources-of-income.title                             = Aside from self employment or letting property, does your client have any other income sources?
 agent.other-sources-of-income.heading                           = Aside from self employment or letting property, does your client have any other income sources?
+agent.other-sources-of-income.caption                           = {0} | {1}
 agent.other-sources-of-income.include                           = What are the other income sources?
 agent.other-sources-of-income.include-point1                    = PAYE as an employee
 agent.other-sources-of-income.include-point2                    = UK pensions or annuities
@@ -536,7 +537,6 @@ agent.other-sources-of-income.not-include                       = This does not 
 agent.other-sources-of-income.not-include-point1                = bank and building society interest
 agent.other-sources-of-income.not-include-point2                = dividends
 agent.other-sources-of-income.invalid                           = Select yes if your client has sources of income other than self employment or property income
-agent.other-sources-of-income.caption                           = Eligibility questions
 
 # Agent cannot take part page
 agent.cannot-take-part.title                                    = Your client cannot take part yet
@@ -570,6 +570,7 @@ declined-sign-up-next-year.para                                 = You’ve chose
 
 ## Agent what you need to do page ##
 agent.what-you-need-to-do.heading                                                        = What you need to do
+agent.what-you-need-to-do.caption                                                        = {0} | {1}
 agent.what-you-need-to-do.voluntary-and-eligible.para-1                                  = By signing up you agree that either you or your client will:
 agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-1            = record income and expenses using compatible software
 agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-2            = use software to send us quarterly updates
@@ -597,14 +598,15 @@ agent.what-you-need-to-do.mandated-and-eligible-next-year-only.notification-bann
 # Agent accounting period check page
 agent.accounting-period-check.title                             = Do your client’s business accounting periods all run from 6 April to 5 April?
 agent.accounting-period-check.heading                           = Do your client’s business accounting periods all run from 6 April to 5 April?
+agent.accounting-period-check.caption                           = {0} | {1}
 agent.accounting-period-check.include                           = Tax year dates
 agent.accounting-period-check.hint                              = The tax year runs from 6 April to 5 April. The accounting period for your client’s self-employment or property needs to be the same if you would like to sign them up to this service.
 agent.accounting-period-check.invalid                           = Select yes if all of your client’s business accounting periods are from 6 April to 5 April
-agent.accounting-period-check.caption                           = Eligibility questions
 
 # Agent property trading after date page
 agent.property-trading-after.title                              = Did your client start letting property on or after {0}?
 agent.property-trading-after.heading                            = Did your client start letting property on or after {0}?
+agent.property-trading-after.caption                            = {0} | {1}
 agent.property-trading-after.line                               = What's included in letting properties?
 agent.property-trading-after.line.point1                        = UK properties
 agent.property-trading-after.line.point2                        = overseas properties
@@ -613,7 +615,6 @@ agent.property-trading-after.line2                              = This does not 
 agent.property-trading-after.line2.point1                       = a room
 agent.property-trading-after.line2.point2                       = part of your property
 agent.property-trading-after.error.summary                      = Select yes if your client owns a property business that began trading on or after {0}
-agent.property-trading-after.caption                            = Eligibility questions
 
 # Client details page
 agent.client-details-error.title                                = There is a problem
@@ -663,7 +664,7 @@ agent.business.what-year-to-sign-up.option-next-hint            = You or your cl
 
 # Agent Sole trader page
 agent.eligibility.sole-trader.heading                           = Did your client’s business start trading on or after {0}?
-agent.eligibility.sole-trader.caption                           = Eligibility questions
+agent.eligibility.sole-trader.caption                           = {0} | {1}
 
 # Agent Property Accounting Method Page
 agent.property.accounting-method.title                          = What accounting method does your client use for their UK property business?

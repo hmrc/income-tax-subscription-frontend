@@ -220,7 +220,7 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
 
   private def goToSignUpClient(thisYear: Boolean): Result = {
     if (thisYear) {
-      Redirect(controllers.agent.routes.HomeController.index)
+      Redirect(controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show)
     } else {
       Redirect(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show)
     }

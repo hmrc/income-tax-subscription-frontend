@@ -29,16 +29,23 @@
   govukNotificationBanner : GovukNotificationBanner,
   languageUtils: LanguageUtils,
   govukInsetText : GovukInsetText,
+  hmrcPageHeading: HmrcPageHeading,
   govukWarningText: GovukWarningText
 )(
   implicit appConfig: AppConfig
 )
 
-@(postAction:Call, eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean, mandatedNextYear: Boolean)(implicit request: Request[_], messages: Messages)
+@(postAction:Call, eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, clientName: String, clientNino: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = messages("agent.what-you-need-to-do.heading")) {
 
-  <h1 class="govuk-heading-xl">@messages("agent.what-you-need-to-do.heading")</h1>
+  <span class="govuk-caption-l">
+    @messages("agent.what-you-need-to-do.caption", clientName, clientNino)
+  </span>
+
+  <h1 class="govuk-heading-l">
+    @messages("agent.what-you-need-to-do.heading")
+  </h1>
 
   @if(mandatedCurrentYear) {
     @mandatedCurrentYearContent

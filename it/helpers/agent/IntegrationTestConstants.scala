@@ -4,12 +4,20 @@ package helpers.agent
 import models.DateModel
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
-
 import java.net.URLEncoder
 import java.util.UUID
+import scala.util.matching.Regex
 
 object IntegrationTestConstants {
+
+  private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
+
   lazy val testNino: String = helpers.IntegrationTestConstants.testNino
+  lazy val testFormattedNino: String = testNino match {
+    case ninoRegex(startLetters, firstDigits, secondDigits, thirdDigits, finalLetter) =>
+      s"$startLetters $firstDigits $secondDigits $thirdDigits $finalLetter"
+    case other => other
+  }
   lazy val testUtr: String = helpers.IntegrationTestConstants.testUtr
   lazy val testUtrEnrolmentKey: String = s"IR-SA~UTR~$testUtr"
   lazy val testMTDID: String = helpers.IntegrationTestConstants.testMtdId
@@ -39,6 +47,7 @@ object IntegrationTestConstants {
   val confirmationURI = s"$baseURI/confirmation"
   val noClientRelationshipURI = s"$baseURI/error/no-client-relationship"
   val incomeSourceURI = s"$baseURI/income"
+  val incomeSourcesURI = "/report-quarterly/income-and-expenses/sign-up/client/eligibility/income-sources"
   val businessNameSEURI = s"$baseSEURI/details"
   val propertyAccountingMethodURI = s"$baseURI/business/accounting-method-property"
   val overseasPropertyAccountingMethod = s"$baseURI/business/overseas-property-accounting-method"

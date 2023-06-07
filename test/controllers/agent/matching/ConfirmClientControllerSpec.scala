@@ -214,7 +214,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
         "the user has a utr" when {
           "the client is eligible" when {
             "the client has no prepop data, prepop and ITSA mandation status are on" should {
-              s"redirect user to ${controllers.agent.routes.HomeController.index.url}" in withController { controller =>
+              s"redirect user to ${controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show.url}" in withController { controller =>
                 mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
                 mockGetEligibilityStatus(utr)(Future.successful(Right(eligibleWithoutPrePop)))
                 mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
@@ -227,7 +227,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
                 val result = await(callSubmit(controller))
 
                 status(result) mustBe SEE_OTHER
-                redirectLocation(result) mustBe Some(controllers.agent.routes.HomeController.index.url)
+                redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show.url)
 
                 val session = result.session(request)
 
@@ -243,7 +243,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
             }
 
             "the client has prepop data, prepop and ITSA mandation status are on" should {
-              s"redirect user to ${controllers.agent.routes.HomeController.index.url} after saving prepop data" in withController { controller =>
+              s"redirect user to ${controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show.url} after saving prepop data" in withController { controller =>
                 mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
                 mockGetEligibilityStatus(utr)(Future.successful(Right(eligibleWithPrePop)))
                 mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
@@ -257,7 +257,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
                 val result = await(callSubmit(controller))
 
                 status(result) mustBe SEE_OTHER
-                redirectLocation(result) mustBe Some(controllers.agent.routes.HomeController.index.url)
+                redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show.url)
 
                 val session = result.session(request)
 

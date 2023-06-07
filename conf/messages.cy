@@ -526,6 +526,7 @@ agent.base.no                                                   = Na
 # Agent other sources of income page
 agent.other-sources-of-income.title                             = Ar wahân i hunangyflogaeth neu roi eiddo ar osod, a oes gan eich cleient unrhyw ffynonellau incwm eraill?
 agent.other-sources-of-income.heading                           = Ar wahân i hunangyflogaeth neu roi eiddo ar osod, a oes gan eich cleient unrhyw ffynonellau incwm eraill?
+agent.other-sources-of-income.caption                           = {0} | {1}
 agent.other-sources-of-income.include                           = Gallai hyn gynnwys:
 agent.other-sources-of-income.include-point1                    = TWE fel cyflogai
 agent.other-sources-of-income.include-point2                    = pensiynau neu flwydd-daliadau’r DU
@@ -536,7 +537,6 @@ agent.other-sources-of-income.not-include                       = Nid yw hyn yn 
 agent.other-sources-of-income.not-include-point1                = llog banc neu gymdeithas adeiladu
 agent.other-sources-of-income.not-include-point2                = difidendau
 agent.other-sources-of-income.invalid                           = Dewiswch ‘Iawn’ os oes gan eich cleient ffynonellau incwm heblaw hunangyflogaeth neu incwm o eiddo
-agent.other-sources-of-income.caption                           = Cwestiynau ynghylch cymhwystra
 
 # Agent cannot take part page
 agent.cannot-take-part.title                                    = Ni all eich cleient gymryd rhan eto
@@ -569,6 +569,7 @@ declined-sign-up-next-year.para                                 = Rydych wedi de
 
 ## Agent what you need to do page ##
 agent.what-you-need-to-do.heading                                                        = Beth y mae angen i chi ei wneud
+agent.what-you-need-to-do.caption                                                        = {0} | {1}
 agent.what-you-need-to-do.voluntary-and-eligible.para-1                                  = Drwy gofrestru, rydych yn cytuno y byddwch chi neu’ch cleient yn gwneud y canlynol:
 agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-1            = cofnodi incwm a threuliau gan ddefnyddio meddalwedd sy’n cydweddu
 agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-2            = defnyddio meddalwedd i anfon diweddariadau chwarterol atom
@@ -596,14 +597,15 @@ agent.what-you-need-to-do.mandated-and-eligible-next-year-only.notification-bann
 # Agent accounting period check page
 agent.accounting-period-check.title                             = A yw holl gyfnodau cyfrifyddu busnes eich cleient yn rhedeg o 6 Ebrill i 5 Ebrill?
 agent.accounting-period-check.heading                           = A yw holl gyfnodau cyfrifyddu busnes eich cleient yn rhedeg o 6 Ebrill i 5 Ebrill?
+agent.accounting-period-check.caption                           = {0} | {1}
 agent.accounting-period-check.include                           = Tax year dates ... in Welsh
 agent.accounting-period-check.hint                              = Mae’r flwyddyn dreth yn rhedeg o 6 Ebrill i 5 Ebrill. Mae angen i’r cyfnod cyfrifyddu ar gyfer hunangyflogaeth neu fusnes eiddo’ch cleient gyfateb â hyn os hoffech ei gofrestru ar gyfer y gwasanaeth hwn.
 agent.accounting-period-check.invalid                           = Dewiswch ‘Iawn’ os yw holl gyfnodau cyfrifyddu busnes eich cleient o 6 Ebrill i 5 Ebrill
-agent.accounting-period-check.caption                           = Cwestiynau ynghylch cymhwystra
 
 # Agent property trading after date page
 agent.property-trading-after.title                              = A wnaeth eich cleient ddechrau rhoi eiddo ar osod ar neu ar ôl {0}?
 agent.property-trading-after.heading                            = A wnaeth eich cleient ddechrau rhoi eiddo ar osod ar neu ar ôl {0}?
+agent.property-trading-after.caption                            = {0} | {1}
 agent.property-trading-after.line                               = Mae hyn yn cynnwys bod yn landlord neu ddefnyddio asiantaeth gosod ar gyfer y canlynol:
 agent.property-trading-after.line.point1                        = eiddo yn y DU
 agent.property-trading-after.line.point2                        = eiddo tramor
@@ -612,7 +614,6 @@ agent.property-trading-after.line2                              = Nid yw hyn yn 
 agent.property-trading-after.line2.point1                       = ystafell
 agent.property-trading-after.line2.point2                       = rhan o’ch eiddo
 agent.property-trading-after.error.summary                      = Dewiswch ‘Iawn’ os yw’ch cleient yn berchen ar fusnes eiddo a ddechreuodd fasnachu ar neu ar ôl {0}
-agent.property-trading-after.caption                            = Cwestiynau ynghylch cymhwystra
 
 # Client details page
 agent.client-details-error.title                                = Mae problem wedi codi
@@ -661,8 +662,8 @@ agent.business.what-year-to-sign-up.option-current-hint       = Bydd yn rhaid i 
 agent.business.what-year-to-sign-up.option-next-hint          = Bydd yn rhaid i chi anfon datganiad terfynol erbyn 31 Ionawr {0}, a llenwi Ffurflen Dreth Hunanasesiad ar gyfer y flwyddyn dreth gyfredol yn ôl yr arfer.
 
 # Agent Sole trader page
-agent.eligibility.sole-trader.heading                           = A ddechreuodd busnes eich cleient fasnachu ar neu ar ôl {0}?
-agent.eligibility.sole-trader.caption                           = Cwestiynau ynghylch cymhwystra
+agent.eligibility.sole-trader.heading                         = A ddechreuodd busnes eich cleient fasnachu ar neu ar ôl {0}?
+agent.eligibility.sole-trader.caption                         = {0} | {1}
 
 # Agent Property Accounting Method Page
 agent.property.accounting-method.title                          = Pa ddull cyfrifo y mae’ch cleient yn ei ddefnyddio ar gyfer ei fusnes eiddo yn y DU?

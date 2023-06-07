@@ -204,10 +204,10 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           When("I call POST /confirm-client")
           val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
 
-          Then("The result must have a status of SEE_OTHER and redirect to index")
+          Then("The result must have a status of SEE_OTHER and redirect to Income Source")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(indexURI)
+            redirectURI(incomeSourcesURI)
           )
 
           val session = getSessionMap(res)

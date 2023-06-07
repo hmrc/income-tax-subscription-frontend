@@ -28,13 +28,12 @@
     form: FormWithCSRF,
     radioHelper: RadioHelper,
     continueButton: ContinueButton,
-    govukDetails:GovukDetails,
-    hmrcPageHeading: HmrcPageHeading
+    govukDetails:GovukDetails
 )(
     implicit appConfig: AppConfig
 )
 
-@(propertyTradingBeforeDateForm: Form[YesNo], postAction: Call, startDateLimit: String, backUrl: String)(implicit request: Request[_], messages: Messages)
+@(propertyTradingBeforeDateForm: Form[YesNo], postAction: Call, startDateLimit: String, clientName: String, clientNino: String, backUrl: String)(implicit request: Request[_], messages: Messages)
 
 @inputContent = {
 
@@ -55,12 +54,13 @@
 
 @mainTemplate(title = messages("agent.property-trading-after.title", startDateLimit), optForm = Some(propertyTradingBeforeDateForm), backLink = Some(backUrl)) {
 
-    @hmrcPageHeading(PageHeading(
-        text = messages("agent.property-trading-after.heading", startDateLimit),
-        section = Some(messages("agent.property-trading-after.caption")),
-        headingClasses = Some("govuk-heading-l"),
-        captionClasses = Some("govuk-caption-l")
-    ))
+    <span class="govuk-caption-l">
+      @messages("agent.property-trading-after.caption", clientName, clientNino)
+    </span>
+
+    <h1 class="govuk-heading-l">
+      @messages("agent.property-trading-after.heading", startDateLimit)
+    </h1>
 
     @govukDetails(Details(
         summary = Text(messages("agent.property-trading-after.line")),
