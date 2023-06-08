@@ -28,6 +28,7 @@ import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockAuditingService, MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService}
+import uk.gov.hmrc.http.InternalServerException
 import utilities.SubscriptionDataKeys
 import views.html.agent.business.PropertyCheckYourAnswers
 
@@ -50,10 +51,18 @@ class PropertyCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   )
 
   "show" should {
+    "return an InternalServerException" when {
+      "there are missing client details in session" in withController { controller =>
+        mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash))))
+
+        intercept[InternalServerException](await(controller.show(false)(subscriptionRequest)))
+          .message mustBe "[IncomeTaxAgentUser][clientDetails] - could not retrieve client details from session"
+      }
+    }
     "return an OK status with the property CYA page" in withController { controller =>
       mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash))))
 
-      val result: Future[Result] = await(controller.show(false)(subscriptionRequest))
+      val result: Future[Result] = await(controller.show(false)(subscriptionRequestWithName))
 
       status(result) mustBe OK
       contentType(result) mustBe Some(HTML)
@@ -63,7 +72,7 @@ class PropertyCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
     "throw an exception if cannot retrieve property details" in withController { controller =>
       mockFetchProperty(None)
 
-      val result: Future[Result] = await(controller.show(false)(subscriptionRequest))
+      val result: Future[Result] = await(controller.show(false)(subscriptionRequestWithName))
 
       result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
     }
@@ -75,7 +84,7 @@ class PropertyCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
         mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
         setupMockSubscriptionDetailsSaveFunctions()
 
-        val result: Future[Result] = await(controller.submit()(subscriptionRequest))
+        val result: Future[Result] = await(controller.submit()(subscriptionRequestWithName))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)
@@ -85,7 +94,7 @@ class PropertyCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
       "the user submits valid partial data" in withController { controller =>
         mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash))))
 
-        val result: Future[Result] = await(controller.submit()(subscriptionRequest))
+        val result: Future[Result] = await(controller.submit()(subscriptionRequestWithName))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)
@@ -101,7 +110,7 @@ class PropertyCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
       "cannot retrieve property details" in withController { controller =>
         mockFetchProperty(None)
 
-        val result: Future[Result] = await(controller.submit()(subscriptionRequest))
+        val result: Future[Result] = await(controller.submit()(subscriptionRequestWithName))
 
         result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
       }
@@ -110,7 +119,7 @@ class PropertyCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
         mockFetchProperty(None)
         setupMockSubscriptionDetailsSaveFunctionsFailure()
 
-        val result: Future[Result] = await(controller.submit()(subscriptionRequest))
+        val result: Future[Result] = await(controller.submit()(subscriptionRequestWithName))
 
         result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
       }
@@ -134,7 +143,7 @@ class PropertyCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   private def withController(testCode: PropertyCheckYourAnswersController => Any): Unit = {
     val mockView = mock[PropertyCheckYourAnswers]
 
-    when(mockView(any(), any(), any())(any(), any(), any()))
+    when(mockView(any(), any(), any(), any())(any(), any(), any()))
       .thenReturn(HtmlFormat.empty)
 
     val controller = new PropertyCheckYourAnswersController(

@@ -21,12 +21,15 @@ import common.Constants.ITSASessionKeys
 import common.Extractors
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.http.InternalServerException
+import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
+
+import scala.util.matching.Regex
 
 class IncomeTaxAgentUser(val enrolments: Enrolments,
                          val affinityGroup: Option[AffinityGroup],
                          val confidenceLevel: ConfidenceLevel)
   extends IncomeTaxUser with Extractors {
-
 
   lazy val arn: String = getArnFromEnrolments(enrolments).get
 
@@ -38,4 +41,11 @@ class IncomeTaxAgentUser(val enrolments: Enrolments,
 
   def clientReference(implicit request: Request[AnyContent]): Option[String] =
     request.session.get(ITSASessionKeys.REFERENCE)
+
+  def clientName(implicit request: Request[AnyContent]): String = {
+    request.fetchClientName.getOrElse(
+      throw new InternalServerException("[IncomeTaxAgentUser][clientName] - could not retrieve client name from request session")
+    )
+  }
+
 }

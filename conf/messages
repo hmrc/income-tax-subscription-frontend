@@ -196,8 +196,9 @@ error.property.month-year.invalid                               = The date must 
 error.property.year.length                                      = The year must be in four digits. For example, 2020.
 
 # Agent Property Start Date Date
-agent.property.name.heading                                     = When did your client’s UK property business start trading?
-agent.property.line-1                                           = This is the date that letting or renting out any property first started.
+agent.property.start-date.heading                               = When did your client’s UK property business start trading?
+agent.property.start-date.heading.caption                       = {0} | {1}
+agent.property.start-date.line-1                                = This is the date that letting or renting out any property first started.
 agent.property.start-date.hint                                  = For example, 17 8 2014.
 
 # Agent Property Start Date errors
@@ -666,7 +667,8 @@ agent.eligibility.sole-trader.heading                           = Did your clien
 agent.eligibility.sole-trader.caption                           = Eligibility questions
 
 # Agent Property Accounting Method Page
-agent.property.accounting-method.title                          = What accounting method does your client use for their UK property business?
+agent.property.accounting-method.heading                        = What accounting method does your client use for their UK property business?
+agent.property.accounting-method.heading.caption                = {0} | {1}
 agent.property.accounting-method.radio.cash                     = Cash basis accounting
 agent.property.accounting-method.radio.accruals                 = Traditional accounting
 
@@ -869,14 +871,15 @@ agent.business.check-your-answers.content.tax-year.current-tax-year   = Current 
 agent.business.check-your-answers.content.tax-year.next-tax-year      = Next tax year (6 April {0} to 5 April {1})
 
 ## Agent UK property check your answers
-agent.business.check-your-answers.content.uk-property.title                      = Check your answers - UK property business
-agent.business.check-your-answers.content.uk-property.caption                    = UK property business you entered
-agent.business.check-your-answers.content.uk-property-start-date.question        = UK property business trading start date
-agent.business.check-your-answers.content.uk-property-start-date.add             = Add UK property business trading start date
-agent.business.check-your-answers.content.uk-property-start-date.change          = Change UK property business trading start date
-agent.business.check-your-answers.content.uk-property-accounting-method.question = UK property business accounting method
-agent.business.check-your-answers.content.uk-property-accounting-method.add      = Add UK property business accounting method
-agent.business.check-your-answers.content.uk-property-accounting-method.change   = Change UK property business accounting method
+agent.property.check-your-answers.title                               = Check your answers - UK property business
+agent.property.check-your-answers.heading                             = Check your answers
+agent.property.check-your-answers.heading.caption                     = {0} | {1}
+agent.property.check-your-answers.start-date.question                 = UK property business trading start date
+agent.property.check-your-answers.start-date.add                      = Add UK property business trading start date
+agent.property.check-your-answers.start-date.change                   = Change UK property business trading start date
+agent.property.check-your-answers.accounting-method.question          = UK property business accounting method
+agent.property.check-your-answers.accounting-method.add               = Add UK property business accounting method
+agent.property.check-your-answers.accounting-method.change            = Change UK property business accounting method
 
 ## Agent Overseas property check your answers
 agent.business.check-your-answers.content.overseas-property.title                      = Check your answers - overseas property business

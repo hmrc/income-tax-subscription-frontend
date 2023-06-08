@@ -16,9 +16,13 @@
 
 package utilities
 
+import common.Constants.ITSASessionKeys
 import models.DateModel
 import models.usermatching.UserDetailsModel
 import play.api.mvc.{AnyContent, Request, Result}
+import uk.gov.hmrc.http.InternalServerException
+
+import scala.util.matching.Regex
 
 object UserMatchingSessionUtil {
 
@@ -89,6 +93,30 @@ object UserMatchingSessionUtil {
 
     def fetchClientNino: Option[String] =
       request.session.get(nino)
+
+    def fetchConfirmedClientNino: Option[String] =
+      request.session.get(ITSASessionKeys.NINO)
+
+    def clientDetails: ClientDetails = {
+      (request.fetchClientName, request.fetchConfirmedClientNino) match {
+        case (Some(name), Some(nino)) => ClientDetails(name, nino)
+        case _ => throw new InternalServerException("[IncomeTaxAgentUser][clientDetails] - could not retrieve client details from session")
+      }
+    }
+
+  }
+
+
+  case class ClientDetails(name: String, nino: String) {
+
+    private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
+
+    val formattedNino: String = nino match {
+      case ninoRegex(startLetters, firstDigits, secondDigits, thirdDigits, finalLetter) =>
+        s"$startLetters $firstDigits $secondDigits $thirdDigits $finalLetter"
+      case other => other
+    }
+
   }
 
 }

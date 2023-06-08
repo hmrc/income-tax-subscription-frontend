@@ -28,6 +28,7 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockAuditingService, MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService}
+import uk.gov.hmrc.http.InternalServerException
 import views.html.agent.business.PropertyAccountingMethod
 
 import scala.concurrent.Future
@@ -41,7 +42,7 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
   private def withController(testCode: PropertyAccountingMethodController => Any): Unit = {
     val propertyAccountingMethodView = mock[PropertyAccountingMethod]
 
-    when(propertyAccountingMethodView(any(), any(), any(), any())(any(), any(), any()))
+    when(propertyAccountingMethodView(any(), any(), any(), any(), any())(any(), any(), any()))
       .thenReturn(HtmlFormat.empty)
 
     val controller = new PropertyAccountingMethodController(
@@ -55,11 +56,20 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
   }
 
   "show" when {
+    "there are missing client details" should {
+      "throw an InternalServerException" in withController { controller =>
+        mockFetchProperty(None)
+
+        intercept[InternalServerException](await(controller.show(isEditMode = false)(subscriptionRequest)))
+          .message mustBe "[IncomeTaxAgentUser][clientDetails] - could not retrieve client details from session"
+      }
+    }
+
     "there is no previous selected answer" should {
       "display the property accounting method view and return OK (200)" in withController { controller =>
         mockFetchProperty(None)
 
-        val result = await(controller.show(isEditMode = false)(subscriptionRequest))
+        val result = await(controller.show(isEditMode = false)(subscriptionRequestWithName))
 
         status(result) must be(Status.OK)
       }
@@ -69,7 +79,7 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
       "display the property accounting method view with the previous selected answer CASH and return OK (200)" in withController { controller =>
         mockFetchProperty(Some(PropertyModel(Some(Cash))))
 
-        val result = await(controller.show(isEditMode = false)(subscriptionRequest))
+        val result = await(controller.show(isEditMode = false)(subscriptionRequestWithName))
 
         status(result) must be(Status.OK)
       }
@@ -79,11 +89,11 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
   "submit" should withController { controller =>
 
     def callSubmit(isEditMode: Boolean): Future[Result] = controller.submit(isEditMode = isEditMode)(
-      subscriptionRequest.post(AccountingMethodPropertyForm.accountingMethodPropertyForm, Cash)
+      subscriptionRequestWithName.post(AccountingMethodPropertyForm.accountingMethodPropertyForm, Cash)
     )
 
     def callSubmitWithErrorForm(isEditMode: Boolean): Future[Result] = controller.submit(isEditMode = isEditMode)(
-      subscriptionRequest
+      subscriptionRequestWithName
     )
 
     "redirect to agent uk property check your answers page" in {

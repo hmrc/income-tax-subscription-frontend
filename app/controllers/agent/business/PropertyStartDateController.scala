@@ -16,7 +16,7 @@
 
 package controllers.agent.business
 
-import auth.agent.AuthenticatedController
+import auth.agent.{AuthenticatedController, IncomeTaxAgentUser}
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
 import forms.agent.PropertyStartDateForm
@@ -29,6 +29,7 @@ import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.ImplicitDateFormatter
+import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.business.PropertyStartDate
 
 import javax.inject.Inject
@@ -79,7 +80,7 @@ class PropertyStartDateController @Inject()(val propertyStartDate: PropertyStart
   }
 
   def backUrl(isEditMode: Boolean): String = {
-    if(isEditMode) {
+    if (isEditMode) {
       controllers.agent.business.routes.PropertyCheckYourAnswersController.show(isEditMode).url
     } else {
       controllers.agent.routes.WhatIncomeSourceToSignUpController.show().url
@@ -91,12 +92,13 @@ class PropertyStartDateController @Inject()(val propertyStartDate: PropertyStart
   }
 
   private def view(propertyStartDateForm: Form[DateModel], isEditMode: Boolean)
-          (implicit request: Request[_]): Html = {
+                  (implicit request: Request[AnyContent]): Html = {
     propertyStartDate(
       propertyStartDateForm = propertyStartDateForm,
       postAction = controllers.agent.business.routes.PropertyStartDateController.submit(editMode = isEditMode),
       isEditMode = isEditMode,
-      backUrl = backUrl(isEditMode)
+      backUrl = backUrl(isEditMode),
+      clientDetails = request.clientDetails
     )
   }
 }

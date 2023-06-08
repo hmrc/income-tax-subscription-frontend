@@ -195,8 +195,9 @@ error.property.month-year.invalid                               = Rhaid i’r dy
 error.property.year.length                                      = Mae’n rhaid i flwyddyn fod yn bedwar digid. Er enghraifft, 2020.
 
 # Agent Property Start Date Date
-agent.property.name.heading                                     = Pryd y dechreuodd busnes eiddo yn y DU eich cleient fasnachu?
-agent.property.line-1                                           = Dyma’r dyddiad y dechreuodd roi unrhyw eiddo ar osod yn y lle cyntaf.
+agent.property.start-date.heading                               = Pryd y dechreuodd busnes eiddo yn y DU eich cleient fasnachu?
+agent.property.start-date.heading.caption                       = {0} | {1}
+agent.property.start-date.line-1                                = Dyma’r dyddiad y dechreuodd roi unrhyw eiddo ar osod yn y lle cyntaf.
 agent.property.start-date.hint                                  = Er enghraifft, 17 8 2014.
 
 # Agent Property Start Date errors
@@ -665,7 +666,8 @@ agent.eligibility.sole-trader.heading                           = A ddechreuodd 
 agent.eligibility.sole-trader.caption                           = Cwestiynau ynghylch cymhwystra
 
 # Agent Property Accounting Method Page
-agent.property.accounting-method.title                          = Pa ddull cyfrifo y mae’ch cleient yn ei ddefnyddio ar gyfer ei fusnes eiddo yn y DU?
+agent.property.accounting-method.heading                        = Pa ddull cyfrifo y mae’ch cleient yn ei ddefnyddio ar gyfer ei fusnes eiddo yn y DU?
+agent.property.accounting-method.heading.caption                = {0} | {1}
 agent.property.accounting-method.radio.cash                     = Cyfrifyddu ar sail arian parod
 agent.property.accounting-method.radio.accruals                 = Cyfrifyddu traddodiadol
 
@@ -867,14 +869,15 @@ agent.business.check-your-answers.content.tax-year.next-tax-year      = Blwyddyn
 agent.business.check-your-answers.content.tax-year.caption            = Y flwyddyn dreth rydych yn cofrestru’ch cleient ar ei chyfer
 
 ## Agent UK property check your answers
-agent.business.check-your-answers.content.uk-property.title                      = Gwirio’ch atebion – busnes eiddo yn y DU
-agent.business.check-your-answers.content.uk-property.caption                    = Manylion y busnes eiddo yn y DU a nodwyd gennych
-agent.business.check-your-answers.content.uk-property-start-date.question        = Dyddiad dechrau masnachu’r busnes eiddo yn y DU
-agent.business.check-your-answers.content.uk-property-start-date.add             = Ychwanegu dyddiad dechrau masnachu’r busnes eiddo yn y DU
-agent.business.check-your-answers.content.uk-property-start-date.change          = Newid dyddiad dechrau masnachu’r busnes eiddo yn y DU
-agent.business.check-your-answers.content.uk-property-accounting-method.question = Dull cyfrifyddu’r busnes eiddo yn y DU
-agent.business.check-your-answers.content.uk-property-accounting-method.add      = Ychwanegu dull cyfrifyddu’r busnes eiddo yn y DU
-agent.business.check-your-answers.content.uk-property-accounting-method.change   = Newid dull cyfrifyddu’r busnes eiddo yn y DU
+agent.property.check-your-answers.title                               = Gwirio’ch atebion – busnes eiddo yn y DU
+agent.property.check-your-answers.heading                             = Gwirio’ch atebion
+agent.property.check-your-answers.heading.caption                     = {0} | {1}
+agent.property.check-your-answers.start-date.question                 = Dyddiad dechrau masnachu’r busnes eiddo yn y DU
+agent.property.check-your-answers.start-date.add                      = Ychwanegu dyddiad dechrau masnachu’r busnes eiddo yn y DU
+agent.property.check-your-answers.start-date.change                   = Newid dyddiad dechrau masnachu’r busnes eiddo yn y DU
+agent.property.check-your-answers.accounting-method.question          = Dull cyfrifyddu’r busnes eiddo yn y DU
+agent.property.check-your-answers.accounting-method.add               = Ychwanegu dull cyfrifyddu’r busnes eiddo yn y DU
+agent.property.check-your-answers.accounting-method.change            = Newid dull cyfrifyddu’r busnes eiddo yn y DU
 
 ## Agent Overseas property check your answers
 agent.business.check-your-answers.content.overseas-property.title                      = Gwirio’ch atebion – busnes eiddo tramor

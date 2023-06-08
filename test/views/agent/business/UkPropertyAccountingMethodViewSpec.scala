@@ -23,6 +23,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
 import play.twirl.api.Html
+import utilities.UserMatchingSessionUtil.ClientDetails
 import utilities.ViewSpec
 import views.html.agent.business.PropertyAccountingMethod
 
@@ -38,7 +39,8 @@ class UkPropertyAccountingMethodViewSpec extends ViewSpec {
       form,
       testCall,
       isEditMode = isEditMode,
-      testBackUrl
+      testBackUrl,
+      ClientDetails("FirstName LastName", "ZZ111111Z")
     )
 
     val document: Document = Jsoup.parse(page.body)
@@ -53,7 +55,8 @@ class UkPropertyAccountingMethodViewSpec extends ViewSpec {
           accountingMethodForm = AccountingMethodPropertyForm.accountingMethodPropertyForm,
           postAction = testCall,
           isEditMode = false,
-          backUrl = testBackUrl
+          backUrl = testBackUrl,
+          ClientDetails("FirstName LastName", "ZZ111111Z")
         ),
         title = messages.title,
         isAgent = true,
@@ -64,7 +67,8 @@ class UkPropertyAccountingMethodViewSpec extends ViewSpec {
           accountingMethodForm = AccountingMethodPropertyForm.accountingMethodPropertyForm.withError(testError),
           postAction = testCall,
           isEditMode = false,
-          backUrl = testBackUrl
+          backUrl = testBackUrl,
+          ClientDetails("FirstName LastName", "ZZ111111Z")
         ),
         title = messages.title,
         isAgent = true,
@@ -72,6 +76,15 @@ class UkPropertyAccountingMethodViewSpec extends ViewSpec {
         error = Some(testError)
       )
     }
+
+    "have a heading" in new Setup {
+      document.mainContent.selectHead("h1.govuk-heading-l").text mustBe messages.heading
+    }
+
+    "have a caption" in new Setup {
+      document.mainContent.selectHead("span.govuk-caption-l").text mustBe messages.caption
+    }
+
 
     "have a form" which {
 

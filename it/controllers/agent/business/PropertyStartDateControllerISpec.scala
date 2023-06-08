@@ -42,7 +42,7 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the property commencement page with populated commencement date")
         res must have(
           httpStatus(OK),
-          pageTitle(messages("agent.property.name.heading") + serviceNameGovUk),
+          pageTitle(messages("agent.property.start-date.heading") + serviceNameGovUk),
           govukDateField("startDate", testPropertyStartDate.startDate)
         )
       }
@@ -60,7 +60,7 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the property commencement date page with no commencement date")
         res must have(
           httpStatus(OK),
-          pageTitle(messages("agent.property.name.heading") + serviceNameGovUk),
+          pageTitle(messages("agent.property.start-date.heading") + serviceNameGovUk),
           govukDateField("startDate", DateModel("", "", ""))
         )
       }
