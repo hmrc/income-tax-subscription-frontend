@@ -55,7 +55,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
         mockView()
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
 
-        val result = await(TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequest))
+        val result = await(TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequestWithName))
 
         status(result) must be(Status.OK)
         verifyFetchSelectedTaxYear(1, "test-reference")
@@ -67,7 +67,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
         mockView()
         mockFetchSelectedTaxYear(None)
 
-        val result = await(TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequest))
+        val result = await(TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequestWithName))
 
         status(result) must be(Status.OK)
         verifyFetchSelectedTaxYear(1, "test-reference")
@@ -78,11 +78,11 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
 
   "submit" should {
     def callSubmit(isEditMode: Boolean): Future[Result] = TestWhatYearToSignUpController.submit(isEditMode = isEditMode)(
-      subscriptionRequest.post(AccountingYearForm.accountingYearForm, Current)
+      subscriptionRequestWithName.post(AccountingYearForm.accountingYearForm, Current)
     )
 
     def callSubmitWithErrorForm(isEditMode: Boolean): Future[Result] = TestWhatYearToSignUpController.submit(isEditMode = isEditMode)(
-      subscriptionRequest
+      subscriptionRequestWithName
     )
 
     "redirect to tax year check your answers page" when {
