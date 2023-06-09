@@ -2,7 +2,9 @@
 package controllers.agent.eligibility
 
 import forms.agent.OtherSourcesOfIncomeForm
+import helpers.IntegrationTestConstants.testFullName
 import helpers.agent.ComponentSpecBase
+import helpers.agent.IntegrationTestConstants.testFormattedNino
 import helpers.agent.servicemocks.AuthStub
 import helpers.servicemocks.AuditStub.verifyAudit
 import models.{No, Yes, YesNo}
@@ -16,7 +18,7 @@ class OtherSourcesOfIncomeControllerISpec extends ComponentSpecBase {
   trait GetSetup {
     AuthStub.stubAuthSuccess()
 
-    lazy val response: WSResponse = IncomeTaxSubscriptionFrontend.showOtherSourcesOfIncome
+    lazy val response: WSResponse = IncomeTaxSubscriptionFrontend.showOtherSourcesOfIncome()
     lazy val doc: Document = Jsoup.parse(response.body)
     lazy val pageContent: Element = doc.mainContent
   }
@@ -25,7 +27,7 @@ class OtherSourcesOfIncomeControllerISpec extends ComponentSpecBase {
     val back: String = "Back"
 
     val heading: String = "Aside from self employment or letting property, does your client have any other income sources?"
-    val caption: String = "This section is Eligibility questions"
+    val caption: String = s"$testFullName | $testFormattedNino"
     val includePoint1: String = "PAYE as an employee"
     val includePoint2: String = "UK pensions or annuities"
     val includePoint3: String = "investments from outside the UK"
@@ -61,9 +63,9 @@ class OtherSourcesOfIncomeControllerISpec extends ComponentSpecBase {
     }
 
     "have a view with the correct heading and caption" in new GetSetup {
-      val header: Element = pageContent.selectHead(".hmrc-page-heading")
-      header.selectHead("h1.govuk-heading-l").text mustBe OtherSourcesOfIncomeMessages.heading
-      header.selectHead("p.hmrc-caption.govuk-caption-l").text mustBe OtherSourcesOfIncomeMessages.caption
+      val header: Element = pageContent
+      header.selectHead(".govuk-heading-l").text mustBe OtherSourcesOfIncomeMessages.heading
+      header.selectHead(".govuk-caption-l").text mustBe OtherSourcesOfIncomeMessages.caption
     }
 
     "have a bullet list of included incomes" in new GetSetup {
@@ -75,7 +77,7 @@ class OtherSourcesOfIncomeControllerISpec extends ComponentSpecBase {
     }
 
     "have a paragraph stating what is not included" in new GetSetup {
-      pageContent.selectNth("p", 2).text mustBe OtherSourcesOfIncomeMessages.notInclude
+      pageContent.selectNth("p", 1).text mustBe OtherSourcesOfIncomeMessages.notInclude
     }
 
     "have a bullet list of not included incomes" in new GetSetup {

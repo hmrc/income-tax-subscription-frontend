@@ -25,11 +25,14 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.mocks.MockAuditingService
+import utilities.agent.TestConstants.{testFormattedNino, testName, testNino}
 import views.html.agent.WhatYouNeedToDo
 
 import scala.concurrent.Future
+import scala.util.Random
 
 class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec with MockAuditingService {
+
 
   object TestWhatYouNeedToDoController extends WhatYouNeedToDoController(
     mock[WhatYouNeedToDo]
@@ -48,6 +51,8 @@ class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec with Mo
     )
   }
 
+
+
   override val controllerName: String = "WhatYouNeedToDoController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
     "show" -> TestWhatYouNeedToDoController.show,
@@ -61,11 +66,13 @@ class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec with Mo
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(false),
           ArgumentMatchers.eq(false),
-          ArgumentMatchers.eq(false)
+          ArgumentMatchers.eq(false),
+          ArgumentMatchers.eq(testName),
+          ArgumentMatchers.eq(testFormattedNino)
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
-          subscriptionRequest.withSession(
+          subscriptionRequestWithName.withSession(
             ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "false",
             ITSASessionKeys.MANDATED_CURRENT_YEAR -> "false",
             ITSASessionKeys.MANDATED_NEXT_YEAR -> "false"
@@ -81,11 +88,13 @@ class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec with Mo
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(true),
           ArgumentMatchers.eq(false),
-          ArgumentMatchers.eq(false)
+          ArgumentMatchers.eq(false),
+          ArgumentMatchers.eq(testName),
+          ArgumentMatchers.eq(testFormattedNino)
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
-          subscriptionRequest.withSession(
+          subscriptionRequestWithName.withSession(
             ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "true",
             ITSASessionKeys.MANDATED_CURRENT_YEAR -> "false",
             ITSASessionKeys.MANDATED_NEXT_YEAR -> "false"
@@ -100,11 +109,13 @@ class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec with Mo
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(false),
           ArgumentMatchers.eq(true),
-          ArgumentMatchers.eq(false)
+          ArgumentMatchers.eq(false),
+          ArgumentMatchers.eq(testName),
+          ArgumentMatchers.eq(testFormattedNino)
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
-          subscriptionRequest.withSession(
+          subscriptionRequestWithName.withSession(
             ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "false",
             ITSASessionKeys.MANDATED_CURRENT_YEAR -> "true",
             ITSASessionKeys.MANDATED_NEXT_YEAR -> "false"
@@ -119,11 +130,13 @@ class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec with Mo
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(false),
           ArgumentMatchers.eq(false),
-          ArgumentMatchers.eq(true)
+          ArgumentMatchers.eq(true),
+          ArgumentMatchers.eq(testName),
+          ArgumentMatchers.eq(testFormattedNino)
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
-          subscriptionRequest.withSession(
+          subscriptionRequestWithName.withSession(
             ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "false",
             ITSASessionKeys.MANDATED_CURRENT_YEAR -> "false",
             ITSASessionKeys.MANDATED_NEXT_YEAR -> "true"
@@ -138,7 +151,7 @@ class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec with Mo
 
   "submit" must {
     "return SEE_OTHER to the task list page" in new Setup {
-      val result: Future[Result] = controller.submit(subscriptionRequest)
+      val result: Future[Result] = controller.submit(subscriptionRequestWithName)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)

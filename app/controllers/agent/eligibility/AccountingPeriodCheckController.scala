@@ -23,10 +23,13 @@ import models.audits.EligibilityAnswerAuditing.EligibilityAnswerAuditModel
 import models.{No, Yes}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
+import uk.gov.hmrc.http.InternalServerException
+import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.eligibility.AccountingPeriodCheck
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
+import scala.util.matching.Regex
 
 @Singleton
 class AccountingPeriodCheckController @Inject()(val auditingService: AuditingService,
@@ -36,19 +39,40 @@ class AccountingPeriodCheckController @Inject()(val auditingService: AuditingSer
                                                 mcc: MessagesControllerComponents,
                                                 val ec: ExecutionContext) extends StatelessController {
 
+  private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
+
+  private def formatNino(clientNino: String): String = {
+    clientNino match {
+      case ninoRegex(startLetters, firstDigits, secondDigits, thirdDigits, finalLetter) =>
+        s"$startLetters $firstDigits $secondDigits $thirdDigits $finalLetter"
+      case other => other
+    }
+  }
+
   def show: Action[AnyContent] = Authenticated { implicit request =>
-    _ =>
-      Ok(accountingPeriodCheck(accountingPeriodCheckForm, routes.AccountingPeriodCheckController.submit, backLink))
+    implicit user =>
+      Ok(accountingPeriodCheck(
+        accountingPeriodCheckForm,
+        routes.AccountingPeriodCheckController.submit,
+        clientName = request.fetchClientName.getOrElse(
+          throw new InternalServerException("[AccountingPeriodCheckController][show] - could not retrieve client name from session")
+        ),
+        clientNino = formatNino(user.clientNino.getOrElse(
+          throw new InternalServerException("[AccountingPeriodCheckController][show] - could not retrieve client nino from session")
+        )),
+        backLink))
   }
 
   def submit: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
+      val clientName = request.fetchClientName.get
+      val clientNino = user.clientNino.get
       accountingPeriodCheckForm.bindFromRequest().fold(
-        formWithErrors => BadRequest(accountingPeriodCheck(formWithErrors, routes.AccountingPeriodCheckController.submit, backLink)),
+        formWithErrors => BadRequest(accountingPeriodCheck(formWithErrors, routes.AccountingPeriodCheckController.submit, clientName, clientNino, backLink)),
         {
           case Yes =>
             auditingService.audit(EligibilityAnswerAuditModel(eligible = true, "yes", "standardAccountingPeriod", user.arn))
-            Redirect(controllers.agent.matching.routes.ClientDetailsController.show())
+            Redirect(controllers.agent.routes.HomeController.home)
           case No =>
             auditingService.audit(EligibilityAnswerAuditModel(eligible = false, "no", "standardAccountingPeriod", user.arn))
             Redirect(routes.CannotTakePartController.show)

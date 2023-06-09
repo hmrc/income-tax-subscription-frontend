@@ -23,10 +23,13 @@ import models.audits.EligibilityAnswerAuditing.EligibilityAnswerAuditModel
 import models.{No, Yes}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
+import uk.gov.hmrc.http.InternalServerException
+import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.eligibility.OtherSourcesOfIncome
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
+import scala.util.matching.Regex
 
 @Singleton
 class OtherSourcesOfIncomeController @Inject()(otherSourcesOfIncome: OtherSourcesOfIncome,
@@ -36,17 +39,38 @@ class OtherSourcesOfIncomeController @Inject()(otherSourcesOfIncome: OtherSource
                                                mcc: MessagesControllerComponents,
                                                val ec: ExecutionContext) extends StatelessController {
 
+  private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
+
+  private def formatNino(clientNino: String): String = {
+    clientNino match {
+      case ninoRegex(startLetters, firstDigits, secondDigits, thirdDigits, finalLetter) =>
+        s"$startLetters $firstDigits $secondDigits $thirdDigits $finalLetter"
+      case other => other
+    }
+  }
+
   def backUrl: String = appConfig.agentIncomeTaxEligibilityFrontendTermsUrl
 
   def show: Action[AnyContent] = Authenticated { implicit request =>
-    _ =>
-      Ok(otherSourcesOfIncome(otherSourcesOfIncomeForm, routes.OtherSourcesOfIncomeController.submit, backUrl))
+    implicit user =>
+      Ok(otherSourcesOfIncome(
+        otherSourcesOfIncomeForm,
+        routes.OtherSourcesOfIncomeController.submit,
+        clientName = request.fetchClientName.getOrElse(
+          throw new InternalServerException("[AccountingPeriodCheckController][show] - could not retrieve client name from session")
+        ),
+        clientNino = formatNino(user.clientNino.getOrElse(
+          throw new InternalServerException("[AccountingPeriodCheckController][show] - could not retrieve client nino from session")
+        )),
+        backUrl))
   }
 
   def submit: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
+      val clientName = request.fetchClientName.get
+      val clientNino = user.clientNino.get
       otherSourcesOfIncomeForm.bindFromRequest().fold(
-        formWithErrors => BadRequest(otherSourcesOfIncome(formWithErrors, routes.OtherSourcesOfIncomeController.submit, backUrl)),
+        formWithErrors => BadRequest(otherSourcesOfIncome(formWithErrors, routes.OtherSourcesOfIncomeController.submit, clientName, clientNino, backUrl)),
         {
           case Yes =>
             auditingService.audit(EligibilityAnswerAuditModel(eligible = false, "yes", "otherIncomeSource", user.arn))

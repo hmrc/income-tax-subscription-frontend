@@ -28,12 +28,22 @@ import utilities.individual
 
 import java.time.LocalDate
 import java.util.UUID
+import scala.util.matching.Regex
 
 object TestConstants {
   /*
   * this nino is a constant, if you need a fresh one use TestModels.newNino
   */
+
+  private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
+
+  lazy val testName: String = "FirstName LastName"
   lazy val testNino: String = individual.TestConstants.testNino
+  lazy val testFormattedNino: String = testNino match {
+    case ninoRegex(startLetters, firstDigits, secondDigits, thirdDigits, finalLetter) =>
+      s"$startLetters $firstDigits $secondDigits $thirdDigits $finalLetter"
+    case other => other
+  }
   lazy val testId: String = "testId"
   lazy val testUtr: String = individual.TestConstants.testUtr
   lazy val testMTDID: String = individual.TestConstants.testMTDID

@@ -179,17 +179,33 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       )
     }
 
-    def showOtherSourcesOfIncome: WSResponse = get("/eligibility/income-sources")
+    def showOtherSourcesOfIncome(sessionData: Map[String, String] = Map(
+      UserMatchingSessionUtil.firstName -> testFirstName,
+      UserMatchingSessionUtil.lastName -> testLastName,
+      ITSASessionKeys.NINO -> testNino
+    )): WSResponse = get("/eligibility/income-sources", sessionData)
 
-    def submitOtherSourcesOfIncome(request: Option[YesNo]): WSResponse = post("/eligibility/income-sources")(
+    def submitOtherSourcesOfIncome(request: Option[YesNo],sessionData: Map[String, String] = Map(
+      UserMatchingSessionUtil.firstName -> testFirstName,
+      UserMatchingSessionUtil.lastName -> testLastName,
+      ITSASessionKeys.NINO -> testNino
+    )): WSResponse = post("/eligibility/income-sources", sessionData)(
       request.fold(Map.empty[String, Seq[String]])(
         model => OtherSourcesOfIncomeForm.otherSourcesOfIncomeForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
       )
     )
 
-    def showPropertyTradingStartAfter: WSResponse = get("/eligibility/property-start-date")
+    def showPropertyTradingStartAfter(sessionData: Map[String, String] = Map(
+      UserMatchingSessionUtil.firstName -> testFirstName,
+      UserMatchingSessionUtil.lastName -> testLastName,
+      ITSASessionKeys.NINO -> testNino
+    )): WSResponse = get("/eligibility/property-start-date", sessionData)
 
-    def submitPropertyTradingStartAfter(request: Option[YesNo]): WSResponse = post("/eligibility/property-start-date")(
+    def submitPropertyTradingStartAfter(request: Option[YesNo],sessionData: Map[String, String] = Map(
+      UserMatchingSessionUtil.firstName -> testFirstName,
+      UserMatchingSessionUtil.lastName -> testLastName,
+      ITSASessionKeys.NINO -> testNino
+    )): WSResponse = post("/eligibility/property-start-date", sessionData)(
       request.fold(Map.empty[String, Seq[String]])(
         model => PropertyTradingStartDateForm.propertyTradingStartDateForm("").fill(model).data.map { case (k, v) => (k, Seq(v)) }
       )
@@ -205,25 +221,49 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       )
     )
 
-    def showSoleTrader(): WSResponse = get("/eligibility/sole-trader-start-date")
+    def showSoleTrader(sessionData: Map[String, String] = Map(
+      UserMatchingSessionUtil.firstName -> testFirstName,
+      UserMatchingSessionUtil.lastName -> testLastName,
+      ITSASessionKeys.NINO -> testNino
+    )): WSResponse = get("/eligibility/sole-trader-start-date", sessionData)
 
-    def submitSoleTraderForm(request: Option[YesNo]): WSResponse = post("/eligibility/sole-trader-start-date")(
+    def submitSoleTraderForm(request: Option[YesNo],sessionData: Map[String, String] = Map(
+      UserMatchingSessionUtil.firstName -> testFirstName,
+      UserMatchingSessionUtil.lastName -> testLastName,
+      ITSASessionKeys.NINO -> testNino
+    )): WSResponse = post("/eligibility/sole-trader-start-date", sessionData)(
       request.fold(Map.empty[String, Seq[String]])(
         model => SoleTraderForm.soleTraderForm("").fill(model).data.map { case (k, v) => (k, Seq(v)) }
       )
     )
 
-    def showAccountingPeriodCheck: WSResponse = get("/eligibility/accounting-period-check")
+    def showAccountingPeriodCheck(sessionData: Map[String, String] = Map(
+      UserMatchingSessionUtil.firstName -> testFirstName,
+      UserMatchingSessionUtil.lastName -> testLastName,
+      ITSASessionKeys.NINO -> testNino
+    )): WSResponse = get("/eligibility/accounting-period-check", sessionData)
 
-    def submitAccountingPeriodCheck(request: Option[YesNo]): WSResponse = post("/eligibility/accounting-period-check")(
+    def submitAccountingPeriodCheck(request: Option[YesNo], sessionData: Map[String, String] = Map(
+      UserMatchingSessionUtil.firstName -> testFirstName,
+      UserMatchingSessionUtil.lastName -> testLastName,
+      ITSASessionKeys.NINO -> testNino
+    )): WSResponse = post("/eligibility/accounting-period-check", sessionData)(
       request.fold(Map.empty[String, Seq[String]])(
         model => AccountingPeriodCheckForm.accountingPeriodCheckForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
       )
     )
 
-    def whatYouNeedToDo(): WSResponse = get("/what-you-need-to-do")
+    def whatYouNeedToDo(sessionData: Map[String, String] = Map(
+      UserMatchingSessionUtil.firstName -> testFirstName,
+      UserMatchingSessionUtil.lastName -> testLastName,
+      ITSASessionKeys.NINO -> testNino
+    )): WSResponse = get("/what-you-need-to-do", sessionData)
 
-    def submitWhatYouNeedToDo(): WSResponse = post("/what-you-need-to-do")(Map.empty)
+    def submitWhatYouNeedToDo(sessionData: Map[String, String] = Map(
+      UserMatchingSessionUtil.firstName -> testFirstName,
+      UserMatchingSessionUtil.lastName -> testLastName,
+      ITSASessionKeys.NINO -> testNino
+    )): WSResponse = post("/what-you-need-to-do", sessionData)(Map.empty)
 
     def declinedSignUpNextYear(): WSResponse = get("/declined-sign-up-next-year")
 

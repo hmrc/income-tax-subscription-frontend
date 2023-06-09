@@ -34,7 +34,7 @@
     hmrcPageHeading: HmrcPageHeading
 )
 
-@(otherSourcesOfIncomeForm: Form[YesNo], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(otherSourcesOfIncomeForm: Form[YesNo], postAction: Call, clientName : String, clientNino : String, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @inputContent = {
 
@@ -57,12 +57,14 @@
 
 @mainTemplate(title = messages("agent.other-sources-of-income.title"), optForm = Some(otherSourcesOfIncomeForm), backLink = Some(backUrl)) {
 
-    @hmrcPageHeading(PageHeading(
-        text = messages("agent.other-sources-of-income.title"),
-        section = Some(messages("agent.other-sources-of-income.caption")),
-        headingClasses = Some("govuk-heading-l"),
-        captionClasses = Some("govuk-caption-l")
-    ))
+    <span class="govuk-caption-l">
+      @messages("agent.other-sources-of-income.caption", clientName, clientNino)
+    </span>
+
+    <h1 class="govuk-heading-l">
+      @messages("agent.other-sources-of-income.heading")
+    </h1>
+
 
     @govukDetails(Details(
         summary = Text(messages("agent.other-sources-of-income.include")),

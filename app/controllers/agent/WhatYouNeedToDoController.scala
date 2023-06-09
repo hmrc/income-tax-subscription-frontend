@@ -21,10 +21,13 @@ import common.Constants.ITSASessionKeys
 import config.AppConfig
 import play.api.mvc._
 import services.{AuditingService, AuthService}
+import uk.gov.hmrc.http.InternalServerException
+import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.WhatYouNeedToDo
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
+import scala.util.matching.Regex
 
 @Singleton
 class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo)
@@ -33,8 +36,18 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo)
                                           val authService: AuthService)
                                          (implicit mcc: MessagesControllerComponents, val ec: ExecutionContext) extends AuthenticatedController {
 
+  private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
+
+  private def formatNino(clientNino: String): String = {
+    clientNino match {
+      case ninoRegex(startLetters, firstDigits, secondDigits, thirdDigits, finalLetter) =>
+        s"$startLetters $firstDigits $secondDigits $thirdDigits $finalLetter"
+      case other => other
+    }
+  }
+
   def show: Action[AnyContent] = Authenticated { implicit request =>
-    _ =>
+    implicit user =>
       val eligibleNextYearOnly: Boolean = request.session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY).contains("true")
       val mandatedCurrentYear: Boolean = request.session.get(ITSASessionKeys.MANDATED_CURRENT_YEAR).contains("true")
       val mandatedNextYear: Boolean = request.session.get(ITSASessionKeys.MANDATED_NEXT_YEAR).contains("true")
@@ -42,7 +55,13 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo)
         postAction = routes.WhatYouNeedToDoController.submit,
         eligibleNextYearOnly = eligibleNextYearOnly,
         mandatedCurrentYear = mandatedCurrentYear,
-        mandatedNextYear = mandatedNextYear
+        mandatedNextYear = mandatedNextYear,
+        clientName = request.fetchClientName.getOrElse(
+          throw new InternalServerException("[AccountingPeriodCheckController][show] - could not retrieve client name from session")
+        ),
+        clientNino = formatNino(user.clientNino.getOrElse(
+          throw new InternalServerException("[AccountingPeriodCheckController][show] - could not retrieve client nino from session")
+        )),
       ))
   }
 

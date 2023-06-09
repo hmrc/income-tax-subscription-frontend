@@ -18,7 +18,9 @@ package controllers.agent.eligibility
 
 import forms.agent.PropertyTradingStartDateForm
 import forms.submapping.YesNoMapping
+import helpers.IntegrationTestConstants.testFullName
 import helpers.agent.ComponentSpecBase
+import helpers.agent.IntegrationTestConstants.testFormattedNino
 import helpers.agent.servicemocks.AuthStub
 import helpers.servicemocks.AuditStub.verifyAudit
 import models.{No, Yes, YesNo}
@@ -36,7 +38,7 @@ class PropertyTradingStartAfterControllerISpec extends ComponentSpecBase {
   trait GetSetup {
     AuthStub.stubAuthSuccess()
 
-    lazy val response: WSResponse = IncomeTaxSubscriptionFrontend.showPropertyTradingStartAfter
+    lazy val response: WSResponse = IncomeTaxSubscriptionFrontend.showPropertyTradingStartAfter()
     lazy val doc: Document = Jsoup.parse(response.body)
     lazy val pageContent: Element = doc.mainContent
   }
@@ -47,7 +49,7 @@ class PropertyTradingStartAfterControllerISpec extends ComponentSpecBase {
 
     def title(date: String) = s"Did your client start letting property on or after $date?"
 
-    val caption = "This section is Eligibility questions"
+    val caption = s"$testFullName | $testFormattedNino"
 
     val hint = "This does not include letting:"
     val point1 = "UK properties"
@@ -79,16 +81,16 @@ class PropertyTradingStartAfterControllerISpec extends ComponentSpecBase {
     }
 
     "have a view with the correct heading and caption" in new GetSetup {
-      val header: Element = pageContent.selectHead(".hmrc-page-heading")
-      header.selectHead("h1.govuk-heading-l").text mustBe PropertyStartAfterMessage.title(date)
-      header.selectHead("p.hmrc-caption.govuk-caption-l").text mustBe PropertyStartAfterMessage.caption
+      val header: Element = pageContent
+      header.selectHead(".govuk-heading-l").text mustBe PropertyStartAfterMessage.title(date)
+      header.selectHead(".govuk-caption-l").text mustBe PropertyStartAfterMessage.caption
     }
 
     "have a view with the correct info" in new GetSetup {
       pageContent.getNthUnorderedList(1).getNthListItem(1).text mustBe PropertyStartAfterMessage.point1
       pageContent.getNthUnorderedList(1).getNthListItem(2).text mustBe PropertyStartAfterMessage.point2
       pageContent.getNthUnorderedList(1).getNthListItem(3).text mustBe PropertyStartAfterMessage.point3
-      pageContent.selectNth("p", 2).text mustBe PropertyStartAfterMessage.hint
+      pageContent.selectNth("p", 1).text mustBe PropertyStartAfterMessage.hint
       pageContent.getNthUnorderedList(2).getNthListItem(1).text mustBe PropertyStartAfterMessage.point4
       pageContent.getNthUnorderedList(2).getNthListItem(2).text mustBe PropertyStartAfterMessage.point5
     }

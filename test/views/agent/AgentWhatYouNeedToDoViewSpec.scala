@@ -23,22 +23,32 @@ import utilities.{AccountingPeriodUtil, ViewSpec}
 import views.html.agent.WhatYouNeedToDo
 
 import java.time.format.DateTimeFormatter
+import scala.util.Random
 
 class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
+
+  private val nameLengthCharacters = 10
+  private val clientName = Random.alphanumeric.take(nameLengthCharacters).mkString
+  private val clientNino = Random.alphanumeric.take(nameLengthCharacters).mkString
 
   val whatYouNeedToDo: WhatYouNeedToDo = app.injector.instanceOf[WhatYouNeedToDo]
 
   "WhatYouNeedToDo" when {
     "the user is mandated for the current year" should {
-      def mainContent: Element = document(eligibleNextYearOnly = false, mandatedCurrentYear = true, mandatedNextYear = false).mainContent
+      def mainContent: Element = document(eligibleNextYearOnly = false, mandatedCurrentYear = true, mandatedNextYear = false, clientName, clientNino).mainContent
 
       "use the correct template details" in new TemplateViewTest(
-        view = page(eligibleNextYearOnly = false, mandatedCurrentYear = true, mandatedNextYear = false),
+        view = page(eligibleNextYearOnly = false, mandatedCurrentYear = true, mandatedNextYear = false, clientName, clientNino),
         title = WhatYouNeedToDoMessages.heading,
         isAgent = true,
         backLink = None,
         hasSignOutLink = true
       )
+
+      "have a client Name and Nino" in {
+        mainContent.selectHead(".govuk-caption-l").text contains(clientName)
+        mainContent.selectHead(".govuk-caption-l").text contains(clientNino)
+      }
 
       "have a first paragraph" in {
         mainContent.selectNth("p", 1).text mustBe WhatYouNeedToDoMessages.MandatedCurrentYear.paraOne
@@ -90,10 +100,10 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
       }
     }
     "the user is mandated for next tax year and only eligible for the next tax year" should {
-      def mainContent: Element = document(eligibleNextYearOnly = true, mandatedCurrentYear = false, mandatedNextYear = true).mainContent
+      def mainContent: Element = document(eligibleNextYearOnly = true, mandatedCurrentYear = false, mandatedNextYear = true, clientNino, clientName).mainContent
 
       "use the correct template details" in new TemplateViewTest(
-        view = page(eligibleNextYearOnly = true, mandatedCurrentYear = false, mandatedNextYear = true),
+        view = page(eligibleNextYearOnly = true, mandatedCurrentYear = false, mandatedNextYear = true, clientName, clientNino),
         title = WhatYouNeedToDoMessages.heading,
         isAgent = true,
         backLink = None,
@@ -101,6 +111,12 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
       )
 
       // rest of the tests here for mandated next year and eligible next year content
+
+      "have a client Name and Nino" in {
+        mainContent.selectHead(".govuk-caption-l").text contains(clientName)
+        mainContent.selectHead(".govuk-caption-l").text contains(clientNino)
+      }
+
       "have a first paragraph" in {
         mainContent.selectNth("p", 1).text mustBe WhatYouNeedToDoMessages.MandatedAndEligibleForNextYearOnly.paraOne
       }
@@ -147,15 +163,20 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
       }
     }
     "the user is voluntary for both years but only eligible for next year" should {
-      def mainContent: Element = document(eligibleNextYearOnly = true, mandatedCurrentYear = false, mandatedNextYear = false).mainContent
+      def mainContent: Element = document(eligibleNextYearOnly = true, mandatedCurrentYear = false, mandatedNextYear = false, clientName, clientNino).mainContent
 
       "use the correct template details" in new TemplateViewTest(
-        view = page(eligibleNextYearOnly = true, mandatedCurrentYear = false, mandatedNextYear = false),
+        view = page(eligibleNextYearOnly = true, mandatedCurrentYear = false, mandatedNextYear = false, clientName, clientNino),
         title = WhatYouNeedToDoMessages.heading,
         isAgent = true,
         backLink = None,
         hasSignOutLink = true
       )
+
+      "have a client Name and Nino" in {
+        mainContent.selectHead(".govuk-caption-l").text contains(clientName)
+        mainContent.selectHead(".govuk-caption-l").text contains(clientNino)
+      }
 
       "have a first paragraph" in {
         mainContent.selectNth("p", 1).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.paraOne
@@ -212,15 +233,20 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
       }
     }
     "the user is voluntary and eligible for both years" should {
-      def mainContent: Element = document(eligibleNextYearOnly = false, mandatedCurrentYear = false, mandatedNextYear = false).mainContent
+      def mainContent: Element = document(eligibleNextYearOnly = false, mandatedCurrentYear = false, mandatedNextYear = false, clientName, clientNino).mainContent
 
       "use the correct template details" in new TemplateViewTest(
-        view = page(eligibleNextYearOnly = false, mandatedCurrentYear = false, mandatedNextYear = false),
+        view = page(eligibleNextYearOnly = false, mandatedCurrentYear = false, mandatedNextYear = false, clientName, clientNino),
         title = WhatYouNeedToDoMessages.heading,
         isAgent = true,
         backLink = None,
         hasSignOutLink = true
       )
+
+      "have a client Name and Nino" in {
+        mainContent.selectHead(".govuk-caption-l").text contains(clientName)
+        mainContent.selectHead(".govuk-caption-l").text contains(clientNino)
+      }
 
       "have a first paragraph" in {
         mainContent.selectNth("p", 1).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.paraOne
@@ -281,17 +307,19 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
     }
   }
 
-  def page(eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean, mandatedNextYear: Boolean): HtmlFormat.Appendable = {
+  def page(eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, clientName: String, clientNino: String): HtmlFormat.Appendable = {
     whatYouNeedToDo(
       postAction = testCall,
       eligibleNextYearOnly = eligibleNextYearOnly,
       mandatedCurrentYear = mandatedCurrentYear,
-      mandatedNextYear = mandatedNextYear
+      mandatedNextYear = mandatedNextYear,
+      clientName = clientName,
+      clientNino = clientNino
     )
   }
 
-  def document(eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean, mandatedNextYear: Boolean): Document = {
-    Jsoup.parse(page(eligibleNextYearOnly, mandatedCurrentYear, mandatedNextYear).body)
+  def document(eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, clientName: String, clientNino: String): Document = {
+    Jsoup.parse(page(eligibleNextYearOnly, mandatedCurrentYear, mandatedNextYear, clientName, clientNino).body)
   }
 
   object WhatYouNeedToDoMessages {

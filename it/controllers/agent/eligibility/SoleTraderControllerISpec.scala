@@ -3,7 +3,9 @@ package controllers.agent.eligibility
 
 import forms.agent.{PropertyTradingStartDateForm, SoleTraderForm}
 import forms.submapping.YesNoMapping
+import helpers.IntegrationTestConstants.testFullName
 import helpers.agent.ComponentSpecBase
+import helpers.agent.IntegrationTestConstants.testFormattedNino
 import helpers.agent.servicemocks.AuthStub
 import helpers.servicemocks.AuditStub.verifyAudit
 import models.{No, Yes, YesNo}
@@ -33,7 +35,7 @@ class SoleTraderControllerISpec extends ComponentSpecBase {
 
     def heading(date: String) = s"Did your client’s business start trading on or after $date?"
 
-    val caption: String = "This section is Eligibility questions"
+    val caption: String = s"$testFullName | $testFormattedNino"
 
     def invalidError(date: String) = s"Select yes if your client is a sole trader that began trading on or after $date?"
 
@@ -61,9 +63,9 @@ class SoleTraderControllerISpec extends ComponentSpecBase {
     }
 
     "have a view with the correct heading and caption" in new GetSetup {
-      val header: Element = pageContent.selectHead(".hmrc-page-heading")
-      header.selectHead("h1.govuk-heading-l").text mustBe SoleTraderPageMessages.heading(date)
-      header.selectHead("p.hmrc-caption.govuk-caption-l").text mustBe SoleTraderPageMessages.caption
+      val header: Element = pageContent
+      header.selectHead(".govuk-heading-l").text mustBe SoleTraderPageMessages.heading(date)
+      header.selectHead(".govuk-caption-l").text mustBe SoleTraderPageMessages.caption
     }
 
     "have a form" in new GetSetup {

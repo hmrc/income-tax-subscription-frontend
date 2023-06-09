@@ -2,7 +2,9 @@
 package controllers.agent.eligibility
 
 import forms.agent.AccountingPeriodCheckForm
+import helpers.IntegrationTestConstants.testFullName
 import helpers.agent.ComponentSpecBase
+import helpers.agent.IntegrationTestConstants.testFormattedNino
 import helpers.agent.servicemocks.AuthStub
 import helpers.servicemocks.AuditStub.verifyAudit
 import models.{No, Yes, YesNo}
@@ -17,7 +19,7 @@ class AccountingPeriodCheckControllerISpec extends ComponentSpecBase {
     val back: String = "Back"
 
     val heading: String = "Do your client’s business accounting periods all run from 6 April to 5 April?"
-    val caption: String = "This section is Eligibility questions"
+    val caption: String =  s"$testFullName | $testFormattedNino"
     val hint: String = "The tax year runs from 6 April to 5 April. The accounting period for your client’s self-employment or property needs to be the same if you would like to sign them up to this service."
     val invalidError: String = "Select yes if all of your client’s business accounting periods are from 6 April to 5 April"
 
@@ -29,7 +31,7 @@ class AccountingPeriodCheckControllerISpec extends ComponentSpecBase {
   trait GetSetup {
     AuthStub.stubAuthSuccess()
 
-    lazy val response: WSResponse = IncomeTaxSubscriptionFrontend.showAccountingPeriodCheck
+    lazy val response: WSResponse = IncomeTaxSubscriptionFrontend.showAccountingPeriodCheck()
     lazy val doc: Document = Jsoup.parse(response.body)
     lazy val pageMainContent: Element = doc.mainContent
   }
@@ -54,13 +56,13 @@ class AccountingPeriodCheckControllerISpec extends ComponentSpecBase {
     }
 
     "have a view with the correct heading and caption" in new GetSetup {
-      val header: Element = pageMainContent.selectHead(".hmrc-page-heading")
-      header.selectHead("h1.govuk-heading-l").text mustBe AccountingPeriodCheckMessages.heading
-      header.selectHead("p.hmrc-caption.govuk-caption-l").text mustBe AccountingPeriodCheckMessages.caption
+      val header: Element = pageMainContent
+      header.selectHead(".govuk-heading-l").text mustBe AccountingPeriodCheckMessages.heading
+      header.selectHead(".govuk-caption-l").text mustBe AccountingPeriodCheckMessages.caption
     }
 
     "has a hint paragraph to explain what is accounting period check" in new GetSetup {
-      pageMainContent.selectNth("p", 2).text mustBe AccountingPeriodCheckMessages.hint
+      pageMainContent.selectNth("p", 1).text mustBe AccountingPeriodCheckMessages.hint
     }
 
     "have a form" which {
@@ -120,7 +122,7 @@ class AccountingPeriodCheckControllerISpec extends ComponentSpecBase {
       verifyAudit()
       response must have(
         httpStatus(SEE_OTHER),
-        redirectURI(controllers.agent.matching.routes.ClientDetailsController.show().url)
+        redirectURI(controllers.agent.routes.HomeController.home.url)
       )
     }
 
