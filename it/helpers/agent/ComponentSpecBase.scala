@@ -185,7 +185,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       ITSASessionKeys.NINO -> testNino
     )): WSResponse = get("/eligibility/income-sources", sessionData)
 
-    def submitOtherSourcesOfIncome(request: Option[YesNo],sessionData: Map[String, String] = Map(
+    def submitOtherSourcesOfIncome(request: Option[YesNo], sessionData: Map[String, String] = Map(
       UserMatchingSessionUtil.firstName -> testFirstName,
       UserMatchingSessionUtil.lastName -> testLastName,
       ITSASessionKeys.NINO -> testNino
@@ -201,7 +201,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       ITSASessionKeys.NINO -> testNino
     )): WSResponse = get("/eligibility/property-start-date", sessionData)
 
-    def submitPropertyTradingStartAfter(request: Option[YesNo],sessionData: Map[String, String] = Map(
+    def submitPropertyTradingStartAfter(request: Option[YesNo], sessionData: Map[String, String] = Map(
       UserMatchingSessionUtil.firstName -> testFirstName,
       UserMatchingSessionUtil.lastName -> testLastName,
       ITSASessionKeys.NINO -> testNino
@@ -227,7 +227,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       ITSASessionKeys.NINO -> testNino
     )): WSResponse = get("/eligibility/sole-trader-start-date", sessionData)
 
-    def submitSoleTraderForm(request: Option[YesNo],sessionData: Map[String, String] = Map(
+    def submitSoleTraderForm(request: Option[YesNo], sessionData: Map[String, String] = Map(
       UserMatchingSessionUtil.firstName -> testFirstName,
       UserMatchingSessionUtil.lastName -> testLastName,
       ITSASessionKeys.NINO -> testNino
@@ -374,7 +374,11 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       ITSASessionKeys.NINO -> testNino
     )): WSResponse = get("/business/accounting-method-property", sessionData)
 
-    def overseasPropertyAccountingMethod(): WSResponse = get("/business/overseas-property-accounting-method")
+    def overseasPropertyAccountingMethod(sessionData: Map[String, String] = Map(
+      UserMatchingSessionUtil.firstName -> testFirstName,
+      UserMatchingSessionUtil.lastName -> testLastName,
+      ITSASessionKeys.NINO -> testNino
+    )): WSResponse = get("/business/overseas-property-accounting-method", sessionData)
 
     def ukPropertyStartDate(sessionData: Map[String, String] = Map(
       UserMatchingSessionUtil.firstName -> testFirstName,
@@ -416,13 +420,21 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       post("/business/uk-property-check-your-answers", sessionData)(Map.empty)
     }
 
-    def overseasPropertyStartDate(): WSResponse = get("/business/overseas-commencement-date")
+    def overseasPropertyStartDate(sessionData: Map[String, String] = Map(
+      UserMatchingSessionUtil.firstName -> testFirstName,
+      UserMatchingSessionUtil.lastName -> testLastName,
+      ITSASessionKeys.NINO -> testNino
+    )): WSResponse = get("/business/overseas-commencement-date", sessionData)
 
-    def submitOverseasPropertyStartDate(inEditMode: Boolean, request: Option[DateModel]): WSResponse = {
+    def submitOverseasPropertyStartDate(inEditMode: Boolean, request: Option[DateModel], sessionData: Map[String, String] = Map(
+      UserMatchingSessionUtil.firstName -> testFirstName,
+      UserMatchingSessionUtil.lastName -> testLastName,
+      ITSASessionKeys.NINO -> testNino
+    )): WSResponse = {
       val testValidMaxStartDate = LocalDate.now.minusYears(1)
       val testValidMinStartDate = LocalDate.of(1900, 1, 1)
       val uri = s"/business/overseas-commencement-date?editMode=$inEditMode"
-      post(uri)(
+      post(uri, sessionData)(
         request.fold(Map.empty[String, Seq[String]])(
           model =>
             OverseasPropertyStartDateForm.overseasPropertyStartDateForm(testValidMinStartDate, testValidMaxStartDate, d => d.toString)
@@ -442,7 +454,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
     def submitRemoveClientOverseasProperty(body: Map[String, Seq[String]]): WSResponse = post("/business/remove-overseas-property-business")(body)
 
-    def getOverseasPropertyCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse = {
+    def getOverseasPropertyCheckYourAnswers(sessionData: Map[String, String] = Map()): WSResponse = {
       get("/business/overseas-property-check-your-answers", sessionData)
     }
 
@@ -494,7 +506,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       )
     }
 
-    def submitPropertyAccountingMethod(inEditMode: Boolean, request: Option[AccountingMethod],sessionData: Map[String, String] = Map(
+    def submitPropertyAccountingMethod(inEditMode: Boolean, request: Option[AccountingMethod], sessionData: Map[String, String] = Map(
       UserMatchingSessionUtil.firstName -> testFirstName,
       UserMatchingSessionUtil.lastName -> testLastName,
       ITSASessionKeys.NINO -> testNino
@@ -508,9 +520,13 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       )
     }
 
-    def submitOverseasPropertyAccountingMethod(inEditMode: Boolean, request: Option[AccountingMethod]): WSResponse = {
+    def submitOverseasPropertyAccountingMethod(inEditMode: Boolean, request: Option[AccountingMethod], sessionData: Map[String, String] = Map(
+      UserMatchingSessionUtil.firstName -> testFirstName,
+      UserMatchingSessionUtil.lastName -> testLastName,
+      ITSASessionKeys.NINO -> testNino
+    )): WSResponse = {
       val uri = s"/business/overseas-property-accounting-method?editMode=$inEditMode"
-      post(uri)(
+      post(uri, sessionData)(
         request.fold(Map.empty[String, Seq[String]])(
           model =>
             AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }

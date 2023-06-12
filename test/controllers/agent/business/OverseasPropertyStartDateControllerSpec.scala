@@ -27,6 +27,7 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.agent.mocks.MockAgentAuthService
 import services.mocks.{MockAuditingService, MockSubscriptionDetailsService}
+import uk.gov.hmrc.http.InternalServerException
 import utilities.SubscriptionDataKeys.OverseasPropertyStartDate
 import utilities.TestModels.{testAccountingMethodProperty, testPropertyStartDateModel}
 
@@ -60,8 +61,17 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
   )
 
   "show" should {
+    "throw an InternalServerException" when {
+      "there are no client details in session" in new Test {
+        mockFetchOverseasProperty(None)
+
+        intercept[InternalServerException](await(controller.show(isEditMode = false)(subscriptionRequest)))
+          .message mustBe "[IncomeTaxAgentUser][clientDetails] - could not retrieve client details from session"
+      }
+    }
+
     "display the foreign property start date view and return OK (200) without fetching income source" in new Test {
-      lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
+      lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequestWithName))
 
       mockFetchOverseasProperty(Some(OverseasPropertyModel(
         accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
@@ -80,12 +90,12 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
     val minStartDate = LocalDate.of(1900, 1, 1)
 
     def callSubmit(isEditMode: Boolean): Future[Result] = TestOverseasPropertyStartDateController$.submit(isEditMode = isEditMode)(
-      subscriptionRequest.post(OverseasPropertyStartDateForm.overseasPropertyStartDateForm(minStartDate, maxStartDate, d => d.toString),
+      subscriptionRequestWithName.post(OverseasPropertyStartDateForm.overseasPropertyStartDateForm(minStartDate, maxStartDate, d => d.toString),
         testValidMaxStartDate)
     )
 
     def callSubmitWithErrorForm(isEditMode: Boolean): Future[Result] = TestOverseasPropertyStartDateController$.submit(isEditMode = isEditMode)(
-      subscriptionRequest
+      subscriptionRequestWithName
     )
 
     "redirect to agent foreign property accounting method page" when {

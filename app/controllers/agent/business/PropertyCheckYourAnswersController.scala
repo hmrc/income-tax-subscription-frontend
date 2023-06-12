@@ -23,11 +23,11 @@ import models.common.PropertyModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
+import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.business.PropertyCheckYourAnswers
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 
 @Singleton
 class PropertyCheckYourAnswersController @Inject()(val propertyCheckYourAnswersView: PropertyCheckYourAnswers,
@@ -39,7 +39,7 @@ class PropertyCheckYourAnswersController @Inject()(val propertyCheckYourAnswersV
                                                    val appConfig: AppConfig) extends AuthenticatedController with ReferenceRetrieval {
 
 
-  def show(isEditMode: Boolean): Action[AnyContent]  = Authenticated.async { implicit request =>
+  def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       withAgentReference { reference =>
         withProperty(reference) { property =>

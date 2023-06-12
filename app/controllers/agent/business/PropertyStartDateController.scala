@@ -16,7 +16,7 @@
 
 package controllers.agent.business
 
-import auth.agent.{AuthenticatedController, IncomeTaxAgentUser}
+import auth.agent.AuthenticatedController
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
 import forms.agent.PropertyStartDateForm
