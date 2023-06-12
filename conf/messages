@@ -227,9 +227,10 @@ overseas.property.line-1                                        = This is the da
 overseas.property.start-date.hint                               = For example, 17 8 2014.
 
 # Agent Overseas Property Start Date
-agent.overseas.property.name.heading                            = When did your client’s overseas property business start trading?
-agent.overseas.property.line-1                                  = This is the date that letting or renting out any overseas property first started.
-agent.overseas.property.start-date.hint                         = For example, 17 8 2014.
+agent.overseas-property.start-date.heading                      = When did your client’s overseas property business start trading?
+agent.overseas-property.start-date.heading.caption              = {0} | {1}
+agent.overseas-property.start-date.line-1                       = This is the date that letting or renting out any overseas property first started.
+agent.overseas-property.start-date.hint                         = For example, 17 8 2014.
 
 # Overseas Property Start Date errors
 error.overseas.property.day-month-year.empty                    = Enter the date your overseas property business started trading
@@ -674,7 +675,8 @@ agent.property.accounting-method.radio.cash                     = Cash basis acc
 agent.property.accounting-method.radio.accruals                 = Traditional accounting
 
 # Agent Overseas Property Accounting Method Page
-agent.overseas.property.accounting-method.title                 = What accounting method does your client use for their overseas property business?
+agent.overseas-property.accounting-method.heading               = What accounting method does your client use for their overseas property business?
+agent.overseas-property.accounting-method.heading.caption               = {0} | {1}
 
 ## Business Name
 agent.business.name.title                                       = Business name
@@ -883,14 +885,15 @@ agent.property.check-your-answers.accounting-method.add               = Add UK p
 agent.property.check-your-answers.accounting-method.change            = Change UK property business accounting method
 
 ## Agent Overseas property check your answers
-agent.business.check-your-answers.content.overseas-property.title                      = Check your answers - overseas property business
-agent.business.check-your-answers.content.overseas-property.caption                    = Overseas property business you entered
-agent.business.check-your-answers.content.overseas-property-start-date.question        = Overseas property business trading start date
-agent.business.check-your-answers.content.overseas-property-start-date.add             = Add Overseas property business trading start date
-agent.business.check-your-answers.content.overseas-property-start-date.change          = Change Overseas property business trading start date
-agent.business.check-your-answers.content.overseas-property-accounting-method.question = Overseas property business accounting method
-agent.business.check-your-answers.content.overseas-property-accounting-method.add      = Add Overseas property business accounting method
-agent.business.check-your-answers.content.overseas-property-accounting-method.change   = Change Overseas property business accounting method
+agent.overseas-property.check-your-answers.title                      = Check your answers - overseas property business
+agent.overseas-property.check-your-answers.heading                    = Check your answers
+agent.overseas-property.check-your-answers.heading.caption            = {0} | {1}
+agent.overseas-property.check-your-answers.start-date.question        = Overseas property business trading start date
+agent.overseas-property.check-your-answers.start-date.add             = Add Overseas property business trading start date
+agent.overseas-property.check-your-answers.start-date.change          = Change Overseas property business trading start date
+agent.overseas-property.check-your-answers.accounting-method.question = Overseas property business accounting method
+agent.overseas-property.check-your-answers.accounting-method.add      = Add Overseas property business accounting method
+agent.overseas-property.check-your-answers.accounting-method.change   = Change Overseas property business accounting method
 
 ## Agent remove business
 agent.business.remove-sole-trader-business.heading                  = Are you sure you want to delete {0}{1}?

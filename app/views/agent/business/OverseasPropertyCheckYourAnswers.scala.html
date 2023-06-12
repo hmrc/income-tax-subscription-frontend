@@ -18,6 +18,7 @@
 @import models.common.OverseasPropertyModel
 @import views.html.templates.AgentMainTemplate
 @import views.html.templates.injected.{CheckYourAnswers, CheckYourAnswersRow}
+@import utilities.UserMatchingSessionUtil.ClientDetails
 
 @this(
         mainTemplate: AgentMainTemplate,
@@ -28,7 +29,8 @@
 @(
         viewModel: OverseasPropertyModel,
         postAction: Call,
-        backUrl: String
+        backUrl: String,
+        clientDetails: ClientDetails
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @startDate(maybeStartDate: Option[DateModel]) = @{
@@ -46,38 +48,40 @@
     }
 }
 
-@mainTemplate(title = messages("agent.business.check-your-answers.content.overseas-property.title"), backLink = Some(backUrl)) {
+@mainTemplate(title = messages("agent.overseas-property.check-your-answers.title"), backLink = Some(backUrl)) {
+
     @checkYourAnswers(
-        heading = messages("agent.business.check-your-answers.heading"),
-        caption = messages("agent.business.check-your-answers.content.overseas-property.caption"),
+        heading = messages("agent.overseas-property.check-your-answers.heading"),
+        caption = messages("agent.overseas-property.check-your-answers.heading.caption", clientDetails.name, clientDetails.formattedNino),
         isIndividual = false,
         postAction = postAction,
         saveAndContinue = !viewModel.confirmed,
-        saveAndReturnReference = Some("overseas-property-check-your-answers")
+        saveAndReturnReference = Some("overseas-property-check-your-answers"),
+        sectionCaption = false
     ) {
         @checkYourAnswersRow(
             field = "start-date",
-            question = messages("agent.business.check-your-answers.content.overseas-property-start-date.question"),
+            question = messages("agent.overseas-property.check-your-answers.start-date.question"),
             answer = startDate(viewModel.startDate),
             changeText = if(viewModel.startDate.isDefined) None else Some(messages("base.add")),
             changeUrl = Some(controllers.agent.business.routes.OverseasPropertyStartDateController.show(editMode = true).url),
             hiddenContent =
                     if(viewModel.startDate.isDefined)
-                        messages("agent.business.check-your-answers.content.overseas-property-start-date.change")
+                        messages("agent.overseas-property.check-your-answers.start-date.change")
                     else
-                        messages("agent.business.check-your-answers.content.overseas-property-start-date.add")
+                        messages("agent.overseas-property.check-your-answers.start-date.add")
         )
         @checkYourAnswersRow(
             field = "accounting-method",
-            question = messages("agent.business.check-your-answers.content.overseas-property-accounting-method.question"),
+            question = messages("agent.overseas-property.check-your-answers.accounting-method.question"),
             answer = accountingMethod(viewModel.accountingMethod),
             changeText = if(viewModel.accountingMethod.isDefined) None else Some(messages("base.add")),
             changeUrl = Some(controllers.agent.business.routes.OverseasPropertyAccountingMethodController.show(editMode = true).url),
             hiddenContent =
                     if(viewModel.accountingMethod.isDefined)
-                        messages("agent.business.check-your-answers.content.overseas-property-accounting-method.change")
+                        messages("agent.overseas-property.check-your-answers.accounting-method.change")
                     else
-                        messages("agent.business.check-your-answers.content.overseas-property-accounting-method.add")
+                        messages("agent.overseas-property.check-your-answers.accounting-method.add")
         )
     }
 }

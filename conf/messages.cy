@@ -226,9 +226,10 @@ overseas.property.line-1                                         = Dyma’r dydd
 overseas.property.start-date.hint                                = Er enghraifft, 17 8 2014.
 
 # Agent Overseas Property Start Date
-agent.overseas.property.name.heading                            = Pryd y dechreuodd busnes eiddo tramor eich cleient fasnachu?
-agent.overseas.property.line-1                                  = Dyma’r dyddiad y dechreuodd roi unrhyw eiddo tramor ar osod yn y lle cyntaf.
-agent.overseas.property.start-date.hint                         = Er enghraifft, 17 8 2014.
+agent.overseas-property.start-date.heading                       = Pryd y dechreuodd busnes eiddo tramor eich cleient fasnachu?
+agent.overseas-property.start-date.heading.caption               = {0} | {1}
+agent.overseas-property.start-date.line-1                        = Dyma’r dyddiad y dechreuodd roi unrhyw eiddo tramor ar osod yn y lle cyntaf.
+agent.overseas-property.start-date.hint                          = Er enghraifft, 17 8 2014.
 
 # Overseas Property Start Date errors
 error.overseas.property.day-month-year.empty                     = Nodwch y dyddiad y dechreuodd eich busnes eiddo tramor fasnachu
@@ -673,7 +674,8 @@ agent.property.accounting-method.radio.cash                     = Cyfrifyddu ar 
 agent.property.accounting-method.radio.accruals                 = Cyfrifyddu traddodiadol
 
 # Agent Overseas Property Accounting Method Page
-agent.overseas.property.accounting-method.title                 = Pa ddull cyfrifo y mae’ch cleient yn ei ddefnyddio ar gyfer ei fusnes eiddo tramor?
+agent.overseas-property.accounting-method.heading               = Pa ddull cyfrifo y mae’ch cleient yn ei ddefnyddio ar gyfer ei fusnes eiddo tramor?
+agent.overseas-property.accounting-method.heading.caption       = {0} | {1}
 
 ## Business Name
 agent.business.name.title                                       = Enw’r busnes
@@ -881,14 +883,15 @@ agent.property.check-your-answers.accounting-method.add               = Ychwaneg
 agent.property.check-your-answers.accounting-method.change            = Newid dull cyfrifyddu’r busnes eiddo yn y DU
 
 ## Agent Overseas property check your answers
-agent.business.check-your-answers.content.overseas-property.title                      = Gwirio’ch atebion – busnes eiddo tramor
-agent.business.check-your-answers.content.overseas-property.caption                    = Manylion y busnes eiddo tramor a nodwyd gennych
-agent.business.check-your-answers.content.overseas-property-start-date.question        = Dyddiad dechrau masnachu’r busnes eiddo tramor
-agent.business.check-your-answers.content.overseas-property-start-date.add             = Ychwanegu dyddiad dechrau masnachu’r busnes eiddo tramor
-agent.business.check-your-answers.content.overseas-property-start-date.change          = Newid dyddiad dechrau masnachu’r busnes eiddo tramor
-agent.business.check-your-answers.content.overseas-property-accounting-method.question = Dull cyfrifyddu’r busnes eiddo tramor
-agent.business.check-your-answers.content.overseas-property-accounting-method.add      = Ychwanegu dull cyfrifyddu’r busnes eiddo tramor
-agent.business.check-your-answers.content.overseas-property-accounting-method.change   = Newid dull cyfrifyddu’r busnes eiddo tramor
+agent.overseas-property.check-your-answers.title                      = Gwirio’ch atebion – busnes eiddo tramor
+agent.overseas-property.check-your-answers.heading                    = Gwirio’ch atebion
+agent.overseas-property.check-your-answers.heading.caption            = {0} | {1}
+agent.overseas-property.check-your-answers.start-date.question        = Dyddiad dechrau masnachu’r busnes eiddo tramor
+agent.overseas-property.check-your-answers.start-date.add             = Ychwanegu dyddiad dechrau masnachu’r busnes eiddo tramor
+agent.overseas-property.check-your-answers.start-date.change          = Newid dyddiad dechrau masnachu’r busnes eiddo tramor
+agent.overseas-property.check-your-answers.accounting-method.question = Dull cyfrifyddu’r busnes eiddo tramor
+agent.overseas-property.check-your-answers.accounting-method.add      = Ychwanegu dull cyfrifyddu’r busnes eiddo tramor
+agent.overseas-property.check-your-answers.accounting-method.change   = Newid dull cyfrifyddu’r busnes eiddo tramor
 
 ## Agent remove business
 agent.business.remove-sole-trader-business.heading                  = A ydych yn siŵr eich bod am ddileu {0}{1}?

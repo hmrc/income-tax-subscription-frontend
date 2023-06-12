@@ -47,7 +47,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
         val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
         res must have(
           httpStatus(OK),
-          pageTitle(messages("agent.overseas.property.name.heading") + serviceNameGovUk),
+          pageTitle(messages("agent.overseas-property.start-date.heading") + serviceNameGovUk),
           govukDateField("startDate", testPropertyStartDate.startDate)
         )
       }
@@ -65,7 +65,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the Overseas property Start date page with no start date")
         res must have(
           httpStatus(OK),
-          pageTitle(messages("agent.overseas.property.name.heading") + serviceNameGovUk)
+          pageTitle(messages("agent.overseas-property.start-date.heading") + serviceNameGovUk)
         )
       }
     }

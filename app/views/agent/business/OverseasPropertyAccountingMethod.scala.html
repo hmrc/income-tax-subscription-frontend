@@ -20,6 +20,7 @@
 @import play.api.data.Form
 @import views.html.helpers.injected.{RadioHelper, SaveAndContinueButtonHelper}
 @import views.html.templates.AgentMainTemplate
+@import utilities.UserMatchingSessionUtil.ClientDetails
 
 @this(
         mainTemplate: AgentMainTemplate,
@@ -30,15 +31,19 @@
         implicit appConfig: AppConfig
 )
 
-@(accountingMethodOverseasPropertyForm: Form[AccountingMethod], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages)
+@(accountingMethodOverseasPropertyForm: Form[AccountingMethod], postAction: Call, isEditMode: Boolean, backUrl: String, clientDetails: ClientDetails)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("agent.overseas.property.accounting-method.title"), optForm = Some(accountingMethodOverseasPropertyForm), backLink = Some(backUrl)) {
+@mainTemplate(title = messages("agent.overseas-property.accounting-method.heading"), optForm = Some(accountingMethodOverseasPropertyForm), backLink = Some(backUrl)) {
+
+  <span class="govuk-caption-l">
+    @messages("agent.overseas-property.accounting-method.heading.caption", clientDetails.name, clientDetails.formattedNino)
+  </span>
 
   @form(action = postAction) {
 
     @radioHelper(
       field = accountingMethodOverseasPropertyForm(AccountingMethodOverseasPropertyForm.accountingMethodOverseasProperty),
-      legend = messages("agent.overseas.property.accounting-method.title"),
+      legend = messages("agent.overseas-property.accounting-method.heading"),
       headingClasses = "govuk-fieldset__legend--l",
       radioItems = Seq(
         RadioItem(content = Text(messages("base.accounting-method.cash")), value = Some(AccountingMethodMapping.option_cash)),

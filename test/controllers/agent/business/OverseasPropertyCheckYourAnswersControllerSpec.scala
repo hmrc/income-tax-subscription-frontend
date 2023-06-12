@@ -28,6 +28,7 @@ import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockAuditingService, MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService}
+import uk.gov.hmrc.http.InternalServerException
 import utilities.SubscriptionDataKeys
 import views.html.agent.business.OverseasPropertyCheckYourAnswers
 
@@ -43,11 +44,19 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBase
   )
 
   "show" should {
+    "return an InternalServerException" when {
+      "there are missing client details in session" in withController { controller =>
+        mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
+
+        intercept[InternalServerException](await(controller.show(false)(subscriptionRequest)))
+          .message mustBe "[IncomeTaxAgentUser][clientDetails] - could not retrieve client details from session"
+      }
+    }
     "return an OK status with the property CYA page" in {
       withController { controller =>
         mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
 
-        val result: Future[Result] = await(controller.show(false)(subscriptionRequest))
+        val result: Future[Result] = await(controller.show(false)(subscriptionRequestWithName))
 
         status(result) mustBe OK
         contentType(result) mustBe Some(HTML)
@@ -59,7 +68,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBase
       withController { controller =>
         mockFetchOverseasProperty(None)
 
-        val result: Future[Result] = await(controller.show(false)(subscriptionRequest))
+        val result: Future[Result] = await(controller.show(false)(subscriptionRequestWithName))
 
         result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
       }
@@ -75,7 +84,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBase
             mockFetchOverseasProperty(Some(testProperty))
             setupMockSubscriptionDetailsSaveFunctions()
 
-            val result: Future[Result] = await(controller.submit()(subscriptionRequest))
+            val result: Future[Result] = await(controller.submit()(subscriptionRequestWithName))
 
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)
@@ -89,7 +98,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBase
           withController { controller =>
             mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
 
-            val result: Future[Result] = await(controller.submit()(subscriptionRequest))
+            val result: Future[Result] = await(controller.submit()(subscriptionRequestWithName))
 
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)
@@ -109,7 +118,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBase
         withController { controller =>
           mockFetchOverseasProperty(None)
 
-          val result: Future[Result] = await(controller.submit()(subscriptionRequest))
+          val result: Future[Result] = await(controller.submit()(subscriptionRequestWithName))
 
           result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
         }
@@ -119,7 +128,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBase
         mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
         setupMockSubscriptionDetailsSaveFunctionsFailure()
 
-        val result: Future[Result] = await(controller.submit()(subscriptionRequest))
+        val result: Future[Result] = await(controller.submit()(subscriptionRequestWithName))
 
         result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
       }
@@ -150,7 +159,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBase
   private def withController(testCode: OverseasPropertyCheckYourAnswersController => Any): Unit = {
     val mockView = mock[OverseasPropertyCheckYourAnswers]
 
-    when(mockView(any(), any(), any())(any(), any(), any()))
+    when(mockView(any(), any(), any(), any())(any(), any(), any()))
       .thenReturn(HtmlFormat.empty)
 
     val controller = new OverseasPropertyCheckYourAnswersController(

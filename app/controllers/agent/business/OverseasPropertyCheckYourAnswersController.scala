@@ -23,6 +23,7 @@ import models.common.OverseasPropertyModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
+import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.business.OverseasPropertyCheckYourAnswers
 
 import javax.inject.{Inject, Singleton}
@@ -44,7 +45,8 @@ class OverseasPropertyCheckYourAnswersController @Inject()(val overseasPropertyC
             overseasPropertyCheckYourAnswersView(
               viewModel = property,
               routes.OverseasPropertyCheckYourAnswersController.submit(),
-              backUrl(isEditMode)
+              backUrl(isEditMode),
+              clientDetails = request.clientDetails
             )
           ))
         }
