@@ -655,6 +655,7 @@ agent.property.income.line-1                                    = This is the am
 ## Accounting Year page
 agent.business.what-year-to-sign-up.title                       = Select when your client will start using Making Tax Digital for Income Tax
 agent.business.what-year-to-sign-up.heading                     = Select when your client will start using Making Tax Digital for Income Tax
+agent.business.what-year-to-sign-up.caption                     = {0} | {1}
 agent.business.what-year-to-sign-up.para                        = You or your client can start sending quarterly updates during the current tax year 6 April {0} to 5 April {1} or the next tax year 6 April {1} to 5 April {2}.
 agent.business.what-year-to-sign-up.warning-text                = Your client won’t be penalised if updates are sent mid-way through the tax year. However, updates need to be made for any missed quarters.
 agent.business.what-year-to-sign-up.line-3                      = You must submit them by these deadlines:
@@ -867,7 +868,7 @@ agent.error.overseas.property.year.length                       = The year must 
 ## agent Tax Year Check Your Answers
 agent.business.check-your-answers.heading                             = Check your answers
 agent.business.check-your-answers.content.tax-year.title              = Check your answers - tax year
-agent.business.check-your-answers.content.tax-year.caption            = Tax year you are signing your client up for
+agent.business.check-your-answers.content.tax-year.caption            = {0} | {1}
 agent.business.check-your-answers.content.tax-year.question           = Tax year you are signing up for
 agent.business.check-your-answers.content.tax-year.question.hidden    = Change tax year you are signing up for
 agent.business.check-your-answers.content.tax-year.current-tax-year   = Current tax year (6 April {0} to 5 April {1})

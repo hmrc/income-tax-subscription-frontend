@@ -18,6 +18,8 @@ package controllers.agent.business
 
 import config.featureswitch.FeatureSwitch.ForeignProperty
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
+import helpers.IntegrationTestConstants.testFullName
+import helpers.agent.IntegrationTestConstants.testFormattedNino
 import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.IntegrationTestModels.testAccountingYearCurrent
@@ -37,6 +39,8 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
     disable(ForeignProperty)
     super.beforeEach()
   }
+
+
 
   "GET /report-quarterly/income-and-expenses/sign-up/client/business/what-year-to-sign-up" when {
     "the Subscription Details Connector returns some data" should {
@@ -94,7 +98,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
           IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYearModel](SelectedTaxYear, AccountingYearModel(userInput))
 
           When("POST /client/business/what-year-to-sign-up is called")
-          val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, Some(userInput))
+          val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, request = Some(userInput))
 
           Then("Should return a SEE_OTHER with a redirect location of Tax Year CYA")
           res must have(
@@ -113,7 +117,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
           IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYearModel](SelectedTaxYear, AccountingYearModel(userInput))
 
           When("POST /client/business/what-year-to-sign-up is called")
-          val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = true, Some(userInput))
+          val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = true, request =  Some(userInput))
 
           Then("Should return a SEE_OTHER with a redirect location of Tax Year CYA")
           res must have(
@@ -132,7 +136,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
 
         When("POST /client/business/what-year-to-sign-up is called")
 
-        val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, None)
+        val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, request = None)
 
         Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
         res must have(
@@ -149,7 +153,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetailsFailure(SelectedTaxYear)
 
         When("POST /client/business/what-year-to-sign-up is called")
-        val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, Some(Current))
+        val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, request = Some(Current))
 
         Then("Should return an INTERNAL_SERVER_ERROR")
         res must have(

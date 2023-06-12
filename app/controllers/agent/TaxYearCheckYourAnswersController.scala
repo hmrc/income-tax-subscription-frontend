@@ -23,7 +23,9 @@ import models.common.AccountingYearModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
+import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.business.TaxYearCheckYourAnswers
+import scala.util.matching.Regex
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -37,13 +39,30 @@ class TaxYearCheckYourAnswersController @Inject()(val checkYourAnswersView: TaxY
                                                   val appConfig: AppConfig,
                                                   mcc: MessagesControllerComponents) extends AuthenticatedController with ReferenceRetrieval {
 
+  private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
+
+  private def formatNino(clientNino: String): String = {
+    clientNino match {
+      case ninoRegex(startLetters, firstDigits, secondDigits, thirdDigits, finalLetter) =>
+        s"$startLetters $firstDigits $secondDigits $thirdDigits $finalLetter"
+      case other => other
+    }
+  }
+
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
+
       withAgentReference { reference =>
         subscriptionDetailsService.fetchSelectedTaxYear(reference) map { maybeAccountingYearModel =>
           Ok(checkYourAnswersView(
             postAction = controllers.agent.routes.TaxYearCheckYourAnswersController.submit(),
             viewModel = maybeAccountingYearModel,
+            clientName = request.fetchClientName.getOrElse(
+              throw new InternalServerException("[AccountingPeriodCheckController][show] - could not retrieve client name from session")
+            ),
+            clientNino = formatNino(user.clientNino.getOrElse(
+              throw new InternalServerException("[AccountingPeriodCheckController][show] - could not retrieve client nino from session")
+            )),
             backUrl = backUrl(isEditMode)
           ))
         }

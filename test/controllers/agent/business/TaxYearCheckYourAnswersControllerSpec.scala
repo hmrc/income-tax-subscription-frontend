@@ -56,7 +56,7 @@ class TaxYearCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
     "return an OK status with the check your answers page" in withController { controller =>
       mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
 
-      val result: Future[Result] = await(controller.show(false)(subscriptionRequest))
+      val result: Future[Result] = await(controller.show(false)(subscriptionRequestWithName))
 
       status(result) mustBe OK
       contentType(result) mustBe Some(HTML)
@@ -71,7 +71,7 @@ class TaxYearCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
       mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
       setupMockSubscriptionDetailsSaveFunctions()
 
-      val result: Future[Result] = await(controller.submit()(subscriptionRequest))
+      val result: Future[Result] = await(controller.submit()(subscriptionRequestWithName))
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)
@@ -83,7 +83,7 @@ class TaxYearCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
       "the accounting year cannot be retrieved" in withController { controller =>
         mockFetchSelectedTaxYear(None)
 
-        val result: Future[Result] = await(controller.submit()(subscriptionRequest))
+        val result: Future[Result] = await(controller.submit()(subscriptionRequestWithName))
 
         result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
         verifySubscriptionDetailsSave(MtditId, 0)
@@ -93,7 +93,7 @@ class TaxYearCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
         setupMockSubscriptionDetailsSaveFunctionsFailure()
 
-        val result: Future[Result] = await(controller.submit()(subscriptionRequest))
+        val result: Future[Result] = await(controller.submit()(subscriptionRequestWithName))
 
         result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
       }
@@ -103,7 +103,7 @@ class TaxYearCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   private def withController(testCode: TaxYearCheckYourAnswersController => Any): Unit = {
     val checkYourAnswersView = mock[TaxYearCheckYourAnswers]
 
-    when(checkYourAnswersView(any(), any(), any())(any(), any(), any()))
+    when(checkYourAnswersView(any(), any(), any(), any(), any())(any(), any(), any()))
       .thenReturn(HtmlFormat.empty)
 
     val controller = new TaxYearCheckYourAnswersController(

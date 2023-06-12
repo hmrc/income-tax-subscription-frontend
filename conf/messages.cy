@@ -654,6 +654,7 @@ agent.property.income.line-1                                    = Dyma’r swm a
 ## Accounting Year page
 agent.business.what-year-to-sign-up.title                     = Dewiswch pryd y bydd eich cleient yn dechrau defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 agent.business.what-year-to-sign-up.heading                   = Dewiswch pryd y bydd eich cleient yn dechrau defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+agent.business.what-year-to-sign-up.caption                   = {0} | {1}
 agent.business.what-year-to-sign-up.para                      = Gallwch chi, neu’ch cleient, ddechrau anfon diweddariadau chwarterol yn ystod y flwyddyn dreth gyfredol (6 Ebrill {0} i 5 Ebrill {1}) neu’r flwyddyn dreth nesaf (6 Ebrill {1} i 5 Ebrill {2}).
 agent.business.what-year-to-sign-up.warning-text              = Ni fydd eich cleient yn cael ei gosbi os caiff diweddariadau eu hanfon hanner ffordd drwy’r flwyddyn dreth. Fodd bynnag, bydd yn rhaid gwneud diweddariadau ar gyfer unrhyw chwarteri sydd wedi eu methu.
 agent.business.what-year-to-sign-up.line-3                    = Gallwch gyflwyno cymaint o ddiweddariadau ag y dymunwch, ond mae’n rhaid i chi eu cyflwyno erbyn y dyddiadau cau canlynol:

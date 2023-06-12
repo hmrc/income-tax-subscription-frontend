@@ -362,7 +362,11 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       )
     }
 
-    def accountingYear(): WSResponse = get("/business/what-year-to-sign-up")
+    def accountingYear(sessionData: Map[String, String] = Map(
+      UserMatchingSessionUtil.firstName -> testFirstName,
+      UserMatchingSessionUtil.lastName -> testLastName,
+      ITSASessionKeys.NINO -> testNino
+    )): WSResponse = get("/business/what-year-to-sign-up", sessionData)
 
     def businessAccountingPeriodPrior(): WSResponse = get("/business/accounting-period-prior")
 
@@ -497,9 +501,13 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
     def confirmation(): WSResponse = get("/confirmation")
 
-    def submitAccountingYear(inEditMode: Boolean, request: Option[AccountingYear]): WSResponse = {
+    def submitAccountingYear(inEditMode: Boolean, sessionData: Map[String, String] = Map(
+      UserMatchingSessionUtil.firstName -> testFirstName,
+      UserMatchingSessionUtil.lastName -> testLastName,
+      ITSASessionKeys.NINO -> testNino
+    ),request: Option[AccountingYear]): WSResponse = {
       val uri = s"/business/what-year-to-sign-up?editMode=$inEditMode"
-      post(uri)(
+      post(uri, sessionData)(
         request.fold(Map.empty[String, Seq[String]])(
           model => AccountingYearForm.accountingYearForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )
@@ -534,11 +542,19 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       )
     }
 
-    def getTaxYearCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse = {
+    def getTaxYearCheckYourAnswers(sessionData: Map[String, String] = Map(
+      UserMatchingSessionUtil.firstName -> testFirstName,
+      UserMatchingSessionUtil.lastName -> testLastName,
+      ITSASessionKeys.NINO -> testNino
+    )): WSResponse = {
       get("/business/tax-year-check-your-answers", sessionData)
     }
 
-    def submitTaxYearCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse = {
+    def submitTaxYearCheckYourAnswers(sessionData: Map[String, String] = Map(
+      UserMatchingSessionUtil.firstName -> testFirstName,
+      UserMatchingSessionUtil.lastName -> testLastName,
+      ITSASessionKeys.NINO -> testNino
+    )): WSResponse = {
       post("/business/tax-year-check-your-answers", sessionData)(Map.empty)
     }
 
