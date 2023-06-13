@@ -315,7 +315,7 @@ class SignUpCompleteViewSpec extends ViewSpec {
     }
 
     "have a add another client button" in {
-      documentNextTaxYear.getElementsByClass("govuk-button").get(0).text() mustBe MessageLookup.Base.addAnother
+      documentNextTaxYear.mainContent.getElementsByClass("govuk-button").get(0).text() mustBe MessageLookup.Base.addAnother
     }
 
     "have a sign out link" in {

@@ -203,7 +203,7 @@ class WhatIncomeSourceToSignUpViewSpec extends ViewSpec {
     }
 
     "have a continue button" in new ViewTest {
-      document.selectHead(".govuk-button").text mustBe "Continue"
+      document.mainContent.selectHead(".govuk-button").text mustBe "Continue"
     }
   }
 
