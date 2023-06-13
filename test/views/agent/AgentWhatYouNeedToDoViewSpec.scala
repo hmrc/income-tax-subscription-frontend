@@ -340,7 +340,7 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
         val bulletThree: String = s"send an end of period statement and submit a final declaration by ${date}"
       }
       object WarningText {
-        val para: String = "Your client may be penalised if they do not use Making Tax Digital for Income Tax."
+        val para: String = "Warning Your client may be penalised if they do not use Making Tax Digital for Income Tax."
       }
 
     }

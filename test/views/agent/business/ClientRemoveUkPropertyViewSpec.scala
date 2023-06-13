@@ -105,7 +105,7 @@ class ClientRemoveUkPropertyViewSpec extends ViewSpec {
     }
 
     "have a agree and continue button" in new ViewTest {
-      document.selectHead(".govuk-button").text mustBe ClientRemoveUkPropertyMessages.agreeAndContinue
+      document.mainContent.selectHead(".govuk-button").text mustBe ClientRemoveUkPropertyMessages.agreeAndContinue
     }
 
   }

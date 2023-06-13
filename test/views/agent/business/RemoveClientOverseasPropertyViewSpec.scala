@@ -105,7 +105,7 @@ class RemoveClientOverseasPropertyViewSpec extends ViewSpec {
     }
 
     "have a agree and continue button" in new ViewTest {
-      document.selectHead(".govuk-button").text mustBe RemoveClientOverseasPropertyMessages.agreeAndContinue
+      document.mainContent.selectHead(".govuk-button").text mustBe RemoveClientOverseasPropertyMessages.agreeAndContinue
     }
 
   }

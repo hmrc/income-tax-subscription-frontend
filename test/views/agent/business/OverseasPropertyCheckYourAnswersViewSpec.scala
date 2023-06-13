@@ -117,20 +117,20 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
 
         "have an enabled confirm and continue button" when {
           "all questions have been answered" in {
-            val buttonLink: Element = document(viewModel = completeAccrualsProperty).selectHead(".govuk-button")
+            val buttonLink: Element = document(viewModel = completeAccrualsProperty).mainContent.selectHead(".govuk-button")
             buttonLink.text mustBe OverseasPropertyCheckYourAnswers.confirmedAndContinue
             buttonLink.hasAttr("disabled") mustBe false
           }
         }
 
         "have a save and come back later button" in {
-          val buttonLink: Element = document(viewModel = completeAccrualsProperty).selectHead(".govuk-button--secondary")
+          val buttonLink: Element = document(viewModel = completeAccrualsProperty).mainContent.selectHead(".govuk-button--secondary")
           buttonLink.text mustBe OverseasPropertyCheckYourAnswers.saveAndComeBack
           buttonLink.attr("href") mustBe controllers.agent.business.routes.ProgressSavedController.show(Some("overseas-property-check-your-answers")).url
         }
 
         "not have a save and come back later button if confirmed" in {
-          val buttonLink: Option[Element] = document(viewModel = confirmedAccrualsProperty).selectOptionally(".govuk-button--secondary")
+          val buttonLink: Option[Element] = document(viewModel = confirmedAccrualsProperty).mainContent.selectOptionally(".govuk-button--secondary")
           buttonLink mustBe None
         }
       }
@@ -158,7 +158,7 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
 
         "have an enabled confirm and continue button" when {
           "the start day has not been answered" in {
-            val buttonLink: Element = document(viewModel = propertyWithMissingStartDate).selectHead(".govuk-button")
+            val buttonLink: Element = document(viewModel = propertyWithMissingStartDate).mainContent.selectHead(".govuk-button")
             buttonLink.text mustBe OverseasPropertyCheckYourAnswers.confirmedAndContinue
             buttonLink.hasAttr("disabled") mustBe false
           }
@@ -187,7 +187,7 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
 
         "have an enabled confirm and continue button" when {
           "the accounting method has not been answered" in {
-            val buttonLink: Element = document(viewModel = propertyWithMissingAccountingMethod).selectHead(".govuk-button")
+            val buttonLink: Element = document(viewModel = propertyWithMissingAccountingMethod).mainContent.selectHead(".govuk-button")
             buttonLink.text mustBe OverseasPropertyCheckYourAnswers.confirmedAndContinue
             buttonLink.hasAttr("disabled") mustBe false
           }
@@ -216,7 +216,7 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
 
         "have an enabled confirm and continue button" when {
           "the accounting method has not been answered" in {
-            val buttonLink: Element = document(viewModel = incompleteProperty).selectHead(".govuk-button")
+            val buttonLink: Element = document(viewModel = incompleteProperty).mainContent.selectHead(".govuk-button")
             buttonLink.text mustBe OverseasPropertyCheckYourAnswers.confirmedAndContinue
             buttonLink.hasAttr("disabled") mustBe false
           }

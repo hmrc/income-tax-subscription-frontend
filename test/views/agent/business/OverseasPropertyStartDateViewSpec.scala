@@ -116,7 +116,7 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
     }
 
     "have a save and continue button when not in edit mode" in {
-      document().getGovukSubmitButton.text mustBe OverseasPropertyStartDateMessages.saveAndContinue
+      document().mainContent.getGovukSubmitButton.text mustBe OverseasPropertyStartDateMessages.saveAndContinue
     }
 
     "have a backlink " in {
