@@ -29,6 +29,7 @@ import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.ImplicitDateFormatter
+import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.business.OverseasPropertyStartDate
 
 import javax.inject.{Inject, Singleton}
@@ -87,12 +88,14 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
   }
 
   private def view(overseasPropertyStartDateForm: Form[DateModel], isEditMode: Boolean)
-                  (implicit request: Request[_]): Html = {
+                  (implicit request: Request[AnyContent]): Html = {
     overseasPropertyStartDate(
       overseasPropertyStartDateForm = overseasPropertyStartDateForm,
       routes.OverseasPropertyStartDateController.submit(editMode = isEditMode),
       backUrl(isEditMode),
-      isEditMode)
+      isEditMode,
+      clientDetails = request.clientDetails
+    )
   }
 
   private def form(implicit request: Request[_]): Form[DateModel] = {

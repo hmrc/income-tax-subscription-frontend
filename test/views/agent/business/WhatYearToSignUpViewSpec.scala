@@ -34,13 +34,15 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
   val taxYearEnd: Int = accountingPeriodService.currentTaxYear
 
   private val whatYearToSignUp: WhatYearToSignUp = app.injector.instanceOf[WhatYearToSignUp]
+  private val fullName = "FirstName LastName"
+  private val nino = "ZZ 11 11 11 Z"
 
   val testFormError: FormError = FormError(AccountingYearForm.accountingYear, "agent.error.business.what-year-to-sign-up.empty")
 
   "what year to sign up" must {
     "have the correct template details" when {
       "the page has no back link" in new TemplateViewTest(
-        view = page(editMode = false, hasBackLink = false),
+        view = page(editMode = false, hasBackLink = false, clientName = fullName, clientNino = nino),
         isAgent = true,
         title = WhatYearToSignUp.heading,
       )
@@ -51,6 +53,10 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
         backLink = Some(testBackUrl),
         error = Some(testFormError)
       )
+    }
+
+    "have client details as caption" in {
+      document().selectHead(".govuk-caption-l").text mustBe WhatYearToSignUp.agentCaption
     }
 
     "have a heading" in {
@@ -201,20 +207,23 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
 
   }
 
-  private def page(editMode: Boolean, hasBackLink: Boolean, hasError: Boolean = false): Html =
+  private def page(editMode: Boolean, clientName: String = fullName, clientNino: String = nino, hasBackLink: Boolean, hasError: Boolean = false): Html =
     whatYearToSignUp(
       if (hasError) AccountingYearForm.accountingYearForm.withError(testFormError) else AccountingYearForm.accountingYearForm,
       postAction = testCall,
+      clientName,
+      clientNino,
       backUrl = if (hasBackLink) Some(testBackUrl) else None,
       endYearOfCurrentTaxPeriod = taxYearEnd,
       isEditMode = editMode,
     )
 
-  private def document(editMode: Boolean = false, hasBackLink: Boolean = false, hasError: Boolean = false): Document =
-    Jsoup.parse(page(editMode = editMode, hasBackLink = hasBackLink, hasError).body)
+  private def document(editMode: Boolean = false, clientName: String = fullName, clientNino: String = nino, hasBackLink: Boolean = false, hasError: Boolean = false): Document =
+    Jsoup.parse(page(editMode = editMode, clientName, clientNino, hasBackLink = hasBackLink, hasError).body)
 
   private object WhatYearToSignUp {
     val heading = "Select when your client will start using Making Tax Digital for Income Tax"
+    val agentCaption = fullName + " | " + nino
     val returnTableCaption = "Submit quarterly updates by the deadline"
     val updatesHeader = "Quarterly update"
     val deadlineHeader = "Deadline"

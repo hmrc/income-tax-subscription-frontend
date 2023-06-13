@@ -37,7 +37,7 @@ base.second                                                     = eiliad
 base.seconds                                                    = eiliadau
 base.accounting-method.cash                                     = Cyfrifyddu ar sail arian parod
 base.accounting-method.accruals                                 = Cyfrifyddu traddodiadol
-base.print-this-page                                            = Print this page ... but in Welsh
+base.print-this-page                                            = Argraffu’r dudalen hon
 base.warning                                                    = Rhybudd
 base.accept-and-continue                                        = Derbyn ac yn eich blaen
 
@@ -96,7 +96,7 @@ cannot-take-part.inset1                                         = Mae’n rhaid 
 
 ##  What You Need To Do (pre-mandation either tax year)  ##
 what-you-need-to-do.heading                                     = Beth y mae angen i chi ei wneud
-what-you-need-to-do.para-1                                      = By taking part you agree to: ... but in Welsh
+what-you-need-to-do.para-1                                      = Drwy gymryd rhan, rydych yn cytuno i’r canlynol:
 what-you-need-to-do.notification.bullet-1                       = bod â meddalwedd sy’n cydweddu i gofnodi’ch incwm a’ch treuliau
 what-you-need-to-do.notification.bullet-2                       = defnyddio’ch meddalwedd i anfon diweddariadau chwarterol atom
 what-you-need-to-do.notification.bullet-3                       = cwblhau unrhyw ddiweddariadau chwarterol sydd ar goll (os ydych wedi dewis cofrestru ar gyfer y flwyddyn dreth bresennol)
@@ -107,7 +107,7 @@ what-you-need-to-do.para-2                                      = O fis Ebrill 2
 
 ##  What You Need To Do (pre-mandation next tax year only)  ##
 what-you-need-to-do.next-year-only.para-1                        = Gallwch gofrestru i ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o 6 Ebrill {0} ymlaen
-what-you-need-to-do.next-year-only.para-2                        = By taking part you agree to: ... but in Welsh
+what-you-need-to-do.next-year-only.para-2                        = Drwy gymryd rhan, rydych yn cytuno i’r canlynol:
 what-you-need-to-do.next-year-only.notification.bullet-1         = cael meddalwedd sy’n cydweddu i gofnodi’ch incwm a’ch treuliau o 6 Ebrill {0} ymlaen
 what-you-need-to-do.next-year-only.notification.bullet-2         = defnyddio’ch meddalwedd i anfon diweddariadau chwarterol atom
 what-you-need-to-do.next-year-only.notification.bullet-3         = anfon datganiad diwedd cyfnod gan ddefnyddio’ch meddalwedd ac anfon eich datganiad terfynol erbyn {0}
@@ -157,7 +157,7 @@ property.accounting-method.accordion.content.para               = Gwnaethoch gre
 property.accounting-method.accordion.content.bullet1            = mis Mai 2017, rydych yn defnyddio ‘Cyfrifyddu ar sail arian parod’
 property.accounting-method.accordion.content.bullet2            = mis Mawrth 2017, rydych yn defnyddio ‘Cyfrifyddu traddodiadol’
 property.accounting-method.cash                                 = <span class="heading-small">Cyfrifyddu ar sail arian parod</span><br>Rydych yn cofnodi naill ai ar y dyddiad yr ydych yn cael taliad gan eich tenantiaid i mewn i’ch cyfrif banc, neu ar y dyddiad yr ydych yn talu bil, er enghraifft ar gyfer atgyweirio a chynnal a chadw. Mae’r rhan fwyaf o fusnesau bach yn defnyddio’r dull hwn.
-property.accounting-method.accruals                             = <span class="heading-small">Cyfrifyddu traddodiadol</span><br>Rydych yn cofnodi ar y dyddiad yr ydych yn anfon anfoneb at eich tenantiaid, neu’n gofyn am daliad ganddynt, hyd yn oed os nad ydych yn cael nac yn talu unrhyw arian. Rydych yn cofnodi ar y dyddiad yr ydych yn cael anfoneb ar gyfer atgyweirio neu gynnal a chadw. Mae hyn hefyd yn cael ei alw’n gyfrifyddu ‘ar sail croniadau’ neu’n gyfrifyddu ‘safonol’..
+property.accounting-method.accruals                             = <span class="heading-small">Cyfrifyddu traddodiadol</span><br>Rydych yn cofnodi ar y dyddiad yr ydych yn anfon anfoneb at eich tenantiaid, neu’n gofyn am daliad ganddynt, hyd yn oed os nad ydych yn cael nac yn talu unrhyw arian. Rydych yn cofnodi ar y dyddiad yr ydych yn cael anfoneb ar gyfer atgyweirio neu gynnal a chadw. Mae hyn hefyd yn cael ei alw’n gyfrifyddu ‘ar sail croniadau’ neu’n gyfrifyddu ‘safonol’.
 
 # Overseas Property accounting method Page
 overseas.property.accounting-method.title                        = Pa ddull cyfrifyddu ydych yn ei ddefnyddio ar gyfer eich busnes eiddo tramor?
@@ -226,9 +226,10 @@ overseas.property.line-1                                         = Dyma’r dydd
 overseas.property.start-date.hint                                = Er enghraifft, 17 8 2014.
 
 # Agent Overseas Property Start Date
-agent.overseas.property.name.heading                            = Pryd y dechreuodd busnes eiddo tramor eich cleient fasnachu?
-agent.overseas.property.line-1                                  = Dyma’r dyddiad y dechreuodd roi unrhyw eiddo tramor ar osod yn y lle cyntaf.
-agent.overseas.property.start-date.hint                         = Er enghraifft, 17 8 2014.
+agent.overseas-property.start-date.heading                       = Pryd y dechreuodd busnes eiddo tramor eich cleient fasnachu?
+agent.overseas-property.start-date.heading.caption               = {0} | {1}
+agent.overseas-property.start-date.line-1                        = Dyma’r dyddiad y dechreuodd roi unrhyw eiddo tramor ar osod yn y lle cyntaf.
+agent.overseas-property.start-date.hint                          = Er enghraifft, 17 8 2014.
 
 # Overseas Property Start Date errors
 error.overseas.property.day-month-year.empty                     = Nodwch y dyddiad y dechreuodd eich busnes eiddo tramor fasnachu
@@ -362,22 +363,22 @@ sign-up-confirmation.mandated.notification-banner.bullet3                    = d
 sign-up-confirmation.mandated.notification-banner.bullet4                    = taliad treth
 
 
-sign-up-confirmation.section2.heading                                = Find software and check your account
+sign-up-confirmation.section2.heading                                = Dod o hyd i feddalwedd a gwirio’ch cyfrif
 
-sign-up-confirmation.section2.online-services.heading                = Check HMRC online services
-sign-up-confirmation.section2.online-services.paragraph              = You can review or change the answers you have just entered, and to get updates.
-sign-up-confirmation.section2.online-services.link                   = Go to your HMRC online services account
-sign-up-confirmation.section2.online-services.next-year.paragraph1   = Go to your {0} to review or change the answers you have entered, and to get updates.
-sign-up-confirmation.section2.online-services.next-year.paragraph2   = It may take a few hours for new information to appear.
-sign-up-confirmation.section2.online-services.next-year.link         = HMRC online services account
+sign-up-confirmation.section2.online-services.heading                = Gwirio gwasanaethau ar-lein CThEF
+sign-up-confirmation.section2.online-services.paragraph              = Gallwch adolygu neu newid yr atebion rydych newydd eu nodi, a chael diweddariadau.
+sign-up-confirmation.section2.online-services.link                   = Ewch i’ch cyfrif gwasanaethau ar-lein CThEF
+sign-up-confirmation.section2.online-services.next-year.paragraph1   = Go to your {0} to review or change the answers you have entered, and to get updates.  .. but in Welsh
+sign-up-confirmation.section2.online-services.next-year.paragraph2   = It may take a few hours for new information to appear.  .. but in Welsh
+sign-up-confirmation.section2.online-services.next-year.link         = Ewch i’ch cyfrif gwasanaethau ar-lein CThEF
 
-sign-up-confirmation.section2.find-software.heading                = Find software
-sign-up-confirmation.section2.find-software.para-1                 = Before you can use Making Tax Digital for Income Tax you need to choose software and allow it to interact with this service.
-sign-up-confirmation.section2.find-software.link                   = Find software
+sign-up-confirmation.section2.find-software.heading                = Dod o hyd i feddalwedd
+sign-up-confirmation.section2.find-software.para-1                 = Cyn i chi allu defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, mae angen i chi ddewis meddalwedd a’i galluogi i ryngweithio â’r gwasanaeth hwn.
+sign-up-confirmation.section2.find-software.link                   = Dod o hyd i feddalwedd
 
-sign-up-confirmation.section2.getting-prepared.heading             = Getting prepared
-sign-up-confirmation.section2.getting-prepared.para-1              = You need to get compatible software before you start using Making Tax Digital for Income Tax on April 6 {0}.
-sign-up-confirmation.section2.getting-prepared.link                = Find software
+sign-up-confirmation.section2.getting-prepared.heading             = Paratoi
+sign-up-confirmation.section2.getting-prepared.para-1              = Mae angen meddalwedd sy’n cydweddu arnoch cyn i chi ddechrau defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar 6 Ebrill {0}.
+sign-up-confirmation.section2.getting-prepared.link                = Dod o hyd i feddalwedd
 
 
 
@@ -598,8 +599,8 @@ agent.what-you-need-to-do.mandated-and-eligible-next-year-only.notification-bann
 # Agent accounting period check page
 agent.accounting-period-check.title                             = A yw holl gyfnodau cyfrifyddu busnes eich cleient yn rhedeg o 6 Ebrill i 5 Ebrill?
 agent.accounting-period-check.heading                           = A yw holl gyfnodau cyfrifyddu busnes eich cleient yn rhedeg o 6 Ebrill i 5 Ebrill?
+agent.accounting-period-check.include                           = Dyddiadau’r flwyddyn dreth
 agent.accounting-period-check.caption                           = {0} | {1}
-agent.accounting-period-check.include                           = Tax year dates ... in Welsh
 agent.accounting-period-check.hint                              = Mae’r flwyddyn dreth yn rhedeg o 6 Ebrill i 5 Ebrill. Mae angen i’r cyfnod cyfrifyddu ar gyfer hunangyflogaeth neu fusnes eiddo’ch cleient gyfateb â hyn os hoffech ei gofrestru ar gyfer y gwasanaeth hwn.
 agent.accounting-period-check.invalid                           = Dewiswch ‘Iawn’ os yw holl gyfnodau cyfrifyddu busnes eich cleient o 6 Ebrill i 5 Ebrill
 
@@ -653,6 +654,7 @@ agent.property.income.line-1                                    = Dyma’r swm a
 ## Accounting Year page
 agent.business.what-year-to-sign-up.title                     = Dewiswch pryd y bydd eich cleient yn dechrau defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 agent.business.what-year-to-sign-up.heading                   = Dewiswch pryd y bydd eich cleient yn dechrau defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+agent.business.what-year-to-sign-up.caption                   = {0} | {1}
 agent.business.what-year-to-sign-up.para                      = Gallwch chi, neu’ch cleient, ddechrau anfon diweddariadau chwarterol yn ystod y flwyddyn dreth gyfredol (6 Ebrill {0} i 5 Ebrill {1}) neu’r flwyddyn dreth nesaf (6 Ebrill {1} i 5 Ebrill {2}).
 agent.business.what-year-to-sign-up.warning-text              = Ni fydd eich cleient yn cael ei gosbi os caiff diweddariadau eu hanfon hanner ffordd drwy’r flwyddyn dreth. Fodd bynnag, bydd yn rhaid gwneud diweddariadau ar gyfer unrhyw chwarteri sydd wedi eu methu.
 agent.business.what-year-to-sign-up.line-3                    = Gallwch gyflwyno cymaint o ddiweddariadau ag y dymunwch, ond mae’n rhaid i chi eu cyflwyno erbyn y dyddiadau cau canlynol:
@@ -673,7 +675,8 @@ agent.property.accounting-method.radio.cash                     = Cyfrifyddu ar 
 agent.property.accounting-method.radio.accruals                 = Cyfrifyddu traddodiadol
 
 # Agent Overseas Property Accounting Method Page
-agent.overseas.property.accounting-method.title                 = Pa ddull cyfrifo y mae’ch cleient yn ei ddefnyddio ar gyfer ei fusnes eiddo tramor?
+agent.overseas-property.accounting-method.heading               = Pa ddull cyfrifo y mae’ch cleient yn ei ddefnyddio ar gyfer ei fusnes eiddo tramor?
+agent.overseas-property.accounting-method.heading.caption       = {0} | {1}
 
 ## Business Name
 agent.business.name.title                                       = Enw’r busnes
@@ -881,14 +884,15 @@ agent.property.check-your-answers.accounting-method.add               = Ychwaneg
 agent.property.check-your-answers.accounting-method.change            = Newid dull cyfrifyddu’r busnes eiddo yn y DU
 
 ## Agent Overseas property check your answers
-agent.business.check-your-answers.content.overseas-property.title                      = Gwirio’ch atebion – busnes eiddo tramor
-agent.business.check-your-answers.content.overseas-property.caption                    = Manylion y busnes eiddo tramor a nodwyd gennych
-agent.business.check-your-answers.content.overseas-property-start-date.question        = Dyddiad dechrau masnachu’r busnes eiddo tramor
-agent.business.check-your-answers.content.overseas-property-start-date.add             = Ychwanegu dyddiad dechrau masnachu’r busnes eiddo tramor
-agent.business.check-your-answers.content.overseas-property-start-date.change          = Newid dyddiad dechrau masnachu’r busnes eiddo tramor
-agent.business.check-your-answers.content.overseas-property-accounting-method.question = Dull cyfrifyddu’r busnes eiddo tramor
-agent.business.check-your-answers.content.overseas-property-accounting-method.add      = Ychwanegu dull cyfrifyddu’r busnes eiddo tramor
-agent.business.check-your-answers.content.overseas-property-accounting-method.change   = Newid dull cyfrifyddu’r busnes eiddo tramor
+agent.overseas-property.check-your-answers.title                      = Gwirio’ch atebion – busnes eiddo tramor
+agent.overseas-property.check-your-answers.heading                    = Gwirio’ch atebion
+agent.overseas-property.check-your-answers.heading.caption            = {0} | {1}
+agent.overseas-property.check-your-answers.start-date.question        = Dyddiad dechrau masnachu’r busnes eiddo tramor
+agent.overseas-property.check-your-answers.start-date.add             = Ychwanegu dyddiad dechrau masnachu’r busnes eiddo tramor
+agent.overseas-property.check-your-answers.start-date.change          = Newid dyddiad dechrau masnachu’r busnes eiddo tramor
+agent.overseas-property.check-your-answers.accounting-method.question = Dull cyfrifyddu’r busnes eiddo tramor
+agent.overseas-property.check-your-answers.accounting-method.add      = Ychwanegu dull cyfrifyddu’r busnes eiddo tramor
+agent.overseas-property.check-your-answers.accounting-method.change   = Newid dull cyfrifyddu’r busnes eiddo tramor
 
 ## Agent remove business
 agent.business.remove-sole-trader-business.heading                  = A ydych yn siŵr eich bod am ddileu {0}{1}?

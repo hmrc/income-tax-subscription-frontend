@@ -25,6 +25,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.{MockAuditingService, MockSubscriptionDetailsService}
+import uk.gov.hmrc.http.InternalServerException
 import utilities.SubscriptionDataKeys.OverseasPropertyAccountingMethod
 import views.agent.mocks.MockOverseasPropertyAccountingMethod
 
@@ -47,9 +48,20 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
   )
 
   "show" when {
+
+    "there are missing client details" should {
+      "throw an InternalServerException" in {
+        mockFetchOverseasProperty(None)
+        mockOverseasPropertyAccountingMethod()
+
+        intercept[InternalServerException](await(TestOverseasPropertyAccountingMethodController.show(isEditMode = false)(subscriptionRequest)))
+          .message mustBe "[IncomeTaxAgentUser][clientDetails] - could not retrieve client details from session"
+      }
+    }
+
     "display the overseas property accounting method view and return OK (200)" when {
       "there is no previously selected accounting method" in {
-        lazy val result = await(TestOverseasPropertyAccountingMethodController.show(isEditMode = false)(subscriptionRequest))
+        lazy val result = await(TestOverseasPropertyAccountingMethodController.show(isEditMode = false)(subscriptionRequestWithName))
         mockFetchOverseasProperty(None)
         mockOverseasPropertyAccountingMethod()
 
@@ -58,7 +70,7 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
       }
 
       "there is a previously selected answer of CASH" in {
-        lazy val result = await(TestOverseasPropertyAccountingMethodController.show(isEditMode = false)(subscriptionRequest))
+        lazy val result = await(TestOverseasPropertyAccountingMethodController.show(isEditMode = false)(subscriptionRequestWithName))
 
         mockFetchOverseasProperty(Some(OverseasPropertyModel(
           accountingMethod = Some(Cash)
@@ -73,11 +85,11 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
 
   "submit" should {
     def callSubmit(isEditMode: Boolean): Future[Result] = TestOverseasPropertyAccountingMethodController.submit(isEditMode)(
-      subscriptionRequest.post(AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm, Cash)
+      subscriptionRequestWithName.post(AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm, Cash)
     )
 
     def callSubmitWithErrorForm(isEditMode: Boolean): Future[Result] = TestOverseasPropertyAccountingMethodController.submit(isEditMode)(
-      subscriptionRequest
+      subscriptionRequestWithName
     )
 
     "redirect to agent overseas property check your answers page" in {

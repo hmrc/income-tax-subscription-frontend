@@ -32,6 +32,8 @@
 @(
         postAction: Call,
         viewModel: Option[AccountingYearModel],
+        clientName: String,
+        clientNino: String,
         backUrl: String
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
@@ -45,7 +47,7 @@
 
 @mainTemplate(title = messages("agent.business.check-your-answers.content.tax-year.title"), backLink = Some(backUrl)) {
 
-    @checkYourAnswers(heading = messages("agent.business.check-your-answers.heading"), caption = messages("agent.business.check-your-answers.content.tax-year.caption"), isIndividual = false, postAction = postAction) {
+    @checkYourAnswers(heading = messages("agent.business.check-your-answers.heading"), caption = messages("agent.business.check-your-answers.content.tax-year.caption", clientName, clientNino), sectionCaption = false, isIndividual = false, postAction = postAction) {
         @checkYourAnswersRow(
             field = "tax-year",
             question = messages("agent.business.check-your-answers.content.tax-year.question"),

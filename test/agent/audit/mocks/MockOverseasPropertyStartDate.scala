@@ -36,7 +36,7 @@ trait MockOverseasPropertyStartDate extends UnitTestTrait with MockitoSugar with
 
 
   def doMock(): Unit = {
-    when(mockOverseasPropertyStartDate(any(),any(),any(), any())(any(), any(), any())) thenReturn HtmlFormat.empty
+    when(mockOverseasPropertyStartDate(any(), any(),any(),any(), any())(any(), any(), any())) thenReturn HtmlFormat.empty
   }
 
 }

@@ -27,10 +27,12 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AccountingPeriodService, AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
+import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.business.WhatYearToSignUp
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.matching.Regex
 
 @Singleton
 class WhatYearToSignUpController @Inject()(val auditingService: AuditingService,
@@ -41,16 +43,28 @@ class WhatYearToSignUpController @Inject()(val auditingService: AuditingService,
                                           (implicit val ec: ExecutionContext, mcc: MessagesControllerComponents,
                                            val appConfig: AppConfig) extends AuthenticatedController with ReferenceRetrieval  {
 
+  private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
+
+  private def formatNino(clientNino: String): String = {
+    clientNino match {
+      case ninoRegex(startLetters, firstDigits, secondDigits, thirdDigits, finalLetter) =>
+        s"$startLetters $firstDigits $secondDigits $thirdDigits $finalLetter"
+      case other => other
+    }
+  }
+
   def backUrl(isEditMode: Boolean): Option[String] =
     if(isEditMode)
       Some(controllers.agent.routes.TaxYearCheckYourAnswersController.show().url)
     else
       Some(controllers.agent.routes.TaskListController.show().url)
 
-  def view(accountingYearForm: Form[AccountingYear], isEditMode: Boolean)(implicit request: Request[_]): Html = {
+  def view(accountingYearForm: Form[AccountingYear], clientName: String, clientNino: String, isEditMode: Boolean)(implicit request: Request[_]): Html = {
     whatYearToSignUp(
       accountingYearForm = accountingYearForm,
       postAction = controllers.agent.routes.WhatYearToSignUpController.submit(editMode = isEditMode),
+      clientName,
+      clientNino,
       backUrl = backUrl(isEditMode),
       endYearOfCurrentTaxPeriod = accountingPeriodService.currentTaxYear,
       isEditMode = isEditMode
@@ -61,7 +75,14 @@ class WhatYearToSignUpController @Inject()(val auditingService: AuditingService,
     implicit user =>
       withAgentReference { reference =>
         subscriptionDetailsService.fetchSelectedTaxYear(reference) map { accountingYearModel =>
-          Ok(view(accountingYearForm = AccountingYearForm.accountingYearForm.fill(accountingYearModel.map(aym => aym.accountingYear)),
+          Ok(view(accountingYearForm = AccountingYearForm.accountingYearForm.fill(
+            accountingYearModel.map(aym => aym.accountingYear)),
+            clientName = request.fetchClientName.getOrElse(
+              throw new InternalServerException("[AccountingPeriodCheckController][show] - could not retrieve client name from session")
+            ),
+            clientNino = formatNino(user.clientNino.getOrElse(
+              throw new InternalServerException("[AccountingPeriodCheckController][show] - could not retrieve client nino from session")
+            )),
             isEditMode = isEditMode))
         }
       }
@@ -69,10 +90,12 @@ class WhatYearToSignUpController @Inject()(val auditingService: AuditingService,
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
+      val clientName = request.fetchClientName.get
+      val clientNino = user.clientNino.get
       withAgentReference { reference =>
         AccountingYearForm.accountingYearForm.bindFromRequest().fold(
           formWithErrors =>
-            Future.successful(BadRequest(view(accountingYearForm = formWithErrors, isEditMode = isEditMode))),
+            Future.successful(BadRequest(view(accountingYearForm = formWithErrors, clientName, clientNino, isEditMode = isEditMode))),
           accountingYear => {
             subscriptionDetailsService.saveSelectedTaxYear(reference, AccountingYearModel(accountingYear)) map {
               case Right(_) => Redirect(controllers.agent.routes.TaxYearCheckYourAnswersController.show())

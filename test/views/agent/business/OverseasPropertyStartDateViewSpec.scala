@@ -23,6 +23,7 @@ import play.api.data.{Form, FormError}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
+import utilities.UserMatchingSessionUtil.ClientDetails
 import utilities.ViewSpec
 import views.html.agent.business.OverseasPropertyStartDate
 
@@ -57,7 +58,8 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
       overseasPropertyStartDateForm,
       action,
       backUrl,
-      isEditMode
+      isEditMode,
+      ClientDetails("FirstName LastName", "ZZ111111Z")
     )(FakeRequest(), implicitly, appConfig)
 
     Jsoup.parse(page.body)
@@ -70,7 +72,8 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
           defaultForm,
           testCall,
           testBackUrl,
-          isEditMode = false
+          isEditMode = false,
+          ClientDetails("FirstName LastName", "ZZ111111Z")
         ),
         title = OverseasPropertyStartDateMessages.heading,
         isAgent = true,
@@ -82,7 +85,8 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
           defaultForm.withError(testError),
           testCall,
           testBackUrl,
-          isEditMode = false
+          isEditMode = false,
+          ClientDetails("FirstName LastName", "ZZ111111Z")
         ),
         title = OverseasPropertyStartDateMessages.heading,
         isAgent = true,

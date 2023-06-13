@@ -32,6 +32,8 @@ class TaxYearCheckYourAnswersViewSpec extends ViewSpec {
 
   private val postAction = controllers.individual.business.routes.TaxYearCheckYourAnswersController.submit()
   private val sectionId = "#tax-year"
+  private val fullName = "FirstName LastName"
+  private val nino = "ZZ 11 11 11 Z"
 
   "business task list view" must {
     "have a title" in {
@@ -42,8 +44,8 @@ class TaxYearCheckYourAnswersViewSpec extends ViewSpec {
       document().select("h1").text mustBe heading
     }
 
-    "have a caption" in {
-      document().select(".hmrc-page-heading p").text mustBe agentCaption
+    "have client details as caption" in {
+      document().select(".govuk-caption-xl").text mustBe agentCaption
     }
 
     "display the tax year section question" in {
@@ -90,12 +92,14 @@ class TaxYearCheckYourAnswersViewSpec extends ViewSpec {
     }
   }
 
-  private def page(accountingYear: AccountingYear) =
+  private def page(accountingYear: AccountingYear, clientName: String, clientNino: String) =
     taxYearCheckYourAnswersView(
       postAction = postAction,
       viewModel = Some(AccountingYearModel(accountingYear)),
+      clientName,
+      clientNino,
       backUrl = "/testUrl"
     )
 
-  private def document(accountingYear: AccountingYear = Current) = Jsoup.parse(page(accountingYear).body)
+  private def document(accountingYear: AccountingYear = Current) = Jsoup.parse(page(accountingYear, clientName = fullName, clientNino= nino).body)
 }

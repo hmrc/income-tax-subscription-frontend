@@ -19,8 +19,9 @@ package controllers.agent.business
 import _root_.common.Constants.ITSASessionKeys
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub.subscriptionUri
+import helpers.IntegrationTestConstants.{testFirstName, testLastName}
 import helpers.agent.ComponentSpecBase
-import helpers.agent.IntegrationTestConstants.{taskListURI, testUtr}
+import helpers.agent.IntegrationTestConstants.{taskListURI, testNino, testUtr}
 import helpers.agent.WiremockHelper.verifyPost
 import helpers.agent.servicemocks.AuthStub
 import models.common.OverseasPropertyModel
@@ -28,6 +29,7 @@ import models.{Cash, DateModel}
 import play.api.http.Status._
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys.OverseasProperty
+import utilities.UserMatchingSessionUtil
 
 class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
   "GET /report-quarterly/income-and-expenses/sign-up/client/business/overseas-property-check-your-answers" should {
@@ -37,13 +39,20 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(OverseasPropertyModel(accountingMethod = Some(Cash))))
 
       When("GET business/overseas-property-check-your-answers is called")
-      val res = IncomeTaxSubscriptionFrontend.getOverseasPropertyCheckYourAnswers(Map(ITSASessionKeys.UTR -> testUtr))
+      val res = IncomeTaxSubscriptionFrontend.getOverseasPropertyCheckYourAnswers(
+        Map(
+          ITSASessionKeys.UTR -> testUtr,
+          UserMatchingSessionUtil.firstName -> testFirstName,
+          UserMatchingSessionUtil.lastName -> testLastName,
+          ITSASessionKeys.NINO -> testNino
+        )
+      )
 
       Then("Should return OK with the property CYA page")
       res must have(
         httpStatus(OK),
         pageTitle(
-          s"${messages("agent.business.check-your-answers.content.overseas-property.title")} - Use software to report your client’s Income Tax - GOV.UK"
+          s"${messages("agent.overseas-property.check-your-answers.title")} - Use software to report your client’s Income Tax - GOV.UK"
         )
       )
     }

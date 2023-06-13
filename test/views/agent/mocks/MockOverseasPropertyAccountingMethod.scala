@@ -34,7 +34,7 @@ trait MockOverseasPropertyAccountingMethod extends PlaySpec with MockitoSugar wi
   }
 
   def mockOverseasPropertyAccountingMethod(): Unit = {
-    when(overseasPropertyAccountingMethod(any(), any(), any(), any())(any(), any()))
+    when(overseasPropertyAccountingMethod(any(), any(), any(), any(), any())(any(), any()))
       .thenReturn(HtmlFormat.empty)
   }
 

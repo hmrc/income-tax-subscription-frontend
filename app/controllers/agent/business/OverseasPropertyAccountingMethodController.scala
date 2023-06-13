@@ -26,6 +26,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
+import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.business.OverseasPropertyAccountingMethod
 
 import javax.inject.{Inject, Singleton}
@@ -67,12 +68,13 @@ class OverseasPropertyAccountingMethodController @Inject()(val auditingService: 
   }
 
   private def view(accountingMethodOverseasPropertyForm: Form[AccountingMethod], isEditMode: Boolean)
-                  (implicit request: Request[_]): Html = {
+                  (implicit request: Request[AnyContent]): Html = {
     overseasPropertyAccountingMethod(
       accountingMethodOverseasPropertyForm = accountingMethodOverseasPropertyForm,
       postAction = controllers.agent.business.routes.OverseasPropertyAccountingMethodController.submit(editMode = isEditMode),
       isEditMode = isEditMode,
-      backUrl = backUrl(isEditMode)
+      backUrl = backUrl(isEditMode),
+      clientDetails = request.clientDetails
     )
   }
 

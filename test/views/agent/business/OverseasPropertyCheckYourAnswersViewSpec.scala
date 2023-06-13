@@ -20,6 +20,7 @@ import models.common.OverseasPropertyModel
 import models.{Accruals, Cash, DateModel}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
+import utilities.UserMatchingSessionUtil.ClientDetails
 import utilities.ViewSpec
 import views.html.agent.business.OverseasPropertyCheckYourAnswers
 
@@ -28,8 +29,8 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
 
   object OverseasPropertyCheckYourAnswers {
     val title = "Check your answers - overseas property business"
+    val caption = "FirstName LastName | ZZ 11 11 11 Z"
     val heading = "Check your answers"
-    val caption = "This section is Overseas property business you entered"
     val startDateQuestion = "Overseas property business trading start date"
     val accountMethodQuestion = "Overseas property business accounting method"
     val confirmedAndContinue = "Confirm and continue"
@@ -67,7 +68,8 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
       view = overseasPropertyCheckYourAnswersView(
         completeCashProperty,
         testCall,
-        testBackUrl
+        testBackUrl,
+        ClientDetails("FirstName LastName", "ZZ111111Z")
       ),
       title = OverseasPropertyCheckYourAnswers.title,
       isAgent = true,
@@ -76,13 +78,13 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
 
     "have a heading" in {
       document(viewModel = completeCashProperty)
-        .select("h1")
+        .selectHead("h1.govuk-heading-xl")
         .text() mustBe OverseasPropertyCheckYourAnswers.heading
     }
 
     "have a caption" in {
       document(viewModel = completeCashProperty)
-        .select(".hmrc-page-heading p")
+        .selectHead(".govuk-caption-xl")
         .text() mustBe OverseasPropertyCheckYourAnswers.caption
     }
 
@@ -264,7 +266,8 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
   private def page(viewModel: OverseasPropertyModel) = overseasPropertyCheckYourAnswersView(
     viewModel,
     postAction = controllers.agent.business.routes.OverseasPropertyStartDateController.submit(),
-    backUrl = "test-back-url"
+    backUrl = "test-back-url",
+    ClientDetails("FirstName LastName", "ZZ111111Z")
   )
 
   private def document(viewModel: OverseasPropertyModel) = Jsoup.parse(page(viewModel).body)

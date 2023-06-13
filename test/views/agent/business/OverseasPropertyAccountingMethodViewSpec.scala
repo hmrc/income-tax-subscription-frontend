@@ -25,6 +25,7 @@ import play.api.data.{Form, FormError}
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
+import utilities.UserMatchingSessionUtil.ClientDetails
 import utilities.ViewSpec
 import views.html.agent.business.OverseasPropertyAccountingMethod
 
@@ -39,7 +40,8 @@ class OverseasPropertyAccountingMethodViewSpec extends ViewSpec {
       accountingMethodOverseasPropertyForm = form,
       postAction = testCall,
       isEditMode = isEditMode,
-      backUrl = testBackUrl
+      backUrl = testBackUrl,
+      ClientDetails("FirstName LastName", "ZZ111111Z")
     )
   }
 
