@@ -99,6 +99,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     "microservice.services.income-tax-subscription-eligibility.host" -> mockHost,
     "microservice.services.income-tax-subscription-eligibility.port" -> mockPort,
     "income-tax-subscription-eligibility-frontend.url" -> mockUrl,
+    "auditing.enabled" -> "true",
     "auditing.consumer.baseUri.host" -> mockHost,
     "auditing.consumer.baseUri.port" -> mockPort,
     "microservice.services.enrolment-store-proxy.host" -> mockHost,

@@ -80,6 +80,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
     "microservice.services.preferences-frontend.host" -> mockHost,
     "microservice.services.preferences-frontend.port" -> mockPort,
     "preferences-frontend.url" -> mockUrl,
+    "auditing.enabled" -> "true",
     "auditing.consumer.baseUri.host" -> mockHost,
     "auditing.consumer.baseUri.port" -> mockPort,
     "microservice.services.government-gateway.host" -> mockHost,
