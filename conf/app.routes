@@ -144,3 +144,6 @@ POST        /business/remove-uk-property-business                controllers.ind
 # Throttle
 GET         /throttle-start                                      controllers.individual.ThrottlingController.start()
 GET         /throttle-end                                        controllers.individual.ThrottlingController.end()
+
+#Your Income Source behind Feature switch
+GET         /details/your-income-source                          controllers.individual.incomesource.YourIncomeSourceToSignUpController.show()
