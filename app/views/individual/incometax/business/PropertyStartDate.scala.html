@@ -22,13 +22,20 @@
         mainTemplate: PrincipalMainTemplate,
         form: FormWithCSRF,
         dateHelper: DateHelper,
+        hmrcPageHeading: HmrcPageHeading,
         saveAndContinueButtonHelper: SaveAndContinueButtonHelper
 )
 
 @(propertyStartDateForm: Form[DateModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = messages("business.property.name.title"), optForm = Some(propertyStartDateForm), backLink = Some(backUrl)) {
-    <h1 class="govuk-heading-l">@messages("business.property.name.heading")</h1>
+
+    @hmrcPageHeading(PageHeading(
+        text = messages("business.property.name.heading"),
+        section = Some(messages("business.property.name.caption")),
+        headingClasses = Some("govuk-heading-l"),
+        captionClasses = Some("govuk-caption-l")
+    ))
 
     <p class="govuk-body">@messages("business.property.line-1")</p>
 

@@ -172,7 +172,8 @@ overseas.property.accounting-method.accruals                     = <span class="
 ## Property Start Date Date
 business.property.name.title                                    = Pryd y dechreuodd eich busnes eiddo yn y DU fasnachu?
 business.property.name.heading                                  = Pryd y dechreuodd eich busnes eiddo yn y DU fasnachu?
-business.property.line-1                                        = Dyma’r dyddiad y dechreuodd roi unrhyw eiddo yn y DU ar osod yn y lle cyntaf.
+business.property.name.caption                                  = Eiddo yn y DU
+business.property.line-1                                        = Dyma pryd y gwnaethoch ddechrau rhoi unrhyw eiddo yn y DU ar osod.
 business.property.start-date.hint                               = Er enghraifft, 17 8 2014.
 
 # Property Start Date errors
