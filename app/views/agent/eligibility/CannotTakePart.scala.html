@@ -46,7 +46,7 @@
 
     <p class="govuk-inset-text">@messages("agent.cannot-take-part.inset1")</p>
 
-    @form(action = controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show) {
+    @form(action = controllers.agent.routes.AddAnotherClientController.addAnother()) {
         <div class="govuk-form-group">
             <div>@continueButton(Some(messages("agent.base.sign-up-another-client")))</div>
         </div>

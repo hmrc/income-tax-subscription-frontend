@@ -83,7 +83,7 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase  {
     "return SEE_OTHER when selecting clicking sign up another client" in new Setup {
 
       private val res = IncomeTaxSubscriptionFrontend.postNoClientRelationship()
-      val expectedRedirect: String = "/report-quarterly/income-and-expenses/sign-up/client/eligibility/income-sources"
+      val expectedRedirect: String = routes.AddAnotherClientController.addAnother().url
 
       res must have(
         httpStatus(SEE_OTHER),

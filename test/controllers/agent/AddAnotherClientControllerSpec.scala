@@ -51,7 +51,7 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
       val result: Result = await(call)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(eligibility.routes.OtherSourcesOfIncomeController.show.url)
+      redirectLocation(result) mustBe Some(controllers.agent.matching.routes.ClientDetailsController.show().url)
 
       result.session(request).get(ITSASessionKeys.MTDITID) mustBe None
       result.session(request).get(ITSASessionKeys.JourneyStateKey) mustBe None
