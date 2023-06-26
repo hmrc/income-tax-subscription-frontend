@@ -73,6 +73,23 @@ income-source.uk-property-hint                  = Incwm o eiddo yn y DU. Mae hyn
 income-source.foreign-property                  = Busnes eiddo tramor
 income-source.foreign-property-hint             = Incwm o roi eiddo ar osod dramor. Mae hyn yn cynnwys arian rydych chi’n ei ennill drwy asiantaeth gosod eiddo. Gallwch chi fod ag incwm o sawl eiddo mewn un busnes eiddo tramor.
 
+## Individual your income sources to sign up page
+your-income-source.title                        = Eich ffynonellau incwm
+your-income-source.heading                      = Eich ffynonellau incwm
+your-income-source.heading2                     = Dim ond yr adrannau sy’n berthnasol i chi y mae angen i chi eu llenwi.
+your-income-source.self-employed                = Unig fasnachwr (hunangyflogedig)
+your-income-source.self-employed-hint           = Rydych yn hunangyflogedig os ydych yn rhedeg eich busnes eich hun fel unigolyn ac yn gweithio i chi’ch hun. Enw arall am hyn yw bod yn ‘unig fasnachwr’. Os ydych yn gweithio drwy gwmni cyfyngedig, nid unig fasnachwr ydych chi.
+your-income-source.self-employed-link           = Ychwanegu ffynhonnell incwm unig fasnachwr
+your-income-source.uk-property                  = Busnes eiddo yn y DU
+your-income-source.uk-property-hint             = Busnes eiddo yn y DU yw pan rydych yn cael incwm o dir neu adeiladau yn y DU. Er enghraifft, rhoi tai, fflatiau neu gartrefi gwyliau ar osod ar sail tymor hir neu fyr.
+your-income-source.uk-property-hint2            = Gallwch gynnwys sawl eiddo neu gyfeiriad mewn un busnes eiddo yn y DU.
+your-income-source.uk-property-link             = Ychwanegu ffynhonnell incwm busnes eiddo yn y DU
+your-income-source.foreign-property             = Busnes eiddo tramor
+your-income-source.foreign-property-hint        = Busnes eiddo tramor yw pan rydych yn cael incwm o dir neu adeiladau mewn gwlad arall. Er enghraifft, rhoi tai, fflatiau neu gartrefi gwyliau ar osod ar sail tymor hir neu fyr.
+your-income-source.foreign-property-hint2       = Gallwch gynnwys sawl eiddo neu gyfeiriad mewn un busnes eiddo tramor.
+your-income-source.foreign-property-link        = Ychwanegu ffynhonnell incwm eiddo tramor
+
+
 error.business-income-source.all-sources                        = Dewiswch ‘Busnes unig fasnachwr’, ‘Eiddo rhent yn y DU’ neu ‘Eiddo rhent tramor’
 error.business-income-source.self-employed-uk-property          = Mae angen i chi ddewis Busnes unig fasnachwr neu Eiddo rhent yn y DU
 error.business-income-source.self-employed-overseas-property    = Mae angen i chi ddewis Busnes unig fasnachwr neu Eiddo rhent tramor

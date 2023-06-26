@@ -18,7 +18,7 @@ package controllers.individual.incomesource
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.{ForeignProperty => ForeignPropertyFeature}
+import config.featureswitch.FeatureSwitch.{ ForeignProperty => ForeignPropertyFeature}
 import controllers.utils.ReferenceRetrieval
 import forms.individual.incomesource.BusinessIncomeSourceForm
 import models.IncomeSourcesStatus
@@ -104,13 +104,19 @@ class WhatIncomeSourceToSignUpController @Inject()(whatIncomeSourceToSignUp: Wha
     }
   }
 
-  private def view(form: Form[BusinessIncomeSource], incomeSourcesStatus: IncomeSourcesStatus)(implicit request: Request[_]): Html =
-    whatIncomeSourceToSignUp(
-      incomeSourceForm = form,
-      postAction = controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.submit(),
-      backUrl = backUrl,
-      incomeSourcesStatus = incomeSourcesStatus
-    )
+  private def view(form: Form[BusinessIncomeSource], incomeSourcesStatus: IncomeSourcesStatus)(implicit request: Request[_]): Html = {
+
+
+      whatIncomeSourceToSignUp(
+        incomeSourceForm = form,
+        postAction = controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.submit(),
+        backUrl = backUrl,
+        incomeSourcesStatus = incomeSourcesStatus
+      )
+
+
+  }
+
 
   private def businessIncomeSourceForm(incomeSourcesStatus: IncomeSourcesStatus): Form[BusinessIncomeSource] =
     BusinessIncomeSourceForm.businessIncomeSourceForm(incomeSourcesStatus)
