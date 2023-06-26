@@ -39,7 +39,7 @@ class AddAnotherClientController @Inject()(val auditingService: AuditingService,
 
   def addAnother(): Action[AnyContent] = Authenticated { implicit request =>
     _ =>
-      Redirect(eligibility.routes.OtherSourcesOfIncomeController.show)
+      Redirect(controllers.agent.matching.routes.ClientDetailsController.show())
         .removingFromSession(ITSASessionKeys.JourneyStateKey)
         .removingFromSession(ITSASessionKeys.clientData: _*)
         .removingFromSession(ITSASessionKeys.REFERENCE)

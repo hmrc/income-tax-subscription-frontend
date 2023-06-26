@@ -41,6 +41,6 @@ class NoClientRelationshipController @Inject()(val auditingService: AuditingServ
 
   val submit: Action[AnyContent] = Authenticated.async { _ =>
     _ =>
-      Future.successful(Redirect(controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show))
+      Future.successful(Redirect(controllers.agent.routes.AddAnotherClientController.addAnother()))
   }
 }
