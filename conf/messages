@@ -189,7 +189,8 @@ overseas.property.accounting-method.accruals                     = You record on
 ## Property Start Date Date
 business.property.name.title                                    = When did your UK property business start trading?
 business.property.name.heading                                  = When did your UK property business start trading?
-business.property.line-1                                        = This is the date that letting or renting out any UK property first started.
+business.property.name.caption                                  = UK property
+business.property.line-1                                        = This is when you started letting any UK property.
 business.property.start-date.hint                               = For example, 17 8 2014.
 
 # Property Start Date errors

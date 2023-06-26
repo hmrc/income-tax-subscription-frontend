@@ -31,7 +31,10 @@ import java.time.LocalDate
 class UkPropertyStartDateViewSpec extends ViewSpec  {
 
   object PropertyStartDateMessages {
+    val captionHidden = "This section is"
+    val captionVisible = "UK property"
     val heading: String = "When did your UK property business start trading?"
+    val para = "This is when you started letting any UK property."
     val hint = "For example, 17 8 2014."
     val continue = "Continue"
     val saveAndContinue = "Save and continue"
@@ -75,8 +78,13 @@ class UkPropertyStartDateViewSpec extends ViewSpec  {
       )
     }
 
-    "have a heading" in {
+    "have a heading with caption" in {
+      document().selectHead(".hmrc-caption").text mustBe s"${PropertyStartDateMessages.captionHidden} ${PropertyStartDateMessages.captionVisible}"
       document().getH1Element.text mustBe PropertyStartDateMessages.heading
+    }
+
+    "have a paragraph" in {
+      document().selectNth("p", 3).text mustBe PropertyStartDateMessages.para
     }
 
     "have a form" in {
