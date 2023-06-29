@@ -54,7 +54,8 @@ class UkPropertyAccountingMethodViewSpec extends ViewSpecTrait  {
       document.title mustBe messages.title + serviceNameGovUk
     }
 
-    "have a heading" in new Setup {
+    "have a heading and a caption" in new Setup {
+      document.select(".hmrc-caption").text mustBe s"${messages.captionHidden} ${messages.captionVisible}"
       document.select("h1").text mustBe messages.heading
     }
 

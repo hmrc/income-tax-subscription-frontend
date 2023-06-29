@@ -25,6 +25,7 @@
         form: FormWithCSRF,
         detailsHelper: DetailsHelper,
         radioHelper: RadioHelper,
+        hmrcPageHeading: HmrcPageHeading,
         saveAndContinueButtonHelper: SaveAndContinueButtonHelper
 )
 
@@ -49,8 +50,14 @@
 
 @mainTemplate(title = messages("property.accounting-method.title"), optForm = Some(accountingMethodForm), backLink = Some(backUrl)) {
 
+    @hmrcPageHeading(PageHeading(
+        text = messages("property.accounting-method.heading"),
+        section = Some(messages("property.accounting-method.caption")),
+        headingClasses = Some("govuk-heading-l"),
+        captionClasses = Some("govuk-caption-l")
+    ))
+
     @form(action = postAction) {
-        @heading(messages("property.accounting-method.heading"))
         @detailsHelper(
             summary = messages("property.accounting-method.accordion.summary"),
             content = detailsContent
