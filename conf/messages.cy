@@ -169,6 +169,7 @@ business.what-year-to-sign-up.conditional.2.line-2              = Anfonwch ddatg
 # Property Accounting Method Page
 property.accounting-method.title                                = Pa ddull cyfrifyddu a ydych yn ei ddefnyddio ar gyfer eich busnes eiddo yn y DU?
 property.accounting-method.heading                              = Pa ddull cyfrifyddu a ydych yn ei ddefnyddio ar gyfer eich busnes eiddo yn y DU?
+property.accounting-method.caption                              = Eiddo yn y DU
 property.accounting-method.accordion.summary                    = Rhowch enghraifft i mi
 property.accounting-method.accordion.content.para               = Gwnaethoch greu anfoneb i rywun ym mis Mawrth 2017, ond ni chawsoch yr arian tan fis Mai 2017. Os ydych yn rhoi gwybod i CThEM eich bod wedi cael yr incwm hwn ym:
 property.accounting-method.accordion.content.bullet1            = mis Mai 2017, rydych yn defnyddio ‘Cyfrifyddu ar sail arian parod’

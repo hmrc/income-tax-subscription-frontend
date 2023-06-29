@@ -169,6 +169,7 @@ business.what-year-to-sign-up.conditional.2.line-2              = Send a final d
 # Property Accounting Method Page
 property.accounting-method.title                                = What accounting method do you use for your UK property business?
 property.accounting-method.heading                              = What accounting method do you use for your UK property business?
+property.accounting-method.caption                              = UK property
 property.accounting-method.accordion.summary                    = Show me an example
 property.accounting-method.accordion.content.para               = You created an invoice for someone in March 2017, but did not receive the money until May 2017. If you tell HMRC you received this income in:
 property.accounting-method.accordion.content.bullet1            = May 2017, you use ‘cash basis accounting’
