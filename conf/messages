@@ -238,9 +238,10 @@ agent.error.property.month-year.invalid                         = The date must 
 agent.error.property.year.length                                = The year must be in four digits. For example, 2020.
 
 ## Overseas Property Start Date
-overseas.property.name.title                                    = When did your overseas property business start trading?
-overseas.property.name.heading                                  = When did your overseas property business start trading?
-overseas.property.line-1                                        = This is the date that letting or renting out any overseas property first started.
+overseas.property.name.title                                    = When did your foreign property business?
+overseas.property.name.heading                                  = When did your foreign property business?
+overseas.property.name.caption                                  = Foreign property
+overseas.property.line-1                                        = This is when you started letting your foreign property.
 overseas.property.start-date.hint                               = For example, 17 8 2014.
 
 # Agent Overseas Property Start Date
