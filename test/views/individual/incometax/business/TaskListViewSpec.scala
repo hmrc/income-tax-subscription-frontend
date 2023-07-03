@@ -68,12 +68,12 @@ class TaskListViewSpec extends ViewSpec {
       SelfEmploymentData("id1", businessName = Some(BusinessNameModel("Name1"))),
       SelfEmploymentData("id2", businessName = Some(BusinessNameModel("Name2")), businessTradeName = Some(BusinessTradeNameModel("TradeName")))
     ),
-    ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")))),
+    ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")))),
     overseasProperty = Some(OverseasPropertyModel(startDate = Some(DateModel("1", "2", "3"))))
   )
 
   private val completedTaskListComplete = TaskListModel(
-    taxYearSelection = Some(AccountingYearModel(Next, confirmed = true, editable = true)),
+    taxYearSelection = Some(AccountingYearModel(Next, confirmed = true)),
     selfEmployments = Seq(SelfEmploymentData(
       id = "id1",
       businessStartDate = Some(BusinessStartDate(DateModel("1", "2", "1980"))),
@@ -83,7 +83,7 @@ class TaskListViewSpec extends ViewSpec {
       confirmed = true
     )),
     selfEmploymentAccountingMethod = Some(Cash),
-    ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
+    ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
     overseasProperty = Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("1", "2", "3")), confirmed = true))
   )
 
@@ -168,7 +168,7 @@ class TaskListViewSpec extends ViewSpec {
         "display the add a business link" in {
           val businessLink = document().mainContent.getElementById("add_business")
           businessLink.text mustBe addBusiness
-          businessLink.classNames() must contain ("govuk-link")
+          businessLink.classNames() must contain("govuk-link")
           businessLink.attr("href") mustBe controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url
         }
 
@@ -248,7 +248,7 @@ class TaskListViewSpec extends ViewSpec {
           "contains a change link" in {
             val ukPropertyIncomeLink = ukPropertyIncomeSection.selectNth("span", 1).selectHead("a")
             ukPropertyIncomeLink.text() mustBe ukPropertyBusiness
-            ukPropertyIncomeLink.attr("href") mustBe controllers.individual.business.routes.PropertyCheckYourAnswersController.show(editMode=true).url
+            ukPropertyIncomeLink.attr("href") mustBe controllers.individual.business.routes.PropertyCheckYourAnswersController.show(editMode = true).url
             ukPropertyIncomeSection.selectNth("span", 2).text mustBe incomplete
             ukPropertyIncomeSection.selectHead("strong").attr("class") mustBe "govuk-tag govuk-tag--grey"
           }
@@ -270,7 +270,7 @@ class TaskListViewSpec extends ViewSpec {
           "contains a change link" in {
             val overseasPropertyLink = overseasPropertySection.selectNth("span", 1).selectHead("a")
             overseasPropertyLink.text mustBe overseasPropertyBusiness
-            overseasPropertyLink.attr("href") mustBe controllers.individual.business.routes.OverseasPropertyCheckYourAnswersController.show(editMode=true).url
+            overseasPropertyLink.attr("href") mustBe controllers.individual.business.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
             overseasPropertySection.selectNth("span", 2).text mustBe incomplete
             overseasPropertySection.selectHead("strong").attr("class") mustBe "govuk-tag govuk-tag--grey"
           }
@@ -342,7 +342,7 @@ class TaskListViewSpec extends ViewSpec {
           val ukPropertyIncomeSection = document(completedTaskListComplete).mainContent.selectHead(selectorForFirstBusiness).selectNth("li", 2)
           val ukPropertyIncomeLink = ukPropertyIncomeSection.selectNth("span", 1).selectHead("a")
           ukPropertyIncomeLink.text() mustBe ukPropertyBusiness
-          ukPropertyIncomeLink.attr("href") mustBe controllers.individual.business.routes.PropertyCheckYourAnswersController.show(editMode=true).url
+          ukPropertyIncomeLink.attr("href") mustBe controllers.individual.business.routes.PropertyCheckYourAnswersController.show(editMode = true).url
           ukPropertyIncomeSection.selectNth("span", 2).text mustBe complete
           ukPropertyIncomeSection.selectHead("strong").attr("class") mustBe "govuk-tag"
         }
@@ -351,7 +351,7 @@ class TaskListViewSpec extends ViewSpec {
           val overseasPropertySection = document(completedTaskListComplete).mainContent.selectHead(selectorForFirstBusiness).selectNth("li", 3)
           val overseasPropertyLink = overseasPropertySection.selectNth("span", 1).selectHead("a")
           overseasPropertyLink.text mustBe overseasPropertyBusiness
-          overseasPropertyLink.attr("href") mustBe controllers.individual.business.routes.OverseasPropertyCheckYourAnswersController.show(editMode=true).url
+          overseasPropertyLink.attr("href") mustBe controllers.individual.business.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
           overseasPropertySection.selectNth("span", 2).text mustBe complete
           overseasPropertySection.selectHead("strong").attr("class") mustBe "govuk-tag"
         }

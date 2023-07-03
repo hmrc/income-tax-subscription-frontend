@@ -80,6 +80,10 @@ POST        /business/overseas-property-accounting-method        controllers.ind
 GET         /business/property-commencement-date                 controllers.individual.business.PropertyStartDateController.show(editMode: Boolean ?= false)
 POST        /business/property-commencement-date                 controllers.individual.business.PropertyStartDateController.submit(editMode: Boolean ?= false)
 
+# Number of properties Routes
+GET         /business/uk-properties-count                        controllers.individual.business.UkPropertyCountController.show(editMode: Boolean ?= false)
+POST        /business/uk-properties-count                        controllers.individual.business.UkPropertyCountController.submit(editMode: Boolean ?= false)
+
 #Foreign Property Start Date Routes
 GET         /business/overseas-property-start-date               controllers.individual.business.OverseasPropertyStartDateController.show(editMode: Boolean ?= false)
 POST        /business/overseas-property-start-date               controllers.individual.business.OverseasPropertyStartDateController.submit(editMode: Boolean ?= false)

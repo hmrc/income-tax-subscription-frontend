@@ -19,7 +19,12 @@ package models.common
 import models.{AccountingMethod, DateModel}
 import play.api.libs.json.{Json, OFormat}
 
-case class PropertyModel(accountingMethod: Option[AccountingMethod] = None, startDate: Option[DateModel] = None, confirmed: Boolean = false)
+case class PropertyModel(
+                          accountingMethod: Option[AccountingMethod] = None,
+                          count: Option[Int] = None,
+                          startDate: Option[DateModel] = None,
+                          confirmed: Boolean = false
+                        )
 
 object PropertyModel {
   implicit val format: OFormat[PropertyModel] = Json.using[Json.WithDefaultValues].format[PropertyModel]
