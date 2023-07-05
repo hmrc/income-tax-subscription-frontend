@@ -18,6 +18,7 @@ package controllers.individual.business
 
 import auth.individual.SignUpController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.utils.ReferenceRetrieval
 import forms.individual.business.PropertyStartDateForm
 import forms.individual.business.PropertyStartDateForm._
@@ -43,13 +44,13 @@ class PropertyStartDateController @Inject()(val auditingService: AuditingService
                                            (implicit val ec: ExecutionContext,
                                             val appConfig: AppConfig,
                                             mcc: MessagesControllerComponents) extends SignUpController
-  with ImplicitDateFormatter  with ReferenceRetrieval {
+  with ImplicitDateFormatter with ReferenceRetrieval {
 
   def view(propertyStartDateForm: Form[DateModel], isEditMode: Boolean)
           (implicit request: Request[_]): Html = {
     propertyStartDate(
       propertyStartDateForm = propertyStartDateForm,
-      postAction = controllers.individual.business.routes.PropertyStartDateController.submit(editMode = isEditMode),
+      postAction = routes.PropertyStartDateController.submit(editMode = isEditMode),
       isEditMode = isEditMode,
       backUrl = backUrl(isEditMode)
     )
@@ -78,9 +79,11 @@ class PropertyStartDateController @Inject()(val auditingService: AuditingService
             subscriptionDetailsService.savePropertyStartDate(reference, startDate) map {
               case Right(_) =>
                 if (isEditMode) {
-                  Redirect(controllers.individual.business.routes.PropertyCheckYourAnswersController.show(isEditMode))
+                  Redirect(routes.PropertyCheckYourAnswersController.show(isEditMode))
+                } else if (isEnabled(EnableTaskListRedesign)) {
+                  Redirect(routes.UkPropertyCountController.show())
                 } else {
-                  Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show(isEditMode))
+                  Redirect(routes.PropertyAccountingMethodController.show(isEditMode))
                 }
               case Left(_) => throw new InternalServerException("[PropertyStartDateController][submit] - Could not save start date")
             }
@@ -89,8 +92,8 @@ class PropertyStartDateController @Inject()(val auditingService: AuditingService
   }
 
   def backUrl(isEditMode: Boolean): String = {
-    if(isEditMode) {
-      controllers.individual.business.routes.PropertyCheckYourAnswersController.show(editMode = true).url
+    if (isEditMode) {
+      routes.PropertyCheckYourAnswersController.show(editMode = true).url
     } else {
       controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url
     }

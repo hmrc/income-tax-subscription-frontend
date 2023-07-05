@@ -425,7 +425,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
     def getOverseasPropertyStartDate: WSResponse = get("/business/overseas-property-start-date")
 
-    def submitpropertyStartDate(inEditMode: Boolean, request: Option[DateModel]): WSResponse = {
+    def submitPropertyStartDate(inEditMode: Boolean, request: Option[DateModel]): WSResponse = {
       val testValidMaxStartDate = LocalDate.now.minusYears(1)
       val testValidMinStartDate = LocalDate.of(1900, 1, 1)
       val uri = s"/business/property-commencement-date?editMode=$inEditMode"

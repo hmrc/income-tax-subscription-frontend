@@ -16,6 +16,7 @@
 
 package controllers.individual.business
 
+import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.ControllerBaseSpec
 import forms.individual.business.PropertyStartDateForm
 import models.DateModel
@@ -35,8 +36,12 @@ import scala.concurrent.Future
 class PropertyStartDateControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockAuditingService
-  with MockPropertyStartDate
-   {
+  with MockPropertyStartDate {
+
+  override def beforeEach(): Unit = {
+    disable(EnableTaskListRedesign)
+    super.beforeEach()
+  }
 
   override val controllerName: String = "PropertyStartDateController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -74,7 +79,7 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
     }
   }
 
-  "submit" should {
+  "submit" when {
 
     val maxDate = LocalDate.now.minusYears(1)
     val testValidMaxDate: DateModel = DateModel.dateConvert(maxDate)
@@ -90,31 +95,57 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
       subscriptionRequest
     )
 
-    "redirect to uk property accounting method page" when {
-      "not in edit mode" in {
+    "in edit mode" should {
+      "redirect to the uk property check your answers page" in {
         setupMockSubscriptionDetailsSaveFunctions()
-        mockFetchProperty(None)
+        mockFetchProperty(Some(testFullPropertyModel))
 
-        val goodRequest = callSubmit(isEditMode = false)
+        val goodRequest = await(callSubmit(isEditMode = true))
 
-        status(goodRequest) must be(Status.SEE_OTHER)
-        await(goodRequest)
-        redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.PropertyAccountingMethodController.show().url)
+        status(goodRequest) mustBe SEE_OTHER
+        redirectLocation(goodRequest) mustBe Some(routes.PropertyCheckYourAnswersController.show(true).url)
+        verifyPropertySave(Some(testFullPropertyModel.copy(startDate = Some(testValidMaxDate), confirmed = false)))
+      }
+    }
 
-        verifyPropertySave(Some(PropertyModel(startDate = Some(testValidMaxDate))))
+    "not in edit mode" when {
+      "the task list redesign feature switch is enabled" should {
+        "redirect to the uk property count page" in {
+          enable(EnableTaskListRedesign)
 
+          setupMockSubscriptionDetailsSaveFunctions()
+          mockFetchProperty(None)
+
+          val goodRequest = await(callSubmit(isEditMode = false))
+
+          status(goodRequest) mustBe SEE_OTHER
+          redirectLocation(goodRequest) mustBe Some(routes.UkPropertyCountController.show().url)
+          verifyPropertySave(Some(PropertyModel(startDate = Some(testValidMaxDate))))
+        }
+      }
+      "the task list redesign feature switch is disabled" should {
+        "redirect to the uk property accounting method page" in {
+          setupMockSubscriptionDetailsSaveFunctions()
+          mockFetchProperty(None)
+
+          val goodRequest = await(callSubmit(isEditMode = false))
+
+          status(goodRequest) mustBe SEE_OTHER
+          redirectLocation(goodRequest) mustBe Some(routes.PropertyAccountingMethodController.show().url)
+          verifyPropertySave(Some(PropertyModel(startDate = Some(testValidMaxDate))))
+        }
       }
     }
 
     "redirect to uk property check your answers page" when {
       "in edit mode" in {
-        setupMockSubscriptionDetailsSaveFunctions()
-        mockFetchProperty(Some(testFullPropertyModel))
-        val goodRequest = callSubmit(isEditMode = true)
-        await(goodRequest)
-        redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.PropertyCheckYourAnswersController.show(true).url)
 
-        verifyPropertySave(Some(testFullPropertyModel.copy(startDate = Some(testValidMaxDate), confirmed = false)))
+      }
+    }
+
+    "redirect to uk property accounting method page" when {
+      "not in edit mode" in {
+
       }
     }
 
@@ -146,7 +177,7 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
     "The back url is in edit mode" should {
       "redirect back to uk property check your answers page" in new Test {
         controller.backUrl(isEditMode = true) mustBe
-          controllers.individual.business.routes.PropertyCheckYourAnswersController.show(true).url
+          routes.PropertyCheckYourAnswersController.show(true).url
       }
     }
 
