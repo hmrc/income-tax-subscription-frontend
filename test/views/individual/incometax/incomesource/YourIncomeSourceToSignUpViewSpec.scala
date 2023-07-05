@@ -17,12 +17,10 @@
 package views.individual.incometax.incomesource
 
 import config.featureswitch.FeatureSwitch.ForeignProperty
-import forms.individual.incomesource.BusinessIncomeSourceForm
 import forms.individual.incomesource.BusinessIncomeSourceForm.incomeSourceKey
 import models.IncomeSourcesStatus
-import models.common.{OverseasProperty, SelfEmployed, UkProperty}
 import org.jsoup.Jsoup
-import org.jsoup.nodes.{Document, Element}
+import org.jsoup.nodes.Document
 import play.api.data.FormError
 import play.api.mvc.Call
 import play.twirl.api.Html
@@ -62,10 +60,9 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
   val testFormError: FormError = FormError(incomeSourceKey, "error.business-income-source.all-sources")
 
-  def view( hasError: Boolean = false): Html = {
+  def view(hasError: Boolean = false): Html = {
     incomeSource(
-
-      backUrl = testBackUrl,
+      backUrl = testBackUrl
     )
   }
 
@@ -88,24 +85,23 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
   }
 
   "IncomeSource view" should {
-      "there is no error" in new TemplateViewTest(
-        view = view(
-        ),
-        title = IndividualIncomeSource.title,
-        isAgent = false,
-        backLink = Some(testBackUrl),
-      )
-    }
+    "there is no error" in new TemplateViewTest(
+      view = view(
+      ),
+      title = IndividualIncomeSource.title,
+      isAgent = false,
+      backLink = Some(testBackUrl),
+    )
+  }
 
 
+  "have the heading for the page" in new ViewTest {
+    document.selectHead("h1").text mustBe IndividualIncomeSource.heading
+  }
 
-    "have the heading for the page" in new ViewTest {
-      document.selectHead("h1").text mustBe IndividualIncomeSource.heading
-    }
-
-    "has information for the user that advises they only need to fill in sections that apply to them" in new ViewTest {
-      document.mainContent.getNthParagraph(1).text mustBe IndividualIncomeSource.paragraph1
-    }
+  "has information for the user that advises they only need to fill in sections that apply to them" in new ViewTest {
+    document.mainContent.getNthParagraph(1).text mustBe IndividualIncomeSource.paragraph1
+  }
 
   "has a section on Sole trader" which {
     "has the sole trader paragraph heading for the section" in new ViewTest {
@@ -117,7 +113,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     }
 
     "has a link to self-employed page" in new ViewTest {
-      document.mainContent.getLinkNth(0).attr("href") mustBe appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl
+      document.mainContent.getLinkNth().attr("href") mustBe appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl
     }
   }
 
@@ -146,7 +142,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     }
 
     "has foreign property  hint text" in new ViewTest(overseasEnabled = true) {
-      document.mainContent.selectNth("p", 5).text()  mustBe IndividualIncomeSource.foreignPropertyHint
+      document.mainContent.selectNth("p", 5).text() mustBe IndividualIncomeSource.foreignPropertyHint
     }
 
     "has foreign property  hint2 text" in new ViewTest(overseasEnabled = true) {

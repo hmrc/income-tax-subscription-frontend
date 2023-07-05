@@ -76,6 +76,7 @@ object IntegrationTestModels {
     )).toSeq
   val testFullPropertyModel: PropertyModel = PropertyModel(
     accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
+    count = Some(1),
     startDate = Some(testPropertyStartDate.startDate),
     confirmed = true
   )

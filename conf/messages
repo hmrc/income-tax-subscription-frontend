@@ -213,6 +213,12 @@ error.property.day-year.invalid                                 = The date must 
 error.property.month-year.invalid                               = The date must be a real date
 error.property.year.length                                      = The year must be in four digits. For example, 2020.
 
+# Number of UK properties
+business.property.count.heading                                 = How many properties do you currently let?
+business.property.count.heading.caption                         = UK property
+error.business.property.count.empty                             = Enter a number greater than 0.
+error.business.property.count.numeric                           = You can only enter numbers. You can not use special characters, such as hyphens, spaces and apostrophes.
+
 # Agent Property Start Date Date
 agent.property.start-date.heading                               = When did your client’s UK property business start trading?
 agent.property.start-date.heading.caption                       = {0} | {1}

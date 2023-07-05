@@ -46,7 +46,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
   private val confirmedEditableYearNext = Some(AccountingYearModel(Next, confirmed = true))
   private val unconfirmedEditableYearNext = Some(AccountingYearModel(Next))
 
-  "Task List " should {
+  "Task List Model" should {
 
     "provided income summary data with a uk property, ukPropertyComplete returns true" in {
 
@@ -54,7 +54,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
         taxYearSelection = confirmedEditableYearNext,
         selfEmployments = Seq(completeSeModel),
         selfEmploymentAccountingMethod = None,
-        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
+        ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
         overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
       )
 
@@ -67,7 +67,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
         taxYearSelection = confirmedEditableYearNext,
         selfEmployments = Seq(completeSeModel),
         selfEmploymentAccountingMethod = None,
-        ukProperty = Some(PropertyModel(None, Some(DateModel("1", "2", "1980")))),
+        ukProperty = Some(PropertyModel(None, Some(1), Some(DateModel("1", "2", "1980")))),
         overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
       )
 
@@ -80,7 +80,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
         taxYearSelection = confirmedEditableYearNext,
         selfEmployments = Seq(completeSeModel),
         selfEmploymentAccountingMethod = Some(Cash),
-        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
+        ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
         overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
       )
 
@@ -93,7 +93,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
         taxYearSelection = confirmedEditableYearNext,
         selfEmployments = Seq(incompleteSeModel),
         selfEmploymentAccountingMethod = Some(Cash),
-        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
+        ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
         overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
       )
 
@@ -106,7 +106,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
         taxYearSelection = confirmedEditableYearNext,
         selfEmployments = Seq(completeSeModel),
         selfEmploymentAccountingMethod = None,
-        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
+        ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
         overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
       )
 
@@ -120,7 +120,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
         taxYearSelection = confirmedEditableYearNext,
         selfEmployments = Seq(completeSeModel),
         selfEmploymentAccountingMethod = None,
-        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
+        ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
         overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
       )
 
@@ -133,7 +133,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
         taxYearSelection = confirmedEditableYearNext,
         selfEmployments = Seq(completeSeModel),
         selfEmploymentAccountingMethod = None,
-        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
+        ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
         overseasProperty = Some(OverseasPropertyModel(Some(Cash)))
       )
 
@@ -146,7 +146,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
         taxYearSelection = confirmedEditableYearNext,
         selfEmployments = Seq(completeSeModel),
         selfEmploymentAccountingMethod = Some(Cash),
-        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
+        ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
         overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
       )
 
@@ -159,7 +159,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
         taxYearSelection = confirmedEditableYearNext,
         selfEmployments = Seq(incompleteSeModel),
         selfEmploymentAccountingMethod = None,
-        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
+        ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
         overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
       )
 
@@ -172,7 +172,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
         taxYearSelection = confirmedEditableYearNext,
         selfEmployments = Seq(completeSeModel),
         selfEmploymentAccountingMethod = Some(Cash),
-        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
+        ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
         overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
       )
 
@@ -185,7 +185,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
           taxYearSelection = confirmedEditableYearNext,
           selfEmployments = Seq(completeSeModel),
           selfEmploymentAccountingMethod = Some(Cash),
-          ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
+          ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
           overseasProperty = Some(OverseasPropertyModel(None, Some(date)))
         )
 
@@ -199,7 +199,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
           taxYearSelection = unconfirmedEditableYearNext,
           selfEmployments = Seq(completeSeModel),
           selfEmploymentAccountingMethod = Some(Cash),
-          ukProperty = Some(PropertyModel(None, Some(DateModel("1", "2", "1980")))),
+          ukProperty = Some(PropertyModel(None, Some(1), Some(DateModel("1", "2", "1980")))),
           overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
         )
 
@@ -214,7 +214,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
           taxYearSelection = confirmedEditableYearNext,
           selfEmployments = Seq(incompleteSeModel),
           selfEmploymentAccountingMethod = None,
-          ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
+          ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
           overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
         )
 
@@ -237,7 +237,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
             )
           },
           selfEmploymentAccountingMethod = Some(Cash),
-          ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
+          ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
           overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
         )
 
@@ -282,7 +282,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
         },
         selfEmploymentAccountingMethod = Some(Cash),
 
-        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")))),
+        ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")))),
         overseasProperty = None
       )
 
@@ -304,7 +304,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
           )
         },
         selfEmploymentAccountingMethod = Some(Cash),
-        ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
+        ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
         overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
       )
 
@@ -322,7 +322,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
           taxYearSelection = confirmedEditableYearNext,
           selfEmployments = Seq(completeSeModel),
           selfEmploymentAccountingMethod = Some(Cash),
-          ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
+          ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
           overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
         )
 
@@ -345,7 +345,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
           taxYearSelection = unconfirmedEditableYearNext,
           selfEmployments = Seq(completeSeModel),
           selfEmploymentAccountingMethod = Some(Cash),
-          ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
+          ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
           overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
         )
 
@@ -369,7 +369,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
           selfEmployments = Seq(completeSeModel),
           selfEmploymentAccountingMethod = Some(Cash),
 
-          ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
+          ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
           overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true))
         )
 

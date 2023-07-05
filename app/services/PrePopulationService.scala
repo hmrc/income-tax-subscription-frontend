@@ -60,7 +60,7 @@ class PrePopulationService @Inject()(val subscriptionDetailsService: Subscriptio
 
     val futureSaveUkPropertyInfo = prePopData.ukProperty match {
       case None => Future.successful(())
-      case Some(up) => subscriptionDetailsService.saveProperty(reference, PropertyModel(up.ukPropertyAccountingMethod, up.ukPropertyStartDate))
+      case Some(up) => subscriptionDetailsService.saveProperty(reference, PropertyModel(up.ukPropertyAccountingMethod, None, up.ukPropertyStartDate))
     }
 
     val futureSaveOverseasPropertyInfo = prePopData.overseasProperty match {
