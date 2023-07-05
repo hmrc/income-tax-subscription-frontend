@@ -20,10 +20,19 @@ import forms.validation.utils.ConstraintUtil._
 import forms.validation.utils.Patterns
 import play.api.data.validation.{Constraint, Invalid, Valid}
 
+import scala.util.{Failure, Success, Try}
+
 object Constraints {
 
   val nonEmpty: String => Constraint[String] = msgKey => constraint[String](
     x => if (x.isEmpty) Invalid(msgKey) else Valid
+  )
+
+  val isNumber: String => Constraint[String] = msgKey => constraint[String](
+    x => Try(x.toInt) match {
+      case Failure(_) => Invalid(msgKey)
+      case Success(_) => Valid
+    }
   )
 
   val maxLength: (Int, String) => Constraint[String] = (length, msgKey) => constraint[String](

@@ -31,7 +31,7 @@ trait FeatureSwitching {
     (sys.props.get(featureSwitch.name) orElse appConfig.configuration.getOptional[String](featureSwitch.name)) contains FEATURE_SWITCH_ON
 
   def isDisabled(featureSwitch: FeatureSwitch): Boolean =
-    (sys.props.get(featureSwitch.name) orElse appConfig.configuration.getOptional[String](featureSwitch.name)) contains FEATURE_SWITCH_OFF
+    !isEnabled(featureSwitch)
 
   def enable(featureSwitch: FeatureSwitch): Unit =
     sys.props += featureSwitch.name -> FEATURE_SWITCH_ON

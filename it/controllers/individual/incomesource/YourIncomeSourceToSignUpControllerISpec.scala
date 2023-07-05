@@ -20,17 +20,13 @@ import config.featureswitch.FeatureSwitch.{ForeignProperty => ForeignPropertyFea
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import controllers.individual.business.{routes => businessRoutes}
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.{overseasPropertyStartDateURI, propertyStartDateURI}
 import helpers.IntegrationTestModels.{testFullOverseasPropertyModel, testFullPropertyModel, testTooManyBusinesses}
 import helpers.servicemocks.AuthStub
-import models.Cash
-import models.common._
-import models.common.business.SelfEmploymentData
 import play.api.http.Status._
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys
 
-class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase  {
+class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
   override def beforeEach(): Unit = {
     super.beforeEach()
     disable(ForeignPropertyFeature)
@@ -76,7 +72,6 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase  {
       }
     }
   }
-
 
 
 }

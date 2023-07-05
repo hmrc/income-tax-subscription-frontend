@@ -59,5 +59,9 @@ object FeatureSwitch {
     override val displayText: String = "Sign up confirmation page"
   }
 
+  case object EnableTaskListRedesign extends FeatureSwitch {
+    override val name = s"$prefix.enable-task-list-redesign"
+    override val displayText = "Enable the task list redesign"
+  }
 
 }

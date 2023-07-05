@@ -213,6 +213,12 @@ error.property.day-year.invalid                                 = Rhaid i’r dy
 error.property.month-year.invalid                               = Rhaid i’r dyddiad fod yn ddyddiad go iawn
 error.property.year.length                                      = Mae’n rhaid i flwyddyn fod yn bedwar digid. Er enghraifft, 2020.
 
+# Number of UK properties
+business.property.count.heading                                 = Sawl eiddo sydd ar osod gennych ar hyn o bryd?
+business.property.count.heading.caption                         = Eiddo yn y DU
+error.business.property.count.empty                             = Nodwch rif sy’n fwy na 0.
+error.business.property.count.numeric                           = Gallwch ond nodi rhifau yn unig. Ni allwch ddefnyddio cymeriadau arbennig, megis cysylltnodau, bylchau, a chollnodau.
+
 # Agent Property Start Date Date
 agent.property.start-date.heading                               = Pryd y dechreuodd busnes eiddo yn y DU eich cleient fasnachu?
 agent.property.start-date.heading.caption                       = {0} | {1}
@@ -249,6 +255,12 @@ agent.overseas-property.start-date.heading                       = Pryd y dechre
 agent.overseas-property.start-date.heading.caption               = {0} | {1}
 agent.overseas-property.start-date.line-1                        = Dyma’r dyddiad y dechreuodd roi unrhyw eiddo tramor ar osod yn y lle cyntaf.
 agent.overseas-property.start-date.hint                          = Er enghraifft, 17 8 2014.
+
+# Number of Overseas Properties
+business.overseas-property.count.heading                        = Sawl eiddo sydd ar osod gennych ar hyn o bryd?
+business.overseas-property.count.heading.caption                = Eiddo yn y DU
+error.business.overseas-property.count.empty                    = Nodwch rif sy’n fwy na 0.
+error.business.overseas-property.count.numeric                  = Gallwch ond nodi rhifau yn unig. Ni allwch ddefnyddio cymeriadau arbennig, megis cysylltnodau, bylchau, a chollnodau.
 
 # Overseas Property Start Date errors
 error.overseas.property.day-month-year.empty                     = Nodwch y dyddiad y dechreuodd eich busnes eiddo tramor fasnachu

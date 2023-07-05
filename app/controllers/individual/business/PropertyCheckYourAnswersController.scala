@@ -19,6 +19,7 @@ package controllers.individual.business
 import auth.individual.SignUpController
 import com.google.inject.Inject
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.utils.ReferenceRetrieval
 import models.common.PropertyModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -56,15 +57,13 @@ class PropertyCheckYourAnswersController @Inject()(val propertyCheckYourAnswersV
   def submit(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       withReference { reference =>
-        withProperty(reference) { property =>
-          if (property.accountingMethod.isDefined && property.startDate.isDefined) {
+        withProperty(reference) {
+          case property@PropertyModel(Some(_), count, Some(_), _) if isDisabled(EnableTaskListRedesign) || count.isDefined =>
             subscriptionDetailsService.saveProperty(reference, property.copy(confirmed = true)).map {
               case Right(_) => Redirect(routes.TaskListController.show())
               case Left(_) => throw new InternalServerException("[PropertyCheckYourAnswersController][submit] - Could not confirm property")
             }
-          } else {
-            Future.successful(Redirect(routes.TaskListController.show()))
-          }
+          case _ => Future.successful(Redirect(routes.TaskListController.show()))
         }
       }
   }

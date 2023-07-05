@@ -52,8 +52,8 @@ class PrePopulationServiceSpec extends TestPrePopulationService {
   private val overseasProperty = Some(PrePopOverseasProperty(Some(DateModel("2", "2", "2002")), Some(Accruals)))
 
   private val testBusinessAccountingMethod = AccountingMethodModel(Accruals) // first found, see selfEmploymentsWithAccountingMethod
-  private val testUkProperty = PropertyModel(Some(Cash), Some(DateModel("1", "1", "2001")), false)
-  private val testOverseasProperty = OverseasPropertyModel(Some(Accruals), Some(DateModel("2", "2", "2002")), false)
+  private val testUkProperty = PropertyModel(Some(Cash), None, Some(DateModel("1", "1", "2001")))
+  private val testOverseasProperty = OverseasPropertyModel(Some(Accruals), None, Some(DateModel("2", "2", "2002")))
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -78,7 +78,7 @@ class PrePopulationServiceSpec extends TestPrePopulationService {
         verifySaveUkProperty(1, testReference, testUkProperty)
         verifyOverseasPropertySave(Some(testOverseasProperty), Some(testReference))
         verifySaveSelfEmploymentsAccountingMethod(1, testReference, testBusinessAccountingMethod)
-        verifySavePrePopFlag(1, testReference, true)
+        verifySavePrePopFlag(1, testReference, value = true)
       }
     }
     "given a user which has been seen before" should {
@@ -93,7 +93,7 @@ class PrePopulationServiceSpec extends TestPrePopulationService {
         verifySaveUkProperty(0, testReference, testUkProperty)
         verifyOverseasPropertySave(None)
         verifySaveSelfEmploymentsAccountingMethod(0, testReference, testBusinessAccountingMethod)
-        verifySavePrePopFlag(0, testReference, true)
+        verifySavePrePopFlag(0, testReference, value = true)
       }
     }
   }

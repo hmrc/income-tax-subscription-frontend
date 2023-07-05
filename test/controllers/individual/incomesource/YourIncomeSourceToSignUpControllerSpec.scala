@@ -19,22 +19,15 @@ package controllers.individual.incomesource
 import config.featureswitch.FeatureSwitch.{ForeignProperty => ForeignPropertyFeature}
 import connectors.subscriptiondata.mocks.MockIncomeTaxSubscriptionConnector
 import controllers.ControllerBaseSpec
-import forms.individual.incomesource.BusinessIncomeSourceForm
-import models.common._
-import models.common.business.SelfEmploymentData
-import models.{Accruals, Cash, IncomeSourcesStatus}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.Assertion
-import play.api.http.Status
-import play.api.http.Status.{OK, SEE_OTHER}
-import play.api.mvc.{Action, AnyContent, Result}
-import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, status}
+import play.api.http.Status.OK
+import play.api.mvc.{Action, AnyContent}
+import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, status}
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockAuditingService, MockSubscriptionDetailsService}
 import views.html.individual.incometax.incomesource.YourIncomeSourceToSignUp
-
-import scala.concurrent.Future
 
 class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService
@@ -69,20 +62,20 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
 
   }
 
-    private def withController(testCode: YourIncomeSourceToSignUpController => Assertion) = {
-      val yourIncomeSourceToSignUpView = mock[YourIncomeSourceToSignUp]
+  private def withController(testCode: YourIncomeSourceToSignUpController => Assertion) = {
+    val yourIncomeSourceToSignUpView = mock[YourIncomeSourceToSignUp]
 
-      when(yourIncomeSourceToSignUpView(any())(any(), any(), any()))
-        .thenReturn(HtmlFormat.empty)
+    when(yourIncomeSourceToSignUpView(any())(any(), any(), any()))
+      .thenReturn(HtmlFormat.empty)
 
-      val controller = new YourIncomeSourceToSignUpController(
-        yourIncomeSourceToSignUpView,
-        MockSubscriptionDetailsService,
-        mockAuditingService,
-        mockAuthService
-      )
+    val controller = new YourIncomeSourceToSignUpController(
+      yourIncomeSourceToSignUpView,
+      MockSubscriptionDetailsService,
+      mockAuditingService,
+      mockAuthService
+    )
 
-      testCode(controller)
-    }
-
+    testCode(controller)
   }
+
+}
