@@ -16,6 +16,7 @@
 
 package controllers.individual.business
 
+import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.ControllerBaseSpec
 import forms.individual.business.AccountingMethodPropertyForm
 import models.common.PropertyModel
@@ -34,7 +35,12 @@ import views.html.individual.incometax.business.PropertyAccountingMethod
 import scala.concurrent.Future
 
 class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
-  with MockSubscriptionDetailsService with MockAuditingService  {
+  with MockSubscriptionDetailsService with MockAuditingService {
+
+  override def beforeEach(): Unit = {
+    disable(EnableTaskListRedesign)
+    super.beforeEach()
+  }
 
   override val controllerName: String = "PropertyAccountingMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
@@ -84,7 +90,7 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
         val goodRequest = callSubmit(isEditMode = false)
 
         await(goodRequest)
-        redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.PropertyCheckYourAnswersController.show().url)
+        redirectLocation(goodRequest) mustBe Some(routes.PropertyCheckYourAnswersController.show().url)
 
 
         verifyPropertySave(Some(PropertyModel(accountingMethod = Some(testAccountingMethod))))
@@ -98,7 +104,7 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
           subscriptionRequest.post(AccountingMethodPropertyForm.accountingMethodPropertyForm, Accruals)
         )
 
-        redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.PropertyCheckYourAnswersController.show(true).url)
+        redirectLocation(goodRequest) mustBe Some(routes.PropertyCheckYourAnswersController.show(true).url)
 
 
         verifyPropertySave(Some(testFullPropertyModel.copy(accountingMethod = Some(Accruals), confirmed = false)))
@@ -128,18 +134,26 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
     }
 
     "The back url" when {
-      "is not in edit mode" should {
+      "is in edit mode" should {
         "redirect back to uk property start date page" in withController { controller =>
-          controller.backUrl(isEditMode = false) mustBe
-            controllers.individual.business.routes.PropertyStartDateController.show().url
+          controller.backUrl(isEditMode = true) mustBe
+            routes.PropertyCheckYourAnswersController.show(true).url
         }
       }
 
-      "is in edit mode" should {
-        "redirect back to uk property check your answers page" in withController { controller =>
-          setupMockSubscriptionDetailsSaveFunctions()
-          controller.backUrl(isEditMode = true) mustBe
-            controllers.individual.business.routes.PropertyCheckYourAnswersController.show(true).url
+      "is not in edit mode" when {
+        "the task list redesign feature switch is enabled" should {
+          "redirect back to uk property check your answers page" in withController { controller =>
+            enable(EnableTaskListRedesign)
+            controller.backUrl(isEditMode = false) mustBe
+              routes.UkPropertyCountController.show().url
+          }
+        }
+        "the task list redesign feature switch is disabled" should {
+          "redirect back to uk property check your answers page" in withController { controller =>
+            controller.backUrl(isEditMode = false) mustBe
+              routes.PropertyStartDateController.show().url
+          }
         }
       }
     }
