@@ -37,7 +37,8 @@ class UkPropertyCountViewSpec extends ViewSpec {
   }
 
   val taxYearEnd: Int = 2020
-  val testError: FormError = FormError("startDate", "error.business.property.count.empty")
+  val testEmptyError: FormError = FormError("startDate", "error.business.property.count.empty")
+  val testNumericalError: FormError = FormError("startDate", "error.business.property.count.numeric")
 
   val ukPropertyCount: UkPropertyCount = app.injector.instanceOf[UkPropertyCount]
 
@@ -56,9 +57,9 @@ class UkPropertyCountViewSpec extends ViewSpec {
         backLink = Some(testBackUrl),
       )
 
-      "there is an error" in new TemplateViewTest(
+      "there is an empty error" in new TemplateViewTest(
         view = ukPropertyCount(
-          UkPropertyCountForm.form.withError(testError),
+          UkPropertyCountForm.form.withError(testEmptyError),
           testCall,
           isEditMode = false,
           testBackUrl
@@ -66,7 +67,20 @@ class UkPropertyCountViewSpec extends ViewSpec {
         title = UkPropertyCountMessages.heading,
         isAgent = false,
         backLink = Some(testBackUrl),
-        error = Some(testError)
+        error = Some(testEmptyError)
+      )
+
+      "there is an numerical error" in new TemplateViewTest(
+        view = ukPropertyCount(
+          UkPropertyCountForm.form.withError(testNumericalError),
+          testCall,
+          isEditMode = false,
+          testBackUrl
+        ),
+        title = UkPropertyCountMessages.heading,
+        isAgent = false,
+        backLink = Some(testBackUrl),
+        error = Some(testNumericalError)
       )
     }
 
@@ -76,7 +90,7 @@ class UkPropertyCountViewSpec extends ViewSpec {
     }
 
     "have a form" which {
-      def form = document().mainContent.getForm
+      def form: Element = document().mainContent.getForm
 
       "has the correct attributes" in {
         form.attr("method") mustBe testCall.method

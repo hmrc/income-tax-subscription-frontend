@@ -29,6 +29,7 @@ class UkPropertyCountFormSpec extends PlaySpec {
         boundForm.value mustBe Some(inputNumber)
       }
     }
+
     "fail to bind" when {
       "no value is provided to the form" in {
         val boundForm = UkPropertyCountForm.form.bind(Map[String, String]())
