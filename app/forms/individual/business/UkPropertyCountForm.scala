@@ -27,7 +27,7 @@ object UkPropertyCountForm {
   val fieldName: String = "uk-property-count"
 
   val emptyErrorKey: String = "error.business.property.count.empty"
-  val nonNumericErrorKey: String = "error.business.property.count.non-numeric"
+  val nonNumericErrorKey: String = "error.business.property.count.numeric"
 
   val aboveZero: Constraint[Int] = constraint[Int] { number =>
     if (number > 0) {
