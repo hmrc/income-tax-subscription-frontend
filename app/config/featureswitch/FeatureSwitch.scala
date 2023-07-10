@@ -29,6 +29,7 @@ object FeatureSwitch {
     PrePopulate,
     ThrottlingFeature,
     ConfirmationPage,
+    EnableTaskListRedesign
   )
 
   def apply(str: String): FeatureSwitch =
