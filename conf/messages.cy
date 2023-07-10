@@ -245,9 +245,10 @@ agent.error.property.month-year.invalid                         = Rhaid i’r dy
 agent.error.property.year.length                                = Mae’n rhaid i flwyddyn fod yn bedwar digid. Er enghraifft, 2020.
 
 ## Overseas Property Start Date
-overseas.property.name.title                                     = Pryd y dechreuodd eich busnes eiddo tramor fasnachu?
-overseas.property.name.heading                                   = Pryd y dechreuodd eich busnes eiddo tramor fasnachu?
-overseas.property.line-1                                         = Dyma’r dyddiad y dechreuwyd rhoi unrhyw eiddo tramor ar osod yn y lle cyntaf.
+overseas.property.name.title                                     = Pryd y gwnaethoch ddechrau eich busnes eiddo tramor?
+overseas.property.name.heading                                   = Pryd y gwnaethoch ddechrau eich busnes eiddo tramor?
+overseas.property.name.caption                                   = Eiddo tramor
+overseas.property.line-1                                         = Dyma pryd y gwnaethoch ddechrau rhoi unrhyw eiddo tramor ar osod.
 overseas.property.start-date.hint                                = Er enghraifft, 17 8 2014.
 
 # Agent Overseas Property Start Date
