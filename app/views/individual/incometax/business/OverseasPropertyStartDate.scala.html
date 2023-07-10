@@ -22,6 +22,7 @@
         mainTemplate: PrincipalMainTemplate,
         form: FormWithCSRF,
         dateHelper: DateHelper,
+        hmrcPageHeading: HmrcPageHeading,
         saveAndContinueButtonHelper: SaveAndContinueButtonHelper
 )
 
@@ -29,7 +30,12 @@
 
 @mainTemplate(title = messages("overseas.property.name.title"), optForm = Some(overseasPropertyStartDateForm), backLink = Some(backUrl)) {
 
-    <h1 class="govuk-heading-l">@messages("overseas.property.name.heading")</h1>
+    @hmrcPageHeading(PageHeading(
+        text = messages("overseas.property.name.heading"),
+        section = Some(messages("overseas.property.name.caption")),
+        headingClasses = Some("govuk-heading-l"),
+        captionClasses = Some("govuk-caption-l")
+    ))
 
     <p class="govuk-body">@messages("overseas.property.line-1")</p>
 

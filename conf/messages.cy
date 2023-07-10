@@ -245,9 +245,10 @@ agent.error.property.month-year.invalid                         = Rhaid i’r dy
 agent.error.property.year.length                                = Mae’n rhaid i flwyddyn fod yn bedwar digid. Er enghraifft, 2020.
 
 ## Overseas Property Start Date
-overseas.property.name.title                                     = Pryd y dechreuodd eich busnes eiddo tramor fasnachu?
-overseas.property.name.heading                                   = Pryd y dechreuodd eich busnes eiddo tramor fasnachu?
-overseas.property.line-1                                         = Dyma’r dyddiad y dechreuwyd rhoi unrhyw eiddo tramor ar osod yn y lle cyntaf.
+overseas.property.name.title                                     = Pryd y gwnaethoch ddechrau eich busnes eiddo tramor?
+overseas.property.name.heading                                   = Pryd y gwnaethoch ddechrau eich busnes eiddo tramor?
+overseas.property.name.caption                                   = Eiddo tramor
+overseas.property.line-1                                         = Dyma pryd y gwnaethoch ddechrau rhoi unrhyw eiddo tramor ar osod.
 overseas.property.start-date.hint                                = Er enghraifft, 17 8 2014.
 
 # Agent Overseas Property Start Date
@@ -989,14 +990,17 @@ business.check-your-answers.content.accounting-method.accruals  = Cyfrifyddu tra
 
 
 ## UK property check your answers
-business.check-your-answers.content.uk-property.title                      = Gwirio’ch atebion – busnes eiddo yn y DU
-business.check-your-answers.content.uk-property.caption                    = Manylion y busnes eiddo yn y DU a nodwyd gennych
-business.check-your-answers.content.uk-property-start-date.question        = Dyddiad dechrau masnachu’r busnes eiddo yn y DU
-business.check-your-answers.content.uk-property-start-date.add             = Ychwanegu dyddiad dechrau masnachu’r busnes eiddo yn y DU
-business.check-your-answers.content.uk-property-start-date.change          = Newid dyddiad dechrau masnachu’r busnes eiddo yn y DU
-business.check-your-answers.content.uk-property-accounting-method.question = Dull cyfrifyddu’r busnes eiddo yn y DU
-business.check-your-answers.content.uk-property-accounting-method.add      = Ychwanegu dull cyfrifyddu’r busnes eiddo yn y DU
-business.check-your-answers.content.uk-property-accounting-method.change   = Newid dull cyfrifyddu’r busnes eiddo yn y DU
+business.check-your-answers.content.uk-property.title                           = Gwirio’ch atebion – busnes eiddo yn y DU
+business.check-your-answers.content.uk-property.caption                         = Manylion y busnes eiddo yn y DU a nodwyd gennych
+business.check-your-answers.content.uk-property-start-date.question             = Dyddiad dechrau
+business.check-your-answers.content.uk-property-start-date.add                  = Ychwanegu dyddiad dechrau
+business.check-your-answers.content.uk-property-start-date.change               = Newid dyddiad dechrau
+business.check-your-answers.content.uk-property-number-of-properties.question   = Y nifer o eiddo
+business.check-your-answers.content.uk-property-number-of-properties.add        = Ychwanegu’r nifer o eiddo
+business.check-your-answers.content.uk-property-number-of-properties.change     = Newid y nifer o eiddo
+business.check-your-answers.content.uk-property-accounting-method.question      = Dull cyfrifyddu
+business.check-your-answers.content.uk-property-accounting-method.add           = Ychwanegu dull cyfrifyddu
+business.check-your-answers.content.uk-property-accounting-method.change        = Newid y dull cyfrifyddu
 
 ## Overseas property check your answers
 business.check-your-answers.content.overseas-property.title                      = Gwirio’ch atebion – busnes eiddo tramor

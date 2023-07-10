@@ -34,6 +34,7 @@ package controllers.individual.business
 
 import auth.individual.SignUpController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.utils.ReferenceRetrieval
 import forms.individual.business.AccountingMethodPropertyForm
 import models.AccountingMethod
@@ -54,15 +55,15 @@ class PropertyAccountingMethodController @Inject()(val auditingService: Auditing
                                                    val subscriptionDetailsService: SubscriptionDetailsService)
                                                   (implicit val ec: ExecutionContext,
                                                    val appConfig: AppConfig,
-                                                   mcc: MessagesControllerComponents) extends SignUpController  with ReferenceRetrieval {
+                                                   mcc: MessagesControllerComponents) extends SignUpController with ReferenceRetrieval {
   def view(accountingMethodPropertyForm: Form[AccountingMethod], isEditMode: Boolean)
           (implicit request: Request[_]): Html = {
-      propertyAccountingMethod(
-        accountingMethodForm = accountingMethodPropertyForm,
-        postAction = controllers.individual.business.routes.PropertyAccountingMethodController.submit(editMode = isEditMode),
-        isEditMode,
-        backUrl = backUrl(isEditMode)
-      )
+    propertyAccountingMethod(
+      accountingMethodForm = accountingMethodPropertyForm,
+      postAction = routes.PropertyAccountingMethodController.submit(editMode = isEditMode),
+      isEditMode,
+      backUrl = backUrl(isEditMode)
+    )
   }
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
@@ -85,7 +86,7 @@ class PropertyAccountingMethodController @Inject()(val auditingService: Auditing
             Future.successful(BadRequest(view(accountingMethodPropertyForm = formWithErrors, isEditMode = isEditMode))),
           accountingMethodProperty => {
             subscriptionDetailsService.saveAccountingMethodProperty(reference, accountingMethodProperty) map {
-              case Right(_) => Redirect(controllers.individual.business.routes.PropertyCheckYourAnswersController.show(isEditMode))
+              case Right(_) => Redirect(routes.PropertyCheckYourAnswersController.show(isEditMode))
               case Left(_) => throw new InternalServerException("[PropertyAccountingMethodController][submit] - Could not save accounting method")
             }
           }
@@ -95,9 +96,11 @@ class PropertyAccountingMethodController @Inject()(val auditingService: Auditing
 
   def backUrl(isEditMode: Boolean): String = {
     if (isEditMode) {
-      controllers.individual.business.routes.PropertyCheckYourAnswersController.show(editMode = true).url
+      routes.PropertyCheckYourAnswersController.show(editMode = true).url
+    } else if (isEnabled(EnableTaskListRedesign)) {
+      routes.UkPropertyCountController.show().url
     } else {
-      controllers.individual.business.routes.PropertyStartDateController.show().url
+      routes.PropertyStartDateController.show().url
     }
   }
 }
