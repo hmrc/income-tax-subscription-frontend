@@ -1003,14 +1003,17 @@ business.check-your-answers.content.uk-property-accounting-method.add         = 
 business.check-your-answers.content.uk-property-accounting-method.change      = Change Accounting method
 
 ## Overseas property check your answers
-business.check-your-answers.content.overseas-property.title                      = Check your answers - overseas property business
-business.check-your-answers.content.overseas-property.caption                    = Overseas property business details you entered
-business.check-your-answers.content.overseas-property-start-date.question        = Overseas property business trading start date
-business.check-your-answers.content.overseas-property-start-date.add             = Add Overseas property business trading start date
-business.check-your-answers.content.overseas-property-start-date.change          = Change Overseas property business trading start date
-business.check-your-answers.content.overseas-property-accounting-method.question = Overseas property business accounting method
-business.check-your-answers.content.overseas-property-accounting-method.add      = Add Overseas property business accounting method
-business.check-your-answers.content.overseas-property-accounting-method.change   = Change Overseas property business accounting method
+business.check-your-answers.content.overseas-property.title                      = Check your answers - Foreign property
+business.check-your-answers.content.overseas-property.caption                    = Foreign property
+business.check-your-answers.content.overseas-property-start-date.question        = Start date
+business.check-your-answers.content.overseas-property-start-date.add             = Add start date
+business.check-your-answers.content.overseas-property-start-date.change          = Change start date
+business.check-your-answers.content.overseas-property-count.question             = Number of properties
+business.check-your-answers.content.overseas-property-count.add                  = Add number of properties
+business.check-your-answers.content.overseas-property-count.change               = Change number of properties
+business.check-your-answers.content.overseas-property-accounting-method.question = Accounting method
+business.check-your-answers.content.overseas-property-accounting-method.add      = Add accounting method
+business.check-your-answers.content.overseas-property-accounting-method.change   = Change accounting method
 
 ## Remove business
 business.remove-sole-trader-business.heading      = Are you sure you want to delete {0}{1}?

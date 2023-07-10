@@ -14,6 +14,8 @@
  * limitations under the License.
  *@
 
+@import config.featureswitch.FeatureSwitchingImpl
+@import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 @import models.common.OverseasPropertyModel
 @import views.html.templates.PrincipalMainTemplate
 @import views.html.templates.injected.{CheckYourAnswers, CheckYourAnswersRow}
@@ -21,7 +23,8 @@
 @this(
         mainTemplate: PrincipalMainTemplate,
         checkYourAnswers: CheckYourAnswers,
-        checkYourAnswersRow: CheckYourAnswersRow
+        checkYourAnswersRow: CheckYourAnswersRow,
+        featureSwitching: FeatureSwitchingImpl
 )
 
 @(
@@ -33,6 +36,13 @@
 @startDate(maybeStartDate: Option[DateModel]) = @{
     maybeStartDate match {
         case Some(startDate) => startDate.toCheckYourAnswersDateFormat
+        case None => ""
+    }
+}
+
+@count(maybeCount: Option[Int]) = @{
+    maybeCount match {
+        case Some(count) => count.toString
         case None => ""
     }
 }
@@ -67,6 +77,20 @@
                     else
                         messages("business.check-your-answers.content.overseas-property-start-date.add")
         )
+        @if(featureSwitching.isEnabled(EnableTaskListRedesign)) {
+            @checkYourAnswersRow(
+                field = "count",
+                question = messages("business.check-your-answers.content.overseas-property-count.question"),
+                answer = count(viewModel.count),
+                changeText = if(viewModel.count.isDefined) None else Some(messages("base.add")),
+                changeUrl = Some(controllers.individual.business.routes.OverseasPropertyCountController.show(editMode = true).url),
+                hiddenContent =
+                    if(viewModel.count.isDefined)
+                        messages("business.check-your-answers.content.overseas-property-count.change")
+                    else
+                        messages("business.check-your-answers.content.overseas-property-count.add")
+            )
+        }
         @checkYourAnswersRow(
             field = "accounting-method",
             question = messages("business.check-your-answers.content.overseas-property-accounting-method.question"),
