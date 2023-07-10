@@ -984,14 +984,17 @@ business.check-your-answers.content.accounting-method.cash      = Cash basis acc
 business.check-your-answers.content.accounting-method.accruals  = Traditional accounting
 
 ## UK property check your answers
-business.check-your-answers.content.uk-property.title                      = Check your answers - UK property business
-business.check-your-answers.content.uk-property.caption                    = UK property business details you entered
-business.check-your-answers.content.uk-property-start-date.question        = UK property business trading start date
-business.check-your-answers.content.uk-property-start-date.add             = Add UK property business trading start date
-business.check-your-answers.content.uk-property-start-date.change          = Change UK property business trading start date
-business.check-your-answers.content.uk-property-accounting-method.question = UK property business accounting method
-business.check-your-answers.content.uk-property-accounting-method.add      = Add UK property business accounting method
-business.check-your-answers.content.uk-property-accounting-method.change   = Change UK property business accounting method
+business.check-your-answers.content.uk-property.title                         = Check your answers - UK property business
+business.check-your-answers.content.uk-property.caption                       = UK property
+business.check-your-answers.content.uk-property-start-date.question           = Start date
+business.check-your-answers.content.uk-property-start-date.add                = Add Start date
+business.check-your-answers.content.uk-property-start-date.change             = Change Start date
+business.check-your-answers.content.uk-property-number-of-properties.question = Number of properties
+business.check-your-answers.content.uk-property-number-of-properties.add      = Add Number of properties
+business.check-your-answers.content.uk-property-number-of-properties.change   = Change Number of properties
+business.check-your-answers.content.uk-property-accounting-method.question    = Accounting method
+business.check-your-answers.content.uk-property-accounting-method.add         = Add Accounting method
+business.check-your-answers.content.uk-property-accounting-method.change      = Change Accounting method
 
 ## Overseas property check your answers
 business.check-your-answers.content.overseas-property.title                      = Check your answers - overseas property business

@@ -17,11 +17,14 @@
 @import models.common.PropertyModel
 @import views.html.templates.PrincipalMainTemplate
 @import views.html.templates.injected.{CheckYourAnswers, CheckYourAnswersRow}
+@import config.featureswitch.FeatureSwitchingImpl
+@import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 
 @this(
         mainTemplate: PrincipalMainTemplate,
         checkYourAnswers: CheckYourAnswers,
-        checkYourAnswersRow: CheckYourAnswersRow
+        checkYourAnswersRow: CheckYourAnswersRow,
+        featureSwitching: FeatureSwitchingImpl
 )
 
 @(
@@ -34,6 +37,13 @@
     maybeStartDate match {
         case Some(startDate) => startDate.toCheckYourAnswersDateFormat
         case None => ""
+    }
+}
+
+@count(maybeCount: Option[Int]) = @{
+    maybeCount match {
+    case Some(count) => count.toString
+    case None => ""
     }
 }
 
@@ -66,6 +76,22 @@
                     else
                         messages("business.check-your-answers.content.uk-property-start-date.add")
         )
+
+            @if(featureSwitching.isEnabled(EnableTaskListRedesign)) {
+                @checkYourAnswersRow(
+                field = "accounting-method",
+                question = messages("business.check-your-answers.content.uk-property-number-of-properties.question"),
+                answer = count(viewModel.count),
+                changeText = if(viewModel.accountingMethod.isDefined) None else Some(messages("base.add")),
+                changeUrl = Some(controllers.individual.business.routes.UkPropertyCountController.show(editMode = true).url),
+                hiddenContent =
+                    if(viewModel.count.isDefined)
+                    messages("business.check-your-answers.content.uk-property-number-of-properties.change")
+                    else
+                    messages("business.check-your-answers.content.uk-property-number-of-properties.add")
+                    )
+            }
+
         @checkYourAnswersRow(
             field = "accounting-method",
             question = messages("business.check-your-answers.content.uk-property-accounting-method.question"),
