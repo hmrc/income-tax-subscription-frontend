@@ -18,6 +18,7 @@ package controllers.individual.business
 
 import auth.individual.SignUpController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.utils.ReferenceRetrieval
 import models.common.OverseasPropertyModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -54,15 +55,13 @@ class OverseasPropertyCheckYourAnswersController @Inject()(val view: OverseasPro
   def submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       withReference { reference =>
-        withProperty(reference) { property =>
-          if (property.accountingMethod.isDefined && property.startDate.isDefined) {
+        withProperty(reference) {
+          case property@OverseasPropertyModel(Some(_), count, Some(_), _) if isDisabled(EnableTaskListRedesign) || count.isDefined =>
             subscriptionDetailsService.saveOverseasProperty(reference, property.copy(confirmed = true)) map {
               case Right(_) => Redirect(routes.TaskListController.show())
               case Left(_) => throw new InternalServerException("[OverseasPropertyCheckYourAnswersController][submit] - Could not confirm property details")
             }
-          } else {
-            Future.successful(Redirect(routes.TaskListController.show()))
-          }
+          case _ => Future.successful(Redirect(routes.TaskListController.show()))
         }
       }
   }

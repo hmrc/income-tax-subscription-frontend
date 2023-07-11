@@ -66,7 +66,7 @@ class PrePopulationService @Inject()(val subscriptionDetailsService: Subscriptio
     val futureSaveOverseasPropertyInfo = prePopData.overseasProperty match {
       case None => Future.successful(())
       case Some(op) =>
-        subscriptionDetailsService.saveOverseasProperty(reference, OverseasPropertyModel(op.overseasPropertyAccountingMethod, op.overseasPropertyStartDate))
+        subscriptionDetailsService.saveOverseasProperty(reference, OverseasPropertyModel(op.overseasPropertyAccountingMethod, None, op.overseasPropertyStartDate))
     }
 
     val maybeAccountingMethod = prePopData.selfEmployments.flatMap(_.flatMap(_.businessAccountingMethod).headOption)

@@ -16,6 +16,7 @@
 
 package controllers.individual.business
 
+import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.ControllerBaseSpec
 import models.common.OverseasPropertyModel
 import models.{Cash, DateModel}
@@ -42,6 +43,11 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
   override val controllerName: String = "OverseasPropertyCheckYourAnswersController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
+  override def beforeEach(): Unit = {
+    disable(EnableTaskListRedesign)
+    super.beforeEach()
+  }
+
   "show" should {
     "return an OK status with the property CYA page" in withController { controller =>
       mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
@@ -63,9 +69,20 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
   }
 
   "submit" should {
-    "redirect to the task list" when {
-      "the user submits valid full data" should {
-        "save the overseas property answers" in withController { controller =>
+    "redirect to the task list and confirm the overseas property details" when {
+      "the user submits a start date, count and accounting method when the task list redesign feature switch is enabled" in withController { controller =>
+        enable(EnableTaskListRedesign)
+        mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash), count = Some(1), startDate = Some(DateModel("10", "11", "2021")))))
+        setupMockSubscriptionDetailsSaveFunctions()
+
+        val result: Future[Result] = await(controller.submit()(subscriptionRequest))
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.individual.business.routes.TaskListController.show().url)
+        verifyOverseasPropertySave(Some(OverseasPropertyModel(accountingMethod = Some(Cash), count = Some(1), startDate = Some(DateModel("10", "11", "2021")), confirmed = true)))
+      }
+
+      "the user submits a start date and accounting method when the task list redesign feature switch is disabled" in withController { controller =>
           val testProperty = OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))
 
           mockFetchOverseasProperty(Some(testProperty))
@@ -77,7 +94,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
           redirectLocation(result) mustBe Some(controllers.individual.business.routes.TaskListController.show().url)
           verifyOverseasPropertySave(Some(testProperty.copy(confirmed = true)))
         }
-      }
+
 
       "the user submits valid partial data" should {
         "not save the overseas property answers" in withController { controller =>

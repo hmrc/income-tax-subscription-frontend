@@ -257,6 +257,12 @@ agent.overseas-property.start-date.heading.caption              = {0} | {1}
 agent.overseas-property.start-date.line-1                       = This is the date that letting or renting out any overseas property first started.
 agent.overseas-property.start-date.hint                         = For example, 17 8 2014.
 
+# Number of Overseas Properties
+business.overseas-property.count.heading                        = How many properties do you currently let?
+business.overseas-property.count.heading.caption                = Foreign property
+error.business.overseas-property.count.empty                    = Enter a number greater than 0.
+error.business.overseas-property.count.numeric                  = You can only enter numbers. You can not use special characters, such as hyphens, spaces and apostrophes.
+
 # Overseas Property Start Date errors
 error.overseas.property.day-month-year.empty                    = Enter the date your overseas property business started trading
 error.overseas.property.day.empty                               = The date must include a day

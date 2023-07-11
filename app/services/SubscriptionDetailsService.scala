@@ -134,6 +134,19 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
     }
   }
 
+  def fetchOverseasPropertyCount(reference: String)(implicit hc: HeaderCarrier): Future[Option[Int]] =
+    fetchOverseasProperty(reference).map(_.flatMap(_.count))
+
+  def saveOverseasPropertyCount(reference: String, count: Int)
+                         (implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
+    fetchOverseasProperty(reference) map {
+      case Some(property) => property.copy(count = Some(count), confirmed = false)
+      case None => OverseasPropertyModel(count = Some(count))
+    } flatMap { model =>
+      saveOverseasProperty(reference, model)
+    }
+  }
+
   def retrieveReference(utr: String)(implicit hc: HeaderCarrier): Future[RetrieveReferenceResponse] = {
     incomeTaxSubscriptionConnector.retrieveReference(utr)
   }
