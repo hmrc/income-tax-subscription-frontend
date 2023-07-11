@@ -1003,14 +1003,17 @@ business.check-your-answers.content.uk-property-accounting-method.add           
 business.check-your-answers.content.uk-property-accounting-method.change        = Newid y dull cyfrifyddu
 
 ## Overseas property check your answers
-business.check-your-answers.content.overseas-property.title                      = Gwirio’ch atebion – busnes eiddo tramor
-business.check-your-answers.content.overseas-property.caption                    = Manylion y busnes eiddo tramor a nodwyd gennych
-business.check-your-answers.content.overseas-property-start-date.question        = Dyddiad dechrau masnachu’r busnes eiddo tramor
-business.check-your-answers.content.overseas-property-start-date.add             = Ychwanegu dyddiad dechrau masnachu’r busnes eiddo tramor
-business.check-your-answers.content.overseas-property-start-date.change          = Newid dyddiad dechrau masnachu’r busnes eiddo tramor
-business.check-your-answers.content.overseas-property-accounting-method.question = Dull cyfrifyddu’r busnes eiddo tramor
-business.check-your-answers.content.overseas-property-accounting-method.add      = Ychwanegu dull cyfrifyddu’r busnes eiddo tramor
-business.check-your-answers.content.overseas-property-accounting-method.change   = Newid dull cyfrifyddu’r busnes eiddo tramor
+business.check-your-answers.content.overseas-property.title                      = Gwirio’ch atebion – Eiddo tramor
+business.check-your-answers.content.overseas-property.caption                    = Eiddo tramor
+business.check-your-answers.content.overseas-property-start-date.question        = Dyddiad dechrau
+business.check-your-answers.content.overseas-property-start-date.add             = Ychwanegu dyddiad dechrau
+business.check-your-answers.content.overseas-property-start-date.change          = Newid dyddiad dechrau
+business.check-your-answers.content.overseas-property-count.question             = Y nifer o eiddo
+business.check-your-answers.content.overseas-property-count.add                  = Ychwanegu’r nifer o eiddo
+business.check-your-answers.content.overseas-property-count.change               = Newid y nifer o eiddo
+business.check-your-answers.content.overseas-property-accounting-method.question = Dull cyfrifyddu
+business.check-your-answers.content.overseas-property-accounting-method.add      = Ychwanegu dull cyfrifyddu
+business.check-your-answers.content.overseas-property-accounting-method.change   = Newid y dull cyfrifyddu
 
 ## Remove business
 business.remove-sole-trader-business.heading      = A ydych yn siŵr eich bod am ddileu {0}{1}?
