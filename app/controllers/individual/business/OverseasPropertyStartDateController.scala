@@ -18,6 +18,7 @@ package controllers.individual.business
 
 import auth.individual.SignUpController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.utils.ReferenceRetrieval
 import forms.individual.business.OverseasPropertyStartDateForm
 import forms.individual.business.OverseasPropertyStartDateForm._
@@ -68,9 +69,11 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
             subscriptionDetailsService.saveOverseasPropertyStartDate(reference, startDate) map {
               case Right(_) =>
                 if (isEditMode) {
-                  Redirect(controllers.individual.business.routes.OverseasPropertyCheckYourAnswersController.show(isEditMode))
+                  Redirect(routes.OverseasPropertyCheckYourAnswersController.show(isEditMode))
+                } else if (isEnabled(EnableTaskListRedesign)) {
+                  Redirect(routes.OverseasPropertyCountController.show())
                 } else {
-                  Redirect(controllers.individual.business.routes.OverseasPropertyAccountingMethodController.show())
+                  Redirect(routes.OverseasPropertyAccountingMethodController.show())
                 }
               case Left(_) => throw new InternalServerException("[OverseasPropertyStartDateController][submit] - Could not save start date")
             }
@@ -80,7 +83,7 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
 
   def backUrl(isEditMode: Boolean): String = {
     if (isEditMode) {
-      controllers.individual.business.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
+      routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
     } else {
       controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url
     }
@@ -90,7 +93,7 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
                   (implicit request: Request[_]): Html = {
     overseasPropertyStartDateView(
       overseasPropertyStartDateForm = overseasPropertyStartDateForm,
-      postAction = controllers.individual.business.routes.OverseasPropertyStartDateController.submit(editMode = isEditMode),
+      postAction = routes.OverseasPropertyStartDateController.submit(editMode = isEditMode),
       isEditMode = isEditMode,
       backUrl = backUrl(isEditMode)
     )
