@@ -16,6 +16,7 @@
 
 package controllers.individual.business
 
+import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.ControllerBaseSpec
 import forms.individual.business.AccountingMethodOverseasPropertyForm
 import models.Cash
@@ -34,7 +35,12 @@ import views.html.individual.incometax.business.OverseasPropertyAccountingMethod
 import scala.concurrent.Future
 
 class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
-  with MockSubscriptionDetailsService with MockAuditingService  {
+  with MockSubscriptionDetailsService with MockAuditingService {
+
+  override def beforeEach(): Unit = {
+    disable(EnableTaskListRedesign)
+    super.beforeEach()
+  }
 
   override val controllerName: String = "ForeignPropertyAccountingMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
@@ -125,18 +131,28 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
       }
     }
 
-    "The back url is not in edit mode" should {
+    "The back url is in edit mode" should {
       "redirect to overseas property start date page" in withController { controller =>
-        controller.backUrl(isEditMode = false) mustBe
-          controllers.individual.business.routes.OverseasPropertyStartDateController.show().url
+        controller.backUrl(isEditMode = true) mustBe
+          routes.OverseasPropertyCheckYourAnswersController.show(true).url
       }
     }
 
-    "The back url is in edit mode" should {
-      "redirect to overseas property check your answers page" in withController { controller =>
-        setupMockSubscriptionDetailsSaveFunctions()
-        controller.backUrl(isEditMode = true) mustBe
-          controllers.individual.business.routes.OverseasPropertyCheckYourAnswersController.show(true).url
+    "The back url" should {
+      "is not in edit mode" when {
+        "the task list redesign feature switch is enabled" should {
+          "redirect back to overseas property check your answers page" in withController { controller =>
+            enable(EnableTaskListRedesign)
+            controller.backUrl(isEditMode = false) mustBe
+              routes.OverseasPropertyCountController.show().url
+          }
+        }
+        "the task list redesign feature switch is disabled" should {
+          "redirect back to overseas property start date page" in withController { controller =>
+            controller.backUrl(isEditMode = false) mustBe
+              routes.OverseasPropertyStartDateController.show().url
+          }
+        }
       }
     }
   }

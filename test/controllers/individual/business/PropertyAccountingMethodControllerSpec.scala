@@ -150,7 +150,7 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
           }
         }
         "the task list redesign feature switch is disabled" should {
-          "redirect back to uk property check your answers page" in withController { controller =>
+          "redirect back to uk property start date page" in withController { controller =>
             controller.backUrl(isEditMode = false) mustBe
               routes.PropertyStartDateController.show().url
           }
