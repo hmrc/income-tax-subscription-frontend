@@ -178,8 +178,9 @@ property.accounting-method.cash                                 = You record on 
 property.accounting-method.accruals                             = You record on the date you send an invoice to, or request a payment from your tenants, even if you do not receive or pay any money. You record on the date you receive an invoice for repairs or maintenance. This is also called ‘accruals’ or ‘standard accounting’.
 
 # Overseas Property accounting method Page
-overseas.property.accounting-method.title                        = What accounting method do you use for your overseas property business?
-overseas.property.accounting-method.heading                      = What accounting method do you use for your overseas property business?
+overseas.property.accounting-method.title                        = What accounting method do you use for your foreign property business?
+overseas.property.accounting-method.heading                      = What accounting method do you use for your foreign property business?
+overseas.property.accounting-method.caption                      = Foreign property
 overseas.property.accounting-method.accordion.summary            = Show me an example
 overseas.property.accounting-method.accordion.content.para       = You created an invoice for someone in March 2017, but did not receive the money until May 2017. If you tell HMRC you received this income in:
 overseas.property.accounting-method.accordion.content.bullet1    = May 2017, you use ‘cash basis accounting’
