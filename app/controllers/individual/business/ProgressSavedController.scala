@@ -59,9 +59,10 @@ class ProgressSavedController @Inject()(val progressSavedView: ProgressSaved,
             )(location => {
               for {
                 saveAndComebackAuditData <- retrieveAuditData(reference, user.utr, user.nino, location)
-                _ = auditingService.audit(saveAndComebackAuditData)
-              } yield
+                _ <- auditingService.audit(saveAndComebackAuditData)
+              } yield {
                 Ok(progressSavedView(cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime), signInUrl))
+              }
             })
           case None => throw new InternalServerException("[ProgressSavedController][show] - The last updated timestamp cannot be retrieved")
         }
@@ -69,11 +70,11 @@ class ProgressSavedController @Inject()(val progressSavedView: ProgressSaved,
   }
 
   private def retrieveAuditData(
-                         reference: String,
-                         maybeUtr: Option[String],
-                         maybeNino: Option[String],
-                         location: String
-                       )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[SaveAndComeBackAuditModel] = {
+                                 reference: String,
+                                 maybeUtr: Option[String],
+                                 maybeNino: Option[String],
+                                 location: String
+                               )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[SaveAndComeBackAuditModel] = {
     for {
       businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
       businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
