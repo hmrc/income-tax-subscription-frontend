@@ -25,7 +25,8 @@
         form: FormWithCSRF,
         detailsHelper: DetailsHelper,
         radioHelper: RadioHelper,
-        saveAndContinueButtonHelper: SaveAndContinueButtonHelper
+        saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
+        hmrcPageHeading: HmrcPageHeading,
 )
 
 @(overseasPropertyAccountingMethodForm: Form[AccountingMethod], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages)
@@ -42,13 +43,18 @@
     </ul>
 }
 
-@heading(heading: String) = {
-    <h1 class="govuk-heading-l">@heading</h1>
-}
-
 @mainTemplate(title = messages("overseas.property.accounting-method.title"), optForm = Some(overseasPropertyAccountingMethodForm), backLink = Some(backUrl)) {
-    @form(action = postAction) {
-        @heading(messages("overseas.property.accounting-method.heading"))
+
+    @hmrcPageHeading(PageHeading(
+        text = messages("overseas.property.accounting-method.heading"),
+        section = Some(messages("overseas.property.accounting-method.caption")),
+        headingClasses = Some("govuk-heading-l"),
+        captionClasses = Some("govuk-caption-l")
+    ))
+
+
+@form(action = postAction) {
+
 
         @detailsHelper(
             summary = messages("overseas.property.accounting-method.accordion.summary"),

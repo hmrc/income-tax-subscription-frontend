@@ -180,6 +180,7 @@ property.accounting-method.accruals                             = <span class="h
 # Overseas Property accounting method Page
 overseas.property.accounting-method.title                        = Pa ddull cyfrifyddu ydych yn ei ddefnyddio ar gyfer eich busnes eiddo tramor?
 overseas.property.accounting-method.heading                      = Pa ddull cyfrifyddu ydych yn ei ddefnyddio ar gyfer eich busnes eiddo tramor?
+overseas.property.accounting-method.caption                      = Eiddo tramor
 overseas.property.accounting-method.accordion.summary            = Rhowch enghraifft i mi
 overseas.property.accounting-method.accordion.content.para       = Gwnaethoch greu anfoneb i rywun ym mis Mawrth 2017, ond ni chawsoch yr arian tan fis Mai 2017. Os ydych yn rhoi gwybod i CThEM eich bod wedi cael yr incwm hwn ym:
 overseas.property.accounting-method.accordion.content.bullet1    = mis Mai 2017, rydych yn defnyddio ‘Cyfrifyddu ar sail arian parod’

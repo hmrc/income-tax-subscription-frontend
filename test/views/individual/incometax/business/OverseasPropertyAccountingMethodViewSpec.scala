@@ -58,6 +58,10 @@ class OverseasPropertyAccountingMethodViewSpec extends ViewSpec {
       document.select("h1").text mustBe messages.heading
     }
 
+    "have a caption" in new Setup {
+      document.selectHead(".hmrc-caption").text mustBe s"${messages.captionHidden} ${messages.captionVisible}"
+    }
+
     "have a back button" in new Setup {
       val backButton: Elements = document.select(".govuk-back-link")
       backButton.attr("href") mustBe backUrl

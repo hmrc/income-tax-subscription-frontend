@@ -160,8 +160,10 @@ object MessageLookup {
   }
 
   object OverseasPropertyAccountingMethod {
-    val title = "What accounting method do you use for your overseas property business?"
-    val heading = "What accounting method do you use for your overseas property business?"
+    val title = "What accounting method do you use for your foreign property business?"
+    val heading = "What accounting method do you use for your foreign property business?"
+    val captionHidden = "This section is"
+    val captionVisible = "Foreign property"
     val accordionSummary = "Show me an example"
     val accordionContentPara = "You created an invoice for someone in March 2017, but did not receive the money until May 2017. If you tell HMRC you received this income in:"
     val accordionContentBullet1 = "May 2017, you use ‘cash basis accounting’"
