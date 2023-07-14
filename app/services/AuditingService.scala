@@ -24,22 +24,22 @@ import play.api.mvc.Request
 import services.AuditingService.{toDataEvent, toExtendedDataEvent}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.AuditExtensions
-import uk.gov.hmrc.play.audit.http.connector.AuditConnector
+import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 import uk.gov.hmrc.play.audit.model.DataEvent
 import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AuditingService @Inject()(appConfig: AppConfig,
                                 auditConnector: AuditConnector)
                                (implicit ec: ExecutionContext) {
 
-  def audit(auditModel: AuditModel)(implicit hc: HeaderCarrier, request: Request[_]): Unit = {
+  def audit(auditModel: AuditModel)(implicit hc: HeaderCarrier, request: Request[_]): Future[AuditResult] = {
     auditConnector.sendEvent(toDataEvent(appConfig.appName, auditModel, request.path))
   }
 
-  def audit(auditModel: JsonAuditModel)(implicit hc: HeaderCarrier, request: Request[_]): Unit = {
+  def audit(auditModel: JsonAuditModel)(implicit hc: HeaderCarrier, request: Request[_]): Future[AuditResult] = {
     auditConnector.sendExtendedEvent(toExtendedDataEvent(appConfig.appName, auditModel, request.path))
   }
 

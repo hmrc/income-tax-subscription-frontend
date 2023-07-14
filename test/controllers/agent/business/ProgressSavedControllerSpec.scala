@@ -94,8 +94,8 @@ class ProgressSavedControllerSpec extends AgentControllerBaseSpec
   "show" should {
     "return OK with progress saved page" when {
       "the location parameter is not provided" in withController { (controller, mockedView) =>
-
         mockFetchLastUpdatedTimestamp(Some(testTimestamp))
+
 
         val result: Future[Result] = await(controller.show()(subscriptionRequest))
 

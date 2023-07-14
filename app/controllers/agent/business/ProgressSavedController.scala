@@ -43,7 +43,7 @@ class ProgressSavedController @Inject()(val progressSavedView: ProgressSaved,
                                         val incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector,
                                         val currentDateProvider: CurrentDateProvider,
                                         val cacheExpiryDateProvider: CacheExpiryDateProvider)
-                                      (implicit val ec: ExecutionContext,
+                                       (implicit val ec: ExecutionContext,
                                         val appConfig: AppConfig,
                                         val config: Configuration,
                                         val env: Environment,
@@ -59,9 +59,10 @@ class ProgressSavedController @Inject()(val progressSavedView: ProgressSaved,
               )(location => {
                 for {
                   saveAndComebackAuditData <- retrieveAuditData(reference, user.arn, user.clientUtr, user.clientNino, location)
-                  _ = auditingService.audit(saveAndComebackAuditData)
-                } yield
+                  _ <- auditingService.audit(saveAndComebackAuditData)
+                } yield {
                   Ok(progressSavedView(cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime), signInUrl))
+                }
               })
             case None => throw new InternalServerException("[ProgressSavedController][show] - The last updated timestamp cannot be retrieved")
           }
@@ -69,12 +70,12 @@ class ProgressSavedController @Inject()(val progressSavedView: ProgressSaved,
   }
 
   private def retrieveAuditData(
-                         reference: String,
-                         arn: String,
-                         maybeUtr: Option[String],
-                         maybeNino: Option[String],
-                         location: String
-                       )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[SaveAndComeBackAuditModel] = {
+                                 reference: String,
+                                 arn: String,
+                                 maybeUtr: Option[String],
+                                 maybeNino: Option[String],
+                                 location: String
+                               )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[SaveAndComeBackAuditModel] = {
     for {
       businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
       businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)

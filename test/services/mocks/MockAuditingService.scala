@@ -17,19 +17,25 @@
 package services.mocks
 
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.{reset, verify}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.Request
 import services.{AuditModel, AuditingService, JsonAuditModel}
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import utilities.UnitTestTrait
+
+import scala.concurrent.Future
 
 trait MockAuditingService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockAuditingService)
+    when(mockAuditingService.audit(any[AuditModel]())(any(), any())).thenReturn(Future.successful(AuditResult.Success))
+    when(mockAuditingService.audit(any[JsonAuditModel]())(any(), any())).thenReturn(Future.successful(AuditResult.Success))
   }
 
   val mockAuditingService: AuditingService = mock[AuditingService]
