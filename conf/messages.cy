@@ -679,6 +679,19 @@ agent.income-source.uk-property                 = Busnes eiddo yn y DU
 agent.income-source.foreign-property            = Busnes eiddo tramor
 agent.income-source.error                       = Dewiswch ffynhonnell incwm eich cleient
 
+## agent your income sources to sign up page
+agent.your-income-source.title                        = Ffynonellau incwm eich cleient
+agent.your-income-source.heading                      = Ffynonellau incwm eich cleient
+agent.your-income-source.heading2                     = Dim ond y ffynonellau incwm sy’n berthnasol i’ch cleient y mae angen i chi eu hychwanegu.
+agent.your-income-source.caption                      = {0} | {1}
+agent.your-income-source.self-employed                = Unig fasnachwr
+agent.your-income-source.self-employed-link           = Ychwanegu ffynhonnell incwm unig fasnachwr
+agent.your-income-source.uk-property                  = Eiddo yn y DU
+agent.your-income-source.uk-property-link             = Ychwanegu ffynhonnell incwm busnes eiddo yn y DU
+agent.your-income-source.foreign-property             = Eiddo tramor
+agent.your-income-source.foreign-property-link        = Ychwanegu ffynhonnell incwm eiddo tramor
+
+
 # Property income page
 agent.property.income.title                                     = Faint oedd eich incwm o eiddo y flwyddyn hon?
 agent.property.income.heading                                   = Faint oedd eich incwm o eiddo y flwyddyn hon?

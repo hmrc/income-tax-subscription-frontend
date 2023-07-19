@@ -136,3 +136,6 @@ POST        /business/remove-overseas-property-business          controllers.age
 # Throttle
 GET         /throttle-start                                      controllers.agent.ThrottlingController.start()
 GET         /throttle-end                                        controllers.agent.ThrottlingController.end()
+
+#Your Income Source behind Feature switch
+GET         /your-income-source                                  controllers.agent.YourIncomeSourceToSignUpController.show()
