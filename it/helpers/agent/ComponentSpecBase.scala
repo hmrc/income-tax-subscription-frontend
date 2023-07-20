@@ -348,6 +348,12 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       get("/income-source", sessionData)
     }
 
+    def agentBusinessIncomeSource(sessionData: Map[String, String] = Map(
+      UserMatchingSessionUtil.firstName -> testFirstName,
+      UserMatchingSessionUtil.lastName -> testLastName,
+      ITSASessionKeys.NINO -> testNino
+    )) : WSResponse = get("/your-income-source", sessionData)
+
     def submitBusinessIncomeSource(request: Option[BusinessIncomeSource],
                                    incomeSourcesStatus: IncomeSourcesStatus = IncomeSourcesStatus(
                                      selfEmploymentAvailable = true,
