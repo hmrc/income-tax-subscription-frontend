@@ -16,6 +16,8 @@
 
 package controllers.agent.business
 
+import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
+import config.featureswitch.FeatureSwitching
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.PropertyStartDateForm
 import models.DateModel
@@ -36,7 +38,12 @@ import java.time.LocalDate
 import scala.concurrent.Future
 
 class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
-  with MockSubscriptionDetailsService with MockAuditingService  {
+  with MockSubscriptionDetailsService with MockAuditingService  with FeatureSwitching{
+
+  override def beforeEach(): Unit = {
+    disable(featureSwitch = EnableTaskListRedesign)
+    super.beforeEach()
+  }
 
   override val controllerName: String = "PropertyStartDateController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -151,6 +158,20 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
           controllers.agent.business.routes.PropertyCheckYourAnswersController.show(true).url
       }
     }
+    "Not in Edit mode the back url with feature switch enabled" should{
+      "redirect to new client's income sources" in withController{ controller =>
+        enable(featureSwitch = EnableTaskListRedesign)
+        controller.backUrl(isEditMode = false) mustBe
+          controllers.agent.routes.YourIncomeSourceToSignUpController.show().url
+      }
+    }
+    "Not in Edit mode the back url with feature switch disabled" should {
+      "redirect to current client's income sources" in withController(controller =>
+        controller.backUrl(isEditMode = false) mustBe
+          controllers.agent.routes.WhatIncomeSourceToSignUpController.show().url
+      )
+    }
+
   }
 
   private def withController(testCode: PropertyStartDateController => Any): Unit = {

@@ -221,9 +221,9 @@ error.business.property.count.empty                             = Enter a number
 error.business.property.count.numeric                           = You can only enter numbers. You can not use special characters, such as hyphens, spaces and apostrophes.
 
 # Agent Property Start Date Date
-agent.property.start-date.heading                               = When did your client’s UK property business start trading?
+agent.property.start-date.heading                               = When did your client’s UK property business start?
 agent.property.start-date.heading.caption                       = {0} | {1}
-agent.property.start-date.line-1                                = This is the date that letting or renting out any property first started.
+agent.property.start-date.line-1                                = This is when your client started letting any UK property.
 agent.property.start-date.hint                                  = For example, 17 8 2014.
 
 # Agent Property Start Date errors
