@@ -221,9 +221,9 @@ error.business.property.count.empty                             = Nodwch rif syâ
 error.business.property.count.numeric                           = Gallwch ond nodi rhifau yn unig. Ni allwch ddefnyddio cymeriadau arbennig, megis cysylltnodau, bylchau, a chollnodau.
 
 # Agent Property Start Date Date
-agent.property.start-date.heading                               = Pryd y dechreuodd busnes eiddo yn y DU eich cleient fasnachu?
+agent.property.start-date.heading                               = Pryd y gwnaethoch ddechrau eich busnes eiddo yn y DU?
 agent.property.start-date.heading.caption                       = {0} | {1}
-agent.property.start-date.line-1                                = Dymaâ€™r dyddiad y dechreuodd roi unrhyw eiddo ar osod yn y lle cyntaf.
+agent.property.start-date.line-1                                = Dyma pryd y gwnaethoch ddechrau rhoi unrhyw eiddo yn y DU ar osod.
 agent.property.start-date.hint                                  = Er enghraifft, 17 8 2014.
 
 # Agent Property Start Date errors

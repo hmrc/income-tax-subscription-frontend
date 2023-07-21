@@ -18,6 +18,8 @@ package controllers.agent.business
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
+import config.featureswitch.FeatureSwitching
 import controllers.utils.ReferenceRetrieval
 import forms.agent.PropertyStartDateForm
 import forms.agent.PropertyStartDateForm.propertyStartDateForm
@@ -43,7 +45,7 @@ class PropertyStartDateController @Inject()(val propertyStartDate: PropertyStart
                                            (implicit val ec: ExecutionContext,
                                             val appConfig: AppConfig,
                                             mcc: MessagesControllerComponents) extends AuthenticatedController
-  with ImplicitDateFormatter with ReferenceRetrieval {
+  with ImplicitDateFormatter with ReferenceRetrieval with FeatureSwitching{
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
@@ -82,7 +84,11 @@ class PropertyStartDateController @Inject()(val propertyStartDate: PropertyStart
   def backUrl(isEditMode: Boolean): String = {
     if (isEditMode) {
       controllers.agent.business.routes.PropertyCheckYourAnswersController.show(isEditMode).url
-    } else {
+    } else if(isEnabled(EnableTaskListRedesign)) {
+      // Switch to new income sources page
+      controllers.agent.routes.YourIncomeSourceToSignUpController.show().url
+    }
+    else {
       controllers.agent.routes.WhatIncomeSourceToSignUpController.show().url
     }
   }

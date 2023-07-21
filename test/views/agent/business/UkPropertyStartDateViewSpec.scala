@@ -54,9 +54,10 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
     )(FakeRequest(), implicitly, appConfig)
 
   object PropertyStartDateMessages {
-    val title = "When did your client’s UK property business start trading?"
+    val title = "When did your client’s UK property business start?"
     val heading: String = title
     val caption: String = "FirstName LastName | ZZ 11 11 11 Z"
+    val para: String = "This is when your client started letting any UK property."
     val hint = "For example, 17 8 2014."
     val continue = "Continue"
     val saveAndContinue = "Save and continue"
@@ -111,6 +112,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
 
     "have a fieldset with dateInputs" in {
       document().mustHaveGovukDateField("startDate", PropertyStartDateMessages.heading, PropertyStartDateMessages.hint)
+      document().selectNth("p", 2).text mustBe PropertyStartDateMessages.para
     }
 
     "have a save & continue button" in {
@@ -136,6 +138,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
         PropertyStartDateMessages.hint,
         Some(PropertyStartDateMessages.maxDate)
       )
+      document().selectNth("p", 2).text mustBe PropertyStartDateMessages.para
     }
 
     "must display min date error form error on page" in {
