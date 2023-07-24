@@ -18,6 +18,7 @@ package controllers.agent.business
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.utils.ReferenceRetrieval
 import forms.agent.OverseasPropertyStartDateForm
 import forms.agent.OverseasPropertyStartDateForm._
@@ -82,6 +83,9 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
   def backUrl(isEditMode: Boolean): String = {
     if (isEditMode) {
       controllers.agent.business.routes.OverseasPropertyCheckYourAnswersController.show(isEditMode).url
+    } else if(isEnabled(EnableTaskListRedesign)) {
+      controllers.agent.routes.YourIncomeSourceToSignUpController.show().url
+
     } else {
       controllers.agent.routes.WhatIncomeSourceToSignUpController.show().url
     }

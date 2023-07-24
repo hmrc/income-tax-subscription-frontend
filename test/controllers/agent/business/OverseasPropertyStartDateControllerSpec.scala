@@ -17,6 +17,8 @@
 package controllers.agent.business
 
 import agent.audit.mocks.MockOverseasPropertyStartDate
+import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
+import config.featureswitch.FeatureSwitching
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.OverseasPropertyStartDateForm
 import models.DateModel
@@ -35,7 +37,13 @@ import java.time.LocalDate
 import scala.concurrent.Future
 
 class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
-  with MockSubscriptionDetailsService with MockAgentAuthService with MockAuditingService with MockOverseasPropertyStartDate {
+  with MockSubscriptionDetailsService with MockAgentAuthService with MockAuditingService with MockOverseasPropertyStartDate with FeatureSwitching {
+
+  override def beforeEach(): Unit = {
+    disable(featureSwitch = EnableTaskListRedesign)
+    super.beforeEach()
+  }
+
   override val controllerName: String = "OverseasPropertyStartDateController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
     "show" -> TestOverseasPropertyStartDateController$.show(isEditMode = false),
@@ -150,10 +158,20 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
     }
 
     "The back url is not in edit mode" when {
-      "save and retrieve is enabled" when {
+      "save and retrieve is enabled and feature switch is disabled" when {
         "redirect to agent income source page" in new Test {
           controller.backUrl(isEditMode = false) mustBe
             controllers.agent.routes.WhatIncomeSourceToSignUpController.show().url
+        }
+      }
+    }
+
+    "The back url is not in edit mode" when {
+      "save and retrieve is enabled and feature switch is enabled" when {
+        "redirect to anget new income source page" in new Test {
+          enable(featureSwitch = EnableTaskListRedesign)
+          controller.backUrl(isEditMode = false) mustBe
+            controllers.agent.routes.YourIncomeSourceToSignUpController.show().url
         }
       }
     }

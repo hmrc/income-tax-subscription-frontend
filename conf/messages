@@ -253,9 +253,9 @@ overseas.property.line-1                                        = This is when y
 overseas.property.start-date.hint                               = For example, 17 8 2014.
 
 # Agent Overseas Property Start Date
-agent.overseas-property.start-date.heading                      = When did your client’s overseas property business start trading?
+agent.overseas-property.start-date.heading                      = When did your client’s foreign property business start?
 agent.overseas-property.start-date.heading.caption              = {0} | {1}
-agent.overseas-property.start-date.line-1                       = This is the date that letting or renting out any overseas property first started.
+agent.overseas-property.start-date.line-1                       = This is when your client started letting any foreign property.
 agent.overseas-property.start-date.hint                         = For example, 17 8 2014.
 
 # Number of Overseas Properties
