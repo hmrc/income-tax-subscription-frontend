@@ -714,6 +714,10 @@ agent.business.what-year-to-sign-up.option-next-hint          = Bydd yn rhaid i 
 agent.eligibility.sole-trader.heading                         = A ddechreuodd busnes eich cleient fasnachu ar neu ar ôl {0}?
 agent.eligibility.sole-trader.caption                         = {0} | {1}
 
+# Agent Uk property count page
+agent.business.property.count.heading                          = Sawl eiddo sydd ar osod gan eich cleient hyn o bryd?
+agent.business.property.count.caption                           = {0} | {1}
+
 # Agent Property Accounting Method Page
 agent.property.accounting-method.heading                        = Pa ddull cyfrifo y mae’ch cleient yn ei ddefnyddio ar gyfer ei fusnes eiddo yn y DU?
 agent.property.accounting-method.heading.caption                = {0} | {1}

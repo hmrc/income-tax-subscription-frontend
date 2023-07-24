@@ -16,6 +16,7 @@
 
 package controllers.agent.business
 
+import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.agent.AgentControllerBaseSpec
 import models.common.PropertyModel
 import models.{Cash, DateModel}
@@ -42,6 +43,11 @@ class PropertyCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
     "show" -> TestPropertyCheckYourAnswersController.show(isEditMode = false),
     "submit" -> TestPropertyCheckYourAnswersController.submit()
   )
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(featureSwitch = EnableTaskListRedesign)
+  }
 
   object TestPropertyCheckYourAnswersController extends PropertyCheckYourAnswersController(
     mock[PropertyCheckYourAnswers],
@@ -81,14 +87,15 @@ class PropertyCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   "submit" should {
     "redirect to the task list when the submission is successful" when {
       "the user submits valid full data" in withController { controller =>
-        mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
+        enable(EnableTaskListRedesign)
+        mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash), count = Some(1),startDate = Some(DateModel("10", "11", "2021")))))
         setupMockSubscriptionDetailsSaveFunctions()
 
         val result: Future[Result] = await(controller.submit()(subscriptionRequestWithName))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)
-        verifyPropertySave(Some(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true)))
+        verifyPropertySave(Some(PropertyModel(accountingMethod = Some(Cash), count = Some(1), startDate = Some(DateModel("10", "11", "2021")), confirmed = true)))
       }
 
       "the user submits valid partial data" in withController { controller =>

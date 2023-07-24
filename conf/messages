@@ -713,6 +713,10 @@ agent.business.what-year-to-sign-up.option-next-hint            = You or your cl
 agent.eligibility.sole-trader.heading                           = Did your client’s business start trading on or after {0}?
 agent.eligibility.sole-trader.caption                           = {0} | {1}
 
+# Agent Uk property count page
+agent.business.property.count.heading                           = How many properties does your client currently let?
+agent.business.property.count.caption                           = {0} | {1}
+
 # Agent Property Accounting Method Page
 agent.property.accounting-method.heading                        = What accounting method does your client use for their UK property business?
 agent.property.accounting-method.heading.caption                = {0} | {1}
