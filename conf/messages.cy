@@ -253,9 +253,9 @@ overseas.property.line-1                                         = Dyma pryd y g
 overseas.property.start-date.hint                                = Er enghraifft, 17 8 2014.
 
 # Agent Overseas Property Start Date
-agent.overseas-property.start-date.heading                       = Pryd y dechreuodd busnes eiddo tramor eich cleient fasnachu?
+agent.overseas-property.start-date.heading                       = Pryd y gwnaeth eich cleient ddechrau ei fusnes eiddo tramor?
 agent.overseas-property.start-date.heading.caption               = {0} | {1}
-agent.overseas-property.start-date.line-1                        = Dyma’r dyddiad y dechreuodd roi unrhyw eiddo tramor ar osod yn y lle cyntaf.
+agent.overseas-property.start-date.line-1                        = Dyma pryd y gwnaeth eich cleient ddechrau rhoi unrhyw eiddo tramor ar osod.
 agent.overseas-property.start-date.hint                          = Er enghraifft, 17 8 2014.
 
 # Number of Overseas Properties
