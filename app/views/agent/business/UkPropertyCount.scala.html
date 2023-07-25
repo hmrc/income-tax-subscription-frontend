@@ -1,0 +1,63 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import forms.agent.AccountingMethodPropertyForm
+@import forms.submapping.AccountingMethodMapping
+@import play.api.data.Form
+@import views.html.helpers.injected.{RadioHelper, SaveAndContinueButtonHelper,TextInputHelper}
+@import views.html.templates.AgentMainTemplate
+@import utilities.UserMatchingSessionUtil.ClientDetails
+@import forms.agent.UkPropertyCountForm._
+
+
+@this(
+        mainTemplate: AgentMainTemplate,
+        form: FormWithCSRF,
+        radioHelper: RadioHelper,
+        saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
+        textInputHelper: TextInputHelper,
+)
+
+@(countForm: Form[Int], postAction: Call, isEditMode: Boolean, backUrl: String,clientDetails: ClientDetails)(implicit request: Request[_], messages: Messages)
+
+
+@mainTemplate(title = messages("agent.business.property.count.heading"), optForm = Some(countForm), backLink = Some(backUrl)) {
+
+    <span class="govuk-caption-l">
+        @messages("agent.business.property.count.caption", clientDetails.name, clientDetails.formattedNino)
+    </span>
+
+    <h1 class="govuk-heading-l">
+        @messages("agent.business.property.count.heading")
+    </h1>
+
+    @form(action = postAction) {
+        @textInputHelper(
+            field = countForm(fieldName),
+            label = messages("agent.business.property.count.heading"),
+            isLabelHidden = true,
+            isPageHeading = false,
+            classes = Some("govuk-input--width-2")
+        )
+
+        @saveAndContinueButtonHelper(
+            isIndividual = false,
+            saveAndReturnReference = Some("uk-property-count")
+        )
+    }
+
+}

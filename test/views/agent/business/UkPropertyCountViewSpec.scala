@@ -14,23 +14,24 @@
  * limitations under the License.
  */
 
-package views.individual.incometax.business
+package views.agent.business
 
-import forms.individual.business.UkPropertyCountForm
+import forms.agent.UkPropertyCountForm
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.api.data.{Form, FormError}
 import play.api.test.FakeRequest
 import play.twirl.api.Html
+import utilities.UserMatchingSessionUtil.ClientDetails
 import utilities.ViewSpec
-import views.html.individual.incometax.business.UkPropertyCount
+import views.html.agent.business.UkPropertyCount
 
 class UkPropertyCountViewSpec extends ViewSpec {
 
   object UkPropertyCountMessages {
     val captionHidden = "This section is"
-    val captionVisible = "UK property"
-    val heading: String = "How many properties do you currently let?"
+    val captionVisible = "FirstName LastName | ZZ 11 11 11 Z"
+    val heading: String = "How many properties does your client currently let?"
     val saveAndContinue = "Save and continue"
     val saveAndComeBackLater = "Save and come back later"
     val backLink = "Back"
@@ -41,6 +42,7 @@ class UkPropertyCountViewSpec extends ViewSpec {
   val testNumericalError: FormError = FormError("startDate", "error.business.property.count.numeric")
 
   val ukPropertyCount: UkPropertyCount = app.injector.instanceOf[UkPropertyCount]
+  val clientDetails = ClientDetails("FirstName LastName", "ZZ111111Z")
 
   "UK property business start" must {
 
@@ -50,10 +52,11 @@ class UkPropertyCountViewSpec extends ViewSpec {
           UkPropertyCountForm.form,
           testCall,
           isEditMode = false,
-          testBackUrl
+          testBackUrl,
+          clientDetails,
         ),
         title = UkPropertyCountMessages.heading,
-        isAgent = false,
+        isAgent = true,
         backLink = Some(testBackUrl),
       )
 
@@ -62,10 +65,11 @@ class UkPropertyCountViewSpec extends ViewSpec {
           UkPropertyCountForm.form.withError(testEmptyError),
           testCall,
           isEditMode = false,
-          testBackUrl
+          testBackUrl,
+          clientDetails,
         ),
         title = UkPropertyCountMessages.heading,
-        isAgent = false,
+        isAgent = true,
         backLink = Some(testBackUrl),
         error = Some(testEmptyError)
       )
@@ -75,17 +79,18 @@ class UkPropertyCountViewSpec extends ViewSpec {
           UkPropertyCountForm.form.withError(testNumericalError),
           testCall,
           isEditMode = false,
-          testBackUrl
+          testBackUrl,
+          clientDetails,
         ),
         title = UkPropertyCountMessages.heading,
-        isAgent = false,
+        isAgent = true,
         backLink = Some(testBackUrl),
         error = Some(testNumericalError)
       )
     }
 
     "have a heading with caption" in {
-      document().mainContent.selectHead(".govuk-caption-l").text mustBe s"${UkPropertyCountMessages.captionHidden} ${UkPropertyCountMessages.captionVisible}"
+      document().mainContent.selectHead(".govuk-caption-l").text mustBe UkPropertyCountMessages.captionVisible
       document().mainContent.getH1Element.text mustBe UkPropertyCountMessages.heading
     }
 
@@ -122,7 +127,7 @@ class UkPropertyCountViewSpec extends ViewSpec {
       val saveAndComeBackButton: Element = document().mainContent.selectHead(".govuk-button--secondary")
       saveAndComeBackButton.text mustBe UkPropertyCountMessages.saveAndComeBackLater
       saveAndComeBackButton.attr("href") mustBe
-        controllers.individual.business.routes.ProgressSavedController.show().url + "?location=uk-property-count"
+        controllers.agent.business.routes.ProgressSavedController.show().url + "?location=uk-property-count"
     }
   }
 
@@ -131,7 +136,8 @@ class UkPropertyCountViewSpec extends ViewSpec {
       ukPropertyCountForm,
       testCall,
       isEditMode,
-      testBackUrl
+      testBackUrl,
+      clientDetails,
     )(FakeRequest(), implicitly)
   }
 
