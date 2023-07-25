@@ -18,6 +18,7 @@ package controllers.agent.business
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.utils.ReferenceRetrieval
 import forms.agent.AccountingMethodPropertyForm
 import models.AccountingMethod
@@ -84,9 +85,11 @@ class PropertyAccountingMethodController @Inject()(propertyAccountingMethod: Pro
 
   def backUrl(isEditMode: Boolean): String = {
     if (isEditMode) {
-      controllers.agent.business.routes.PropertyCheckYourAnswersController.show(isEditMode).url
+      routes.PropertyCheckYourAnswersController.show(isEditMode).url
+    } else if (isEnabled(EnableTaskListRedesign)){
+      routes.UkPropertyCountController.show().url
     } else {
-      controllers.agent.business.routes.PropertyStartDateController.show().url
+      routes.PropertyStartDateController.show().url
     }
   }
 
