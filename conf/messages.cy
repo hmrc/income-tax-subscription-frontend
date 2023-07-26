@@ -941,15 +941,18 @@ agent.property.check-your-answers.uk-property-number.add              = Ychwaneg
 agent.property.check-your-answers.uk-property-number.change           = Newid y nifer o eiddo
 
 ## Agent Overseas property check your answers
-agent.overseas-property.check-your-answers.title                      = Gwirio’ch atebion – busnes eiddo tramor
+agent.overseas-property.check-your-answers.title                      = Gwirio’ch atebion – Eiddo tramor
 agent.overseas-property.check-your-answers.heading                    = Gwirio’ch atebion
 agent.overseas-property.check-your-answers.heading.caption            = {0} | {1}
-agent.overseas-property.check-your-answers.start-date.question        = Dyddiad dechrau masnachu’r busnes eiddo tramor
-agent.overseas-property.check-your-answers.start-date.add             = Ychwanegu dyddiad dechrau masnachu’r busnes eiddo tramor
-agent.overseas-property.check-your-answers.start-date.change          = Newid dyddiad dechrau masnachu’r busnes eiddo tramor
-agent.overseas-property.check-your-answers.accounting-method.question = Dull cyfrifyddu’r busnes eiddo tramor
-agent.overseas-property.check-your-answers.accounting-method.add      = Ychwanegu dull cyfrifyddu’r busnes eiddo tramor
-agent.overseas-property.check-your-answers.accounting-method.change   = Newid dull cyfrifyddu’r busnes eiddo tramor
+agent.overseas-property.check-your-answers.start-date.question        = Dyddiad dechrau
+agent.overseas-property.check-your-answers.start-date.add             = Ychwanegu dyddiad dechrau
+agent.overseas-property.check-your-answers.start-date.change          = Newid dyddiad dechrau
+agent.overseas-property.check-your-answers.count.question             = Y nifer o eiddo
+agent.overseas-property.check-your-answers.count.add                  = Ychwanegu’r nifer o eiddo
+agent.overseas-property.check-your-answers.count.change               = Newid y nifer o eiddo
+agent.overseas-property.check-your-answers.accounting-method.question = Dull cyfrifyddu
+agent.overseas-property.check-your-answers.accounting-method.add      = Ychwanegu dull cyfrifyddu
+agent.overseas-property.check-your-answers.accounting-method.change   = Newid y dull cyfrifyddu
 
 ## Agent remove business
 agent.business.remove-sole-trader-business.heading                  = A ydych yn siŵr eich bod am ddileu {0}{1}?

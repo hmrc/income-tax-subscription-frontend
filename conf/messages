@@ -943,15 +943,18 @@ agent.property.check-your-answers.uk-property-number.change           = Change N
 
 
 ## Agent Overseas property check your answers
-agent.overseas-property.check-your-answers.title                      = Check your answers - overseas property business
+agent.overseas-property.check-your-answers.title                      = Check your answers - Foreign property
 agent.overseas-property.check-your-answers.heading                    = Check your answers
 agent.overseas-property.check-your-answers.heading.caption            = {0} | {1}
-agent.overseas-property.check-your-answers.start-date.question        = Overseas property business trading start date
-agent.overseas-property.check-your-answers.start-date.add             = Add Overseas property business trading start date
-agent.overseas-property.check-your-answers.start-date.change          = Change Overseas property business trading start date
-agent.overseas-property.check-your-answers.accounting-method.question = Overseas property business accounting method
-agent.overseas-property.check-your-answers.accounting-method.add      = Add Overseas property business accounting method
-agent.overseas-property.check-your-answers.accounting-method.change   = Change Overseas property business accounting method
+agent.overseas-property.check-your-answers.start-date.question        = Start date
+agent.overseas-property.check-your-answers.start-date.add             = Add start date
+agent.overseas-property.check-your-answers.start-date.change          = Change start date
+agent.overseas-property.check-your-answers.count.question             = Number of properties
+agent.overseas-property.check-your-answers.count.add                  = Add number of properties
+agent.overseas-property.check-your-answers.count.change               = Change number of properties
+agent.overseas-property.check-your-answers.accounting-method.question = Accounting method
+agent.overseas-property.check-your-answers.accounting-method.add      = Add accounting method
+agent.overseas-property.check-your-answers.accounting-method.change   = Change accounting method
 
 ## Agent remove business
 agent.business.remove-sole-trader-business.heading                  = Are you sure you want to delete {0}{1}?
