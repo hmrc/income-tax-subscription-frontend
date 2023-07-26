@@ -51,7 +51,7 @@ class OverseasPropertyAccountingMethodViewSpec extends ViewSpec {
   }
 
   object OverseasPropertyAccountingMethodMessages {
-    val heading: String = "What accounting method does your client use for their overseas property business?"
+    val heading: String = "What accounting method does your client use for their foreign property business?"
     val cash: String = "Cash basis accounting"
     val accruals: String = "Traditional accounting"
     val continue: String = "Continue"

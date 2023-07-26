@@ -724,8 +724,8 @@ agent.property.accounting-method.radio.cash                     = Cash basis acc
 agent.property.accounting-method.radio.accruals                 = Traditional accounting
 
 # Agent Overseas Property Accounting Method Page
-agent.overseas-property.accounting-method.heading               = What accounting method does your client use for their overseas property business?
-agent.overseas-property.accounting-method.heading.caption               = {0} | {1}
+agent.overseas-property.accounting-method.heading               = What accounting method does your client use for their foreign property business?
+agent.overseas-property.accounting-method.heading.caption       = {0} | {1}
 
 ## Business Name
 agent.business.name.title                                       = Business name
