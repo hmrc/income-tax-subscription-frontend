@@ -926,12 +926,15 @@ agent.business.check-your-answers.content.tax-year.caption            = Y flwydd
 agent.property.check-your-answers.title                               = Gwirio’ch atebion – busnes eiddo yn y DU
 agent.property.check-your-answers.heading                             = Gwirio’ch atebion
 agent.property.check-your-answers.heading.caption                     = {0} | {1}
-agent.property.check-your-answers.start-date.question                 = Dyddiad dechrau masnachu’r busnes eiddo yn y DU
+agent.property.check-your-answers.start-date.question                 = Dyddiad dechrau
 agent.property.check-your-answers.start-date.add                      = Ychwanegu dyddiad dechrau masnachu’r busnes eiddo yn y DU
-agent.property.check-your-answers.start-date.change                   = Newid dyddiad dechrau masnachu’r busnes eiddo yn y DU
-agent.property.check-your-answers.accounting-method.question          = Dull cyfrifyddu’r busnes eiddo yn y DU
+agent.property.check-your-answers.start-date.change                   = Newid dyddiad dechrau
+agent.property.check-your-answers.accounting-method.question          = Dull cyfrifyddu
 agent.property.check-your-answers.accounting-method.add               = Ychwanegu dull cyfrifyddu’r busnes eiddo yn y DU
-agent.property.check-your-answers.accounting-method.change            = Newid dull cyfrifyddu’r busnes eiddo yn y DU
+agent.property.check-your-answers.accounting-method.change            = Newid y dull cyfrifyddu
+agent.property.check-your-answers.uk-property-number.question         = Y nifer o eiddo
+agent.property.check-your-answers.uk-property-number.add              = Ychwanegu’r nifer o eiddo
+agent.property.check-your-answers.uk-property-number.change           = Newid y nifer o eiddo
 
 ## Agent Overseas property check your answers
 agent.overseas-property.check-your-answers.title                      = Gwirio’ch atebion – busnes eiddo tramor

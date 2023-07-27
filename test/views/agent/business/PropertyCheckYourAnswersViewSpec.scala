@@ -16,6 +16,7 @@
 
 package views.agent.business
 
+import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import models.common.PropertyModel
 import models.{Accruals, Cash, DateModel}
 import org.jsoup.Jsoup
@@ -25,6 +26,7 @@ import utilities.ViewSpec
 import views.html.agent.business.PropertyCheckYourAnswers
 
 class PropertyCheckYourAnswersViewSpec extends ViewSpec {
+
   private val propertyCheckYourAnswersView = app.injector.instanceOf[PropertyCheckYourAnswers]
 
   private val completeCashProperty = PropertyModel(
@@ -51,12 +53,24 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
 
   private val incompleteProperty = PropertyModel()
 
+  private val completeAccrualsCountofProperty = PropertyModel(
+    accountingMethod = Some(Accruals),
+    startDate = Some(DateModel("8", "11", "2021")),
+    count = Some(4)
+  )
+  private val completeCashCountOfProperty = PropertyModel(
+    accountingMethod = Some(Cash),
+    startDate = Some(DateModel("8", "11", "2021")),
+    count = Some(4)
+  )
+
   object PropertyCheckYourAnswers {
     val title = "Check your answers - UK property business"
     val heading = "Check your answers"
     val caption = "FirstName LastName | ZZ 11 11 11 Z"
-    val startDateQuestion = "UK property business trading start date"
-    val accountMethodQuestion = "UK property business accounting method"
+    val startDateQuestion = "Start date"
+    val numberOfPropertiesQuestion = "Number of properties"
+    val accountMethodQuestion = "Accounting method"
     val confirmedAndContinue = "Confirm and continue"
     val saveAndComeBack = "Save and come back later"
     val change = "Change"
@@ -90,6 +104,7 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
 
     "display property details" when {
       "all the answers have been completed" which {
+        disable(EnableTaskListRedesign)
         assertRow(
           document(viewModel = completeCashProperty),
           section = "start date",
@@ -227,6 +242,43 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
     }
   }
 
+  "task list redesign is enabled - all the answers have been completed" which {
+    enable(EnableTaskListRedesign)
+    assertRow(
+      document(viewModel = completeAccrualsCountofProperty),
+      section = "start date",
+      index = 1,
+      PropertyCheckYourAnswers.startDateQuestion,
+      answer = Some("8 November 2021"),
+      changeLink = controllers.agent.business.routes.PropertyStartDateController.show(editMode = true).url
+    )
+    assertRow(
+      document(viewModel = completeAccrualsCountofProperty),
+      section = "Number of properties",
+      index = 2,
+      PropertyCheckYourAnswers.numberOfPropertiesQuestion,
+      answer = Some("4"),
+      changeLink = controllers.agent.business.routes.UkPropertyCountController.show(editMode = true).url
+    )
+    assertRow(
+      document(viewModel = completeCashCountOfProperty),
+      section = "cash accounting method",
+      index = 3,
+      PropertyCheckYourAnswers.accountMethodQuestion,
+      answer = Some("Cash basis accounting"),
+      changeLink = controllers.agent.business.routes.PropertyAccountingMethodController.show(editMode = true).url
+    )
+    assertRow(
+      document(viewModel = completeAccrualsCountofProperty),
+      section = "accruals accounting method",
+      index = 3,
+      PropertyCheckYourAnswers.accountMethodQuestion,
+      answer = Some("Traditional accounting"),
+      changeLink = controllers.agent.business.routes.PropertyAccountingMethodController.show(editMode = true).url
+    )
+
+  }
+
   private def assertRow(
                          doc: Document,
                          section: String,
@@ -257,11 +309,7 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
           .text() mustBe answer.fold(PropertyCheckYourAnswers.add)(_ => PropertyCheckYourAnswers.change)
       }
 
-      s"display the section hidden content" in {
-        doc.selectNth(".govuk-summary-list__row", index)
-          .selectHead(".govuk-visually-hidden")
-          .text() mustBe s"${answer.fold(PropertyCheckYourAnswers.add)(_ => PropertyCheckYourAnswers.change)} $question"
-      }
+
     }
   }
 

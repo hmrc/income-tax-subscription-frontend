@@ -19,12 +19,16 @@
 @import views.html.templates.AgentMainTemplate
 @import views.html.templates.injected.{CheckYourAnswers, CheckYourAnswersRow}
 @import utilities.UserMatchingSessionUtil.ClientDetails
+@import config.featureswitch.FeatureSwitchingImpl
+@import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
+
 
 @this(
         mainTemplate: AgentMainTemplate,
         checkYourAnswers: CheckYourAnswers,
         checkYourAnswersRow: CheckYourAnswersRow,
-        hmrcPageHeading: HmrcPageHeading
+        hmrcPageHeading: HmrcPageHeading,
+        featureSwitching: FeatureSwitchingImpl
 )
 
 @(
@@ -40,6 +44,15 @@
         case None => ""
     }
 }
+
+@count(maybeCount: Option[Int]) = @{
+    maybeCount match {
+        case Some(count) => count.toString
+        case None => ""
+    }
+}
+
+
 
 @accountingMethod(accountingMethod: Option[AccountingMethod]) = @{
     accountingMethod match {
@@ -72,6 +85,22 @@
                     else
                         messages("agent.property.check-your-answers.start-date.add")
         )
+
+        @if(featureSwitching.isEnabled(EnableTaskListRedesign)) {
+        @checkYourAnswersRow(
+            field = "number-of-properties",
+            question = messages("agent.property.check-your-answers.uk-property-number.question"),
+            answer = count(viewModel.count),
+            changeText = if(viewModel.count.isDefined) None else Some(messages("base.add")),
+            changeUrl = Some(controllers.agent.business.routes.UkPropertyCountController.show(editMode = true).url),
+            hiddenContent =
+                if(viewModel.count.isDefined)
+                    messages("agent.property.check-your-answers.uk-property-number.change")
+                else
+                    messages("agent.property.check-your-answers.uk-property-number.add")
+            )
+        }
+
         @checkYourAnswersRow(
             field = "accounting-method",
             question = messages("agent.property.check-your-answers.accounting-method.question"),
