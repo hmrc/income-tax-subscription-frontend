@@ -79,10 +79,10 @@
 
             @if(featureSwitching.isEnabled(EnableTaskListRedesign)) {
                 @checkYourAnswersRow(
-                field = "accounting-method",
+                field = "property-count",
                 question = messages("business.check-your-answers.content.uk-property-number-of-properties.question"),
                 answer = count(viewModel.count),
-                changeText = if(viewModel.accountingMethod.isDefined) None else Some(messages("base.add")),
+                changeText = if(viewModel.count.isDefined) None else Some(messages("base.add")),
                 changeUrl = Some(controllers.individual.business.routes.UkPropertyCountController.show(editMode = true).url),
                 hiddenContent =
                     if(viewModel.count.isDefined)

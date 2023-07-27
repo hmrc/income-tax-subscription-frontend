@@ -926,12 +926,17 @@ agent.business.check-your-answers.content.tax-year.next-tax-year      = Next tax
 agent.property.check-your-answers.title                               = Check your answers - UK property business
 agent.property.check-your-answers.heading                             = Check your answers
 agent.property.check-your-answers.heading.caption                     = {0} | {1}
-agent.property.check-your-answers.start-date.question                 = UK property business trading start date
+agent.property.check-your-answers.start-date.question                 = Start date
 agent.property.check-your-answers.start-date.add                      = Add UK property business trading start date
-agent.property.check-your-answers.start-date.change                   = Change UK property business trading start date
-agent.property.check-your-answers.accounting-method.question          = UK property business accounting method
+agent.property.check-your-answers.start-date.change                   = Change Start date
+agent.property.check-your-answers.accounting-method.question          = Accounting method
 agent.property.check-your-answers.accounting-method.add               = Add UK property business accounting method
-agent.property.check-your-answers.accounting-method.change            = Change UK property business accounting method
+agent.property.check-your-answers.accounting-method.change            = Change Accounting method
+agent.property.check-your-answers.uk-property-number.question         = Number of properties
+agent.property.check-your-answers.uk-property-number.add              = Add Number of properties
+agent.property.check-your-answers.uk-property-number.change           = Change Number of properties
+
+
 
 ## Agent Overseas property check your answers
 agent.overseas-property.check-your-answers.title                      = Check your answers - overseas property business
