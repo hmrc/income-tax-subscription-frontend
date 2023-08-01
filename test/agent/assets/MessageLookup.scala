@@ -139,13 +139,6 @@ object MessageLookup {
     val accruals = "Traditional accounting"
   }
 
-  object OverseasPropertyAccountingMethod {
-    val title = "What accounting method does your client use for their overseas property business?"
-    val heading = title
-    val cash = "Cash basis accounting"
-    val accruals = "Traditional accounting"
-  }
-
   object Summary {
     val title = "Check your answers"
     val heading: String = "Check your answers"
