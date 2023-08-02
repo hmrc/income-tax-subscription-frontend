@@ -100,6 +100,10 @@ POST        /business/overseas-commencement-date                controllers.agen
 GET         /business/uk-properties-count                        controllers.agent.business.UkPropertyCountController.show(editMode: Boolean ?= false)
 POST        /business/uk-properties-count                        controllers.agent.business.UkPropertyCountController.submit(editMode: Boolean ?= false)
 
+# Number of Foreign Properties Routes
+GET         /business/overseas-properties-count                  controllers.agent.business.OverseasPropertyCountController.show(editMode: Boolean ?= false)
+POST        /business/overseas-properties-count                  controllers.agent.business.OverseasPropertyCountController.submit(editMode: Boolean ?= false)
+
 #Foreign Property Accounting Method Routes
 GET         /business/overseas-property-accounting-method        controllers.agent.business.OverseasPropertyAccountingMethodController.show(editMode: Boolean ?= false)
 POST        /business/overseas-property-accounting-method        controllers.agent.business.OverseasPropertyAccountingMethodController.submit(editMode: Boolean ?= false)
