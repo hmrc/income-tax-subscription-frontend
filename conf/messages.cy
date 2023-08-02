@@ -716,7 +716,11 @@ agent.eligibility.sole-trader.caption                         = {0} | {1}
 
 # Agent Uk property count page
 agent.business.property.count.heading                          = Sawl eiddo sydd ar osod gan eich cleient hyn o bryd?
-agent.business.property.count.caption                           = {0} | {1}
+agent.business.property.count.caption                          = {0} | {1}
+
+# Agent Overseas Property Count Page
+agent.business.overseas-property.count.heading                 = Sawl eiddo tramor sydd ar osod gan eich cleient hyn o bryd?
+agent.business.overseas-property.count.caption                 = {0} | {1}
 
 # Agent Property Accounting Method Page
 agent.property.accounting-method.heading                        = Pa ddull cyfrifo y mae’ch cleient yn ei ddefnyddio ar gyfer ei fusnes eiddo yn y DU?

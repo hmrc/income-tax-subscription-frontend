@@ -16,6 +16,7 @@
 
 package controllers.agent.business
 
+import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.agent.AgentControllerBaseSpec
 import models.common.OverseasPropertyModel
 import models.{Cash, DateModel}
@@ -36,6 +37,11 @@ import scala.concurrent.Future
 
 class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   with MockSubscriptionDetailsService with MockAuditingService with MockIncomeTaxSubscriptionConnector {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(featureSwitch = EnableTaskListRedesign)
+  }
 
   override val controllerName: String = "OverseasPropertyCheckYourAnswersController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -81,14 +87,15 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBase
         "save the overseas property answers" in {
           withController { controller =>
             val testProperty = OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))
-            mockFetchOverseasProperty(Some(testProperty))
+            enable(EnableTaskListRedesign)
+            mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash), count = Some(1),startDate = Some(DateModel("10", "11", "2021")))))
             setupMockSubscriptionDetailsSaveFunctions()
 
             val result: Future[Result] = await(controller.submit()(subscriptionRequestWithName))
 
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)
-            verifyOverseasPropertySave(Some(testProperty.copy(confirmed = true)))
+            verifyOverseasPropertySave(Some(OverseasPropertyModel(accountingMethod = Some(Cash), count = Some(1), startDate = Some(DateModel("10", "11", "2021")), confirmed = true)))
           }
         }
       }

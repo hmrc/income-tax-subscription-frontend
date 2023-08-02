@@ -20,6 +20,7 @@ import auth.agent.AuthenticatedController
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
 import models.common.OverseasPropertyModel
+import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
@@ -57,7 +58,7 @@ class OverseasPropertyCheckYourAnswersController @Inject()(val overseasPropertyC
     implicit user =>
       withAgentReference { reference =>
         withOverseasProperty(reference) { property =>
-          if (property.accountingMethod.isDefined && property.startDate.isDefined) {
+          if (property.accountingMethod.isDefined && property.startDate.isDefined && (isDisabled(EnableTaskListRedesign) || property.count.isDefined)) {
             subscriptionDetailsService.saveOverseasProperty(reference, property.copy(confirmed = true)) map {
               case Right(_) => Redirect(controllers.agent.routes.TaskListController.show())
               case Left(_) => throw new InternalServerException("[OverseasPropertyCheckYourAnswersController][submit] - Could not confirm property details")
