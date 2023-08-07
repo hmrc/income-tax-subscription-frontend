@@ -16,6 +16,7 @@
 
 package controllers.agent.business
 
+import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.AccountingMethodOverseasPropertyForm
 import models.Cash
@@ -33,6 +34,11 @@ import scala.concurrent.Future
 
 class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
   with MockSubscriptionDetailsService with MockAuditingService with MockOverseasPropertyAccountingMethod {
+
+  override def beforeEach(): Unit = {
+    disable(EnableTaskListRedesign)
+    super.beforeEach()
+  }
 
   override val controllerName: String = "OverseasPropertyAccountingMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -130,18 +136,28 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
       }
     }
 
-    "The back url is not in edit mode" should {
-      "redirect to the Overseas Property Start Date page" in {
-        TestOverseasPropertyAccountingMethodController.backUrl(isEditMode = false) mustBe
-          controllers.agent.business.routes.OverseasPropertyStartDateController.show().url
-      }
-    }
-
     "The back url is in edit mode" should {
       "redirect to the agent overseas property check your answers page" in {
         TestOverseasPropertyAccountingMethodController.backUrl(isEditMode = true) mustBe
           controllers.agent.business.routes.OverseasPropertyCheckYourAnswersController.show(true).url
       }
     }
+
+    "The back url is not in edit mode" should {
+      "Task list redesign feature switch is enabled" when {
+        "redirect to overseas property count page" in {
+          enable(EnableTaskListRedesign)
+          TestOverseasPropertyAccountingMethodController.backUrl(isEditMode = false) mustBe
+            controllers.agent.business.routes.OverseasPropertyCountController.show().url
+        }
+      }
+      "Task list redesign feature switch is disabled" when {
+        "redirect to the Overseas Property Start Date page" in {
+          TestOverseasPropertyAccountingMethodController.backUrl(isEditMode = false) mustBe
+            controllers.agent.business.routes.OverseasPropertyStartDateController.show().url
+        }
+      }
+    }
+
   }
 }
