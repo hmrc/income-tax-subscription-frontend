@@ -70,9 +70,11 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
             subscriptionDetailsService.saveOverseasPropertyStartDate(reference, startDate) map {
               case Right(_) =>
                 if (isEditMode) {
-                  Redirect(controllers.agent.business.routes.OverseasPropertyCheckYourAnswersController.show(isEditMode))
+                  Redirect(routes.OverseasPropertyCheckYourAnswersController.show(isEditMode))
+                } else if (isEnabled(EnableTaskListRedesign)) {
+                  Redirect(routes.OverseasPropertyCountController.show())
                 } else {
-                  Redirect(controllers.agent.business.routes.OverseasPropertyAccountingMethodController.show())
+                  Redirect(routes.OverseasPropertyAccountingMethodController.show())
                 }
               case Left(_) => throw new InternalServerException("[OverseasPropertyStartDateController][submit] - Could not save start date")
             }
@@ -82,10 +84,9 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
 
   def backUrl(isEditMode: Boolean): String = {
     if (isEditMode) {
-      controllers.agent.business.routes.OverseasPropertyCheckYourAnswersController.show(isEditMode).url
+      routes.OverseasPropertyCheckYourAnswersController.show(isEditMode).url
     } else if(isEnabled(EnableTaskListRedesign)) {
       controllers.agent.routes.YourIncomeSourceToSignUpController.show().url
-
     } else {
       controllers.agent.routes.WhatIncomeSourceToSignUpController.show().url
     }

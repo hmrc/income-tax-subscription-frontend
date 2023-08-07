@@ -18,6 +18,7 @@ package controllers.agent.business
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.utils.ReferenceRetrieval
 import forms.agent.AccountingMethodOverseasPropertyForm
 import models.AccountingMethod
@@ -59,7 +60,7 @@ class OverseasPropertyAccountingMethodController @Inject()(val auditingService: 
             Future.successful(BadRequest(view(accountingMethodOverseasPropertyForm = formWithErrors, isEditMode = isEditMode))),
           overseasPropertyAccountingMethod => {
             subscriptionDetailsService.saveOverseasAccountingMethodProperty(reference, overseasPropertyAccountingMethod) map {
-              case Right(_) => Redirect(controllers.agent.business.routes.OverseasPropertyCheckYourAnswersController.show(isEditMode))
+              case Right(_) => Redirect(routes.OverseasPropertyCheckYourAnswersController.show(isEditMode))
               case Left(_) => throw new InternalServerException("[OverseasPropertyAccountingMethodController][submit] - Could not save accounting method")
             }
           }
@@ -71,7 +72,7 @@ class OverseasPropertyAccountingMethodController @Inject()(val auditingService: 
                   (implicit request: Request[AnyContent]): Html = {
     overseasPropertyAccountingMethod(
       accountingMethodOverseasPropertyForm = accountingMethodOverseasPropertyForm,
-      postAction = controllers.agent.business.routes.OverseasPropertyAccountingMethodController.submit(editMode = isEditMode),
+      postAction = routes.OverseasPropertyAccountingMethodController.submit(editMode = isEditMode),
       isEditMode = isEditMode,
       backUrl = backUrl(isEditMode),
       clientDetails = request.clientDetails
@@ -80,9 +81,11 @@ class OverseasPropertyAccountingMethodController @Inject()(val auditingService: 
 
   def backUrl(isEditMode: Boolean): String = {
     if (isEditMode) {
-      controllers.agent.business.routes.OverseasPropertyCheckYourAnswersController.show(isEditMode).url
+      routes.OverseasPropertyCheckYourAnswersController.show(isEditMode).url
+    } else if (isEnabled(EnableTaskListRedesign)){
+      routes.OverseasPropertyCountController.show().url
     } else {
-      controllers.agent.business.routes.OverseasPropertyStartDateController.show().url
+      routes.OverseasPropertyStartDateController.show().url
     }
   }
 }

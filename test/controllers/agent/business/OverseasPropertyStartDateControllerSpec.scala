@@ -107,7 +107,7 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
     )
 
     "redirect to agent foreign property accounting method page" when {
-      "not in edit mode" in {
+      "not in edit mode and the feature switch is disabled" in {
         setupMockSubscriptionDetailsSaveFunctions()
         mockFetchOverseasProperty(Some(OverseasPropertyModel()))
 
@@ -118,6 +118,19 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
 
         await(goodRequest)
         verifyOverseasPropertySave(Some(OverseasPropertyModel(startDate = Some(testValidMaxStartDate))))
+      }
+    }
+
+    "redirect to agent foreign property count page" when {
+      "not in edit mode and the feature switch is enabled" in {
+        setupMockSubscriptionDetailsSaveFunctions()
+        mockFetchOverseasProperty(Some(OverseasPropertyModel()))
+        enable(featureSwitch = EnableTaskListRedesign)
+
+        val goodRequest = callSubmit(isEditMode = false)
+
+        status(goodRequest) must be(Status.SEE_OTHER)
+        redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.OverseasPropertyCountController.show().url)
       }
     }
 
@@ -168,7 +181,7 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
 
     "The back url is not in edit mode" when {
       "save and retrieve is enabled and feature switch is enabled" when {
-        "redirect to anget new income source page" in new Test {
+        "redirect to agent new income source page" in new Test {
           enable(featureSwitch = EnableTaskListRedesign)
           controller.backUrl(isEditMode = false) mustBe
             controllers.agent.routes.YourIncomeSourceToSignUpController.show().url
