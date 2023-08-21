@@ -73,7 +73,7 @@ class RemoveBusinessController @Inject()(val removeBusinessView: RemoveBusiness,
   }
 
   private def fetchBusinessesAndRemoveThisBusiness(businessId: String, reference: String)(implicit headerCarrier: HeaderCarrier) = {
-    incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
+    subscriptionDetailsService.fetchAllSelfEmployments(reference)
       .flatMap(businesses => removeBusinessService.deleteBusiness(reference, businessId, businesses))
       .map {
         case Right(_) => Redirect(controllers.individual.business.routes.TaskListController.show())
@@ -95,7 +95,7 @@ class RemoveBusinessController @Inject()(val removeBusinessView: RemoveBusiness,
   }
 
   private def fetchBusinessData(reference: String, id: String)(implicit hc: HeaderCarrier): Future[Option[SelfEmploymentData]] = {
-    incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey).map {
+    subscriptionDetailsService.fetchAllSelfEmployments(reference).map {
       _.find(_.id == id)
     }
   }

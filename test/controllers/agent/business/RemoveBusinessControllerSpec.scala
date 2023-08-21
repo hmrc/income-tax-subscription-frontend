@@ -45,7 +45,17 @@ class RemoveBusinessControllerSpec extends AgentControllerBaseSpec
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
   override val mockIncomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector = mock[IncomeTaxSubscriptionConnector]
 
-  private val testBusinesses = Seq(
+  private val encryptedTestBusinesses = Seq(
+    SelfEmploymentData(
+      id = "id",
+      businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
+      businessName = Some(BusinessNameModel("business name").encrypt(crypto.QueryParameterCrypto)),
+      businessTradeName = Some(BusinessTradeNameModel("business trade")),
+      businessAddress = Some(BusinessAddressModel("123", Address(Seq("line 1"), Some("ZZ1 1ZZ"))).encrypt(crypto.QueryParameterCrypto))
+    )
+  )
+
+  private val decryptedTestBusinesses = Seq(
     SelfEmploymentData(
       id = "id",
       businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
@@ -57,7 +67,7 @@ class RemoveBusinessControllerSpec extends AgentControllerBaseSpec
 
   "show" should {
     "return OK status" in withController { controller =>
-      mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(testBusinesses)
+      mockFetchAllSelfEmployments(encryptedTestBusinesses)
 
       val result: Future[Result] = await(controller.show("id")(subscriptionRequest))
 
@@ -68,7 +78,7 @@ class RemoveBusinessControllerSpec extends AgentControllerBaseSpec
 
     "throw an exception" when {
       "the Sole trader business cannot be retrieved" in withController { controller =>
-        mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(testBusinesses)
+        mockFetchAllSelfEmployments(encryptedTestBusinesses)
 
         val result: Future[Result] = await(controller.show("unknown")(subscriptionRequest))
         result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
@@ -80,7 +90,7 @@ class RemoveBusinessControllerSpec extends AgentControllerBaseSpec
     "redirect to the task list page" when {
       "the user selects 'yes'" in withController { controller =>
         // get the businesses
-        mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(testBusinesses)
+        mockFetchAllSelfEmployments(encryptedTestBusinesses)
         // save the businesses with one removed.
         mockDeleteBusiness(Right("dummy"))
 
@@ -90,11 +100,11 @@ class RemoveBusinessControllerSpec extends AgentControllerBaseSpec
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)
-        verifyDeleteBusiness(businessId = "id", testBusinesses)
+        verifyDeleteBusiness(businessId = "id", decryptedTestBusinesses)
       }
 
       "the user selects 'no'" in withController { controller =>
-        mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(testBusinesses)
+        mockFetchAllSelfEmployments(encryptedTestBusinesses)
 
         val result: Future[Result] = await(controller.submit("id")(
           subscriptionRequest.post(RemoveBusinessForm.removeBusinessForm(), No)
@@ -108,7 +118,7 @@ class RemoveBusinessControllerSpec extends AgentControllerBaseSpec
 
     "throw an exception" when {
       "the user submits invalid data" in withController { controller =>
-        mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(testBusinesses)
+        mockFetchAllSelfEmployments(encryptedTestBusinesses)
 
         val result: Future[Result] = await(controller.submit("id")(
           subscriptionRequest

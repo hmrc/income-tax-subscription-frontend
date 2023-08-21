@@ -81,16 +81,16 @@ class TaskListControllerSpec extends ControllerBaseSpec
     "return an OK status with the task list page" in {
       mockTaskList()
 
-      mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(Seq(
+      mockFetchAllSelfEmployments(Seq(
         SelfEmploymentData(
           id = "id",
           businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
-          businessName = Some(BusinessNameModel("business name")),
+          businessName = Some(BusinessNameModel("business name").encrypt(crypto.QueryParameterCrypto)),
           businessTradeName = Some(BusinessTradeNameModel("business trade")),
-          businessAddress = Some(BusinessAddressModel("123", Address(Seq("line 1"), Some("ZZ1 1ZZ"))))
+          businessAddress = Some(BusinessAddressModel("123", Address(Seq("line 1"), Some("ZZ1 1ZZ"))).encrypt(crypto.QueryParameterCrypto))
         )
       ))
-      mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(Some(AccountingMethodModel(Cash)))
+      mockFetchSelfEmploymentAccountingMethod(Some(AccountingMethodModel(Cash)))
       mockFetchProperty(Some(PropertyModel(
         accountingMethod = Some(Cash),
         startDate = Some(DateModel("1", "1", "1980")),
@@ -115,8 +115,8 @@ class TaskListControllerSpec extends ControllerBaseSpec
     "sign up income source is successful" should {
       "return status (SEE_OTHER - 303) and redirect to the confirmation page" in {
         setupMockSubscriptionDetailsSaveFunctions()
-        mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(Seq.empty)
-        mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(None)
+        mockFetchAllSelfEmployments(Seq.empty)
+        mockFetchSelfEmploymentAccountingMethod(None)
         mockFetchProperty(Some(PropertyModel(
           accountingMethod = Some(testAccountingMethod.accountingMethod),
           startDate = Some(testValidStartDate),
@@ -142,8 +142,8 @@ class TaskListControllerSpec extends ControllerBaseSpec
 
     "sign up income source fails" should {
       "return an internalServer error" in {
-        mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(Seq.empty)
-        mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(None)
+        mockFetchAllSelfEmployments(Seq.empty)
+        mockFetchSelfEmploymentAccountingMethod(None)
         mockFetchProperty(Some(PropertyModel(
           accountingMethod = Some(testAccountingMethod.accountingMethod),
           startDate = Some(testValidStartDate),

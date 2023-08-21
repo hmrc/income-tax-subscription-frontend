@@ -70,7 +70,17 @@ class ProgressSavedControllerSpec extends AgentControllerBaseSpec
 
   private val currentYear = 2023
   private val selectedTaxYear = Some(AccountingYearModel(Next))
-  private val selfEmployments = Seq(
+  private val encryptedSelfEmployments = Seq(
+    SelfEmploymentData(
+      id = "id",
+      businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
+      businessName = Some(BusinessNameModel("business name").encrypt(crypto.QueryParameterCrypto)),
+      businessTradeName = Some(BusinessTradeNameModel("business trade")),
+      businessAddress = Some(BusinessAddressModel("123", Address(Seq("line 1"), Some("ZZ1 1ZZ"))).encrypt(crypto.QueryParameterCrypto))
+    )
+  )
+
+  private val decryptedSelfEmployments = Seq(
     SelfEmploymentData(
       id = "id",
       businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
@@ -79,6 +89,7 @@ class ProgressSavedControllerSpec extends AgentControllerBaseSpec
       businessAddress = Some(BusinessAddressModel("123", Address(Seq("line 1"), Some("ZZ1 1ZZ"))))
     )
   )
+
   private val selfEmploymentAccountingMethod = Some(AccountingMethodModel(Cash))
   private val property = Some(PropertyModel(
     accountingMethod = Some(Cash),
@@ -110,8 +121,8 @@ class ProgressSavedControllerSpec extends AgentControllerBaseSpec
         mockAgent()
         mockFetchLastUpdatedTimestamp(Some(testTimestamp))
         mockFetchLastUpdatedTimestamp(Some(testTimestamp))
-        mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(selfEmployments)
-        mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(selfEmploymentAccountingMethod)
+        mockFetchAllSelfEmployments(encryptedSelfEmployments)
+        mockFetchSelfEmploymentAccountingMethod(selfEmploymentAccountingMethod)
         mockFetchProperty(property)
         mockFetchOverseasProperty(overseasProperty)
         mockFetchSelectedTaxYear(selectedTaxYear)
@@ -138,7 +149,7 @@ class ProgressSavedControllerSpec extends AgentControllerBaseSpec
           saveAndRetrieveLocation = "test-location",
           currentTaxYear = currentYear,
           selectedTaxYear = selectedTaxYear,
-          selfEmployments = selfEmployments,
+          selfEmployments = decryptedSelfEmployments,
           maybeSelfEmploymentAccountingMethod = selfEmploymentAccountingMethod,
           maybePropertyModel = property,
           maybeOverseasPropertyModel = overseasProperty

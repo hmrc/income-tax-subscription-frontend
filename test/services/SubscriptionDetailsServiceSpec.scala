@@ -35,18 +35,6 @@ class SubscriptionDetailsServiceSpec extends UnitTestTrait
 
   "mock Subscription Details  service" should {
 
-    "configure and verify fetch and save business name as specified" in {
-      val testBusinessName = BusinessNameModel("my business name")
-      setupMockSubscriptionDetailsSaveFunctions()
-      mockFetchBusinessName(Some(testBusinessName))
-
-      val businessName = await(subscriptionDetailsService.fetchBusinessName(testReference))
-
-      businessName shouldBe Some(testBusinessName)
-
-      verifyFetchBusinessName(1, testReference)
-    }
-
     "return next year when the ELIGIBLE_NEXT_YEAR_ONLY session variable is set" in {
       val request = FakeRequest().withSession(
         ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "true"

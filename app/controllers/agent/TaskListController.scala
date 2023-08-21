@@ -87,15 +87,15 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
   private def getTaskListModel(reference: String)(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[TaskListModel] = {
     for {
       selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
-      businesses <- incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
-      businessAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
+      businesses <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
+      businessAccountingMethod <- subscriptionDetailsService.fetchSelfEmploymentsAccountingMethod(reference)
       property <- subscriptionDetailsService.fetchProperty(reference)
       overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
     } yield {
       TaskListModel(
         selectedTaxYear,
         businesses,
-        businessAccountingMethod.map(_.accountingMethod),
+        businessAccountingMethod,
         property,
         overseasProperty
       )
@@ -123,13 +123,13 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
       implicit user =>
         withAgentReference { reference =>
           val model = for {
-            selfEmployments <- incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
-            selfEmploymentsAccountingMethod <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
+            selfEmployments <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
+            selfEmploymentsAccountingMethod <- subscriptionDetailsService.fetchSelfEmploymentsAccountingMethod(reference)
             property <- subscriptionDetailsService.fetchProperty(reference)
             overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
             selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
           } yield {
-            createIncomeSources(user.clientNino.get, selfEmployments, selfEmploymentsAccountingMethod, property, overseasProperty, accountingYear = selectedTaxYear)
+            createIncomeSources(user.clientNino.get, selfEmployments, selfEmploymentsAccountingMethod.map(AccountingMethodModel.apply), property, overseasProperty, accountingYear = selectedTaxYear)
           }
           model.flatMap { model =>
             processFunc(user)(request)(model)

@@ -25,6 +25,7 @@ import models.common.business._
 import models.status.MandationStatusModel
 import models.{AccountingMethod, Current, DateModel, Next}
 import play.api.mvc.{AnyContent, Request}
+import uk.gov.hmrc.crypto.{ApplicationCrypto, Crypted, PlainText}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import utilities.SubscriptionDataKeys
 import utilities.SubscriptionDataKeys._
@@ -35,7 +36,8 @@ import scala.concurrent.{ExecutionContext, Future}
 //scalastyle:off
 
 @Singleton
-class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector)
+class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector,
+                                           applicationCrypto: ApplicationCrypto)
                                           (implicit ec: ExecutionContext) {
 
   def deleteAll(reference: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
@@ -47,9 +49,6 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
 
   def savePrePopFlag(reference: String, prepop: Boolean)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] =
     incomeTaxSubscriptionConnector.saveSubscriptionDetails[Boolean](reference, PrePopFlag, prepop)
-
-  def fetchBusinessName(reference: String)(implicit hc: HeaderCarrier): Future[Option[BusinessNameModel]] =
-    incomeTaxSubscriptionConnector.getSubscriptionDetails[BusinessNameModel](reference, SubscriptionDataKeys.BusinessName)
 
   private def getEligibilityNextYearOnlyFromSession(implicit request: Request[AnyContent]) = {
     request.session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY).exists(_.toBoolean)
@@ -84,8 +83,23 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
   def fetchProperty(reference: String)(implicit hc: HeaderCarrier): Future[Option[PropertyModel]] =
     incomeTaxSubscriptionConnector.getSubscriptionDetails[PropertyModel](reference, Property)
 
-  def saveBusinesses(reference: String, selfEmploymentData: Seq[SelfEmploymentData])(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] =
-    incomeTaxSubscriptionConnector.saveSubscriptionDetails[Seq[SelfEmploymentData]](reference, BusinessesKey, selfEmploymentData)
+  def saveBusinesses(reference: String, selfEmploymentData: Seq[SelfEmploymentData])(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
+
+    def encryptBusinessList(businesses: Seq[SelfEmploymentData]) : Seq[SelfEmploymentData] = {
+      businesses map {
+        business => business.copy(
+          businessName = business.businessName.map(name =>
+            name.encrypt(applicationCrypto.QueryParameterCrypto)
+          ),
+          businessAddress = business.businessAddress.map(address =>
+            address.encrypt(applicationCrypto.QueryParameterCrypto)
+          )
+        )
+      }
+    }
+
+    incomeTaxSubscriptionConnector.saveSubscriptionDetails[Seq[SelfEmploymentData]](reference, BusinessesKey, encryptBusinessList(selfEmploymentData))
+  }
 
   def saveProperty(reference: String, property: PropertyModel)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] =
     incomeTaxSubscriptionConnector.saveSubscriptionDetails[PropertyModel](reference, Property, property)
@@ -175,8 +189,32 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
     }
   }
 
-  def fetchAllSelfEmployments(reference: String)(implicit hc: HeaderCarrier): Future[Seq[SelfEmploymentData]] =
-    incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey)
+  def fetchAllSelfEmployments(reference: String)(implicit hc: HeaderCarrier): Future[Seq[SelfEmploymentData]] = {
+
+    def decryptBusinessList(businesses: Seq[SelfEmploymentData]) : Seq[SelfEmploymentData] = {
+      businesses map {
+        business => business.copy(
+          businessName = business.businessName.map(name =>
+            BusinessNameModel(applicationCrypto.QueryParameterCrypto.decrypt(Crypted(name.businessName)).value)
+          ),
+          businessAddress = business.businessAddress.map(address =>
+            address.copy(
+              address = Address(
+                lines = address.address.lines.map(
+                  line => applicationCrypto.QueryParameterCrypto.decrypt(Crypted(line)).value
+                ),
+                postcode = address.address.postcode.map(
+                  postcode => applicationCrypto.QueryParameterCrypto.decrypt(Crypted(postcode)).value
+                )
+              )
+            )
+          )
+        )
+      }
+    }
+
+    incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey).map(decryptBusinessList)
+  }
 
   def fetchSelfEmploymentsAccountingMethod(reference: String)(implicit hc: HeaderCarrier): Future[Option[AccountingMethod]] =
     incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)

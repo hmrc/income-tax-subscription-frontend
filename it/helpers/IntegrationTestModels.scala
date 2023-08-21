@@ -24,10 +24,13 @@ import models.common._
 import models.common.business._
 import models.common.subscription.EnrolmentKey
 import models.usermatching.UserDetailsModel
+import uk.gov.hmrc.crypto.ApplicationCrypto
 
 import java.time.LocalDate
 
-object IntegrationTestModels {
+object IntegrationTestModels extends ComponentSpecBase {
+
+  val crypto : ApplicationCrypto = app.injector.instanceOf[ApplicationCrypto]
 
   val testStartDate: DateModel = DateModel.dateConvert(LocalDate.now)
   private val testOneDayAgo: DateModel = DateModel.dateConvert(LocalDate.now.minusDays(1))
@@ -61,18 +64,18 @@ object IntegrationTestModels {
   val testBusinesses: Option[Seq[SelfEmploymentData]] = Some(Seq(SelfEmploymentData(
     id = "12345",
     businessStartDate = Some(BusinessStartDate(DateModel("05", "04", "2017"))),
-    businessName = Some(testBusinessName),
+    businessName = Some(testBusinessName.encrypt(crypto.QueryParameterCrypto)),
     businessTradeName = Some(testBusinessTrade),
-    businessAddress = Some(testBusinessAddress)
+    businessAddress = Some(testBusinessAddress.encrypt(crypto.QueryParameterCrypto))
   )))
   private val tooManyBusinesses = 51
   val testTooManyBusinesses: Seq[SelfEmploymentData] = Array.range(1, tooManyBusinesses).map(i =>
     SelfEmploymentData(
       id = i.toString,
       businessStartDate = Some(BusinessStartDate(DateModel("05", "04", "2017"))),
-      businessName = Some(BusinessNameModel(s"${testBusinessName.businessName} $i")),
+      businessName = Some(BusinessNameModel(s"${testBusinessName.businessName} $i").encrypt(crypto.QueryParameterCrypto)),
       businessTradeName = Some(testBusinessTrade),
-      businessAddress = Some(testBusinessAddress)
+      businessAddress = Some(testBusinessAddress.encrypt(crypto.QueryParameterCrypto))
     )).toSeq
   val testFullPropertyModel: PropertyModel = PropertyModel(
     accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
@@ -101,8 +104,8 @@ object IntegrationTestModels {
     Seq(SelfEmploymentData(
       id = testId,
       businessStartDate = Some(testBusinessStartDate),
-      businessName = Some(testBusinessName),
+      businessName = Some(testBusinessName.encrypt(crypto.QueryParameterCrypto)),
       businessTradeName = Some(testBusinessTradeName),
-      businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), Some("TF2 1PF"))))
+      businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), Some("TF2 1PF"))).encrypt(crypto.QueryParameterCrypto))
     ))
 }

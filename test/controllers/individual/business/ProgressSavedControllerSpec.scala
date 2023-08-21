@@ -34,6 +34,7 @@ import play.twirl.api.HtmlFormat
 import services.mocks.{MockAuditingService, MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
+import uk.gov.hmrc.crypto.ApplicationCrypto
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import utilities.individual.TestConstants.testCredId
 import utilities.{CacheExpiryDateProvider, CurrentDateProvider}
@@ -46,6 +47,7 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
   with MockAuditingService
   with MockSubscriptionDetailsService
   with MockIncomeTaxSubscriptionConnector {
+
   override val controllerName: String = "ProgressSavedController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
   implicit lazy val config: Configuration = app.injector.instanceOf[Configuration]
@@ -56,6 +58,7 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
       Seq(EnrolmentIdentifier(Constants.ninoEnrolmentIdentifierKey, "GA714758A")),
       "Activated"
     )
+
 
     val utrEnrolment = Enrolment(
       Constants.utrEnrolmentName,
@@ -76,7 +79,17 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
 
   private val currentYear = 2023
   private val selectedTaxYear = Some(AccountingYearModel(Next))
-  private val selfEmployments = Seq(
+  private val encryptedSelfEmployments = Seq(
+    SelfEmploymentData(
+      id = "id",
+      businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
+      businessName = Some(BusinessNameModel("business name").encrypt(crypto.QueryParameterCrypto)),
+      businessTradeName = Some(BusinessTradeNameModel("business trade")),
+      businessAddress = Some(BusinessAddressModel("123", Address(Seq("line 1"), Some("ZZ1 1ZZ"))).encrypt(crypto.QueryParameterCrypto))
+    )
+  )
+
+  private val decryptedSelfEmployments = Seq(
     SelfEmploymentData(
       id = "id",
       businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
@@ -121,8 +134,8 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
       "the location parameter is provided" in withController { (controller, mockedView) =>
         mockNinoAndUtrRetrieval()
         mockFetchLastUpdatedTimestamp(Some(testTimestamp))
-        mockGetSelfEmploymentsSeq[SelfEmploymentData](BusinessesKey)(selfEmployments)
-        mockGetSelfEmployments[AccountingMethodModel](BusinessAccountingMethod)(selfEmploymentAccountingMethod)
+        mockFetchAllSelfEmployments(encryptedSelfEmployments)
+        mockFetchSelfEmploymentAccountingMethod(selfEmploymentAccountingMethod)
         mockFetchProperty(property)
         mockFetchOverseasProperty(overseasProperty)
         mockFetchSelectedTaxYear(selectedTaxYear)
@@ -143,7 +156,7 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
           saveAndRetrieveLocation = "test-location",
           currentTaxYear = currentYear,
           selectedTaxYear = selectedTaxYear,
-          selfEmployments = selfEmployments,
+          selfEmployments = decryptedSelfEmployments,
           maybeSelfEmploymentAccountingMethod = selfEmploymentAccountingMethod,
           maybePropertyModel = property,
           maybeOverseasPropertyModel = overseasProperty
