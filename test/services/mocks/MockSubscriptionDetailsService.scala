@@ -20,6 +20,7 @@ import connectors.IncomeTaxSubscriptionConnector
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.{PostSubscriptionDetailsSuccessResponse, UnexpectedStatusFailure}
 import connectors.httpparser.RetrieveReferenceHttpParser
 import connectors.httpparser.RetrieveReferenceHttpParser.{Created, Existence, RetrieveReferenceResponse}
+import models.AccountingMethod
 import models.common._
 import models.common.business.{AccountingMethodModel, BusinessNameModel, SelfEmploymentData}
 import models.status.MandationStatusModel
@@ -29,6 +30,7 @@ import org.mockito.{ArgumentMatcher, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import services.SubscriptionDetailsService
+import uk.gov.hmrc.crypto.ApplicationCrypto
 import uk.gov.hmrc.http.HttpResponse
 import utilities.SubscriptionDataKeys._
 import utilities.{SubscriptionDataKeys, UnitTestTrait}
@@ -38,8 +40,9 @@ import scala.concurrent.Future
 trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
 
   val mockConnector: IncomeTaxSubscriptionConnector = mock[IncomeTaxSubscriptionConnector]
+  val crypto: ApplicationCrypto = app.injector.instanceOf[ApplicationCrypto]
 
-  object MockSubscriptionDetailsService extends SubscriptionDetailsService(mockConnector)
+  object MockSubscriptionDetailsService extends SubscriptionDetailsService(mockConnector, crypto)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -284,6 +287,11 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
   protected final def mockFetchAllSelfEmployments(selfEmployments: Seq[SelfEmploymentData] = Seq.empty): Unit = {
     when(mockConnector.getSubscriptionDetailsSeq[SelfEmploymentData](any(), ArgumentMatchers.eq(SubscriptionDataKeys.BusinessesKey))(any(), any()))
       .thenReturn(Future.successful(selfEmployments))
+  }
+
+  protected final def mockFetchSelfEmploymentAccountingMethod(accountingMethodModel: Option[AccountingMethodModel]): Unit = {
+    when(mockConnector.getSubscriptionDetails[AccountingMethodModel](any(), ArgumentMatchers.eq(SubscriptionDataKeys.BusinessAccountingMethod))(any(), any()))
+      .thenReturn(Future.successful(accountingMethodModel))
   }
 
   protected final def verifySubscriptionDetailsDeleteAll(deleteAll: Option[Int]): Unit = {

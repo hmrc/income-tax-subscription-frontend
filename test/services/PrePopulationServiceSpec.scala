@@ -22,6 +22,7 @@ import models.common.{OverseasPropertyModel, PropertyModel}
 import org.mockito.Mockito.reset
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import services.mocks.TestPrePopulationService
+import uk.gov.hmrc.crypto.ApplicationCrypto
 
 class PrePopulationServiceSpec extends TestPrePopulationService {
 
@@ -37,12 +38,12 @@ class PrePopulationServiceSpec extends TestPrePopulationService {
     SelfEmploymentData(
       "",
       None,
-      Some(BusinessNameModel("testBusines Name1")),
+      Some(BusinessNameModel("testBusines Name1").encrypt(crypto.QueryParameterCrypto)),
     ),
     SelfEmploymentData(
       "",
       None,
-      Some(BusinessNameModel("testBusinessName2")),
+      Some(BusinessNameModel("testBusinessName2").encrypt(crypto.QueryParameterCrypto)),
       Some(BusinessTradeNameModel("testBusinessTradeName2"))
     )
   )

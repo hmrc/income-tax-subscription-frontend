@@ -25,7 +25,8 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RemoveBusinessService @Inject()(val incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector)
+class RemoveBusinessService @Inject()(val incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector,
+                                      val subscriptionDetailsService: SubscriptionDetailsService)
                                      (implicit val ec: ExecutionContext) {
 
 
@@ -33,8 +34,7 @@ class RemoveBusinessService @Inject()(val incomeTaxSubscriptionConnector: Income
     implicit hc: HeaderCarrier
   ): Future[Either[_, _]] = {
     val remainingBusinesses = businesses.filterNot(_.id == businessId)
-    incomeTaxSubscriptionConnector
-      .saveSubscriptionDetails[Seq[SelfEmploymentData]](reference, BusinessesKey, remainingBusinesses)
+    subscriptionDetailsService.saveBusinesses(reference, remainingBusinesses)
       .flatMap {
         case Right(_) if remainingBusinesses.isEmpty => incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, BusinessAccountingMethod)
         case saveResult@Right(_) => Future.successful(saveResult)
