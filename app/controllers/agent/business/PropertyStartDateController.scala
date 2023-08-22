@@ -71,9 +71,11 @@ class PropertyStartDateController @Inject()(val propertyStartDate: PropertyStart
             subscriptionDetailsService.savePropertyStartDate(reference, startDate) map {
               case Right(_) =>
                 if (isEditMode) {
-                  Redirect(controllers.agent.business.routes.PropertyCheckYourAnswersController.show(isEditMode))
+                  Redirect(routes.PropertyCheckYourAnswersController.show(isEditMode))
+                } else if (isEnabled(EnableTaskListRedesign)){
+                  Redirect(routes.UkPropertyCountController.show())
                 } else {
-                  Redirect(controllers.agent.business.routes.PropertyAccountingMethodController.show())
+                  Redirect(routes.PropertyAccountingMethodController.show())
                 }
               case Left(_) => throw new InternalServerException("[PropertyStartDateController][submit] - Could not save start date")
             }
@@ -83,12 +85,11 @@ class PropertyStartDateController @Inject()(val propertyStartDate: PropertyStart
 
   def backUrl(isEditMode: Boolean): String = {
     if (isEditMode) {
-      controllers.agent.business.routes.PropertyCheckYourAnswersController.show(isEditMode).url
-    } else if(isEnabled(EnableTaskListRedesign)) {
+      routes.PropertyCheckYourAnswersController.show(isEditMode).url
+    } else if (isEnabled(EnableTaskListRedesign)) {
       // Switch to new income sources page
       controllers.agent.routes.YourIncomeSourceToSignUpController.show().url
-    }
-    else {
+    } else {
       controllers.agent.routes.WhatIncomeSourceToSignUpController.show().url
     }
   }

@@ -16,6 +16,7 @@
 
 package controllers.agent.business
 
+import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.AccountingMethodPropertyForm
 import models.Cash
@@ -35,6 +36,12 @@ import scala.concurrent.Future
 
 class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
   with MockSubscriptionDetailsService with MockAuditingService with MockIncomeTaxSubscriptionConnector {
+
+  override def beforeEach(): Unit = {
+    disable(EnableTaskListRedesign)
+    super.beforeEach()
+  }
+
 
   override val controllerName: String = "PropertyAccountingMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
@@ -143,10 +150,19 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
     }
 
     "not in edit mode" should {
-      "redirect to the uk property commencement date" in withController { controller =>
-        controller.backUrl(
-          isEditMode = false
-        ) mustBe controllers.agent.business.routes.PropertyStartDateController.show().url
+      "the task list redesign feature switch is enabled" should {
+        "redirect to the uk property count page" in withController { controller =>
+          enable(EnableTaskListRedesign)
+          controller.backUrl(
+            isEditMode = false
+          ) mustBe routes.UkPropertyCountController.show().url
+        }
+      }
+      "the task list redesign feature switch is disabled" should {
+        "redirect back to uk property check your answers page" in withController { controller =>
+          controller.backUrl(isEditMode = false) mustBe
+            routes.PropertyStartDateController.show().url
+        }
       }
     }
   }

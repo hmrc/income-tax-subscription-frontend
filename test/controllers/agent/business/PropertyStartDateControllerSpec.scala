@@ -78,7 +78,7 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
     }
   }
 
-  "submit" should {
+  "submit" when {
     val testValidMaxStartDate: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(1))
 
     val testPropertyStartDateModel: DateModel = testValidMaxStartDate
@@ -96,18 +96,18 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
         subscriptionRequestWithName
       )
 
-    "redirect to agent uk property accounting method page" when {
-      "not in edit mode" in withController { controller =>
+    "in edit mode" should  {
+      "redirect to the uk property check your answers page" in withController { controller =>
         setupMockSubscriptionDetailsSaveFunctions()
-        mockFetchProperty(None)
+        mockFetchProperty(Some(testFullPropertyModel))
 
-        val goodRequest = callSubmit(controller, isEditMode = false)
+        val goodRequest = callSubmit(controller, isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
         await(goodRequest)
-        redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.PropertyAccountingMethodController.show().url)
+        redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.PropertyCheckYourAnswersController.show(true).url)
 
-        verifyPropertySave(Some(PropertyModel(startDate = Some(testValidMaxStartDate))))
+        verifyPropertySave(Some(testFullPropertyModel.copy(startDate = Some(testValidMaxStartDate), confirmed = false)))
       }
     }
 
