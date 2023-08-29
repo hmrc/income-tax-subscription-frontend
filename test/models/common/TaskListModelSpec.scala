@@ -31,7 +31,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
     businessStartDate = Some(BusinessStartDate(date)),
     businessName = Some(BusinessNameModel("Fake Name")),
     businessTradeName = Some(BusinessTradeNameModel("Trade")),
-    businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line1"), Some("Postcode")))),
+    businessAddress = Some(BusinessAddressModel(Address(Seq("line1"), Some("Postcode")))),
     confirmed = true
   )
 
@@ -40,7 +40,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
     businessStartDate = Some(BusinessStartDate(date)),
     businessName = None,
     businessTradeName = Some(BusinessTradeNameModel("Trade")),
-    businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line1"), Some("Postcode"))))
+    businessAddress = Some(BusinessAddressModel(Address(Seq("line1"), Some("Postcode"))))
   )
 
   private val confirmedEditableYearNext = Some(AccountingYearModel(Next, confirmed = true))
@@ -233,7 +233,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
               businessStartDate = Some(BusinessStartDate(date)),
               businessName = Some(BusinessNameModel("Fake Name")),
               businessTradeName = Some(BusinessTradeNameModel("Trade")),
-              businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line1"), Some("Postcode"))))
+              businessAddress = Some(BusinessAddressModel(Address(Seq("line1"), Some("Postcode"))))
             )
           },
           selfEmploymentAccountingMethod = Some(Cash),
@@ -255,7 +255,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
             businessStartDate = Some(BusinessStartDate(date)),
             businessName = Some(BusinessNameModel("Fake Name")),
             businessTradeName = Some(BusinessTradeNameModel("Trade")),
-            businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line1"), Some("Postcode"))))
+            businessAddress = Some(BusinessAddressModel(Address(Seq("line1"), Some("Postcode"))))
           )
         },
         selfEmploymentAccountingMethod = Some(Cash),
@@ -277,7 +277,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
             businessStartDate = Some(BusinessStartDate(date)),
             businessName = Some(BusinessNameModel("Fake Name")),
             businessTradeName = Some(BusinessTradeNameModel("Trade")),
-            businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line1"), Some("Postcode"))))
+            businessAddress = Some(BusinessAddressModel(Address(Seq("line1"), Some("Postcode"))))
           )
         },
         selfEmploymentAccountingMethod = Some(Cash),
@@ -300,7 +300,7 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
             businessStartDate = Some(BusinessStartDate(date)),
             businessName = Some(BusinessNameModel("Fake Name")),
             businessTradeName = Some(BusinessTradeNameModel("Trade")),
-            businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line1"), Some("Postcode"))))
+            businessAddress = Some(BusinessAddressModel(Address(Seq("line1"), Some("Postcode"))))
           )
         },
         selfEmploymentAccountingMethod = Some(Cash),

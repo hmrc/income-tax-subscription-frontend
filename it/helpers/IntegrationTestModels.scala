@@ -42,7 +42,6 @@ object IntegrationTestModels extends ComponentSpecBase {
   private val testBusinessName: BusinessNameModel = BusinessNameModel("test business")
   private val testBusinessTrade: BusinessTradeNameModel = BusinessTradeNameModel("test trade")
   private val testBusinessAddress: BusinessAddressModel = BusinessAddressModel(
-    "",
     Address(
       lines = Seq(
         "1 long road",
@@ -106,6 +105,6 @@ object IntegrationTestModels extends ComponentSpecBase {
       businessStartDate = Some(testBusinessStartDate),
       businessName = Some(testBusinessName.encrypt(crypto.QueryParameterCrypto)),
       businessTradeName = Some(testBusinessTradeName),
-      businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), Some("TF2 1PF"))).encrypt(crypto.QueryParameterCrypto))
+      businessAddress = Some(BusinessAddressModel(Address(Seq("line 1", "line 2"), Some("TF2 1PF"))).encrypt(crypto.QueryParameterCrypto))
     ))
 }

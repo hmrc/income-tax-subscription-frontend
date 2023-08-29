@@ -77,7 +77,7 @@ class AgentTaskListViewSpec extends ViewSpec {
       businessStartDate = Some(BusinessStartDate(DateModel("1", "2", "1980"))),
       businessName = Some(BusinessNameModel("Name1")),
       businessTradeName = Some(BusinessTradeNameModel("TradeName")),
-      businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line1"), Some("Postcode")))),
+      businessAddress = Some(BusinessAddressModel(Address(Seq("line1"), Some("Postcode")))),
       confirmed = true
     )),
     selfEmploymentAccountingMethod = Some(Cash),

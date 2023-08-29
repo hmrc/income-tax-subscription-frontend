@@ -16,10 +16,11 @@
 
 package models.common.subscription
 
+import models.common.business._
 import models.common.{AccountingPeriodModel, AccountingYearModel, OverseasPropertyModel, PropertyModel}
-import models.common.business.{AccountingMethodModel, SelfEmploymentData}
 import models.{AccountingMethod, Current, DateModel, Next}
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
+import services.GetCompleteDetailsService.CompleteDetails
 import uk.gov.hmrc.http.InternalServerException
 import utilities.AccountingPeriodUtil.{getCurrentTaxYear, getNextTaxYear}
 
@@ -28,7 +29,7 @@ case class CreateIncomeSourcesModel(
                                      soleTraderBusinesses: Option[SoleTraderBusinesses] = None,
                                      ukProperty: Option[UkProperty] = None,
                                      overseasProperty: Option[OverseasProperty] = None
-                                   ){
+                                   ) {
   require(soleTraderBusinesses.isDefined || ukProperty.isDefined || overseasProperty.isDefined, "at least one income source is required")
 }
 
@@ -39,7 +40,7 @@ case class SoleTraderBusinesses(
                                )
 
 object SoleTraderBusinesses {
-  implicit val format = Json.format[SoleTraderBusinesses]
+  implicit val format: OFormat[SoleTraderBusinesses] = Json.format[SoleTraderBusinesses]
 }
 
 case class UkProperty(
@@ -49,7 +50,7 @@ case class UkProperty(
                      )
 
 object UkProperty {
-  implicit val format = Json.format[UkProperty]
+  implicit val format: OFormat[UkProperty] = Json.format[UkProperty]
 }
 
 case class OverseasProperty(
@@ -59,11 +60,59 @@ case class OverseasProperty(
                            )
 
 object OverseasProperty {
-  implicit val format = Json.format[OverseasProperty]
+  implicit val format: OFormat[OverseasProperty] = Json.format[OverseasProperty]
 }
 
 object CreateIncomeSourcesModel {
-  implicit val format = Json.format[CreateIncomeSourcesModel]
+  implicit val format: OFormat[CreateIncomeSourcesModel] = Json.format[CreateIncomeSourcesModel]
+
+  def createIncomeSources(nino: String, completeDetails: CompleteDetails): CreateIncomeSourcesModel = {
+    val accountingPeriod: AccountingPeriodModel = {
+      completeDetails.taxYear match {
+        case Next => getNextTaxYear
+        case Current => getCurrentTaxYear
+      }
+    }
+
+    val soleTraderBusinesses: Option[SoleTraderBusinesses] = {
+      completeDetails.incomeSources.soleTraderBusinesses map { businesses =>
+        val selfEmployments: Seq[SelfEmploymentData] = businesses.businesses.map { business =>
+          SelfEmploymentData(
+            id = business.id,
+            businessStartDate = Some(BusinessStartDate(DateModel.dateConvert(business.startDate))),
+            businessName = Some(BusinessNameModel(business.name)),
+            businessTradeName = Some(BusinessTradeNameModel(business.trade)),
+            businessAddress = Some(BusinessAddressModel(business.address)),
+            confirmed = true
+          )
+        }
+        SoleTraderBusinesses(accountingPeriod, businesses.accountingMethod, selfEmployments)
+      }
+    }
+
+    val ukProperty: Option[UkProperty] = {
+      completeDetails.incomeSources.ukProperty map { ukProperty =>
+        UkProperty(
+          accountingPeriod, DateModel.dateConvert(ukProperty.startDate), ukProperty.accountingMethod
+        )
+      }
+    }
+
+    val foreignProperty: Option[OverseasProperty] = {
+      completeDetails.incomeSources.foreignProperty map { foreignProperty =>
+        OverseasProperty(
+          accountingPeriod, DateModel.dateConvert(foreignProperty.startDate), foreignProperty.accountingMethod
+        )
+      }
+    }
+
+    CreateIncomeSourcesModel(
+      nino = nino,
+      soleTraderBusinesses = soleTraderBusinesses,
+      ukProperty = ukProperty,
+      overseasProperty = foreignProperty
+    )
+  }
 
   def createIncomeSources(nino: String,
                           selfEmployments: Seq[SelfEmploymentData] = Seq.empty,

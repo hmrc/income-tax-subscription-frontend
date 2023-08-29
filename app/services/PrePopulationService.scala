@@ -51,7 +51,7 @@ class PrePopulationService @Inject()(val subscriptionDetailsService: Subscriptio
           se.businessName.flatMap(name => BusinessNameModel(name).toCleanOption),
           BusinessTradeNameModel(se.businessTradeName).toCleanOption,
           if (se.businessAddressPostCode.isDefined || se.businessAddressFirstLine.isDefined)
-            Some(BusinessAddressModel(UUID.randomUUID().toString, address = Address(se.businessAddressFirstLine.toList, se.businessAddressPostCode)))
+            Some(BusinessAddressModel(address = Address(se.businessAddressFirstLine.toList, se.businessAddressPostCode)))
           else
             None
         ))

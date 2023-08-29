@@ -26,7 +26,6 @@ object IntegrationTestModels {
   val testBusinessName: BusinessNameModel = BusinessNameModel("test business")
   val testBusinessTrade: BusinessTradeNameModel = BusinessTradeNameModel("test trade")
   val testBusinessAddress: BusinessAddressModel = BusinessAddressModel(
-    "",
     Address(
       lines = Seq(
         "1 long road",
@@ -56,7 +55,7 @@ object IntegrationTestModels {
 
   val testBusinessTradeName: BusinessTradeNameModel = BusinessTradeNameModel("test trade name")
   val testBusinessStartDate: BusinessStartDate = BusinessStartDate(DateModel("05", "04", "2018"))
-  val testBusinessAddressModel: BusinessAddressModel = BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), Some("TF2 1PF")))
+  val testBusinessAddressModel: BusinessAddressModel = BusinessAddressModel(Address(Seq("line 1", "line 2"), Some("TF2 1PF")))
   val testId = "testId"
 
   // we don't verify date of birth since an incorrect one would not result in a match so it can be any date
@@ -68,6 +67,6 @@ object IntegrationTestModels {
       businessStartDate = Some(testBusinessStartDate),
       businessName = Some(testBusinessName),
       businessTradeName = Some(testBusinessTradeName),
-      businessAddress = Some(BusinessAddressModel("auditRef", Address(Seq("line 1", "line 2"), Some("TF2 1PF"))))
+      businessAddress = Some(BusinessAddressModel(Address(Seq("line 1", "line 2"), Some("TF2 1PF"))))
     ))
 }

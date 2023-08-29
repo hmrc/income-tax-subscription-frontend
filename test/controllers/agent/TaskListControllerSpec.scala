@@ -32,7 +32,6 @@ import services.AccountingPeriodService
 import services.agent.mocks.MockSubscriptionOrchestrationService
 import services.mocks.{MockAuditingService, MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
-import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import utilities.TestModels.{testAccountingMethod, testSelectedTaxYearCurrent, testValidStartDate}
 import utilities.agent.TestConstants._
 import views.html.agent.AgentTaskList
@@ -85,7 +84,7 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
           businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
           businessName = Some(BusinessNameModel("business name").encrypt(crypto.QueryParameterCrypto)),
           businessTradeName = Some(BusinessTradeNameModel("business trade")),
-          businessAddress = Some(BusinessAddressModel("123", Address(Seq("line 1"), Some("ZZ1 1ZZ"))).encrypt(crypto.QueryParameterCrypto))
+          businessAddress = Some(BusinessAddressModel(Address(Seq("line 1"), Some("ZZ1 1ZZ"))).encrypt(crypto.QueryParameterCrypto))
         )
       ))
       mockFetchSelfEmploymentAccountingMethod(Some(AccountingMethodModel(Cash)))

@@ -43,7 +43,6 @@ class CreateIncomeSourcesModelSpec extends PlaySpec with MustMatchers {
         businessName = Some(BusinessNameModel("testBusinessName")),
         businessTradeName = Some(BusinessTradeNameModel("testBusinessTrade")),
         businessAddress = Some(BusinessAddressModel(
-          auditRef = "testAuditRef",
           address = Address(lines = Seq("line 1", "line 2"), postcode = Some("testPostcode"))
         )),
         confirmed = true
@@ -101,7 +100,6 @@ class CreateIncomeSourcesModelSpec extends PlaySpec with MustMatchers {
           "businessTradeName" -> "testBusinessTrade"
         ),
         "businessAddress" -> Json.obj(
-          "auditRef" -> "testAuditRef",
           "address" -> Json.obj(
             "lines" -> Json.arr(
               "line 1",

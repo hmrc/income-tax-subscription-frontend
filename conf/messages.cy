@@ -40,6 +40,8 @@ base.accounting-method.accruals                                 = Cyfrifyddu tra
 base.print-this-page                                            = Argraffu’r dudalen hon
 base.warning                                                    = Rhybudd
 base.accept-and-continue                                        = Derbyn ac yn eich blaen
+base.tax-year.current                                           = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
+base.tax-year.next                                              = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
 
 ## Client details CYA
 check-your-details.change.first-name                            = Newid enw cyntaf
@@ -998,7 +1000,7 @@ business.task-list.status.completed                             = Wedi’i gwblh
 business.task-list.status.incomplete                            = Anghyflawn
 business.task-list.status.in-progress                           = Ar waith
 business.task-list.status.not-started                           = Heb ddechrau
-business.task-list.accounting-period-confirm                    = Cyfnod cyfrifyddu wedi'i gadarnhau: 6 Ebrill i 5 Ebrill
+business.task-list.accounting-period-confirm                    = Cyfnod cyfrifyddu wedi’i gadarnhau: 6 Ebrill i 5 Ebrill
 
 # Remove overseas property business
 remove-overseas-property-business.heading                       = Ydych chi’n siŵr eich bod am ddileu’ch busnes eiddo tramor?
@@ -1095,3 +1097,23 @@ agent.throttle-end.title                                           = Ni ellir cw
 agent.throttle-end.heading                                         = Ni ellir cwblhau’ch cofrestriad ar hyn o bryd
 agent.throttle-end.line-1                                          = Rydym yn gweld nifer fawr o geisiadau ar gyfer y gwasanaeth hwn ac ni allwn gwblhau cofrestriad eich cleient ar hyn o bryd. Peidiwch â phoeni – bydd y manylion rydych wedi’u nodi yn cael eu cadw am 30 diwrnod.
 agent.throttle-end.line-2                                          = I orffen cofrestru’ch cleient, rhowch gynnig arall arni neu allgofnodwch a dod yn ôl yn nes ymlaen.
+
+# Global Check Your Answers
+individual.global-check-your-answers.heading                                                    = Gwirio’ch atebion cyn cofrestru
+individual.global-check-your-answers.income-sources.heading                                     = 1. Ffynonellau incwm
+individual.global-check-your-answers.income-sources.self-employment.heading                     = Masnach: {0}
+individual.global-check-your-answers.income-sources.self-employment.name                        = Enw’r busnes
+individual.global-check-your-answers.income-sources.self-employment.start-date                  = Dyddiad dechrau masnachu
+individual.global-check-your-answers.income-sources.self-employment.address                     = Cyfeiriad
+individual.global-check-your-answers.income-sources.self-employment-accounting-method.heading   = Dull cyfrifyddu busnesau unig fasnachwr
+individual.global-check-your-answers.income-sources.self-employment.accounting-method           = Dull cyfrifyddu
+individual.global-check-your-answers.income-sources.uk-property.heading                         = Busnes eiddo yn y DU
+individual.global-check-your-answers.income-sources.uk-property.start-date                      = Dyddiad dechrau
+individual.global-check-your-answers.income-sources.uk-property.accounting-method               = Dull cyfrifyddu
+individual.global-check-your-answers.income-sources.foreign-property.heading                    = Busnes eiddo tramor
+individual.global-check-your-answers.income-sources.foreign-property.start-date                 = Dyddiad dechrau
+individual.global-check-your-answers.income-sources.foreign-property.accounting-method          = Dull cyfrifyddu
+individual.global-check-your-answers.tax-year.heading                                           = 2. Y flwyddyn dreth a ddewiswyd
+individual.global-check-your-answers.tax-year.label                                             = Blwydden treth
+individual.global-check-your-answers.software.heading                                           = 3. Meddalwedd ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+individual.global-check-your-answers.software.label                                             = Meddalwedd sy’n cydweddu

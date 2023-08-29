@@ -17,11 +17,9 @@
 package services
 
 import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscriptionDetailsSuccessResponse
-import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import models.DateModel
 import models.common.business._
 import org.mockito.ArgumentMatchers
-import org.mockito.ArgumentMatchers.argThat
 import org.mockito.Mockito.{times, verify}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
@@ -41,7 +39,7 @@ class RemoveBusinessServiceSpec extends UnitTestTrait
       businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
       businessName = Some(BusinessNameModel("business name")),
       businessTradeName = Some(BusinessTradeNameModel("business trade")),
-      businessAddress = Some(BusinessAddressModel("123", Address(Seq("line 1"), Some("ZZ1 1ZZ"))))
+      businessAddress = Some(BusinessAddressModel(Address(Seq("line 1"), Some("ZZ1 1ZZ"))))
     )
 
   private def encryptedTestBusiness(id: String) =
@@ -50,7 +48,7 @@ class RemoveBusinessServiceSpec extends UnitTestTrait
       businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
       businessName = Some(BusinessNameModel("business name").encrypt(crypto.QueryParameterCrypto)),
       businessTradeName = Some(BusinessTradeNameModel("business trade")),
-      businessAddress = Some(BusinessAddressModel("123", Address(Seq("line 1"), Some("ZZ1 1ZZ")))encrypt(crypto.QueryParameterCrypto))
+      businessAddress = Some(BusinessAddressModel(Address(Seq("line 1"), Some("ZZ1 1ZZ"))) encrypt (crypto.QueryParameterCrypto))
     )
 
 
