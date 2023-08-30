@@ -33,21 +33,21 @@ import scala.concurrent.Future
 trait MockMisSubscriptionConnector extends UnitTestTrait with MockitoSugar {
   val mockMisSubscriptionConnector: MultipleIncomeSourcesSubscriptionConnector = mock[MultipleIncomeSourcesSubscriptionConnector]
 
-  private def setupMockMisSignUp(nino: String)(result: Future[PostSignUpIncomeSourcesResponse]): Unit =
-    when(mockMisSubscriptionConnector.signUp(ArgumentMatchers.eq(nino))(ArgumentMatchers.any[HeaderCarrier]))
+  private def setupMockMisSignUp(nino: String, taxYear: String)(result: Future[PostSignUpIncomeSourcesResponse]): Unit =
+    when(mockMisSubscriptionConnector.signUp(ArgumentMatchers.eq(nino), ArgumentMatchers.eq(taxYear))(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(result)
 
-  def setupMockSignUpIncomeSourcesSuccess(nino: String): Unit =
-    setupMockMisSignUp(nino)(Future.successful(Right(SignUpIncomeSourcesSuccess(testMTDID))))
+  def setupMockSignUpIncomeSourcesSuccess(nino: String, taxYear: String): Unit =
+    setupMockMisSignUp(nino, taxYear)(Future.successful(Right(SignUpIncomeSourcesSuccess(testMTDID))))
 
-  def setupMockSignUpIncomeSourcesFailure(nino: String): Unit =
-    setupMockMisSignUp(nino)(Future.successful(Left(SignUpIncomeSourcesFailureResponse(BAD_REQUEST))))
+  def setupMockSignUpIncomeSourcesFailure(nino: String, taxYear: String): Unit =
+    setupMockMisSignUp(nino, taxYear)(Future.successful(Left(SignUpIncomeSourcesFailureResponse(BAD_REQUEST))))
 
-  def setupMockSignUpIncomeSourcesBadFormatting(nino: String): Unit =
-    setupMockMisSignUp(nino)(Future.successful(Left(BadlyFormattedSignUpIncomeSourcesResponse)))
+  def setupMockSignUpIncomeSourcesBadFormatting(nino: String, taxYear: String): Unit =
+    setupMockMisSignUp(nino, taxYear)(Future.successful(Left(BadlyFormattedSignUpIncomeSourcesResponse)))
 
-  def setupMockSignUpIncomeSourcesException(nino: String): Unit =
-    setupMockMisSignUp(nino)(Future.failed(testException))
+  def setupMockSignUpIncomeSourcesException(nino: String, taxYear: String): Unit =
+    setupMockMisSignUp(nino, taxYear)(Future.failed(testException))
 
   private def setupMockCreateIncomeSourcesFromTaskList(mtdbsa: String, createIncomeSourcesModel: CreateIncomeSourcesModel)
                                                       (result: Future[PostCreateIncomeSourceResponse]): Unit =

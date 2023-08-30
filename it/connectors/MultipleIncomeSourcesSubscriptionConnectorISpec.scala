@@ -16,25 +16,27 @@ class MultipleIncomeSourcesSubscriptionConnectorISpec extends ComponentSpecBase 
 
   val TestMisSubscriptionConnector: MultipleIncomeSourcesSubscriptionConnector = app.injector.instanceOf[MultipleIncomeSourcesSubscriptionConnector]
 
+  val testTaxYear: String = "2023-24"
+
   "MultipleIncomeSourcesSubscription signup" should {
     "return SignUpIncomeSourcesSuccess when valid response is returned" in {
-      stubPostSignUp(testNino)(OK)
+      stubPostSignUp(testNino, testTaxYear)(OK)
 
-      val res = TestMisSubscriptionConnector.signUp(testNino)
+      val res = TestMisSubscriptionConnector.signUp(testNino, testTaxYear)
 
       await(res) mustBe Right(SignUpIncomeSourcesSuccess(testMtdId))
     }
     "return BadlyFormattedSignUpIncomeSourcesResponse when the response is malformed" in {
-      stubPostSignUp(testNino)(OK, Json.obj("not" -> "correct"))
+      stubPostSignUp(testNino, testTaxYear)(OK, Json.obj("not" -> "correct"))
 
-      val res = TestMisSubscriptionConnector.signUp(testNino)
+      val res = TestMisSubscriptionConnector.signUp(testNino, testTaxYear)
 
       await(res) mustBe Left(BadlyFormattedSignUpIncomeSourcesResponse)
     }
     "return SignUpIncomeSourcesFailureResponse if the request fails" in {
-      stubPostSignUp(testNino)(INTERNAL_SERVER_ERROR)
+      stubPostSignUp(testNino, testTaxYear)(INTERNAL_SERVER_ERROR)
 
-      val res = TestMisSubscriptionConnector.signUp(testNino)
+      val res = TestMisSubscriptionConnector.signUp(testNino, testTaxYear)
 
       await(res) mustBe Left(SignUpIncomeSourcesFailureResponse(INTERNAL_SERVER_ERROR))
     }

@@ -22,7 +22,6 @@ import models.common.{OverseasPropertyModel, PropertyModel}
 import org.mockito.Mockito.reset
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import services.mocks.TestPrePopulationService
-import uk.gov.hmrc.crypto.ApplicationCrypto
 
 class PrePopulationServiceSpec extends TestPrePopulationService {
 

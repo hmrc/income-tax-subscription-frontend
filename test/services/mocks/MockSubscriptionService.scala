@@ -43,8 +43,8 @@ trait MockSubscriptionService extends UnitTestTrait with MockitoSugar with Befor
   }
 
 
-  private def mockSignUpIncomeSources(nino: String)(result: Future[PostSignUpIncomeSourcesResponse]): Unit =
-    when(mockSubscriptionService.signUpIncomeSources(ArgumentMatchers.eq(nino))(ArgumentMatchers.any[HeaderCarrier]))
+  private def mockSignUpIncomeSources(nino: String, taxYear: String)(result: Future[PostSignUpIncomeSourcesResponse]): Unit =
+    when(mockSubscriptionService.signUpIncomeSources(ArgumentMatchers.eq(nino), ArgumentMatchers.eq(taxYear))(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(result)
 
   private def mockCreateIncomeSourcesFromTaskList(mtdbsa: String, createIncomeSourcesModel: CreateIncomeSourcesModel)
@@ -57,14 +57,14 @@ trait MockSubscriptionService extends UnitTestTrait with MockitoSugar with Befor
       .thenReturn(result)
   }
 
-  def mockSignUpIncomeSourcesSuccess(nino: String): Unit =
-    mockSignUpIncomeSources(nino)(Future.successful(testSignUpIncomeSourcesSuccess))
+  def mockSignUpIncomeSourcesSuccess(nino: String, taxYear: String): Unit =
+    mockSignUpIncomeSources(nino, taxYear)(Future.successful(testSignUpIncomeSourcesSuccess))
 
-  def mockSignUpIncomeSourcesFailure(nino: String): Unit =
-    mockSignUpIncomeSources(nino)(Future.successful(testSignUpIncomeSourcesFailure))
+  def mockSignUpIncomeSourcesFailure(nino: String, taxYear: String): Unit =
+    mockSignUpIncomeSources(nino, taxYear)(Future.successful(testSignUpIncomeSourcesFailure))
 
-  def mockSignUpIncomeSourcesException(nino: String): Unit =
-    mockSignUpIncomeSources(nino)(Future.failed(testException))
+  def mockSignUpIncomeSourcesException(nino: String, taxYear: String): Unit =
+    mockSignUpIncomeSources(nino, taxYear)(Future.failed(testException))
 
   def mockCreateIncomeSourcesFromTaskListSuccess(mtdbsa: String, createIncomeSourcesModel: CreateIncomeSourcesModel): Unit =
     mockCreateIncomeSourcesFromTaskList(mtdbsa, createIncomeSourcesModel)(Future.successful(testCreateIncomeSourcesFromTaskListSuccess))

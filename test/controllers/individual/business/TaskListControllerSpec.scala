@@ -33,7 +33,6 @@ import services.AccountingPeriodService
 import services.individual.mocks.MockSubscriptionOrchestrationService
 import services.mocks.{MockAuditingService, MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
-import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import utilities.TestModels.{testAccountingMethod, testSelectedTaxYearCurrent, testValidStartDate}
 import utilities.individual.TestConstants.{testCreateIncomeSources, testNino}
 import views.html.individual.incometax.business.TaskList

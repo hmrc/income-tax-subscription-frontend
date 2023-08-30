@@ -27,11 +27,13 @@ import helpers.agent.servicemocks._
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import helpers.servicemocks.EnrolmentStoreProxyStub
 import helpers.servicemocks.EnrolmentStoreProxyStub.jsonResponseBody
+import models.Next
 import models.common.subscription.CreateIncomeSourcesModel
 import models.sps.AgentSPSPayload
 import play.api.http.Status._
 import play.api.libs.json.Json
 import play.api.test.Helpers.NO_CONTENT
+import utilities.AccountingPeriodUtil
 import utilities.SubscriptionDataKeys._
 
 class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
@@ -124,12 +126,12 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
 
-          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
+          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear)(OK)
           MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
             mtdbsa = testMtdId,
             request = CreateIncomeSourcesModel(
               nino = testNino,
-              soleTraderBusinesses = Some(testSoleTraderBusinesses)
+              soleTraderBusinesses = Some(testSoleTraderBusinesses())
             )
           )(NO_CONTENT)
 
@@ -170,19 +172,19 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
             Property,
             OK,
             Json.toJson(testFullPropertyModel.copy(
-              accountingMethod = Some(testUkProperty.accountingMethod),
-              startDate = Some(testUkProperty.tradingStartDate)
+              accountingMethod = Some(testUkProperty().accountingMethod),
+              startDate = Some(testUkProperty().tradingStartDate)
             ))
           )
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
 
-          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
+          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear)(OK)
           MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
             mtdbsa = testMtdId,
             request = CreateIncomeSourcesModel(
               nino = testNino,
-              ukProperty = Some(testUkProperty)
+              ukProperty = Some(testUkProperty())
             )
           )(NO_CONTENT)
 
@@ -223,17 +225,17 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
             OverseasProperty,
             OK,
             Json.toJson(testFullOverseasPropertyModel.copy(
-              accountingMethod = Some(testOverseasProperty.accountingMethod),
-              startDate = Some(testOverseasProperty.tradingStartDate)
+              accountingMethod = Some(testOverseasProperty().accountingMethod),
+              startDate = Some(testOverseasProperty().tradingStartDate)
             )))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
 
-          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
+          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear)(OK)
           MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
             mtdbsa = testMtdId,
             request = CreateIncomeSourcesModel(
               nino = testNino,
-              overseasProperty = Some(testOverseasProperty)
+              overseasProperty = Some(testOverseasProperty())
             )
           )(NO_CONTENT)
 
@@ -274,20 +276,20 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
             Property,
             OK,
             Json.toJson(testFullPropertyModel.copy(
-              accountingMethod = Some(testUkProperty.accountingMethod),
-              startDate = Some(testUkProperty.tradingStartDate)
+              accountingMethod = Some(testUkProperty().accountingMethod),
+              startDate = Some(testUkProperty().tradingStartDate)
             ))
           )
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
 
-          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
+          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear)(OK)
           MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
             mtdbsa = testMtdId,
             request = CreateIncomeSourcesModel(
               nino = testNino,
-              soleTraderBusinesses = Some(testSoleTraderBusinesses),
-              ukProperty = Some(testUkProperty)
+              soleTraderBusinesses = Some(testSoleTraderBusinesses()),
+              ukProperty = Some(testUkProperty())
             )
           )(NO_CONTENT)
 
@@ -329,18 +331,18 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
             OverseasProperty,
             OK,
             Json.toJson(testFullOverseasPropertyModel.copy(
-              accountingMethod = Some(testOverseasProperty.accountingMethod),
-              startDate = Some(testOverseasProperty.tradingStartDate)
+              accountingMethod = Some(testOverseasProperty().accountingMethod),
+              startDate = Some(testOverseasProperty().tradingStartDate)
             )))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
 
-          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
+          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear)(OK)
           MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
             mtdbsa = testMtdId,
             request = CreateIncomeSourcesModel(
               nino = testNino,
-              soleTraderBusinesses = Some(testSoleTraderBusinesses),
-              overseasProperty = Some(testOverseasProperty)
+              soleTraderBusinesses = Some(testSoleTraderBusinesses()),
+              overseasProperty = Some(testOverseasProperty())
             )
           )(NO_CONTENT)
 
@@ -381,25 +383,25 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
             Property,
             OK,
             Json.toJson(testFullPropertyModel.copy(
-              accountingMethod = Some(testUkProperty.accountingMethod),
-              startDate = Some(testUkProperty.tradingStartDate)
+              accountingMethod = Some(testUkProperty().accountingMethod),
+              startDate = Some(testUkProperty().tradingStartDate)
             )))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
             OverseasProperty,
             OK,
             Json.toJson(testFullOverseasPropertyModel.copy(
-              accountingMethod = Some(testOverseasProperty.accountingMethod),
-              startDate = Some(testOverseasProperty.tradingStartDate)
+              accountingMethod = Some(testOverseasProperty().accountingMethod),
+              startDate = Some(testOverseasProperty().tradingStartDate)
             )))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
 
-          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
+          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear)(OK)
           MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
             mtdbsa = testMtdId,
             request = CreateIncomeSourcesModel(
               nino = testNino,
-              ukProperty = Some(testUkProperty),
-              overseasProperty = Some(testOverseasProperty)
+              ukProperty = Some(testUkProperty()),
+              overseasProperty = Some(testOverseasProperty())
             )
           )(NO_CONTENT)
 
@@ -430,64 +432,121 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
 
         }
 
-        "they have self employment, uk property and overseas property income" in {
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
+        "they have self employment, uk property and overseas property income" when {
+          "they are signing up to the current tax year" in {
+            Given("I setup the Wiremock stubs")
+            AuthStub.stubAuthSuccess()
 
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+              Property,
+              OK,
+              Json.toJson(testFullPropertyModel.copy(
+                accountingMethod = Some(testUkProperty().accountingMethod),
+                startDate = Some(testUkProperty().tradingStartDate)
+              )))
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+              OverseasProperty,
+              OK,
+              Json.toJson(testFullOverseasPropertyModel.copy(
+                accountingMethod = Some(testOverseasProperty().accountingMethod),
+                startDate = Some(testOverseasProperty().tradingStartDate)
+              )))
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
 
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-            Property,
-            OK,
-            Json.toJson(testFullPropertyModel.copy(
-              accountingMethod = Some(testUkProperty.accountingMethod),
-              startDate = Some(testUkProperty.tradingStartDate)
-            )))
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-            OverseasProperty,
-            OK,
-            Json.toJson(testFullOverseasPropertyModel.copy(
-              accountingMethod = Some(testOverseasProperty.accountingMethod),
-              startDate = Some(testOverseasProperty.tradingStartDate)
-            )))
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
+            MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear)(OK)
+            MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
+              mtdbsa = testMtdId,
+              request = CreateIncomeSourcesModel(
+                nino = testNino,
+                soleTraderBusinesses = Some(testSoleTraderBusinesses()),
+                ukProperty = Some(testUkProperty()),
+                overseasProperty = Some(testOverseasProperty())
+              )
+            )(NO_CONTENT)
 
-          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
-          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
-            mtdbsa = testMtdId,
-            request = CreateIncomeSourcesModel(
-              nino = testNino,
-              soleTraderBusinesses = Some(testSoleTraderBusinesses),
-              ukProperty = Some(testUkProperty),
-              overseasProperty = Some(testOverseasProperty)
+            And("The wiremock stubs for auto enrolment")
+            EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
+            EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
+            UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
+            EnrolmentStoreProxyStub.stubUpsertEnrolment(testMtdId, testNino)(NO_CONTENT)
+            EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testMtdId, testGroupId, testCredentialId)(CREATED)
+            EnrolmentStoreProxyStub.stubAssignEnrolment(testMtdId, testCredentialId)(CREATED)
+            EnrolmentStoreProxyStub.stubAssignEnrolment(testMtdId, testCredentialId2)(CREATED)
+
+            When("I call POST /task-list")
+            val res = IncomeTaxSubscriptionFrontend.submitTaskList()
+
+            Then("The result must have a status of SEE_OTHER and redirect to the confirmation page")
+            res must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(confirmationURI)
             )
-          )(NO_CONTENT)
 
-          And("The wiremock stubs for auto enrolment")
-          EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
-          EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
-          UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
-          EnrolmentStoreProxyStub.stubUpsertEnrolment(testMtdId, testNino)(NO_CONTENT)
-          EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testMtdId, testGroupId, testCredentialId)(CREATED)
-          EnrolmentStoreProxyStub.stubAssignEnrolment(testMtdId, testCredentialId)(CREATED)
-          EnrolmentStoreProxyStub.stubAssignEnrolment(testMtdId, testCredentialId2)(CREATED)
+            val expectedSPSBody: AgentSPSPayload = AgentSPSPayload(testARN, testNino, testUtrEnrolmentKey, testMTDIDEnrolmentKey)
+            verifyPost("/channel-preferences/enrolment", Some(Json.toJson(expectedSPSBody).toString), Some(1))
 
-          When("I call POST /task-list")
-          val res = IncomeTaxSubscriptionFrontend.submitTaskList()
+            val cookieMap = getSessionMap(res)
+            cookieMap(ITSASessionKeys.MTDITID) mustBe testMTDID
+          }
+          "they are signing up to the next tax year" in {
+            Given("I setup the Wiremock stubs")
+            AuthStub.stubAuthSuccess()
 
-          Then("The result must have a status of SEE_OTHER and redirect to the confirmation page")
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(confirmationURI)
-          )
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+              Property,
+              OK,
+              Json.toJson(testFullPropertyModel.copy(
+                accountingMethod = Some(testUkProperty(Next).accountingMethod),
+                startDate = Some(testUkProperty(Next).tradingStartDate)
+              )))
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+              OverseasProperty,
+              OK,
+              Json.toJson(testFullOverseasPropertyModel.copy(
+                accountingMethod = Some(testOverseasProperty(Next).accountingMethod),
+                startDate = Some(testOverseasProperty(Next).tradingStartDate)
+              )))
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearNextConfirmed))
 
-          val expectedSPSBody: AgentSPSPayload = AgentSPSPayload(testARN, testNino, testUtrEnrolmentKey, testMTDIDEnrolmentKey)
-          verifyPost("/channel-preferences/enrolment", Some(Json.toJson(expectedSPSBody).toString), Some(1))
+            MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getNextTaxYear.toLongTaxYear)(OK)
+            MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
+              mtdbsa = testMtdId,
+              request = CreateIncomeSourcesModel(
+                nino = testNino,
+                soleTraderBusinesses = Some(testSoleTraderBusinesses(accountingYear = Next)),
+                ukProperty = Some(testUkProperty(accountingYear = Next)),
+                overseasProperty = Some(testOverseasProperty(accountingYear = Next))
+              )
+            )(NO_CONTENT)
 
-          val cookieMap = getSessionMap(res)
-          cookieMap(ITSASessionKeys.MTDITID) mustBe testMTDID
+            And("The wiremock stubs for auto enrolment")
+            EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
+            EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
+            UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
+            EnrolmentStoreProxyStub.stubUpsertEnrolment(testMtdId, testNino)(NO_CONTENT)
+            EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testMtdId, testGroupId, testCredentialId)(CREATED)
+            EnrolmentStoreProxyStub.stubAssignEnrolment(testMtdId, testCredentialId)(CREATED)
+            EnrolmentStoreProxyStub.stubAssignEnrolment(testMtdId, testCredentialId2)(CREATED)
 
+            When("I call POST /task-list")
+            val res = IncomeTaxSubscriptionFrontend.submitTaskList()
+
+            Then("The result must have a status of SEE_OTHER and redirect to the confirmation page")
+            res must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(confirmationURI)
+            )
+
+            val expectedSPSBody: AgentSPSPayload = AgentSPSPayload(testARN, testNino, testUtrEnrolmentKey, testMTDIDEnrolmentKey)
+            verifyPost("/channel-preferences/enrolment", Some(Json.toJson(expectedSPSBody).toString), Some(1))
+
+            val cookieMap = getSessionMap(res)
+            cookieMap(ITSASessionKeys.MTDITID) mustBe testMTDID
+          }
         }
       }
       "fail to sign up the client" when {
@@ -495,35 +554,16 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
 
-
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
 
-          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
-          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
-            mtdbsa = testMtdId,
-            request = CreateIncomeSourcesModel(
-              nino = testNino,
-              soleTraderBusinesses = Some(testSoleTraderBusinesses)
-            )
-          )(NO_CONTENT)
-
-          And("The wiremock stubs for auto enrolment")
-          EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
-          EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
-          UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
-          EnrolmentStoreProxyStub.stubUpsertEnrolment(testMtdId, testNino)(NO_CONTENT)
-          EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testMtdId, testGroupId, testCredentialId)(CREATED)
-          EnrolmentStoreProxyStub.stubAssignEnrolment(testMtdId, testCredentialId)(CREATED)
-          EnrolmentStoreProxyStub.stubAssignEnrolment(testMtdId, testCredentialId2)(CREATED)
-
           When("I call POST /task-list")
           val res = IncomeTaxSubscriptionFrontend.submitTaskList()
 
-          Then("The result must have a status of INTERNAL_SERVER_ERROR and redirect to the confirmation page")
+          Then("The result must have a status of INTERNAL_SERVER_ERROR")
           res must have(
             httpStatus(INTERNAL_SERVER_ERROR)
           )
@@ -540,32 +580,13 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
 
-          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
-          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
-            mtdbsa = testMtdId,
-            request = CreateIncomeSourcesModel(
-              nino = testNino,
-              soleTraderBusinesses = Some(testSoleTraderBusinesses)
-            )
-          )(NO_CONTENT)
-
-          And("The wiremock stubs for auto enrolment")
-          EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
-          EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
-          UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
-          EnrolmentStoreProxyStub.stubUpsertEnrolment(testMtdId, testNino)(NO_CONTENT)
-          EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testMtdId, testGroupId, testCredentialId)(CREATED)
-          EnrolmentStoreProxyStub.stubAssignEnrolment(testMtdId, testCredentialId)(CREATED)
-          EnrolmentStoreProxyStub.stubAssignEnrolment(testMtdId, testCredentialId2)(CREATED)
-
           When("I call POST /task-list")
           val res = IncomeTaxSubscriptionFrontend.submitTaskList()
 
-          Then("The result must have a status of INTERNAL_SERVER_ERROR and redirect to the confirmation page")
+          Then("The result must have a status of INTERNAL_SERVER_ERROR")
           res must have(
             httpStatus(INTERNAL_SERVER_ERROR)
           )
-
         }
       }
     }

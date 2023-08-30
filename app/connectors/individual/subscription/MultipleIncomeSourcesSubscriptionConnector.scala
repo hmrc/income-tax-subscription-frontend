@@ -30,13 +30,13 @@ class MultipleIncomeSourcesSubscriptionConnector @Inject()(val appConfig: AppCon
                                                            val http: HttpClient)
                                                           (implicit ec: ExecutionContext) {
 
-  private def signUpUrl(nino: String): String = appConfig.signUpIncomeSourcesUrl + MultipleIncomeSourcesSubscriptionConnector.signUpUri(nino)
+  private def signUpUrl(nino: String, taxYear: String): String = appConfig.signUpIncomeSourcesUrl + MultipleIncomeSourcesSubscriptionConnector.signUpUri(nino, taxYear)
 
   private def createIncomeSourcesUrl(mtdbsa: String): String = appConfig.createIncomeSourcesUrl +
     MultipleIncomeSourcesSubscriptionConnector.createIncomeSourcesUri(mtdbsa)
 
-  def signUp(nino: String)(implicit hc: HeaderCarrier): Future[PostSignUpIncomeSourcesResponse] =
-    http.POSTEmpty[PostSignUpIncomeSourcesResponse](signUpUrl(nino))
+  def signUp(nino: String, taxYear: String)(implicit hc: HeaderCarrier): Future[PostSignUpIncomeSourcesResponse] =
+    http.POSTEmpty[PostSignUpIncomeSourcesResponse](signUpUrl(nino, taxYear))
 
   def createIncomeSourcesFromTaskList(mtdbsa: String, request: CreateIncomeSourcesModel)
                                      (implicit hc: HeaderCarrier): Future[PostCreateIncomeSourceResponse] =
@@ -46,7 +46,7 @@ class MultipleIncomeSourcesSubscriptionConnector @Inject()(val appConfig: AppCon
 
 object MultipleIncomeSourcesSubscriptionConnector {
 
-  def signUpUri(nino: String): String = s"/$nino"
+  def signUpUri(nino: String, taxYear: String): String = s"/$nino/$taxYear"
 
   def createIncomeSourcesUri(mtdbsa: String): String = s"/$mtdbsa"
 

@@ -38,6 +38,7 @@ object IntegrationTestModels extends ComponentSpecBase {
   val testAccountingYearCurrent: AccountingYearModel = AccountingYearModel(Current)
   val testAccountingYearCurrentConfirmed: AccountingYearModel = AccountingYearModel(Current, confirmed = true)
   val testAccountingYearNext: AccountingYearModel = AccountingYearModel(Next)
+  val testAccountingYearNextConfirmed: AccountingYearModel = AccountingYearModel(Next, confirmed = true)
 
   private val testBusinessName: BusinessNameModel = BusinessNameModel("test business")
   private val testBusinessTrade: BusinessTradeNameModel = BusinessTradeNameModel("test trade")

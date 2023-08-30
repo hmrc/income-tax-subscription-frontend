@@ -21,7 +21,7 @@ import cats.implicits._
 import models.ConnectorError
 import models.common.subscription.{CreateIncomeSourcesModel, SubscriptionSuccess}
 import services.{SPSService, SubscriptionService}
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -45,8 +45,16 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
                                                createIncomeSourceModel: CreateIncomeSourcesModel,
                                                maybeSpsEntityId: Option[String] = None)
                                               (implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {
+    val taxYear: String = {
+      createIncomeSourceModel.ukProperty.map(_.accountingPeriod.toLongTaxYear) orElse
+        createIncomeSourceModel.overseasProperty.map(_.accountingPeriod.toLongTaxYear) orElse
+        createIncomeSourceModel.soleTraderBusinesses.map(_.accountingPeriod.toLongTaxYear)
+    }.getOrElse(throw new InternalServerException(
+      "[SubscriptionOrchestrationService][signUpAndCreateIncomeSourcesFromTaskList] - Unable to retrieve any tax year from income sources"
+    ))
+
     val res = for {
-      signUpResponse <- EitherT(subscriptionService.signUpIncomeSources(nino))
+      signUpResponse <- EitherT(subscriptionService.signUpIncomeSources(nino, taxYear))
       mtdbsa = signUpResponse.mtdbsa
       _ <- EitherT(subscriptionService.createIncomeSourcesFromTaskList(mtdbsa, createIncomeSourceModel))
       _ <- EitherT(knownFactsService.addKnownFacts(mtdbsa, nino))

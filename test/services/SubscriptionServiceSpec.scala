@@ -29,11 +29,11 @@ import utilities.individual.TestConstants._
 
 import scala.concurrent.Future
 
-
 class SubscriptionServiceSpec extends TestSubscriptionService
   with EitherValues {
 
   val testNino: String = TestConstants.testNino
+  val testTaxYear: String = "2023-24"
 
   "SubscriptionService.getSubscription" should {
 
@@ -62,25 +62,25 @@ class SubscriptionServiceSpec extends TestSubscriptionService
 
   "SubscriptionService.signUpIncomeSources" should {
 
-    def call: PostSignUpIncomeSourcesResponse = await(TestSubscriptionService.signUpIncomeSources(nino = testNino))
+    def call: PostSignUpIncomeSourcesResponse = await(TestSubscriptionService.signUpIncomeSources(nino = testNino, taxYear = testTaxYear))
 
     "return the mtdbsa id when the signUp is successful" in {
-      setupMockSignUpIncomeSourcesSuccess(testNino)
+      setupMockSignUpIncomeSourcesSuccess(testNino, testTaxYear)
       call.value shouldBe SignUpIncomeSourcesSuccess(testMTDID)
     }
 
     "return the error if sign up fails on bad request" in {
-      setupMockSignUpIncomeSourcesFailure(testNino)
+      setupMockSignUpIncomeSourcesFailure(testNino, testTaxYear)
       call.left.value shouldBe SignUpIncomeSourcesFailureResponse(BAD_REQUEST)
     }
 
     "return the error if sign up fails on bad formatting" in {
-      setupMockSignUpIncomeSourcesBadFormatting(testNino)
+      setupMockSignUpIncomeSourcesBadFormatting(testNino, testTaxYear)
       call.left.value shouldBe BadlyFormattedSignUpIncomeSourcesResponse
     }
 
     "return the error if subscription throws an exception" in {
-      setupMockSignUpIncomeSourcesException(testNino)
+      setupMockSignUpIncomeSourcesException(testNino, testTaxYear)
       intercept[Exception](call) shouldBe testException
     }
   }

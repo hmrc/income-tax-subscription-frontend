@@ -19,7 +19,7 @@ package helpers
 import models.common.AccountingPeriodModel
 import models.common.business._
 import models.common.subscription.{OverseasProperty, SoleTraderBusinesses, UkProperty}
-import models.{AccountingMethod, Cash, DateModel}
+import models.{AccountingMethod, AccountingYear, Cash, Current, DateModel}
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
 import utilities.AccountingPeriodUtil
@@ -66,9 +66,21 @@ object IntegrationTestConstants {
                            endDate: DateModel = testEndDate): AccountingPeriodModel =
     AccountingPeriodModel(startDate, endDate)
 
-  val testSoleTraderBusinesses: SoleTraderBusinesses = SoleTraderBusinesses(testAccountingPeriod, testAccountMethod, testSelfEmploymentData)
-  val testUkProperty: UkProperty = UkProperty(testAccountingPeriod, tradingStartDate, testAccountMethod)
-  val testOverseasProperty: OverseasProperty = OverseasProperty(testAccountingPeriod, tradingStartDate, testAccountMethod)
+  def testSoleTraderBusinesses(accountingYear: AccountingYear = Current): SoleTraderBusinesses = SoleTraderBusinesses(
+    if(accountingYear == Current) AccountingPeriodUtil.getCurrentTaxYear else AccountingPeriodUtil.getNextTaxYear,
+    testAccountMethod,
+    testSelfEmploymentData
+  )
+  def testUkProperty(accountingYear: AccountingYear = Current): UkProperty = UkProperty(
+    if(accountingYear == Current) AccountingPeriodUtil.getCurrentTaxYear else AccountingPeriodUtil.getNextTaxYear,
+    tradingStartDate,
+    testAccountMethod
+  )
+  def testOverseasProperty(accountingYear: AccountingYear = Current): OverseasProperty = OverseasProperty(
+    if(accountingYear == Current) AccountingPeriodUtil.getCurrentTaxYear else AccountingPeriodUtil.getNextTaxYear,
+    tradingStartDate,
+    testAccountMethod
+  )
 
   lazy val testSelfEmploymentData: Seq[SelfEmploymentData] =
     Seq(SelfEmploymentData
