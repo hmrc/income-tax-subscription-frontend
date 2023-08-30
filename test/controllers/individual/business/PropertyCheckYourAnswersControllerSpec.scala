@@ -135,12 +135,19 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
   }
 
   "backUrl" should {
-    "go to the task list page" when {
-      "in edit mode" in withController { controller =>
-        controller.backUrl(true) mustBe controllers.individual.business.routes.TaskListController.show().url
+    "in edit mode " when {
+      "TaskList is not enabled " should {
+        "return the task list page" in withController { controller =>
+          controller.backUrl(true) mustBe controllers.individual.business.routes.TaskListController.show().url
+        }
+      }
+      "TaskList is enabled " should {
+        "return the your income source page" in withController { controller =>
+          enable(EnableTaskListRedesign)
+          controller.backUrl(true) mustBe controllers.individual.incomesource.routes.YourIncomeSourceToSignUpController.show().url
+        }
       }
     }
-
     "go to the property accounting method page" when {
       "not in edit mode" in withController { controller =>
         controller.backUrl(false) mustBe controllers.individual.business.routes.PropertyAccountingMethodController.show().url

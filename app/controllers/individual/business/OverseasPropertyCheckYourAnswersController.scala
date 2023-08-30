@@ -68,7 +68,8 @@ class OverseasPropertyCheckYourAnswersController @Inject()(val view: OverseasPro
 
   def backUrl(isEditMode: Boolean): String =
     if (isEditMode) {
-      controllers.individual.business.routes.TaskListController.show().url
+        if (isEnabled(EnableTaskListRedesign)) controllers.individual.incomesource.routes.YourIncomeSourceToSignUpController.show().url
+        else controllers.individual.business.routes.TaskListController.show().url
     } else {
       controllers.individual.business.routes.OverseasPropertyAccountingMethodController.show().url
     }
