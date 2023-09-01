@@ -23,8 +23,7 @@ case class Address(lines: Seq[String], postcode: Option[String]) {
   override def toString: String = s"${lines.mkString(", ")}${postcode.map(t => s", $t").getOrElse("")}"
 }
 
-case class BusinessAddressModel(auditRef: String,
-                                address: Address) {
+case class BusinessAddressModel(address: Address) {
 
   def encrypt(encrypter: Encrypter): BusinessAddressModel = this.copy(
     address = Address(

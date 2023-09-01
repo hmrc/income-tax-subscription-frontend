@@ -28,9 +28,8 @@ class BusinessAddressModelSpec extends PlaySpec with GuiceOneServerPerSuite {
 
     "work with a postcode" should {
 
-      val businessAddressModel = BusinessAddressModel(auditRef = "1", Address(lines = lines, postcode = Some("TF3 4NT")))
-      val json = Json.obj("auditRef" -> "1",
-        "address" -> Json.obj("lines" -> lines, "postcode" -> Some("TF3 4NT")))
+      val businessAddressModel = BusinessAddressModel(Address(lines = lines, postcode = Some("TF3 4NT")))
+      val json = Json.obj("address" -> Json.obj("lines" -> lines, "postcode" -> Some("TF3 4NT")))
 
       "read from Json correctly" in {
         Json.fromJson[BusinessAddressModel](json) mustBe JsSuccess(businessAddressModel)
@@ -42,9 +41,8 @@ class BusinessAddressModelSpec extends PlaySpec with GuiceOneServerPerSuite {
     }
     "work without a postcode" should {
 
-      val businessAddressModel = BusinessAddressModel(auditRef = "1", Address(lines = lines, postcode = None))
-      val json = Json.obj("auditRef" -> "1",
-        "address" -> Json.obj("lines" -> lines))
+      val businessAddressModel = BusinessAddressModel(Address(lines = lines, postcode = None))
+      val json = Json.obj("address" -> Json.obj("lines" -> lines))
 
       "read from Json correctly" in {
         Json.fromJson[BusinessAddressModel](json) mustBe JsSuccess(businessAddressModel)

@@ -33,7 +33,7 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
       businessStartDate = Some(BusinessStartDate(DateModel("6", "5", "2020"))),
       businessName = Some(BusinessNameModel("Money Business")),
       businessTradeName = Some(BusinessTradeNameModel("Consulting")),
-      businessAddress = Some(BusinessAddressModel("123", Address(Seq("line 1"), Some("ZZ1 1ZZ"))))
+      businessAddress = Some(BusinessAddressModel(Address(Seq("line 1"), Some("ZZ1 1ZZ"))))
     )
   )
   private val selfEmploymentAccountingMethod = Some(AccountingMethodModel(Cash))
@@ -174,7 +174,7 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
             businessStartDate = Some(BusinessStartDate(DateModel("6", "5", "2020"))),
             businessName = Some(BusinessNameModel("Money Business")),
             businessTradeName = Some(BusinessTradeNameModel("Consulting")),
-            businessAddress = Some(BusinessAddressModel("123", Address(Seq("line 1"), Some("ZZ1 1ZZ"))))
+            businessAddress = Some(BusinessAddressModel(Address(Seq("line 1"), Some("ZZ1 1ZZ"))))
           ),
         maybeSelfEmploymentAccountingMethod = selfEmploymentAccountingMethod,
         maybePropertyModel = property,

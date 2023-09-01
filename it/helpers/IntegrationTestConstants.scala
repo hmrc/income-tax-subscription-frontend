@@ -77,7 +77,7 @@ object IntegrationTestConstants {
       businessStartDate = Some(businessStartDate),
       businessName = Some(testBusinessName),
       businessTradeName = Some(testBusinessTradeName),
-      businessAddress = Some(BusinessAddressModel("", Address(Seq("1 long road", "lonely town", "quiet county"), Some("ZZ1 1ZZ"))))
+      businessAddress = Some(BusinessAddressModel(Address(Seq("1 long road", "lonely town", "quiet county"), Some("ZZ1 1ZZ"))))
     )
     )
 
@@ -114,7 +114,7 @@ object IntegrationTestConstants {
   val overseasPropertyCYAURI = s"$baseURI/business/overseas-property-check-your-answers"
   val taskListURI = s"$baseURI/business/task-list"
   val saveAndRetrieveURI = s"$baseURI/business/progress-saved"
-  val taxYearCyaURI= s"$baseURI/business/tax-year-check-your-answers"
+  val taxYearCyaURI = s"$baseURI/business/tax-year-check-your-answers"
   val feedbackSubmittedURI = s"$baseURI/feedback-submitted"
   val signOutURI = s"$baseURI/logout"
   val ggSignOutURI = s"/bas-gateway/sign-out-without-state"

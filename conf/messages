@@ -40,6 +40,8 @@ base.accounting-method.accruals                                 = Traditional ac
 base.print-this-page                                            = Print this page
 base.warning                                                    = Warning
 base.accept-and-continue                                        = Accept and continue
+base.tax-year.current                                           = Current tax year (6 April {0} to 5 April {1})
+base.tax-year.next                                              = Next tax year (6 April {0} to 5 April {1})
 
 ## Client details CYA
 check-your-details.change.first-name                            = Change first name
@@ -372,8 +374,6 @@ agent.sign-up-confirmation.manadated.notification-banner.bullet3                
 agent.sign-up-confirmation.manadated.notification-banner.bullet4                    = tax payment
 
 ## Sign Up Confirmation page ##
-
-
 sign-up-confirmation.heading                                                  = Sign up complete
 sign-up-confirmation.heading.panel.current                                    = is now signed up for Making Tax Digital for Income Tax for the current tax year ({0})
 sign-up-confirmation.heading.panel.next                                       = is now signed up for Making Tax Digital for Income Tax for the next tax year ({0})
@@ -641,7 +641,7 @@ agent.accounting-period-check.invalid                           = Select yes if 
 agent.property-trading-after.title                              = Did your client start letting property on or after {0}?
 agent.property-trading-after.heading                            = Did your client start letting property on or after {0}?
 agent.property-trading-after.caption                            = {0} | {1}
-agent.property-trading-after.line                               = What's included in letting properties?
+agent.property-trading-after.line                               = What’s included in letting properties?
 agent.property-trading-after.line.point1                        = UK properties
 agent.property-trading-after.line.point2                        = overseas properties
 agent.property-trading-after.line.point3                        = holiday properties
@@ -1095,3 +1095,23 @@ agent.throttle-end.title                                           = Your sign u
 agent.throttle-end.heading                                         = Your sign up cannot be completed right now
 agent.throttle-end.line-1                                          = We are experiencing high levels of applications for this service and cannot complete your client’s sign up at the moment. Don’t worry, the details you have entered will be saved for 30 days.
 agent.throttle-end.line-2                                          = To finish and complete signing up your client, try again or sign out and come back later.
+
+# Global Check Your Answers
+individual.global-check-your-answers.heading                                                    = Check your answers before signing up
+individual.global-check-your-answers.income-sources.heading                                     = 1. Income sources
+individual.global-check-your-answers.income-sources.self-employment.heading                     = Trade: {0}
+individual.global-check-your-answers.income-sources.self-employment.name                        = Business name
+individual.global-check-your-answers.income-sources.self-employment.start-date                  = Trading start date
+individual.global-check-your-answers.income-sources.self-employment.address                     = Address
+individual.global-check-your-answers.income-sources.self-employment-accounting-method.heading   = Sole trader businesses accounting method
+individual.global-check-your-answers.income-sources.self-employment.accounting-method           = Accounting method
+individual.global-check-your-answers.income-sources.uk-property.heading                         = UK property business
+individual.global-check-your-answers.income-sources.uk-property.start-date                      = Start date
+individual.global-check-your-answers.income-sources.uk-property.accounting-method               = Accounting method
+individual.global-check-your-answers.income-sources.foreign-property.heading                    = Foreign property business
+individual.global-check-your-answers.income-sources.foreign-property.start-date                 = Start date
+individual.global-check-your-answers.income-sources.foreign-property.accounting-method          = Accounting method
+individual.global-check-your-answers.tax-year.heading                                           = 2. Selected tax year
+individual.global-check-your-answers.tax-year.label                                             = Tax year
+individual.global-check-your-answers.software.heading                                           = 3. Software for Making Tax Digital for Income Tax
+individual.global-check-your-answers.software.label                                             = Compatible software
