@@ -14,13 +14,14 @@
  * limitations under the License.
  *@
 
+@import forms.individual.business.GlobalCheckYourAnswersForm
 @import models.common._
 @import models._
 @import models.common.business.SelfEmploymentData
 @import services.AccountingPeriodService
 @import services.GetCompleteDetailsService._
 @import utilities.ImplicitDateFormatterImpl
-@import views.html.helpers.injected.ContinueButton
+@import views.html.helpers.injected.{ContinueButton, RadioHelper}
 @import views.html.templates.PrincipalMainTemplate
 @import views.html.templates.injected.{CheckYourAnswers, CheckYourAnswersRow}
 
@@ -30,10 +31,12 @@
         govukSummaryList : GovukSummaryList,
         implicitDateFormatter: ImplicitDateFormatterImpl,
         accountingPeriodService: AccountingPeriodService,
+        radioHelper: RadioHelper,
         form: FormWithCSRF
 )
 
 @(
+        globalCheckYourAnswersForm: Form[YesNo],
         postAction: Call,
         backUrl: String,
         completeDetails: CompleteDetails
@@ -41,7 +44,7 @@
 
 @import implicitDateFormatter.LongDate
 
-@mainTemplate(title = messages("individual.global-check-your-answers.heading"), backLink = Some(backUrl)) {
+@mainTemplate(title = messages("individual.global-check-your-answers.heading"), optForm = Some(globalCheckYourAnswersForm), backLink = Some(backUrl)) {
 
     <h1 class="govuk-heading-l">@messages("individual.global-check-your-answers.heading")</h1>
 
@@ -50,9 +53,32 @@
     @softwareSection(completeDetails.hasSoftware)
 
     @form(action = postAction) {
+
+        @yesNoRadios()
+
         @continueButton()
+
     }
 
+}
+
+@yesNoRadios() = {
+    @radioHelper(
+        field = globalCheckYourAnswersForm(GlobalCheckYourAnswersForm.fieldName),
+        legend = messages("individual.global-check-your-answers.form.heading"),
+        isPageHeading = false,
+        headingClasses = "govuk-!-font-weight-bold",
+        radioItems = Seq(
+            RadioItem(
+                content = Text(messages("individual.global-check-your-answers.form.yes")),
+                value = Some(Yes.toString)
+            ),
+            RadioItem(
+                content = Text(messages("individual.global-check-your-answers.form.no")),
+                value = Some(No.toString)
+            )
+        )
+    )
 }
 
 @incomeSourcesSection(incomeSources: IncomeSources) = {

@@ -22,14 +22,16 @@ import play.api.data.Form
 import play.api.data.Forms.single
 import play.api.data.validation.Invalid
 
-object RemoveBusinessForm {
+object GlobalCheckYourAnswersForm {
+
   val fieldName: String = "yes-no"
 
-  def removeBusinessForm(): Form[YesNo] = Form(
+  val form: Form[YesNo] = Form(
     single(
       fieldName -> YesNoMapping.yesNoMapping(
-        yesNoInvalid = Invalid("error.remove-sole-trader-business.invalid")
+        yesNoInvalid = Invalid("individual.global-check-your-answers.form.error.empty")
       )
     )
   )
+
 }

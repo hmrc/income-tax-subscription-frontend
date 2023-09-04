@@ -16,10 +16,13 @@
 
 package views.individual.incometax.business
 
+import forms.individual.business.GlobalCheckYourAnswersForm
+import forms.submapping.YesNoMapping
 import models._
 import models.common.business.Address
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
+import play.api.data.{Form, FormError}
 import play.twirl.api.Html
 import services.GetCompleteDetailsService._
 import utilities.{AccountingPeriodUtil, ViewSpec}
@@ -29,16 +32,34 @@ import java.time.LocalDate
 
 class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
+  val formError: FormError = FormError(GlobalCheckYourAnswersForm.fieldName, "individual.global-check-your-answers.form.error.empty")
+
   "GlobalCheckYourAnswers" must {
 
     "use the correct template" when {
       "there is no error on the page" in new TemplateViewTest(
-        view = page(completeDetails()),
+        view = page(
+          form = GlobalCheckYourAnswersForm.form,
+          completeDetails = completeDetails()
+        ),
         title = GlobalCheckYourAnswersMessages.heading,
         isAgent = false,
         backLink = Some(testBackUrl),
         hasSignOutLink = true,
         error = None
+      )
+      "there is an error on the page" in new TemplateViewTest(
+        view = page(
+          form = GlobalCheckYourAnswersForm.form.withError(
+            formError
+          ),
+          completeDetails = completeDetails()
+        ),
+        title = GlobalCheckYourAnswersMessages.heading,
+        isAgent = false,
+        backLink = Some(testBackUrl),
+        hasSignOutLink = true,
+        error = Some(formError)
       )
     }
 
@@ -389,6 +410,37 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
         form.attr("method") mustBe testCall.method
         form.attr("action") mustBe testCall.url
       }
+
+      "has a radio button selection" which {
+        "has a heading" in {
+          form.selectHead("fieldset").selectHead("legend").text() mustBe GlobalCheckYourAnswersMessages.Form.heading
+        }
+        "has a yes option" in {
+          val radio: Element = form.selectHead("fieldset").selectHead(".govuk-radios").selectNth(".govuk-radios__item", 1)
+          val input: Element = radio.selectHead("input")
+          input.id mustBe GlobalCheckYourAnswersForm.fieldName
+          input.attr("name") mustBe GlobalCheckYourAnswersForm.fieldName
+          input.attr("type") mustBe "radio"
+          input.attr("value") mustBe YesNoMapping.option_yes
+
+          val label: Element = radio.selectHead("label")
+          label.text mustBe GlobalCheckYourAnswersMessages.Form.yes
+          label.attr("for") mustBe input.id
+        }
+        "has a no option" in {
+          val radio: Element = form.selectHead("fieldset").selectHead(".govuk-radios").selectNth(".govuk-radios__item", 2)
+          val input: Element = radio.selectHead("input")
+          input.id mustBe s"${GlobalCheckYourAnswersForm.fieldName}-2"
+          input.attr("name") mustBe GlobalCheckYourAnswersForm.fieldName
+          input.attr("type") mustBe "radio"
+          input.attr("value") mustBe YesNoMapping.option_no
+
+          val label: Element = radio.selectHead("label")
+          label.text mustBe GlobalCheckYourAnswersMessages.Form.no
+          label.attr("for") mustBe input.id
+        }
+      }
+
       "has a continue button to submit" in {
         form.selectHead("button").text mustBe GlobalCheckYourAnswersMessages.continue
       }
@@ -398,13 +450,17 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
   val globalCheckYourAnswers: GlobalCheckYourAnswers = app.injector.instanceOf[GlobalCheckYourAnswers]
 
-  def page(completeDetails: CompleteDetails): Html = globalCheckYourAnswers(
+  def page(form: Form[YesNo], completeDetails: CompleteDetails): Html = globalCheckYourAnswers(
+    globalCheckYourAnswersForm = form,
     postAction = testCall,
     backUrl = testBackUrl,
     completeDetails = completeDetails
   )
 
-  def document(details: CompleteDetails = completeDetails()): Document = Jsoup.parse(page(details).body)
+  def document(details: CompleteDetails = completeDetails()): Document = Jsoup.parse(page(
+    form = GlobalCheckYourAnswersForm.form,
+    completeDetails = details
+  ).body)
 
   object GlobalCheckYourAnswersMessages {
     val heading: String = "Check your answers before signing up"
@@ -456,6 +512,13 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       val key: String = "Compatible software"
       val yes: String = "Yes"
       val no: String = "No"
+    }
+
+    object Form {
+      val heading: String = "Is this information correct?"
+      val yes: String = "Yes, I’m ready to sign up"
+      val no: String = "No, I need to change something"
+      val error: String = "Select ‘Yes’ if you’re ready to sign up"
     }
 
     val continue: String = "Continue"

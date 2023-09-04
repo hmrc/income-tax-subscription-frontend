@@ -23,7 +23,7 @@ import helpers.IntegrationTestModels.{testAccountingMethod, testAccountingYearCu
 import helpers.WiremockHelper.verifyPost
 import helpers._
 import helpers.servicemocks.{AuthStub, ChannelPreferencesStub, TaxEnrolmentsStub}
-import models.DateModel
+import models.{DateModel, No, Yes}
 import models.common.subscription.CreateIncomeSourcesModel
 import models.sps.SPSPayload
 import play.api.http.Status._
@@ -92,8 +92,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
 
-        When("GET /final-check-your-answers is called")
-        val res = IncomeTaxSubscriptionFrontend.submitGlobalCheckYourAnswers()
+        When("POST /final-check-your-answers is called")
+        val res = IncomeTaxSubscriptionFrontend.submitGlobalCheckYourAnswers(None)()
 
         Then("Should redirect to the task list page")
         res must have(
@@ -103,6 +103,77 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
       }
     }
     "there is complete data" should {
+      "return a BAD_REQUEST with page content" when {
+        "the user does not select an option" in {
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+            Property,
+            OK,
+            Json.toJson(testFullPropertyModel.copy(
+              accountingMethod = Some(testUkProperty.accountingMethod),
+              startDate = Some(testUkProperty.tradingStartDate)
+            ))
+          )
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+            OverseasProperty,
+            OK,
+            Json.toJson(testFullOverseasPropertyModel.copy(
+              accountingMethod = Some(testOverseasProperty.accountingMethod),
+              startDate = Some(testOverseasProperty.tradingStartDate)
+            ))
+          )
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
+
+          When("POST /final-check-your-answers is called")
+          val res = IncomeTaxSubscriptionFrontend.submitGlobalCheckYourAnswers(None)()
+
+          val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+
+          Then("Should return bad request with page content")
+          res must have(
+            httpStatus(BAD_REQUEST),
+            errorDisplayed(),
+            pageTitle("Error: " + messages("individual.global-check-your-answers.heading") + serviceNameGovUk)
+          )
+        }
+      }
+      "redirect to the progress saved page" when {
+        "the user selects they are not ready to sign up" in {
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+            Property,
+            OK,
+            Json.toJson(testFullPropertyModel.copy(
+              accountingMethod = Some(testUkProperty.accountingMethod),
+              startDate = Some(testUkProperty.tradingStartDate)
+            ))
+          )
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+            OverseasProperty,
+            OK,
+            Json.toJson(testFullOverseasPropertyModel.copy(
+              accountingMethod = Some(testOverseasProperty.accountingMethod),
+              startDate = Some(testOverseasProperty.tradingStartDate)
+            ))
+          )
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
+
+          When("POST /final-check-your-answers is called")
+          val res = IncomeTaxSubscriptionFrontend.submitGlobalCheckYourAnswers(Some(No))()
+
+          Then("Should redirect to the progress saved page")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(s"$saveAndRetrieveURI?location=global-check-your-answers")
+          )
+        }
+      }
       "sign up and redirect to the confirmation page" when {
         "all calls were successful" in {
           Given("I setup the Wiremock stubs")
@@ -147,9 +218,9 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
 
           ChannelPreferencesStub.stubChannelPreferenceConfirm()
 
-          When("GET /final-check-your-answers is called")
+          When("POST /final-check-your-answers is called")
           val testEntityId: String = "testEntityId"
-          val res = IncomeTaxSubscriptionFrontend.submitGlobalCheckYourAnswers(Map(SPSEntityId -> testEntityId))
+          val res = IncomeTaxSubscriptionFrontend.submitGlobalCheckYourAnswers(Some(Yes))(Map(SPSEntityId -> testEntityId))
 
           Then("Should redirect to the confirmation page")
           res must have(
@@ -187,8 +258,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
 
           MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(INTERNAL_SERVER_ERROR)
 
-          When("GET /final-check-your-answers is called")
-          val res = IncomeTaxSubscriptionFrontend.submitGlobalCheckYourAnswers()
+          When("POST /final-check-your-answers is called")
+          val res = IncomeTaxSubscriptionFrontend.submitGlobalCheckYourAnswers(Some(Yes))()
 
           Then("Should show the internal service error page")
           res must have(
@@ -233,8 +304,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             )
           )(INTERNAL_SERVER_ERROR)
 
-          When("GET /final-check-your-answers is called")
-          val res = IncomeTaxSubscriptionFrontend.submitGlobalCheckYourAnswers()
+          When("POST /final-check-your-answers is called")
+          val res = IncomeTaxSubscriptionFrontend.submitGlobalCheckYourAnswers(Some(Yes))()
 
           Then("Should show the internal service error page")
           res must have(
@@ -281,8 +352,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
 
           TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, INTERNAL_SERVER_ERROR)
 
-          When("GET /final-check-your-answers is called")
-          val res = IncomeTaxSubscriptionFrontend.submitGlobalCheckYourAnswers()
+          When("POST /final-check-your-answers is called")
+          val res = IncomeTaxSubscriptionFrontend.submitGlobalCheckYourAnswers(Some(Yes))()
 
           Then("Show an internal server error")
           res must have(
@@ -330,8 +401,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
           TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
           TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, INTERNAL_SERVER_ERROR)
 
-          When("GET /final-check-your-answers is called")
-          val res = IncomeTaxSubscriptionFrontend.submitGlobalCheckYourAnswers()
+          When("POST /final-check-your-answers is called")
+          val res = IncomeTaxSubscriptionFrontend.submitGlobalCheckYourAnswers(Some(Yes))()
 
           Then("Show an internal server error")
           res must have(

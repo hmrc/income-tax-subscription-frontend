@@ -271,8 +271,12 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
       get("/final-check-your-answers", sessionData)
     }
 
-    def submitGlobalCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse = {
-      post("/final-check-your-answers", sessionData)(Map.empty)
+    def submitGlobalCheckYourAnswers(request: Option[YesNo])(sessionData: Map[String, String] = Map.empty): WSResponse = {
+      post("/final-check-your-answers", sessionData)(
+        request.fold(Map.empty[String, Seq[String]])(
+          model => GlobalCheckYourAnswersForm.form.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        )
+      )
     }
 
     def getTaxYearCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse = {

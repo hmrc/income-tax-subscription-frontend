@@ -1115,3 +1115,7 @@ individual.global-check-your-answers.tax-year.heading                           
 individual.global-check-your-answers.tax-year.label                                             = Tax year
 individual.global-check-your-answers.software.heading                                           = 3. Software for Making Tax Digital for Income Tax
 individual.global-check-your-answers.software.label                                             = Compatible software
+individual.global-check-your-answers.form.heading                                               = Is this information correct?
+individual.global-check-your-answers.form.yes                                                   = Yes, I’m ready to sign up
+individual.global-check-your-answers.form.no                                                    = No, I need to change something
+individual.global-check-your-answers.form.error.empty                                           = Select ‘Yes’ if you’re ready to sign up
