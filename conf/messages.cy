@@ -1117,3 +1117,7 @@ individual.global-check-your-answers.tax-year.heading                           
 individual.global-check-your-answers.tax-year.label                                             = Blwydden treth
 individual.global-check-your-answers.software.heading                                           = 3. Meddalwedd ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 individual.global-check-your-answers.software.label                                             = Meddalwedd sy’n cydweddu
+individual.global-check-your-answers.form.heading                                               = A yw’r wybodaeth hon yn gywir?
+individual.global-check-your-answers.form.yes                                                   = Iawn, rwy’n barod i gofrestru
+individual.global-check-your-answers.form.no                                                    = Na, mae angen i fi newid rhywbeth
+individual.global-check-your-answers.form.error.empty                                           = Dewiswch ‘Iawn’ os ydych yn barod i gofrestru

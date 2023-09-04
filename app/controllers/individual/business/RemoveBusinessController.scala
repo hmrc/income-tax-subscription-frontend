@@ -27,7 +27,6 @@ import play.api.data.Form
 import play.api.mvc._
 import services.{AuditingService, AuthService, RemoveBusinessService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
-import utilities.SubscriptionDataKeys.BusinessesKey
 import views.html.individual.incometax.business.RemoveBusiness
 
 import javax.inject.{Inject, Singleton}
@@ -42,8 +41,8 @@ class RemoveBusinessController @Inject()(val removeBusinessView: RemoveBusiness,
                                          val incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector
                                         )(implicit val ec: ExecutionContext,
                                           val appConfig: AppConfig,
-                                          mcc: MessagesControllerComponents
-                                        ) extends SignUpController with ReferenceRetrieval {
+                                          mcc: MessagesControllerComponents) extends SignUpController with ReferenceRetrieval {
+
   def show(businessId: String): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user => {
       withReference { reference =>
