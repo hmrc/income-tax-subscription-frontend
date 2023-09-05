@@ -183,7 +183,7 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
         ))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.ProgressSavedController.show(location = Some("global-check-your-answers")).url)
+        redirectLocation(result) mustBe Some(routes.TaskListController.show().url)
       }
     }
 

@@ -67,7 +67,7 @@ class GlobalCheckYourAnswersController @Inject()(val auditingService: AuditingSe
         withCompleteDetails(reference) { completeDetails =>
           handleForm(completeDetails)(
             onYes = Redirect(controllers.individual.subscription.routes.ConfirmationController.show),
-            onNo = Redirect(routes.ProgressSavedController.show(location = Some("global-check-your-answers")))
+            onNo = Redirect(routes.TaskListController.show())
           )
         }
       }
