@@ -170,7 +170,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
           Then("Should redirect to the progress saved page")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(s"$saveAndRetrieveURI?location=global-check-your-answers")
+            redirectURI(taskListURI)
           )
         }
       }
