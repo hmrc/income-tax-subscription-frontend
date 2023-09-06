@@ -20,7 +20,6 @@ import connectors.IncomeTaxSubscriptionConnector
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.{PostSubscriptionDetailsSuccessResponse, UnexpectedStatusFailure}
 import connectors.httpparser.RetrieveReferenceHttpParser
 import connectors.httpparser.RetrieveReferenceHttpParser.{Created, Existence, RetrieveReferenceResponse}
-import models.AccountingMethod
 import models.common._
 import models.common.business.{AccountingMethodModel, BusinessNameModel, SelfEmploymentData}
 import models.status.MandationStatusModel

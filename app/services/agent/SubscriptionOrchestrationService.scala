@@ -22,7 +22,7 @@ import connectors.agent.AgentSPSConnector
 import models.ConnectorError
 import models.common.subscription.{CreateIncomeSourcesModel, CreateIncomeSourcesSuccess, SubscriptionSuccess}
 import services.SubscriptionService
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, InternalServerException}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -36,10 +36,10 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
   def createSubscriptionFromTaskList(arn: String,
                                      nino: String,
                                      utr: String,
-                                     createIncomeSourceModel: CreateIncomeSourcesModel)
+                                     createIncomeSourcesModel: CreateIncomeSourcesModel)
                                     (implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {
 
-    signUpAndCreateIncomeSourcesFromTaskList(nino, createIncomeSourceModel) flatMap {
+    signUpAndCreateIncomeSourcesFromTaskList(nino, createIncomeSourcesModel) flatMap {
       case right@Right(subscriptionSuccess) => {
         autoEnrolmentService.autoClaimEnrolment(utr, nino, subscriptionSuccess.mtditId) map {
           case Right(_) =>
@@ -57,8 +57,16 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
   private[services] def signUpAndCreateIncomeSourcesFromTaskList(nino: String, createIncomeSourcesModel: CreateIncomeSourcesModel)
                                                                 (implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {
 
+    val taxYear: String = {
+      createIncomeSourcesModel.ukProperty.map(_.accountingPeriod.toLongTaxYear) orElse
+        createIncomeSourcesModel.overseasProperty.map(_.accountingPeriod.toLongTaxYear) orElse
+        createIncomeSourcesModel.soleTraderBusinesses.map(_.accountingPeriod.toLongTaxYear)
+    }.getOrElse(throw new InternalServerException(
+      "[SubscriptionOrchestrationService][signUpAndCreateIncomeSourcesFromTaskList] - Unable to retrieve any tax year from income sources"
+    ))
+
     val res = for {
-      signUpResponse <- EitherT(subscriptionService.signUpIncomeSources(nino))
+      signUpResponse <- EitherT(subscriptionService.signUpIncomeSources(nino, taxYear))
       mtdbsa = signUpResponse.mtdbsa
       _ <- EitherT[Future, ConnectorError, CreateIncomeSourcesSuccess](subscriptionService.createIncomeSourcesFromTaskList(mtdbsa, createIncomeSourcesModel))
     } yield SubscriptionSuccess(mtdbsa)

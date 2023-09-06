@@ -22,6 +22,7 @@ import org.scalatest.concurrent.ScalaFutures.whenReady
 import play.api.test.Helpers._
 import services.agent.mocks.MockAgentSPSConnector
 import services.mocks.{MockAutoEnrolmentService, MockSubscriptionService}
+import utilities.TestModels.testAccountingPeriodThisYear
 import utilities.agent.TestConstants._
 
 import scala.concurrent.Future
@@ -34,6 +35,8 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with 
     mockAgentSpsConnector
   )
 
+  val testTaxYear: String = testAccountingPeriodThisYear.toLongTaxYear
+
   "createSubscriptionFromTaskList" should {
     def res: Future[Either[ConnectorError, SubscriptionSuccess]] = {
       TestSubscriptionOrchestrationService.createSubscriptionFromTaskList(testARN, testNino, testUtr, testCreateIncomeSourcesThisYear)
@@ -41,7 +44,7 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with 
 
     "return a success" when {
       "all services succeed" in {
-        mockSignUpIncomeSourcesSuccess(testNino)
+        mockSignUpIncomeSourcesSuccess(testNino, testTaxYear)
         mockCreateIncomeSourcesFromTaskListSuccess(testMTDID, testCreateIncomeSourcesThisYear)
         mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(Right(AutoEnrolmentService.EnrolmentAssigned))
         val res = TestSubscriptionOrchestrationService.createSubscriptionFromTaskList(testARN, testNino, testUtr, testCreateIncomeSourcesThisYear)
@@ -53,18 +56,17 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with 
 
     "return a failure" when {
       "sign up income sources request fail and returns an error" in {
-        mockSignUpIncomeSourcesFailure(testNino)
+        mockSignUpIncomeSourcesFailure(testNino, testTaxYear)
 
         whenReady(res)(_ mustBe testSignUpIncomeSourcesFailure)
       }
 
       "create income sources from task list request fail and returns an error" in {
-        mockSignUpIncomeSourcesSuccess(testNino)
+        mockSignUpIncomeSourcesSuccess(testNino, testTaxYear)
         mockCreateIncomeSourcesFromTaskListFailure(testMTDID, testCreateIncomeSourcesThisYear)
 
         whenReady(res)(_ mustBe testCreateSubscriptionFromTaskListFailure)
       }
-
     }
   }
 }

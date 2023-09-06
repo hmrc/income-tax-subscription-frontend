@@ -19,15 +19,16 @@ package controllers.individual.business
 import common.Constants.ITSASessionKeys.SPSEntityId
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, MultipleIncomeSourcesSubscriptionAPIStub}
 import helpers.IntegrationTestConstants._
-import helpers.IntegrationTestModels.{testAccountingMethod, testAccountingYearCurrent, testAccountingYearCurrentConfirmed, testBusinesses, testFullOverseasPropertyModel, testFullPropertyModel, testMTDITEnrolmentKey}
+import helpers.IntegrationTestModels.{testAccountingMethod, testAccountingYearCurrent, testAccountingYearCurrentConfirmed, testAccountingYearNextConfirmed, testBusinesses, testFullOverseasPropertyModel, testFullPropertyModel, testMTDITEnrolmentKey}
 import helpers.WiremockHelper.verifyPost
 import helpers._
 import helpers.servicemocks.{AuthStub, ChannelPreferencesStub, TaxEnrolmentsStub}
-import models.{DateModel, No, Yes}
 import models.common.subscription.CreateIncomeSourcesModel
 import models.sps.SPSPayload
+import models.{DateModel, Next, No, Yes}
 import play.api.http.Status._
 import play.api.libs.json.Json
+import utilities.AccountingPeriodUtil
 import utilities.SubscriptionDataKeys._
 
 class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
@@ -113,16 +114,16 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             Property,
             OK,
             Json.toJson(testFullPropertyModel.copy(
-              accountingMethod = Some(testUkProperty.accountingMethod),
-              startDate = Some(testUkProperty.tradingStartDate)
+              accountingMethod = Some(testUkProperty().accountingMethod),
+              startDate = Some(testUkProperty().tradingStartDate)
             ))
           )
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
             OverseasProperty,
             OK,
             Json.toJson(testFullOverseasPropertyModel.copy(
-              accountingMethod = Some(testOverseasProperty.accountingMethod),
-              startDate = Some(testOverseasProperty.tradingStartDate)
+              accountingMethod = Some(testOverseasProperty().accountingMethod),
+              startDate = Some(testOverseasProperty().tradingStartDate)
             ))
           )
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
@@ -150,16 +151,16 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             Property,
             OK,
             Json.toJson(testFullPropertyModel.copy(
-              accountingMethod = Some(testUkProperty.accountingMethod),
-              startDate = Some(testUkProperty.tradingStartDate)
+              accountingMethod = Some(testUkProperty().accountingMethod),
+              startDate = Some(testUkProperty().tradingStartDate)
             ))
           )
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
             OverseasProperty,
             OK,
             Json.toJson(testFullOverseasPropertyModel.copy(
-              accountingMethod = Some(testOverseasProperty.accountingMethod),
-              startDate = Some(testOverseasProperty.tradingStartDate)
+              accountingMethod = Some(testOverseasProperty().accountingMethod),
+              startDate = Some(testOverseasProperty().tradingStartDate)
             ))
           )
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
@@ -175,61 +176,121 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
         }
       }
       "sign up and redirect to the confirmation page" when {
-        "all calls were successful" in {
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-            Property,
-            OK,
-            Json.toJson(testFullPropertyModel.copy(
-              accountingMethod = Some(testUkProperty.accountingMethod),
-              startDate = Some(testUkProperty.tradingStartDate)
-            ))
-          )
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-            OverseasProperty,
-            OK,
-            Json.toJson(testFullOverseasPropertyModel.copy(
-              accountingMethod = Some(testOverseasProperty.accountingMethod),
-              startDate = Some(testOverseasProperty.tradingStartDate)
-            ))
-          )
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
-
-          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
-          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
-            mtdbsa = testMtdId,
-            request = CreateIncomeSourcesModel(
-              nino = testNino,
-              soleTraderBusinesses = Some(testSoleTraderBusinesses.copy(
-                businesses = testSoleTraderBusinesses.businesses.map(business =>
-                  business.copy(confirmed = true, businessStartDate = business.businessStartDate.map(date => date.copy(startDate = DateModel.dateConvert(date.startDate.toLocalDate))))
-                )
-              )),
-              ukProperty = Some(testUkProperty.copy(tradingStartDate = DateModel.dateConvert(testUkProperty.tradingStartDate.toLocalDate))),
-              overseasProperty = Some(testOverseasProperty.copy(tradingStartDate = DateModel.dateConvert(testOverseasProperty.tradingStartDate.toLocalDate)))
+        "signing up for the current tax year" when {
+          "all calls were successful" in {
+            Given("I setup the Wiremock stubs")
+            AuthStub.stubAuthSuccess()
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+              Property,
+              OK,
+              Json.toJson(testFullPropertyModel.copy(
+                accountingMethod = Some(testUkProperty().accountingMethod),
+                startDate = Some(testUkProperty().tradingStartDate)
+              ))
             )
-          )(NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+              OverseasProperty,
+              OK,
+              Json.toJson(testFullOverseasPropertyModel.copy(
+                accountingMethod = Some(testOverseasProperty().accountingMethod),
+                startDate = Some(testOverseasProperty().tradingStartDate)
+              ))
+            )
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
 
-          TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
-          TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, CREATED)
+            MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear)(OK)
+            MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
+              mtdbsa = testMtdId,
+              request = CreateIncomeSourcesModel(
+                nino = testNino,
+                soleTraderBusinesses = Some(testSoleTraderBusinesses().copy(
+                  businesses = testSoleTraderBusinesses().businesses.map(business =>
+                    business.copy(confirmed = true, businessStartDate = business.businessStartDate.map(date => date.copy(startDate = DateModel.dateConvert(date.startDate.toLocalDate))))
+                  )
+                )),
+                ukProperty = Some(testUkProperty().copy(tradingStartDate = DateModel.dateConvert(testUkProperty().tradingStartDate.toLocalDate))),
+                overseasProperty = Some(testOverseasProperty().copy(tradingStartDate = DateModel.dateConvert(testOverseasProperty().tradingStartDate.toLocalDate)))
+              )
+            )(NO_CONTENT)
 
-          ChannelPreferencesStub.stubChannelPreferenceConfirm()
+            TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
+            TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, CREATED)
 
-          When("POST /final-check-your-answers is called")
-          val testEntityId: String = "testEntityId"
-          val res = IncomeTaxSubscriptionFrontend.submitGlobalCheckYourAnswers(Some(Yes))(Map(SPSEntityId -> testEntityId))
+            ChannelPreferencesStub.stubChannelPreferenceConfirm()
 
-          Then("Should redirect to the confirmation page")
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(confirmationURI)
-          )
+            When("POST /final-check-your-answers is called")
+            val testEntityId: String = "testEntityId"
+            val res = IncomeTaxSubscriptionFrontend.submitGlobalCheckYourAnswers(Some(Yes))(Map(SPSEntityId -> testEntityId))
 
-          val expectedSPSBody: SPSPayload = SPSPayload(testEntityId, s"HMRC-MTD-IT~MTDITID~$testMtdId")
-          verifyPost("/channel-preferences/confirm", Some(Json.toJson(expectedSPSBody).toString), Some(1))
+            Then("Should redirect to the confirmation page")
+            res must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(confirmationURI)
+            )
+
+            val expectedSPSBody: SPSPayload = SPSPayload(testEntityId, s"HMRC-MTD-IT~MTDITID~$testMtdId")
+            verifyPost("/channel-preferences/confirm", Some(Json.toJson(expectedSPSBody).toString), Some(1))
+          }
+        }
+        "signing up for the next tax year" when {
+          "all calls were successful" in {
+            Given("I setup the Wiremock stubs")
+            AuthStub.stubAuthSuccess()
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+              Property,
+              OK,
+              Json.toJson(testFullPropertyModel.copy(
+                accountingMethod = Some(testUkProperty(Next).accountingMethod),
+                startDate = Some(testUkProperty(Next).tradingStartDate)
+              ))
+            )
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+              OverseasProperty,
+              OK,
+              Json.toJson(testFullOverseasPropertyModel.copy(
+                accountingMethod = Some(testOverseasProperty(Next).accountingMethod),
+                startDate = Some(testOverseasProperty(Next).tradingStartDate)
+              ))
+            )
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearNextConfirmed))
+
+            MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getNextTaxYear.toLongTaxYear)(OK)
+            MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
+              mtdbsa = testMtdId,
+              request = CreateIncomeSourcesModel(
+                nino = testNino,
+                soleTraderBusinesses = Some(testSoleTraderBusinesses(Next).copy(
+                  businesses = testSoleTraderBusinesses(Next).businesses.map(business =>
+                    business.copy(confirmed = true, businessStartDate = business.businessStartDate.map(date => date.copy(startDate = DateModel.dateConvert(date.startDate.toLocalDate))))
+                  )
+                )),
+                ukProperty = Some(testUkProperty(Next).copy(tradingStartDate = DateModel.dateConvert(testUkProperty(Next).tradingStartDate.toLocalDate))),
+                overseasProperty = Some(testOverseasProperty(Next).copy(tradingStartDate = DateModel.dateConvert(testOverseasProperty(Next).tradingStartDate.toLocalDate)))
+              )
+            )(NO_CONTENT)
+
+            TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
+            TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, CREATED)
+
+            ChannelPreferencesStub.stubChannelPreferenceConfirm()
+
+            When("POST /final-check-your-answers is called")
+            val testEntityId: String = "testEntityId"
+            val res = IncomeTaxSubscriptionFrontend.submitGlobalCheckYourAnswers(Some(Yes))(Map(SPSEntityId -> testEntityId))
+
+            Then("Should redirect to the confirmation page")
+            res must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(confirmationURI)
+            )
+
+            val expectedSPSBody: SPSPayload = SPSPayload(testEntityId, s"HMRC-MTD-IT~MTDITID~$testMtdId")
+            verifyPost("/channel-preferences/confirm", Some(Json.toJson(expectedSPSBody).toString), Some(1))
+          }
         }
       }
       "return INTERNAL SERVER ERROR" when {
@@ -242,21 +303,21 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             Property,
             OK,
             Json.toJson(testFullPropertyModel.copy(
-              accountingMethod = Some(testUkProperty.accountingMethod),
-              startDate = Some(testUkProperty.tradingStartDate)
+              accountingMethod = Some(testUkProperty().accountingMethod),
+              startDate = Some(testUkProperty().tradingStartDate)
             ))
           )
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
             OverseasProperty,
             OK,
             Json.toJson(testFullOverseasPropertyModel.copy(
-              accountingMethod = Some(testOverseasProperty.accountingMethod),
-              startDate = Some(testOverseasProperty.tradingStartDate)
+              accountingMethod = Some(testOverseasProperty().accountingMethod),
+              startDate = Some(testOverseasProperty().tradingStartDate)
             ))
           )
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
 
-          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(INTERNAL_SERVER_ERROR)
+          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear)(INTERNAL_SERVER_ERROR)
 
           When("POST /final-check-your-answers is called")
           val res = IncomeTaxSubscriptionFrontend.submitGlobalCheckYourAnswers(Some(Yes))()
@@ -275,32 +336,32 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             Property,
             OK,
             Json.toJson(testFullPropertyModel.copy(
-              accountingMethod = Some(testUkProperty.accountingMethod),
-              startDate = Some(testUkProperty.tradingStartDate)
+              accountingMethod = Some(testUkProperty().accountingMethod),
+              startDate = Some(testUkProperty().tradingStartDate)
             ))
           )
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
             OverseasProperty,
             OK,
             Json.toJson(testFullOverseasPropertyModel.copy(
-              accountingMethod = Some(testOverseasProperty.accountingMethod),
-              startDate = Some(testOverseasProperty.tradingStartDate)
+              accountingMethod = Some(testOverseasProperty().accountingMethod),
+              startDate = Some(testOverseasProperty().tradingStartDate)
             ))
           )
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
 
-          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
+          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear)(OK)
           MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
             mtdbsa = testMtdId,
             request = CreateIncomeSourcesModel(
               nino = testNino,
-              soleTraderBusinesses = Some(testSoleTraderBusinesses.copy(
-                businesses = testSoleTraderBusinesses.businesses.map(business =>
+              soleTraderBusinesses = Some(testSoleTraderBusinesses().copy(
+                businesses = testSoleTraderBusinesses().businesses.map(business =>
                   business.copy(confirmed = true, businessStartDate = business.businessStartDate.map(date => date.copy(startDate = DateModel.dateConvert(date.startDate.toLocalDate))))
                 )
               )),
-              ukProperty = Some(testUkProperty.copy(tradingStartDate = DateModel.dateConvert(testUkProperty.tradingStartDate.toLocalDate))),
-              overseasProperty = Some(testOverseasProperty.copy(tradingStartDate = DateModel.dateConvert(testOverseasProperty.tradingStartDate.toLocalDate)))
+              ukProperty = Some(testUkProperty().copy(tradingStartDate = DateModel.dateConvert(testUkProperty().tradingStartDate.toLocalDate))),
+              overseasProperty = Some(testOverseasProperty().copy(tradingStartDate = DateModel.dateConvert(testOverseasProperty().tradingStartDate.toLocalDate)))
             )
           )(INTERNAL_SERVER_ERROR)
 
@@ -321,32 +382,32 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             Property,
             OK,
             Json.toJson(testFullPropertyModel.copy(
-              accountingMethod = Some(testUkProperty.accountingMethod),
-              startDate = Some(testUkProperty.tradingStartDate)
+              accountingMethod = Some(testUkProperty().accountingMethod),
+              startDate = Some(testUkProperty().tradingStartDate)
             ))
           )
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
             OverseasProperty,
             OK,
             Json.toJson(testFullOverseasPropertyModel.copy(
-              accountingMethod = Some(testOverseasProperty.accountingMethod),
-              startDate = Some(testOverseasProperty.tradingStartDate)
+              accountingMethod = Some(testOverseasProperty().accountingMethod),
+              startDate = Some(testOverseasProperty().tradingStartDate)
             ))
           )
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
 
-          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
+          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear)(OK)
           MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
             mtdbsa = testMtdId,
             request = CreateIncomeSourcesModel(
               nino = testNino,
-              soleTraderBusinesses = Some(testSoleTraderBusinesses.copy(
-                businesses = testSoleTraderBusinesses.businesses.map(business =>
+              soleTraderBusinesses = Some(testSoleTraderBusinesses().copy(
+                businesses = testSoleTraderBusinesses().businesses.map(business =>
                   business.copy(confirmed = true, businessStartDate = business.businessStartDate.map(date => date.copy(startDate = DateModel.dateConvert(date.startDate.toLocalDate))))
                 )
               )),
-              ukProperty = Some(testUkProperty.copy(tradingStartDate = DateModel.dateConvert(testUkProperty.tradingStartDate.toLocalDate))),
-              overseasProperty = Some(testOverseasProperty.copy(tradingStartDate = DateModel.dateConvert(testOverseasProperty.tradingStartDate.toLocalDate)))
+              ukProperty = Some(testUkProperty().copy(tradingStartDate = DateModel.dateConvert(testUkProperty().tradingStartDate.toLocalDate))),
+              overseasProperty = Some(testOverseasProperty().copy(tradingStartDate = DateModel.dateConvert(testOverseasProperty().tradingStartDate.toLocalDate)))
             )
           )(NO_CONTENT)
 
@@ -369,32 +430,32 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             Property,
             OK,
             Json.toJson(testFullPropertyModel.copy(
-              accountingMethod = Some(testUkProperty.accountingMethod),
-              startDate = Some(testUkProperty.tradingStartDate)
+              accountingMethod = Some(testUkProperty().accountingMethod),
+              startDate = Some(testUkProperty().tradingStartDate)
             ))
           )
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
             OverseasProperty,
             OK,
             Json.toJson(testFullOverseasPropertyModel.copy(
-              accountingMethod = Some(testOverseasProperty.accountingMethod),
-              startDate = Some(testOverseasProperty.tradingStartDate)
+              accountingMethod = Some(testOverseasProperty().accountingMethod),
+              startDate = Some(testOverseasProperty().tradingStartDate)
             ))
           )
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
 
-          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino)(OK)
+          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear)(OK)
           MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
             mtdbsa = testMtdId,
             request = CreateIncomeSourcesModel(
               nino = testNino,
-              soleTraderBusinesses = Some(testSoleTraderBusinesses.copy(
-                businesses = testSoleTraderBusinesses.businesses.map(business =>
+              soleTraderBusinesses = Some(testSoleTraderBusinesses().copy(
+                businesses = testSoleTraderBusinesses().businesses.map(business =>
                   business.copy(confirmed = true, businessStartDate = business.businessStartDate.map(date => date.copy(startDate = DateModel.dateConvert(date.startDate.toLocalDate))))
                 )
               )),
-              ukProperty = Some(testUkProperty.copy(tradingStartDate = DateModel.dateConvert(testUkProperty.tradingStartDate.toLocalDate))),
-              overseasProperty = Some(testOverseasProperty.copy(tradingStartDate = DateModel.dateConvert(testOverseasProperty.tradingStartDate.toLocalDate)))
+              ukProperty = Some(testUkProperty().copy(tradingStartDate = DateModel.dateConvert(testUkProperty().tradingStartDate.toLocalDate))),
+              overseasProperty = Some(testOverseasProperty().copy(tradingStartDate = DateModel.dateConvert(testOverseasProperty().tradingStartDate.toLocalDate)))
             )
           )(NO_CONTENT)
 
