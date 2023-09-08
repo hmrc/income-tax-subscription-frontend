@@ -968,7 +968,7 @@ agent.business.progress-saved.content.summary                         = We will 
 agent.business.progress-saved.content.subheading                      = What happens next
 agent.business.progress-saved.content.paragraph1                      = You can:
 agent.business.progress-saved.content.paragraph2                      = If you sign out, you will need to come back to your {0} to continue. We suggest you bookmark this to make it easier to find when you return.
-agent.business.progress-saved.content.sign-up-link                    = return to sign up your client’s business for Making Tax Digital for Income Tax
+agent.business.progress-saved.content.sign-up-link                    = continue signing up for Making Tax Digital for Income Tax
 agent.business.progress-saved.content.sign-out-link                   = sign out and come back later
 agent.business.progress-saved.content.sign-in-link                    = Government Gateway login
 
@@ -1057,7 +1057,7 @@ business.progress-saved.content.subheading                      = What happens n
 business.progress-saved.content.paragraph1                      = You can:
 business.progress-saved.content.paragraph2.part1                = If you sign out, you will need to come back to your
 business.progress-saved.content.paragraph2.part2                = to continue. We suggest you bookmark this to make it easier to find when you return.
-business.progress-saved.content.sign-up-link                    = return to sign up your business for Making Tax Digital for Income Tax
+business.progress-saved.content.sign-up-link                    = continue signing up for Making Tax Digital for Income Tax
 business.progress-saved.content.sign-out-link                   = sign out and come back later
 business.progress-saved.content.sign-in-link                    = Government Gateway login
 

@@ -968,7 +968,7 @@ agent.business.progress-saved.content.summary                         = Byddwn y
 agent.business.progress-saved.content.subheading                      = Yr hyn sy’n digwydd nesaf
 agent.business.progress-saved.content.paragraph1                      = Gallwch wneud y canlynol:
 agent.business.progress-saved.content.paragraph2                      = Os byddwch yn allgofnodi, bydd angen i chi ddod yn ôl at i’ch manylion {0} i barhau. Rydym yn awgrymu eich bod yn nodi’r dudalen hon i’w gwneud yn haws dod o hyd iddi pan fyddwch yn dod yn ôl.
-agent.business.progress-saved.content.sign-up-link                    = dychwelyd i gofrestru busnes eich cleient ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+agent.business.progress-saved.content.sign-up-link                    = parhau i gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 agent.business.progress-saved.content.sign-out-link                   = allgofnodi a dod yn ôl yn nes ymlaen
 agent.business.progress-saved.content.sign-in-link                    = mewngofnodi Porth y Llywodraeth
 
@@ -1058,7 +1058,7 @@ business.progress-saved.content.subheading                      = Yr hyn sy’n 
 business.progress-saved.content.paragraph1                      = Gallwch wneud y canlynol:
 business.progress-saved.content.paragraph2.part1                = Os byddwch yn allgofnodi, bydd angen i chi ddod yn ôl i’ch
 business.progress-saved.content.paragraph2.part2                = i barhau. Rydym yn awgrymu eich bod yn rhoi nod tudalen yma i’w gwneud yn haws dod o hyd i’r dudalen pan fyddwch yn dod yn ôl.
-business.progress-saved.content.sign-up-link                    = dychwelyd i gofrestru’ch busnes ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+business.progress-saved.content.sign-up-link                    = parhau i gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 business.progress-saved.content.sign-out-link                   = allgofnodi a dod yn ôl yn nes ymlaen
 business.progress-saved.content.sign-in-link                    = manylion mewngofnodi Porth y Llywodraeth
 
