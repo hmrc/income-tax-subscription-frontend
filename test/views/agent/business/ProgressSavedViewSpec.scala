@@ -32,7 +32,7 @@ class ProgressSavedViewSpec extends ViewSpec {
 
     val subheading = "What happens next"
     val paragraph1 = "You can:"
-    val bullet1 = "return to sign up your client’s business for Making Tax Digital for Income Tax"
+    val bullet1 = "continue signing up for Making Tax Digital for Income Tax"
     val bullet2 = "sign out and come back later"
     val paragraph2 = "If you sign out, you will need to come back to your Government Gateway login to continue. We suggest you bookmark this to make it easier to find when you return."
   }
