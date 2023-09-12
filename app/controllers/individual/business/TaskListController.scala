@@ -23,7 +23,7 @@ import config.AppConfig
 import connectors.IncomeTaxSubscriptionConnector
 import controllers.utils.ReferenceRetrieval
 import models.common.TaskListModel
-import models.common.business.{AccountingMethodModel, SelfEmploymentData}
+import models.common.business.AccountingMethodModel
 import models.common.subscription.CreateIncomeSourcesModel
 import models.common.subscription.CreateIncomeSourcesModel.createIncomeSources
 import play.api.Logging
@@ -31,7 +31,6 @@ import play.api.mvc._
 import services._
 import services.individual.SubscriptionOrchestrationService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
-import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import views.html.individual.incometax.business.TaskList
 
 import javax.inject.{Inject, Singleton}
@@ -74,13 +73,15 @@ class TaskListController @Inject()(val taskListView: TaskList,
       property <- subscriptionDetailsService.fetchProperty(reference)
       overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
       selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
+      incomeSourcesConfirmed <- subscriptionDetailsService.fetchIncomeSourcesConfirmation(reference)
     } yield {
       TaskListModel(
         selectedTaxYear,
         businesses,
         businessAccountingMethod,
         property,
-        overseasProperty
+        overseasProperty,
+        incomeSourcesConfirmed
       )
     }
   }

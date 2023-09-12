@@ -46,343 +46,195 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
   private val confirmedEditableYearNext = Some(AccountingYearModel(Next, confirmed = true))
   private val unconfirmedEditableYearNext = Some(AccountingYearModel(Next))
 
-  "Task List Model" should {
+  val fullCompleteTaskListModel: TaskListModel = TaskListModel(
+    taxYearSelection = confirmedEditableYearNext,
+    selfEmployments = Seq(completeSeModel),
+    selfEmploymentAccountingMethod = Some(Cash),
+    ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
+    overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(1), Some(date), confirmed = true)),
+    incomeSourcesConfirmed = Some(true)
+  )
 
-    "provided income summary data with a uk property, ukPropertyComplete returns true" in {
+  val emptyTaskListModel: TaskListModel = TaskListModel(
+    taxYearSelection = None,
+    selfEmployments = Seq.empty,
+    selfEmploymentAccountingMethod = None,
+    ukProperty = None,
+    overseasProperty = None,
+    incomeSourcesConfirmed = None
+  )
 
-      val summary = TaskListModel(
-        taxYearSelection = confirmedEditableYearNext,
-        selfEmployments = Seq(completeSeModel),
-        selfEmploymentAccountingMethod = None,
-        ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
-        overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(1), Some(date), confirmed = true))
-      )
-
-      summary.ukPropertyComplete shouldBe true
-    }
-
-    "provided income summary data without a uk property, ukPropertyComplete returns false" in {
-
-      val summary = TaskListModel(
-        taxYearSelection = confirmedEditableYearNext,
-        selfEmployments = Seq(completeSeModel),
-        selfEmploymentAccountingMethod = None,
-        ukProperty = Some(PropertyModel(None, Some(1), Some(DateModel("1", "2", "1980")))),
-        overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(1), Some(date), confirmed = true))
-      )
-
-      summary.ukPropertyComplete shouldBe false
-    }
-
-    "provided income summary data with a completed self-employment, selfEmploymentsComplete returns true" in {
-
-      val summary = TaskListModel(
-        taxYearSelection = confirmedEditableYearNext,
-        selfEmployments = Seq(completeSeModel),
-        selfEmploymentAccountingMethod = Some(Cash),
-        ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
-        overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(1), Some(date), confirmed = true))
-      )
-
-      summary.selfEmploymentsComplete shouldBe true
-    }
-
-    "provided income summary data with an incomplete self-employment, selfEmploymentsComplete returns false" in {
-
-      val summary = TaskListModel(
-        taxYearSelection = confirmedEditableYearNext,
-        selfEmployments = Seq(incompleteSeModel),
-        selfEmploymentAccountingMethod = Some(Cash),
-        ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
-        overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(1), Some(date), confirmed = true))
-      )
-
-      summary.selfEmploymentsComplete shouldBe false
-    }
-
-    "provided income summary data with an incomplete self-employment accounting method, selfEmploymentsComplete returns false" in {
-
-      val summary = TaskListModel(
-        taxYearSelection = confirmedEditableYearNext,
-        selfEmployments = Seq(completeSeModel),
-        selfEmploymentAccountingMethod = None,
-        ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
-        overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(1), Some(date), confirmed = true))
-      )
-
-      summary.selfEmploymentsComplete shouldBe false
-    }
-
-
-    "provided income summary data with a foreign property, overseasPropertyComplete returns true" in {
-
-      val summary = TaskListModel(
-        taxYearSelection = confirmedEditableYearNext,
-        selfEmployments = Seq(completeSeModel),
-        selfEmploymentAccountingMethod = None,
-        ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
-        overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(1), Some(date), confirmed = true))
-      )
-
-      summary.overseasPropertyComplete shouldBe true
-    }
-
-    "provided income summary data without a foreign property, overseasPropertyComplete returns false" in {
-
-      val summary = TaskListModel(
-        taxYearSelection = confirmedEditableYearNext,
-        selfEmployments = Seq(completeSeModel),
-        selfEmploymentAccountingMethod = None,
-        ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
-        overseasProperty = Some(OverseasPropertyModel(Some(Cash)))
-      )
-
-      summary.overseasPropertyComplete shouldBe false
-    }
-
-    "provided income summary data with a foreign property, ukProperty and a complete self employment, sectionsTotal returns 4" in {
-
-      val summary = TaskListModel(
-        taxYearSelection = confirmedEditableYearNext,
-        selfEmployments = Seq(completeSeModel),
-        selfEmploymentAccountingMethod = Some(Cash),
-        ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
-        overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(1), Some(date), confirmed = true))
-      )
-
-      summary.sectionsTotal shouldBe 4
-    }
-
-    "provided income summary data with a foreign property, ukProperty and an incomplete self employment, sectionsCompleted returns 3" in {
-
-      val summary = TaskListModel(
-        taxYearSelection = confirmedEditableYearNext,
-        selfEmployments = Seq(incompleteSeModel),
-        selfEmploymentAccountingMethod = None,
-        ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
-        overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(1), Some(date), confirmed = true))
-      )
-
-      summary.sectionsComplete shouldBe 3
-    }
-
-    "provided income summary data with a foreign property, ukProperty and a complete self employment, taskListComplete returns true" in {
-
-      val summary = TaskListModel(
-        taxYearSelection = confirmedEditableYearNext,
-        selfEmployments = Seq(completeSeModel),
-        selfEmploymentAccountingMethod = Some(Cash),
-        ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
-        overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(1), Some(date), confirmed = true))
-      )
-
-      summary.taskListComplete shouldBe true
-    }
-
-    "taskListComplete returns false" when {
-      "income summary data with an unfinished foreign property, a complete ukProperty and a complete self employment" in {
-        val summary = TaskListModel(
-          taxYearSelection = confirmedEditableYearNext,
-          selfEmployments = Seq(completeSeModel),
-          selfEmploymentAccountingMethod = Some(Cash),
-          ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
-          overseasProperty = Some(OverseasPropertyModel(None, Some(1), Some(date)))
-        )
-
-        summary.taskListComplete shouldBe false
+  "TaskListModel.ukPropertyComplete" should {
+    "return true" when {
+      "provided an income summary data with a confirmed uk property" in {
+        fullCompleteTaskListModel
+          .ukPropertyComplete shouldBe true
       }
     }
-
-    "taskListComplete returns false" when {
-      "income summary data with a complete foreign property, an unfinished ukProperty and a complete self employment" in {
-        val summary = TaskListModel(
-          taxYearSelection = unconfirmedEditableYearNext,
-          selfEmployments = Seq(completeSeModel),
-          selfEmploymentAccountingMethod = Some(Cash),
-          ukProperty = Some(PropertyModel(None, Some(1), Some(DateModel("1", "2", "1980")))),
-          overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(1), Some(date), confirmed = true))
-        )
-
-        summary.taskListComplete shouldBe false
+    "return false" when {
+      "provided an income summary data with an unconfirmed uk property" in {
+        fullCompleteTaskListModel.copy(ukProperty = fullCompleteTaskListModel.ukProperty.map(_.copy(confirmed = false)))
+          .ukPropertyComplete shouldBe false
+      }
+      "provided an income summary without a uk property" in {
+        fullCompleteTaskListModel.copy(ukProperty = None)
+          .ukPropertyComplete shouldBe false
       }
     }
+  }
 
-    "taskListComplete returns false" when {
-      "income summary data with a complete foreign property, a complete ukProperty and an incomplete self employment" in {
-
-        val summary = TaskListModel(
-          taxYearSelection = confirmedEditableYearNext,
-          selfEmployments = Seq(incompleteSeModel),
-          selfEmploymentAccountingMethod = None,
-          ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
-          overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(1), Some(date), confirmed = true))
-        )
-
-        summary.taskListComplete shouldBe false
+  "TaskListModel.overseasPropertyComplete" should {
+    "return true" when {
+      "provided an income summary data with a confirmed uk property" in {
+        fullCompleteTaskListModel
+          .overseasPropertyComplete shouldBe true
       }
     }
-
-    val maxSelfEmployments = 50
-    "canAddMoreBusinesses returns true" when {
-      "provided income summary data with a foreign property, ukProperty and with less than 50 complete self employment summaries, " in {
-        val summary = TaskListModel(
-          taxYearSelection = confirmedEditableYearNext,
-          selfEmployments = (1 to 30).map { _ =>
-            SelfEmploymentData(
-              id = "",
-              businessStartDate = Some(BusinessStartDate(date)),
-              businessName = Some(BusinessNameModel("Fake Name")),
-              businessTradeName = Some(BusinessTradeNameModel("Trade")),
-              businessAddress = Some(BusinessAddressModel(Address(Seq("line1"), Some("Postcode"))))
-            )
-          },
-          selfEmploymentAccountingMethod = Some(Cash),
-          ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
-          overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(1), Some(date), confirmed = true))
-        )
-
-        summary.canAddMoreBusinesses(maxSelfEmployments = maxSelfEmployments) shouldBe true
+    "return false" when {
+      "provided an income summary data with an unconfirmed uk property" in {
+        fullCompleteTaskListModel.copy(overseasProperty = fullCompleteTaskListModel.overseasProperty.map(_.copy(confirmed = false)))
+          .overseasPropertyComplete shouldBe false
+      }
+      "provided an income summary without a uk property" in {
+        fullCompleteTaskListModel.copy(overseasProperty = None)
+          .overseasPropertyComplete shouldBe false
       }
     }
+  }
 
-    "provided income summary data with a foreign property and with 50 complete self employment summaries, canAddMoreBusinesses returns true" in {
-
-      val summary = TaskListModel(
-        taxYearSelection = confirmedEditableYearNext,
-        selfEmployments = (1 to maxSelfEmployments).map { _ =>
-          SelfEmploymentData(
-            id = "",
-            businessStartDate = Some(BusinessStartDate(date)),
-            businessName = Some(BusinessNameModel("Fake Name")),
-            businessTradeName = Some(BusinessTradeNameModel("Trade")),
-            businessAddress = Some(BusinessAddressModel(Address(Seq("line1"), Some("Postcode"))))
-          )
-        },
-        selfEmploymentAccountingMethod = Some(Cash),
-        ukProperty = None,
-        overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(1), Some(date), confirmed = true))
-      )
-
-      summary.canAddMoreBusinesses(maxSelfEmployments = maxSelfEmployments) shouldBe true
-
-    }
-
-    "provided income summary data with a ukProperty and with 50 complete self employment summaries, canAddMoreBusinesses returns true" in {
-
-      val summary = TaskListModel(
-        taxYearSelection = confirmedEditableYearNext,
-        selfEmployments = (1 to maxSelfEmployments).map { _ =>
-          SelfEmploymentData(
-            id = "",
-            businessStartDate = Some(BusinessStartDate(date)),
-            businessName = Some(BusinessNameModel("Fake Name")),
-            businessTradeName = Some(BusinessTradeNameModel("Trade")),
-            businessAddress = Some(BusinessAddressModel(Address(Seq("line1"), Some("Postcode"))))
-          )
-        },
-        selfEmploymentAccountingMethod = Some(Cash),
-
-        ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")))),
-        overseasProperty = None
-      )
-
-      summary.canAddMoreBusinesses(maxSelfEmployments = maxSelfEmployments) shouldBe true
-
-    }
-
-    "provided income summary data with a foreign property, ukProperty and with 50 complete self employment summaries, canAddMoreBusinesses returns false" in {
-
-      val summary = TaskListModel(
-        taxYearSelection = confirmedEditableYearNext,
-        selfEmployments = (1 to maxSelfEmployments).map { _ =>
-          SelfEmploymentData(
-            id = "",
-            businessStartDate = Some(BusinessStartDate(date)),
-            businessName = Some(BusinessNameModel("Fake Name")),
-            businessTradeName = Some(BusinessTradeNameModel("Trade")),
-            businessAddress = Some(BusinessAddressModel(Address(Seq("line1"), Some("Postcode"))))
-          )
-        },
-        selfEmploymentAccountingMethod = Some(Cash),
-        ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
-        overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(1), Some(date), confirmed = true))
-      )
-
-      summary.canAddMoreBusinesses(maxSelfEmployments = maxSelfEmployments) shouldBe false
-
-    }
-
-    "provided income summary data with a foreign property, ukProperty and a complete self employment," +
-      "sectionsTotal returns 4, sectionsComplete returns 3, canAddMoreBusinesses returns true" +
-      "taskListComplete returns true, and taxYearSelectedAndConfirmed return true" when {
-      "tax year selected and has confirmed on tax year CYA page" in {
-
-
-        val summary = TaskListModel(
-          taxYearSelection = confirmedEditableYearNext,
-          selfEmployments = Seq(completeSeModel),
-          selfEmploymentAccountingMethod = Some(Cash),
-          ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
-          overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(1), Some(date), confirmed = true))
-        )
-
-        summary.sectionsTotal shouldBe 4
-        summary.sectionsComplete shouldBe 4
-        summary.canAddMoreBusinesses(maxSelfEmployments = maxSelfEmployments) shouldBe true
-        summary.taskListComplete shouldBe true
-        summary.taxYearSelectedAndConfirmed shouldBe true
-
+  "TaskListModel.selfEmploymentsComplete" should {
+    "return true" when {
+      "there is a single confirmed self employment income source and accounting method" in {
+        fullCompleteTaskListModel
+          .selfEmploymentsComplete shouldBe true
+      }
+      "there are multiple confirmed self employment income sources and accounting method" in {
+        fullCompleteTaskListModel.copy(selfEmployments = Seq(completeSeModel, completeSeModel))
+          .selfEmploymentsComplete shouldBe true
       }
     }
-
-    "provided income summary data with a foreign property, ukProperty and a complete self employment," +
-      "sectionsTotal returns 4, sectionsComplete returns 3, canAddMoreBusinesses returns true" +
-      "taskListComplete returns false, and taxYearSelectedNotConfirmed return true" when {
-      "tax year selected but has not confirmed on tax year CYA page" in {
-
-
-        val summary = TaskListModel(
-          taxYearSelection = unconfirmedEditableYearNext,
-          selfEmployments = Seq(completeSeModel),
-          selfEmploymentAccountingMethod = Some(Cash),
-          ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
-          overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(1), Some(date), confirmed = true))
-        )
-
-        summary.sectionsTotal shouldBe 4
-        summary.sectionsComplete shouldBe 3
-        summary.canAddMoreBusinesses(maxSelfEmployments = maxSelfEmployments) shouldBe true
-        summary.taskListComplete shouldBe false
-        summary.taxYearSelectedNotConfirmed shouldBe true
-
+    "return false" when {
+      "there are no self employment income sources" in {
+        fullCompleteTaskListModel.copy(selfEmployments = Seq.empty)
+          .selfEmploymentsComplete shouldBe false
+      }
+      "there is a single unconfirmed self employment income source" in {
+        fullCompleteTaskListModel.copy(selfEmployments = Seq(incompleteSeModel))
+          .selfEmploymentsComplete shouldBe false
+      }
+      "there are a mixture of confirmed and unconfirmed self employment income sources" in {
+        fullCompleteTaskListModel.copy(selfEmployments = Seq(completeSeModel, incompleteSeModel))
+          .selfEmploymentsComplete shouldBe false
       }
     }
+  }
 
-    "provided income summary data with a foreign property, ukProperty and a complete self employment," +
-      "sectionsTotal returns 4, sectionsComplete returns 3, canAddMoreBusinesses returns true" +
-      "taskListComplete returns false, and taxYearSelectedAndConfirmed and taxYearSelectedAndConfirmed both return false" when {
-      "tax year has not been selected" in {
+  "TaskListModel.sectionsTotal" when {
+    "the task list redesign flag is false" should {
+      "return 3" when {
+        "there are no details" in {
+          emptyTaskListModel.sectionsTotal() shouldBe 3
+        }
+      }
+      "return 3 plus the number of income sources added" when {
+        "there are multiple income sources added" in {
+          fullCompleteTaskListModel
+            .sectionsComplete() shouldBe 5 // 1: information about you + 1: tax year selection + 3: each income source
+        }
+      }
 
-
-        val summary = TaskListModel(
-          taxYearSelection = None,
-          selfEmployments = Seq(completeSeModel),
-          selfEmploymentAccountingMethod = Some(Cash),
-
-          ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
-          overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(1), Some(date), confirmed = true))
-        )
-
-        summary.sectionsTotal shouldBe 4
-        summary.sectionsComplete shouldBe 3
-        summary.canAddMoreBusinesses(maxSelfEmployments = maxSelfEmployments) shouldBe true
-        summary.taskListComplete shouldBe false
-        summary.taxYearSelectedNotConfirmed shouldBe false
-        summary.taxYearSelectedAndConfirmed shouldBe false
-
+    }
+    "the task list redesign flag is true" should {
+      "return 3" in {
+        fullCompleteTaskListModel
+          .sectionsTotal(true) shouldBe 3
       }
     }
+  }
 
+  "TaskListModel.sectionsComplete" when {
+    "the task list redesign flag is false" should {
+      "have the correct total" when {
+        "there are no income sources confirmed and no tax year confirmed" in {
+          emptyTaskListModel
+            .sectionsComplete() shouldBe 1
+        }
+        "there are only unconfirmed income sources and tax year" in {
+          fullCompleteTaskListModel.copy(
+            taxYearSelection = unconfirmedEditableYearNext,
+            selfEmployments = Seq(incompleteSeModel), selfEmploymentAccountingMethod = None,
+            ukProperty = fullCompleteTaskListModel.ukProperty.map(_.copy(confirmed = false)),
+            overseasProperty = fullCompleteTaskListModel.overseasProperty.map(_.copy(confirmed = false))
+          ).sectionsComplete() shouldBe 1
+        }
+        "there are multiple self employment income sources confirmed" in {
+          fullCompleteTaskListModel.copy(
+            selfEmployments = Seq(completeSeModel, completeSeModel),
+            ukProperty = None,
+            overseasProperty = None
+          ).sectionsComplete() shouldBe 4
+        }
+        "there are multiple confirmed income sources and tax year selection" in {
+          fullCompleteTaskListModel
+            .sectionsComplete() shouldBe 5
+        }
+      }
+    }
+    "the task list redesign flag is true" should {
+      "have the correct total" when {
+        "the income sources section is not complete and the tax year is not selected" in {
+          fullCompleteTaskListModel.copy(incomeSourcesConfirmed = None, taxYearSelection = None)
+            .sectionsComplete(true) shouldBe 1
+        }
+        "the income sources section is complete and the tax year is not selected" in {
+          fullCompleteTaskListModel.copy(taxYearSelection = None)
+            .sectionsComplete(true) shouldBe 2
+        }
+        "the income sources section is complete and the tax year is confirmed" in {
+          fullCompleteTaskListModel
+            .sectionsComplete(true) shouldBe 3
+        }
+      }
+    }
+  }
+
+  "TaskListModel.taskListComplete" when {
+    "the task list redesign flag is true" should {
+      "return true" when {
+        "a tax year is selected and the income sources are complete" in {
+          fullCompleteTaskListModel
+            .taskListComplete(true) shouldBe true
+        }
+      }
+      "return false" when {
+        "a tax year is not selected but income sources are complete" in {
+          fullCompleteTaskListModel.copy(taxYearSelection = None)
+            .taskListComplete(true) shouldBe false
+        }
+        "a tax year is selected but income sources are not complete" in {
+          fullCompleteTaskListModel.copy(incomeSourcesConfirmed = None)
+            .taskListComplete(true) shouldBe false
+        }
+      }
+    }
+    "the task list redesign flag is false" should {
+      "return true" when {
+        "a tax year is selected and all income sources confirmed" in {
+          fullCompleteTaskListModel
+            .taskListComplete() shouldBe true
+        }
+      }
+      "return false" when {
+        "a tax year is not selected, income sources are confirmed" in {
+          fullCompleteTaskListModel.copy(taxYearSelection = None)
+            .taskListComplete() shouldBe false
+        }
+        "a tax year is selected, but an income source is not confirmed" in {
+          fullCompleteTaskListModel.copy(selfEmployments = Seq(incompleteSeModel))
+            .taskListComplete() shouldBe false
+        }
+      }
+    }
   }
 
 }

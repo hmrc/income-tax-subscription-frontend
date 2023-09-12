@@ -19,11 +19,12 @@ package views.individual.incometax.business
 import assets.MessageLookup.Summary.SelectedTaxYear
 import assets.MessageLookup.TaskList._
 import assets.MessageLookup.TaxYearCheckYourAnswers.next
+import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import models._
 import models.common.business._
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel, TaskListModel}
 import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
+import org.jsoup.nodes.{Document, Element}
 import play.api.mvc.Call
 import play.twirl.api.Html
 import services.AccountingPeriodService
@@ -34,10 +35,14 @@ import views.html.individual.incometax.business.TaskList
 
 class TaskListViewSpec extends ViewSpec {
 
+  override def beforeEach(): Unit = {
+    disable(EnableTaskListRedesign)
+    super.beforeEach()
+  }
+
   val selectorForUserInformation = "ol > li:nth-of-type(1)"
   val selectorForFirstBusiness = "ol > li:nth-of-type(2) > ul:nth-of-type(1)"
   val selectorForFirstParaOfBusiness = "ol > li:nth-of-type(2)"
-  val selectorForFirstParaOfSignup = "ol > li:nth-of-type(4)"
 
   val taskListView: TaskList = app.injector.instanceOf[TaskList]
 
@@ -49,12 +54,14 @@ class TaskListViewSpec extends ViewSpec {
                           selfEmployments: Seq[SelfEmploymentData] = Nil,
                           selfEmploymentAccountingMethod: Option[AccountingMethod] = None,
                           ukProperty: Option[PropertyModel] = None,
-                          overseasProperty: Option[OverseasPropertyModel] = None): TaskListModel = {
+                          overseasProperty: Option[OverseasPropertyModel] = None,
+                          incomeSourcesConfirmed: Option[Boolean] = None): TaskListModel = {
     TaskListModel(taxYearSelection,
       selfEmployments,
       selfEmploymentAccountingMethod,
       ukProperty,
-      overseasProperty
+      overseasProperty,
+      incomeSourcesConfirmed
     )
   }
 
@@ -84,7 +91,8 @@ class TaskListViewSpec extends ViewSpec {
     )),
     selfEmploymentAccountingMethod = Some(Cash),
     ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
-    overseasProperty = Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("1", "2", "3")), confirmed = true))
+    overseasProperty = Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("1", "2", "3")), confirmed = true)),
+    incomeSourcesConfirmed = Some(true)
   )
 
 
@@ -118,7 +126,6 @@ class TaskListViewSpec extends ViewSpec {
       contentList.text() must include(item1)
       contentList.text() must include(item2)
       contentList.text() must include(item3)
-      contentList.text() must include(item4)
     }
 
     "display the save and come back later button" in {
@@ -133,7 +140,7 @@ class TaskListViewSpec extends ViewSpec {
 
 
         "display the number of sections complete out of the total" in {
-          document().mainContent.getElementById("taskListCompletedSummary").text mustBe contentSummary(0, 2)
+          document().mainContent.getElementById("taskListCompletedSummary").text mustBe contentSummary(1, 3)
         }
 
         "in the information section: display heading" in {
@@ -151,7 +158,7 @@ class TaskListViewSpec extends ViewSpec {
 
         "in the business section: display the information para" in {
           val infoPara = document().mainContent.selectHead(selectorForFirstParaOfBusiness).selectHead("p")
-          infoPara.text mustBe item3Para
+          infoPara.text mustBe item2Para
         }
 
         "in the select tax year section: display the select tax year link with status incomplete" when {
@@ -165,15 +172,37 @@ class TaskListViewSpec extends ViewSpec {
           }
         }
 
-        "display the add a business link" in {
-          val businessLink = document().mainContent.getElementById("add_business")
-          businessLink.text mustBe addBusiness
-          businessLink.classNames() must contain("govuk-link")
-          businessLink.attr("href") mustBe controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url
+        "display the add your income sources link and tag" when {
+          "the task list redesign feature switch is enabled" in {
+            enable(EnableTaskListRedesign)
+
+            val incomeSourcesSection = document().mainContent.selectHead(".app-task-list").selectNth("li", 2)
+            val incomeSourcesRow = incomeSourcesSection.selectHead("ul").selectHead("li")
+
+            val incomeSourcesLink = incomeSourcesRow.selectNth("span", 1).selectHead("a")
+            incomeSourcesLink.text mustBe addYourIncomeSources
+            incomeSourcesLink.attr("href") mustBe controllers.individual.incomesource.routes.YourIncomeSourceToSignUpController.show().url
+
+            val incomeSourcesTag = incomeSourcesRow.selectNth("span", 2)
+            incomeSourcesTag.selectHead("strong").text mustBe notStarted
+
+            incomeSourcesLink.attr("aria-describedby") mustBe incomeSourcesTag.id
+
+            document().mainContent.selectOptionally("#add_business") mustBe None
+          }
+        }
+
+        "display the add a business link" when {
+          "the task list redesign feature switch is disabled" in {
+            val businessLink = document().mainContent.getElementById("add_business")
+            businessLink.text mustBe addBusiness
+            businessLink.classNames() must contain("govuk-link")
+            businessLink.attr("href") mustBe controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url
+          }
         }
 
         "display the sign up incomplete text" in {
-          val incompleteText = document().mainContent.selectHead(selectorForFirstParaOfSignup).selectHead("p")
+          val incompleteText = document().mainContent.selectNth("p", 4)
           incompleteText.text mustBe signUpIncompleteText
         }
 
@@ -191,7 +220,7 @@ class TaskListViewSpec extends ViewSpec {
 
         "display the number of sections complete out of the total" in {
           document(partialTaskListComplete).mainContent.getElementById("taskListCompletedSummary").text mustBe
-            contentSummary(numberComplete = 0, numberTotal = 5)
+            contentSummary(numberComplete = 1, numberTotal = 6)
         }
 
         "in the user information section: display heading, name, nino and utr" in {
@@ -262,10 +291,10 @@ class TaskListViewSpec extends ViewSpec {
         }
 
         "display an incomplete overseas property income with remove-link" which {
-          def overseasPropertySection = document(partialTaskListComplete)
-            .mainContent.
-            selectHead(selectorForFirstBusiness).
-            selectNth("li", 4)
+          def overseasPropertySection: Element = document(partialTaskListComplete)
+            .mainContent
+            .selectHead(selectorForFirstBusiness)
+            .selectNth("li", 4)
 
           "contains a change link" in {
             val overseasPropertyLink = overseasPropertySection.selectNth("span", 1).selectHead("a")
@@ -283,16 +312,37 @@ class TaskListViewSpec extends ViewSpec {
           }
         }
 
-        "display the add a business link" in {
-          val businessLink = document(partialTaskListComplete)
-            .mainContent
-            .getElementById("add_business")
-          businessLink.text mustBe addBusiness
-          businessLink.attr("href") mustBe controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url
+        "display the add your income sources link and tag" when {
+          "the task list redesign feature switch is enabled" in {
+            enable(EnableTaskListRedesign)
+
+            val incomeSourcesSection = document(partialTaskListComplete).mainContent.selectHead(".app-task-list").selectNth("li", 2)
+            val incomeSourcesRow = incomeSourcesSection.selectHead("ul").selectHead("li")
+
+            val incomeSourcesLink = incomeSourcesRow.selectNth("span", 1).selectHead("a")
+            incomeSourcesLink.text mustBe addYourIncomeSources
+            incomeSourcesLink.attr("href") mustBe controllers.individual.incomesource.routes.YourIncomeSourceToSignUpController.show().url
+
+            val incomeSourcesTag = incomeSourcesRow.selectNth("span", 2)
+            incomeSourcesTag.selectHead("strong").text mustBe inProgress
+
+            incomeSourcesLink.attr("aria-describedby") mustBe incomeSourcesTag.id
+
+            document(partialTaskListComplete).mainContent.selectOptionally("#add_business") mustBe None
+          }
+        }
+
+        "display the add a business link" when {
+          "the task list redesign feature switch is disabled" in {
+            val businessLink = document(partialTaskListComplete).mainContent.getElementById("add_business")
+            businessLink.text mustBe addBusiness
+            businessLink.classNames() must contain("govuk-link")
+            businessLink.attr("href") mustBe controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url
+          }
         }
 
         "display the sign up incomplete text" in {
-          val incompleteText = document(partialTaskListComplete).mainContent.selectHead(selectorForFirstParaOfSignup).selectHead("p")
+          val incompleteText = document(partialTaskListComplete).mainContent.selectNth("p", 4)
           incompleteText.text mustBe signUpIncompleteText
         }
 
@@ -307,7 +357,7 @@ class TaskListViewSpec extends ViewSpec {
         }
 
         "display the number of sections complete out of the total" in {
-          document(completedTaskListComplete).mainContent.getElementById("taskListCompletedSummary").text mustBe contentSummary(4, 4)
+          document(completedTaskListComplete).mainContent.getElementById("taskListCompletedSummary").text mustBe contentSummary(5, 5)
         }
 
         "in the user information section: display heading, name, nino and utr" in {
@@ -356,19 +406,44 @@ class TaskListViewSpec extends ViewSpec {
           overseasPropertySection.selectHead("strong").attr("class") mustBe "govuk-tag"
         }
 
-        "display the add a business link" in {
-          val businessLink = document(completedTaskListComplete).mainContent.getElementById("add_business")
-          businessLink.text mustBe addBusiness
-          businessLink.attr("href") mustBe controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url
+        "display the view your income sources link and tag" when {
+          "the task list redesign feature switch is enabled" in {
+            enable(EnableTaskListRedesign)
+
+            val incomeSourcesSection = document(completedTaskListComplete).mainContent.selectHead(".app-task-list").selectNth("li", 2)
+            val incomeSourcesRow = incomeSourcesSection.selectHead("ul").selectHead("li")
+
+            val incomeSourcesLink = incomeSourcesRow.selectNth("span", 1).selectHead("a")
+            incomeSourcesLink.text mustBe viewYourIncomeSources
+            incomeSourcesLink.attr("href") mustBe controllers.individual.incomesource.routes.YourIncomeSourceToSignUpController.show().url
+
+            val incomeSourcesTag = incomeSourcesRow.selectNth("span", 2)
+            incomeSourcesTag.selectHead("strong").text mustBe complete
+
+            incomeSourcesLink.attr("aria-describedby") mustBe incomeSourcesTag.id
+
+            document(completedTaskListComplete).mainContent.selectOptionally("#add_business") mustBe None
+          }
+        }
+
+        "display the add a business link" when {
+          "the task list redesign feature switch is disabled" in {
+            val businessLink = document(completedTaskListComplete).mainContent.getElementById("add_business")
+            businessLink.text mustBe addBusiness
+            businessLink.classNames() must contain("govuk-link")
+            businessLink.attr("href") mustBe controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url
+          }
+        }
+
+        "display the sign up ready text" in {
+          val incompleteText = document(completedTaskListComplete).mainContent.selectNth("p", 4)
+          incompleteText.text mustBe signUpReadyText
         }
 
         "display the sign up button" in {
           document(completedTaskListComplete).mainContent.selectHead("button").text mustBe continue
         }
 
-        "do not display the sign up incomplete text" in {
-          document(completedTaskListComplete).mainContent.selectHead(selectorForFirstParaOfSignup).selectOptionalNth("span", 2) mustBe None
-        }
       }
     }
   }
@@ -377,12 +452,18 @@ class TaskListViewSpec extends ViewSpec {
     val doc = document(forcedYearTaskList)
     "display the select tax year with status complete and no link" when {
       "the user has not selected any tax year to sign up" in {
-        val selectTaxYearSection = doc.mainContent.selectNth("ul", 1)
-        val selectTaxYearText = selectTaxYearSection.selectNth("span", 1)
-        selectTaxYearText.text mustBe next(getCurrentTaxEndYear, getCurrentTaxEndYear + 1)
-        selectTaxYearSection.selectNth("span", 2).text mustBe complete
-        selectTaxYearSection.selectHead("strong").attr("class") mustBe "govuk-tag"
-        selectTaxYearText.select("a").size() mustBe 0
+        val selectTaxYearSection = doc.mainContent.selectHead(".app-task-list").selectHead("li:nth-of-type(3)")
+        selectTaxYearSection.selectHead("h2").text mustBe item3
+
+        selectTaxYearSection.selectHead("p").text mustBe item3Para
+
+        val selectTaxYearContent = selectTaxYearSection.selectHead("ul").selectHead("li")
+        selectTaxYearContent.selectNth("span", 1).text mustBe next(getCurrentTaxEndYear, getCurrentTaxEndYear + 1)
+        selectTaxYearContent.selectOptionally("a") mustBe None
+
+        val tag = selectTaxYearContent.selectNth("span", 2).selectHead("strong")
+        tag.text mustBe complete
+        tag.attr("class") mustBe "govuk-tag"
       }
     }
   }
