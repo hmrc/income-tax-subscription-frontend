@@ -19,10 +19,8 @@ package services
 import common.Constants.ITSASessionKeys
 import models.Next
 import models.common.AccountingYearModel
-import models.common.business.BusinessNameModel
 import org.scalatest.matchers.should.Matchers._
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
 import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.{SubscriptionDataKeys, UnitTestTrait}

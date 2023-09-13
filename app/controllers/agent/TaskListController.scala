@@ -22,7 +22,7 @@ import config.AppConfig
 import connectors.IncomeTaxSubscriptionConnector
 import controllers.utils.ReferenceRetrieval
 import models.common.TaskListModel
-import models.common.business.{AccountingMethodModel, SelfEmploymentData}
+import models.common.business.AccountingMethodModel
 import models.common.subscription.CreateIncomeSourcesModel.createIncomeSources
 import models.common.subscription.{CreateIncomeSourcesModel, SubscriptionSuccess}
 import play.api.Logging
@@ -30,7 +30,6 @@ import play.api.mvc._
 import services._
 import services.agent.SubscriptionOrchestrationService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
-import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.AgentTaskList
 
@@ -97,7 +96,8 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
         businesses,
         businessAccountingMethod,
         property,
-        overseasProperty
+        overseasProperty,
+        None //todo: implement this value in future story
       )
     }
   }

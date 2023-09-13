@@ -38,7 +38,6 @@ class AgentTaskListViewSpec extends ViewSpec {
 
   val selectorForFirstBusiness = "ol > li:nth-of-type(2) > ul:nth-of-type(1)"
   val selectorForFirstParaOfBusiness = "ol > li:nth-of-type(2)"
-  val selectorForFirstParaOfSignup = "ol > li:nth-of-type(4)"
 
   val taskListView: AgentTaskList = app.injector.instanceOf[AgentTaskList]
 
@@ -50,12 +49,14 @@ class AgentTaskListViewSpec extends ViewSpec {
                                   selfEmployments: Seq[SelfEmploymentData] = Nil,
                                   selfEmploymentAccountingMethod: Option[AccountingMethod] = None,
                                   ukProperty: Option[PropertyModel] = None,
-                                  overseasProperty: Option[OverseasPropertyModel] = None): TaskListModel =
+                                  overseasProperty: Option[OverseasPropertyModel] = None,
+                                  incomeSourcesConfirmed: Option[Boolean] = None): TaskListModel =
     TaskListModel(taxYearSelection,
       selfEmployments,
       selfEmploymentAccountingMethod,
       ukProperty,
-      overseasProperty
+      overseasProperty,
+      incomeSourcesConfirmed
     )
 
   private val emptyTaskList = customTaskListModel()
@@ -82,7 +83,8 @@ class AgentTaskListViewSpec extends ViewSpec {
     )),
     selfEmploymentAccountingMethod = Some(Cash),
     ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
-    overseasProperty = Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("1", "2", "3")), confirmed = true))
+    overseasProperty = Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("1", "2", "3")), confirmed = true)),
+    incomeSourcesConfirmed = Some(true)
   )
 
   private val forcedYearTaskList = customTaskListModel(
@@ -114,13 +116,11 @@ class AgentTaskListViewSpec extends ViewSpec {
         doc.title mustBe agentTitle
       }
 
-
       "have a contents list" in {
         val contentList = doc.select("ol").select("h2")
         contentList.text() must include(agentItem1)
         contentList.text() must include(agentItem2)
         contentList.text() must include(agentItem3)
-        contentList.text() must include(item4)
       }
 
       "display the save and come back later button" in {
@@ -134,7 +134,7 @@ class AgentTaskListViewSpec extends ViewSpec {
           }
 
           "display the number of sections complete out of the total" in {
-            doc.mainContent.getElementById("taskListCompletedSummary").text mustBe contentSummary(0, 2)
+            doc.mainContent.getElementById("taskListCompletedSummary").text mustBe contentSummary(1, 3)
           }
 
           "in the client information section: have a client name, nino and utr" in {
@@ -161,13 +161,13 @@ class AgentTaskListViewSpec extends ViewSpec {
 
           "display the add a business link" in {
             val businessLink = doc.mainContent.getElementById("add_business")
-            businessLink.text() mustBe addBusiness
+            businessLink.text() mustBe agentAddBusiness
             businessLink.classNames() must contain("govuk-link")
             businessLink.attr("href") mustBe controllers.agent.routes.WhatIncomeSourceToSignUpController.show().url
           }
 
           "display the sign up incomplete text" in {
-            val incompleteText = doc.mainContent.selectHead(selectorForFirstParaOfSignup).selectHead("p")
+            val incompleteText = doc.mainContent.selectNth("p", 3)
             incompleteText.text mustBe agentSignUpIncompleteText
           }
 
@@ -186,7 +186,7 @@ class AgentTaskListViewSpec extends ViewSpec {
 
       "display the number of sections complete out of the total" in {
         doc.mainContent.getElementById("taskListCompletedSummary").text mustBe
-          contentSummary(numberComplete = 0, numberTotal = 5)
+          contentSummary(numberComplete = 1, numberTotal = 6)
       }
 
       "in the client information section: have a client name, nino and utr" in {
@@ -279,12 +279,12 @@ class AgentTaskListViewSpec extends ViewSpec {
           .mainContent
           .getElementById("add_business")
 
-        businessLink.text mustBe addBusiness
+        businessLink.text mustBe agentAddBusiness
         businessLink.attr("href") mustBe controllers.agent.routes.WhatIncomeSourceToSignUpController.show().url
       }
 
       "display the sign up incomplete text" in {
-        val incompleteText = doc.mainContent.selectHead(selectorForFirstParaOfSignup).selectHead("p")
+        val incompleteText = doc.mainContent.selectNth("p", 3)
         incompleteText.text mustBe agentSignUpIncompleteText
       }
 
@@ -301,7 +301,7 @@ class AgentTaskListViewSpec extends ViewSpec {
       }
 
       "display the number of sections complete out of the total" in {
-        doc.mainContent.getElementById("taskListCompletedSummary").text mustBe contentSummary(4, 4)
+        doc.mainContent.getElementById("taskListCompletedSummary").text mustBe contentSummary(5, 5)
       }
 
       "in the client information section: have a client name, nino and utr" in {
@@ -348,7 +348,7 @@ class AgentTaskListViewSpec extends ViewSpec {
 
       "display the add a business link" in {
         val businessLink = doc.mainContent.getElementById("add_business")
-        businessLink.text mustBe addBusiness
+        businessLink.text mustBe agentAddBusiness
         businessLink.attr("href") mustBe controllers.agent.routes.WhatIncomeSourceToSignUpController.show().url
       }
 
@@ -357,7 +357,7 @@ class AgentTaskListViewSpec extends ViewSpec {
       }
 
       "do not display the sign up incomplete text" in {
-        doc.mainContent.selectHead(selectorForFirstParaOfSignup).selectOptionalNth("span", 2) mustBe None
+        doc.mainContent.selectOptionalNth("p", 3) mustBe None
       }
     }
   }
