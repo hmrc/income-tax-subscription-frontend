@@ -30,7 +30,6 @@ import play.api.test.Helpers._
 import services.ThrottlingService
 import services.mocks._
 import uk.gov.hmrc.http.InternalServerException
-import utilities.SubscriptionDataKeys._
 import utilities.individual.TestConstants
 import utilities.individual.TestConstants.testFullName
 
@@ -97,38 +96,20 @@ class HomeControllerSpec extends ControllerBaseSpec
 
   "index" when {
     "the user has a nino" when {
-      "the user already has an MTDIT subscription on ETMP" when {
-        "the saving of the mtd id is successful" should {
-          "redirect to the claim subscription page" in {
-            mockNinoAndUtrRetrieval()
-            mockLookupUserWithUtr(testNino)(testUtr, testFullName)
-            setupMockGetSubscriptionFound(testNino)
-            setupMockSubscriptionDetailsSaveFunctions()
-            mockRetrieveReferenceSuccess(testUtr)(testReference)
+      "the user already has an MTDIT subscription on ETMP" should {
+        "redirect to the claim subscription page" in {
+          mockNinoAndUtrRetrieval()
+          mockLookupUserWithUtr(testNino)(testUtr, testFullName)
+          setupMockGetSubscriptionFound(testNino)
+          setupMockSubscriptionDetailsSaveFunctions()
+          mockRetrieveReferenceSuccess(testUtr)(testReference)
 
-            val result = testHomeController().index(fakeRequest)
+          val result = testHomeController().index(fakeRequest)
 
-            status(result) must be(Status.SEE_OTHER)
-            redirectLocation(result).get mustBe controllers.individual.subscription.routes.ClaimSubscriptionController.claim.url
+          status(result) must be(Status.SEE_OTHER)
+          redirectLocation(result).get mustBe controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show.url
 
-            verifySubscriptionDetailsSave(MtditId, 1)
-            verifyGetThrottleStatusCalls(times(1))
-          }
-        }
-        "the saving of the mtd id failed" should {
-          "throw an internal server exeception" in {
-            mockNinoAndUtrRetrieval()
-            mockLookupUserWithUtr(testNino)(testUtr, testFullName)
-            setupMockGetSubscriptionFound(testNino)
-            setupMockSubscriptionDetailsSaveFunctionsFailure()
-            mockRetrieveReferenceSuccess(testUtr)(testReference)
-
-            intercept[InternalServerException](await(testHomeController().index(fakeRequest)))
-              .message mustBe "[HomeController][claimSubscription] - Could not save subscription id"
-
-            verifySubscriptionDetailsSave(MtditId, 1)
-            verifyGetThrottleStatusCalls(times(1))
-          }
+          verifyGetThrottleStatusCalls(times(1))
         }
       }
 
@@ -145,7 +126,6 @@ class HomeControllerSpec extends ControllerBaseSpec
           status(result) must be(Status.SEE_OTHER)
           redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSCallbackController.callback(Some(TestConstants.testSpsEntityId)).url
 
-          verifySubscriptionDetailsSave(MtditId, 0)
           verifyGetThrottleStatusCalls(never())
         }
       }
@@ -171,9 +151,9 @@ class HomeControllerSpec extends ControllerBaseSpec
 
                   verifyPrePopulationSave(0, testReference)
                   verifyGetThrottleStatusCalls(times(1))
-                  result.session(fakeRequest).data must contain (ELIGIBLE_NEXT_YEAR_ONLY -> "false")
-                  result.session(fakeRequest).data must contain (MANDATED_CURRENT_YEAR -> "false")
-                  result.session(fakeRequest).data must contain (MANDATED_NEXT_YEAR -> "true")
+                  result.session(fakeRequest).data must contain(ELIGIBLE_NEXT_YEAR_ONLY -> "false")
+                  result.session(fakeRequest).data must contain(MANDATED_CURRENT_YEAR -> "false")
+                  result.session(fakeRequest).data must contain(MANDATED_NEXT_YEAR -> "true")
                 }
               }
 
@@ -196,7 +176,7 @@ class HomeControllerSpec extends ControllerBaseSpec
 
                   verifyPrePopulationSave(1, testReference)
                   verifyGetThrottleStatusCalls(times(1))
-                  result.session(fakeRequest).data must contain (ELIGIBLE_NEXT_YEAR_ONLY -> "false")
+                  result.session(fakeRequest).data must contain(ELIGIBLE_NEXT_YEAR_ONLY -> "false")
                   result.session(fakeRequest).data must contain(MANDATED_CURRENT_YEAR -> "true")
                   result.session(fakeRequest).data must contain(MANDATED_NEXT_YEAR -> "false")
                 }
@@ -224,7 +204,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                 session(result).get(ITSASessionKeys.FULLNAME) mustBe Some(testFullName)
 
                 verifyGetThrottleStatusCalls(times(1))
-                result.session(fakeRequest).data must contain (ELIGIBLE_NEXT_YEAR_ONLY -> "false")
+                result.session(fakeRequest).data must contain(ELIGIBLE_NEXT_YEAR_ONLY -> "false")
                 result.session(fakeRequest).data must contain(MANDATED_CURRENT_YEAR -> "false")
                 result.session(fakeRequest).data must contain(MANDATED_NEXT_YEAR -> "false")
               }
@@ -252,46 +232,46 @@ class HomeControllerSpec extends ControllerBaseSpec
         }
 
         "the user is not eligible this year, but is eligible next year" when {
-            "user has prepop and prepop is enabled" should {
-              "redirect to the Cannot Sign Up This Year page" in {
-                mockNinoAndUtrRetrieval()
-                mockLookupUserWithUtr(testNino)(testUtr, testFullName)
-                setupMockGetSubscriptionNotFound(testNino)
-                mockRetrieveReferenceSuccess(testUtr)(testReference)
-                mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleNextYearOnlyWithPrepopData)))
-                setupMockPrePopulateSave(testReference)
-                enable(PrePopulate)
-                mockGetMandationStatus(Voluntary,Voluntary)
+          "user has prepop and prepop is enabled" should {
+            "redirect to the Cannot Sign Up This Year page" in {
+              mockNinoAndUtrRetrieval()
+              mockLookupUserWithUtr(testNino)(testUtr, testFullName)
+              setupMockGetSubscriptionNotFound(testNino)
+              mockRetrieveReferenceSuccess(testUtr)(testReference)
+              mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleNextYearOnlyWithPrepopData)))
+              setupMockPrePopulateSave(testReference)
+              enable(PrePopulate)
+              mockGetMandationStatus(Voluntary, Voluntary)
 
-                val result = await(testHomeController().index(fakeRequest))
-                status(result) mustBe SEE_OTHER
-                redirectLocation(result) mustBe Some(controllers.individual.eligibility.routes.CannotSignUpThisYearController.show.url)
-                verifyGetThrottleStatusCalls(times(1))
-                verifyPrePopulationSave(1, testReference)
-                result.session(fakeRequest).data must contain(ELIGIBLE_NEXT_YEAR_ONLY -> "true")
-                result.session(fakeRequest).data must contain(MANDATED_CURRENT_YEAR -> "false")
-                result.session(fakeRequest).data must contain(MANDATED_NEXT_YEAR -> "false")
-              }
+              val result = await(testHomeController().index(fakeRequest))
+              status(result) mustBe SEE_OTHER
+              redirectLocation(result) mustBe Some(controllers.individual.eligibility.routes.CannotSignUpThisYearController.show.url)
+              verifyGetThrottleStatusCalls(times(1))
+              verifyPrePopulationSave(1, testReference)
+              result.session(fakeRequest).data must contain(ELIGIBLE_NEXT_YEAR_ONLY -> "true")
+              result.session(fakeRequest).data must contain(MANDATED_CURRENT_YEAR -> "false")
+              result.session(fakeRequest).data must contain(MANDATED_NEXT_YEAR -> "false")
             }
-            "user has no prepop and prepop is enabled" should {
-              "redirect to the Cannot Sign Up This Year page" in {
-                mockNinoAndUtrRetrieval()
-                mockLookupUserWithUtr(testNino)(testUtr, testFullName)
-                setupMockGetSubscriptionNotFound(testNino)
-                mockRetrieveReferenceSuccess(testUtr)(testReference)
-                mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleNextYearOnly)))
-                mockGetMandationStatus(Voluntary,Voluntary)
+          }
+          "user has no prepop and prepop is enabled" should {
+            "redirect to the Cannot Sign Up This Year page" in {
+              mockNinoAndUtrRetrieval()
+              mockLookupUserWithUtr(testNino)(testUtr, testFullName)
+              setupMockGetSubscriptionNotFound(testNino)
+              mockRetrieveReferenceSuccess(testUtr)(testReference)
+              mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleNextYearOnly)))
+              mockGetMandationStatus(Voluntary, Voluntary)
 
-                val result = await(testHomeController().index(fakeRequest))
-                status(result) mustBe SEE_OTHER
-                redirectLocation(result) mustBe Some(controllers.individual.eligibility.routes.CannotSignUpThisYearController.show.url)
-                verifyGetThrottleStatusCalls(times(1))
-                verifyPrePopulationSave(0, testReference)
-                result.session(fakeRequest).data must contain(ELIGIBLE_NEXT_YEAR_ONLY -> "true")
-                result.session(fakeRequest).data must contain(MANDATED_CURRENT_YEAR -> "false")
-                result.session(fakeRequest).data must contain(MANDATED_NEXT_YEAR -> "false")
-              }
+              val result = await(testHomeController().index(fakeRequest))
+              status(result) mustBe SEE_OTHER
+              redirectLocation(result) mustBe Some(controllers.individual.eligibility.routes.CannotSignUpThisYearController.show.url)
+              verifyGetThrottleStatusCalls(times(1))
+              verifyPrePopulationSave(0, testReference)
+              result.session(fakeRequest).data must contain(ELIGIBLE_NEXT_YEAR_ONLY -> "true")
+              result.session(fakeRequest).data must contain(MANDATED_CURRENT_YEAR -> "false")
+              result.session(fakeRequest).data must contain(MANDATED_NEXT_YEAR -> "false")
             }
+          }
         }
 
         "the user is not eligible" should {

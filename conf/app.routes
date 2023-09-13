@@ -9,8 +9,6 @@ GET         /index                                               controllers.use
 # SignOut Controller
 GET         /logout                                              controllers.SignOutController.signOut
 
-
-
 # SPS routes
 GET         /sps-handoff                                         controllers.individual.sps.SPSHandoffController.redirectToSPS
 GET         /sps-callback                                        controllers.individual.sps.SPSCallbackController.callback(entityId: Option[String] ?= None)
@@ -33,9 +31,6 @@ GET         /register-for-SA                                     controllers.use
 
 # Affinity Group Error
 GET         /error/affinity-group                                controllers.usermatching.AffinityGroupErrorController.show
-
-# Claim Subscription
-GET         /claim-subscription                                  controllers.individual.subscription.ClaimSubscriptionController.claim
 
 # Cannot Use Service
 GET         /error/cannot-use-service                            controllers.individual.incomesource.CannotUseServiceController.show()

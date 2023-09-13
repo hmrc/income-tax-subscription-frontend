@@ -98,7 +98,6 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
       }
 
       "return not found if the user is not enrolled" in {
-        mockFetchSubscriptionIdFromSubscriptionDetails(Some("testId"))
         val result = TestConfirmationController.show(subscriptionRequest)
 
         intercept[NotFoundException](await(result)).message mustBe "AuthPredicates.enrolledPredicate"

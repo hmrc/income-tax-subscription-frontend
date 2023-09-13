@@ -76,10 +76,10 @@ class HomeController @Inject()(val auditingService: AuditingService,
   private def tryToSubscribe(nino: String, utr: String, fullNameMaybe: Option[String])(implicit request: Request[AnyContent], user: IncomeTaxSAUser) =
     throttlingService.throttled(IndividualStartOfJourneyThrottle) {
       getSubscription(nino) flatMap {
-        // Subscription available, will be throttled
-        case Some(SubscriptionSuccess(mtditId)) => claimSubscription(mtditId, nino, utr)
-        // New phone, who dis?
-        case None => handleNoSubscriptionFound(utr, java.time.LocalDateTime.now().toString, nino)
+        case Some(SubscriptionSuccess(_)) => // found an already existing subscription, go to claim it
+          Future.successful(Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show.url))
+        case None => // did not find a subscription, continue into sign up journey
+          handleNoSubscriptionFound(utr, java.time.LocalDateTime.now().toString, nino)
       } map { response =>
         val cookiesToAdd = fullNameMaybe map (fullName => FULLNAME -> fullName)
         response.addingToSession(cookiesToAdd.toSeq: _*)
@@ -105,12 +105,12 @@ class HomeController @Inject()(val auditingService: AuditingService,
       case Right(result) =>
         withReference(utr) { reference =>
           result match {
-            case EligibilityStatus(false, false , _) =>
+            case EligibilityStatus(false, false, _) =>
               Future.successful(Redirect(eligibilityRoutes.NotEligibleForIncomeTaxController.show()))
             case EligibilityStatus(thisYear, _, prepopMaybe) =>
               handlePrepop(reference, prepopMaybe) flatMap { _ =>
                 withMandationStatus(nino, utr) { mandationStatus =>
-                  goToSignUp(thisYear, utr, timestamp, nino)
+                  goToSignUp(thisYear)
                     .addingToSession(StartTime -> timestamp)
                     .withJourneyState(SignUp)
                     .addingToSession(UTR -> utr)
@@ -128,12 +128,12 @@ class HomeController @Inject()(val auditingService: AuditingService,
   private def withMandationStatus(nino: String, utr: String)
                                  (f: MandationStatusModel => Result)
                                  (implicit request: Request[AnyContent]): Future[Result] = {
-          mandationStatusConnector.getMandationStatus(nino, utr) map {
-            case Left(_) =>
-              throw new InternalServerException("[HomeController][withMandationStatus] - Unexpected failure when receiving mandation status")
-            case Right(model) =>
-              f(model)
-          }
+    mandationStatusConnector.getMandationStatus(nino, utr) map {
+      case Left(_) =>
+        throw new InternalServerException("[HomeController][withMandationStatus] - Unexpected failure when receiving mandation status")
+      case Right(model) =>
+        f(model)
+    }
   }
 
   private def getSubscription(nino: String)(implicit request: Request[AnyContent]): Future[Option[SubscriptionSuccess]] =
@@ -142,28 +142,13 @@ class HomeController @Inject()(val auditingService: AuditingService,
       case Left(err) => throw new InternalServerException(s"HomeController.index: unexpected error calling the subscription service:\n$err")
     }
 
-  private def goToSignUp(thisYear: Boolean, utr: String, timestamp: String, nino: String)(implicit request: Request[AnyContent]): Result = {
+  private def goToSignUp(thisYear: Boolean): Result = {
     val location: Call = if (thisYear)
       controllers.individual.sps.routes.SPSHandoffController.redirectToSPS
     else
       controllers.individual.eligibility.routes.CannotSignUpThisYearController.show
     Redirect(location)
   }
-
-  private def claimSubscription(mtditId: String, nino: String, utr: String)
-                               (implicit user: IncomeTaxSAUser, request: Request[AnyContent]): Future[Result] =
-    withReference(utr) {
-      reference =>
-        subscriptionDetailsService.saveSubscriptionId(reference, mtditId) map {
-          case Right(_) =>
-            Redirect(controllers.individual.subscription.routes.ClaimSubscriptionController.claim)
-              .withJourneyState(SignUp)
-              .addingToSession(NINO -> nino)
-              .addingToSession(UTR -> utr)
-          case Left(_) =>
-            throw new InternalServerException("[HomeController][claimSubscription] - Could not save subscription id")
-        }
-    }
 
   private def handlePrepop(reference: String, prepopMaybe: Option[PrePopData])(implicit hc: HeaderCarrier) =
     prepopMaybe match {

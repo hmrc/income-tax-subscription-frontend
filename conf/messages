@@ -295,16 +295,6 @@ already-enrolled.title                                          = You’ve alrea
 already-enrolled.heading                                        = You’ve already signed up
 already-enrolled.line1                                          = Your sign in details are already in use.
 
-## Claim subscription page ##
-claim-subscription.title                                        = You’ve already signed up for quarterly reporting
-claim-subscription.heading                                      = You’ve already signed up for quarterly reporting
-claim-subscription.what-happens-next.heading                    = What happens next
-claim-subscription.what-happens-next.para1                      = You must use accounting software to record your income and expenses and send a report to HM Revenue and Customs at least every quarter.
-claim-subscription.what-happens-next.para2                      = After you send a report you’ll get an Income Tax estimate. You can view your estimate and report deadlines in your:
-claim-subscription.what-happens-next.bullet1                    = <a class="govuk-link" id="accountingSoftware" href="{0}">accounting software</a>
-claim-subscription.what-happens-next.bullet2                    = <a class="govuk-link" id="bta" href="{0}">business tax account</a>
-claim-subscription.what-happens-next.para4                      = It may take a few hours for them all to appear.
-
 ## Claim Enrolment Confirmation
 claim-enrolment.confirmation.title                                              = You have added Making Tax Digital for Income Tax to your account
 claim-enrolment.confirmation.heading                                            = What happens now

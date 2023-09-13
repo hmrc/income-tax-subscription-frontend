@@ -17,7 +17,6 @@
 package controllers.usermatching
 
 import common.Constants.ITSASessionKeys
-import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.IntegrationTestConstants._
 import helpers.agent.IntegrationTestConstants.{testNino, testUtr}
 import helpers.servicemocks._
@@ -43,20 +42,19 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
   "GET /report-quarterly/income-and-expenses/sign-up/index" when {
     "the user both nino and utr enrolments" when {
       "the user has a subscription" should {
-        "redirect to the claim subscription page" in {
+        "redirect to the claim enrolment journey page" in {
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
           CitizenDetailsStub.stubCIDUserWithNinoAndUtrAndName(testNino, testUtr, testFirstName, testLastName)
           SubscriptionStub.stubGetSubscriptionFound()
-          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionId()
 
           When("GET /index is called")
           val res = IncomeTaxSubscriptionFrontend.indexPage()
 
-          Then("Should return a SEE OTHER with the claim subscription page")
+          Then("Should return a SEE OTHER with the claim enrolment journey page")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(claimSubscriptionURI)
+            redirectURI(addMTDITOverviewURI)
           )
         }
       }
@@ -70,7 +68,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
             CitizenDetailsStub.stubCIDUserWithNinoAndUtrAndName(testNino, testUtr, testFirstName, testLastName)
             SubscriptionStub.stubGetNoSubscription()
             EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
-            MandationStatusStub.stubGetMandationStatus(testNino,testUtr)(Voluntary,Voluntary)
+            MandationStatusStub.stubGetMandationStatus(testNino, testUtr)(Voluntary, Voluntary)
             When("GET /index is called")
             val res = IncomeTaxSubscriptionFrontend.indexPage()
 
@@ -130,7 +128,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
               SubscriptionStub.stubGetNoSubscription()
               CitizenDetailsStub.stubCIDUserWithNinoAndUtrAndName(testNino, testUtr, testFirstName, testLastName)
               EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
-              MandationStatusStub.stubGetMandationStatus(testNino,testUtr)(Voluntary,Voluntary)
+              MandationStatusStub.stubGetMandationStatus(testNino, testUtr)(Voluntary, Voluntary)
               When("GET /index is called")
               val res = IncomeTaxSubscriptionFrontend.indexPage()
 
@@ -154,7 +152,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
                 SubscriptionStub.stubGetNoSubscription()
                 CitizenDetailsStub.stubCIDUserWithNinoAndUtrAndNoName(testNino, testUtr)
                 EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
-                MandationStatusStub.stubGetMandationStatus(testNino,testUtr)(Voluntary,Voluntary)
+                MandationStatusStub.stubGetMandationStatus(testNino, testUtr)(Voluntary, Voluntary)
                 When("GET /index is called")
                 val res = IncomeTaxSubscriptionFrontend.indexPage()
 

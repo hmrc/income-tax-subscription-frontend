@@ -142,7 +142,6 @@ object IntegrationTestConstants {
     s"http://localhost:9553/bas-gateway/sign-in?continue_url=%2Freport-quarterly%2Fincome-and-expenses%2Fsign-up$updatedContinue&origin=income-tax-subscription-frontend"
   }
 
-  val claimSubscriptionURI = s"$baseURI/claim-subscription"
   val wrongAffinityURI = s"$baseURI/error/affinity-group"
   val ivURI = s"$baseURI/iv"
   val userLockedOutURI = s"$baseURI/error/lockout"

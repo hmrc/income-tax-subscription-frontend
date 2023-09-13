@@ -230,11 +230,6 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
       (ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(fetchBusinessName))
   }
 
-  protected final def mockFetchSubscriptionIdFromSubscriptionDetails(fetchSubscriptionId: Option[String]): Unit = {
-    when(mockConnector.getSubscriptionDetails[String](ArgumentMatchers.any(), ArgumentMatchers.eq(SubscriptionDataKeys.MtditId))
-      (ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(fetchSubscriptionId))
-  }
-
   protected final def mockFetchSelectedTaxYear(fetchSelectedTaxYear: Option[AccountingYearModel]): Unit = {
     when(mockConnector.getSubscriptionDetails[AccountingYearModel](ArgumentMatchers.any(), ArgumentMatchers.eq(SubscriptionDataKeys.SelectedTaxYear))
       (ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(fetchSelectedTaxYear))

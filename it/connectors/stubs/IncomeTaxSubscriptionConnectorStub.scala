@@ -3,7 +3,6 @@ package connectors.stubs
 
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, stubFor}
-import helpers.IntegrationTestConstants.testMtdId
 import helpers.IntegrationTestModels._
 import helpers.WiremockHelper
 import helpers.servicemocks.WireMockMethods
@@ -75,10 +74,6 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
     WiremockHelper.verifyDelete(subscriptionUri(id), count)
   }
 
-  def stubClaimSubscription(): Unit = {
-    when(method = GET, uri = subscriptionUri(MtditId)).thenReturn[String](Status.OK, testMtdId)
-  }
-
   def stubBusinessesData(): Unit = {
     val body = testSummaryDataSelfEmploymentData
 
@@ -107,11 +102,6 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
     val mapping = POST.wireMockMapping(WireMock.urlPathMatching(subscriptionUri(subscriptionId) + "*"))
     val response = aResponse().withStatus(Status.INTERNAL_SERVER_ERROR)
     stubFor(mapping.willReturn(response))
-  }
-
-  def stubSaveSubscriptionId(): Unit = {
-    when(method = POST, uri = subscriptionUri(MtditId))
-      .thenReturn(Status.OK)
   }
 
   case class SubscriptionData(id: String, data: Map[String, JsValue])
