@@ -80,8 +80,6 @@ class PropertyStartDateController @Inject()(val auditingService: AuditingService
               case Right(_) =>
                 if (isEditMode) {
                   Redirect(routes.PropertyCheckYourAnswersController.show(isEditMode))
-                } else if (isEnabled(EnableTaskListRedesign)) {
-                  Redirect(routes.UkPropertyCountController.show())
                 } else {
                   Redirect(routes.PropertyAccountingMethodController.show(isEditMode))
                 }

@@ -38,8 +38,8 @@ class UkPropertyCountViewSpec extends ViewSpec {
   }
 
   val taxYearEnd: Int = 2020
-  val testEmptyError: FormError = FormError("startDate", "error.business.property.count.empty")
-  val testNumericalError: FormError = FormError("startDate", "error.business.property.count.numeric")
+  val testEmptyError: FormError = FormError("startDate", "error.agent.business.property.count.empty")
+  val testNumericalError: FormError = FormError("startDate", "error.agent.business.property.count.numeric")
 
   val ukPropertyCount: UkPropertyCount = app.injector.instanceOf[UkPropertyCount]
   val clientDetails = ClientDetails("FirstName LastName", "ZZ111111Z")

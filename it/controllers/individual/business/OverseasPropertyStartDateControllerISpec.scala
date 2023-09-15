@@ -16,12 +16,10 @@
 
 package controllers.individual.business
 
-import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
-import helpers.agent.IntegrationTestModels
 import helpers.servicemocks.AuthStub
 import models.DateModel
 import models.common.OverseasPropertyModel
@@ -99,7 +97,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
     }
 
     "redirect to the overseas property check your answers page" when {
-      "in edit mode and the task list redesign feature switch is disabled" when {
+      "in edit mode" when {
         "enter the same start date" in {
           val userInput = testValidStartDate
           val expected = OverseasPropertyModel(startDate = Some(userInput))
@@ -123,29 +121,6 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
           )
 
           IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(expected, Some(1))
-        }
-
-        "redirect to the overseas property count page" when {
-          "not in edit mode and the task list redesign feature switch is enabled" when {
-            "enter a valid start date" in {
-              val userInput: DateModel = IntegrationTestModels.testPropertyStartDate.startDate
-
-              Given("I setup the Wiremock stubs and enable the task list redesign feature")
-              enable(EnableTaskListRedesign)
-              AuthStub.stubAuthSuccess()
-              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
-              IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(OverseasPropertyModel(startDate = Some(userInput)))
-
-              When("POST /property-start-date is called")
-              val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyStartDate(inEditMode = false, Some(userInput))
-
-              Then("Should return a SEE_OTHER with a redirect location of the uk property count page")
-              res must have(
-                httpStatus(SEE_OTHER),
-                redirectURI(overseasPropertyCountURI)
-              )
-            }
-          }
         }
 
         "enter a new start date" in {

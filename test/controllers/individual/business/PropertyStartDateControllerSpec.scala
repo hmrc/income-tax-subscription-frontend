@@ -108,44 +108,16 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
       }
     }
 
-    "not in edit mode" when {
-      "the task list redesign feature switch is enabled" should {
-        "redirect to the uk property count page" in {
-          enable(EnableTaskListRedesign)
+    "not in edit mode" must {
+      "redirect to the uk property accounting method page" in {
+        setupMockSubscriptionDetailsSaveFunctions()
+        mockFetchProperty(None)
 
-          setupMockSubscriptionDetailsSaveFunctions()
-          mockFetchProperty(None)
+        val goodRequest = await(callSubmit(isEditMode = false))
 
-          val goodRequest = await(callSubmit(isEditMode = false))
-
-          status(goodRequest) mustBe SEE_OTHER
-          redirectLocation(goodRequest) mustBe Some(routes.UkPropertyCountController.show().url)
-          verifyPropertySave(Some(PropertyModel(startDate = Some(testValidMaxDate))))
-        }
-      }
-      "the task list redesign feature switch is disabled" should {
-        "redirect to the uk property accounting method page" in {
-          setupMockSubscriptionDetailsSaveFunctions()
-          mockFetchProperty(None)
-
-          val goodRequest = await(callSubmit(isEditMode = false))
-
-          status(goodRequest) mustBe SEE_OTHER
-          redirectLocation(goodRequest) mustBe Some(routes.PropertyAccountingMethodController.show().url)
-          verifyPropertySave(Some(PropertyModel(startDate = Some(testValidMaxDate))))
-        }
-      }
-    }
-
-    "redirect to uk property check your answers page" when {
-      "in edit mode" in {
-
-      }
-    }
-
-    "redirect to uk property accounting method page" when {
-      "not in edit mode" in {
-
+        status(goodRequest) mustBe SEE_OTHER
+        redirectLocation(goodRequest) mustBe Some(routes.PropertyAccountingMethodController.show().url)
+        verifyPropertySave(Some(PropertyModel(startDate = Some(testValidMaxDate))))
       }
     }
 

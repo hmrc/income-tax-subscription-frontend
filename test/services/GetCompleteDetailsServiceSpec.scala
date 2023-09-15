@@ -54,7 +54,6 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
 
   val ukProperty: PropertyModel = PropertyModel(
     accountingMethod = Some(Cash),
-    count = None,
     startDate = Some(DateModel("2", "1", "1980"))
   )
 

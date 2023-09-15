@@ -97,8 +97,6 @@ class PropertyAccountingMethodController @Inject()(val auditingService: Auditing
   def backUrl(isEditMode: Boolean): String = {
     if (isEditMode) {
       routes.PropertyCheckYourAnswersController.show(editMode = true).url
-    } else if (isEnabled(EnableTaskListRedesign)) {
-      routes.UkPropertyCountController.show().url
     } else {
       routes.PropertyStartDateController.show().url
     }

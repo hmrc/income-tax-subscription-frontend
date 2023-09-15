@@ -16,7 +16,6 @@
 
 package views.individual.incometax.business
 
-import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import models.common.PropertyModel
 import models.{Accruals, Cash, DateModel}
 import org.jsoup.Jsoup
@@ -96,7 +95,7 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
     }
 
     "have a caption" in {
-      document().select(".hmrc-page-heading p" ).text mustBe s"${PropertyCheckYourAnswers.captionHidden} ${PropertyCheckYourAnswers.caption}"
+      document().select(".hmrc-page-heading p").text mustBe s"${PropertyCheckYourAnswers.captionHidden} ${PropertyCheckYourAnswers.caption}"
     }
 
     "display property details" when {
@@ -125,9 +124,6 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
           answer = Some("Traditional accounting"),
           changeLink = controllers.individual.business.routes.PropertyAccountingMethodController.show(editMode = true).url
         )
-
-
-
 
 
         "have an enabled confirm and continue button" when {
@@ -244,43 +240,6 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
       }
     }
   }
-
-    "task list redesign is enabled - all the answers have been completed" which {
-      enable(EnableTaskListRedesign)
-      assertRow(
-        document(viewModel = completeAccrualsCountofProperty),
-        section = "start date",
-        index = 1,
-        PropertyCheckYourAnswers.startDateQuestion,
-        answer = Some("8 November 2021"),
-        changeLink = controllers.individual.business.routes.PropertyStartDateController.show(editMode = true).url
-      )
-      assertRow(
-        document(viewModel = completeAccrualsCountofProperty),
-        section = "Number of properties",
-        index = 2,
-        PropertyCheckYourAnswers.numberOfPropertiesQuestion,
-        answer = Some("4"),
-        changeLink = controllers.individual.business.routes.UkPropertyCountController.show(editMode = true).url
-      )
-      assertRow(
-        document(viewModel = completeCashCountOfProperty),
-        section = "cash accounting method",
-        index = 3,
-        PropertyCheckYourAnswers.accountMethodQuestion,
-        answer = Some("Cash basis accounting"),
-        changeLink = controllers.individual.business.routes.PropertyAccountingMethodController.show(editMode = true).url
-      )
-      assertRow(
-        document(viewModel = completeAccrualsCountofProperty),
-        section = "accruals accounting method",
-        index = 3,
-        PropertyCheckYourAnswers.accountMethodQuestion,
-        answer = Some("Traditional accounting"),
-        changeLink = controllers.individual.business.routes.PropertyAccountingMethodController.show(editMode = true).url
-      )
-
-    }
 
   private def assertRow(
                          doc: Document,

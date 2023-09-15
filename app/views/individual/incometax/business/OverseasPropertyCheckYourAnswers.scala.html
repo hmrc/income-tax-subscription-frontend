@@ -40,13 +40,6 @@
     }
 }
 
-@count(maybeCount: Option[Int]) = @{
-    maybeCount match {
-        case Some(count) => count.toString
-        case None => ""
-    }
-}
-
 @accountingMethod(accountingMethod: Option[AccountingMethod]) = @{
     accountingMethod match {
         case Some(Cash) => messages("business.check-your-answers.content.accounting-method.cash")
@@ -77,20 +70,6 @@
                     else
                         messages("business.check-your-answers.content.overseas-property-start-date.add")
         )
-        @if(featureSwitching.isEnabled(EnableTaskListRedesign)) {
-            @checkYourAnswersRow(
-                field = "count",
-                question = messages("business.check-your-answers.content.overseas-property-count.question"),
-                answer = count(viewModel.count),
-                changeText = if(viewModel.count.isDefined) None else Some(messages("base.add")),
-                changeUrl = Some(controllers.individual.business.routes.OverseasPropertyCountController.show(editMode = true).url),
-                hiddenContent =
-                    if(viewModel.count.isDefined)
-                        messages("business.check-your-answers.content.overseas-property-count.change")
-                    else
-                        messages("business.check-your-answers.content.overseas-property-count.add")
-            )
-        }
         @checkYourAnswersRow(
             field = "accounting-method",
             question = messages("business.check-your-answers.content.overseas-property-accounting-method.question"),

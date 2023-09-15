@@ -38,8 +38,8 @@ class OverseasPropertyCountViewSpec extends ViewSpec {
   }
 
   val taxYearEnd: Int = 2020
-  val testEmptyError: FormError = FormError("startDate", "error.business.overseas-property.count.empty")
-  val testNumericalError: FormError = FormError("startDate", "error.business.overseas-property.count.numeric")
+  val testEmptyError: FormError = FormError("startDate", "error.agent.business.overseas-property.count.empty")
+  val testNumericalError: FormError = FormError("startDate", "error.agent.business.overseas-property.count.numeric")
 
   val overseasPropertyCount: OverseasPropertyCount = app.injector.instanceOf[OverseasPropertyCount]
   val clientDetails = ClientDetails("FirstName LastName", "ZZ111111Z")

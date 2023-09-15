@@ -38,17 +38,14 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
     val heading = "Check your answers"
     val caption = "This section is Foreign property"
     val startDateQuestion = "Start date"
-    val countQuestion = "Number of properties"
     val accountMethodQuestion = "Accounting method"
     val confirmedAndContinue = "Confirm and continue"
     val saveAndComeBack = "Save and come back later"
     val change = "Change"
     val changeStartDate = "Change start date"
-    val changeCount = "Change number of properties"
     val changeAccountingMethod = "Change accounting method"
     val add = "Add"
     val addStartDate = "Add start date"
-    val addCount = "Add number of properties"
     val addAccountingMethod = "Add accounting method"
     val cash = "Cash basis accounting"
     val accruals = "Traditional accounting"
@@ -56,29 +53,20 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
 
   private val completeCashProperty = OverseasPropertyModel(
     accountingMethod = Some(Cash),
-    count = Some(1),
     startDate = Some(DateModel("8", "11", "2021")),
   )
 
   private val completeAccrualsProperty = OverseasPropertyModel(
     accountingMethod = Some(Accruals),
-    count = Some(1),
     startDate = Some(DateModel("8", "11", "2021")),
   )
 
   private val propertyWithMissingStartDate = OverseasPropertyModel(
     accountingMethod = Some(Cash),
-    count = Some(1),
   )
 
   private val propertyWithMissingAccountingMethod = OverseasPropertyModel(
     startDate = Some(DateModel("8", "11", "2021")),
-    count = Some(1),
-  )
-
-  private val propertyWithMissingCount = OverseasPropertyModel(
-    startDate = Some(DateModel("8", "11", "2021")),
-    accountingMethod = Some(Cash)
   )
 
   "Overseas Property CYA page" must {
@@ -190,44 +178,6 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
       buttonLink.attr("href") mustBe
         controllers.individual.business.routes.ProgressSavedController.show().url + "?location=overseas-property-check-your-answers"
     }
-  }
-
-  "Overseas Property CYA page" when {
-    "the task list redesign feature switch is enabled" should {
-      "display the overseas property count row" when {
-        "the count is complete" in {
-          enable(EnableTaskListRedesign)
-
-          val row = document(viewModel = completeCashProperty)
-            .selectNth(".govuk-summary-list__row", 2)
-
-          row.selectHead(".govuk-summary-list__key").text mustBe OverseasPropertyCheckYourAnswers.countQuestion
-          row.selectHead(".govuk-summary-list__value").text mustBe "1"
-
-          val link = row.selectHead(".govuk-summary-list__actions").selectHead("a")
-
-          link.attr("href") mustBe controllers.individual.business.routes.OverseasPropertyCountController.show(true).url
-          link.selectHead("span[aria-hidden=\"true\"]").text mustBe OverseasPropertyCheckYourAnswers.change
-          link.selectHead("span.govuk-visually-hidden").text mustBe OverseasPropertyCheckYourAnswers.changeCount
-        }
-        "the count is incomplete" in {
-          enable(EnableTaskListRedesign)
-
-          val row = document(viewModel = propertyWithMissingCount)
-            .selectNth(".govuk-summary-list__row", 2)
-
-          row.selectHead(".govuk-summary-list__key").text mustBe OverseasPropertyCheckYourAnswers.countQuestion
-          row.selectHead(".govuk-summary-list__value").text mustBe ""
-
-          val link = row.selectHead(".govuk-summary-list__actions").selectHead("a")
-
-          link.attr("href") mustBe controllers.individual.business.routes.OverseasPropertyCountController.show(true).url
-          link.selectHead("span[aria-hidden=\"true\"]").text mustBe OverseasPropertyCheckYourAnswers.add
-          link.selectHead("span.govuk-visually-hidden").text mustBe OverseasPropertyCheckYourAnswers.addCount
-        }
-      }
-    }
-
   }
 
   private def page(viewModel: OverseasPropertyModel) = view(

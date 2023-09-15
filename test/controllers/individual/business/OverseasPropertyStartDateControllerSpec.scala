@@ -19,22 +19,22 @@ package controllers.individual.business
 import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.ControllerBaseSpec
 import forms.individual.business.OverseasPropertyStartDateForm
-import models.{Cash, DateModel}
 import models.common.OverseasPropertyModel
+import models.{Cash, DateModel}
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.individual.mocks.MockAuthService
 import services.mocks.{MockAuditingService, MockSubscriptionDetailsService}
-import utilities.TestModels.{testFullOverseasPropertyModel, testOverseasPropertyStartDateModel}
+import utilities.TestModels.testFullOverseasPropertyModel
 import views.individual.mocks.MockOverseasPropertyStartDate
 
 import java.time.LocalDate
 import scala.concurrent.Future
 
 class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
-  with MockSubscriptionDetailsService with MockAuthService with MockAuditingService  with MockOverseasPropertyStartDate {
+  with MockSubscriptionDetailsService with MockAuthService with MockAuditingService with MockOverseasPropertyStartDate {
 
   override def beforeEach(): Unit = {
     disable(EnableTaskListRedesign)
@@ -68,7 +68,7 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
   }
 
   "submit" when {
-    val testValidMaxStartDate: DateModel = DateModel.dateConvert( LocalDate.now.minusYears(1))
+    val testValidMaxStartDate: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(1))
     val maxDate = LocalDate.now.minusYears(1)
     val testValidMaxDate: DateModel = DateModel.dateConvert(maxDate)
 
@@ -86,7 +86,7 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
     "in edit mode" should {
       "redirect to overseas property check your answers page" in withController { controller =>
         setupMockSubscriptionDetailsSaveFunctions()
-        mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod= Some(Cash), startDate = Some(DateModel("22", "11", "2021")))))
+        mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("22", "11", "2021")))))
         val goodRequest = callPost(controller, isEditMode = true)
 
         redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.OverseasPropertyCheckYourAnswersController.show(true).url)
@@ -97,32 +97,16 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
       }
     }
 
-    "not in edit mode" when {
-      "the task list redesign feature switch is enabled" should {
-        "redirect to the overseas property count page" in withController { controller =>
-          enable(EnableTaskListRedesign)
+    "not in edit mode" should {
+      "redirect to the overseas property accounting method page" in withController { controller =>
+        setupMockSubscriptionDetailsSaveFunctions()
+        mockFetchOverseasProperty(None)
 
-          setupMockSubscriptionDetailsSaveFunctions()
-          mockFetchOverseasProperty(None)
+        val goodRequest = await(callPost(controller, isEditMode = false))
 
-          val goodRequest = await(callPost(controller, isEditMode = false))
-
-          status(goodRequest) mustBe SEE_OTHER
-          redirectLocation(goodRequest) mustBe Some(routes.OverseasPropertyCountController.show().url)
-          verifyOverseasPropertySave(Some(OverseasPropertyModel(startDate = Some(testValidMaxDate))))
-        }
-      }
-      "the task list redesign feature switch is disabled" should {
-        "redirect to the overseas property accounting method page" in withController { controller =>
-          setupMockSubscriptionDetailsSaveFunctions()
-          mockFetchOverseasProperty(None)
-
-          val goodRequest = await(callPost(controller, isEditMode = false))
-
-          status(goodRequest) mustBe SEE_OTHER
-          redirectLocation(goodRequest) mustBe Some(routes.OverseasPropertyAccountingMethodController.show().url)
-          verifyOverseasPropertySave(Some(OverseasPropertyModel(startDate = Some(testValidMaxDate))))
-        }
+        status(goodRequest) mustBe SEE_OTHER
+        redirectLocation(goodRequest) mustBe Some(routes.OverseasPropertyAccountingMethodController.show().url)
+        verifyOverseasPropertySave(Some(OverseasPropertyModel(startDate = Some(testValidMaxDate))))
       }
     }
 
