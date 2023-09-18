@@ -1,6 +1,7 @@
 
 package helpers.agent
 
+import helpers.IntegrationTestModels.crypto
 import models._
 import models.common._
 import models.common.business._
@@ -15,6 +16,9 @@ object IntegrationTestModels {
   val testEndDateNext: DateModel = AccountingPeriodUtil.getCurrentTaxYear.endDate.plusYears(1).plusDays(-1)
   val testEndDatePlus1Y: DateModel = AccountingPeriodUtil.getCurrentTaxYear.endDate.plusYears(1)
   val testAccountingYearNext: AccountingYearModel = AccountingYearModel(Next)
+  val testAccountingYearCurrentConfirmed: AccountingYearModel = AccountingYearModel(Current, confirmed = true)
+  val testAccountingYearNextConfirmed: AccountingYearModel = AccountingYearModel(Next, confirmed = true)
+  private val testPropertyStartDateModel: PropertyStartDateModel = PropertyStartDateModel(DateModel("05", "04", "2017"))
   val testAccountingYearCurrent: AccountingYearModel = AccountingYearModel(Current)
   val testAccountingPeriod: AccountingPeriodModel =
     testAccountingPeriod(testStartDate, testEndDate)
@@ -45,13 +49,12 @@ object IntegrationTestModels {
   val testInvalidOverseasPropertyStartDate: OverseasPropertyStartDateModel = OverseasPropertyStartDateModel(testInvalidStartDate)
   val testInvalidPropertyStartDate: PropertyStartDateModel = PropertyStartDateModel(testInvalidStartDate)
   val testBusinesses: Seq[SelfEmploymentData] = Seq(SelfEmploymentData(
-    id = "businessId",
-    businessStartDate = Some(BusinessStartDate(DateModel("19", "03", "1999"))),
-    businessName = Some(testBusinessName),
+    id = "12345",
+    businessStartDate = Some(BusinessStartDate(DateModel("5", "4", "2017"))),
+    businessName = Some(testBusinessName.encrypt(crypto.QueryParameterCrypto)),
     businessTradeName = Some(testBusinessTrade),
-    businessAddress = Some(testBusinessAddress)
+    businessAddress = Some(BusinessAddressModel(Address(Seq("1 long road", "lonely town", "quiet county"), Some("ZZ1 1ZZ"))).encrypt(crypto.QueryParameterCrypto))
   ))
-
 
   val testBusinessTradeName: BusinessTradeNameModel = BusinessTradeNameModel("test trade name")
   val testBusinessStartDate: BusinessStartDate = BusinessStartDate(DateModel("05", "04", "2018"))
@@ -69,4 +72,18 @@ object IntegrationTestModels {
       businessTradeName = Some(testBusinessTradeName),
       businessAddress = Some(BusinessAddressModel(Address(Seq("line 1", "line 2"), Some("TF2 1PF"))))
     ))
+
+  val testFullOverseasPropertyModel: OverseasPropertyModel = OverseasPropertyModel(
+    accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
+    count = Some(1),
+    startDate = Some(testPropertyStartDateModel.startDate),
+    confirmed = true
+  )
+
+  val testFullPropertyModel: PropertyModel = PropertyModel(
+    accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
+    count = Some(1),
+    startDate = Some(testPropertyStartDate.startDate),
+    confirmed = true
+  )
 }

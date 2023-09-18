@@ -147,3 +147,7 @@ GET         /throttle-end                                        controllers.age
 
 #Your Income Source behind Feature switch
 GET         /your-income-source                                  controllers.agent.YourIncomeSourceToSignUpController.show()
+
+# Agent Global Check Your Answers
+GET         /final-check-your-answers                            controllers.agent.business.GlobalCheckYourAnswersController.show
+POST        /final-check-your-answers                            controllers.agent.business.GlobalCheckYourAnswersController.submit

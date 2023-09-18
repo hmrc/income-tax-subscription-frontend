@@ -134,7 +134,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
     def defaultCookies(withUTR: Boolean = true, withJourneyStateSignUp: Boolean = true): Map[String, String] = {
       val utrKvp = if (withUTR)
-        Map(ITSASessionKeys.UTR -> "123456")
+        Map(ITSASessionKeys.UTR -> testUtr)
       else
         Map()
       val stateKvp = if (withJourneyStateSignUp)
@@ -211,6 +211,21 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
         model => PropertyTradingStartDateForm.propertyTradingStartDateForm("").fill(model).data.map { case (k, v) => (k, Seq(v)) }
       )
     )
+
+    def getAgentGlobalCheckYourAnswers(sessionData: Map[String, String] = Map(
+      UserMatchingSessionUtil.firstName -> testFirstName,
+      UserMatchingSessionUtil.lastName -> testLastName,
+      ITSASessionKeys.NINO -> testNino)): WSResponse = {
+      get("/final-check-your-answers", sessionData)
+    }
+
+    def submitAgentGlobalCheckYourAnswers(request: Option[YesNo])(sessionData: Map[String, String] = Map(
+      UserMatchingSessionUtil.firstName -> testFirstName,
+      UserMatchingSessionUtil.lastName -> testLastName,
+      ITSASessionKeys.NINO -> testNino)): WSResponse = {
+      post("/final-check-your-answers", sessionData)(Map.empty
+      )
+    }
 
     def showCannotTakePart: WSResponse = get("/error/cannot-sign-up")
 
