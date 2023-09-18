@@ -16,9 +16,8 @@
 
 package controllers.individual.business
 
-import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
-import helpers.IntegrationTestConstants.{accountingMethodPropertyURI, ukPropertyCYAURI, ukPropertyCountURI}
+import helpers.IntegrationTestConstants.{accountingMethodPropertyURI, ukPropertyCYAURI}
 import helpers.IntegrationTestModels.{testFullPropertyModel, testPropertyStartDate}
 import helpers.servicemocks.AuthStub
 import helpers.{ComponentSpecBase, IntegrationTestModels}
@@ -29,11 +28,6 @@ import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys.Property
 
 class PropertyStartDateControllerISpec extends ComponentSpecBase {
-
-  override def beforeEach(): Unit = {
-    disable(EnableTaskListRedesign)
-    super.beforeEach()
-  }
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/property-start-date" should {
 
@@ -74,7 +68,7 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
 
   "POST /report-quarterly/income-and-expenses/sign-up/property-start-date" should {
     "redirect to the uk property accounting method page" when {
-      "not in edit mode and the task list redesign feature switch is disabled" when {
+      "not in edit mode" when {
         "enter a valid start date" in {
           val userInput: DateModel = IntegrationTestModels.testPropertyStartDate.startDate
 
@@ -90,29 +84,6 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
           res must have(
             httpStatus(SEE_OTHER),
             redirectURI(accountingMethodPropertyURI)
-          )
-        }
-      }
-    }
-
-    "redirect to the uk property count page" when {
-      "not in edit mode and the task list redesign feature switch is enabled" when {
-        "enter a valid start date" in {
-          val userInput: DateModel = IntegrationTestModels.testPropertyStartDate.startDate
-
-          Given("I setup the Wiremock stubs and enable the task list redesign feature")
-          enable(EnableTaskListRedesign)
-          AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
-          IncomeTaxSubscriptionConnectorStub.stubSaveProperty(PropertyModel(startDate = Some(userInput)))
-
-          When("POST /property-start-date is called")
-          val res = IncomeTaxSubscriptionFrontend.submitPropertyStartDate(inEditMode = false, Some(userInput))
-
-          Then("Should return a SEE_OTHER with a redirect location of the uk property count page")
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(ukPropertyCountURI)
           )
         }
       }

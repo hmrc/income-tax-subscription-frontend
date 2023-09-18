@@ -18,10 +18,10 @@ package controllers.agent.business
 
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import forms.agent.OverseasPropertyCountForm
-import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.{accountingMethodOverseasPropertyURI, overseasPropertyCYAURI}
+import helpers.agent.ComponentSpecBase
 import helpers.IntegrationTestModels.testFullOverseasPropertyModel
-import helpers.servicemocks.AuthStub
+import helpers.agent.IntegrationTestConstants.{overseasPropertyAccountingMethod, overseasPropertyCheckYourAnswersURI}
+import helpers.agent.servicemocks.AuthStub
 import models.common.OverseasPropertyModel
 import play.api.http.Status._
 import play.api.libs.json.Json
@@ -39,12 +39,12 @@ class OverseasPropertyCountControllerISpec extends ComponentSpecBase {
 
         When(s"GET ${routes.OverseasPropertyCountController.show().url} is called")
         val res = IncomeTaxSubscriptionFrontend.overseasPropertyCount()
-        val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+        val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
 
         Then("Should return a OK with the property start page with populated start date")
         res must have(
           httpStatus(OK),
-          pageTitle(messages("business.overseas-property.count.heading") + serviceNameGovUk),
+          pageTitle(messages("agent.business.overseas-property.count.heading") + serviceNameGovUk),
           textField(OverseasPropertyCountForm.fieldName, "1")
         )
       }
@@ -56,12 +56,12 @@ class OverseasPropertyCountControllerISpec extends ComponentSpecBase {
 
         When(s"GET ${routes.OverseasPropertyCountController.show().url} is called")
         val res = IncomeTaxSubscriptionFrontend.overseasPropertyCount()
-        val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+        val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
 
         Then("Should return a OK with the property start date page with no start date")
         res must have(
           httpStatus(OK),
-          pageTitle(messages("business.overseas-property.count.heading") + serviceNameGovUk),
+          pageTitle(messages("agent.business.overseas-property.count.heading") + serviceNameGovUk),
           textField(OverseasPropertyCountForm.fieldName, "")
         )
       }
@@ -85,7 +85,7 @@ class OverseasPropertyCountControllerISpec extends ComponentSpecBase {
           Then("Should return a SEE_OTHER with a redirect location of overseas property accounting method page")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(accountingMethodOverseasPropertyURI)
+            redirectURI(overseasPropertyAccountingMethod)
           )
         }
       }
@@ -109,7 +109,7 @@ class OverseasPropertyCountControllerISpec extends ComponentSpecBase {
           Then("Should return a SEE_OTHER with a redirect location of check your answers")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(overseasPropertyCYAURI)
+            redirectURI(overseasPropertyCheckYourAnswersURI)
           )
         }
 
@@ -130,7 +130,7 @@ class OverseasPropertyCountControllerISpec extends ComponentSpecBase {
           Then("Should return a SEE_OTHER with a redirect location of check your answers")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(overseasPropertyCYAURI)
+            redirectURI(overseasPropertyCheckYourAnswersURI)
           )
         }
       }

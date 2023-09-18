@@ -68,18 +68,8 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
 
   "submit" should {
     "redirect to the task list and confirm the uk property details" when {
-      "the user submits a start date, count and accounting method when the task list redesign feature switch is enabled" in withController { controller =>
+      "the user submits a start date and accounting method" in withController { controller =>
         enable(EnableTaskListRedesign)
-        mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash), count = Some(1), startDate = Some(DateModel("10", "11", "2021")))))
-        setupMockSubscriptionDetailsSaveFunctions()
-
-        val result: Future[Result] = await(controller.submit()(subscriptionRequest))
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.individual.business.routes.TaskListController.show().url)
-        verifyPropertySave(Some(PropertyModel(accountingMethod = Some(Cash), count = Some(1), startDate = Some(DateModel("10", "11", "2021")), confirmed = true)))
-      }
-      "the user submits a start date and accounting method when the task list redesign feature switch is disabled" in withController { controller =>
         mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
         setupMockSubscriptionDetailsSaveFunctions()
 
@@ -91,18 +81,7 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
       }
     }
     "redirect to the task list but don't confirm the uk property details" when {
-      "the user submits a start date and accounting method but the task list redesign feature switch is enabled" in withController { controller =>
-        enable(EnableTaskListRedesign)
-        mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
-        setupMockSubscriptionDetailsSaveFunctions()
-
-        val result: Future[Result] = await(controller.submit()(subscriptionRequest))
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.individual.business.routes.TaskListController.show().url)
-        verifyPropertySave(None)
-      }
-      "the user submits partial data when the task list redesign is disabled" in withController { controller =>
+      "the user submits partial data" in withController { controller =>
         mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash))))
         setupMockSubscriptionDetailsSaveFunctions()
 

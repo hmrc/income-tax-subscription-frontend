@@ -16,25 +16,16 @@
 
 package controllers.agent
 
-import config.featureswitch.FeatureSwitch.{ForeignProperty => ForeignPropertyFeature}
 import connectors.subscriptiondata.mocks.MockIncomeTaxSubscriptionConnector
-import forms.agent.BusinessIncomeSourceForm
-import models.common._
-import models.common.business.SelfEmploymentData
-import models.{Accruals, Cash, IncomeSourcesStatus}
-import org.mockito.ArgumentMatchers.{any, eq => meq}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.Assertion
-import play.api.http.Status
-import play.api.http.Status.{OK, SEE_OTHER}
-import play.api.mvc.{Action, AnyContent, Result}
-import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, status}
+import play.api.http.Status.OK
+import play.api.mvc.{Action, AnyContent}
+import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, status}
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockAuditingService, MockSubscriptionDetailsService}
 import views.html.agent.YourIncomeSourceToSignUp
-
-
-import scala.concurrent.Future
 
 class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
   with MockSubscriptionDetailsService

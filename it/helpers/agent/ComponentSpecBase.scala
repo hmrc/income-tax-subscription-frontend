@@ -352,7 +352,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       UserMatchingSessionUtil.firstName -> testFirstName,
       UserMatchingSessionUtil.lastName -> testLastName,
       ITSASessionKeys.NINO -> testNino
-    )) : WSResponse = get("/your-income-source", sessionData)
+    )): WSResponse = get("/your-income-source", sessionData)
 
     def submitBusinessIncomeSource(request: Option[BusinessIncomeSource],
                                    incomeSourcesStatus: IncomeSourcesStatus = IncomeSourcesStatus(
@@ -454,6 +454,44 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       )
     }
 
+    def overseasPropertyCount(sessionData: Map[String, String] = Map(
+      UserMatchingSessionUtil.firstName -> testFirstName,
+      UserMatchingSessionUtil.lastName -> testLastName,
+      ITSASessionKeys.NINO -> testNino
+    )): WSResponse = get("/business/overseas-properties-count", sessionData)
+
+    def submitOverseasPropertyCount(isEditMode: Boolean, request: Option[Int], sessionData: Map[String, String] = Map(
+      UserMatchingSessionUtil.firstName -> testFirstName,
+      UserMatchingSessionUtil.lastName -> testLastName,
+      ITSASessionKeys.NINO -> testNino
+    )): WSResponse = {
+      post(uri = s"/business/overseas-properties-count?editMode=$isEditMode", sessionData)(
+        body = request.fold(Map.empty[String, Seq[String]])(
+          count =>
+            OverseasPropertyCountForm.form.fill(count).data.map { case (k, v) => (k, Seq(v)) }
+        )
+      )
+    }
+
+    def ukPropertyCount(sessionData: Map[String, String] = Map(
+      UserMatchingSessionUtil.firstName -> testFirstName,
+      UserMatchingSessionUtil.lastName -> testLastName,
+      ITSASessionKeys.NINO -> testNino
+    )): WSResponse = get("/business/uk-properties-count", sessionData)
+
+    def submitUkPropertyCount(isEditMode: Boolean, request: Option[Int], sessionData: Map[String, String] = Map(
+      UserMatchingSessionUtil.firstName -> testFirstName,
+      UserMatchingSessionUtil.lastName -> testLastName,
+      ITSASessionKeys.NINO -> testNino
+    )): WSResponse = {
+      post(uri = s"/business/uk-properties-count?editMode=$isEditMode", sessionData)(
+        body = request.fold(Map.empty[String, Seq[String]])(
+          count =>
+            UkPropertyCountForm.form.fill(count).data.map { case (k, v) => (k, Seq(v)) }
+        )
+      )
+    }
+
     def getClientRemoveUkProperty: WSResponse = get("/business/remove-uk-property-business")
 
 
@@ -512,7 +550,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       UserMatchingSessionUtil.firstName -> testFirstName,
       UserMatchingSessionUtil.lastName -> testLastName,
       ITSASessionKeys.NINO -> testNino
-    ),request: Option[AccountingYear]): WSResponse = {
+    ), request: Option[AccountingYear]): WSResponse = {
       val uri = s"/business/what-year-to-sign-up?editMode=$inEditMode"
       post(uri, sessionData)(
         request.fold(Map.empty[String, Seq[String]])(

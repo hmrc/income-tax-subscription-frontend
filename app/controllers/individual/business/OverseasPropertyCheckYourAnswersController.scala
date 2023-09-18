@@ -56,7 +56,7 @@ class OverseasPropertyCheckYourAnswersController @Inject()(val view: OverseasPro
     implicit user =>
       withReference { reference =>
         withProperty(reference) {
-          case property@OverseasPropertyModel(Some(_), count, Some(_), _) if isDisabled(EnableTaskListRedesign) || count.isDefined =>
+          case property@OverseasPropertyModel(Some(_), _, Some(_), _) =>
             subscriptionDetailsService.saveOverseasProperty(reference, property.copy(confirmed = true)) map {
               case Right(_) => Redirect(routes.TaskListController.show())
               case Left(_) => throw new InternalServerException("[OverseasPropertyCheckYourAnswersController][submit] - Could not confirm property details")

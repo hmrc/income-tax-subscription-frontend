@@ -18,10 +18,10 @@ package controllers.agent.business
 
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import forms.agent.UkPropertyCountForm
-import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.{accountingMethodPropertyURI, ukPropertyCYAURI}
+import helpers.agent.ComponentSpecBase
+import helpers.agent.IntegrationTestConstants.{propertyAccountingMethodURI, ukPropertyCheckYourAnswersURI}
 import helpers.IntegrationTestModels.testFullPropertyModel
-import helpers.servicemocks.AuthStub
+import helpers.agent.servicemocks.AuthStub
 import models.common.PropertyModel
 import play.api.http.Status._
 import play.api.libs.json.Json
@@ -39,12 +39,12 @@ class UkPropertyCountControllerISpec extends ComponentSpecBase {
 
         When(s"GET ${routes.UkPropertyCountController.show().url} is called")
         val res = IncomeTaxSubscriptionFrontend.ukPropertyCount()
-        val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+        val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
 
         Then("Should return a OK with the property start page with populated start date")
         res must have(
           httpStatus(OK),
-          pageTitle(messages("business.property.count.heading") + serviceNameGovUk),
+          pageTitle(messages("agent.business.property.count.heading") + serviceNameGovUk),
           textField(UkPropertyCountForm.fieldName, "1")
         )
       }
@@ -56,12 +56,12 @@ class UkPropertyCountControllerISpec extends ComponentSpecBase {
 
         When(s"GET ${routes.UkPropertyCountController.show().url} is called")
         val res = IncomeTaxSubscriptionFrontend.ukPropertyCount()
-        val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+        val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
 
         Then("Should return a OK with the property start date page with no start date")
         res must have(
           httpStatus(OK),
-          pageTitle(messages("business.property.count.heading") + serviceNameGovUk),
+          pageTitle(messages("agent.business.property.count.heading") + serviceNameGovUk),
           textField(UkPropertyCountForm.fieldName, "")
         )
       }
@@ -85,7 +85,7 @@ class UkPropertyCountControllerISpec extends ComponentSpecBase {
           Then("Should return a SEE_OTHER with a redirect location of property accounting method page")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(accountingMethodPropertyURI)
+            redirectURI(propertyAccountingMethodURI)
           )
         }
       }
@@ -109,7 +109,7 @@ class UkPropertyCountControllerISpec extends ComponentSpecBase {
           Then("Should return a SEE_OTHER with a redirect location of check your answers")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(ukPropertyCYAURI)
+            redirectURI(ukPropertyCheckYourAnswersURI)
           )
         }
 
@@ -130,7 +130,7 @@ class UkPropertyCountControllerISpec extends ComponentSpecBase {
           Then("Should return a SEE_OTHER with a redirect location of check your answers")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(ukPropertyCYAURI)
+            redirectURI(ukPropertyCheckYourAnswersURI)
           )
         }
       }

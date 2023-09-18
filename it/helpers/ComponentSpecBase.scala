@@ -424,30 +424,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
     def propertyStartDate(): WSResponse = get("/business/property-commencement-date")
 
-    def ukPropertyCount(): WSResponse = get("/business/uk-properties-count")
-
-    def submitUkPropertyCount(isEditMode: Boolean, request: Option[Int]): WSResponse = {
-      post(uri = s"/business/uk-properties-count?editMode=$isEditMode")(
-        body = request.fold(Map.empty[String, Seq[String]])(
-          count =>
-            UkPropertyCountForm.form.fill(count).data.map { case (k, v) => (k, Seq(v)) }
-        )
-      )
-    }
-
     def getOverseasPropertyStartDate: WSResponse = get("/business/overseas-property-start-date")
-
-
-    def overseasPropertyCount(): WSResponse = get("/business/overseas-properties-count")
-
-    def submitOverseasPropertyCount(isEditMode: Boolean, request: Option[Int]): WSResponse = {
-      post(uri = s"/business/overseas-properties-count?editMode=$isEditMode")(
-        body = request.fold(Map.empty[String, Seq[String]])(
-          count =>
-            OverseasPropertyCountForm.form.fill(count).data.map { case (k, v) => (k, Seq(v)) }
-        )
-      )
-    }
 
     def submitPropertyStartDate(inEditMode: Boolean, request: Option[DateModel]): WSResponse = {
 

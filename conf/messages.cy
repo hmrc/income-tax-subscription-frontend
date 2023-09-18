@@ -216,12 +216,6 @@ error.property.day-year.invalid                                 = Rhaid i’r dy
 error.property.month-year.invalid                               = Rhaid i’r dyddiad fod yn ddyddiad go iawn
 error.property.year.length                                      = Mae’n rhaid i flwyddyn fod yn bedwar digid. Er enghraifft, 2020.
 
-# Number of UK properties
-business.property.count.heading                                 = Sawl eiddo sydd ar osod gennych ar hyn o bryd?
-business.property.count.heading.caption                         = Eiddo yn y DU
-error.business.property.count.empty                             = Nodwch rif sy’n fwy na 0.
-error.business.property.count.numeric                           = Gallwch ond nodi rhifau yn unig. Ni allwch ddefnyddio cymeriadau arbennig, megis cysylltnodau, bylchau, a chollnodau.
-
 # Agent Property Start Date Date
 agent.property.start-date.heading                               = Pryd y gwnaethoch ddechrau eich busnes eiddo yn y DU?
 agent.property.start-date.heading.caption                       = {0} | {1}
@@ -259,12 +253,6 @@ agent.overseas-property.start-date.heading                       = Pryd y gwnaet
 agent.overseas-property.start-date.heading.caption               = {0} | {1}
 agent.overseas-property.start-date.line-1                        = Dyma pryd y gwnaeth eich cleient ddechrau rhoi unrhyw eiddo tramor ar osod.
 agent.overseas-property.start-date.hint                          = Er enghraifft, 17 8 2014.
-
-# Number of Overseas Properties
-business.overseas-property.count.heading                        = Sawl eiddo sydd ar osod gennych ar hyn o bryd?
-business.overseas-property.count.heading.caption                = Eiddo yn y DU
-error.business.overseas-property.count.empty                    = Nodwch rif sy’n fwy na 0.
-error.business.overseas-property.count.numeric                  = Gallwch ond nodi rhifau yn unig. Ni allwch ddefnyddio cymeriadau arbennig, megis cysylltnodau, bylchau, a chollnodau.
 
 # Overseas Property Start Date errors
 error.overseas.property.day-month-year.empty                     = Nodwch y dyddiad y dechreuodd eich busnes eiddo tramor fasnachu
@@ -719,10 +707,14 @@ agent.eligibility.sole-trader.caption                         = {0} | {1}
 # Agent Uk property count page
 agent.business.property.count.heading                          = Sawl eiddo sydd ar osod gan eich cleient hyn o bryd?
 agent.business.property.count.caption                          = {0} | {1}
+error.agent.business.property.count.empty                      = Nodwch rif sy’n fwy na 0.
+error.agent.business.property.count.numeric                    = Gallwch ond nodi rhifau yn unig. Ni allwch ddefnyddio cymeriadau arbennig, megis cysylltnodau, bylchau, a chollnodau.
 
 # Agent Overseas Property Count Page
 agent.business.overseas-property.count.heading                 = Sawl eiddo tramor sydd ar osod gan eich cleient hyn o bryd?
 agent.business.overseas-property.count.caption                 = {0} | {1}
+error.agent.business.overseas-property.count.empty             = Nodwch rif sy’n fwy na 0.
+error.agent.business.overseas-property.count.numeric           = Gallwch ond nodi rhifau yn unig. Ni allwch ddefnyddio cymeriadau arbennig, megis cysylltnodau, bylchau, a chollnodau.
 
 # Agent Property Accounting Method Page
 agent.property.accounting-method.heading                        = Pa ddull cyfrifo y mae’ch cleient yn ei ddefnyddio ar gyfer ei fusnes eiddo yn y DU?
@@ -1033,9 +1025,6 @@ business.check-your-answers.content.uk-property.caption                         
 business.check-your-answers.content.uk-property-start-date.question             = Dyddiad dechrau
 business.check-your-answers.content.uk-property-start-date.add                  = Ychwanegu dyddiad dechrau
 business.check-your-answers.content.uk-property-start-date.change               = Newid dyddiad dechrau
-business.check-your-answers.content.uk-property-number-of-properties.question   = Y nifer o eiddo
-business.check-your-answers.content.uk-property-number-of-properties.add        = Ychwanegu’r nifer o eiddo
-business.check-your-answers.content.uk-property-number-of-properties.change     = Newid y nifer o eiddo
 business.check-your-answers.content.uk-property-accounting-method.question      = Dull cyfrifyddu
 business.check-your-answers.content.uk-property-accounting-method.add           = Ychwanegu dull cyfrifyddu
 business.check-your-answers.content.uk-property-accounting-method.change        = Newid y dull cyfrifyddu
@@ -1046,9 +1035,6 @@ business.check-your-answers.content.overseas-property.caption                   
 business.check-your-answers.content.overseas-property-start-date.question        = Dyddiad dechrau
 business.check-your-answers.content.overseas-property-start-date.add             = Ychwanegu dyddiad dechrau
 business.check-your-answers.content.overseas-property-start-date.change          = Newid dyddiad dechrau
-business.check-your-answers.content.overseas-property-count.question             = Y nifer o eiddo
-business.check-your-answers.content.overseas-property-count.add                  = Ychwanegu’r nifer o eiddo
-business.check-your-answers.content.overseas-property-count.change               = Newid y nifer o eiddo
 business.check-your-answers.content.overseas-property-accounting-method.question = Dull cyfrifyddu
 business.check-your-answers.content.overseas-property-accounting-method.add      = Ychwanegu dull cyfrifyddu
 business.check-your-answers.content.overseas-property-accounting-method.change   = Newid y dull cyfrifyddu
