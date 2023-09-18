@@ -217,11 +217,6 @@ object MessageLookup {
     val line1 = "Your sign in details are already in use."
   }
 
-  object ClaimSubscription {
-    val title = "You’ve already signed up for quarterly reporting"
-    val heading = "You’ve already signed up for quarterly reporting"
-  }
-
   object ClaimEnrollmentConfirmation {
     val title = "You have added Making Tax Digital for Income Tax to your account"
     val heading = "What happens now"

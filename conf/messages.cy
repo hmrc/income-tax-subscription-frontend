@@ -283,16 +283,6 @@ already-enrolled.title                                          = Rydych chi eis
 already-enrolled.heading                                        = Rydych chi eisoes wedi cofrestru
 already-enrolled.line1                                          = Mae’ch manylion mewngofnodi eisoes yn cael eu defnyddio.
 
-## Claim subscription page ##
-claim-subscription.title                                        = Rydych chi eisoes wedi cofrestru ar gyfer hysbysu chwarterol
-claim-subscription.heading                                      = Rydych chi eisoes wedi cofrestru ar gyfer hysbysu chwarterol
-claim-subscription.what-happens-next.heading                    = Yr hyn sy’n digwydd nesaf
-claim-subscription.what-happens-next.para1                      = Rhaid i chi ddefnyddio meddalwedd cyfrifyddu i gofnodi’ch incwm a’ch treuliau ac anfon adroddiad i Gyllid a Thollau EM bob chwarter, o leiaf.
-claim-subscription.what-happens-next.para2                      = Ar ôl i chi anfon adroddiad, byddwch yn cael amcangyfrif o’ch Treth Incwm. Gallwch weld eich amcangyfrif a dyddiadau cau’ch adroddiadau yn eich:
-claim-subscription.what-happens-next.bullet1                    = <a class="govuk-link" id="accountingSoftware" href="{0}">meddalwedd cyfrifyddu</a>
-claim-subscription.what-happens-next.bullet2                    = <a class="govuk-link" id="bta" href="{0}">cyfrif treth busnes</a>
-claim-subscription.what-happens-next.para4                      = Gall gymryd rhai oriau cyn eu bod i gyd i’w gweld.
-
 ## Claim Enrolment Confirmation
 claim-enrolment.confirmation.title                                              = Rydych wedi ychwanegu Troi Treth yn Ddigidol ar gyfer Treth Incwm i’ch cyfrif
 claim-enrolment.confirmation.heading                                            = Yr hyn sy’n digwydd nawr {0}

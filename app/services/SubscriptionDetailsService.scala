@@ -71,12 +71,6 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
   def saveSelectedTaxYear(reference: String, selectedTaxYear: AccountingYearModel)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] =
     incomeTaxSubscriptionConnector.saveSubscriptionDetails[AccountingYearModel](reference, SelectedTaxYear, selectedTaxYear)
 
-  def fetchSubscriptionId(reference: String)(implicit hc: HeaderCarrier): Future[Option[String]] =
-    incomeTaxSubscriptionConnector.getSubscriptionDetails[String](reference, MtditId)
-
-  def saveSubscriptionId(reference: String, mtditId: String)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] =
-    incomeTaxSubscriptionConnector.saveSubscriptionDetails[String](reference, MtditId, mtditId)
-
   def fetchLastUpdatedTimestamp(reference: String)(implicit hc: HeaderCarrier): Future[Option[TimestampModel]] =
     incomeTaxSubscriptionConnector.getSubscriptionDetails[TimestampModel](reference, lastUpdatedTimestamp)
 

@@ -88,7 +88,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBase
           withController { controller =>
             val testProperty = OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))
             enable(EnableTaskListRedesign)
-            mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash), count = Some(1),startDate = Some(DateModel("10", "11", "2021")))))
+            mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash), count = Some(1), startDate = Some(DateModel("10", "11", "2021")))))
             setupMockSubscriptionDetailsSaveFunctions()
 
             val result: Future[Result] = await(controller.submit()(subscriptionRequestWithName))

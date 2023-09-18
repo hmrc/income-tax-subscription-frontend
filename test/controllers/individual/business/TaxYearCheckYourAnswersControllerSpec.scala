@@ -28,7 +28,6 @@ import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTim
 import play.twirl.api.HtmlFormat
 import services.AccountingPeriodService
 import services.mocks.{MockAccountingPeriodService, MockAuditingService, MockSubscriptionDetailsService}
-import utilities.SubscriptionDataKeys.MtditId
 import views.agent.mocks.MockWhatYearToSignUp
 import views.html.individual.incometax.business.TaxYearCheckYourAnswers
 
@@ -38,8 +37,7 @@ class TaxYearCheckYourAnswersControllerSpec extends ControllerBaseSpec
   with MockWhatYearToSignUp
   with MockAuditingService
   with MockAccountingPeriodService
-  with MockSubscriptionDetailsService
-   {
+  with MockSubscriptionDetailsService {
 
   override val controllerName: String = "CheckYourAnswersController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
@@ -90,7 +88,6 @@ class TaxYearCheckYourAnswersControllerSpec extends ControllerBaseSpec
         val result: Future[Result] = await(controller.submit()(subscriptionRequest))
 
         result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
-        verifySubscriptionDetailsSave(MtditId, 0)
       }
 
       "accounting year cannot be confirmed" in withController { controller =>

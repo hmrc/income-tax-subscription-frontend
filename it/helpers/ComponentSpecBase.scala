@@ -367,11 +367,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
     def submitAddMTDITOverview(): WSResponse = post("/claim-enrolment/overview", Map(JourneyStateKey -> ClaimEnrolmentJourney.name))(Map.empty)
 
-    def claimSubscription(): WSResponse = {
-      val uri = s"/claim-subscription"
-      get(uri)
-    }
-
     def submitBusinessIncomeSource(request: Option[BusinessIncomeSource],
                                    incomeSourcesStatus: IncomeSourcesStatus = IncomeSourcesStatus(
                                      selfEmploymentAvailable = true,

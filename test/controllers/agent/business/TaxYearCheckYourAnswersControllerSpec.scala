@@ -27,7 +27,6 @@ import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockAccountingPeriodService, MockAuditingService, MockSubscriptionDetailsService}
-import utilities.SubscriptionDataKeys.MtditId
 import views.agent.mocks.MockWhatYearToSignUp
 import views.html.agent.business.TaxYearCheckYourAnswers
 
@@ -86,7 +85,6 @@ class TaxYearCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
         val result: Future[Result] = await(controller.submit()(subscriptionRequestWithName))
 
         result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
-        verifySubscriptionDetailsSave(MtditId, 0)
       }
 
       "the accounting year cannot be confirmed" in withController { controller =>
