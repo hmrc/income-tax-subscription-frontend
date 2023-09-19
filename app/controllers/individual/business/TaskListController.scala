@@ -20,6 +20,7 @@ import auth.individual.{IncomeTaxSAUser, SignUpController}
 import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.SPSEntityId
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import connectors.IncomeTaxSubscriptionConnector
 import controllers.utils.ReferenceRetrieval
 import models.common.TaskListModel
@@ -89,17 +90,21 @@ class TaskListController @Inject()(val taskListView: TaskList,
   def submit: Action[AnyContent] = journeySafeGuard { implicit user =>
     implicit request =>
       incomeSourcesModel =>
-        val nino = user.nino.get
-        val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
-        val session = request.session
+        if (isEnabled(EnableTaskListRedesign)) {
+          Future.successful(Redirect(routes.GlobalCheckYourAnswersController.show))
+        } else {
+          val nino = user.nino.get
+          val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
+          val session = request.session
 
-        subscriptionService.signUpAndCreateIncomeSourcesFromTaskList(
-          nino, incomeSourcesModel, maybeSpsEntityId = session.get(SPSEntityId)
-        )(headerCarrier) map {
-          case Right(_) =>
-            Redirect(controllers.individual.subscription.routes.ConfirmationController.show)
-          case Left(failure) =>
-            throw new InternalServerException(s"[TaskListController][submit] - failure response received from submission: ${failure.toString}")
+          subscriptionService.signUpAndCreateIncomeSourcesFromTaskList(
+            nino, incomeSourcesModel, maybeSpsEntityId = session.get(SPSEntityId)
+          )(headerCarrier) map {
+            case Right(_) =>
+              Redirect(controllers.individual.subscription.routes.ConfirmationController.show)
+            case Left(failure) =>
+              throw new InternalServerException(s"[TaskListController][submit] - failure response received from submission: ${failure.toString}")
+          }
         }
   }
 

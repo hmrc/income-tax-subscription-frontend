@@ -272,7 +272,11 @@
   @if(viewModel.taskListComplete(featureSwitching.isEnabled(EnableTaskListRedesign))) {
     <div class = "app-task-list__pre-list">
       <p class="govuk-body">@messages(s"${messagePrefix}.content.action-complete")</p>
-      @continueButton(Some(messages("base.submit-and-continue")))
+      @if(featureSwitching.isEnabled(EnableTaskListRedesign)) {
+        @continueButton(Some(messages(s"${messagePrefix}.content.check-and-continue")))
+      } else {
+        @continueButton(Some(messages("base.submit-and-continue")))
+      }
       @saveAndComeBackButton
     </div>
   } else {

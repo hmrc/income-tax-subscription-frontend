@@ -100,6 +100,7 @@ object IntegrationTestConstants {
   val userDetailsURI = "/user-details"
   val confirmDetailsURI = "/confirm-details"
   val confirmationURI = s"$baseURI/confirmation"
+  val globalCheckYourAnswersURI = s"$baseURI/final-check-your-answers"
   val incomeSourceURI = s"$baseURI/income"
   val incomeReceivedURI = s"$baseURI/details/income-receive"
   val cannotSignUpURI = s"$baseURI/error/cannot-sign-up"

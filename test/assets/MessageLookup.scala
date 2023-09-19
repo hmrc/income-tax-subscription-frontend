@@ -313,6 +313,7 @@ object MessageLookup {
     val item3Para = "Select when you want to start using Making Tax Digital for Income Tax."
     val continue = "Submit and continue"
     val submitContinue = "Submit and continue"
+    val checkAndContinue = "Check and continue"
     val selectTaxYear = "Select tax year"
     val complete = "Complete"
     val incomplete = "Incomplete"
