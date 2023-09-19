@@ -986,6 +986,7 @@ business.task-list.content.section3                             = Cofrestru
 business.task-list.content.action-needed                        = Mae’n rhaid i chi gwblhau pob adran uchod cyn i chi allu cadarnhau a chofrestru.
 business.task-list.content.action-needed-new                    = Mae’n rhaid i chi lenwi pob un o’r adrannau uchod cyn i chi allu cofrestru.
 business.task-list.content.action-complete                      = Gallwch gofrestru nawr.
+business.task-list.content.check-and-continue                   = Check and continue
 business.task-list.status.completed                             = Wedi’i gwblhau
 business.task-list.status.incomplete                            = Anghyflawn
 business.task-list.status.in-progress                           = Ar waith

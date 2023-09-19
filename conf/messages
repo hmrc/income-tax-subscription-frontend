@@ -984,11 +984,13 @@ business.task-list.content.section3                             = Sign up
 business.task-list.content.action-needed                        = You need to complete all sections above before you can confirm and sign up.
 business.task-list.content.action-needed-new                    = You need to complete all sections above before you can sign up.
 business.task-list.content.action-complete                      = You can now sign up.
+business.task-list.content.check-and-continue                   = Check and continue
 business.task-list.status.completed                             = Complete
 business.task-list.status.incomplete                            = Incomplete
 business.task-list.status.in-progress                           = In progress
 business.task-list.status.not-started                           = Not started
 business.task-list.accounting-period-confirm                    = Accounting period confirmed: 6 April to 5 April
+
 
 # Remove overseas property business
 remove-overseas-property-business.heading                       = Are you sure you want to delete your overseas property business?

@@ -440,8 +440,14 @@ class TaskListViewSpec extends ViewSpec {
           incompleteText.text mustBe signUpReadyText
         }
 
-        "display the sign up button" in {
-          document(completedTaskListComplete).mainContent.selectHead("button").text mustBe continue
+        "display the sign up button" when {
+          "the task list redesign feature switch is enabled" in {
+            enable(EnableTaskListRedesign)
+            document(completedTaskListComplete).mainContent.selectHead("button").text mustBe checkAndContinue
+          }
+          "the task list redesign feature switch is disabled" in {
+            document(completedTaskListComplete).mainContent.selectHead("button").text mustBe continue
+          }
         }
 
       }
