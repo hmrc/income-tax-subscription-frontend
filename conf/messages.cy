@@ -5,6 +5,7 @@ base.title-pattern.error                                        = Gwall: {0} - D
 base.back                                                       = Yn ôl
 base.continue                                                   = Yn eich blaen
 base.continue-sign-up                                           = Parhau i gofrestru
+base.sign-up-my-client                                          = Cofrestrwch fy cleient
 base.update                                                     = Yn eich blaen
 base.sign-out                                                   = Allgofnodi
 base.sign-up                                                    = Cofrestru
@@ -1106,3 +1107,24 @@ individual.global-check-your-answers.form.heading                               
 individual.global-check-your-answers.form.yes                                                   = Iawn, rwy’n barod i gofrestru
 individual.global-check-your-answers.form.no                                                    = Na, mae angen i fi newid rhywbeth
 individual.global-check-your-answers.form.error.empty                                           = Dewiswch ‘Iawn’ os ydych yn barod i gofrestru
+
+# Agent Global Check Your Answers
+agent.global-check-your-answers.heading                                                         = Gwirio’ch atebion cyn i chi gofrestru’ch cleient
+agent.global-check-your-answers.income-sources.heading                                          = Ffynhonnell incwm unig fasnachwr: : {0}
+agent.global-check-your-answers.income-sources.self-employment.name                             = Enw’r
+agent.global-check-your-answers.income-sources.self-employment.start-date                       = Dyddiad dechrau masnachu
+agent.global-check-your-answers.income-sources.self-employment.address                          = Cyfeiriad
+agent.global-check-your-answers.income-sources.self-employment-accounting-method.heading        = Dull cyfrifyddu busnesau unig fasnachwr
+agent.global-check-your-answers.income-sources.self-employment.accounting-method                = Dull cyfrifyddu
+agent.global-check-your-answers.income-sources.uk-property.heading                              = Busnes eiddo yn y DU
+agent.global-check-your-answers.income-sources.uk-property.start-date                           = Dyddiad dechrau
+agent.global-check-your-answers.income-sources.uk-property.accounting-method                    = Dull cyfrifyddu
+agent.global-check-your-answers.income-sources.foreign-property.heading                         = Busnes eiddo tramor
+agent.global-check-your-answers.income-sources.foreign-property.start-date                      = Dyddiad dechrau
+agent.global-check-your-answers.income-sources.foreign-property.accounting-method               = Dull cyfrifyddu
+agent.global-check-your-answers.tax-year.heading                                                = Y flwyddyn dreth a ddewiswyd
+agent.global-check-your-answers.tax-year.label                                                  = Blwyddyn Dreth
+agent.global-check-your-answers.form.heading                                                    = A yw gwybodaeth eich cleient yn gywir?
+agent.global-check-your-answers.form.para                                                       = Drwy gyflwyno, rydych yn cadarnhau, hyd eithaf eich gwybodaeth, fod y manylion a rowch yn gywir.
+agent.global-check-your-answers.change-something                                                = Na, mae angen i fi newid rhywbeth
+
