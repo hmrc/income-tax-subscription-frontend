@@ -181,7 +181,7 @@ class TaskListViewSpec extends ViewSpec {
 
             val incomeSourcesLink = incomeSourcesRow.selectNth("span", 1).selectHead("a")
             incomeSourcesLink.text mustBe addYourIncomeSources
-            incomeSourcesLink.attr("href") mustBe controllers.individual.incomesource.routes.YourIncomeSourceToSignUpController.show().url
+            incomeSourcesLink.attr("href") mustBe controllers.individual.incomesource.routes.YourIncomeSourceToSignUpController.show.url
 
             val incomeSourcesTag = incomeSourcesRow.selectNth("span", 2)
             incomeSourcesTag.selectHead("strong").text mustBe notStarted
@@ -321,7 +321,7 @@ class TaskListViewSpec extends ViewSpec {
 
             val incomeSourcesLink = incomeSourcesRow.selectNth("span", 1).selectHead("a")
             incomeSourcesLink.text mustBe addYourIncomeSources
-            incomeSourcesLink.attr("href") mustBe controllers.individual.incomesource.routes.YourIncomeSourceToSignUpController.show().url
+            incomeSourcesLink.attr("href") mustBe controllers.individual.incomesource.routes.YourIncomeSourceToSignUpController.show.url
 
             val incomeSourcesTag = incomeSourcesRow.selectNth("span", 2)
             incomeSourcesTag.selectHead("strong").text mustBe inProgress
@@ -415,7 +415,7 @@ class TaskListViewSpec extends ViewSpec {
 
             val incomeSourcesLink = incomeSourcesRow.selectNth("span", 1).selectHead("a")
             incomeSourcesLink.text mustBe viewYourIncomeSources
-            incomeSourcesLink.attr("href") mustBe controllers.individual.incomesource.routes.YourIncomeSourceToSignUpController.show().url
+            incomeSourcesLink.attr("href") mustBe controllers.individual.incomesource.routes.YourIncomeSourceToSignUpController.show.url
 
             val incomeSourcesTag = incomeSourcesRow.selectNth("span", 2)
             incomeSourcesTag.selectHead("strong").text mustBe complete

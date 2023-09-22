@@ -254,7 +254,7 @@
         } else {
           messages(s"${messagePrefix}.content.section2-income-sources.add-text")
         },
-        href = Some(controllers.individual.incomesource.routes.YourIncomeSourceToSignUpController.show().url),
+        href = Some(controllers.individual.incomesource.routes.YourIncomeSourceToSignUpController.show.url),
         tagLabel = if(viewModel.incomeSourcesComplete) {
           messages(s"${messagePrefix}.status.completed")
         } else if (viewModel.hasAnyBusiness) {

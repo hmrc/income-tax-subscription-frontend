@@ -18,15 +18,16 @@ package controllers.individual.incomesource
 
 import config.featureswitch.FeatureSwitch.{ForeignProperty => ForeignPropertyFeature}
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
-import controllers.individual.business.{routes => businessRoutes}
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestModels.{testFullOverseasPropertyModel, testFullPropertyModel, testTooManyBusinesses}
+import helpers.IntegrationTestConstants.taskListURI
+import helpers.IntegrationTestModels.{testBusinesses, testFullOverseasPropertyModel, testFullPropertyModel}
 import helpers.servicemocks.AuthStub
 import play.api.http.Status._
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys
 
 class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
+
   override def beforeEach(): Unit = {
     super.beforeEach()
     disable(ForeignPropertyFeature)
@@ -34,42 +35,57 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
 
   val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
 
-  "GET /report-quarterly/income-and-expenses/sign-up/details/your-income-source" should {
-    "return OK" in {
-      Given("I setup the Wiremock stubs")
-      AuthStub.stubAuthSuccess()
-
-      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessesKey, NO_CONTENT)
-      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT)
-      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, NO_CONTENT)
-
-      When("GET /details/your-income-source is called")
-      val res = IncomeTaxSubscriptionFrontend.businessYourIncomeSource()
-
-      Then("Should return a OK with the income source page")
-      res must have(
-        httpStatus(OK),
-        pageTitle(messages("your-income-source.title") + serviceNameGovUk)
-      )
-    }
-
-    "redirect to task list" when {
-      "there are no options left" in {
+  s"GET ${routes.YourIncomeSourceToSignUpController.show.url}" should {
+    "return OK" when {
+      "there are no income sources added" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessesKey, OK, Json.toJson(testTooManyBusinesses))
+
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessesKey, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, NO_CONTENT)
+
+        When(s"GET ${routes.YourIncomeSourceToSignUpController.show.url} is called")
+        val res = IncomeTaxSubscriptionFrontend.yourIncomeSources()
+
+        Then("Should return a OK with the income source page")
+        res must have(
+          httpStatus(OK),
+          pageTitle(messages("your-income-source.title") + serviceNameGovUk)
+        )
+      }
+      "there are multiple income sources added" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessesKey, OK, Json.toJson(testBusinesses))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
 
-        When(s"GET ${routes.YourIncomeSourceToSignUpController.show().url} is called")
-        val res = IncomeTaxSubscriptionFrontend.businessIncomeSource()
+        When(s"GET ${routes.YourIncomeSourceToSignUpController.show.url} is called")
+        val res = IncomeTaxSubscriptionFrontend.yourIncomeSources()
 
-        Then("Should return 303 with the task list page")
+        Then("Should return a OK with the income source page")
         res must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(businessRoutes.TaskListController.show().url)
+          httpStatus(OK),
+          pageTitle(messages("your-income-source.title") + serviceNameGovUk)
         )
       }
+    }
+  }
+
+  s"POST ${routes.YourIncomeSourceToSignUpController.submit.url}" should {
+    "redirect to the task list page" in {
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubAuthSuccess()
+
+      When(s"POST ${routes.YourIncomeSourceToSignUpController.submit.url} is called")
+      val res = IncomeTaxSubscriptionFrontend.submitYourIncomeSources()
+
+      Then("Should redirect to the task list page")
+      res must have(
+        httpStatus(SEE_OTHER),
+        redirectURI(taskListURI)
+      )
     }
   }
 
