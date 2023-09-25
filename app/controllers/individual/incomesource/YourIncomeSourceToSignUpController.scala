@@ -18,20 +18,16 @@ package controllers.individual.incomesource
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.{ForeignProperty => ForeignPropertyFeature}
 import controllers.utils.ReferenceRetrieval
-import forms.individual.incomesource.BusinessIncomeSourceForm
-import models.IncomeSourcesStatus
-import models.common.{BusinessIncomeSource, OverseasProperty, SelfEmployed, UkProperty}
-import play.api.data.Form
+import models.common.business.SelfEmploymentData
+import models.common.{OverseasPropertyModel, PropertyModel}
 import play.api.mvc._
 import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
-import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import views.html.individual.incometax.incomesource.YourIncomeSourceToSignUp
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class YourIncomeSourceToSignUpController @Inject()(yourIncomeSourceToSignUp: YourIncomeSourceToSignUp,
@@ -40,23 +36,43 @@ class YourIncomeSourceToSignUpController @Inject()(yourIncomeSourceToSignUp: You
                                                    val authService: AuthService)
                                                   (implicit val ec: ExecutionContext,
                                                    val appConfig: AppConfig,
-                                                   mcc: MessagesControllerComponents) extends SignUpController  with ReferenceRetrieval {
+                                                   mcc: MessagesControllerComponents) extends SignUpController with ReferenceRetrieval {
 
 
-
-  def show(): Action[AnyContent] = Authenticated { implicit request =>
+  def show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-    Ok(view)
+      withReference { reference =>
+        for {
+          businesses <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
+          ukProperty <- subscriptionDetailsService.fetchProperty(reference)
+          foreignProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
+        } yield {
+          Ok(view(
+            selfEmployments = businesses,
+            ukProperty = ukProperty,
+            foreignProperty = foreignProperty
+          ))
+        }
+      }
   }
 
-
+  def submit: Action[AnyContent] = Authenticated { implicit request =>
+    implicit user =>
+      Redirect(controllers.individual.business.routes.TaskListController.show())
+  }
 
   def backUrl: String = controllers.individual.business.routes.TaskListController.show().url
 
 
-  private def view(implicit request: Request[_]): Html =
+  private def view(selfEmployments: Seq[SelfEmploymentData],
+                   ukProperty: Option[PropertyModel],
+                   foreignProperty: Option[OverseasPropertyModel])(implicit request: Request[_]): Html =
     yourIncomeSourceToSignUp(
-      backUrl = backUrl
-  )
+      postAction = routes.YourIncomeSourceToSignUpController.submit,
+      backUrl = backUrl,
+      selfEmployments,
+      ukProperty,
+      foreignProperty
+    )
 
 }

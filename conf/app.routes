@@ -141,7 +141,8 @@ GET         /throttle-start                                      controllers.ind
 GET         /throttle-end                                        controllers.individual.ThrottlingController.end()
 
 #Your Income Source behind Feature switch
-GET         /details/your-income-source                          controllers.individual.incomesource.YourIncomeSourceToSignUpController.show()
+GET         /details/your-income-source                          controllers.individual.incomesource.YourIncomeSourceToSignUpController.show
+POST        /details/your-income-source                          controllers.individual.incomesource.YourIncomeSourceToSignUpController.submit
 
 # Global Check Your Answers
 GET         /final-check-your-answers                            controllers.individual.business.GlobalCheckYourAnswersController.show

@@ -143,7 +143,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
         "TaskList is enabled " should {
           "return the your income source page" in withController { controller =>
             enable(EnableTaskListRedesign)
-            controller.backUrl(true) mustBe controllers.individual.incomesource.routes.YourIncomeSourceToSignUpController.show().url
+            controller.backUrl(true) mustBe controllers.individual.incomesource.routes.YourIncomeSourceToSignUpController.show.url
           }
         }
       }

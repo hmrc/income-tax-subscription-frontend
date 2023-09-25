@@ -195,6 +195,10 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
     def businessIncomeSource(): WSResponse = get("/details/income-source")
 
+    def yourIncomeSources(): WSResponse = get("/details/your-income-source")
+
+    def submitYourIncomeSources(): WSResponse = post("/details/your-income-source")(Map.empty)
+
     def businessYourIncomeSource(): WSResponse = get("/details/your-income-source")
 
     def thankYou(): WSResponse = get("/thank-you")

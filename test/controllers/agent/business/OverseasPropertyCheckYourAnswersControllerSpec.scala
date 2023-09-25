@@ -86,7 +86,6 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBase
       "the user answer all the answers for the overseas property" should {
         "save the overseas property answers" in {
           withController { controller =>
-            val testProperty = OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))
             enable(EnableTaskListRedesign)
             mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash), count = Some(1), startDate = Some(DateModel("10", "11", "2021")))))
             setupMockSubscriptionDetailsSaveFunctions()

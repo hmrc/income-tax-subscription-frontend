@@ -17,11 +17,10 @@
 package views.individual.incometax.incomesource
 
 import config.featureswitch.FeatureSwitch.ForeignProperty
-import forms.individual.incomesource.BusinessIncomeSourceForm.incomeSourceKey
-import models.IncomeSourcesStatus
+import models.common.business._
+import models.common.{OverseasPropertyModel, PropertyModel}
 import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
-import play.api.data.FormError
+import org.jsoup.nodes.{Document, Element}
 import play.api.mvc.Call
 import play.twirl.api.Html
 import utilities.ViewSpec
@@ -39,17 +38,29 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
   object IndividualIncomeSource {
     val title = "Your income sources"
     val heading: String = title
-    val paragraph1: String = "You only need to fill in the sections that apply to you."
-    val business = "Sole trader (self-employed)"
-    val businessHint = "You’re self-employed if you run your own business as an individual and work for yourself. This is also known as being a ‘sole trader’. If you work through a limited company, you’re not a sole trader."
-    val ukProperty = "UK property business"
-    val ukPropertyHint = "A UK property business is when you get income from land or buildings in the UK. For instance, letting houses, flat or holiday homes either on a long or short term basis."
-    val ukPropertyHint2 = "You can include multiple properties or addresses in one UK property business."
-    val ukPropertyLink = "/report-quarterly/income-and-expenses/sign-up/business/property-commencement-date"
-    val foreignProperty = "Foreign property business"
-    val foreignPropertyHint = "A foreign property business is when you get income from land or buildings in another country. For instance, letting houses, flat or holiday homes either on a long or short term basis."
-    val foreignPropertyHint2 = "You can include multiple properties or addresses in one foreign property business."
-    val foreignPropertyLink = "/report-quarterly/income-and-expenses/sign-up/business/overseas-property-start-date"
+    val paragraph1: String = "You only need to add the income sources that apply to you."
+    val selfEmploymentHeading = "Sole trader (self-employed)"
+    val selfEmploymentDescription = "You’re self-employed if you run your own business as an individual and work for yourself. This is also known as being a ‘sole trader’. If you work through a limited company, you’re not a sole trader."
+    val addSelfEmploymentLinkText = "Add sole trader income source"
+    def selfEmploymentChange(name: String) = s"Change $name"
+    def selfEmploymentRemove(name: String) = s"Remove $name"
+
+    val addAnotherSelfEmploymentLinkText = "Add another sole trader income source"
+    val ukPropertyHeading = "UK property business"
+    val ukPropertyDescription = "A UK property business is when you get income from land or buildings in the UK. For instance, letting houses, flat or holiday homes either on a long or short term basis."
+    val ukPropertyLabel = "UK property income source"
+    val ukPropertyLinkText = "Add UK property income source"
+    val ukPropertyChange = "Change UK property income source"
+    val ukPropertyRemove = "Remove UK property income source"
+    val foreignPropertyHeading = "Foreign property business"
+    val foreignPropertyDescription = "A foreign property business is when you get income from land or buildings in another country. For instance, letting houses, flat or holiday homes either on a long or short term basis."
+    val foreignPropertyLabel = "Foreign property income source"
+    val foreignPropertyLinkText = "Add foreign property income source"
+    val foreignPropertyChange = "Change foreign property income source"
+    val foreignPropertyRemove = "Remove foreign property income source"
+
+    val change: String = "Change"
+    val remove: String = "Remove"
   }
 
   val backUrl: String = ViewSpecTrait.testBackUrl
@@ -58,99 +69,251 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
   val incomeSource: YourIncomeSourceToSignUp = app.injector.instanceOf[YourIncomeSourceToSignUp]
 
-  val testFormError: FormError = FormError(incomeSourceKey, "error.business-income-source.all-sources")
+  val selfEmployments: Seq[SelfEmploymentData] = Seq(
+    SelfEmploymentData("idOne", None, Some(BusinessNameModel("business name")), Some(BusinessTradeNameModel("business trade"))),
+    SelfEmploymentData("idOne", None, Some(BusinessNameModel("business name"))),
+    SelfEmploymentData("idOne", None, None, businessTradeName = Some(BusinessTradeNameModel("business trade"))),
+    SelfEmploymentData("idOne")
+  )
+  val ukProperty: Option[PropertyModel] = Some(PropertyModel())
+  val foreignProperty: Option[OverseasPropertyModel] = Some(OverseasPropertyModel())
 
-  def view(hasError: Boolean = false): Html = {
+  def view(selfEmployments: Seq[SelfEmploymentData] = Seq.empty,
+           ukProperty: Option[PropertyModel] = None,
+           foreignProperty: Option[OverseasPropertyModel] = None): Html = {
     incomeSource(
-      backUrl = testBackUrl
+      postAction = testCall,
+      backUrl = testBackUrl,
+      selfEmployments = selfEmployments,
+      ukProperty = ukProperty,
+      foreignProperty = foreignProperty
     )
   }
 
-  class ViewTest(
-                  incomeSourcesStatus: IncomeSourcesStatus = IncomeSourcesStatus(
-                    selfEmploymentAvailable = true,
-                    ukPropertyAvailable = true,
-                    overseasPropertyAvailable = true
-                  ),
-                  hasError: Boolean = false,
-                  overseasEnabled: Boolean = false
-                ) {
+  class ViewTest(selfEmployments: Seq[SelfEmploymentData] = Seq.empty,
+                 ukProperty: Option[PropertyModel] = None,
+                 foreignProperty: Option[OverseasPropertyModel] = None,
+                 foreignPropertyEnabled: Boolean = true) {
 
-    if (overseasEnabled) enable(ForeignProperty)
+    if (foreignPropertyEnabled) enable(ForeignProperty)
 
-    val document: Document = Jsoup.parse(view(
-      hasError = hasError
-    ).body)
+    val document: Document = Jsoup.parse(view(selfEmployments, ukProperty, foreignProperty).body)
 
   }
 
-  "IncomeSource view" should {
-    "there is no error" in new TemplateViewTest(
-      view = view(
-      ),
+  "YourIncomeSourceToSignUp" should {
+    "use the correct template" in new TemplateViewTest(
+      view = view(),
       title = IndividualIncomeSource.title,
       isAgent = false,
       backLink = Some(testBackUrl),
     )
-  }
 
-
-  "have the heading for the page" in new ViewTest {
-    document.selectHead("h1").text mustBe IndividualIncomeSource.heading
-  }
-
-  "has information for the user that advises they only need to fill in sections that apply to them" in new ViewTest {
-    document.mainContent.getNthParagraph(1).text mustBe IndividualIncomeSource.paragraph1
-  }
-
-  "has a section on Sole trader" which {
-    "has the sole trader paragraph heading for the section" in new ViewTest {
-      document.mainContent.getElementById("heading-self-employed").text mustBe IndividualIncomeSource.business
+    "have a heading" in new ViewTest {
+      document.mainContent.selectHead("h1").text mustBe IndividualIncomeSource.heading
     }
 
-    "has sole trader hint text" in new ViewTest(overseasEnabled = true) {
-      document.mainContent.selectNth("p", 2).text() mustBe IndividualIncomeSource.businessHint
-    }
-
-    "has a link to self-employed page" in new ViewTest {
-      document.mainContent.getLinkNth().attr("href") mustBe appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl
+    "have a lead paragraph" in new ViewTest {
+      document.mainContent.selectHead("p.govuk-body-l").text mustBe IndividualIncomeSource.paragraph1
     }
   }
 
+  "YourIncomeSourceToSignUp" when {
+    "there are no income sources added" should {
+      "have a section for sole trader income sources" which {
+        "has a heading" in new ViewTest {
+          document.mainContent.selectNth("h2", 1).text mustBe IndividualIncomeSource.selfEmploymentHeading
+        }
 
-  "has a section on Uk property" which {
-    "have the UK property paragraph heading for the section" in new ViewTest {
-      document.mainContent.getElementById("heading-uk-property").text mustBe IndividualIncomeSource.ukProperty
+        "has a description" in new ViewTest {
+          document.mainContent.selectNth("p", 2).text mustBe IndividualIncomeSource.selfEmploymentDescription
+        }
+
+        "has a link to add a self employment business" in new ViewTest {
+          val link: Element = document.mainContent.selectNth("a", 1)
+          link.text mustBe IndividualIncomeSource.addSelfEmploymentLinkText
+          link.attr("href") mustBe appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl
+        }
+      }
+
+      "have a section for uk property" which {
+        "has a heading" in new ViewTest {
+          document.mainContent.selectNth("h2", 2).text mustBe IndividualIncomeSource.ukPropertyHeading
+        }
+        "has a description" in new ViewTest {
+          document.mainContent.selectNth("p", 3).text mustBe IndividualIncomeSource.ukPropertyDescription
+        }
+        "has a link to add a uk property business" in new ViewTest {
+          val link: Element = document.mainContent.selectNth("a", 2)
+          link.text mustBe IndividualIncomeSource.ukPropertyLinkText
+          link.attr("href") mustBe controllers.individual.business.routes.PropertyStartDateController.show().url
+        }
+      }
+
+      "have a section for foreign property" when {
+        "the foreign property feature switch is enabled" which {
+          "has a heading" in new ViewTest {
+            document.mainContent.selectNth("h2", 3).text mustBe IndividualIncomeSource.foreignPropertyHeading
+          }
+          "has a description" in new ViewTest {
+            document.mainContent.selectNth("p", 4).text mustBe IndividualIncomeSource.foreignPropertyDescription
+          }
+          "has a link to add a foreign property business" in new ViewTest {
+            val link: Element = document.mainContent.selectNth("a", 3)
+            link.text mustBe IndividualIncomeSource.foreignPropertyLinkText
+            link.attr("href") mustBe controllers.individual.business.routes.OverseasPropertyStartDateController.show().url
+          }
+        }
+      }
+
+      "have no section for foreign property" when {
+        "the foreign property feature switch is not enabled" in new ViewTest(foreignPropertyEnabled = false) {
+          document.mainContent.selectOptionalNth("h2", 3) mustBe None
+        }
+      }
     }
 
-    "has Uk property  hint text" in new ViewTest(overseasEnabled = true) {
-      document.mainContent.selectNth("p", 3).text() mustBe IndividualIncomeSource.ukPropertyHint
-    }
-    "has Uk property  hint2  text" in new ViewTest(overseasEnabled = true) {
-      document.mainContent.selectNth("p", 4).text() mustBe IndividualIncomeSource.ukPropertyHint2
-    }
+    "there are a full set of income sources added" should {
+      "have a section for sole trader income sources" which {
+        "has a heading" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
+          document.mainContent.selectNth("h2", 1).text mustBe IndividualIncomeSource.selfEmploymentHeading
+        }
 
-    "has a link to property commencement page" in new ViewTest {
-      document.mainContent.getLinkNth(1).attr("href") mustBe IndividualIncomeSource.ukPropertyLink
-    }
-  }
+        "has a description" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
+          document.mainContent.selectNth("p", 2).text mustBe IndividualIncomeSource.selfEmploymentDescription
+        }
 
+        "has a list of added self employment businesses" which {
+          "has a first row" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
+            val summaryList: Element = document.mainContent.selectNth("dl", 1)
+            val row: Element = summaryList.selectNth("div.govuk-summary-list__row", 1)
 
-  "has a section on Foreign property" which {
-    "have the UK property paragraph heading for the section" in new ViewTest(overseasEnabled = true) {
-      document.mainContent.getElementById("heading-foreign-property").text mustBe IndividualIncomeSource.foreignProperty
-    }
+            row.selectHead("dt").text mustBe "business name - business trade"
 
-    "has foreign property  hint text" in new ViewTest(overseasEnabled = true) {
-      document.mainContent.selectNth("p", 5).text() mustBe IndividualIncomeSource.foreignPropertyHint
-    }
+            val actions: Element = row.selectHead("dd")
+            val changeLink: Element = actions.selectHead("ul").selectNth("li", 1).selectHead("a")
+            changeLink.selectHead("span[aria-hidden=true]").text mustBe IndividualIncomeSource.change
+            changeLink.selectHead("span.govuk-visually-hidden").text mustBe IndividualIncomeSource.selfEmploymentChange("business name - business trade")
 
-    "has foreign property  hint2 text" in new ViewTest(overseasEnabled = true) {
-      document.mainContent.selectNth("p", 6).text() mustBe IndividualIncomeSource.foreignPropertyHint2
-    }
+            val removeLink: Element = actions.selectHead("ul").selectNth("li", 2).selectHead("a")
+            removeLink.selectHead("span[aria-hidden=true]").text mustBe IndividualIncomeSource.remove
+            removeLink.selectHead("span.govuk-visually-hidden").text mustBe IndividualIncomeSource.selfEmploymentRemove("business name - business trade")
+          }
+          "has a second row" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
+            val summaryList: Element = document.mainContent.selectNth("dl.govuk-summary-list", 1)
+            val row: Element = summaryList.selectNth("div.govuk-summary-list__row", 2)
 
-    "has a link to foreign property start date page" in new ViewTest(overseasEnabled = true) {
-      document.mainContent.getLinkNth(2).attr("href") mustBe IndividualIncomeSource.foreignPropertyLink
+            row.selectHead("dt").text mustBe "business name"
+
+            val actions: Element = row.selectHead("dd")
+            val changeLink: Element = actions.selectHead("ul").selectNth("li", 1).selectHead("a")
+            changeLink.selectHead("span[aria-hidden=true]").text mustBe IndividualIncomeSource.change
+            changeLink.selectHead("span.govuk-visually-hidden").text mustBe IndividualIncomeSource.selfEmploymentChange("business name")
+
+            val removeLink: Element = actions.selectHead("ul").selectNth("li", 2).selectHead("a")
+            removeLink.selectHead("span[aria-hidden=true]").text mustBe IndividualIncomeSource.remove
+            removeLink.selectHead("span.govuk-visually-hidden").text mustBe IndividualIncomeSource.selfEmploymentRemove("business name")
+          }
+          "has a third row" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
+            val summaryList: Element = document.mainContent.selectNth("dl.govuk-summary-list", 1)
+            val row: Element = summaryList.selectNth("div.govuk-summary-list__row", 3)
+
+            row.selectHead("dt").text mustBe "business trade"
+
+            val actions: Element = row.selectHead("dd")
+            val changeLink: Element = actions.selectHead("ul").selectNth("li", 1).selectHead("a")
+            changeLink.selectHead("span[aria-hidden=true]").text mustBe IndividualIncomeSource.change
+            changeLink.selectHead("span.govuk-visually-hidden").text mustBe IndividualIncomeSource.selfEmploymentChange("business trade")
+
+            val removeLink: Element = actions.selectHead("ul").selectNth("li", 2).selectHead("a")
+            removeLink.selectHead("span[aria-hidden=true]").text mustBe IndividualIncomeSource.remove
+            removeLink.selectHead("span.govuk-visually-hidden").text mustBe IndividualIncomeSource.selfEmploymentRemove("business trade")
+          }
+          "has a forth row" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
+            val summaryList: Element = document.mainContent.selectNth("dl.govuk-summary-list", 1)
+            val row: Element = summaryList.selectNth("div.govuk-summary-list__row", 4)
+
+            row.selectHead("dt").text mustBe "Business 4"
+
+            val actions: Element = row.selectHead("dd")
+            val changeLink: Element = actions.selectHead("ul").selectNth("li", 1).selectHead("a")
+            changeLink.selectHead("span[aria-hidden=true]").text mustBe IndividualIncomeSource.change
+            changeLink.selectHead("span.govuk-visually-hidden").text mustBe IndividualIncomeSource.selfEmploymentChange("Business 4")
+
+            val removeLink: Element = actions.selectHead("ul").selectNth("li", 2).selectHead("a")
+            removeLink.selectHead("span[aria-hidden=true]").text mustBe IndividualIncomeSource.remove
+            removeLink.selectHead("span.govuk-visually-hidden").text mustBe IndividualIncomeSource.selfEmploymentRemove("Business 4")
+          }
+        }
+
+        "has a link to add a self employment business" in new ViewTest {
+          val link: Element = document.mainContent.selectHead("#add-self-employment").selectHead("a")
+          link.text mustBe IndividualIncomeSource.addSelfEmploymentLinkText
+          link.attr("href") mustBe appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl
+        }
+      }
+
+      "have a section for uk property" which {
+        "has a heading" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
+          document.mainContent.selectNth("h2", 2).text mustBe IndividualIncomeSource.ukPropertyHeading
+        }
+        "has a description" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
+          document.mainContent.selectNth("p", 3).text mustBe IndividualIncomeSource.ukPropertyDescription
+        }
+        "has a summary of the added uk property business" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
+          val summaryList: Element = document.mainContent.selectNth("dl", 2)
+          val row: Element = summaryList.selectNth("div.govuk-summary-list__row", 1)
+
+          row.selectHead("dt").text mustBe IndividualIncomeSource.ukPropertyLabel
+
+          val actions: Element = row.selectHead("dd")
+          val changeLink: Element = actions.selectHead("ul").selectNth("li", 1).selectHead("a")
+          changeLink.selectHead("span[aria-hidden=true]").text mustBe IndividualIncomeSource.change
+          changeLink.selectHead("span.govuk-visually-hidden").text mustBe IndividualIncomeSource.ukPropertyChange
+
+          val removeLink: Element = actions.selectHead("ul").selectNth("li", 2).selectHead("a")
+          removeLink.selectHead("span[aria-hidden=true]").text mustBe IndividualIncomeSource.remove
+          removeLink.selectHead("span.govuk-visually-hidden").text mustBe IndividualIncomeSource.ukPropertyRemove
+        }
+        "has no link to add a uk property business" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
+          document.mainContent.selectOptionally("#add-uk-property") mustBe None
+        }
+      }
+
+      "have a section for foreign property" when {
+        "the foreign property feature switch is enabled" which {
+          "has a heading" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
+            document.mainContent.selectNth("h2", 3).text mustBe IndividualIncomeSource.foreignPropertyHeading
+          }
+          "has a description" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
+            document.mainContent.selectNth("p", 4).text mustBe IndividualIncomeSource.foreignPropertyDescription
+          }
+          "has a summary of the added foreign property business" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
+            val summaryList: Element = document.mainContent.selectNth("dl", 3)
+            val row: Element = summaryList.selectNth("div.govuk-summary-list__row", 1)
+
+            row.selectHead("dt").text mustBe IndividualIncomeSource.foreignPropertyLabel
+
+            val actions: Element = row.selectHead("dd")
+            val changeLink: Element = actions.selectHead("ul").selectNth("li", 1).selectHead("a")
+            changeLink.selectHead("span[aria-hidden=true]").text mustBe IndividualIncomeSource.change
+            changeLink.selectHead("span.govuk-visually-hidden").text mustBe IndividualIncomeSource.foreignPropertyChange
+
+            val removeLink: Element = actions.selectHead("ul").selectNth("li", 2).selectHead("a")
+            removeLink.selectHead("span[aria-hidden=true]").text mustBe IndividualIncomeSource.remove
+            removeLink.selectHead("span.govuk-visually-hidden").text mustBe IndividualIncomeSource.foreignPropertyRemove
+          }
+          "has no link to add a foreign property business" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
+            document.mainContent.selectOptionally("#add-foreign-property") mustBe None
+          }
+        }
+      }
+
+      "have no section for foreign property" when {
+        "the foreign property feature switch is not enabled" in new ViewTest(selfEmployments, ukProperty, foreignProperty, false) {
+          document.mainContent.selectOptionalNth("h2", 3) mustBe None
+        }
+      }
     }
   }
 
