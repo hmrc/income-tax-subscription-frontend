@@ -63,34 +63,25 @@ class ClaimEnrolmentConfirmationViewSpec extends ViewSpec {
     }
 
 
-    "have a 'What happens now' section" which {
+    "have a 'What you must do' section" which {
 
-      "has a leading paragraph" in {
-        document.mainContent.selectHead("#whatHappensNow").selectHead("p").text mustBe MessageLookup.ClaimEnrollmentConfirmation.para
+      "has a first paragraph" in {
+        document.mainContent.selectHead("#whatHappensNow").selectHead("p").text mustBe MessageLookup.ClaimEnrollmentConfirmation.para1
       }
 
-      s"has first numbered point '${MessageLookup.ClaimEnrollmentConfirmation.bullet1}'" in {
-        val point1 = document.select("ol.govuk-list--number").select("li").first()
-        val actual = point1.text
-        val expected = MessageLookup.ClaimEnrollmentConfirmation.bullet1
-        actual mustBe expected
-        point1 select "a" attr "href" mustBe appConfig.softwareUrl
+      "has a second paragraph with hyper link" in {
+        document.mainContent.selectNth("p", 2).text mustBe MessageLookup.ClaimEnrollmentConfirmation.para2
+        document.mainContent.selectNth("p",2).selectHead("a").attr("href").contains("https://www.gov.uk/government/collections/making-tax-digital-for-income-tax")
       }
 
-      s"has second numbered point '${MessageLookup.ClaimEnrollmentConfirmation.bullet2}'" in {
-        val point2 = document.select("ol.govuk-list--number").select("li").get(1)
-        point2.text() mustBe MessageLookup.ClaimEnrollmentConfirmation.bullet2
+      "has a third paragraph" in {
+        document.mainContent.selectNth("p", 3).text mustBe MessageLookup.ClaimEnrollmentConfirmation.para3
       }
 
-      s"has third numbered point '${MessageLookup.ClaimEnrollmentConfirmation.bullet3}'" in {
-        val point3 = document.select("ol.govuk-list--number").select("li").get(2)
-        point3.text() mustBe MessageLookup.ClaimEnrollmentConfirmation.bullet3
-      }
 
-      "have a sign out link" in {
-        val actionSignOut = document.getElementById("sign-out-button")
-        actionSignOut.text() mustBe MessageLookup.Base.signOut
-        actionSignOut.attr("href") mustBe SignOutController.signOut.url
+      "have a Continue to Online Services account button" in {
+        val actionToContinueOnlineServices = document.mainContent.selectHead("button")
+        actionToContinueOnlineServices.text() mustBe MessageLookup.ClaimEnrollmentConfirmation.ContinueToOnlineServicesButton
       }
 
     }

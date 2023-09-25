@@ -57,14 +57,12 @@ class ClaimEnrolmentResolverControllerSpec extends ControllerBaseSpec
   }
 
   "the claim enrolment service returns a not subscribed response" should {
-    "redirect the user to the not subscribed page" in {
+    "throw an InternalServerException with details" in {
 
-      mockClaimEnrolment(response = Left(NotSubscribed))
+      mockClaimEnrolment(response = Left(ClaimEnrolmentError(msg = "User was not subscribed")))
 
-      val result: Future[Result] = TestClaimEnrolmentResolverController.resolve()(claimEnrolmentRequest)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.NotSubscribedController.show().url)
+      intercept[InternalServerException](await(TestClaimEnrolmentResolverController.resolve()(claimEnrolmentRequest)))
+        .message mustBe "User was not subscribed"
     }
   }
   "the claim enrolment service returns a already signed up response" should {
@@ -77,6 +75,7 @@ class ClaimEnrolmentResolverControllerSpec extends ControllerBaseSpec
       redirectLocation(result) mustBe Some(routes.ClaimEnrolmentAlreadySignedUpController.show.url)
     }
   }
+
   "the claim enrolment service returns a claim enrolment error" should {
     "throw an InternalServerException with details" in {
 

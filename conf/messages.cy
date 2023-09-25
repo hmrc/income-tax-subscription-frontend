@@ -285,28 +285,19 @@ already-enrolled.heading                                        = Rydych chi eis
 already-enrolled.line1                                          = Mae’ch manylion mewngofnodi eisoes yn cael eu defnyddio.
 
 ## Claim Enrolment Confirmation
-claim-enrolment.confirmation.title                                              = Rydych wedi ychwanegu Troi Treth yn Ddigidol ar gyfer Treth Incwm i’ch cyfrif
-claim-enrolment.confirmation.heading                                            = Yr hyn sy’n digwydd nawr {0}
-claim-enrolment.confirmation.content.line1                                      = Os nad ydych yn defnyddio asiant i reoli’ch materion treth, bydd angen i chi wneud y canlynol:
-claim-enrolment.confirmation.content.checklist.item1.link                       = Dewch o hyd i feddalwedd sy’n cydweddu
-claim-enrolment.confirmation.content.checklist.item1.suffix                     = a chaniatáu iddi ryngweithio â CThEM, os nad ydych eisoes wedi gwneud hynny.
-claim-enrolment.confirmation.content.checklist.item2                            = Anfonwch ddiweddariadau chwarterol nesaf gan ddefnyddio’ch meddalwedd pan fo angen drwy gydol y flwyddyn dreth.
-claim-enrolment.confirmation.content.checklist.item3                            = Cyflwynwch eich diweddariadau blynyddol a gwnewch ddatganiad ar gyfer y flwyddyn dreth.
-claim-enrolment.confirmation.content.line2                                      = Ar ôl i chi anfon diweddariad, byddwch yn cael amcangyfrif o’ch Treth Incwm ar gyfer y flwyddyn hyd yn hyn. Gallwch fwrw golwg dros eich amcangyfrifon a’ch dyddiadau cyflwyno drwy’ch meddalwedd neu drwy’ch cyfrif Troi Treth yn {0}
-claim-enrolment.confirmation.content.line2.link                                 = cyfrif Troi Treth yn Ddigidol ar gyfer Treth Incwm.
-claim-enrolment.confirmation.content.line3                                      = Gall gymryd ychydig oriau cyn i wybodaeth newydd ymddangos.
-claim-enrolment.confirmation.continue-button                                    = Yn eich blaen i’ch cyfrif treth busnes
-
-# Claim Enrolment Not Subscribed
-claim-enrolment.not-subscribed.heading                          = Mae’n ddrwg gennym – mae problem gyda’r gwasanaeth
-claim-enrolment.not-subscribed.info                             = Nid ydych wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm. Yn ôl i’ch
-claim-enrolment.not-subscribed.info.link-text                   = cyfrif treth busnes.
+claim-enrolment.confirmation.title                              = Rydych wedi ychwanegu Troi Treth yn Ddigidol ar gyfer Treth Incwm i’ch cyfrif
+claim-enrolment.confirmation.heading                            = Yr hyn y mae’n rhaid i chi ei wneud nawr
+claim-enrolment.confirmation.content.para1                      = Byddwch nawr yn defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm i gyflwyno’ch incwm a’ch treuliau i CThEF.
+claim-enrolment.confirmation.content.para2                      = Darllenwch ragor am {0}.
+claim-enrolment.confirmation.content.para2.link                 = Troi Treth yn Ddigidol ar gyfer Treth Incwm
+claim-enrolment.confirmation.content.para3                      = Rydym yn eich annog i gysylltu â’ch asiant treth penodedig, os oes gennych un.
+claim-enrolment.confirmation.continue-button                    = Yn eich blaen i’ch cyfrif gwasanaethau ar-lein CThEF
 
 ## Claim Enrolment Already Signed Up
 claim-enrolment.claim-already-signed-up.title                      = Rydych eisoes wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-claim-enrolment.claim-already-signed-up.content                    = Os na allwch ddod o hyd i fanylion eich cyfrif Hunanasesiad, mae’n bosibl eu bod yn eich cyfrif ar-lein arall gan CThEM.
-claim-enrolment.claim-already-signed-up.content.link1              = Gwiriwch a yw’ch Hunanasesiad mewn cyfrif arall
-claim-enrolment.claim-already-signed-up.content.link2              = Adfer manylion mewngofnodi ar gyfer eich cyfrif arall
+claim-enrolment.claim-already-signed-up.content                    = Os na allwch ddod o hyd i fanylion eich cyfrif Hunanasesiad, mae’n bosibl eu bod yn eich cyfrif gwasanaethau ar-lein CThEF arall. Gallwch wneud y canlynol:
+claim-enrolment.claim-already-signed-up.content.link1              = gwirio a yw’ch manylion Hunanasesiad mewn cyfrif arall
+claim-enrolment.claim-already-signed-up.content.link2              = adfer manylion mewngofnodi ar gyfer eich cyfrif arall
 
 ## Sign Up Complete page ##
 sign-up-complete.heading                                        = Rydych wedi’ch cofrestru i ddefnyddio meddalwedd i anfon diweddariadau ynghylch Treth Incwm
@@ -512,13 +503,11 @@ affinity-group-error.agent.line1                                = I gofrestru ar
 mtdit-overview.heading                                          = Ychwanegwch Troi Treth yn Ddigidol ar gyfer Treth Incwm i’ch cyfrif treth busnes
 mtdit-overview.paragraph1                                       = Mae’ch asiant wedi’ch cofrestru ar gyfer {0}
 mtdit-overview.link1                                            = Troi Treth yn Ddigidol ar gyfer Treth Incwm
-mtdit-overview.paragraph2                                       = Mae ychwanegu hyn at eich cyfrif treth busnes yn eich galluogi i’w reoli ar-lein gyda’ch trethi eraill.
-mtdit-overview.inset                                            = Mae angen i chi ddefnyddio’ch Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth. Gallwch wirio manylion eich cyfrif presennol ar eich {0}
+mtdit-overview.paragraph2                                       = Gallwch nawr fynd ati i ychwanegu’r cynllun at eich cyfrif gwasanaethau ar-lein CThEF, a’i reoli gyda’ch trethi eraill.
+mtdit-overview.paragraph3                                       = Efallai y bydd angen i chi ddarparu dogfennau i brofi pwy ydych er mwyn ychwanegu’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm at eich cyfrif gwasanaethau ar-lein CThEF.
+mtdit-overview.inset                                            = Bydd angen i chi ddefnyddio’ch Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth ar gyfer Hunanasesiad er mwyn ychwanegu’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm. Gallwch wirio manylion eich cyfrif presennol ar eich {0}.
 mtdit-overview.link2                                            = cyfrif treth busnes
-mtdit-overview.heading2                                         = Eich cyfrifoldebau
-mtdit-overview.paragraph3                                       = Mae Troi Treth yn Ddigidol ar gyfer Treth Incwm yn disodli Hunanasesiad. Gallwch atal y dreth hon ar unrhyw adeg a mynd yn ôl i Hunanasesiad.
-mtdit-overview.paragraph4                                       = Bydd yn dal i fod yn rhaid i chi anfon Ffurflen Dreth Hunanasesiad i CThEM ar gyfer y flwyddyn dreth cyn i chi gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
-mtdit-overview.paragraph5                                       = I ychwanegu’r dreth hon, mae’n bosibl y bydd angen i chi ddarparu dogfennau sy’n profi pwy ydych.
+
 
 ## Agent Base ##
 agent.base.service-name                                         = Defnyddiwch feddalwedd i roi gwybod am Dreth Incwm eich cleient
