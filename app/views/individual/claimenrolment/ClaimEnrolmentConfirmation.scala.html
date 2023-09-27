@@ -39,33 +39,18 @@
         <section class="govuk-form-group" id="whatHappensNow">
             <h2 class="govuk-heading-m">@messages("claim-enrolment.confirmation.heading")</h2>
 
-            <p class="govuk-body">@messages("claim-enrolment.confirmation.content.line1")</p>
-
-            <ol id="actionList" class="govuk-list govuk-list--number govuk-!-margin-2">
-                <li>
-                    @hmrcNewTabLinkHelper(NewTabLinkHelper(messages("claim-enrolment.confirmation.content.checklist.item1.link"), Some(appConfig.softwareUrl)))
-                    @messages(
-                        key = "claim-enrolment.confirmation.content.checklist.item1.suffix"
-                    )
-                </li>
-                <li>
-                    @messages("claim-enrolment.confirmation.content.checklist.item2")
-                </li>
-                <li>
-                    @messages("claim-enrolment.confirmation.content.checklist.item3")
-                </li>
-            </ol>
+            <p class="govuk-body">@messages("claim-enrolment.confirmation.content.para1")</p>
 
             <p class="govuk-body">
                 @Html(messages(
-                    key = "claim-enrolment.confirmation.content.line2",
-                    args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("claim-enrolment.confirmation.content.line2.link"), Some(appConfig.incomeTaxViewChangeUrl)))
+                key = "claim-enrolment.confirmation.content.para2",
+                args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("claim-enrolment.confirmation.content.para2.link"), Some("https://www.gov.uk/government/collections/making-tax-digital-for-income-tax")))
                 ))
             </p>
 
-            <p class="govuk-body govuk-!-margin-bottom-6">@messages("claim-enrolment.confirmation.content.line3")</p>
+            <p class="govuk-body">@messages("claim-enrolment.confirmation.content.para3")</p>
+
             @buttonHelper(messages("claim-enrolment.confirmation.continue-button"), classes = Some("govuk-!-display-block"))
-            @signOutLink()
         </section>
     }
 }

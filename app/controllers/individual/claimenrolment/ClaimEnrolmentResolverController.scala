@@ -46,7 +46,7 @@ class ClaimEnrolmentResolverController @Inject()(claimEnrolmentService: ClaimEnr
             )
             Redirect(controllers.individual.claimenrolment.spsClaimEnrol.routes.SPSHandoffForClaimEnrolController.redirectToSPS)
 
-          case Left(NotSubscribed) => Redirect(routes.NotSubscribedController.show())
+          case Left(NotSubscribed) => throw new InternalServerException("[ClaimEnrollmentResolverController] User was not subscribed")
           case Left(AlreadySignedUp) => Redirect(routes.ClaimEnrolmentAlreadySignedUpController.show)
           case Left(ClaimEnrolmentError(msg)) => throw new InternalServerException(msg)
         }

@@ -294,28 +294,19 @@ already-enrolled.heading                                        = You’ve alrea
 already-enrolled.line1                                          = Your sign in details are already in use.
 
 ## Claim Enrolment Confirmation
-claim-enrolment.confirmation.title                                              = You have added Making Tax Digital for Income Tax to your account
-claim-enrolment.confirmation.heading                                            = What happens now
-claim-enrolment.confirmation.content.line1                                      = If you do not use an agent to manage your tax affairs, you will need to:
-claim-enrolment.confirmation.content.checklist.item1.link                       = Find software that’s compatible
-claim-enrolment.confirmation.content.checklist.item1.suffix                     = and allow it to interact with HMRC, if you have not already done so.
-claim-enrolment.confirmation.content.checklist.item2                            = Send next quarterly updates using your software when required throughout the tax year.
-claim-enrolment.confirmation.content.checklist.item3                            = Submit your annual updates and declare for the tax year.
-claim-enrolment.confirmation.content.line2                                      = After you have sent an update, you will get a year-to-date Income Tax estimate. You can view your estimates and submission dates in your software or your {0}
-claim-enrolment.confirmation.content.line2.link                                 = Making Tax Digital for Income Tax account
-claim-enrolment.confirmation.content.line3                                      = It may take a few hours before new information is displayed.
-claim-enrolment.confirmation.continue-button                                    = Continue to your business tax account
-
-# Claim enrolment not subscribed
-claim-enrolment.not-subscribed.heading                          = Sorry, there is a problem with the service
-claim-enrolment.not-subscribed.info                             = You are not signed up for Making Tax Digital for Income Tax. Return to your
-claim-enrolment.not-subscribed.info.link-text                   = business tax account.
+claim-enrolment.confirmation.title                              = You have added Making Tax Digital for Income Tax to your account
+claim-enrolment.confirmation.heading                            = What you must do now
+claim-enrolment.confirmation.content.para1                      = You will now use Making Tax Digital for Income Tax to submit your income and expenses to HMRC.
+claim-enrolment.confirmation.content.para2                      = Read more about {0}.
+claim-enrolment.confirmation.content.para2.link                 = Making Tax Digital for Income Tax
+claim-enrolment.confirmation.content.para3                      = We advise contacting your appointed tax agent, if you have one.
+claim-enrolment.confirmation.continue-button                    = Continue to Online Services account
 
 ## Claim Enrolment Already Signed Up
-claim-enrolment.claim-already-signed-up.title                      = You are already signed up for Making Tax Digital for Income Tax
-claim-enrolment.claim-already-signed-up.content                    = If you cannot find your Self Assessment account details, they may be in your other HMRC online account.
-claim-enrolment.claim-already-signed-up.content.link1              = Check if your Self Assessment is in another account
-claim-enrolment.claim-already-signed-up.content.link2              = Retrieve sign in details for your other account
+claim-enrolment.claim-already-signed-up.title                   = You are already signed up for Making Tax Digital for Income Tax
+claim-enrolment.claim-already-signed-up.content                 = If you cannot find your Self Assessment account details, they may be in your other HMRC online services account. You can:
+claim-enrolment.claim-already-signed-up.content.link1           = check if your Self Assessment is in another account
+claim-enrolment.claim-already-signed-up.content.link2           = retrieve sign in details for your other account
 
 ## Sign Up Complete page ##
 sign-up-complete.heading                                        = You have signed up to use software to send Income Tax updates
@@ -518,13 +509,10 @@ affinity-group-error.agent.line1                                = To sign up for
 mtdit-overview.heading                                          = Add Making Tax Digital for Income Tax to your business tax account
 mtdit-overview.paragraph1                                       = Your agent has signed you up for {0}
 mtdit-overview.link1                                            = Making Tax Digital for Income Tax
-mtdit-overview.paragraph2                                       = Adding this to your business tax account lets you manage it online with your other taxes.
-mtdit-overview.inset                                            = You need to use your current Government Gateway ID for Self Assessment. You can check your existing account details on your {0}
+mtdit-overview.paragraph2                                       = You can now add it to your HMRC online services account and manage it with other taxes.
+mtdit-overview.paragraph3                                       = You may need to provide documents to prove your identity to add Making Tax Digital for Income Tax to your HMRC online services account.
+mtdit-overview.inset                                            = You need to use your current Government Gateway ID for Self Assessment to add Making Tax Digital for Income Tax. You can check your existing account details on your {0}.
 mtdit-overview.link2                                            = business tax account
-mtdit-overview.heading2                                         = Your responsibilities
-mtdit-overview.paragraph3                                       = Making Tax Digital for Income Tax replaces Self Assessment. You can stop this tax at any time and go back to Self Assessment.
-mtdit-overview.paragraph4                                       = You’ll still need to send HMRC a Self Assessment tax return for the tax year before you signed up for Making Tax Digital for Income Tax.
-mtdit-overview.paragraph5                                       = To add this tax, you may need to provide documents that prove your identity.
 
 ## Agent Base ##
 agent.base.service-name                                         = Use software to report your client’s Income Tax

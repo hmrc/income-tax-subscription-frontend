@@ -16,12 +16,14 @@
 
 package views.individual.claimenrolment
 
+import assets.MessageLookup
 import assets.MessageLookup.{AddMTDITOverview => messages}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import play.api.mvc.Call
 import play.api.test.FakeRequest
+import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.HtmlFormat
 import utilities.ViewSpec
 import views.ViewSpecTrait
@@ -51,21 +53,16 @@ class AddMTDITOverviewSpec extends ViewSpec {
       document.mainContent.select("h1").text mustBe messages.heading
     }
 
-    "have a sub-heading" in new Setup {
-      document.mainContent.select("h2").first().text mustBe messages.subHeading
+    "have content and a hyperlink" in new Setup {
+      val paragraphs: Elements = document.mainContent.select(".govuk-body").select("p")
+      paragraphs.get(0).text() mustBe messages.paragraph1
+      paragraphs.get(0).selectHead("a").attr("href").contains("https://www.gov.uk/government/collections/making-tax-digital-for-income-tax")
+      paragraphs.get(1).text() mustBe messages.paragraph2
+      paragraphs.get(2).text() mustBe messages.paragraph3
     }
 
     "have a inset text" in new Setup {
       document.mainContent.select(".govuk-inset-text").text mustBe messages.insetText
-    }
-
-    "have content" in new Setup {
-      val paragraphs: Elements = document.mainContent.select(".govuk-body").select("p")
-      paragraphs.get(0).text() mustBe messages.paragraph1
-      paragraphs.get(1).text() mustBe messages.paragraph2
-      paragraphs.get(2).text() mustBe messages.paragraph3
-      paragraphs.get(3).text() mustBe messages.paragraph4
-      paragraphs.get(4).text() mustBe messages.paragraph5
     }
   }
 }

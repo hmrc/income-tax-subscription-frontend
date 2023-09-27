@@ -58,10 +58,9 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
           When("GET /claim-enrolment/resolve is called")
           val res = IncomeTaxSubscriptionFrontend.claimEnrolmentResolver()
 
-          Then("Should return a SEE_OTHER with a redirect location of the claim enrolment not subscribed page")
+          Then("Should return an INTERNAL_SERVER_ERROR")
           res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(notSubscribedURI)
+            httpStatus(INTERNAL_SERVER_ERROR)
           )
         }
       }
