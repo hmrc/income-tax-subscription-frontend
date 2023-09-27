@@ -22,7 +22,7 @@ import auth.individual.{JourneyState, SignUp, ClaimEnrolment => ClaimEnrolmentJo
 import config.AppConfig
 import config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import forms.individual.business._
-import forms.individual.incomesource.BusinessIncomeSourceForm
+import forms.individual.incomesource.{BusinessIncomeSourceForm, HaveYouCompletedThisSectionForm}
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import models._
@@ -197,8 +197,11 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
     def yourIncomeSources(): WSResponse = get("/details/your-income-source")
 
-    def submitYourIncomeSources(): WSResponse = post("/details/your-income-source")(Map.empty)
-
+    def submitYourIncomeSources(request: Option[YesNo]): WSResponse = post("/details/your-income-source")(
+      request.fold(Map.empty[String, Seq[String]])(
+        model => HaveYouCompletedThisSectionForm.form.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+      )
+    )
     def businessYourIncomeSource(): WSResponse = get("/details/your-income-source")
 
     def thankYou(): WSResponse = get("/thank-you")

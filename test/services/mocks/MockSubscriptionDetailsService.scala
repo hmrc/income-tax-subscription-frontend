@@ -62,6 +62,9 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
   def mockSaveBusinesses(reference: String) =
     setupMockSubscriptionDetailsSaveFunctions(reference, SubscriptionDataKeys.BusinessesKey)
 
+  def mockSaveIncomeSrouceConfirmation(reference: String) =
+    setupMockSubscriptionDetailsSaveFunctions(reference, SubscriptionDataKeys.IncomeSourceConfirmation)
+
   def mockSaveSelfEmploymentsAccountingMethod(reference: String) =
     setupMockSubscriptionDetailsSaveFunctions(reference, SubscriptionDataKeys.BusinessAccountingMethod)
 
@@ -290,6 +293,16 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
 
   protected final def verifySubscriptionDetailsDeleteAll(deleteAll: Option[Int]): Unit = {
     deleteAll map (count => verify(mockConnector, times(count)).deleteAll(ArgumentMatchers.any())(ArgumentMatchers.any()))
+  }
+
+  protected final def mockFetchIncomeSourceConfirmation(flag: Option[Boolean] ): Unit = {
+    when(mockConnector.getSubscriptionDetails[Boolean](any(), ArgumentMatchers.eq(SubscriptionDataKeys.IncomeSourceConfirmation))(any(), any()))
+      .thenReturn(Future.successful(flag))
+  }
+
+  protected final def mockSaveIncomeSourceConfirmation(flag: Option[Boolean] ): Unit = {
+    when(mockConnector.getSubscriptionDetails[Boolean](any(), ArgumentMatchers.eq(SubscriptionDataKeys.IncomeSourceConfirmation))(any(), any()))
+      .thenReturn(Future.successful(flag))
   }
 
 }

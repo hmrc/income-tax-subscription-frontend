@@ -19,6 +19,7 @@
 @import views.html.templates.AgentMainTemplate
 @import views.html.helpers.injected.RadioHelper
 @import views.html.helpers.injected.ContinueButton
+@import forms.agent.HaveYouCompletedThisSectionForm
 @import models.common.BusinessIncomeSource
 @import config.AppConfig
 @import models.common._
@@ -39,7 +40,7 @@
   hmrcListWithActions : HmrcListWithActions
 )
 
-@(postAction: Call, backUrl: String,clientDetails: ClientDetails, selfEmployments: Seq[SelfEmploymentData], ukProperty:
+@(postAction: Call, backUrl: String, haveYouCompletedThisSectionForm: Form[YesNo], clientDetails: ClientDetails, selfEmployments: Seq[SelfEmploymentData], ukProperty:
 Option[PropertyModel], foreignProperty: Option[OverseasPropertyModel])(implicit request:
 Request[_], messages: Messages)
 
@@ -128,20 +129,20 @@ Request[_], messages: Messages)
 
 @foreignPropertySection = {
 
-<h2 class="govuk-heading-m">@messages("agent.your-income-source.foreign-property")</h2>
+    <h2 class="govuk-heading-m">@messages("agent.your-income-source.foreign-property")</h2>
 
-@if(foreignProperty.isDefined) {
-    @hmrcListWithActions(ListWithActions(
-        items = foreignProperty.map { property =>
-            ListWithActionsItem(
-                name = Text(messages("agent.your-income-source.foreign-property.label")),
-                actions = Seq(
-                    ListWithActionsAction(
-                    href = controllers.agent.business.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url,
-                    content = Text(messages("base.change")),
-                    visuallyHiddenText = Some(messages("agent.your-income-source.foreign-property.change-hidden")),
-                    ),
-                    ListWithActionsAction(
+    @if(foreignProperty.isDefined) {
+        @hmrcListWithActions(ListWithActions(
+            items = foreignProperty.map { property =>
+                ListWithActionsItem(
+                    name = Text(messages("agent.your-income-source.foreign-property.label")),
+                    actions = Seq(
+                        ListWithActionsAction(
+                            href = controllers.agent.business.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url,
+                            content = Text(messages("base.change")),
+                            visuallyHiddenText = Some(messages("agent.your-income-source.foreign-property.change-hidden")),
+                        ),
+                ListWithActionsAction(
                     href = controllers.agent.business.routes.RemoveOverseasPropertyController.show.url,
                     content = Text(messages("base.remove")),
                     visuallyHiddenText = Some(messages("agent.your-income-source.foreign-property.remove-hidden")),
@@ -157,8 +158,30 @@ Request[_], messages: Messages)
 }
 
 }
+
+@yesNoRadios() = {
+    @radioHelper(
+        field = haveYouCompletedThisSectionForm(HaveYouCompletedThisSectionForm.fieldName),
+        legend = messages("agent.your-income-source.completed.form.heading"),
+        isPageHeading = false,
+        headingClasses = "govuk-!-font-weight-bold",
+        radioItems = Seq(
+            RadioItem(
+                content = Text(messages("agent.your-income-source.completed.form.yes")),
+                value = Some(Yes.toString)
+            ),
+            RadioItem(
+                content = Text(messages("agent.your-income-source.completed.form.no")),
+                value = Some(No.toString)
+            )
+        )
+    )
+}
+
+
 @agentMainTemplate(
     title = messages("agent.your-income-source.title"),
+    optForm = Some(haveYouCompletedThisSectionForm),
     backLink = Some(backUrl)
 ) {
     <span class="govuk-caption-l">
@@ -177,9 +200,12 @@ Request[_], messages: Messages)
         @foreignPropertySection
     }
 
-    <div class="govuk-form-group">
-        @continueButton()
-    </div>
-
-
+    @form(action = postAction) {
+        <div class="govuk-form-group">
+            @yesNoRadios()
+            <div class="govuk-body">
+                @continueButton()
+            </div>
+        </div>
+    }
 }
