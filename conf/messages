@@ -849,33 +849,35 @@ agent.no-sa.heading                                             = Your client is
 agent.no-sa.line-1                                              = To use this service, your client needs to <a class="govuk-link" id="sa-signup" href="{0}">register for Self Assessment</a>.
 
 # Agent Task List
-agent.business.task-list.title                                        = Your client’s details
-agent.business.task-list.heading.incomplete                           = Application incomplete
-agent.business.task-list.heading.complete                             = Application complete
-agent.business.task-list.content.summary                              = You have completed {0} of {1} sections.
-agent.business.task-list.client-information.heading                   = Your client’s information
-agent.business.task-list.client-information.name                      = Name
-agent.business.task-list.client-information.nino                      = National Insurance number
-agent.business.task-list.client-information.utr                       = Unique Taxpayer Reference (UTR)
-agent.business.task-list.content.section1                             = Choose a tax year to sign up
-agent.business.task-list.content.section1.action                      = Select tax year
-agent.business.task-list.content.section1.current-tax-year            = Current tax year (6 April {0} to 5 April {1})
-agent.business.task-list.content.section1.next-tax-year               = Next tax year (6 April {0} to 5 April {1})
-agent.business.task-list.content.section2                             = Tell us about your client’s income
-agent.business.task-list.content.section2.business                    = Business {0}
-agent.business.task-list.content.section2.add                         = Add a business
-agent.business.task-list.content.section2.property.uk                 = UK property business
-agent.business.task-list.content.section2.property.overseas           = Overseas property business
-agent.business.task-list.content.section2.remove-sole-trader-business = Remove {0}
-agent.business.task-list.content.section2.remove-uk-property          = Remove UK property business
-agent.business.task-list.content.section2.remove-overseas-property    = Remove overseas property business
-agent.business.task-list.content.section2.para                        = You must add all your client’s sole trader businesses, up to a maximum of {0}. You do not need to add their PAYE earnings. But you must add any property businesses they have, which is limited to one UK property business and one overseas property business.
-agent.business.task-list.content.section3                             = Sign up
-agent.business.task-list.content.action-needed                        = You need to complete all sections above before you can confirm and sign up your client.
-agent.business.task-list.status.completed                             = Complete
-agent.business.task-list.status.incomplete                            = Incomplete
-agent.business.task-list.status.in-progress                           = In progress
-agent.business.task-list.status.not-started                           = Not started
+agent.business.task-list.title                                              = Sign up your client for Making Tax Digital for Income Tax
+agent.business.task-list.heading.incomplete                                 = Application incomplete
+agent.business.task-list.heading.complete                                   = Application complete
+agent.business.task-list.content.summary                                    = You have completed {0} of {1} sections.
+agent.business.task-list.client-information.heading                         = Your client’s information
+agent.business.task-list.client-information.name                            = Name
+agent.business.task-list.client-information.nino                            = National Insurance number
+agent.business.task-list.client-information.utr                             = Unique Taxpayer Reference (UTR)
+agent.business.task-list.content.tax-year.heading                           = Choose a tax year to sign up
+agent.business.task-list.content.tax-year.action                            = Select tax year
+agent.business.task-list.content.tax-year.current-tax-year                  = Current tax year (6 April {0} to 5 April {1})
+agent.business.task-list.content.tax-year.next-tax-year                     = Next tax year (6 April {0} to 5 April {1})
+agent.business.task-list.content.income-sources.heading                     = Tell us about your client’s income
+agent.business.task-list.content.income-sources.business                    = Business {0}
+agent.business.task-list.content.income-sources.add                         = Add a business
+agent.business.task-list.content.income-sources.property.uk                 = UK property business
+agent.business.task-list.content.income-sources.property.overseas           = Overseas property business
+agent.business.task-list.content.income-sources.remove-sole-trader-business = Remove {0}
+agent.business.task-list.content.income-sources.remove-uk-property          = Remove UK property business
+agent.business.task-list.content.income-sources.remove-overseas-property    = Remove overseas property business
+agent.business.task-list.content.add-income.heading                         = Your client’s income sources
+agent.business.task-list.content.add-income.add-text                        = Add your client’s income sources
+agent.business.task-list.content.add-income.view-text                       = View your client’s income sources
+agent.business.task-list.content.action-needed                              = You need to complete all sections above before you can confirm and sign up your client.
+agent.business.task-list.content.action-complete                            = You can now sign up your client.
+agent.business.task-list.status.completed                                   = Complete
+agent.business.task-list.status.incomplete                                  = Incomplete
+agent.business.task-list.status.in-progress                                 = In progress
+agent.business.task-list.status.not-started                                 = Not started
 
 
 # Agent Overseas Property Start Date Page errors

@@ -285,10 +285,10 @@ object MessageLookup {
   }
 
   object TaskList {
-    val agentTitle = "Your client’s details - Use software to report your client’s Income Tax - GOV.UK"
+    val agentHeading = "Sign up your client for Making Tax Digital for Income Tax"
+    val agentTitle = s"$agentHeading - Use software to report your client’s Income Tax - GOV.UK"
     val heading = "Sign up for Making Tax Digital for Income Tax"
     val title = s"$heading - Use software to send Income Tax updates - GOV.UK"
-    val agentHeading = "Your client’s details"
 
     val userInfoHeading = "Your information"
     val userInfoContent = "Full name: individualUserFullName National Insurance number: individualUserNino Unique Taxpayer Reference (UTR): individualUTRNumber"
@@ -306,9 +306,9 @@ object MessageLookup {
     val agentItem1 = "1. Your client’s information"
     val agentItem2 = "2. Tell us about your client’s income"
     val agentItem3 = "3. Choose a tax year to sign up"
-    val agentItem3Para = "You must add all your client’s sole trader businesses, up to a maximum of 50. You do not need to add their PAYE earnings. But you must add any property businesses they have, which is limited to one UK property business and one overseas property business."
     val signUpIncompleteText = "You need to complete all sections above before you can sign up."
     val signUpReadyText = "You can now sign up."
+    val agentSignUpReadyText = "You can now sign up your client."
     val agentSignUpIncompleteText = "You need to complete all sections above before you can confirm and sign up your client."
     val item3Para = "Select when you want to start using Making Tax Digital for Income Tax."
     val continue = "Submit and continue"

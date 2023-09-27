@@ -110,6 +110,7 @@ class AgentTaskListViewSpec extends ViewSpec {
   def document(taskList: TaskListModel): Document = Jsoup.parse(page(taskList).body)
 
   "business task list view" when {
+
     "given empty task list model" must {
       val doc = document(emptyTaskList)
       "have a title" in {
@@ -141,13 +142,6 @@ class AgentTaskListViewSpec extends ViewSpec {
             doc.mainContent.getElementsByClass("govuk-summary-list__key").text contains s"Client: $clientName | $clientNino |$clientUtr"
           }
 
-          "in the business section: display the information para" should {
-            "display the sign up incomplete text" in {
-              val infoPara = doc.mainContent.selectHead(selectorForFirstParaOfBusiness).selectHead("p")
-              infoPara.text mustBe agentItem3Para
-            }
-          }
-
           "in the select tax year section: display the select tax year link with status incomplete" when {
             "the user has not selected any tax year to sign up" in {
               val selectTaxYearSection = doc.mainContent.selectNth("ul", 1)
@@ -167,7 +161,7 @@ class AgentTaskListViewSpec extends ViewSpec {
           }
 
           "display the sign up incomplete text" in {
-            val incompleteText = doc.mainContent.selectNth("p", 3)
+            val incompleteText = doc.mainContent.selectNth("p", 2)
             incompleteText.text mustBe agentSignUpIncompleteText
           }
 
@@ -284,7 +278,7 @@ class AgentTaskListViewSpec extends ViewSpec {
       }
 
       "display the sign up incomplete text" in {
-        val incompleteText = doc.mainContent.selectNth("p", 3)
+        val incompleteText = doc.mainContent.selectNth("p", 2)
         incompleteText.text mustBe agentSignUpIncompleteText
       }
 
@@ -352,13 +346,14 @@ class AgentTaskListViewSpec extends ViewSpec {
         businessLink.attr("href") mustBe controllers.agent.routes.WhatIncomeSourceToSignUpController.show().url
       }
 
+      "display the text to let them know they can now sign up" in {
+        doc.mainContent.selectNth("p", 2).text mustBe agentSignUpReadyText
+      }
+
       "display the sign up button" in {
         doc.mainContent.selectHead("button").text mustBe submitContinue
       }
 
-      "do not display the sign up incomplete text" in {
-        doc.mainContent.selectOptionalNth("p", 3) mustBe None
-      }
     }
   }
 
