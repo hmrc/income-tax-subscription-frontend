@@ -82,8 +82,6 @@ class OverseasPropertyAccountingMethodController @Inject()(val auditingService: 
   def backUrl(isEditMode: Boolean): String = {
     if (isEditMode) {
       routes.OverseasPropertyCheckYourAnswersController.show(isEditMode).url
-    } else if (isEnabled(EnableTaskListRedesign)){
-      routes.OverseasPropertyCountController.show().url
     } else {
       routes.OverseasPropertyStartDateController.show().url
     }

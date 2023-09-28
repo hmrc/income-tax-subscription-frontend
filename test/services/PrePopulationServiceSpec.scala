@@ -52,8 +52,8 @@ class PrePopulationServiceSpec extends TestPrePopulationService {
   private val overseasProperty = Some(PrePopOverseasProperty(Some(DateModel("2", "2", "2002")), Some(Accruals)))
 
   private val testBusinessAccountingMethod = AccountingMethodModel(Accruals) // first found, see selfEmploymentsWithAccountingMethod
-  private val testUkProperty = PropertyModel(Some(Cash), None, Some(DateModel("1", "1", "2001")))
-  private val testOverseasProperty = OverseasPropertyModel(Some(Accruals), None, Some(DateModel("2", "2", "2002")))
+  private val testUkProperty = PropertyModel(Some(Cash), Some(DateModel("1", "1", "2001")))
+  private val testOverseasProperty = OverseasPropertyModel(Some(Accruals), Some(DateModel("2", "2", "2002")))
 
   override def beforeEach(): Unit = {
     super.beforeEach()

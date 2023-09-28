@@ -53,17 +53,6 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
 
   private val incompleteProperty = PropertyModel()
 
-  private val completeAccrualsCountofProperty = PropertyModel(
-    accountingMethod = Some(Accruals),
-    startDate = Some(DateModel("8", "11", "2021")),
-    count = Some(4)
-  )
-  private val completeCashCountOfProperty = PropertyModel(
-    accountingMethod = Some(Cash),
-    startDate = Some(DateModel("8", "11", "2021")),
-    count = Some(4)
-  )
-
   object PropertyCheckYourAnswers {
     val title = "Check your answers - UK property business"
     val heading = "Check your answers"
@@ -240,43 +229,6 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
         }
       }
     }
-  }
-
-  "task list redesign is enabled - all the answers have been completed" which {
-    enable(EnableTaskListRedesign)
-    assertRow(
-      document(viewModel = completeAccrualsCountofProperty),
-      section = "start date",
-      index = 1,
-      PropertyCheckYourAnswers.startDateQuestion,
-      answer = Some("8 November 2021"),
-      changeLink = controllers.agent.business.routes.PropertyStartDateController.show(editMode = true).url
-    )
-    assertRow(
-      document(viewModel = completeAccrualsCountofProperty),
-      section = "Number of properties",
-      index = 2,
-      PropertyCheckYourAnswers.numberOfPropertiesQuestion,
-      answer = Some("4"),
-      changeLink = controllers.agent.business.routes.UkPropertyCountController.show(editMode = true).url
-    )
-    assertRow(
-      document(viewModel = completeCashCountOfProperty),
-      section = "cash accounting method",
-      index = 3,
-      PropertyCheckYourAnswers.accountMethodQuestion,
-      answer = Some("Cash basis accounting"),
-      changeLink = controllers.agent.business.routes.PropertyAccountingMethodController.show(editMode = true).url
-    )
-    assertRow(
-      document(viewModel = completeAccrualsCountofProperty),
-      section = "accruals accounting method",
-      index = 3,
-      PropertyCheckYourAnswers.accountMethodQuestion,
-      answer = Some("Traditional accounting"),
-      changeLink = controllers.agent.business.routes.PropertyAccountingMethodController.show(editMode = true).url
-    )
-
   }
 
   private def assertRow(

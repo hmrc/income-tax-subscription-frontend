@@ -87,14 +87,14 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBase
         "save the overseas property answers" in {
           withController { controller =>
             enable(EnableTaskListRedesign)
-            mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash), count = Some(1), startDate = Some(DateModel("10", "11", "2021")))))
+            mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
             setupMockSubscriptionDetailsSaveFunctions()
 
             val result: Future[Result] = await(controller.submit()(subscriptionRequestWithName))
 
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)
-            verifyOverseasPropertySave(Some(OverseasPropertyModel(accountingMethod = Some(Cash), count = Some(1), startDate = Some(DateModel("10", "11", "2021")), confirmed = true)))
+            verifyOverseasPropertySave(Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true)))
           }
         }
       }

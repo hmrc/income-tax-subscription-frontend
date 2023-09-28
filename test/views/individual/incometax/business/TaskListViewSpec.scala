@@ -75,7 +75,7 @@ class TaskListViewSpec extends ViewSpec {
       SelfEmploymentData("id1", businessName = Some(BusinessNameModel("Name1"))),
       SelfEmploymentData("id2", businessName = Some(BusinessNameModel("Name2")), businessTradeName = Some(BusinessTradeNameModel("TradeName")))
     ),
-    ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")))),
+    ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")))),
     overseasProperty = Some(OverseasPropertyModel(startDate = Some(DateModel("1", "2", "3"))))
   )
 
@@ -90,7 +90,7 @@ class TaskListViewSpec extends ViewSpec {
       confirmed = true
     )),
     selfEmploymentAccountingMethod = Some(Cash),
-    ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
+    ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
     overseasProperty = Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("1", "2", "3")), confirmed = true)),
     incomeSourcesConfirmed = Some(true)
   )

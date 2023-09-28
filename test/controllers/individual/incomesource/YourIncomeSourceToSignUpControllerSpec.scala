@@ -146,14 +146,12 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
 
   def testUkProperty: PropertyModel = PropertyModel(
     accountingMethod = Some(Cash),
-    count = None,
     startDate = Some(DateModel("2", "2", "1981")),
     confirmed = true
   )
 
   def testForeignProperty: OverseasPropertyModel = OverseasPropertyModel(
     accountingMethod = Some(Cash),
-    count = None,
     startDate = Some(DateModel("3", "3", "1982")),
     confirmed = true
   )

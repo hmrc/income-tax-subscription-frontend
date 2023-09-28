@@ -60,7 +60,7 @@ class PropertyCheckYourAnswersController @Inject()(val propertyCheckYourAnswersV
     implicit user =>
       withAgentReference { reference =>
         withProperty(reference) { property =>
-          if (property.accountingMethod.isDefined && property.startDate.isDefined  && (isDisabled(EnableTaskListRedesign) || property.count.isDefined)) {
+          if (property.accountingMethod.isDefined && property.startDate.isDefined) {
             subscriptionDetailsService.saveProperty(reference, property.copy(confirmed = true)) map {
               case Right(_) => Redirect(controllers.agent.routes.TaskListController.show())
               case Left(_) => throw new InternalServerException("[PropertyCheckYourAnswersController][submit] - Could not confirm property")

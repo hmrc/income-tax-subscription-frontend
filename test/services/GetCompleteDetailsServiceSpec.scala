@@ -59,7 +59,6 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
 
   val foreignProperty: OverseasPropertyModel = OverseasPropertyModel(
     accountingMethod = Some(Cash),
-    count = None,
     startDate = Some(DateModel("3", "1", "1980"))
   )
 

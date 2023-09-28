@@ -469,44 +469,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       )
     }
 
-    def overseasPropertyCount(sessionData: Map[String, String] = Map(
-      UserMatchingSessionUtil.firstName -> testFirstName,
-      UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.NINO -> testNino
-    )): WSResponse = get("/business/overseas-properties-count", sessionData)
-
-    def submitOverseasPropertyCount(isEditMode: Boolean, request: Option[Int], sessionData: Map[String, String] = Map(
-      UserMatchingSessionUtil.firstName -> testFirstName,
-      UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.NINO -> testNino
-    )): WSResponse = {
-      post(uri = s"/business/overseas-properties-count?editMode=$isEditMode", sessionData)(
-        body = request.fold(Map.empty[String, Seq[String]])(
-          count =>
-            OverseasPropertyCountForm.form.fill(count).data.map { case (k, v) => (k, Seq(v)) }
-        )
-      )
-    }
-
-    def ukPropertyCount(sessionData: Map[String, String] = Map(
-      UserMatchingSessionUtil.firstName -> testFirstName,
-      UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.NINO -> testNino
-    )): WSResponse = get("/business/uk-properties-count", sessionData)
-
-    def submitUkPropertyCount(isEditMode: Boolean, request: Option[Int], sessionData: Map[String, String] = Map(
-      UserMatchingSessionUtil.firstName -> testFirstName,
-      UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.NINO -> testNino
-    )): WSResponse = {
-      post(uri = s"/business/uk-properties-count?editMode=$isEditMode", sessionData)(
-        body = request.fold(Map.empty[String, Seq[String]])(
-          count =>
-            UkPropertyCountForm.form.fill(count).data.map { case (k, v) => (k, Seq(v)) }
-        )
-      )
-    }
-
     def getClientRemoveUkProperty: WSResponse = get("/business/remove-uk-property-business")
 
 
