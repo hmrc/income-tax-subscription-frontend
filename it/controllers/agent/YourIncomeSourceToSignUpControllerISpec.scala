@@ -28,25 +28,51 @@ import models.common.business.SelfEmploymentData
 import play.api.http.Status._
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys
+import helpers.IntegrationTestConstants.taskListURI
+import helpers.IntegrationTestModels.{testBusinesses, testFullOverseasPropertyModel, testFullPropertyModel}
 
 
 class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
-  private val serviceNameGovUk = "Use software to report your client’s Income Tax - GOV.UK"
-  "GET /report-quarterly/income-and-expenses/sign-up/client/your-income-source" should {
-    "return OK" in {
+  private val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
+
+
+
+  s"GET ${routes.YourIncomeSourceToSignUpController.show.url}" should {
+    "return OK" when {
+      "there are no income sources added" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
 
-      When(s"GET ${routes.YourIncomeSourceToSignUpController.show().url} is called")
-      val res = IncomeTaxSubscriptionFrontend.agentBusinessIncomeSource()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessesKey, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, NO_CONTENT)
 
-      Then("Should return OK with the income source page")
-      res must have(
-        httpStatus(OK),
-        pageTitle(
-          s"${messages("agent.your-income-source.heading")} - $serviceNameGovUk"
+        When(s"GET ${routes.YourIncomeSourceToSignUpController.show.url} is called")
+        val res = IncomeTaxSubscriptionFrontend.yourIncomeSourcesAgent()
+
+        Then("Should return a OK with the income source page")
+        res must have(
+          httpStatus(OK),
+          pageTitle(messages("agent.your-income-source.title") + serviceNameGovUk)
         )
-      )
+      }
+      "there are multiple income sources added" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessesKey, OK, Json.toJson(testBusinesses))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
+
+        When(s"GET ${routes.YourIncomeSourceToSignUpController.show.url} is called")
+        val res = IncomeTaxSubscriptionFrontend.yourIncomeSourcesAgent()
+
+        Then("Should return a OK with the income source page")
+        res must have(
+          httpStatus(OK),
+          pageTitle(messages("agent.your-income-source.title") + serviceNameGovUk)
+        )
+      }
     }
   }
+
 }

@@ -17,6 +17,7 @@
 package controllers.agent
 
 import auth.agent.AuthenticatedController
+import auth.agent.IncomeTaxAgentUser
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
 import play.api.mvc._
@@ -24,9 +25,11 @@ import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import views.html.agent.YourIncomeSourceToSignUp
 import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
+import models.common.business.SelfEmploymentData
+import models.common.{OverseasPropertyModel, PropertyModel}
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ExecutionContext}
 
 @Singleton
 class YourIncomeSourceToSignUpController @Inject()(val yourIncomeSourceToSignUp: YourIncomeSourceToSignUp,
@@ -38,17 +41,42 @@ class YourIncomeSourceToSignUpController @Inject()(val yourIncomeSourceToSignUp:
                                                     mcc: MessagesControllerComponents) extends AuthenticatedController
   
   with ReferenceRetrieval {
-  def show(): Action[AnyContent] = Authenticated { implicit request =>
+  def show(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      Ok(view)
+      withAgentReference { reference =>
+        for {
+          businesses <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
+          ukProperty <- subscriptionDetailsService.fetchProperty(reference)
+          foreignProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
+        } yield {
+          Ok(view(
+            selfEmployments = businesses,
+            ukProperty = ukProperty,
+            foreignProperty = foreignProperty
+          ))
+        }
+      }
 
   }
 
-  private def view(implicit request: Request[AnyContent]): Html = {
+  def submit: Action[AnyContent] = Authenticated { implicit request =>
+    implicit user =>
+      Redirect(controllers.agent.routes.TaskListController.show())
+  }
+
+  def backUrl: String = controllers.agent.routes.TaskListController.show().url
+
+  private def view(selfEmployments: Seq[SelfEmploymentData],
+                   ukProperty: Option[PropertyModel],
+                   foreignProperty: Option[OverseasPropertyModel])(implicit request: Request[AnyContent]): Html =
     yourIncomeSourceToSignUp(
-      backUrl = controllers.agent.routes.TaskListController.show().url,
-      clientDetails = request.clientDetails
+      postAction = routes.YourIncomeSourceToSignUpController.submit,
+      backUrl = backUrl,
+      clientDetails = request.clientDetails,
+      selfEmployments,
+      ukProperty,
+      foreignProperty,
     )
-  }
+
 
 }

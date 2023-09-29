@@ -658,16 +658,28 @@ agent.income-source.foreign-property            = Busnes eiddo tramor
 agent.income-source.error                       = Dewiswch ffynhonnell incwm eich cleient
 
 ## agent your income sources to sign up page
-agent.your-income-source.title                        = Ffynonellau incwm eich cleient
-agent.your-income-source.heading                      = Ffynonellau incwm eich cleient
-agent.your-income-source.heading2                     = Dim ond y ffynonellau incwm sy’n berthnasol i’ch cleient y mae angen i chi eu hychwanegu.
-agent.your-income-source.caption                      = {0} | {1}
-agent.your-income-source.self-employed                = Unig fasnachwr
-agent.your-income-source.self-employed-link           = Ychwanegu ffynhonnell incwm unig fasnachwr
-agent.your-income-source.uk-property                  = Eiddo yn y DU
-agent.your-income-source.uk-property-link             = Ychwanegu ffynhonnell incwm busnes eiddo yn y DU
-agent.your-income-source.foreign-property             = Eiddo tramor
-agent.your-income-source.foreign-property-link        = Ychwanegu ffynhonnell incwm eiddo tramor
+agent.your-income-source.title                              = Ffynonellau incwm eich cleient
+agent.your-income-source.heading                            = Ffynonellau incwm eich cleient
+agent.your-income-source.heading2                           = Dim ond y ffynonellau incwm sy’n berthnasol i’ch cleient y mae angen i chi eu hychwanegu.
+agent.your-income-source.caption                            = {0} | {1}
+agent.your-income-source.self-employed                      = Unig fasnachwr
+agent.your-income-source.self-employed-link                 = Ychwanegu ffynhonnell incwm unig fasnachwr
+agent.your-income-source.self-employed.label-full           = {0} - {1}
+agent.your-income-source.self-employed.label-none           = Busnes {0}
+agent.your-income-source.self-employed.add-link             = Ychwanegu ffynhonnell incwm unig fasnachwr
+agent.your-income-source.self-employed.add-another-link     = Ychwanegu ffynhonnell incwm unig fasnachwr
+agent.your-income-source.self-employed.change-hidden        = Change {0} (NEEDS TRANSLATION)
+agent.your-income-source.self-employed.remove-hidden        = Tynnu {0}
+agent.your-income-source.uk-property                        = Eiddo yn y DU
+agent.your-income-source.uk-property.label                  = UK property income source (NEEDS TRANSLATION)
+agent.your-income-source.uk-property.add-link               = Ychwanegu ffynhonnell incwm busnes eiddo yn y DU
+agent.your-income-source.uk-property.change-hidden          = Change UK property income source (NEEDS TRANSLATION)
+agent.your-income-source.uk-property.remove-hidden          = Remove UK property income source (NEEDS TRANSLATION)
+agent.your-income-source.foreign-property                   = Eiddo tramor
+agent.your-income-source.foreign-property.label             = Eiddo tramor
+agent.your-income-source.foreign-property.add-link          = Ychwanegu ffynhonnell incwm eiddo tramor
+agent.your-income-source.foreign-property.change-hidden     = Change foreign property income source .. in Welsh
+agent.your-income-source.foreign-property.remove-hidden     = Remove foreign property income source .. in Welsh
 
 
 # Property income page

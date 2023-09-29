@@ -17,15 +17,23 @@
 package controllers.agent
 
 import connectors.subscriptiondata.mocks.MockIncomeTaxSubscriptionConnector
+import controllers.agent.{YourIncomeSourceToSignUpController, routes}
+import models.{Cash, DateModel}
+import models.common.{OverseasPropertyModel, PropertyModel}
+import models.common.business.{Address, BusinessAddressModel, BusinessNameModel, BusinessStartDate, BusinessTradeNameModel, SelfEmploymentData}
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.Assertion
-import play.api.http.Status.OK
-import play.api.mvc.{Action, AnyContent}
-import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, status}
+import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.mvc.{Action, AnyContent, Result}
+import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockAuditingService, MockSubscriptionDetailsService}
 import views.html.agent.YourIncomeSourceToSignUp
+
+
+import scala.concurrent.Future
 
 class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
   with MockSubscriptionDetailsService
@@ -37,26 +45,65 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
 
 
   "show" should {
-    "return OK status" in {
+    "return OK status" when {
+      "there are no income sources added" in new Setup {
+        mockFetchAllSelfEmployments(Seq.empty)
+        mockFetchProperty(None)
+        mockFetchOverseasProperty(None)
 
-      withController { controller =>
-        val result = await(controller.show()(subscriptionRequestWithName))
+        mockYourIncomeSourceToSignUpView(
+          selfEmployments = Seq.empty,
+          ukProperty = None,
+          foreignProperty = None
+        )
+
+        val result: Result = await(controller.show()(subscriptionRequestWithName))
+
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+      }
+      "there are multiple different income sources added" in new Setup {
+        mockFetchAllSelfEmployments(Seq(
+          testSelfEmployment("id").encrypt(crypto.QueryParameterCrypto),
+          testSelfEmployment("id2").encrypt(crypto.QueryParameterCrypto)
+        ))
+        mockFetchProperty(Some(testUkProperty))
+        mockFetchOverseasProperty(Some(testForeignProperty))
+
+        mockYourIncomeSourceToSignUpView(
+          selfEmployments = Seq(
+            testSelfEmployment("id"),
+            testSelfEmployment("id2")
+          ),
+          ukProperty = Some(testUkProperty),
+          foreignProperty = Some(testForeignProperty)
+        )
+
+        val result: Result = await(controller.show()(subscriptionRequestWithName))
+
         status(result) mustBe OK
         contentType(result) mustBe Some(HTML)
       }
     }
-
   }
 
+  "submit" must {
+    "redirect to the task list page" in new Setup {
+      val result: Future[Result] = controller.submit(subscriptionRequest)
 
-  private def withController(testCode: YourIncomeSourceToSignUpController => Assertion) = {
-    val yourIncomeSourceToSignUpView = mock[YourIncomeSourceToSignUp]
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)
+    }
+  }
 
-    when(yourIncomeSourceToSignUpView(
-      any(),
-      any()
-    )(any(), any(), any()))
-      .thenReturn(HtmlFormat.empty)
+  "backUrl" should {
+    "go to the Task List Page" in new Setup {
+      controller.backUrl mustBe controllers.agent.routes.TaskListController.show().url
+    }
+  }
+
+  trait Setup {
+    val yourIncomeSourceToSignUpView: YourIncomeSourceToSignUp = mock[YourIncomeSourceToSignUp]
 
     val controller = new YourIncomeSourceToSignUpController(
       yourIncomeSourceToSignUpView,
@@ -65,7 +112,52 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
       mockAuthService
     )
 
-    testCode(controller)
+    def mockYourIncomeSourceToSignUpView(selfEmployments: Seq[SelfEmploymentData],
+                                         ukProperty: Option[PropertyModel],
+                                         foreignProperty: Option[OverseasPropertyModel]): Unit = {
+      when(yourIncomeSourceToSignUpView(
+        ArgumentMatchers.eq(routes.YourIncomeSourceToSignUpController.submit),
+        ArgumentMatchers.eq(controllers.agent.routes.TaskListController.show().url),
+        ArgumentMatchers.any(),
+        ArgumentMatchers.eq(selfEmployments),
+        ArgumentMatchers.eq(ukProperty),
+        ArgumentMatchers.eq(foreignProperty)
+      )(ArgumentMatchers.any(), ArgumentMatchers.any()))
+        .thenReturn(HtmlFormat.empty)
+    }
   }
+
+  def testSelfEmployment(id: String): SelfEmploymentData = SelfEmploymentData(
+    id = id,
+    businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
+    businessName = Some(BusinessNameModel("business name")),
+    businessTradeName = Some(BusinessTradeNameModel("business trade")),
+    businessAddress = Some(BusinessAddressModel(Address(
+      lines = Seq(
+        "1 long road",
+        "lonely street"
+      ),
+      postcode = Some("ZZ1 1ZZ")
+    ))),
+    confirmed = true
+  )
+
+  def testUkProperty: PropertyModel = PropertyModel(
+    accountingMethod = Some(Cash),
+    startDate = Some(DateModel("2", "2", "1981")),
+    confirmed = true
+  )
+
+  def testForeignProperty: OverseasPropertyModel = OverseasPropertyModel(
+    accountingMethod = Some(Cash),
+    startDate = Some(DateModel("3", "3", "1982")),
+    confirmed = true
+  )
+
+
+
+
+
+
 
 }

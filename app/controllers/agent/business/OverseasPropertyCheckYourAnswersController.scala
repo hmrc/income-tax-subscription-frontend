@@ -18,6 +18,7 @@ package controllers.agent.business
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.utils.ReferenceRetrieval
 import models.common.OverseasPropertyModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -71,7 +72,9 @@ class OverseasPropertyCheckYourAnswersController @Inject()(val overseasPropertyC
 
   def backUrl(isEditMode: Boolean): String = {
     if (isEditMode) {
-      controllers.agent.routes.TaskListController.show().url
+        if (isEnabled(EnableTaskListRedesign))
+          controllers.agent.routes.YourIncomeSourceToSignUpController.show.url
+        else controllers.agent.routes.TaskListController.show.url
     } else {
       routes.OverseasPropertyAccountingMethodController.show().url
     }

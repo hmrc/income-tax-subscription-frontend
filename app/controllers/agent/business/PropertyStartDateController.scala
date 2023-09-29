@@ -86,7 +86,7 @@ class PropertyStartDateController @Inject()(val propertyStartDate: PropertyStart
       routes.PropertyCheckYourAnswersController.show(isEditMode).url
     } else if (isEnabled(EnableTaskListRedesign)) {
       // Switch to new income sources page
-      controllers.agent.routes.YourIncomeSourceToSignUpController.show().url
+      controllers.agent.routes.YourIncomeSourceToSignUpController.show.url
     } else {
       controllers.agent.routes.WhatIncomeSourceToSignUpController.show().url
     }
