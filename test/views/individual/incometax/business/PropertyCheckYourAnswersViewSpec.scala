@@ -37,18 +37,6 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
     startDate = Some(DateModel("8", "11", "2021")),
   )
 
-  private val completeAccrualsCountofProperty = PropertyModel(
-    accountingMethod = Some(Accruals),
-    startDate = Some(DateModel("8", "11", "2021")),
-    count = Some(4)
-  )
-  private val completeCashCountOfProperty = PropertyModel(
-    accountingMethod = Some(Cash),
-    startDate = Some(DateModel("8", "11", "2021")),
-    count = Some(4)
-  )
-
-
   private val confirmedAccrualsProperty = completeAccrualsProperty.copy(
     confirmed = true
   )

@@ -16,7 +16,6 @@
 
 package views.agent.business
 
-import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import models.common.OverseasPropertyModel
 import models.{Accruals, Cash, DateModel}
 import org.jsoup.Jsoup
@@ -59,29 +58,20 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
 
   private val completeCashProperty = OverseasPropertyModel(
     startDate = Some(DateModel("8", "11", "2021")),
-    count = Some(1),
     accountingMethod = Some(Cash)
   )
 
   private val completeAccrualsProperty = OverseasPropertyModel(
     startDate = Some(DateModel("8", "11", "2021")),
-    count = Some(1),
     accountingMethod = Some(Accruals)
   )
 
   private val propertyWithMissingStartDate = OverseasPropertyModel(
-    count = Some(1),
     accountingMethod = Some(Cash)
   )
 
   private val propertyWithMissingAccountingMethod = OverseasPropertyModel(
-    startDate = Some(DateModel("8", "11", "2021")),
-    count = Some(1)
-  )
-
-  private val propertyWithMissingCount = OverseasPropertyModel(
-    startDate = Some(DateModel("8", "11", "2021")),
-    accountingMethod = Some(Accruals)
+    startDate = Some(DateModel("8", "11", "2021"))
   )
 
   "Foreign Property CYA page" must {
@@ -206,43 +196,6 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
           .mainContent
           .selectHead("button")
           .text mustBe OverseasPropertyCheckYourAnswers.continue
-      }
-    }
-  }
-
-  "Overseas Property CYA page" when {
-    "the task list redesign feature switch is enabled" should {
-      "display the overseas property count row" when {
-        "the count is complete" in {
-          enable(EnableTaskListRedesign)
-
-          val row = document(viewModel = completeCashProperty)
-            .selectNth(".govuk-summary-list__row", 2)
-
-          row.selectHead(".govuk-summary-list__key").text mustBe OverseasPropertyCheckYourAnswers.count
-          row.selectHead(".govuk-summary-list__value").text mustBe "1"
-
-          val link = row.selectHead(".govuk-summary-list__actions").selectHead("a")
-
-          link.attr("href") mustBe controllers.agent.business.routes.OverseasPropertyCountController.show(true).url
-          link.selectHead("span[aria-hidden=\"true\"]").text mustBe OverseasPropertyCheckYourAnswers.change
-          link.selectHead("span.govuk-visually-hidden").text mustBe OverseasPropertyCheckYourAnswers.changeCount
-        }
-        "the count is incomplete" in {
-          enable(EnableTaskListRedesign)
-
-          val row = document(viewModel = propertyWithMissingCount)
-            .selectNth(".govuk-summary-list__row", 2)
-
-          row.selectHead(".govuk-summary-list__key").text mustBe OverseasPropertyCheckYourAnswers.count
-          row.selectHead(".govuk-summary-list__value").text mustBe ""
-
-          val link = row.selectHead(".govuk-summary-list__actions").selectHead("a")
-
-          link.attr("href") mustBe controllers.agent.business.routes.OverseasPropertyCountController.show(true).url
-          link.selectHead("span[aria-hidden=\"true\"]").text mustBe OverseasPropertyCheckYourAnswers.add
-          link.selectHead("span.govuk-visually-hidden").text mustBe OverseasPropertyCheckYourAnswers.addCount
-        }
       }
     }
   }

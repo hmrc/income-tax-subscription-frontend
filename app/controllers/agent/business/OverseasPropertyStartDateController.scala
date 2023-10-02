@@ -71,8 +71,6 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
               case Right(_) =>
                 if (isEditMode) {
                   Redirect(routes.OverseasPropertyCheckYourAnswersController.show(isEditMode))
-                } else if (isEnabled(EnableTaskListRedesign)) {
-                  Redirect(routes.OverseasPropertyCountController.show())
                 } else {
                   Redirect(routes.OverseasPropertyAccountingMethodController.show())
                 }

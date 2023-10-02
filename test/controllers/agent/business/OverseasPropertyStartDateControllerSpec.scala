@@ -121,19 +121,6 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
       }
     }
 
-    "redirect to agent foreign property count page" when {
-      "not in edit mode and the feature switch is enabled" in {
-        setupMockSubscriptionDetailsSaveFunctions()
-        mockFetchOverseasProperty(Some(OverseasPropertyModel()))
-        enable(featureSwitch = EnableTaskListRedesign)
-
-        val goodRequest = callSubmit(isEditMode = false)
-
-        status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.OverseasPropertyCountController.show().url)
-      }
-    }
-
     "redirect to agent overseas check your answers page" when {
       "in edit mode" in {
         setupMockSubscriptionDetailsSaveFunctions()

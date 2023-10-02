@@ -56,7 +56,7 @@ class OverseasPropertyCheckYourAnswersController @Inject()(val view: OverseasPro
     implicit user =>
       withReference { reference =>
         withProperty(reference) {
-          case property@OverseasPropertyModel(Some(_), _, Some(_), _) =>
+          case property@OverseasPropertyModel(Some(_), Some(_), _) =>
             subscriptionDetailsService.saveOverseasProperty(reference, property.copy(confirmed = true)) map {
               case Right(_) => Redirect(routes.TaskListController.show())
               case Left(_) => throw new InternalServerException("[OverseasPropertyCheckYourAnswersController][submit] - Could not confirm property details")
@@ -68,8 +68,8 @@ class OverseasPropertyCheckYourAnswersController @Inject()(val view: OverseasPro
 
   def backUrl(isEditMode: Boolean): String =
     if (isEditMode) {
-        if (isEnabled(EnableTaskListRedesign)) controllers.individual.incomesource.routes.YourIncomeSourceToSignUpController.show.url
-        else controllers.individual.business.routes.TaskListController.show().url
+      if (isEnabled(EnableTaskListRedesign)) controllers.individual.incomesource.routes.YourIncomeSourceToSignUpController.show.url
+      else controllers.individual.business.routes.TaskListController.show().url
     } else {
       controllers.individual.business.routes.OverseasPropertyAccountingMethodController.show().url
     }

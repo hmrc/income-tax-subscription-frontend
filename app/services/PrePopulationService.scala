@@ -60,13 +60,13 @@ class PrePopulationService @Inject()(val subscriptionDetailsService: Subscriptio
 
     val futureSaveUkPropertyInfo = prePopData.ukProperty match {
       case None => Future.successful(())
-      case Some(up) => subscriptionDetailsService.saveProperty(reference, PropertyModel(up.ukPropertyAccountingMethod, None, up.ukPropertyStartDate))
+      case Some(up) => subscriptionDetailsService.saveProperty(reference, PropertyModel(up.ukPropertyAccountingMethod, up.ukPropertyStartDate))
     }
 
     val futureSaveOverseasPropertyInfo = prePopData.overseasProperty match {
       case None => Future.successful(())
       case Some(op) =>
-        subscriptionDetailsService.saveOverseasProperty(reference, OverseasPropertyModel(op.overseasPropertyAccountingMethod, None, op.overseasPropertyStartDate))
+        subscriptionDetailsService.saveOverseasProperty(reference, OverseasPropertyModel(op.overseasPropertyAccountingMethod, op.overseasPropertyStartDate))
     }
 
     val maybeAccountingMethod = prePopData.selfEmployments.flatMap(_.flatMap(_.businessAccountingMethod).headOption)

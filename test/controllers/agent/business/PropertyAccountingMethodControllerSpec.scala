@@ -150,19 +150,9 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
     }
 
     "not in edit mode" should {
-      "the task list redesign feature switch is enabled" should {
-        "redirect to the uk property count page" in withController { controller =>
-          enable(EnableTaskListRedesign)
-          controller.backUrl(
-            isEditMode = false
-          ) mustBe routes.UkPropertyCountController.show().url
-        }
-      }
-      "the task list redesign feature switch is disabled" should {
-        "redirect back to uk property check your answers page" in withController { controller =>
-          controller.backUrl(isEditMode = false) mustBe
-            routes.PropertyStartDateController.show().url
-        }
+      "redirect back to uk property check your answers page" in withController { controller =>
+        controller.backUrl(isEditMode = false) mustBe
+          routes.PropertyStartDateController.show().url
       }
     }
   }

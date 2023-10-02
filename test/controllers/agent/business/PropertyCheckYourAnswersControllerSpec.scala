@@ -88,14 +88,14 @@ class PropertyCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
     "redirect to the task list when the submission is successful" when {
       "the user submits valid full data" in withController { controller =>
         enable(EnableTaskListRedesign)
-        mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash), count = Some(1),startDate = Some(DateModel("10", "11", "2021")))))
+        mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
         setupMockSubscriptionDetailsSaveFunctions()
 
         val result: Future[Result] = await(controller.submit()(subscriptionRequestWithName))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)
-        verifyPropertySave(Some(PropertyModel(accountingMethod = Some(Cash), count = Some(1), startDate = Some(DateModel("10", "11", "2021")), confirmed = true)))
+        verifyPropertySave(Some(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true)))
       }
 
       "the user submits valid partial data" in withController { controller =>

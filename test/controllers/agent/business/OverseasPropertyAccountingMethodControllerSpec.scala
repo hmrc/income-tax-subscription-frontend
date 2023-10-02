@@ -106,7 +106,7 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
 
       status(goodRequest) must be(Status.SEE_OTHER)
 
-      redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.OverseasPropertyCheckYourAnswersController.show(false).url)
+      redirectLocation(goodRequest) mustBe Some(controllers.agent.business.routes.OverseasPropertyCheckYourAnswersController.show().url)
 
       await(goodRequest)
       verifyOverseasPropertySave(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
@@ -144,18 +144,9 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
     }
 
     "The back url is not in edit mode" should {
-      "Task list redesign feature switch is enabled" when {
-        "redirect to overseas property count page" in {
-          enable(EnableTaskListRedesign)
-          TestOverseasPropertyAccountingMethodController.backUrl(isEditMode = false) mustBe
-            controllers.agent.business.routes.OverseasPropertyCountController.show().url
-        }
-      }
-      "Task list redesign feature switch is disabled" when {
-        "redirect to the Overseas Property Start Date page" in {
-          TestOverseasPropertyAccountingMethodController.backUrl(isEditMode = false) mustBe
-            controllers.agent.business.routes.OverseasPropertyStartDateController.show().url
-        }
+      "redirect to the Overseas Property Start Date page" in {
+        TestOverseasPropertyAccountingMethodController.backUrl(isEditMode = false) mustBe
+          controllers.agent.business.routes.OverseasPropertyStartDateController.show().url
       }
     }
 

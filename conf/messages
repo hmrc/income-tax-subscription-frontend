@@ -689,23 +689,11 @@ agent.business.what-year-to-sign-up.option-next-hint            = You or your cl
 agent.eligibility.sole-trader.heading                           = Did your client’s business start trading on or after {0}?
 agent.eligibility.sole-trader.caption                           = {0} | {1}
 
-# Agent Uk property count page
-agent.business.property.count.heading                           = How many properties does your client currently let?
-agent.business.property.count.caption                           = {0} | {1}
-error.agent.business.property.count.empty                       = Enter a number greater than 0.
-error.agent.business.property.count.numeric                     = You can only enter numbers. You can not use special characters, such as hyphens, spaces and apostrophes.
-
 # Agent Property Accounting Method Page
 agent.property.accounting-method.heading                        = What accounting method does your client use for their UK property business?
 agent.property.accounting-method.heading.caption                = {0} | {1}
 agent.property.accounting-method.radio.cash                     = Cash basis accounting
 agent.property.accounting-method.radio.accruals                 = Traditional accounting
-
-# Agent Overseas Property Count Page
-agent.business.overseas-property.count.heading                  = How many foreign properties does your client currently let?
-agent.business.overseas-property.count.caption                  = {0} | {1}
-error.agent.business.overseas-property.count.empty              = Enter a number greater than 0.
-error.agent.business.overseas-property.count.numeric            = You can only enter numbers. You can not use special characters, such as hyphens, spaces and apostrophes.
 
 # Agent Overseas Property Accounting Method Page
 agent.overseas-property.accounting-method.heading               = What accounting method does your client use for their foreign property business?

@@ -50,8 +50,8 @@ class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues 
     taxYearSelection = confirmedEditableYearNext,
     selfEmployments = Seq(completeSeModel),
     selfEmploymentAccountingMethod = Some(Cash),
-    ukProperty = Some(PropertyModel(Some(Cash), Some(1), Some(DateModel("1", "2", "1980")), confirmed = true)),
-    overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(1), Some(date), confirmed = true)),
+    ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
+    overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true)),
     incomeSourcesConfirmed = Some(true)
   )
 

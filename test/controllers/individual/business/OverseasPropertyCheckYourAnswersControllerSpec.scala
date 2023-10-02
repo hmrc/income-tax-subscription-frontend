@@ -70,30 +70,18 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
 
   "submit" should {
     "redirect to the task list and confirm the overseas property details" when {
-      "the user submits a start date, count and accounting method when the task list redesign feature switch is enabled" in withController { controller =>
-        enable(EnableTaskListRedesign)
-        mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash), count = Some(1), startDate = Some(DateModel("10", "11", "2021")))))
+      "the user submits a start date and accounting method" in withController { controller =>
+        val testProperty = OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))
+
+        mockFetchOverseasProperty(Some(testProperty))
         setupMockSubscriptionDetailsSaveFunctions()
 
         val result: Future[Result] = await(controller.submit()(subscriptionRequest))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.individual.business.routes.TaskListController.show().url)
-        verifyOverseasPropertySave(Some(OverseasPropertyModel(accountingMethod = Some(Cash), count = Some(1), startDate = Some(DateModel("10", "11", "2021")), confirmed = true)))
+        verifyOverseasPropertySave(Some(testProperty.copy(confirmed = true)))
       }
-
-      "the user submits a start date and accounting method when the task list redesign feature switch is disabled" in withController { controller =>
-          val testProperty = OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))
-
-          mockFetchOverseasProperty(Some(testProperty))
-          setupMockSubscriptionDetailsSaveFunctions()
-
-          val result: Future[Result] = await(controller.submit()(subscriptionRequest))
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.individual.business.routes.TaskListController.show().url)
-          verifyOverseasPropertySave(Some(testProperty.copy(confirmed = true)))
-        }
 
 
       "the user submits valid partial data" should {
@@ -133,20 +121,20 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
     }
   }
 
-    "backUrl" should {
-      "in edit mode " when {
-        "TaskList is not enabled " should {
-          "return the task list page" in withController { controller =>
-            controller.backUrl(true) mustBe controllers.individual.business.routes.TaskListController.show().url
-          }
-        }
-        "TaskList is enabled " should {
-          "return the your income source page" in withController { controller =>
-            enable(EnableTaskListRedesign)
-            controller.backUrl(true) mustBe controllers.individual.incomesource.routes.YourIncomeSourceToSignUpController.show.url
-          }
+  "backUrl" should {
+    "in edit mode " when {
+      "TaskList is not enabled " should {
+        "return the task list page" in withController { controller =>
+          controller.backUrl(true) mustBe controllers.individual.business.routes.TaskListController.show().url
         }
       }
+      "TaskList is enabled " should {
+        "return the your income source page" in withController { controller =>
+          enable(EnableTaskListRedesign)
+          controller.backUrl(true) mustBe controllers.individual.incomesource.routes.YourIncomeSourceToSignUpController.show.url
+        }
+      }
+    }
     "go to the property accounting method page" when {
       "not in edit mode" in withController { controller =>
         controller.backUrl(false) mustBe controllers.individual.business.routes.OverseasPropertyAccountingMethodController.show().url

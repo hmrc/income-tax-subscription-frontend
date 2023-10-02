@@ -21,7 +21,6 @@ import play.api.libs.json.{Json, OFormat}
 
 case class OverseasPropertyModel(
                                   accountingMethod: Option[AccountingMethod] = None,
-                                  count: Option[Int] = None,
                                   startDate: Option[DateModel] = None,
                                   confirmed: Boolean = false
                                 )
