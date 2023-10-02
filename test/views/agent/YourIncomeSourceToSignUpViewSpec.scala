@@ -20,11 +20,13 @@ import config.featureswitch.FeatureSwitch.ForeignProperty
 import forms.agent.BusinessIncomeSourceForm
 import forms.agent.BusinessIncomeSourceForm.incomeSourceKey
 import models.IncomeSourcesStatus
-import models.common.{OverseasProperty, SelfEmployed, UkProperty}
+import models.common.business.{BusinessNameModel, BusinessTradeNameModel, SelfEmploymentData}
+import models.common.{OverseasProperty, OverseasPropertyModel, PropertyModel, SelfEmployed, UkProperty}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.api.data.FormError
 import play.api.mvc.Call
+import play.twirl.api.Html
 import utilities.UserMatchingSessionUtil.ClientDetails
 import utilities.ViewSpec
 import views.ViewSpecTrait
@@ -50,24 +52,66 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     val ukProperty = "UK property"
     val ukPropertyLinkText = "Add UK property income source"
     val ukPropertyLink = controllers.agent.business.routes.PropertyStartDateController.show().url
-    val foreignProperty = "Foreign property"
+    val foreignPropertyHeading = "Foreign property"
+    val foreignPropertyLabel = "Foreign property income source"
     val foreignPropertyLinkText = "Add foreign property income source"
     val foreignPropertyLink = controllers.agent.business.routes.OverseasPropertyStartDateController.show().url
+    val foreignPropertyChange = "Change foreign property income source"
+    val foreignPropertyRemove = "Remove foreign property income source"
     val errorHeading = "There is a problem"
     val errorSummary = "Select Sole trader business, UK property rental or Overseas property rental"
+
+    val change: String = "Change"
+    val remove: String = "Remove"
   }
 
-  private val testIncomeSourcesStatus = IncomeSourcesStatus(selfEmploymentAvailable = true, ukPropertyAvailable = true, overseasPropertyAvailable = true)
+  val action: Call = ViewSpecTrait.testCall
 
   private val incomeSourceView = app.injector.instanceOf[YourIncomeSourceToSignUp]
 
   private val clientDetails = ClientDetails("FirstName LastName", "ZZ111111Z")
 
+  val selfEmployments: Seq[SelfEmploymentData] = Seq(
+    SelfEmploymentData("idOne", None, Some(BusinessNameModel("business name")), Some(BusinessTradeNameModel("business trade"))),
+    SelfEmploymentData("idOne", None, Some(BusinessNameModel("business name"))),
+    SelfEmploymentData("idOne", None, None, businessTradeName = Some(BusinessTradeNameModel("business trade"))),
+    SelfEmploymentData("idOne")
+
+  )
+
+  val ukProperty: Option[PropertyModel] = Some(PropertyModel())
+  val foreignProperty: Option[OverseasPropertyModel] = Some(OverseasPropertyModel())
+
+  def view(selfEmployments: Seq[SelfEmploymentData] = Seq.empty,
+           ukProperty: Option[PropertyModel] = None,
+           foreignProperty: Option[OverseasPropertyModel] = None): Html = {
+    incomeSourceView(
+      postAction = testCall,
+      backUrl = testBackUrl,
+      clientDetails = clientDetails,
+      selfEmployments = selfEmployments,
+      ukProperty = ukProperty,
+      foreignProperty = foreignProperty
+    )
+  }
+
+  class ViewTest(selfEmployments: Seq[SelfEmploymentData] = Seq.empty,
+                 ukProperty: Option[PropertyModel] = None,
+                 foreignProperty: Option[OverseasPropertyModel] = None,
+                 foreignPropertyEnabled: Boolean = true) {
+
+    if (foreignPropertyEnabled) enable(ForeignProperty)
+
+    val document: Document = Jsoup.parse(view(selfEmployments, ukProperty, foreignProperty).body)
+
+  }
+
+
   "Your Income Source To Sign Up View" should {
     "display the template correctly" when {
 
       "there is no error" in new TemplateViewTest(
-        view = page,
+        view = view(),
         title = AgentIncomeSource.heading,
         isAgent = true,
         backLink = Some(testBackUrl),
@@ -75,59 +119,59 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       )
     }
 
-    "have the heading for the page" in {
-      document().selectHead("h1").text mustBe AgentIncomeSource.heading
+    "have the heading for the page" in new ViewTest {
+      document.mainContent.selectHead("h1").text mustBe AgentIncomeSource.heading
     }
 
 
-    "have a section on Sole trader" in {
-      document().mainContent.getElementById("heading-self-employed").text mustBe AgentIncomeSource.soleTrader
+    "have a section on Sole trader" in new ViewTest {
+      document.mainContent.selectHead("h2").text mustBe AgentIncomeSource.soleTrader
     }
 
-    "have a  Sole trader link" in {
-      val link = document().mainContent.selectNth("div.app-task-list__item", 1).selectHead("a")
+    "have a  Sole trader link" in new ViewTest{
+      val link = document.mainContent.getElementById("add-self-employment").selectHead("a")
       link.text mustBe AgentIncomeSource.soleTraderLinkText
       link.attr("href") mustBe AgentIncomeSource.soleTraderLink
 
     }
 
-    "have a section on UK property" in {
-      document().mainContent.getElementById("heading-uk-property").text mustBe AgentIncomeSource.ukProperty
+    "have a section on UK property" in new ViewTest {
+      document.mainContent.selectNth("h2",2).text mustBe AgentIncomeSource.ukProperty
     }
 
-    "have a  UK property  link" in {
-      val link = document().mainContent.selectNth("div.app-task-list__item", 2).selectHead("a")
+    "have a  UK property  link" in  new ViewTest{
+      val link = document.mainContent.getElementById("add-uk-property").selectHead("a")
       link.text mustBe AgentIncomeSource.ukPropertyLinkText
       link.attr("href") mustBe AgentIncomeSource.ukPropertyLink
     }
 
-    "have a section when feature switch is enabled" which {
-      "mentions overseas property when enabled" in {
-        enable(ForeignProperty)
-        document().mainContent.getElementById("heading-foreign-property").text mustBe AgentIncomeSource.foreignProperty
-      }
-      "have a  Foreign  property  link" in {
-        enable(ForeignProperty)
-        val link = document().mainContent.selectNth("div.app-task-list__item", 3).selectHead("a")
-        link.text mustBe AgentIncomeSource.foreignPropertyLinkText
-        link.attr("href") mustBe AgentIncomeSource.foreignPropertyLink
+    "have a section for foreign property" when {
+      "the foreign property feature switch is enabled" which {
+        "has a heading" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
+          document.mainContent.selectNth("h2", 3).text mustBe AgentIncomeSource.foreignPropertyHeading
+        }
+
+        "has a summary of the added foreign property business" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
+          val summaryList: Element = document.mainContent.selectNth("dl", 3)
+          val row: Element = summaryList.selectNth("div.govuk-summary-list__row", 1)
+
+          row.selectHead("dt").text mustBe AgentIncomeSource.foreignPropertyLabel
+
+          val actions: Element = row.selectHead("dd")
+          val changeLink: Element = actions.selectHead("ul").selectNth("li", 1).selectHead("a")
+          changeLink.selectHead("span[aria-hidden=true]").text mustBe AgentIncomeSource.change
+          changeLink.selectHead("span.govuk-visually-hidden").text mustBe AgentIncomeSource.foreignPropertyChange
+
+          val removeLink: Element = actions.selectHead("ul").selectNth("li", 2).selectHead("a")
+          removeLink.selectHead("span[aria-hidden=true]").text mustBe AgentIncomeSource.remove
+          removeLink.selectHead("span.govuk-visually-hidden").text mustBe AgentIncomeSource.foreignPropertyRemove
+        }
+        "has no link to add a foreign property business" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
+          document.mainContent.selectOptionally("#add-foreign-property") mustBe None
+        }
       }
     }
 
-
   }
-
-
-  private def page = {
-    incomeSourceView(
-      testBackUrl,
-      clientDetails
-    )
-  }
-
-
-  private def document() =
-    Jsoup.parse(page.body)
-
 
 }

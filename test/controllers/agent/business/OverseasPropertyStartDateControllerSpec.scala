@@ -171,7 +171,7 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
         "redirect to agent new income source page" in new Test {
           enable(featureSwitch = EnableTaskListRedesign)
           controller.backUrl(isEditMode = false) mustBe
-            controllers.agent.routes.YourIncomeSourceToSignUpController.show().url
+            controllers.agent.routes.YourIncomeSourceToSignUpController.show.url
         }
       }
     }

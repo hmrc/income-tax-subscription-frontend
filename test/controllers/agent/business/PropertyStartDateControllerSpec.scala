@@ -162,7 +162,7 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
       "redirect to new client's income sources" in withController{ controller =>
         enable(featureSwitch = EnableTaskListRedesign)
         controller.backUrl(isEditMode = false) mustBe
-          controllers.agent.routes.YourIncomeSourceToSignUpController.show().url
+          controllers.agent.routes.YourIncomeSourceToSignUpController.show.url
       }
     }
     "Not in Edit mode the back url with feature switch disabled" should {

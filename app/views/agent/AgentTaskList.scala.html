@@ -23,6 +23,8 @@
 @import views.html.templates.AgentMainTemplate
 @import views.html.helpers.injected.TaskListHelper
 @import views.helpers.models.tasklist._
+@import config.featureswitch.FeatureSwitchingImpl
+@import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 
 @this(
     mainTemplate: AgentMainTemplate,
@@ -32,7 +34,8 @@
     saveAndContinueButton: ButtonHelper,
     taskListHelper : TaskListHelper,
     govukTag : GovukTag,
-    govukSummaryList: GovukSummaryList
+    govukSummaryList: GovukSummaryList,
+    featureSwitching: FeatureSwitchingImpl
 )
 
 @(postAction: Call, viewModel: TaskListModel, clientName: String, clientNino: String, clientUtr: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -144,10 +147,14 @@
 }
 
 @addBusiness ={
+
+
   <div class="app-task-list__items">
-    <a href="@controllers.agent.routes.WhatIncomeSourceToSignUpController.show().url" id="add_business" class="govuk-link">
+    <a href="@controllers.agent.routes.WhatIncomeSourceToSignUpController.show().url"
+       id="add_business" class="govuk-link">
       @{messages(s"${messagePrefix}.content.section2.add")}
     </a>
+
   </div>
 }
 
@@ -238,6 +245,8 @@
   )
 }
 
+
+
 @signUpSectionContent = {
   @if(viewModel.taskListComplete()) {
     <div class = "app-task-list__pre-list">
@@ -260,7 +269,13 @@
   @form(action = postAction){
     @taskListApplicationStatus
     <div class="govuk-!-padding-top-7">
-      @taskListHelper(Seq(yourClientsInformation, businesses, selectTaxYear))
+      @taskListHelper(
+        Seq(
+          yourClientsInformation,
+          businesses,
+          selectTaxYear
+        )
+      )
       @signUpSectionContent
     </div>
   }

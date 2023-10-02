@@ -74,9 +74,12 @@ class PropertyCheckYourAnswersController @Inject()(val propertyCheckYourAnswersV
 
   def backUrl(isEditMode: Boolean): String = {
     if (isEditMode) {
-      controllers.agent.routes.TaskListController.show().url
+        if (isEnabled(EnableTaskListRedesign))
+          controllers.agent.routes.YourIncomeSourceToSignUpController.show.url
+        else controllers.agent.routes.TaskListController.show.url
     } else {
       routes.PropertyAccountingMethodController.show().url
+
     }
   }
 
