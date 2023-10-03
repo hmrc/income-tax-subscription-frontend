@@ -49,6 +49,11 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
       .thenReturn(Status.OK)
   }
 
+  def stubSaveIncomeSourceConfirmation(flag: Boolean): Unit = {
+    when(method = POST, uri = subscriptionUri(IncomeSourceConfirmation), body = Json.toJson(flag))
+      .thenReturn(Status.OK)
+  }
+
   def verifySaveProperty[T](property: PropertyModel, count: Option[Int] = None): Unit = {
     WiremockHelper.verifyPost(subscriptionUri(Property), Some((Json.toJson(property): JsValue).toString()), count)
   }

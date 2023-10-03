@@ -26,6 +26,7 @@ import play.twirl.api.Html
 import utilities.ViewSpec
 import views.ViewSpecTrait
 import views.html.individual.incometax.incomesource.YourIncomeSourceToSignUp
+import forms.individual.incomesource.HaveYouCompletedThisSectionForm
 
 
 class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
@@ -58,6 +59,10 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     val foreignPropertyLinkText = "Add foreign property income source"
     val foreignPropertyChange = "Change foreign property income source"
     val foreignPropertyRemove = "Remove foreign property income source"
+    val completedThisSectionFormHeading = "Have you completed this section?"
+    val completedSectionYes = "Yes, I’ve completed this section"
+    val completedSectionNo = "No, I’ll come back to it later"
+    val continue = "Continue"
 
     val change: String = "Change"
     val remove: String = "Remove"
@@ -83,6 +88,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
            foreignProperty: Option[OverseasPropertyModel] = None): Html = {
     incomeSource(
       postAction = testCall,
+      haveYouCompletedThisSectionForm = HaveYouCompletedThisSectionForm.form,
       backUrl = testBackUrl,
       selfEmployments = selfEmployments,
       ukProperty = ukProperty,
@@ -313,6 +319,24 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         "the foreign property feature switch is not enabled" in new ViewTest(selfEmployments, ukProperty, foreignProperty, false) {
           document.mainContent.selectOptionalNth("h2", 3) mustBe None
         }
+      }
+
+      "has a Have you completed this section?" which {
+        "has a heading" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
+          document.mainContent.selectHead(".govuk-fieldset").selectHead("legend").text mustBe IndividualIncomeSource.completedThisSectionFormHeading
+        }
+
+        "have a Yes, I have completed this section radio button" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
+          document.mainContent.selectNth(".govuk-radios__label", 1).text mustBe IndividualIncomeSource.completedSectionYes
+        }
+
+        "have a No, I will come back to it later radio button" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
+          document.mainContent.selectNth(".govuk-radios__label", 2).text mustBe IndividualIncomeSource.completedSectionNo
+        }
+      }
+
+      "have a continue button and redirect to tasklist page" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
+        document.mainContent.selectHead("#continue-button").text mustBe IndividualIncomeSource.continue
       }
     }
   }

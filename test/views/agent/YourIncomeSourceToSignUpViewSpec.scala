@@ -19,6 +19,7 @@ package views.agent
 import config.featureswitch.FeatureSwitch.ForeignProperty
 import forms.agent.BusinessIncomeSourceForm
 import forms.agent.BusinessIncomeSourceForm.incomeSourceKey
+import forms.agent.HaveYouCompletedThisSectionForm
 import models.IncomeSourcesStatus
 import models.common.business.{BusinessNameModel, BusinessTradeNameModel, SelfEmploymentData}
 import models.common.{OverseasProperty, OverseasPropertyModel, PropertyModel, SelfEmployed, UkProperty}
@@ -60,6 +61,10 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     val foreignPropertyRemove = "Remove foreign property income source"
     val errorHeading = "There is a problem"
     val errorSummary = "Select Sole trader business, UK property rental or Overseas property rental"
+    val completedThisSectionFormHeading = "Have you completed this section?"
+    val completedSectionYes = "Yes, I’ve completed this section"
+    val completedSectionNo = "No, I’ll come back to it later"
+    val continue = "Continue"
 
     val change: String = "Change"
     val remove: String = "Remove"
@@ -88,6 +93,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     incomeSourceView(
       postAction = testCall,
       backUrl = testBackUrl,
+      haveYouCompletedThisSectionForm = HaveYouCompletedThisSectionForm.form,
       clientDetails = clientDetails,
       selfEmployments = selfEmployments,
       ukProperty = ukProperty,
@@ -172,6 +178,22 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       }
     }
 
-  }
+    "have a Have you completed this section?" which {
+      "has a heading" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
+        document.mainContent.selectHead(".govuk-fieldset").selectHead("legend").text mustBe AgentIncomeSource.completedThisSectionFormHeading
+      }
 
+      "have a Yes, I have completed this section radio button" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
+        document.mainContent.selectNth(".govuk-radios__label", 1).text mustBe AgentIncomeSource.completedSectionYes
+      }
+
+      "have a No, I will come back to it later radio button" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
+        document.mainContent.selectNth(".govuk-radios__label", 2).text mustBe AgentIncomeSource.completedSectionNo
+      }
+    }
+
+    "have a continue button and redirect to tasklist page" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
+      document.mainContent.selectHead("#continue-button").text mustBe AgentIncomeSource.continue
+    }
+  }
 }

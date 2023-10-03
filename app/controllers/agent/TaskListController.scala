@@ -90,6 +90,7 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
       businessAccountingMethod <- subscriptionDetailsService.fetchSelfEmploymentsAccountingMethod(reference)
       property <- subscriptionDetailsService.fetchProperty(reference)
       overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
+      incomeSourcesConfirmed <- subscriptionDetailsService.fetchIncomeSourcesConfirmation(reference)
     } yield {
       TaskListModel(
         selectedTaxYear,
@@ -97,7 +98,7 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
         businessAccountingMethod,
         property,
         overseasProperty,
-        None //todo: implement this value in future story
+        incomeSourcesConfirmed
       )
     }
   }

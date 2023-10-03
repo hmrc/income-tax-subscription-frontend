@@ -80,7 +80,7 @@ class TaskListControllerSpec extends ControllerBaseSpec
   "show" should {
     "return an OK status with the task list page" in {
       mockTaskList()
-
+      mockFetchIncomeSourceConfirmation(Some(true))
       mockFetchAllSelfEmployments(Seq(
         SelfEmploymentData(
           id = "id",

@@ -100,6 +100,10 @@ your-income-source.foreign-property.label                       = Ffynhonnell in
 your-income-source.foreign-property.add-link                    = Ychwanegu ffynhonnell incwm eiddo tramor
 your-income-source.foreign-property.change-hidden               = Newid ffynhonnell incwm o eiddo tramor
 your-income-source.foreign-property.remove-hidden               = Dileu ffynhonnell incwm o eiddo tramor
+your-income-source.completed.form.heading                       = A ydych wedi llenwi’r adran hon?
+your-income-source.completed.form.yes                           = Iawn, rwyf wedi llenwi’r adran hon
+your-income-source.completed.form.no                            = Na, dof yn ôl ati yn nes ymlaen
+your-income-source.completed.form.error.empty                   = Select Yes if you have completed the information. Select No if you’re coming back to it later. ...but in Welsh
 
 error.business-income-source.all-sources                        = Dewiswch ‘Busnes unig fasnachwr’, ‘Eiddo rhent yn y DU’ neu ‘Eiddo rhent tramor’
 error.business-income-source.self-employed-uk-property          = Mae angen i chi ddewis Busnes unig fasnachwr neu Eiddo rhent yn y DU
@@ -680,6 +684,10 @@ agent.your-income-source.foreign-property.label             = Ffynhonnell incwm 
 agent.your-income-source.foreign-property.add-link          = Ychwanegu ffynhonnell incwm eiddo tramor
 agent.your-income-source.foreign-property.change-hidden     = Newid ffynhonnell incwm o eiddo tramor
 agent.your-income-source.foreign-property.remove-hidden     = Dileu ffynhonnell incwm o eiddo tramor
+agent.your-income-source.completed.form.heading             = A ydych wedi llenwi’r adran hon?
+agent.your-income-source.completed.form.yes                 = Iawn, rwyf wedi llenwi’r adran hon
+agent.your-income-source.completed.form.no                  = Na, dof yn ôl ati yn nes ymlaen
+agent.your-income-source.completed.form.error.empty         = Select Yes if you have completed the information. Select No if you’re coming back to it later. ...but in Welsh
 
 
 # Property income page

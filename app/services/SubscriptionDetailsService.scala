@@ -107,8 +107,11 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
   }
 
   def fetchIncomeSourcesConfirmation(reference: String)(implicit hc: HeaderCarrier): Future[Option[Boolean]] = {
-    //todo: implement correct fetch when page is implemented, for now, return None
-    Future.successful(None)
+    incomeTaxSubscriptionConnector.getSubscriptionDetails[Boolean](reference, SubscriptionDataKeys.IncomeSourceConfirmation)
+  }
+
+  def saveIncomeSourcesConfirmation(reference: String)(implicit  hc:HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
+    incomeTaxSubscriptionConnector.saveSubscriptionDetails[Boolean](reference, SubscriptionDataKeys.IncomeSourceConfirmation, true)
   }
 
   def saveOverseasProperty(reference: String, overseasProperty: OverseasPropertyModel)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] =

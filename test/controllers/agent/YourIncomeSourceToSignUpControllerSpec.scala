@@ -18,6 +18,8 @@ package controllers.agent
 
 import connectors.subscriptiondata.mocks.MockIncomeTaxSubscriptionConnector
 import controllers.agent.{YourIncomeSourceToSignUpController, routes}
+import forms.agent.HaveYouCompletedThisSectionForm
+import forms.submapping.YesNoMapping
 import models.{Cash, DateModel}
 import models.common.{OverseasPropertyModel, PropertyModel}
 import models.common.business.{Address, BusinessAddressModel, BusinessNameModel, BusinessStartDate, BusinessTradeNameModel, SelfEmploymentData}
@@ -31,7 +33,6 @@ import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, red
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockAuditingService, MockSubscriptionDetailsService}
 import views.html.agent.YourIncomeSourceToSignUp
-
 
 import scala.concurrent.Future
 
@@ -88,8 +89,17 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
   }
 
   "submit" must {
-    "redirect to the task list page" in new Setup {
-      val result: Future[Result] = controller.submit(subscriptionRequest)
+    "redirect to the task list page when selected yes" in new Setup {
+      mockSaveIncomeSrouceConfirmation("test-reference")
+      val result: Future[Result] = controller.submit(subscriptionRequest.withFormUrlEncodedBody(HaveYouCompletedThisSectionForm.fieldName -> YesNoMapping.option_yes))
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)
+    }
+
+    "redirect to the task list page when selected no" in new Setup {
+      mockSaveIncomeSrouceConfirmation("test-reference")
+      val result: Future[Result] = controller.submit(subscriptionRequest.withFormUrlEncodedBody(HaveYouCompletedThisSectionForm.fieldName -> YesNoMapping.option_no))
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)
@@ -118,6 +128,7 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
       when(yourIncomeSourceToSignUpView(
         ArgumentMatchers.eq(routes.YourIncomeSourceToSignUpController.submit),
         ArgumentMatchers.eq(controllers.agent.routes.TaskListController.show().url),
+        ArgumentMatchers.any(),
         ArgumentMatchers.any(),
         ArgumentMatchers.eq(selfEmployments),
         ArgumentMatchers.eq(ukProperty),

@@ -19,6 +19,8 @@ package controllers.individual.incomesource
 import config.featureswitch.FeatureSwitch.{ForeignProperty => ForeignPropertyFeature}
 import connectors.subscriptiondata.mocks.MockIncomeTaxSubscriptionConnector
 import controllers.ControllerBaseSpec
+import forms.individual.incomesource.HaveYouCompletedThisSectionForm
+import forms.submapping.YesNoMapping
 import models.common.business._
 import models.common.{OverseasPropertyModel, PropertyModel}
 import models.{Cash, DateModel}
@@ -91,8 +93,18 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
   }
 
   "submit" must {
-    "redirect to the task list page" in new Setup {
-      val result: Future[Result] = controller.submit(subscriptionRequest)
+    "redirect to the task list page when you select yes" in new Setup {
+      mockSaveIncomeSrouceConfirmation("test-reference")
+      val result: Future[Result] = controller.submit(subscriptionRequest.withFormUrlEncodedBody(HaveYouCompletedThisSectionForm.fieldName -> YesNoMapping.option_yes))
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.individual.business.routes.TaskListController.show().url)
+    }
+  }
+
+  "submit" must {
+    "redirect to the task list page when you select no" in new Setup {
+      val result: Future[Result] = controller.submit(subscriptionRequest.withFormUrlEncodedBody(HaveYouCompletedThisSectionForm.fieldName -> YesNoMapping.option_no))
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.individual.business.routes.TaskListController.show().url)
@@ -121,6 +133,7 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
       when(yourIncomeSourceToSignUpView(
         ArgumentMatchers.eq(routes.YourIncomeSourceToSignUpController.submit),
         ArgumentMatchers.eq(controllers.individual.business.routes.TaskListController.show().url),
+        ArgumentMatchers.any(),
         ArgumentMatchers.eq(selfEmployments),
         ArgumentMatchers.eq(ukProperty),
         ArgumentMatchers.eq(foreignProperty)

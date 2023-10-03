@@ -77,7 +77,7 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
   "show" should {
     "return an OK status with the task list page" in {
       mockTaskList()
-
+      mockSaveIncomeSourceConfirmation(Some(true))
       mockFetchAllSelfEmployments(Seq(
         SelfEmploymentData(
           id = "id",
