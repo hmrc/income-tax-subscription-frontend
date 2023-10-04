@@ -16,15 +16,13 @@
 
 package controllers.individual.business
 
+import auth.agent.IncomeTaxAgentUser
 import auth.individual.{IncomeTaxSAUser, SignUpController}
 import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.SPSEntityId
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
-import forms.individual.business.GlobalCheckYourAnswersForm
-import models.common.subscription.CreateIncomeSourcesModel
-import models.{No, Yes, YesNo}
-import play.api.data.Form
+import models.common.subscription.{CreateIncomeSourcesModel, SubscriptionSuccess}
 import play.api.mvc._
 import play.twirl.api.Html
 import services.GetCompleteDetailsService.CompleteDetails
@@ -52,7 +50,6 @@ class GlobalCheckYourAnswersController @Inject()(val auditingService: AuditingSe
       withReference { reference =>
         withCompleteDetails(reference) { completeDetails =>
           Future.successful(Ok(view(
-            form = GlobalCheckYourAnswersForm.form,
             postAction = routes.GlobalCheckYourAnswersController.submit,
             backUrl = routes.TaskListController.show().url,
             completeDetails = completeDetails
@@ -65,36 +62,16 @@ class GlobalCheckYourAnswersController @Inject()(val auditingService: AuditingSe
     implicit user =>
       withReference { reference =>
         withCompleteDetails(reference) { completeDetails =>
-          handleForm(completeDetails)(
-            onYes = Redirect(controllers.individual.subscription.routes.ConfirmationController.show),
-            onNo = Redirect(routes.TaskListController.show())
+          signUp(completeDetails)(
+              Redirect(controllers.individual.subscription.routes.ConfirmationController.show)
           )
         }
       }
   }
 
-  private def handleForm(completeDetails: CompleteDetails)(onYes: Result, onNo: Result)
-                        (implicit request: Request[AnyContent], user: IncomeTaxSAUser): Future[Result] = {
-    GlobalCheckYourAnswersForm.form.bindFromRequest().fold(
-      hasErrors => Future.successful(BadRequest(view(
-        form = hasErrors,
-        postAction = routes.GlobalCheckYourAnswersController.submit,
-        backUrl = routes.TaskListController.show().url,
-        completeDetails = completeDetails
-      ))),
-      {
-        case Yes =>
-          signUp(completeDetails)(
-            onSuccessfulSignUp = onYes
-          )
-        case No =>
-          Future.successful(onNo)
-      }
-    )
-  }
 
   private def signUp(completeDetails: CompleteDetails)
-                    (onSuccessfulSignUp: => Result)
+                    (onSuccessfulSignUp: Result)
                     (implicit request: Request[AnyContent], user: IncomeTaxSAUser): Future[Result] = {
     val nino = user.nino.get
     val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
@@ -115,13 +92,12 @@ class GlobalCheckYourAnswersController @Inject()(val auditingService: AuditingSe
   }
 
 
-  private def view(form: Form[YesNo],
+  private def view(
                    postAction: Call,
                    backUrl: String,
                    completeDetails: CompleteDetails)
                   (implicit request: Request[AnyContent]): Html = {
     globalCheckYourAnswers(
-      globalCheckYourAnswersForm = form,
       postAction = postAction,
       backUrl = backUrl,
       completeDetails = completeDetails

@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,26 +12,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package forms.individual.business
+@this(
+  govukButton: GovukButton
+)
 
-import forms.submapping.YesNoMapping
-import models.YesNo
-import play.api.data.Form
-import play.api.data.Forms.single
-import play.api.data.validation.Invalid
+@(alternateText: Option[String] = None, isEditMode: Boolean = false)(implicit messages: Messages)
 
-object GlobalCheckYourAnswersForm {
-
-  val fieldName: String = "yes-no"
-
-  val form: Form[YesNo] = Form(
-    single(
-      fieldName -> YesNoMapping.yesNoMapping(
-        yesNoInvalid = Invalid("individual.global-check-your-answers.form.error.empty")
-      )
-    )
-  )
-
+@buttonContent = @{
+    messages("base.ready-to-sign-up")
 }
+
+@govukButton(Button(
+  content = Text(alternateText.getOrElse(buttonContent)),
+  attributes = Map("id" -> "ready-to-sign-up-button"),
+  preventDoubleClick = Some(true)
+)) 
