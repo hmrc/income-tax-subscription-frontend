@@ -31,6 +31,11 @@ POST        /report-quarterly/income-and-expenses/sign-up/test-only/feature-swit
 GET         /report-quarterly/income-and-expenses/sign-up/client/test-only/reset-user                      testonly.controllers.agent.ResetUserController.resetUser
 GET         /report-quarterly/income-and-expenses/sign-up/client/test-only/reset-lockout                   testonly.controllers.agent.ResetAgentLockoutController.resetLockout
 
+# Reset data routes
+GET         /report-quarterly/income-and-expenses/sign-up/test-only/reset-data                             testonly.controllers.ResetDataController.resetWithoutIdentifiers
+GET         /report-quarterly/income-and-expenses/sign-up/test-only/reset-data/utr/:utr                    testonly.controllers.ResetDataController.resetWithUTR(utr: String)
+GET         /report-quarterly/income-and-expenses/sign-up/test-only/reset-data/nino/:nino                  testonly.controllers.ResetDataController.resetWithNino(nino: String)
+
 # Add all the application routes to the prod.routes file
 ->          /                                                                                              prod.Routes
 
