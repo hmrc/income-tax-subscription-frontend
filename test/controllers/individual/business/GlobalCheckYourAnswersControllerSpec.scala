@@ -17,7 +17,6 @@
 package controllers.individual.business
 
 import controllers.ControllerBaseSpec
-import forms.individual.business.GlobalCheckYourAnswersForm
 import forms.submapping.YesNoMapping
 import models.common.business.Address
 import models.common.subscription.{CreateIncomeSourcesModel, SubscriptionFailureResponse}
@@ -125,7 +124,6 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
           .thenReturn(Future.successful(Right(completeDetails)))
 
         when(mockGlobalCheckYourAnswers(
-          ArgumentMatchers.eq(GlobalCheckYourAnswersForm.form),
           ArgumentMatchers.eq(routes.GlobalCheckYourAnswersController.submit),
           ArgumentMatchers.eq(routes.TaskListController.show().url),
           ArgumentMatchers.eq(completeDetails)
@@ -153,40 +151,6 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
       }
     }
 
-    "return the original page with an error" when {
-      "the user does not select an option" in new Setup {
-        when(mockGetCompleteDetailsService.getCompleteSignUpDetails(any())(any(), any()))
-          .thenReturn(Future.successful(Right(completeDetails)))
-
-        when(mockGlobalCheckYourAnswers(
-          ArgumentMatchers.any(),
-          ArgumentMatchers.eq(routes.GlobalCheckYourAnswersController.submit),
-          ArgumentMatchers.eq(routes.TaskListController.show().url),
-          ArgumentMatchers.eq(completeDetails)
-        )(ArgumentMatchers.any(), ArgumentMatchers.any()))
-          .thenReturn(HtmlFormat.empty)
-
-        val result: Future[Result] = controller.submit(subscriptionRequest)
-
-        status(result) mustBe BAD_REQUEST
-        contentType(result) mustBe Some(HTML)
-      }
-    }
-
-    "redirect to the progress saved page" when {
-      "the user selects that they are not ready to sign up" in new Setup {
-        when(mockGetCompleteDetailsService.getCompleteSignUpDetails(any())(any(), any()))
-          .thenReturn(Future.successful(Right(completeDetails)))
-
-        val result: Future[Result] = controller.submit(subscriptionRequest.withFormUrlEncodedBody(
-          GlobalCheckYourAnswersForm.fieldName -> YesNoMapping.option_no
-        ))
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.TaskListController.show().url)
-      }
-    }
-
     "redirect to the confirmation page" when {
       "the submission of the users details was successful" in new Setup {
         when(mockGetCompleteDetailsService.getCompleteSignUpDetails(any())(any(), any()))
@@ -194,9 +158,7 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
 
         mockSignUpAndCreateIncomeSourcesFromTaskListSuccess(nino = testNino, CreateIncomeSourcesModel.createIncomeSources(testNino, completeDetails))
 
-        val result: Future[Result] = controller.submit(subscriptionRequest.withFormUrlEncodedBody(
-          GlobalCheckYourAnswersForm.fieldName -> YesNoMapping.option_yes
-        ))
+        val result: Future[Result] = controller.submit(subscriptionRequest)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.individual.subscription.routes.ConfirmationController.show.url)
@@ -210,9 +172,7 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
 
         mockSignUpAndCreateIncomeSourcesFromTaskListFailure(nino = testNino, CreateIncomeSourcesModel.createIncomeSources(testNino, completeDetails))
 
-        intercept[InternalServerException](await(controller.submit(subscriptionRequest.withFormUrlEncodedBody(
-          GlobalCheckYourAnswersForm.fieldName -> YesNoMapping.option_yes
-        ))))
+        intercept[InternalServerException](await(controller.submit(subscriptionRequest)))
           .message mustBe s"[GlobalCheckYourAnswersController][submit] - failure response received from submission: ${SubscriptionFailureResponse(INTERNAL_SERVER_ERROR)}"
       }
     }

@@ -14,11 +14,12 @@
  * limitations under the License.
  *@
 
-@import forms.individual.business.GlobalCheckYourAnswersForm
+@import controllers.individual.business.routes
 @import models.common._
 @import models._
 @import models.common.business.SelfEmploymentData
 @import services.AccountingPeriodService
+@import views.html.helpers.injected.{ReadyToSignUpButton}
 @import services.GetCompleteDetailsService._
 @import utilities.ImplicitDateFormatterImpl
 @import views.html.helpers.injected.{ContinueButton, RadioHelper}
@@ -31,12 +32,12 @@
         govukSummaryList : GovukSummaryList,
         implicitDateFormatter: ImplicitDateFormatterImpl,
         accountingPeriodService: AccountingPeriodService,
+        readyToSignUpButton: ReadyToSignUpButton,
         radioHelper: RadioHelper,
         form: FormWithCSRF
 )
 
 @(
-        globalCheckYourAnswersForm: Form[YesNo],
         postAction: Call,
         backUrl: String,
         completeDetails: CompleteDetails
@@ -44,41 +45,31 @@
 
 @import implicitDateFormatter.LongDate
 
-@mainTemplate(title = messages("individual.global-check-your-answers.heading"), optForm = Some(globalCheckYourAnswersForm), backLink = Some(backUrl)) {
+@mainTemplate(title = messages("individual.global-check-your-answers.heading"), backLink = Some(backUrl)) {
 
     <h1 class="govuk-heading-l">@messages("individual.global-check-your-answers.heading")</h1>
 
     @incomeSourcesSection(completeDetails.incomeSources)
     @taxYearSection(completeDetails.taxYear)
     @softwareSection(completeDetails.hasSoftware)
+    @correctInfo()
 
-    @form(action = postAction) {
-
-        @yesNoRadios()
-
-        @continueButton()
-
-    }
+@form(action = postAction){
+    <div class="govuk-button-group">
+        @readyToSignUpButton()
+        <a href="@controllers.individual.business.routes.TaskListController.show().url" id="return_to_tasklist" class="govuk-link">
+            @messages("individual.global-check-your-answers.change-something")
+        </a>
+    </div>
+}
 
 }
 
-@yesNoRadios() = {
-    @radioHelper(
-        field = globalCheckYourAnswersForm(GlobalCheckYourAnswersForm.fieldName),
-        legend = messages("individual.global-check-your-answers.form.heading"),
-        isPageHeading = false,
-        headingClasses = "govuk-!-font-weight-bold",
-        radioItems = Seq(
-            RadioItem(
-                content = Text(messages("individual.global-check-your-answers.form.yes")),
-                value = Some(Yes.toString)
-            ),
-            RadioItem(
-                content = Text(messages("individual.global-check-your-answers.form.no")),
-                value = Some(No.toString)
-            )
-        )
-    )
+@correctInfo() = {
+    <h2 class="govuk-heading-m">@messages("individual.global-check-your-answers.correct-info.heading")</h2>
+    <p class="govuk-body">
+        @messages("individual.global-check-your-answers.correct-info.para")
+    </p>
 }
 
 @incomeSourcesSection(incomeSources: IncomeSources) = {

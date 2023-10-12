@@ -6,6 +6,7 @@ base.back                                                       = Yn ôl
 base.continue                                                   = Yn eich blaen
 base.continue-sign-up                                           = Parhau i gofrestru
 base.sign-up-my-client                                          = Cofrestrwch fy cleient
+base.ready-to-sign-up                                           = Iawn, rwy’n barod i gofrestru
 base.update                                                     = Yn eich blaen
 base.sign-out                                                   = Allgofnodi
 base.sign-up                                                    = Cofrestru
@@ -1093,7 +1094,7 @@ agent.throttle-end.line-2                                          = I orffen co
 
 # Global Check Your Answers
 individual.global-check-your-answers.heading                                                    = Gwirio’ch atebion cyn cofrestru
-individual.global-check-your-answers.income-sources.heading                                     = 1. Ffynonellau incwm
+individual.global-check-your-answers.income-sources.heading                                     = Ffynonellau incwm
 individual.global-check-your-answers.income-sources.self-employment.heading                     = Masnach: {0}
 individual.global-check-your-answers.income-sources.self-employment.name                        = Enw’r busnes
 individual.global-check-your-answers.income-sources.self-employment.start-date                  = Dyddiad dechrau masnachu
@@ -1106,14 +1107,13 @@ individual.global-check-your-answers.income-sources.uk-property.accounting-metho
 individual.global-check-your-answers.income-sources.foreign-property.heading                    = Busnes eiddo tramor
 individual.global-check-your-answers.income-sources.foreign-property.start-date                 = Dyddiad dechrau
 individual.global-check-your-answers.income-sources.foreign-property.accounting-method          = Dull cyfrifyddu
-individual.global-check-your-answers.tax-year.heading                                           = 2. Y flwyddyn dreth a ddewiswyd
+individual.global-check-your-answers.tax-year.heading                                           = Y flwyddyn dreth a ddewiswyd
 individual.global-check-your-answers.tax-year.label                                             = Blwydden treth
-individual.global-check-your-answers.software.heading                                           = 3. Meddalwedd ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+individual.global-check-your-answers.software.heading                                           = Meddalwedd ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 individual.global-check-your-answers.software.label                                             = Meddalwedd sy’n cydweddu
-individual.global-check-your-answers.form.heading                                               = A yw’r wybodaeth hon yn gywir?
-individual.global-check-your-answers.form.yes                                                   = Iawn, rwy’n barod i gofrestru
-individual.global-check-your-answers.form.no                                                    = Na, mae angen i fi newid rhywbeth
-individual.global-check-your-answers.form.error.empty                                           = Dewiswch ‘Iawn’ os ydych yn barod i gofrestru
+individual.global-check-your-answers.correct-info.heading                                       = A yw’ch gwybodaeth yn gywir?
+individual.global-check-your-answers.correct-info.para                                          = Drwy gyflwyno, rydych yn cadarnhau, hyd eithaf eich gwybodaeth, fod y manylion a rowch yn gywir.
+individual.global-check-your-answers.change-something                                           = Na, mae angen i fi newid rhywbeth
 
 # Agent Global Check Your Answers
 agent.global-check-your-answers.heading                                                         = Gwirio’ch atebion cyn i chi gofrestru’ch cleient

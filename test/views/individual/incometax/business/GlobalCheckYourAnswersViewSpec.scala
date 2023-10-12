@@ -16,7 +16,6 @@
 
 package views.individual.incometax.business
 
-import forms.individual.business.GlobalCheckYourAnswersForm
 import forms.submapping.YesNoMapping
 import models._
 import models.common.business.Address
@@ -26,20 +25,18 @@ import play.api.data.{Form, FormError}
 import play.twirl.api.Html
 import services.GetCompleteDetailsService._
 import utilities.{AccountingPeriodUtil, ViewSpec}
+import views.html.helper.form
 import views.html.individual.incometax.business.GlobalCheckYourAnswers
 
 import java.time.LocalDate
 
 class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
-  val formError: FormError = FormError(GlobalCheckYourAnswersForm.fieldName, "individual.global-check-your-answers.form.error.empty")
-
   "GlobalCheckYourAnswers" must {
 
     "use the correct template" when {
       "there is no error on the page" in new TemplateViewTest(
         view = page(
-          form = GlobalCheckYourAnswersForm.form,
           completeDetails = completeDetails()
         ),
         title = GlobalCheckYourAnswersMessages.heading,
@@ -47,19 +44,6 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
         backLink = Some(testBackUrl),
         hasSignOutLink = true,
         error = None
-      )
-      "there is an error on the page" in new TemplateViewTest(
-        view = page(
-          form = GlobalCheckYourAnswersForm.form.withError(
-            formError
-          ),
-          completeDetails = completeDetails()
-        ),
-        title = GlobalCheckYourAnswersMessages.heading,
-        isAgent = false,
-        backLink = Some(testBackUrl),
-        hasSignOutLink = true,
-        error = Some(formError)
       )
     }
 
@@ -403,6 +387,16 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       }
     }
 
+    "have a correct information section" which {
+      "has a heading" in {
+          document().mainContent.selectNth(".govuk-heading-m", 4).text mustBe GlobalCheckYourAnswersMessages.correctInformation.heading
+      }
+
+      "has a paragraph" in {
+        document().mainContent.selectNth("p", 1).text mustBe GlobalCheckYourAnswersMessages.correctInformation.para
+      }
+    }
+
     "have a form" which {
       def form: Element = document().mainContent.selectHead("form")
 
@@ -411,38 +405,13 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
         form.attr("action") mustBe testCall.url
       }
 
-      "has a radio button selection" which {
-        "has a heading" in {
-          form.selectHead("fieldset").selectHead("legend").text() mustBe GlobalCheckYourAnswersMessages.Form.heading
-        }
-        "has a yes option" in {
-          val radio: Element = form.selectHead("fieldset").selectHead(".govuk-radios").selectNth(".govuk-radios__item", 1)
-          val input: Element = radio.selectHead("input")
-          input.id mustBe GlobalCheckYourAnswersForm.fieldName
-          input.attr("name") mustBe GlobalCheckYourAnswersForm.fieldName
-          input.attr("type") mustBe "radio"
-          input.attr("value") mustBe YesNoMapping.option_yes
-
-          val label: Element = radio.selectHead("label")
-          label.text mustBe GlobalCheckYourAnswersMessages.Form.yes
-          label.attr("for") mustBe input.id
-        }
-        "has a no option" in {
-          val radio: Element = form.selectHead("fieldset").selectHead(".govuk-radios").selectNth(".govuk-radios__item", 2)
-          val input: Element = radio.selectHead("input")
-          input.id mustBe s"${GlobalCheckYourAnswersForm.fieldName}-2"
-          input.attr("name") mustBe GlobalCheckYourAnswersForm.fieldName
-          input.attr("type") mustBe "radio"
-          input.attr("value") mustBe YesNoMapping.option_no
-
-          val label: Element = radio.selectHead("label")
-          label.text mustBe GlobalCheckYourAnswersMessages.Form.no
-          label.attr("for") mustBe input.id
-        }
+      "has a Ready to Sign Up button to submit" in {
+        form.selectHead("button").text mustBe GlobalCheckYourAnswersMessages.form.readyToSignUp
       }
 
-      "has a continue button to submit" in {
-        form.selectHead("button").text mustBe GlobalCheckYourAnswersMessages.continue
+      "has a I need to change something hyper link and have redirection link to Tasklist" in {
+        form.selectHead("a").text mustBe GlobalCheckYourAnswersMessages.form.needToChange
+        form.selectHead("a").attr("href").matches(controllers.agent.routes.TaskListController.show().url)
       }
     }
 
@@ -450,15 +419,13 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
   val globalCheckYourAnswers: GlobalCheckYourAnswers = app.injector.instanceOf[GlobalCheckYourAnswers]
 
-  def page(form: Form[YesNo], completeDetails: CompleteDetails): Html = globalCheckYourAnswers(
-    globalCheckYourAnswersForm = form,
+  def page(completeDetails: CompleteDetails): Html = globalCheckYourAnswers(
     postAction = testCall,
     backUrl = testBackUrl,
     completeDetails = completeDetails
   )
 
   def document(details: CompleteDetails = completeDetails()): Document = Jsoup.parse(page(
-    form = GlobalCheckYourAnswersForm.form,
     completeDetails = details
   ).body)
 
@@ -466,7 +433,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     val heading: String = "Check your answers before signing up"
 
     object IncomeSources {
-      val heading: String = "1. Income sources"
+      val heading: String = "Income sources"
 
       object SoleTrader {
         def heading(trade: String): String = s"Trade: $trade"
@@ -499,7 +466,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     }
 
     object SelectedTaxYear {
-      val heading: String = "2. Selected tax year"
+      val heading: String = "Selected tax year"
       val key: String = "Tax year"
 
       def current(year: Int): String = s"Current tax year (6 April ${year - 1} to 5 April $year)"
@@ -508,20 +475,21 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     }
 
     object Software {
-      val heading: String = "3. Software for Making Tax Digital for Income Tax"
+      val heading: String = "Software for Making Tax Digital for Income Tax"
       val key: String = "Compatible software"
       val yes: String = "Yes"
       val no: String = "No"
     }
 
-    object Form {
+    object correctInformation {
       val heading: String = "Is this information correct?"
-      val yes: String = "Yes, I’m ready to sign up"
-      val no: String = "No, I need to change something"
-      val error: String = "Select ‘Yes’ if you’re ready to sign up"
+      val para: String = "By submitting, you are confirming that, to the best of your knowledge, the details you are providing are correct."
     }
 
-    val continue: String = "Continue"
+    object form {
+      val readyToSignUp: String = "Yes, I’m ready to sign up"
+      val needToChange: String = "No, I need to change something"
+    }
 
   }
 
