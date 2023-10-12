@@ -130,46 +130,37 @@ cannot-take-part.inset1                                         = You must submi
 ##  What You Need To Do (pre-mandation either tax year)  ##
 what-you-need-to-do.heading                                     = What you need to do
 what-you-need-to-do.para-1                                      = By taking part you agree to:
-what-you-need-to-do.notification.bullet-1                       = get compatible software to record your income and expenses
-what-you-need-to-do.notification.bullet-2                       = use your software to send us quarterly updates
-what-you-need-to-do.notification.bullet-3                       = complete any missing quarterly updates (if you’ve chosen to sign up for the current tax year)
-what-you-need-to-do.notification.bullet-4                       = send an end of period statement and submit your final declaration by 31 January following the end of the tax year
-what-you-need-to-do.notification.bullet-5                       = tell HMRC if you stop trading or start a new business
+what-you-need-to-do.bullet-1                                    = Get compatible software to record your income and expenses.
+what-you-need-to-do.bullet-2                                    = Use your software to send us quarterly updates.
+what-you-need-to-do.bullet-3                                    = Complete any missing quarterly updates (if you have chosen to sign up for the current tax year).
+what-you-need-to-do.bullet-4                                    = Send an end of period statement and submit your final declaration by 31 January following the end of the tax year.
+what-you-need-to-do.bullet-5                                    = Tell HMRC if you stop trading or start a new business.
 what-you-need-to-do.inset.para                                  = Signing up to Making Tax Digital for Income Tax is currently voluntary. You can opt out and go back to Self Assessment at any time.
 what-you-need-to-do.para-2                                      = It will be compulsory for some people to use Making Tax Digital for Income Tax from April 2026, depending on their total qualifying income. We’ll send you a letter if this applies to you.
 
 ##  What You Need To Do (pre-mandation next tax year only)  ##
 what-you-need-to-do.next-year-only.para-1                        = You can sign up to use Making Tax Digital for Income Tax from 6 April {0}.
 what-you-need-to-do.next-year-only.para-2                        = By taking part you agree to:
-what-you-need-to-do.next-year-only.notification.bullet-1         = get compatible software to record your income and expenses from 6 April {0}
-what-you-need-to-do.next-year-only.notification.bullet-2         = use your software to send us quarterly updates
-what-you-need-to-do.next-year-only.notification.bullet-3         = send an end of period statement using your software and send your final declaration by {0}
-what-you-need-to-do.next-year-only.notification.bullet-4         = tell HMRC if you stop trading or start a new business
+what-you-need-to-do.next-year-only.bullet-1                      = Get compatible software to record your income and expenses from 6 April {0}.
+what-you-need-to-do.next-year-only.bullet-2                      = Use your software to send us quarterly updates.
+what-you-need-to-do.next-year-only.bullet-3                      = Send an end of period statement using your software and send your final declaration by {0}.
+what-you-need-to-do.next-year-only.bullet-4                      = Tell HMRC if you stop trading or start a new business.
 what-you-need-to-do.next-year-only.inset.para                    = You must continue submitting your Self Assessment tax returns as usual until the year you’ve signed up.
 
 ##  What You Need To Do Current  ##
 what-you-need-to-do-current.para-1                               = Based on your previous returns, you need to sign up for Making Tax Digital for Income Tax.
 what-you-need-to-do-current.para-2                               = By signing up you agree to:
-what-you-need-to-do-current.notification.bullet-1                = get compatible software to record your income and expenses
-what-you-need-to-do-current.notification.bullet-2                = use your software to send us quarterly updates
-what-you-need-to-do-current.notification.bullet-3                = send an end of period statement and submit your final declaration by {0}
+what-you-need-to-do-current.bullet-1                             = Get compatible software to record your income and expenses.
+what-you-need-to-do-current.bullet-2                             = Use your software to send us quarterly updates.
+what-you-need-to-do-current.bullet-3                             = Send an end of period statement and submit your final declaration by {0}.
 what-you-need-to-do-current.inset.para                           = You may be penalised if you don’t use Making Tax Digital for Income Tax.
 
 ## What You Need To Do Next Year Manadated ##
 what-you-need-to-do.next-year-mandated.para-1                   = You can sign up to use Making Tax Digital for Income Tax from 6 April {0}.
 what-you-need-to-do.next-year-mandated.para-2                   = By signing up you agree to:
-what-you-need-to-do.next-year-mandated.notification.bullet-1    = get compatible software to record your income and expenses
-what-you-need-to-do.next-year-mandated.notification.bullet-2    = use your compatible software to send us quarterly updates
-what-you-need-to-do.next-year-mandated.notification.bullet-3    = send an end of period statement and submit your final declaration by {0}
-
-##  Agent What You Need To Do (Current year Mandated)  ##
-agent.what-you-need-to-do-current.para-1                                = Based on your client’s previous tax returns, they must use Making Tax Digital for Income Tax.
-agent.what-you-need-to-do-current.para-2                                = Either you or your client must:
-agent.what-you-need-to-do-current.notification.bullet-1                 = record income and expenses using compatible software
-agent.what-you-need-to-do-current.notification.bullet-2                 = use software to send us quarterly updates
-agent.what-you-need-to-do-current.notification.bullet-3                 = send an end of period statement and submit a final declaration by {0}
-agent.what-you-need-to-do-current.warning.para                          = Your client may be penalised if they do not use Making Tax Digital for Income Tax.
-
+what-you-need-to-do.next-year-mandated.bullet-1                 = Get compatible software to record your income and expenses.
+what-you-need-to-do.next-year-mandated.bullet-2                 = Use your compatible software to send us quarterly updates.
+what-you-need-to-do.next-year-mandated.bullet-3                 = Send an end of period statement and submit your final declaration by {0}.
 
 # What tax year to sign up
 business.what-year-to-sign-up.heading                           = Choose when you want to start using Making Tax Digital for Income Tax
@@ -587,28 +578,36 @@ declined-sign-up-next-year.para                                 = You’ve chose
 agent.what-you-need-to-do.heading                                                        = What you need to do
 agent.what-you-need-to-do.caption                                                        = {0} | {1}
 agent.what-you-need-to-do.voluntary-and-eligible.para-1                                  = By signing up you agree that either you or your client will:
-agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-1            = record income and expenses using compatible software
-agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-2            = use software to send us quarterly updates
-agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-3            = complete any missing quarterly updates (if you’ve chosen to sign up for the current tax year)
-agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-4            = send an end of period statement and submit a final declaration by 31 January following the end of the tax year
-agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-5            = tell HMRC if they stop trading or start a new business
+agent.what-you-need-to-do.voluntary-and-eligible.bullet-1                                = Record income and expenses using compatible software.
+agent.what-you-need-to-do.voluntary-and-eligible.bullet-2                                = Use software to send us quarterly updates.
+agent.what-you-need-to-do.voluntary-and-eligible.bullet-3                                = Complete any missing quarterly updates (if you have chosen to sign up for the current tax year).
+agent.what-you-need-to-do.voluntary-and-eligible.bullet-4                                = Send an end of period statement and submit a final declaration by 31 January following the end of the tax year.
+agent.what-you-need-to-do.voluntary-and-eligible.bullet-5                                = Tell HMRC if they stop trading or start a new business.
 agent.what-you-need-to-do.voluntary-and-eligible.inset-text.para                         = Using Making Tax Digital for Income Tax is currently voluntary. Your client can opt out and go back to Self Assessment at any time.
 agent.what-you-need-to-do.voluntary-and-eligible.para-2                                  = It will be compulsory for some people to use Making Tax Digital for Income Tax from April 2026, depending on their total qualifying income. If this applies to your client, we’ll send them a letter.
 
 agent.what-you-need-to-do.voluntary-eligible-next-year-only.para-1                       = Your client can sign up to use Making Tax Digital for Income Tax from 6 April {0}.
 agent.what-you-need-to-do.voluntary-eligible-next-year-only.para-2                       = By signing up you agree that either you or your client will:
-agent.what-you-need-to-do.voluntary-eligible-next-year-only.notification-banner.bullet-1 = record income and expenses using compatible software
-agent.what-you-need-to-do.voluntary-eligible-next-year-only.notification-banner.bullet-2 = use software to send us quarterly update
-agent.what-you-need-to-do.voluntary-eligible-next-year-only.notification-banner.bullet-3 = send an end of period statement and submit a final declaration by {0}
-agent.what-you-need-to-do.voluntary-eligible-next-year-only.notification-banner.bullet-4 = tell HMRC if they stop trading or start a new business
+agent.what-you-need-to-do.voluntary-eligible-next-year-only.bullet-1                     = Record income and expenses using compatible software.
+agent.what-you-need-to-do.voluntary-eligible-next-year-only.bullet-2                     = Use software to send us quarterly update.
+agent.what-you-need-to-do.voluntary-eligible-next-year-only.bullet-3                     = Send an end of period statement and submit a final declaration by {0}.
+agent.what-you-need-to-do.voluntary-eligible-next-year-only.bullet-4                     = Tell HMRC if they stop trading or start a new business.
 agent.what-you-need-to-do.voluntary-eligible-next-year-only.inset-text.para              = Your client’s Self Assessment tax return must be submitted at the end of the {0} tax year as normal.
 
+##  Agent What You Need To Do (Current year Mandated)  ##
+agent.what-you-need-to-do-current.para-1                                                 = Based on your client’s previous tax returns, they must use Making Tax Digital for Income Tax.
+agent.what-you-need-to-do-current.para-2                                                 = Either you or your client must:
+agent.what-you-need-to-do-current.bullet-1                                               = Record income and expenses using compatible software.
+agent.what-you-need-to-do-current.bullet-2                                               = Use software to send us quarterly updates.
+agent.what-you-need-to-do-current.bullet-3                                               = Send an end of period statement and submit a final declaration by {0}.
+agent.what-you-need-to-do-current.warning.para                                           = Your client may be penalised if they do not use Making Tax Digital for Income Tax.
+
 ## Agent what you need to do page post mandation next tax year
-agent.what-you-need-to-do.mandated-and-eligible-next-year-only.para-1                          = You can sign up your client to use Making Tax Digital for Income Tax from 6 April {0}.
-agent.what-you-need-to-do.mandated-and-eligible-next-year-only.para-2                          = By signing up you agree that either you or your client will:
-agent.what-you-need-to-do.mandated-and-eligible-next-year-only.notification-banner.bullet-1    = get compatible software to record your income and expenses
-agent.what-you-need-to-do.mandated-and-eligible-next-year-only.notification-banner.bullet-2    = use your compatible software to send us quarterly updates
-agent.what-you-need-to-do.mandated-and-eligible-next-year-only.notification-banner.bullet-3    = send an end of period statement and submit your final declaration by {0}
+agent.what-you-need-to-do.mandated-and-eligible-next-year-only.para-1                    = You can sign up your client to use Making Tax Digital for Income Tax from 6 April {0}.
+agent.what-you-need-to-do.mandated-and-eligible-next-year-only.para-2                    = By signing up you agree that either you or your client will:
+agent.what-you-need-to-do.mandated-and-eligible-next-year-only.bullet-1                  = Get compatible software to record your income and expenses.
+agent.what-you-need-to-do.mandated-and-eligible-next-year-only.bullet-2                  = Use your compatible software to send us quarterly updates.
+agent.what-you-need-to-do.mandated-and-eligible-next-year-only.bullet-3                  = Send an end of period statement and submit your final declaration by {0}.
 
 # Agent accounting period check page
 agent.accounting-period-check.title                             = Do your client’s business accounting periods all run from 6 April to 5 April?

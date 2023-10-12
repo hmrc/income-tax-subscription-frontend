@@ -21,21 +21,17 @@
 @import views.html.templates.PrincipalMainTemplate
 
 @this(
-        mainTemplate: PrincipalMainTemplate,
-        continueButton: ContinueButton,
-        govukNotificationBanner: GovukNotificationBanner,
-        govukInsetText: GovukInsetText,
-        form: FormWithCSRF,
-        languageUtils: LanguageUtils,
-        govukWarningText: GovukWarningText
-)(
-        implicit appConfig: AppConfig
+  mainTemplate: PrincipalMainTemplate,
+  continueButton: ContinueButton,
+  govukInsetText: GovukInsetText,
+  form: FormWithCSRF,
+  languageUtils: LanguageUtils,
+  govukWarningText: GovukWarningText
 )
 
 @(postAction: Call, onlyNextYear: Boolean, mandatedCurrentYear: Boolean, mandatedNextYear: Boolean)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = messages("what-you-need-to-do.heading"), backLink = None) {
-
 
   <h1 class="govuk-heading-xl">@messages("what-you-need-to-do.heading")</h1>
 
@@ -56,21 +52,32 @@
 }
 
 @nonMandatedNextYear = {
-  <p class="govuk-body">@messages("what-you-need-to-do.next-year-only.para-1",
-    AccountingPeriodUtil.getCurrentTaxEndYear.toString)</p>
+  <p class="govuk-body">@messages("what-you-need-to-do.next-year-only.para-1", AccountingPeriodUtil.getCurrentTaxEndYear.toString)</p>
   <p class="govuk-body">@messages("what-you-need-to-do.next-year-only.para-2")</p>
-@govukNotificationBanner(NotificationBanner(content = HtmlContent(nonMandatedNextYearOnlyNotificationContent)))
 
-@govukInsetText(InsetText(
-  content = Text(Messages("what-you-need-to-do.next-year-only.inset.para"))
-))
+  <ol class="govuk-list govuk-list--number">
+    <li>@messages("what-you-need-to-do.next-year-only.bullet-1", AccountingPeriodUtil.getCurrentTaxEndYear.toString)</li>
+    <li>@messages("what-you-need-to-do.next-year-only.bullet-2")</li>
+    <li>@messages("what-you-need-to-do.next-year-only.bullet-3", languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(true)))</li>
+    <li>@messages("what-you-need-to-do.next-year-only.bullet-4")</li>
+  </ol>
+
+  @govukInsetText(InsetText(
+    content = Text(Messages("what-you-need-to-do.next-year-only.inset.para"))
+  ))
 }
 
 
 @nonMandatedEitherYear = {
   <p class="govuk-body">@messages("what-you-need-to-do.para-1")</p>
 
-  @govukNotificationBanner(NotificationBanner(content = HtmlContent(nonMandatedEitherYearNotificationContent)))
+  <ol class="govuk-list govuk-list--number">
+    <li>@messages("what-you-need-to-do.bullet-1")</li>
+    <li>@messages("what-you-need-to-do.bullet-2")</li>
+    <li>@messages("what-you-need-to-do.bullet-3")</li>
+    <li>@messages("what-you-need-to-do.bullet-4")</li>
+    <li>@messages("what-you-need-to-do.bullet-5")</li>
+  </ol>
 
   @govukInsetText(InsetText(
     content = Text(Messages("what-you-need-to-do.inset.para"))
@@ -79,64 +86,33 @@
   <p class="govuk-body">@messages("what-you-need-to-do.para-2")</p>
 }
 
-@nonMandatedNextYearOnlyNotificationContent = {
-@{
-  val finalDeclarationDate = languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(true))
-    <ul class="govuk-list govuk-list--bullet">
-    <li>
-    {messages("what-you-need-to-do.next-year-only.notification.bullet-1",
-      AccountingPeriodUtil.getCurrentTaxEndYear.toString)}
-    </li>
-    <li>{messages("what-you-need-to-do.next-year-only.notification.bullet-2")}</li>
-    <li>{messages("what-you-need-to-do.next-year-only.notification.bullet-3", finalDeclarationDate)}</li>
-    <li>{messages("what-you-need-to-do.next-year-only.notification.bullet-4")}</li>
-    </ul>
-}
-}
-@nonMandatedEitherYearNotificationContent = {
-  <ul class="govuk-list govuk-list--bullet">
-    <li>@messages("what-you-need-to-do.notification.bullet-1")</li>
-    <li>@messages("what-you-need-to-do.notification.bullet-2")</li>
-    <li>@messages("what-you-need-to-do.notification.bullet-3")</li>
-    <li>@messages("what-you-need-to-do.notification.bullet-4")</li>
-    <li>@messages("what-you-need-to-do.notification.bullet-5")</li>
-  </ul>
-}
 
 @currentYearMandated = {
   <p class="govuk-body">@messages("what-you-need-to-do-current.para-1")</p>
   <p class="govuk-body">@messages("what-you-need-to-do-current.para-2")</p>
-@govukNotificationBanner(NotificationBanner(content = HtmlContent(currentYearMandatedNotificationContent)))
 
-@govukWarningText(WarningText(
-  content = Text(Messages("what-you-need-to-do-current.inset.para"))
-))
-}
+  <ol class="govuk-list govuk-list--number">
+    <li>@messages("what-you-need-to-do-current.bullet-1")</li>
+    <li>@messages("what-you-need-to-do-current.bullet-2")</li>
+    <li>@messages("what-you-need-to-do-current.bullet-3", languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(false)))</li>
+  </ol>
 
-@currentYearMandatedNotificationContent = {
-  <ul class="govuk-list govuk-list--bullet">
-    <li>@messages("what-you-need-to-do-current.notification.bullet-1")</li>
-    <li>@messages("what-you-need-to-do-current.notification.bullet-2")</li>
-    <li>@messages("what-you-need-to-do-current.notification.bullet-3", languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(false)))</li>
-  </ul>
+  @govukWarningText(WarningText(
+    content = Text(Messages("what-you-need-to-do-current.inset.para"))
+  ))
 }
 
 @nextYearMandated = {
-  <p class="govuk-body">@messages("what-you-need-to-do.next-year-mandated.para-1",
-      AccountingPeriodUtil.getCurrentTaxEndYear.toString)</p>
+  <p class="govuk-body">@messages("what-you-need-to-do.next-year-mandated.para-1", AccountingPeriodUtil.getCurrentTaxEndYear.toString)</p>
   <p class="govuk-body">@messages("what-you-need-to-do.next-year-mandated.para-2")</p>
 
-  @govukNotificationBanner(NotificationBanner(content = HtmlContent(nextYearMandatedNotificationContent)))
+  <ol class="govuk-list govuk-list--number">
+    <li>@messages("what-you-need-to-do.next-year-mandated.bullet-1", AccountingPeriodUtil.getCurrentTaxEndYear.toString)</li>
+    <li>@messages("what-you-need-to-do.next-year-mandated.bullet-2")</li>
+    <li>@messages("what-you-need-to-do.next-year-mandated.bullet-3", languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(true)))</li>
+  </ol>
 }
 
-@nextYearMandatedNotificationContent = {
-  <ul class="govuk-list govuk-list--bullet">
-    <li>@messages("what-you-need-to-do.next-year-mandated.notification.bullet-1",
-        AccountingPeriodUtil.getCurrentTaxEndYear.toString)</li>
-    <li>@messages("what-you-need-to-do.next-year-mandated.notification.bullet-2")</li>
-    <li>@messages("what-you-need-to-do.next-year-mandated.notification.bullet-3", languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(true)))</li>
-  </ul>
-}
 
 
 

@@ -130,45 +130,37 @@ cannot-take-part.inset1                                         = Mae’n rhaid 
 ##  What You Need To Do (pre-mandation either tax year)  ##
 what-you-need-to-do.heading                                     = Beth y mae angen i chi ei wneud
 what-you-need-to-do.para-1                                      = Drwy gymryd rhan, rydych yn cytuno i’r canlynol:
-what-you-need-to-do.notification.bullet-1                       = bod â meddalwedd sy’n cydweddu i gofnodi’ch incwm a’ch treuliau
-what-you-need-to-do.notification.bullet-2                       = defnyddio’ch meddalwedd i anfon diweddariadau chwarterol atom
-what-you-need-to-do.notification.bullet-3                       = cwblhau unrhyw ddiweddariadau chwarterol sydd ar goll (os ydych wedi dewis cofrestru ar gyfer y flwyddyn dreth bresennol)
-what-you-need-to-do.notification.bullet-4                       = anfon datganiad diwedd cyfnod a chyflwyno’ch datganiad terfynol erbyn 31 Ionawr yn dilyn diwedd y flwyddyn dreth
-what-you-need-to-do.notification.bullet-5                       = rhoi gwybod i CThEF os byddwch yn rhoi’r gorau i fasnachu neu’n dechrau busnes newydd
+what-you-need-to-do.bullet-1                                    = Bod â meddalwedd sy’n cydweddu i gofnodi’ch incwm a’ch treuliau.
+what-you-need-to-do.bullet-2                                    = Defnyddio’ch meddalwedd i anfon diweddariadau chwarterol atom.
+what-you-need-to-do.bullet-3                                    = Cwblhewch unrhyw ddiweddariadau chwarterol sydd ar goll (os ydych wedi dewis cofrestru ar gyfer y flwyddyn dreth bresennol).
+what-you-need-to-do.bullet-4                                    = Anfon datganiad diwedd cyfnod a chyflwyno’ch datganiad terfynol erbyn 31 Ionawr yn dilyn diwedd y flwyddyn dreth.
+what-you-need-to-do.bullet-5                                    = Rhoi gwybod i CThEF os byddwch yn rhoi’r gorau i fasnachu neu’n dechrau busnes newydd.
 what-you-need-to-do.inset.para                                  = Mae cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm yn wirfoddol ar hyn o bryd. Gallwch optio allan a mynd yn ôl i Hunanasesiad ar unrhyw adeg
 what-you-need-to-do.para-2                                      = O fis Ebrill 2026 ymlaen, bydd yn orfodol i rai pobl ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, yn dibynnu ar gyfanswm eu hincwm cymwys. Byddwn yn anfon llythyr atoch os yw hyn yn berthnasol i chi.
 
 ##  What You Need To Do (pre-mandation next tax year only)  ##
-what-you-need-to-do.next-year-only.para-1                        = Gallwch gofrestru i ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o 6 Ebrill {0} ymlaen
-what-you-need-to-do.next-year-only.para-2                        = Drwy gymryd rhan, rydych yn cytuno i’r canlynol:
-what-you-need-to-do.next-year-only.notification.bullet-1         = cael meddalwedd sy’n cydweddu i gofnodi’ch incwm a’ch treuliau o 6 Ebrill {0} ymlaen
-what-you-need-to-do.next-year-only.notification.bullet-2         = defnyddio’ch meddalwedd i anfon diweddariadau chwarterol atom
-what-you-need-to-do.next-year-only.notification.bullet-3         = anfon datganiad diwedd cyfnod gan ddefnyddio’ch meddalwedd ac anfon eich datganiad terfynol erbyn {0}
-what-you-need-to-do.next-year-only.notification.bullet-4         = rhoi gwybod i CThEF os byddwch yn rhoi’r gorau i fasnachu neu’n dechrau busnes newydd
-what-you-need-to-do.next-year-only.inset.para                    = Mae’n rhaid i chi barhau i gyflwyno’ch Ffurflenni Treth Hunanasesiad yn ôl yr arfer, hyd at y flwyddyn pan wnaethoch gofrestru.
+what-you-need-to-do.next-year-only.para-1                       = Gallwch gofrestru i ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o 6 Ebrill {0} ymlaen
+what-you-need-to-do.next-year-only.para-2                       = Drwy gymryd rhan, rydych yn cytuno i’r canlynol:
+what-you-need-to-do.next-year-only.bullet-1                     = Cael meddalwedd sy’n cydweddu i gofnodi’ch incwm a’ch treuliau o 6 Ebrill {0} ymlaen.
+what-you-need-to-do.next-year-only.bullet-2                     = Defnyddio’ch meddalwedd i anfon diweddariadau chwarterol atom.
+what-you-need-to-do.next-year-only.bullet-3                     = Anfon datganiad diwedd cyfnod gan ddefnyddio’ch meddalwedd ac anfon eich datganiad terfynol erbyn {0}.
+what-you-need-to-do.next-year-only.bullet-4                     = Rhoi gwybod i CThEF os byddwch yn rhoi’r gorau i fasnachu neu’n dechrau busnes newydd.
+what-you-need-to-do.next-year-only.inset.para                   = Mae’n rhaid i chi barhau i gyflwyno’ch Ffurflenni Treth Hunanasesiad yn ôl yr arfer, hyd at y flwyddyn pan wnaethoch gofrestru.
 
 ##  What You Need To Do Current  ##
 what-you-need-to-do-current.para-1                               = Yn seiliedig ar eich Ffurflenni Treth blaenorol, mae’n rhaid i chi gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
 what-you-need-to-do-current.para-2                               = Drwy gofrestru, rydych yn cytuno i wneud y canlynol:
-what-you-need-to-do-current.notification.bullet-1                = cael gafael ar feddalwedd sy’n cydweddu er mwyn cofnodi’ch incwm a’ch treuliau
-what-you-need-to-do-current.notification.bullet-2                = defnyddio’ch meddalwedd i anfon diweddariadau chwarterol atom
-what-you-need-to-do-current.notification.bullet-3                = anfon datganiad diwedd cyfnod a chyflwyno’ch datganiad terfynol erbyn 31 Ionawr 2027
+what-you-need-to-do-current.bullet-1                             = Cael gafael ar feddalwedd sy’n cydweddu er mwyn cofnodi’ch incwm a’ch treuliau.
+what-you-need-to-do-current.bullet-2                             = Defnyddio’ch meddalwedd i anfon diweddariadau chwarterol atom.
+what-you-need-to-do-current.bullet-3                             = Anfon datganiad diwedd cyfnod a chyflwyno’ch datganiad terfynol erbyn 31 Ionawr 2027.
 what-you-need-to-do-current.inset.para                           = Mae’n bosibl y byddwch yn cael eich cosbi os na fyddwch yn defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
 
 ## What You Need To Do Next Year Manadated ##
-what-you-need-to-do.next-year-mandated.para-1                   = Gallwch gofrestru i ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o 6 Ebrill {0} ymlaen
-what-you-need-to-do.next-year-mandated.para-2                   = Drwy gofrestru, rydych yn cytuno i wneud y canlynol:
-what-you-need-to-do.next-year-mandated.notification.bullet-1    = cael gafael ar feddalwedd sy’n cydweddu er mwyn cofnodi’ch incwm a’ch treuliau
-what-you-need-to-do.next-year-mandated.notification.bullet-2    = defnyddio’ch meddalwedd i anfon diweddariadau chwarterol atom
-what-you-need-to-do.next-year-mandated.notification.bullet-3    = anfon datganiad diwedd cyfnod a chyflwyno’ch datganiad terfynol erbyn {0}
-
-##  Agent What You Need To Do (Current year Mandated)  ##
-agent.what-you-need-to-do-current.para-1                                = Yn seiliedig ar Ffurflenni Treth blaenorol eich cleient, mae’n rhaid iddo ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
-agent.what-you-need-to-do-current.para-2                                = Mae’n rhaid i chi neu’ch cleient wneud y canlynol:
-agent.what-you-need-to-do-current.notification.bullet-1                 = cofnodi incwm a threuliau gan ddefnyddio meddalwedd sy’n cydweddu
-agent.what-you-need-to-do-current.notification.bullet-2                 = defnyddio meddalwedd i anfon diweddariadau chwarterol atom
-agent.what-you-need-to-do-current.notification.bullet-3                 = anfon datganiad diwedd cyfnod a chyflwyno datganiad terfynol {0}
-agent.what-you-need-to-do-current.warning.para                          = Mae’n bosibl y bydd eich cleient yn cael ei gosbi os na fydd yn defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+what-you-need-to-do.next-year-mandated.para-1                    = Gallwch gofrestru i ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o 6 Ebrill {0} ymlaen
+what-you-need-to-do.next-year-mandated.para-2                    = Drwy gofrestru, rydych yn cytuno i wneud y canlynol:
+what-you-need-to-do.next-year-mandated.bullet-1                  = Cael gafael ar feddalwedd sy’n cydweddu er mwyn cofnodi’ch incwm a’ch treuliau.
+what-you-need-to-do.next-year-mandated.bullet-2                  = Defnyddio’ch meddalwedd i anfon diweddariadau chwarterol atom.
+what-you-need-to-do.next-year-mandated.bullet-3                  = Anfon datganiad diwedd cyfnod a chyflwyno’ch datganiad terfynol erbyn {0}.
 
 # What tax year to sign up
 business.what-year-to-sign-up.heading                           = Dewiswch pryd yr hoffech ddechrau defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
@@ -586,31 +578,39 @@ declined-sign-up-next-year.heading                              = Beth y mae ang
 declined-sign-up-next-year.para                                 = Rydych wedi dewis peidio â chofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm. Parhewch i gyflwyno’ch Ffurflen Dreth Hunanasesiad flynyddol yn ôl yr arfer.
 
 ## Agent what you need to do page ##
-agent.what-you-need-to-do.heading                                                        = Beth y mae angen i chi ei wneud
-agent.what-you-need-to-do.caption                                                        = {0} | {1}
-agent.what-you-need-to-do.voluntary-and-eligible.para-1                                  = Drwy gofrestru, rydych yn cytuno y byddwch chi neu’ch cleient yn gwneud y canlynol:
-agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-1            = cofnodi incwm a threuliau gan ddefnyddio meddalwedd sy’n cydweddu
-agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-2            = defnyddio meddalwedd i anfon diweddariadau chwarterol atom
-agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-3            = cwblhau unrhyw ddiweddariadau chwarterol sydd ar goll (os ydych wedi dewis cofrestru ar gyfer y flwyddyn dreth bresennol)
-agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-4            = sanfon datganiad diwedd cyfnod a chyflwyno datganiad terfynol erbyn 31 Ionawr yn dilyn diwedd y flwyddyn dreth
-agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-5            = rhoi gwybod i CThEF os bydd yn rhoi’r gorau i fasnachu neu’n dechrau busnes newydd
-agent.what-you-need-to-do.voluntary-and-eligible.inset-text.para                         = Mae defnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm yn wirfoddol ar hyn o bryd. Gall eich cleient optio allan a mynd yn ôl i Hunanasesiad ar unrhyw adeg.
-agent.what-you-need-to-do.voluntary-and-eligible.para-2                                  = O fis Ebrill 2026 ymlaen, bydd yn orfodol i rai pobl ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, yn dibynnu ar gyfanswm eu hincwm cymwys. Os yw hyn yn berthnasol i’ch cleient, byddwn yn anfon llythyr ato.
+agent.what-you-need-to-do.heading                                              = Beth y mae angen i chi ei wneud
+agent.what-you-need-to-do.caption                                              = {0} | {1}
+agent.what-you-need-to-do.voluntary-and-eligible.para-1                        = Drwy gofrestru, rydych yn cytuno y byddwch chi neu’ch cleient yn gwneud y canlynol:
+agent.what-you-need-to-do.voluntary-and-eligible.bullet-1                      = Cofnodi incwm a threuliau gan ddefnyddio meddalwedd sy’n cydweddu.
+agent.what-you-need-to-do.voluntary-and-eligible.bullet-2                      = Defnyddio meddalwedd i anfon diweddariadau chwarterol atom.
+agent.what-you-need-to-do.voluntary-and-eligible.bullet-3                      = Cwblhewch unrhyw ddiweddariadau chwarterol sydd ar goll (os ydych wedi dewis cofrestru ar gyfer y flwyddyn dreth bresennol).
+agent.what-you-need-to-do.voluntary-and-eligible.bullet-4                      = Sanfon datganiad diwedd cyfnod a chyflwyno datganiad terfynol erbyn 31 Ionawr yn dilyn diwedd y flwyddyn dreth.
+agent.what-you-need-to-do.voluntary-and-eligible.bullet-5                      = Rhoi gwybod i CThEF os bydd yn rhoi’r gorau i fasnachu neu’n dechrau busnes newydd.
+agent.what-you-need-to-do.voluntary-and-eligible.inset-text.para               = Mae defnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm yn wirfoddol ar hyn o bryd. Gall eich cleient optio allan a mynd yn ôl i Hunanasesiad ar unrhyw adeg.
+agent.what-you-need-to-do.voluntary-and-eligible.para-2                        = O fis Ebrill 2026 ymlaen, bydd yn orfodol i rai pobl ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, yn dibynnu ar gyfanswm eu hincwm cymwys. Os yw hyn yn berthnasol i’ch cleient, byddwn yn anfon llythyr ato.
 
-agent.what-you-need-to-do.voluntary-eligible-next-year-only.para-1                       = Gall eich cleient gofrestru i ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o 6 Ebrill {0} ymlaen
-agent.what-you-need-to-do.voluntary-eligible-next-year-only.para-2                       = Drwy gofrestru, rydych yn cytuno y byddwch chi neu’ch cleient yn gwneud y canlynol:
-agent.what-you-need-to-do.voluntary-eligible-next-year-only.notification-banner.bullet-1 = cofnodi incwm a threuliau gan ddefnyddio meddalwedd sy’n cydweddu
-agent.what-you-need-to-do.voluntary-eligible-next-year-only.notification-banner.bullet-2 = defnyddio meddalwedd i anfon diweddariadau chwarterol atom
-agent.what-you-need-to-do.voluntary-eligible-next-year-only.notification-banner.bullet-3 = anfon datganiad diwedd cyfnod a chyflwyno datganiad terfynol erbyn {0}
-agent.what-you-need-to-do.voluntary-eligible-next-year-only.notification-banner.bullet-4 = rhoi gwybod i CThEF os bydd yn rhoi’r gorau i fasnachu neu’n dechrau busnes newydd
-agent.what-you-need-to-do.voluntary-eligible-next-year-only.inset-text.para              = Mae’n rhaid i Ffurflen Dreth Hunanasesiad eich cleient gael ei chyflwyno erbyn diwedd blwyddyn dreth {0}  yn ôl yr arfer.
+agent.what-you-need-to-do.voluntary-eligible-next-year-only.para-1             = Gall eich cleient gofrestru i ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o 6 Ebrill {0} ymlaen
+agent.what-you-need-to-do.voluntary-eligible-next-year-only.para-2             = Drwy gofrestru, rydych yn cytuno y byddwch chi neu’ch cleient yn gwneud y canlynol:
+agent.what-you-need-to-do.voluntary-eligible-next-year-only.bullet-1           = Cofnodi incwm a threuliau gan ddefnyddio meddalwedd sy’n cydweddu.
+agent.what-you-need-to-do.voluntary-eligible-next-year-only.bullet-2           = Defnyddio meddalwedd i anfon diweddariadau chwarterol atom.
+agent.what-you-need-to-do.voluntary-eligible-next-year-only.bullet-3           = Anfon datganiad diwedd cyfnod a chyflwyno datganiad terfynol erbyn {0}.
+agent.what-you-need-to-do.voluntary-eligible-next-year-only.bullet-4           = Rhoi gwybod i CThEF os bydd yn rhoi’r gorau i fasnachu neu’n dechrau busnes newydd.
+agent.what-you-need-to-do.voluntary-eligible-next-year-only.inset-text.para    = Mae’n rhaid i Ffurflen Dreth Hunanasesiad eich cleient gael ei chyflwyno erbyn diwedd blwyddyn dreth {0}  yn ôl yr arfer.
+
+##  Agent What You Need To Do (Current year Mandated)  ##
+agent.what-you-need-to-do-current.para-1                                       = Yn seiliedig ar Ffurflenni Treth blaenorol eich cleient, mae’n rhaid iddo ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+agent.what-you-need-to-do-current.para-2                                       = Mae’n rhaid i chi neu’ch cleient wneud y canlynol:
+agent.what-you-need-to-do-current.bullet-1                                     = cofnodi incwm a threuliau gan ddefnyddio meddalwedd sy’n cydweddu
+agent.what-you-need-to-do-current.bullet-2                                     = defnyddio meddalwedd i anfon diweddariadau chwarterol atom
+agent.what-you-need-to-do-current.bullet-3                                     = anfon datganiad diwedd cyfnod a chyflwyno datganiad terfynol {0}
+agent.what-you-need-to-do-current.warning.para                                 = Mae’n bosibl y bydd eich cleient yn cael ei gosbi os na fydd yn defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
 
 ## Agent what you need to do page post mandation next tax year
-agent.what-you-need-to-do.mandated-and-eligible-next-year-only.para-1                          = Gallwch gofrestru’ch cleient i ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o 6 Ebrill {0} ymlaen
-agent.what-you-need-to-do.mandated-and-eligible-next-year-only.para-2                          = Drwy gofrestru, rydych yn cytuno y byddwch chi neu’ch cleient yn gwneud y canlynol:
-agent.what-you-need-to-do.mandated-and-eligible-next-year-only.notification-banner.bullet-1    = cofnodi incwm a threuliau gan ddefnyddio meddalwedd sy’n cydweddu
-agent.what-you-need-to-do.mandated-and-eligible-next-year-only.notification-banner.bullet-2    = defnyddio meddalwedd i anfon diweddariadau chwarterol atom
-agent.what-you-need-to-do.mandated-and-eligible-next-year-only.notification-banner.bullet-3    = anfon datganiad diwedd cyfnod a chyflwyno’ch datganiad terfynol erbyn {0}
+agent.what-you-need-to-do.mandated-and-eligible-next-year-only.para-1          = Gallwch gofrestru’ch cleient i ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o 6 Ebrill {0} ymlaen
+agent.what-you-need-to-do.mandated-and-eligible-next-year-only.para-2          = Drwy gofrestru, rydych yn cytuno y byddwch chi neu’ch cleient yn gwneud y canlynol:
+agent.what-you-need-to-do.mandated-and-eligible-next-year-only.bullet-1        = Cofnodi incwm a threuliau gan ddefnyddio meddalwedd sy’n cydweddu.
+agent.what-you-need-to-do.mandated-and-eligible-next-year-only.bullet-2        = Defnyddio meddalwedd i anfon diweddariadau chwarterol atom.
+agent.what-you-need-to-do.mandated-and-eligible-next-year-only.bullet-3        = Anfon datganiad diwedd cyfnod a chyflwyno’ch datganiad terfynol erbyn {0}.
 
 # Agent accounting period check page
 agent.accounting-period-check.title                             = A yw holl gyfnodau cyfrifyddu busnes eich cleient yn rhedeg o 6 Ebrill i 5 Ebrill?
