@@ -26,13 +26,10 @@
   form: FormWithCSRF,
   continueButton: ContinueButton,
   hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
-  govukNotificationBanner : GovukNotificationBanner,
   languageUtils: LanguageUtils,
   govukInsetText : GovukInsetText,
   hmrcPageHeading: HmrcPageHeading,
   govukWarningText: GovukWarningText
-)(
-  implicit appConfig: AppConfig
 )
 
 @(postAction:Call, eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, clientName: String, clientNino: String)(implicit request: Request[_], messages: Messages)
@@ -64,21 +61,18 @@
 }
 
 @mandatedCurrentYearContent = {
-<p class="govuk-body">@messages("agent.what-you-need-to-do-current.para-1")</p>
-<p class="govuk-body">@messages("agent.what-you-need-to-do-current.para-2")</p>
-@govukNotificationBanner(NotificationBanner(content = HtmlContent(mandatedCurrentYearNotificationBanner)))
+  <p class="govuk-body">@messages("agent.what-you-need-to-do-current.para-1")</p>
+  <p class="govuk-body">@messages("agent.what-you-need-to-do-current.para-2")</p>
 
-@govukWarningText(WarningText(
-content = Text(Messages("agent.what-you-need-to-do-current.warning.para"))
-))
-}
+  <ol class="govuk-list govuk-list--number">
+    <li>@messages("agent.what-you-need-to-do-current.bullet-1")</li>
+    <li>@messages("agent.what-you-need-to-do-current.bullet-2")</li>
+    <li>@messages("agent.what-you-need-to-do-current.bullet-3", languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(false)))</li>
+  </ol>
 
-@mandatedCurrentYearNotificationBanner = {
-<ul class="govuk-list govuk-list--bullet">
-    <li>@messages("agent.what-you-need-to-do-current.notification.bullet-1")</li>
-    <li>@messages("agent.what-you-need-to-do-current.notification.bullet-2")</li>
-    <li>@messages("agent.what-you-need-to-do-current.notification.bullet-3", languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(false)))</li>
-</ul>
+  @govukWarningText(WarningText(
+    content = Text(Messages("agent.what-you-need-to-do-current.warning.para"))
+  ))
 }
 
 @mandatedAndEligibleNextYearOnlyContent = {
@@ -86,46 +80,39 @@ content = Text(Messages("agent.what-you-need-to-do-current.warning.para"))
       AccountingPeriodUtil.getCurrentTaxEndYear.toString)</p>
   <p class="govuk-body">@messages("agent.what-you-need-to-do.mandated-and-eligible-next-year-only.para-2")</p>
 
-  @govukNotificationBanner(NotificationBanner(content = HtmlContent(mandatedAndEligibleNextYearOnlyNotificationBanner)))
-}
-
-@mandatedAndEligibleNextYearOnlyNotificationBanner = {
-  <ul class="govuk-list govuk-list--bullet">
-    <li>@messages("agent.what-you-need-to-do.mandated-and-eligible-next-year-only.notification-banner.bullet-1")</li>
-    <li>@messages("agent.what-you-need-to-do.mandated-and-eligible-next-year-only.notification-banner.bullet-2")</li>
-    <li>@messages("agent.what-you-need-to-do.mandated-and-eligible-next-year-only.notification-banner.bullet-3", languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(true)))</li>
-  </ul>
+  <ol class="govuk-list govuk-list--number">
+    <li>@messages("agent.what-you-need-to-do.mandated-and-eligible-next-year-only.bullet-1")</li>
+    <li>@messages("agent.what-you-need-to-do.mandated-and-eligible-next-year-only.bullet-2")</li>
+    <li>@messages("agent.what-you-need-to-do.mandated-and-eligible-next-year-only.bullet-3", languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(true)))</li>
+  </ol>
 }
 
 @voluntaryAndEligibleNextYearOnlyContent = {
   <p class="govuk-body">@messages("agent.what-you-need-to-do.voluntary-eligible-next-year-only.para-1", AccountingPeriodUtil.getCurrentTaxEndYear.toString)</p>
   <p class="govuk-body">@messages("agent.what-you-need-to-do.voluntary-eligible-next-year-only.para-2")</p>
-  @govukNotificationBanner(NotificationBanner(content = HtmlContent(voluntaryAndEligibleNextYearOnlyNotificationBanner)))
-  @govukInsetText(InsetText(content = Text(messages("agent.what-you-need-to-do.voluntary-eligible-next-year-only.inset-text.para", AccountingPeriodUtil.getCurrentTaxEndYear.toString))))
-}
 
-@voluntaryAndEligibleNextYearOnlyNotificationBanner = {
-  <ul class="govuk-list govuk-list--bullet">
-    <li>@messages("agent.what-you-need-to-do.voluntary-eligible-next-year-only.notification-banner.bullet-1")</li>
-    <li>@messages("agent.what-you-need-to-do.voluntary-eligible-next-year-only.notification-banner.bullet-2")</li>
-    <li>@messages("agent.what-you-need-to-do.voluntary-eligible-next-year-only.notification-banner.bullet-3", languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(true)))</li>
-    <li>@messages("agent.what-you-need-to-do.voluntary-eligible-next-year-only.notification-banner.bullet-4")</li>
-  </ul>
+  <ol class="govuk-list govuk-list--number">
+    <li>@messages("agent.what-you-need-to-do.voluntary-eligible-next-year-only.bullet-1")</li>
+    <li>@messages("agent.what-you-need-to-do.voluntary-eligible-next-year-only.bullet-2")</li>
+    <li>@messages("agent.what-you-need-to-do.voluntary-eligible-next-year-only.bullet-3", languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(true)))</li>
+    <li>@messages("agent.what-you-need-to-do.voluntary-eligible-next-year-only.bullet-4")</li>
+  </ol>
+
+  @govukInsetText(InsetText(content = Text(messages("agent.what-you-need-to-do.voluntary-eligible-next-year-only.inset-text.para", AccountingPeriodUtil.getCurrentTaxEndYear.toString))))
 }
 
 @voluntaryAndEligibleBothYearsContent = {
   <p class="govuk-body">@messages("agent.what-you-need-to-do.voluntary-and-eligible.para-1")</p>
-  @govukNotificationBanner(NotificationBanner(content = HtmlContent(voluntaryAndEligibleBothYearsNotificationBanner)))
-  @govukInsetText(InsetText(content = Text(messages("agent.what-you-need-to-do.voluntary-and-eligible.inset-text.para"))))
-  <p class="govuk-body">@messages("agent.what-you-need-to-do.voluntary-and-eligible.para-2")</p>
-}
 
-@voluntaryAndEligibleBothYearsNotificationBanner = {
-  <ul class="govuk-list govuk-list--bullet">
-    <li>@messages("agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-1")</li>
-    <li>@messages("agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-2")</li>
-    <li>@messages("agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-3")</li>
-    <li>@messages("agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-4")</li>
-    <li>@messages("agent.what-you-need-to-do.voluntary-and-eligible.notification-banner.bullet-5")</li>
-  </ul>
+  <ol class="govuk-list govuk-list--number">
+    <li>@messages("agent.what-you-need-to-do.voluntary-and-eligible.bullet-1")</li>
+    <li>@messages("agent.what-you-need-to-do.voluntary-and-eligible.bullet-2")</li>
+    <li>@messages("agent.what-you-need-to-do.voluntary-and-eligible.bullet-3")</li>
+    <li>@messages("agent.what-you-need-to-do.voluntary-and-eligible.bullet-4")</li>
+    <li>@messages("agent.what-you-need-to-do.voluntary-and-eligible.bullet-5")</li>
+  </ol>
+
+  @govukInsetText(InsetText(content = Text(messages("agent.what-you-need-to-do.voluntary-and-eligible.inset-text.para"))))
+
+  <p class="govuk-body">@messages("agent.what-you-need-to-do.voluntary-and-eligible.para-2")</p>
 }

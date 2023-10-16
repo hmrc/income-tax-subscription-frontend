@@ -28,16 +28,18 @@ class WhatYouNeedToDoSpec extends ViewSpec {
 
   val whatYouNeedToDo: WhatYouNeedToDo = app.injector.instanceOf[WhatYouNeedToDo]
 
-  def page(onlyNextYear : Boolean): HtmlFormat.Appendable = whatYouNeedToDo(testCall, onlyNextYear, mandatedCurrentYear = false, mandatedNextYear = false)
+  def page(onlyNextYear: Boolean): HtmlFormat.Appendable = whatYouNeedToDo(testCall, onlyNextYear, mandatedCurrentYear = false, mandatedNextYear = false)
 
-  def document(onlyNextYear : Boolean): Document = Jsoup.parse(page(onlyNextYear).body)
+  def document(onlyNextYear: Boolean): Document = Jsoup.parse(page(onlyNextYear).body)
 
 
   def pageCurrentMandated(currentYearMandated: Boolean): HtmlFormat.Appendable = whatYouNeedToDo(testCall, onlyNextYear = false, mandatedCurrentYear = currentYearMandated, mandatedNextYear = false)
+
   def pageNextYearOnlyAndMandated(nextYearMandated: Boolean): HtmlFormat.Appendable = whatYouNeedToDo(testCall, onlyNextYear = true, mandatedCurrentYear = false, mandatedNextYear = nextYearMandated)
 
-  def documentCurrentMandated(currentYearMandated : Boolean): Document = Jsoup.parse(pageCurrentMandated(currentYearMandated).body)
-  def documentNextYearOnlyAndMandated(nextYearMandated : Boolean): Document = Jsoup.parse(pageNextYearOnlyAndMandated(nextYearMandated).body)
+  def documentCurrentMandated(currentYearMandated: Boolean): Document = Jsoup.parse(pageCurrentMandated(currentYearMandated).body)
+
+  def documentNextYearOnlyAndMandated(nextYearMandated: Boolean): Document = Jsoup.parse(pageNextYearOnlyAndMandated(nextYearMandated).body)
 
   object WhatYouNeedToDoMessages {
     val heading: String = "What you need to do"
@@ -45,11 +47,11 @@ class WhatYouNeedToDoSpec extends ViewSpec {
 
     object NotificationBanner {
       val heading: String = "Important"
-      val bulletOne: String = "get compatible software to record your income and expenses"
-      val bulletTwo: String = "use your software to send us quarterly updates"
-      val bulletThree: String = "complete any missing quarterly updates (if you’ve chosen to sign up for the current tax year)"
-      val bulletFour: String = "send an end of period statement and submit your final declaration by 31 January following the end of the tax year"
-      val bulletFive: String = "tell HMRC if you stop trading or start a new business"
+      val bulletOne: String = "Get compatible software to record your income and expenses."
+      val bulletTwo: String = "Use your software to send us quarterly updates."
+      val bulletThree: String = "Complete any missing quarterly updates (if you have chosen to sign up for the current tax year)."
+      val bulletFour: String = "Send an end of period statement and submit your final declaration by 31 January following the end of the tax year."
+      val bulletFive: String = "Tell HMRC if you stop trading or start a new business."
     }
 
     object InsetText {
@@ -66,13 +68,13 @@ class WhatYouNeedToDoSpec extends ViewSpec {
 
     object NotificationBanner {
       val heading: String = "Important"
-      val bulletOne: String = s"get compatible software to record your income and expenses from 6 April ${AccountingPeriodUtil.getCurrentTaxEndYear}"
-      val bulletTwo: String = "use your software to send us quarterly updates"
+      val bulletOne: String = s"Get compatible software to record your income and expenses from 6 April ${AccountingPeriodUtil.getCurrentTaxEndYear}."
+      val bulletTwo: String = "Use your software to send us quarterly updates."
       val bulletThree: String = {
         val date = AccountingPeriodUtil.getFinalDeclarationDate(true).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
-        s"send an end of period statement using your software and send your final declaration by $date"
+        s"Send an end of period statement using your software and send your final declaration by $date."
       }
-      val bulletFour: String = "tell HMRC if you stop trading or start a new business"
+      val bulletFour: String = "Tell HMRC if you stop trading or start a new business."
     }
 
     object InsetText {
@@ -89,11 +91,11 @@ class WhatYouNeedToDoSpec extends ViewSpec {
 
     object NotificationBanner {
       val heading: String = "Important"
-      val bulletOne: String = "get compatible software to record your income and expenses"
-      val bulletTwo: String = "use your software to send us quarterly updates"
+      val bulletOne: String = "Get compatible software to record your income and expenses."
+      val bulletTwo: String = "Use your software to send us quarterly updates."
       val bulletThree: String = {
         val date = AccountingPeriodUtil.getFinalDeclarationDate(false).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
-        s"send an end of period statement and submit your final declaration by $date"
+        s"Send an end of period statement and submit your final declaration by $date."
       }
     }
 
@@ -112,13 +114,11 @@ class WhatYouNeedToDoSpec extends ViewSpec {
     object NotificationBanner {
       val finalDeclarationDate: String = AccountingPeriodUtil.getFinalDeclarationDate(true).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
       val heading: String = "Important"
-      val bulletOne: String = s"get compatible software to record your income and expenses"
-      val bulletTwo: String = "use your compatible software to send us quarterly updates"
-      val bulletThree: String = s"send an end of period statement and submit your final declaration by $finalDeclarationDate"
+      val bulletOne: String = "Get compatible software to record your income and expenses."
+      val bulletTwo: String = "Use your compatible software to send us quarterly updates."
+      val bulletThree: String = s"Send an end of period statement and submit your final declaration by $finalDeclarationDate."
     }
-
   }
-
 
   "WhatYouNeedToDo" must {
 
@@ -138,35 +138,27 @@ class WhatYouNeedToDoSpec extends ViewSpec {
       document(false).mainContent.selectNth("p", 1).text mustBe WhatYouNeedToDoMessages.paraOne
     }
 
-    "has a notification banner" which {
-      def notificationBanner: Element = document(false).mainContent.selectHead(".govuk-notification-banner")
+    "has a numbered list" which {
+      def numberedList: Element = document(false).mainContent.selectHead("ol.govuk-list--number")
 
-      "has a heading" in {
-        notificationBanner.selectHead(".govuk-notification-banner__header").text mustBe WhatYouNeedToDoMessages.NotificationBanner.heading
+      "has a first point" in {
+        numberedList.selectNth("li", 1).text mustBe WhatYouNeedToDoMessages.NotificationBanner.bulletOne
       }
 
-      "has a bullet list" which {
-        def bulletList: Element = notificationBanner.selectHead("ul")
+      "has a second point" in {
+        numberedList.selectNth("li", 2).text mustBe WhatYouNeedToDoMessages.NotificationBanner.bulletTwo
+      }
 
-        "has a first bullet" in {
-          bulletList.selectNth("li", 1).text mustBe WhatYouNeedToDoMessages.NotificationBanner.bulletOne
-        }
+      "has a third point" in {
+        numberedList.selectNth("li", 3).text mustBe WhatYouNeedToDoMessages.NotificationBanner.bulletThree
+      }
 
-        "has a second bullet" in {
-          bulletList.selectNth("li", 2).text mustBe WhatYouNeedToDoMessages.NotificationBanner.bulletTwo
-        }
+      "has a forth point" in {
+        numberedList.selectNth("li", 4).text mustBe WhatYouNeedToDoMessages.NotificationBanner.bulletFour
+      }
 
-        "has a third bullet" in {
-          bulletList.selectNth("li", 3).text mustBe WhatYouNeedToDoMessages.NotificationBanner.bulletThree
-        }
-
-        "has a forth bullet" in {
-          bulletList.selectNth("li", 4).text mustBe WhatYouNeedToDoMessages.NotificationBanner.bulletFour
-        }
-
-        "has a fifth bullet" in {
-          bulletList.selectNth("li", 5).text mustBe WhatYouNeedToDoMessages.NotificationBanner.bulletFive
-        }
+      "has a fifth point" in {
+        numberedList.selectNth("li", 5).text mustBe WhatYouNeedToDoMessages.NotificationBanner.bulletFive
       }
     }
 
@@ -179,7 +171,6 @@ class WhatYouNeedToDoSpec extends ViewSpec {
     }
 
   }
-
 
 
   "NextYearOnlyWhatYouNeedToDo" must {
@@ -204,31 +195,23 @@ class WhatYouNeedToDoSpec extends ViewSpec {
       document(true).mainContent.selectNth("p", 2).text mustBe NextYearOnlyWhatYouNeedToDoMessages.paraTwo
     }
 
-    "has a notification banner" which {
-      def notificationBanner: Element = document(true).mainContent.selectHead(".govuk-notification-banner")
+    "has a numbered list" which {
+      def numberedList: Element = document(true).mainContent.selectHead("ol.govuk-list--number")
 
-      "has a heading" in {
-        notificationBanner.selectHead(".govuk-notification-banner__header").text mustBe NextYearOnlyWhatYouNeedToDoMessages.NotificationBanner.heading
+      "has a first point" in {
+        numberedList.selectNth("li", 1).text mustBe NextYearOnlyWhatYouNeedToDoMessages.NotificationBanner.bulletOne
       }
 
-      "has a bullet list" which {
-        def bulletList: Element = notificationBanner.selectHead("ul")
+      "has a second point" in {
+        numberedList.selectNth("li", 2).text mustBe NextYearOnlyWhatYouNeedToDoMessages.NotificationBanner.bulletTwo
+      }
 
-        "has a first bullet" in {
-          bulletList.selectNth("li", 1).text mustBe NextYearOnlyWhatYouNeedToDoMessages.NotificationBanner.bulletOne
-        }
+      "has a third point" in {
+        numberedList.selectNth("li", 3).text mustBe NextYearOnlyWhatYouNeedToDoMessages.NotificationBanner.bulletThree
+      }
 
-        "has a second bullet" in {
-          bulletList.selectNth("li", 2).text mustBe NextYearOnlyWhatYouNeedToDoMessages.NotificationBanner.bulletTwo
-        }
-
-        "has a third bullet" in {
-          bulletList.selectNth("li", 3).text mustBe NextYearOnlyWhatYouNeedToDoMessages.NotificationBanner.bulletThree
-        }
-
-        "has a forth bullet" in {
-          bulletList.selectNth("li", 4).text mustBe NextYearOnlyWhatYouNeedToDoMessages.NotificationBanner.bulletFour
-        }
+      "has a forth point" in {
+        numberedList.selectNth("li", 4).text mustBe NextYearOnlyWhatYouNeedToDoMessages.NotificationBanner.bulletFour
       }
     }
 
@@ -260,34 +243,26 @@ class WhatYouNeedToDoSpec extends ViewSpec {
       documentCurrentMandated(true).mainContent.selectNth("p", 2).text mustBe WhatYouNeedToDoMandatedCurrent.paraTwo
     }
 
-    "has a notification banner" which {
-      def notificationBanner: Element = documentCurrentMandated(true).mainContent.selectHead(".govuk-notification-banner")
+    "has a numbered list" which {
+      def numberedList: Element = documentCurrentMandated(true).mainContent.selectHead("ol.govuk-list--number")
 
-      "has a heading" in {
-        notificationBanner.selectHead(".govuk-notification-banner__header").text mustBe WhatYouNeedToDoMandatedCurrent.NotificationBanner.heading
+      "has a first point" in {
+        numberedList.selectNth("li", 1).text mustBe WhatYouNeedToDoMandatedCurrent.NotificationBanner.bulletOne
       }
 
-      "has a bullet list" which {
-        def bulletList: Element = notificationBanner.selectHead("ul")
+      "has a second point" in {
+        numberedList.selectNth("li", 2).text mustBe WhatYouNeedToDoMandatedCurrent.NotificationBanner.bulletTwo
+      }
 
-        "has a first bullet" in {
-          bulletList.selectNth("li", 1).text mustBe WhatYouNeedToDoMandatedCurrent.NotificationBanner.bulletOne
-        }
-
-        "has a second bullet" in {
-          bulletList.selectNth("li", 2).text mustBe WhatYouNeedToDoMandatedCurrent.NotificationBanner.bulletTwo
-        }
-
-        "has a third bullet" in {
-          bulletList.selectNth("li", 3).text mustBe WhatYouNeedToDoMandatedCurrent.NotificationBanner.bulletThree
-        }
-        }
+      "has a third point" in {
+        numberedList.selectNth("li", 3).text mustBe WhatYouNeedToDoMandatedCurrent.NotificationBanner.bulletThree
       }
     }
+  }
 
-    "has an warning text" in {
-      documentCurrentMandated(true).selectHead(".govuk-warning-text__text").text mustBe WhatYouNeedToDoMandatedCurrent.WarningText.para
-    }
+  "has an warning text" in {
+    documentCurrentMandated(true).selectHead(".govuk-warning-text__text").text mustBe WhatYouNeedToDoMandatedCurrent.WarningText.para
+  }
 
   "WhatYouNeedToDoMandatedAndNextYearOnly" must {
 
@@ -311,27 +286,19 @@ class WhatYouNeedToDoSpec extends ViewSpec {
       documentNextYearOnlyAndMandated(true).mainContent.selectNth("p", 2).text mustBe WhatYouNeedToDoMandatedAndEligibleForNextYearOnly.paraTwo
     }
 
-    "has a notification banner" which {
-      def notificationBanner: Element = documentNextYearOnlyAndMandated(true).mainContent.selectHead(".govuk-notification-banner")
+    "has a numbered list" which {
+      def numberedList: Element = documentNextYearOnlyAndMandated(true).mainContent.selectHead("ol.govuk-list--number")
 
-      "has a heading" in {
-        notificationBanner.selectHead(".govuk-notification-banner__header").text mustBe WhatYouNeedToDoMandatedAndEligibleForNextYearOnly.NotificationBanner.heading
+      "has a first point" in {
+        numberedList.selectNth("li", 1).text mustBe WhatYouNeedToDoMandatedAndEligibleForNextYearOnly.NotificationBanner.bulletOne
       }
 
-      "has a bullet list" which {
-        def bulletList: Element = notificationBanner.selectHead("ul")
+      "has a second point" in {
+        numberedList.selectNth("li", 2).text mustBe WhatYouNeedToDoMandatedAndEligibleForNextYearOnly.NotificationBanner.bulletTwo
+      }
 
-        "has a first bullet" in {
-          bulletList.selectNth("li", 1).text mustBe WhatYouNeedToDoMandatedAndEligibleForNextYearOnly.NotificationBanner.bulletOne
-        }
-
-        "has a second bullet" in {
-          bulletList.selectNth("li", 2).text mustBe WhatYouNeedToDoMandatedAndEligibleForNextYearOnly.NotificationBanner.bulletTwo
-        }
-
-        "has a third bullet" in {
-          bulletList.selectNth("li", 3).text mustBe WhatYouNeedToDoMandatedAndEligibleForNextYearOnly.NotificationBanner.bulletThree
-        }
+      "has a third point" in {
+        numberedList.selectNth("li", 3).text mustBe WhatYouNeedToDoMandatedAndEligibleForNextYearOnly.NotificationBanner.bulletThree
       }
     }
 

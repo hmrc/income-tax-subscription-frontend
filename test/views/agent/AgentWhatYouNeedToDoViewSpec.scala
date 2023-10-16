@@ -46,8 +46,8 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
       )
 
       "have a client Name and Nino" in {
-        mainContent.selectHead(".govuk-caption-l").text contains(clientName)
-        mainContent.selectHead(".govuk-caption-l").text contains(clientNino)
+        mainContent.selectHead(".govuk-caption-l").text contains (clientName)
+        mainContent.selectHead(".govuk-caption-l").text contains (clientNino)
       }
 
       "have a first paragraph" in {
@@ -58,28 +58,21 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
         mainContent.selectNth("p", 2).text mustBe WhatYouNeedToDoMessages.MandatedCurrentYear.paraTwo
       }
 
-      "have a notification banner" which {
-        def notificationBanner: Element = mainContent.selectHead(".govuk-notification-banner")
+      "have a numbered list" which {
+        def numberedList: Element = mainContent.selectHead("ol.govuk-list--number")
 
-        "has a heading" in {
-          notificationBanner.selectHead(".govuk-notification-banner__header").text mustBe WhatYouNeedToDoMessages.NotificationBanner.heading
+        "has a first point" in {
+          numberedList.selectNth("li", 1).text mustBe WhatYouNeedToDoMessages.MandatedCurrentYear.NotificationBanner.bulletOne
         }
 
-        "has a bullet list" which {
-          def bulletList: Element = notificationBanner.selectHead("ul")
-
-          "has a first bullet" in {
-            bulletList.selectNth("li", 1).text mustBe WhatYouNeedToDoMessages.MandatedCurrentYear.NotificationBanner.bulletOne
-          }
-
-          "has a second bullet" in {
-            bulletList.selectNth("li", 2).text mustBe WhatYouNeedToDoMessages.MandatedCurrentYear.NotificationBanner.bulletTwo
-          }
-
-          "has a third bullet" in {
-            bulletList.selectNth("li", 3).text mustBe WhatYouNeedToDoMessages.MandatedCurrentYear.NotificationBanner.bulletThree
-          }
+        "has a second point" in {
+          numberedList.selectNth("li", 2).text mustBe WhatYouNeedToDoMessages.MandatedCurrentYear.NotificationBanner.bulletTwo
         }
+
+        "has a third point" in {
+          numberedList.selectNth("li", 3).text mustBe WhatYouNeedToDoMessages.MandatedCurrentYear.NotificationBanner.bulletThree
+        }
+
       }
 
       "have a warning text" in {
@@ -113,8 +106,8 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
       // rest of the tests here for mandated next year and eligible next year content
 
       "have a client Name and Nino" in {
-        mainContent.selectHead(".govuk-caption-l").text contains(clientName)
-        mainContent.selectHead(".govuk-caption-l").text contains(clientNino)
+        mainContent.selectHead(".govuk-caption-l").text contains (clientName)
+        mainContent.selectHead(".govuk-caption-l").text contains (clientNino)
       }
 
       "have a first paragraph" in {
@@ -125,27 +118,19 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
         mainContent.selectNth("p", 2).text mustBe WhatYouNeedToDoMessages.MandatedAndEligibleForNextYearOnly.paraTwo
       }
 
-      "have a notification banner" which {
-        def notificationBanner: Element = mainContent.selectHead(".govuk-notification-banner")
+      "have a numbered list" which {
+        def numberedList: Element = mainContent.selectHead("ol.govuk-list--number")
 
-        "has a heading" in {
-          notificationBanner.selectHead(".govuk-notification-banner__header").text mustBe WhatYouNeedToDoMessages.NotificationBanner.heading
+        "has a first point" in {
+          numberedList.selectNth("li", 1).text mustBe WhatYouNeedToDoMessages.MandatedAndEligibleForNextYearOnly.NotificationBanner.bulletOne
         }
 
-        "has a bullet list" which {
-          def bulletList: Element = notificationBanner.selectHead("ul")
+        "has a second point" in {
+          numberedList.selectNth("li", 2).text mustBe WhatYouNeedToDoMessages.MandatedAndEligibleForNextYearOnly.NotificationBanner.bulletTwo
+        }
 
-          "has a first bullet" in {
-            bulletList.selectNth("li", 1).text mustBe WhatYouNeedToDoMessages.MandatedAndEligibleForNextYearOnly.NotificationBanner.bulletOne
-          }
-
-          "has a second bullet" in {
-            bulletList.selectNth("li", 2).text mustBe WhatYouNeedToDoMessages.MandatedAndEligibleForNextYearOnly.NotificationBanner.bulletTwo
-          }
-
-          "has a third bullet" in {
-            bulletList.selectNth("li", 3).text mustBe WhatYouNeedToDoMessages.MandatedAndEligibleForNextYearOnly.NotificationBanner.bulletThree
-          }
+        "has a third point" in {
+          numberedList.selectNth("li", 3).text mustBe WhatYouNeedToDoMessages.MandatedAndEligibleForNextYearOnly.NotificationBanner.bulletThree
         }
       }
 
@@ -174,8 +159,8 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
       )
 
       "have a client Name and Nino" in {
-        mainContent.selectHead(".govuk-caption-l").text contains(clientName)
-        mainContent.selectHead(".govuk-caption-l").text contains(clientNino)
+        mainContent.selectHead(".govuk-caption-l").text contains (clientName)
+        mainContent.selectHead(".govuk-caption-l").text contains (clientNino)
       }
 
       "have a first paragraph" in {
@@ -186,31 +171,23 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
         mainContent.selectNth("p", 2).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.paraTwo
       }
 
-      "have a notification banner" which {
-        def notificationBanner: Element = mainContent.selectHead(".govuk-notification-banner")
+      "have a numbered list" which {
+        def numberedList: Element = mainContent.selectHead("ol.govuk-list--number")
 
-        "has a heading" in {
-          notificationBanner.selectHead(".govuk-notification-banner__header").text mustBe WhatYouNeedToDoMessages.NotificationBanner.heading
+        "has a first point" in {
+          numberedList.selectNth("li", 1).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.NotificationBanner.bulletOne
         }
 
-        "has a bullet list" which {
-          def bulletList: Element = notificationBanner.selectHead("ul")
+        "has a second point" in {
+          numberedList.selectNth("li", 2).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.NotificationBanner.bulletTwo
+        }
 
-          "has a first bullet" in {
-            bulletList.selectNth("li", 1).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.NotificationBanner.bulletOne
-          }
+        "has a third point" in {
+          numberedList.selectNth("li", 3).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.NotificationBanner.bulletThree
+        }
 
-          "has a second bullet" in {
-            bulletList.selectNth("li", 2).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.NotificationBanner.bulletTwo
-          }
-
-          "has a third bullet" in {
-            bulletList.selectNth("li", 3).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.NotificationBanner.bulletThree
-          }
-
-          "has a forth bullet" in {
-            bulletList.selectNth("li", 4).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.NotificationBanner.bulletFour
-          }
+        "has a forth point" in {
+          numberedList.selectNth("li", 4).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.NotificationBanner.bulletFour
         }
 
       }
@@ -244,43 +221,35 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
       )
 
       "have a client Name and Nino" in {
-        mainContent.selectHead(".govuk-caption-l").text contains(clientName)
-        mainContent.selectHead(".govuk-caption-l").text contains(clientNino)
+        mainContent.selectHead(".govuk-caption-l").text contains (clientName)
+        mainContent.selectHead(".govuk-caption-l").text contains (clientNino)
       }
 
       "have a first paragraph" in {
         mainContent.selectNth("p", 1).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.paraOne
       }
 
-      "have a notification banner" which {
-        def notificationBanner: Element = mainContent.selectHead(".govuk-notification-banner")
+      "have a numbered list" which {
+        def numberedList: Element = mainContent.selectHead("ol.govuk-list--number")
 
-        "has a heading" in {
-          notificationBanner.selectHead(".govuk-notification-banner__header").text mustBe WhatYouNeedToDoMessages.NotificationBanner.heading
+        "has a first point" in {
+          numberedList.selectNth("li", 1).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.NotificationBanner.bulletOne
         }
 
-        "has a bullet list" which {
-          def bulletList: Element = notificationBanner.selectHead("ul")
+        "has a second point" in {
+          numberedList.selectNth("li", 2).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.NotificationBanner.bulletTwo
+        }
 
-          "has a first bullet" in {
-            bulletList.selectNth("li", 1).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.NotificationBanner.bulletOne
-          }
+        "has a third point" in {
+          numberedList.selectNth("li", 3).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.NotificationBanner.bulletThree
+        }
 
-          "has a second bullet" in {
-            bulletList.selectNth("li", 2).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.NotificationBanner.bulletTwo
-          }
+        "has a forth point" in {
+          numberedList.selectNth("li", 4).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.NotificationBanner.bulletFour
+        }
 
-          "has a third bullet" in {
-            bulletList.selectNth("li", 3).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.NotificationBanner.bulletThree
-          }
-
-          "has a forth bullet" in {
-            bulletList.selectNth("li", 4).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.NotificationBanner.bulletFour
-          }
-
-          "has a fifth bullet" in {
-            bulletList.selectNth("li", 5).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.NotificationBanner.bulletFive
-          }
+        "has a fifth point" in {
+          numberedList.selectNth("li", 5).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.NotificationBanner.bulletFive
         }
       }
 
@@ -334,19 +303,16 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
       val paraTwo: String = "Either you or your client must:"
 
       object NotificationBanner {
-        val bulletOne: String = "record income and expenses using compatible software"
-        val bulletTwo: String = "use software to send us quarterly updates"
+        val bulletOne: String = "Record income and expenses using compatible software."
+        val bulletTwo: String = "Use software to send us quarterly updates."
         val date = AccountingPeriodUtil.getFinalDeclarationDate(false).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
-        val bulletThree: String = s"send an end of period statement and submit a final declaration by ${date}"
+        val bulletThree: String = s"Send an end of period statement and submit a final declaration by $date."
       }
+
       object WarningText {
         val para: String = "Warning Your client may be penalised if they do not use Making Tax Digital for Income Tax."
       }
 
-    }
-
-    object MandatedAndEligibleNextYearOnly {
-      // add messages here
     }
 
     object EligibleNextYearOnly {
@@ -357,13 +323,13 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
       val paraTwo: String = "By signing up you agree that either you or your client will:"
 
       object NotificationBanner {
-        val bulletOne: String = "record income and expenses using compatible software"
-        val bulletTwo: String = "use software to send us quarterly update"
+        val bulletOne: String = "Record income and expenses using compatible software."
+        val bulletTwo: String = "Use software to send us quarterly update."
         val bulletThree: String = {
           val date: String = AccountingPeriodUtil.getFinalDeclarationDate(true).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
-          s"send an end of period statement and submit a final declaration by $date"
+          s"Send an end of period statement and submit a final declaration by $date."
         }
-        val bulletFour: String = "tell HMRC if they stop trading or start a new business"
+        val bulletFour: String = "Tell HMRC if they stop trading or start a new business."
       }
 
       object InsetText {
@@ -378,11 +344,11 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
       val paraOne: String = "By signing up you agree that either you or your client will:"
 
       object NotificationBanner {
-        val bulletOne: String = "record income and expenses using compatible software"
-        val bulletTwo: String = "use software to send us quarterly updates"
-        val bulletThree: String = "complete any missing quarterly updates (if you’ve chosen to sign up for the current tax year)"
-        val bulletFour: String = "send an end of period statement and submit a final declaration by 31 January following the end of the tax year"
-        val bulletFive: String = "tell HMRC if they stop trading or start a new business"
+        val bulletOne: String = "Record income and expenses using compatible software."
+        val bulletTwo: String = "Use software to send us quarterly updates."
+        val bulletThree: String = "Complete any missing quarterly updates (if you have chosen to sign up for the current tax year)."
+        val bulletFour: String = "Send an end of period statement and submit a final declaration by 31 January following the end of the tax year."
+        val bulletFive: String = "Tell HMRC if they stop trading or start a new business."
       }
 
       object InsetText {
@@ -394,16 +360,16 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
     }
 
     object MandatedAndEligibleForNextYearOnly {
-      val currentYearDate = AccountingPeriodUtil.getCurrentTaxEndYear
+      val currentYearDate: Int = AccountingPeriodUtil.getCurrentTaxEndYear
       val paraOne: String = s"You can sign up your client to use Making Tax Digital for Income Tax from 6 April $currentYearDate."
       val paraTwo: String = "By signing up you agree that either you or your client will:"
 
       object NotificationBanner {
-        val bulletOne: String = "get compatible software to record your income and expenses"
-        val bulletTwo: String = "use your compatible software to send us quarterly updates"
+        val bulletOne: String = "Get compatible software to record your income and expenses."
+        val bulletTwo: String = "Use your compatible software to send us quarterly updates."
         val bulletThree: String = {
           val finalDeclarationDate = AccountingPeriodUtil.getFinalDeclarationDate(true).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
-          s"send an end of period statement and submit your final declaration by $finalDeclarationDate"
+          s"Send an end of period statement and submit your final declaration by $finalDeclarationDate."
         }
       }
 
