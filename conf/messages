@@ -165,7 +165,7 @@ what-you-need-to-do.next-year-mandated.bullet-3                 = Send an end of
 # What tax year to sign up
 business.what-year-to-sign-up.heading                           = Choose when you want to start using Making Tax Digital for Income Tax
 business.what-year-to-sign-up.para                              = You can start sending quarterly updates during the current tax year (6 April {0} to 5 April {1}) or the next tax year (6 April {1} to 5 April {2}).
-business.what-year-to-sign-up.warning-text                      = You won’t be penalised if you start sending updates mid-way through the tax year. However, you will need to make updates for the quarters you’ve missed.
+business.what-year-to-sign-up.warning-text                      = You will not be penalised if you start sending updates mid-way through the tax year. However, you will need to make updates for the quarters you’ve missed.
 business.what-year-to-sign-up.table-caption                     = Submit quarterly updates by the deadline
 business.what-year-to-sign-up.option-1                          = Current tax year (6 April {0} to 5 April {1})
 business.what-year-to-sign-up.option-2                          = Next tax year (6 April {0} to 5 April {1})
@@ -697,7 +697,7 @@ agent.business.what-year-to-sign-up.title                       = Select when yo
 agent.business.what-year-to-sign-up.heading                     = Select when your client will start using Making Tax Digital for Income Tax
 agent.business.what-year-to-sign-up.caption                     = {0} | {1}
 agent.business.what-year-to-sign-up.para                        = You or your client can start sending quarterly updates during the current tax year 6 April {0} to 5 April {1} or the next tax year 6 April {1} to 5 April {2}.
-agent.business.what-year-to-sign-up.warning-text                = Your client won’t be penalised if updates are sent mid-way through the tax year. However, updates need to be made for any missed quarters.
+agent.business.what-year-to-sign-up.warning-text                = Your client will not be penalised if updates are sent mid-way through the tax year. However, updates need to be made for any missed quarters.
 agent.business.what-year-to-sign-up.line-3                      = You must submit them by these deadlines:
 agent.business.what-year-to-sign-up.radio-option-heading        = Select tax year
 agent.business.what-year-to-sign-up.option-1                    = Current tax year (6 April {0} to 5 April {1})

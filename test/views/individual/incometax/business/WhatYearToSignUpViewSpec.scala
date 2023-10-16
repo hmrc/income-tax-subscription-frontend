@@ -210,7 +210,7 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
     val updatesHeader = "Quarterly update"
     val deadlineHeader = "Deadline"
     val paragraph = "You can start sending quarterly updates during the current tax year (6 April 2023 to 5 April 2024) or the next tax year (6 April 2024 to 5 April 2025)."
-    val warningText = "Warning You won’t be penalised if you start sending updates mid-way through the tax year. However, you will need to make updates for the quarters you’ve missed."
+    val warningText = "Warning You will not be penalised if you start sending updates mid-way through the tax year. However, you will need to make updates for the quarters you’ve missed."
 
     val currentYearOptionHint = s"Send a final declaration by the 31 January ${(taxYearEnd + 1).toString}."
 
