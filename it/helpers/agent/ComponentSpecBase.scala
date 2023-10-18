@@ -2,6 +2,7 @@
 package helpers.agent
 
 import _root_.common.Constants.ITSASessionKeys
+import utilities.UserMatchingSessionUtil.{firstName,lastName}
 import auth.agent.{AgentJourneyState, AgentSignUp, AgentUserMatching}
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
@@ -599,7 +600,9 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       ITSASessionKeys.ArnKey -> testARN,
       ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
       ITSASessionKeys.NINO -> testNino,
-      ITSASessionKeys.UTR -> testUtr
+      ITSASessionKeys.UTR -> testUtr,
+      firstName -> "FirstName",
+      lastName -> "LastName"
     )): WSResponse = {
       get(
         saveAndRetrieveLocation.fold(

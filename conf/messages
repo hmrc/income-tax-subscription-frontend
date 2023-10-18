@@ -952,12 +952,12 @@ agent.error.remove-sole-trader-business.invalid                     = Select yes
 
 ## Agent progress saved
 agent.business.progress-saved.title                                   = Your progress has been saved
-agent.business.progress-saved.content.summary                         = We will keep your information until {0}.
-agent.business.progress-saved.content.subheading                      = What happens next
+agent.business.progress-saved.content.summary                         = We will keep {0}’s information until {1}.
+agent.business.progress-saved.content.subheading                      = What you can do next
 agent.business.progress-saved.content.paragraph1                      = You can:
 agent.business.progress-saved.content.paragraph2                      = If you sign out, you will need to come back to your {0} to continue. We suggest you bookmark this to make it easier to find when you return.
-agent.business.progress-saved.content.sign-up-link                    = continue signing up for Making Tax Digital for Income Tax
-agent.business.progress-saved.content.sign-out-link                   = sign out and come back later
+agent.business.progress-saved.content.sign-up-link                    = continue signing up this client
+agent.business.progress-saved.content.sign-up-another-client-link     = sign up another client
 agent.business.progress-saved.content.sign-in-link                    = Government Gateway login
 
 ## Task List
