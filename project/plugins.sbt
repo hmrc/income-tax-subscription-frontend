@@ -17,4 +17,4 @@ addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.6.1")
 
 addSbtPlugin("org.lyranthe.sbt" % "partial-unification" % "1.1.2")
 
-addSbtPlugin("org.irundaia.sbt" % "sbt-sassify" % "1.4.13")
+addSbtPlugin("io.github.irundaia" % "sbt-sassify" % "1.5.2")
