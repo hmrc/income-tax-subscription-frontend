@@ -44,6 +44,10 @@ class MessagesSpec extends PlaySpec with MessagesMatcher  {
       messageKeysWelsh must containOnlyPermittedCharacters
     }
 
+    "not contain single quotes" in {
+      messageLinesWelsh must containNoSingleQuotes
+    }
+
     "contain a govuk-link class when a link is present" in {
       messageLinesWelsh must includeCorrectClassOnLinks
     }
@@ -60,6 +64,10 @@ class MessagesSpec extends PlaySpec with MessagesMatcher  {
 
     "contain only permitted characters" in {
       messageKeysEnglish must containOnlyPermittedCharacters
+    }
+
+    "not contain single quotes" in {
+      messageLinesEnglish must containNoSingleQuotes
     }
 
     "contain a govuk-link class when a link is present" in {

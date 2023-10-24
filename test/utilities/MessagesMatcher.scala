@@ -51,6 +51,15 @@ trait MessagesMatcher {
     )
   }
 
+  def containNoSingleQuotes: Matcher[Seq[String]] = (left: Seq[String]) => {
+    val badLines = left.filter(_.contains("'"))
+    MatchResult(
+      badLines.isEmpty,
+      s"${badLines.size} bad line(s): ${badLines.mkString("\n  ", "\n  ", "\n")}",
+      ""
+    )
+  }
+
   def includeCorrectClassOnLinks: Matcher[Seq[String]] = (left: Seq[String]) => {
     val badLines = left.filter(_.contains("<a")).filterNot(_.contains("""class="govuk-link""""))
     MatchResult(
