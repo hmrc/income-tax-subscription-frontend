@@ -54,7 +54,7 @@ class RemoveOverseasPropertyViewSpec extends ViewSpec {
   }
 
   object RemoveOverseasPropertyMessages {
-    val heading: String = "Are you sure you want to delete your overseas property business?"
+    val heading: String = "Are you sure you want to delete your foreign property business?"
     val hint: String = "All your current sole trader and property businesses need to be added to Making Tax Digital for Income Tax at the same time. You will need to re-enter this information if you remove it by mistake."
     val agreeAndContinue = "Agree and continue"
   }

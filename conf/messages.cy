@@ -1003,7 +1003,7 @@ business.task-list.status.not-started                           = Heb ddechrau
 business.task-list.accounting-period-confirm                    = Cyfnod cyfrifyddu wedi’i gadarnhau: 6 Ebrill i 5 Ebrill
 
 # Remove overseas property business
-remove-overseas-property-business.heading                       = Ydych chi’n siŵr eich bod am ddileu’ch busnes eiddo tramor?
+remove-overseas-property-business.heading                       = A ydych yn siŵr eich bod am ddileu’ch busnes eiddo tramor?
 remove-overseas-property-business.hint                          = Mae angen ychwanegu pob un o’ch busnesau unig fasnachwr a’ch busnesau eiddo presennol at y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar yr un pryd. Bydd angen i chi ail-nodi’r wybodaeth hon os byddwch yn ei dileu ar gam.
 error.remove-overseas-property-business.invalid                 = Dewiswch ‘Iawn’ os ydych am ddileu’r busnes
 
