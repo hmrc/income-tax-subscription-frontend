@@ -565,8 +565,8 @@ agent.declined-sign-up-next-year.para                           = You’ve chose
 agent.declined-sign-up-next-year.inset-text.para                = Your client’s Self Assessment tax return needs to be submitted as normal.
 
 # Individual cannot sign up page
-cannot-sign-up.heading                                          = You can sign up to this pilot from the next tax year
-cannot-sign-up.paragraph1                                       = You can sign up for Making Tax Digital for Income Tax for the next tax year ({0} to {1}).
+cannot-sign-up.heading                                          = You can sign up to Making Tax Digital for Income Tax from the next tax year
+cannot-sign-up.paragraph1                                       = There is something that has prevented you from signing up to the current tax year ({0} to {1}). For example, other income or activities, or the length of time you have been self-employed or a landlord.
 cannot-sign-up.yes-no-radio-helper.heading                      = Would you like to sign up for the next tax year?
 error.cannot-sign-up.invalid                                    = You must select ‘yes’ or ‘no’
 

@@ -568,8 +568,8 @@ agent.declined-sign-up-next-year.para                           = Rydych wedi de
 agent.declined-sign-up-next-year.inset-text.para                = Mae’n rhaid i Ffurflen Dreth Hunanasesiad eich cleient gael ei chyflwyno yn ôl yr arfer.
 
 # Individual cannot sign up page
-cannot-sign-up.heading                                          = Gallwch gofrestru i’r peilot hwn o’r flwyddyn dreth nesaf
-cannot-sign-up.paragraph1                                       = Gallwch gofrestru i’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar gyfer y flwyddyn dreth nesaf ({0} to {1}).
+cannot-sign-up.heading                                          = Gallwch gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o’r flwyddyn dreth nesaf
+cannot-sign-up.paragraph1                                       = Mae rhywbeth wedi eich atal rhag cofrestru ar gyfer y flwyddyn dreth bresennol ({0} i {1}). Er enghraifft, mathau penodol eraill o incwm neu weithgareddau, neu’r cyfnod o amser rydych wedi bod yn hunangyflogedig, neu’n landlord.
 cannot-sign-up.yes-no-radio-helper.heading                      = A hoffech gofrestru ar gyfer y flwyddyn dreth nesaf?
 error.cannot-sign-up.invalid                                    = Mae’n rhaid i chi ddewis ‘iawn’ neu ‘na’
 
