@@ -100,7 +100,7 @@ class WhatYouNeedToDoSpec extends ViewSpec {
     }
 
     object WarningText {
-      val para: String = "Warning You may be penalised if you don’t use Making Tax Digital for Income Tax."
+      val para: String = "Warning You may be penalised if you do not use Making Tax Digital for Income Tax."
     }
 
   }
