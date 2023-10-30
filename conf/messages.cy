@@ -123,8 +123,8 @@ cannot-use-service.line1                                        = Gallwch ond co
 cannot-take-part.title                                          = Ni allwch gymryd rhan yn y cynllun peilot hwn ar hyn o bryd
 cannot-take-part.heading                                        = Ni allwch gymryd rhan yn y cynllun peilot hwn ar hyn o bryd
 cannot-take-part.para1                                          = Nid yw cynllun peilot Troi Treth yn Ddigidol ar gyfer Treth Incwm ar gael ar hyn o bryd i bobl sydd ag incwm neu ddidyniadau penodol.
-cannot-take-part.para2                                          = Fodd bynnag, mae’n bosibl y byddwch yn gallu cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm yn y dyfodol.
-cannot-take-part.link1                                          = Dysgwch ragor am bwy sy’n gymwys ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+cannot-take-part.para2                                          = Mae’n bosibl y bydd y gwasanaeth hwn ar gael i chi yn y dyfodol. {0}.
+cannot-take-part.link1                                          = Dysgwch ragor am yr hyn sy’n eich gwneud yn gymwys i gofrestru
 cannot-take-part.inset1                                         = Mae’n rhaid i chi gyflwyno’ch Ffurflen Dreth Hunanasesiad yn ôl yr arfer.
 
 ##  What You Need To Do (pre-mandation either tax year)  ##

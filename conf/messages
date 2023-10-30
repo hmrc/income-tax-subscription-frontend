@@ -123,8 +123,8 @@ cannot-use-service.line1                                        = You can only s
 cannot-take-part.title                                          = You cannot take part yet
 cannot-take-part.heading                                        = You cannot take part yet
 cannot-take-part.para1                                          = Making Tax Digital for Income Tax is not currently available people with certain types of income or who have not been trading long enough. You cannot take part yet.
-cannot-take-part.para2                                          = However, you may be able to sign up to Making Tax Digital for Income Tax in the future. Learn more about {0}.
-cannot-take-part.link1                                          = who’s eligible for Making Tax Digital for Income Tax
+cannot-take-part.para2                                          = This service may be available to you in the future. Learn more about {0}.
+cannot-take-part.link1                                          = what makes you eligible to sign up
 cannot-take-part.inset1                                         = You must submit your Self Assessment tax return as normal.
 
 ##  What You Need To Do (pre-mandation either tax year)  ##
