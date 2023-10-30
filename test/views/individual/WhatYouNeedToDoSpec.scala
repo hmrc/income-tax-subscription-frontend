@@ -78,7 +78,7 @@ class WhatYouNeedToDoSpec extends ViewSpec {
     }
 
     object InsetText {
-      val para: String = "You must continue submitting your Self Assessment tax returns as usual until the year you’ve signed up."
+      val para: String = "You must continue to submit your Self Assessment tax returns until the year you have signed up."
     }
 
   }

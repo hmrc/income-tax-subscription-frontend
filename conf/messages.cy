@@ -145,7 +145,7 @@ what-you-need-to-do.next-year-only.bullet-1                     = Cael meddalwed
 what-you-need-to-do.next-year-only.bullet-2                     = Defnyddio’ch meddalwedd i anfon diweddariadau chwarterol atom.
 what-you-need-to-do.next-year-only.bullet-3                     = Anfon datganiad diwedd cyfnod gan ddefnyddio’ch meddalwedd ac anfon eich datganiad terfynol erbyn {0}.
 what-you-need-to-do.next-year-only.bullet-4                     = Rhoi gwybod i CThEF os byddwch yn rhoi’r gorau i fasnachu neu’n dechrau busnes newydd.
-what-you-need-to-do.next-year-only.inset.para                   = Mae’n rhaid i chi barhau i gyflwyno’ch Ffurflenni Treth Hunanasesiad yn ôl yr arfer, hyd at y flwyddyn pan wnaethoch gofrestru.
+what-you-need-to-do.next-year-only.inset.para                   = Mae’n rhaid i chi barhau i gyflwyno’ch Ffurflenni Treth Hunanasesiad hyd at y flwyddyn pan wnaethoch gofrestru.
 
 ##  What You Need To Do Current  ##
 what-you-need-to-do-current.para-1                               = Yn seiliedig ar eich Ffurflenni Treth blaenorol, mae’n rhaid i chi gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
