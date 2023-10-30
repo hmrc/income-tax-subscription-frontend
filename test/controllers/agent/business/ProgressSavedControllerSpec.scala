@@ -40,6 +40,7 @@ import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import utilities.agent.TestConstants.testCredId
 import utilities.{CacheExpiryDateProvider, CurrentDateProvider}
 import views.html.agent.business.ProgressSaved
+import utilities.UserMatchingSessionUtil.{firstName,lastName}
 
 import java.time.{LocalDate, LocalDateTime}
 import scala.concurrent.Future
@@ -107,13 +108,13 @@ class ProgressSavedControllerSpec extends AgentControllerBaseSpec
         mockFetchLastUpdatedTimestamp(Some(testTimestamp))
 
 
-        val result: Future[Result] = await(controller.show()(subscriptionRequest))
+        val result: Future[Result] = await(controller.show()(subscriptionRequestWithName))
 
         status(result) mustBe OK
         contentType(result) mustBe Some(HTML)
         charset(result) mustBe Some(Codec.utf_8.charset)
 
-        verify(mockedView).apply(meq("Monday, 20 October 2021"), meq("/bas-gateway/sign-in"))(any(), any(), any())
+        verify(mockedView).apply(meq("Monday, 20 October 2021"), meq("/bas-gateway/sign-in"), any())(any(), any(), any())
       }
 
       "the saveAndRetrieveLocation parameter is provided" in withController { (controller, mockedView) =>
@@ -130,6 +131,8 @@ class ProgressSavedControllerSpec extends AgentControllerBaseSpec
           ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
           ITSASessionKeys.NINO -> "KS969148D",
           ITSASessionKeys.UTR -> "1234567890",
+          firstName -> "FirstName",
+          lastName -> "LastName",
           ITSASessionKeys.REFERENCE -> "test-reference"
         ).withMethod("POST")
 
@@ -139,7 +142,7 @@ class ProgressSavedControllerSpec extends AgentControllerBaseSpec
         contentType(result) mustBe Some(HTML)
         charset(result) mustBe Some(Codec.utf_8.charset)
 
-        verify(mockedView).apply(meq("Monday, 20 October 2021"), meq("/bas-gateway/sign-in"))(any(), any(), any())
+        verify(mockedView).apply(meq("Monday, 20 October 2021"), meq("/bas-gateway/sign-in"), any())(any(), any(), any())
         verifyAudit(SaveAndComeBackAuditModel(
           userType = SaveAndComebackAuditing.agentUserType,
           utr = "1234567890",
@@ -168,7 +171,7 @@ class ProgressSavedControllerSpec extends AgentControllerBaseSpec
   private def withController(testCode: (ProgressSavedController, ProgressSaved) => Any): Unit = {
     val progressSavedView = mock[ProgressSaved]
 
-    when(progressSavedView(meq("Monday, 20 October 2021"), any())(any(), any(), any()))
+    when(progressSavedView(meq("Monday, 20 October 2021"), any(), any())(any(), any(), any()))
       .thenReturn(HtmlFormat.empty)
 
     val cacheExpiryDateProvider = mock[CacheExpiryDateProvider]

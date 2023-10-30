@@ -31,6 +31,7 @@ import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
 import utilities.{AccountingPeriodUtil, CacheExpiryDateProvider, CurrentDateProvider}
 import views.html.agent.business.ProgressSaved
+import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -55,13 +56,13 @@ class ProgressSavedController @Inject()(val progressSavedView: ProgressSaved,
           subscriptionDetailsService.fetchLastUpdatedTimestamp(reference) flatMap {
             case Some(timestamp) =>
               location.fold(
-                Future.successful(Ok(progressSavedView(cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime), signInUrl)))
+                Future.successful(Ok(progressSavedView(cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime), signInUrl, clientDetails = request.clientDetails)))
               )(location => {
                 for {
                   saveAndComebackAuditData <- retrieveAuditData(reference, user.arn, user.clientUtr, user.clientNino, location)
                   _ <- auditingService.audit(saveAndComebackAuditData)
                 } yield {
-                  Ok(progressSavedView(cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime), signInUrl))
+                  Ok(progressSavedView(cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime), signInUrl, clientDetails = request.clientDetails))
                 }
               })
             case None => throw new InternalServerException("[ProgressSavedController][show] - The last updated timestamp cannot be retrieved")

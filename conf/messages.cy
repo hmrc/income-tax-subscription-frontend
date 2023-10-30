@@ -955,12 +955,12 @@ agent.error.remove-sole-trader-business.invalid                     = Dewiswch �
 
 ## Agent progress saved
 agent.business.progress-saved.title                                   = Mae eich cynnydd hyd yma wedi ei gadw
-agent.business.progress-saved.content.summary                         = Byddwn yn cadw eich gwybodaeth tan {0}.
-agent.business.progress-saved.content.subheading                      = Yr hyn sy’n digwydd nesaf
+agent.business.progress-saved.content.summary                         = Byddwn yn cadw gwybodaeth {0}‘s tan, {1}.
+agent.business.progress-saved.content.subheading                      = Yr hyn y gallwch ei wneud nesaf
 agent.business.progress-saved.content.paragraph1                      = Gallwch wneud y canlynol:
 agent.business.progress-saved.content.paragraph2                      = Os byddwch yn allgofnodi, bydd angen i chi ddod yn ôl at i’ch manylion {0} i barhau. Rydym yn awgrymu eich bod yn nodi’r dudalen hon i’w gwneud yn haws dod o hyd iddi pan fyddwch yn dod yn ôl.
-agent.business.progress-saved.content.sign-up-link                    = parhau i gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-agent.business.progress-saved.content.sign-out-link                   = allgofnodi a dod yn ôl yn nes ymlaen
+agent.business.progress-saved.content.sign-up-link                    = mynd yn eich blaen i gofrestru y cleient hwn
+agent.business.progress-saved.content.sign-up-another-client-link     = cofrestru cleient arall
 agent.business.progress-saved.content.sign-in-link                    = mewngofnodi Porth y Llywodraeth
 
 ## Task List

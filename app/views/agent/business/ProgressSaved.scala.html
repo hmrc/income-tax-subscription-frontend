@@ -16,6 +16,7 @@
 
 @import config.AppConfig
 @import views.html.templates.AgentMainTemplate
+@import utilities.UserMatchingSessionUtil.ClientDetails
 
 @this(
   mainTemplate: AgentMainTemplate
@@ -23,7 +24,8 @@
 
 @(
   expirationDate: String,
-  signInUrl: String
+  signInUrl: String,
+  clientDetails: ClientDetails
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @signInLink = {
@@ -36,7 +38,7 @@
       @messages("agent.business.progress-saved.title")
     </h1>
     <div class="govuk-panel__body">
-      @messages("agent.business.progress-saved.content.summary", expirationDate)
+      @messages("agent.business.progress-saved.content.summary", clientDetails.name, expirationDate)
     </div>
   </div>
 
@@ -51,7 +53,7 @@
       <a href="@controllers.agent.routes.TaskListController.show().url" class="govuk-link sign-up-link">@messages("agent.business.progress-saved.content.sign-up-link")</a>
     </li>
     <li>
-      <a href="@SignOutController.signOut.url" class="govuk-link sign-out-link">@messages("agent.business.progress-saved.content.sign-out-link")</a>
+      <a href="@controllers.agent.routes.AddAnotherClientController.addAnother().url" class="govuk-link sign-out-link">@messages("agent.business.progress-saved.content.sign-up-another-client-link")</a>
     </li>
   </ul>
 
