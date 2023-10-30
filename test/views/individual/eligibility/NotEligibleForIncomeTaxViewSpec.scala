@@ -62,8 +62,8 @@ class NotEligibleForIncomeTaxViewSpec extends ViewSpec {
   object CannotTakePartMessages {
     val heading = "You cannot take part yet"
     val paragraph1 = "Making Tax Digital for Income Tax is not currently available people with certain types of income or who have not been trading long enough. You cannot take part yet."
-    val paragraph2 = "However, you may be able to sign up to Making Tax Digital for Income Tax in the future. Learn more about who’s eligible for Making Tax Digital for Income Tax."
-    val link = "who’s eligible for Making Tax Digital for Income Tax"
+    val paragraph2 = "This service may be available to you in the future. Learn more about what makes you eligible to sign up."
+    val link = "what makes you eligible to sign up"
     val linkHref = "https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax"
     val insetText = "You must submit your Self Assessment tax return as normal."
     val signoutButton = "Sign out"
