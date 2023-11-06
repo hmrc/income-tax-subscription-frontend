@@ -614,7 +614,7 @@ agent.accounting-period-check.title                             = Do your client
 agent.accounting-period-check.heading                           = Do your client’s business accounting periods all run from 6 April to 5 April?
 agent.accounting-period-check.caption                           = {0} | {1}
 agent.accounting-period-check.include                           = Tax year dates
-agent.accounting-period-check.hint                              = The tax year runs from 6 April to 5 April. The accounting period for your client’s self-employment or property needs to be the same if you would like to sign them up to this service.
+agent.accounting-period-check.hint                              = The tax year runs from 6 April to 5 April. The accounting period for your client’s self-employment or property income needs to be the same if you would like to sign them up to this service.
 agent.accounting-period-check.invalid                           = Select yes if all of your client’s business accounting periods are from 6 April to 5 April
 
 # Agent property trading after date page
