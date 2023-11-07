@@ -56,12 +56,6 @@ class OtherSourcesOfIncomeControllerISpec extends ComponentSpecBase {
       doc.title mustBe OtherSourcesOfIncomeMessages.heading + serviceNameGovUk
     }
 
-    "have a view with a back link" in new GetSetup {
-      val backLink: Element = doc.select(".govuk-back-link").first()
-      backLink.attr("href") mustBe appConfig.agentIncomeTaxEligibilityFrontendTermsUrl
-      backLink.text mustBe OtherSourcesOfIncomeMessages.back
-    }
-
     "have a view with the correct heading and caption" in new GetSetup {
       val header: Element = pageContent
       header.selectHead(".govuk-heading-l").text mustBe OtherSourcesOfIncomeMessages.heading
