@@ -61,8 +61,8 @@ class OtherSourcesOfIncomeController @Inject()(otherSourcesOfIncome: OtherSource
         ),
         clientNino = formatNino(user.clientNino.getOrElse(
           throw new InternalServerException("[AccountingPeriodCheckController][show] - could not retrieve client nino from session")
-        )),
-        backUrl))
+        ))
+      ))
   }
 
   def submit: Action[AnyContent] = Authenticated { implicit request =>
@@ -70,7 +70,7 @@ class OtherSourcesOfIncomeController @Inject()(otherSourcesOfIncome: OtherSource
       val clientName = request.fetchClientName.get
       val clientNino = user.clientNino.get
       otherSourcesOfIncomeForm.bindFromRequest().fold(
-        formWithErrors => BadRequest(otherSourcesOfIncome(formWithErrors, routes.OtherSourcesOfIncomeController.submit, clientName, clientNino, backUrl)),
+        formWithErrors => BadRequest(otherSourcesOfIncome(formWithErrors, routes.OtherSourcesOfIncomeController.submit, clientName, clientNino)),
         {
           case Yes =>
             auditingService.audit(EligibilityAnswerAuditModel(eligible = false, "yes", "otherIncomeSource", user.arn))
