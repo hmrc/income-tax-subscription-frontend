@@ -135,6 +135,7 @@ object IntegrationTestConstants {
   val claimEnrolmentAlreadySignedUpURI = s"$baseURI/claim-enrolment/already-signed-up"
   val claimEnrolmentResolverURI = s"$baseURI/claim-enrolment/resolve"
   val endOfJourneyThrottleURI = s"$baseURI/throttle"
+  val yourIncomeSourcesURI = s"$baseURI/details/your-income-source"
 
   def basGatewaySignIn(continueTo: String): String = {
     val updatedContinue: String = continueTo.replace("/", "%2F")
