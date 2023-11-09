@@ -16,10 +16,10 @@
 
 package controllers.agent.business
 
+import common.Constants.ITSASessionKeys
 import config.featureswitch.FeatureSwitch.ForeignProperty
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
-import helpers.IntegrationTestConstants.testFullName
-import helpers.agent.IntegrationTestConstants.testFormattedNino
+import helpers.IntegrationTestConstants.{testFirstName, testLastName}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.IntegrationTestModels.testAccountingYearCurrent
@@ -28,7 +28,7 @@ import models.common.AccountingYearModel
 import models.{Current, Next}
 import play.api.http.Status._
 import play.api.libs.json.Json
-import utilities.AccountingPeriodUtil
+import utilities.{AccountingPeriodUtil, UserMatchingSessionUtil}
 import utilities.SubscriptionDataKeys.SelectedTaxYear
 
 import java.time.LocalDate
@@ -39,7 +39,6 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
     disable(ForeignProperty)
     super.beforeEach()
   }
-
 
 
   "GET /report-quarterly/income-and-expenses/sign-up/client/business/what-year-to-sign-up" when {
@@ -64,6 +63,46 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
           radioButtonSet(id = "accountingYear", selectedRadioButton = Some(expectedText)),
           radioButtonSet(id = "accountingYear-2", selectedRadioButton = None)
         )
+      }
+      "return SEE_OTHER" when {
+        "The user is mandated for the current tax year" in {
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
+
+          When("GET /client/business/what-year-to-sign-up is called")
+          val res = IncomeTaxSubscriptionFrontend.getTaxYearCheckYourAnswers(Map(
+            UserMatchingSessionUtil.firstName -> testFirstName,
+            UserMatchingSessionUtil.lastName -> testLastName,
+            ITSASessionKeys.NINO -> testNino,
+            ITSASessionKeys.MANDATED_CURRENT_YEAR -> "true"
+          ))
+
+          Then("Should return SEE_OTHER to task list page")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(taskListURI)
+          )
+        }
+        "The user is eligible for the next tax year only" in {
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
+
+          When("GET /client/business/what-year-to-sign-up is called")
+          val res = IncomeTaxSubscriptionFrontend.getTaxYearCheckYourAnswers(Map(
+            UserMatchingSessionUtil.firstName -> testFirstName,
+            UserMatchingSessionUtil.lastName -> testLastName,
+            ITSASessionKeys.NINO -> testNino,
+            ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "true"
+          ))
+
+          Then("Should return SEE_OTHER to task list page")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(taskListURI)
+          )
+        }
       }
     }
 
@@ -117,7 +156,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
           IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYearModel](SelectedTaxYear, AccountingYearModel(userInput))
 
           When("POST /client/business/what-year-to-sign-up is called")
-          val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = true, request =  Some(userInput))
+          val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = true, request = Some(userInput))
 
           Then("Should return a SEE_OTHER with a redirect location of Tax Year CYA")
           res must have(

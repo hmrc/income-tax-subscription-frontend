@@ -16,16 +16,18 @@
 
 package controllers.individual.business
 
+import common.Constants.ITSASessionKeys
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub.verifySubscriptionSave
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.taskListURI
+import helpers.IntegrationTestConstants.{taskListURI, testFirstName, testLastName, testNino}
 import helpers.servicemocks.AuthStub
 import models.Current
 import models.common.AccountingYearModel
 import play.api.http.Status._
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys.SelectedTaxYear
+import utilities.UserMatchingSessionUtil
 
 class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
   "GET /report-quarterly/income-and-expenses/sign-up/business/tax-year-check-your-answers" should {
@@ -44,7 +46,40 @@ class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
           s"${messages("business.check-your-answers.content.tax-year.title")} - Use software to send Income Tax updates - GOV.UK"
         )
       )
+    }
+    "return SEE_OTHER" when {
+      "The user is mandated for the current tax year" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
 
+        When("GET /business/tax-year-check-your-answers is called")
+        val res = IncomeTaxSubscriptionFrontend.getTaxYearCheckYourAnswers(Map(
+          ITSASessionKeys.MANDATED_CURRENT_YEAR -> "true"
+        ))
+
+        Then("Should return SEE_OTHER to task list page")
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(taskListURI)
+        )
+      }
+      "The user is eligible for the next tax year only" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
+
+        When("GET /business/tax-year-check-your-answers is called")
+        val res = IncomeTaxSubscriptionFrontend.getTaxYearCheckYourAnswers(Map(
+          ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "true"
+        ))
+
+        Then("Should return SEE_OTHER to task list page")
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(taskListURI)
+        )
+      }
     }
   }
 

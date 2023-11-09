@@ -18,7 +18,7 @@ package controllers.individual.business
 
 import auth.individual.SignUpController
 import config.AppConfig
-import controllers.utils.ReferenceRetrieval
+import controllers.utils.{ReferenceRetrieval, TaxYearNavigationHelper}
 import forms.individual.business.AccountingYearForm
 import models.AccountingYear
 import models.common.AccountingYearModel
@@ -40,7 +40,7 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
                                            val subscriptionDetailsService: SubscriptionDetailsService)
                                           (implicit val ec: ExecutionContext,
                                            val appConfig: AppConfig,
-                                           mcc: MessagesControllerComponents) extends SignUpController with ReferenceRetrieval {
+                                           mcc: MessagesControllerComponents) extends SignUpController with ReferenceRetrieval with TaxYearNavigationHelper {
 
   def view(accountingYearForm: Form[AccountingYear], isEditMode: Boolean)(implicit request: Request[_]): Html = {
     whatYearToSignUp(
@@ -54,9 +54,11 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withReference { reference =>
-        subscriptionDetailsService.fetchSelectedTaxYear(reference) map { accountingYearModel =>
-          Ok(view(accountingYearForm = AccountingYearForm.accountingYearForm.fill(accountingYearModel.map(aym => aym.accountingYear)), isEditMode = isEditMode))
+      handleUnableToSelectTaxYearIndividual(request) {
+        withReference { reference =>
+          subscriptionDetailsService.fetchSelectedTaxYear(reference) map { accountingYearModel =>
+            Ok(view(accountingYearForm = AccountingYearForm.accountingYearForm.fill(accountingYearModel.map(aym => aym.accountingYear)), isEditMode = isEditMode))
+          }
         }
       }
   }
