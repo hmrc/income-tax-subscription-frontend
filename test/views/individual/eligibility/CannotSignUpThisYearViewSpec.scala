@@ -16,13 +16,12 @@
 
 package views.individual.eligibility
 
-import forms.individual.business.CannotSignUpThisYearForm.yesNo
 import forms.individual.business.CannotSignUpThisYearForm
-import models.DateModel
-import models.common.AccountingPeriodModel
+import forms.individual.business.CannotSignUpThisYearForm.yesNo
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.api.data.FormError
+import play.twirl.api.HtmlFormat
 import utilities.{AccountingPeriodUtil, ViewSpec}
 import views.html.individual.eligibility.CannotSignUpThisYear
 
@@ -32,7 +31,7 @@ class CannotSignUpThisYearViewSpec extends ViewSpec {
   val testFormError: FormError = FormError(yesNo, "error.cannot-sign-up.invalid")
 
   class ViewTest(hasError: Boolean = false) {
-    val page = view(
+    val page: HtmlFormat.Appendable = view(
       if (hasError) {
         CannotSignUpThisYearForm.cannotSignUpThisYearForm.withError(testFormError)
       } else {
@@ -43,8 +42,8 @@ class CannotSignUpThisYearViewSpec extends ViewSpec {
     val document: Document = Jsoup.parse(page.body)
 
     val mainContent: Element = document.mainContent
-    val year: Int = AccountingPeriodUtil.getCurrentTaxEndYear
-    val nextYear: Int = AccountingPeriodUtil.getNextTaxEndYear
+    val year: Int = AccountingPeriodUtil.getCurrentTaxEndYear - 1
+    val nextYear: Int = AccountingPeriodUtil.getCurrentTaxEndYear
   }
 
   "Cannot Sign Up View" should {
@@ -92,9 +91,9 @@ class CannotSignUpThisYearViewSpec extends ViewSpec {
   }
 
   object CannotSignUpMessages {
-    val heading = "You can sign up to this pilot from the next tax year"
+    val heading = "You can sign up to Making Tax Digital for Income Tax from the next tax year"
 
-    def paragraph1(year: Int, nextYear: Int) = s"You can sign up for Making Tax Digital for Income Tax for the next tax year (6 April $year to 5 April $nextYear)."
+    def paragraph1(year: Int, nextYear: Int) = s"There is something that has prevented you from signing up to the current tax year (6 April $year to 5 April $nextYear). For example, other income or activities, or the length of time you have been self-employed or a landlord."
 
     val formHeading = "Would you like to sign up for the next tax year?"
     val continueButton = "Continue"

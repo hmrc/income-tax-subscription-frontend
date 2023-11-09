@@ -59,8 +59,8 @@
 
   <h1 class="govuk-heading-l">@messages("cannot-sign-up.heading")</h1>
 
-  <p class="govuk-body">@messages("cannot-sign-up.paragraph1", languageUtils.Dates.formatDate(AccountingPeriodUtil.getNextTaxYear.startDate.toLocalDate),
-      languageUtils.Dates.formatDate(AccountingPeriodUtil.getNextTaxYear.endDate.toLocalDate))</p>
+  <p class="govuk-body">@messages("cannot-sign-up.paragraph1", languageUtils.Dates.formatDate(AccountingPeriodUtil.getCurrentTaxYear.startDate.toLocalDate),
+      languageUtils.Dates.formatDate(AccountingPeriodUtil.getCurrentTaxYear.endDate.toLocalDate))</p>
 
   @form(action = postAction) {
     @yesNoRadioHelper(
