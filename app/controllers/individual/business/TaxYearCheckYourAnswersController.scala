@@ -17,8 +17,9 @@
 package controllers.individual.business
 
 import auth.individual.SignUpController
+import common.Constants.ITSASessionKeys
 import config.AppConfig
-import controllers.utils.ReferenceRetrieval
+import controllers.utils.{ReferenceRetrieval, TaxYearNavigationHelper}
 import models.common.AccountingYearModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AccountingPeriodService, AuditingService, AuthService, SubscriptionDetailsService}
@@ -26,7 +27,7 @@ import uk.gov.hmrc.http.InternalServerException
 import views.html.individual.incometax.business.TaxYearCheckYourAnswers
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class TaxYearCheckYourAnswersController @Inject()(val checkYourAnswersView: TaxYearCheckYourAnswers,
@@ -36,18 +37,20 @@ class TaxYearCheckYourAnswersController @Inject()(val checkYourAnswersView: TaxY
                                                   val subscriptionDetailsService: SubscriptionDetailsService)
                                                  (implicit val ec: ExecutionContext,
                                                   val appConfig: AppConfig,
-                                                  mcc: MessagesControllerComponents) extends SignUpController with ReferenceRetrieval {
+                                                  mcc: MessagesControllerComponents) extends SignUpController with ReferenceRetrieval with TaxYearNavigationHelper {
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withReference { reference =>
-        subscriptionDetailsService.fetchSelectedTaxYear(reference) map { maybeAccountingYearModel =>
-          Ok(checkYourAnswersView(
-            postAction = controllers.individual.business.routes.TaxYearCheckYourAnswersController.submit(),
-            viewModel = maybeAccountingYearModel,
-            accountingPeriodService = accountingPeriodService,
-            backUrl = backUrl(isEditMode)
-          ))
+      handleUnableToSelectTaxYearIndividual(request) {
+        withReference { reference =>
+          subscriptionDetailsService.fetchSelectedTaxYear(reference) map { maybeAccountingYearModel =>
+            Ok(checkYourAnswersView(
+              postAction = controllers.individual.business.routes.TaxYearCheckYourAnswersController.submit(),
+              viewModel = maybeAccountingYearModel,
+              accountingPeriodService = accountingPeriodService,
+              backUrl = backUrl(isEditMode)
+            ))
+          }
         }
       }
   }
@@ -72,4 +75,5 @@ class TaxYearCheckYourAnswersController @Inject()(val checkYourAnswersView: TaxY
   } else {
     controllers.individual.business.routes.WhatYearToSignUpController.show().url
   }
+
 }

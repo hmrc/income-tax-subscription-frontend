@@ -18,7 +18,7 @@ package controllers.agent
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
-import controllers.utils.ReferenceRetrieval
+import controllers.utils.{ReferenceRetrieval, TaxYearNavigationHelper}
 import forms.agent.AccountingYearForm
 import models.AccountingYear
 import models.common.AccountingYearModel
@@ -41,7 +41,7 @@ class WhatYearToSignUpController @Inject()(val auditingService: AuditingService,
                                            val subscriptionDetailsService: SubscriptionDetailsService,
                                            whatYearToSignUp: WhatYearToSignUp)
                                           (implicit val ec: ExecutionContext, mcc: MessagesControllerComponents,
-                                           val appConfig: AppConfig) extends AuthenticatedController with ReferenceRetrieval  {
+                                           val appConfig: AppConfig) extends AuthenticatedController with ReferenceRetrieval with TaxYearNavigationHelper  {
 
   private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
 
@@ -73,17 +73,19 @@ class WhatYearToSignUpController @Inject()(val auditingService: AuditingService,
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withAgentReference { reference =>
-        subscriptionDetailsService.fetchSelectedTaxYear(reference) map { accountingYearModel =>
-          Ok(view(accountingYearForm = AccountingYearForm.accountingYearForm.fill(
-            accountingYearModel.map(aym => aym.accountingYear)),
-            clientName = request.fetchClientName.getOrElse(
-              throw new InternalServerException("[AccountingPeriodCheckController][show] - could not retrieve client name from session")
-            ),
-            clientNino = formatNino(user.clientNino.getOrElse(
-              throw new InternalServerException("[AccountingPeriodCheckController][show] - could not retrieve client nino from session")
-            )),
-            isEditMode = isEditMode))
+      handleUnableToSelectTaxYearAgent(request) {
+        withAgentReference { reference =>
+          subscriptionDetailsService.fetchSelectedTaxYear(reference) map { accountingYearModel =>
+            Ok(view(accountingYearForm = AccountingYearForm.accountingYearForm.fill(
+              accountingYearModel.map(aym => aym.accountingYear)),
+              clientName = request.fetchClientName.getOrElse(
+                throw new InternalServerException("[AccountingPeriodCheckController][show] - could not retrieve client name from session")
+              ),
+              clientNino = formatNino(user.clientNino.getOrElse(
+                throw new InternalServerException("[AccountingPeriodCheckController][show] - could not retrieve client nino from session")
+              )),
+              isEditMode = isEditMode))
+          }
         }
       }
   }

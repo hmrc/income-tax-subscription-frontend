@@ -16,6 +16,7 @@
 
 package controllers.individual.business
 
+import common.Constants.ITSASessionKeys
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails
 import helpers.ComponentSpecBase
@@ -26,7 +27,7 @@ import models.common.AccountingYearModel
 import models.{Current, Next}
 import play.api.http.Status._
 import play.api.libs.json.Json
-import utilities.AccountingPeriodUtil
+import utilities.{AccountingPeriodUtil, UserMatchingSessionUtil}
 import utilities.SubscriptionDataKeys.SelectedTaxYear
 
 import java.time.LocalDate
@@ -78,7 +79,40 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
         )
       }
     }
+    "return SEE_OTHER" when {
+      "The user is mandated for the current tax year" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
 
+        When("GET /business/what-year-to-sign-up is called")
+        val res = IncomeTaxSubscriptionFrontend.getTaxYearCheckYourAnswers(Map(
+          ITSASessionKeys.MANDATED_CURRENT_YEAR -> "true"
+        ))
+
+        Then("Should return SEE_OTHER to task list page")
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(taskListURI)
+        )
+      }
+      "The user is eligible for the next tax year only" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
+
+        When("GET /business/what-year-to-sign-up is called")
+        val res = IncomeTaxSubscriptionFrontend.getTaxYearCheckYourAnswers(Map(
+          ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "true"
+        ))
+
+        Then("Should return SEE_OTHER to task list page")
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(taskListURI)
+        )
+      }
+    }
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/business/what-year-to-sign-up" should {

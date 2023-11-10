@@ -16,8 +16,10 @@
 
 package controllers.agent.business
 
+import common.Constants.ITSASessionKeys
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub.verifySubscriptionSave
+import helpers.IntegrationTestConstants.{testFirstName, testLastName, testNino}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants.taskListURI
 import helpers.agent.servicemocks.AuthStub
@@ -26,6 +28,7 @@ import models.common.AccountingYearModel
 import play.api.http.Status._
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys.SelectedTaxYear
+import utilities.UserMatchingSessionUtil
 
 class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
   "GET /report-quarterly/income-and-expenses/sign-up/client/business/tax-year-check-your-answers" should {
@@ -34,7 +37,7 @@ class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
       AuthStub.stubAuthSuccess()
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
 
-      When("GET /business/tax-year-check-your-answers is called")
+      When("GET /client/business/tax-year-check-your-answers is called")
       val res = IncomeTaxSubscriptionFrontend.getTaxYearCheckYourAnswers()
 
       Then("Should return OK with tax year CYA page")
@@ -45,7 +48,48 @@ class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
         )
       )
     }
+    "return SEE_OTHER" when {
+      "The user is mandated for the current tax year" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
+
+        When("GET /client/business/tax-year-check-your-answers is called")
+        val res = IncomeTaxSubscriptionFrontend.getTaxYearCheckYourAnswers(Map(
+          UserMatchingSessionUtil.firstName -> testFirstName,
+          UserMatchingSessionUtil.lastName -> testLastName,
+          ITSASessionKeys.NINO -> testNino,
+          ITSASessionKeys.MANDATED_CURRENT_YEAR -> "true"
+        ))
+
+        Then("Should return SEE_OTHER to task list page")
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(taskListURI)
+        )
+      }
+      "The user is eligible for the next tax year only" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
+
+        When("GET /client/business/tax-year-check-your-answers is called")
+        val res = IncomeTaxSubscriptionFrontend.getTaxYearCheckYourAnswers(Map(
+          UserMatchingSessionUtil.firstName -> testFirstName,
+          UserMatchingSessionUtil.lastName -> testLastName,
+          ITSASessionKeys.NINO -> testNino,
+          ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "true"
+        ))
+
+        Then("Should return SEE_OTHER to task list page")
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(taskListURI)
+        )
+      }
+    }
   }
+
 
   "POST /report-quarterly/income-and-expenses/sign-up/client/business/tax-year-check-your-answers" should {
     "redirect to the task list" when {
@@ -57,7 +101,7 @@ class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(unconfirmedTaxYear))
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYearModel](SelectedTaxYear, unconfirmedTaxYear.copy(confirmed = true))
 
-        When("GET /business/tax-year-check-your-answers is called")
+        When("GET /client/business/tax-year-check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.submitTaxYearCheckYourAnswers()
 
         Then("Should return a SEE_OTHER with a redirect location of task list page")
@@ -76,7 +120,7 @@ class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
 
-        When("GET /business/tax-year-check-your-answers is called")
+        When("GET /client/business/tax-year-check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.submitTaxYearCheckYourAnswers()
 
         Then("Should return an INTERNAL_SERVER_ERROR")
@@ -91,7 +135,7 @@ class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(AccountingYearModel(Current)))
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetailsFailure(SelectedTaxYear)
 
-        When("GET /business/tax-year-check-your-answers is called")
+        When("GET /client/business/tax-year-check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.submitTaxYearCheckYourAnswers()
 
         Then("Should return an INTERNAL_SERVER_ERROR")
