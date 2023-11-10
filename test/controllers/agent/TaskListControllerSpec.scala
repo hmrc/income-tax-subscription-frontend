@@ -16,7 +16,7 @@
 
 package controllers.agent
 
-import config.featureswitch.FeatureSwitch.ThrottlingFeature
+import config.featureswitch.FeatureSwitch.{EnableTaskListRedesign, ThrottlingFeature}
 import models.common.business._
 import models.common.subscription.SubscriptionFailureResponse
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
@@ -57,6 +57,7 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
     super.beforeEach()
     reset(taskList)
     enable(ThrottlingFeature)
+    disable(EnableTaskListRedesign)
   }
 
   def mockTaskList(): Unit = {
@@ -109,9 +110,10 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
   }
 
   "submit" when {
-    "sign up income source is successful" should {
-      "return status (SEE_OTHER - 303) and redirect to the confirmation page" in {
-        setupMockSubscriptionDetailsSaveFunctions()
+    "the task list redesign feature switch is enabled" should {
+      "redirect to the global check your answers page" in {
+        enable(EnableTaskListRedesign)
+
         mockFetchAllSelfEmployments(Seq.empty)
         mockFetchSelfEmploymentAccountingMethod(None)
         mockFetchProperty(Some(PropertyModel(
@@ -119,73 +121,94 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
           startDate = Some(testValidStartDate),
           confirmed = true
         )))
-        mockFetchOverseasProperty(Some(OverseasPropertyModel(
-          accountingMethod = Some(testAccountingMethod.accountingMethod),
-          startDate = Some(testValidStartDate),
-          confirmed = true
-        )))
+        mockFetchOverseasProperty(None)
         mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
-
-        val testIncomeSourceModel = testCreateIncomeSourcesThisYear.copy(soleTraderBusinesses = None)
-        mockCreateSubscriptionFromTaskListSuccess(testARN, testNino, testUtr, testIncomeSourceModel)
 
         val result: Future[Result] = TestTaskListController.submit()(subscriptionRequestWithName)
 
-        status(result) must be(Status.SEE_OTHER)
-        redirectLocation(result) mustBe Some(controllers.agent.routes.ConfirmationAgentController.show.url)
+        status(result) mustBe Status.SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.agent.business.routes.GlobalCheckYourAnswersController.show.url)
       }
     }
+    "the task list redesign feature switch is disabled" should {
+      "sign up income source is successful" should {
+        "return status (SEE_OTHER - 303) and redirect to the confirmation page" in {
+          setupMockSubscriptionDetailsSaveFunctions()
+          mockFetchAllSelfEmployments(Seq.empty)
+          mockFetchSelfEmploymentAccountingMethod(None)
+          mockFetchProperty(Some(PropertyModel(
+            accountingMethod = Some(testAccountingMethod.accountingMethod),
+            startDate = Some(testValidStartDate),
+            confirmed = true
+          )))
+          mockFetchOverseasProperty(Some(OverseasPropertyModel(
+            accountingMethod = Some(testAccountingMethod.accountingMethod),
+            startDate = Some(testValidStartDate),
+            confirmed = true
+          )))
+          mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
 
-    "sign up income source is successful but tax year has been enforced" should {
-      "return status (SEE_OTHER - 303) and redirect to the confirmation page" in {
-        setupMockSubscriptionDetailsSaveFunctions()
-        mockFetchAllSelfEmployments(Seq.empty)
-        mockFetchSelfEmploymentAccountingMethod(None)
-        mockFetchProperty(Some(PropertyModel(
-          accountingMethod = Some(testAccountingMethod.accountingMethod),
-          startDate = Some(testValidStartDate),
-          confirmed = true
-        )))
-        mockFetchOverseasProperty(Some(OverseasPropertyModel(
-          accountingMethod = Some(testAccountingMethod.accountingMethod),
-          startDate = Some(testValidStartDate),
-          confirmed = true
-        )))
-        // NB Do NOT mock fetch selected tax year.
+          val testIncomeSourceModel = testCreateIncomeSourcesThisYear.copy(soleTraderBusinesses = None)
+          mockCreateSubscriptionFromTaskListSuccess(testARN, testNino, testUtr, testIncomeSourceModel)
 
-        val testIncomeSourceModel = testCreateIncomeSourcesNextYear.copy(soleTraderBusinesses = None)
-        mockCreateSubscriptionFromTaskListSuccess(testARN, testNino, testUtr, testIncomeSourceModel)
+          val result: Future[Result] = TestTaskListController.submit()(subscriptionRequestWithName)
 
-        val result: Future[Result] = TestTaskListController.submit()(subscriptionRequestWithNameNextYearOnly)
-
-        status(result) must be(Status.SEE_OTHER)
-        redirectLocation(result) mustBe Some(controllers.agent.routes.ConfirmationAgentController.show.url)
+          status(result) must be(Status.SEE_OTHER)
+          redirectLocation(result) mustBe Some(controllers.agent.routes.ConfirmationAgentController.show.url)
+        }
       }
-    }
 
-    "sign up income source fails" should {
-      "return an internalServer error" in {
-        mockFetchAllSelfEmployments(Seq.empty)
-        mockFetchSelfEmploymentAccountingMethod(None)
-        mockFetchProperty(Some(PropertyModel(
-          accountingMethod = Some(testAccountingMethod.accountingMethod),
-          startDate = Some(testValidStartDate),
-          confirmed = true
-        )))
-        mockFetchOverseasProperty(Some(OverseasPropertyModel(
-          accountingMethod = Some(testAccountingMethod.accountingMethod),
-          startDate = Some(testValidStartDate),
-          confirmed = true
-        )))
-        mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
+      "sign up income source is successful but tax year has been enforced" should {
+        "return status (SEE_OTHER - 303) and redirect to the confirmation page" in {
+          setupMockSubscriptionDetailsSaveFunctions()
+          mockFetchAllSelfEmployments(Seq.empty)
+          mockFetchSelfEmploymentAccountingMethod(None)
+          mockFetchProperty(Some(PropertyModel(
+            accountingMethod = Some(testAccountingMethod.accountingMethod),
+            startDate = Some(testValidStartDate),
+            confirmed = true
+          )))
+          mockFetchOverseasProperty(Some(OverseasPropertyModel(
+            accountingMethod = Some(testAccountingMethod.accountingMethod),
+            startDate = Some(testValidStartDate),
+            confirmed = true
+          )))
+          // NB Do NOT mock fetch selected tax year.
 
-        val testIncomeSourceModel = testCreateIncomeSourcesThisYear.copy(soleTraderBusinesses = None)
-        mockCreateSubscriptionFromTaskListFailure(testARN, testNino, testUtr, testIncomeSourceModel)
+          val testIncomeSourceModel = testCreateIncomeSourcesNextYear.copy(soleTraderBusinesses = None)
+          mockCreateSubscriptionFromTaskListSuccess(testARN, testNino, testUtr, testIncomeSourceModel)
 
-        val result: Future[Result] = TestTaskListController.submit()(subscriptionRequestWithName)
-        intercept[InternalServerException](await(result)).message must include(
-          s"[TaskListController][submit] - failure response received from submission: ${SubscriptionFailureResponse(INTERNAL_SERVER_ERROR)}"
-        )
+          val result: Future[Result] = TestTaskListController.submit()(subscriptionRequestWithNameNextYearOnly)
+
+          status(result) must be(Status.SEE_OTHER)
+          redirectLocation(result) mustBe Some(controllers.agent.routes.ConfirmationAgentController.show.url)
+        }
+      }
+
+      "sign up income source fails" should {
+        "return an internalServer error" in {
+          mockFetchAllSelfEmployments(Seq.empty)
+          mockFetchSelfEmploymentAccountingMethod(None)
+          mockFetchProperty(Some(PropertyModel(
+            accountingMethod = Some(testAccountingMethod.accountingMethod),
+            startDate = Some(testValidStartDate),
+            confirmed = true
+          )))
+          mockFetchOverseasProperty(Some(OverseasPropertyModel(
+            accountingMethod = Some(testAccountingMethod.accountingMethod),
+            startDate = Some(testValidStartDate),
+            confirmed = true
+          )))
+          mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
+
+          val testIncomeSourceModel = testCreateIncomeSourcesThisYear.copy(soleTraderBusinesses = None)
+          mockCreateSubscriptionFromTaskListFailure(testARN, testNino, testUtr, testIncomeSourceModel)
+
+          val result: Future[Result] = TestTaskListController.submit()(subscriptionRequestWithName)
+          intercept[InternalServerException](await(result)).message must include(
+            s"[TaskListController][submit] - failure response received from submission: ${SubscriptionFailureResponse(INTERNAL_SERVER_ERROR)}"
+          )
+        }
       }
     }
   }

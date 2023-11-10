@@ -19,6 +19,7 @@ package controllers.agent
 import auth.agent.{AuthenticatedController, IncomeTaxAgentUser}
 import common.Constants.ITSASessionKeys
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import connectors.IncomeTaxSubscriptionConnector
 import controllers.utils.ReferenceRetrieval
 import models.common.TaskListModel
@@ -106,16 +107,20 @@ class TaskListController @Inject()(val taskListView: AgentTaskList,
   def submit: Action[AnyContent] = journeySafeGuard { implicit user =>
     implicit request =>
       incomeSourceModel =>
-        val nino = user.clientNino.get
-        val arn = user.arn
-        val utr = user.clientUtr.get
-        val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
+        if (isEnabled(EnableTaskListRedesign)) {
+          Future.successful(Redirect(controllers.agent.business.routes.GlobalCheckYourAnswersController.show))
+        } else {
+          val nino = user.clientNino.get
+          val arn = user.arn
+          val utr = user.clientUtr.get
+          val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
 
-        subscriptionService.createSubscriptionFromTaskList(arn, nino, utr, incomeSourceModel)(headerCarrier) map {
-          case Right(SubscriptionSuccess(id)) =>
-            Redirect(controllers.agent.routes.ConfirmationAgentController.show).addingToSession(ITSASessionKeys.MTDITID -> id)
-          case Left(failure) =>
-            throw new InternalServerException(s"[TaskListController][submit] - failure response received from submission: ${failure.toString}")
+          subscriptionService.createSubscriptionFromTaskList(arn, nino, utr, incomeSourceModel)(headerCarrier) map {
+            case Right(SubscriptionSuccess(id)) =>
+              Redirect(controllers.agent.routes.ConfirmationAgentController.show).addingToSession(ITSASessionKeys.MTDITID -> id)
+            case Left(failure) =>
+              throw new InternalServerException(s"[TaskListController][submit] - failure response received from submission: ${failure.toString}")
+          }
         }
   }
 

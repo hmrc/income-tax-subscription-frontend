@@ -16,13 +16,14 @@
 
 package controllers.agent
 
+import _root_.config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import common.Constants.ITSASessionKeys
 import connectors.agent.httpparsers.QueryUsersHttpParser.principalUserIdKey
 import connectors.stubs._
 import helpers.IntegrationTestConstants.{confirmationURI => _, _}
 import helpers.IntegrationTestModels.{testBusinessName => _, _}
 import helpers.WiremockHelper.verifyPost
-import helpers.agent.IntegrationTestConstants.{testNino => _, testUtr => _, _}
+import helpers.agent.IntegrationTestConstants.{globalCheckYourAnswersURI, testNino => _, testUtr => _, _}
 import helpers.agent.servicemocks._
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import helpers.servicemocks.EnrolmentStoreProxyStub
@@ -40,6 +41,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
 
   override def beforeEach(): Unit = {
     super.beforeEach()
+    disable(EnableTaskListRedesign)
   }
 
   "GET /report-quarterly/income-and-expenses/sign-up/client/business/task-list" should {
@@ -116,7 +118,37 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/client/business/task-list" when {
-    "the save and retrieve feature switch is enabled" should {
+    "the task list redesign feature switch is enabled" should {
+      "redirect to the global check your answers page" in {
+        enable(EnableTaskListRedesign)
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+          Property,
+          OK,
+          Json.toJson(testFullPropertyModel.copy(
+            accountingMethod = Some(testUkProperty().accountingMethod),
+            startDate = Some(testUkProperty().tradingStartDate)
+          ))
+        )
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
+
+        When("I call POST /task-list")
+        val res = IncomeTaxSubscriptionFrontend.submitTaskList()
+
+        Then("The result must have a status of SEE_OTHER and redirect to the confirmation page")
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(globalCheckYourAnswersURI)
+        )
+      }
+    }
+    "the task list redesign feature switch is disabled" should {
       "sign up the client successfully" when {
         "they only have self employment income" in {
           Given("I setup the Wiremock stubs")
