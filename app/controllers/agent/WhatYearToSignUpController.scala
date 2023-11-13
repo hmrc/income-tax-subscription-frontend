@@ -54,10 +54,11 @@ class WhatYearToSignUpController @Inject()(val auditingService: AuditingService,
   }
 
   def backUrl(isEditMode: Boolean): Option[String] =
-    if(isEditMode)
-      Some(controllers.agent.routes.TaxYearCheckYourAnswersController.show().url)
-    else
+    if(isEditMode) {
+      Some(controllers.agent.routes.TaxYearCheckYourAnswersController.show(isEditMode).url)
+    } else {
       Some(controllers.agent.routes.TaskListController.show().url)
+    }
 
   def view(accountingYearForm: Form[AccountingYear], clientName: String, clientNino: String, isEditMode: Boolean)(implicit request: Request[_]): Html = {
     whatYearToSignUp(

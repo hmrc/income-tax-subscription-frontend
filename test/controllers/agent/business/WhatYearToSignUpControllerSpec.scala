@@ -138,7 +138,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
   "backUrl" when {
     "in edit mode" must {
       s"return ${controllers.agent.routes.TaxYearCheckYourAnswersController.show().url}" in {
-        TestWhatYearToSignUpController.backUrl(true) mustBe Some(controllers.agent.routes.TaxYearCheckYourAnswersController.show().url)
+        TestWhatYearToSignUpController.backUrl(true) mustBe Some(controllers.agent.routes.TaxYearCheckYourAnswersController.show(true).url)
       }
     }
     "not in edit mode" must {

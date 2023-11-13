@@ -81,7 +81,7 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
 
   def backUrl(isEditMode: Boolean): Option[String] = {
     if (isEditMode) {
-      Some(controllers.individual.business.routes.TaxYearCheckYourAnswersController.show().url)
+      Some(controllers.individual.business.routes.TaxYearCheckYourAnswersController.show(isEditMode).url)
     } else {
       Some(controllers.individual.business.routes.TaskListController.show().url)
     }

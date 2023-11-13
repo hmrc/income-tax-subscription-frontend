@@ -141,7 +141,7 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
 
       "return the user to the taxYearCYA page when is in editMode" in {
         mockView()
-        TestWhatYearToSignUpController.backUrl(isEditMode = true) mustBe Some(controllers.individual.business.routes.TaxYearCheckYourAnswersController.show().url)
+        TestWhatYearToSignUpController.backUrl(isEditMode = true) mustBe Some(controllers.individual.business.routes.TaxYearCheckYourAnswersController.show(true).url)
       }
     }
   }
