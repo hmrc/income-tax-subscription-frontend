@@ -46,6 +46,7 @@ object IntegrationTestConstants {
   val alreadySubscribedURI = s"$baseURI/error/client-already-subscribed"
   val registerForSAURI = s"$baseURI/register-for-SA"
   val confirmationURI = s"$baseURI/confirmation"
+  val globalCheckYourAnswersURI = s"$baseURI/final-check-your-answers"
   val noClientRelationshipURI = s"$baseURI/error/no-client-relationship"
   val incomeSourceURI = s"$baseURI/income"
   val incomeSourcesURI = "/report-quarterly/income-and-expenses/sign-up/client/eligibility/income-sources"

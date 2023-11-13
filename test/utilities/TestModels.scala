@@ -51,7 +51,7 @@ object TestModels {
     AccountingPeriodModel(startDate, endDate)
 
   val testBusinessName = BusinessNameModel("test business")
-  val testSelectedTaxYearCurrent = AccountingYearModel(Current, true)
+  val testSelectedTaxYearCurrent = AccountingYearModel(Current, confirmed = true)
   val testSelectedTaxYearNext = AccountingYearModel(Next)
   val testAccountingMethod = AccountingMethodModel(Cash)
   val testAccountMethod: AccountingMethod = Cash
