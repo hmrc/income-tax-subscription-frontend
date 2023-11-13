@@ -86,18 +86,30 @@ body:not(.js-enabled) {
     list-style: none;
 
     @include govuk-media-query($from: tablet) {
-      padding-left: govuk-spacing(6);
+        padding-left: govuk-spacing(6);
     }
 }
 
-.app-task-list__post-list > a{
-  font-size: 1rem;
+.app-task-list__post-list > a {
+    font-size: 1rem;
 
-  @include govuk-media-query($from: tablet) {
-    font-size: 1.1875rem;
-  }
+    @include govuk-media-query($from: tablet) {
+        font-size: 1.1875rem;
+    }
 }
 
 .app-task-list__post-list-padding {
-   padding-right: govuk-spacing(6)
+    padding-right: govuk-spacing(6)
+}
+
+.govuk-tag {
+    margin-bottom: govuk-spacing(1);
+    margin-top: govuk-spacing(2);
+}
+
+.govuk-tag {
+    @include govuk-media-query($from: tablet) {
+        margin-bottom: 0;
+        margin-top: 0;
+    }
 }
