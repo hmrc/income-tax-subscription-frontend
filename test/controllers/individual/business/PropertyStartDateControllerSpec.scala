@@ -153,7 +153,15 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
       }
     }
 
-    "The back url is not in edit mode" should {
+    "The back url is not in edit mode and Tasklist redesign is enabled" should {
+      "redirect back to what income source page" in new Test {
+        enable(EnableTaskListRedesign)
+        controller.backUrl(isEditMode = false) mustBe
+          controllers.individual.incomesource.routes.YourIncomeSourceToSignUpController.show.url
+      }
+    }
+
+    "The back url is not in edit mode and Tasklist redesign is  not enabled" should {
       "redirect back to what income source page" in new Test {
         controller.backUrl(isEditMode = false) mustBe
           controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url

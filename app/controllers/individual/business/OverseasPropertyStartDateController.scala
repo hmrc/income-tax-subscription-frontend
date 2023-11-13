@@ -83,7 +83,11 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
     if (isEditMode) {
       routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
     } else {
-      controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url
+      if (isEnabled(EnableTaskListRedesign)){
+        controllers.individual.incomesource.routes.YourIncomeSourceToSignUpController.show.url
+      } else {
+        controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url
+      }
     }
   }
 

@@ -141,7 +141,15 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
         }
       }
 
-      "not in edit mode" should {
+      "not in edit mode and taskList redesign is enabled" should {
+        "redirect to what income source to sign up page" in withController { controller =>
+          enable(EnableTaskListRedesign)
+          controller.backUrl(isEditMode = false) mustBe
+            controllers.individual.incomesource.routes.YourIncomeSourceToSignUpController.show.url
+        }
+      }
+
+      "not in edit mode and taskList redesign is not enabled" should {
         "redirect to what income source to sign up page" in withController { controller =>
           controller.backUrl(isEditMode = false) mustBe
             controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url

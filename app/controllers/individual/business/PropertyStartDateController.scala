@@ -92,10 +92,13 @@ class PropertyStartDateController @Inject()(val auditingService: AuditingService
   def backUrl(isEditMode: Boolean): String = {
     if (isEditMode) {
       routes.PropertyCheckYourAnswersController.show(editMode = true).url
-    } else {
+    } else if(isEnabled(EnableTaskListRedesign)){
+        controllers.individual.incomesource.routes.YourIncomeSourceToSignUpController.show.url
+      }else{
       controllers.individual.incomesource.routes.WhatIncomeSourceToSignUpController.show().url
     }
   }
+
 
   def form(implicit request: Request[_]): Form[DateModel] = {
     propertyStartDateForm(PropertyStartDateForm.minStartDate, PropertyStartDateForm.maxStartDate, d => d.toLongDate)
