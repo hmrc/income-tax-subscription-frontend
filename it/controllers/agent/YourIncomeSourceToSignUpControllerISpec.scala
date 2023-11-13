@@ -16,26 +16,16 @@
 
 package controllers.agent
 
-import config.featureswitch.FeatureSwitch.{ForeignProperty => ForeignPropertyFeature}
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
-import helpers.IntegrationTestModels.{testFullOverseasPropertyModel, testFullPropertyModel, testTooManyBusinesses}
+import helpers.IntegrationTestModels.{testBusinesses, testFullOverseasPropertyModel, testFullPropertyModel}
 import helpers.agent.ComponentSpecBase
-import helpers.agent.IntegrationTestConstants.{overseasPropertyStartDateURI, propertyStartDateURI}
 import helpers.agent.servicemocks.AuthStub
-import models.Cash
-import models.common._
-import models.common.business.SelfEmploymentData
 import play.api.http.Status._
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys
-import helpers.IntegrationTestConstants.taskListURI
-import helpers.IntegrationTestModels.{testBusinesses, testFullOverseasPropertyModel, testFullPropertyModel}
-
 
 class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
   private val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
-
-
 
   s"GET ${routes.YourIncomeSourceToSignUpController.show.url}" should {
     "return OK" when {

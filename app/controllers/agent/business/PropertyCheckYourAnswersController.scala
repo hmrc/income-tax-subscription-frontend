@@ -21,7 +21,7 @@ import config.AppConfig
 import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.utils.ReferenceRetrieval
 import models.common.PropertyModel
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Result}
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
@@ -62,21 +62,27 @@ class PropertyCheckYourAnswersController @Inject()(val propertyCheckYourAnswersV
         withProperty(reference) { property =>
           if (property.accountingMethod.isDefined && property.startDate.isDefined) {
             subscriptionDetailsService.saveProperty(reference, property.copy(confirmed = true)) map {
-              case Right(_) => Redirect(controllers.agent.routes.TaskListController.show())
+              case Right(_) => Redirect(continueLocation)
               case Left(_) => throw new InternalServerException("[PropertyCheckYourAnswersController][submit] - Could not confirm property")
             }
           } else {
-            Future.successful(Redirect(controllers.agent.routes.TaskListController.show()))
+            Future.successful(Redirect(continueLocation))
           }
         }
       }
   }
 
+  def continueLocation: Call = {
+    if(isEnabled(EnableTaskListRedesign)) {
+      controllers.agent.routes.YourIncomeSourceToSignUpController.show
+    } else {
+      controllers.agent.routes.TaskListController.show()
+    }
+  }
+
   def backUrl(isEditMode: Boolean): String = {
     if (isEditMode) {
-        if (isEnabled(EnableTaskListRedesign))
-          controllers.agent.routes.YourIncomeSourceToSignUpController.show.url
-        else controllers.agent.routes.TaskListController.show.url
+      continueLocation.url
     } else {
       routes.PropertyAccountingMethodController.show().url
 

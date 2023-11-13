@@ -202,6 +202,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
         model => HaveYouCompletedThisSectionForm.form.fill(model).data.map { case (k, v) => (k, Seq(v)) }
       )
     )
+
     def businessYourIncomeSource(): WSResponse = get("/details/your-income-source")
 
     def thankYou(): WSResponse = get("/thank-you")

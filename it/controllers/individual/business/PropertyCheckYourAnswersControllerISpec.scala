@@ -18,10 +18,11 @@
 
 package controllers.individual.business
 
+import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub.subscriptionUri
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.taskListURI
+import helpers.IntegrationTestConstants.{taskListURI, yourIncomeSourcesURI}
 import helpers.agent.WiremockHelper.verifyPost
 import helpers.servicemocks.AuthStub
 import models.common.PropertyModel
@@ -31,6 +32,12 @@ import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys.Property
 
 class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(EnableTaskListRedesign)
+  }
+
   "GET /report-quarterly/income-and-expenses/sign-up/business/uk-property-check-your-answers" should {
     "return OK" in {
       Given("I setup the Wiremock stubs")
@@ -67,7 +74,61 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/business/uk-property-check-your-answers" should {
-    "redirect" when {
+    "redirect to the your income sources page if the task list redesign feature switch is enabled" when {
+      "the user has answered all the questions for uk property" should {
+        "redirect to the tasks list page and save property answers" in {
+          enable(EnableTaskListRedesign)
+
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+            Property,
+            OK,
+            Json.toJson(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021"))))
+          )
+          IncomeTaxSubscriptionConnectorStub.stubSaveProperty(
+            PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true)
+          )
+
+          When("POST business/uk-property-check-your-answers is called")
+          val res = IncomeTaxSubscriptionFrontend.submitPropertyCheckYourAnswers()
+
+          Then("Should return a SEE_OTHER with a redirect location of the your income sources page")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(yourIncomeSourcesURI)
+          )
+
+          IncomeTaxSubscriptionConnectorStub.verifySaveProperty(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true), Some(1))
+        }
+      }
+
+      "the user has answered partial questions for uk property" should {
+        "redirect to the tasks list page but not save property answers" in {
+          enable(EnableTaskListRedesign)
+
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+            Property,
+            OK,
+            Json.toJson(PropertyModel(accountingMethod = Some(Cash)))
+          )
+
+          When("POST business/uk-property-check-your-answers is called")
+          val res = IncomeTaxSubscriptionFrontend.submitPropertyCheckYourAnswers()
+
+          Then("Should return a SEE_OTHER with a redirect location of the your income sources page")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(yourIncomeSourcesURI)
+          )
+
+          verifyPost(subscriptionUri(Property), count = Some(0))
+        }
+      }
+    }
+    "redirect to the task list page if the task list redesign feature switch is disabled" when {
       "the user has answered all the questions for uk property" should {
         "redirect to the tasks list page and save property answers" in {
           Given("I setup the Wiremock stubs")

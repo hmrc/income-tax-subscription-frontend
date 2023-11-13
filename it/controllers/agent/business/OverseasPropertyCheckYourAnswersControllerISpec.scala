@@ -17,11 +17,12 @@
 package controllers.agent.business
 
 import _root_.common.Constants.ITSASessionKeys
+import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub.subscriptionUri
 import helpers.IntegrationTestConstants.{testFirstName, testLastName}
 import helpers.agent.ComponentSpecBase
-import helpers.agent.IntegrationTestConstants.{taskListURI, testNino, testUtr}
+import helpers.agent.IntegrationTestConstants.{taskListURI, testNino, testUtr, yourIncomeSourcesURI}
 import helpers.agent.WiremockHelper.verifyPost
 import helpers.agent.servicemocks.AuthStub
 import models.common.OverseasPropertyModel
@@ -32,6 +33,12 @@ import utilities.SubscriptionDataKeys.OverseasProperty
 import utilities.UserMatchingSessionUtil
 
 class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(EnableTaskListRedesign)
+  }
+
   "GET /report-quarterly/income-and-expenses/sign-up/client/business/overseas-property-check-your-answers" should {
     "return OK" in {
       Given("I setup the Wiremock stubs")
@@ -59,7 +66,54 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/client/business/overseas-property-check-your-answers" should {
-    "redirect to the agent task list page" when {
+    "redirect to the agent your income source page if the task list redesign feature switch is enabled" when {
+      "the user answered all the overseas property questions" should {
+        "save the property answers" in {
+          enable(EnableTaskListRedesign)
+
+          val testProperty = OverseasPropertyModel(
+            accountingMethod = Some(Cash),
+            startDate = Some(DateModel("10", "11", "2021"))
+          )
+          val expectedProperty = testProperty.copy(confirmed = true)
+
+          AuthStub.stubAuthSuccess()
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testProperty))
+          IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(expectedProperty)
+
+          When("POST business/overseas-property-check-your-answers is called")
+          val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers(Map(ITSASessionKeys.UTR -> testUtr))
+
+          Then("Should return a SEE_OTHER with a redirect location of the your income sources page")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(yourIncomeSourcesURI)
+          )
+
+          IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(expectedProperty, Some(1))
+        }
+      }
+
+      "the user answered partial overseas property questions" should {
+        "not save the property answers" in {
+          enable(EnableTaskListRedesign)
+
+          AuthStub.stubAuthSuccess()
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(OverseasPropertyModel(accountingMethod = Some(Cash))))
+          When("POST business/overseas-property-check-your-answers is called")
+          val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers(Map(ITSASessionKeys.UTR -> testUtr))
+
+          Then("Should return a SEE_OTHER with a redirect location of the your income sources page")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(yourIncomeSourcesURI)
+          )
+
+          verifyPost(subscriptionUri(OverseasProperty), count = Some(0))
+        }
+      }
+    }
+    "redirect to the agent task list page if the task list redesign feature switch is disabled" when {
       "the user answered all the overseas property questions" should {
         "save the property answers" in {
           val testProperty = OverseasPropertyModel(

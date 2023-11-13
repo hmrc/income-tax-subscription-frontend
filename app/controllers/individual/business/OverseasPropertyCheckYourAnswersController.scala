@@ -21,7 +21,7 @@ import config.AppConfig
 import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.utils.ReferenceRetrieval
 import models.common.OverseasPropertyModel
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc._
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import views.html.individual.incometax.business.OverseasPropertyCheckYourAnswers
@@ -58,18 +58,25 @@ class OverseasPropertyCheckYourAnswersController @Inject()(val view: OverseasPro
         withProperty(reference) {
           case property@OverseasPropertyModel(Some(_), Some(_), _) =>
             subscriptionDetailsService.saveOverseasProperty(reference, property.copy(confirmed = true)) map {
-              case Right(_) => Redirect(routes.TaskListController.show())
+              case Right(_) => Redirect(continueLocation)
               case Left(_) => throw new InternalServerException("[OverseasPropertyCheckYourAnswersController][submit] - Could not confirm property details")
             }
-          case _ => Future.successful(Redirect(routes.TaskListController.show()))
+          case _ => Future.successful(Redirect(continueLocation))
         }
       }
   }
 
+  def continueLocation: Call = {
+    if (isEnabled(EnableTaskListRedesign)) {
+      controllers.individual.incomesource.routes.YourIncomeSourceToSignUpController.show
+    } else {
+      routes.TaskListController.show()
+    }
+  }
+
   def backUrl(isEditMode: Boolean): String =
     if (isEditMode) {
-      if (isEnabled(EnableTaskListRedesign)) controllers.individual.incomesource.routes.YourIncomeSourceToSignUpController.show.url
-      else controllers.individual.business.routes.TaskListController.show().url
+      continueLocation.url
     } else {
       controllers.individual.business.routes.OverseasPropertyAccountingMethodController.show().url
     }

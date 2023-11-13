@@ -22,11 +22,9 @@ import forms.individual.business.CannotSignUpThisYearForm
 import models.{No, Yes, YesNo}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
-import services.{AuditingService, AuthService}
-import utilities.{AccountingPeriodUtil, SubscriptionDataKeys}
-import views.html.individual.eligibility.CannotSignUpThisYear
-import controllers.utils
 import play.twirl.api.Html
+import services.{AuditingService, AuthService}
+import views.html.individual.eligibility.CannotSignUpThisYear
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -46,16 +44,16 @@ class CannotSignUpThisYearController @Inject()(val auditingService: AuditingServ
   }
 
   def submit: Action[AnyContent] = Authenticated { implicit request =>
-    implicit user =>
+    _ =>
       form.bindFromRequest().fold(
         hasErrors => BadRequest(view(form = hasErrors)), {
           case Yes => Redirect(controllers.individual.sps.routes.SPSHandoffController.redirectToSPS)
           case No => Redirect(controllers.individual.eligibility.routes.DeclinedSignUpNextYearController.show)
         }
       )
-    }
+  }
 
-  private def view(form: Form[YesNo]) (implicit request: Request[_]): Html = cannotSignUp(
+  private def view(form: Form[YesNo])(implicit request: Request[_]): Html = cannotSignUp(
     yesNoForm = form,
     postAction = routes.CannotSignUpThisYearController.submit
   )

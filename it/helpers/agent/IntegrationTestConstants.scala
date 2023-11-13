@@ -4,6 +4,7 @@ package helpers.agent
 import models.DateModel
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
+
 import java.net.URLEncoder
 import java.util.UUID
 import scala.util.matching.Regex
@@ -34,7 +35,7 @@ object IntegrationTestConstants {
   val testUserIdEncoded: String = URLEncoder.encode(userId, "UTF-8")
 
   val baseURI = "/report-quarterly/income-and-expenses/sign-up/client"
-  val baseSEURI ="http://localhost:9563/report-quarterly/income-and-expenses/sign-up/self-employments/client"
+  val baseSEURI = "http://localhost:9563/report-quarterly/income-and-expenses/sign-up/self-employments/client"
   val indexURI = s"$baseURI/index"
   val userDetailsURI = "/user-details"
   val confirmDetailsURI = "/confirm-details"
@@ -63,6 +64,7 @@ object IntegrationTestConstants {
   val whatYearToSignUpURI = s"$baseURI/business/what-year-to-sign-up"
   val taxYearCheckYourAnswersURI = s"$baseURI/business/tax-year-check-your-answers"
   val taskListURI = s"$baseURI/business/task-list"
+  val yourIncomeSourcesURI = s"$baseURI/your-income-source"
   val addAnotherClient = s"$baseURI/add-another"
 
   object Auth {

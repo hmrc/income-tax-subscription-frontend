@@ -22,7 +22,7 @@ import config.AppConfig
 import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.utils.ReferenceRetrieval
 import models.common.PropertyModel
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc._
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import views.html.individual.incometax.business.PropertyCheckYourAnswers
@@ -60,18 +60,25 @@ class PropertyCheckYourAnswersController @Inject()(val propertyCheckYourAnswersV
         withProperty(reference) {
           case property@PropertyModel(Some(_), Some(_), _) =>
             subscriptionDetailsService.saveProperty(reference, property.copy(confirmed = true)).map {
-              case Right(_) => Redirect(routes.TaskListController.show())
+              case Right(_) => Redirect(continueLocation)
               case Left(_) => throw new InternalServerException("[PropertyCheckYourAnswersController][submit] - Could not confirm property")
             }
-          case _ => Future.successful(Redirect(routes.TaskListController.show()))
+          case _ => Future.successful(Redirect(continueLocation))
         }
       }
   }
 
+  def continueLocation: Call = {
+    if (isEnabled(EnableTaskListRedesign)) {
+      controllers.individual.incomesource.routes.YourIncomeSourceToSignUpController.show
+    } else {
+      controllers.individual.business.routes.TaskListController.show()
+    }
+  }
+
   def backUrl(isEditMode: Boolean): String = {
     if (isEditMode) {
-        if (isEnabled(EnableTaskListRedesign)) controllers.individual.incomesource.routes.YourIncomeSourceToSignUpController.show.url
-        else controllers.individual.business.routes.TaskListController.show().url
+      continueLocation.url
     } else {
       controllers.individual.business.routes.PropertyAccountingMethodController.show().url
     }
@@ -82,7 +89,6 @@ class PropertyCheckYourAnswersController @Inject()(val propertyCheckYourAnswersV
       val property = maybeProperty.getOrElse(
         throw new InternalServerException("[PropertyCheckYourAnswersController] - Could not retrieve property details")
       )
-
       f(property)
     }
   }

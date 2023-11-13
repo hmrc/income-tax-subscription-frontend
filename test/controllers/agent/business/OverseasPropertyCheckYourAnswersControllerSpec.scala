@@ -20,9 +20,8 @@ import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.agent.AgentControllerBaseSpec
 import models.common.OverseasPropertyModel
 import models.{Cash, DateModel}
-import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, verify, when}
+import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Codec, Result}
@@ -30,7 +29,6 @@ import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTim
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockAuditingService, MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
-import utilities.SubscriptionDataKeys
 import views.html.agent.business.OverseasPropertyCheckYourAnswers
 
 import scala.concurrent.Future
@@ -40,7 +38,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBase
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    disable(featureSwitch = EnableTaskListRedesign)
+    disable(EnableTaskListRedesign)
   }
 
   override val controllerName: String = "OverseasPropertyCheckYourAnswersController"
@@ -81,44 +79,76 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBase
     }
   }
 
-  "submit" should {
-    "redirect to the task list" when {
-      "the user answer all the answers for the overseas property" should {
-        "save the overseas property answers" in {
-          withController { controller =>
-            enable(EnableTaskListRedesign)
-            mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
-            setupMockSubscriptionDetailsSaveFunctions()
+  "submit" when {
+    "the task list redesign feature switch is enabled" should {
+      "redirect to the your income sources page" when {
+        "the user answer all the answers for the overseas property" should {
+          "save the overseas property answers" in {
+            withController { controller =>
+              enable(EnableTaskListRedesign)
+              mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
+              setupMockSubscriptionDetailsSaveFunctions()
 
-            val result: Future[Result] = await(controller.submit()(subscriptionRequestWithName))
+              val result: Future[Result] = await(controller.submit()(subscriptionRequestWithName))
 
-            status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)
-            verifyOverseasPropertySave(Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true)))
+              status(result) mustBe SEE_OTHER
+              redirectLocation(result) mustBe Some(controllers.agent.routes.YourIncomeSourceToSignUpController.show.url)
+              verifyOverseasPropertySave(Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true)))
+            }
+          }
+        }
+
+        "the user answer partial answers for the overseas property" should {
+          "not save the overseas property answers" in {
+            withController { controller =>
+              enable(EnableTaskListRedesign)
+              mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
+
+              val result: Future[Result] = await(controller.submit()(subscriptionRequestWithName))
+
+              status(result) mustBe SEE_OTHER
+              redirectLocation(result) mustBe Some(controllers.agent.routes.YourIncomeSourceToSignUpController.show.url)
+              verifyOverseasPropertySave(None)
+            }
           }
         }
       }
-
-      "the user answer partial answers for the overseas property" should {
-        "not save the overseas property answers" in {
-          withController { controller =>
-            mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
-
-            val result: Future[Result] = await(controller.submit()(subscriptionRequestWithName))
-
-            status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)
-            verify(mockConnector, never).saveSubscriptionDetails[OverseasPropertyModel](
-              any(),
-              ArgumentMatchers.eq(SubscriptionDataKeys.Property),
-              any()
-            )(any(), any())
-          }
-        }
-      }
-
     }
+    "the task list redesign feature switch is disabled" should {
+      "redirect to the task list" when {
+        "the user answer all the answers for the overseas property" should {
+          "save the overseas property answers" in {
+            withController { controller =>
+              mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
+              setupMockSubscriptionDetailsSaveFunctions()
 
+              val result: Future[Result] = await(controller.submit()(subscriptionRequestWithName))
+
+              status(result) mustBe SEE_OTHER
+              redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)
+              verifyOverseasPropertySave(Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true)))
+            }
+          }
+        }
+
+        "the user answer partial answers for the overseas property" should {
+          "not save the overseas property answers" in {
+            withController { controller =>
+              mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
+
+              val result: Future[Result] = await(controller.submit()(subscriptionRequestWithName))
+
+              status(result) mustBe SEE_OTHER
+              redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)
+              verifyOverseasPropertySave(None)
+            }
+          }
+        }
+      }
+    }
+  }
+
+  "submit" should {
     "throw an exception" when {
       "cannot retrieve property details" in {
         withController { controller =>
