@@ -29,30 +29,6 @@ body:not(.js-enabled) {
   background-color: govuk-colour("light-grey");
 }
 
-.boxout {
-  border-style: solid;
-  border-color: #0b0c0c;
-  border-width: thin;
-  padding: govuk-spacing(3);
-  margin-bottom: govuk-spacing(2);
-}
-
-.boxout:first-child {
-  margin-left: 0;
-}
-
-@media (min-width: 40.0625em) {
-    .boxout {
-      margin-left: govuk-spacing(2);
-    }
-    .row {
-      display: flex;
-    }
-    .col {
-      flex: 1;
-    }
-}
-
 .print-link::before {
     content: url(../images/print-icon.svg);
     padding-right: 0.5em;
