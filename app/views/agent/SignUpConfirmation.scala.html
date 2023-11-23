@@ -74,24 +74,55 @@
         <h3 class="govuk-heading-m">2. @messages("agent.sign-up-confirmation.quarterly-updates.heading")</h3>
         <p class="govuk-body">@messages("agent.sign-up-confirmation.quarterly-updates.para")</p>
 
-        @table(
-          updateAndDeadlineDates = accountingPeriodService.getAllUpdateAndDeadlineDates(Next),
-          tableCaption = messages("agent.sign-up-confirmation.quarterly-updates.table.caption")
-        )
+        <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+            @messages("agent.sign-up-confirmation.quarterly-updates.details.title")
+            </span>
+            </summary>
+            <div class="govuk-details__text">
+                @table(
+                updateAndDeadlineDates = accountingPeriodService.getAllUpdateAndDeadlineDates(Next),
+                tableCaption = messages("agent.sign-up-confirmation.quarterly-updates.table.caption")
+                )
+
+                @if(!mandatedCurrentYear){
+                @govukWarningText(WarningText(
+                content = Text(Messages("agent.sign-up-confirmation.warning.para"))
+                ))
+                }
+
+                <p>@messages("agent.sign-up-confirmation.quarterly-updates.details.para1")</p>
+                <p>@messages("agent.sign-up-confirmation.quarterly-updates.details.para2")</p>
+            </div>
+        </details>
+
       } else {
         <h3 class="govuk-heading-m">1. @messages("agent.sign-up-confirmation.quarterly-updates.heading")</h3>
-        <p class="govuk-body">@messages("agent.sign-up-confirmation.quarterly-updates.para")</p>
+        <p class="govuk-body">@messages("agent.sign-up-confirmation.quarterly-updates.para1")</p>
 
-        @table(
-          updateAndDeadlineDates = accountingPeriodService.getAllUpdateAndDeadlineDates(Next),
-          tableCaption = messages("agent.sign-up-confirmation.quarterly-updates.table.caption")
-        )
+        <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+            @messages("agent.sign-up-confirmation.quarterly-updates.details.title")
+            </span>
+            </summary>
+            <div class="govuk-details__text">
+                @table(
+                updateAndDeadlineDates = accountingPeriodService.getAllUpdateAndDeadlineDates(Next),
+                tableCaption = messages("agent.sign-up-confirmation.quarterly-updates.table.caption")
+                )
 
-        @if(!mandatedCurrentYear){
-          @govukWarningText(WarningText(
-            content = Text(Messages("agent.sign-up-confirmation.warning.para"))
-          ))
-        }
+                @if(!mandatedCurrentYear){
+                @govukWarningText(WarningText(
+                content = Text(Messages("agent.sign-up-confirmation.warning.para"))
+                ))
+                }
+
+                <p>@messages("agent.sign-up-confirmation.quarterly-updates.details.para1")</p>
+                <p>@messages("agent.sign-up-confirmation.quarterly-updates.details.para2")</p>
+            </div>
+        </details>
       }
     </div>
 }

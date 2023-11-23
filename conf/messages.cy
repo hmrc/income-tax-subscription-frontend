@@ -335,6 +335,10 @@ agent.sign-up-confirmation.end-of-period-statement.heading                      
 agent.sign-up-confirmation.end-of-period-statement.para                             = Mae’n rhaid i chi neu’ch cleient gyflwyno datganiad diwedd cyfnod, gan ddefnyddio’ch meddalwedd, erbyn {0}.
 agent.sign-up-confirmation.final-declaration.para                                   = Mae’n rhaid i chi neu’ch cleient gyflwyno datganiad terfynol erbyn {0}. Mae’n rhaid iddo hefyd dalu’r dreth sydd arno.
 agent.sign-up-confirmation.warning.para                                             = Mae’n rhai i chi gyflwyno diweddariadau ar gyfer unrhyw chwarterau rydych wedi’u methu.
+agent.sign-up-confirmation.quarterly-updates.para1                                  = You must send quarterly updates of your client’s income and expenses using compatible software. ...in Welsh
+agent.sign-up-confirmation.quarterly-updates.details.title                          = Quarterly update deadlines ...in Welsh
+agent.sign-up-confirmation.quarterly-updates.details.para1                          = You can choose to send your client’s updates by calendar quarterly period dates instead.  This must be selected in the compatible software before the first update is made. ...in Welsh
+agent.sign-up-confirmation.quarterly-updates.details.para2                          = The deadline for both quarterly period dates are the same. ...in Welsh
 
 
 agent.sign-up-confirmation.voluntary-next-year.self-assessment.heading              = Parhau â’r Hunanasesiad ar gyfer y flwyddyn hon

@@ -87,7 +87,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains Quarterly Updates initial paragraph" in {
-          mainContent.selectNth(".govuk-section-break--visible", 1).selectHead("p").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParagraph
+          mainContent.selectNth(".govuk-section-break--visible", 1).selectHead("p").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParagraph1
         }
 
         "contains a table" in {
@@ -348,7 +348,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains Quarterly Updates initial paragraph" in {
-          mainContent.selectNth(".govuk-section-break--visible", 1).selectHead("p").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParagraph
+          mainContent.selectNth(".govuk-section-break--visible", 1).selectHead("p").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParagraph1
         }
 
         "contains a table" in {
@@ -441,8 +441,9 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val continueSelfAssessmentPara              = s"Your client’s Self Assessment tax return must be submitted as normal on 31 January ${AccountingPeriodUtil.getNextTaxEndYear + 1}."
 
     val quarterlyUpdatesHeading                 = "Send quarterly updates"
+    val quarterlyUpdatesParagraph1              = "You must send quarterly updates of your client’s income and expenses using compatible software."
     val quarterlyUpdatesParagraph               = "Quarterly updates of your client’s income and expenses must be made using compatible software by the following deadlines:"
-    val quarterlyUpdatesTableCaption            = "Quarterly updates by the deadline"
+    val quarterlyUpdatesTableCaption            = "Submit quarterly updates by the deadline"
     val quarterlyUpdate                         = "Quarterly update"
     val deadline                                = "Deadline"
 
