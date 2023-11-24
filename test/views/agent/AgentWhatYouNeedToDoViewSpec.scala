@@ -185,11 +185,6 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
         "has a third point" in {
           numberedList.selectNth("li", 3).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.NotificationBanner.bulletThree
         }
-
-        "has a forth point" in {
-          numberedList.selectNth("li", 4).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.NotificationBanner.bulletFour
-        }
-
       }
 
       "have an inset text" in {
@@ -248,9 +243,6 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
           numberedList.selectNth("li", 4).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.NotificationBanner.bulletFour
         }
 
-        "has a fifth point" in {
-          numberedList.selectNth("li", 5).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.NotificationBanner.bulletFive
-        }
       }
 
       "have an inset text" in {

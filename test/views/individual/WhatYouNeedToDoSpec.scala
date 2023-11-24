@@ -156,10 +156,6 @@ class WhatYouNeedToDoSpec extends ViewSpec {
       "has a forth point" in {
         numberedList.selectNth("li", 4).text mustBe WhatYouNeedToDoMessages.NotificationBanner.bulletFour
       }
-
-      "has a fifth point" in {
-        numberedList.selectNth("li", 5).text mustBe WhatYouNeedToDoMessages.NotificationBanner.bulletFive
-      }
     }
 
     "has an inset text" in {
@@ -209,10 +205,7 @@ class WhatYouNeedToDoSpec extends ViewSpec {
       "has a third point" in {
         numberedList.selectNth("li", 3).text mustBe NextYearOnlyWhatYouNeedToDoMessages.NotificationBanner.bulletThree
       }
-
-      "has a forth point" in {
-        numberedList.selectNth("li", 4).text mustBe NextYearOnlyWhatYouNeedToDoMessages.NotificationBanner.bulletFour
-      }
+      
     }
 
     "has an inset text" in {
