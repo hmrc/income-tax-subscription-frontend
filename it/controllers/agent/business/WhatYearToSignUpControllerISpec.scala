@@ -19,10 +19,9 @@ package controllers.agent.business
 import common.Constants.ITSASessionKeys
 import config.featureswitch.FeatureSwitch.ForeignProperty
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
-import helpers.IntegrationTestConstants.{testFirstName, testLastName}
+import helpers.IntegrationTestConstants.{AgentURI, testFirstName, testLastName, testNino}
 import helpers.agent.ComponentSpecBase
-import helpers.agent.IntegrationTestConstants._
-import helpers.agent.IntegrationTestModels.testAccountingYearCurrent
+import helpers.IntegrationTestModels.testAccountingYearCurrent
 import helpers.agent.servicemocks.AuthStub
 import models.common.AccountingYearModel
 import models.{Current, Next}
@@ -81,7 +80,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
           Then("Should return SEE_OTHER to task list page")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(taskListURI)
+            redirectURI(AgentURI.taskListURI)
           )
         }
         "The user is eligible for the next tax year only" in {
@@ -100,7 +99,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
           Then("Should return SEE_OTHER to task list page")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(taskListURI)
+            redirectURI(AgentURI.taskListURI)
           )
         }
       }
@@ -142,7 +141,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
           Then("Should return a SEE_OTHER with a redirect location of Tax Year CYA")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(taxYearCheckYourAnswersURI)
+            redirectURI(AgentURI.taxYearCheckYourAnswersURI)
           )
         }
       }
@@ -161,7 +160,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
           Then("Should return a SEE_OTHER with a redirect location of Tax Year CYA")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(taxYearCheckYourAnswersURI)
+            redirectURI(AgentURI.taxYearCheckYourAnswersURI)
           )
         }
       }

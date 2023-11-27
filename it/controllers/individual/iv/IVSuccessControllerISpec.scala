@@ -18,7 +18,7 @@ package controllers.individual.iv
 
 import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.{baseURI, claimEnrolmentResolverURI}
+import helpers.IntegrationTestConstants.IndividualURI
 import helpers.servicemocks.AuthStub
 import play.api.http.Status._
 import _root_.common.Constants.ITSASessionKeys
@@ -52,7 +52,7 @@ class IVSuccessControllerISpec extends ComponentSpecBase {
 
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(claimEnrolmentResolverURI)
+          redirectURI(IndividualURI.claimEnrolmentResolverURI)
         )
       }
     }
@@ -64,7 +64,7 @@ class IVSuccessControllerISpec extends ComponentSpecBase {
 
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(baseURI)
+          redirectURI(IndividualURI.baseURI)
         )
       }
     }

@@ -62,7 +62,7 @@ class SPSHandoffForClaimEnrolControllerISpec extends ComponentSpecBase {
       Then("Should return a SEE_OTHER and redirect to SPS")
       res must have(
         httpStatus(SEE_OTHER),
-        redirectURI(claimEnrolSpsHandoffURI)
+        redirectURI(IndividualURI.claimEnrolSpsHandoffURI)
       )
     }
   }

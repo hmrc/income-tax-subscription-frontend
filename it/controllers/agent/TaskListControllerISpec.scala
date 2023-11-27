@@ -20,10 +20,9 @@ import _root_.config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import common.Constants.ITSASessionKeys
 import connectors.agent.httpparsers.QueryUsersHttpParser.principalUserIdKey
 import connectors.stubs._
-import helpers.IntegrationTestConstants.{confirmationURI => _, _}
+import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels.{testBusinessName => _, _}
 import helpers.WiremockHelper.verifyPost
-import helpers.agent.IntegrationTestConstants.{globalCheckYourAnswersURI, testNino => _, testUtr => _, _}
 import helpers.agent.servicemocks._
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import helpers.servicemocks.EnrolmentStoreProxyStub
@@ -144,7 +143,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         Then("The result must have a status of SEE_OTHER and redirect to the confirmation page")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(globalCheckYourAnswersURI)
+          redirectURI(AgentURI.globalCheckYourAnswersURI)
         )
       }
     }
@@ -185,14 +184,14 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           Then("The result must have a status of SEE_OTHER and redirect to the confirmation page")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(confirmationURI)
+            redirectURI(AgentURI.confirmationURI)
           )
 
           val expectedSPSBody: AgentSPSPayload = AgentSPSPayload(testARN, testNino, testUtrEnrolmentKey, testMTDIDEnrolmentKey)
           verifyPost("/channel-preferences/enrolment", Some(Json.toJson(expectedSPSBody).toString), Some(1))
 
           val cookieMap = getSessionMap(res)
-          cookieMap(ITSASessionKeys.MTDITID) mustBe testMTDID
+          cookieMap(ITSASessionKeys.MTDITID) mustBe testMtdId
 
         }
 
@@ -227,10 +226,10 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
           EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
           UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
-          EnrolmentStoreProxyStub.stubUpsertEnrolment(testMTDID, testNino)(NO_CONTENT)
-          EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testMTDID, testGroupId, testCredentialId)(CREATED)
-          EnrolmentStoreProxyStub.stubAssignEnrolment(testMTDID, testCredentialId)(CREATED)
-          EnrolmentStoreProxyStub.stubAssignEnrolment(testMTDID, testCredentialId2)(CREATED)
+          EnrolmentStoreProxyStub.stubUpsertEnrolment(testMtdId, testNino)(NO_CONTENT)
+          EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testMtdId, testGroupId, testCredentialId)(CREATED)
+          EnrolmentStoreProxyStub.stubAssignEnrolment(testMtdId, testCredentialId)(CREATED)
+          EnrolmentStoreProxyStub.stubAssignEnrolment(testMtdId, testCredentialId2)(CREATED)
 
           When("I call POST /task-list")
           val res = IncomeTaxSubscriptionFrontend.submitTaskList()
@@ -238,14 +237,14 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           Then("The result must have a status of SEE_OTHER and redirect to the confirmation page")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(confirmationURI)
+            redirectURI(AgentURI.confirmationURI)
           )
 
           val expectedSPSBody: AgentSPSPayload = AgentSPSPayload(testARN, testNino, testUtrEnrolmentKey, testMTDIDEnrolmentKey)
           verifyPost("/channel-preferences/enrolment", Some(Json.toJson(expectedSPSBody).toString), Some(1))
 
           val cookieMap = getSessionMap(res)
-          cookieMap(ITSASessionKeys.MTDITID) mustBe testMTDID
+          cookieMap(ITSASessionKeys.MTDITID) mustBe testMtdId
 
         }
         "they only have overseas property income" in {
@@ -278,10 +277,10 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
           EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
           UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
-          EnrolmentStoreProxyStub.stubUpsertEnrolment(testMTDID, testNino)(NO_CONTENT)
-          EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testMTDID, testGroupId, testCredentialId)(CREATED)
-          EnrolmentStoreProxyStub.stubAssignEnrolment(testMTDID, testCredentialId)(CREATED)
-          EnrolmentStoreProxyStub.stubAssignEnrolment(testMTDID, testCredentialId2)(CREATED)
+          EnrolmentStoreProxyStub.stubUpsertEnrolment(testMtdId, testNino)(NO_CONTENT)
+          EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testMtdId, testGroupId, testCredentialId)(CREATED)
+          EnrolmentStoreProxyStub.stubAssignEnrolment(testMtdId, testCredentialId)(CREATED)
+          EnrolmentStoreProxyStub.stubAssignEnrolment(testMtdId, testCredentialId2)(CREATED)
 
           When("I call POST /task-list")
           val res = IncomeTaxSubscriptionFrontend.submitTaskList()
@@ -289,14 +288,14 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           Then("The result must have a status of SEE_OTHER and redirect to the confirmation page")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(confirmationURI)
+            redirectURI(AgentURI.confirmationURI)
           )
 
           val expectedSPSBody: AgentSPSPayload = AgentSPSPayload(testARN, testNino, testUtrEnrolmentKey, testMTDIDEnrolmentKey)
           verifyPost("/channel-preferences/enrolment", Some(Json.toJson(expectedSPSBody).toString), Some(1))
 
           val cookieMap = getSessionMap(res)
-          cookieMap(ITSASessionKeys.MTDITID) mustBe testMTDID
+          cookieMap(ITSASessionKeys.MTDITID) mustBe testMtdId
 
 
         }
@@ -343,14 +342,14 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           Then("The result must have a status of SEE_OTHER and redirect to the confirmation page")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(confirmationURI)
+            redirectURI(AgentURI.confirmationURI)
           )
 
           val expectedSPSBody: AgentSPSPayload = AgentSPSPayload(testARN, testNino, testUtrEnrolmentKey, testMTDIDEnrolmentKey)
           verifyPost("/channel-preferences/enrolment", Some(Json.toJson(expectedSPSBody).toString), Some(1))
 
           val cookieMap = getSessionMap(res)
-          cookieMap(ITSASessionKeys.MTDITID) mustBe testMTDID
+          cookieMap(ITSASessionKeys.MTDITID) mustBe testMtdId
 
 
         }
@@ -396,14 +395,14 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           Then("The result must have a status of SEE_OTHER and redirect to the confirmation page")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(confirmationURI)
+            redirectURI(AgentURI.confirmationURI)
           )
 
           val expectedSPSBody: AgentSPSPayload = AgentSPSPayload(testARN, testNino, testUtrEnrolmentKey, testMTDIDEnrolmentKey)
           verifyPost("/channel-preferences/enrolment", Some(Json.toJson(expectedSPSBody).toString), Some(1))
 
           val cookieMap = getSessionMap(res)
-          cookieMap(ITSASessionKeys.MTDITID) mustBe testMTDID
+          cookieMap(ITSASessionKeys.MTDITID) mustBe testMtdId
 
 
         }
@@ -444,10 +443,10 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
           EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
           UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
-          EnrolmentStoreProxyStub.stubUpsertEnrolment(testMTDID, testNino)(NO_CONTENT)
-          EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testMTDID, testGroupId, testCredentialId)(CREATED)
-          EnrolmentStoreProxyStub.stubAssignEnrolment(testMTDID, testCredentialId)(CREATED)
-          EnrolmentStoreProxyStub.stubAssignEnrolment(testMTDID, testCredentialId2)(CREATED)
+          EnrolmentStoreProxyStub.stubUpsertEnrolment(testMtdId, testNino)(NO_CONTENT)
+          EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testMtdId, testGroupId, testCredentialId)(CREATED)
+          EnrolmentStoreProxyStub.stubAssignEnrolment(testMtdId, testCredentialId)(CREATED)
+          EnrolmentStoreProxyStub.stubAssignEnrolment(testMtdId, testCredentialId2)(CREATED)
 
           When("I call POST /task-list")
           val res = IncomeTaxSubscriptionFrontend.submitTaskList()
@@ -455,14 +454,14 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
           Then("The result must have a status of SEE_OTHER and redirect to the confirmation page")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(confirmationURI)
+            redirectURI(AgentURI.confirmationURI)
           )
 
           val expectedSPSBody: AgentSPSPayload = AgentSPSPayload(testARN, testNino, testUtrEnrolmentKey, testMTDIDEnrolmentKey)
           verifyPost("/channel-preferences/enrolment", Some(Json.toJson(expectedSPSBody).toString), Some(1))
 
           val cookieMap = getSessionMap(res)
-          cookieMap(ITSASessionKeys.MTDITID) mustBe testMTDID
+          cookieMap(ITSASessionKeys.MTDITID) mustBe testMtdId
 
 
         }
@@ -516,14 +515,14 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
             Then("The result must have a status of SEE_OTHER and redirect to the confirmation page")
             res must have(
               httpStatus(SEE_OTHER),
-              redirectURI(confirmationURI)
+              redirectURI(AgentURI.confirmationURI)
             )
 
             val expectedSPSBody: AgentSPSPayload = AgentSPSPayload(testARN, testNino, testUtrEnrolmentKey, testMTDIDEnrolmentKey)
             verifyPost("/channel-preferences/enrolment", Some(Json.toJson(expectedSPSBody).toString), Some(1))
 
             val cookieMap = getSessionMap(res)
-            cookieMap(ITSASessionKeys.MTDITID) mustBe testMTDID
+            cookieMap(ITSASessionKeys.MTDITID) mustBe testMtdId
           }
           "they are signing up to the next tax year" in {
             Given("I setup the Wiremock stubs")
@@ -573,14 +572,14 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
             Then("The result must have a status of SEE_OTHER and redirect to the confirmation page")
             res must have(
               httpStatus(SEE_OTHER),
-              redirectURI(confirmationURI)
+              redirectURI(AgentURI.confirmationURI)
             )
 
             val expectedSPSBody: AgentSPSPayload = AgentSPSPayload(testARN, testNino, testUtrEnrolmentKey, testMTDIDEnrolmentKey)
             verifyPost("/channel-preferences/enrolment", Some(Json.toJson(expectedSPSBody).toString), Some(1))
 
             val cookieMap = getSessionMap(res)
-            cookieMap(ITSASessionKeys.MTDITID) mustBe testMTDID
+            cookieMap(ITSASessionKeys.MTDITID) mustBe testMtdId
           }
         }
       }

@@ -3,7 +3,7 @@ package controllers.individual.business
 
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.taskListURI
+import helpers.IntegrationTestConstants.IndividualURI
 import helpers.servicemocks.AuthStub
 import models.{No, Yes}
 import play.api.http.Status._
@@ -42,7 +42,7 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
         Then("Should return a SEE_OTHER status")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(taskListURI)
+          redirectURI(IndividualURI.taskListURI)
         )
 
         IncomeTaxSubscriptionConnectorStub.verifyDeleteSubscriptionDetails(OverseasProperty, Some(1))
@@ -58,7 +58,7 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
         Then("Should return a SEE_OTHER status")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(taskListURI)
+          redirectURI(IndividualURI.taskListURI)
         )
 
         IncomeTaxSubscriptionConnectorStub.verifyDeleteSubscriptionDetails(OverseasProperty, Some(0))

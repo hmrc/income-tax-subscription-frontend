@@ -17,9 +17,9 @@
 package controllers.agent.business
 
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
+import helpers.IntegrationTestConstants.AgentURI
 import helpers.IntegrationTestModels.testFullOverseasPropertyModel
 import helpers.agent.ComponentSpecBase
-import helpers.agent.IntegrationTestConstants.overseasPropertyCheckYourAnswersURI
 import helpers.agent.servicemocks.AuthStub
 import models.Cash
 import models.common.OverseasPropertyModel
@@ -90,7 +90,7 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
         Then("Should return a SEE_OTHER with a redirect location of check your answers")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(overseasPropertyCheckYourAnswersURI)
+          redirectURI(AgentURI.overseasPropertyCheckYourAnswersURI)
         )
 
         IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(expected, Some(1))

@@ -92,7 +92,7 @@ object AuthStub extends WireMockMethods {
     )
   )
 
-  private def successfulAuthResponse(affinityGroup: AffinityGroup, confidenceLevel: ConfidenceLevel, enrolments: JsObject*): JsObject =
+  def successfulAuthResponse(affinityGroup: AffinityGroup, confidenceLevel: ConfidenceLevel, enrolments: JsObject*): JsObject =
   //Written out manually as the json writer for Enrolment doesn't match the reader
     Json.obj(
       "allEnrolments" -> enrolments,

@@ -18,7 +18,7 @@ package controllers.individual.claimenrolment.spsClaimEnrol
 
 import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.{basGatewaySignIn, claimEnrolmentConfirmationURI}
+import helpers.IntegrationTestConstants.{basGatewaySignIn, IndividualURI}
 import helpers.WiremockHelper.verifyPost
 import helpers.servicemocks.{AuthStub, SubscriptionStub}
 import play.api.http.Status._
@@ -57,7 +57,7 @@ class SPSCallbackForClaimEnrolControllerISpec extends ComponentSpecBase {
           verifyPost("/channel-preferences/confirm", count = Some(1))
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(claimEnrolmentConfirmationURI)
+            redirectURI(IndividualURI.claimEnrolmentConfirmationURI)
           )
         }
       }
@@ -91,7 +91,7 @@ class SPSCallbackForClaimEnrolControllerISpec extends ComponentSpecBase {
         )
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(claimEnrolmentConfirmationURI)
+          redirectURI(IndividualURI.claimEnrolmentConfirmationURI)
         )
       }
     }

@@ -19,8 +19,8 @@ package controllers.agent.business
 import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub.subscriptionUri
+import helpers.IntegrationTestConstants.AgentURI
 import helpers.agent.ComponentSpecBase
-import helpers.agent.IntegrationTestConstants.{taskListURI, yourIncomeSourcesURI}
 import helpers.agent.WiremockHelper.verifyPost
 import helpers.agent.servicemocks.AuthStub
 import models.common.PropertyModel
@@ -77,7 +77,7 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
         Then("Should return a SEE_OTHER with a redirect location of the your income sources page")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(yourIncomeSourcesURI)
+          redirectURI(AgentURI.yourIncomeSourcesURI)
         )
 
         IncomeTaxSubscriptionConnectorStub.verifySaveProperty(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true), Some(1))
@@ -99,7 +99,7 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
         Then("Should return a SEE_OTHER with a redirect location of task list page")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(yourIncomeSourcesURI)
+          redirectURI(AgentURI.yourIncomeSourcesURI)
         )
         verifyPost(subscriptionUri(Property), count = Some(0))
       }
@@ -123,7 +123,7 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
         Then("Should return a SEE_OTHER with a redirect location of task list page")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(taskListURI)
+          redirectURI(AgentURI.taskListURI)
         )
 
         IncomeTaxSubscriptionConnectorStub.verifySaveProperty(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true), Some(1))
@@ -143,7 +143,7 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
         Then("Should return a SEE_OTHER with a redirect location of task list page")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(taskListURI)
+          redirectURI(AgentURI.taskListURI)
         )
         verifyPost(subscriptionUri(Property), count = Some(0))
       }

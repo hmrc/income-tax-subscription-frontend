@@ -36,7 +36,7 @@ class SignOutControllerISpec extends ComponentSpecBase {
         Then("Should return a SEE_OTHER with a redirect location of gg sign in")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(ggSignOutURI)
+          redirectURI(IndividualURI.ggSignOutURI)
         )
       }
     }

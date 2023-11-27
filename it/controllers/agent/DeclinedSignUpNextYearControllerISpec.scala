@@ -17,7 +17,7 @@
 package controllers.agent
 
 import helpers.agent.ComponentSpecBase
-import helpers.agent.IntegrationTestConstants.addAnotherClient
+import helpers.IntegrationTestConstants.AgentURI
 import helpers.agent.servicemocks.AuthStub
 import play.api.http.Status.{OK, SEE_OTHER}
 
@@ -52,7 +52,7 @@ class DeclinedSignUpNextYearControllerISpec extends ComponentSpecBase {
       Then("The result should be SEE_OTHER redirecting to the task list page")
       result must have(
         httpStatus(SEE_OTHER),
-        redirectURI(addAnotherClient)
+        redirectURI(AgentURI.addAnotherClient)
       )
     }
   }

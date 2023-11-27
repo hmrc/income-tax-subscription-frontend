@@ -19,7 +19,7 @@ package controllers.individual.subscription
 import config.featureswitch.FeatureSwitch.ConfirmationPage
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.signOutURI
+import helpers.IntegrationTestConstants.IndividualURI
 import helpers.servicemocks.AuthStub
 import play.api.http.Status._
 import utilities.SubscriptionDataKeys._
@@ -93,7 +93,7 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
       Then("Should redirect to sign out")
       res must have(
         httpStatus(SEE_OTHER),
-        redirectURI(signOutURI)
+        redirectURI(IndividualURI.signOutURI)
       )
     }
 

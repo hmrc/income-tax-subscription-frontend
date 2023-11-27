@@ -18,9 +18,10 @@ package controllers.agent.matching
 
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.UserMatchingIntegrationResultSupport
-import helpers.agent.IntegrationTestConstants.{agentLockedOutURI, testARN}
+import helpers.IntegrationTestConstants.{AgentURI, testARN}
 import helpers.agent.servicemocks.{AgentLockoutStub, AuthStub}
-import helpers.agent.{ComponentSpecBase, IntegrationTestModels}
+import helpers.IntegrationTestModels
+import helpers.agent.{ComponentSpecBase}
 import models.usermatching.UserDetailsModel
 import org.jsoup.Jsoup
 import play.api.http.Status.{BAD_REQUEST, SEE_OTHER}
@@ -49,7 +50,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         Then("The result must have a status of SEE_OTHER")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(agentLockedOutURI)
+          redirectURI(AgentURI.lockedOutURI)
         )
       }
     }
@@ -101,7 +102,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         Then("The result must have a status of SEE_OTHER")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(agentLockedOutURI)
+          redirectURI(AgentURI.lockedOutURI)
         )
       }
     }

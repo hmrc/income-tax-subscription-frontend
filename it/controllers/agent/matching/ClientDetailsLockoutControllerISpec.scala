@@ -17,7 +17,7 @@
 package controllers.agent.matching
 
 import helpers.agent.ComponentSpecBase
-import helpers.agent.IntegrationTestConstants.{clientDetailsURI, testARN}
+import helpers.IntegrationTestConstants.{AgentURI, testARN}
 import helpers.agent.servicemocks.{AgentLockoutStub, AuthStub}
 import play.api.http.Status.{OK, SEE_OTHER}
 
@@ -53,7 +53,7 @@ class ClientDetailsLockoutControllerISpec extends ComponentSpecBase {
         Then("The result must have a status of SEE_OTHER")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(clientDetailsURI)
+          redirectURI(AgentURI.clientDetailsURI)
         )
       }
     }

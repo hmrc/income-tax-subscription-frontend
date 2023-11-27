@@ -19,7 +19,7 @@ package controllers.individual.incomesource
 import config.featureswitch.FeatureSwitch.{ForeignProperty => ForeignPropertyFeature}
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.taskListURI
+import helpers.IntegrationTestConstants.IndividualURI
 import helpers.IntegrationTestModels.{testBusinesses, testFullOverseasPropertyModel, testFullPropertyModel}
 import helpers.servicemocks.AuthStub
 import models.{No, Yes}
@@ -87,7 +87,7 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
       Then("Should redirect to the task list page")
       res must have(
         httpStatus(SEE_OTHER),
-        redirectURI(taskListURI)
+        redirectURI(IndividualURI.taskListURI)
       )
     }
 
@@ -101,7 +101,7 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
       Then("Should redirect to the task list page")
       res must have(
         httpStatus(SEE_OTHER),
-        redirectURI(taskListURI)
+        redirectURI(IndividualURI.taskListURI)
       )
     }
 

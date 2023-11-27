@@ -20,7 +20,7 @@ import forms.agent.PropertyTradingStartDateForm
 import forms.submapping.YesNoMapping
 import helpers.IntegrationTestConstants.testFullName
 import helpers.agent.ComponentSpecBase
-import helpers.agent.IntegrationTestConstants.testFormattedNino
+import helpers.IntegrationTestConstants.testFormattedNino
 import helpers.agent.servicemocks.AuthStub
 import helpers.servicemocks.AuditStub.verifyAudit
 import models.{No, Yes, YesNo}

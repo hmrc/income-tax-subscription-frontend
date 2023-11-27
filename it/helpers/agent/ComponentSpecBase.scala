@@ -2,7 +2,7 @@
 package helpers.agent
 
 import _root_.common.Constants.ITSASessionKeys
-import utilities.UserMatchingSessionUtil.{firstName,lastName}
+import utilities.UserMatchingSessionUtil.{firstName, lastName}
 import auth.agent.{AgentJourneyState, AgentSignUp, AgentUserMatching}
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
@@ -12,9 +12,8 @@ import config.AppConfig
 import config.featureswitch.FeatureSwitching
 import forms.agent._
 import forms.individual.business.RemoveBusinessForm
-import helpers.IntegrationTestConstants.{testFirstName, testId, testLastName}
-import helpers.UserMatchingIntegrationRequestSupport
-import helpers.agent.IntegrationTestConstants._
+import helpers.IntegrationTestConstants._
+import helpers.{IntegrationTestModels, UserMatchingIntegrationRequestSupport}
 import helpers.agent.WiremockHelper._
 import helpers.agent.servicemocks.WireMockMethods
 import helpers.servicemocks.AuditStub
@@ -52,6 +51,37 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
   with BeforeAndAfterEach with BeforeAndAfterAll with Eventually
   with CustomMatchers with WireMockMethods with SessionCookieBaker with FeatureSwitching {
 
+  object ClientData {
+    val basicClientData = Map(
+      UserMatchingSessionUtil.firstName -> testFirstName,
+      UserMatchingSessionUtil.lastName -> testLastName,
+      ITSASessionKeys.NINO -> testNino
+    )
+
+    val detailedClientData = Map(
+      ITSASessionKeys.ArnKey -> testARN,
+      ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
+      ITSASessionKeys.NINO -> testNino,
+      ITSASessionKeys.UTR -> testUtr
+    )
+
+    val clientDataWithNinoAndUTR = Map(
+      UserMatchingSessionUtil.firstName -> testFirstName,
+      UserMatchingSessionUtil.lastName -> testLastName,
+      ITSASessionKeys.NINO -> testNino,
+      ITSASessionKeys.UTR -> testUtr
+    )
+
+    val completeClientData = Map(
+      ITSASessionKeys.ArnKey -> testARN,
+      ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
+      ITSASessionKeys.NINO -> testNino,
+      ITSASessionKeys.UTR -> testUtr,
+      firstName -> "FirstName",
+      lastName -> "LastName"
+    )
+  }
+
   lazy val ws: WSClient = app.injector.instanceOf[WSClient]
 
   implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
@@ -72,7 +102,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
   def resetWiremock(): Unit = WireMock.reset()
 
-  def buildClient(path: String): WSRequest = ws.url(s"http://localhost:$port$baseURI$path").withFollowRedirects(false)
+  def buildClient(path: String): WSRequest = ws.url(s"http://localhost:$port${AgentURI.baseURI}$path").withFollowRedirects(false)
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .in(Environment.simple(mode = Mode.Dev))
@@ -143,7 +173,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       else
         Map()
       Map(
-        ITSASessionKeys.ArnKey -> IntegrationTestConstants.testARN,
+        ITSASessionKeys.ArnKey -> testARN,
         ITSASessionKeys.REFERENCE -> "test-reference"
       ) ++ utrKvp ++ stateKvp
     }
@@ -181,49 +211,27 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       )
     }
 
-    def showOtherSourcesOfIncome(sessionData: Map[String, String] = Map(
-      UserMatchingSessionUtil.firstName -> testFirstName,
-      UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.NINO -> testNino
-    )): WSResponse = get("/eligibility/income-sources", sessionData)
+    def showOtherSourcesOfIncome(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/eligibility/income-sources", sessionData)
 
-    def submitOtherSourcesOfIncome(request: Option[YesNo], sessionData: Map[String, String] = Map(
-      UserMatchingSessionUtil.firstName -> testFirstName,
-      UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.NINO -> testNino
-    )): WSResponse = post("/eligibility/income-sources", sessionData)(
+    def submitOtherSourcesOfIncome(request: Option[YesNo], sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = post("/eligibility/income-sources", sessionData)(
       request.fold(Map.empty[String, Seq[String]])(
         model => OtherSourcesOfIncomeForm.otherSourcesOfIncomeForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
       )
     )
 
-    def showPropertyTradingStartAfter(sessionData: Map[String, String] = Map(
-      UserMatchingSessionUtil.firstName -> testFirstName,
-      UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.NINO -> testNino
-    )): WSResponse = get("/eligibility/property-start-date", sessionData)
+    def showPropertyTradingStartAfter(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/eligibility/property-start-date", sessionData)
 
-    def submitPropertyTradingStartAfter(request: Option[YesNo], sessionData: Map[String, String] = Map(
-      UserMatchingSessionUtil.firstName -> testFirstName,
-      UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.NINO -> testNino
-    )): WSResponse = post("/eligibility/property-start-date", sessionData)(
+    def submitPropertyTradingStartAfter(request: Option[YesNo], sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = post("/eligibility/property-start-date", sessionData)(
       request.fold(Map.empty[String, Seq[String]])(
         model => PropertyTradingStartDateForm.propertyTradingStartDateForm("").fill(model).data.map { case (k, v) => (k, Seq(v)) }
       )
     )
 
-    def getAgentGlobalCheckYourAnswers(sessionData: Map[String, String] = Map(
-      UserMatchingSessionUtil.firstName -> testFirstName,
-      UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.NINO -> testNino)): WSResponse = {
+    def getAgentGlobalCheckYourAnswers(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
       get("/final-check-your-answers", sessionData)
     }
 
-    def submitAgentGlobalCheckYourAnswers(request: Option[YesNo])(sessionData: Map[String, String] = Map(
-      UserMatchingSessionUtil.firstName -> testFirstName,
-      UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.NINO -> testNino)): WSResponse = {
+    def submitAgentGlobalCheckYourAnswers(request: Option[YesNo])(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
       post("/final-check-your-answers", sessionData)(Map.empty
       )
     }
@@ -238,49 +246,25 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       )
     )
 
-    def showSoleTrader(sessionData: Map[String, String] = Map(
-      UserMatchingSessionUtil.firstName -> testFirstName,
-      UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.NINO -> testNino
-    )): WSResponse = get("/eligibility/sole-trader-start-date", sessionData)
+    def showSoleTrader(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/eligibility/sole-trader-start-date", sessionData)
 
-    def submitSoleTraderForm(request: Option[YesNo], sessionData: Map[String, String] = Map(
-      UserMatchingSessionUtil.firstName -> testFirstName,
-      UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.NINO -> testNino
-    )): WSResponse = post("/eligibility/sole-trader-start-date", sessionData)(
+    def submitSoleTraderForm(request: Option[YesNo], sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = post("/eligibility/sole-trader-start-date", sessionData)(
       request.fold(Map.empty[String, Seq[String]])(
         model => SoleTraderForm.soleTraderForm("").fill(model).data.map { case (k, v) => (k, Seq(v)) }
       )
     )
 
-    def showAccountingPeriodCheck(sessionData: Map[String, String] = Map(
-      UserMatchingSessionUtil.firstName -> testFirstName,
-      UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.NINO -> testNino
-    )): WSResponse = get("/eligibility/accounting-period-check", sessionData)
+    def showAccountingPeriodCheck(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/eligibility/accounting-period-check", sessionData)
 
-    def submitAccountingPeriodCheck(request: Option[YesNo], sessionData: Map[String, String] = Map(
-      UserMatchingSessionUtil.firstName -> testFirstName,
-      UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.NINO -> testNino
-    )): WSResponse = post("/eligibility/accounting-period-check", sessionData)(
+    def submitAccountingPeriodCheck(request: Option[YesNo], sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = post("/eligibility/accounting-period-check", sessionData)(
       request.fold(Map.empty[String, Seq[String]])(
         model => AccountingPeriodCheckForm.accountingPeriodCheckForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
       )
     )
 
-    def whatYouNeedToDo(sessionData: Map[String, String] = Map(
-      UserMatchingSessionUtil.firstName -> testFirstName,
-      UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.NINO -> testNino
-    )): WSResponse = get("/what-you-need-to-do", sessionData)
+    def whatYouNeedToDo(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/what-you-need-to-do", sessionData)
 
-    def submitWhatYouNeedToDo(sessionData: Map[String, String] = Map(
-      UserMatchingSessionUtil.firstName -> testFirstName,
-      UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.NINO -> testNino
-    )): WSResponse = post("/what-you-need-to-do", sessionData)(Map.empty)
+    def submitWhatYouNeedToDo(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = post("/what-you-need-to-do", sessionData)(Map.empty)
 
     def declinedSignUpNextYear(): WSResponse = get("/declined-sign-up-next-year")
 
@@ -311,7 +295,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
     def showConfirmation(hasSubmitted: Boolean, firstName: String, lastName: String, nino: String): WSResponse =
       if (hasSubmitted)
-        get("/confirmation", Map(ITSASessionKeys.MTDITID -> testMTDID, UserMatchingSessionUtil.firstName -> firstName,
+        get("/confirmation", Map(ITSASessionKeys.MTDITID -> testMtdId, UserMatchingSessionUtil.firstName -> firstName,
           UserMatchingSessionUtil.lastName -> lastName, ITSASessionKeys.NINO -> nino))
       else
         get("/confirmation", Map[String, String](UserMatchingSessionUtil.firstName -> firstName,
@@ -333,20 +317,10 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
     def submitClientAlreadySubscribed(): WSResponse = post("/error/client-already-subscribed", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))(Map.empty)
 
-    def checkYourAnswers(): WSResponse = get("/check-your-answers", Map(
-      ITSASessionKeys.ArnKey -> testARN,
-      ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
-      ITSASessionKeys.NINO -> testNino,
-      ITSASessionKeys.UTR -> testUtr
-    ))
+    def checkYourAnswers(): WSResponse = get("/check-your-answers", ClientData.detailedClientData)
 
     def submitCheckYourAnswers(): WSResponse = post("/check-your-answers",
-      Map(
-        ITSASessionKeys.ArnKey -> testARN,
-        ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
-        ITSASessionKeys.NINO -> testNino,
-        ITSASessionKeys.UTR -> testUtr
-      )
+      ClientData.detailedClientData
     )(Map.empty)
 
     def submitConfirmClient(previouslyFailedAttempts: Int = 0,
@@ -364,26 +338,14 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       get("/income-source", sessionData)
     }
 
-    def yourIncomeSourcesAgent(sessionData: Map[String, String] = Map(
-      UserMatchingSessionUtil.firstName -> testFirstName,
-      UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.NINO -> testNino
-    )): WSResponse = get("/your-income-source", sessionData)
+    def yourIncomeSourcesAgent(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/your-income-source", sessionData)
 
 
-    def submitYourIncomeSourcesAgent(sessionData: Map[String, String] = Map(
-      UserMatchingSessionUtil.firstName -> testFirstName,
-      UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.NINO -> testNino
-    )): WSResponse = {
+    def submitYourIncomeSourcesAgent(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
       post("/your-income-source", sessionData)(Map.empty)
     }
 
-    def agentBusinessIncomeSource(sessionData: Map[String, String] = Map(
-      UserMatchingSessionUtil.firstName -> testFirstName,
-      UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.NINO -> testNino
-    )): WSResponse = get("/your-income-source", sessionData)
+    def agentBusinessIncomeSource(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/your-income-source", sessionData)
 
     def submitBusinessIncomeSource(request: Option[BusinessIncomeSource],
                                    incomeSourcesStatus: IncomeSourcesStatus = IncomeSourcesStatus(
@@ -400,39 +362,19 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       )
     }
 
-    def accountingYear(sessionData: Map[String, String] = Map(
-      UserMatchingSessionUtil.firstName -> testFirstName,
-      UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.NINO -> testNino
-    )): WSResponse = get("/business/what-year-to-sign-up", sessionData)
+    def accountingYear(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/business/what-year-to-sign-up", sessionData)
 
     def businessAccountingPeriodPrior(): WSResponse = get("/business/accounting-period-prior")
 
     def businessAccountingMethod(): WSResponse = get("/business/accounting-method")
 
-    def propertyAccountingMethod(sessionData: Map[String, String] = Map(
-      UserMatchingSessionUtil.firstName -> testFirstName,
-      UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.NINO -> testNino
-    )): WSResponse = get("/business/accounting-method-property", sessionData)
+    def propertyAccountingMethod(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/business/accounting-method-property", sessionData)
 
-    def overseasPropertyAccountingMethod(sessionData: Map[String, String] = Map(
-      UserMatchingSessionUtil.firstName -> testFirstName,
-      UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.NINO -> testNino
-    )): WSResponse = get("/business/overseas-property-accounting-method", sessionData)
+    def overseasPropertyAccountingMethod(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/business/overseas-property-accounting-method", sessionData)
 
-    def ukPropertyStartDate(sessionData: Map[String, String] = Map(
-      UserMatchingSessionUtil.firstName -> testFirstName,
-      UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.NINO -> testNino
-    )): WSResponse = get("/business/property-commencement-date", sessionData)
+    def ukPropertyStartDate(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/business/property-commencement-date", sessionData)
 
-    def submitUkPropertyStartDate(isEditMode: Boolean = false, request: Option[DateModel], sessionData: Map[String, String] = Map(
-      UserMatchingSessionUtil.firstName -> testFirstName,
-      UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.NINO -> testNino
-    )): WSResponse = {
+    def submitUkPropertyStartDate(isEditMode: Boolean = false, request: Option[DateModel], sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
       val testValidMaxStartDate = LocalDate.now.minusYears(1)
       val testValidMinStartDate = LocalDate.of(1900, 1, 1)
       val uri = s"/business/property-commencement-date?editMode=$isEditMode"
@@ -446,33 +388,17 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       )
     }
 
-    def getPropertyCheckYourAnswers(sessionData: Map[String, String] = Map(
-      UserMatchingSessionUtil.firstName -> testFirstName,
-      UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.NINO -> testNino
-    )): WSResponse = {
+    def getPropertyCheckYourAnswers(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
       get("/business/uk-property-check-your-answers", sessionData)
     }
 
-    def submitPropertyCheckYourAnswers(sessionData: Map[String, String] = Map(
-      UserMatchingSessionUtil.firstName -> testFirstName,
-      UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.NINO -> testNino
-    )): WSResponse = {
+    def submitPropertyCheckYourAnswers(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
       post("/business/uk-property-check-your-answers", sessionData)(Map.empty)
     }
 
-    def overseasPropertyStartDate(sessionData: Map[String, String] = Map(
-      UserMatchingSessionUtil.firstName -> testFirstName,
-      UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.NINO -> testNino
-    )): WSResponse = get("/business/overseas-commencement-date", sessionData)
+    def overseasPropertyStartDate(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/business/overseas-commencement-date", sessionData)
 
-    def submitOverseasPropertyStartDate(inEditMode: Boolean, request: Option[DateModel], sessionData: Map[String, String] = Map(
-      UserMatchingSessionUtil.firstName -> testFirstName,
-      UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.NINO -> testNino
-    )): WSResponse = {
+    def submitOverseasPropertyStartDate(inEditMode: Boolean, request: Option[DateModel], sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
       val testValidMaxStartDate = LocalDate.now.minusYears(1)
       val testValidMinStartDate = LocalDate.of(1900, 1, 1)
       val uri = s"/business/overseas-commencement-date?editMode=$inEditMode"
@@ -514,36 +440,23 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       )
     )
 
-    def getTaskList(sessionData: Map[String, String] = Map(
-      UserMatchingSessionUtil.firstName -> testFirstName,
-      UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.NINO -> testNino
-    )): WSResponse = {
+    def getTaskList(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
       get("/business/task-list", sessionData)
     }
 
-    def submitTaskList(sessionData: Map[String, String] = Map(
-      UserMatchingSessionUtil.firstName -> testFirstName,
-      UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.NINO -> testNino,
-      ITSASessionKeys.UTR -> testUtr
-    )): WSResponse = {
+    def submitTaskList(sessionData: Map[String, String] = ClientData.clientDataWithNinoAndUTR): WSResponse = {
       post("/business/task-list", sessionData)(Map.empty)
     }
 
     def getAddAnotherClient(hasSubmitted: Boolean): WSResponse =
       if (hasSubmitted)
-        get("/add-another", Map(ITSASessionKeys.MTDITID -> testMTDID))
+        get("/add-another", Map(ITSASessionKeys.MTDITID -> testMtdId))
       else
         get("/add-another")
 
     def confirmation(): WSResponse = get("/confirmation")
 
-    def submitAccountingYear(inEditMode: Boolean, sessionData: Map[String, String] = Map(
-      UserMatchingSessionUtil.firstName -> testFirstName,
-      UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.NINO -> testNino
-    ), request: Option[AccountingYear]): WSResponse = {
+    def submitAccountingYear(inEditMode: Boolean, sessionData: Map[String, String] = ClientData.basicClientData, request: Option[AccountingYear]): WSResponse = {
       val uri = s"/business/what-year-to-sign-up?editMode=$inEditMode"
       post(uri, sessionData)(
         request.fold(Map.empty[String, Seq[String]])(
@@ -552,11 +465,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       )
     }
 
-    def submitPropertyAccountingMethod(inEditMode: Boolean, request: Option[AccountingMethod], sessionData: Map[String, String] = Map(
-      UserMatchingSessionUtil.firstName -> testFirstName,
-      UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.NINO -> testNino
-    )): WSResponse = {
+    def submitPropertyAccountingMethod(inEditMode: Boolean, request: Option[AccountingMethod], sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
       val uri = s"/business/accounting-method-property?editMode=$inEditMode"
       post(uri, sessionData)(
         request.fold(Map.empty[String, Seq[String]])(
@@ -566,11 +475,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       )
     }
 
-    def submitOverseasPropertyAccountingMethod(inEditMode: Boolean, request: Option[AccountingMethod], sessionData: Map[String, String] = Map(
-      UserMatchingSessionUtil.firstName -> testFirstName,
-      UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.NINO -> testNino
-    )): WSResponse = {
+    def submitOverseasPropertyAccountingMethod(inEditMode: Boolean, request: Option[AccountingMethod], sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
       val uri = s"/business/overseas-property-accounting-method?editMode=$inEditMode"
       post(uri, sessionData)(
         request.fold(Map.empty[String, Seq[String]])(
@@ -580,30 +485,15 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       )
     }
 
-    def getTaxYearCheckYourAnswers(sessionData: Map[String, String] = Map(
-      UserMatchingSessionUtil.firstName -> testFirstName,
-      UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.NINO -> testNino
-    )): WSResponse = {
+    def getTaxYearCheckYourAnswers(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
       get("/business/tax-year-check-your-answers", sessionData)
     }
 
-    def submitTaxYearCheckYourAnswers(sessionData: Map[String, String] = Map(
-      UserMatchingSessionUtil.firstName -> testFirstName,
-      UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.NINO -> testNino
-    )): WSResponse = {
+    def submitTaxYearCheckYourAnswers(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
       post("/business/tax-year-check-your-answers", sessionData)(Map.empty)
     }
 
-    def getProgressSaved(saveAndRetrieveLocation: Option[String] = None, sessionData: Map[String, String] = Map(
-      ITSASessionKeys.ArnKey -> testARN,
-      ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
-      ITSASessionKeys.NINO -> testNino,
-      ITSASessionKeys.UTR -> testUtr,
-      firstName -> "FirstName",
-      lastName -> "LastName"
-    )): WSResponse = {
+    def getProgressSaved(saveAndRetrieveLocation: Option[String] = None, sessionData: Map[String, String] = ClientData.completeClientData): WSResponse = {
       get(
         saveAndRetrieveLocation.fold(
           "/business/progress-saved"
@@ -767,8 +657,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       element.getErrorSummary.select("h2").text mustBe "There is a problem"
       element.getErrorSummary.select("ul > li").text mustBe errors.mkString(" ")
     }
-
-
   }
 
 }

@@ -3,7 +3,7 @@ package helpers.agent.servicemocks
 
 import java.time.OffsetDateTime
 
-import helpers.agent.IntegrationTestConstants.testARN
+import helpers.IntegrationTestConstants.testARN
 import models.usermatching.LockedOut
 import play.api.http.Status
 

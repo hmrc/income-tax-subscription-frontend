@@ -17,7 +17,7 @@
 package controllers.individual.sps
 
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.{basGatewaySignIn, whatYouNeedToDoURI}
+import helpers.IntegrationTestConstants.{basGatewaySignIn, IndividualURI}
 import helpers.servicemocks.AuthStub
 import play.api.http.Status._
 
@@ -45,7 +45,7 @@ class SPSCallbackControllerISpec extends ComponentSpecBase {
 
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(whatYouNeedToDoURI)
+            redirectURI(IndividualURI.whatYouNeedToDoURI)
           )
         }
       }

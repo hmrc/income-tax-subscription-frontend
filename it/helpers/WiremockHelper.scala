@@ -139,5 +139,5 @@ trait WiremockHelper {
 
   def resetWiremock(): Unit = WireMock.reset()
 
-  def buildClient(path: String): WSRequest = ws.url(s"http://localhost:$port$baseURI$path").withFollowRedirects(false)
+  def buildClient(path: String): WSRequest = ws.url(s"http://localhost:$port${IndividualURI.baseURI}$path").withFollowRedirects(false)
 }

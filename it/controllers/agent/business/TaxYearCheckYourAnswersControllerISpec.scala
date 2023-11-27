@@ -19,9 +19,8 @@ package controllers.agent.business
 import common.Constants.ITSASessionKeys
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub.verifySubscriptionSave
-import helpers.IntegrationTestConstants.{testFirstName, testLastName, testNino}
+import helpers.IntegrationTestConstants.{AgentURI, testFirstName, testLastName, testNino}
 import helpers.agent.ComponentSpecBase
-import helpers.agent.IntegrationTestConstants.taskListURI
 import helpers.agent.servicemocks.AuthStub
 import models.Current
 import models.common.AccountingYearModel
@@ -65,7 +64,7 @@ class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
         Then("Should return SEE_OTHER to task list page")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(taskListURI)
+          redirectURI(AgentURI.taskListURI)
         )
       }
       "The user is eligible for the next tax year only" in {
@@ -84,7 +83,7 @@ class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
         Then("Should return SEE_OTHER to task list page")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(taskListURI)
+          redirectURI(AgentURI.taskListURI)
         )
       }
     }
@@ -107,7 +106,7 @@ class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
         Then("Should return a SEE_OTHER with a redirect location of task list page")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(taskListURI)
+          redirectURI(AgentURI.taskListURI)
         )
 
         verifySubscriptionSave(SelectedTaxYear, Json.toJson(unconfirmedTaxYear.copy(confirmed = true)), Some(1))

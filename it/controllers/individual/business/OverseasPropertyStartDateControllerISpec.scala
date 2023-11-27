@@ -89,7 +89,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
         Then("Should return a SEE_OTHER with a redirect location of overseas property accounting method page")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(accountingMethodOverseasPropertyURI)
+          redirectURI(IndividualURI.accountingMethodOverseasPropertyURI)
         )
 
         IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(expected, Some(1))
@@ -117,7 +117,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
           Then("Should return a SEE_OTHER with a redirect location of overseas property check your answers")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(overseasPropertyCYAURI)
+            redirectURI(IndividualURI.overseasPropertyCYAURI)
           )
 
           IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(expected, Some(1))
@@ -143,7 +143,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
           Then("Should return a SEE_OTHER with a redirect location of check your answers")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(overseasPropertyCYAURI)
+            redirectURI(IndividualURI.overseasPropertyCYAURI)
           )
 
           IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(expected, Some(1))

@@ -17,7 +17,7 @@
 package controllers.individual
 
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.taskListURI
+import helpers.IntegrationTestConstants.IndividualURI
 import helpers.servicemocks.AuthStub
 import play.api.http.Status.{OK, SEE_OTHER}
 
@@ -52,7 +52,7 @@ class WhatYouNeedToDoControllerISpec extends ComponentSpecBase {
       Then("The result should be SEE_OTHER redirecting to the task list page")
       result must have(
         httpStatus(SEE_OTHER),
-        redirectURI(taskListURI)
+        redirectURI(IndividualURI.taskListURI)
       )
     }
   }

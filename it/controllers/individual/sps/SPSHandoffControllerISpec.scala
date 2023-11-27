@@ -48,7 +48,7 @@ class SPSHandoffControllerISpec extends ComponentSpecBase {
       Then("Should return a SEE_OTHER and redirect to SPS")
       res must have(
         httpStatus(SEE_OTHER),
-        redirectURI(spsHandoffURI)
+        redirectURI(IndividualURI.spsHandoffURI)
       )
     }
 

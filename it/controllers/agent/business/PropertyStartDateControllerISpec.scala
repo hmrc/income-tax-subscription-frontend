@@ -17,10 +17,10 @@
 package controllers.agent.business
 
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
+import helpers.IntegrationTestConstants.AgentURI
 import helpers.IntegrationTestModels
 import helpers.IntegrationTestModels.{testFullPropertyModel, testPropertyStartDate}
 import helpers.agent.ComponentSpecBase
-import helpers.agent.IntegrationTestConstants.{propertyAccountingMethodURI, ukPropertyCheckYourAnswersURI}
 import helpers.agent.servicemocks.AuthStub
 import models.DateModel
 import models.common.PropertyModel
@@ -84,7 +84,7 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
           Then("Should return a SEE_OTHER with a redirect location of property accounting method page")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(propertyAccountingMethodURI)
+            redirectURI(AgentURI.propertyAccountingMethodURI)
           )
         }
       }
@@ -108,7 +108,7 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
           Then("Should return a SEE_OTHER with a redirect location of agent uk property check your answers")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(ukPropertyCheckYourAnswersURI)
+            redirectURI(AgentURI.ukPropertyCheckYourAnswersURI)
           )
         }
 
@@ -133,7 +133,7 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
 
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(ukPropertyCheckYourAnswersURI)
+            redirectURI(AgentURI.ukPropertyCheckYourAnswersURI)
           )
         }
       }

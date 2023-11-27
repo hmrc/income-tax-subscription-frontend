@@ -19,7 +19,7 @@ package controllers.individual.incomesource
 import config.featureswitch.FeatureSwitch.{ForeignProperty => ForeignPropertyFeature}
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.{overseasPropertyStartDateURI, propertyStartDateURI}
+import helpers.IntegrationTestConstants.IndividualURI
 import helpers.IntegrationTestModels.{testFullPropertyModel, testTooManyBusinesses, testFullOverseasPropertyModel}
 import helpers.servicemocks.AuthStub
 import models.Cash
@@ -112,7 +112,7 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase  {
       Then(s"Should return $SEE_OTHER with a redirect location of property commencement date")
       res must have(
         httpStatus(SEE_OTHER),
-        redirectURI(propertyStartDateURI)
+        redirectURI(IndividualURI.propertyStartDateURI)
       )
     }
 
@@ -133,7 +133,7 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase  {
       Then(s"Should return $SEE_OTHER with a redirect location of overseas property commencement date")
       res must have(
         httpStatus(SEE_OTHER),
-        redirectURI(overseasPropertyStartDateURI)
+        redirectURI(IndividualURI.overseasPropertyStartDateURI)
       )
     }
 
