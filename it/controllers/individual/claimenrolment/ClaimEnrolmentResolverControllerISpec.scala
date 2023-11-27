@@ -43,7 +43,7 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
             Then("Should return a SEE_OTHER with a redirect location of the SPS beginning page")
             res must have(
               httpStatus(SEE_OTHER),
-              redirectURI(claimEnrolSpsHandoffRouteURI)
+              redirectURI(IndividualURI.claimEnrolSpsHandoffRouteURI)
             )
           }
         }
@@ -78,7 +78,7 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
           Then("Should return a SEE_OTHER with a redirect location of the claim enrolment already signed up page")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(claimEnrolmentAlreadySignedUpURI)
+            redirectURI(IndividualURI.claimEnrolmentAlreadySignedUpURI)
           )
         }
       }

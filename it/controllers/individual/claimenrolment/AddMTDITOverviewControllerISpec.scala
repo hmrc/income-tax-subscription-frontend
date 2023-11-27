@@ -17,7 +17,7 @@
 package controllers.individual.claimenrolment
 
 import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
-import helpers.IntegrationTestConstants.claimEnrolmentResolverURI
+import helpers.IntegrationTestConstants.IndividualURI
 import helpers.servicemocks.AuthStub
 import helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import play.api.http.Status.{OK, SEE_OTHER}
@@ -59,7 +59,7 @@ class AddMTDITOverviewControllerISpec extends ComponentSpecBase  with SessionCoo
           Then("Should return a SEE_OTHER with a redirect location of the claim enrolment confirmation page")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(claimEnrolmentResolverURI)
+            redirectURI(IndividualURI.claimEnrolmentResolverURI)
           )
         }
       }

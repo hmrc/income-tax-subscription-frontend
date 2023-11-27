@@ -72,7 +72,7 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
           Then("Should return a SEE_OTHER with a redirect location of overseas check your answers")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(overseasPropertyCYAURI)
+            redirectURI(IndividualURI.overseasPropertyCYAURI)
           )
 
           IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(expected, Some(1))
@@ -93,7 +93,7 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
           Then("Should return a SEE_OTHER with a redirect location of overseas check your answers")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(overseasPropertyCYAURI)
+            redirectURI(IndividualURI.overseasPropertyCYAURI)
           )
 
           IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(expected, Some(1))

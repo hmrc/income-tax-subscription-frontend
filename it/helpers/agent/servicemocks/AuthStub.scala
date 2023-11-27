@@ -3,7 +3,7 @@ package helpers.agent.servicemocks
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.Constants.{GovernmentGateway, agentServiceIdentifierKey, hmrcAsAgent}
-import helpers.agent.IntegrationTestConstants._
+import helpers.IntegrationTestConstants._
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.http.Status._
 import play.api.libs.json.{JsObject, Json}

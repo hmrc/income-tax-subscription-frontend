@@ -87,7 +87,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase  {
           Then("Should return a SEE_OTHER with a redirect location of check your answers")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(ukPropertyCYAURI)
+            redirectURI(IndividualURI.ukPropertyCYAURI)
           )
         }
 
@@ -108,7 +108,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase  {
           Then("Should return a SEE_OTHER with a redirect location of check your answers")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(ukPropertyCYAURI)
+            redirectURI(IndividualURI.ukPropertyCYAURI)
           )
         }
       }
@@ -131,7 +131,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase  {
           Then("Should return a SEE_OTHER with a redirect location of check your answers")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(ukPropertyCYAURI)
+            redirectURI(IndividualURI.ukPropertyCYAURI)
           )
         }
       }

@@ -19,7 +19,7 @@ package controllers.agent
 import common.Constants.ITSASessionKeys
 import helpers.SessionCookieCrumbler
 import helpers.agent.ComponentSpecBase
-import helpers.agent.IntegrationTestConstants.{testARN, testNino, testUtr}
+import helpers.IntegrationTestConstants.{testARN, testNino, testUtr}
 import helpers.agent.servicemocks.AuthStub
 import play.api.http.Status.{OK, SEE_OTHER}
 

@@ -17,7 +17,7 @@
 package controllers.agent
 
 import helpers.agent.ComponentSpecBase
-import helpers.agent.IntegrationTestConstants._
+import helpers.IntegrationTestConstants.AgentURI
 import helpers.agent.servicemocks.AuthStub
 import play.api.http.Status.{OK, SEE_OTHER}
 
@@ -50,7 +50,7 @@ class ClientAlreadySubscribedControllerISpec extends ComponentSpecBase {
       Then("Should return a redirect to client matching")
       res must have(
         httpStatus(SEE_OTHER),
-        redirectURI(clientDetailsURI)
+        redirectURI(AgentURI.clientDetailsURI)
       )
     }
   }

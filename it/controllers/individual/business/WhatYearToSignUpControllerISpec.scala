@@ -93,7 +93,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
         Then("Should return SEE_OTHER to task list page")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(taskListURI)
+          redirectURI(IndividualURI.taskListURI)
         )
       }
       "The user is eligible for the next tax year only" in {
@@ -109,7 +109,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
         Then("Should return SEE_OTHER to task list page")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(taskListURI)
+          redirectURI(IndividualURI.taskListURI)
         )
       }
     }
@@ -131,7 +131,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
           Then("Should return a SEE_OTHER with a redirect location of Tax Year CYA")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(taxYearCyaURI)
+            redirectURI(IndividualURI.taxYearCyaURI)
           )
         }
       }
@@ -150,7 +150,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
           Then("Should return a SEE_OTHER with a redirect location of Tax Year CYA")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(taxYearCyaURI)
+            redirectURI(IndividualURI.taxYearCyaURI)
           )
         }
       }

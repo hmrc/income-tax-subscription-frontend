@@ -21,7 +21,7 @@ import auth.agent.AgentUserMatched
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.UserMatchingIntegrationResultSupport
 import helpers.agent.ComponentSpecBase
-import helpers.agent.IntegrationTestConstants._
+import helpers.IntegrationTestConstants._
 import helpers.agent.servicemocks.{AgentServicesStub, AuthStub}
 import helpers.servicemocks.{AuthStub => _, _}
 import models.status.MandationStatus.Voluntary
@@ -65,7 +65,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
         Then("The result must have a status of SEE_OTHER and redirect to client details page")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(clientDetailsURI)
+          redirectURI(AgentURI.clientDetailsURI)
         )
       }
     }
@@ -84,7 +84,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           Then("The result must have a status of SEE_OTHER and redirect to client details error page")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(clientDetailsErrorURI)
+            redirectURI(AgentURI.clientDetailsErrorURI)
           )
 
           val cookie = getSessionMap(res)
@@ -107,7 +107,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           Then("The result must have a status of SEE_OTHER and redirect to agent locked out page")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(agentLockedOutURI)
+            redirectURI(AgentURI.lockedOutURI)
           )
 
           val cookie = getSessionMap(res)
@@ -132,7 +132,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
         Then("The result must have a status of SEE_OTHER and redirect to already subscribed page")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(alreadySubscribedURI)
+          redirectURI(AgentURI.alreadySubscribedURI)
         )
       }
     }
@@ -152,7 +152,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
         Then("The result must have a status of SEE_OTHER and redirect to check client relationship")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(noClientRelationshipURI)
+          redirectURI(AgentURI.clientRelationshipURI)
         )
 
         Then("The client matching request must have been audited")
@@ -176,7 +176,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
         Then("The result must have a status of SEE_OTHER and redirect to index")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(indexURI)
+          redirectURI(AgentURI.indexURI)
         )
 
         val session = getSessionMap(res)
@@ -207,7 +207,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           Then("The result must have a status of SEE_OTHER and redirect to Income Source")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(incomeSourcesURI)
+            redirectURI(AgentURI.incomeSourcesEligibilityURI)
           )
 
           val session = getSessionMap(res)

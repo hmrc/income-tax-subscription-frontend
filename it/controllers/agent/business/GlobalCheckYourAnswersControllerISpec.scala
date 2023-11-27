@@ -19,11 +19,9 @@ package controllers.agent.business
 import common.Constants.ITSASessionKeys.SPSEntityId
 import connectors.agent.httpparsers.QueryUsersHttpParser.principalUserIdKey
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, MultipleIncomeSourcesSubscriptionAPIStub, UsersGroupsSearchStub}
-import helpers.IntegrationTestConstants.{testCredentialId, testCredentialId2, testGroupId, testMtdId, testOverseasProperty, testSoleTraderBusinesses, testUkProperty, testUtr}
-import helpers.IntegrationTestModels.testIRSAEnrolmentKey
-import helpers.agent.IntegrationTestModels.{testAccountingMethod, testAccountingYearCurrent, testAccountingYearCurrentConfirmed, testAccountingYearNextConfirmed, testBusinesses, testFullOverseasPropertyModel, testFullPropertyModel}
+import helpers.IntegrationTestConstants._
+import helpers.IntegrationTestModels._
 import helpers.WiremockHelper.verifyPost
-import helpers.agent.IntegrationTestConstants.{confirmationURI, taskListURI, testARN, testMTDIDEnrolmentKey, testNino, testUtrEnrolmentKey}
 import helpers.agent._
 import helpers.agent.servicemocks.AuthStub
 import helpers.servicemocks.EnrolmentStoreProxyStub
@@ -59,7 +57,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
         Then("Should redirect to the task list page")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(taskListURI)
+          redirectURI(AgentURI.taskListURI)
         )
       }
     }
@@ -104,7 +102,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
         Then("Should redirect to the task list page")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(taskListURI)
+          redirectURI(AgentURI.taskListURI)
         )
       }
     }
@@ -166,7 +164,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             Then("Should redirect to the confirmation page")
             res must have(
               httpStatus(SEE_OTHER),
-              redirectURI(confirmationURI)
+              redirectURI(AgentURI.confirmationURI)
             )
 
             val expectedSPSBody: AgentSPSPayload = AgentSPSPayload(testARN, testNino, testUtrEnrolmentKey, testMTDIDEnrolmentKey)
@@ -219,7 +217,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             Then("Should redirect to the confirmation page")
             res must have(
               httpStatus(SEE_OTHER),
-              redirectURI(confirmationURI)
+              redirectURI(AgentURI.confirmationURI)
             )
           }
         }

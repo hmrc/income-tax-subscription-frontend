@@ -17,7 +17,7 @@
 package controllers.individual.business
 
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
-import helpers.IntegrationTestConstants.{accountingMethodPropertyURI, ukPropertyCYAURI}
+import helpers.IntegrationTestConstants.IndividualURI
 import helpers.IntegrationTestModels.{testFullPropertyModel, testPropertyStartDate}
 import helpers.servicemocks.AuthStub
 import helpers.{ComponentSpecBase, IntegrationTestModels}
@@ -83,7 +83,7 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
           Then("Should return a SEE_OTHER with a redirect location of property accounting method page")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(accountingMethodPropertyURI)
+            redirectURI(IndividualURI.accountingMethodPropertyURI)
           )
         }
       }
@@ -107,7 +107,7 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
           Then("Should return a SEE_OTHER with a redirect location of check your answers")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(ukPropertyCYAURI)
+            redirectURI(IndividualURI.ukPropertyCYAURI)
           )
         }
 
@@ -128,7 +128,7 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
           Then("Should return a SEE_OTHER with a redirect location of check your answers")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(ukPropertyCYAURI)
+            redirectURI(IndividualURI.ukPropertyCYAURI)
           )
         }
       }

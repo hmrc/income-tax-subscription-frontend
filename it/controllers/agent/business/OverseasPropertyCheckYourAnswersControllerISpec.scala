@@ -20,9 +20,8 @@ import _root_.common.Constants.ITSASessionKeys
 import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub.subscriptionUri
-import helpers.IntegrationTestConstants.{testFirstName, testLastName}
+import helpers.IntegrationTestConstants.{AgentURI, testFirstName, testLastName, testNino, testUtr}
 import helpers.agent.ComponentSpecBase
-import helpers.agent.IntegrationTestConstants.{taskListURI, testNino, testUtr, yourIncomeSourcesURI}
 import helpers.agent.WiremockHelper.verifyPost
 import helpers.agent.servicemocks.AuthStub
 import models.common.OverseasPropertyModel
@@ -87,7 +86,7 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
           Then("Should return a SEE_OTHER with a redirect location of the your income sources page")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(yourIncomeSourcesURI)
+            redirectURI(AgentURI.yourIncomeSourcesURI)
           )
 
           IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(expectedProperty, Some(1))
@@ -106,7 +105,7 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
           Then("Should return a SEE_OTHER with a redirect location of the your income sources page")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(yourIncomeSourcesURI)
+            redirectURI(AgentURI.yourIncomeSourcesURI)
           )
 
           verifyPost(subscriptionUri(OverseasProperty), count = Some(0))
@@ -132,7 +131,7 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
           Then("Should return a SEE_OTHER with a redirect location of task list page")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(taskListURI)
+            redirectURI(AgentURI.taskListURI)
           )
 
           IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(expectedProperty, Some(1))
@@ -149,7 +148,7 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
           Then("Should return a SEE_OTHER with a redirect location of task list page")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(taskListURI)
+            redirectURI(AgentURI.taskListURI)
           )
 
           verifyPost(subscriptionUri(OverseasProperty), count = Some(0))

@@ -25,6 +25,7 @@ import models.common.business._
 import models.common.subscription.EnrolmentKey
 import models.usermatching.UserDetailsModel
 import uk.gov.hmrc.crypto.ApplicationCrypto
+import utilities.AccountingPeriodUtil
 
 import java.time.LocalDate
 
@@ -39,6 +40,10 @@ object IntegrationTestModels extends ComponentSpecBase {
   val testAccountingYearCurrentConfirmed: AccountingYearModel = AccountingYearModel(Current, confirmed = true)
   val testAccountingYearNext: AccountingYearModel = AccountingYearModel(Next)
   val testAccountingYearNextConfirmed: AccountingYearModel = AccountingYearModel(Next, confirmed = true)
+  val testEndDateNext: DateModel = AccountingPeriodUtil.getCurrentTaxYear.endDate.plusYears(1).plusDays(-1)
+  val testEndDatePlus1Y: DateModel = AccountingPeriodUtil.getCurrentTaxYear.endDate.plusYears(1)
+  val testAccountingPeriod: AccountingPeriodModel =
+    testAccountingPeriod(testStartDate, testEndDate)
 
   private val testBusinessName: BusinessNameModel = BusinessNameModel("test business")
   private val testBusinessTrade: BusinessTradeNameModel = BusinessTradeNameModel("test trade")
@@ -77,6 +82,7 @@ object IntegrationTestModels extends ComponentSpecBase {
       businessTradeName = Some(testBusinessTrade),
       businessAddress = Some(testBusinessAddress.encrypt(crypto.QueryParameterCrypto))
     )).toSeq
+
   val testFullPropertyModel: PropertyModel = PropertyModel(
     accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
     startDate = Some(testPropertyStartDate.startDate),
@@ -106,4 +112,10 @@ object IntegrationTestModels extends ComponentSpecBase {
       businessTradeName = Some(testBusinessTradeName),
       businessAddress = Some(BusinessAddressModel(Address(Seq("line 1", "line 2"), Some("TF2 1PF"))).encrypt(crypto.QueryParameterCrypto))
     ))
+
+  lazy val testClientDetails: UserDetailsModel = helpers.IntegrationTestModels.testUserDetails
+
+  def testAccountingPeriod(startDate: DateModel = testStartDate,
+                           endDate: DateModel = testEndDate): AccountingPeriodModel =
+    AccountingPeriodModel(startDate, endDate)
 }

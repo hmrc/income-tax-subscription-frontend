@@ -18,7 +18,7 @@ package controllers.agent
 
 import auth.agent.{AgentSignUp, AgentUserMatched, AgentUserMatching}
 import common.Constants.ITSASessionKeys
-import helpers.agent.IntegrationTestConstants._
+import helpers.IntegrationTestConstants.{AgentURI, testNino, testUtr}
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import play.api.http.Status._
@@ -53,7 +53,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler  
           Then("the result must have a status of SEE_OTHER and a redirect location of /client-details")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(clientDetailsURI)
+            redirectURI(AgentURI.clientDetailsURI)
           )
 
           Then("the JourneyStateKey should be added as UserMatching")
@@ -72,7 +72,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler  
           Then("the result must have a status of SEE_OTHER and a redirect location of /client-details")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(clientDetailsURI)
+            redirectURI(AgentURI.clientDetailsURI)
           )
 
           Then("the JourneyStateKey should remain as UserMatching")
@@ -93,7 +93,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler  
               Then("the result must have a status of SEE_OTHER and a redirect location of /what-you-need-to-do")
               res must have(
                 httpStatus(SEE_OTHER),
-                redirectURI(whatYouNeedToDoURI)
+                redirectURI(AgentURI.whatYouNeedToDoURI)
               )
 
               Then("the JourneyStateKey should be changed to AgentSignUp")
@@ -113,7 +113,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler  
             Then("the result must have a status of SEE_OTHER and a redirect location of /register-for-SA")
             res must have(
               httpStatus(SEE_OTHER),
-              redirectURI(registerForSAURI)
+              redirectURI(AgentURI.registerForSAURI)
             )
 
             Then("the JourneyStateKey should be removed")

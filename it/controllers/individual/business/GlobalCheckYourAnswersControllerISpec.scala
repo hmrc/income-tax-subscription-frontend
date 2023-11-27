@@ -18,7 +18,7 @@ package controllers.individual.business
 
 import common.Constants.ITSASessionKeys.SPSEntityId
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, MultipleIncomeSourcesSubscriptionAPIStub}
-import helpers.IntegrationTestConstants._
+import helpers.IntegrationTestConstants.{IndividualURI, testGroupId, testMtdId, testNino, testOverseasProperty, testSoleTraderBusinesses, testUkProperty}
 import helpers.IntegrationTestModels.{testAccountingMethod, testAccountingYearCurrent, testAccountingYearCurrentConfirmed, testAccountingYearNextConfirmed, testBusinesses, testFullOverseasPropertyModel, testFullPropertyModel, testMTDITEnrolmentKey}
 import helpers.WiremockHelper.verifyPost
 import helpers._
@@ -54,7 +54,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
         Then("Should redirect to the task list page")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(taskListURI)
+          redirectURI(IndividualURI.taskListURI)
         )
       }
     }
@@ -99,7 +99,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
         Then("Should redirect to the task list page")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(taskListURI)
+          redirectURI(IndividualURI.taskListURI)
         )
       }
     }
@@ -156,7 +156,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             Then("Should redirect to the confirmation page")
             res must have(
               httpStatus(SEE_OTHER),
-              redirectURI(confirmationURI)
+              redirectURI(IndividualURI.confirmationURI)
             )
 
             val expectedSPSBody: SPSPayload = SPSPayload(testEntityId, s"HMRC-MTD-IT~MTDITID~$testMtdId")
@@ -214,7 +214,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             Then("Should redirect to the confirmation page")
             res must have(
               httpStatus(SEE_OTHER),
-              redirectURI(confirmationURI)
+              redirectURI(IndividualURI.confirmationURI)
             )
 
             val expectedSPSBody: SPSPayload = SPSPayload(testEntityId, s"HMRC-MTD-IT~MTDITID~$testMtdId")

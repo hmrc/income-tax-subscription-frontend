@@ -17,9 +17,9 @@
 package controllers.agent.business
 
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
+import helpers.IntegrationTestConstants.AgentURI
 import helpers.IntegrationTestModels.testFullPropertyModel
 import helpers.agent.ComponentSpecBase
-import helpers.agent.IntegrationTestConstants._
 import helpers.agent.servicemocks.AuthStub
 import models.Cash
 import models.common._
@@ -87,7 +87,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase {
         Then("Should return a SEE_OTHER with a redirect location of agent Uk Property Check Your Answers")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(ukPropertyCheckYourAnswersURI)
+          redirectURI(AgentURI.ukPropertyCheckYourAnswersURI)
         )
       }
     }

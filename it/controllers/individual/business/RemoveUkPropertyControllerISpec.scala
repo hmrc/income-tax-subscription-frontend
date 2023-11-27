@@ -18,7 +18,7 @@ package controllers.individual.business
 
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants._
+import helpers.IntegrationTestConstants.IndividualURI
 import helpers.servicemocks.AuthStub
 import play.api.http.Status._
 import utilities.SubscriptionDataKeys.Property
@@ -53,7 +53,7 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
         Then("Should return a SEE_OTHER with a redirect location of task list page")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(taskListURI)
+          redirectURI(IndividualURI.taskListURI)
         )
 
         IncomeTaxSubscriptionConnectorStub.verifyDeleteSubscriptionDetails(Property, Some(1))
@@ -69,7 +69,7 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
         Then("Should return a SEE_OTHER with a redirect location of task list page")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(taskListURI)
+          redirectURI(IndividualURI.taskListURI)
         )
 
         IncomeTaxSubscriptionConnectorStub.verifyDeleteSubscriptionDetails(Property, Some(0))

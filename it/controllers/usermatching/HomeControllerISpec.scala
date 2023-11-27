@@ -18,7 +18,6 @@ package controllers.usermatching
 
 import common.Constants.ITSASessionKeys
 import helpers.IntegrationTestConstants._
-import helpers.agent.IntegrationTestConstants.{testNino, testUtr}
 import helpers.servicemocks._
 import helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import models.status.MandationStatus.Voluntary
@@ -34,7 +33,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
       Then("Return the guidance page")
       res must have(
         httpStatus(SEE_OTHER),
-        redirectURI(indexURI)
+        redirectURI(IndividualURI.indexURI)
       )
     }
   }
@@ -54,7 +53,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
           Then("Should return a SEE OTHER with the claim enrolment journey page")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(addMTDITOverviewURI)
+            redirectURI(IndividualURI.addMTDITOverviewURI)
           )
         }
       }
@@ -75,7 +74,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
             Then("Should return a SEE OTHER and re-direct to the SPSHandoff controller")
             res must have(
               httpStatus(SEE_OTHER),
-              redirectURI(spsHandoffRouteURI)
+              redirectURI(IndividualURI.spsHandoffRouteURI)
             )
           }
         }
@@ -94,7 +93,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
             Then("Should return a SEE OTHER and re-direct to the not eligible page")
             res must have(
               httpStatus(SEE_OTHER),
-              redirectURI(notEligibleURI)
+              redirectURI(IndividualURI.notEligibleURI)
             )
           }
         }
@@ -135,7 +134,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
               Then("Should return a SEE OTHER and re-direct to the sps page")
               res must have(
                 httpStatus(SEE_OTHER),
-                redirectURI(spsHandoffRouteURI)
+                redirectURI(IndividualURI.spsHandoffRouteURI)
               )
 
               val cookie = getSessionMap(res)
@@ -159,7 +158,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
                 Then("Should return a SEE OTHER and re-direct to the sps page")
                 res must have(
                   httpStatus(SEE_OTHER),
-                  redirectURI(spsHandoffRouteURI)
+                  redirectURI(IndividualURI.spsHandoffRouteURI)
                 )
 
                 val cookie = getSessionMap(res)
@@ -187,7 +186,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
           Then("Should return a SEE OTHER and re-direct to the no nino page")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(noSaURI)
+            redirectURI(IndividualURI.noSaURI)
           )
 
           val cookie = getSessionMap(res)

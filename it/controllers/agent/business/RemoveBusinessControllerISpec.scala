@@ -17,9 +17,9 @@
 package controllers.agent.business
 
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
+import helpers.IntegrationTestConstants.AgentURI
 import helpers.IntegrationTestModels.testBusinesses
 import helpers.agent.ComponentSpecBase
-import helpers.agent.IntegrationTestConstants.taskListURI
 import helpers.agent.servicemocks.AuthStub
 import models.common.business.SelfEmploymentData
 import models.{No, Yes}
@@ -78,7 +78,7 @@ class RemoveBusinessControllerISpec extends ComponentSpecBase {
         Then("Should return a SEE_OTHER with a redirect location of task list page")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(taskListURI)
+          redirectURI(AgentURI.taskListURI)
         )
 
         IncomeTaxSubscriptionConnectorStub.verifySaveSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey, Seq(), Some(1))
@@ -95,7 +95,7 @@ class RemoveBusinessControllerISpec extends ComponentSpecBase {
         Then("Should return a SEE_OTHER with a redirect location of task list page")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(taskListURI)
+          redirectURI(AgentURI.taskListURI)
         )
 
         IncomeTaxSubscriptionConnectorStub.verifySaveSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey, Seq(), Some(0))

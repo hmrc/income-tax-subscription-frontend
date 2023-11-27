@@ -132,7 +132,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         Then("Should return a SEE_OTHER with a redirect location of confirmation")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(globalCheckYourAnswersURI)
+          redirectURI(IndividualURI.globalCheckYourAnswersURI)
         )
       }
     }
@@ -171,7 +171,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
             Then("Should return a SEE_OTHER with a redirect location of confirmation")
             res must have(
               httpStatus(SEE_OTHER),
-              redirectURI(confirmationURI)
+              redirectURI(IndividualURI.confirmationURI)
             )
 
             val expectedSPSBody: SPSPayload = SPSPayload(testEntityId, s"HMRC-MTD-IT~MTDITID~$testMtdId")
@@ -221,7 +221,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
             Then("Should return a SEE_OTHER with a redirect location of confirmation")
             res must have(
               httpStatus(SEE_OTHER),
-              redirectURI(confirmationURI)
+              redirectURI(IndividualURI.confirmationURI)
             )
 
             val expectedSPSBody: SPSPayload = SPSPayload(testEntityId, s"HMRC-MTD-IT~MTDITID~$testMtdId")
@@ -270,7 +270,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
             Then("Should return a SEE_OTHER with a redirect location of confirmation")
             res must have(
               httpStatus(SEE_OTHER),
-              redirectURI(confirmationURI)
+              redirectURI(IndividualURI.confirmationURI)
             )
 
             val expectedSPSBody: SPSPayload = SPSPayload(testEntityId, s"HMRC-MTD-IT~MTDITID~$testMtdId")
@@ -328,7 +328,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
               Then("Should return a SEE_OTHER with a redirect location of confirmation")
               res must have(
                 httpStatus(SEE_OTHER),
-                redirectURI(confirmationURI)
+                redirectURI(IndividualURI.confirmationURI)
               )
 
               val expectedSPSBody: SPSPayload = SPSPayload(testEntityId, s"HMRC-MTD-IT~MTDITID~$testMtdId")
@@ -382,7 +382,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
               Then("Should return a SEE_OTHER with a redirect location of confirmation")
               res must have(
                 httpStatus(SEE_OTHER),
-                redirectURI(confirmationURI)
+                redirectURI(IndividualURI.confirmationURI)
               )
 
               val expectedSPSBody: SPSPayload = SPSPayload(testEntityId, s"HMRC-MTD-IT~MTDITID~$testMtdId")
