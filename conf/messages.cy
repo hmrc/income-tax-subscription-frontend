@@ -54,7 +54,7 @@ check-your-details.change.date-of-birth                         = Newid Dyddiad 
 ## Preferences call back page
 preferences-callback.title                                      = Ydych chi am fynd yn eich blaen?
 preferences-callback.heading                                    = Rhaid i chi gytuno i fynd yn ‘ddi-bapur’
-preferences-callback.line-1                                     = I gofrestru ar gyfer y gwasanaeth hwn, rhaid i chi ganiatáu i Gyllid a Thollau EM anfon gohebiaeth electronig atoch.
+preferences-callback.line-1                                     = I gofrestru ar gyfer y gwasanaeth hwn, rhaid i chi ganiatáu i Cyllid a Thollau EF anfon gohebiaeth electronig atoch.
 preferences-callback.button                                     = Ewch yn ôl
 
 # IV Failure Page
@@ -177,7 +177,7 @@ property.accounting-method.title                                = Pa ddull cyfri
 property.accounting-method.heading                              = Pa ddull cyfrifyddu a ydych yn ei ddefnyddio ar gyfer eich busnes eiddo yn y DU?
 property.accounting-method.caption                              = Eiddo yn y DU
 property.accounting-method.accordion.summary                    = Rhowch enghraifft i mi
-property.accounting-method.accordion.content.para               = Gwnaethoch greu anfoneb i rywun ym mis Mawrth 2017, ond ni chawsoch yr arian tan fis Mai 2017. Os ydych yn rhoi gwybod i CThEM eich bod wedi cael yr incwm hwn ym:
+property.accounting-method.accordion.content.para               = Gwnaethoch greu anfoneb i rywun ym mis Mawrth 2017, ond ni chawsoch yr arian tan fis Mai 2017. Os ydych yn rhoi gwybod i CThEF eich bod wedi cael yr incwm hwn ym:
 property.accounting-method.accordion.content.bullet1            = mis Mai 2017, rydych yn defnyddio ‘Cyfrifyddu ar sail arian parod’
 property.accounting-method.accordion.content.bullet2            = mis Mawrth 2017, rydych yn defnyddio ‘Cyfrifyddu traddodiadol’
 property.accounting-method.cash                                 = <span class="heading-small">Cyfrifyddu ar sail arian parod</span><br>Rydych yn cofnodi naill ai ar y dyddiad yr ydych yn cael taliad gan eich tenantiaid i mewn i’ch cyfrif banc, neu ar y dyddiad yr ydych yn talu bil, er enghraifft ar gyfer atgyweirio a chynnal a chadw. Mae’r rhan fwyaf o fusnesau bach yn defnyddio’r dull hwn.
@@ -188,7 +188,7 @@ overseas.property.accounting-method.title                        = Pa ddull cyfr
 overseas.property.accounting-method.heading                      = Pa ddull cyfrifyddu ydych yn ei ddefnyddio ar gyfer eich busnes eiddo tramor?
 overseas.property.accounting-method.caption                      = Eiddo tramor
 overseas.property.accounting-method.accordion.summary            = Rhowch enghraifft i mi
-overseas.property.accounting-method.accordion.content.para       = Gwnaethoch greu anfoneb i rywun ym mis Mawrth 2017, ond ni chawsoch yr arian tan fis Mai 2017. Os ydych yn rhoi gwybod i CThEM eich bod wedi cael yr incwm hwn ym:
+overseas.property.accounting-method.accordion.content.para       = Gwnaethoch greu anfoneb i rywun ym mis Mawrth 2017, ond ni chawsoch yr arian tan fis Mai 2017. Os ydych yn rhoi gwybod i CThEF eich bod wedi cael yr incwm hwn ym:
 overseas.property.accounting-method.accordion.content.bullet1    = mis Mai 2017, rydych yn defnyddio ‘Cyfrifyddu ar sail arian parod’
 overseas.property.accounting-method.accordion.content.bullet2    = mis Mawrth 2017, rydych yn defnyddio ‘Cyfrifyddu traddodiadol’
 overseas.property.accounting-method.cash                         = <span class="heading-small">Cyfrifyddu ar sail arian parod</span><br>Rydych yn cofnodi naill ai ar y dyddiad yr ydych yn cael taliad gan eich tenantiaid i mewn i’ch cyfrif banc, neu ar y dyddiad yr ydych yn talu bil, er enghraifft ar gyfer atgyweirio a chynnal a chadw. Mae’r rhan fwyaf o fusnesau bach yn defnyddio’r dull hwn.
@@ -306,7 +306,7 @@ claim-enrolment.claim-already-signed-up.content.link2              = adfer manyl
 sign-up-complete.heading                                        = Rydych wedi’ch cofrestru i ddefnyddio meddalwedd i anfon diweddariadau ynghylch Treth Incwm
 sign-up-complete.can-use-software                               = Gallwch nawr ddefnyddio meddalwedd er mwyn anfon diweddariadau ynghylch Treth Incwm
 sign-up-complete.what-now.heading                               = Yr hyn sy’n digwydd nawr
-sign-up-complete.what-now.find-software                         = Os nad ydych eisoes wedi gwneud hynny, {0} a chaniatáu iddi ryngweithio â CThEM.
+sign-up-complete.what-now.find-software                         = Os nad ydych eisoes wedi gwneud hynny, {0} a chaniatáu iddi ryngweithio â CThEF.
 sign-up-complete.what-now.find-software.link                    = dewch o hyd i feddalwedd sy’n cydweddu
 sign-up-complete.quarter-table-caption                          = Cyflwynwch ddiweddariadau chwarterol erbyn y dyddiad cau
 sign-up-complete.what-now.para                                  = Ar ôl i chi anfon diweddariad, byddwch yn cael amcangyfrif o’ch Treth Incwm ar gyfer y flwyddyn hyd yn hyn. Gallwch fwrw golwg dros eich amcangyfrifon a’ch dyddiadau cyflwyno drwy’ch meddalwedd neu drwy’ch {0}.
@@ -760,7 +760,7 @@ agent.sign-up-complete.signed-up-for-mtd                        = bellach wedi c
 agent.sign-up-complete.quarter-table-caption                    = Cyflwynwch ddiweddariadau chwarterol erbyn y dyddiad cau
 agent.sign-up-complete.can-use-software                         = Erbyn hyn, gallwch ddefnyddio meddalwedd er mwyn anfon diweddariadau ynghylch Treth Incwm
 agent.sign-up-complete.what-now.heading                         = Yr hyn sy’n digwydd nawr
-agent.sign-up-complete.what-now.find-software                   = Os nad ydych eisoes wedi gwneud hynny, {0} a chaniatáu iddi ryngweithio â CThEM.
+agent.sign-up-complete.what-now.find-software                   = Os nad ydych eisoes wedi gwneud hynny, {0} a chaniatáu iddi ryngweithio â CThEF.
 agent.sign-up-complete.what-now.find-software.link              = dewch o hyd i feddalwedd sy’n cydweddu
 agent.sign-up-complete.what-now.previous-updates                = Mae’n rhaid i chi ychwanegu’r holl incwm a threuliau ar gyfer y diweddariadau blaenorol gan ddefnyddio’ch meddalwedd ar gyfer:
 agent.sign-up-complete.what-now.no-penalty                      = Does dim cosb os byddwch yn dechrau gwneud diweddariadau hanner ffordd drwy’r flwyddyn dreth gyfredol.
@@ -818,14 +818,14 @@ agent.error.nino.empty                                          = Nodwch rif Ysw
 ## Eligible page ##
 agent.eligible.title                                            = Gallwch anfon diweddariadau digidol
 agent.eligible.heading                                          = Gallwch anfon diweddariadau digidol
-agent.eligible.line-1                                           = Mae’ch atebion yn golygu y dylech allu dechrau anfon diweddariadau digidol i CThEM ar ôl i chi gofrestru.
+agent.eligible.line-1                                           = Mae’ch atebion yn golygu y dylech allu dechrau anfon diweddariadau digidol i CThEF ar ôl i chi gofrestru.
 agent.eligible.line-2                                           = Dim ond ychydig o fanylion eraill sydd angen i chi eu rhoi.
 
 ## Not eligible page ##
 agent.not-eligible.title                                        = Ni allwch anfon diweddariadau digidol ar hyn o bryd
 agent.not-eligible.heading                                      = Ni allwch anfon diweddariadau digidol ar hyn o bryd
-agent.not-eligible.line-1                                       = Mae’ch atebion yn golygu nad ydych yn gymwys i anfon diweddariadau digidol i CThEM ar hyn o bryd.
-agent.not-eligible.line-2                                       = Mae dal yn bosibl i chi gofrestru ar gyfer y gwasanaeth. Mae CThEM yn gweithio i wneud diweddariadau digidol ar gael i bob unig fasnachwr dros y misoedd nesaf. Os ydych yn cofrestru nawr, byddwch yn gallu anfon diweddariadau digidol i CThEM pan fyddwch yn gymwys.
+agent.not-eligible.line-1                                       = Mae’ch atebion yn golygu nad ydych yn gymwys i anfon diweddariadau digidol i CThEF ar hyn o bryd.
+agent.not-eligible.line-2                                       = Mae dal yn bosibl i chi gofrestru ar gyfer y gwasanaeth. Mae CThEF yn gweithio i wneud diweddariadau digidol ar gael i bob unig fasnachwr dros y misoedd nesaf. Os ydych yn cofrestru nawr, byddwch yn gallu anfon diweddariadau digidol i CThEF pan fyddwch yn gymwys.
 agent.not-eligible.line-3                                       = Os dewiswch gofrestru, byddwn yn gofyn ychydig o gwestiynau i chi am eich incwm a’ch manylion cyswllt.
 agent.not-eligible.question                                     = Dewiswch beth hoffech ei wneud nesaf
 agent.not-eligible.signup                                       = Rydw i eisiau cofrestru
