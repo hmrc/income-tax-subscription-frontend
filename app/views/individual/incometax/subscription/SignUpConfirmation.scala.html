@@ -123,29 +123,42 @@
 
 @quarterlyUpdates = {
     <li>
-        @if(taxYearSelectionIsNext) {
-            <h3 class="govuk-heading-s">@messages("sign-up-confirmation.quarterly-updates.heading")</h3>
-            <p class="govuk-body">@messages("sign-up-confirmation.quarterly-updates.para")</p>
+        <h3 class="govuk-heading-s">@messages("sign-up-confirmation.quarterly-updates.heading")</h3>
 
+        <p class="govuk-body">@messages("sign-up-confirmation.quarterly-updates.para-one")</p>
+
+        <p class="govuk-body">@messages("sign-up-confirmation.quarterly-updates.quarter-types")</p>
+
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@messages("sign-up-confirmation.quarterly-updates.quarter-types.item-1")</li>
+            <li>@messages("sign-up-confirmation.quarterly-updates.quarter-types.item-2")</li>
+        </ul>
+
+        <p class="govuk-body">@messages("sign-up-confirmation.quarterly-updates.para-two")</p>
+
+        @if(taxYearSelectionIsNext) {
             @table(
                 updateAndDeadlineDates = accountingPeriodService.getAllUpdateAndDeadlineDates(Next),
                 tableCaption = messages("sign-up-confirmation.quarterly-updates.table.caption")
             )
         } else {
-            <h3 class="govuk-heading-s">@messages("sign-up-confirmation.quarterly-updates.heading")</h3>
-            <p class="govuk-body">@messages("sign-up-confirmation.quarterly-updates.para")</p>
-
             @table(
-                updateAndDeadlineDates = accountingPeriodService.getAllUpdateAndDeadlineDates(Next),
+                updateAndDeadlineDates = accountingPeriodService.getAllUpdateAndDeadlineDates(Current),
                 tableCaption = messages("sign-up-confirmation.quarterly-updates.table.caption")
             )
 
             @if(!mandatedCurrentYear){
                 @govukWarningText(WarningText(
-                    content = Text(Messages("sign-up-confirmation.warning.para"))
+                    content = Text(Messages("sign-up-confirmation.quarterly-updates.warning.para"))
                 ))
             }
         }
+
+        @hmrcNewTabLinkHelper(NewTabLinkHelper(
+            messages("sign-up-confirmation.quarterly-updates.link-text"),
+            Some("https://www.gov.uk/guidance/using-making-tax-digital-for-income-tax#sending-quarterly-updates-using-compatible-software")
+        ))
+
     </li>
 }
 

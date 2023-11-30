@@ -345,20 +345,23 @@ agent.sign-up-confirmation.mandated.notification-banner.bullet2                 
 agent.sign-up-confirmation.mandated.notification-banner.bullet3                    = datganiad terfynol
 agent.sign-up-confirmation.mandated.notification-banner.bullet4                    = taliad treth
 
-
 ## Sign Up Confirmation page ##
-
 sign-up-confirmation.heading                                                  = Rydych wedi cofrestru’n llwyddiannus
 sign-up-confirmation.heading.panel.current                                    = Mae wedi llwyddo i gofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm, o ran y flwyddyn dreth bresennol ({0})
 sign-up-confirmation.heading.panel.next                                       = Mae wedi llwyddo i gofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm, o ran y flwyddyn dreth nesaf ({0})
 sign-up-confirmation.what-you-must-do.heading                                 = Yr hyn y mae’n rhaid i chi ei wneud
 sign-up-confirmation.quarterly-updates.heading                                = Anfon diweddariadau chwarterol:
-sign-up-confirmation.quarterly-updates.para                                   = Mae’n rhaid i chi anfon diweddariadau chwarterol o’ch incwm a’ch treuliau, gan ddefnyddio meddalwedd sy’n cydweddu, erbyn y dyddiadau cau canlynol:
+sign-up-confirmation.quarterly-updates.para-one                               = Er mwyn anfon eich diweddariadau, mae’n rhaid i chi ddewis y cyfnodau chwarterol yr hoffech eu defnyddio. Gallwch wneud hyn yn eich meddalwedd sy’n cydweddu cyn gwneud eich diweddariad cyntaf.
+sign-up-confirmation.quarterly-updates.quarter-types                          = Mae dyddiadau’r cyfnodau chwarterol fel a ganlyn:
+sign-up-confirmation.quarterly-updates.quarter-types.item-1                   = chwarterau calendr (er enghraifft, 1 Ebrill i 30 Mehefin)
+sign-up-confirmation.quarterly-updates.quarter-types.item-2                   = chwarterau safonol (yn dechrau ar y 6ed o bob mis)
+sign-up-confirmation.quarterly-updates.para-two                               = Mae’r dyddiad cau ar gyfer eich diweddariadau yn aros yr un peth.
 sign-up-confirmation.quarterly-updates.table.caption                          = Diweddariadau chwarterol erbyn y dyddiad cau
+sign-up-confirmation.quarterly-updates.link-text                              = Dysgwch ragor am ddiweddariadau chwarterol.
+sign-up-confirmation.quarterly-updates.warning.para                           = Mae’n rhai i chi gyflwyno diweddariadau ar gyfer unrhyw chwarterau rydych wedi’u methu.
 sign-up-confirmation.end-of-period-statement.heading                          = Anfon datganiad diwedd cyfnod
 sign-up-confirmation.end-of-period-statement.para                             = Mae’n rhaid i chi gyflwyno datganiad diwedd cyfnod, gan ddefnyddio’ch meddalwedd, erbyn {0}.
 sign-up-confirmation.final-declaration.para                                   = Mae’n rhaid i chi gyflwyno’ch datganiad terfynol a thalu’r dreth sydd arnoch erbyn {0}.
-sign-up-confirmation.warning.para                                             = Mae’n rhai i chi gyflwyno diweddariadau ar gyfer unrhyw chwarterau rydych wedi’u methu.
 
 sign-up-confirmation.voluntary-next-year.self-assessment.heading              = Cyflwyno’ch Ffurflen Dreth Hunanasesiad ar gyfer y flwyddyn hon
 sign-up-confirmation.voluntary-next-year.self-assessment.para                 = Mae’n rhaid i chi gyflwyno’ch Ffurflen Dreth Hunanasesiad, yn ôl yr arfer, erbyn 31 Ionawr {0}.
