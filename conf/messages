@@ -171,6 +171,8 @@ business.what-year-to-sign-up.conditional.1.line-1              = You need to se
 business.what-year-to-sign-up.conditional.1.line-2              = Send a final declaration by the 31 January {0}.
 business.what-year-to-sign-up.conditional.2.line-1              = You need to send a quarterly filing update for:
 business.what-year-to-sign-up.conditional.2.line-2              = Send a final declaration by 31 January {0} and complete a Self Assessment return for the current tax year as normal.
+business.what-year-to-sign-up.choose-calendar-quarter-1         = You can choose to send updates by calendar quarters instead. For example, 1 April to 30 June instead of 6 April to 5 July.
+business.what-year-to-sign-up.choose-calendar-quarter-2         = This must be done in your compatible software before you make your first update. The deadlines will remain the same.
 
 # Property Accounting Method Page
 property.accounting-method.title                                = What accounting method do you use for your UK property business?

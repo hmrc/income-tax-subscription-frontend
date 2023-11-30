@@ -171,6 +171,8 @@ business.what-year-to-sign-up.conditional.1.line-1              = Mae angen i ch
 business.what-year-to-sign-up.conditional.1.line-2              = Anfonwch ddatganiad terfynol erbyn 31 Ionawr {0}.
 business.what-year-to-sign-up.conditional.2.line-1              = Mae angen i chi anfon diweddariad cyflwyno chwarterol ar gyfer:
 business.what-year-to-sign-up.conditional.2.line-2              = Anfonwch ddatganiad terfynol erbyn 31 Ionawr {0} a llenwch Ffurflen Dreth Hunanasesiad ar gyfer y flwyddyn dreth bresennol yn unol â’r arfer.
+business.what-year-to-sign-up.choose-calendar-quarter-1         = Gallwch ddewis anfon diweddariadau fesul chwarter calendr yn lle’r uchod. Er enghraifft, 1 Ebrill i 30 Mehefin yn lle 6 Ebrill i 5 Gorffennaf.
+business.what-year-to-sign-up.choose-calendar-quarter-2         = Mae’n rhaid i chi wneud hyn yn eich meddalwedd sy’n cydweddu cyn gwneud eich diweddariad cyntaf. Bydd y dyddiadau cau yn aros yr un peth.
 
 # Property Accounting Method Page
 property.accounting-method.title                                = Pa ddull cyfrifyddu a ydych yn ei ddefnyddio ar gyfer eich busnes eiddo yn y DU?

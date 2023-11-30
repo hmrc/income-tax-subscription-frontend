@@ -56,6 +56,14 @@
     captionHidden = false
   )
 
+<p class="govuk-inset-text">
+    @messages("business.what-year-to-sign-up.choose-calendar-quarter-1")
+    <br>
+    <br>
+    @messages("business.what-year-to-sign-up.choose-calendar-quarter-2")
+
+</p>
+
   @form(action = postAction) {
     @radioHelper(
       field = accountingYearForm(AccountingYearForm.accountingYear),
