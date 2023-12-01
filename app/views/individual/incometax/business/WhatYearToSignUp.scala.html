@@ -27,10 +27,20 @@
     continueButton: ContinueButton,
     accountingPeriodService: AccountingPeriodService,
     table: ReturnDeadlineTable,
-    govukWarningText: GovukWarningText
+    govukWarningText: GovukWarningText,
+    govukInsetText: GovukInsetText
 )
 
 @(accountingYearForm: Form[AccountingYear], postAction: Call, backUrl: Option[String], endYearOfCurrentTaxPeriod: Int, isEditMode: Boolean)(implicit request: Request[_], messages: Messages)
+
+@calendarQuarters = {
+<p>
+    @messages("business.what-year-to-sign-up.choose-calendar-quarter-1")
+    <br>
+    <br>
+    @messages("business.what-year-to-sign-up.choose-calendar-quarter-2")
+</p>
+}
 
 @mainTemplate(title = messages("business.what-year-to-sign-up.heading"), optForm = Some(accountingYearForm), backLink = backUrl) {
 
@@ -55,6 +65,10 @@
     updateAndDeadlineDates = accountingPeriodService.getAllUpdateAndDeadlineDates(Current),
     captionHidden = false
   )
+
+
+@govukInsetText(InsetText(content = HtmlContent(calendarQuarters)))
+
 
   @form(action = postAction) {
     @radioHelper(
