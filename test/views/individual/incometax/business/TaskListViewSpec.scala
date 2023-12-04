@@ -324,7 +324,7 @@ class TaskListViewSpec extends ViewSpec {
             incomeSourcesLink.attr("href") mustBe controllers.individual.incomesource.routes.YourIncomeSourceToSignUpController.show.url
 
             val incomeSourcesTag = incomeSourcesRow.selectNth("span", 2)
-            incomeSourcesTag.selectHead("strong").text mustBe inProgress
+            incomeSourcesTag.selectHead("strong").text mustBe incomplete
 
             incomeSourcesLink.attr("aria-describedby") mustBe incomeSourcesTag.id
 

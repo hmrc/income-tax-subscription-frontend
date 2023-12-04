@@ -20,6 +20,7 @@ import agent.assets.MessageLookup.Base.saveAndComeBackLater
 import assets.MessageLookup.Summary.SelectedTaxYear
 import assets.MessageLookup.TaskList._
 import assets.MessageLookup.TaxYearCheckYourAnswers.next
+import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import models._
 import models.common.business._
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel, TaskListModel}
@@ -35,6 +36,11 @@ import views.html.agent.AgentTaskList
 import scala.util.Random
 
 class AgentTaskListViewSpec extends ViewSpec {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(EnableTaskListRedesign)
+  }
 
   val selectorForFirstBusiness = "ol > li:nth-of-type(2) > ul:nth-of-type(1)"
   val selectorForFirstParaOfBusiness = "ol > li:nth-of-type(2)"
@@ -112,7 +118,8 @@ class AgentTaskListViewSpec extends ViewSpec {
   "business task list view" when {
 
     "given empty task list model" must {
-      val doc = document(emptyTaskList)
+      def doc = document(emptyTaskList)
+
       "have a title" in {
         doc.title mustBe agentTitle
       }
@@ -173,7 +180,8 @@ class AgentTaskListViewSpec extends ViewSpec {
       }
     }
     "given partial task list model" must {
-      val doc = document(partialTaskList)
+      def doc = document(partialTaskList)
+
       "display the application is incomplete" in {
         doc.getElementById("taskListStatus").text mustBe subHeadingIncomplete
       }
@@ -268,6 +276,27 @@ class AgentTaskListViewSpec extends ViewSpec {
         }
       }
 
+      "display the add your income sources link and tag" when {
+        "the task list redesign feature switch is enabled" in {
+          enable(EnableTaskListRedesign)
+
+          val incomeSourcesSection = doc.mainContent.selectHead(".app-task-list").selectNth("li", 2)
+          val incomeSourcesRow = incomeSourcesSection.selectHead("ul").selectHead("li")
+
+          val incomeSourcesLink = incomeSourcesRow.selectNth("span", 1).selectHead("a")
+          incomeSourcesLink.text mustBe addYourClientsIncomeSource
+          incomeSourcesLink.attr("href") mustBe controllers.agent.routes.YourIncomeSourceToSignUpController.show.url
+
+          val incomeSourcesTag = incomeSourcesRow.selectNth("span", 2)
+          incomeSourcesTag.selectHead("strong").text mustBe incomplete
+
+          incomeSourcesLink.attr("aria-describedby") mustBe incomeSourcesTag.id
+
+          doc.mainContent.selectOptionally("#add_business") mustBe None
+        }
+      }
+
+
       "display the add a business link" in {
         val businessLink = doc
           .mainContent
@@ -288,8 +317,8 @@ class AgentTaskListViewSpec extends ViewSpec {
     }
 
     "given complete task list model" must {
+      def doc = document(completeTaskList)
 
-      val doc = document(completeTaskList)
       "display the application is complete" in {
         doc.getElementById("taskListStatus").text mustBe subHeadingComplete
       }
@@ -338,6 +367,26 @@ class AgentTaskListViewSpec extends ViewSpec {
         overseasPropertyLink.attr("href") mustBe controllers.agent.business.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
         overseasPropertySection.selectNth("span", 2).text mustBe complete
         overseasPropertySection.selectHead("strong").attr("class") mustBe "govuk-tag"
+      }
+
+      "display the view your income sources link and tag" when {
+        "the task list redesign feature switch is enabled" in {
+          enable(EnableTaskListRedesign)
+
+          val incomeSourcesSection = doc.mainContent.selectHead(".app-task-list").selectNth("li", 2)
+          val incomeSourcesRow = incomeSourcesSection.selectHead("ul").selectHead("li")
+
+          val incomeSourcesLink = incomeSourcesRow.selectNth("span", 1).selectHead("a")
+          incomeSourcesLink.text mustBe viewYourClientsIncomeSources
+          incomeSourcesLink.attr("href") mustBe controllers.agent.routes.YourIncomeSourceToSignUpController.show.url
+
+          val incomeSourcesTag = incomeSourcesRow.selectNth("span", 2)
+          incomeSourcesTag.selectHead("strong").text mustBe complete
+
+          incomeSourcesLink.attr("aria-describedby") mustBe incomeSourcesTag.id
+
+          doc.mainContent.selectOptionally("#add_business") mustBe None
+        }
       }
 
       "display the add a business link" in {
