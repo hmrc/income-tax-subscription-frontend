@@ -55,7 +55,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     val ukPropertyLink = controllers.agent.business.routes.PropertyStartDateController.show().url
     val foreignPropertyHeading = "Foreign property"
     val foreignPropertyLabel = "Foreign property income source"
-    val foreignPropertyLinkText = "Add foreign property income source"
+    val foreignPropertyLinkText = "Add foreign property business"
     val foreignPropertyLink = controllers.agent.business.routes.OverseasPropertyStartDateController.show().url
     val foreignPropertyChange = "Change foreign property income source"
     val foreignPropertyRemove = "Remove foreign property income source"
