@@ -888,7 +888,7 @@ agent.business.task-list.content.add-income.view-text                       = Bw
 agent.business.task-list.content.action-needed                              = Mae’n rhaid i chi gwblhau pob adran uchod cyn i chi allu cadarnhau a chofrestru’ch cleient.
 agent.business.task-list.content.action-complete                            = Gallwch gofrestru’ch cleient nawr.
 agent.business.task-list.status.completed                                   = Wedi’i gwblhau
-agent.business.task-list.status.incomplete                                  = Anghyflawn
+agent.business.task-list.status.incomplete                                  = Heb ei gwblhau
 agent.business.task-list.status.in-progress                                 = Ar waith
 agent.business.task-list.status.not-started                                 = Heb ddechrau
 
@@ -998,7 +998,7 @@ business.task-list.content.action-needed-new                    = Mae’n rhaid 
 business.task-list.content.action-complete                      = Gallwch gofrestru nawr.
 business.task-list.content.check-and-continue                   = Check and continue
 business.task-list.status.completed                             = Wedi’i gwblhau
-business.task-list.status.incomplete                            = Anghyflawn
+business.task-list.status.incomplete                            = Heb ei gwblhau
 business.task-list.status.in-progress                           = Ar waith
 business.task-list.status.not-started                           = Heb ddechrau
 business.task-list.accounting-period-confirm                    = Cyfnod cyfrifyddu wedi’i gadarnhau: 6 Ebrill i 5 Ebrill

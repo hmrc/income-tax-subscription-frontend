@@ -256,7 +256,7 @@
         tagLabel = if(viewModel.incomeSourcesComplete) {
           messages(s"${messagePrefix}.status.completed")
         } else if (viewModel.hasAnyBusiness) {
-          messages(s"${messagePrefix}.status.in-progress")
+          messages(s"${messagePrefix}.status.incomplete")
         } else {
           messages(s"${messagePrefix}.status.not-started")
         },
