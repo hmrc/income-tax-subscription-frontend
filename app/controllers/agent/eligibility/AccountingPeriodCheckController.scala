@@ -16,7 +16,7 @@
 
 package controllers.agent.eligibility
 
-import auth.agent.StatelessController
+import auth.agent.PreSignUpController
 import config.AppConfig
 import forms.agent.AccountingPeriodCheckForm.accountingPeriodCheckForm
 import models.audits.EligibilityAnswerAuditing.EligibilityAnswerAuditModel
@@ -37,7 +37,7 @@ class AccountingPeriodCheckController @Inject()(val auditingService: AuditingSer
                                                 val authService: AuthService)
                                                (implicit val appConfig: AppConfig,
                                                 mcc: MessagesControllerComponents,
-                                                val ec: ExecutionContext) extends StatelessController {
+                                                val ec: ExecutionContext) extends PreSignUpController {
 
   private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
 

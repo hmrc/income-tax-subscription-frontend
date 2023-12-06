@@ -95,6 +95,8 @@ object IntegrationTestModels extends ComponentSpecBase {
     confirmed = true
   )
 
+
+
   private val testBusinessTradeName: BusinessTradeNameModel = BusinessTradeNameModel("test trade name")
   private val testBusinessStartDate: BusinessStartDate = BusinessStartDate(DateModel("05", "04", "2018"))
   private val testId = "testId"

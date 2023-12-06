@@ -16,7 +16,7 @@
 
 package controllers.agent.eligibility
 
-import auth.agent.StatelessController
+import auth.agent.PreSignUpController
 import config.AppConfig
 import forms.agent.PropertyTradingStartDateForm.propertyTradingStartDateForm
 import models.audits.EligibilityAnswerAuditing.EligibilityAnswerAuditModel
@@ -43,7 +43,7 @@ class PropertyTradingStartAfterController @Inject()(val auditingService: Auditin
                                                     propertyTradingAfter: PropertyTradingAfter)
                                                    (implicit val appConfig: AppConfig,
                                                     mcc: MessagesControllerComponents,
-                                                    val ec: ExecutionContext) extends StatelessController with ImplicitDateFormatter {
+                                                    val ec: ExecutionContext) extends PreSignUpController with ImplicitDateFormatter {
 
   private def startDateLimit: LocalDate = LocalDate.now.minusYears(1)
 

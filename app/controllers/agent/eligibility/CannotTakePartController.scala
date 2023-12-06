@@ -16,7 +16,7 @@
 
 package controllers.agent.eligibility
 
-import auth.agent.StatelessController
+import auth.agent.PreSignUpController
 import config.AppConfig
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
@@ -31,7 +31,7 @@ class CannotTakePartController @Inject()(val auditingService: AuditingService,
                                          cannotTakePart: CannotTakePart)
                                         (implicit val appConfig: AppConfig,
                                          mcc: MessagesControllerComponents,
-                                         val ec: ExecutionContext) extends StatelessController {
+                                         val ec: ExecutionContext) extends PreSignUpController {
 
   def show: Action[AnyContent] = Authenticated { implicit request =>
     _ =>

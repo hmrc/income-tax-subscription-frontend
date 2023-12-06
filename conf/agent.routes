@@ -144,3 +144,7 @@ POST        /your-income-source                                  controllers.age
 # Agent Global Check Your Answers
 GET         /final-check-your-answers                            controllers.agent.business.GlobalCheckYourAnswersController.show
 POST        /final-check-your-answers                            controllers.agent.business.GlobalCheckYourAnswersController.submit
+
+# Cannot Go Back To Previous Client
+GET         /cannot-go-back-to-previous-client                   controllers.agent.CannotGoBackToPreviousClientController.show
+POST        /cannot-go-back-to-previous-client                   controllers.agent.CannotGoBackToPreviousClientController.submit

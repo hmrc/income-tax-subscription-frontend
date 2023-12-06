@@ -16,7 +16,7 @@
 
 package controllers.agent.eligibility
 
-import auth.agent.StatelessController
+import auth.agent.PreSignUpController
 import config.AppConfig
 import forms.agent.SoleTraderForm.soleTraderForm
 import models._
@@ -44,7 +44,7 @@ class SoleTraderController @Inject()(val auditingService: AuditingService,
                                     (implicit val appConfig: AppConfig,
                                      mcc: MessagesControllerComponents,
                                      override val languageUtils: LanguageUtils,
-                                     val ec: ExecutionContext) extends StatelessController with I18nSupport with ImplicitDateFormatter {
+                                     val ec: ExecutionContext) extends PreSignUpController with I18nSupport with ImplicitDateFormatter {
 
   private def startDateLimit: LocalDate = LocalDate.now.minusYears(2)
 

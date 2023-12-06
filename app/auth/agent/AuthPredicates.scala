@@ -45,6 +45,10 @@ object AuthPredicates extends Results {
     if (request.session.get(ITSASessionKeys.MTDITID).nonEmpty) Right(AuthPredicateSuccess)
     else Left(Future.failed(new NotFoundException("auth.AuthPredicates.hasSubmitted")))
 
+  val hasClientDetails: AuthPredicate[IncomeTaxAgentUser] = request => user =>
+    if (request.session.get(ITSASessionKeys.UTR).isDefined) Right(AuthPredicateSuccess)
+    else Left(Future.successful(Redirect(controllers.agent.routes.CannotGoBackToPreviousClientController.show)))
+
   val timeoutPredicate: AuthPredicate[IncomeTaxAgentUser] = request => user =>
     if (request.session.get(lastRequestTimestamp).nonEmpty && request.session.get(authToken).isEmpty) {
       Left(Future.successful(timeoutRoute))
@@ -73,7 +77,9 @@ object AuthPredicates extends Results {
 
   val userMatchingPredicates = homePredicates |+| userMatchingJourneyPredicate
 
-  val subscriptionPredicates = homePredicates |+| signUpJourneyPredicate
+  val subscriptionPredicates = homePredicates |+| hasClientDetails |+| signUpJourneyPredicate
 
-  val confirmationPredicates = defaultPredicates |+| hasSubmitted
+  val preSignUpPredicates = homePredicates |+| hasClientDetails
+
+  val confirmationPredicates = defaultPredicates |+| hasClientDetails |+| hasSubmitted
 }
