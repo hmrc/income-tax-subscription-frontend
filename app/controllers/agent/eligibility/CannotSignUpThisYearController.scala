@@ -16,7 +16,7 @@
 
 package controllers.agent.eligibility
 
-import auth.agent.StatelessController
+import auth.agent.PreSignUpController
 import config.AppConfig
 import forms.agent.CannotSignUpThisYearForm
 import models.{No, Yes, YesNo}
@@ -34,7 +34,7 @@ class CannotSignUpThisYearController @Inject()(val auditingService: AuditingServ
                                                cannotSignUp: CannotSignUpThisYear)
                                               (implicit val appConfig: AppConfig,
                                       mcc: MessagesControllerComponents,
-                                      val ec: ExecutionContext) extends StatelessController  {
+                                      val ec: ExecutionContext) extends PreSignUpController  {
 
   private val form: Form[YesNo] = CannotSignUpThisYearForm.cannotSignUpThisYearForm
   def show: Action[AnyContent] = Authenticated { implicit request =>

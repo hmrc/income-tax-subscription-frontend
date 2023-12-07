@@ -16,7 +16,7 @@
 
 package controllers.agent
 
-import auth.agent.StatelessController
+import auth.agent.PreSignUpController
 import config.AppConfig
 import play.api.mvc._
 import services.{AuditingService, AuthService}
@@ -30,7 +30,7 @@ class DeclinedSignUpNextYearController @Inject()(declinedSignUpNextYear: Decline
                                                 (val auditingService: AuditingService,
                                                  val appConfig: AppConfig,
                                                  val authService: AuthService)
-                                                (implicit mcc: MessagesControllerComponents, val ec: ExecutionContext) extends StatelessController {
+                                                (implicit mcc: MessagesControllerComponents, val ec: ExecutionContext) extends PreSignUpController {
 
   def show: Action[AnyContent] = Authenticated { implicit request =>
     _ =>

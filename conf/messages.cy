@@ -964,6 +964,15 @@ agent.business.progress-saved.content.sign-up-link                    = mynd yn 
 agent.business.progress-saved.content.sign-up-another-client-link     = cofrestru cleient arall
 agent.business.progress-saved.content.sign-in-link                    = mewngofnodi Porth y Llywodraeth
 
+## Cannot go back to previous client
+agent.cannot-go-back-previous-client.title                      = Ni allwch fynd yn ôl i gleient blaenorol
+agent.cannot-go-back-previous-client.heading                    = Ni allwch fynd yn ôl i gleient blaenorol
+agent.cannot-go-back-previous-client.radio-option.heading       = I reoli manylion eich cleient, gallwch wneud y canlynol:
+agent.cannot-go-back-previous-client.agent-service-account      = Mynd i’ch cyfrif gwasanaethau asiant, os ydych wedi gorffen cofrestru’r cleient
+agent.cannot-go-back-previous-client.re-enter-client-details    = Nodi manylion eto ar gyfer cleient na wnaethoch orffen ei gofrestru
+agent.cannot-go-back-previous-client.sign-up-another-client     = Sign up another client
+agent.cannot-go-back-previous-client.error.empty                = Mae’n rhaid i chi ddewis yr hyn rydych am ei wneud nesaf cyn mynd yn eich blaen.
+
 ## Task List
 business.task-list.title                                        = Cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 business.task-list.user-information.heading                     = Gwybodaeth amdanoch chi

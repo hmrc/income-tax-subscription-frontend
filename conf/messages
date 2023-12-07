@@ -963,6 +963,15 @@ agent.business.progress-saved.content.sign-up-link                    = continue
 agent.business.progress-saved.content.sign-up-another-client-link     = sign up another client
 agent.business.progress-saved.content.sign-in-link                    = Government Gateway login
 
+## Cannot go back to previous client
+agent.cannot-go-back-previous-client.title                      = You cannot go back to previous client
+agent.cannot-go-back-previous-client.heading                    = You cannot go back to previous client
+agent.cannot-go-back-previous-client.radio-option.heading       = To manage your client’s information you can:
+agent.cannot-go-back-previous-client.agent-service-account      = Go to your agent service account, if you finished signing the client up
+agent.cannot-go-back-previous-client.re-enter-client-details    = Re-enter the details of a client you did not finish signing up
+agent.cannot-go-back-previous-client.sign-up-another-client     = Sign up another client
+agent.cannot-go-back-previous-client.error.empty                = You must choose what you want to do next before you can continue.
+
 ## Task List
 business.task-list.title                                        = Sign up for Making Tax Digital for Income Tax
 business.task-list.user-information.heading                     = Information about you
