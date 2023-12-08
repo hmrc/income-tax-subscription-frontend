@@ -337,6 +337,7 @@ agent.sign-up-confirmation.final-declaration.para                               
 agent.sign-up-confirmation.warning.para                                             = Mae’n rhai i chi gyflwyno diweddariadau ar gyfer unrhyw chwarterau rydych wedi’u methu.
 
 
+
 agent.sign-up-confirmation.voluntary-next-year.self-assessment.heading              = Parhau â’r Hunanasesiad ar gyfer y flwyddyn hon
 agent.sign-up-confirmation.voluntary-next-year.self-assessment.para                 = Mae’n rhaid cyflwyno Ffurflen Dreth Hunanasesiad eich cleient, yn ôl yr arfer, erbyn 31 Ionawr  {0}.
 agent.sign-up-confirmation.voluntary-next-year.final-declaration.heading            = Cyflwyno datganiad terfynol a thalu treth
@@ -709,7 +710,9 @@ agent.business.what-year-to-sign-up.option-1                  = Blwyddyn dreth b
 agent.business.what-year-to-sign-up.option-2                  = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
 agent.business.what-year-to-sign-up.option-current-hint       = Bydd yn rhaid i chi anfon datganiad terfynol erbyn 31 Ionawr {0}.
 agent.business.what-year-to-sign-up.option-next-hint          = Bydd yn rhaid i chi anfon datganiad terfynol erbyn 31 Ionawr {0}, a llenwi Ffurflen Dreth Hunanasesiad ar gyfer y flwyddyn dreth gyfredol yn ôl yr arfer.
-
+agent.business.what-year-to-sign-up.table.title               = Dyddiadau cau ar gyfer diweddariadau chwarterol
+agent.business.what-year-to-sign-up.table.details.p1          = Gallwch ddewis anfon diweddariadau eich cleient yn ôl dyddiadau ar gyfer cyfnodau chwarterol calendr. Mae’n rhaid dewis yr opsiwn hwn yn y feddalwedd sy’n cydweddu cyn gwneud y diweddariad cyntaf.
+agent.business.what-year-to-sign-up.table.details.p2          = Mae’r dyddiad cau ar gyfer y ddau gyfnod chwarterol yr un peth.
 # Agent Sole trader page
 agent.eligibility.sole-trader.heading                         = A ddechreuodd busnes eich cleient fasnachu ar neu ar ôl {0}?
 agent.eligibility.sole-trader.caption                         = {0} | {1}

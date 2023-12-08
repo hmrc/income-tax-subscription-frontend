@@ -28,12 +28,19 @@
     continueButton: ContinueButton,
     accountingPeriodService: AccountingPeriodService,
     table: ReturnDeadlineTable,
-    form : FormWithCSRF
+    form : FormWithCSRF,
+    govukDetails : GovukDetails
 )
 
 @(accountingYearForm: Form[AccountingYear], postAction: Call, clientName: String, clientNino: String, backUrl: Option[String], endYearOfCurrentTaxPeriod: Int, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@quarterDayTb = {@table(accountingPeriodService.getAllUpdateAndDeadlineDates(Current))}
+@quarterDayTb = {
+@table(accountingPeriodService.getAllUpdateAndDeadlineDates(Current), false)
+<p class="govuk-body" id="para1">
+    @messages("agent.business.what-year-to-sign-up.table.details.p1")</p>
+<p class="govuk-body" id="para2">@messages("agent.business.what-year-to-sign-up.table.details.p2")</p>
+
+}
 
 @optionCurrentContent = {
   <p>@messages("agent.business.what-year-to-sign-up.option-current-hint", (endYearOfCurrentTaxPeriod + 1).toString)</p>
@@ -42,6 +49,7 @@
 @optionNextContent = {
   <p>@messages("agent.business.what-year-to-sign-up.option-next-hint", (endYearOfCurrentTaxPeriod + 2).toString)</p>
 }
+
 
 @mainTemplate(title = messages("agent.business.what-year-to-sign-up.title"), optForm = Some(accountingYearForm), backLink = backUrl) {
   @form(action = postAction) {
@@ -66,8 +74,10 @@
 content = Text(Messages("agent.business.what-year-to-sign-up.warning-text"))
 ))
 
-
-@quarterDayTb
+@govukDetails(Details(
+summary = Text(messages("agent.business.what-year-to-sign-up.table.title")),
+content = HtmlContent(quarterDayTb)
+))
 
     @radioHelper(
       field = accountingYearForm(AccountingYearForm.accountingYear),
