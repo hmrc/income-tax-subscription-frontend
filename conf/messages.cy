@@ -783,6 +783,13 @@ agent.sign-up-complete.what-now.agent-services-account          = Gallai gymryd 
 agent.sign-up-complete.what-now.agent-services-account.link     = cyfrif gwasanaethau asiant
 agent.sign-up-complete.what-now.send-quarterly                  = Bydd yn rhaid i chi anfon diweddariadau chwarterol gan ddefnyddio’ch meddalwedd erbyn:
 
+## Agent Action Page
+agent.return-to-client-details.title                                        = Beth hoffech ei wneud nesaf?
+agent.return-to-client-details.heading                                      = Beth hoffech ei wneud nesaf?
+agent.return-to-client-details.continue-signing-up                          = Yn eich blaen i gofrestru {0}
+agent.return-to-client-details.sign-up-another-client                       = Cofrestru cleient arall
+agent.return-to-client-details.error.empty                                  = Mae’n rhaid i chi ddewis yr hyn rydych am ei wneud nesaf cyn mynd yn eich blaen.
+
 ## Errors ##
 
 agent.error.client-details.date-of-birth.invalid-chars                              = Nodwch ddyddiad geni gan ddefnyddio’r rhifau 0 i 9
@@ -976,7 +983,7 @@ agent.cannot-go-back-previous-client.heading                    = Ni allwch fynd
 agent.cannot-go-back-previous-client.radio-option.heading       = I reoli manylion eich cleient, gallwch wneud y canlynol:
 agent.cannot-go-back-previous-client.agent-service-account      = Mynd i’ch cyfrif gwasanaethau asiant, os ydych wedi gorffen cofrestru’r cleient
 agent.cannot-go-back-previous-client.re-enter-client-details    = Nodi manylion eto ar gyfer cleient na wnaethoch orffen ei gofrestru
-agent.cannot-go-back-previous-client.sign-up-another-client     = Sign up another client
+agent.cannot-go-back-previous-client.sign-up-another-client     = Cofrestru cleient arall
 agent.cannot-go-back-previous-client.error.empty                = Mae’n rhaid i chi ddewis yr hyn rydych am ei wneud nesaf cyn mynd yn eich blaen.
 
 ## Task List

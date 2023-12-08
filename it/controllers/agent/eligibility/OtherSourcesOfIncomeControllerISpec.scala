@@ -62,6 +62,12 @@ class OtherSourcesOfIncomeControllerISpec extends ComponentSpecBase {
       header.selectHead(".govuk-caption-l").text mustBe OtherSourcesOfIncomeMessages.caption
     }
 
+    "have a view with back link" in new GetSetup {
+      val backLink: Element = doc.getGovukBackLink
+      backLink.attr("href").mustBe(controllers.agent.routes.ReturnToClientDetailsController.show.url)
+      backLink.text mustBe OtherSourcesOfIncomeMessages.back
+    }
+
     "have a bullet list of included incomes" in new GetSetup {
       pageContent.getNthUnorderedList(1).getNthListItem(1).text mustBe OtherSourcesOfIncomeMessages.includePoint1
       pageContent.getNthUnorderedList(1).getNthListItem(2).text mustBe OtherSourcesOfIncomeMessages.includePoint2

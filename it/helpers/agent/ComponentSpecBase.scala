@@ -52,6 +52,11 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
   with CustomMatchers with WireMockMethods with SessionCookieBaker with FeatureSwitching {
 
   object ClientData {
+
+    val clientName = Map(
+      UserMatchingSessionUtil.firstName -> testFirstName,
+      UserMatchingSessionUtil.lastName -> testLastName
+    )
     val basicClientData = Map(
       UserMatchingSessionUtil.firstName -> testFirstName,
       UserMatchingSessionUtil.lastName -> testLastName,
@@ -510,6 +515,15 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
           model =>
             CannotGoBackToPreviousClientForm.cannotGoBackTpPreviousClientForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )
+    )
+
+    def showReturnToClientDetails(sessionData: Map[String, String] = ClientData.clientName): WSResponse = get("/return-to-client-details", sessionData)
+
+    def submitReturnToClientDetails(returnToClientDetailsModel: Option[ReturnToClientDetailsModel], sessionData: Map[String, String] = ClientData.clientName): WSResponse = post("/return-to-client-details", sessionData)(
+      returnToClientDetailsModel.fold(Map.empty[String, Seq[String]])(
+        model =>
+          ReturnToClientDetailsForm.returnToClientDetailsForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+      )
     )
 
     def noSA(): WSResponse = get("/register-for-SA")
