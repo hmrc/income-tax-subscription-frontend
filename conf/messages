@@ -707,6 +707,9 @@ agent.business.what-year-to-sign-up.option-1                    = Current tax ye
 agent.business.what-year-to-sign-up.option-2                    = Next tax year (6 April {0} to 5 April {1})
 agent.business.what-year-to-sign-up.option-current-hint         = You or your client will need to submit a final declaration by the 31 January {0}.
 agent.business.what-year-to-sign-up.option-next-hint            = You or your client will need to submit a final declaration by 31 January {0} and will need to complete a Self Assessment return for the current tax year as normal.
+agent.business.what-year-to-sign-up.table.title                 = Quarterly update deadlines
+agent.business.what-year-to-sign-up.table.details.p1            = You can choose to send your client’s updates by calendar quarterly period dates. This must be selected in the compatible software before the first update is made.
+agent.business.what-year-to-sign-up.table.details.p2            = The deadline for both quarterly period dates are the same.
 
 # Agent Sole trader page
 agent.eligibility.sole-trader.heading                           = Did your client’s business start trading on or after {0}?

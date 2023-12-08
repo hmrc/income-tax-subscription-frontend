@@ -74,8 +74,87 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
         document().selectHead(".govuk-warning-text").text() mustBe WhatYearToSignUp.warningText
       }
 
-      "has paragraph 2" in {
-        document().selectHead(".govuk-table__caption").text() mustBe WhatYearToSignUp.paragraph2
+      "has details section" which {
+
+        "have a table for quarterly update example with filing and deadline dates" which {
+          val tableRows = document().select(".govuk-table__row")
+
+          "has the filing and deadline heading" in {
+            val tableRows =
+              document()
+                .select(".govuk-table__row")
+
+            tableRows.get(0).select(".govuk-table__header").get(0).text() mustBe WhatYearToSignUp.updatesHeader
+            tableRows.get(0).select(".govuk-table__header").get(1).text() mustBe WhatYearToSignUp.deadlineHeader
+          }
+
+          "has the filing and deadline dates 1" in {
+            val tableCellsHeader =
+              tableRows
+                .get(1)
+                .select(".govuk-table__header")
+
+            val tableCells =
+              tableRows
+                .get(1)
+                .select(".govuk-table__cell")
+
+            tableCellsHeader.get(0).text() mustBe WhatYearToSignUp.filingDateOne
+            tableCells.get(0).text() mustBe WhatYearToSignUp.deadlineDateOne
+          }
+
+          "has the filing and deadline dates 2" in {
+            val tableCellsHeader =
+              tableRows
+                .get(2)
+                .select(".govuk-table__header")
+
+            val tableCells =
+              tableRows
+                .get(2)
+                .select(".govuk-table__cell")
+
+            tableCellsHeader.get(0).text() mustBe WhatYearToSignUp.filingDateTwo
+            tableCells.get(0).text() mustBe WhatYearToSignUp.deadlineDateTwo
+          }
+
+          "has the filing and deadline dates 3" in {
+            val tableCellsHeader =
+              tableRows
+                .get(3)
+                .select(".govuk-table__header")
+
+            val tableCells =
+              tableRows
+                .get(3)
+                .select(".govuk-table__cell")
+
+            tableCellsHeader.get(0).text() mustBe WhatYearToSignUp.filingDateThree
+            tableCells.get(0).text() mustBe WhatYearToSignUp.deadlineDateThree
+          }
+
+          "has the filing and deadline dates 4" in {
+            val tableCellsHeader =
+              tableRows
+                .get(4)
+                .select(".govuk-table__header")
+
+            val tableCells =
+              tableRows
+                .get(4)
+                .select(".govuk-table__cell")
+
+            tableCellsHeader.get(0).text() mustBe WhatYearToSignUp.filingDateFour
+            tableCells.get(0).text() mustBe WhatYearToSignUp.deadlineDateFour
+          }
+        }
+      }
+      "has details para1" in {
+        document().getElementById("para1").text() mustBe WhatYearToSignUp.detailsPara1
+      }
+
+      "has details para2" in {
+        document().getElementById("para2").text() mustBe WhatYearToSignUp.detailsPara2
       }
     }
 
@@ -91,79 +170,6 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
       document()
         .selectHead(".govuk-table")
         .selectHead(".govuk-table__caption").text() mustBe WhatYearToSignUp.returnTableCaption
-    }
-
-    "have a table for quarterly update example with filing and deadline dates" which {
-      val tableRows = document().select(".govuk-table__row")
-
-      "has the filing and deadline heading" in {
-        val tableRows =
-          document()
-            .select(".govuk-table__row")
-
-        tableRows.get(0).select(".govuk-table__header").get(0).text() mustBe WhatYearToSignUp.updatesHeader
-        tableRows.get(0).select(".govuk-table__header").get(1).text() mustBe WhatYearToSignUp.deadlineHeader
-      }
-
-      "has the filing and deadline dates 1" in {
-        val tableCellsHeader =
-          tableRows
-            .get(1)
-            .select(".govuk-table__header")
-
-        val tableCells =
-          tableRows
-            .get(1)
-            .select(".govuk-table__cell")
-
-        tableCellsHeader.get(0).text() mustBe WhatYearToSignUp.filingDateOne
-        tableCells.get(0).text() mustBe WhatYearToSignUp.deadlineDateOne
-      }
-
-      "has the filing and deadline dates 2" in {
-        val tableCellsHeader =
-          tableRows
-            .get(2)
-            .select(".govuk-table__header")
-
-        val tableCells =
-          tableRows
-            .get(2)
-            .select(".govuk-table__cell")
-
-        tableCellsHeader.get(0).text() mustBe WhatYearToSignUp.filingDateTwo
-        tableCells.get(0).text() mustBe WhatYearToSignUp.deadlineDateTwo
-      }
-
-      "has the filing and deadline dates 3" in {
-        val tableCellsHeader =
-          tableRows
-            .get(3)
-            .select(".govuk-table__header")
-
-        val tableCells =
-          tableRows
-            .get(3)
-            .select(".govuk-table__cell")
-
-        tableCellsHeader.get(0).text() mustBe WhatYearToSignUp.filingDateThree
-        tableCells.get(0).text() mustBe WhatYearToSignUp.deadlineDateThree
-      }
-
-      "has the filing and deadline dates 4" in {
-        val tableCellsHeader =
-          tableRows
-            .get(4)
-            .select(".govuk-table__header")
-
-        val tableCells =
-          tableRows
-            .get(4)
-            .select(".govuk-table__cell")
-
-        tableCellsHeader.get(0).text() mustBe WhatYearToSignUp.filingDateFour
-        tableCells.get(0).text() mustBe WhatYearToSignUp.deadlineDateFour
-      }
     }
 
     "have a form" which {
@@ -225,6 +231,8 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
     val heading = "Select when your client will start using Making Tax Digital for Income Tax"
     val agentCaption = fullName + " | " + nino
     val returnTableCaption = "Submit quarterly updates by the deadline"
+    val detailsPara1 = "You can choose to send your client’s updates by calendar quarterly period dates. This must be selected in the compatible software before the first update is made."
+    val detailsPara2 = "The deadline for both quarterly period dates are the same."
     val updatesHeader = "Quarterly update"
     val deadlineHeader = "Deadline"
     val paragraph1 = "You or your client can start sending quarterly updates during the current tax year 6 April 2023 to 5 April 2024 or the next tax year 6 April 2024 to 5 April 2025."
