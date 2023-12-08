@@ -110,7 +110,7 @@ class CannotGoBackToPreviousClientControllerISpec extends ComponentSpecBase {
         Then("Should return a SEE_OTHER with a redirect location of Enter Client Details")
         res must have(
           httpStatus(BAD_REQUEST),
-          pageTitle(messages("agent.cannot-go-back-previous-client.title") + serviceNameGovUk),
+          pageTitle("Error: " + messages("agent.cannot-go-back-previous-client.title") + serviceNameGovUk),
           errorDisplayed()
         )
       }

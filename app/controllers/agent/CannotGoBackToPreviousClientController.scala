@@ -19,7 +19,6 @@ package controllers.agent
 import auth.agent.StatelessController
 import config.AppConfig
 import forms.agent.CannotGoBackToPreviousClientForm
-import forms.agent.CannotGoBackToPreviousClientForm.cannotGoBackTpPreviousClientForm
 import models.CannotGoBack
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
@@ -42,14 +41,14 @@ class CannotGoBackToPreviousClientController @Inject()(val auditingService: Audi
 
   def view(cannotGoBackToPreviousClientForm: Form[CannotGoBack])(implicit request: Request[_]): Html = {
     cannotGoBackToPreviousClient(
-      cannotGoBackToPreviousClientForm = cannotGoBackTpPreviousClientForm,
+      cannotGoBackToPreviousClientForm = cannotGoBackToPreviousClientForm,
       postAction = controllers.agent.routes.CannotGoBackToPreviousClientController.submit
     )
   }
 
   def show(): Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
-        Ok(view(cannotGoBackToPreviousClientForm = CannotGoBackToPreviousClientForm.cannotGoBackTpPreviousClientForm))
+        Ok(view(cannotGoBackToPreviousClientForm = CannotGoBackToPreviousClientForm.cannotGoBackToPreviousClientForm))
   }
 
 
@@ -57,7 +56,7 @@ class CannotGoBackToPreviousClientController @Inject()(val auditingService: Audi
 
   def submit(): Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
-        CannotGoBackToPreviousClientForm.cannotGoBackTpPreviousClientForm.bindFromRequest.fold(
+        CannotGoBackToPreviousClientForm.cannotGoBackToPreviousClientForm.bindFromRequest.fold(
           formWithErrors =>
             BadRequest(view(cannotGoBackToPreviousClientForm = formWithErrors)),
           {

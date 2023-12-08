@@ -29,21 +29,21 @@ class CannotGoBackToPreviousClientFormSpec extends PlaySpec with GuiceOneAppPerT
       "Agent Service Account is submitted" in {
         val testInput = Map(CannotGoBackToPreviousClientForm.cannotGoBackToPreviousClient -> AgentServiceAccount.key)
         val expected = AgentServiceAccount
-        val actual = cannotGoBackTpPreviousClientForm.bind(testInput)
+        val actual = cannotGoBackToPreviousClientForm.bind(testInput)
         actual.errors mustBe Seq.empty[FormError]
         actual.value mustBe Some(expected)
       }
       "Reenter Client Details is submitted" in {
         val testInput = Map(CannotGoBackToPreviousClientForm.cannotGoBackToPreviousClient -> ReenterClientDetails.key)
         val expected = ReenterClientDetails
-        val actual = cannotGoBackTpPreviousClientForm.bind(testInput)
+        val actual = cannotGoBackToPreviousClientForm.bind(testInput)
         actual.errors mustBe Seq.empty[FormError]
         actual.value mustBe Some(expected)
       }
       "Sign Up Another Client is submitted" in {
         val testInput = Map(CannotGoBackToPreviousClientForm.cannotGoBackToPreviousClient -> SignUpAnotherClient.key)
         val expected = SignUpAnotherClient
-        val actual = cannotGoBackTpPreviousClientForm.bind(testInput)
+        val actual = cannotGoBackToPreviousClientForm.bind(testInput)
         actual.errors mustBe Seq.empty[FormError]
         actual.value mustBe Some(expected)
       }
@@ -51,7 +51,7 @@ class CannotGoBackToPreviousClientFormSpec extends PlaySpec with GuiceOneAppPerT
     "Produce an error" when {
       "no input is provided" in {
         val testInput = Map.empty[String, String]
-        val actual = cannotGoBackTpPreviousClientForm.bind(testInput)
+        val actual = cannotGoBackToPreviousClientForm.bind(testInput)
         actual.value mustBe None
         actual.errors mustBe Seq(FormError(CannotGoBackToPreviousClientForm.cannotGoBackToPreviousClient, "agent.cannot-go-back-previous-client.error.empty"))
       }

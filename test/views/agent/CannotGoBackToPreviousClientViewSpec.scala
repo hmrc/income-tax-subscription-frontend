@@ -103,7 +103,7 @@ class CannotGoBackToPreviousClientViewSpec extends ViewSpec {
 
   private def page(hasError: Boolean = false): Html =
     cannotGoBackToPreviousClient(
-      if (hasError) CannotGoBackToPreviousClientForm.cannotGoBackTpPreviousClientForm.withError(testFormError) else CannotGoBackToPreviousClientForm.cannotGoBackTpPreviousClientForm,
+      if (hasError) CannotGoBackToPreviousClientForm.cannotGoBackToPreviousClientForm.withError(testFormError) else CannotGoBackToPreviousClientForm.cannotGoBackToPreviousClientForm,
       postAction = testCall
     )
 

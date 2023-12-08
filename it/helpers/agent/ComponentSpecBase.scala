@@ -513,7 +513,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     def submitCannotGoBackToPreviousClient(cannotGoBack: Option[CannotGoBack]): WSResponse = post("/cannot-go-back-to-previous-client")(
         cannotGoBack.fold(Map.empty[String, Seq[String]])(
           model =>
-            CannotGoBackToPreviousClientForm.cannotGoBackTpPreviousClientForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+            CannotGoBackToPreviousClientForm.cannotGoBackToPreviousClientForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )
     )
 
