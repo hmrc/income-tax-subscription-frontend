@@ -330,8 +330,11 @@ agent.sign-up-confirmation.heading.panel.current                                
 agent.sign-up-confirmation.heading.panel.next                                       = is now signed up for Making Tax Digital for Income Tax for the next tax year ({0})
 agent.sign-up-confirmation.what-you-will-have-to-do.heading                         = What you must do
 agent.sign-up-confirmation.quarterly-updates.heading                                = Send quarterly updates
-agent.sign-up-confirmation.quarterly-updates.para                                   = Quarterly updates of your client’s income and expenses must be made using compatible software by the following deadlines:
-agent.sign-up-confirmation.quarterly-updates.table.caption                          = Quarterly updates by the deadline
+agent.sign-up-confirmation.quarterly-updates.para                                   = You must send quarterly updates of your client’s income and expenses using compatible software.
+agent.sign-up-confirmation.quarterly-updates.table.caption                          = Quarterly update deadlines
+agent.sign-up-confirmation.quarterly-updates.table.caption.title                    = Submit quarterly updates by the deadline
+agent.sign-up-confirmation.quarterly-updates.table.para1                            = You can choose to send your client’s updates by calendar quarterly period dates. This must be selected in the compatible software before the first update is made.
+agent.sign-up-confirmation.quarterly-updates.table.para2                            = The deadline for both quarterly period dates are the same.
 agent.sign-up-confirmation.end-of-period-statement.heading                          = Send an end of period statement
 agent.sign-up-confirmation.end-of-period-statement.para                             = Either you or your client must submit an end of period statement using your software by {0}.
 agent.sign-up-confirmation.final-declaration.para                                   = A final declaration must be submitted by either you or your client by {0}. They must also pay the tax they owe.
@@ -777,7 +780,6 @@ agent.sign-up-complete.what-now.after-update                    = After you’ve
 agent.sign-up-complete.what-now.agent-services-account          = It may take a few hours before new information is displayed in your {0}.
 agent.sign-up-complete.what-now.agent-services-account.link     = agent service account
 agent.sign-up-complete.what-now.send-quarterly                  = You will need to send quarterly updates using your software by:
-
 ## Errors ##
 
 agent.error.client-details.date-of-birth.invalid-chars                              = Enter a date of birth using numbers 0 to 9

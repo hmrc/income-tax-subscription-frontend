@@ -329,8 +329,11 @@ agent.sign-up-confirmation.heading.panel.current                                
 agent.sign-up-confirmation.heading.panel.next                                       = wedi llwyddo i gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, erbyn y flwyddyn dreth nesaf  ({0})
 agent.sign-up-confirmation.what-you-will-have-to-do.heading                         = Yr hyn y mae’n rhaid i chi ei wneud
 agent.sign-up-confirmation.quarterly-updates.heading                                = Anfon diweddariadau chwarterol:
-agent.sign-up-confirmation.quarterly-updates.para                                   = Mae’n rhaid cyflwyno diweddariadau chwarterol o incwm a threuliau eich cleient, gan ddefnyddio meddalwedd sy’n cydweddu, erbyn y dyddiadau cau canlynol:
-agent.sign-up-confirmation.quarterly-updates.table.caption                          = Diweddariadau chwarterol erbyn y dyddiad cau
+agent.sign-up-confirmation.quarterly-updates.para                                   = Mae’n rhaid i chi anfon diweddariadau chwarterol o incwm a threuliau eich cleient gan ddefnyddio meddalwedd sy’n cydweddu.
+agent.sign-up-confirmation.quarterly-updates.table.caption                          = Dyddiadau cau ar gyfer diweddariadau chwarterol
+agent.sign-up-confirmation.quarterly-updates.table.caption.title                    = Cyflwynwch ddiweddariadau chwarterol erbyn y dyddiad cau
+agent.sign-up-confirmation.quarterly-updates.table.para1                            = Gallwch ddewis anfon diweddariadau eich cleient yn ôl dyddiadau ar gyfer cyfnodau chwarterol calendr. Mae’n rhaid dewis yr opsiwn hwn yn y feddalwedd sy’n cydweddu cyn gwneud y diweddariad cyntaf.
+agent.sign-up-confirmation.quarterly-updates.table.para2                            = Mae’r dyddiad cau ar gyfer y ddau gyfnod chwarterol yr un peth.
 agent.sign-up-confirmation.end-of-period-statement.heading                          = Anfon datganiad diwedd cyfnod
 agent.sign-up-confirmation.end-of-period-statement.para                             = Mae’n rhaid i chi neu’ch cleient gyflwyno datganiad diwedd cyfnod, gan ddefnyddio’ch meddalwedd, erbyn {0}.
 agent.sign-up-confirmation.final-declaration.para                                   = Mae’n rhaid i chi neu’ch cleient gyflwyno datganiad terfynol erbyn {0}. Mae’n rhaid iddo hefyd dalu’r dreth sydd arno.
