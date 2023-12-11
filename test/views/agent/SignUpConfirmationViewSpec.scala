@@ -99,13 +99,21 @@ class SignUpConfirmationViewSpec extends ViewSpec {
               List(q3Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q3Update.deadline.toLongDateNoYear),
               List(q4Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q4Update.deadline.toLongDateNoYear)
             ),
-            maybeCaption = Some(SignUpConfirmationMessages.quarterlyUpdatesTableCaption),
+            maybeCaption = Some(SignUpConfirmationMessages.quarterlyUpdatesTableCaptionTitle),
             hiddenTableCaption = false
           )
         }
 
         "contains a warning message" in {
           mainContent.selectHead(".govuk-warning-text").text() contains SignUpConfirmationMessages.warningMessage
+        }
+
+        "contains details para1" in {
+          mainContent.selectNth(".govuk-details", 1).selectHead("p").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesDetailsp1
+        }
+
+        "contains details para2" in {
+          mainContent.selectNth(".govuk-details", 1).selectNth("p",2).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesDetailsp2
         }
       }
 
@@ -192,9 +200,17 @@ class SignUpConfirmationViewSpec extends ViewSpec {
               List(q3Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q3Update.deadline.toLongDateNoYear),
               List(q4Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q4Update.deadline.toLongDateNoYear)
             ),
-            maybeCaption = Some(SignUpConfirmationMessages.quarterlyUpdatesTableCaption),
+            maybeCaption = Some(SignUpConfirmationMessages.quarterlyUpdatesTableCaptionTitle),
             hiddenTableCaption = false
           )
+        }
+
+        "contains details para1" in {
+          mainContent.selectNth(".govuk-details", 1).selectHead("p").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesDetailsp1
+        }
+
+        "contains details para2" in {
+          mainContent.selectNth(".govuk-details", 1).selectNth("p",2).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesDetailsp2
         }
       }
 
@@ -281,7 +297,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
               List(q3Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q3Update.deadline.toLongDateNoYear),
               List(q4Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q4Update.deadline.toLongDateNoYear)
             ),
-            maybeCaption = Some(SignUpConfirmationMessages.quarterlyUpdatesTableCaption),
+            maybeCaption = Some(SignUpConfirmationMessages.quarterlyUpdatesTableCaptionTitle),
             hiddenTableCaption = false
           )
         }
@@ -360,7 +376,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
               List(q3Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q3Update.deadline.toLongDateNoYear),
               List(q4Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q4Update.deadline.toLongDateNoYear)
             ),
-            maybeCaption = Some(SignUpConfirmationMessages.quarterlyUpdatesTableCaption),
+            maybeCaption = Some(SignUpConfirmationMessages.quarterlyUpdatesTableCaptionTitle),
             hiddenTableCaption = false
           )
         }
@@ -441,10 +457,13 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val continueSelfAssessmentPara              = s"Your client’s Self Assessment tax return must be submitted as normal on 31 January ${AccountingPeriodUtil.getNextTaxEndYear + 1}."
 
     val quarterlyUpdatesHeading                 = "Send quarterly updates"
-    val quarterlyUpdatesParagraph               = "Quarterly updates of your client’s income and expenses must be made using compatible software by the following deadlines:"
-    val quarterlyUpdatesTableCaption            = "Quarterly updates by the deadline"
+    val quarterlyUpdatesParagraph               = "You must send quarterly updates of your client’s income and expenses using compatible software."
+    val quarterlyUpdatesTableCaption            = "Quarterly update deadlines"
+    val quarterlyUpdatesTableCaptionTitle       = "Submit quarterly updates by the deadline"
     val quarterlyUpdate                         = "Quarterly update"
     val deadline                                = "Deadline"
+    val quarterlyUpdatesDetailsp1               = "You can choose to send your client’s updates by calendar quarterly period dates. This must be selected in the compatible software before the first update is made."
+    val quarterlyUpdatesDetailsp2               = "The deadline for both quarterly period dates are the same."
 
     val warningMessage                          = "You must make updates for any quarters you’ve missed."
 

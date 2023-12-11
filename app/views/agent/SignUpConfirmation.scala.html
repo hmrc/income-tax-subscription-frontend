@@ -31,7 +31,8 @@
     table: UpdateDeadlineTable,
     accountingPeriodService: AccountingPeriodService,
     govukNotificationBanner : GovukNotificationBanner,
-    govukWarningText: GovukWarningText
+    govukWarningText: GovukWarningText,
+    govukDetails : GovukDetails
 )
 
 
@@ -44,6 +45,30 @@
     }
 }
 
+@warningText = {
+@if(!mandatedCurrentYear){
+@govukWarningText(WarningText(
+content = Text(Messages("agent.sign-up-confirmation.warning.para"))
+))}
+}
+
+@quarterDayTable = {
+    @table(
+        updateAndDeadlineDates = accountingPeriodService.getAllUpdateAndDeadlineDates(Next),
+        tableCaption = messages("agent.sign-up-confirmation.quarterly-updates.table.caption.title")
+        )
+@warningText
+<p class="govuk-body">@messages("agent.sign-up-confirmation.quarterly-updates.table.para1")</p>
+<p class="govuk-body">@messages("agent.sign-up-confirmation.quarterly-updates.table.para2")</p>
+}
+
+@detailsContent = {
+@govukDetails(Details(
+summary = Text(messages("agent.sign-up-confirmation.quarterly-updates.table.caption")),
+content = HtmlContent(quarterDayTable)
+))
+
+}
 
 
 @headingPanelContent = {
@@ -74,24 +99,14 @@
         <h3 class="govuk-heading-m">2. @messages("agent.sign-up-confirmation.quarterly-updates.heading")</h3>
         <p class="govuk-body">@messages("agent.sign-up-confirmation.quarterly-updates.para")</p>
 
-        @table(
-          updateAndDeadlineDates = accountingPeriodService.getAllUpdateAndDeadlineDates(Next),
-          tableCaption = messages("agent.sign-up-confirmation.quarterly-updates.table.caption")
-        )
+        @detailsContent
+
       } else {
         <h3 class="govuk-heading-m">1. @messages("agent.sign-up-confirmation.quarterly-updates.heading")</h3>
         <p class="govuk-body">@messages("agent.sign-up-confirmation.quarterly-updates.para")</p>
 
-        @table(
-          updateAndDeadlineDates = accountingPeriodService.getAllUpdateAndDeadlineDates(Next),
-          tableCaption = messages("agent.sign-up-confirmation.quarterly-updates.table.caption")
-        )
+        @detailsContent
 
-        @if(!mandatedCurrentYear){
-          @govukWarningText(WarningText(
-            content = Text(Messages("agent.sign-up-confirmation.warning.para"))
-          ))
-        }
       }
     </div>
 }
