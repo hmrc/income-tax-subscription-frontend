@@ -18,7 +18,6 @@ package controllers.agent
 
 import auth.agent.StatelessController
 import config.AppConfig
-import controllers.utils.ReferenceRetrieval
 import forms.agent.CannotGoBackToPreviousClientForm
 import forms.agent.CannotGoBackToPreviousClientForm.cannotGoBackTpPreviousClientForm
 import models.CannotGoBack
@@ -63,8 +62,8 @@ class CannotGoBackToPreviousClientController @Inject()(val auditingService: Audi
             BadRequest(view(cannotGoBackToPreviousClientForm = formWithErrors)),
           {
             case CannotGoBack.AgentServiceAccount => Redirect(appConfig.agentServicesAccountHomeUrl)
-            case CannotGoBack.ReenterClientDetails => Redirect(controllers.agent.matching.routes.ClientDetailsController.show())
-            case CannotGoBack.SignUpAnotherClient => Redirect(controllers.agent.matching.routes.ClientDetailsController.show())
+            case CannotGoBack.ReenterClientDetails => Redirect(controllers.agent.routes.AddAnotherClientController.addAnother())
+            case CannotGoBack.SignUpAnotherClient => Redirect(controllers.agent.routes.AddAnotherClientController.addAnother())
           }
         )
     }

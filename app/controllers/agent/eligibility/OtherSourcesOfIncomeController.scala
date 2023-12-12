@@ -49,7 +49,7 @@ class OtherSourcesOfIncomeController @Inject()(otherSourcesOfIncome: OtherSource
     }
   }
 
-  def backUrl: String = appConfig.agentIncomeTaxEligibilityFrontendTermsUrl
+  def backUrl: String = controllers.agent.routes.ReturnToClientDetailsController.show.url
 
   def show: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
@@ -61,7 +61,8 @@ class OtherSourcesOfIncomeController @Inject()(otherSourcesOfIncome: OtherSource
         ),
         clientNino = formatNino(user.clientNino.getOrElse(
           throw new InternalServerException("[AccountingPeriodCheckController][show] - could not retrieve client nino from session")
-        ))
+        )),
+        backUrl
       ))
   }
 
@@ -70,7 +71,7 @@ class OtherSourcesOfIncomeController @Inject()(otherSourcesOfIncome: OtherSource
       val clientName = request.fetchClientName.get
       val clientNino = user.clientNino.get
       otherSourcesOfIncomeForm.bindFromRequest().fold(
-        formWithErrors => BadRequest(otherSourcesOfIncome(formWithErrors, routes.OtherSourcesOfIncomeController.submit, clientName, clientNino)),
+        formWithErrors => BadRequest(otherSourcesOfIncome(formWithErrors, routes.OtherSourcesOfIncomeController.submit, clientName, clientNino, backUrl)),
         {
           case Yes =>
             auditingService.audit(EligibilityAnswerAuditModel(eligible = false, "yes", "otherIncomeSource", user.arn))

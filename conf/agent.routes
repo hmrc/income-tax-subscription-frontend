@@ -148,3 +148,7 @@ POST        /final-check-your-answers                            controllers.age
 # Cannot Go Back To Previous Client
 GET         /cannot-go-back-to-previous-client                   controllers.agent.CannotGoBackToPreviousClientController.show
 POST        /cannot-go-back-to-previous-client                   controllers.agent.CannotGoBackToPreviousClientController.submit
+
+# Agetn Action
+GET         /return-to-client-details                            controllers.agent.ReturnToClientDetailsController.show
+POST        /return-to-client-details                            controllers.agent.ReturnToClientDetailsController.submit

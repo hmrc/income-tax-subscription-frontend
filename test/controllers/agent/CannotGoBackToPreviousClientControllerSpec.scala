@@ -67,7 +67,7 @@ class CannotGoBackToPreviousClientControllerSpec extends AgentControllerBaseSpec
           fakeRequest.post(CannotGoBackToPreviousClientForm.cannotGoBackTpPreviousClientForm, ReenterClientDetails)
         )
         status(result) must be(Status.SEE_OTHER)
-        redirectLocation(result) mustBe Some(controllers.agent.matching.routes.ClientDetailsController.show().url)
+        redirectLocation(result) mustBe Some(controllers.agent.routes.AddAnotherClientController.addAnother().url)
       }
     }
     "Sign Up Another Client is selected" should {
@@ -76,7 +76,7 @@ class CannotGoBackToPreviousClientControllerSpec extends AgentControllerBaseSpec
           fakeRequest.post(CannotGoBackToPreviousClientForm.cannotGoBackTpPreviousClientForm, SignUpAnotherClient)
         )
         status(result) must be(Status.SEE_OTHER)
-        redirectLocation(result) mustBe Some(controllers.agent.matching.routes.ClientDetailsController.show().url)
+        redirectLocation(result) mustBe Some(controllers.agent.routes.AddAnotherClientController.addAnother().url)
       }
     }
     "No Option is selected" should {
