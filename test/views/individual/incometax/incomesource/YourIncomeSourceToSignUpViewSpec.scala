@@ -48,7 +48,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
     val addAnotherSelfEmploymentLinkText = "Add another sole trader income source"
     val ukPropertyHeading = "UK property business"
-    val ukPropertyDescription = "A UK property business is when you get income from land or buildings in the UK. For example, letting houses, flat or holiday homes either on a long or short term basis."
+    val ukPropertyDescription = "A UK property business is when you get income from land or buildings in the UK. For example, letting houses, flats or holiday homes either on a long or short term basis."
     val ukPropertyLabel = "UK property income source"
     val ukPropertyLinkText = "Add UK property income source"
     val ukPropertyChange = "Change UK property income source"
