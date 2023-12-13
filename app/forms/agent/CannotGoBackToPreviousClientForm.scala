@@ -26,7 +26,7 @@ object CannotGoBackToPreviousClientForm {
 
   val cannotGoBackToPreviousClient: String = "cannotGoBackToPreviousClient"
 
-  val cannotGoBackTpPreviousClientForm: Form[CannotGoBack] = Form(
+  val cannotGoBackToPreviousClientForm: Form[CannotGoBack] = Form(
     single(
       cannotGoBackToPreviousClient -> CannotGoBackToPreviousClientMapping.apply(
         cannotGoBackToPreviousClientEmpty = Invalid("agent.cannot-go-back-previous-client.error.empty")

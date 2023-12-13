@@ -55,7 +55,7 @@ class CannotGoBackToPreviousClientControllerSpec extends AgentControllerBaseSpec
     "Agent services account is selected" should {
       "Redirect to the Agent Services Account page" in {
         val result = TestCannotGoBackToPreviousClient.submit()(
-          fakeRequest.post(CannotGoBackToPreviousClientForm.cannotGoBackTpPreviousClientForm, AgentServiceAccount)
+          fakeRequest.post(CannotGoBackToPreviousClientForm.cannotGoBackToPreviousClientForm, AgentServiceAccount)
         )
         status(result) must be(Status.SEE_OTHER)
         redirectLocation(result) mustBe Some(appConfig.agentServicesAccountHomeUrl)
@@ -64,7 +64,7 @@ class CannotGoBackToPreviousClientControllerSpec extends AgentControllerBaseSpec
     "Re-enter Client Details is selected" should {
       "Redirect to Enter Client Details page" in {
         val result = TestCannotGoBackToPreviousClient.submit()(
-          fakeRequest.post(CannotGoBackToPreviousClientForm.cannotGoBackTpPreviousClientForm, ReenterClientDetails)
+          fakeRequest.post(CannotGoBackToPreviousClientForm.cannotGoBackToPreviousClientForm, ReenterClientDetails)
         )
         status(result) must be(Status.SEE_OTHER)
         redirectLocation(result) mustBe Some(controllers.agent.routes.AddAnotherClientController.addAnother().url)
@@ -73,7 +73,7 @@ class CannotGoBackToPreviousClientControllerSpec extends AgentControllerBaseSpec
     "Sign Up Another Client is selected" should {
       "Redirect to Enter Client Details page" in {
         val result = TestCannotGoBackToPreviousClient.submit()(
-          fakeRequest.post(CannotGoBackToPreviousClientForm.cannotGoBackTpPreviousClientForm, SignUpAnotherClient)
+          fakeRequest.post(CannotGoBackToPreviousClientForm.cannotGoBackToPreviousClientForm, SignUpAnotherClient)
         )
         status(result) must be(Status.SEE_OTHER)
         redirectLocation(result) mustBe Some(controllers.agent.routes.AddAnotherClientController.addAnother().url)
@@ -82,7 +82,7 @@ class CannotGoBackToPreviousClientControllerSpec extends AgentControllerBaseSpec
     "No Option is selected" should {
       "return an Bad Request" in {
         mockView()
-        val result = TestCannotGoBackToPreviousClient.submit()(fakeRequest.post(CannotGoBackToPreviousClientForm.cannotGoBackTpPreviousClientForm))
+        val result = TestCannotGoBackToPreviousClient.submit()(fakeRequest.post(CannotGoBackToPreviousClientForm.cannotGoBackToPreviousClientForm))
         status(result) must be(Status.BAD_REQUEST)
         contentType(result) mustBe Some(HTML)
       }
