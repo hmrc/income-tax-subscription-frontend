@@ -20,6 +20,7 @@ import auth.individual.{IncomeTaxSAUser, PostSubmissionController}
 import common.Constants.ITSASessionKeys
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.ConfirmationPage
+import connectors.individual.PreferencesFrontendConnector
 import controllers.utils.ReferenceRetrieval
 import models.Next
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -34,7 +35,8 @@ class ConfirmationController @Inject()(val auditingService: AuditingService,
                                        val authService: AuthService,
                                        val subscriptionDetailsService: SubscriptionDetailsService,
                                        val signUpComplete: SignUpComplete,
-                                       val signUpConfirmation: SignUpConfirmation
+                                       val signUpConfirmation: SignUpConfirmation,
+                                       preferencesFrontendConnector: PreferencesFrontendConnector
                                       )
                                       (implicit val ec: ExecutionContext,
                                        val appConfig: AppConfig,
@@ -43,28 +45,35 @@ class ConfirmationController @Inject()(val auditingService: AuditingService,
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       withReference { reference =>
-        subscriptionDetailsService.fetchSelectedTaxYear(reference) map { selectedTaxYear =>
-          val taxYearSelectionIsNext = selectedTaxYear.map(_.accountingYear).contains(Next)
-
-          val view = if (isEnabled(ConfirmationPage)) {
+        if (isEnabled(ConfirmationPage)) {
+          for {
+            preference <- preferencesFrontendConnector.getOptedInStatus
+            selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
+          } yield {
+            val taxYearSelectionIsNext = selectedTaxYear.map(_.accountingYear).contains(Next)
             val mandatedCurrentYear: Boolean = request.session.get(ITSASessionKeys.MANDATED_CURRENT_YEAR).contains("true")
-            signUpConfirmation(
+
+            Ok(signUpConfirmation(
               mandatedCurrentYear = mandatedCurrentYear,
               taxYearSelectionIsNext = taxYearSelectionIsNext,
               individualUserNameMaybe = IncomeTaxSAUser.fullName,
-              individualUserNino = user
-                .nino
-                .getOrElse(throw new Exception("[ConfirmationController][show]-could not retrieve individual nino from session"))
-            )
-          } else {
-            signUpComplete(
+              individualUserNino = user.nino.getOrElse(
+                throw new Exception("[ConfirmationController][show]-could not retrieve individual nino from session")
+              )
+            ))
+          }
+        } else {
+          for {
+            selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
+          } yield {
+            val taxYearSelectionIsNext = selectedTaxYear.map(_.accountingYear).contains(Next)
+            Ok(signUpComplete(
               taxYearSelectionIsNext = taxYearSelectionIsNext,
               postAction = routes.ConfirmationController.submit
-            )
+            ))
           }
-
-          Ok(view)
         }
+
       }
   }
 

@@ -16,9 +16,11 @@
 
 package controllers.individual.subscription
 
-import common.Constants.ITSASessionKeys
+import common.Constants.ITSASessionKeys.MANDATED_CURRENT_YEAR
+import config.featureswitch.FeatureSwitch.ConfirmationPage
+import connectors.individual.PreferencesFrontendConnector
 import controllers.ControllerBaseSpec
-import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.{any, eq => matches}
 import org.mockito.Mockito.{reset, when}
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.FakeRequest
@@ -26,10 +28,10 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockAccountingPeriodService, MockAuditingService, MockSubscriptionDetailsService, MockUserMatchingService}
 import uk.gov.hmrc.http.NotFoundException
-import utilities.TestModels.testSelectedTaxYearNext
+import utilities.TestModels.{testSelectedTaxYearCurrent, testSelectedTaxYearNext}
+import utilities.individual.TestConstants.testNino
 import views.html.individual.incometax.subscription.{SignUpComplete, SignUpConfirmation}
 
-import java.time.LocalDateTime
 import scala.concurrent.Future
 
 class ConfirmationControllerSpec extends ControllerBaseSpec
@@ -40,9 +42,13 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
 
   val mockSignUpComplete: SignUpComplete = mock[SignUpComplete]
   val mockSignUpConfirmation: SignUpConfirmation = mock[SignUpConfirmation]
+  val mockPreferencesFrontendConnector: PreferencesFrontendConnector = mock[PreferencesFrontendConnector]
 
   override def beforeEach(): Unit = {
     reset(mockSignUpComplete)
+    reset(mockSignUpConfirmation)
+    reset(mockPreferencesFrontendConnector)
+    disable(ConfirmationPage)
     super.beforeEach()
   }
 
@@ -51,7 +57,8 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
     mockAuthService,
     MockSubscriptionDetailsService,
     mockSignUpComplete,
-    mockSignUpConfirmation
+    mockSignUpConfirmation,
+    mockPreferencesFrontendConnector
   )
 
   val taxQuarter1: (String, String) = ("agent.sign-up.complete.julyUpdate", "2020")
@@ -68,42 +75,183 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
     "submit" -> TestConfirmationController.submit
   )
 
-  implicit class SessionUtil[T](fakeRequest: FakeRequest[T]) {
-    def addStartTime(time: LocalDateTime): FakeRequest[T] = fakeRequest.withSession(
-      (fakeRequest.session.data + (ITSASessionKeys.StartTime -> time.toString)).toSeq: _*
-    )
-  }
-
-  "show" when {
-    val startTime: LocalDateTime = LocalDateTime.now()
-    "the user is in confirmation journey state" should {
-      "get the ID from Subscription Details  if the user is enrolled" in {
-        mockAuthEnrolled()
-        mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
-
-        when(mockSignUpComplete(ArgumentMatchers.eq(true), ArgumentMatchers.any())
-        (ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(HtmlFormat.empty)
-
-        val result: Future[Result] = TestConfirmationController.show(subscriptionRequest.addStartTime(startTime))
-
-        status(result) mustBe OK
-      }
-
-      "submitted is not in session" should {
-        "return a NotFoundException" in {
-          val result = TestConfirmationController.show(subscriptionRequest)
-
-          intercept[NotFoundException](await(result))
-        }
-      }
-
-      "return not found if the user is not enrolled" in {
+  "show" must {
+    "return a not found exception" when {
+      "the user is not enrolled" in {
         val result = TestConfirmationController.show(subscriptionRequest)
 
         intercept[NotFoundException](await(result)).message mustBe "AuthPredicates.enrolledPredicate"
       }
     }
+  }
 
+  "show" when {
+    "the confirmation page feature switch is disabled" must {
+      "return the sign up complete page" when {
+        "the user signed up for the current tax year" in {
+          mockAuthEnrolled()
+          mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
+
+          when(mockSignUpComplete(matches(false), matches(routes.ConfirmationController.submit))(any(), any()))
+            .thenReturn(HtmlFormat.empty)
+
+          val result: Future[Result] = TestConfirmationController.show(subscriptionRequest)
+
+          status(result) mustBe OK
+          contentType(result) mustBe Some(HTML)
+        }
+        "the user signed up for the next tax year" in {
+          mockAuthEnrolled()
+          mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
+
+          when(mockSignUpComplete(matches(true), matches(routes.ConfirmationController.submit))(any(), any()))
+            .thenReturn(HtmlFormat.empty)
+
+          val result: Future[Result] = TestConfirmationController.show(subscriptionRequest)
+
+          status(result) mustBe OK
+          contentType(result) mustBe Some(HTML)
+        }
+      }
+    }
+    "the confirmation page feature switch is enabled" must {
+      "return the sign up confirmation page" when {
+        "the user signed up for the current tax year" when {
+          "the user is mandated for current year" when {
+            "the user has no digital preference available" in {
+              enable(ConfirmationPage)
+
+              mockAuthEnrolled()
+              mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
+              when(mockPreferencesFrontendConnector.getOptedInStatus(any())) thenReturn Future.successful(None)
+              when(mockSignUpConfirmation(matches(true), matches(false), any(), matches(testNino))(any(), any(), any()))
+                .thenReturn(HtmlFormat.empty)
+
+              val result: Future[Result] = TestConfirmationController.show(subscriptionRequest.withSession(MANDATED_CURRENT_YEAR -> "true"))
+
+              status(result) mustBe OK
+              contentType(result) mustBe Some(HTML)
+            }
+            "the user has a paper preference" in {
+              enable(ConfirmationPage)
+
+              mockAuthEnrolled()
+              mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
+              when(mockPreferencesFrontendConnector.getOptedInStatus(any())) thenReturn Future.successful(Some(false))
+              when(mockSignUpConfirmation(matches(true), matches(false), any(), matches(testNino))(any(), any(), any()))
+                .thenReturn(HtmlFormat.empty)
+
+              val result: Future[Result] = TestConfirmationController.show(subscriptionRequest.withSession(MANDATED_CURRENT_YEAR -> "true"))
+
+              status(result) mustBe OK
+              contentType(result) mustBe Some(HTML)
+            }
+            "the user has a digital preference" in {
+              enable(ConfirmationPage)
+
+              mockAuthEnrolled()
+              mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
+              when(mockPreferencesFrontendConnector.getOptedInStatus(any())) thenReturn Future.successful(Some(true))
+              when(mockSignUpConfirmation(matches(true), matches(false), any(), matches(testNino))(any(), any(), any()))
+                .thenReturn(HtmlFormat.empty)
+
+              val result: Future[Result] = TestConfirmationController.show(subscriptionRequest.withSession(MANDATED_CURRENT_YEAR -> "true"))
+
+              status(result) mustBe OK
+              contentType(result) mustBe Some(HTML)
+            }
+          }
+          "the user is not mandated for current year" when {
+            "the user has no digital preference available" in {
+              enable(ConfirmationPage)
+
+              mockAuthEnrolled()
+              mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
+              when(mockPreferencesFrontendConnector.getOptedInStatus(any())) thenReturn Future.successful(None)
+              when(mockSignUpConfirmation(matches(false), matches(false), any(), matches(testNino))(any(), any(), any()))
+                .thenReturn(HtmlFormat.empty)
+
+              val result: Future[Result] = TestConfirmationController.show(subscriptionRequest)
+
+              status(result) mustBe OK
+              contentType(result) mustBe Some(HTML)
+            }
+            "the user has a paper preference" in {
+              enable(ConfirmationPage)
+
+              mockAuthEnrolled()
+              mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
+              when(mockPreferencesFrontendConnector.getOptedInStatus(any())) thenReturn Future.successful(Some(false))
+              when(mockSignUpConfirmation(matches(false), matches(false), any(), matches(testNino))(any(), any(), any()))
+                .thenReturn(HtmlFormat.empty)
+
+              val result: Future[Result] = TestConfirmationController.show(subscriptionRequest)
+
+              status(result) mustBe OK
+              contentType(result) mustBe Some(HTML)
+            }
+            "the user has a digital preference" in {
+              enable(ConfirmationPage)
+
+              mockAuthEnrolled()
+              mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
+              when(mockPreferencesFrontendConnector.getOptedInStatus(any())) thenReturn Future.successful(Some(true))
+              when(mockSignUpConfirmation(matches(false), matches(false), any(), matches(testNino))(any(), any(), any()))
+                .thenReturn(HtmlFormat.empty)
+
+              val result: Future[Result] = TestConfirmationController.show(subscriptionRequest)
+
+              status(result) mustBe OK
+              contentType(result) mustBe Some(HTML)
+            }
+          }
+        }
+        "the user signed up for the next tax year" when {
+          "the user has no digital preference available" in {
+            enable(ConfirmationPage)
+
+            mockAuthEnrolled()
+            mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
+            when(mockPreferencesFrontendConnector.getOptedInStatus(any())) thenReturn Future.successful(None)
+            when(mockSignUpConfirmation(matches(false), matches(true), any(), matches(testNino))(any(), any(), any()))
+              .thenReturn(HtmlFormat.empty)
+
+            val result: Future[Result] = TestConfirmationController.show(subscriptionRequest)
+
+            status(result) mustBe OK
+            contentType(result) mustBe Some(HTML)
+          }
+          "the user has a paper preference" in {
+            enable(ConfirmationPage)
+
+            mockAuthEnrolled()
+            mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
+            when(mockPreferencesFrontendConnector.getOptedInStatus(any())) thenReturn Future.successful(Some(false))
+            when(mockSignUpConfirmation(matches(false), matches(true), any(), matches(testNino))(any(), any(), any()))
+              .thenReturn(HtmlFormat.empty)
+
+            val result: Future[Result] = TestConfirmationController.show(subscriptionRequest)
+
+            status(result) mustBe OK
+            contentType(result) mustBe Some(HTML)
+          }
+          "the user has a digital preference" in {
+            enable(ConfirmationPage)
+
+            mockAuthEnrolled()
+            mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
+            when(mockPreferencesFrontendConnector.getOptedInStatus(any())) thenReturn Future.successful(Some(true))
+            when(mockSignUpConfirmation(matches(false), matches(true), any(), matches(testNino))(any(), any(), any()))
+              .thenReturn(HtmlFormat.empty)
+
+            val result: Future[Result] = TestConfirmationController.show(subscriptionRequest)
+
+            status(result) mustBe OK
+            contentType(result) mustBe Some(HTML)
+          }
+        }
+      }
+    }
   }
 
   "submit" should {
