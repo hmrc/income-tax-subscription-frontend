@@ -290,7 +290,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
                   val result = await(callSubmit(controller))
 
                   status(result) mustBe SEE_OTHER
-                  redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
+                  redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show.url)
 
                   val session = result.session(request)
 
@@ -317,7 +317,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
                     val result = await(callSubmit(controller))
 
                     status(result) mustBe SEE_OTHER
-                    redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
+                    redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show.url)
 
                     val session = result.session(request)
 
@@ -343,7 +343,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
                     val result = await(callSubmit(controller))
 
                     status(result) mustBe SEE_OTHER
-                    redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
+                    redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show.url)
 
                     val session = result.session(request)
 

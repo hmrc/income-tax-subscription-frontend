@@ -1,6 +1,7 @@
 
 package controllers.agent.eligibility
 
+import common.Constants.ITSASessionKeys
 import forms.agent.AccountingPeriodCheckForm
 import helpers.IntegrationTestConstants.{testFormattedNino, testFullName}
 import helpers.agent.ComponentSpecBase
@@ -109,20 +110,36 @@ class AccountingPeriodCheckControllerISpec extends ComponentSpecBase {
     }
   }
 
-  class PostSetup(answer: Option[YesNo]) {
+  class PostSetup(answer: Option[YesNo], eligibleNextYearOnly: Boolean = false) {
     AuthStub.stubAuthSuccess()
 
-    val response: WSResponse = IncomeTaxSubscriptionFrontend.submitAccountingPeriodCheck(answer)
+    val response: WSResponse = IncomeTaxSubscriptionFrontend.submitAccountingPeriodCheck(
+      request = answer,
+      sessionData = if(eligibleNextYearOnly) {
+        ClientData.basicClientData ++ Map(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "true")
+      } else {
+        ClientData.basicClientData
+      }
+    )
   }
 
   "POST /client/eligibility/accounting-period-check" should {
 
-    "return SEE_OTHER when selecting yes and an audit has been sent" in new PostSetup(Some(Yes)) {
-      verifyAudit()
-      response must have(
-        httpStatus(SEE_OTHER),
-        redirectURI(controllers.agent.routes.HomeController.home.url)
-      )
+    "return SEE_OTHER when selecting yes and an audit has been sent" when {
+      "the user is eligible for next year only" in new PostSetup(Some(Yes), true) {
+        verifyAudit()
+        response must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
+        )
+      }
+      "the user is eligible for all years" in new PostSetup(Some(Yes)) {
+        verifyAudit()
+        response must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(controllers.agent.routes.HomeController.home.url)
+        )
+      }
     }
 
     "return SEE_OTHER when selecting No and an audit has been sent" in new PostSetup(Some(No)) {
