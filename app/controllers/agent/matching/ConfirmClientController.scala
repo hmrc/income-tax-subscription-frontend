@@ -202,7 +202,7 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
           case EligibilityStatus(thisYear, _, prepop) =>
             handlePrepop(reference, prepop) flatMap { _ =>
               withMandationStatus(nino, utr) { mandationStatus =>
-                goToSignUpClient(thisYear)
+                goToSignUpClient()
                   .withJourneyState(AgentUserMatched)
                   .addingToSession(ITSASessionKeys.NINO -> nino)
                   .addingToSession(ITSASessionKeys.UTR -> utr)
@@ -218,12 +218,8 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
     }
   }
 
-  private def goToSignUpClient(thisYear: Boolean): Result = {
-    if (thisYear) {
+  private def goToSignUpClient(): Result = {
       Redirect(controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show)
-    } else {
-      Redirect(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show)
-    }
   }
 
 
