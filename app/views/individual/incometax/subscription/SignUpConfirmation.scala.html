@@ -36,7 +36,7 @@
     hmrcNewTabLinkHelper: HmrcNewTabLinkHelper
 )
 
-@(mandatedCurrentYear: Boolean, taxYearSelectionIsNext: Boolean, individualUserNameMaybe: Option[String], individualUserNino: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(mandatedCurrentYear: Boolean, taxYearSelectionIsNext: Boolean, individualUserNameMaybe: Option[String], individualUserNino: String, preference: Option[Boolean])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @principalMainTemplate(title = messages("sign-up-confirmation.heading")) {
 
@@ -235,14 +235,26 @@
             <p class="govuk-body">
                 @messages("sign-up-confirmation.section2.online-services.next-year.paragraph2")
             </p>
-            } else {
+        } else {
             <p class="govuk-body">
                 @messages("sign-up-confirmation.section2.online-services.paragraph")
             </p>
-            <p>
-                <a class="govuk-link" href="@{appConfig.onlineServiceAccountUrl}">@messages("sign-up-confirmation.section2.online-services.link")</a>
-            </p>
+
+            <a class="govuk-link" href="@{appConfig.onlineServiceAccountUrl}">@messages("sign-up-confirmation.section2.online-services.link")</a>
         }
+
+        @if(preference.contains(true)) {
+            <p class="govuk-body">
+                @messages("sign-up-confirmation.preference-set.online.para-one")
+            </p>
+            <p class="govuk-body">
+                @messages("sign-up-confirmation.preference-set.online.para-two")
+            </p>
+        } else if (preference.contains(false)) {
+            <p class="govuk-body">
+                @messages("sign-up-confirmation.preference-set.paper.para")
+            </p>
+        } else {}
     </div>
 }
 
