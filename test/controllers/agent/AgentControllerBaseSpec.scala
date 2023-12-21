@@ -16,7 +16,7 @@
 
 package controllers.agent
 
-import akka.actor.ActorSystem
+import org.apache.pekko.actor.ActorSystem
 import auth.agent.{AgentSignUp, AgentUserMatched, AgentUserMatching}
 import common.Constants.ITSASessionKeys
 import org.mockito.Mockito
