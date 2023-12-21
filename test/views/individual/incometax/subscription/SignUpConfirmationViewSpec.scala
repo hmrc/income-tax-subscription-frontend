@@ -47,22 +47,26 @@ class SignUpConfirmationViewSpec extends ViewSpec {
   private val endDate: DateModel = DateModel(getRandomDate, "4", "2011")
   val testAccountingPeriodModel: AccountingPeriodModel = AccountingPeriodModel(startDate, endDate)
 
-  def page(mandatedCurrentYear: Boolean, selectedTaxYearIsNext: Boolean, userNameMaybe: Option[String]): Html =
-    signUpConfirmation(mandatedCurrentYear, selectedTaxYearIsNext, userNameMaybe, testNino)
+  def page(mandatedCurrentYear: Boolean, selectedTaxYearIsNext: Boolean, userNameMaybe: Option[String], preference: Option[Boolean]): Html =
+    signUpConfirmation(mandatedCurrentYear, selectedTaxYearIsNext, userNameMaybe, testNino, preference)
 
-  def document(eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, selectedTaxYearIsNext: Boolean, userNameMaybe: Option[String] = Some(testName)): Document =
-    Jsoup.parse(page(mandatedCurrentYear, selectedTaxYearIsNext, userNameMaybe).body)
+  def document(mandatedCurrentYear: Boolean,
+               selectedTaxYearIsNext: Boolean,
+               userNameMaybe: Option[String] = Some(testName),
+               preference: Option[Boolean] = None): Document = {
+    Jsoup.parse(page(mandatedCurrentYear, selectedTaxYearIsNext, userNameMaybe, preference).body)
+  }
 
   "The sign up confirmation view" when {
     "the user is voluntary and eligible for this year" should {
-      def mainContent: Element = document(eligibleNextYearOnly = false, mandatedCurrentYear = false, mandatedNextYear = false, selectedTaxYearIsNext = false).mainContent
+      def mainContent(preference: Option[Boolean] = None): Element = document(mandatedCurrentYear = false, selectedTaxYearIsNext = false, preference = preference).mainContent
 
       "have a header panel" which {
         "contains the panel heading" in {
-          mainContent.select(".govuk-panel").select("h1").text() mustBe SignUpConfirmationMessages.panelHeading
+          mainContent().select(".govuk-panel").select("h1").text() mustBe SignUpConfirmationMessages.panelHeading
         }
         "contains the user name and nino" in {
-          mainContent.select(".govuk-panel")
+          mainContent().select(".govuk-panel")
             .select(".govuk-panel__body")
             .select("p")
             .get(0)
@@ -70,7 +74,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains the description" in {
-          mainContent.select(".govuk-panel")
+          mainContent().select(".govuk-panel")
             .select(".govuk-panel__body")
             .select("p")
             .get(1)
@@ -79,28 +83,28 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "contains what you must do heading" in {
-        mainContent.selectNth("h2", 1).text() mustBe SignUpConfirmationMessages.whatYouMustDoHeading
+        mainContent().selectNth("h2", 1).text() mustBe SignUpConfirmationMessages.whatYouMustDoHeading
       }
 
       "contains the find software section in first position" which {
 
         "contains a heading" in {
-          mainContent.selectHead("ol").selectNth("li", 1).selectHead("h3").text() contains SignUpConfirmationMessages.findSoftwareHeading
+          mainContent().selectHead("ol").selectNth("li", 1).selectHead("h3").text() contains SignUpConfirmationMessages.findSoftwareHeading
         }
 
         "contains a paragraph" in {
-          mainContent.selectHead("ol").selectNth("li", 1).selectHead("p").text() mustBe SignUpConfirmationMessages.findSoftwareParagraph
+          mainContent().selectHead("ol").selectNth("li", 1).selectHead("p").text() mustBe SignUpConfirmationMessages.findSoftwareParagraph
         }
 
         "contains a link" in {
-          val link = mainContent.selectNth(".govuk-link", 1)
+          val link = mainContent().selectNth(".govuk-link", 1)
           link.attr("href") mustBe "https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax"
           link.text mustBe SignUpConfirmationMessages.findSoftwareLink
         }
       }
 
       "have a quarterly updates section" which {
-        def quarterlySection: Element = mainContent.selectHead("ol").selectNth("li", 2)
+        def quarterlySection: Element = mainContent().selectHead("ol").selectNth("li", 2)
 
         "contains a heading" in {
           quarterlySection.selectHead("h3").text() contains SignUpConfirmationMessages.quarterlyUpdatesHeading
@@ -154,7 +158,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "have end of period section" which {
-        def endOfPeriodSection: Element = mainContent.selectHead("ol > li:nth-of-type(3)")
+        def endOfPeriodSection: Element = mainContent().selectHead("ol > li:nth-of-type(3)")
 
         "contains a heading" in {
           endOfPeriodSection.selectHead("h3").text() contains SignUpConfirmationMessages.endOfPeriodStatementHeading
@@ -166,7 +170,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "have final declaration section" which {
-        def finalDeclarationSection: Element = mainContent.selectHead("ol > li:nth-of-type(4)")
+        def finalDeclarationSection: Element = mainContent().selectHead("ol > li:nth-of-type(4)")
 
         "contains a heading" in {
           finalDeclarationSection.selectHead("h3").text() contains SignUpConfirmationMessages.finalDeclarationCurrentYearHeading
@@ -177,40 +181,54 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
       }
 
-      "contains the online HMRC services section in second position" which {
+      "contains the online HMRC services section" which {
+        def checkOnlineSection(preference: Option[Boolean] = None): Element = mainContent(preference).selectHead("#check-online-section")
 
         "contains a heading" in {
-          mainContent.selectHead("#check-online-section").selectHead("h2").text mustBe SignUpConfirmationMessages.onlineServicesHeading
+          checkOnlineSection().selectHead("h2").text mustBe SignUpConfirmationMessages.onlineServicesHeading
         }
 
-        "contains a paragraph" in {
-          mainContent.selectHead("#check-online-section").selectHead("p").text() mustBe SignUpConfirmationMessages.onlineServicesThisYearParagraph
+        "contains a first paragraph" in {
+          checkOnlineSection().selectHead("p").text() mustBe SignUpConfirmationMessages.onlineServicesThisYearParagraph
         }
 
         "contains a link" in {
-          val link = mainContent.selectHead("#check-online-section").selectHead("a.govuk-link")
-          link.attr("href") mustBe "https://www.tax.service.gov.uk/account"
+          val link = checkOnlineSection().selectHead("a")
+          link.attr("href") mustBe appConfig.onlineServiceAccountUrl
           link.text mustBe SignUpConfirmationMessages.onlineServicesLink
+        }
+
+        "has no retrieved preference content when no preference was provided to the view" in {
+          checkOnlineSection().selectOptionalNth("p", 2) mustBe None
+        }
+
+        "has an online preference when their opt in preference was true" in {
+          checkOnlineSection(preference = Some(true)).selectNth("p", 2).text mustBe SignUpConfirmationMessages.onlinePreferenceParaOne
+          checkOnlineSection(preference = Some(true)).selectNth("p", 3).text mustBe SignUpConfirmationMessages.onlinePreferenceParaTwo
+        }
+
+        "has a paper preference when their opt in preference was false " in {
+          checkOnlineSection(preference = Some(false)).selectNth("p", 2).text mustBe SignUpConfirmationMessages.paperPreferencePara
         }
       }
 
 
       "have a button to print the page" in {
-        mainContent.selectHead(".print-link").text() mustBe SignUpConfirmationMessages.printThisPage
-        mainContent.selectHead(".print-link").attr("href") mustBe "javascript:window.print()"
+        mainContent().selectHead(".print-link").text() mustBe SignUpConfirmationMessages.printThisPage
+        mainContent().selectHead(".print-link").attr("href") mustBe "javascript:window.print()"
       }
     }
 
     "the user is voluntary and eligible for next year only" should {
-      def mainContent: Element = document(eligibleNextYearOnly = true, mandatedCurrentYear = false, mandatedNextYear = false, selectedTaxYearIsNext = true).mainContent
+      def mainContent(preference: Option[Boolean] = None): Element = document(mandatedCurrentYear = false, selectedTaxYearIsNext = true, preference = preference).mainContent
 
       "have a header panel" which {
         "contains the panel heading" in {
-          mainContent.select(".govuk-panel").select("h1").text() mustBe SignUpConfirmationMessages.panelHeading
+          mainContent().select(".govuk-panel").select("h1").text() mustBe SignUpConfirmationMessages.panelHeading
         }
 
         "contains the user name and nino" in {
-          mainContent.select(".govuk-panel")
+          mainContent().select(".govuk-panel")
             .select(".govuk-panel__body")
             .select("p")
             .get(0)
@@ -218,7 +236,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains the description" in {
-          mainContent.select(".govuk-panel")
+          mainContent().select(".govuk-panel")
             .select(".govuk-panel__body")
             .select("p")
             .get(1)
@@ -227,36 +245,36 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "contains what you will have to do heading" in {
-        mainContent.selectNth("h2", 1).text() mustBe SignUpConfirmationMessages.whatYouMustDoHeading
+        mainContent().selectNth("h2", 1).text() mustBe SignUpConfirmationMessages.whatYouMustDoHeading
       }
 
       "have Self Tax Assessment section" which {
         "contains a heading" in {
-          mainContent.selectHead("ol").selectNth("li", 1).selectHead("h3").text() contains SignUpConfirmationMessages.submitSelfAssessmentHeading
+          mainContent().selectHead("ol").selectNth("li", 1).selectHead("h3").text() contains SignUpConfirmationMessages.submitSelfAssessmentHeading
         }
 
         "contains a paragraph" in {
-          mainContent.selectHead("ol").selectNth("li", 1).selectHead("p").text() mustBe SignUpConfirmationMessages.submitSelfAssessmentPara
+          mainContent().selectHead("ol").selectNth("li", 1).selectHead("p").text() mustBe SignUpConfirmationMessages.submitSelfAssessmentPara
         }
       }
 
       "have Get prepared section" which {
         "contains a heading" in {
-          mainContent.selectHead("ol").selectNth("li", 2).selectHead("h3").text() contains SignUpConfirmationMessages.gettingPreparedHeading
+          mainContent().selectHead("ol").selectNth("li", 2).selectHead("h3").text() contains SignUpConfirmationMessages.gettingPreparedHeading
         }
 
         "contains a paragraph" in {
-          mainContent.selectHead("ol").selectNth("li", 2).selectHead("p").text() mustBe SignUpConfirmationMessages.gettingPreparedParagraph
+          mainContent().selectHead("ol").selectNth("li", 2).selectHead("p").text() mustBe SignUpConfirmationMessages.gettingPreparedParagraph
         }
 
         "contains a link" in {
-          mainContent.selectHead("ol").selectNth("li", 2).selectHead("a").text() mustBe SignUpConfirmationMessages.gettingPreparedLink
-          mainContent.selectHead("a").attr("href") mustBe "https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax"
+          mainContent().selectHead("ol").selectNth("li", 2).selectHead("a").text() mustBe SignUpConfirmationMessages.gettingPreparedLink
+          mainContent().selectHead("a").attr("href") mustBe "https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax"
         }
       }
 
       "have a quarterly updates section" which {
-        def quarterlySection: Element = mainContent.selectHead("ol").selectNth("li", 3)
+        def quarterlySection: Element = mainContent().selectHead("ol").selectNth("li", 3)
 
         "contains a heading" in {
           quarterlySection.selectHead("h3").text() contains SignUpConfirmationMessages.quarterlyUpdatesHeading
@@ -306,7 +324,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "have end of period section" which {
-        def endOfPeriodSection: Element = mainContent.selectHead("ol > li:nth-of-type(4)")
+        def endOfPeriodSection: Element = mainContent().selectHead("ol > li:nth-of-type(4)")
 
         "contains a heading" in {
           endOfPeriodSection.selectHead("h3").text() contains SignUpConfirmationMessages.endOfPeriodStatementHeading
@@ -318,7 +336,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "have final declaration section" which {
-        def finalDeclarationSection: Element = mainContent.selectHead("ol > li:nth-of-type(5)")
+        def finalDeclarationSection: Element = mainContent().selectHead("ol > li:nth-of-type(5)")
 
         "contains a heading" in {
           finalDeclarationSection.selectHead("h3").text() contains SignUpConfirmationMessages.finalDeclarationNextYearHeading
@@ -329,22 +347,56 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
       }
 
+      "contains the online HMRC services section" which {
+        def checkOnlineSection(preference: Option[Boolean] = None): Element = mainContent(preference).selectHead("#check-online-section")
+
+        "contains a heading" in {
+          checkOnlineSection().selectHead("h2").text mustBe SignUpConfirmationMessages.onlineServicesHeading
+        }
+
+        "contains a first paragraph with a link" in {
+          val para: Element = checkOnlineSection().selectNth("p", 1)
+          val link: Element = para.selectHead("a")
+
+          para.text mustBe SignUpConfirmationMessages.onlineServicesNextYearParaOne
+          link.text mustBe SignUpConfirmationMessages.onlineServicesNextYearLinkText
+          link.attr("href") mustBe appConfig.onlineServiceAccountUrl
+        }
+
+        "contains a second paragraph" in {
+          checkOnlineSection().selectNth("p", 2).text mustBe SignUpConfirmationMessages.onlineServicesNextYearParaTwo
+        }
+
+        "has no retrieved preference content when no preference was provided to the view" in {
+          checkOnlineSection().selectOptionalNth("p", 3) mustBe None
+        }
+
+        "has an online preference when their opt in preference was true" in {
+          checkOnlineSection(preference = Some(true)).selectNth("p", 3).text mustBe SignUpConfirmationMessages.onlinePreferenceParaOne
+          checkOnlineSection(preference = Some(true)).selectNth("p", 4).text mustBe SignUpConfirmationMessages.onlinePreferenceParaTwo
+        }
+
+        "has a paper preference when their opt in preference was false " in {
+          checkOnlineSection(preference = Some(false)).selectNth("p", 3).text mustBe SignUpConfirmationMessages.paperPreferencePara
+        }
+      }
+
       "have a button to print the page" in {
-        mainContent.selectHead(".print-link").text() mustBe SignUpConfirmationMessages.printThisPage
-        mainContent.selectHead(".print-link").attr("href") mustBe "javascript:window.print()"
+        mainContent().selectHead(".print-link").text() mustBe SignUpConfirmationMessages.printThisPage
+        mainContent().selectHead(".print-link").attr("href") mustBe "javascript:window.print()"
       }
     }
 
     "the user is mandated and eligible for next year only" should {
-      def mainContent: Element = document(eligibleNextYearOnly = true, mandatedCurrentYear = false, mandatedNextYear = false, selectedTaxYearIsNext = true).mainContent
+      def mainContent(preference: Option[Boolean] = None): Element = document(mandatedCurrentYear = false, selectedTaxYearIsNext = true, preference = preference).mainContent
 
       "have a header panel" which {
         "contains the panel heading" in {
-          mainContent.select(".govuk-panel").select("h1").text() mustBe SignUpConfirmationMessages.panelHeading
+          mainContent().select(".govuk-panel").select("h1").text() mustBe SignUpConfirmationMessages.panelHeading
         }
 
         "contains the user name and nino" in {
-          mainContent.select(".govuk-panel")
+          mainContent().select(".govuk-panel")
             .select(".govuk-panel__body")
             .select("p")
             .get(0)
@@ -352,7 +404,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains the description" in {
-          mainContent.select(".govuk-panel")
+          mainContent().select(".govuk-panel")
             .select(".govuk-panel__body")
             .select("p")
             .get(1)
@@ -361,36 +413,36 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "contains what you will have to do heading" in {
-        mainContent.selectNth("h2", 1).text() mustBe SignUpConfirmationMessages.whatYouMustDoHeading
+        mainContent().selectNth("h2", 1).text() mustBe SignUpConfirmationMessages.whatYouMustDoHeading
       }
 
       "have Self Tax Assessment section" which {
         "contains a heading" in {
-          mainContent.selectHead("ol").selectNth("li", 1).selectHead("h3").text() contains SignUpConfirmationMessages.submitSelfAssessmentHeading
+          mainContent().selectHead("ol").selectNth("li", 1).selectHead("h3").text() contains SignUpConfirmationMessages.submitSelfAssessmentHeading
         }
 
         "contains a paragraph" in {
-          mainContent.selectHead("ol").selectNth("li", 1).selectHead("p").text() mustBe SignUpConfirmationMessages.submitSelfAssessmentPara
+          mainContent().selectHead("ol").selectNth("li", 1).selectHead("p").text() mustBe SignUpConfirmationMessages.submitSelfAssessmentPara
         }
       }
 
       "have Get prepared section" which {
         "contains a heading" in {
-          mainContent.selectHead("ol").selectNth("li", 2).selectHead("h3").text() contains SignUpConfirmationMessages.gettingPreparedHeading
+          mainContent().selectHead("ol").selectNth("li", 2).selectHead("h3").text() contains SignUpConfirmationMessages.gettingPreparedHeading
         }
 
         "contains a paragraph" in {
-          mainContent.selectHead("ol").selectNth("li", 2).selectHead("p").text() mustBe SignUpConfirmationMessages.gettingPreparedParagraph
+          mainContent().selectHead("ol").selectNth("li", 2).selectHead("p").text() mustBe SignUpConfirmationMessages.gettingPreparedParagraph
         }
 
         "contains a link" in {
-          mainContent.selectHead("ol").selectNth("li", 2).selectHead("a").text() mustBe SignUpConfirmationMessages.gettingPreparedLink
-          mainContent.selectHead("a").attr("href") mustBe "https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax"
+          mainContent().selectHead("ol").selectNth("li", 2).selectHead("a").text() mustBe SignUpConfirmationMessages.gettingPreparedLink
+          mainContent().selectHead("a").attr("href") mustBe "https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax"
         }
       }
 
       "have a quarterly updates section" which {
-        def quarterlySection: Element = mainContent.selectHead("ol").selectNth("li", 3)
+        def quarterlySection: Element = mainContent().selectHead("ol").selectNth("li", 3)
 
         "contains a heading" in {
           quarterlySection.selectHead("h3").text() contains SignUpConfirmationMessages.quarterlyUpdatesHeading
@@ -440,7 +492,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "have end of period section" which {
-        def endOfPeriodSection: Element = mainContent.selectHead("ol > li:nth-of-type(4)")
+        def endOfPeriodSection: Element = mainContent().selectHead("ol > li:nth-of-type(4)")
 
         "contains a heading" in {
           endOfPeriodSection.selectHead("h3").text() contains SignUpConfirmationMessages.endOfPeriodStatementHeading
@@ -452,7 +504,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "have final declaration section" which {
-        def finalDeclarationSection: Element = mainContent.selectHead("ol > li:nth-of-type(5)")
+        def finalDeclarationSection: Element = mainContent().selectHead("ol > li:nth-of-type(5)")
 
         "contains a heading" in {
           finalDeclarationSection.selectHead("h3").text() contains SignUpConfirmationMessages.finalDeclarationNextYearHeading
@@ -463,22 +515,57 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
       }
 
+      "contains the online HMRC services section" which {
+        def checkOnlineSection(preference: Option[Boolean] = None): Element = mainContent(preference).selectHead("#check-online-section")
+
+        "contains a heading" in {
+          checkOnlineSection().selectHead("h2").text mustBe SignUpConfirmationMessages.onlineServicesHeading
+        }
+
+        "contains a first paragraph with a link" in {
+          val para: Element = checkOnlineSection().selectNth("p", 1)
+          val link: Element = para.selectHead("a")
+
+          para.text mustBe SignUpConfirmationMessages.onlineServicesNextYearParaOne
+          link.text mustBe SignUpConfirmationMessages.onlineServicesNextYearLinkText
+          link.attr("href") mustBe appConfig.onlineServiceAccountUrl
+        }
+
+        "contains a second paragraph" in {
+          checkOnlineSection().selectNth("p", 2).text mustBe SignUpConfirmationMessages.onlineServicesNextYearParaTwo
+        }
+
+
+        "has no retrieved preference content when no preference was provided to the view" in {
+          checkOnlineSection().selectOptionalNth("p", 3) mustBe None
+        }
+
+        "has an online preference when their opt in preference was true" in {
+          checkOnlineSection(preference = Some(true)).selectNth("p", 3).text mustBe SignUpConfirmationMessages.onlinePreferenceParaOne
+          checkOnlineSection(preference = Some(true)).selectNth("p", 4).text mustBe SignUpConfirmationMessages.onlinePreferenceParaTwo
+        }
+
+        "has a paper preference when their opt in preference was false " in {
+          checkOnlineSection(preference = Some(false)).selectNth("p", 3).text mustBe SignUpConfirmationMessages.paperPreferencePara
+        }
+      }
+
       "have a button to print the page" in {
-        mainContent.selectHead(".print-link").text() mustBe SignUpConfirmationMessages.printThisPage
-        mainContent.selectHead(".print-link").attr("href") mustBe "javascript:window.print()"
+        mainContent().selectHead(".print-link").text() mustBe SignUpConfirmationMessages.printThisPage
+        mainContent().selectHead(".print-link").attr("href") mustBe "javascript:window.print()"
       }
     }
 
     "the user is mandated and eligible for this year" should {
-      def mainContent: Element = document(eligibleNextYearOnly = false, mandatedCurrentYear = true, mandatedNextYear = false, selectedTaxYearIsNext = false).mainContent
+      def mainContent(preference: Option[Boolean] = None): Element = document(mandatedCurrentYear = true, selectedTaxYearIsNext = false, preference = preference).mainContent
 
       "have a header panel" which {
         "contains the panel heading" in {
-          mainContent.select(".govuk-panel").select("h1").text() mustBe SignUpConfirmationMessages.panelHeading
+          mainContent().select(".govuk-panel").select("h1").text() mustBe SignUpConfirmationMessages.panelHeading
         }
 
         "contains the user name and nino" in {
-          mainContent.select(".govuk-panel")
+          mainContent().select(".govuk-panel")
             .select(".govuk-panel__body")
             .select("p")
             .get(0)
@@ -486,7 +573,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains the description" in {
-          mainContent.select(".govuk-panel")
+          mainContent().select(".govuk-panel")
             .select(".govuk-panel__body")
             .select("p")
             .get(1)
@@ -495,28 +582,28 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "contains what you will have to do heading" in {
-        mainContent.selectNth("h2", 1).text() mustBe SignUpConfirmationMessages.whatYouMustDoHeading
+        mainContent().selectNth("h2", 1).text() mustBe SignUpConfirmationMessages.whatYouMustDoHeading
       }
 
       "contains the find software section in first position" which {
 
         "contains a heading" in {
-          mainContent.selectHead("ol").selectNth("li", 1).selectHead("h3").text() contains SignUpConfirmationMessages.findSoftwareHeading
+          mainContent().selectHead("ol").selectNth("li", 1).selectHead("h3").text() contains SignUpConfirmationMessages.findSoftwareHeading
         }
 
         "contains a paragraph" in {
-          mainContent.selectHead("ol").selectNth("li", 1).selectHead("p").text() mustBe SignUpConfirmationMessages.findSoftwareParagraph
+          mainContent().selectHead("ol").selectNth("li", 1).selectHead("p").text() mustBe SignUpConfirmationMessages.findSoftwareParagraph
         }
 
         "contains a link" in {
-          val link = mainContent.selectNth(".govuk-link", 1)
+          val link = mainContent().selectNth(".govuk-link", 1)
           link.attr("href") mustBe "https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax"
           link.text mustBe SignUpConfirmationMessages.findSoftwareLink
         }
       }
 
       "have a quarterly updates section" which {
-        def quarterlySection: Element = mainContent.selectHead("ol").selectNth("li", 2)
+        def quarterlySection: Element = mainContent().selectHead("ol").selectNth("li", 2)
 
         "contains a heading" in {
           quarterlySection.selectHead("h3").text() contains SignUpConfirmationMessages.quarterlyUpdatesHeading
@@ -565,7 +652,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "have end of period section" which {
-        def endOfPeriodSection: Element = mainContent.selectHead("ol > li:nth-of-type(3)")
+        def endOfPeriodSection: Element = mainContent().selectHead("ol > li:nth-of-type(3)")
 
         "contains a heading" in {
           endOfPeriodSection.selectHead("h3").text() contains SignUpConfirmationMessages.endOfPeriodStatementHeading
@@ -577,7 +664,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "have final declaration section" which {
-        def finalDeclarationSection: Element = mainContent.selectHead("ol > li:nth-of-type(4)")
+        def finalDeclarationSection: Element = mainContent().selectHead("ol > li:nth-of-type(4)")
 
         "contains a heading" in {
           finalDeclarationSection.selectHead("h3").text() contains SignUpConfirmationMessages.finalDeclarationCurrentYearHeading
@@ -589,7 +676,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "have Notification Panel" which {
-        def notificationBanner: Element = mainContent.selectHead(".govuk-notification-banner")
+        def notificationBanner: Element = mainContent().selectHead(".govuk-notification-banner")
 
         "contains Notification Header" in {
           notificationBanner.selectHead(".govuk-notification-banner__header").text mustBe SignUpConfirmationMessages.notificationBannerHeader
@@ -619,24 +706,41 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           }
         }
       }
-      "contains the online HMRC services section in second position" which {
+
+      "contains the online HMRC services section" which {
+        def checkOnlineSection(preference: Option[Boolean] = None): Element = mainContent(preference).selectHead("#check-online-section")
 
         "contains a heading" in {
-          mainContent.selectHead("#check-online-section").selectHead("h2").text() contains SignUpConfirmationMessages.onlineServicesHeading
+          checkOnlineSection().selectHead("h2").text mustBe SignUpConfirmationMessages.onlineServicesHeading
         }
 
-        "contains a paragraph" in {
-          mainContent.selectHead("#check-online-section").selectHead("p").text() mustBe SignUpConfirmationMessages.onlineServicesThisYearParagraph
+        "contains a first paragraph" in {
+          checkOnlineSection().selectHead("p").text() mustBe SignUpConfirmationMessages.onlineServicesThisYearParagraph
         }
 
         "contains a link" in {
-          mainContent.selectNth(".govuk-link", 3).attr("href") mustBe "https://www.tax.service.gov.uk/account"
+          val link = checkOnlineSection().selectHead("a")
+          link.attr("href") mustBe appConfig.onlineServiceAccountUrl
+          link.text mustBe SignUpConfirmationMessages.onlineServicesLink
+        }
+
+        "has no retrieved preference content when no preference was provided to the view" in {
+          checkOnlineSection().selectOptionalNth("p", 2) mustBe None
+        }
+
+        "has an online preference when their opt in preference was true" in {
+          checkOnlineSection(preference = Some(true)).selectNth("p", 2).text mustBe SignUpConfirmationMessages.onlinePreferenceParaOne
+          checkOnlineSection(preference = Some(true)).selectNth("p", 3).text mustBe SignUpConfirmationMessages.onlinePreferenceParaTwo
+        }
+
+        "has a paper preference when their opt in preference was false " in {
+          checkOnlineSection(preference = Some(false)).selectNth("p", 2).text mustBe SignUpConfirmationMessages.paperPreferencePara
         }
       }
 
       "have a button to print the page" in {
-        mainContent.selectHead(".print-link").text() mustBe SignUpConfirmationMessages.printThisPage
-        mainContent.selectHead(".print-link").attr("href") mustBe "javascript:window.print()"
+        mainContent().selectHead(".print-link").text() mustBe SignUpConfirmationMessages.printThisPage
+        mainContent().selectHead(".print-link").attr("href") mustBe "javascript:window.print()"
       }
     }
   }
@@ -669,10 +773,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val quarterlyUpdatesQuarterTypesPara = "The quarterly period dates are:"
     val quarterlyUpdatesQuarterTypesItemOne = "calendar quarters (for example, 1 April to 30 June)"
     val quarterlyUpdatesQuarterTypesItemTwo = "standard quarters (starts on the 6th date of each month)"
-    val quarterlyUpdatesParaTwo = "The deadline for your updates stays the same."
     val quarterlyUpdatesTableCaption = "Quarterly updates by the deadline"
-    val quarterlyUpdatesCalendarSectionParaOne = "You can choose to send updates by calendar quarter instead. For example, 1 April to 30 June instead of 6 April to 5 July."
-    val quarterlyUpdatesCalendarSectionParaTwo = "You need to select your preferred option using your compatible software, if it has this function, before you make your first quarterly update."
     val quarterlyUpdatesCalendarSectionLinkText = "Learn more about quarterly updates (opens in new tab)"
     val quarterlyUpdate = "Quarterly update"
     val deadline = "Deadline"
@@ -702,6 +803,14 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val onlineServicesHeading = "Check HMRC online services"
     val onlineServicesThisYearParagraph = "You can review or change the answers you have just entered, and to get updates."
     val onlineServicesLink = "Go to your HMRC online services account"
+
+    val onlineServicesNextYearLinkText = "HMRC online services account"
+    val onlineServicesNextYearParaOne = s"Go to your $onlineServicesNextYearLinkText to review or change the answers you have entered, and to get updates."
+    val onlineServicesNextYearParaTwo = "It may take a few hours for new information to appear."
+
+    val onlinePreferenceParaOne = "You have chosen to get your tax letters online."
+    val onlinePreferenceParaTwo = "You must verify your email address to confirm this. Select the link we sent by email to do this, if you have not already done so."
+    val paperPreferencePara = "You have chosen to get your tax letters by post. You can change this at anytime in your HMRC online account."
 
     val findSoftwareHeading = "Find software"
     val findSoftwareParagraph =

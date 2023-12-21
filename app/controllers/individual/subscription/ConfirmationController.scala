@@ -59,7 +59,8 @@ class ConfirmationController @Inject()(val auditingService: AuditingService,
               individualUserNameMaybe = IncomeTaxSAUser.fullName,
               individualUserNino = user.nino.getOrElse(
                 throw new Exception("[ConfirmationController][show]-could not retrieve individual nino from session")
-              )
+              ),
+              preference = preference
             ))
           }
         } else {

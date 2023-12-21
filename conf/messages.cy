@@ -389,6 +389,10 @@ sign-up-confirmation.section2.online-services.next-year.paragraph1   = Go to you
 sign-up-confirmation.section2.online-services.next-year.paragraph2   = It may take a few hours for new information to appear.  .. but in Welsh
 sign-up-confirmation.section2.online-services.next-year.link         = Ewch i’ch cyfrif gwasanaethau ar-lein CThEF
 
+sign-up-confirmation.preference-set.online.para-one                  = Rydych wedi dewis i gael eich llythyrau treth ar-lein.
+sign-up-confirmation.preference-set.online.para-two                  = Mae’n rhaid i chi ddilysu’ch cyfeiriad e-bost i gadarnhau hyn. Os nad ydych wedi gwneud hyn yn barod, dewiswch y cysylltiad a anfonwyd atoch drwy e-bost.
+sign-up-confirmation.preference-set.paper.para                       = Rydych wedi dewis cael eich llythyrau treth drwy’r post. Gallwch newid y dewis hwn ar unrhyw adeg yn eich cyfrif CThEF ar-lein.
+
 sign-up-confirmation.section2.find-software.heading                = Dod o hyd i feddalwedd
 sign-up-confirmation.section2.find-software.para-1                 = Cyn i chi allu defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, mae angen i chi ddewis meddalwedd a’i galluogi i ryngweithio â’r gwasanaeth hwn.
 sign-up-confirmation.section2.find-software.link                   = Dod o hyd i feddalwedd

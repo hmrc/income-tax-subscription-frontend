@@ -124,7 +124,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
               mockAuthEnrolled()
               mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
               when(mockPreferencesFrontendConnector.getOptedInStatus(any())) thenReturn Future.successful(None)
-              when(mockSignUpConfirmation(matches(true), matches(false), any(), matches(testNino))(any(), any(), any()))
+              when(mockSignUpConfirmation(matches(true), matches(false), any(), matches(testNino), matches(None))(any(), any(), any()))
                 .thenReturn(HtmlFormat.empty)
 
               val result: Future[Result] = TestConfirmationController.show(subscriptionRequest.withSession(MANDATED_CURRENT_YEAR -> "true"))
@@ -138,7 +138,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
               mockAuthEnrolled()
               mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
               when(mockPreferencesFrontendConnector.getOptedInStatus(any())) thenReturn Future.successful(Some(false))
-              when(mockSignUpConfirmation(matches(true), matches(false), any(), matches(testNino))(any(), any(), any()))
+              when(mockSignUpConfirmation(matches(true), matches(false), any(), matches(testNino), matches(Some(false)))(any(), any(), any()))
                 .thenReturn(HtmlFormat.empty)
 
               val result: Future[Result] = TestConfirmationController.show(subscriptionRequest.withSession(MANDATED_CURRENT_YEAR -> "true"))
@@ -152,7 +152,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
               mockAuthEnrolled()
               mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
               when(mockPreferencesFrontendConnector.getOptedInStatus(any())) thenReturn Future.successful(Some(true))
-              when(mockSignUpConfirmation(matches(true), matches(false), any(), matches(testNino))(any(), any(), any()))
+              when(mockSignUpConfirmation(matches(true), matches(false), any(), matches(testNino), matches(Some(true)))(any(), any(), any()))
                 .thenReturn(HtmlFormat.empty)
 
               val result: Future[Result] = TestConfirmationController.show(subscriptionRequest.withSession(MANDATED_CURRENT_YEAR -> "true"))
@@ -168,7 +168,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
               mockAuthEnrolled()
               mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
               when(mockPreferencesFrontendConnector.getOptedInStatus(any())) thenReturn Future.successful(None)
-              when(mockSignUpConfirmation(matches(false), matches(false), any(), matches(testNino))(any(), any(), any()))
+              when(mockSignUpConfirmation(matches(false), matches(false), any(), matches(testNino), matches(None))(any(), any(), any()))
                 .thenReturn(HtmlFormat.empty)
 
               val result: Future[Result] = TestConfirmationController.show(subscriptionRequest)
@@ -182,7 +182,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
               mockAuthEnrolled()
               mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
               when(mockPreferencesFrontendConnector.getOptedInStatus(any())) thenReturn Future.successful(Some(false))
-              when(mockSignUpConfirmation(matches(false), matches(false), any(), matches(testNino))(any(), any(), any()))
+              when(mockSignUpConfirmation(matches(false), matches(false), any(), matches(testNino), matches(Some(false)))(any(), any(), any()))
                 .thenReturn(HtmlFormat.empty)
 
               val result: Future[Result] = TestConfirmationController.show(subscriptionRequest)
@@ -196,7 +196,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
               mockAuthEnrolled()
               mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
               when(mockPreferencesFrontendConnector.getOptedInStatus(any())) thenReturn Future.successful(Some(true))
-              when(mockSignUpConfirmation(matches(false), matches(false), any(), matches(testNino))(any(), any(), any()))
+              when(mockSignUpConfirmation(matches(false), matches(false), any(), matches(testNino), matches(Some(true)))(any(), any(), any()))
                 .thenReturn(HtmlFormat.empty)
 
               val result: Future[Result] = TestConfirmationController.show(subscriptionRequest)
@@ -213,7 +213,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
             mockAuthEnrolled()
             mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
             when(mockPreferencesFrontendConnector.getOptedInStatus(any())) thenReturn Future.successful(None)
-            when(mockSignUpConfirmation(matches(false), matches(true), any(), matches(testNino))(any(), any(), any()))
+            when(mockSignUpConfirmation(matches(false), matches(true), any(), matches(testNino), matches(None))(any(), any(), any()))
               .thenReturn(HtmlFormat.empty)
 
             val result: Future[Result] = TestConfirmationController.show(subscriptionRequest)
@@ -227,7 +227,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
             mockAuthEnrolled()
             mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
             when(mockPreferencesFrontendConnector.getOptedInStatus(any())) thenReturn Future.successful(Some(false))
-            when(mockSignUpConfirmation(matches(false), matches(true), any(), matches(testNino))(any(), any(), any()))
+            when(mockSignUpConfirmation(matches(false), matches(true), any(), matches(testNino), matches(Some(false)))(any(), any(), any()))
               .thenReturn(HtmlFormat.empty)
 
             val result: Future[Result] = TestConfirmationController.show(subscriptionRequest)
@@ -241,7 +241,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
             mockAuthEnrolled()
             mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
             when(mockPreferencesFrontendConnector.getOptedInStatus(any())) thenReturn Future.successful(Some(true))
-            when(mockSignUpConfirmation(matches(false), matches(true), any(), matches(testNino))(any(), any(), any()))
+            when(mockSignUpConfirmation(matches(false), matches(true), any(), matches(testNino), matches(Some(true)))(any(), any(), any()))
               .thenReturn(HtmlFormat.empty)
 
             val result: Future[Result] = TestConfirmationController.show(subscriptionRequest)
