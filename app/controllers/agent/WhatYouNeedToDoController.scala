@@ -61,7 +61,7 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo)
         ),
         clientNino = formatNino(user.clientNino.getOrElse(
           throw new InternalServerException("[AccountingPeriodCheckController][show] - could not retrieve client nino from session")
-        )),
+        ))
       ))
   }
 

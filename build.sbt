@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import uk.gov.hmrc.DefaultBuildSettings
 import uk.gov.hmrc.DefaultBuildSettings.{addTestReportOption, defaultSettings, scalaSettings}
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin._
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
@@ -31,16 +32,16 @@ lazy val scoverageSettings = {
   )
 }
 
+ThisBuild / majorVersion := 1
+ThisBuild / scalaVersion := "2.13.12"
 lazy val microservice = Project(AppDependencies.appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin)
   .settings(scoverageSettings: _*)
-  .settings(scalaSettings: _*)
-  .settings(defaultSettings(): _*)
+  .settings(PlayKeys.playDefaultPort := 9561)
   .settings(
     Test / Keys.fork := true,
     Test / javaOptions += "-Dlogger.resource=logback-test.xml",
-    scalaVersion := "2.13.8",
     Test / parallelExecution := true
   )
   .settings(
@@ -49,19 +50,19 @@ lazy val microservice = Project(AppDependencies.appName, file("."))
     scalacOptions ++= Seq("-deprecation", "-feature"),
   )
   .settings(
-    libraryDependencies ++= (AppDependencies.compile ++ AppDependencies.test ++ AppDependencies.integrationTest),
+    libraryDependencies ++= (AppDependencies.compile ++ AppDependencies.test),
     retrieveManaged := true
   )
-  .configs(IntegrationTest)
-  .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
+
+lazy val it = project
+  .enablePlugins(PlayScala)
+  .dependsOn(microservice % "test->test") // the "test->test" allows reusing test code and test dependencies
+  .settings(DefaultBuildSettings.itSettings)
+  .settings(libraryDependencies ++= AppDependencies.integrationTest)
   .settings(
-    IntegrationTest / Keys.fork := true,
-    IntegrationTest / unmanagedSourceDirectories := (IntegrationTest / baseDirectory) (base => Seq(base / "it")).value,
-    addTestReportOption(IntegrationTest, "int-test-reports"),
-    IntegrationTest / javaOptions += "-Dlogger.resource=logback-test.xml",
-    IntegrationTest / parallelExecution := false)
-  .settings(majorVersion := 1)
-  .settings(resolvers += Resolver.jcenterRepo)
+    Keys.fork := true,
+    javaOptions += "-Dlogger.resource=logback-test.xml"
+  )
 
 TwirlKeys.templateImports ++= Seq(
   "uk.gov.hmrc.govukfrontend.views.html.components._",
@@ -71,11 +72,6 @@ TwirlKeys.templateImports ++= Seq(
   "uk.gov.hmrc.govukfrontend.views.html.components.implicits._"
 )
 
-lazy val results = taskKey[Unit]("Opens test results'")
-results := { "open target/test-reports/html-report/index.html" ! }
-Test / results := (results).value
 
-lazy val itResults = taskKey[Unit]("Opens it test results'")
-itResults := { "open target/int-test-reports/html-report/index.html" ! }
-IntegrationTest / results := (itResults).value
+
 

@@ -115,6 +115,6 @@ class YourIncomeSourceToSignUpController @Inject()(val yourIncomeSourceToSignUp:
       clientDetails = request.clientDetails,
       selfEmployments,
       ukProperty,
-      foreignProperty,
+      foreignProperty
     )
 }

@@ -69,14 +69,15 @@ class AccountingPeriodService @Inject()(currentDateProvider: CurrentDateProvider
       UpdateDeadline(
         AccountingPeriodModel(
           updateFrom = LocalDate.of(taxYear - 1, APRIL, SIXTH),
-          updateTo = LocalDate.of(taxYear - 1, JULY, FIFTH),
+          updateTo = LocalDate.of(taxYear - 1, JULY, FIFTH)
         ),
         deadline = LocalDate.of(taxYear - 1, AUGUST, FIFTH)
       ),
-      UpdateDeadline(AccountingPeriodModel(
-        updateFrom = LocalDate.of(taxYear - 1, JULY, SIXTH),
-        updateTo = LocalDate.of(taxYear - 1, OCTOBER, FIFTH)
-      ),
+      UpdateDeadline(
+        AccountingPeriodModel(
+          updateFrom = LocalDate.of(taxYear - 1, JULY, SIXTH),
+          updateTo = LocalDate.of(taxYear - 1, OCTOBER, FIFTH)
+        ),
         deadline = LocalDate.of(taxYear - 1, NOVEMBER, FIFTH)
       ),
       UpdateDeadline(
