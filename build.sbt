@@ -57,12 +57,8 @@ lazy val microservice = Project(AppDependencies.appName, file("."))
 lazy val it = project
   .enablePlugins(PlayScala)
   .dependsOn(microservice % "test->test") // the "test->test" allows reusing test code and test dependencies
-  .settings(DefaultBuildSettings.itSettings)
+  .settings(DefaultBuildSettings.itSettings())
   .settings(libraryDependencies ++= AppDependencies.integrationTest)
-  .settings(
-    Keys.fork := true,
-    javaOptions += "-Dlogger.resource=logback-test.xml"
-  )
 
 TwirlKeys.templateImports ++= Seq(
   "uk.gov.hmrc.govukfrontend.views.html.components._",
