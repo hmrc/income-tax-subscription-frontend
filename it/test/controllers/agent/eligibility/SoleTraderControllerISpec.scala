@@ -18,9 +18,8 @@ package controllers.agent.eligibility
 
 import forms.agent.{PropertyTradingStartDateForm, SoleTraderForm}
 import forms.submapping.YesNoMapping
-import helpers.IntegrationTestConstants.testFullName
+import helpers.IntegrationTestConstants.{testFormattedNino, testFullName}
 import helpers.agent.ComponentSpecBase
-import helpers.IntegrationTestConstants.testFormattedNino
 import helpers.agent.servicemocks.AuthStub
 import helpers.servicemocks.AuditStub.verifyAudit
 import models.{No, Yes, YesNo}

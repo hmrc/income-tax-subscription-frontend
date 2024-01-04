@@ -18,7 +18,7 @@ package controllers.individual.sps
 
 import auth.individual.SignUp
 import common.Constants.ITSASessionKeys
-import controllers.ControllerBaseSpec
+import controllers.individual.ControllerBaseSpec
 import play.api.http.Status.SEE_OTHER
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.FakeRequest

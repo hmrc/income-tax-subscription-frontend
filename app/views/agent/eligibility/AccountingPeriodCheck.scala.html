@@ -14,11 +14,10 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import views.html.templates.AgentMainTemplate
-@import views.html.helpers.injected.RadioHelper
+@import views.html.helpers.RadioHelper
 @import forms.agent.AccountingPeriodCheckForm
-@import views.html.helpers.injected.ContinueButton
+@import views.html.helpers.ContinueButton
 @import models.Yes
 @import models.No
 @import forms.submapping.YesNoMapping
@@ -32,7 +31,7 @@
     hmrcPageHeading: HmrcPageHeading
 )
 
-@(accountingPeriodCheckForm: Form[YesNo], postAction: Call, clientName: String, clientNino: String, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(accountingPeriodCheckForm: Form[YesNo], postAction: Call, clientName: String, clientNino: String, backUrl: String)(implicit request: Request[_], messages: Messages)
 
 @inputContent = {
     <p class="govuk-body">@messages("agent.accounting-period-check.hint")</p>

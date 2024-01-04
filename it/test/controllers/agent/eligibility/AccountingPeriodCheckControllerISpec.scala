@@ -34,7 +34,7 @@ class AccountingPeriodCheckControllerISpec extends ComponentSpecBase {
     val back: String = "Back"
 
     val heading: String = "Do your client’s business accounting periods all run from 6 April to 5 April?"
-    val caption: String =  s"$testFullName | $testFormattedNino"
+    val caption: String = s"$testFullName | $testFormattedNino"
     val hint: String = "The tax year runs from 6 April to 5 April. The accounting period for your client’s self-employment or property income needs to be the same if you would like to sign them up to this service."
     val invalidError: String = "Select yes if all of your client’s business accounting periods are from 6 April to 5 April"
 
@@ -95,12 +95,12 @@ class AccountingPeriodCheckControllerISpec extends ComponentSpecBase {
         fieldset.selectFirst("legend").text mustBe AccountingPeriodCheckMessages.heading
 
         val firstRadioWithLabel: Element = fieldset.selectFirst(".govuk-radios__item:nth-of-type(1)")
-        firstRadioWithLabel mustNot be (null)
+        firstRadioWithLabel mustNot be(null)
         val firstRadioLabel: Element = firstRadioWithLabel.selectFirst("label")
         val firstRadioButton: Element = firstRadioWithLabel.selectFirst("input")
 
         val secondRadioWithLabel: Element = fieldset.selectFirst(".govuk-radios__item:nth-of-type(2)")
-        secondRadioWithLabel mustNot be (null)
+        secondRadioWithLabel mustNot be(null)
         val secondRadioLabel: Element = secondRadioWithLabel.selectFirst("label")
         val secondRadioButton: Element = secondRadioWithLabel.selectFirst("input")
 
@@ -130,7 +130,7 @@ class AccountingPeriodCheckControllerISpec extends ComponentSpecBase {
 
     val response: WSResponse = IncomeTaxSubscriptionFrontend.submitAccountingPeriodCheck(
       request = answer,
-      sessionData = if(eligibleNextYearOnly) {
+      sessionData = if (eligibleNextYearOnly) {
         ClientData.basicClientData ++ Map(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "true")
       } else {
         ClientData.basicClientData
@@ -152,7 +152,7 @@ class AccountingPeriodCheckControllerISpec extends ComponentSpecBase {
         verifyAudit()
         response must have(
           httpStatus(SEE_OTHER),
-          redirectURI(controllers.agent.routes.HomeController.home.url)
+          redirectURI(controllers.agent.matching.routes.HomeController.home.url)
         )
       }
     }

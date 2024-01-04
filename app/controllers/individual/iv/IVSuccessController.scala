@@ -47,7 +47,7 @@ class IVSuccessController @Inject()(val appConfig: AppConfig,
         )
       } else {
         Future.successful(
-          Redirect(controllers.usermatching.routes.HomeController.home)
+          Redirect(controllers.individual.matching.routes.HomeController.home)
             .removingFromSession(ITSASessionKeys.IdentityVerificationFlag)
         )
       }

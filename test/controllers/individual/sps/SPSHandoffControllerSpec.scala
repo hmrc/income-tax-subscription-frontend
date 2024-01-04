@@ -16,7 +16,7 @@
 
 package controllers.individual.sps
 
-import controllers.ControllerBaseSpec
+import controllers.individual.ControllerBaseSpec
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest

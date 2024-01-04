@@ -17,7 +17,7 @@
 package controllers.individual.iv
 
 import common.Constants.ITSASessionKeys
-import controllers.ControllerBaseSpec
+import controllers.individual.ControllerBaseSpec
 import models.audits.IVOutcomeFailureAuditing.IVOutcomeFailureAuditModel
 import org.mockito.ArgumentMatchers.{any, eq => matches}
 import org.mockito.Mockito.{never, verify, when}

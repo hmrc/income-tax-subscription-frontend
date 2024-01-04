@@ -16,8 +16,8 @@
 
 package views.agent
 
-import agent.assets.MessageLookup
 import forms.agent.CannotGoBackToPreviousClientForm
+import messagelookup.agent.MessageLookup
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
@@ -26,7 +26,7 @@ import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import utilities.ViewSpec
-import views.html.agent.CannotGoBackToPreviousClient
+import views.html.agent.matching.CannotGoBackToPreviousClient
 
 class CannotGoBackToPreviousClientViewSpec extends ViewSpec {
 
@@ -66,6 +66,7 @@ class CannotGoBackToPreviousClientViewSpec extends ViewSpec {
 
     "have a form" which {
       def form = document().selectHead("form")
+
       "has correct attributes" in {
         form.attr("method") mustBe testCall.method
         form.attr("action") mustBe testCall.url
@@ -95,7 +96,7 @@ class CannotGoBackToPreviousClientViewSpec extends ViewSpec {
       }
 
       "has a continue button" in {
-          document().select("button[id=continue-button]").text mustBe MessageLookup.Base.continue
+        document().select("button[id=continue-button]").text mustBe MessageLookup.Base.continue
       }
     }
 

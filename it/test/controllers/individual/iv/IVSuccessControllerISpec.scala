@@ -16,12 +16,12 @@
 
 package controllers.individual.iv
 
+import _root_.common.Constants.ITSASessionKeys
 import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.IndividualURI
 import helpers.servicemocks.AuthStub
 import play.api.http.Status._
-import _root_.common.Constants.ITSASessionKeys
 
 class IVSuccessControllerISpec extends ComponentSpecBase {
 

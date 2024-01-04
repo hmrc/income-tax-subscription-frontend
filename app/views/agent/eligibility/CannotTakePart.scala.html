@@ -14,10 +14,9 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import play.api.i18n.Messages
 @import play.api.mvc.Request
-@import views.html.helpers.injected.{ContinueButton, SignOutLink}
+@import views.html.helpers.{ContinueButton, SignOutLink}
 @import views.html.templates.AgentMainTemplate
 
 @this(
@@ -25,8 +24,6 @@
         form: FormWithCSRF,
         continueButton: ContinueButton,
         signOutLink: SignOutLink
-)(
-        implicit appConfig: AppConfig
 )
 
 @()(implicit request: Request[_], messages: Messages)

@@ -16,8 +16,8 @@
 
 package views.agent
 
-import agent.assets.MessageLookup
 import forms.agent.ReturnToClientDetailsForm
+import messagelookup.agent.MessageLookup
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.data.FormError
@@ -25,7 +25,7 @@ import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import utilities.ViewSpec
-import views.html.agent.ReturnToClientDetails
+import views.html.agent.matching.ReturnToClientDetails
 
 class ReturnToClientDetailsViewSpec extends ViewSpec {
 
@@ -57,6 +57,7 @@ class ReturnToClientDetailsViewSpec extends ViewSpec {
 
     "have a form" which {
       def form = document().selectHead("form")
+
       "has correct attributes" in {
         form.attr("method") mustBe testCall.method
         form.attr("action") mustBe testCall.url
@@ -81,7 +82,7 @@ class ReturnToClientDetailsViewSpec extends ViewSpec {
       }
 
       "has a continue button" in {
-          document().select("button[id=continue-button]").text mustBe MessageLookup.Base.continue
+        document().select("button[id=continue-button]").text mustBe MessageLookup.Base.continue
       }
     }
 
@@ -101,7 +102,7 @@ class ReturnToClientDetailsViewSpec extends ViewSpec {
     val clientName = "FirstName LastName"
     val heading = "What do you want to do next?"
     val continueWithCurrentClientOptionLabel = "continue-signing-up"
-    val continueWithCurrentClientOptionText = s"Continue signing up ${clientName}"
+    val continueWithCurrentClientOptionText = s"Continue signing up $clientName"
     val signUpAnotherClientOptionLabel = "sign-up-another-client"
     val signUpAnotherClientOptionText = "Sign up another client"
 

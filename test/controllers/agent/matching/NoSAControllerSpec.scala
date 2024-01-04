@@ -16,13 +16,13 @@
 
 package controllers.agent.matching
 
-import assets.MessageLookup
-import controllers.ControllerBaseSpec
+import controllers.individual.ControllerBaseSpec
+import messagelookup.individual.MessageLookup
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.api.test.Helpers._
-import views.html.agent.ClientNoSa
+import views.html.agent.matching.ClientNoSa
 
 class NoSAControllerSpec extends ControllerBaseSpec {
 

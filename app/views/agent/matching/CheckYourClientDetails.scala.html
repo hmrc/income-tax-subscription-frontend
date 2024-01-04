@@ -1,0 +1,72 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import models.usermatching.UserDetailsModel
+@import views.agent.helpers.ConfirmClientIdConstants._
+@import views.html.templates.AgentMainTemplate
+@import views.html.helpers.{CheckYourAnswersRow, CheckYourAnswers => CYA}
+
+@this(
+        agentMainTemplate: AgentMainTemplate,
+        checkYourAnswers: CYA,
+        checkYourAnswersRow: CheckYourAnswersRow
+)
+
+@(
+        userDetailsModel: UserDetailsModel,
+        postAction: Call
+)(implicit request: Request[_], messages: Messages)
+
+@agentMainTemplate(title = messages("agent.client-details.summary.title")) {
+    @checkYourAnswers(
+        heading = messages("agent.client-details.summary.heading"),
+        caption = messages("agent.client-details.summary.caption"),
+        isIndividual = false,
+        postAction = postAction
+    ) {
+        @checkYourAnswersRow(
+            field = FirstNameId,
+            question = messages("agent.client-details.summary.first-name"),
+            answer = userDetailsModel.firstName,
+            changeUrl = Some(controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url),
+            hiddenContent = messages("check-your-details.change.first-name")
+        )
+
+        @checkYourAnswersRow(
+            field = LastNameId,
+            question = messages("agent.client-details.summary.last-name"),
+            answer = userDetailsModel.lastName,
+            changeUrl = Some(controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url),
+            hiddenContent = messages("check-your-details.change.last-name")
+        )
+
+        @checkYourAnswersRow(
+            field = NinoId,
+            question = messages("agent.client-details.summary.nino"),
+            answer = userDetailsModel.ninoInDisplayFormat,
+            changeUrl = Some(controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url),
+            hiddenContent = messages("check-your-details.change.national-insurance")
+        )
+
+        @checkYourAnswersRow(
+            field = DobId,
+            question = messages("agent.client-details.summary.dob"),
+            answer = userDetailsModel.dateOfBirth.toCheckYourAnswersDateFormat,
+            changeUrl = Some(controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url),
+            hiddenContent = messages("check-your-details.change.date-of-birth")
+        )
+    }
+}

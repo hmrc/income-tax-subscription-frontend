@@ -14,14 +14,13 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import forms.agent.SoleTraderForm
 @import forms.submapping.YesNoMapping
 @import models.YesNo
 @import play.api.data.Form
 @import play.api.i18n.Messages
 @import play.api.mvc.{Call, Request}
-@import views.html.helpers.injected.{ContinueButton, RadioHelper}
+@import views.html.helpers.{ContinueButton, RadioHelper}
 @import views.html.templates.AgentMainTemplate
 
 @this(
@@ -32,7 +31,7 @@
     hmrcPageHeading: HmrcPageHeading
 )
 
-@(soleTraderForm: Form[YesNo], postAction: Call, startDateLimit: String, clientName: String, clientNino: String, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(soleTraderForm: Form[YesNo], postAction: Call, startDateLimit: String, clientName: String, clientNino: String, backUrl: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = messages("agent.eligibility.sole-trader.heading", startDateLimit), optForm = Some(soleTraderForm), backLink = Some(backUrl)) {
 

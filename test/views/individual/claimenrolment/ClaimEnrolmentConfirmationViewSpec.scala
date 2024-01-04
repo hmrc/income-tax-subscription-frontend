@@ -16,23 +16,20 @@
 
 package views.individual.claimenrolment
 
-import assets.MessageLookup
-import controllers.SignOutController
+import messagelookup.individual.MessageLookup
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 import play.twirl.api.Html
 import utilities.ViewSpec
-import views.ViewSpecTrait
 import views.html.individual.claimenrolment.ClaimEnrolmentConfirmation
 
 
 class ClaimEnrolmentConfirmationViewSpec extends ViewSpec {
 
   val claimEnrolmentConfirmation: ClaimEnrolmentConfirmation = app.injector.instanceOf[ClaimEnrolmentConfirmation]
-  val action = ViewSpecTrait.testCall
-  override val request = ViewSpecTrait.viewTestRequest
 
-  val page: Html = claimEnrolmentConfirmation(action)(request, implicitly, appConfig)
-  val document = Jsoup.parse(page.body)
+  val page: Html = claimEnrolmentConfirmation(testCall)(request, implicitly)
+  val document: Document = Jsoup.parse(page.body)
 
   "The Claim Enrolment Confirmation view" should {
 
@@ -71,7 +68,7 @@ class ClaimEnrolmentConfirmationViewSpec extends ViewSpec {
 
       "has a second paragraph with hyper link" in {
         document.mainContent.selectNth("p", 2).text mustBe MessageLookup.ClaimEnrollmentConfirmation.para2
-        document.mainContent.selectNth("p",2).selectHead("a").attr("href").contains("https://www.gov.uk/government/collections/making-tax-digital-for-income-tax")
+        document.mainContent.selectNth("p", 2).selectHead("a").attr("href").contains("https://www.gov.uk/government/collections/making-tax-digital-for-income-tax")
       }
 
       "has a third paragraph" in {

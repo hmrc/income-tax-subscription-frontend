@@ -24,7 +24,7 @@ import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{contentType, _}
 import play.twirl.api.HtmlFormat
 import services.mocks.MockAuditingService
-import views.html.agent.ClientDetailsError
+import views.html.agent.matching.ClientDetailsError
 
 class ClientDetailsErrorControllerSpec extends AgentControllerBaseSpec with MockAuditingService {
 
@@ -33,7 +33,7 @@ class ClientDetailsErrorControllerSpec extends AgentControllerBaseSpec with Mock
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
   val mockClientDetailsError: ClientDetailsError = mock[ClientDetailsError]
-  when(mockClientDetailsError(ArgumentMatchers.any())(ArgumentMatchers.any(),ArgumentMatchers.any(),ArgumentMatchers.any()))
+  when(mockClientDetailsError(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
     .thenReturn(HtmlFormat.empty)
 
   object TestClientDetailsErrorController extends ClientDetailsErrorController(

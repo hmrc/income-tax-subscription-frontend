@@ -39,17 +39,15 @@ class ClaimEnrolmentResolverController @Inject()(claimEnrolmentService: ClaimEnr
 
   def resolve: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-        claimEnrolmentService.claimEnrolment map {
-          case Right(claimEnrolSuccess) =>
-            auditingService.audit(
-              ClaimEnrolAddToIndivCredAuditingModel(nino = claimEnrolSuccess.nino, mtditid = claimEnrolSuccess.mtditid)
-            )
-            Redirect(controllers.individual.claimenrolment.spsClaimEnrol.routes.SPSHandoffForClaimEnrolController.redirectToSPS)
-
-          case Left(NotSubscribed) => throw new InternalServerException("[ClaimEnrollmentResolverController] User was not subscribed")
-          case Left(AlreadySignedUp) => Redirect(routes.ClaimEnrolmentAlreadySignedUpController.show)
-          case Left(ClaimEnrolmentError(msg)) => throw new InternalServerException(msg)
+      claimEnrolmentService.claimEnrolment map {
+        case Right(claimEnrolSuccess) => {
+          auditingService.audit(ClaimEnrolAddToIndivCredAuditingModel(nino = claimEnrolSuccess.nino, mtditid = claimEnrolSuccess.mtditid))
+          Redirect(controllers.individual.claimenrolment.sps.routes.SPSHandoffForClaimEnrolController.redirectToSPS)
         }
+        case Left(NotSubscribed) => throw new InternalServerException("[ClaimEnrollmentResolverController] User was not subscribed")
+        case Left(AlreadySignedUp) => Redirect(routes.ClaimEnrolmentAlreadySignedUpController.show)
+        case Left(ClaimEnrolmentError(msg)) => throw new InternalServerException(msg)
+      }
   }
 
 }

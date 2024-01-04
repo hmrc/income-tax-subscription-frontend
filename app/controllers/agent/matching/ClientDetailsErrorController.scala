@@ -20,7 +20,7 @@ import auth.agent.UserMatchingController
 import config.AppConfig
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
-import views.html.agent.ClientDetailsError
+import views.html.agent.matching.ClientDetailsError
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

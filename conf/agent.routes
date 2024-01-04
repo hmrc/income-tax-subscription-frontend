@@ -1,6 +1,6 @@
 # Home controller
-GET         /                                       controllers.agent.HomeController.home
-GET         /index                                  controllers.agent.HomeController.index
+GET         /                                       controllers.agent.matching.HomeController.home
+GET         /index                                  controllers.agent.matching.HomeController.index
 
 # Other sources of income
 GET         /eligibility/income-sources             controllers.agent.eligibility.OtherSourcesOfIncomeController.show
@@ -29,22 +29,22 @@ POST        /eligibility/property-start-date        controllers.agent.eligibilit
 GET         /eligibility/sole-trader-start-date     controllers.agent.eligibility.SoleTraderController.show()
 POST        /eligibility/sole-trader-start-date     controllers.agent.eligibility.SoleTraderController.submit()
 
-GET         /income-source                          controllers.agent.WhatIncomeSourceToSignUpController.show()
-POST        /income-source                          controllers.agent.WhatIncomeSourceToSignUpController.submit()
+GET         /income-source                          controllers.agent.tasklist.addbusiness.WhatIncomeSourceToSignUpController.show()
+POST        /income-source                          controllers.agent.tasklist.addbusiness.WhatIncomeSourceToSignUpController.submit()
 
 # Confirmation Routes
-GET         /confirmation                           controllers.agent.ConfirmationAgentController.show
-POST        /confirmation                           controllers.agent.ConfirmationAgentController.submit
+GET         /confirmation                           controllers.agent.ConfirmationController.show
+POST        /confirmation                           controllers.agent.ConfirmationController.submit
 
 # Session Timeout Route
 GET         /session-timeout                        controllers.agent.SessionTimeoutController.show
 
 #
-GET         /error/client-already-subscribed        controllers.agent.ClientAlreadySubscribedController.show
-POST        /error/client-already-subscribed        controllers.agent.ClientAlreadySubscribedController.submit
+GET         /error/client-already-subscribed        controllers.agent.matching.ClientAlreadySubscribedController.show
+POST        /error/client-already-subscribed        controllers.agent.matching.ClientAlreadySubscribedController.submit
 
 # Home controller
-GET         /not-enrolled-agent-services            controllers.agent.NotEnrolledAgentServicesController.show
+GET         /not-enrolled-agent-services            controllers.agent.matching.NotEnrolledAgentServicesController.show
 
 # Client Matching
 GET         /client-details                         controllers.agent.matching.ClientDetailsController.show(editMode: Boolean ?= false)
@@ -62,8 +62,8 @@ POST        /error/client-details                   controllers.agent.matching.C
 GET         /error/lockout                          controllers.agent.matching.ClientDetailsLockoutController.show
 
 #
-GET         /error/no-client-relationship           controllers.agent.NoClientRelationshipController.show
-POST        /error/no-client-relationship           controllers.agent.NoClientRelationshipController.submit
+GET         /error/no-client-relationship           controllers.agent.matching.NoClientRelationshipController.show
+POST        /error/no-client-relationship           controllers.agent.matching.NoClientRelationshipController.submit
 
 # add another client
 GET         /add-another                            controllers.agent.AddAnotherClientController.addAnother()
@@ -77,78 +77,78 @@ GET         /language/:lang                         controllers.agent.LanguageSw
 ######################### Business Routes
 
 #What Tax Year To Sign Up Routes
-GET         /business/what-year-to-sign-up                      controllers.agent.WhatYearToSignUpController.show(editMode: Boolean ?= false)
-POST        /business/what-year-to-sign-up                      controllers.agent.WhatYearToSignUpController.submit(editMode: Boolean ?= false)
+GET         /business/what-year-to-sign-up                      controllers.agent.tasklist.taxyear.WhatYearToSignUpController.show(editMode: Boolean ?= false)
+POST        /business/what-year-to-sign-up                      controllers.agent.tasklist.taxyear.WhatYearToSignUpController.submit(editMode: Boolean ?= false)
 
 # What you need to do
 GET         /what-you-need-to-do                                controllers.agent.WhatYouNeedToDoController.show()
 POST        /what-you-need-to-do                                controllers.agent.WhatYouNeedToDoController.submit
 
 #Property Income Type Routes
-GET         /business/accounting-method-property                controllers.agent.business.PropertyAccountingMethodController.show(editMode: Boolean ?= false)
-POST        /business/accounting-method-property                controllers.agent.business.PropertyAccountingMethodController.submit(editMode: Boolean ?= false)
+GET         /business/accounting-method-property                controllers.agent.tasklist.ukproperty.PropertyAccountingMethodController.show(editMode: Boolean ?= false)
+POST        /business/accounting-method-property                controllers.agent.tasklist.ukproperty.PropertyAccountingMethodController.submit(editMode: Boolean ?= false)
 
 #Property Start Date Routes
-GET         /business/property-commencement-date                controllers.agent.business.PropertyStartDateController.show(editMode: Boolean ?= false)
-POST        /business/property-commencement-date                controllers.agent.business.PropertyStartDateController.submit(editMode: Boolean ?= false)
+GET         /business/property-commencement-date                controllers.agent.tasklist.ukproperty.PropertyStartDateController.show(editMode: Boolean ?= false)
+POST        /business/property-commencement-date                controllers.agent.tasklist.ukproperty.PropertyStartDateController.submit(editMode: Boolean ?= false)
 
 #Overseas Property Start Date Routes
-GET         /business/overseas-commencement-date                controllers.agent.business.OverseasPropertyStartDateController.show(editMode: Boolean ?= false)
-POST        /business/overseas-commencement-date                controllers.agent.business.OverseasPropertyStartDateController.submit(editMode: Boolean ?= false)
+GET         /business/overseas-commencement-date                controllers.agent.tasklist.overseasproperty.OverseasPropertyStartDateController.show(editMode: Boolean ?= false)
+POST        /business/overseas-commencement-date                controllers.agent.tasklist.overseasproperty.OverseasPropertyStartDateController.submit(editMode: Boolean ?= false)
 
 #Foreign Property Accounting Method Routes
-GET         /business/overseas-property-accounting-method        controllers.agent.business.OverseasPropertyAccountingMethodController.show(editMode: Boolean ?= false)
-POST        /business/overseas-property-accounting-method        controllers.agent.business.OverseasPropertyAccountingMethodController.submit(editMode: Boolean ?= false)
+GET         /business/overseas-property-accounting-method        controllers.agent.tasklist.overseasproperty.OverseasPropertyAccountingMethodController.show(editMode: Boolean ?= false)
+POST        /business/overseas-property-accounting-method        controllers.agent.tasklist.overseasproperty.OverseasPropertyAccountingMethodController.submit(editMode: Boolean ?= false)
 
 GET         /keep-alive                                         controllers.agent.SessionTimeoutController.keepAlive
 GET         /timeout                                            controllers.agent.SessionTimeoutController.timeout
 
 # Agent Tax Year Check Your Answers Routes
-GET         /business/tax-year-check-your-answers                controllers.agent.TaxYearCheckYourAnswersController.show(editMode: Boolean ?= false)
-POST        /business/tax-year-check-your-answers                controllers.agent.TaxYearCheckYourAnswersController.submit()
+GET         /business/tax-year-check-your-answers                controllers.agent.tasklist.taxyear.TaxYearCheckYourAnswersController.show(editMode: Boolean ?= false)
+POST        /business/tax-year-check-your-answers                controllers.agent.tasklist.taxyear.TaxYearCheckYourAnswersController.submit()
 
 
-GET         /business/uk-property-check-your-answers             controllers.agent.business.PropertyCheckYourAnswersController.show(editMode: Boolean ?= false)
-POST        /business/uk-property-check-your-answers             controllers.agent.business.PropertyCheckYourAnswersController.submit()
+GET         /business/uk-property-check-your-answers             controllers.agent.tasklist.ukproperty.PropertyCheckYourAnswersController.show(editMode: Boolean ?= false)
+POST        /business/uk-property-check-your-answers             controllers.agent.tasklist.ukproperty.PropertyCheckYourAnswersController.submit()
 
 
-GET         /business/overseas-property-check-your-answers       controllers.agent.business.OverseasPropertyCheckYourAnswersController.show(editMode: Boolean ?= false)
-POST        /business/overseas-property-check-your-answers       controllers.agent.business.OverseasPropertyCheckYourAnswersController.submit()
+GET         /business/overseas-property-check-your-answers       controllers.agent.tasklist.overseasproperty.OverseasPropertyCheckYourAnswersController.show(editMode: Boolean ?= false)
+POST        /business/overseas-property-check-your-answers       controllers.agent.tasklist.overseasproperty.OverseasPropertyCheckYourAnswersController.submit()
 
-GET         /business/progress-saved                            controllers.agent.business.ProgressSavedController.show(location: Option[String] ?= None)
+GET         /business/progress-saved                            controllers.agent.tasklist.ProgressSavedController.show(location: Option[String] ?= None)
 
 #Task List Routes
-GET         /business/task-list                                  controllers.agent.TaskListController.show()
-POST        /business/task-list                                  controllers.agent.TaskListController.submit()
+GET         /business/task-list                                  controllers.agent.tasklist.TaskListController.show()
+POST        /business/task-list                                  controllers.agent.tasklist.TaskListController.submit()
 
 #Remove sole trader business routes
-GET         /business/remove-sole-trader-business                controllers.agent.business.RemoveBusinessController.show(id: String)
-POST        /business/remove-sole-trader-business                controllers.agent.business.RemoveBusinessController.submit(id: String)
+GET         /business/remove-sole-trader-business                controllers.agent.tasklist.selfemployment.RemoveSelfEmploymentBusinessController.show(id: String)
+POST        /business/remove-sole-trader-business                controllers.agent.tasklist.selfemployment.RemoveSelfEmploymentBusinessController.submit(id: String)
 
 # remove UK property buisness confirmation page
-GET         /business/remove-uk-property-business                controllers.agent.business.RemoveUkPropertyController.show
-POST        /business/remove-uk-property-business                controllers.agent.business.RemoveUkPropertyController.submit
+GET         /business/remove-uk-property-business                controllers.agent.tasklist.ukproperty.RemoveUkPropertyController.show
+POST        /business/remove-uk-property-business                controllers.agent.tasklist.ukproperty.RemoveUkPropertyController.submit
 
 # Remove overseas property buisness confirmation page
-GET         /business/remove-overseas-property-business          controllers.agent.business.RemoveOverseasPropertyController.show
-POST        /business/remove-overseas-property-business          controllers.agent.business.RemoveOverseasPropertyController.submit
+GET         /business/remove-overseas-property-business          controllers.agent.tasklist.overseasproperty.RemoveOverseasPropertyController.show
+POST        /business/remove-overseas-property-business          controllers.agent.tasklist.overseasproperty.RemoveOverseasPropertyController.submit
 
 # Throttle
 GET         /throttle-start                                      controllers.agent.ThrottlingController.start()
 GET         /throttle-end                                        controllers.agent.ThrottlingController.end()
 
-#Your Income Source behind Feature switch
-GET         /your-income-source                                  controllers.agent.YourIncomeSourceToSignUpController.show
-POST        /your-income-source                                  controllers.agent.YourIncomeSourceToSignUpController.submit
+# Your Income Sources
+GET         /your-income-source                                  controllers.agent.tasklist.addbusiness.YourIncomeSourceToSignUpController.show
+POST        /your-income-source                                  controllers.agent.tasklist.addbusiness.YourIncomeSourceToSignUpController.submit
 
 # Agent Global Check Your Answers
-GET         /final-check-your-answers                            controllers.agent.business.GlobalCheckYourAnswersController.show
-POST        /final-check-your-answers                            controllers.agent.business.GlobalCheckYourAnswersController.submit
+GET         /final-check-your-answers                            controllers.agent.GlobalCheckYourAnswersController.show
+POST        /final-check-your-answers                            controllers.agent.GlobalCheckYourAnswersController.submit
 
 # Cannot Go Back To Previous Client
-GET         /cannot-go-back-to-previous-client                   controllers.agent.CannotGoBackToPreviousClientController.show
-POST        /cannot-go-back-to-previous-client                   controllers.agent.CannotGoBackToPreviousClientController.submit
+GET         /cannot-go-back-to-previous-client                   controllers.agent.matching.CannotGoBackToPreviousClientController.show
+POST        /cannot-go-back-to-previous-client                   controllers.agent.matching.CannotGoBackToPreviousClientController.submit
 
 # Agetn Action
-GET         /return-to-client-details                            controllers.agent.ReturnToClientDetailsController.show
-POST        /return-to-client-details                            controllers.agent.ReturnToClientDetailsController.submit
+GET         /return-to-client-details                            controllers.agent.matching.ReturnToClientDetailsController.show
+POST        /return-to-client-details                            controllers.agent.matching.ReturnToClientDetailsController.submit

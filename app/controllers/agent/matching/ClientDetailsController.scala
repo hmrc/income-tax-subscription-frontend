@@ -25,7 +25,7 @@ import play.api.mvc._
 import play.twirl.api.Html
 import services.{AuditingService, AuthService, UserLockoutService}
 import uk.gov.hmrc.http.InternalServerException
-import views.html.agent.ClientDetails
+import views.html.agent.matching.ClientDetails
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

@@ -25,7 +25,7 @@ import models.common.business._
 import models.status.MandationStatusModel
 import models.{AccountingMethod, Current, DateModel, Next}
 import play.api.mvc.{AnyContent, Request}
-import uk.gov.hmrc.crypto.{ApplicationCrypto, Crypted, PlainText}
+import uk.gov.hmrc.crypto.{ApplicationCrypto, Crypted}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import utilities.SubscriptionDataKeys
 import utilities.SubscriptionDataKeys._
@@ -79,16 +79,17 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
 
   def saveBusinesses(reference: String, selfEmploymentData: Seq[SelfEmploymentData])(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
 
-    def encryptBusinessList(businesses: Seq[SelfEmploymentData]) : Seq[SelfEmploymentData] = {
+    def encryptBusinessList(businesses: Seq[SelfEmploymentData]): Seq[SelfEmploymentData] = {
       businesses map {
-        business => business.copy(
-          businessName = business.businessName.map(name =>
-            name.encrypt(applicationCrypto.QueryParameterCrypto)
-          ),
-          businessAddress = business.businessAddress.map(address =>
-            address.encrypt(applicationCrypto.QueryParameterCrypto)
+        business =>
+          business.copy(
+            businessName = business.businessName.map(name =>
+              name.encrypt(applicationCrypto.QueryParameterCrypto)
+            ),
+            businessAddress = business.businessAddress.map(address =>
+              address.encrypt(applicationCrypto.QueryParameterCrypto)
+            )
           )
-        )
       }
     }
 
@@ -110,7 +111,7 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
     incomeTaxSubscriptionConnector.getSubscriptionDetails[Boolean](reference, SubscriptionDataKeys.IncomeSourceConfirmation)
   }
 
-  def saveIncomeSourcesConfirmation(reference: String)(implicit  hc:HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
+  def saveIncomeSourcesConfirmation(reference: String)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
     incomeTaxSubscriptionConnector.saveSubscriptionDetails[Boolean](reference, SubscriptionDataKeys.IncomeSourceConfirmation, true)
   }
 
@@ -172,25 +173,26 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
 
   def fetchAllSelfEmployments(reference: String)(implicit hc: HeaderCarrier): Future[Seq[SelfEmploymentData]] = {
 
-    def decryptBusinessList(businesses: Seq[SelfEmploymentData]) : Seq[SelfEmploymentData] = {
+    def decryptBusinessList(businesses: Seq[SelfEmploymentData]): Seq[SelfEmploymentData] = {
       businesses map {
-        business => business.copy(
-          businessName = business.businessName.map(name =>
-            BusinessNameModel(applicationCrypto.QueryParameterCrypto.decrypt(Crypted(name.businessName)).value)
-          ),
-          businessAddress = business.businessAddress.map(address =>
-            address.copy(
-              address = Address(
-                lines = address.address.lines.map(
-                  line => applicationCrypto.QueryParameterCrypto.decrypt(Crypted(line)).value
-                ),
-                postcode = address.address.postcode.map(
-                  postcode => applicationCrypto.QueryParameterCrypto.decrypt(Crypted(postcode)).value
+        business =>
+          business.copy(
+            businessName = business.businessName.map(name =>
+              BusinessNameModel(applicationCrypto.QueryParameterCrypto.decrypt(Crypted(name.businessName)).value)
+            ),
+            businessAddress = business.businessAddress.map(address =>
+              address.copy(
+                address = Address(
+                  lines = address.address.lines.map(
+                    line => applicationCrypto.QueryParameterCrypto.decrypt(Crypted(line)).value
+                  ),
+                  postcode = address.address.postcode.map(
+                    postcode => applicationCrypto.QueryParameterCrypto.decrypt(Crypted(postcode)).value
+                  )
                 )
               )
             )
           )
-        )
       }
     }
 

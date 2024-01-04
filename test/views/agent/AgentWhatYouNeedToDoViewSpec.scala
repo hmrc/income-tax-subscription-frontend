@@ -35,7 +35,13 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
 
   "WhatYouNeedToDo" when {
     "the user is mandated for the current year" should {
-      def mainContent: Element = document(eligibleNextYearOnly = false, mandatedCurrentYear = true, mandatedNextYear = false, clientName, clientNino).mainContent
+      def mainContent: Element = document(
+        eligibleNextYearOnly = false,
+        mandatedCurrentYear = true,
+        mandatedNextYear = false,
+        clientName,
+        clientNino
+      ).mainContent
 
       "use the correct template details" in new TemplateViewTest(
         view = page(eligibleNextYearOnly = false, mandatedCurrentYear = true, mandatedNextYear = false, clientName, clientNino),
@@ -46,8 +52,8 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
       )
 
       "have a client Name and Nino" in {
-        mainContent.selectHead(".govuk-caption-l").text contains (clientName)
-        mainContent.selectHead(".govuk-caption-l").text contains (clientNino)
+        mainContent.selectHead(".govuk-caption-l").text contains clientName
+        mainContent.selectHead(".govuk-caption-l").text contains clientNino
       }
 
       "have a first paragraph" in {
@@ -106,8 +112,8 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
       // rest of the tests here for mandated next year and eligible next year content
 
       "have a client Name and Nino" in {
-        mainContent.selectHead(".govuk-caption-l").text contains (clientName)
-        mainContent.selectHead(".govuk-caption-l").text contains (clientNino)
+        mainContent.selectHead(".govuk-caption-l").text contains clientName
+        mainContent.selectHead(".govuk-caption-l").text contains clientNino
       }
 
       "have a first paragraph" in {
@@ -148,7 +154,13 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
       }
     }
     "the user is voluntary for both years but only eligible for next year" should {
-      def mainContent: Element = document(eligibleNextYearOnly = true, mandatedCurrentYear = false, mandatedNextYear = false, clientName, clientNino).mainContent
+      def mainContent: Element = document(
+        eligibleNextYearOnly = true,
+        mandatedCurrentYear = false,
+        mandatedNextYear = false,
+        clientName,
+        clientNino
+      ).mainContent
 
       "use the correct template details" in new TemplateViewTest(
         view = page(eligibleNextYearOnly = true, mandatedCurrentYear = false, mandatedNextYear = false, clientName, clientNino),
@@ -159,8 +171,8 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
       )
 
       "have a client Name and Nino" in {
-        mainContent.selectHead(".govuk-caption-l").text contains (clientName)
-        mainContent.selectHead(".govuk-caption-l").text contains (clientNino)
+        mainContent.selectHead(".govuk-caption-l").text contains clientName
+        mainContent.selectHead(".govuk-caption-l").text contains clientNino
       }
 
       "have a first paragraph" in {
@@ -205,7 +217,13 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
       }
     }
     "the user is voluntary and eligible for both years" should {
-      def mainContent: Element = document(eligibleNextYearOnly = false, mandatedCurrentYear = false, mandatedNextYear = false, clientName, clientNino).mainContent
+      def mainContent: Element = document(
+        eligibleNextYearOnly = false,
+        mandatedCurrentYear = false,
+        mandatedNextYear = false,
+        clientName,
+        clientNino
+      ).mainContent
 
       "use the correct template details" in new TemplateViewTest(
         view = page(eligibleNextYearOnly = false, mandatedCurrentYear = false, mandatedNextYear = false, clientName, clientNino),
@@ -216,8 +234,8 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
       )
 
       "have a client Name and Nino" in {
-        mainContent.selectHead(".govuk-caption-l").text contains (clientName)
-        mainContent.selectHead(".govuk-caption-l").text contains (clientNino)
+        mainContent.selectHead(".govuk-caption-l").text contains clientName
+        mainContent.selectHead(".govuk-caption-l").text contains clientNino
       }
 
       "have a first paragraph" in {
@@ -268,7 +286,13 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
     }
   }
 
-  def page(eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, clientName: String, clientNino: String): HtmlFormat.Appendable = {
+  def page(
+            eligibleNextYearOnly: Boolean,
+            mandatedCurrentYear: Boolean,
+            mandatedNextYear: Boolean,
+            clientName: String,
+            clientNino: String
+          ): HtmlFormat.Appendable = {
     whatYouNeedToDo(
       postAction = testCall,
       eligibleNextYearOnly = eligibleNextYearOnly,
@@ -297,7 +321,7 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
       object NotificationBanner {
         val bulletOne: String = "Record income and expenses using compatible software."
         val bulletTwo: String = "Use software to send us quarterly updates."
-        val date = AccountingPeriodUtil.getFinalDeclarationDate(false).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
+        val date: String = AccountingPeriodUtil.getFinalDeclarationDate(false).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
         val bulletThree: String = s"Send an end of period statement and submit a final declaration by $date."
       }
 

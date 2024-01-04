@@ -14,19 +14,19 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
+@import views.html.templates.PrincipalMainTemplate
+@import views.html.helpers.ContinueButton
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 @import uk.gov.hmrc.play.language.LanguageUtils
 @import utilities.AccountingPeriodUtil
-@import views.html.helpers.injected.ContinueButton
-@import views.html.templates.PrincipalMainTemplate
 
 @this(
-  mainTemplate: PrincipalMainTemplate,
-  continueButton: ContinueButton,
-  govukInsetText: GovukInsetText,
-  form: FormWithCSRF,
-  languageUtils: LanguageUtils,
-  govukWarningText: GovukWarningText
+    mainTemplate: PrincipalMainTemplate,
+    continueButton: ContinueButton,
+    govukInsetText: GovukInsetText,
+    form: FormWithCSRF,
+    languageUtils: LanguageUtils,
+    govukWarningText: GovukWarningText
 )
 
 @(postAction: Call, onlyNextYear: Boolean, mandatedCurrentYear: Boolean, mandatedNextYear: Boolean)(implicit request: Request[_], messages: Messages)

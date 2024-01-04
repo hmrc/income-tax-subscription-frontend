@@ -237,7 +237,7 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
     "redirect to home when the user has no sps entity id" in {
       val result = subscriptionPredicates(authorisedRequestWithoutSPSEntityId)(defaultPredicateUser).left.value
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.usermatching.routes.HomeController.index.url)
+      redirectLocation(result) mustBe Some(controllers.individual.matching.routes.HomeController.index.url)
     }
   }
 

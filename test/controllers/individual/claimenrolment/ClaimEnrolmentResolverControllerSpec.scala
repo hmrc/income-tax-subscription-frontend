@@ -16,11 +16,11 @@
 
 package controllers.individual.claimenrolment
 
-import controllers.ControllerBaseSpec
+import controllers.individual.ControllerBaseSpec
 import models.audits.ClaimEnrolAddToIndivCredAuditing.ClaimEnrolAddToIndivCredAuditingModel
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.individual.claimenrolment.ClaimEnrolmentService.{AlreadySignedUp, ClaimEnrolmentError, ClaimEnrolmentSuccess, NotSubscribed}
+import services.individual.claimenrolment.ClaimEnrolmentService.{AlreadySignedUp, ClaimEnrolmentError, ClaimEnrolmentSuccess}
 import services.mocks.{MockAuditingService, MockClaimEnrolmentService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.agent.TestConstants
@@ -52,7 +52,7 @@ class ClaimEnrolmentResolverControllerSpec extends ControllerBaseSpec
 
       verifyAudit(ClaimEnrolAddToIndivCredAuditingModel(TestConstants.testNino, "mtditid"))
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.individual.claimenrolment.spsClaimEnrol.routes.SPSHandoffForClaimEnrolController.redirectToSPS.url)
+      redirectLocation(result) mustBe Some(controllers.individual.claimenrolment.sps.routes.SPSHandoffForClaimEnrolController.redirectToSPS.url)
     }
   }
 

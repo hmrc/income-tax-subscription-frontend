@@ -25,11 +25,10 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.mocks.MockAuditingService
-import utilities.agent.TestConstants.{testFormattedNino, testName, testNino}
+import utilities.agent.TestConstants.{testFormattedNino, testName}
 import views.html.agent.WhatYouNeedToDo
 
 import scala.concurrent.Future
-import scala.util.Random
 
 class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec with MockAuditingService {
 
@@ -50,7 +49,6 @@ class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec with Mo
       mockAuthService
     )
   }
-
 
 
   override val controllerName: String = "WhatYouNeedToDoController"
@@ -154,7 +152,7 @@ class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec with Mo
       val result: Future[Result] = controller.submit(subscriptionRequestWithName)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.agent.routes.TaskListController.show().url)
+      redirectLocation(result) mustBe Some(controllers.agent.tasklist.routes.TaskListController.show().url)
     }
   }
 

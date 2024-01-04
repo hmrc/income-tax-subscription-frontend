@@ -1,0 +1,70 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import forms.individual.business.RemoveBusinessForm
+@import forms.submapping.YesNoMapping
+@import views.html.helpers.{ContinueButton, RadioHelper}
+@import views.html.templates.PrincipalMainTemplate
+
+@this(
+    mainTemplate: PrincipalMainTemplate,
+    form: FormWithCSRF,
+    radioHelper: RadioHelper,
+    continueButton: ContinueButton
+)
+
+@(
+    removeBusinessForm: Form[YesNo],
+    businessName: Option[String],
+    businessTradeName: Option[String],
+    postAction: Call,
+    backUrl: String)(implicit request: Request[_], messages: Messages)
+
+
+@heading = @{
+  val tradeNameText = businessTradeName.fold("")(value => s" - $value")
+  businessName match {
+    case Some(name) =>
+      messages("business.remove-sole-trader-business.heading", name, tradeNameText)
+    case None =>
+      messages("business.remove-sole-trader-business.unnamed", tradeNameText)
+  }
+}
+
+@mainTemplate(title = heading, optForm = Some(removeBusinessForm), backLink = Some(backUrl)) {
+  <h1 class="govuk-heading-l">@heading</h1>
+
+  @form(action = postAction) {
+    @radioHelper(
+      field = removeBusinessForm(RemoveBusinessForm.fieldName),
+      legend = heading,
+      isPageHeading = false,
+      hint = Some(Text(messages("business.remove-sole-trader-business.paragraph"))),
+      radioItems = Seq(
+        RadioItem(
+          content = Text(messages("base.yes")),
+          value = Some(YesNoMapping.option_yes)
+        ),
+        RadioItem(
+          content = Text(messages("base.no")),
+          value = Some(YesNoMapping.option_no)
+        )
+      ),
+      inline = true
+    )
+    @continueButton(alternateText = Some(messages("base.agree-and-continue")))
+  }
+}

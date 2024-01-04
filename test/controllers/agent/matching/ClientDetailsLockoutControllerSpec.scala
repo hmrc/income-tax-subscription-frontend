@@ -16,17 +16,17 @@
 
 package controllers.agent.matching
 
-import agent.assets.MessageLookup.{ClientDetailsLockout => messages}
 import controllers.agent.AgentControllerBaseSpec
+import messagelookup.agent.MessageLookup.{ClientDetailsLockout => messages}
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Cookie, Request}
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{contentAsString, contentType, _}
+import play.api.test.Helpers._
 import services.mocks.{MockAuditingService, MockUserLockoutService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.agent.TestConstants.testARN
-import views.html.agent.ClientDetailsLockout
+import views.html.agent.matching.ClientDetailsLockout
 
 import java.time.Duration
 

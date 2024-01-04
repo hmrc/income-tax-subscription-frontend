@@ -19,9 +19,9 @@ package controllers.agent.matching
 import _root_.common.Constants.ITSASessionKeys
 import auth.agent.AgentUserMatched
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
+import helpers.IntegrationTestConstants._
 import helpers.UserMatchingIntegrationResultSupport
 import helpers.agent.ComponentSpecBase
-import helpers.IntegrationTestConstants._
 import helpers.agent.servicemocks.{AgentServicesStub, AuthStub}
 import helpers.servicemocks.{AuthStub => _, _}
 import models.status.MandationStatus.Voluntary

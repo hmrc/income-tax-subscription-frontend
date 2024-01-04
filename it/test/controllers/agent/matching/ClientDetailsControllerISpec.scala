@@ -17,11 +17,10 @@
 package controllers.agent.matching
 
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
-import helpers.UserMatchingIntegrationResultSupport
 import helpers.IntegrationTestConstants.{AgentURI, testARN}
+import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.{AgentLockoutStub, AuthStub}
-import helpers.IntegrationTestModels
-import helpers.agent.{ComponentSpecBase}
+import helpers.{IntegrationTestModels, UserMatchingIntegrationResultSupport}
 import models.usermatching.UserDetailsModel
 import org.jsoup.Jsoup
 import play.api.http.Status.{BAD_REQUEST, SEE_OTHER}

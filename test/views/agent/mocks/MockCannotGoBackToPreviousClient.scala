@@ -22,7 +22,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import play.twirl.api.HtmlFormat
-import views.html.agent.CannotGoBackToPreviousClient
+import views.html.agent.matching.CannotGoBackToPreviousClient
 
 
 trait MockCannotGoBackToPreviousClient extends PlaySpec with MockitoSugar with BeforeAndAfterEach {

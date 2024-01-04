@@ -24,8 +24,6 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.InternalServerException
 import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 
-import scala.util.matching.Regex
-
 class IncomeTaxAgentUser(val enrolments: Enrolments,
                          val affinityGroup: Option[AffinityGroup],
                          val confidenceLevel: ConfidenceLevel)

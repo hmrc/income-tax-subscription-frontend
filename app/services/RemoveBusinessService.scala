@@ -19,7 +19,7 @@ package services
 import connectors.IncomeTaxSubscriptionConnector
 import models.common.business.SelfEmploymentData
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
+import utilities.SubscriptionDataKeys.BusinessAccountingMethod
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

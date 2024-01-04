@@ -1,0 +1,204 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import models.common._
+@import models._
+@import models.common.business.SelfEmploymentData
+@import services.AccountingPeriodService
+@import views.html.helpers.ReadyToSignUpButton
+@import services.GetCompleteDetailsService._
+@import utilities.ImplicitDateFormatterImpl
+@import views.html.helpers.{ContinueButton, RadioHelper, CheckYourAnswers, CheckYourAnswersRow}
+@import views.html.templates.PrincipalMainTemplate
+
+@this(
+        mainTemplate: PrincipalMainTemplate,
+        continueButton: ContinueButton,
+        govukSummaryList : GovukSummaryList,
+        implicitDateFormatter: ImplicitDateFormatterImpl,
+        accountingPeriodService: AccountingPeriodService,
+        readyToSignUpButton: ReadyToSignUpButton,
+        radioHelper: RadioHelper,
+        form: FormWithCSRF
+)
+
+@(
+        postAction: Call,
+        backUrl: String,
+        completeDetails: CompleteDetails
+)(implicit request: Request[_], messages: Messages)
+
+@import implicitDateFormatter.LongDate
+
+@mainTemplate(title = messages("individual.global-check-your-answers.heading"), backLink = Some(backUrl)) {
+
+    <h1 class="govuk-heading-l">@messages("individual.global-check-your-answers.heading")</h1>
+
+    @incomeSourcesSection(completeDetails.incomeSources)
+    @taxYearSection(completeDetails.taxYear)
+    @softwareSection(completeDetails.hasSoftware)
+    @correctInfo()
+
+@form(action = postAction){
+    <div class="govuk-button-group">
+        @readyToSignUpButton()
+        <a href="@controllers.individual.tasklist.routes.TaskListController.show().url" id="return_to_tasklist" class="govuk-link">
+            @messages("individual.global-check-your-answers.change-something")
+        </a>
+    </div>
+}
+
+}
+
+@correctInfo() = {
+    <h2 class="govuk-heading-m">@messages("individual.global-check-your-answers.correct-info.heading")</h2>
+    <p class="govuk-body">
+        @messages("individual.global-check-your-answers.correct-info.para")
+    </p>
+}
+
+@incomeSourcesSection(incomeSources: IncomeSources) = {
+    <h2 class="govuk-heading-m">@messages("individual.global-check-your-answers.income-sources.heading")</h2>
+
+    @incomeSources.soleTraderBusinesses.map(toSoleTraderBusinessesDisplay)
+    @incomeSources.ukProperty.map(toUKPropertyDisplay)
+    @incomeSources.foreignProperty.map(toForeignPropertyDisplay)
+}
+
+@toSoleTraderBusinessesDisplay(soleTraderBusinesses: SoleTraderBusinesses) = {
+
+    @soleTraderBusinesses.businesses.map { business =>
+        <h3 class="govuk-heading-s">@messages("individual.global-check-your-answers.income-sources.self-employment.heading", business.trade)</h3>
+
+        @govukSummaryList(SummaryList(
+            rows = Seq(
+                Some(SummaryListRow(
+                    key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.self-employment.name"))),
+                    value = Value(content = Text(business.name))
+                )),
+                Some(SummaryListRow(
+                    key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.self-employment.start-date"))),
+                    value = Value(content = Text(business.startDate.toLongDate))
+                )),
+                Some(SummaryListRow(
+                    key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.self-employment.address"))),
+                    value = Value(content = Text(business.address.toString))
+                )),
+                if(soleTraderBusinesses.businesses.size == 1) {
+                    Some(SummaryListRow(
+                        key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.self-employment.accounting-method"))),
+                        value = Value(content = Text(accountingMethod(soleTraderBusinesses.accountingMethod)))
+                    ))
+                } else {
+                    None
+                }
+            ).flatten
+        ))
+    }
+
+    @if(soleTraderBusinesses.businesses.size > 1) {
+        <h3 class="govuk-heading-s">@messages("individual.global-check-your-answers.income-sources.self-employment-accounting-method.heading")</h3>
+
+        @govukSummaryList(SummaryList(
+            rows = Seq(
+                SummaryListRow(
+                    key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.self-employment.accounting-method"))),
+                    value = Value(content = Text(accountingMethod(soleTraderBusinesses.accountingMethod)))
+                )
+            )
+        ))
+    }
+}
+
+@toUKPropertyDisplay(ukProperty: UKProperty) = {
+
+    <h3 class="govuk-heading-s">@messages("individual.global-check-your-answers.income-sources.uk-property.heading")</h3>
+
+    @govukSummaryList(SummaryList(
+        rows = Seq(
+            SummaryListRow(
+                key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.uk-property.start-date"))),
+                value = Value(content = Text(ukProperty.startDate.toLongDate))
+            ),
+            SummaryListRow(
+                key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.uk-property.accounting-method"))),
+                value = Value(content = Text(accountingMethod(ukProperty.accountingMethod)))
+            )
+        )
+    ))
+
+}
+
+@toForeignPropertyDisplay(foreignProperty: ForeignProperty) = {
+
+    <h3 class="govuk-heading-s">@messages("individual.global-check-your-answers.income-sources.foreign-property.heading")</h3>
+
+    @govukSummaryList(SummaryList(
+        rows = Seq(
+            SummaryListRow(
+                key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.foreign-property.start-date"))),
+                value = Value(content = Text(foreignProperty.startDate.toLongDate))
+            ),
+            SummaryListRow(
+                key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.foreign-property.accounting-method"))),
+                value = Value(content = Text(accountingMethod(foreignProperty.accountingMethod)))
+            )
+        )
+    ))
+
+}
+
+@taxYearSection(selectedTaxYear: AccountingYear) = {
+    <h2 class="govuk-heading-m">@messages("individual.global-check-your-answers.tax-year.heading")</h2>
+
+    @govukSummaryList(SummaryList(
+        rows = Seq(
+            SummaryListRow(
+                key = Key(content = Text(messages("individual.global-check-your-answers.tax-year.label"))),
+                value = Value(content = Text(taxYear(selectedTaxYear)))
+            )
+        )
+    ))
+}
+
+@softwareSection(hasSoftware: Boolean) = {
+    <h2 class="govuk-heading-m">@messages("individual.global-check-your-answers.software.heading")</h2>
+
+    @govukSummaryList(SummaryList(
+        rows = Seq(
+            SummaryListRow(
+                key = Key(content = Text(messages("individual.global-check-your-answers.software.label"))),
+                value = Value(content = Text(messages(
+                    if(hasSoftware) "base.yes" else "base.no"
+                )))
+            )
+        )
+    ))
+}
+
+@taxYear(accountingYear: AccountingYear) = @{
+    accountingYear match {
+        case Current => messages("base.tax-year.current", (accountingPeriodService.currentTaxYear - 1).toString, accountingPeriodService.currentTaxYear.toString)
+        case Next => messages("base.tax-year.next", accountingPeriodService.currentTaxYear.toString, (accountingPeriodService.currentTaxYear + 1).toString)
+    }
+}
+
+@accountingMethod(accountingMethod: AccountingMethod) = @{
+    accountingMethod match {
+        case Cash => messages("base.accounting-method.cash")
+        case Accruals => messages("base.accounting-method.accruals")
+    }
+}

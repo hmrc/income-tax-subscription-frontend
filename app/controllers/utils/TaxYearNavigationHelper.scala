@@ -17,7 +17,6 @@
 package controllers.utils
 
 import common.Constants.ITSASessionKeys
-import controllers.individual.business.routes
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{AnyContent, Request, Result}
 
@@ -26,21 +25,23 @@ import scala.concurrent.Future
 trait TaxYearNavigationHelper {
 
   def handleUnableToSelectTaxYearIndividual(request: Request[AnyContent])(ableToSelect: Future[Result]): Future[Result] = {
+    val mandatedCurrentYear: Boolean = request.session.get(ITSASessionKeys.MANDATED_CURRENT_YEAR).contains("true")
+    val eligibleNextYearOnly: Boolean = request.session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY).contains("true")
 
-    if (request.session.get(ITSASessionKeys.MANDATED_CURRENT_YEAR).contains("true") || request.session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY).contains("true")) {
-      Future.successful(Redirect(routes.TaskListController.show()))
-    }
-    else {
+    if (mandatedCurrentYear || eligibleNextYearOnly) {
+      Future.successful(Redirect(controllers.individual.tasklist.routes.TaskListController.show()))
+    } else {
       ableToSelect
     }
   }
 
   def handleUnableToSelectTaxYearAgent(request: Request[AnyContent])(ableToSelect: Future[Result]): Future[Result] = {
+    val mandatedCurrentYear: Boolean = request.session.get(ITSASessionKeys.MANDATED_CURRENT_YEAR).contains("true")
+    val eligibleNextYearOnly: Boolean = request.session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY).contains("true")
 
-    if (request.session.get(ITSASessionKeys.MANDATED_CURRENT_YEAR).contains("true") || request.session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY).contains("true")) {
-      Future.successful(Redirect(controllers.agent.routes.TaskListController.show()))
-    }
-    else {
+    if (mandatedCurrentYear || eligibleNextYearOnly) {
+      Future.successful(Redirect(controllers.agent.tasklist.routes.TaskListController.show()))
+    } else {
       ableToSelect
     }
   }

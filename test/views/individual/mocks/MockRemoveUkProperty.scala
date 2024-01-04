@@ -22,11 +22,11 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import play.twirl.api.HtmlFormat
-import views.html.individual.incometax.business.RemoveUkProperty
+import views.html.individual.tasklist.ukproperty.RemoveUkPropertyBusiness
 
 trait MockRemoveUkProperty extends PlaySpec with MockitoSugar with BeforeAndAfterEach {
 
-  val removeUkProperty: RemoveUkProperty = mock[RemoveUkProperty]
+  val removeUkProperty: RemoveUkPropertyBusiness = mock[RemoveUkPropertyBusiness]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
