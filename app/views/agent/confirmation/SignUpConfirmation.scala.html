@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
 @import services.AccountingPeriodService
 @import views.html.helpers.UpdateDeadlineTable
 @import views.html.templates.AgentMainTemplate
@@ -21,6 +22,8 @@
 @import uk.gov.hmrc.play.language.LanguageUtils
 @import views.html.helpers.ButtonHelper
 @import utilities.AccountingPeriodUtil
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcNewTabLinkHelper
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 
 @this(
     agentMainTemplate: AgentMainTemplate,
@@ -31,207 +34,174 @@
     accountingPeriodService: AccountingPeriodService,
     govukNotificationBanner : GovukNotificationBanner,
     govukWarningText: GovukWarningText,
-    govukDetails : GovukDetails
+    govukDetails : GovukDetails,
+    hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
+    appConfig: AppConfig
 )
-
 
 @(mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, taxYearSelectionIsNext : Boolean, userNameMaybe: Option[String], individualUserNino: String, accountingPeriodModel: AccountingPeriodModel)(implicit request: Request[_], messages: Messages)
 
+@agentMainTemplate(title = messages("agent.sign-up-confirmation.heading")) {
+
+    @headingPanel
+
+    <h2 class="govuk-heading-m">@messages("agent.sign-up-confirmation.what-you-will-have-to-do.heading")</h2>
+
+    <ol class="govuk-list govuk-list--number govuk-list--spaced">
+        @if(mandatedCurrentYear) {
+            @mandatedCurrentYearContent
+        } else if (mandatedNextYear && taxYearSelectionIsNext) {
+            @mandatedNextYearContent
+        } else if (taxYearSelectionIsNext) {
+            @voluntaryNextYearContent
+        } else {
+            @voluntaryCurrentYearContent
+        }
+    </ol>
+
+    @agentServicesAccount
+
+    <div>
+        @buttonHelper(
+            buttonText = messages("agent.base.sign-up-another-client"),
+            href = Some(controllers.agent.routes.AddAnotherClientController.addAnother().url)
+        )
+    </div>
+
+}
+
+@headingPanel = {
+    @govukPanel(Panel(
+        title = Text(messages("agent.sign-up-confirmation.heading")),
+        content = HtmlContent(headingPanelContent),
+        classes = "govuk-!-margin-bottom-6"
+    ))
+}
+
+@headingPanelContent = {
+    <p>
+        <strong>@userDetails</strong>
+    </p>
+    <p>
+        @if(taxYearSelectionIsNext) {
+            @messages("agent.sign-up-confirmation.heading.panel.next", languageUtils.Dates.formatDateRange(accountingPeriodModel.startDate.toLocalDate, accountingPeriodModel.endDate.toLocalDate))
+        } else {
+            @messages("agent.sign-up-confirmation.heading.panel.current", languageUtils.Dates.formatDateRange(accountingPeriodModel.startDate.toLocalDate, accountingPeriodModel.endDate.toLocalDate))
+        }
+    </p>
+}
+
 @userDetails = @{
     userNameMaybe match {
-        case Some(name) => s"$name &vert; $individualUserNino"
+        case Some(name) => s"$name | $individualUserNino"
         case None => individualUserNino
     }
 }
 
+@voluntaryNextYearContent = {
+    <li>@continuingTaxReturn</li>
+    <li>@quarterlyUpdates</li>
+    <li>@periodStatement</li>
+    <li>@finalDeclaration</li>
+}
+
+@voluntaryCurrentYearContent = {
+    <li>@quarterlyUpdates</li>
+    <li>@periodStatement</li>
+    <li>@finalDeclaration</li>
+}
+
+@mandatedCurrentYearContent = {
+    <li>@quarterlyUpdates</li>
+    <li>@periodStatement</li>
+    <li>
+        @finalDeclaration
+    </li>
+}
+
+@mandatedNextYearContent = {
+    <li>@continuingTaxReturn</li>
+    <li>@quarterlyUpdates</li>
+    <li>@periodStatement</li>
+    <li>@finalDeclaration</li>
+}
+
 @warningText = {
-@if(!mandatedCurrentYear){
-@govukWarningText(WarningText(
-content = Text(Messages("agent.sign-up-confirmation.warning.para"))
-))}
+    @if(!mandatedCurrentYear) {
+        @govukWarningText(WarningText(
+            content = Text(Messages("agent.sign-up-confirmation.warning.para"))
+        ))
+    }
 }
 
 @quarterDayTable = {
     @table(
         updateAndDeadlineDates = accountingPeriodService.getAllUpdateAndDeadlineDates(Next),
         tableCaption = messages("agent.sign-up-confirmation.quarterly-updates.table.caption.title")
-        )
-@warningText
-<p class="govuk-body">@messages("agent.sign-up-confirmation.quarterly-updates.table.para1")</p>
-<p class="govuk-body">@messages("agent.sign-up-confirmation.quarterly-updates.table.para2")</p>
+    )
+    @warningText
+    <p class="govuk-body">@messages("agent.sign-up-confirmation.quarterly-updates.table.para1")</p>
+    <p class="govuk-body">@messages("agent.sign-up-confirmation.quarterly-updates.table.para2")</p>
 }
 
 @detailsContent = {
-@govukDetails(Details(
-summary = Text(messages("agent.sign-up-confirmation.quarterly-updates.table.caption")),
-content = HtmlContent(quarterDayTable)
-))
-
-}
-
-
-@headingPanelContent = {
-    <p>
-        <strong>@Html(userDetails)</strong>
-    </p>
-    <p>
-        @if(taxYearSelectionIsNext) {
-          @messages("agent.sign-up-confirmation.heading.panel.next", languageUtils.Dates.formatDateRange(accountingPeriodModel.startDate.toLocalDate, accountingPeriodModel.endDate.toLocalDate))
-        } else {
-          @messages("agent.sign-up-confirmation.heading.panel.current", languageUtils.Dates.formatDateRange(accountingPeriodModel.startDate.toLocalDate, accountingPeriodModel.endDate.toLocalDate))
-        }
-    </p>
+    @govukDetails(Details(
+        summary = Text(messages("agent.sign-up-confirmation.quarterly-updates.table.caption")),
+        content = HtmlContent(quarterDayTable)
+    ))
 }
 
 
 @continuingTaxReturn = {
-  <div>
-    <h3 class="govuk-heading-m">1. @messages("agent.sign-up-confirmation.voluntary-next-year.self-assessment.heading")</h3>
-    <p class="govuk-body">@messages("agent.sign-up-confirmation.voluntary-next-year.self-assessment.para", (AccountingPeriodUtil.getNextTaxEndYear +1).toString)</p>
-  </div>
+    <div>
+        <h3 class="govuk-heading-s">@messages("agent.sign-up-confirmation.voluntary-next-year.self-assessment.heading")</h3>
+        <p class="govuk-body">@messages("agent.sign-up-confirmation.voluntary-next-year.self-assessment.para", (AccountingPeriodUtil.getNextTaxEndYear +1).toString)</p>
+    </div>
 }
-
 
 @quarterlyUpdates = {
     <div>
-      @if(taxYearSelectionIsNext) {
-        <h3 class="govuk-heading-m">2. @messages("agent.sign-up-confirmation.quarterly-updates.heading")</h3>
+        <h3 class="govuk-heading-s">@messages("agent.sign-up-confirmation.quarterly-updates.heading")</h3>
         <p class="govuk-body">@messages("agent.sign-up-confirmation.quarterly-updates.para")</p>
-
         @detailsContent
-
-      } else {
-        <h3 class="govuk-heading-m">1. @messages("agent.sign-up-confirmation.quarterly-updates.heading")</h3>
-        <p class="govuk-body">@messages("agent.sign-up-confirmation.quarterly-updates.para")</p>
-
-        @detailsContent
-
-      }
     </div>
 }
 
 @periodStatement = {
-  <div> @{
-    val statementDueDate = languageUtils.Dates.formatDate(AccountingPeriodUtil.getEndOfPeriodStatementDate(taxYearSelectionIsNext))
-    if(taxYearSelectionIsNext) {
-        <h3 class="govuk-heading-m">3. {messages("agent.sign-up-confirmation.end-of-period-statement.heading")}</h3>
-        <p class="govuk-body">{messages("agent.sign-up-confirmation.end-of-period-statement.para", statementDueDate)}</p>
-    } else {
-        <h3 class="govuk-heading-m">2. {messages("agent.sign-up-confirmation.end-of-period-statement.heading")}</h3>
-        <p class="govuk-body">{messages("agent.sign-up-confirmation.end-of-period-statement.para", statementDueDate)}</p>
-    }
-  }
-  </div>
+    <div>
+        <h3 class="govuk-heading-s">@messages("agent.sign-up-confirmation.end-of-period-statement.heading")</h3>
+        <p class="govuk-body">
+            @messages("agent.sign-up-confirmation.end-of-period-statement.para", languageUtils.Dates.formatDate(AccountingPeriodUtil.getEndOfPeriodStatementDate(taxYearSelectionIsNext)))
+        </p>
+    </div>
 }
 
 @finalDeclaration = {
-    <div> @{
-      val finalDeclarationDate = languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(taxYearSelectionIsNext))
-      if(taxYearSelectionIsNext) {
-          <h3 class="govuk-heading-m">4. {messages("agent.sign-up-confirmation.voluntary-next-year.final-declaration.heading")}</h3>
-          <p class="govuk-body">{messages("agent.sign-up-confirmation.final-declaration.para", finalDeclarationDate)}</p>
-      } else {
-          <h3 class="govuk-heading-m">3. {messages("agent.sign-up-confirmation.voluntary-current-year.final-declaration.heading")}</h3>
-          <p class="govuk-body">{messages("agent.sign-up-confirmation.final-declaration.para", finalDeclarationDate)}</p>
-      }
-    }
+    <div>
+        <h3 class="govuk-heading-s">@messages("agent.sign-up-confirmation.final-declaration.heading")</h3>
+        <p class="govuk-body">
+            @messages("agent.sign-up-confirmation.final-declaration.para", languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(taxYearSelectionIsNext)))
+        </p>
     </div>
 }
 
 @mandatedNotificationBanner = {
-  <p class="govuk-body">@messages("agent.sign-up-confirmation.mandated-notification-banner.para")</p>
-  <ul class="govuk-list govuk-list--bullet">
-    <li>@messages("agent.sign-up-confirmation.mandated.notification-banner.bullet1")</li>
-    <li>@messages("agent.sign-up-confirmation.mandated.notification-banner.bullet2")</li>
-    <li>@messages("agent.sign-up-confirmation.mandated.notification-banner.bullet3")</li>
-    <li>@messages("agent.sign-up-confirmation.mandated.notification-banner.bullet4")</li>
-  </ul>
+    <p class="govuk-body">@messages("agent.sign-up-confirmation.mandated-notification-banner.para")</p>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("agent.sign-up-confirmation.mandated.notification-banner.bullet1")</li>
+        <li>@messages("agent.sign-up-confirmation.mandated.notification-banner.bullet2")</li>
+        <li>@messages("agent.sign-up-confirmation.mandated.notification-banner.bullet3")</li>
+        <li>@messages("agent.sign-up-confirmation.mandated.notification-banner.bullet4")</li>
+    </ul>
 }
 
-@voluntaryNextYearContent = {
-  <div class="govuk-!-margin-bottom-2 govuk-section-break--visible govuk-!-padding-top-2">
-      @continuingTaxReturn
-  </div>
-  <div class="govuk-!-margin-bottom-2 govuk-section-break--visible govuk-!-padding-top-2">
-      @quarterlyUpdates
-  </div>
-  <div class="govuk-!-margin-bottom-2 govuk-section-break--visible govuk-!-padding-top-2">
-      @periodStatement
-  </div>
-  <div class="govuk-!-margin-bottom-2 govuk-section-break--visible govuk-!-padding-top-2">
-      @finalDeclaration
-  </div>
+@agentServicesAccount = {
+    <div class="govuk-!-margin-bottom-6">
+        <h2 class="govuk-heading-s">@messages("agent.sign-up-confirmation.agent-services-account.heading")</h2>
+        <p class="govuk-body">@messages("agent.sign-up-confirmation.agent-services-account.para")</p>
+        @hmrcNewTabLinkHelper(NewTabLinkHelper(
+            messages("agent.sign-up-confirmation.agent-services-account.link-text"),
+            Some(appConfig.agentServicesAccountHomeUrl)
+        ))
+    </div>
 }
-
-@voluntaryCurrentYearContent = {
-  <div class="govuk-!-margin-bottom-2 govuk-section-break--visible govuk-!-padding-top-2">
-      @quarterlyUpdates
-  </div>
-  <div class="govuk-!-margin-bottom-2 govuk-section-break--visible govuk-!-padding-top-2">
-      @periodStatement
-  </div>
-  <div class="govuk-!-margin-bottom-2 govuk-section-break--visible govuk-!-padding-top-2">
-      @finalDeclaration
-  </div>
-}
-
-@mandatedCurrentYearContent = {
-  <div class="govuk-!-margin-bottom-2 govuk-section-break--visible govuk-!-padding-top-2">
-      @quarterlyUpdates
-  </div>
-  <div class="govuk-!-margin-bottom-2 govuk-section-break--visible govuk-!-padding-top-2">
-      @periodStatement
-  </div>
-  <div class="govuk-!-margin-bottom-2 govuk-section-break--visible govuk-!-padding-top-2">
-      @finalDeclaration
-      @govukNotificationBanner(NotificationBanner(content = HtmlContent(mandatedNotificationBanner)))
-  </div>
-}
-
-@mandatedNextYearContent = {
-  <div class="govuk-!-margin-bottom-2 govuk-section-break--visible govuk-!-padding-top-2">
-    @continuingTaxReturn
-</div>
-<div class="govuk-!-margin-bottom-2 govuk-section-break--visible govuk-!-padding-top-2">
-    @quarterlyUpdates
-</div>
-<div class="govuk-!-margin-bottom-2 govuk-section-break--visible govuk-!-padding-top-2">
-    @periodStatement
-</div>
-<div class="govuk-!-margin-bottom-2 govuk-section-break--visible govuk-!-padding-top-2">
-    @finalDeclaration
-</div>
-}
-
-
-@agentMainTemplate(title = messages("agent.sign-up-confirmation.heading"), fullWidth = true) {
-
-@govukPanel(Panel(
-  title = Text(messages("agent.sign-up-confirmation.heading")),
-  content = HtmlContent(headingPanelContent),
-  classes = "govuk-!-margin-bottom-6"
-))
-
-
-  <h2 class="govuk-heading-l">@messages("agent.sign-up-confirmation.what-you-will-have-to-do.heading")</h2>
-
-  @if(mandatedCurrentYear) {
-    @mandatedCurrentYearContent
-  } else if (mandatedNextYear && taxYearSelectionIsNext) {
-    @mandatedNextYearContent
-  } else if (taxYearSelectionIsNext) {
-    @voluntaryNextYearContent
-  } else {
-    @voluntaryCurrentYearContent
-  }
-
-  <div>
-    @buttonHelper(
-      buttonText = messages("agent.base.sign-up-another-client"),
-      href = Some(controllers.agent.routes.AddAnotherClientController.addAnother().url)
-    )
-  </div>
-}
-
-
-

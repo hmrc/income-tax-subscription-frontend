@@ -327,7 +327,7 @@ sign-up-complete.what-now.submit-annual                         = Cyflwynwch eic
 agent.sign-up-confirmation.heading                                                  = Cleient wedi’i gofrestru’n llwyddiannus
 agent.sign-up-confirmation.heading.panel.current                                    = wedi llwyddo i gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, erbyn y flwyddyn dreth bresennol ({0})
 agent.sign-up-confirmation.heading.panel.next                                       = wedi llwyddo i gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, erbyn y flwyddyn dreth nesaf  ({0})
-agent.sign-up-confirmation.what-you-will-have-to-do.heading                         = Yr hyn y mae’n rhaid i chi ei wneud
+agent.sign-up-confirmation.what-you-will-have-to-do.heading                         = Yr hyn y mae’n rhaid i chi ei wneud nawr
 agent.sign-up-confirmation.quarterly-updates.heading                                = Anfon diweddariadau chwarterol:
 agent.sign-up-confirmation.quarterly-updates.para                                   = Mae’n rhaid i chi anfon diweddariadau chwarterol o incwm a threuliau eich cleient gan ddefnyddio meddalwedd sy’n cydweddu.
 agent.sign-up-confirmation.quarterly-updates.table.caption                          = Dyddiadau cau ar gyfer diweddariadau chwarterol
@@ -336,20 +336,21 @@ agent.sign-up-confirmation.quarterly-updates.table.para1                        
 agent.sign-up-confirmation.quarterly-updates.table.para2                            = Mae’r dyddiad cau ar gyfer y ddau gyfnod chwarterol yr un peth.
 agent.sign-up-confirmation.end-of-period-statement.heading                          = Anfon datganiad diwedd cyfnod
 agent.sign-up-confirmation.end-of-period-statement.para                             = Mae’n rhaid i chi neu’ch cleient gyflwyno datganiad diwedd cyfnod, gan ddefnyddio’ch meddalwedd, erbyn {0}.
+agent.sign-up-confirmation.final-declaration.heading                                = Cyflwyno datganiad terfynol a thalu
 agent.sign-up-confirmation.final-declaration.para                                   = Mae’n rhaid i chi neu’ch cleient gyflwyno datganiad terfynol erbyn {0}. Mae’n rhaid iddo hefyd dalu’r dreth sydd arno.
 agent.sign-up-confirmation.warning.para                                             = Mae’n rhai i chi gyflwyno diweddariadau ar gyfer unrhyw chwarterau rydych wedi’u methu.
 
-
-
 agent.sign-up-confirmation.voluntary-next-year.self-assessment.heading              = Parhau â’r Hunanasesiad ar gyfer y flwyddyn hon
 agent.sign-up-confirmation.voluntary-next-year.self-assessment.para                 = Mae’n rhaid cyflwyno Ffurflen Dreth Hunanasesiad eich cleient, yn ôl yr arfer, erbyn 31 Ionawr  {0}.
-agent.sign-up-confirmation.voluntary-next-year.final-declaration.heading            = Cyflwyno datganiad terfynol a thalu treth
-agent.sign-up-confirmation.voluntary-current-year.final-declaration.heading         = Cyflwyno datganiad terfynol a thalu’ch treth
 agent.sign-up-confirmation.mandated-notification-banner.para                        = Mae’n bosibl y codir cosb ar eich cleient os bydd yn methu’r dyddiadau cau ar gyfer y canlynol:
-agent.sign-up-confirmation.mandated.notification-banner.bullet1                    = diweddariadau chwarterol
-agent.sign-up-confirmation.mandated.notification-banner.bullet2                    = datganiad diwedd cyfnod
-agent.sign-up-confirmation.mandated.notification-banner.bullet3                    = datganiad terfynol
-agent.sign-up-confirmation.mandated.notification-banner.bullet4                    = taliad treth
+agent.sign-up-confirmation.mandated.notification-banner.bullet1                     = diweddariadau chwarterol
+agent.sign-up-confirmation.mandated.notification-banner.bullet2                     = datganiad diwedd cyfnod
+agent.sign-up-confirmation.mandated.notification-banner.bullet3                     = datganiad terfynol
+agent.sign-up-confirmation.mandated.notification-banner.bullet4                     = taliad treth
+
+agent.sign-up-confirmation.agent-services-account.heading                           = Eich cyfrif gwasanaethau asiant
+agent.sign-up-confirmation.agent-services-account.para                              = Awdurdodi cyfrifau eich cleientiaid, a’u rheoli.
+agent.sign-up-confirmation.agent-services-account.link-text                         = Ewch i’ch cyfrif gwasanaethau asiant
 
 ## Sign Up Confirmation page ##
 sign-up-confirmation.heading                                                  = Rydych wedi cofrestru’n llwyddiannus
