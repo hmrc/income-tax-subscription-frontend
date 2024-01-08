@@ -81,7 +81,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
     )(
       ArgumentMatchers.any(),
       ArgumentMatchers.any())
-    ).thenReturn(Future.successful(if (preExistingRelationship) Right(ApprovedAgent(nino, utr)) else Right(UnApprovedAgent(nino, utr))))
+    ).thenReturn(Future.successful(if (preExistingRelationship) Right(ApprovedAgent(nino, utr)) else Left(UnApprovedAgent(nino, utr))))
 
   def mockOrchestrateAgentQualificationFailure(arn: String, expectedResult: UnqualifiedAgent): Unit =
     when(mockAgentQualificationService.orchestrateAgentQualification(

@@ -115,7 +115,7 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
       preExistingRelationship(testARN, testNino)(isPreExistingRelationship = false)
       val response = await(call)
 
-      response mustBe Right(unapprovedMatchedClient)
+      response mustBe Left(unapprovedMatchedClient)
     }
 
     "return ApprovedAgent if there is an existing relationship" in {
@@ -133,6 +133,8 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
       TestAgentQualificationService.orchestrateAgentQualification(clientDetails, testARN)(implicitly[HeaderCarrier], request)
 
     "return UnexpectedFailure if something went awry" in {
+      preExistingRelationship(testARN, testClientDetails.nino)(true)
+
       setupOrchestrateAgentQualificationFailure(UnexpectedFailure)
 
       val response = await(call(testClientDetails, request(Some(testClientDetails))))
@@ -151,6 +153,8 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
     }
 
     "return ClientAlreadySubscribed if the client already has subscription" in {
+      preExistingRelationship(testARN, testClientDetails.nino)(true)
+
       setupOrchestrateAgentQualificationFailure(ClientAlreadySubscribed)
 
       val result = call(testClientDetails, request(Some(testClientDetails)))
@@ -166,13 +170,15 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
 
       val result = call(testClientDetails, request(Some(testClientDetails)))
 
-      await(result) mustBe Right(UnApprovedAgent(testClientDetails.ninoInBackendFormat, Some(testUtr)))
+      await(result) mustBe Left(UnApprovedAgent(testClientDetails.ninoInBackendFormat, Some(testUtr)))
 
       verifyClientMatchingSuccessAudit()
     }
 
     "return ApprovedAgent if the client matching was successful" in {
       setupOrchestrateAgentQualificationSuccess(isPreExistingRelationship = true)
+
+      setupMockGetSubscriptionNotFound(testNino)
 
       val result = call(testClientDetails, request(Some(testClientDetails)))
 

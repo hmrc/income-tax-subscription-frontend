@@ -72,7 +72,7 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
             case Left(NoClientMatched) => handleFailedClientMatch(user.arn, clientDetails)
             case Left(ClientAlreadySubscribed) => Future.successful(handleClientAlreadySubscribed(user.arn, clientDetails))
             case Left(UnexpectedFailure) => Future.successful(handleUnexpectedFailure(user.arn, clientDetails))
-            case Right(_: UnApprovedAgent) => Future.successful(handleUnapprovedAgent(user.arn, clientDetails))
+            case Left(_: UnApprovedAgent) => Future.successful(handleUnapprovedAgent(user.arn, clientDetails))
             case Right(ApprovedAgent(nino, None)) => Future.successful(handleApprovedAgentWithoutClientUTR(user.arn, nino, clientDetails))
             case Right(ApprovedAgent(nino, Some(utr))) => handleApprovedAgent(user.arn, nino, utr, clientDetails)
           }

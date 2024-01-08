@@ -34,6 +34,8 @@ case object ClientAlreadySubscribed extends UnqualifiedAgent
 
 case object UnexpectedFailure extends UnqualifiedAgent
 
+case class UnApprovedAgent(clientNino: String, clientUtr: Option[String]) extends UnqualifiedAgent
+
 sealed trait QualifiedAgent {
   def clientNino: String
 
@@ -42,7 +44,6 @@ sealed trait QualifiedAgent {
 
 case class ApprovedAgent(clientNino: String, clientUtr: Option[String]) extends QualifiedAgent
 
-case class UnApprovedAgent(clientNino: String, clientUtr: Option[String]) extends QualifiedAgent
 
 @Singleton
 class AgentQualificationService @Inject()(clientMatchingService: UserMatchingService,
@@ -85,7 +86,7 @@ class AgentQualificationService @Inject()(clientMatchingService: UserMatchingSer
       isPreExistingRelationship <- clientRelationshipService.isPreExistingRelationship(agentReferenceNumber, matchedClient.clientNino)
     } yield
       if (isPreExistingRelationship) Right(matchedClient)
-      else Right(UnApprovedAgent(matchedClient.clientNino, matchedClient.clientUtr))
+      else Left(UnApprovedAgent(matchedClient.clientNino, matchedClient.clientUtr))
   }.recoverWith { case _ => Future.successful(Left(UnexpectedFailure)) }
 
   private implicit class Util[A, B](first: Future[Either[A, B]]) {
@@ -99,8 +100,8 @@ class AgentQualificationService @Inject()(clientMatchingService: UserMatchingSer
   def orchestrateAgentQualification(clientDetails: UserDetailsModel, agentReferenceNumber: String)
                                    (implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[ReturnType] =
     matchClient(clientDetails, agentReferenceNumber)
-      .flatMapRight(checkExistingSubscription)
       .flatMapRight(checkClientRelationship(agentReferenceNumber, _))
+      .flatMapRight(checkExistingSubscription)
 }
 
 

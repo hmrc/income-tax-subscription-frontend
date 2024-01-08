@@ -38,7 +38,6 @@ trait MockAgentQualificationService extends MockClientRelationshipService
                                                 nino: String = TestConstants.testNino,
                                                 isPreExistingRelationship: Boolean): Unit = {
     mockUserMatchSuccess(testClientDetails)
-    setupMockGetSubscriptionNotFound(nino)
     preExistingRelationship(arn, nino)(isPreExistingRelationship)
   }
 
