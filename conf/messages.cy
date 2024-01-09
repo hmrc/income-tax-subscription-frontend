@@ -353,57 +353,55 @@ agent.sign-up-confirmation.agent-services-account.para                          
 agent.sign-up-confirmation.agent-services-account.link-text                         = Ewch i’ch cyfrif gwasanaethau asiant
 
 ## Sign Up Confirmation page ##
-sign-up-confirmation.heading                                                  = Rydych wedi cofrestru’n llwyddiannus
-sign-up-confirmation.heading.panel.current                                    = Mae wedi llwyddo i gofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm, o ran y flwyddyn dreth bresennol ({0})
-sign-up-confirmation.heading.panel.next                                       = Mae wedi llwyddo i gofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm, o ran y flwyddyn dreth nesaf ({0})
-sign-up-confirmation.what-you-must-do.heading                                 = Yr hyn y mae’n rhaid i chi ei wneud
-sign-up-confirmation.quarterly-updates.heading                                = Anfon diweddariadau chwarterol:
-sign-up-confirmation.quarterly-updates.para-one                               = Er mwyn anfon eich diweddariadau, mae’n rhaid i chi ddewis y cyfnodau chwarterol yr hoffech eu defnyddio. Gallwch wneud hyn yn eich meddalwedd sy’n cydweddu cyn gwneud eich diweddariad cyntaf.
-sign-up-confirmation.quarterly-updates.quarter-types                          = Mae dyddiadau’r cyfnodau chwarterol fel a ganlyn:
-sign-up-confirmation.quarterly-updates.quarter-types.item-1                   = chwarterau calendr (er enghraifft, 1 Ebrill i 30 Mehefin)
-sign-up-confirmation.quarterly-updates.quarter-types.item-2                   = chwarterau safonol (yn dechrau ar y 6ed o bob mis)
-sign-up-confirmation.quarterly-updates.para-two                               = Mae’r dyddiad cau ar gyfer eich diweddariadau yn aros yr un peth.
-sign-up-confirmation.quarterly-updates.table.caption                          = Diweddariadau chwarterol erbyn y dyddiad cau
-sign-up-confirmation.quarterly-updates.link-text                              = Dysgwch ragor am ddiweddariadau chwarterol.
-sign-up-confirmation.quarterly-updates.warning.para                           = Mae’n rhai i chi gyflwyno diweddariadau ar gyfer unrhyw chwarterau rydych wedi’u methu.
-sign-up-confirmation.end-of-period-statement.heading                          = Anfon datganiad diwedd cyfnod
-sign-up-confirmation.end-of-period-statement.para                             = Mae’n rhaid i chi gyflwyno datganiad diwedd cyfnod, gan ddefnyddio’ch meddalwedd, erbyn {0}.
-sign-up-confirmation.final-declaration.para                                   = Mae’n rhaid i chi gyflwyno’ch datganiad terfynol a thalu’r dreth sydd arnoch erbyn {0}.
+## Sign Up Confirmation page ##
+sign-up-confirmation.heading                                         = Rydych wedi cofrestru’n llwyddiannus
+sign-up-confirmation.heading.panel.current                           = Mae wedi llwyddo i gofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm, o ran y flwyddyn dreth bresennol ({0})
+sign-up-confirmation.heading.panel.next                              = Mae wedi llwyddo i gofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm, o ran y flwyddyn dreth nesaf ({0})
 
-sign-up-confirmation.voluntary-next-year.self-assessment.heading              = Cyflwyno’ch Ffurflen Dreth Hunanasesiad ar gyfer y flwyddyn hon
-sign-up-confirmation.voluntary-next-year.self-assessment.para                 = Mae’n rhaid i chi gyflwyno’ch Ffurflen Dreth Hunanasesiad, yn ôl yr arfer, erbyn 31 Ionawr {0}.
-sign-up-confirmation.voluntary-next-year.final-declaration.heading            = Cyflwyno datganiad terfynol a thalu’ch treth
-sign-up-confirmation.voluntary-current-year.final-declaration.heading         = Cyflwyno datganiad terfynol a thalu’ch treth
-sign-up-confirmation.mandated-notification-banner.para                        = Mae’n bosibl y byddwch yn cael eich cosbi os byddwch yn methu’r dyddiadau cau ar gyfer eich:
-sign-up-confirmation.mandated.notification-banner.bullet1                    = diweddariadau chwarterol
-sign-up-confirmation.mandated.notification-banner.bullet2                    = datganiad diwedd cyfnod
-sign-up-confirmation.mandated.notification-banner.bullet3                    = datganiad terfynol
-sign-up-confirmation.mandated.notification-banner.bullet4                    = taliad treth
+sign-up-confirmation.what-you-must-do.heading                        = Yr hyn y mae’n rhaid i chi ei wneud
 
+sign-up-confirmation.before-you-start.heading                        = Cyn i chi ddechrau
+sign-up-confirmation.before-you-start.para1                          = Fel y gallwch ddechrau defnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm, mae’n rhaid i chi gael meddalwedd sy’n cydweddu. Dylech wirio a yw’r feddalwedd yn bodloni anghenion eich busnes.
+sign-up-confirmation.before-you-start.para2                          = Er enghraifft, os ydych am ddiweddaru’ch incwm a’ch treuliau fesul cyfnod chwarterol calendr, mae’n rhaid i chi ddewis meddalwedd sy’n gallu gwneud hynny.
+sign-up-confirmation.before-you-start.para3                          = Mae’n rhaid gwneud hyn cyn y byddwch yn gwneud eich diweddariad cyntaf.
+sign-up-confirmation.before-you-start.find-software.link-text        = Dod o hyd i feddalwedd sy’n cydweddu (yn agor tab newydd)
 
-sign-up-confirmation.section2.heading                                = Dod o hyd i feddalwedd a gwirio’ch cyfrif
+sign-up-confirmation.when-you-start.heading                          = Pan fyddwch yn dechrau arni
 
-sign-up-confirmation.section2.online-services.heading                = Gwirio gwasanaethau ar-lein CThEF
-sign-up-confirmation.section2.online-services.paragraph              = Gallwch adolygu neu newid yr atebion rydych newydd eu nodi, a chael diweddariadau.
-sign-up-confirmation.section2.online-services.link                   = Ewch i’ch cyfrif gwasanaethau ar-lein CThEF
-sign-up-confirmation.section2.online-services.next-year.paragraph1   = Go to your {0} to review or change the answers you have entered, and to get updates.  .. but in Welsh
-sign-up-confirmation.section2.online-services.next-year.paragraph2   = It may take a few hours for new information to appear.  .. but in Welsh
-sign-up-confirmation.section2.online-services.next-year.link         = Ewch i’ch cyfrif gwasanaethau ar-lein CThEF
+sign-up-confirmation.quarterly-updates.heading                       = Anfon diweddariadau chwarterol
+sign-up-confirmation.quarterly-updates.para-one                      = Mae’n rhaid i chi anfon diweddariadau chwarterol. Mae dyddiadau’r cyfnodau chwarterol fel a ganlyn:
+sign-up-confirmation.quarterly-updates.quarter-types.item-1          = chwarterau calendr (er enghraifft, 1 Ebrill i 30 Mehefin)
+sign-up-confirmation.quarterly-updates.quarter-types.item-2          = chwarterau safonol (yn dechrau ar y 6ed diwrnod o bob mis)
+sign-up-confirmation.quarterly-updates.para-two                      = Mae’r dyddiad cau ar gyfer eich diweddariadau yn aros yr un peth.
+sign-up-confirmation.quarterly-updates.table.caption                 = Diweddariadau chwarterol erbyn y dyddiad cau
+sign-up-confirmation.quarterly-updates.link-text                     = Dysgwch ragor am ddiweddariadau chwarterol.
+sign-up-confirmation.quarterly-updates.warning.para                  = Mae’n rhai i chi gyflwyno diweddariadau ar gyfer unrhyw chwarterau rydych wedi’u methu.
+
+sign-up-confirmation.end-of-period-statement.heading                 = Anfon datganiad diwedd cyfnod
+sign-up-confirmation.end-of-period-statement.para                    = Mae’n rhaid i chi gyflwyno datganiad diwedd cyfnod gan ddefnyddio’ch meddalwedd erbyn {0}.
+
+sign-up-confirmation.final-declaration.heading                       = Cyflwyno datganiad terfynol
+sign-up-confirmation.final-declaration.para1                         = Dylid datgan ffynhonellau incwm eraill, megis incwm o gyflogaeth, difidendau neu gynilion. Mae angen i chi rhoi gwybod am yr incwm hwn gan ddefnyddio naill ai:
+sign-up-confirmation.final-declaration.bullet1                       = eich meddalwedd sy’n cydweddu (os oes ganddi’r swyddogaeth honno)
+sign-up-confirmation.final-declaration.bullet2                       = Heich cyfrif gwasanaethau ar-lein CThEF
+sign-up-confirmation.final-declaration.online-services.link-text     = Mae rhagor o wybodaeth yn eich cyfrif gwasanaethau ar-lein CThEF.
+
+sign-up-confirmation.report-previous-tax-year.heading                = Rhoi gwybod am flwyddyn dreth flaenorol
+sign-up-confirmation.report-previous-tax-year.para                   = Bydd yn rhaid i chi gyflwyno’ch Ffurflen Dreth Hunanasesiad am y flwyddyn a ddaw i ben ar 5 Ebrill 2023, gan ddefnyddio’ch cyfrif gwasanaethau ar-lein CThEF yn ôl yr arfer.
+
+sign-up-confirmation.pay-your-tax.heading                            = Talu’ch treth
+sign-up-confirmation.pay-your-tax.para1                              = Mae sawl ffordd o dalu’ch treth, gan gynnwys:
+sign-up-confirmation.pay-your-tax.bullet1                            = bancio ar-lein
+sign-up-confirmation.pay-your-tax.bullet2                            = bancio dros y ffôn
+sign-up-confirmation.pay-your-tax.bullet3                            = cerdyn debyd
+sign-up-confirmation.pay-your-tax.bullet4                            = cerdyn credyd corfforaethol
+sign-up-confirmation.pay-your-tax.bullet5                            = debyd uniongyrchol
+sign-up-confirmation.pay-your-tax.para2                              = Mae rhagor o wybodaeth ar {0} ar GOV.UK.
+sign-up-confirmation.pay-your-tax.link-text                          = sut i dalu’ch bil treth
 
 sign-up-confirmation.preference-set.online.para-one                  = Rydych wedi dewis i gael eich llythyrau treth ar-lein.
 sign-up-confirmation.preference-set.online.para-two                  = Mae’n rhaid i chi ddilysu’ch cyfeiriad e-bost i gadarnhau hyn. Os nad ydych wedi gwneud hyn yn barod, dewiswch y cysylltiad a anfonwyd atoch drwy e-bost.
 sign-up-confirmation.preference-set.paper.para                       = Rydych wedi dewis cael eich llythyrau treth drwy’r post. Gallwch newid y dewis hwn ar unrhyw adeg yn eich cyfrif CThEF ar-lein.
-
-sign-up-confirmation.section2.find-software.heading                = Dod o hyd i feddalwedd
-sign-up-confirmation.section2.find-software.para-1                 = Cyn i chi allu defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, mae angen i chi ddewis meddalwedd a’i galluogi i ryngweithio â’r gwasanaeth hwn.
-sign-up-confirmation.section2.find-software.link                   = Dod o hyd i feddalwedd
-
-sign-up-confirmation.section2.getting-prepared.heading             = Paratoi
-sign-up-confirmation.section2.getting-prepared.para-1              = Mae angen meddalwedd sy’n cydweddu arnoch cyn i chi ddechrau defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar 6 Ebrill {0}.
-sign-up-confirmation.section2.getting-prepared.link                = Dod o hyd i feddalwedd
-
-
-
 
 
 ## Errors ##
