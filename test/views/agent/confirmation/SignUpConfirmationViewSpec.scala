@@ -110,16 +110,18 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "have a Quarterly updates section" which {
+        def section: Element = mainContent.selectHead("ol").selectNth("li", 1)
+
         "contains a heading" in {
-          mainContent.selectNth(".govuk-section-break--visible", 1).selectHead("h3").text() contains SignUpConfirmationMessages.quarterlyUpdatesHeading
+          section.selectHead("h3").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesHeading
         }
 
         "contains Quarterly Updates initial paragraph" in {
-          mainContent.selectNth(".govuk-section-break--visible", 1).selectHead("p").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParagraph
+          section.selectHead("p").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParagraph
         }
 
         "contains a table" in {
-          mainContent.selectNth(".govuk-section-break--visible", 1).mustHaveTable(
+          section.mustHaveTable(
             tableHeads = List(SignUpConfirmationMessages.quarterlyUpdate, SignUpConfirmationMessages.deadline),
             tableRows = List(
               List(q1Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q1Update.deadline.toLongDateNoYear),
@@ -133,35 +135,39 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains a warning message" in {
-          mainContent.selectHead(".govuk-warning-text").text() contains SignUpConfirmationMessages.warningMessage
+          section.selectHead(".govuk-warning-text").text() mustBe SignUpConfirmationMessages.warningMessage
         }
 
         "contains details para1" in {
-          mainContent.selectNth(".govuk-details", 1).selectHead("p").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesDetailsp1
+          section.selectNth(".govuk-details", 1).selectHead("p").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesDetailsp1
         }
 
         "contains details para2" in {
-          mainContent.selectNth(".govuk-details", 1).selectNth("p",2).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesDetailsp2
+          section.selectNth(".govuk-details", 1).selectNth("p",2).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesDetailsp2
         }
       }
 
       "have End of Period section" which {
+        def section: Element = mainContent.selectHead("ol").selectNth("li", 2)
+
         "contains a heading" in {
-          mainContent.selectNth(".govuk-section-break--visible", 2).selectHead("h3").text() contains SignUpConfirmationMessages.endOfPeriodStatementHeading
+          section.selectHead("h3").text() contains SignUpConfirmationMessages.endOfPeriodStatementHeading
         }
 
         "contains end of period paragraph" in {
-          mainContent.selectNth(".govuk-section-break--visible", 2).selectHead("p").text() mustBe SignUpConfirmationMessages.endOfPeriodStatementThisYearParagraph
+          section.selectHead("p").text() mustBe SignUpConfirmationMessages.endOfPeriodStatementThisYearParagraph
         }
       }
 
       "have Final Declaration section" which {
+        def section: Element = mainContent.selectHead("ol").selectNth("li", 3)
+
         "contains a heading" in {
-          mainContent.selectNth(".govuk-section-break--visible", 3).selectHead("h3").text() contains SignUpConfirmationMessages.finalDeclarationCurrentYearHeading
+          section.selectHead("h3").text() mustBe SignUpConfirmationMessages.finalDeclarationHeading
         }
 
         "contains final declaration paragraph" in {
-          mainContent.selectNth(".govuk-section-break--visible", 3).selectHead("p").text() mustBe SignUpConfirmationMessages.finalDeclarationThisYearParagraph
+          section.selectHead("p").text() mustBe SignUpConfirmationMessages.finalDeclarationThisYearParagraph
         }
       }
 
@@ -201,26 +207,30 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "have Self Assessment section" which {
+        def section: Element = mainContent.selectHead("ol").selectNth("li", 1)
+
         "contains a heading" in {
-          mainContent.selectNth(".govuk-section-break--visible", 1).selectHead("h3").text() contains SignUpConfirmationMessages.continueSelfAssessmentHeading
+          section.selectHead("h3").text() mustBe SignUpConfirmationMessages.continueSelfAssessmentHeading
         }
 
         "contains a paragraph" in {
-          mainContent.selectNth(".govuk-section-break--visible", 1).selectHead("p").text() mustBe SignUpConfirmationMessages.continueSelfAssessmentPara
+          section.selectHead("p").text() mustBe SignUpConfirmationMessages.continueSelfAssessmentPara
         }
       }
 
       "have a Quarterly updates section" which {
+        def section: Element = mainContent.selectHead("ol").selectNth("li", 2)
+
         "contains a heading" in {
-          mainContent.selectNth(".govuk-section-break--visible", 2).selectHead("h3").text() contains SignUpConfirmationMessages.quarterlyUpdatesHeading
+          section.selectHead("h3").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesHeading
         }
 
         "contains Quarterly Updates initial paragraph" in {
-          mainContent.selectNth(".govuk-section-break--visible", 2).selectHead("p").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParagraph
+          section.selectHead("p").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParagraph
         }
 
         "contains a table" in {
-          mainContent.selectNth(".govuk-section-break--visible", 2).mustHaveTable(
+          section.mustHaveTable(
             tableHeads = List(SignUpConfirmationMessages.quarterlyUpdate, SignUpConfirmationMessages.deadline),
             tableRows = List(
               List(q1Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q1Update.deadline.toLongDateNoYear),
@@ -234,31 +244,35 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains details para1" in {
-          mainContent.selectNth(".govuk-details", 1).selectHead("p").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesDetailsp1
+          section.selectNth(".govuk-details", 1).selectHead("p").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesDetailsp1
         }
 
         "contains details para2" in {
-          mainContent.selectNth(".govuk-details", 1).selectNth("p",2).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesDetailsp2
+          section.selectNth(".govuk-details", 1).selectNth("p",2).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesDetailsp2
         }
       }
 
       "have End of Period section" which {
+        def section: Element = mainContent.selectHead("ol").selectNth("li", 3)
+
         "contains a heading" in {
-          mainContent.selectNth(".govuk-section-break--visible", 3).selectHead("h3").text() contains SignUpConfirmationMessages.endOfPeriodStatementHeading
+          section.selectHead("h3").text() mustBe SignUpConfirmationMessages.endOfPeriodStatementHeading
         }
 
         "contains end of period paragraph" in {
-          mainContent.selectNth(".govuk-section-break--visible", 3).selectHead("p").text() mustBe SignUpConfirmationMessages.endOfPeriodStatementNextYearParagraph
+          section.selectHead("p").text() mustBe SignUpConfirmationMessages.endOfPeriodStatementNextYearParagraph
         }
       }
 
       "have Final Declaration section" which {
+        def section: Element = mainContent.selectHead("ol").selectNth("li", 4)
+
         "contains a heading" in {
-          mainContent.selectNth(".govuk-section-break--visible", 4).selectHead("h3").text() contains SignUpConfirmationMessages.finalDeclarationNextYearHeading
+          section.selectHead("h3").text() mustBe SignUpConfirmationMessages.finalDeclarationHeading
         }
 
         "contains final declaration paragraph" in {
-          mainContent.selectNth(".govuk-section-break--visible", 4).selectHead("p").text() mustBe SignUpConfirmationMessages.finalDeclarationNextYearParagraph
+          section.selectHead("p").text() mustBe SignUpConfirmationMessages.finalDeclarationNextYearParagraph
         }
       }
 
@@ -298,26 +312,30 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "have Self Assessment section" which {
+        def section: Element = mainContent.selectHead("ol").selectNth("li", 1)
+
         "contains a heading" in {
-          mainContent.selectNth(".govuk-section-break--visible", 1).selectHead("h3").text() contains SignUpConfirmationMessages.continueSelfAssessmentHeading
+          section.selectHead("h3").text() mustBe SignUpConfirmationMessages.continueSelfAssessmentHeading
         }
 
         "contains a paragraph" in {
-          mainContent.selectNth(".govuk-section-break--visible", 1).selectHead("p").text() mustBe SignUpConfirmationMessages.continueSelfAssessmentPara
+          section.selectHead("p").text() mustBe SignUpConfirmationMessages.continueSelfAssessmentPara
         }
       }
 
       "have a Quarterly updates section" which {
+        def section: Element = mainContent.selectHead("ol").selectNth("li", 2)
+
         "contains a heading" in {
-          mainContent.selectNth(".govuk-section-break--visible", 2).selectHead("h3").text() contains SignUpConfirmationMessages.quarterlyUpdatesHeading
+          section.selectHead("h3").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesHeading
         }
 
         "contains Quarterly Updates initial paragraph" in {
-          mainContent.selectNth(".govuk-section-break--visible", 2).selectHead("p").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParagraph
+          section.selectHead("p").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParagraph
         }
 
         "contains a table" in {
-          mainContent.selectNth(".govuk-section-break--visible", 2).mustHaveTable(
+          section.mustHaveTable(
             tableHeads = List(SignUpConfirmationMessages.quarterlyUpdate, SignUpConfirmationMessages.deadline),
             tableRows = List(
               List(q1Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q1Update.deadline.toLongDateNoYear),
@@ -332,22 +350,26 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "have End of Period section" which {
+        def section: Element = mainContent.selectHead("ol").selectNth("li", 3)
+
         "contains a heading" in {
-          mainContent.selectNth(".govuk-section-break--visible", 3).selectHead("h3").text() contains SignUpConfirmationMessages.endOfPeriodStatementHeading
+          section.selectHead("h3").text() mustBe SignUpConfirmationMessages.endOfPeriodStatementHeading
         }
 
         "contains end of period paragraph" in {
-          mainContent.selectNth(".govuk-section-break--visible", 3).selectHead("p").text() mustBe SignUpConfirmationMessages.endOfPeriodStatementNextYearParagraph
+          section.selectHead("p").text() mustBe SignUpConfirmationMessages.endOfPeriodStatementNextYearParagraph
         }
       }
 
       "have Final Declaration section" which {
+        def section: Element = mainContent.selectHead("ol").selectNth("li", 4)
+
         "contains a heading" in {
-          mainContent.selectNth(".govuk-section-break--visible", 4).selectHead("h3").text() contains SignUpConfirmationMessages.finalDeclarationNextYearHeading
+          section.selectHead("h3").text() mustBe SignUpConfirmationMessages.finalDeclarationHeading
         }
 
         "contains final declaration paragraph" in {
-          mainContent.selectNth(".govuk-section-break--visible", 4).selectHead("p").text() mustBe SignUpConfirmationMessages.finalDeclarationNextYearParagraph
+          section.selectHead("p").text() mustBe SignUpConfirmationMessages.finalDeclarationNextYearParagraph
         }
       }
 
@@ -387,16 +409,18 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "have a Quarterly updates section" which {
+        def section: Element = mainContent.selectHead("ol").selectNth("li", 1)
+
         "contains a heading" in {
-          mainContent.selectNth(".govuk-section-break--visible", 1).selectHead("h3").text() contains SignUpConfirmationMessages.quarterlyUpdatesHeading
+          section.selectHead("h3").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesHeading
         }
 
         "contains Quarterly Updates initial paragraph" in {
-          mainContent.selectNth(".govuk-section-break--visible", 1).selectHead("p").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParagraph
+          section.selectHead("p").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParagraph
         }
 
         "contains a table" in {
-          mainContent.selectNth(".govuk-section-break--visible", 1).mustHaveTable(
+          section.mustHaveTable(
             tableHeads = List(SignUpConfirmationMessages.quarterlyUpdate, SignUpConfirmationMessages.deadline),
             tableRows = List(
               List(q1Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q1Update.deadline.toLongDateNoYear),
@@ -411,54 +435,26 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "have End of Period section" which {
+        def section: Element = mainContent.selectHead("ol").selectNth("li", 2)
+
         "contains a heading" in {
-          mainContent.selectNth(".govuk-section-break--visible", 2).selectHead("h3").text() contains SignUpConfirmationMessages.endOfPeriodStatementHeading
+          section.selectHead("h3").text() mustBe SignUpConfirmationMessages.endOfPeriodStatementHeading
         }
 
         "contains end of period paragraph" in {
-          mainContent.selectNth(".govuk-section-break--visible", 2).selectHead("p").text() mustBe SignUpConfirmationMessages.endOfPeriodStatementThisYearParagraph
+          section.selectHead("p").text() mustBe SignUpConfirmationMessages.endOfPeriodStatementThisYearParagraph
         }
       }
 
       "have Final Declaration section" which {
+        def section: Element = mainContent.selectHead("ol").selectNth("li", 3)
+
         "contains a heading" in {
-          mainContent.selectNth(".govuk-section-break--visible", 3).selectHead("h3").text() contains SignUpConfirmationMessages.finalDeclarationCurrentYearHeading
+          section.selectHead("h3").text() mustBe SignUpConfirmationMessages.finalDeclarationHeading
         }
 
         "contains final declaration paragraph" in {
-          mainContent.selectNth(".govuk-section-break--visible", 3).selectHead("p").text() mustBe SignUpConfirmationMessages.finalDeclarationThisYearParagraph
-        }
-      }
-
-      "have Notification Panel" which {
-        def notificationBanner: Element = mainContent.selectHead(".govuk-notification-banner")
-
-        "contains Notification Header" in {
-          notificationBanner.selectHead(".govuk-notification-banner__header").text mustBe SignUpConfirmationMessages.notificationBannerHeader
-        }
-
-        "contains a paragraph" in {
-          notificationBanner.selectHead("p").text() mustBe SignUpConfirmationMessages.notificationBannerParagraph
-        }
-
-        "has a bullet list" which {
-          def bulletList: Element = notificationBanner.selectHead("ul")
-
-          "has a first bullet" in {
-            bulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.notificationBannerBulletOne
-          }
-
-          "has a second bullet" in {
-            bulletList.selectNth("li", 2).text mustBe SignUpConfirmationMessages.notificationBannerBulletTwo
-          }
-
-          "has a thrid bullet" in {
-            bulletList.selectNth("li", 3).text mustBe SignUpConfirmationMessages.notificationBannerBulletThree
-          }
-
-          "has a fourth bullet" in {
-            bulletList.selectNth("li", 4).text mustBe SignUpConfirmationMessages.notificationBannerBulletFour
-          }
+          section.selectHead("p").text() mustBe SignUpConfirmationMessages.finalDeclarationThisYearParagraph
         }
       }
 
@@ -470,7 +466,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
   }
 
   private object SignUpConfirmationMessages {
-    val whatToDoHeading                         = "What you must do"
+    val whatToDoHeading                         = "What you must do now"
     val panelHeading                            = "Client sign up complete"
     val panelUserDetails                        = s"$testName | $testNino"
     val panelDescriptionThis                    = s"is now signed up for Making Tax Digital for Income Tax for the current tax year (${startDate.day} April 2010 to ${endDate.day} April 2011)"
@@ -493,27 +489,19 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val quarterlyUpdatesDetailsp1               = "You can choose to send your client’s updates by calendar quarterly period dates. This must be selected in the compatible software before the first update is made."
     val quarterlyUpdatesDetailsp2               = "The deadline for both quarterly period dates are the same."
 
-    val warningMessage                          = "You must make updates for any quarters you’ve missed."
+    val warningMessage                          = "! Warning You must make updates for any quarters you’ve missed."
 
-    val endOfPeriodStatementHeading             = "Send us an end of period statement"
+    val endOfPeriodStatementHeading             = "Send an end of period statement"
     val endOfPeriodStatementThisYearDate: String = AccountingPeriodUtil.getEndOfPeriodStatementDate(false).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
     val endOfPeriodStatementNextYearDate: String = AccountingPeriodUtil.getEndOfPeriodStatementDate(true).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
     val endOfPeriodStatementThisYearParagraph   = s"Either you or your client must submit an end of period statement using your software by $endOfPeriodStatementThisYearDate."
     val endOfPeriodStatementNextYearParagraph   = s"Either you or your client must submit an end of period statement using your software by $endOfPeriodStatementNextYearDate."
 
-    val finalDeclarationCurrentYearHeading      = "Submit a final declaration and pay your tax"
-    val finalDeclarationNextYearHeading         = "Submit a final declaration and pay tax"
+    val finalDeclarationHeading                 = "Submit a final declaration and pay"
     val finalDeclarationThisYearDate: String = AccountingPeriodUtil.getFinalDeclarationDate(false).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
     val finalDeclarationNextYearDate: String = AccountingPeriodUtil.getFinalDeclarationDate(true).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
     val finalDeclarationThisYearParagraph       = s"A final declaration must be submitted by either you or your client by $finalDeclarationThisYearDate. They must also pay the tax they owe."
     val finalDeclarationNextYearParagraph       = s"A final declaration must be submitted by either you or your client by $finalDeclarationNextYearDate. They must also pay the tax they owe."
-
-    val notificationBannerHeader                = "Important"
-    val notificationBannerParagraph             = "Your client may be penalised if deadlines are missed for their:"
-    val notificationBannerBulletOne             = "quarterly updates"
-    val notificationBannerBulletTwo             = "end of period statement"
-    val notificationBannerBulletThree           = "final declaration"
-    val notificationBannerBulletFour            = "tax payment"
 
     val signUpAnotherClient                     = "Sign up another client"
 
