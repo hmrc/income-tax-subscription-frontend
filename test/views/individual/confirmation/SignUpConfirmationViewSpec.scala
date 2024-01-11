@@ -29,7 +29,7 @@ import java.time.Month._
 import java.time.format.DateTimeFormatter
 import scala.util.Random
 
-
+//scalastyle:off
 class SignUpConfirmationViewSpec extends ViewSpec {
 
   val implicitDateFormatter: ImplicitDateFormatter = app.injector.instanceOf[ImplicitDateFormatterImpl]
@@ -61,7 +61,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     "the user is voluntary and eligible for this year" should {
       def mainContent(preference: Option[Boolean] = None): Element = document(mandatedCurrentYear = false, selectedTaxYearIsNext = false, preference = preference).mainContent
 
-      "have a header panel" which {
+      "has a header panel" which {
         "contains the panel heading" in {
           mainContent().select(".govuk-panel").select("h1").text() mustBe SignUpConfirmationMessages.panelHeading
         }
@@ -86,134 +86,205 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         mainContent().selectNth("h2", 1).text() mustBe SignUpConfirmationMessages.whatYouMustDoHeading
       }
 
-      "contains the find software section in first position" which {
+      "contains the Before you start section in first position" which {
 
         "contains a heading" in {
-          mainContent().selectHead("ol").selectNth("li", 1).selectHead("h3").text() contains SignUpConfirmationMessages.findSoftwareHeading
+          mainContent().selectNth("h3", 1).text() contains SignUpConfirmationMessages.beforeYouStartSection.heading
         }
 
-        "contains a paragraph" in {
-          mainContent().selectHead("ol").selectNth("li", 1).selectHead("p").text() mustBe SignUpConfirmationMessages.findSoftwareParagraph
+        "contains a paragraph one" in {
+          mainContent().selectNth("p", 3).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph1
+        }
+
+        "contains a paragraph two" in {
+          mainContent().selectNth("p", 4).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph2
+        }
+
+        "contains a paragraph three" in {
+          mainContent().selectNth("p", 5).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph3
         }
 
         "contains a link" in {
           val link = mainContent().selectNth(".govuk-link", 1)
           link.attr("href") mustBe "https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax"
-          link.text mustBe SignUpConfirmationMessages.findSoftwareLink
+          link.text mustBe SignUpConfirmationMessages.beforeYouStartSection.findSoftwareLinkText
         }
       }
 
-      "have a quarterly updates section" which {
-        def quarterlySection: Element = mainContent().selectHead("ol").selectNth("li", 2)
+      "contains a When you start section in second position" which {
 
-        "contains a heading" in {
-          quarterlySection.selectHead("h3").text() contains SignUpConfirmationMessages.quarterlyUpdatesHeading
+        "which has a heading" in {
+          mainContent().selectNth("h3", 2).text() contains SignUpConfirmationMessages.whenYouStartSection.heading
         }
 
-        "contains quarterly updates initial paragraph" in {
-          quarterlySection.selectNth("p", 1).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParaOne
+        "has a Send quarterly updates sub section" which {
+
+          def quarterlySection: Element = mainContent().selectHead("ol").selectNth("li", 1)
+
+          "contains a heading" in {
+            quarterlySection.selectHead("h3").text() contains SignUpConfirmationMessages.whenYouStartSection.quarterlyUpdates.heading
+          }
+
+          "contains quarterly updates initial paragraph" in {
+            quarterlySection.selectHead("p").text() mustBe SignUpConfirmationMessages.whenYouStartSection.quarterlyUpdates.paraOne
+          }
+
+          "contains a bullet list of quarter types" which {
+            def bulletList = quarterlySection.selectHead("ul")
+
+            "has a first item" in {
+              bulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.whenYouStartSection.quarterlyUpdates.quarterTypesItemOne
+            }
+
+            "has a second item" in {
+              bulletList.selectNth("li", 2).text mustBe SignUpConfirmationMessages.whenYouStartSection.quarterlyUpdates.quarterTypesItemTwo
+            }
+          }
+
+          "contains a table" in {
+            quarterlySection.mustHaveTable(
+              tableHeads = List(SignUpConfirmationMessages.whenYouStartSection.quarterlyUpdates.quarterlyUpdate, SignUpConfirmationMessages.whenYouStartSection.quarterlyUpdates.deadline),
+              tableRows = List(
+                List(q1Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q1Update.deadline.toLongDateNoYear),
+                List(q2Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q2Update.deadline.toLongDateNoYear),
+                List(q3Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q3Update.deadline.toLongDateNoYear),
+                List(q4Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q4Update.deadline.toLongDateNoYear)
+              ),
+              maybeCaption = Some(SignUpConfirmationMessages.whenYouStartSection.quarterlyUpdates.tableCaption),
+              hiddenTableCaption = false
+            )
+          }
+
+          "contains a warning message" in {
+            quarterlySection.selectHead(".govuk-warning-text").text() contains SignUpConfirmationMessages.whenYouStartSection.quarterlyUpdates.warningMessage
+          }
+
+          "contains a link to find software which opens in a new tab" in {
+            val link = quarterlySection.selectHead("a")
+            link.attr("href") mustBe "https://www.gov.uk/guidance/using-making-tax-digital-for-income-tax#sending-quarterly-updates-using-compatible-software"
+            link.attr("target") mustBe "_blank"
+            link.text mustBe SignUpConfirmationMessages.whenYouStartSection.quarterlyUpdates.sectionLinkText
+          }
         }
 
-        "contains quarterly updates secondary paragraph" in {
-          quarterlySection.selectNth("p", 2).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesQuarterTypesPara
+        "has Send an end of period statement sub section" which {
+          def endOfPeriodSection: Element = mainContent().selectHead("ol > li:nth-of-type(2)")
+
+          "contains a heading" in {
+            endOfPeriodSection.selectHead("h3").text() contains SignUpConfirmationMessages.whenYouStartSection.endOfPeriod.heading
+          }
+
+          "contains end of period paragraph" in {
+            endOfPeriodSection.selectHead("p").text() mustBe SignUpConfirmationMessages.whenYouStartSection.endOfPeriod.thisYearParagraph
+          }
         }
 
-        "contains a bullet list of quarter types" which {
-          def bulletList = quarterlySection.selectHead("ul")
+        "has Submit a final declaration sub section" which {
+          def finalDeclarationSection: Element = mainContent().selectHead("ol > li:nth-of-type(3)")
+
+          "contains a heading" in {
+            finalDeclarationSection.selectHead("h3").text() contains SignUpConfirmationMessages.whenYouStartSection.finalDeclaration.heading
+          }
+
+          "contains final declaration paragraph" in {
+            finalDeclarationSection.selectHead("p").text() mustBe SignUpConfirmationMessages.whenYouStartSection.finalDeclaration.paragraph
+          }
+
+          "contains a bullet list of types" which {
+
+            def finalDeclarationbulletList = finalDeclarationSection.selectHead("ul")
+
+            "has a first item" in {
+              finalDeclarationbulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.whenYouStartSection.finalDeclaration.bulletItemOne
+            }
+
+            "has a second item" in {
+              finalDeclarationbulletList.selectNth("li", 2).text mustBe SignUpConfirmationMessages.whenYouStartSection.finalDeclaration.bulletItemTwo
+            }
+          }
+
+          "contains a link" in {
+            val link = finalDeclarationSection.selectHead("a")
+            link.attr("href") mustBe appConfig.onlineServiceAccountUrl
+            link.text mustBe SignUpConfirmationMessages.whenYouStartSection.finalDeclaration.onlineServiceLinkText
+          }
+        }
+      }
+
+      "contains a Report previous tax year section in third position" which {
+
+        "has a heading" in {
+          mainContent().selectNth("h3", 5).text() mustBe SignUpConfirmationMessages.reportPreviousTax.heading
+        }
+
+        "has a paragraph" in {
+          mainContent().selectNth("p", 11).text() mustBe SignUpConfirmationMessages.reportPreviousTax.paragraphThisYear
+        }
+      }
+
+      "contains a Pay you tax section in fourth position" which {
+
+        "has a heading" in {
+          mainContent().selectNth("h3", 6).text() mustBe SignUpConfirmationMessages.payYourTax.heading
+        }
+
+        "has a paragraph" in {
+          mainContent().selectNth("p", 12).text() mustBe SignUpConfirmationMessages.payYourTax.paraOne
+        }
+
+        "contains a bullet list of payment types" which {
+
+          def bulletList = mainContent().selectNth("ul",3)
 
           "has a first item" in {
-            bulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.quarterlyUpdatesQuarterTypesItemOne
+            bulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.payYourTax.bulletOne
           }
 
           "has a second item" in {
-            bulletList.selectNth("li", 2).text mustBe SignUpConfirmationMessages.quarterlyUpdatesQuarterTypesItemTwo
+            bulletList.selectNth("li", 2).text mustBe SignUpConfirmationMessages.payYourTax.bulletTwo
+          }
+
+          "has a third item" in {
+            bulletList.selectNth("li", 3).text mustBe SignUpConfirmationMessages.payYourTax.bulletThree
+          }
+
+          "has a fourth item" in {
+            bulletList.selectNth("li", 4).text mustBe SignUpConfirmationMessages.payYourTax.bulletFour
+          }
+
+          "has a fifth item" in {
+            bulletList.selectNth("li", 5).text mustBe SignUpConfirmationMessages.payYourTax.bulletFive
           }
         }
 
-        "contains a link to find software which opens in a new tab" in {
-          val link = quarterlySection.selectHead("a")
-          link.attr("href") mustBe "https://www.gov.uk/guidance/using-making-tax-digital-for-income-tax#sending-quarterly-updates-using-compatible-software"
-          link.attr("target") mustBe "_blank"
-          link.text mustBe SignUpConfirmationMessages.quarterlyUpdatesCalendarSectionLinkText
-        }
-
-        "contains a table" in {
-          quarterlySection.mustHaveTable(
-            tableHeads = List(SignUpConfirmationMessages.quarterlyUpdate, SignUpConfirmationMessages.deadline),
-            tableRows = List(
-              List(q1Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q1Update.deadline.toLongDateNoYear),
-              List(q2Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q2Update.deadline.toLongDateNoYear),
-              List(q3Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q3Update.deadline.toLongDateNoYear),
-              List(q4Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q4Update.deadline.toLongDateNoYear)
-            ),
-            maybeCaption = Some(SignUpConfirmationMessages.quarterlyUpdatesTableCaption),
-            hiddenTableCaption = false
-          )
-        }
-
-        "contains a warning message" in {
-          quarterlySection.selectHead(".govuk-warning-text").text() contains SignUpConfirmationMessages.warningMessage
-        }
-
-      }
-
-      "have end of period section" which {
-        def endOfPeriodSection: Element = mainContent().selectHead("ol > li:nth-of-type(3)")
-
-        "contains a heading" in {
-          endOfPeriodSection.selectHead("h3").text() contains SignUpConfirmationMessages.endOfPeriodStatementHeading
-        }
-
-        "contains end of period paragraph" in {
-          endOfPeriodSection.selectHead("p").text() mustBe SignUpConfirmationMessages.endOfPeriodStatementThisYearParagraph
+        "contains a paragraph with link" in {
+          val link = mainContent().selectNth("a",4)
+          link.attr("href") mustBe "https://www.gov.uk/pay-self-assessment-tax-bill"
+          link.text mustBe SignUpConfirmationMessages.payYourTax.linkText
+          mainContent().selectNth("p",13).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
         }
       }
 
-      "have final declaration section" which {
-        def finalDeclarationSection: Element = mainContent().selectHead("ol > li:nth-of-type(4)")
+      "contains a preference section" which {
 
-        "contains a heading" in {
-          finalDeclarationSection.selectHead("h3").text() contains SignUpConfirmationMessages.finalDeclarationCurrentYearHeading
-        }
-
-        "contains final declaration paragraph" in {
-          finalDeclarationSection.selectHead("p").text() mustBe SignUpConfirmationMessages.finalDeclarationThisYearParagraph
-        }
-      }
-
-      "contains the online HMRC services section" which {
-        def checkOnlineSection(preference: Option[Boolean] = None): Element = mainContent(preference).selectHead("#check-online-section")
-
-        "contains a heading" in {
-          checkOnlineSection().selectHead("h2").text mustBe SignUpConfirmationMessages.onlineServicesHeading
-        }
-
-        "contains a first paragraph" in {
-          checkOnlineSection().selectHead("p").text() mustBe SignUpConfirmationMessages.onlineServicesThisYearParagraph
-        }
-
-        "contains a link" in {
-          val link = checkOnlineSection().selectHead("a")
-          link.attr("href") mustBe appConfig.onlineServiceAccountUrl
-          link.text mustBe SignUpConfirmationMessages.onlineServicesLink
-        }
+        def preferenceSection(preference: Option[Boolean] = None) : Element = mainContent(preference).selectNth("div",7)
 
         "has no retrieved preference content when no preference was provided to the view" in {
-          checkOnlineSection().selectOptionalNth("p", 2) mustBe None
+          preferenceSection().selectOptionalNth("p", 1) mustBe None
         }
 
         "has an online preference when their opt in preference was true" in {
-          checkOnlineSection(preference = Some(true)).selectNth("p", 2).text mustBe SignUpConfirmationMessages.onlinePreferenceParaOne
-          checkOnlineSection(preference = Some(true)).selectNth("p", 3).text mustBe SignUpConfirmationMessages.onlinePreferenceParaTwo
+          preferenceSection(preference = Some(true)).selectNth("p", 1).text mustBe SignUpConfirmationMessages.onlinePreferenceParaOne
+          preferenceSection(preference = Some(true)).selectNth("p", 2).text mustBe SignUpConfirmationMessages.onlinePreferenceParaTwo
         }
 
         "has a paper preference when their opt in preference was false " in {
-          checkOnlineSection(preference = Some(false)).selectNth("p", 2).text mustBe SignUpConfirmationMessages.paperPreferencePara
+          preferenceSection(preference = Some(false)).selectNth("p", 1).text mustBe SignUpConfirmationMessages.paperPreferencePara
         }
+
       }
 
-
-      "have a button to print the page" in {
+      "contains a button to print the page" in {
         mainContent().selectHead(".print-link").text() mustBe SignUpConfirmationMessages.printThisPage
         mainContent().selectHead(".print-link").attr("href") mustBe "javascript:window.print()"
       }
@@ -244,144 +315,205 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
       }
 
-      "contains what you will have to do heading" in {
+      "contains what you you must do heading" in {
         mainContent().selectNth("h2", 1).text() mustBe SignUpConfirmationMessages.whatYouMustDoHeading
       }
 
-      "have Self Tax Assessment section" which {
+      "contains the Before you start section in first position" which {
+
         "contains a heading" in {
-          mainContent().selectHead("ol").selectNth("li", 1).selectHead("h3").text() contains SignUpConfirmationMessages.submitSelfAssessmentHeading
+          mainContent().selectNth("h3", 1).text() contains SignUpConfirmationMessages.beforeYouStartSection.heading
         }
 
-        "contains a paragraph" in {
-          mainContent().selectHead("ol").selectNth("li", 1).selectHead("p").text() mustBe SignUpConfirmationMessages.submitSelfAssessmentPara
-        }
-      }
-
-      "have Get prepared section" which {
-        "contains a heading" in {
-          mainContent().selectHead("ol").selectNth("li", 2).selectHead("h3").text() contains SignUpConfirmationMessages.gettingPreparedHeading
+        "contains a paragraph one" in {
+          mainContent().selectNth("p", 3).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph1
         }
 
-        "contains a paragraph" in {
-          mainContent().selectHead("ol").selectNth("li", 2).selectHead("p").text() mustBe SignUpConfirmationMessages.gettingPreparedParagraph
+        "contains a paragraph two" in {
+          mainContent().selectNth("p", 4).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph2
+        }
+
+        "contains a paragraph three" in {
+          mainContent().selectNth("p", 5).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph3
         }
 
         "contains a link" in {
-          mainContent().selectHead("ol").selectNth("li", 2).selectHead("a").text() mustBe SignUpConfirmationMessages.gettingPreparedLink
-          mainContent().selectHead("a").attr("href") mustBe "https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax"
+          val link = mainContent().selectNth(".govuk-link", 1)
+          link.attr("href") mustBe "https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax"
+          link.text mustBe SignUpConfirmationMessages.beforeYouStartSection.findSoftwareLinkText
         }
       }
 
-      "have a quarterly updates section" which {
-        def quarterlySection: Element = mainContent().selectHead("ol").selectNth("li", 3)
+      "contains a When you start section in second position" which {
 
-        "contains a heading" in {
-          quarterlySection.selectHead("h3").text() contains SignUpConfirmationMessages.quarterlyUpdatesHeading
+        "which has a heading" in {
+          mainContent().selectNth("h3", 2).text() contains SignUpConfirmationMessages.whenYouStartSection.heading
         }
 
-        "contains quarterly updates initial paragraph" in {
-          quarterlySection.selectNth("p", 1).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParaOne
+        "has a Send quarterly updates sub section" which {
+
+          def quarterlySection: Element = mainContent().selectHead("ol").selectNth("li", 1)
+
+          "contains a heading" in {
+            quarterlySection.selectHead("h3").text() contains SignUpConfirmationMessages.whenYouStartSection.quarterlyUpdates.heading
+          }
+
+          "contains quarterly updates initial paragraph" in {
+            quarterlySection.selectHead("p").text() mustBe SignUpConfirmationMessages.whenYouStartSection.quarterlyUpdates.paraOne
+          }
+
+          "contains a bullet list of quarter types" which {
+            def bulletList = quarterlySection.selectHead("ul")
+
+            "has a first item" in {
+              bulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.whenYouStartSection.quarterlyUpdates.quarterTypesItemOne
+            }
+
+            "has a second item" in {
+              bulletList.selectNth("li", 2).text mustBe SignUpConfirmationMessages.whenYouStartSection.quarterlyUpdates.quarterTypesItemTwo
+            }
+          }
+
+          "contains a table" in {
+            quarterlySection.mustHaveTable(
+              tableHeads = List(SignUpConfirmationMessages.whenYouStartSection.quarterlyUpdates.quarterlyUpdate, SignUpConfirmationMessages.whenYouStartSection.quarterlyUpdates.deadline),
+              tableRows = List(
+                List(q1Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q1Update.deadline.toLongDateNoYear),
+                List(q2Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q2Update.deadline.toLongDateNoYear),
+                List(q3Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q3Update.deadline.toLongDateNoYear),
+                List(q4Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q4Update.deadline.toLongDateNoYear)
+              ),
+              maybeCaption = Some(SignUpConfirmationMessages.whenYouStartSection.quarterlyUpdates.tableCaption),
+              hiddenTableCaption = false
+            )
+          }
+
+          "contains a link to find software which opens in a new tab" in {
+            val link = quarterlySection.selectHead("a")
+            link.attr("href") mustBe "https://www.gov.uk/guidance/using-making-tax-digital-for-income-tax#sending-quarterly-updates-using-compatible-software"
+            link.attr("target") mustBe "_blank"
+            link.text mustBe SignUpConfirmationMessages.whenYouStartSection.quarterlyUpdates.sectionLinkText
+          }
         }
 
-        "contains quarterly updates secondary paragraph" in {
-          quarterlySection.selectNth("p", 2).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesQuarterTypesPara
+        "has Send an end of period statement sub section" which {
+          def endOfPeriodSection: Element = mainContent().selectHead("ol > li:nth-of-type(2)")
+
+          "contains a heading" in {
+            endOfPeriodSection.selectHead("h3").text() contains SignUpConfirmationMessages.whenYouStartSection.endOfPeriod.heading
+          }
+
+          "contains end of period paragraph" in {
+            endOfPeriodSection.selectHead("p").text() mustBe SignUpConfirmationMessages.whenYouStartSection.endOfPeriod.nextYearParagraph
+          }
         }
 
-        "contains a bullet list of quarter types" which {
-          def bulletList = quarterlySection.selectHead("ul")
+        "has Submit a final declaration sub section" which {
+          def finalDeclarationSection: Element = mainContent().selectHead("ol > li:nth-of-type(3)")
+
+          "contains a heading" in {
+            finalDeclarationSection.selectHead("h3").text() contains SignUpConfirmationMessages.whenYouStartSection.finalDeclaration.heading
+          }
+
+          "contains final declaration paragraph" in {
+            finalDeclarationSection.selectHead("p").text() mustBe SignUpConfirmationMessages.whenYouStartSection.finalDeclaration.paragraph
+          }
+
+          "contains a bullet list of types" which {
+
+            def finalDeclarationbulletList = finalDeclarationSection.selectHead("ul")
+
+            "has a first item" in {
+              finalDeclarationbulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.whenYouStartSection.finalDeclaration.bulletItemOne
+            }
+
+            "has a second item" in {
+              finalDeclarationbulletList.selectNth("li", 2).text mustBe SignUpConfirmationMessages.whenYouStartSection.finalDeclaration.bulletItemTwo
+            }
+          }
+
+          "contains a link" in {
+            val link = finalDeclarationSection.selectHead("a")
+            link.attr("href") mustBe appConfig.onlineServiceAccountUrl
+            link.text mustBe SignUpConfirmationMessages.whenYouStartSection.finalDeclaration.onlineServiceLinkText
+          }
+        }
+      }
+
+      "contains a Report previous tax year section in third position" which {
+
+        "has a heading" in {
+          mainContent().selectNth("h3", 5).text() mustBe SignUpConfirmationMessages.reportPreviousTax.heading
+        }
+
+        "has a paragraph" in {
+          mainContent().selectNth("p", 11).text() mustBe SignUpConfirmationMessages.reportPreviousTax.paragraphNextYear
+        }
+      }
+
+      "contains a Pay your tax section in fourth position" which {
+
+        "has a heading" in {
+          mainContent().selectNth("h3", 6).text() mustBe SignUpConfirmationMessages.payYourTax.heading
+        }
+
+        "has a paragraph" in {
+          mainContent().selectNth("p", 12).text() mustBe SignUpConfirmationMessages.payYourTax.paraOne
+        }
+
+        "contains a bullet list of payment types" which {
+
+          def bulletList = mainContent().selectNth("ul",3)
 
           "has a first item" in {
-            bulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.quarterlyUpdatesQuarterTypesItemOne
+            bulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.payYourTax.bulletOne
           }
 
           "has a second item" in {
-            bulletList.selectNth("li", 2).text mustBe SignUpConfirmationMessages.quarterlyUpdatesQuarterTypesItemTwo
+            bulletList.selectNth("li", 2).text mustBe SignUpConfirmationMessages.payYourTax.bulletTwo
+          }
+
+          "has a third item" in {
+            bulletList.selectNth("li", 3).text mustBe SignUpConfirmationMessages.payYourTax.bulletThree
+          }
+
+          "has a fourth item" in {
+            bulletList.selectNth("li", 4).text mustBe SignUpConfirmationMessages.payYourTax.bulletFour
+          }
+
+          "has a fifth item" in {
+            bulletList.selectNth("li", 5).text mustBe SignUpConfirmationMessages.payYourTax.bulletFive
           }
         }
 
-        "contains a link to find software which opens in a new tab" in {
-          val link = quarterlySection.selectHead("a")
-          link.attr("href") mustBe "https://www.gov.uk/guidance/using-making-tax-digital-for-income-tax#sending-quarterly-updates-using-compatible-software"
-          link.attr("target") mustBe "_blank"
-          link.text mustBe SignUpConfirmationMessages.quarterlyUpdatesCalendarSectionLinkText
-        }
-
-        "contains a table" in {
-          quarterlySection.mustHaveTable(
-            tableHeads = List(SignUpConfirmationMessages.quarterlyUpdate, SignUpConfirmationMessages.deadline),
-            tableRows = List(
-              List(q1Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q1Update.deadline.toLongDateNoYear),
-              List(q2Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q2Update.deadline.toLongDateNoYear),
-              List(q3Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q3Update.deadline.toLongDateNoYear),
-              List(q4Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q4Update.deadline.toLongDateNoYear)
-            ),
-            maybeCaption = Some(SignUpConfirmationMessages.quarterlyUpdatesTableCaption),
-            hiddenTableCaption = false
-          )
-        }
-
-      }
-
-      "have end of period section" which {
-        def endOfPeriodSection: Element = mainContent().selectHead("ol > li:nth-of-type(4)")
-
-        "contains a heading" in {
-          endOfPeriodSection.selectHead("h3").text() contains SignUpConfirmationMessages.endOfPeriodStatementHeading
-        }
-
-        "contains end of period paragraph" in {
-          endOfPeriodSection.selectHead("p").text() mustBe SignUpConfirmationMessages.endOfPeriodStatementNextYearParagraph
+        "contains a paragraph with link" in {
+          val link = mainContent().selectNth("a",4)
+          link.attr("href") mustBe "https://www.gov.uk/pay-self-assessment-tax-bill"
+          link.text mustBe SignUpConfirmationMessages.payYourTax.linkText
+          mainContent().selectNth("p",13).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
         }
       }
 
-      "have final declaration section" which {
-        def finalDeclarationSection: Element = mainContent().selectHead("ol > li:nth-of-type(5)")
+      "contains a preference section" which {
 
-        "contains a heading" in {
-          finalDeclarationSection.selectHead("h3").text() contains SignUpConfirmationMessages.finalDeclarationNextYearHeading
-        }
-
-        "contains final declaration paragraph" in {
-          finalDeclarationSection.selectHead("p").text() mustBe SignUpConfirmationMessages.finalDeclarationNextYearParagraph
-        }
-      }
-
-      "contains the online HMRC services section" which {
-        def checkOnlineSection(preference: Option[Boolean] = None): Element = mainContent(preference).selectHead("#check-online-section")
-
-        "contains a heading" in {
-          checkOnlineSection().selectHead("h2").text mustBe SignUpConfirmationMessages.onlineServicesHeading
-        }
-
-        "contains a first paragraph with a link" in {
-          val para: Element = checkOnlineSection().selectNth("p", 1)
-          val link: Element = para.selectHead("a")
-
-          para.text mustBe SignUpConfirmationMessages.onlineServicesNextYearParaOne
-          link.text mustBe SignUpConfirmationMessages.onlineServicesNextYearLinkText
-          link.attr("href") mustBe appConfig.onlineServiceAccountUrl
-        }
-
-        "contains a second paragraph" in {
-          checkOnlineSection().selectNth("p", 2).text mustBe SignUpConfirmationMessages.onlineServicesNextYearParaTwo
-        }
+        def preferenceSection(preference: Option[Boolean] = None) : Element = mainContent(preference).selectNth("div",6)
 
         "has no retrieved preference content when no preference was provided to the view" in {
-          checkOnlineSection().selectOptionalNth("p", 3) mustBe None
+          preferenceSection().selectOptionalNth("p", 1) mustBe None
         }
 
         "has an online preference when their opt in preference was true" in {
-          checkOnlineSection(preference = Some(true)).selectNth("p", 3).text mustBe SignUpConfirmationMessages.onlinePreferenceParaOne
-          checkOnlineSection(preference = Some(true)).selectNth("p", 4).text mustBe SignUpConfirmationMessages.onlinePreferenceParaTwo
+          preferenceSection(preference = Some(true)).selectNth("p", 1).text mustBe SignUpConfirmationMessages.onlinePreferenceParaOne
+          preferenceSection(preference = Some(true)).selectNth("p", 2).text mustBe SignUpConfirmationMessages.onlinePreferenceParaTwo
         }
 
         "has a paper preference when their opt in preference was false " in {
-          checkOnlineSection(preference = Some(false)).selectNth("p", 3).text mustBe SignUpConfirmationMessages.paperPreferencePara
+          preferenceSection(preference = Some(false)).selectNth("p", 1).text mustBe SignUpConfirmationMessages.paperPreferencePara
         }
+
       }
 
-      "have a button to print the page" in {
+      "contains a button to print the page" in {
         mainContent().selectHead(".print-link").text() mustBe SignUpConfirmationMessages.printThisPage
         mainContent().selectHead(".print-link").attr("href") mustBe "javascript:window.print()"
       }
@@ -412,145 +544,205 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
       }
 
-      "contains what you will have to do heading" in {
+      "contains what you must do heading" in {
         mainContent().selectNth("h2", 1).text() mustBe SignUpConfirmationMessages.whatYouMustDoHeading
       }
 
-      "have Self Tax Assessment section" which {
+      "contains the Before you start section in first position" which {
+
         "contains a heading" in {
-          mainContent().selectHead("ol").selectNth("li", 1).selectHead("h3").text() contains SignUpConfirmationMessages.submitSelfAssessmentHeading
+          mainContent().selectNth("h3", 1).text() contains SignUpConfirmationMessages.beforeYouStartSection.heading
         }
 
-        "contains a paragraph" in {
-          mainContent().selectHead("ol").selectNth("li", 1).selectHead("p").text() mustBe SignUpConfirmationMessages.submitSelfAssessmentPara
-        }
-      }
-
-      "have Get prepared section" which {
-        "contains a heading" in {
-          mainContent().selectHead("ol").selectNth("li", 2).selectHead("h3").text() contains SignUpConfirmationMessages.gettingPreparedHeading
+        "contains a paragraph one" in {
+          mainContent().selectNth("p", 3).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph1
         }
 
-        "contains a paragraph" in {
-          mainContent().selectHead("ol").selectNth("li", 2).selectHead("p").text() mustBe SignUpConfirmationMessages.gettingPreparedParagraph
+        "contains a paragraph two" in {
+          mainContent().selectNth("p", 4).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph2
+        }
+
+        "contains a paragraph three" in {
+          mainContent().selectNth("p", 5).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph3
         }
 
         "contains a link" in {
-          mainContent().selectHead("ol").selectNth("li", 2).selectHead("a").text() mustBe SignUpConfirmationMessages.gettingPreparedLink
-          mainContent().selectHead("a").attr("href") mustBe "https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax"
+          val link = mainContent().selectNth(".govuk-link", 1)
+          link.attr("href") mustBe "https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax"
+          link.text mustBe SignUpConfirmationMessages.beforeYouStartSection.findSoftwareLinkText
         }
       }
 
-      "have a quarterly updates section" which {
-        def quarterlySection: Element = mainContent().selectHead("ol").selectNth("li", 3)
+      "contains a When you start section in second position" which {
 
-        "contains a heading" in {
-          quarterlySection.selectHead("h3").text() contains SignUpConfirmationMessages.quarterlyUpdatesHeading
+        "which has a heading" in {
+          mainContent().selectNth("h3", 2).text() contains SignUpConfirmationMessages.whenYouStartSection.heading
         }
 
-        "contains quarterly updates initial paragraph" in {
-          quarterlySection.selectNth("p", 1).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParaOne
+        "has a Send quarterly updates sub section" which {
+
+          def quarterlySection: Element = mainContent().selectHead("ol").selectNth("li", 1)
+
+          "contains a heading" in {
+            quarterlySection.selectHead("h3").text() contains SignUpConfirmationMessages.whenYouStartSection.quarterlyUpdates.heading
+          }
+
+          "contains quarterly updates initial paragraph" in {
+            quarterlySection.selectHead("p").text() mustBe SignUpConfirmationMessages.whenYouStartSection.quarterlyUpdates.paraOne
+          }
+
+          "contains a bullet list of quarter types" which {
+            def bulletList = quarterlySection.selectHead("ul")
+
+            "has a first item" in {
+              bulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.whenYouStartSection.quarterlyUpdates.quarterTypesItemOne
+            }
+
+            "has a second item" in {
+              bulletList.selectNth("li", 2).text mustBe SignUpConfirmationMessages.whenYouStartSection.quarterlyUpdates.quarterTypesItemTwo
+            }
+          }
+
+          "contains a table" in {
+            quarterlySection.mustHaveTable(
+              tableHeads = List(SignUpConfirmationMessages.whenYouStartSection.quarterlyUpdates.quarterlyUpdate, SignUpConfirmationMessages.whenYouStartSection.quarterlyUpdates.deadline),
+              tableRows = List(
+                List(q1Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q1Update.deadline.toLongDateNoYear),
+                List(q2Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q2Update.deadline.toLongDateNoYear),
+                List(q3Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q3Update.deadline.toLongDateNoYear),
+                List(q4Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q4Update.deadline.toLongDateNoYear)
+              ),
+              maybeCaption = Some(SignUpConfirmationMessages.whenYouStartSection.quarterlyUpdates.tableCaption),
+              hiddenTableCaption = false
+            )
+          }
+
+          "contains a link to find software which opens in a new tab" in {
+            val link = quarterlySection.selectHead("a")
+            link.attr("href") mustBe "https://www.gov.uk/guidance/using-making-tax-digital-for-income-tax#sending-quarterly-updates-using-compatible-software"
+            link.attr("target") mustBe "_blank"
+            link.text mustBe SignUpConfirmationMessages.whenYouStartSection.quarterlyUpdates.sectionLinkText
+          }
         }
 
-        "contains quarterly updates secondary paragraph" in {
-          quarterlySection.selectNth("p", 2).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesQuarterTypesPara
+        "has Send an end of period statement sub section" which {
+          def endOfPeriodSection: Element = mainContent().selectHead("ol > li:nth-of-type(2)")
+
+          "contains a heading" in {
+            endOfPeriodSection.selectHead("h3").text() contains SignUpConfirmationMessages.whenYouStartSection.endOfPeriod.heading
+          }
+
+          "contains end of period paragraph" in {
+            endOfPeriodSection.selectHead("p").text() mustBe SignUpConfirmationMessages.whenYouStartSection.endOfPeriod.nextYearParagraph
+          }
         }
 
-        "contains a bullet list of quarter types" which {
-          def bulletList = quarterlySection.selectHead("ul")
+        "has Submit a final declaration sub section" which {
+          def finalDeclarationSection: Element = mainContent().selectHead("ol > li:nth-of-type(3)")
+
+          "contains a heading" in {
+            finalDeclarationSection.selectHead("h3").text() contains SignUpConfirmationMessages.whenYouStartSection.finalDeclaration.heading
+          }
+
+          "contains final declaration paragraph" in {
+            finalDeclarationSection.selectHead("p").text() mustBe SignUpConfirmationMessages.whenYouStartSection.finalDeclaration.paragraph
+          }
+
+          "contains a bullet list of types" which {
+
+            def finalDeclarationbulletList = finalDeclarationSection.selectHead("ul")
+
+            "has a first item" in {
+              finalDeclarationbulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.whenYouStartSection.finalDeclaration.bulletItemOne
+            }
+
+            "has a second item" in {
+              finalDeclarationbulletList.selectNth("li", 2).text mustBe SignUpConfirmationMessages.whenYouStartSection.finalDeclaration.bulletItemTwo
+            }
+          }
+
+          "contains a link" in {
+            val link = finalDeclarationSection.selectHead("a")
+            link.attr("href") mustBe appConfig.onlineServiceAccountUrl
+            link.text mustBe SignUpConfirmationMessages.whenYouStartSection.finalDeclaration.onlineServiceLinkText
+          }
+        }
+      }
+
+      "contains a Report previous tax year section in third position" which {
+
+        "has a heading" in {
+          mainContent().selectNth("h3", 5).text() mustBe SignUpConfirmationMessages.reportPreviousTax.heading
+        }
+
+        "has a paragraph" in {
+          mainContent().selectNth("p", 11).text() mustBe SignUpConfirmationMessages.reportPreviousTax.paragraphNextYear
+        }
+      }
+
+      "contains a Pay you tax section in fourth position" which {
+
+        "has a heading" in {
+          mainContent().selectNth("h3", 6).text() mustBe SignUpConfirmationMessages.payYourTax.heading
+        }
+
+        "has a paragraph" in {
+          mainContent().selectNth("p", 12).text() mustBe SignUpConfirmationMessages.payYourTax.paraOne
+        }
+
+        "contains a bullet list of payment types" which {
+
+          def bulletList = mainContent().selectNth("ul",3)
 
           "has a first item" in {
-            bulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.quarterlyUpdatesQuarterTypesItemOne
+            bulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.payYourTax.bulletOne
           }
 
           "has a second item" in {
-            bulletList.selectNth("li", 2).text mustBe SignUpConfirmationMessages.quarterlyUpdatesQuarterTypesItemTwo
+            bulletList.selectNth("li", 2).text mustBe SignUpConfirmationMessages.payYourTax.bulletTwo
+          }
+
+          "has a third item" in {
+            bulletList.selectNth("li", 3).text mustBe SignUpConfirmationMessages.payYourTax.bulletThree
+          }
+
+          "has a fourth item" in {
+            bulletList.selectNth("li", 4).text mustBe SignUpConfirmationMessages.payYourTax.bulletFour
+          }
+
+          "has a fifth item" in {
+            bulletList.selectNth("li", 5).text mustBe SignUpConfirmationMessages.payYourTax.bulletFive
           }
         }
 
-        "contains a link to find software which opens in a new tab" in {
-          val link = quarterlySection.selectHead("a")
-          link.attr("href") mustBe "https://www.gov.uk/guidance/using-making-tax-digital-for-income-tax#sending-quarterly-updates-using-compatible-software"
-          link.attr("target") mustBe "_blank"
-          link.text mustBe SignUpConfirmationMessages.quarterlyUpdatesCalendarSectionLinkText
-        }
-
-        "contains a table" in {
-          quarterlySection.mustHaveTable(
-            tableHeads = List(SignUpConfirmationMessages.quarterlyUpdate, SignUpConfirmationMessages.deadline),
-            tableRows = List(
-              List(q1Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q1Update.deadline.toLongDateNoYear),
-              List(q2Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q2Update.deadline.toLongDateNoYear),
-              List(q3Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q3Update.deadline.toLongDateNoYear),
-              List(q4Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q4Update.deadline.toLongDateNoYear)
-            ),
-            maybeCaption = Some(SignUpConfirmationMessages.quarterlyUpdatesTableCaption),
-            hiddenTableCaption = false
-          )
-        }
-
-      }
-
-      "have end of period section" which {
-        def endOfPeriodSection: Element = mainContent().selectHead("ol > li:nth-of-type(4)")
-
-        "contains a heading" in {
-          endOfPeriodSection.selectHead("h3").text() contains SignUpConfirmationMessages.endOfPeriodStatementHeading
-        }
-
-        "contains end of period paragraph" in {
-          endOfPeriodSection.selectHead("p").text() mustBe SignUpConfirmationMessages.endOfPeriodStatementNextYearParagraph
+        "contains a paragraph with link" in {
+          val link = mainContent().selectNth("a",4)
+          link.attr("href") mustBe "https://www.gov.uk/pay-self-assessment-tax-bill"
+          link.text mustBe SignUpConfirmationMessages.payYourTax.linkText
+          mainContent().selectNth("p",13).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
         }
       }
 
-      "have final declaration section" which {
-        def finalDeclarationSection: Element = mainContent().selectHead("ol > li:nth-of-type(5)")
+      "contains a preference section" which {
 
-        "contains a heading" in {
-          finalDeclarationSection.selectHead("h3").text() contains SignUpConfirmationMessages.finalDeclarationNextYearHeading
-        }
-
-        "contains final declaration paragraph" in {
-          finalDeclarationSection.selectHead("p").text() mustBe SignUpConfirmationMessages.finalDeclarationNextYearParagraph
-        }
-      }
-
-      "contains the online HMRC services section" which {
-        def checkOnlineSection(preference: Option[Boolean] = None): Element = mainContent(preference).selectHead("#check-online-section")
-
-        "contains a heading" in {
-          checkOnlineSection().selectHead("h2").text mustBe SignUpConfirmationMessages.onlineServicesHeading
-        }
-
-        "contains a first paragraph with a link" in {
-          val para: Element = checkOnlineSection().selectNth("p", 1)
-          val link: Element = para.selectHead("a")
-
-          para.text mustBe SignUpConfirmationMessages.onlineServicesNextYearParaOne
-          link.text mustBe SignUpConfirmationMessages.onlineServicesNextYearLinkText
-          link.attr("href") mustBe appConfig.onlineServiceAccountUrl
-        }
-
-        "contains a second paragraph" in {
-          checkOnlineSection().selectNth("p", 2).text mustBe SignUpConfirmationMessages.onlineServicesNextYearParaTwo
-        }
-
+        def preferenceSection(preference: Option[Boolean] = None) : Element = mainContent(preference).selectNth("div",6)
 
         "has no retrieved preference content when no preference was provided to the view" in {
-          checkOnlineSection().selectOptionalNth("p", 3) mustBe None
+          preferenceSection().selectOptionalNth("p", 1) mustBe None
         }
 
         "has an online preference when their opt in preference was true" in {
-          checkOnlineSection(preference = Some(true)).selectNth("p", 3).text mustBe SignUpConfirmationMessages.onlinePreferenceParaOne
-          checkOnlineSection(preference = Some(true)).selectNth("p", 4).text mustBe SignUpConfirmationMessages.onlinePreferenceParaTwo
+          preferenceSection(preference = Some(true)).selectNth("p", 1).text mustBe SignUpConfirmationMessages.onlinePreferenceParaOne
+          preferenceSection(preference = Some(true)).selectNth("p", 2).text mustBe SignUpConfirmationMessages.onlinePreferenceParaTwo
         }
 
         "has a paper preference when their opt in preference was false " in {
-          checkOnlineSection(preference = Some(false)).selectNth("p", 3).text mustBe SignUpConfirmationMessages.paperPreferencePara
+          preferenceSection(preference = Some(false)).selectNth("p", 1).text mustBe SignUpConfirmationMessages.paperPreferencePara
         }
+
       }
 
-      "have a button to print the page" in {
+      "contains a button to print the page" in {
         mainContent().selectHead(".print-link").text() mustBe SignUpConfirmationMessages.printThisPage
         mainContent().selectHead(".print-link").attr("href") mustBe "javascript:window.print()"
       }
@@ -581,164 +773,208 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
       }
 
-      "contains what you will have to do heading" in {
+      "contains what you must do heading" in {
         mainContent().selectNth("h2", 1).text() mustBe SignUpConfirmationMessages.whatYouMustDoHeading
       }
 
-      "contains the find software section in first position" which {
+      "contains the Before you start section in first position" which {
 
         "contains a heading" in {
-          mainContent().selectHead("ol").selectNth("li", 1).selectHead("h3").text() contains SignUpConfirmationMessages.findSoftwareHeading
+          mainContent().selectNth("h3", 1).text() contains SignUpConfirmationMessages.beforeYouStartSection.heading
         }
 
-        "contains a paragraph" in {
-          mainContent().selectHead("ol").selectNth("li", 1).selectHead("p").text() mustBe SignUpConfirmationMessages.findSoftwareParagraph
+        "contains a paragraph one" in {
+          mainContent().selectNth("p", 3).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph1
+        }
+
+        "contains a paragraph two" in {
+          mainContent().selectNth("p", 4).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph2
+        }
+
+        "contains a paragraph three" in {
+          mainContent().selectNth("p", 5).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph3
         }
 
         "contains a link" in {
           val link = mainContent().selectNth(".govuk-link", 1)
           link.attr("href") mustBe "https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax"
-          link.text mustBe SignUpConfirmationMessages.findSoftwareLink
+          link.text mustBe SignUpConfirmationMessages.beforeYouStartSection.findSoftwareLinkText
         }
       }
 
-      "have a quarterly updates section" which {
-        def quarterlySection: Element = mainContent().selectHead("ol").selectNth("li", 2)
+      "contains a When you start section in second position" which {
 
-        "contains a heading" in {
-          quarterlySection.selectHead("h3").text() contains SignUpConfirmationMessages.quarterlyUpdatesHeading
+        "which has a heading" in {
+          mainContent().selectNth("h3", 2).text() contains SignUpConfirmationMessages.whenYouStartSection.heading
         }
 
-        "contains quarterly updates initial paragraph" in {
-          quarterlySection.selectNth("p", 1).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParaOne
+        "has a Send quarterly updates sub section" which {
+
+          def quarterlySection: Element = mainContent().selectHead("ol").selectNth("li", 1)
+
+          "contains a heading" in {
+            quarterlySection.selectHead("h3").text() contains SignUpConfirmationMessages.whenYouStartSection.quarterlyUpdates.heading
+          }
+
+          "contains quarterly updates initial paragraph" in {
+            quarterlySection.selectHead("p").text() mustBe SignUpConfirmationMessages.whenYouStartSection.quarterlyUpdates.paraOne
+          }
+
+          "contains a bullet list of quarter types" which {
+            def bulletList = quarterlySection.selectHead("ul")
+
+            "has a first item" in {
+              bulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.whenYouStartSection.quarterlyUpdates.quarterTypesItemOne
+            }
+
+            "has a second item" in {
+              bulletList.selectNth("li", 2).text mustBe SignUpConfirmationMessages.whenYouStartSection.quarterlyUpdates.quarterTypesItemTwo
+            }
+          }
+
+          "contains a table" in {
+            quarterlySection.mustHaveTable(
+              tableHeads = List(SignUpConfirmationMessages.whenYouStartSection.quarterlyUpdates.quarterlyUpdate, SignUpConfirmationMessages.whenYouStartSection.quarterlyUpdates.deadline),
+              tableRows = List(
+                List(q1Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q1Update.deadline.toLongDateNoYear),
+                List(q2Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q2Update.deadline.toLongDateNoYear),
+                List(q3Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q3Update.deadline.toLongDateNoYear),
+                List(q4Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q4Update.deadline.toLongDateNoYear)
+              ),
+              maybeCaption = Some(SignUpConfirmationMessages.whenYouStartSection.quarterlyUpdates.tableCaption),
+              hiddenTableCaption = false
+            )
+          }
+
+          "contains a warning message" in {
+            quarterlySection.selectHead(".govuk-warning-text").text() contains SignUpConfirmationMessages.whenYouStartSection.quarterlyUpdates.warningMessage
+          }
+
+          "contains a link to find software which opens in a new tab" in {
+            val link = quarterlySection.selectHead("a")
+            link.attr("href") mustBe "https://www.gov.uk/guidance/using-making-tax-digital-for-income-tax#sending-quarterly-updates-using-compatible-software"
+            link.attr("target") mustBe "_blank"
+            link.text mustBe SignUpConfirmationMessages.whenYouStartSection.quarterlyUpdates.sectionLinkText
+          }
         }
 
-        "contains quarterly updates secondary paragraph" in {
-          quarterlySection.selectNth("p", 2).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesQuarterTypesPara
+        "has Send an end of period statement sub section" which {
+          def endOfPeriodSection: Element = mainContent().selectHead("ol > li:nth-of-type(2)")
+
+          "contains a heading" in {
+            endOfPeriodSection.selectHead("h3").text() contains SignUpConfirmationMessages.whenYouStartSection.endOfPeriod.heading
+          }
+
+          "contains end of period paragraph" in {
+            endOfPeriodSection.selectHead("p").text() mustBe SignUpConfirmationMessages.whenYouStartSection.endOfPeriod.thisYearParagraph
+          }
         }
 
-        "contains a bullet list of quarter types" which {
-          def bulletList = quarterlySection.selectHead("ul")
+        "has Submit a final declaration sub section" which {
+          def finalDeclarationSection: Element = mainContent().selectHead("ol > li:nth-of-type(3)")
+
+          "contains a heading" in {
+            finalDeclarationSection.selectHead("h3").text() contains SignUpConfirmationMessages.whenYouStartSection.finalDeclaration.heading
+          }
+
+          "contains final declaration paragraph" in {
+            finalDeclarationSection.selectHead("p").text() mustBe SignUpConfirmationMessages.whenYouStartSection.finalDeclaration.paragraph
+          }
+
+          "contains a bullet list of types" which {
+
+            def finalDeclarationbulletList = finalDeclarationSection.selectHead("ul")
+
+            "has a first item" in {
+              finalDeclarationbulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.whenYouStartSection.finalDeclaration.bulletItemOne
+            }
+
+            "has a second item" in {
+              finalDeclarationbulletList.selectNth("li", 2).text mustBe SignUpConfirmationMessages.whenYouStartSection.finalDeclaration.bulletItemTwo
+            }
+          }
+
+          "contains a link" in {
+            val link = finalDeclarationSection.selectHead("a")
+            link.attr("href") mustBe appConfig.onlineServiceAccountUrl
+            link.text mustBe SignUpConfirmationMessages.whenYouStartSection.finalDeclaration.onlineServiceLinkText
+          }
+        }
+      }
+
+      "contains a Report previous tax year section in third position" which {
+
+        "has a heading" in {
+          mainContent().selectNth("h3", 5).text() mustBe SignUpConfirmationMessages.reportPreviousTax.heading
+        }
+
+        "has a paragraph" in {
+          mainContent().selectNth("p", 11).text() mustBe SignUpConfirmationMessages.reportPreviousTax.paragraphThisYear
+        }
+      }
+
+      "contains a Pay you tax section in fourth position" which {
+
+        "has a heading" in {
+          mainContent().selectNth("h3", 6).text() mustBe SignUpConfirmationMessages.payYourTax.heading
+        }
+
+        "has a paragraph" in {
+          mainContent().selectNth("p", 12).text() mustBe SignUpConfirmationMessages.payYourTax.paraOne
+        }
+
+        "contains a bullet list of payment types" which {
+
+          def bulletList = mainContent().selectNth("ul",3)
 
           "has a first item" in {
-            bulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.quarterlyUpdatesQuarterTypesItemOne
+            bulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.payYourTax.bulletOne
           }
 
           "has a second item" in {
-            bulletList.selectNth("li", 2).text mustBe SignUpConfirmationMessages.quarterlyUpdatesQuarterTypesItemTwo
+            bulletList.selectNth("li", 2).text mustBe SignUpConfirmationMessages.payYourTax.bulletTwo
+          }
+
+          "has a third item" in {
+            bulletList.selectNth("li", 3).text mustBe SignUpConfirmationMessages.payYourTax.bulletThree
+          }
+
+          "has a fourth item" in {
+            bulletList.selectNth("li", 4).text mustBe SignUpConfirmationMessages.payYourTax.bulletFour
+          }
+
+          "has a fifth item" in {
+            bulletList.selectNth("li", 5).text mustBe SignUpConfirmationMessages.payYourTax.bulletFive
           }
         }
 
-        "contains a link to find software which opens in a new tab" in {
-          val link = quarterlySection.selectHead("a")
-          link.attr("href") mustBe "https://www.gov.uk/guidance/using-making-tax-digital-for-income-tax#sending-quarterly-updates-using-compatible-software"
-          link.attr("target") mustBe "_blank"
-          link.text mustBe SignUpConfirmationMessages.quarterlyUpdatesCalendarSectionLinkText
-        }
-
-        "contains a table" in {
-          quarterlySection.mustHaveTable(
-            tableHeads = List(SignUpConfirmationMessages.quarterlyUpdate, SignUpConfirmationMessages.deadline),
-            tableRows = List(
-              List(q1Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q1Update.deadline.toLongDateNoYear),
-              List(q2Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q2Update.deadline.toLongDateNoYear),
-              List(q3Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q3Update.deadline.toLongDateNoYear),
-              List(q4Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q4Update.deadline.toLongDateNoYear)
-            ),
-            maybeCaption = Some(SignUpConfirmationMessages.quarterlyUpdatesTableCaption),
-            hiddenTableCaption = false
-          )
+        "contains a paragraph with link" in {
+          val link = mainContent().selectNth("a",4)
+          link.attr("href") mustBe "https://www.gov.uk/pay-self-assessment-tax-bill"
+          link.text mustBe SignUpConfirmationMessages.payYourTax.linkText
+          mainContent().selectNth("p",13).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
         }
       }
 
-      "have end of period section" which {
-        def endOfPeriodSection: Element = mainContent().selectHead("ol > li:nth-of-type(3)")
+      "contains a preference section" which {
 
-        "contains a heading" in {
-          endOfPeriodSection.selectHead("h3").text() contains SignUpConfirmationMessages.endOfPeriodStatementHeading
-        }
-
-        "contains end of period paragraph" in {
-          endOfPeriodSection.selectHead("p").text() mustBe SignUpConfirmationMessages.endOfPeriodStatementThisYearParagraph
-        }
-      }
-
-      "have final declaration section" which {
-        def finalDeclarationSection: Element = mainContent().selectHead("ol > li:nth-of-type(4)")
-
-        "contains a heading" in {
-          finalDeclarationSection.selectHead("h3").text() contains SignUpConfirmationMessages.finalDeclarationCurrentYearHeading
-        }
-
-        "contains final declaration paragraph" in {
-          finalDeclarationSection.selectHead("p").text() mustBe SignUpConfirmationMessages.finalDeclarationThisYearParagraph
-        }
-      }
-
-      "have Notification Panel" which {
-        def notificationBanner: Element = mainContent().selectHead(".govuk-notification-banner")
-
-        "contains Notification Header" in {
-          notificationBanner.selectHead(".govuk-notification-banner__header").text mustBe SignUpConfirmationMessages.notificationBannerHeader
-        }
-
-        "contains a paragraph" in {
-          notificationBanner.selectHead("p").text() mustBe SignUpConfirmationMessages.notificationBannerParagraph
-        }
-
-        "has a bullet list" which {
-          def bulletList: Element = notificationBanner.selectHead("ul")
-
-          "has a first bullet" in {
-            bulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.notificationBannerBulletOne
-          }
-
-          "has a second bullet" in {
-            bulletList.selectNth("li", 2).text mustBe SignUpConfirmationMessages.notificationBannerBulletTwo
-          }
-
-          "has a thrid bullet" in {
-            bulletList.selectNth("li", 3).text mustBe SignUpConfirmationMessages.notificationBannerBulletThree
-          }
-
-          "has a fourth bullet" in {
-            bulletList.selectNth("li", 4).text mustBe SignUpConfirmationMessages.notificationBannerBulletFour
-          }
-        }
-      }
-
-      "contains the online HMRC services section" which {
-        def checkOnlineSection(preference: Option[Boolean] = None): Element = mainContent(preference).selectHead("#check-online-section")
-
-        "contains a heading" in {
-          checkOnlineSection().selectHead("h2").text mustBe SignUpConfirmationMessages.onlineServicesHeading
-        }
-
-        "contains a first paragraph" in {
-          checkOnlineSection().selectHead("p").text() mustBe SignUpConfirmationMessages.onlineServicesThisYearParagraph
-        }
-
-        "contains a link" in {
-          val link = checkOnlineSection().selectHead("a")
-          link.attr("href") mustBe appConfig.onlineServiceAccountUrl
-          link.text mustBe SignUpConfirmationMessages.onlineServicesLink
-        }
+        def preferenceSection(preference: Option[Boolean] = None) : Element = mainContent(preference).selectNth("div",7)
 
         "has no retrieved preference content when no preference was provided to the view" in {
-          checkOnlineSection().selectOptionalNth("p", 2) mustBe None
+          preferenceSection().selectOptionalNth("p", 1) mustBe None
         }
 
         "has an online preference when their opt in preference was true" in {
-          checkOnlineSection(preference = Some(true)).selectNth("p", 2).text mustBe SignUpConfirmationMessages.onlinePreferenceParaOne
-          checkOnlineSection(preference = Some(true)).selectNth("p", 3).text mustBe SignUpConfirmationMessages.onlinePreferenceParaTwo
+          preferenceSection(preference = Some(true)).selectNth("p", 1).text mustBe SignUpConfirmationMessages.onlinePreferenceParaOne
+          preferenceSection(preference = Some(true)).selectNth("p", 2).text mustBe SignUpConfirmationMessages.onlinePreferenceParaTwo
         }
 
         "has a paper preference when their opt in preference was false " in {
-          checkOnlineSection(preference = Some(false)).selectNth("p", 2).text mustBe SignUpConfirmationMessages.paperPreferencePara
+          preferenceSection(preference = Some(false)).selectNth("p", 1).text mustBe SignUpConfirmationMessages.paperPreferencePara
         }
       }
 
-      "have a button to print the page" in {
+      "contains a button to print the page" in {
         mainContent().selectHead(".print-link").text() mustBe SignUpConfirmationMessages.printThisPage
         mainContent().selectHead(".print-link").attr("href") mustBe "javascript:window.print()"
       }
@@ -768,59 +1004,70 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val submitSelfAssessmentHeading = "Submit your Self Assessment tax return for this year"
     val submitSelfAssessmentPara = s"You must submit your Self Assessment tax return as normal until 31 January ${AccountingPeriodUtil.getCurrentTaxEndYear + 1}."
 
-    val quarterlyUpdatesHeading = "Send quarterly updates"
-    val quarterlyUpdatesParaOne = "To send your updates you must select the quarterly period dates you would like to use. You can do this in your compatible software before you make your first update."
-    val quarterlyUpdatesQuarterTypesPara = "The quarterly period dates are:"
-    val quarterlyUpdatesQuarterTypesItemOne = "calendar quarters (for example, 1 April to 30 June)"
-    val quarterlyUpdatesQuarterTypesItemTwo = "standard quarters (starts on the 6th date of each month)"
-    val quarterlyUpdatesTableCaption = "Quarterly updates by the deadline"
-    val quarterlyUpdatesCalendarSectionLinkText = "Learn more about quarterly updates (opens in new tab)"
-    val quarterlyUpdate = "Quarterly update"
-    val deadline = "Deadline"
+    object beforeYouStartSection  {
+      val heading = "Before you start"
+      val paragraph1 = "To start using Making Tax Digital for Income Tax you must get compatible software. You should check if the software meets your business needs."
+      val paragraph2 = "For example, if you want to update your income and expenses by calendar quarterly period dates you must choose software that supports this."
+      val paragraph3 = "This must be done before you make your first update."
+      val findSoftwareLinkText = "Find compatible software (opens in new tab)"
+    }
 
-    val warningMessage = "You must make updates for any quarters you’ve missed."
+    object whenYouStartSection {
+      val heading = "When you start"
 
-    val endOfPeriodStatementHeading = "Send an end of period statement"
-    val endOfPeriodStatementThisYearDate: String = AccountingPeriodUtil.getEndOfPeriodStatementDate(false).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
-    val endOfPeriodStatementNextYearDate: String = AccountingPeriodUtil.getEndOfPeriodStatementDate(true).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
-    val endOfPeriodStatementThisYearParagraph = s"You must submit an end of period statement using your software by $endOfPeriodStatementThisYearDate."
-    val endOfPeriodStatementNextYearParagraph = s"You must submit an end of period statement using your software by $endOfPeriodStatementNextYearDate."
+      object quarterlyUpdates {
+        val heading = "Send quarterly updates"
+        val paraOne = "You must send quarterly updates. The quarterly period dates are:"
+        val quarterTypesItemOne = "calendar quarters (for example, 1 April to 30 June)"
+        val quarterTypesItemTwo = "standard quarters (starts on the 6th date of each month)"
+        val tableCaption = "Quarterly updates by the deadline"
+        val sectionLinkText = "Learn more about quarterly updates (opens in new tab)"
+        val quarterlyUpdate = "Quarterly update"
+        val deadline = "Deadline"
 
-    val finalDeclarationCurrentYearHeading = "Submit a final declaration and pay your tax"
-    val finalDeclarationNextYearHeading = "Submit a final declaration and pay tax"
-    val finalDeclarationThisYearDate: String = AccountingPeriodUtil.getFinalDeclarationDate(false).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
-    val finalDeclarationNextYearDate: String = AccountingPeriodUtil.getFinalDeclarationDate(true).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
-    val finalDeclarationThisYearParagraph = s"You must submit your final declaration and pay the tax you owe by $finalDeclarationThisYearDate."
-    val finalDeclarationNextYearParagraph = s"You must submit your final declaration and pay the tax you owe by $finalDeclarationNextYearDate."
+        val warningMessage = "You must make updates for any quarters you’ve missed."
+      }
 
-    val notificationBannerHeader = "Important"
-    val notificationBannerParagraph = "You may be penalised if you fail to meet the deadlines for your:"
-    val notificationBannerBulletOne = "quarterly updates"
-    val notificationBannerBulletTwo = "end of period statement"
-    val notificationBannerBulletThree = "final declaration"
-    val notificationBannerBulletFour = "tax payment"
+      object endOfPeriod {
+        val heading = "Send an end of period statement"
+        val thisYearDate: String = AccountingPeriodUtil.getEndOfPeriodStatementDate(false).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
+        val nextYearDate: String = AccountingPeriodUtil.getEndOfPeriodStatementDate(true).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
+        val thisYearParagraph = s"You must submit an end of period statement using your software by $thisYearDate."
+        val nextYearParagraph = s"You must submit an end of period statement using your software by $nextYearDate."
+      }
 
-    val onlineServicesHeading = "Check HMRC online services"
-    val onlineServicesThisYearParagraph = "You can review or change the answers you have just entered, and to get updates."
-    val onlineServicesLink = "Go to your HMRC online services account"
+      object finalDeclaration {
+        val heading = "Submit a final declaration"
+        val paragraph = "Other income sources should be declared, such as income from employment, dividends or savings. You need to report this income using either your:"
+        val bulletItemOne = "compatible software (if it has the functionality)"
+        val bulletItemTwo = "HMRC online services account"
+        val onlineServiceLinkText = "You can find more information in your HMRC online services account."
+      }
+    }
 
-    val onlineServicesNextYearLinkText = "HMRC online services account"
-    val onlineServicesNextYearParaOne = s"Go to your $onlineServicesNextYearLinkText to review or change the answers you have entered, and to get updates."
-    val onlineServicesNextYearParaTwo = "It may take a few hours for new information to appear."
+    object reportPreviousTax {
+      val thisYear = AccountingPeriodUtil.getCurrentTaxEndYear
+      val nextYear = AccountingPeriodUtil.getNextTaxEndYear
+      val heading = "Report previous tax year"
+      val paragraphThisYear = s"You must submit your Self Assessment tax return for the year ended 5 April $thisYear using your HMRC online services account as normal."
+      val paragraphNextYear = s"You must submit your Self Assessment tax return for the year ended 5 April $nextYear using your HMRC online services account as normal."
+    }
+
+    object payYourTax {
+      val heading = "Pay your tax"
+      val paraOne = "There are many ways to pay your tax, including:"
+      val bulletOne = "online banking"
+      val bulletTwo = "telephone banking"
+      val bulletThree = "debit card"
+      val bulletFour = "corporate credit card"
+      val bulletFive = "direct debit"
+      val linkText = "how to pay your tax bill"
+      val paraTwo = s"GOV.UK has more information on $linkText."
+    }
 
     val onlinePreferenceParaOne = "You have chosen to get your tax letters online."
     val onlinePreferenceParaTwo = "You must verify your email address to confirm this. Select the link we sent by email to do this, if you have not already done so."
     val paperPreferencePara = "You have chosen to get your tax letters by post. You can change this at anytime in your HMRC online account."
-
-    val findSoftwareHeading = "Find software"
-    val findSoftwareParagraph =
-      "Before you can use Making Tax Digital for Income Tax you need to choose software and allow it to interact with this service."
-    val findSoftwareLink = "Find software"
-
-    val gettingPreparedHeading = "Getting prepared"
-    val gettingPreparedParagraph: String =
-      s"You need to get compatible software before you start using Making Tax Digital for Income Tax on April 6 ${AccountingPeriodUtil.getCurrentTaxEndYear}."
-    val gettingPreparedLink = "Find software (opens in new tab)"
 
     val printThisPage = "Print this page"
   }
