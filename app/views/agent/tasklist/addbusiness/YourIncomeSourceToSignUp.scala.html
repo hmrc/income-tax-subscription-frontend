@@ -17,7 +17,6 @@
 @import config.featureswitch.FeatureSwitchingImpl
 @import config.featureswitch.FeatureSwitch.ForeignProperty
 @import views.html.templates.AgentMainTemplate
-@import forms.agent.HaveYouCompletedThisSectionForm
 @import views.html.helpers.{RadioHelper, ContinueButton}
 @import models.common.BusinessIncomeSource
 @import config.AppConfig
@@ -37,7 +36,7 @@
     hmrcListWithActions : HmrcListWithActions
 )
 
-@(postAction: Call, backUrl: String, haveYouCompletedThisSectionForm: Form[YesNo], clientDetails: ClientDetails, selfEmployments: Seq[SelfEmploymentData], ukProperty: Option[PropertyModel], foreignProperty: Option[OverseasPropertyModel])(implicit request: Request[_], messages: Messages)
+@(postAction: Call, backUrl: String, clientDetails: ClientDetails, selfEmployments: Seq[SelfEmploymentData], ukProperty: Option[PropertyModel], foreignProperty: Option[OverseasPropertyModel])(implicit request: Request[_], messages: Messages)
 
 @selfEmploymentLabel(business: SelfEmploymentData, index: Int) = @{
     (business.businessName, business.businessTradeName) match {
@@ -146,29 +145,8 @@
     }
 }
 
-@yesNoRadios() = {
-    @radioHelper(
-        field = haveYouCompletedThisSectionForm(HaveYouCompletedThisSectionForm.fieldName),
-        legend = messages("agent.your-income-source.completed.form.heading"),
-        isPageHeading = false,
-        headingClasses = "govuk-!-font-weight-bold",
-        radioItems = Seq(
-            RadioItem(
-                content = Text(messages("agent.your-income-source.completed.form.yes")),
-                value = Some(Yes.toString)
-            ),
-            RadioItem(
-                content = Text(messages("agent.your-income-source.completed.form.no")),
-                value = Some(No.toString)
-            )
-        )
-    )
-}
-
-
 @agentMainTemplate(
     title = messages("agent.your-income-source.title"),
-    optForm = Some(haveYouCompletedThisSectionForm),
     backLink = Some(backUrl)
 ) {
     <span class="govuk-caption-l">
@@ -189,7 +167,6 @@
 
     @form(action = postAction) {
         <div class="govuk-form-group">
-            @yesNoRadios()
             @continueButton()
         </div>
     }

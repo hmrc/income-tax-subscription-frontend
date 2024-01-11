@@ -18,6 +18,7 @@ package connectors.agent
 
 import config.AppConfig
 import models.sps.AgentSPSPayload
+import play.api.Logging
 import play.api.libs.json.Format.GenericFormat
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.HttpReads.Implicits._
@@ -29,9 +30,9 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class AgentSPSConnector @Inject()(appConfig: AppConfig,
                                   http: HttpClient)
-                                 (implicit ec: ExecutionContext) {
+                                 (implicit ec: ExecutionContext) extends Logging {
 
-  def postSpsConfirm(arn: String, nino: String, sautr: String, itsaId: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
+  def postSpsConfirm(arn: String, nino: String, sautr: String, itsaId: String)(implicit hc: HeaderCarrier): Future[Unit] = {
 
     val enrolmentIRSA = s"IR-SA~UTR~$sautr"
     val enrolmentMTDITID = s"HMRC-MTD-IT~MTDITID~$itsaId"
@@ -39,7 +40,10 @@ class AgentSPSConnector @Inject()(appConfig: AppConfig,
     http.POST[JsValue, HttpResponse](
       url = appConfig.channelPreferencesUrl + s"/channel-preferences/enrolment",
       body = Json.toJson(AgentSPSPayload(arn, nino, enrolmentIRSA, enrolmentMTDITID))
-    )
+    ).map(_ => ()).recover { _ =>
+      logger.warn("[AgentSPSConnector][postSpsConfirm] - Failure when confirming sps preference")
+      ()
+    }
   }
 
 }

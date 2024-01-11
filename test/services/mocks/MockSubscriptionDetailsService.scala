@@ -62,8 +62,11 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
   def mockSaveBusinesses(reference: String) =
     setupMockSubscriptionDetailsSaveFunctions(reference, SubscriptionDataKeys.BusinessesKey)
 
-  def mockSaveIncomeSrouceConfirmation(reference: String) =
+  def mockSaveIncomeSourceConfirmation(reference: String) =
     setupMockSubscriptionDetailsSaveFunctions(reference, SubscriptionDataKeys.IncomeSourceConfirmation)
+
+  def verifySaveIncomeSourceConfirmation(reference: String, count: Int) =
+    verifySubscriptionDetailsSaveWithField(count = count, field = SubscriptionDataKeys.IncomeSourceConfirmation, reference = reference, wanted = true)
 
   def mockSaveSelfEmploymentsAccountingMethod(reference: String) =
     setupMockSubscriptionDetailsSaveFunctions(reference, SubscriptionDataKeys.BusinessAccountingMethod)

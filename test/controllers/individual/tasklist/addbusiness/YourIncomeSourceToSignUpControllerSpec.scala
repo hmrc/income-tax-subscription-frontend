@@ -94,7 +94,7 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
 
   "submit" must {
     "redirect to the task list page when you select yes" in new Setup {
-      mockSaveIncomeSrouceConfirmation("test-reference")
+      mockSaveIncomeSourceConfirmation("test-reference")
       val result: Future[Result] = controller.submit(subscriptionRequest.withFormUrlEncodedBody(HaveYouCompletedThisSectionForm.fieldName -> YesNoMapping.option_yes))
 
       status(result) mustBe SEE_OTHER

@@ -19,17 +19,26 @@ package services;
 import connectors.SPSConnector
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify}
+import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.http.Status
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
+import uk.gov.hmrc.http.HttpResponse
 import utilities.UnitTestTrait
+
+import scala.concurrent.Future
 
 class SPSServiceSpec extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
 
   "Augment the mtditid with prefix" in {
     val mockConnector = mock[SPSConnector]
     val service = new SPSService(mockConnector)
-    service.confirmPreferences("mtdItsaId", Some("spsEntityId"))
+
+    when(mockConnector.postSpsConfirm(ArgumentMatchers.eq("spsEntityId"), ArgumentMatchers.eq("HMRC-MTD-IT~MTDITID~mtdItsaId"))(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(HttpResponse(Status.OK, "")))
+
+    await(service.confirmPreferences("mtdItsaId", Some("spsEntityId")))
 
     verify(mockConnector).postSpsConfirm(ArgumentMatchers.eq("spsEntityId"), ArgumentMatchers.eq("HMRC-MTD-IT~MTDITID~mtdItsaId"))(any())
   }
@@ -39,7 +48,7 @@ class SPSServiceSpec extends UnitTestTrait with MockitoSugar with BeforeAndAfter
       val mockConnector = mock[SPSConnector]
       val service = new SPSService(mockConnector)
 
-      service.confirmPreferences("mtdItsaId", None)
+      await(service.confirmPreferences("mtdItsaId", None))
 
       verify(mockConnector, times(0)).postSpsConfirm(any(), any())(any())
     }

@@ -66,6 +66,14 @@ object IntegrationTestModels extends ComponentSpecBase {
   val testPropertyStartDate: PropertyStartDateModel = PropertyStartDateModel(testValidStartDate)
   private val testPropertyStartDateModel: PropertyStartDateModel = PropertyStartDateModel(DateModel("05", "04", "2017"))
   val testInvalidPropertyStartDate: PropertyStartDateModel = PropertyStartDateModel(testInvalidStartDate)
+  def testBusiness(id: String, confirmed: Boolean = false): SelfEmploymentData = SelfEmploymentData(
+    id = id,
+    businessStartDate = Some(BusinessStartDate(DateModel("05", "04", "2017"))),
+    businessName = Some(testBusinessName.encrypt(crypto.QueryParameterCrypto)),
+    businessTradeName = Some(testBusinessTrade),
+    businessAddress = Some(testBusinessAddress.encrypt(crypto.QueryParameterCrypto)),
+    confirmed = confirmed
+  )
   val testBusinesses: Option[Seq[SelfEmploymentData]] = Some(Seq(SelfEmploymentData(
     id = "12345",
     businessStartDate = Some(BusinessStartDate(DateModel("05", "04", "2017"))),

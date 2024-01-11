@@ -64,6 +64,7 @@ class SPSCallbackForClaimEnrolControllerSpec extends ControllerBaseSpec with Moc
     "mtditid successfully retrieves from claimEnrolmentService" should {
       "link preference with mtditid to sps, save the entityId in session and redirect to the claim enrolment confirmation page" in {
         mockGetMtditidFromSubscription(Right("mtditid"))
+        mockConfirmPreference(testEntityId = "testId", testMtditid = "mtditid")
 
         val result: Future[Result] = await(TestSPSCallbackForClaimEnrolController.callback(request(hasEntityId = true)).run())
 

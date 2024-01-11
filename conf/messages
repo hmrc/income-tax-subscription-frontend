@@ -692,10 +692,6 @@ agent.your-income-source.foreign-property.label                     = Foreign pr
 agent.your-income-source.foreign-property.add-link                  = Add foreign property income source
 agent.your-income-source.foreign-property.change-hidden             = Change foreign property income source
 agent.your-income-source.foreign-property.remove-hidden             = Remove foreign property income source
-agent.your-income-source.completed.form.heading                     = Have you completed this section?
-agent.your-income-source.completed.form.yes                         = Yes, I’ve completed this section
-agent.your-income-source.completed.form.no                          = No, I’ll come back to it later
-agent.your-income-source.completed.form.error.empty                 = Select Yes if you have completed the information. Select No if you’re coming back to it later.
 
 # Property income page
 agent.property.income.title                                     = How much was your income from property this year?
