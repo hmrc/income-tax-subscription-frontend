@@ -18,8 +18,6 @@ package controllers.agent.tasklist.addbusiness
 
 import connectors.subscriptiondata.mocks.MockIncomeTaxSubscriptionConnector
 import controllers.agent.AgentControllerBaseSpec
-import forms.agent.HaveYouCompletedThisSectionForm
-import forms.submapping.YesNoMapping
 import models.common.business._
 import models.common.{OverseasPropertyModel, PropertyModel}
 import models.{Cash, DateModel}
@@ -30,6 +28,7 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockAuditingService, MockSubscriptionDetailsService}
+import utilities.agent.TestModels.testAccountingMethod
 import views.html.agent.tasklist.addbusiness.YourIncomeSourceToSignUp
 
 import scala.concurrent.Future
@@ -47,6 +46,7 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
     "return OK status" when {
       "there are no income sources added" in new Setup {
         mockFetchAllSelfEmployments(Seq.empty)
+        mockFetchSelfEmploymentAccountingMethod(None)
         mockFetchProperty(None)
         mockFetchOverseasProperty(None)
 
@@ -66,6 +66,7 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
           testSelfEmployment("id").encrypt(crypto.QueryParameterCrypto),
           testSelfEmployment("id2").encrypt(crypto.QueryParameterCrypto)
         ))
+        mockFetchSelfEmploymentAccountingMethod(Some(testAccountingMethod))
         mockFetchProperty(Some(testUkProperty))
         mockFetchOverseasProperty(Some(testForeignProperty))
 
@@ -86,21 +87,124 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
     }
   }
 
-  "submit" must {
-    "redirect to the task list page when selected yes" in new Setup {
-      mockSaveIncomeSrouceConfirmation("test-reference")
-      val result: Future[Result] = controller.submit(subscriptionRequest.withFormUrlEncodedBody(HaveYouCompletedThisSectionForm.fieldName -> YesNoMapping.option_yes))
+  "submit" should {
+    "redirect to the task list page and save the income sources section as complete" when {
+      "all income sources are complete" in new Setup {
+        mockFetchAllSelfEmployments(Seq(
+          testSelfEmployment("id").encrypt(crypto.QueryParameterCrypto),
+          testSelfEmployment("id2").encrypt(crypto.QueryParameterCrypto)
+        ))
+        mockFetchSelfEmploymentAccountingMethod(Some(testAccountingMethod))
+        mockFetchProperty(Some(testUkProperty))
+        mockFetchOverseasProperty(Some(testForeignProperty))
+        mockSaveIncomeSourceConfirmation("test-reference")
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.agent.tasklist.routes.TaskListController.show().url)
+        val result: Future[Result] = controller.submit(subscriptionRequest)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.agent.tasklist.routes.TaskListController.show().url)
+
+        verifySaveIncomeSourceConfirmation(reference = "test-reference", count = 1)
+      }
+      "only self employment income sources are added and complete" in new Setup {
+        mockFetchAllSelfEmployments(Seq(
+          testSelfEmployment("id").encrypt(crypto.QueryParameterCrypto),
+          testSelfEmployment("id2").encrypt(crypto.QueryParameterCrypto)
+        ))
+        mockFetchSelfEmploymentAccountingMethod(Some(testAccountingMethod))
+        mockFetchProperty(None)
+        mockFetchOverseasProperty(None)
+        mockSaveIncomeSourceConfirmation("test-reference")
+
+        val result: Future[Result] = controller.submit(subscriptionRequest)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.agent.tasklist.routes.TaskListController.show().url)
+
+        verifySaveIncomeSourceConfirmation(reference = "test-reference", count = 1)
+      }
+      "only uk property income sources are added and complete" in new Setup {
+        mockFetchAllSelfEmployments(Seq.empty[SelfEmploymentData])
+        mockFetchSelfEmploymentAccountingMethod(None)
+        mockFetchProperty(Some(testUkProperty))
+        mockFetchOverseasProperty(None)
+        mockSaveIncomeSourceConfirmation("test-reference")
+
+        val result: Future[Result] = controller.submit(subscriptionRequest)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.agent.tasklist.routes.TaskListController.show().url)
+
+        verifySaveIncomeSourceConfirmation(reference = "test-reference", count = 1)
+      }
+      "only foreign property income sources are added and complete" in new Setup {
+        mockFetchAllSelfEmployments(Seq.empty[SelfEmploymentData])
+        mockFetchSelfEmploymentAccountingMethod(None)
+        mockFetchProperty(Some(testUkProperty))
+        mockFetchOverseasProperty(Some(testForeignProperty))
+        mockSaveIncomeSourceConfirmation("test-reference")
+
+        val result: Future[Result] = controller.submit(subscriptionRequest)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.agent.tasklist.routes.TaskListController.show().url)
+
+        verifySaveIncomeSourceConfirmation(reference = "test-reference", count = 1)
+      }
     }
+    "redirect to the task list page" when {
+      "self employment income sources are not complete" in new Setup {
+        mockFetchAllSelfEmployments(Seq(testSelfEmployment("id").copy(confirmed = false).encrypt(crypto.QueryParameterCrypto)))
+        mockFetchSelfEmploymentAccountingMethod(Some(testAccountingMethod))
+        mockFetchProperty(Some(testUkProperty))
+        mockFetchOverseasProperty(Some(testForeignProperty))
 
-    "redirect to the task list page when selected no" in new Setup {
-      mockSaveIncomeSrouceConfirmation("test-reference")
-      val result: Future[Result] = controller.submit(subscriptionRequest.withFormUrlEncodedBody(HaveYouCompletedThisSectionForm.fieldName -> YesNoMapping.option_no))
+        val result: Future[Result] = controller.submit(subscriptionRequest)
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.agent.tasklist.routes.TaskListController.show().url)
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.agent.tasklist.routes.TaskListController.show().url)
+
+        verifySaveIncomeSourceConfirmation(reference = "test-reference", count = 0)
+      }
+      "uk property income sources are not complete" in new Setup {
+        mockFetchAllSelfEmployments(Seq(testSelfEmployment("id").encrypt(crypto.QueryParameterCrypto)))
+        mockFetchSelfEmploymentAccountingMethod(Some(testAccountingMethod))
+        mockFetchProperty(Some(testUkProperty.copy(confirmed = false)))
+        mockFetchOverseasProperty(Some(testForeignProperty))
+
+        val result: Future[Result] = controller.submit(subscriptionRequest)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.agent.tasklist.routes.TaskListController.show().url)
+
+        verifySaveIncomeSourceConfirmation(reference = "test-reference", count = 0)
+      }
+      "overseas property income sources are not complete" in new Setup {
+        mockFetchAllSelfEmployments(Seq(testSelfEmployment("id").encrypt(crypto.QueryParameterCrypto)))
+        mockFetchSelfEmploymentAccountingMethod(Some(testAccountingMethod))
+        mockFetchProperty(Some(testUkProperty))
+        mockFetchOverseasProperty(Some(testForeignProperty.copy(confirmed = false)))
+
+        val result: Future[Result] = controller.submit(subscriptionRequest)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.agent.tasklist.routes.TaskListController.show().url)
+
+        verifySaveIncomeSourceConfirmation(reference = "test-reference", count = 0)
+      }
+      "no income sources have been added" in new Setup {
+        mockFetchAllSelfEmployments(Seq.empty[SelfEmploymentData])
+        mockFetchSelfEmploymentAccountingMethod(None)
+        mockFetchProperty(None)
+        mockFetchOverseasProperty(None)
+
+        val result: Future[Result] = controller.submit(subscriptionRequest)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.agent.tasklist.routes.TaskListController.show().url)
+
+        verifySaveIncomeSourceConfirmation(reference = "test-reference", count = 0)
+      }
     }
   }
 
@@ -126,7 +230,6 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
       when(yourIncomeSourceToSignUpView(
         ArgumentMatchers.eq(routes.YourIncomeSourceToSignUpController.submit),
         ArgumentMatchers.eq(controllers.agent.tasklist.routes.TaskListController.show().url),
-        ArgumentMatchers.any(),
         ArgumentMatchers.any(),
         ArgumentMatchers.eq(selfEmployments),
         ArgumentMatchers.eq(ukProperty),

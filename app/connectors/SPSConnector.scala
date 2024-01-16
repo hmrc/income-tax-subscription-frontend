@@ -18,10 +18,11 @@ package connectors
 
 import config.AppConfig
 import models.sps.SPSPayload
+import play.api.Logging
 import play.api.libs.json.Format.GenericFormat
 import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -29,10 +30,16 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class SPSConnector @Inject()(appConfig: AppConfig,
                              http: HttpClient)
-                            (implicit ec: ExecutionContext) {
+                            (implicit ec: ExecutionContext) extends Logging {
 
-  def postSpsConfirm(entityId: String, itsaId: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
-    http.POST[JsValue, HttpResponse](appConfig.channelPreferencesUrl + s"/channel-preferences/confirm", Json.toJson(SPSPayload(entityId, itsaId)))
+  def postSpsConfirm(entityId: String, itsaId: String)(implicit hc: HeaderCarrier): Future[Unit] = {
+    http.POST[JsValue, HttpResponse](
+      appConfig.channelPreferencesUrl + s"/channel-preferences/confirm",
+      Json.toJson(SPSPayload(entityId, itsaId))
+    ).map(_ => ()).recover { _ =>
+      logger.warn("[SPSConnector][postSpsConfirm] - Failure when confirming sps preference")
+      ()
+    }
   }
 
 }

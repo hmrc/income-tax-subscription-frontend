@@ -17,7 +17,6 @@
 package views.agent
 
 import config.featureswitch.FeatureSwitch.ForeignProperty
-import forms.agent.HaveYouCompletedThisSectionForm
 import models.common.business.{BusinessNameModel, BusinessTradeNameModel, SelfEmploymentData}
 import models.common.{OverseasPropertyModel, PropertyModel}
 import org.jsoup.Jsoup
@@ -85,7 +84,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     incomeSourceView(
       postAction = testCall,
       backUrl = testBackUrl,
-      haveYouCompletedThisSectionForm = HaveYouCompletedThisSectionForm.form,
       clientDetails = clientDetails,
       selfEmployments = selfEmployments,
       ukProperty = ukProperty,
@@ -170,22 +168,17 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       }
     }
 
-    "have a Have you completed this section?" which {
-      "has a heading" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
-        document.mainContent.selectHead(".govuk-fieldset").selectHead("legend").text mustBe AgentIncomeSource.completedThisSectionFormHeading
-      }
+    "have a form" which {
+      def form(document: Element): Element = document.getForm
 
-      "have a Yes, I have completed this section radio button" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
-        document.mainContent.selectNth(".govuk-radios__label", 1).text mustBe AgentIncomeSource.completedSectionYes
+      "has the correct attributes" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
+        val selectedForm: Element = form(document)
+        selectedForm.attr("method") mustBe testCall.method
+        selectedForm.attr("action") mustBe testCall.url
       }
-
-      "have a No, I will come back to it later radio button" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
-        document.mainContent.selectNth(".govuk-radios__label", 2).text mustBe AgentIncomeSource.completedSectionNo
+      "has a continue button" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
+        form(document).selectHead("#continue-button").text mustBe AgentIncomeSource.continue
       }
-    }
-
-    "have a continue button and redirect to tasklist page" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
-      document.mainContent.selectHead("#continue-button").text mustBe AgentIncomeSource.continue
     }
   }
 }

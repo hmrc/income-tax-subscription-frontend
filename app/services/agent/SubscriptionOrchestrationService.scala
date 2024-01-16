@@ -22,7 +22,7 @@ import connectors.agent.AgentSPSConnector
 import models.ConnectorError
 import models.common.subscription.{CreateIncomeSourcesModel, CreateIncomeSourcesSuccess, SubscriptionSuccess}
 import services.SubscriptionService
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, InternalServerException}
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -31,7 +31,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class SubscriptionOrchestrationService @Inject()(subscriptionService: SubscriptionService,
                                                  autoEnrolmentService: AutoEnrolmentService,
                                                  agentSPSConnector: AgentSPSConnector)
-                                                (implicit ec: ExecutionContext){
+                                                (implicit ec: ExecutionContext) {
 
   def createSubscriptionFromTaskList(arn: String,
                                      nino: String,
@@ -41,12 +41,12 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
 
     signUpAndCreateIncomeSourcesFromTaskList(nino, createIncomeSourcesModel) flatMap {
       case right@Right(subscriptionSuccess) => {
-        autoEnrolmentService.autoClaimEnrolment(utr, nino, subscriptionSuccess.mtditId) map {
+        autoEnrolmentService.autoClaimEnrolment(utr, nino, subscriptionSuccess.mtditId) flatMap {
           case Right(_) =>
             confirmAgentEnrollmentToSps(arn, nino, utr, right.value.mtditId)
-            right
+              .map(_ => right)
           case Left(_) =>
-            right
+            Future.successful(right)
         }
       }
       case left => Future.successful(left)
@@ -75,7 +75,7 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
   }
 
   private[services] def confirmAgentEnrollmentToSps(arn: String, nino: String, sautr: String, mtditId: String)
-                                                   (implicit hc: HeaderCarrier): Future[HttpResponse] = {
+                                                   (implicit hc: HeaderCarrier): Future[Unit] = {
     agentSPSConnector.postSpsConfirm(arn, nino, sautr, mtditId)
   }
 

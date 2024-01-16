@@ -40,15 +40,16 @@ class SPSCallbackForClaimEnrolController @Inject()(val auditingService: Auditing
     implicit user =>
       request.queryString.get("entityId").flatMap(_.headOption) match {
         case Some(entityId) =>
-          claimEnrolmentService.getMtditidFromSubscription map {
+          claimEnrolmentService.getMtditidFromSubscription flatMap {
             case Right(mtdItId) =>
-              spsService.confirmPreferences(mtdItId, Some(entityId))
-              Redirect(controllers.individual.claimenrolment.routes.ClaimEnrolmentConfirmationController.show()).addingToSession(
-                ITSASessionKeys.SPSEntityId -> entityId
-              )
+              spsService.confirmPreferences(mtdItId, Some(entityId)) map { _ =>
+                Redirect(controllers.individual.claimenrolment.routes.ClaimEnrolmentConfirmationController.show()).addingToSession(
+                  ITSASessionKeys.SPSEntityId -> entityId
+                )
+              }
             case Left(_) => throw new InternalServerException(
-              "[SPSCallbackForClaimEnrolController][callback] - failed to retrieve mtditid from claimEnrolmentService")
-
+              "[SPSCallbackForClaimEnrolController][callback] - failed to retrieve mtditid from claimEnrolmentService"
+            )
           }
         case None => Future.successful(Redirect(controllers.individual.claimenrolment.routes.ClaimEnrolmentConfirmationController.show()))
       }

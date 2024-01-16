@@ -693,11 +693,6 @@ agent.your-income-source.foreign-property.label             = Ffynhonnell incwm 
 agent.your-income-source.foreign-property.add-link          = Ychwanegu ffynhonnell incwm eiddo tramor
 agent.your-income-source.foreign-property.change-hidden     = Newid ffynhonnell incwm o eiddo tramor
 agent.your-income-source.foreign-property.remove-hidden     = Dileu ffynhonnell incwm o eiddo tramor
-agent.your-income-source.completed.form.heading             = A ydych wedi llenwi’r adran hon?
-agent.your-income-source.completed.form.yes                 = Iawn, rwyf wedi llenwi’r adran hon
-agent.your-income-source.completed.form.no                  = Na, dof yn ôl ati yn nes ymlaen
-agent.your-income-source.completed.form.error.empty         = Select Yes if you have completed the information. Select No if you’re coming back to it later. ...but in Welsh
-
 
 # Property income page
 agent.property.income.title                                     = Faint oedd eich incwm o eiddo y flwyddyn hon?

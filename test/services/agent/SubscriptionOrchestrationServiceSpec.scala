@@ -47,6 +47,8 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with 
         mockSignUpIncomeSourcesSuccess(testNino, testTaxYear)
         mockCreateIncomeSourcesFromTaskListSuccess(testMTDID, testCreateIncomeSourcesThisYear)
         mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(Right(AutoEnrolmentService.EnrolmentAssigned))
+        mockAgentSpsConnectorSuccess(testARN, testUtr, testNino, testMTDID)
+
         val res = TestSubscriptionOrchestrationService.createSubscriptionFromTaskList(testARN, testNino, testUtr, testCreateIncomeSourcesThisYear)
 
         await(res) mustBe testSubscriptionSuccess

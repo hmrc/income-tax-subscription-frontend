@@ -17,15 +17,19 @@
 package services
 
 import connectors.SPSConnector
+import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
+import scala.concurrent.Future
 
-class SPSService @Inject()(val spsConnector: SPSConnector){
+class SPSService @Inject()(val spsConnector: SPSConnector) extends Logging {
 
-  def confirmPreferences(itsaId: String, maybeSpsEntityId: Option[String])(implicit hc: HeaderCarrier): Unit =
-    maybeSpsEntityId map { entityId =>
-      spsConnector.postSpsConfirm(entityId, s"HMRC-MTD-IT~MTDITID~$itsaId")
+  def confirmPreferences(itsaId: String, maybeSpsEntityId: Option[String])(implicit hc: HeaderCarrier): Future[Unit] = {
+    maybeSpsEntityId match {
+      case Some(entityId) => spsConnector.postSpsConfirm(entityId, s"HMRC-MTD-IT~MTDITID~$itsaId")
+      case None => Future.successful(())
     }
+  }
 
 }

@@ -22,7 +22,6 @@ import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionD
 import connectors.httpparser.RetrieveReferenceHttpParser.RetrieveReferenceResponse
 import models.common._
 import models.common.business._
-import models.status.MandationStatusModel
 import models.{AccountingMethod, Current, DateModel, Next}
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, Crypted}
@@ -206,7 +205,19 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
   def saveSelfEmploymentsAccountingMethod(reference: String, accountingMethodModel: AccountingMethodModel)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] =
     incomeTaxSubscriptionConnector.saveSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod, accountingMethodModel)
 
-  def saveMandationStatus(reference: String, mandationStatus: MandationStatusModel)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] =
-    incomeTaxSubscriptionConnector.saveSubscriptionDetails[MandationStatusModel](reference, MandationStatus, mandationStatus)
-
+  def fetchAllIncomeSources(reference: String)(implicit hc: HeaderCarrier): Future[IncomeSources] = {
+    for {
+      selfEmployments <- fetchAllSelfEmployments(reference)
+      selfEmploymentsAccountingMethod <- fetchSelfEmploymentsAccountingMethod(reference)
+      ukProperty <- fetchProperty(reference)
+      foreignProperty <- fetchOverseasProperty(reference)
+    } yield {
+      IncomeSources(
+        selfEmployments,
+        selfEmploymentsAccountingMethod,
+        ukProperty,
+        foreignProperty
+      )
+    }
+  }
 }

@@ -23,6 +23,8 @@ import org.scalatestplus.mockito.MockitoSugar
 import services.SPSService
 import utilities.UnitTestTrait
 
+import scala.concurrent.Future
+
 trait MockSpsService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
 
   val mockSpsService: SPSService = mock[SPSService]
@@ -34,10 +36,14 @@ trait MockSpsService extends UnitTestTrait with MockitoSugar with BeforeAndAfter
     reset(mockSpsService)
   }
 
+  def mockConfirmPreference(testEntityId: String, testMtditid: String): Unit =
+    when(mockSpsService.confirmPreferences(ArgumentMatchers.eq(testMtditid), ArgumentMatchers.eq(Some(testEntityId)))(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(()))
+
   def verifyConfirmPreferencesPostSpsConfirm(testEntityId: String, testMtditid: String, someCount: Option[Int]): Unit =
     someCount foreach (count =>
       verify(mockSpsService, times(count))
         .confirmPreferences(ArgumentMatchers.eq(testEntityId), ArgumentMatchers.eq(Some(testMtditid)))(
-      ArgumentMatchers.any()))
+          ArgumentMatchers.any()))
 
 }
