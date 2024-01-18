@@ -39,7 +39,7 @@
 
 @selfEmploymentLabel(business: SelfEmploymentData, index: Int) = @{
     (business.businessName, business.businessTradeName) match {
-        case (Some(BusinessNameModel(name)), Some(BusinessTradeNameModel(trade))) => messages("your-income-source.self-employed.label-full", name, trade)
+        case (Some(BusinessNameModel(name)), Some(BusinessTradeNameModel(trade))) => messages("your-income-source.self-employed.label-full", trade, name)
         case (Some(BusinessNameModel(name)), None) => name
         case (None, Some(BusinessTradeNameModel(trade))) => trade
         case _ => messages("your-income-source.self-employed.label-none", index)

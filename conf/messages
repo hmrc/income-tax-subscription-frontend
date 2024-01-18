@@ -670,12 +670,10 @@ agent.income-source.foreign-property            = Overseas property business
 agent.income-source.error                       = Select your client’s source of income
 
 ## agent your income sources to sign up page
-agent.your-income-source.title                                      = Your client’s income sources
-agent.your-income-source.heading                                    = Your client’s income sources
-agent.your-income-source.heading2                                   = You only need to add the income sources that apply to your client
+agent.your-income-source.heading.no-income                          = Your client’s income sources
+agent.your-income-source.lead.no-income                             = You only need to add the income sources that apply to your client.
 agent.your-income-source.caption                                    = {0} | {1}
 agent.your-income-source.self-employed                              = Sole trader
-agent.your-income-source.self-employed-link                         = Add sole trader income source
 agent.your-income-source.self-employed.label-full                   = {0} - {1}
 agent.your-income-source.self-employed.label-none                   = Business {0}
 agent.your-income-source.self-employed.add-link                     = Add sole trader income source

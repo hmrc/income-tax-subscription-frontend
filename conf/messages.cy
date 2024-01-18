@@ -671,12 +671,10 @@ agent.income-source.foreign-property            = Busnes eiddo tramor
 agent.income-source.error                       = Dewiswch ffynhonnell incwm eich cleient
 
 ## agent your income sources to sign up page
-agent.your-income-source.title                              = Ffynonellau incwm eich cleient
-agent.your-income-source.heading                            = Ffynonellau incwm eich cleient
-agent.your-income-source.heading2                           = Dim ond y ffynonellau incwm sy’n berthnasol i’ch cleient y mae angen i chi eu hychwanegu.
+agent.your-income-source.heading.no-income                  = Ffynonellau incwm eich cleient
+agent.your-income-source.lead.no-income                     = Dim ond y ffynonellau incwm sy’n berthnasol i’ch cleient y mae angen i chi eu hychwanegu.
 agent.your-income-source.caption                            = {0} | {1}
 agent.your-income-source.self-employed                      = Unig fasnachwr
-agent.your-income-source.self-employed-link                 = Ychwanegu ffynhonnell incwm unig fasnachwr
 agent.your-income-source.self-employed.label-full           = {0} - {1}
 agent.your-income-source.self-employed.label-none           = Busnes {0}
 agent.your-income-source.self-employed.add-link             = Ychwanegu ffynhonnell incwm unig fasnachwr

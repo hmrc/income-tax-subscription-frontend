@@ -35,7 +35,6 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
 
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessesKey, NO_CONTENT)
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessAccountingMethod, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, NO_CONTENT)
 
@@ -45,14 +44,13 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the income source page")
         res must have(
           httpStatus(OK),
-          pageTitle(messages("agent.your-income-source.title") + serviceNameGovUk)
+          pageTitle(messages("agent.your-income-source.heading.no-income") + serviceNameGovUk)
         )
       }
       "there are multiple income sources added" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessesKey, OK, Json.toJson(testBusinesses))
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
 
@@ -62,7 +60,7 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the income source page")
         res must have(
           httpStatus(OK),
-          pageTitle(messages("agent.your-income-source.title") + serviceNameGovUk)
+          pageTitle(messages("agent.your-income-source.heading.no-income") + serviceNameGovUk)
         )
       }
     }
@@ -78,7 +76,6 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
           OK,
           Json.toJson(Seq(testBusiness("12345", confirmed = true)))
         )
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
 
@@ -105,7 +102,6 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
           OK,
           Json.toJson(Seq(testBusiness("12345", confirmed = true), testBusiness("54321")))
         )
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
 
@@ -126,7 +122,6 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessesKey, NO_CONTENT)
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessAccountingMethod, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, NO_CONTENT)
 

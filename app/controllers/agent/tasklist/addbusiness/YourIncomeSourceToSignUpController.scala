@@ -19,8 +19,7 @@ package controllers.agent.tasklist.addbusiness
 import auth.agent.AuthenticatedController
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
-import models.common.business.SelfEmploymentData
-import models.common.{OverseasPropertyModel, PropertyModel}
+import models.common.IncomeSources
 import play.api.mvc._
 import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
@@ -45,9 +44,7 @@ class YourIncomeSourceToSignUpController @Inject()(val yourIncomeSourceToSignUp:
       withAgentReference { reference =>
         subscriptionDetailsService.fetchAllIncomeSources(reference) map { incomeSources =>
           Ok(view(
-            selfEmployments = incomeSources.selfEmployments,
-            ukProperty = incomeSources.ukProperty,
-            foreignProperty = incomeSources.foreignProperty,
+            incomeSources,
             clientDetails = request.clientDetails
           ))
         }
@@ -74,16 +71,12 @@ class YourIncomeSourceToSignUpController @Inject()(val yourIncomeSourceToSignUp:
 
   def backUrl: String = controllers.agent.tasklist.routes.TaskListController.show().url
 
-  private def view(selfEmployments: Seq[SelfEmploymentData],
-                   ukProperty: Option[PropertyModel],
-                   foreignProperty: Option[OverseasPropertyModel],
+  private def view(incomeSources: IncomeSources,
                    clientDetails: ClientDetails)(implicit request: Request[AnyContent]): Html =
     yourIncomeSourceToSignUp(
       postAction = routes.YourIncomeSourceToSignUpController.submit,
       backUrl = backUrl,
       clientDetails = clientDetails,
-      selfEmployments,
-      ukProperty,
-      foreignProperty
+      incomeSources
     )
 }
