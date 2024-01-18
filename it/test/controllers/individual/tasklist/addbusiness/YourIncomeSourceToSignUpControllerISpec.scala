@@ -26,6 +26,8 @@ import models.{No, Yes}
 import play.api.http.Status._
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys
+import helpers.IntegrationTestConstants.AgentURI.taskListURI
+import helpers.IntegrationTestModels.{testAccountingMethod, testBusiness, testBusinesses, testFullOverseasPropertyModel, testFullPropertyModel}
 
 class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
 
@@ -43,6 +45,7 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
 
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessesKey, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessAccountingMethod, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, NO_CONTENT)
 
@@ -59,6 +62,7 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessesKey, OK, Json.toJson(testBusinesses))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
 
@@ -75,54 +79,20 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
   }
 
   s"POST ${routes.YourIncomeSourceToSignUpController.submit.url}" should {
-    "redirect to the task list page when you select yes" in {
+    "redirect to the task list page when you click continue" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
 
       IncomeTaxSubscriptionConnectorStub.stubSaveIncomeSourceConfirmation(true)
 
       When(s"POST ${routes.YourIncomeSourceToSignUpController.submit.url} is called")
-      val res = IncomeTaxSubscriptionFrontend.submitYourIncomeSources(Some(Yes))
+      val res = IncomeTaxSubscriptionFrontend.submitYourIncomeSources()
 
       Then("Should redirect to the task list page")
       res must have(
         httpStatus(SEE_OTHER),
         redirectURI(IndividualURI.taskListURI)
-      )
-    }
-
-    "redirect to the task list page when you select no" in {
-      Given("I setup the Wiremock stubs")
-      AuthStub.stubAuthSuccess()
-
-      When(s"POST ${routes.YourIncomeSourceToSignUpController.submit.url} is called")
-      val res = IncomeTaxSubscriptionFrontend.submitYourIncomeSources(Some(No))
-
-      Then("Should redirect to the task list page")
-      res must have(
-        httpStatus(SEE_OTHER),
-        redirectURI(IndividualURI.taskListURI)
-      )
-    }
-
-    "return a BAD Request when no data is submitted" in {
-      Given("I setup the Wiremock stubs")
-      AuthStub.stubAuthSuccess()
-
-      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessesKey, OK, Json.toJson(testBusinesses))
-      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
-      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
-
-      When(s"POST ${routes.YourIncomeSourceToSignUpController.submit.url} is called")
-      val res = IncomeTaxSubscriptionFrontend.submitYourIncomeSources(None)
-
-      Then("Should redirect to the task list page")
-      res must have(
-        httpStatus(BAD_REQUEST),
-        errorDisplayed()
       )
     }
   }
-
-
 }

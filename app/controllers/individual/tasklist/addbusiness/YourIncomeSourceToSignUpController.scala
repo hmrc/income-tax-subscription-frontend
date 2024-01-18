@@ -19,16 +19,14 @@ package controllers.individual.tasklist.addbusiness
 import auth.individual.SignUpController
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
-import forms.individual.incomesource.HaveYouCompletedThisSectionForm
 import models.common.business.SelfEmploymentData
 import models.common.{OverseasPropertyModel, PropertyModel}
-import models.{No, Yes, YesNo}
-import play.api.data.Form
 import play.api.mvc._
 import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import views.html.individual.tasklist.addbusiness.YourIncomeSourceToSignUp
+import utilities.UserMatchingSessionUtil.{ClientDetails, UserMatchingSessionRequestUtil}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -45,16 +43,11 @@ class YourIncomeSourceToSignUpController @Inject()(yourIncomeSourceToSignUp: You
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       withReference { reference =>
-        for {
-          businesses <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
-          ukProperty <- subscriptionDetailsService.fetchProperty(reference)
-          foreignProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
-        } yield {
+        subscriptionDetailsService.fetchAllIncomeSources(reference) map { incomeSources =>
           Ok(view(
-            form = HaveYouCompletedThisSectionForm.form,
-            selfEmployments = businesses,
-            ukProperty = ukProperty,
-            foreignProperty = foreignProperty
+            selfEmployments = incomeSources.selfEmployments,
+            ukProperty = incomeSources.ukProperty,
+            foreignProperty = incomeSources.foreignProperty
           ))
         }
       }
@@ -63,50 +56,30 @@ class YourIncomeSourceToSignUpController @Inject()(yourIncomeSourceToSignUp: You
   def submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       withReference { reference =>
-        handleForm(reference)(
-          onYes = Redirect(controllers.individual.tasklist.routes.TaskListController.show()),
-          onNo = Redirect(controllers.individual.tasklist.routes.TaskListController.show())
-        )
+        val continue: Result = Redirect(controllers.individual.tasklist.routes.TaskListController.show())
+
+        subscriptionDetailsService.fetchAllIncomeSources(reference) flatMap { incomeSources =>
+          if (incomeSources.isComplete){
+            subscriptionDetailsService.saveIncomeSourcesConfirmation(reference) map {
+              case Right(_) => continue
+              case Left(_) => throw new InternalServerException("[YourIncomeSourceToSignUpController][submit] - failed to save income sources confirmation")
+            }
+          } else {
+            Future.successful(continue)
+          }
+        }
       }
   }
 
-  private def handleForm(reference: String)(onYes: Result, onNo: Result)
-                        (implicit request: Request[AnyContent]): Future[Result] = {
-    HaveYouCompletedThisSectionForm.form.bindFromRequest().fold(
-      hasErrors => for {
-        businesses <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
-        ukProperty <- subscriptionDetailsService.fetchProperty(reference)
-        foreignProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
-      } yield {
-        BadRequest(view(
-          form = hasErrors,
-          selfEmployments = businesses,
-          ukProperty = ukProperty,
-          foreignProperty = foreignProperty
-        ))
-      },
-      {
-        case Yes =>
-          subscriptionDetailsService.saveIncomeSourcesConfirmation(reference).map {
-            case Right(_) => onYes
-            case Left(_) => throw new InternalServerException("[YourIncomeSourceToSignUpController] [Failed to save income sources]")
-          }
-        case No =>
-          Future.successful(onNo)
-      }
-    )
-  }
 
   def backUrl: String = controllers.individual.tasklist.routes.TaskListController.show().url
 
-  private def view(form: Form[YesNo],
-                   selfEmployments: Seq[SelfEmploymentData],
+  private def view(selfEmployments: Seq[SelfEmploymentData],
                    ukProperty: Option[PropertyModel],
                    foreignProperty: Option[OverseasPropertyModel])(implicit request: Request[_]): Html =
     yourIncomeSourceToSignUp(
       postAction = routes.YourIncomeSourceToSignUpController.submit,
       backUrl = backUrl,
-      haveYouCompletedThisSectionForm = form,
       selfEmployments,
       ukProperty,
       foreignProperty
