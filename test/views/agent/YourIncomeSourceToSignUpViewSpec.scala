@@ -17,8 +17,9 @@
 package views.agent
 
 import config.featureswitch.FeatureSwitch.ForeignProperty
-import models.common.business.{BusinessNameModel, BusinessTradeNameModel, SelfEmploymentData}
-import models.common.{OverseasPropertyModel, PropertyModel}
+import models.common.business._
+import models.common.{IncomeSources, OverseasPropertyModel, PropertyModel}
+import models.{Cash, DateModel}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.Html
@@ -26,6 +27,7 @@ import utilities.UserMatchingSessionUtil.ClientDetails
 import utilities.ViewSpec
 import views.html.agent.tasklist.addbusiness.YourIncomeSourceToSignUp
 
+//scalastyle:off
 class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
   override def beforeEach(): Unit = {
@@ -34,7 +36,8 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
   }
 
   object AgentIncomeSource {
-    val heading = "Your client’s income sources"
+    val headingNoIncomeAdded = "Your client’s income sources"
+    val leadNoIncomeAdded = "You only need to add the income sources that apply to your client."
     val paragraph1: String = "If your client is self-employed, you must add all of their sole trader businesses if they have more than one. " +
       "If they have income from property you must add it, but this is limited to one UK property business."
     val paragraph1Overseas: String = "Your client can have up to 50 sole trader businesses. " +
@@ -42,142 +45,488 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     val paragraph2 = "Renting out a property includes using a letting agency."
     val soleTrader = "Sole trader"
     val soleTraderLinkText = "Add sole trader income source"
+    val anotherSoleTraderLinkText = "Add another sole trader income source"
     val soleTraderLink: String = appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl
     val ukProperty = "UK property"
+    val ukPropertyLabel = "UK property income source"
     val ukPropertyLinkText = "Add UK property income source"
     val ukPropertyLink: String = controllers.agent.tasklist.ukproperty.routes.PropertyStartDateController.show().url
     val foreignPropertyHeading = "Foreign property"
     val foreignPropertyLabel = "Foreign property income source"
-    val foreignPropertyLinkText = "Add foreign property business"
+    val foreignPropertyLinkText = "Add foreign property income source"
     val foreignPropertyLink: String = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show().url
-    val foreignPropertyChange = "Change foreign property income source"
-    val foreignPropertyRemove = "Remove foreign property income source"
-    val errorHeading = "There is a problem"
-    val errorSummary = "Select Sole trader business, UK property rental or Overseas property rental"
-    val completedThisSectionFormHeading = "Have you completed this section?"
-    val completedSectionYes = "Yes, I’ve completed this section"
-    val completedSectionNo = "No, I’ll come back to it later"
+
     val continue = "Continue"
+    val saveAndComeBackLater = "Save and come back later"
 
     val change: String = "Change"
     val remove: String = "Remove"
+
+    def selfEmploymentChange(name: String) = s"Change $name"
+
+    def selfEmploymentRemove(name: String) = s"Remove $name"
+
+    val ukPropertyChange = "Change UK property income source"
+    val ukPropertyRemove = "Remove UK property income source"
+
+    val foreignPropertyChange = "Change foreign property income source"
+    val foreignPropertyRemove = "Remove foreign property income source"
   }
 
   private val incomeSourceView = app.injector.instanceOf[YourIncomeSourceToSignUp]
 
   private val clientDetails = ClientDetails("FirstName LastName", "ZZ111111Z")
 
-  val selfEmployments: Seq[SelfEmploymentData] = Seq(
-    SelfEmploymentData("idOne", None, Some(BusinessNameModel("business name")), Some(BusinessTradeNameModel("business trade"))),
-    SelfEmploymentData("idOne", None, Some(BusinessNameModel("business name"))),
-    SelfEmploymentData("idOne", None, None, businessTradeName = Some(BusinessTradeNameModel("business trade"))),
-    SelfEmploymentData("idOne")
-
+  val completeSelfEmployments: Seq[SelfEmploymentData] = Seq(
+    SelfEmploymentData(
+      id = "idOne",
+      businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
+      businessName = Some(BusinessNameModel("business name")),
+      businessTradeName = Some(BusinessTradeNameModel("business trade")),
+      businessAddress = Some(BusinessAddressModel(Address(Seq("1 Long Road"), Some("ZZ1 1ZZ")))),
+      confirmed = true
+    )
   )
+  val completeUKProperty: Option[PropertyModel] = Some(PropertyModel(
+    accountingMethod = Some(Cash),
+    startDate = Some(DateModel("1", "1", "1981")),
+    confirmed = true
+  ))
+  val completeForeignProperty: Option[OverseasPropertyModel] = Some(OverseasPropertyModel(
+    accountingMethod = Some(Cash),
+    startDate = Some(DateModel("1", "1", "1982")),
+    confirmed = true
+  ))
 
-  val ukProperty: Option[PropertyModel] = Some(PropertyModel())
-  val foreignProperty: Option[OverseasPropertyModel] = Some(OverseasPropertyModel())
+  val incompleteSelfEmployments: Seq[SelfEmploymentData] = Seq(
+    SelfEmploymentData("idOne", None, Some(BusinessNameModel("business name")), Some(BusinessTradeNameModel("business trade"))),
+    SelfEmploymentData("idTwo", None, Some(BusinessNameModel("business name"))),
+    SelfEmploymentData("idThree", None, None, businessTradeName = Some(BusinessTradeNameModel("business trade"))),
+    SelfEmploymentData("idFour")
+  )
+  val incompleteUKProperty: Option[PropertyModel] = Some(PropertyModel())
+  val incompleteForeignProperty: Option[OverseasPropertyModel] = Some(OverseasPropertyModel())
 
-  def view(selfEmployments: Seq[SelfEmploymentData] = Seq.empty,
-           ukProperty: Option[PropertyModel] = None,
-           foreignProperty: Option[OverseasPropertyModel] = None): Html = {
+  def view(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None)): Html = {
     incomeSourceView(
       postAction = testCall,
       backUrl = testBackUrl,
       clientDetails = clientDetails,
-      selfEmployments = selfEmployments,
-      ukProperty = ukProperty,
-      foreignProperty = foreignProperty
+      incomeSources = incomeSources
     )
   }
 
-  class ViewTest(selfEmployments: Seq[SelfEmploymentData] = Seq.empty,
-                 ukProperty: Option[PropertyModel] = None,
-                 foreignProperty: Option[OverseasPropertyModel] = None,
+  class ViewTest(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None),
                  foreignPropertyEnabled: Boolean = true) {
 
     if (foreignPropertyEnabled) enable(ForeignProperty)
 
-    val document: Document = Jsoup.parse(view(selfEmployments, ukProperty, foreignProperty).body)
+    val document: Document = Jsoup.parse(view(incomeSources).body)
 
   }
 
-
-  "Your Income Source To Sign Up View" should {
+  "YourIncomeSourceToSignUp" should {
     "display the template correctly" when {
-
-      "there is no error" in new TemplateViewTest(
+      "the are no income sources added" in new TemplateViewTest(
         view = view(),
-        title = AgentIncomeSource.heading,
+        title = AgentIncomeSource.headingNoIncomeAdded,
+        isAgent = true,
+        backLink = Some(testBackUrl),
+        hasSignOutLink = true
+      )
+      "the are incomplete income sources added" in new TemplateViewTest(
+        view = view(IncomeSources(incompleteSelfEmployments, incompleteUKProperty, incompleteForeignProperty)),
+        title = AgentIncomeSource.headingNoIncomeAdded,
+        isAgent = true,
+        backLink = Some(testBackUrl),
+        hasSignOutLink = true
+      )
+      "the are complete income sources added" in new TemplateViewTest(
+        view = view(IncomeSources(completeSelfEmployments, completeUKProperty, completeForeignProperty)),
+        title = AgentIncomeSource.headingNoIncomeAdded,
         isAgent = true,
         backLink = Some(testBackUrl),
         hasSignOutLink = true
       )
     }
+  }
 
-    "have the heading for the page" in new ViewTest {
-      document.mainContent.selectHead("h1").text mustBe AgentIncomeSource.heading
-    }
+  "YourIncomeSourceToSignUp" when {
+    "there are no income sources added" should {
+      def noIncomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None)
 
-
-    "have a section on Sole trader" in new ViewTest {
-      document.mainContent.selectHead("h2").text mustBe AgentIncomeSource.soleTrader
-    }
-
-    "have a  Sole trader link" in new ViewTest {
-      val link: Element = document.mainContent.getElementById("add-self-employment").selectHead("a")
-      link.text mustBe AgentIncomeSource.soleTraderLinkText
-      link.attr("href") mustBe AgentIncomeSource.soleTraderLink
-
-    }
-
-    "have a section on UK property" in new ViewTest {
-      document.mainContent.selectNth("h2", 2).text mustBe AgentIncomeSource.ukProperty
-    }
-
-    "have a  UK property  link" in new ViewTest {
-      val link: Element = document.mainContent.getElementById("add-uk-property").selectHead("a")
-      link.text mustBe AgentIncomeSource.ukPropertyLinkText
-      link.attr("href") mustBe AgentIncomeSource.ukPropertyLink
-    }
-
-    "have a section for foreign property" when {
-      "the foreign property feature switch is enabled" which {
-        "has a heading" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
-          document.mainContent.selectNth("h2", 3).text mustBe AgentIncomeSource.foreignPropertyHeading
+      "have a heading for the page" in new ViewTest(noIncomeSources) {
+        document.mainContent.getH1Element.text mustBe AgentIncomeSource.headingNoIncomeAdded
+      }
+      "have a caption with the clien's details" in new ViewTest(noIncomeSources) {
+        document.mainContent.selectHead("span.govuk-caption-l").text mustBe s"${clientDetails.name} | ${clientDetails.formattedNino}"
+      }
+      "have a lead paragraph" in new ViewTest(noIncomeSources) {
+        document.mainContent.selectHead("p.govuk-body-l").text mustBe AgentIncomeSource.leadNoIncomeAdded
+      }
+      "have a sole trader section" which {
+        "has a heading" in new ViewTest(noIncomeSources) {
+          document.mainContent.selectNth("h2", 1).text mustBe AgentIncomeSource.soleTrader
+        }
+        "has an add business link" in new ViewTest(noIncomeSources) {
+          val link: Element = document.mainContent.getElementById("add-self-employment").selectHead("a")
+          link.text mustBe AgentIncomeSource.soleTraderLinkText
+          link.attr("href") mustBe AgentIncomeSource.soleTraderLink
+        }
+      }
+      "have a uk property section" which {
+        "has a heading" in new ViewTest(noIncomeSources) {
+          document.mainContent.selectNth("h2", 2).text mustBe AgentIncomeSource.ukProperty
         }
 
-        "has a summary of the added foreign property business" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
-          val summaryList: Element = document.mainContent.selectNth("dl", 3)
-          val row: Element = summaryList.selectNth("div.govuk-summary-list__row", 1)
-
-          row.selectHead("dt").text mustBe AgentIncomeSource.foreignPropertyLabel
-
-          val actions: Element = row.selectHead("dd")
-          val changeLink: Element = actions.selectHead("ul").selectNth("li", 1).selectHead("a")
-          changeLink.selectHead("span[aria-hidden=true]").text mustBe AgentIncomeSource.change
-          changeLink.selectHead("span.govuk-visually-hidden").text mustBe AgentIncomeSource.foreignPropertyChange
-
-          val removeLink: Element = actions.selectHead("ul").selectNth("li", 2).selectHead("a")
-          removeLink.selectHead("span[aria-hidden=true]").text mustBe AgentIncomeSource.remove
-          removeLink.selectHead("span.govuk-visually-hidden").text mustBe AgentIncomeSource.foreignPropertyRemove
+        "has an add business link" in new ViewTest(noIncomeSources) {
+          val link: Element = document.mainContent.getElementById("add-uk-property").selectHead("a")
+          link.text mustBe AgentIncomeSource.ukPropertyLinkText
+          link.attr("href") mustBe AgentIncomeSource.ukPropertyLink
         }
-        "has no link to add a foreign property business" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
+      }
+      "have a foreign property section" when {
+        "the foreign property feature switch is enabled" which {
+          "has a heading" in new ViewTest(noIncomeSources) {
+            document.mainContent.selectNth("h2", 3).text mustBe AgentIncomeSource.foreignPropertyHeading
+          }
+          "has an add business link" in new ViewTest(noIncomeSources) {
+            val link: Element = document.mainContent.getElementById("add-foreign-property").selectHead("a")
+            link.text mustBe AgentIncomeSource.foreignPropertyLinkText
+            link.attr("href") mustBe AgentIncomeSource.foreignPropertyLink
+          }
+        }
+      }
+      "have no foreign property section" when {
+        "the foreign property feature switch is disabled" in new ViewTest(noIncomeSources, foreignPropertyEnabled = false) {
+          document.mainContent.selectOptionalNth("h2", 3) mustBe None
           document.mainContent.selectOptionally("#add-foreign-property") mustBe None
         }
       }
-    }
+      "have a form" which {
+        def form(document: Document): Element = document.mainContent.getForm
 
-    "have a form" which {
-      def form(document: Element): Element = document.getForm
-
-      "has the correct attributes" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
-        val selectedForm: Element = form(document)
-        selectedForm.attr("method") mustBe testCall.method
-        selectedForm.attr("action") mustBe testCall.url
+        "has the correct attributes" in new ViewTest(noIncomeSources) {
+          form(document).attr("method") mustBe testCall.method
+          form(document).attr("action") mustBe testCall.url
+        }
+        "has a continue button" in new ViewTest(noIncomeSources) {
+          form(document).getGovukSubmitButton.text mustBe AgentIncomeSource.continue
+        }
+        "has no save and come back later button" in new ViewTest(noIncomeSources) {
+          form(document).selectOptionally(".govuk-button--secondary") mustBe None
+        }
       }
-      "has a continue button" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
-        form(document).selectHead("#continue-button").text mustBe AgentIncomeSource.continue
+    }
+    "there are incomplete income sources added" should {
+      def incompleteIncomeSources: IncomeSources = IncomeSources(incompleteSelfEmployments, incompleteUKProperty, incompleteForeignProperty)
+
+      "have a heading for the page" in new ViewTest(incompleteIncomeSources) {
+        document.mainContent.getH1Element.text mustBe AgentIncomeSource.headingNoIncomeAdded
+      }
+      "have a caption with the clien's details" in new ViewTest(incompleteIncomeSources) {
+        document.mainContent.selectHead("span.govuk-caption-l").text mustBe s"${clientDetails.name} | ${clientDetails.formattedNino}"
+      }
+      "have a lead paragraph" in new ViewTest(incompleteIncomeSources) {
+        document.mainContent.selectHead("p.govuk-body-l").text mustBe AgentIncomeSource.leadNoIncomeAdded
+      }
+      "have a sole trader section" which {
+        "has a heading" in new ViewTest(incompleteIncomeSources) {
+          document.mainContent.selectNth("h2", 1).text mustBe AgentIncomeSource.soleTrader
+        }
+        "has a summary of incomplete self employed businesses" which {
+          def selfEmploymentSummary(document: Document): Element = document.mainContent.selectNth("dl", 1)
+
+          "has a first business" which {
+            def businessSummary(document: Document): Element = selfEmploymentSummary(document)
+              .selectNth("div.govuk-summary-list__row", 1)
+
+            "has a label" in new ViewTest(incompleteIncomeSources) {
+              businessSummary(document).selectHead("dt").text mustBe "business trade - business name"
+            }
+            "has a set of actions" which {
+              def actions(document: Document): Element = businessSummary(document).selectHead("dd").selectHead("ul")
+
+              "has a change action" in new ViewTest(incompleteIncomeSources) {
+                val link: Element = actions(document).selectNth("li", 1).selectHead("a")
+                link.selectHead("span[aria-hidden=true]").text mustBe AgentIncomeSource.change
+                link.selectHead("span.govuk-visually-hidden").text mustBe AgentIncomeSource.selfEmploymentChange("business trade - business name")
+              }
+              "has a remove action" in new ViewTest(incompleteIncomeSources) {
+                val link: Element = actions(document).selectNth("li", 2).selectHead("a")
+                link.selectHead("span[aria-hidden=true]").text mustBe AgentIncomeSource.remove
+                link.selectHead("span.govuk-visually-hidden").text mustBe AgentIncomeSource.selfEmploymentRemove("business trade - business name")
+              }
+            }
+          }
+          "has a second business" which {
+            def businessSummary(document: Document): Element = selfEmploymentSummary(document)
+              .selectNth("div.govuk-summary-list__row", 2)
+
+            "has a label" in new ViewTest(incompleteIncomeSources) {
+              businessSummary(document).selectHead("dt").text mustBe "business name"
+            }
+            "has a set of actions" which {
+              def actions(document: Document): Element = businessSummary(document).selectHead("dd").selectHead("ul")
+
+              "has a change action" in new ViewTest(incompleteIncomeSources) {
+                val link: Element = actions(document).selectNth("li", 1).selectHead("a")
+                link.selectHead("span[aria-hidden=true]").text mustBe AgentIncomeSource.change
+                link.selectHead("span.govuk-visually-hidden").text mustBe AgentIncomeSource.selfEmploymentChange("business name")
+              }
+              "has a remove action" in new ViewTest(incompleteIncomeSources) {
+                val link: Element = actions(document).selectNth("li", 2).selectHead("a")
+                link.selectHead("span[aria-hidden=true]").text mustBe AgentIncomeSource.remove
+                link.selectHead("span.govuk-visually-hidden").text mustBe AgentIncomeSource.selfEmploymentRemove("business name")
+              }
+            }
+          }
+          "has a third business" which {
+            def businessSummary(document: Document): Element = selfEmploymentSummary(document)
+              .selectNth("div.govuk-summary-list__row", 3)
+
+            "has a label" in new ViewTest(incompleteIncomeSources) {
+              businessSummary(document).selectHead("dt").text mustBe "business trade"
+            }
+            "has a set of actions" which {
+              def actions(document: Document): Element = businessSummary(document).selectHead("dd").selectHead("ul")
+
+              "has a change action" in new ViewTest(incompleteIncomeSources) {
+                val link: Element = actions(document).selectNth("li", 1).selectHead("a")
+                link.selectHead("span[aria-hidden=true]").text mustBe AgentIncomeSource.change
+                link.selectHead("span.govuk-visually-hidden").text mustBe AgentIncomeSource.selfEmploymentChange("business trade")
+              }
+              "has a remove action" in new ViewTest(incompleteIncomeSources) {
+                val link: Element = actions(document).selectNth("li", 2).selectHead("a")
+                link.selectHead("span[aria-hidden=true]").text mustBe AgentIncomeSource.remove
+                link.selectHead("span.govuk-visually-hidden").text mustBe AgentIncomeSource.selfEmploymentRemove("business trade")
+              }
+            }
+          }
+          "has a forth business" which {
+            def businessSummary(document: Document): Element = selfEmploymentSummary(document)
+              .selectNth("div.govuk-summary-list__row", 4)
+
+            "has a label" in new ViewTest(incompleteIncomeSources) {
+              businessSummary(document).selectHead("dt").text mustBe "Business 4"
+            }
+            "has a set of actions" which {
+              def actions(document: Document): Element = businessSummary(document).selectHead("dd").selectHead("ul")
+
+              "has a change action" in new ViewTest(incompleteIncomeSources) {
+                val link: Element = actions(document).selectNth("li", 1).selectHead("a")
+                link.selectHead("span[aria-hidden=true]").text mustBe AgentIncomeSource.change
+                link.selectHead("span.govuk-visually-hidden").text mustBe AgentIncomeSource.selfEmploymentChange("Business 4")
+              }
+              "has a remove action" in new ViewTest(incompleteIncomeSources) {
+                val link: Element = actions(document).selectNth("li", 2).selectHead("a")
+                link.selectHead("span[aria-hidden=true]").text mustBe AgentIncomeSource.remove
+                link.selectHead("span.govuk-visually-hidden").text mustBe AgentIncomeSource.selfEmploymentRemove("Business 4")
+              }
+            }
+          }
+        }
+        "has an add business link" in new ViewTest(incompleteIncomeSources) {
+          val link: Element = document.mainContent.getElementById("add-self-employment").selectHead("a")
+          link.text mustBe AgentIncomeSource.anotherSoleTraderLinkText
+          link.attr("href") mustBe AgentIncomeSource.soleTraderLink
+        }
+      }
+      "have a uk property section" which {
+        "has a heading" in new ViewTest(incompleteIncomeSources) {
+          document.mainContent.selectNth("h2", 2).text mustBe AgentIncomeSource.ukProperty
+        }
+        "has a summary of the incomplete uk property" which {
+          def ukPropertySummary(document: Document): Element = document.mainContent.selectNth("dl", 2).selectHead("div.govuk-summary-list__row")
+
+          "has a label" in new ViewTest(incompleteIncomeSources) {
+            ukPropertySummary(document).selectHead("dt").text mustBe AgentIncomeSource.ukPropertyLabel
+          }
+          "has a set of actions" which {
+            def actions(document: Document): Element = ukPropertySummary(document).selectHead("dd").selectHead("ul")
+
+            "has a change action" in new ViewTest(incompleteIncomeSources) {
+              val link: Element = actions(document).selectNth("li", 1)
+              link.selectHead("span[aria-hidden=true]").text mustBe AgentIncomeSource.change
+              link.selectHead("span.govuk-visually-hidden").text mustBe AgentIncomeSource.ukPropertyChange
+            }
+            "has a remove action" in new ViewTest(incompleteIncomeSources) {
+              val link: Element = actions(document).selectNth("li", 2)
+              link.selectHead("span[aria-hidden=true]").text mustBe AgentIncomeSource.remove
+              link.selectHead("span.govuk-visually-hidden").text mustBe AgentIncomeSource.ukPropertyRemove
+            }
+          }
+        }
+      }
+      "have a foreign property section" when {
+        "the foreign property feature switch is enabled" which {
+          "has a heading" in new ViewTest(incompleteIncomeSources) {
+            document.mainContent.selectNth("h2", 3).text mustBe AgentIncomeSource.foreignPropertyHeading
+          }
+          "has a summary of the incomplete foreign property" which {
+            def foreignPropertySummary(document: Document): Element = document.mainContent.selectNth("dl", 3).selectHead("div.govuk-summary-list__row")
+
+            "has a label" in new ViewTest(incompleteIncomeSources) {
+              foreignPropertySummary(document).selectHead("dt").text mustBe AgentIncomeSource.foreignPropertyLabel
+            }
+            "has a set of actions" which {
+              def actions(document: Document): Element = foreignPropertySummary(document).selectHead("dd").selectHead("ul")
+
+              "has a change action" in new ViewTest(incompleteIncomeSources) {
+                val link: Element = actions(document).selectNth("li", 1)
+                link.selectHead("span[aria-hidden=true]").text mustBe AgentIncomeSource.change
+                link.selectHead("span.govuk-visually-hidden").text mustBe AgentIncomeSource.foreignPropertyChange
+              }
+              "has a remove action" in new ViewTest(incompleteIncomeSources) {
+                val link: Element = actions(document).selectNth("li", 2)
+                link.selectHead("span[aria-hidden=true]").text mustBe AgentIncomeSource.remove
+                link.selectHead("span.govuk-visually-hidden").text mustBe AgentIncomeSource.foreignPropertyRemove
+              }
+            }
+          }
+        }
+      }
+      "have no foreign property section" when {
+        "the foreign property feature switch is disabled" in new ViewTest(incompleteIncomeSources, foreignPropertyEnabled = false) {
+          document.mainContent.selectOptionalNth("h2", 3) mustBe None
+          document.mainContent.selectOptionally("#add-foreign-property") mustBe None
+        }
+      }
+      "have a form" which {
+        def form(document: Document): Element = document.mainContent.getForm
+
+        "has the correct attributes" in new ViewTest(incompleteIncomeSources) {
+          form(document).attr("method") mustBe testCall.method
+          form(document).attr("action") mustBe testCall.url
+        }
+        "has a continue button" in new ViewTest(incompleteIncomeSources) {
+          form(document).getGovukSubmitButton.text mustBe AgentIncomeSource.continue
+        }
+        "has a save and come back later button" in new ViewTest(incompleteIncomeSources) {
+          val button: Element = form(document).selectHead(".govuk-button--secondary")
+          button.text mustBe AgentIncomeSource.saveAndComeBackLater
+          button.attr("href") mustBe controllers.agent.tasklist.routes.ProgressSavedController.show(Some("income-sources")).url
+        }
+      }
+    }
+    "there are fully complete income sources added" should {
+      def completeIncomeSources: IncomeSources = IncomeSources(completeSelfEmployments, completeUKProperty, completeForeignProperty)
+
+      "have a heading for the page" in new ViewTest(completeIncomeSources) {
+        document.mainContent.getH1Element.text mustBe AgentIncomeSource.headingNoIncomeAdded
+      }
+      "have a caption with the clien's details" in new ViewTest(completeIncomeSources) {
+        document.mainContent.selectHead("span.govuk-caption-l").text mustBe s"${clientDetails.name} | ${clientDetails.formattedNino}"
+      }
+      "have a lead paragraph" in new ViewTest(completeIncomeSources) {
+        document.mainContent.selectHead("p.govuk-body-l").text mustBe AgentIncomeSource.leadNoIncomeAdded
+      }
+      "have a sole trader section" which {
+        "has a heading" in new ViewTest(completeIncomeSources) {
+          document.mainContent.selectNth("h2", 1).text mustBe AgentIncomeSource.soleTrader
+        }
+        "has a summary of incomplete self employed businesses" which {
+          def selfEmploymentSummary(document: Document): Element = document.mainContent.selectNth("dl", 1).selectHead("div.govuk-summary-list__row")
+
+          "has a label" in new ViewTest(completeIncomeSources) {
+            selfEmploymentSummary(document).selectHead("dt").text mustBe "business trade - business name"
+          }
+          "has a set of actions" which {
+            def actions(document: Document): Element = selfEmploymentSummary(document).selectHead("dd").selectHead("ul")
+
+            "has a change action" in new ViewTest(completeIncomeSources) {
+              val link: Element = actions(document).selectNth("li", 1).selectHead("a")
+              link.selectHead("span[aria-hidden=true]").text mustBe AgentIncomeSource.change
+              link.selectHead("span.govuk-visually-hidden").text mustBe AgentIncomeSource.selfEmploymentChange("business trade - business name")
+            }
+            "has a remove action" in new ViewTest(completeIncomeSources) {
+              val link: Element = actions(document).selectNth("li", 2).selectHead("a")
+              link.selectHead("span[aria-hidden=true]").text mustBe AgentIncomeSource.remove
+              link.selectHead("span.govuk-visually-hidden").text mustBe AgentIncomeSource.selfEmploymentRemove("business trade - business name")
+            }
+          }
+        }
+        "has an add business link" in new ViewTest(completeIncomeSources) {
+          val link: Element = document.mainContent.getElementById("add-self-employment").selectHead("a")
+          link.text mustBe AgentIncomeSource.anotherSoleTraderLinkText
+          link.attr("href") mustBe AgentIncomeSource.soleTraderLink
+        }
+      }
+      "have a uk property section" which {
+        "has a heading" in new ViewTest(completeIncomeSources) {
+          document.mainContent.selectNth("h2", 2).text mustBe AgentIncomeSource.ukProperty
+        }
+        "has a summary of the incomplete uk property" which {
+          def ukPropertySummary(document: Document): Element = document.mainContent.selectNth("dl", 2).selectHead("div.govuk-summary-list__row")
+
+          "has a label" in new ViewTest(completeIncomeSources) {
+            ukPropertySummary(document).selectHead("dt").text mustBe AgentIncomeSource.ukPropertyLabel
+          }
+          "has a set of actions" which {
+            def actions(document: Document): Element = ukPropertySummary(document).selectHead("dd").selectHead("ul")
+
+            "has a change action" in new ViewTest(completeIncomeSources) {
+              val link: Element = actions(document).selectNth("li", 1)
+              link.selectHead("span[aria-hidden=true]").text mustBe AgentIncomeSource.change
+              link.selectHead("span.govuk-visually-hidden").text mustBe AgentIncomeSource.ukPropertyChange
+            }
+            "has a remove action" in new ViewTest(completeIncomeSources) {
+              val link: Element = actions(document).selectNth("li", 2)
+              link.selectHead("span[aria-hidden=true]").text mustBe AgentIncomeSource.remove
+              link.selectHead("span.govuk-visually-hidden").text mustBe AgentIncomeSource.ukPropertyRemove
+            }
+          }
+        }
+      }
+      "have a foreign property section" when {
+        "the foreign property feature switch is enabled" which {
+          "has a heading" in new ViewTest(completeIncomeSources) {
+            document.mainContent.selectNth("h2", 3).text mustBe AgentIncomeSource.foreignPropertyHeading
+          }
+          "has a summary of the incomplete foreign property" which {
+            def foreignPropertySummary(document: Document): Element = document.mainContent.selectNth("dl", 3).selectHead("div.govuk-summary-list__row")
+
+            "has a label" in new ViewTest(completeIncomeSources) {
+              foreignPropertySummary(document).selectHead("dt").text mustBe AgentIncomeSource.foreignPropertyLabel
+            }
+            "has a set of actions" which {
+              def actions(document: Document): Element = foreignPropertySummary(document).selectHead("dd").selectHead("ul")
+
+              "has a change action" in new ViewTest(completeIncomeSources) {
+                val link: Element = actions(document).selectNth("li", 1)
+                link.selectHead("span[aria-hidden=true]").text mustBe AgentIncomeSource.change
+                link.selectHead("span.govuk-visually-hidden").text mustBe AgentIncomeSource.foreignPropertyChange
+              }
+              "has a remove action" in new ViewTest(completeIncomeSources) {
+                val link: Element = actions(document).selectNth("li", 2)
+                link.selectHead("span[aria-hidden=true]").text mustBe AgentIncomeSource.remove
+                link.selectHead("span.govuk-visually-hidden").text mustBe AgentIncomeSource.foreignPropertyRemove
+              }
+            }
+          }
+        }
+      }
+      "have no foreign property section" when {
+        "the foreign property feature switch is disabled" in new ViewTest(completeIncomeSources, foreignPropertyEnabled = false) {
+          document.mainContent.selectOptionalNth("h2", 3) mustBe None
+          document.mainContent.selectOptionally("#add-foreign-property") mustBe None
+        }
+      }
+      "have a form" which {
+        def form(document: Document): Element = document.mainContent.getForm
+
+        "has the correct attributes" in new ViewTest(completeIncomeSources) {
+          form(document).attr("method") mustBe testCall.method
+          form(document).attr("action") mustBe testCall.url
+        }
+        "has a continue button" in new ViewTest(completeIncomeSources) {
+          form(document).getGovukSubmitButton.text mustBe AgentIncomeSource.continue
+        }
+        "has a save and come back later button" in new ViewTest(completeIncomeSources) {
+          val button: Element = form(document).selectHead(".govuk-button--secondary")
+          button.text mustBe AgentIncomeSource.saveAndComeBackLater
+          button.attr("href") mustBe controllers.agent.tasklist.routes.ProgressSavedController.show(Some("income-sources")).url
+        }
       }
     }
   }

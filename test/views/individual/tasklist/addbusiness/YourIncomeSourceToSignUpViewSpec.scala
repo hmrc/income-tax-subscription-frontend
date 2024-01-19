@@ -194,16 +194,16 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
             val summaryList: Element = document.mainContent.selectNth("dl", 1)
             val row: Element = summaryList.selectNth("div.govuk-summary-list__row", 1)
 
-            row.selectHead("dt").text mustBe "business name - business trade"
+            row.selectHead("dt").text mustBe "business trade - business name"
 
             val actions: Element = row.selectHead("dd")
             val changeLink: Element = actions.selectHead("ul").selectNth("li", 1).selectHead("a")
             changeLink.selectHead("span[aria-hidden=true]").text mustBe IndividualIncomeSource.change
-            changeLink.selectHead("span.govuk-visually-hidden").text mustBe IndividualIncomeSource.selfEmploymentChange("business name - business trade")
+            changeLink.selectHead("span.govuk-visually-hidden").text mustBe IndividualIncomeSource.selfEmploymentChange("business trade - business name")
 
             val removeLink: Element = actions.selectHead("ul").selectNth("li", 2).selectHead("a")
             removeLink.selectHead("span[aria-hidden=true]").text mustBe IndividualIncomeSource.remove
-            removeLink.selectHead("span.govuk-visually-hidden").text mustBe IndividualIncomeSource.selfEmploymentRemove("business name - business trade")
+            removeLink.selectHead("span.govuk-visually-hidden").text mustBe IndividualIncomeSource.selfEmploymentRemove("business trade - business name")
           }
           "has a second row" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
             val summaryList: Element = document.mainContent.selectNth("dl.govuk-summary-list", 1)
