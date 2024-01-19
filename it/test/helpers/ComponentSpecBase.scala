@@ -197,11 +197,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
     def yourIncomeSources(): WSResponse = get("/details/your-income-source")
 
-    def submitYourIncomeSources(request: Option[YesNo]): WSResponse = post("/details/your-income-source")(
-      request.fold(Map.empty[String, Seq[String]])(
-        model => HaveYouCompletedThisSectionForm.form.fill(model).data.map { case (k, v) => (k, Seq(v)) }
-      )
-    )
+    def submitYourIncomeSources(): WSResponse = post("/details/your-income-source")(Map.empty[String, Seq[String]])
 
     def businessYourIncomeSource(): WSResponse = get("/details/your-income-source")
 

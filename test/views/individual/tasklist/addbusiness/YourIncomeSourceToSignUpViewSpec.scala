@@ -89,7 +89,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
            foreignProperty: Option[OverseasPropertyModel] = None): Html = {
     incomeSource(
       postAction = testCall,
-      haveYouCompletedThisSectionForm = HaveYouCompletedThisSectionForm.form,
       backUrl = testBackUrl,
       selfEmployments = selfEmployments,
       ukProperty = ukProperty,
@@ -319,20 +318,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       "have no section for foreign property" when {
         "the foreign property feature switch is not enabled" in new ViewTest(selfEmployments, ukProperty, foreignProperty, false) {
           document.mainContent.selectOptionalNth("h2", 3) mustBe None
-        }
-      }
-
-      "has a Have you completed this section?" which {
-        "has a heading" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
-          document.mainContent.selectHead(".govuk-fieldset").selectHead("legend").text mustBe IndividualIncomeSource.completedThisSectionFormHeading
-        }
-
-        "have a Yes, I have completed this section radio button" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
-          document.mainContent.selectNth(".govuk-radios__label", 1).text mustBe IndividualIncomeSource.completedSectionYes
-        }
-
-        "have a No, I will come back to it later radio button" in new ViewTest(selfEmployments, ukProperty, foreignProperty) {
-          document.mainContent.selectNth(".govuk-radios__label", 2).text mustBe IndividualIncomeSource.completedSectionNo
         }
       }
 
