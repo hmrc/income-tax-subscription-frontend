@@ -96,12 +96,12 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           mainContent().selectNth("p", 3).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph1
         }
 
-        "contains a paragraph two" in {
-          mainContent().selectNth("p", 4).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph2
+        "contains a inset test" in {
+          mainContent().selectHead(".govuk-inset-text").text() mustBe SignUpConfirmationMessages.beforeYouStartSection.insetText
         }
 
-        "contains a paragraph three" in {
-          mainContent().selectNth("p", 5).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph3
+        "contains a paragraph two" in {
+          mainContent().selectNth("p", 4).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph3
         }
 
         "contains a link" in {
@@ -218,7 +218,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "has a paragraph" in {
-          mainContent().selectNth("p", 11).text() mustBe SignUpConfirmationMessages.reportPreviousTax.paragraphThisYear
+          mainContent().selectNth("p", 10).text() mustBe SignUpConfirmationMessages.reportPreviousTax.paragraphThisYear
         }
       }
 
@@ -229,7 +229,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "has a paragraph" in {
-          mainContent().selectNth("p", 12).text() mustBe SignUpConfirmationMessages.payYourTax.paraOne
+          mainContent().selectNth("p", 11).text() mustBe SignUpConfirmationMessages.payYourTax.paraOne
         }
 
         "contains a bullet list of payment types" which {
@@ -261,13 +261,13 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           val link = mainContent().selectNth("a",4)
           link.attr("href") mustBe "https://www.gov.uk/pay-self-assessment-tax-bill"
           link.text mustBe SignUpConfirmationMessages.payYourTax.linkText
-          mainContent().selectNth("p",13).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
+          mainContent().selectNth("p",12).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
         }
       }
 
       "contains a preference section" which {
 
-        def preferenceSection(preference: Option[Boolean] = None) : Element = mainContent(preference).selectNth("div",7)
+        def preferenceSection(preference: Option[Boolean] = None) : Element = mainContent(preference).selectNth("div",8)
 
         "has no retrieved preference content when no preference was provided to the view" in {
           preferenceSection().selectOptionalNth("p", 1) mustBe None
@@ -329,12 +329,12 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           mainContent().selectNth("p", 3).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph1
         }
 
-        "contains a paragraph two" in {
-          mainContent().selectNth("p", 4).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph2
+        "contains a inset text" in {
+          mainContent().selectHead(".govuk-inset-text").text() mustBe SignUpConfirmationMessages.beforeYouStartSection.insetText
         }
 
-        "contains a paragraph three" in {
-          mainContent().selectNth("p", 5).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph3
+        "contains a paragraph two" in {
+          mainContent().selectNth("p", 4).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph3
         }
 
         "contains a link" in {
@@ -447,7 +447,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "has a paragraph" in {
-          mainContent().selectNth("p", 11).text() mustBe SignUpConfirmationMessages.reportPreviousTax.paragraphNextYear
+          mainContent().selectNth("p", 10).text() mustBe SignUpConfirmationMessages.reportPreviousTax.paragraphNextYear
         }
       }
 
@@ -458,7 +458,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "has a paragraph" in {
-          mainContent().selectNth("p", 12).text() mustBe SignUpConfirmationMessages.payYourTax.paraOne
+          mainContent().selectNth("p", 11).text() mustBe SignUpConfirmationMessages.payYourTax.paraOne
         }
 
         "contains a bullet list of payment types" which {
@@ -490,13 +490,13 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           val link = mainContent().selectNth("a",4)
           link.attr("href") mustBe "https://www.gov.uk/pay-self-assessment-tax-bill"
           link.text mustBe SignUpConfirmationMessages.payYourTax.linkText
-          mainContent().selectNth("p",13).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
+          mainContent().selectNth("p",12).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
         }
       }
 
       "contains a preference section" which {
 
-        def preferenceSection(preference: Option[Boolean] = None) : Element = mainContent(preference).selectNth("div",6)
+        def preferenceSection(preference: Option[Boolean] = None) : Element = mainContent(preference).selectNth("div",7)
 
         "has no retrieved preference content when no preference was provided to the view" in {
           preferenceSection().selectOptionalNth("p", 1) mustBe None
@@ -558,12 +558,12 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           mainContent().selectNth("p", 3).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph1
         }
 
-        "contains a paragraph two" in {
-          mainContent().selectNth("p", 4).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph2
+        "contains a inset text" in {
+          mainContent().selectHead(".govuk-inset-text").text() mustBe SignUpConfirmationMessages.beforeYouStartSection.insetText
         }
 
-        "contains a paragraph three" in {
-          mainContent().selectNth("p", 5).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph3
+        "contains a paragraph two" in {
+          mainContent().selectNth("p", 4).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph3
         }
 
         "contains a link" in {
@@ -676,7 +676,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "has a paragraph" in {
-          mainContent().selectNth("p", 11).text() mustBe SignUpConfirmationMessages.reportPreviousTax.paragraphNextYear
+          mainContent().selectNth("p", 10).text() mustBe SignUpConfirmationMessages.reportPreviousTax.paragraphNextYear
         }
       }
 
@@ -687,7 +687,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "has a paragraph" in {
-          mainContent().selectNth("p", 12).text() mustBe SignUpConfirmationMessages.payYourTax.paraOne
+          mainContent().selectNth("p", 11).text() mustBe SignUpConfirmationMessages.payYourTax.paraOne
         }
 
         "contains a bullet list of payment types" which {
@@ -719,13 +719,13 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           val link = mainContent().selectNth("a",4)
           link.attr("href") mustBe "https://www.gov.uk/pay-self-assessment-tax-bill"
           link.text mustBe SignUpConfirmationMessages.payYourTax.linkText
-          mainContent().selectNth("p",13).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
+          mainContent().selectNth("p",12).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
         }
       }
 
       "contains a preference section" which {
 
-        def preferenceSection(preference: Option[Boolean] = None) : Element = mainContent(preference).selectNth("div",6)
+        def preferenceSection(preference: Option[Boolean] = None) : Element = mainContent(preference).selectNth("div",7)
 
         "has no retrieved preference content when no preference was provided to the view" in {
           preferenceSection().selectOptionalNth("p", 1) mustBe None
@@ -787,12 +787,12 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           mainContent().selectNth("p", 3).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph1
         }
 
-        "contains a paragraph two" in {
-          mainContent().selectNth("p", 4).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph2
+        "contains a inset text" in {
+          mainContent().selectHead(".govuk-inset-text").text() mustBe SignUpConfirmationMessages.beforeYouStartSection.insetText
         }
 
-        "contains a paragraph three" in {
-          mainContent().selectNth("p", 5).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph3
+        "contains a paragraph two" in {
+          mainContent().selectNth("p", 4).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph3
         }
 
         "contains a link" in {
@@ -909,7 +909,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "has a paragraph" in {
-          mainContent().selectNth("p", 11).text() mustBe SignUpConfirmationMessages.reportPreviousTax.paragraphThisYear
+          mainContent().selectNth("p", 10).text() mustBe SignUpConfirmationMessages.reportPreviousTax.paragraphThisYear
         }
       }
 
@@ -920,7 +920,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "has a paragraph" in {
-          mainContent().selectNth("p", 12).text() mustBe SignUpConfirmationMessages.payYourTax.paraOne
+          mainContent().selectNth("p", 11).text() mustBe SignUpConfirmationMessages.payYourTax.paraOne
         }
 
         "contains a bullet list of payment types" which {
@@ -952,13 +952,13 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           val link = mainContent().selectNth("a",4)
           link.attr("href") mustBe "https://www.gov.uk/pay-self-assessment-tax-bill"
           link.text mustBe SignUpConfirmationMessages.payYourTax.linkText
-          mainContent().selectNth("p",13).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
+          mainContent().selectNth("p",12).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
         }
       }
 
       "contains a preference section" which {
 
-        def preferenceSection(preference: Option[Boolean] = None) : Element = mainContent(preference).selectNth("div",7)
+        def preferenceSection(preference: Option[Boolean] = None) : Element = mainContent(preference).selectNth("div",8)
 
         "has no retrieved preference content when no preference was provided to the view" in {
           preferenceSection().selectOptionalNth("p", 1) mustBe None
@@ -1007,7 +1007,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     object beforeYouStartSection  {
       val heading = "Before you start"
       val paragraph1 = "To start using Making Tax Digital for Income Tax you must get compatible software. You should check if the software meets your business needs."
-      val paragraph2 = "For example, if you want to update your income and expenses by calendar quarterly period dates you must choose software that supports this."
+      val insetText = "For example, if you want to update your income and expenses by calendar quarterly period dates you must choose software that supports this."
       val paragraph3 = "This must be done before you make your first update."
       val findSoftwareLinkText = "Find compatible software (opens in new tab)"
     }
@@ -1041,7 +1041,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         val paragraph = "Other income sources should be declared, such as income from employment, dividends or savings. You need to report this income using either your:"
         val bulletItemOne = "compatible software (if it has the functionality)"
         val bulletItemTwo = "HMRC online services account"
-        val onlineServiceLinkText = "You can find more information in your HMRC online services account."
+        val onlineServiceLinkText = "HMRC online services account(opens in new tab)"
       }
     }
 
@@ -1061,7 +1061,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       val bulletThree = "debit card"
       val bulletFour = "corporate credit card"
       val bulletFive = "direct debit"
-      val linkText = "how to pay your tax bill"
+      val linkText = "how to pay your tax bill(opens in new tab)"
       val paraTwo = s"GOV.UK has more information on $linkText."
     }
 

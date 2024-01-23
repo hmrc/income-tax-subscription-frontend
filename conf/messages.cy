@@ -384,7 +384,8 @@ sign-up-confirmation.final-declaration.heading                       = Cyflwyno 
 sign-up-confirmation.final-declaration.para1                         = Dylid datgan ffynhonellau incwm eraill, megis incwm o gyflogaeth, difidendau neu gynilion. Mae angen i chi rhoi gwybod am yr incwm hwn gan ddefnyddio naill ai:
 sign-up-confirmation.final-declaration.bullet1                       = eich meddalwedd sy’n cydweddu (os oes ganddi’r swyddogaeth honno)
 sign-up-confirmation.final-declaration.bullet2                       = Heich cyfrif gwasanaethau ar-lein CThEF
-sign-up-confirmation.final-declaration.online-services.link-text     = Mae rhagor o wybodaeth yn eich cyfrif gwasanaethau ar-lein CThEF.
+sign-up-confirmation.final-declaration.online-services.link-text     = Mae rhagor o wybodaeth yn eich {0}.
+sign-up-confirmation.final-declaration.online-services.link          = Cyfrif gwasanaethau ar-lein CThEF
 
 sign-up-confirmation.report-previous-tax-year.heading                = Rhoi gwybod am flwyddyn dreth flaenorol
 sign-up-confirmation.report-previous-tax-year.para                   = Bydd yn rhaid i chi gyflwyno’ch Ffurflen Dreth Hunanasesiad am y flwyddyn a ddaw i ben ar 5 Ebrill 2023, gan ddefnyddio’ch cyfrif gwasanaethau ar-lein CThEF yn ôl yr arfer.

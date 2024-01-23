@@ -383,7 +383,8 @@ sign-up-confirmation.final-declaration.heading                       = Submit a 
 sign-up-confirmation.final-declaration.para1                         = Other income sources should be declared, such as income from employment, dividends or savings. You need to report this income using either your:
 sign-up-confirmation.final-declaration.bullet1                       = compatible software (if it has the functionality)
 sign-up-confirmation.final-declaration.bullet2                       = HMRC online services account
-sign-up-confirmation.final-declaration.online-services.link-text     = You can find more information in your HMRC online services account.
+sign-up-confirmation.final-declaration.online-services.link-text     = You can find more information in your {0}.
+sign-up-confirmation.final-declaration.online-services.link          = HMRC online services account(opens in new tab)
 
 sign-up-confirmation.report-previous-tax-year.heading                = Report previous tax year
 sign-up-confirmation.report-previous-tax-year.para                   = You must submit your Self Assessment tax return for the year ended 5 April {0} using your HMRC online services account as normal.
@@ -396,7 +397,7 @@ sign-up-confirmation.pay-your-tax.bullet3                            = debit car
 sign-up-confirmation.pay-your-tax.bullet4                            = corporate credit card
 sign-up-confirmation.pay-your-tax.bullet5                            = direct debit
 sign-up-confirmation.pay-your-tax.para2                              = GOV.UK has more information on {0}.
-sign-up-confirmation.pay-your-tax.link-text                          = how to pay your tax bill
+sign-up-confirmation.pay-your-tax.link-text                          = how to pay your tax bill(opens in new tab)
 
 sign-up-confirmation.preference-set.online.para-one                  = You have chosen to get your tax letters online.
 sign-up-confirmation.preference-set.online.para-two                  = You must verify your email address to confirm this. Select the link we sent by email to do this, if you have not already done so.
