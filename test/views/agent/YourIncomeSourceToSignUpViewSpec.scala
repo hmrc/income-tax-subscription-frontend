@@ -56,6 +56,9 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     val foreignPropertyLinkText = "Add foreign property income source"
     val foreignPropertyLink: String = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show().url
 
+    val finalNoteOne = "You must add all your client’s income sources to continue to sign up. You can do this now or come back later."
+    val finalNoteTwo = "Your client’s income source information can be changed at anytime."
+
     val continue = "Continue"
     val saveAndComeBackLater = "Save and come back later"
 
@@ -201,6 +204,14 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         "the foreign property feature switch is disabled" in new ViewTest(noIncomeSources, foreignPropertyEnabled = false) {
           document.mainContent.selectOptionalNth("h2", 3) mustBe None
           document.mainContent.selectOptionally("#add-foreign-property") mustBe None
+        }
+      }
+      "have a final note" which {
+        "has a first first paragraph" in new ViewTest(noIncomeSources) {
+          document.mainContent.selectNth("p.govuk-body", 1).text mustBe AgentIncomeSource.finalNoteOne
+        }
+        "has a second paragraph" in new ViewTest(noIncomeSources) {
+          document.mainContent.selectNth("p.govuk-body", 2).text mustBe AgentIncomeSource.finalNoteTwo
         }
       }
       "have a form" which {
@@ -392,6 +403,14 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           document.mainContent.selectOptionally("#add-foreign-property") mustBe None
         }
       }
+      "have a final note" which {
+        "has a first first paragraph" in new ViewTest(incompleteIncomeSources) {
+          document.mainContent.selectNth("p.govuk-body", 1).text mustBe AgentIncomeSource.finalNoteOne
+        }
+        "has a second paragraph" in new ViewTest(incompleteIncomeSources) {
+          document.mainContent.selectNth("p.govuk-body", 2).text mustBe AgentIncomeSource.finalNoteTwo
+        }
+      }
       "have a form" which {
         def form(document: Document): Element = document.mainContent.getForm
 
@@ -510,6 +529,14 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         "the foreign property feature switch is disabled" in new ViewTest(completeIncomeSources, foreignPropertyEnabled = false) {
           document.mainContent.selectOptionalNth("h2", 3) mustBe None
           document.mainContent.selectOptionally("#add-foreign-property") mustBe None
+        }
+      }
+      "have a final note" which {
+        "has a first first paragraph" in new ViewTest(completeIncomeSources) {
+          document.mainContent.selectNth("p.govuk-body", 1).text mustBe AgentIncomeSource.finalNoteOne
+        }
+        "has a second paragraph" in new ViewTest(completeIncomeSources) {
+          document.mainContent.selectNth("p.govuk-body", 2).text mustBe AgentIncomeSource.finalNoteTwo
         }
       }
       "have a form" which {

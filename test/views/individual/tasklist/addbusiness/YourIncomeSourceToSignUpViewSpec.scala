@@ -17,7 +17,6 @@
 package views.individual.tasklist.addbusiness
 
 import config.featureswitch.FeatureSwitch.ForeignProperty
-import forms.individual.incomesource.HaveYouCompletedThisSectionForm
 import models.common.business._
 import models.common.{IncomeSources, OverseasPropertyModel, PropertyModel}
 import org.jsoup.Jsoup

@@ -55,7 +55,7 @@ class YourIncomeSourceToSignUpController @Inject()(yourIncomeSourceToSignUp: You
         val continue: Result = Redirect(controllers.individual.tasklist.routes.TaskListController.show())
 
         subscriptionDetailsService.fetchAllIncomeSources(reference) flatMap { incomeSources =>
-          if (incomeSources.isComplete){
+          if (incomeSources.isComplete) {
             subscriptionDetailsService.saveIncomeSourcesConfirmation(reference) map {
               case Right(_) => continue
               case Left(_) => throw new InternalServerException("[YourIncomeSourceToSignUpController][submit] - failed to save income sources confirmation")
