@@ -19,10 +19,8 @@ package controllers.individual.tasklist.addbusiness
 import config.featureswitch.FeatureSwitch.{ForeignProperty => ForeignPropertyFeature}
 import connectors.subscriptiondata.mocks.MockIncomeTaxSubscriptionConnector
 import controllers.individual.ControllerBaseSpec
-import forms.individual.incomesource.HaveYouCompletedThisSectionForm
-import forms.submapping.YesNoMapping
 import models.common.business._
-import models.common.{OverseasPropertyModel, PropertyModel}
+import models.common.{IncomeSources, OverseasPropertyModel, PropertyModel}
 import models.{Cash, DateModel}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
@@ -54,15 +52,10 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
     "return OK status" when {
       "there are no income sources added" in new Setup {
         mockFetchAllSelfEmployments(Seq.empty)
-        mockFetchSelfEmploymentAccountingMethod(None)
         mockFetchProperty(None)
         mockFetchOverseasProperty(None)
 
-        mockYourIncomeSourceToSignUpView(
-          selfEmployments = Seq.empty,
-          ukProperty = None,
-          foreignProperty = None
-        )
+        mockYourIncomeSourceToSignUpView(IncomeSources(Seq.empty[SelfEmploymentData], None, None))
 
         val result: Result = await(controller.show()(subscriptionRequest))
 
@@ -74,17 +67,18 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
           testSelfEmployment("id").encrypt(crypto.QueryParameterCrypto),
           testSelfEmployment("id2").encrypt(crypto.QueryParameterCrypto)
         ))
-        mockFetchSelfEmploymentAccountingMethod(Some(testAccountingMethod))
         mockFetchProperty(Some(testUkProperty))
         mockFetchOverseasProperty(Some(testForeignProperty))
 
         mockYourIncomeSourceToSignUpView(
-          selfEmployments = Seq(
-            testSelfEmployment("id"),
-            testSelfEmployment("id2")
-          ),
-          ukProperty = Some(testUkProperty),
-          foreignProperty = Some(testForeignProperty)
+          IncomeSources(
+            selfEmployments = Seq(
+              testSelfEmployment("id"),
+              testSelfEmployment("id2")
+            ),
+            ukProperty = Some(testUkProperty),
+            foreignProperty = Some(testForeignProperty)
+          )
         )
 
         val result: Result = await(controller.show()(subscriptionRequest))
@@ -102,7 +96,6 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
           testSelfEmployment("id").encrypt(crypto.QueryParameterCrypto),
           testSelfEmployment("id2").encrypt(crypto.QueryParameterCrypto)
         ))
-        mockFetchSelfEmploymentAccountingMethod(Some(testAccountingMethod))
         mockFetchProperty(Some(testUkProperty))
         mockFetchOverseasProperty(Some(testForeignProperty))
         mockSaveIncomeSourceConfirmation("test-reference")
@@ -119,7 +112,6 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
           testSelfEmployment("id").encrypt(crypto.QueryParameterCrypto),
           testSelfEmployment("id2").encrypt(crypto.QueryParameterCrypto)
         ))
-        mockFetchSelfEmploymentAccountingMethod(Some(testAccountingMethod))
         mockFetchProperty(None)
         mockFetchOverseasProperty(None)
         mockSaveIncomeSourceConfirmation("test-reference")
@@ -133,7 +125,6 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
       }
       "only uk property income sources are added and complete" in new Setup {
         mockFetchAllSelfEmployments(Seq.empty[SelfEmploymentData])
-        mockFetchSelfEmploymentAccountingMethod(None)
         mockFetchProperty(Some(testUkProperty))
         mockFetchOverseasProperty(None)
         mockSaveIncomeSourceConfirmation("test-reference")
@@ -147,7 +138,6 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
       }
       "only foreign property income sources are added and complete" in new Setup {
         mockFetchAllSelfEmployments(Seq.empty[SelfEmploymentData])
-        mockFetchSelfEmploymentAccountingMethod(None)
         mockFetchProperty(Some(testUkProperty))
         mockFetchOverseasProperty(Some(testForeignProperty))
         mockSaveIncomeSourceConfirmation("test-reference")
@@ -163,7 +153,6 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
     "redirect to the task list page" when {
       "self employment income sources are not complete" in new Setup {
         mockFetchAllSelfEmployments(Seq(testSelfEmployment("id").copy(confirmed = false).encrypt(crypto.QueryParameterCrypto)))
-        mockFetchSelfEmploymentAccountingMethod(Some(testAccountingMethod))
         mockFetchProperty(Some(testUkProperty))
         mockFetchOverseasProperty(Some(testForeignProperty))
 
@@ -176,7 +165,6 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
       }
       "uk property income sources are not complete" in new Setup {
         mockFetchAllSelfEmployments(Seq(testSelfEmployment("id").encrypt(crypto.QueryParameterCrypto)))
-        mockFetchSelfEmploymentAccountingMethod(Some(testAccountingMethod))
         mockFetchProperty(Some(testUkProperty.copy(confirmed = false)))
         mockFetchOverseasProperty(Some(testForeignProperty))
 
@@ -189,7 +177,6 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
       }
       "overseas property income sources are not complete" in new Setup {
         mockFetchAllSelfEmployments(Seq(testSelfEmployment("id").encrypt(crypto.QueryParameterCrypto)))
-        mockFetchSelfEmploymentAccountingMethod(Some(testAccountingMethod))
         mockFetchProperty(Some(testUkProperty))
         mockFetchOverseasProperty(Some(testForeignProperty.copy(confirmed = false)))
 
@@ -202,7 +189,6 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
       }
       "no income sources have been added" in new Setup {
         mockFetchAllSelfEmployments(Seq.empty[SelfEmploymentData])
-        mockFetchSelfEmploymentAccountingMethod(None)
         mockFetchProperty(None)
         mockFetchOverseasProperty(None)
 
@@ -232,15 +218,11 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
       mockAuthService
     )
 
-    def mockYourIncomeSourceToSignUpView(selfEmployments: Seq[SelfEmploymentData],
-                                         ukProperty: Option[PropertyModel],
-                                         foreignProperty: Option[OverseasPropertyModel]): Unit = {
+    def mockYourIncomeSourceToSignUpView(incomeSources: IncomeSources): Unit = {
       when(yourIncomeSourceToSignUpView(
         ArgumentMatchers.eq(routes.YourIncomeSourceToSignUpController.submit),
         ArgumentMatchers.eq(controllers.individual.tasklist.routes.TaskListController.show().url),
-        ArgumentMatchers.eq(selfEmployments),
-        ArgumentMatchers.eq(ukProperty),
-        ArgumentMatchers.eq(foreignProperty)
+        ArgumentMatchers.eq(incomeSources)
       )(ArgumentMatchers.any(), ArgumentMatchers.any()))
         .thenReturn(HtmlFormat.empty)
     }

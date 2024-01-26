@@ -16,12 +16,11 @@
 
 @import config.featureswitch.FeatureSwitchingImpl
 @import config.featureswitch.FeatureSwitch.ForeignProperty
-@import forms.individual.incomesource.HaveYouCompletedThisSectionForm
 @import config.AppConfig
 @import play.api.data.Form
 @import models.common._
 @import models.common.business._
-@import views.html.helpers.{ContinueButton, RadioHelper}
+@import views.html.helpers.{ContinueButton, RadioHelper, SaveAndContinueButtonHelper}
 @import views.html.templates.PrincipalMainTemplate
 @import uk.gov.hmrc.hmrcfrontend.views.html.components._
 
@@ -32,10 +31,46 @@
     hmrcListWithActions : HmrcListWithActions,
     featureSwitching: FeatureSwitchingImpl,
     radioHelper: RadioHelper,
-    form: FormWithCSRF
+    form: FormWithCSRF,
+    saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
 )
 
-@(postAction: Call, backUrl: String, selfEmployments: Seq[SelfEmploymentData], ukProperty: Option[PropertyModel], foreignProperty: Option[OverseasPropertyModel])( implicit request: Request[_], messages: Messages)
+@(postAction: Call, backUrl: String, incomeSources: IncomeSources)( implicit request: Request[_], messages: Messages)
+
+@heading = @{
+    messages("your-income-source.heading")
+}
+
+
+@mainTemplate(
+    title = heading,
+    backLink = Some(backUrl)
+) {
+
+    <h1 class="govuk-heading-xl">@heading</h1>
+
+    <p class="govuk-body-l">@messages("your-income-source.lead") </p>
+
+    @selfEmploymentSection
+
+    @ukPropertySection
+
+    @if(featureSwitching.isEnabled(ForeignProperty)) {
+        @foreignPropertySection
+    }
+
+    @form(action = postAction) {
+        @if(incomeSources.hasNoIncomeSources) {
+            @continueButton()
+        } else {
+            @saveAndContinueButtonHelper(
+                isIndividual = true,
+                saveAndContinueText = Some(messages("base.continue")),
+                saveAndReturnReference = Some("income-sources")
+            )
+        }
+    }
+}
 
 @selfEmploymentLabel(business: SelfEmploymentData, index: Int) = @{
     (business.businessName, business.businessTradeName) match {
@@ -52,7 +87,7 @@
     <p class="govuk-body">@messages("your-income-source.self-employed.description")</p>
 
     @hmrcListWithActions(ListWithActions(
-        items = selfEmployments.zip(1 to selfEmployments.length).map { case (business, index) =>
+        items = incomeSources.selfEmployments.zip(1 to incomeSources.selfEmployments.length).map { case (business, index) =>
             ListWithActionsItem(
                 name = Text(selfEmploymentLabel(business, index)),
                 actions = Seq(
@@ -73,7 +108,7 @@
 
     <div id="add-self-employment" class="govuk-!-padding-bottom-6">
         <a class="govuk-link" href="@appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl">
-            @if(selfEmployments.isEmpty) {
+            @if(incomeSources.selfEmployments.isEmpty) {
                 @messages("your-income-source.self-employed.add-link")
             } else {
                 @messages("your-income-source.self-employed.add-another-link")
@@ -89,9 +124,9 @@
 
     <p class="govuk-body">@messages("your-income-source.uk-property.description")</p>
 
-    @if(ukProperty.isDefined) {
+    @if(incomeSources.ukProperty.isDefined) {
         @hmrcListWithActions(ListWithActions(
-            items = ukProperty.map { property =>
+            items = incomeSources.ukProperty.map { property =>
                 ListWithActionsItem(
                     name = Text(messages("your-income-source.uk-property.label")),
                     actions = Seq(
@@ -124,9 +159,9 @@
 
     <p class="govuk-body">@messages("your-income-source.foreign-property.description")</p>
 
-    @if(foreignProperty.isDefined) {
+    @if(incomeSources.foreignProperty.isDefined) {
         @hmrcListWithActions(ListWithActions(
-            items = foreignProperty.map { property =>
+            items = incomeSources.foreignProperty.map { property =>
                 ListWithActionsItem(
                     name = Text(messages("your-income-source.foreign-property.label")),
                     actions = Seq(
@@ -152,29 +187,3 @@
 
 }
 
-
-
-
-@mainTemplate(
-    title = messages("your-income-source.title"),
-    backLink = Some(backUrl)
-) {
-
-    <h1 class="govuk-heading-xl">@messages("your-income-source.heading")</h1>
-
-    <p class="govuk-body-l">@messages("your-income-source.lead") </p>
-
-    @selfEmploymentSection
-
-    @ukPropertySection
-
-    @if(featureSwitching.isEnabled(ForeignProperty)) {
-        @foreignPropertySection
-    }
-
-    @form(action = postAction) {
-        <div class="govuk-form-group">
-                @continueButton()
-        </div>
-    }
-}

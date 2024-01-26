@@ -19,14 +19,12 @@ package controllers.individual.tasklist.addbusiness
 import auth.individual.SignUpController
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
-import models.common.business.SelfEmploymentData
-import models.common.{OverseasPropertyModel, PropertyModel}
+import models.common.IncomeSources
 import play.api.mvc._
 import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import views.html.individual.tasklist.addbusiness.YourIncomeSourceToSignUp
-import utilities.UserMatchingSessionUtil.{ClientDetails, UserMatchingSessionRequestUtil}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -45,9 +43,7 @@ class YourIncomeSourceToSignUpController @Inject()(yourIncomeSourceToSignUp: You
       withReference { reference =>
         subscriptionDetailsService.fetchAllIncomeSources(reference) map { incomeSources =>
           Ok(view(
-            selfEmployments = incomeSources.selfEmployments,
-            ukProperty = incomeSources.ukProperty,
-            foreignProperty = incomeSources.foreignProperty
+            incomeSources
           ))
         }
       }
@@ -74,15 +70,11 @@ class YourIncomeSourceToSignUpController @Inject()(yourIncomeSourceToSignUp: You
 
   def backUrl: String = controllers.individual.tasklist.routes.TaskListController.show().url
 
-  private def view(selfEmployments: Seq[SelfEmploymentData],
-                   ukProperty: Option[PropertyModel],
-                   foreignProperty: Option[OverseasPropertyModel])(implicit request: Request[_]): Html =
+  private def view(incomeSources: IncomeSources)(implicit request: Request[AnyContent]): Html =
     yourIncomeSourceToSignUp(
       postAction = routes.YourIncomeSourceToSignUpController.submit,
       backUrl = backUrl,
-      selfEmployments,
-      ukProperty,
-      foreignProperty
+      incomeSources
     )
 
 }
