@@ -690,6 +690,8 @@ agent.your-income-source.foreign-property.label                     = Foreign pr
 agent.your-income-source.foreign-property.add-link                  = Add foreign property income source
 agent.your-income-source.foreign-property.change-hidden             = Change foreign property income source
 agent.your-income-source.foreign-property.remove-hidden             = Remove foreign property income source
+agent.your-income-source.final-note.para-one                        = You must add all your client’s income sources to continue to sign up. You can do this now or come back later.
+agent.your-income-source.final-note.para-two                        = Your client’s income source information can be changed at anytime.
 
 # Property income page
 agent.property.income.title                                     = How much was your income from property this year?

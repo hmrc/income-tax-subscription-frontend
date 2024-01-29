@@ -68,6 +68,14 @@
         @foreignPropertySection
     }
 
+    <p class="govuk-body">
+        @messages("agent.your-income-source.final-note.para-one")
+    </p>
+
+    <p class="govuk-body">
+        @messages("agent.your-income-source.final-note.para-two")
+    </p>
+
     @form(action = postAction) {
         @if(incomeSources.hasNoIncomeSources) {
             @continueButton()

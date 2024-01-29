@@ -691,6 +691,8 @@ agent.your-income-source.foreign-property.label             = Ffynhonnell incwm 
 agent.your-income-source.foreign-property.add-link          = Ychwanegu ffynhonnell incwm eiddo tramor
 agent.your-income-source.foreign-property.change-hidden     = Newid ffynhonnell incwm o eiddo tramor
 agent.your-income-source.foreign-property.remove-hidden     = Dileu ffynhonnell incwm o eiddo tramor
+agent.your-income-source.final-note.para-one                = Mae’n rhaid i chi ychwanegu holl ffynonellau incwm eich cleient er mwyn mynd yn eich blaen i gofrestru. Gallwch wneud hynny nawr, neu ddod yn ôl yn nes ymlaen.
+agent.your-income-source.final-note.para-two                = Gellir newid yr wybodaeth am ffynonellau incwm eich cleient ar unrhyw adeg.
 
 # Property income page
 agent.property.income.title                                     = Faint oedd eich incwm o eiddo y flwyddyn hon?
