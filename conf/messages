@@ -102,9 +102,10 @@ your-income-source.foreign-property.add-link                    = Add foreign pr
 your-income-source.foreign-property.change-hidden               = Change foreign property income source
 your-income-source.foreign-property.remove-hidden               = Remove foreign property income source
 your-income-source.completed.form.heading                       = Have you added all your income source information?
-your-income-source.completed.form.yes                           = Yes, I have completed the information
-your-income-source.completed.form.no                            = No, I’ll come back to it later
 your-income-source.completed.form.error.empty                   = Select Yes if you have completed the information. Select No if you’re coming back to it later.
+your-income-source.final-note.para-one                          = You must add all your income sources to continue to sign up. You can do this now or come back later.
+your-income-source.final-note.para-two                          = Your income source information can be changed at anytime.
+
 
 error.business-income-source.all-sources                        = Select Sole trader business, UK property rental or Overseas property rental
 error.business-income-source.self-employed-uk-property          = You need to select Sole trader business or UK property rental

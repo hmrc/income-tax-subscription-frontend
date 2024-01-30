@@ -102,9 +102,9 @@ your-income-source.foreign-property.add-link                    = Ychwanegu busn
 your-income-source.foreign-property.change-hidden               = Newid ffynhonnell incwm o eiddo tramor
 your-income-source.foreign-property.remove-hidden               = Dileu ffynhonnell incwm o eiddo tramor
 your-income-source.completed.form.heading                       = A ydych wedi ychwanegu eich holl wybodaeth ffynhonnell incwm?
-your-income-source.completed.form.yes                           = Iawn, dw i wedi cwblhau’r wybodaeth
-your-income-source.completed.form.no                            = Na, dof yn ôl ati yn nes ymlaen
 your-income-source.completed.form.error.empty                   = Dewiswch ‘Iawn’ os ydych wedi cwblhau’r wybodaeth. Dewiswch ‘Na’ os ydych chi’n dod yn ôl ato’n nes ymlaen.
+your-income-source.final-note.para-one                          = Mae’n rhaid i chi ychwanegu’ch holl ffynonellau incwm er mwyn mynd yn eich blaen i gofrestru. Gallwch wneud hynny nawr, neu ddod yn ôl yn nes ymlaen.
+your-income-source.final-note.para-two                          = Gellir newid yr wybodaeth am eich ffynonellau incwm ar unrhyw adeg.
 
 error.business-income-source.all-sources                        = Dewiswch ‘Busnes unig fasnachwr’, ‘Eiddo rhent yn y DU’ neu ‘Eiddo rhent tramor’
 error.business-income-source.self-employed-uk-property          = Mae angen i chi ddewis Busnes unig fasnachwr neu Eiddo rhent yn y DU
