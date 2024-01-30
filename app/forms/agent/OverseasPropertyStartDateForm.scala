@@ -26,7 +26,7 @@ import java.time.LocalDate
 object OverseasPropertyStartDateForm {
   val startDate: String = "startDate"
 
-  def maxStartDate: LocalDate = LocalDate.now().minusYears(1)
+  def maxStartDate: LocalDate = LocalDate.now().plusDays(6)
 
   def minStartDate: LocalDate = LocalDate.of(1900, 1, 1)
 
@@ -34,7 +34,7 @@ object OverseasPropertyStartDateForm {
 
   def overseasPropertyStartDateForm(minStartDate: LocalDate, maxStartDate: LocalDate, f: LocalDate => String): Form[DateModel] = Form(
     single(
-      startDate -> dateModelMapping(isAgent = true, errorContext = errorContext, Some(minStartDate), Some(maxStartDate), Some(f))
+      startDate -> dateModelMapping(isAgent = true, errorContext = errorContext, Some(minStartDate), Some(maxStartDate), dateFormatter = Some(f))
     )
   )
 }

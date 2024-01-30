@@ -30,17 +30,19 @@ import java.time.LocalDate
 class OverseasPropertyStartDateViewSpec extends ViewSpec {
 
   object OverseasPropertyStartDateMessages {
-    val title = "When did your foreign property business?"
+    val title = "When did you start your foreign property business?"
     val heading: String = title
     val captionHidden = "This section is"
     val captionVisible = "Foreign property"
-    val hintText = "This is when you started letting your foreign property."
+    val hintText = "This is when you started letting any foreign property."
+    val para1 = "The date your business started trading can be today, in the past or up to 7 days in the future."
+    val para2 = "This is the date we’ll use to calculate Class 2 National Insurance charge, if appropriate."
     val hint = "For example, 17 8 2014."
     val continue = "Continue"
     val saveAndContinue = "Save and continue"
     val backLink = "Back"
     val update = "Update"
-    val maxDate = "The date your overseas property business started trading must be the same as or before 11 April 2021"
+    val maxDate = "The date your foreign property business started trading must be the same as or before 11 April 2021"
     val minDate = "The date your property business started must be on or after 11 April 2021"
   }
 

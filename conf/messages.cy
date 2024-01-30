@@ -202,7 +202,9 @@ overseas.property.accounting-method.accruals                     = <span class="
 business.property.name.title                                    = Pryd y dechreuodd eich busnes eiddo yn y DU fasnachu?
 business.property.name.heading                                  = Pryd y dechreuodd eich busnes eiddo yn y DU fasnachu?
 business.property.name.caption                                  = Eiddo yn y DU
-business.property.line-1                                        = Dyma pryd y gwnaethoch ddechrau rhoi unrhyw eiddo yn y DU ar osod.
+business.property.para1                                         = Dyma pryd y gwnaethoch ddechrau rhoi unrhyw eiddo yn y DU ar osod.
+business.property.para2                                         = Gall y dyddiad y dechreuodd eich busnes fasnachu fod heddiw, yn y gorffennol neu hyd at 8 diwrnod yn y dyfodol.
+business.property.para3                                         = Byddwn yn defnyddio’r dyddiad hwn i gyfrifo’r ffi Yswiriant Gwladol Dosbarth 2, os yw’n briodol.
 business.property.start-date.hint                               = Er enghraifft, 17 8 2014.
 
 # Property Start Date errors
@@ -225,9 +227,10 @@ error.property.month-year.invalid                               = Rhaid i’r dy
 error.property.year.length                                      = Mae’n rhaid i flwyddyn fod yn bedwar digid. Er enghraifft, 2020.
 
 # Agent Property Start Date Date
-agent.property.start-date.heading                               = Pryd y gwnaethoch ddechrau eich busnes eiddo yn y DU?
+agent.property.start-date.heading                               = Pryd y gwnaeth eich cleient ddechrau ei fusnes eiddo yn y DU?
 agent.property.start-date.heading.caption                       = {0} | {1}
-agent.property.start-date.line-1                                = Dyma pryd y gwnaethoch ddechrau rhoi unrhyw eiddo yn y DU ar osod.
+agent.property.start-date.para1                                 = Gall y dyddiad y dechreuodd busnes eich cleient fasnachu fod heddiw, yn y gorffennol neu hyd at 7 diwrnod yn y dyfodol.
+agent.property.start-date.para2                                 = Byddwn yn defnyddio’r dyddiad hwn i gyfrifo ffi Yswiriant Gwladol Dosbarth 2 eich cleient, os yw’n briodol.
 agent.property.start-date.hint                                  = Er enghraifft, 17 8 2014.
 
 # Agent Property Start Date errors
@@ -238,7 +241,7 @@ agent.error.property.year.empty                                 = Mae’n rhaid 
 agent.error.property.day-month.empty                            = Mae’n rhaid i’r dyddiad gynnwys diwrnod a mis
 agent.error.property.day-year.empty                             = Mae’n rhaid i’r dyddiad gynnwys diwrnod a blwyddyn
 agent.error.property.month-year.empty                           = Mae’n rhaid i’r dyddiad gynnwys mis a blwyddyn
-agent.error.property.day-month-year.max-date                    = Mae’n rhaid i’r dyddiad y dechreuodd y busnes fasnachu fod ar neu cyn {0}
+agent.error.property.day-month-year.max-date                    = Mae’n rhaid i’r dyddiad gwnaeth y busnes eiddo yn y DU ddechrau masnachu fod ar neu cyn {0}
 agent.error.property.day-month-year.min-date                    = Rhaid i’r dyddiad y dechreuodd busnes eiddo eich cleient fasnachu fod ar neu ar ôl {0}
 agent.error.property.day-month-year.invalid                     = Rhaid i’r dyddiad fod yn ddyddiad go iawn
 agent.error.property.day.invalid                                = Rhaid i’r dyddiad fod yn ddyddiad go iawn
@@ -253,13 +256,17 @@ agent.error.property.year.length                                = Mae’n rhaid 
 overseas.property.name.title                                     = Pryd y gwnaethoch ddechrau eich busnes eiddo tramor?
 overseas.property.name.heading                                   = Pryd y gwnaethoch ddechrau eich busnes eiddo tramor?
 overseas.property.name.caption                                   = Eiddo tramor
-overseas.property.line-1                                         = Dyma pryd y gwnaethoch ddechrau rhoi unrhyw eiddo tramor ar osod.
+overseas.property.para1                                          = Dyma pryd y gwnaethoch ddechrau rhoi unrhyw eiddo tramor ar osod.
+overseas.property.para2                                          = Gall y dyddiad y dechreuodd eich busnes fasnachu fod heddiw, yn y gorffennol neu hyd at 7 diwrnod yn y dyfodol
+overseas.property.para3                                          = Byddwn yn defnyddio’r dyddiad hwn i gyfrifo ffi Yswiriant Gwladol Dosbarth 2 eich cleient, os yw’n briodol.
 overseas.property.start-date.hint                                = Er enghraifft, 17 8 2014.
 
 # Agent Overseas Property Start Date
+agent.overseas-property.start-date.title                         = Pryd y gwnaeth eich cleient ddechrau ei fusnes eiddo tramor?
 agent.overseas-property.start-date.heading                       = Pryd y gwnaeth eich cleient ddechrau ei fusnes eiddo tramor?
 agent.overseas-property.start-date.heading.caption               = {0} | {1}
-agent.overseas-property.start-date.line-1                        = Dyma pryd y gwnaeth eich cleient ddechrau rhoi unrhyw eiddo tramor ar osod.
+agent.overseas-property.start-date.para1                         = Gall y dyddiad y dechreuodd busnes eich cleient fasnachu fod heddiw, yn y gorffennol neu hyd at 8 diwrnod yn y dyfodol.
+agent.overseas-property.start-date.para2                         = Byddwn yn defnyddio’r dyddiad hwn i gyfrifo ffi Yswiriant Gwladol Dosbarth 2 eich cleient, os yw’n briodol.
 agent.overseas-property.start-date.hint                          = Er enghraifft, 17 8 2014.
 
 # Overseas Property Start Date errors
@@ -913,7 +920,7 @@ agent.error.overseas.property.day-year.empty                    = Mae’n rhaid 
 agent.error.overseas.property.year.empty                        = Mae’n rhaid i’r dyddiad gynnwys blwyddyn
 agent.error.overseas.property.day.empty                         = Mae’n rhaid i’r dyddiad gynnwys diwrnod
 agent.error.overseas.property.month.empty                       = Mae’n rhaid i’r dyddiad gynnwys mis
-agent.error.overseas.property.day-month-year.max-date           = Nodwch y dyddiad y dechreuodd busnes eiddo tramor eich cleient fasnachu
+agent.error.overseas.property.day-month-year.max-date           = Mae’n rhaid i’r dyddiad gwnaeth y busnes eiddo tramor ddechrau masnachu fod ar neu cyn {0}
 agent.error.overseas.property.day-month-year.min-date           = Rhaid i’r dyddiad y dechreuodd busnes eiddo eich cleient fasnachu fod ar neu ar ôl {0}
 agent.error.overseas.property.day-month-year.invalid            = Rhaid i’r dyddiad fod yn ddyddiad go iawn
 agent.error.overseas.property.month-year.invalid                = Rhaid i’r dyddiad fod yn ddyddiad go iawn

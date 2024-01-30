@@ -149,7 +149,7 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
         )
       }
 
-      "selecting start date within 12 months" in {
+      "selecting start date within 7 days including the current date" in {
         val userInput: DateModel = IntegrationTestModels.testInvalidPropertyStartDate.startDate
 
         Given("I setup the Wiremock stubs")

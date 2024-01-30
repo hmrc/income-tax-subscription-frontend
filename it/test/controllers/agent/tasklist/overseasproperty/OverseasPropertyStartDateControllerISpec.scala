@@ -162,7 +162,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
           )
         }
 
-        "select start date within 12 months" in {
+        "select start date within 7 days including current date" in {
           val userInput = testInvalidStartDate
 
           Given("I setup the Wiremock stubs")

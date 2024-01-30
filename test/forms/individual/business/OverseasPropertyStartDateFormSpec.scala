@@ -16,6 +16,7 @@
 
 package forms.individual.business
 
+import forms.agent.OverseasPropertyStartDateForm
 import forms.formatters.DateModelMapping.{day, month, year}
 import forms.individual.business.OverseasPropertyStartDateForm.{overseasPropertyStartDateForm, startDate}
 import forms.validation.testutils.DataMap.DataMap
@@ -59,14 +60,14 @@ class OverseasPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuit
         "the date supplied to the map is invalid" in {
           form.bind(DataMap.govukDate(startDate)("31", "13", "1899")).errors must contain(FormError(monthKeyError, s"$errorContext.month.invalid"))
         }
-        "it is within 1 years" in {
-          val oneYearAgo: LocalDate = LocalDate.now.minusMonths(6)
+        "it is not within 7 days ahead including current date" in {
+          val sevenDaysInFuture: LocalDate = LocalDate.now.plusDays(7)
           val maxTest = form.bind(DataMap.govukDate(startDate)(
-            oneYearAgo.getDayOfMonth.toString,
-            oneYearAgo.getMonthValue.toString,
-            oneYearAgo.getYear.toString
+            sevenDaysInFuture.getDayOfMonth.toString,
+            sevenDaysInFuture.getMonthValue.toString,
+            sevenDaysInFuture.getYear.toString
           ))
-          maxTest.errors must contain(FormError(dayKeyError, s"$errorContext.day-month-year.max-date", Seq(OverseasPropertyStartDateForm.maxStartDate.toString)))
+          maxTest.errors must contain(FormError(dayKeyError, s"$errorContext.day-month-year.max-date", List(OverseasPropertyStartDateForm.maxStartDate.toString)))
         }
         "it is before year 1900" in {
           val minTest = form.bind(DataMap.govukDate(startDate)("31", "12", "1899"))
@@ -117,12 +118,12 @@ class OverseasPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuit
       }
     }
     "accept a valid date" when {
-      "the date is exactly one years ago" in {
-        val oneYearAgo: LocalDate = LocalDate.now.minusYears(1)
+      "the date within 7 days including the current date" in {
+        val sevenDaysInPast: LocalDate = LocalDate.now.plusDays(6)
         val testData = DataMap.govukDate(startDate)(
-          day = oneYearAgo.getDayOfMonth.toString,
-          month = oneYearAgo.getMonthValue.toString,
-          year = oneYearAgo.getYear.toString
+          day = sevenDaysInPast.getDayOfMonth.toString,
+          month = sevenDaysInPast.getMonthValue.toString,
+          year = sevenDaysInPast.getYear.toString
         )
         val validated = form.bind(testData)
         validated.hasErrors mustBe false

@@ -59,10 +59,10 @@ object IntegrationTestModels extends ComponentSpecBase {
   )
   val testAccountingMethod: AccountingMethodModel = AccountingMethodModel(Cash)
   private val testAccountingMethodProperty: AccountingMethodPropertyModel = AccountingMethodPropertyModel(Cash)
-  val testValidStartDate: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(1))
+  val testValidStartDate: DateModel = DateModel.dateConvert(LocalDate.now.plusDays(6))
   val testValidStartDate2: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(2))
   //noinspection ScalaStyle
-  val testInvalidStartDate: DateModel = DateModel.dateConvert(LocalDate.now.minusDays(364))
+  val testInvalidStartDate: DateModel = DateModel.dateConvert(LocalDate.now.plusDays(7))
   val testPropertyStartDate: PropertyStartDateModel = PropertyStartDateModel(testValidStartDate)
   private val testPropertyStartDateModel: PropertyStartDateModel = PropertyStartDateModel(DateModel("05", "04", "2017"))
   val testInvalidPropertyStartDate: PropertyStartDateModel = PropertyStartDateModel(testInvalidStartDate)
