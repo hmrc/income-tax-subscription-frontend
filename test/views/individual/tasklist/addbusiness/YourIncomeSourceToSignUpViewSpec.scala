@@ -37,8 +37,10 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
   object IndividualIncomeSource {
     val title = "Your income sources"
+    val someIncomeSourcesTitle = "Manage your income sources"
     val heading: String = title
     val paragraph1: String = "You only need to add the income sources that apply to you."
+    val someIncomeSourcesParagraph1: String = "You can manage income sources that apply to you. This includes finishing adding an income source you have already started, adding a new one or removing an existing one."
     val selfEmploymentHeading = "Sole trader (self-employed)"
     val selfEmploymentDescription = "You’re self-employed if you run your own business as an individual and work for yourself. This is also known as being a ‘sole trader’. If you work through a limited company, you’re not a sole trader."
     val addSelfEmploymentLinkText = "Add sole trader income source"
@@ -302,6 +304,13 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         "there are a full set of income sources added" should {
 
           def completeIncomeSources: IncomeSources = IncomeSources(completeSelfEmployments, completeUKProperty, completeForeignProperty)
+
+          "have a heading for the page" in new ViewTest(completeIncomeSources) {
+            document.mainContent.getH1Element.text mustBe IndividualIncomeSource.someIncomeSourcesTitle
+          }
+          "have a lead paragraph" in new ViewTest(completeIncomeSources) {
+            document.mainContent.selectHead("p.govuk-body-l").text mustBe IndividualIncomeSource.someIncomeSourcesParagraph1
+          }
 
           "have a section for sole trader income sources" which {
             "has a heading" in new ViewTest(completeIncomeSources) {
