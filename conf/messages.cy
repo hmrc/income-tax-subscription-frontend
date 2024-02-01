@@ -80,6 +80,8 @@ income-source.foreign-property-hint                             = Incwm o roi ei
 ## Individual your income sources to sign up page
 your-income-source.title                                        = Eich ffynonellau incwm
 your-income-source.heading                                      = Eich ffynonellau incwm
+your-income-source.manage.heading                               = Rheoli’ch ffynonellau incwm
+your-income-source.manage.label                                 = Gallwch reoli’r ffynonellau incwm sy’n berthnasol i chi. Mae hyn yn cynnwys gorffen ychwanegu ffynhonnell incwm rydych eisoes wedi’i dechrau, ychwanegu un newydd, neu dynnu un bresennol.
 your-income-source.lead                                         = Dim ond y ffynonellau incwm sy’n berthnasol i chi y mae angen i chi eu hychwanegu.
 your-income-source.self-employed.heading                        = Unig fasnachwr (hunangyflogedig)
 your-income-source.self-employed.description                    = Rydych yn hunangyflogedig os ydych yn rhedeg eich busnes eich hun fel unigolyn ac yn gweithio i chi’ch hun. Enw arall am hyn yw bod yn ‘unig fasnachwr’. Os ydych yn gweithio drwy gwmni cyfyngedig, nid unig fasnachwr ydych chi.
