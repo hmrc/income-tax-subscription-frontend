@@ -52,6 +52,7 @@ import play.api.libs.json.{JsArray, Writes}
 import play.api.libs.ws.{WSClient, WSRequest, WSResponse}
 import play.api.mvc.{Headers, Session}
 import play.api.test.FakeRequest
+import uk.gov.hmrc.crypto.{ApplicationCrypto, Decrypter, Encrypter}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utilities.UserMatchingSessionUtil
@@ -128,6 +129,8 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     .in(Environment.simple(mode = Mode.Dev))
     .configure(config)
     .build()
+
+  implicit lazy val crypto: Encrypter with Decrypter = app.injector.instanceOf[ApplicationCrypto].JsonCrypto
 
   lazy val mockHost: String = WiremockHelper.wiremockHost
   lazy val mockPort: String = WiremockHelper.wiremockPort.toString

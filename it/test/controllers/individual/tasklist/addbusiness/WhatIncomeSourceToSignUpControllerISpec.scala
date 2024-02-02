@@ -42,7 +42,7 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
 
-      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessesKey, NO_CONTENT)
+      IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(NO_CONTENT)
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT)
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, NO_CONTENT)
 
@@ -60,7 +60,8 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
       "there are no options left" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessesKey, OK, Json.toJson(testTooManyBusinesses))
+
+        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testTooManyBusinesses)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
 
@@ -81,7 +82,7 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
       Given("I setup the wiremock stubs")
       AuthStub.stubAuthSuccess()
 
-      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessesKey, NO_CONTENT)
+      IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(NO_CONTENT)
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT)
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, NO_CONTENT)
 
@@ -100,7 +101,7 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
       Given("I setup the wiremock stubs")
       AuthStub.stubAuthSuccess()
 
-      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessesKey, NO_CONTENT)
+      IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(NO_CONTENT)
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT)
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, NO_CONTENT)
 
@@ -121,7 +122,7 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
       And("Foreign property feature switch is enabled")
       enable(ForeignPropertyFeature)
 
-      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessesKey, NO_CONTENT)
+      IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(NO_CONTENT)
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT)
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, NO_CONTENT)
 
@@ -143,7 +144,7 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
 
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessesKey, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, NO_CONTENT)
 
@@ -163,13 +164,7 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
 
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-          id = SubscriptionDataKeys.BusinessesKey,
-          responseStatus = OK,
-          responseBody = Json.toJson(Seq.fill(appConfig.maxSelfEmployments)(
-            SelfEmploymentData("testId")
-          ))
-        )
+        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, Seq.fill(appConfig.maxSelfEmployments)(SelfEmploymentData("testId")))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, NO_CONTENT)
 
@@ -190,7 +185,7 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
 
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessesKey, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
           id = SubscriptionDataKeys.Property,
           responseStatus = OK,
@@ -215,7 +210,7 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
 
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessesKey, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
           id = SubscriptionDataKeys.OverseasProperty,
@@ -238,7 +233,7 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
 
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessesKey, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, NO_CONTENT)
 

@@ -18,12 +18,14 @@ package connectors.stubs
 
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, stubFor}
-import helpers.IntegrationTestModels._
 import helpers.WiremockHelper
 import helpers.servicemocks.WireMockMethods
-import models.common.{OverseasPropertyModel, PropertyModel}
+import models.AccountingMethod
+import models.common.business.SelfEmploymentData
+import models.common.{OverseasPropertyModel, PropertyModel, SoleTraderBusinesses}
 import play.api.http.Status
 import play.api.libs.json.{JsValue, Json, OFormat, Writes}
+import uk.gov.hmrc.crypto.{Decrypter, Encrypter}
 import utilities.SubscriptionDataKeys._
 
 object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
@@ -43,6 +45,38 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
       method = GET,
       uri = subscriptionUri(id)
     ).thenReturn(responseStatus, responseBody)
+  }
+
+  def stubSoleTraderBusinessesDetails(
+                                       responseStatus: Int,
+                                       businesses: Seq[SelfEmploymentData] = Seq.empty,
+                                       accountingMethod: Option[AccountingMethod] = None
+                                     )(implicit crypto: Encrypter with Decrypter): Unit = {
+    when(
+      method = GET,
+      uri = subscriptionUri(SoleTraderBusinessesKey)
+    ).thenReturn(
+      responseStatus,
+      Json.toJson(SoleTraderBusinesses(
+        businesses = businesses.map(_.toSoleTraderBusiness),
+        accountingMethod = accountingMethod)
+      )(SoleTraderBusinesses.encryptedFormat))
+  }
+
+  def stubSaveSoleTraderBusinessDetails(
+                                         selfEmployments: Seq[SelfEmploymentData],
+                                         accountingMethod: Option[AccountingMethod]
+                                       )(implicit crypto: Encrypter with Decrypter): Unit = {
+    when(
+      method = POST,
+      uri = subscriptionUri(SoleTraderBusinessesKey),
+      body = Json.toJson(SoleTraderBusinesses(
+        businesses = selfEmployments.map(_.toSoleTraderBusiness),
+        accountingMethod = accountingMethod
+      ))(SoleTraderBusinesses.encryptedFormat)
+    ).thenReturn(
+      Status.OK
+    )
   }
 
   def stubSaveSubscriptionDetails[T](id: String, body: T)(implicit writer: Writes[T]): Unit = {
@@ -69,7 +103,7 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
       .thenReturn(Status.OK)
   }
 
-  def verifySaveProperty[T](property: PropertyModel, count: Option[Int] = None): Unit = {
+  def verifySaveProperty(property: PropertyModel, count: Option[Int] = None): Unit = {
     WiremockHelper.verifyPost(subscriptionUri(Property), Some((Json.toJson(property): JsValue).toString()), count)
   }
 
@@ -78,7 +112,7 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
       .thenReturn(Status.OK)
   }
 
-  def verifySaveOverseasProperty[T](property: OverseasPropertyModel, count: Option[Int] = None): Unit = {
+  def verifySaveOverseasProperty(property: OverseasPropertyModel, count: Option[Int] = None): Unit = {
     WiremockHelper.verifyPost(subscriptionUri(OverseasProperty), Some((Json.toJson(property): JsValue).toString()), count)
   }
 
@@ -92,13 +126,6 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
 
   def verifyDeleteSubscriptionDetails(id: String, count: Option[Int] = None): Unit = {
     WiremockHelper.verifyDelete(subscriptionUri(id), count)
-  }
-
-  def stubBusinessesData(): Unit = {
-    val body = testSummaryDataSelfEmploymentData
-
-    when(method = GET, uri = subscriptionUri(BusinessesKey))
-      .thenReturn(Status.OK, body)
   }
 
   def stubSubscriptionDeleteAll(): Unit = {

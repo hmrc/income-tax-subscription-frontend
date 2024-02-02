@@ -14,6 +14,7 @@ object AppDependencies {
   private val playHmrcFrontendVersion  = "8.1.0"
   private val domainVersion            = "9.0.0"
   private val catsVersion              = "2.10.0"
+  private val cryptoJsonVersion        = "7.6.0"
 
   private val jsoupVersion             = "1.15.3"
 
@@ -23,7 +24,8 @@ object AppDependencies {
     "uk.gov.hmrc"   %% "play-partials-play-30"      % playPartialsVersion,
     "uk.gov.hmrc"   %% "play-frontend-hmrc-play-30" % playHmrcFrontendVersion,
     "uk.gov.hmrc"   %% "domain-play-30"             % domainVersion,
-    "org.typelevel" %% "cats-core"                  % catsVersion
+    "org.typelevel" %% "cats-core"                  % catsVersion,
+    "uk.gov.hmrc"   %% "crypto-json-play-30"        % cryptoJsonVersion
   )
 
   val test: Seq[ModuleID] = Seq(

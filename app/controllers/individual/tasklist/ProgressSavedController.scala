@@ -76,8 +76,7 @@ class ProgressSavedController @Inject()(val progressSavedView: ProgressSaved,
                                )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[SaveAndComeBackAuditModel] = {
 
     for {
-      businesses <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
-      businessAccountingMethod <- subscriptionDetailsService.fetchSelfEmploymentsAccountingMethod(reference)
+      (businesses, accountingMethod) <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
       property <- subscriptionDetailsService.fetchProperty(reference)
       overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
       selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
@@ -90,7 +89,7 @@ class ProgressSavedController @Inject()(val progressSavedView: ProgressSaved,
         currentTaxYear = AccountingPeriodUtil.getTaxEndYear(currentDateProvider.getCurrentDate),
         selectedTaxYear = selectedTaxYear,
         selfEmployments = businesses,
-        maybeSelfEmploymentAccountingMethod = businessAccountingMethod.map(AccountingMethodModel.apply),
+        maybeSelfEmploymentAccountingMethod = accountingMethod.map(AccountingMethodModel.apply),
         maybePropertyModel = property,
         maybeOverseasPropertyModel = overseasProperty
       )

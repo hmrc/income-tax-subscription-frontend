@@ -84,12 +84,11 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
         SelfEmploymentData(
           id = "id",
           businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
-          businessName = Some(BusinessNameModel("business name").encrypt(crypto.QueryParameterCrypto)),
+          businessName = Some(BusinessNameModel("business name")),
           businessTradeName = Some(BusinessTradeNameModel("business trade")),
-          businessAddress = Some(BusinessAddressModel(Address(Seq("line 1"), Some("ZZ1 1ZZ"))).encrypt(crypto.QueryParameterCrypto))
+          businessAddress = Some(BusinessAddressModel(Address(Seq("line 1"), Some("ZZ1 1ZZ"))))
         )
       ))
-      mockFetchSelfEmploymentAccountingMethod(Some(AccountingMethodModel(Cash)))
       mockFetchProperty(Some(PropertyModel(
         accountingMethod = Some(Cash),
         startDate = Some(DateModel("1", "1", "1980")),
@@ -115,8 +114,7 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
       "redirect to the global check your answers page" in {
         enable(EnableTaskListRedesign)
 
-        mockFetchAllSelfEmployments(Seq.empty)
-        mockFetchSelfEmploymentAccountingMethod(None)
+        mockFetchAllSelfEmployments()
         mockFetchProperty(Some(PropertyModel(
           accountingMethod = Some(testAccountingMethod.accountingMethod),
           startDate = Some(testValidStartDate),
@@ -135,8 +133,7 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
       "sign up income source is successful" should {
         "return status (SEE_OTHER - 303) and redirect to the confirmation page" in {
           setupMockSubscriptionDetailsSaveFunctions()
-          mockFetchAllSelfEmployments(Seq.empty)
-          mockFetchSelfEmploymentAccountingMethod(None)
+          mockFetchAllSelfEmployments()
           mockFetchProperty(Some(PropertyModel(
             accountingMethod = Some(testAccountingMethod.accountingMethod),
             startDate = Some(testValidStartDate),
@@ -162,8 +159,7 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
       "sign up income source is successful but tax year has been enforced" should {
         "return status (SEE_OTHER - 303) and redirect to the confirmation page" in {
           setupMockSubscriptionDetailsSaveFunctions()
-          mockFetchAllSelfEmployments(Seq.empty)
-          mockFetchSelfEmploymentAccountingMethod(None)
+          mockFetchAllSelfEmployments()
           mockFetchProperty(Some(PropertyModel(
             accountingMethod = Some(testAccountingMethod.accountingMethod),
             startDate = Some(testValidStartDate),
@@ -188,8 +184,7 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
 
       "sign up income source fails" should {
         "return an internalServer error" in {
-          mockFetchAllSelfEmployments(Seq.empty)
-          mockFetchSelfEmploymentAccountingMethod(None)
+          mockFetchAllSelfEmployments()
           mockFetchProperty(Some(PropertyModel(
             accountingMethod = Some(testAccountingMethod.accountingMethod),
             startDate = Some(testValidStartDate),

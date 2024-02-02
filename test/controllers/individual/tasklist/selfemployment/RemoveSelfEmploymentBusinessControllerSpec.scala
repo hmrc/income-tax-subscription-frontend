@@ -19,6 +19,7 @@ package controllers.individual.tasklist.selfemployment
 import connectors.IncomeTaxSubscriptionConnector
 import controllers.individual.ControllerBaseSpec
 import forms.individual.business.RemoveBusinessForm
+import models.common.SoleTraderBusinesses
 import models.common.business._
 import models.{DateModel, No, Yes}
 import org.mockito.ArgumentMatchers.any
@@ -30,7 +31,7 @@ import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockAuditingService, MockIncomeTaxSubscriptionConnector, MockRemoveBusinessService, MockSubscriptionDetailsService}
-import utilities.SubscriptionDataKeys.BusinessesKey
+import utilities.SubscriptionDataKeys.SoleTraderBusinessesKey
 import views.html.individual.tasklist.selfemployments.RemoveSelfEmploymentBusiness
 
 import scala.concurrent.Future
@@ -45,17 +46,7 @@ class RemoveSelfEmploymentBusinessControllerSpec extends ControllerBaseSpec
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
   override val mockIncomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector = mock[IncomeTaxSubscriptionConnector]
 
-  private val encryptedTestBusinesses = Seq(
-    SelfEmploymentData(
-      id = "id",
-      businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
-      businessName = Some(BusinessNameModel("business name").encrypt(crypto.QueryParameterCrypto)),
-      businessTradeName = Some(BusinessTradeNameModel("business trade")),
-      businessAddress = Some(BusinessAddressModel(Address(Seq("line 1"), Some("ZZ1 1ZZ"))).encrypt(crypto.QueryParameterCrypto))
-    )
-  )
-
-  private val decryptedTestBusinesses = Seq(
+  private val testBusinesses = Seq(
     SelfEmploymentData(
       id = "id",
       businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
@@ -67,7 +58,7 @@ class RemoveSelfEmploymentBusinessControllerSpec extends ControllerBaseSpec
 
   "show" should {
     "return OK status" in withController { controller =>
-      mockFetchAllSelfEmployments(encryptedTestBusinesses)
+      mockFetchAllSelfEmployments(testBusinesses)
 
       val result: Future[Result] = await(controller.show("id")(subscriptionRequest))
 
@@ -78,7 +69,7 @@ class RemoveSelfEmploymentBusinessControllerSpec extends ControllerBaseSpec
 
     "throw an exception" when {
       "the Sole trader business cannot be retrieved" in withController { controller =>
-        mockFetchAllSelfEmployments(encryptedTestBusinesses)
+        mockFetchAllSelfEmployments(testBusinesses)
 
         val result: Future[Result] = await(controller.show("unknown")(subscriptionRequest))
         result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
@@ -90,7 +81,7 @@ class RemoveSelfEmploymentBusinessControllerSpec extends ControllerBaseSpec
     "redirect to the task list page" when {
       "the user selects 'yes'" in withController { controller =>
         // get the businesses
-        mockFetchAllSelfEmployments(encryptedTestBusinesses)
+        mockFetchAllSelfEmployments(testBusinesses)
         // save the businesses with one removed.
         mockDeleteBusiness(Right("dummy"))
 
@@ -99,11 +90,11 @@ class RemoveSelfEmploymentBusinessControllerSpec extends ControllerBaseSpec
         ))
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
-        verifyDeleteBusiness(businessId = "id", decryptedTestBusinesses)
+        verifyDeleteBusiness(businessId = "id")
       }
 
       "the user selects 'no'" in withController { controller =>
-        mockFetchAllSelfEmployments(encryptedTestBusinesses)
+        mockFetchAllSelfEmployments(testBusinesses)
 
         val result: Future[Result] = await(controller.submit("id")(
           subscriptionRequest.post(RemoveBusinessForm.removeBusinessForm(), No)
@@ -111,20 +102,20 @@ class RemoveSelfEmploymentBusinessControllerSpec extends ControllerBaseSpec
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
-        verifySelfEmploymentsSave[Seq[SelfEmploymentData]](BusinessesKey, None)
+        verifySelfEmploymentsSave[SoleTraderBusinesses](SoleTraderBusinessesKey, None)
       }
     }
 
     "throw an exception" when {
       "the user submits invalid data" in withController { controller =>
-        mockFetchAllSelfEmployments(encryptedTestBusinesses)
+        mockFetchAllSelfEmployments(testBusinesses)
 
         val result: Future[Result] = await(controller.submit("id")(
           subscriptionRequest
         ))
 
         status(result) must be(Status.BAD_REQUEST)
-        verifySelfEmploymentsSave[Seq[SelfEmploymentData]](BusinessesKey, None)
+        verifySelfEmploymentsSave[SoleTraderBusinesses](SoleTraderBusinessesKey, None)
       }
     }
   }

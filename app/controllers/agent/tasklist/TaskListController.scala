@@ -87,8 +87,7 @@ class TaskListController @Inject()(val taskListView: TaskList,
   private def getTaskListModel(reference: String)(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[TaskListModel] = {
     for {
       selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
-      businesses <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
-      businessAccountingMethod <- subscriptionDetailsService.fetchSelfEmploymentsAccountingMethod(reference)
+      (businesses, accountingMethod) <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
       property <- subscriptionDetailsService.fetchProperty(reference)
       overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
       incomeSourcesConfirmed <- subscriptionDetailsService.fetchIncomeSourcesConfirmation(reference)
@@ -96,7 +95,7 @@ class TaskListController @Inject()(val taskListView: TaskList,
       TaskListModel(
         selectedTaxYear,
         businesses,
-        businessAccountingMethod,
+        accountingMethod,
         property,
         overseasProperty,
         incomeSourcesConfirmed
@@ -129,8 +128,7 @@ class TaskListController @Inject()(val taskListView: TaskList,
       implicit user =>
         withAgentReference { reference =>
           val model = for {
-            selfEmployments <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
-            selfEmploymentsAccountingMethod <- subscriptionDetailsService.fetchSelfEmploymentsAccountingMethod(reference)
+            (selfEmployments, accountingMethod) <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
             property <- subscriptionDetailsService.fetchProperty(reference)
             overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
             selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
@@ -138,7 +136,7 @@ class TaskListController @Inject()(val taskListView: TaskList,
             createIncomeSources(
               nino = user.clientNino.get,
               selfEmployments = selfEmployments,
-              selfEmploymentsAccountingMethod = selfEmploymentsAccountingMethod.map(AccountingMethodModel.apply),
+              selfEmploymentsAccountingMethod = accountingMethod.map(AccountingMethodModel.apply),
               property = property,
               overseasProperty = overseasProperty,
               accountingYear = selectedTaxYear

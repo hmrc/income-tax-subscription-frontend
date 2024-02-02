@@ -17,9 +17,10 @@
 package services
 
 import connectors.IncomeTaxSubscriptionConnector
+import models.AccountingMethod
 import models.common.business.SelfEmploymentData
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.SubscriptionDataKeys.BusinessAccountingMethod
+import utilities.SubscriptionDataKeys.SoleTraderBusinessesKey
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -30,13 +31,13 @@ class RemoveBusinessService @Inject()(val incomeTaxSubscriptionConnector: Income
                                      (implicit val ec: ExecutionContext) {
 
 
-  def deleteBusiness(reference: String, businessId: String, businesses: Seq[SelfEmploymentData])(
+  def deleteBusiness(reference: String, businessId: String, businesses: Seq[SelfEmploymentData], accountingMethod: Option[AccountingMethod])(
     implicit hc: HeaderCarrier
   ): Future[Either[_, _]] = {
     val remainingBusinesses = businesses.filterNot(_.id == businessId)
-    subscriptionDetailsService.saveBusinesses(reference, remainingBusinesses)
+    subscriptionDetailsService.saveBusinesses(reference, remainingBusinesses, accountingMethod)
       .flatMap {
-        case Right(_) if remainingBusinesses.isEmpty => incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, BusinessAccountingMethod)
+        case Right(_) if remainingBusinesses.isEmpty => incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, SoleTraderBusinessesKey)
         case saveResult@Right(_) => Future.successful(saveResult)
         case fail@Left(_) => Future.successful(fail)
       }

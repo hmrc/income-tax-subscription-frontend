@@ -17,29 +17,12 @@
 package models.common.business
 
 import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.crypto.{Crypted, Decrypter, Encrypter, PlainText}
 
 case class Address(lines: Seq[String], postcode: Option[String]) {
   override def toString: String = s"${lines.mkString(", ")}${postcode.map(t => s", $t").getOrElse("")}"
 }
 
-case class BusinessAddressModel(address: Address) {
-
-  def encrypt(encrypter: Encrypter): BusinessAddressModel = this.copy(
-    address = Address(
-      lines = this.address.lines.map(line => encrypter.encrypt(PlainText(line)).value),
-      postcode = this.address.postcode.map(postcode => encrypter.encrypt(PlainText(postcode)).value)
-    )
-  )
-
-  def decrypt(decrypter: Decrypter): BusinessAddressModel = this.copy(
-    address = Address(
-      lines = this.address.lines.map(line => decrypter.decrypt(Crypted(line)).value),
-      postcode = this.address.postcode.map(postcode => decrypter.decrypt(Crypted(postcode)).value)
-    )
-  )
-
-}
+case class BusinessAddressModel(address: Address)
 
 object Address {
   implicit val format: OFormat[Address] = Json.format[Address]

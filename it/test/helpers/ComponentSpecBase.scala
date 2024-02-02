@@ -22,7 +22,7 @@ import auth.individual.{JourneyState, SignUp, ClaimEnrolment => ClaimEnrolmentJo
 import config.AppConfig
 import config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import forms.individual.business._
-import forms.individual.incomesource.{BusinessIncomeSourceForm, HaveYouCompletedThisSectionForm}
+import forms.individual.incomesource.BusinessIncomeSourceForm
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import models._
@@ -43,6 +43,7 @@ import play.api.libs.json.{JsArray, JsValue, Writes}
 import play.api.libs.ws.WSResponse
 import play.api.test.FakeRequest
 import play.twirl.api.TwirlHelperImports.twirlJavaCollectionToScala
+import uk.gov.hmrc.crypto.{ApplicationCrypto, Decrypter, Encrypter}
 
 import java.time.LocalDate
 import java.util.UUID
@@ -109,6 +110,8 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
     .in(Environment.simple(mode = Mode.Dev))
     .configure(config)
     .build()
+
+  implicit lazy val crypto: Encrypter with Decrypter = app.injector.instanceOf[ApplicationCrypto].JsonCrypto
 
   implicit lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
 

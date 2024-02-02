@@ -24,7 +24,7 @@ import play.api.http.Status.{NO_CONTENT, OK}
 import play.api.libs.json.{JsNumber, JsObject}
 import utilities.SubscriptionDataKeys._
 
-class ProgressSavedControllerISpec  extends ComponentSpecBase {
+class ProgressSavedControllerISpec extends ComponentSpecBase {
   "GET /report-quarterly/income-and-expenses/sign-up/business/progress-saved" should {
     "return OK" when {
       "the location is not provided" in {
@@ -50,8 +50,7 @@ class ProgressSavedControllerISpec  extends ComponentSpecBase {
         stubAuditing()
 
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(lastUpdatedTimestamp, OK, JsObject(Seq(("$date", JsNumber(1)))))
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, NO_CONTENT)
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessAccountingMethod, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)

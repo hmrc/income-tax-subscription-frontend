@@ -41,12 +41,12 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
   val selfEmployment: SelfEmploymentData = SelfEmploymentData(
     id = "test-id",
     businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
-    businessName = Some(BusinessNameModel("ABC Limited").encrypt(crypto.QueryParameterCrypto)),
+    businessName = Some(BusinessNameModel("ABC Limited")),
     businessTradeName = Some(BusinessTradeNameModel("Plumbing")),
     businessAddress = Some(BusinessAddressModel(address = Address(
       lines = Seq("1 Long Road", "Lonely city"),
       postcode = Some("ZZ11ZZ")
-    )).encrypt(crypto.QueryParameterCrypto)),
+    ))),
     confirmed = true
   )
 
@@ -95,8 +95,7 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
   "getCompleteSignUpDetails" must {
     "return a complete details model" when {
       "all fetches were successful and are full data sets" in new Setup {
-        mockFetchAllSelfEmployments(Seq(selfEmployment))
-        mockFetchSelfEmploymentAccountingMethod(Some(selfEmploymentsAccountingMethod))
+        mockFetchAllSelfEmployments(Seq(selfEmployment), Some(selfEmploymentsAccountingMethod.accountingMethod))
         mockFetchProperty(Some(ukProperty))
         mockFetchOverseasProperty(Some(foreignProperty))
         mockFetchSelectedTaxYear(Some(accountingYear))
@@ -111,8 +110,7 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
 
     "return a GetCompleteDetailsFailure" when {
       "there is no selected tax year" in new Setup {
-        mockFetchAllSelfEmployments(Seq(selfEmployment))
-        mockFetchSelfEmploymentAccountingMethod(Some(selfEmploymentsAccountingMethod))
+        mockFetchAllSelfEmployments(Seq(selfEmployment), Some(selfEmploymentsAccountingMethod.accountingMethod))
         mockFetchProperty(Some(ukProperty))
         mockFetchOverseasProperty(Some(foreignProperty))
         mockFetchSelectedTaxYear(None)
@@ -125,8 +123,7 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
       }
       "there is a sole trader business" which {
         "does not have a name" in new Setup {
-          mockFetchAllSelfEmployments(Seq(selfEmployment.copy(businessName = None)))
-          mockFetchSelfEmploymentAccountingMethod(Some(selfEmploymentsAccountingMethod))
+          mockFetchAllSelfEmployments(Seq(selfEmployment.copy(businessName = None)), Some(selfEmploymentsAccountingMethod.accountingMethod))
           mockFetchProperty(Some(ukProperty))
           mockFetchOverseasProperty(Some(foreignProperty))
           mockFetchSelectedTaxYear(Some(accountingYear))
@@ -138,8 +135,7 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
           await(result) mustBe Left(GetCompleteDetailsFailure)
         }
         "does not have a trade" in new Setup {
-          mockFetchAllSelfEmployments(Seq(selfEmployment.copy(businessTradeName = None)))
-          mockFetchSelfEmploymentAccountingMethod(Some(selfEmploymentsAccountingMethod))
+          mockFetchAllSelfEmployments(Seq(selfEmployment.copy(businessTradeName = None)), Some(selfEmploymentsAccountingMethod.accountingMethod))
           mockFetchProperty(Some(ukProperty))
           mockFetchOverseasProperty(Some(foreignProperty))
           mockFetchSelectedTaxYear(Some(accountingYear))
@@ -151,8 +147,7 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
           await(result) mustBe Left(GetCompleteDetailsFailure)
         }
         "does not have a start date" in new Setup {
-          mockFetchAllSelfEmployments(Seq(selfEmployment.copy(businessStartDate = None)))
-          mockFetchSelfEmploymentAccountingMethod(Some(selfEmploymentsAccountingMethod))
+          mockFetchAllSelfEmployments(Seq(selfEmployment.copy(businessStartDate = None)), Some(selfEmploymentsAccountingMethod.accountingMethod))
           mockFetchProperty(Some(ukProperty))
           mockFetchOverseasProperty(Some(foreignProperty))
           mockFetchSelectedTaxYear(Some(accountingYear))
@@ -164,8 +159,7 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
           await(result) mustBe Left(GetCompleteDetailsFailure)
         }
         "does not have an address" in new Setup {
-          mockFetchAllSelfEmployments(Seq(selfEmployment.copy(businessAddress = None)))
-          mockFetchSelfEmploymentAccountingMethod(Some(selfEmploymentsAccountingMethod))
+          mockFetchAllSelfEmployments(Seq(selfEmployment.copy(businessAddress = None)), Some(selfEmploymentsAccountingMethod.accountingMethod))
           mockFetchProperty(Some(ukProperty))
           mockFetchOverseasProperty(Some(foreignProperty))
           mockFetchSelectedTaxYear(Some(accountingYear))
@@ -179,8 +173,7 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
       }
       "there is a uk property business" which {
         "does not have a start date" in new Setup {
-          mockFetchAllSelfEmployments(Seq(selfEmployment))
-          mockFetchSelfEmploymentAccountingMethod(Some(selfEmploymentsAccountingMethod))
+          mockFetchAllSelfEmployments(Seq(selfEmployment), Some(selfEmploymentsAccountingMethod.accountingMethod))
           mockFetchProperty(Some(ukProperty.copy(startDate = None)))
           mockFetchOverseasProperty(Some(foreignProperty))
           mockFetchSelectedTaxYear(Some(accountingYear))
@@ -192,8 +185,7 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
           await(result) mustBe Left(GetCompleteDetailsFailure)
         }
         "does not have an accounting method" in new Setup {
-          mockFetchAllSelfEmployments(Seq(selfEmployment))
-          mockFetchSelfEmploymentAccountingMethod(Some(selfEmploymentsAccountingMethod))
+          mockFetchAllSelfEmployments(Seq(selfEmployment), Some(selfEmploymentsAccountingMethod.accountingMethod))
           mockFetchProperty(Some(ukProperty.copy(accountingMethod = None)))
           mockFetchOverseasProperty(Some(foreignProperty))
           mockFetchSelectedTaxYear(Some(accountingYear))
@@ -207,8 +199,7 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
       }
       "there is a foreign property business" which {
         "does not have a start date" in new Setup {
-          mockFetchAllSelfEmployments(Seq(selfEmployment))
-          mockFetchSelfEmploymentAccountingMethod(Some(selfEmploymentsAccountingMethod))
+          mockFetchAllSelfEmployments(Seq(selfEmployment), Some(selfEmploymentsAccountingMethod.accountingMethod))
           mockFetchProperty(Some(ukProperty))
           mockFetchOverseasProperty(Some(foreignProperty.copy(startDate = None)))
           mockFetchSelectedTaxYear(Some(accountingYear))
@@ -220,8 +211,7 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
           await(result) mustBe Left(GetCompleteDetailsFailure)
         }
         "does not have an accounting method" in new Setup {
-          mockFetchAllSelfEmployments(Seq(selfEmployment))
-          mockFetchSelfEmploymentAccountingMethod(Some(selfEmploymentsAccountingMethod))
+          mockFetchAllSelfEmployments(Seq(selfEmployment), Some(selfEmploymentsAccountingMethod.accountingMethod))
           mockFetchProperty(Some(ukProperty))
           mockFetchOverseasProperty(Some(foreignProperty.copy(accountingMethod = None)))
           mockFetchSelectedTaxYear(Some(accountingYear))

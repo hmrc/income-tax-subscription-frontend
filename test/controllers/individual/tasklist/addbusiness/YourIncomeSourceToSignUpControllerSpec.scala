@@ -30,7 +30,6 @@ import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, red
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockAuditingService, MockSubscriptionDetailsService}
 import views.html.individual.tasklist.addbusiness.YourIncomeSourceToSignUp
-import utilities.TestModels.testAccountingMethod
 
 import scala.concurrent.Future
 
@@ -64,8 +63,8 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
       }
       "there are multiple different income sources added" in new Setup {
         mockFetchAllSelfEmployments(Seq(
-          testSelfEmployment("id").encrypt(crypto.QueryParameterCrypto),
-          testSelfEmployment("id2").encrypt(crypto.QueryParameterCrypto)
+          testSelfEmployment("id"),
+          testSelfEmployment("id2")
         ))
         mockFetchProperty(Some(testUkProperty))
         mockFetchOverseasProperty(Some(testForeignProperty))
@@ -93,8 +92,8 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
     "redirect to the task list page and save the income sources section as complete" when {
       "all income sources are complete" in new Setup {
         mockFetchAllSelfEmployments(Seq(
-          testSelfEmployment("id").encrypt(crypto.QueryParameterCrypto),
-          testSelfEmployment("id2").encrypt(crypto.QueryParameterCrypto)
+          testSelfEmployment("id"),
+          testSelfEmployment("id2")
         ))
         mockFetchProperty(Some(testUkProperty))
         mockFetchOverseasProperty(Some(testForeignProperty))
@@ -109,8 +108,8 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
       }
       "only self employment income sources are added and complete" in new Setup {
         mockFetchAllSelfEmployments(Seq(
-          testSelfEmployment("id").encrypt(crypto.QueryParameterCrypto),
-          testSelfEmployment("id2").encrypt(crypto.QueryParameterCrypto)
+          testSelfEmployment("id"),
+          testSelfEmployment("id2")
         ))
         mockFetchProperty(None)
         mockFetchOverseasProperty(None)
@@ -152,7 +151,7 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
     }
     "redirect to the task list page" when {
       "self employment income sources are not complete" in new Setup {
-        mockFetchAllSelfEmployments(Seq(testSelfEmployment("id").copy(confirmed = false).encrypt(crypto.QueryParameterCrypto)))
+        mockFetchAllSelfEmployments(Seq(testSelfEmployment("id").copy(confirmed = false)))
         mockFetchProperty(Some(testUkProperty))
         mockFetchOverseasProperty(Some(testForeignProperty))
 
@@ -164,7 +163,7 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
         verifySaveIncomeSourceConfirmation(reference = "test-reference", count = 0)
       }
       "uk property income sources are not complete" in new Setup {
-        mockFetchAllSelfEmployments(Seq(testSelfEmployment("id").encrypt(crypto.QueryParameterCrypto)))
+        mockFetchAllSelfEmployments(Seq(testSelfEmployment("id")))
         mockFetchProperty(Some(testUkProperty.copy(confirmed = false)))
         mockFetchOverseasProperty(Some(testForeignProperty))
 
@@ -176,7 +175,7 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
         verifySaveIncomeSourceConfirmation(reference = "test-reference", count = 0)
       }
       "overseas property income sources are not complete" in new Setup {
-        mockFetchAllSelfEmployments(Seq(testSelfEmployment("id").encrypt(crypto.QueryParameterCrypto)))
+        mockFetchAllSelfEmployments(Seq(testSelfEmployment("id")))
         mockFetchProperty(Some(testUkProperty))
         mockFetchOverseasProperty(Some(testForeignProperty.copy(confirmed = false)))
 
