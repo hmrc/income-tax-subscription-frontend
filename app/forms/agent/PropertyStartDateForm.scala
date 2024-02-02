@@ -26,7 +26,7 @@ import java.time.LocalDate
 object PropertyStartDateForm {
   val startDate: String = "startDate"
 
-  def maxStartDate: LocalDate = LocalDate.now().minusYears(1)
+  def maxStartDate: LocalDate = LocalDate.now().plusDays(6)
 
   def minStartDate: LocalDate = LocalDate.of(1900, 1, 1)
 

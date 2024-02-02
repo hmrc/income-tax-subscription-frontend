@@ -200,10 +200,12 @@ overseas.property.accounting-method.cash                         = You record on
 overseas.property.accounting-method.accruals                     = You record on the date you send an invoice to, or request a payment from your tenants, even if you do not receive or pay any money. You record on the date you receive an invoice for repairs or maintenance. This is also called ‘accruals’ or ‘standard accounting’.
 
 ## Property Start Date Date
-business.property.name.title                                    = When did your UK property business start trading?
-business.property.name.heading                                  = When did your UK property business start trading?
+business.property.name.title                                    = When did you start your UK property business?
+business.property.name.heading                                  = When did you start your UK property business?
 business.property.name.caption                                  = UK property
-business.property.line-1                                        = This is when you started letting any UK property.
+business.property.para1                                         = This is when you started letting any UK property.
+business.property.para2                                         = The date your business started trading can be today, in the past or up to 7 days in the future.
+business.property.para3                                         = This is the date we’ll use to calculate Class 2 National Insurance charge, if appropriate.
 business.property.start-date.hint                               = For example, 17 8 2014.
 
 # Property Start Date errors
@@ -226,9 +228,10 @@ error.property.month-year.invalid                               = The date must 
 error.property.year.length                                      = The year must be in four digits. For example, 2020.
 
 # Agent Property Start Date Date
-agent.property.start-date.heading                               = When did your client’s UK property business start?
+agent.property.start-date.heading                               = When did your client start their UK property business?
 agent.property.start-date.heading.caption                       = {0} | {1}
-agent.property.start-date.line-1                                = This is when your client started letting any UK property.
+agent.property.start-date.para1                                 = The date your client’s business started trading can be today, in the past or up to 7 days in the future.
+agent.property.start-date.para2                                 = This is the date we’ll use to calculate your client’s Class 2 National Insurance charge, if appropriate.
 agent.property.start-date.hint                                  = For example, 17 8 2014.
 
 # Agent Property Start Date errors
@@ -251,27 +254,31 @@ agent.error.property.month-year.invalid                         = The date must 
 agent.error.property.year.length                                = The year must be in four digits. For example, 2020.
 
 ## Overseas Property Start Date
-overseas.property.name.title                                    = When did your foreign property business?
-overseas.property.name.heading                                  = When did your foreign property business?
+overseas.property.name.title                                    = When did you start your foreign property business?
+overseas.property.name.heading                                  = When did you start your foreign property business?
 overseas.property.name.caption                                  = Foreign property
-overseas.property.line-1                                        = This is when you started letting your foreign property.
+overseas.property.para1                                         = This is when you started letting any foreign property.
+overseas.property.para2                                         = The date your business started trading can be today, in the past or up to 7 days in the future.
+overseas.property.para3                                         = This is the date we’ll use to calculate Class 2 National Insurance charge, if appropriate.
 overseas.property.start-date.hint                               = For example, 17 8 2014.
 
 # Agent Overseas Property Start Date
-agent.overseas-property.start-date.heading                      = When did your client’s foreign property business start?
+agent.overseas-property.start-date.title                        = When did your client start their foreign property business?
+agent.overseas-property.start-date.heading                      = When did your client start their foreign property business?
 agent.overseas-property.start-date.heading.caption              = {0} | {1}
-agent.overseas-property.start-date.line-1                       = This is when your client started letting any foreign property.
+agent.overseas-property.start-date.para1                        = The date your client’s business started trading can be today, in the past or up to 7 days in the future.
+agent.overseas-property.start-date.para2                        = This is the date we’ll use to calculate your client’s Class 2 National Insurance charge, if appropriate.
 agent.overseas-property.start-date.hint                         = For example, 17 8 2014.
 
 # Overseas Property Start Date errors
-error.overseas.property.day-month-year.empty                    = Enter the date your overseas property business started trading
+error.overseas.property.day-month-year.empty                    = Enter the date your foreign property business started trading
 error.overseas.property.day.empty                               = The date must include a day
 error.overseas.property.month.empty                             = The date must include a month
 error.overseas.property.year.empty                              = The date must include a year
 error.overseas.property.day-month.empty                         = The date must include a day and a month
 error.overseas.property.day-year.empty                          = The date must include a day and a year
 error.overseas.property.month-year.empty                        = The date must include a month and a year
-error.overseas.property.day-month-year.max-date                 = The date your overseas property business started trading must be the same as or before {0}
+error.overseas.property.day-month-year.max-date                 = The date your foreign property business started trading must be the same as or before {0}
 error.overseas.property.day-month-year.min-date                 = The date your property business started must be on or after {0}
 error.overseas.property.day-month-year.invalid                  = The date must be a real date
 error.overseas.property.day.invalid                             = The date must be a real date

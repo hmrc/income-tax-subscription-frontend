@@ -54,10 +54,11 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
     )(FakeRequest(), implicitly)
 
   object PropertyStartDateMessages {
-    val title = "When did your client’s UK property business start?"
+    val title = "When did your client start their UK property business?"
     val heading: String = title
     val caption: String = "FirstName LastName | ZZ 11 11 11 Z"
-    val para: String = "This is when your client started letting any UK property."
+    val para1 = "The date your client’s business started trading can be today, in the past or up to 7 days in the future."
+    val para2 = "This is the date we’ll use to calculate your client’s Class 2 National Insurance charge, if appropriate."
     val hint = "For example, 17 8 2014."
     val continue = "Continue"
     val saveAndContinue = "Save and continue"
@@ -105,6 +106,14 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
       document().mainContent.selectHead("span.govuk-caption-l").text mustBe PropertyStartDateMessages.caption
     }
 
+    "have a paragraph One" in{
+      document().mainContent.selectNth("p", 1).text() mustBe PropertyStartDateMessages.para1
+    }
+
+    "have a paragraph Two" in{
+      document().mainContent.selectNth("p", 2).text() mustBe PropertyStartDateMessages.para2
+    }
+
     "have a Form" in {
       document().getForm.attr("method") mustBe testCall.method
       document().getForm.attr("action") mustBe testCall.url
@@ -112,7 +121,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
 
     "have a fieldset with dateInputs" in {
       document().mustHaveGovukDateField("startDate", PropertyStartDateMessages.heading, PropertyStartDateMessages.hint)
-      document().selectNth("p", 2).text mustBe PropertyStartDateMessages.para
+      document().selectNth("p", 2).text mustBe PropertyStartDateMessages.para1
     }
 
     "have a save & continue button" in {
@@ -138,7 +147,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
         PropertyStartDateMessages.hint,
         Some(PropertyStartDateMessages.maxDate)
       )
-      document().selectNth("p", 2).text mustBe PropertyStartDateMessages.para
+      document().selectNth("p", 2).text mustBe PropertyStartDateMessages.para1
     }
 
     "must display min date error form error on page" in {

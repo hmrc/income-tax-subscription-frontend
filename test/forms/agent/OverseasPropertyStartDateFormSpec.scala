@@ -20,6 +20,7 @@ import forms.agent.OverseasPropertyStartDateForm.{overseasPropertyStartDateForm,
 import forms.formatters.DateModelMapping.{day, month, year}
 import forms.validation.testutils.DataMap.DataMap
 import models.DateModel
+import models.common.OverseasPropertyStartDateModel
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.data.{Form, FormError}
@@ -33,7 +34,9 @@ class OverseasPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuit
   }
 
   "The OverseasPropertyStartDateForm" should {
+
     "transform a valid request to the date form case class" in {
+
       val testDateDay = "31"
       val testDateMonth = "5"
       val testDateYear = "2017"
@@ -55,15 +58,16 @@ class OverseasPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuit
         "the date is not supplied to the map" in {
           form.bind(DataMap.EmptyMap).errors must contain(FormError(dayKeyError, s"$errorContext.day-month-year.empty"))
         }
-        "it is within 1 years" in {
-          val oneYearAgo: LocalDate = LocalDate.now.minusMonths(6)
+        "it is not within 7 days including current date" in {
+          val sevenDaysInFuture: LocalDate = LocalDate.now.plusDays(7)
           val maxTest = form.bind(DataMap.govukDate(startDate)(
-            oneYearAgo.getDayOfMonth.toString,
-            oneYearAgo.getMonthValue.toString,
-            oneYearAgo.getYear.toString
+            sevenDaysInFuture.getDayOfMonth.toString,
+            sevenDaysInFuture.getMonthValue.toString,
+            sevenDaysInFuture.getYear.toString
           ))
-          maxTest.errors must contain(FormError(dayKeyError, s"$errorContext.day-month-year.max-date", Seq(OverseasPropertyStartDateForm.maxStartDate.toString)))
+          maxTest.errors must contain(FormError(dayKeyError, s"$errorContext.day-month-year.max-date", List(OverseasPropertyStartDateForm.maxStartDate.toString)))
         }
+
         "it is before year 1900" in {
           val minTest = form.bind(DataMap.govukDate(startDate)("31", "12", "1899"))
           minTest.errors must contain(FormError(dayKeyError, s"$errorContext.day-month-year.min-date", Seq(OverseasPropertyStartDateForm.minStartDate.toString)))
@@ -113,12 +117,12 @@ class OverseasPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuit
       }
     }
     "accept a valid date" when {
-      "the date is exactly one years ago" in {
-        val oneYearAgo: LocalDate = LocalDate.now.minusYears(1)
+      "the date is within 7 days from current date" in {
+        val sevenDaysInPast: LocalDate = LocalDate.now.plusDays(6)
         val testData = DataMap.govukDate(startDate)(
-          day = oneYearAgo.getDayOfMonth.toString,
-          month = oneYearAgo.getMonthValue.toString,
-          year = oneYearAgo.getYear.toString
+          day = sevenDaysInPast.getDayOfMonth.toString,
+          month = sevenDaysInPast.getMonthValue.toString,
+          year = sevenDaysInPast.getYear.toString
         )
         val validated = form.bind(testData)
         validated.hasErrors mustBe false

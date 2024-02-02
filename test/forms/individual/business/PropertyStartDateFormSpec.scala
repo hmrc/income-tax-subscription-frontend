@@ -16,10 +16,12 @@
 
 package forms.individual.business
 
+import forms.agent.PropertyStartDateForm
 import forms.formatters.DateModelMapping.{day, month, year}
 import forms.individual.business.PropertyStartDateForm.{propertyStartDateForm, startDate}
 import forms.validation.testutils.DataMap.DataMap
 import models.DateModel
+import models.common.business.BusinessStartDate
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.data.{Form, FormError}
@@ -56,13 +58,12 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
         "the date is not supplied to the map" in {
           form.bind(DataMap.EmptyMap).errors must contain(FormError(dayKeyError, s"$errorContext.day-month-year.empty"))
         }
-        "it is within 1 years" in {
-
-          val oneYearAgo: LocalDate = LocalDate.now.minusMonths(6)
+        "it is not within 7 days from current day" in {
+          val sevenDaysInFuture: LocalDate = LocalDate.now.plusDays(7)
           val maxTest = form.bind(DataMap.govukDate(startDate)(
-            oneYearAgo.getDayOfMonth.toString,
-            oneYearAgo.getMonthValue.toString,
-            oneYearAgo.getYear.toString
+            sevenDaysInFuture.getDayOfMonth.toString,
+            sevenDaysInFuture.getMonthValue.toString,
+            sevenDaysInFuture.getYear.toString
           ))
           maxTest.errors must contain(FormError(dayKeyError, s"$errorContext.day-month-year.max-date", List(PropertyStartDateForm.maxStartDate.toString)))
         }
@@ -115,12 +116,12 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
       }
     }
     "accept a valid date" when {
-      "the date is exactly one years ago" in {
-        val oneYearAgo: LocalDate = LocalDate.now.minusYears(1)
+      "the date is 7 days ahead from current date" in {
+        val sevenDaysInPresent: LocalDate = LocalDate.now.plusDays(6)
         val testData = DataMap.govukDate(startDate)(
-          day = oneYearAgo.getDayOfMonth.toString,
-          month = oneYearAgo.getMonthValue.toString,
-          year = oneYearAgo.getYear.toString
+          day = sevenDaysInPresent.getDayOfMonth.toString,
+          month = sevenDaysInPresent.getMonthValue.toString,
+          year = sevenDaysInPresent.getYear.toString
         )
         val validated = form.bind(testData)
         validated.hasErrors mustBe false
