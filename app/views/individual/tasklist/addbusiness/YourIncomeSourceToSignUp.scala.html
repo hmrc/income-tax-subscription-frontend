@@ -37,20 +37,23 @@
 
 @(postAction: Call, backUrl: String, incomeSources: IncomeSources)( implicit request: Request[_], messages: Messages)
 
-@heading = @{
-    messages("your-income-source.heading")
-}
+    @heading = @{
+        if(incomeSources.hasNoIncomeSources){
+            messages("your-income-source.heading")
+        } else {
+            messages("your-income-source.manage.heading")
+        }
+    }
 
 
 @mainTemplate(
     title = heading,
     backLink = Some(backUrl)
 ) {
+    <h1 class="govuk-heading-xl">@heading</h1>
     @if(incomeSources.hasNoIncomeSources){
-        <h1 class="govuk-heading-xl">@heading</h1>
         <p class="govuk-body-l">@messages("your-income-source.lead") </p>
     } else {
-        <h1 class="govuk-heading-xl">@messages("your-income-source.manage.heading")</h1>
         <p class="govuk-body-l">@messages("your-income-source.manage.label")</p>
     }
 

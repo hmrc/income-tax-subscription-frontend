@@ -36,7 +36,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
   }
 
   object AgentIncomeSource {
-    val headingNoIncomeAdded = "Your client’s income sources"
+    val headingNoIncomeAdded = "Add your client’s income sources"
     val headingIncompleteIncomeAdded = "Manage your client’s income sources"
     val leadNoIncomeAdded = "You only need to add the income sources that apply to your client."
     val leadIncompleteIncomeAdded = "You can manage income sources that apply to your client. This includes finishing adding an income source you have already started, adding a new one or removing an existing one."
