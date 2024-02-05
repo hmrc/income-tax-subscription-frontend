@@ -682,6 +682,8 @@ agent.income-source.error                       = Select your client’s source 
 ## agent your income sources to sign up page
 agent.your-income-source.heading.no-income                          = Your client’s income sources
 agent.your-income-source.lead.no-income                             = You only need to add the income sources that apply to your client.
+agent.your-income-source.heading.some-income                        = Manage your client’s income sources
+agent.your-income-source.lead.some-income                           = You can manage income sources that apply to your client. This includes finishing adding an income source you have already started, adding a new one or removing an existing one.
 agent.your-income-source.caption                                    = {0} | {1}
 agent.your-income-source.self-employed                              = Sole trader
 agent.your-income-source.self-employed.label-full                   = {0} - {1}

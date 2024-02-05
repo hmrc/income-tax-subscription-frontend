@@ -37,7 +37,9 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
   object AgentIncomeSource {
     val headingNoIncomeAdded = "Your client’s income sources"
+    val headingIncompleteIncomeAdded = "Manage your client’s income sources"
     val leadNoIncomeAdded = "You only need to add the income sources that apply to your client."
+    val leadIncompleteIncomeAdded = "You can manage income sources that apply to your client. This includes finishing adding an income source you have already started, adding a new one or removing an existing one."
     val paragraph1: String = "If your client is self-employed, you must add all of their sole trader businesses if they have more than one. " +
       "If they have income from property you must add it, but this is limited to one UK property business."
     val paragraph1Overseas: String = "Your client can have up to 50 sole trader businesses. " +
@@ -139,14 +141,14 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       )
       "the are incomplete income sources added" in new TemplateViewTest(
         view = view(IncomeSources(incompleteSelfEmployments, incompleteUKProperty, incompleteForeignProperty)),
-        title = AgentIncomeSource.headingNoIncomeAdded,
+        title = AgentIncomeSource.headingIncompleteIncomeAdded,
         isAgent = true,
         backLink = Some(testBackUrl),
         hasSignOutLink = true
       )
       "the are complete income sources added" in new TemplateViewTest(
         view = view(IncomeSources(completeSelfEmployments, completeUKProperty, completeForeignProperty)),
-        title = AgentIncomeSource.headingNoIncomeAdded,
+        title = AgentIncomeSource.headingIncompleteIncomeAdded,
         isAgent = true,
         backLink = Some(testBackUrl),
         hasSignOutLink = true
@@ -233,13 +235,13 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       def incompleteIncomeSources: IncomeSources = IncomeSources(incompleteSelfEmployments, incompleteUKProperty, incompleteForeignProperty)
 
       "have a heading for the page" in new ViewTest(incompleteIncomeSources) {
-        document.mainContent.getH1Element.text mustBe AgentIncomeSource.headingNoIncomeAdded
+        document.mainContent.getH1Element.text mustBe AgentIncomeSource.headingIncompleteIncomeAdded
       }
       "have a caption with the clien's details" in new ViewTest(incompleteIncomeSources) {
         document.mainContent.selectHead("span.govuk-caption-l").text mustBe s"${clientDetails.name} | ${clientDetails.formattedNino}"
       }
       "have a lead paragraph" in new ViewTest(incompleteIncomeSources) {
-        document.mainContent.selectHead("p.govuk-body-l").text mustBe AgentIncomeSource.leadNoIncomeAdded
+        document.mainContent.selectHead("p.govuk-body-l").text mustBe AgentIncomeSource.leadIncompleteIncomeAdded
       }
       "have a sole trader section" which {
         "has a heading" in new ViewTest(incompleteIncomeSources) {
@@ -432,13 +434,13 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       def completeIncomeSources: IncomeSources = IncomeSources(completeSelfEmployments, completeUKProperty, completeForeignProperty)
 
       "have a heading for the page" in new ViewTest(completeIncomeSources) {
-        document.mainContent.getH1Element.text mustBe AgentIncomeSource.headingNoIncomeAdded
+        document.mainContent.getH1Element.text mustBe AgentIncomeSource.headingIncompleteIncomeAdded
       }
       "have a caption with the clien's details" in new ViewTest(completeIncomeSources) {
         document.mainContent.selectHead("span.govuk-caption-l").text mustBe s"${clientDetails.name} | ${clientDetails.formattedNino}"
       }
       "have a lead paragraph" in new ViewTest(completeIncomeSources) {
-        document.mainContent.selectHead("p.govuk-body-l").text mustBe AgentIncomeSource.leadNoIncomeAdded
+        document.mainContent.selectHead("p.govuk-body-l").text mustBe AgentIncomeSource.leadIncompleteIncomeAdded
       }
       "have a sole trader section" which {
         "has a heading" in new ViewTest(completeIncomeSources) {

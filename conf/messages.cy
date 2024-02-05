@@ -682,6 +682,8 @@ agent.income-source.error                       = Dewiswch ffynhonnell incwm eic
 ## agent your income sources to sign up page
 agent.your-income-source.heading.no-income                  = Ffynonellau incwm eich cleient
 agent.your-income-source.lead.no-income                     = Dim ond y ffynonellau incwm sy’n berthnasol i’ch cleient y mae angen i chi eu hychwanegu.
+agent.your-income-source.heading.some-income                = Rheoli ffynonellau incwm eich cleient
+agent.your-income-source.lead.some-income                   = Gallwch reoli’r ffynonellau incwm sy’n berthnasol i’ch cleient. Mae hyn yn cynnwys gorffen ychwanegu ffynhonnell incwm rydych eisoes wedi’i dechrau, ychwanegu un newydd, neu dynnu un bresennol.
 agent.your-income-source.caption                            = {0} | {1}
 agent.your-income-source.self-employed                      = Unig fasnachwr
 agent.your-income-source.self-employed.label-full           = {0} - {1}

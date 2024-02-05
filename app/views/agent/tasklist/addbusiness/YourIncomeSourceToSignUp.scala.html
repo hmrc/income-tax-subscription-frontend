@@ -40,7 +40,11 @@
 @(postAction: Call, backUrl: String, clientDetails: ClientDetails, incomeSources: IncomeSources)(implicit request: Request[_], messages: Messages)
 
 @heading = @{
-    messages("agent.your-income-source.heading.no-income")
+    if(incomeSources.hasNoIncomeSources){
+        messages("agent.your-income-source.heading.no-income")
+    } else {
+        messages("agent.your-income-source.heading.some-income")
+    }
 }
 
 @agentMainTemplate(
@@ -52,13 +56,13 @@
         @messages("agent.your-income-source.caption", clientDetails.name, clientDetails.formattedNino)
     </span>
 
-    <h1 class="govuk-heading-xl">
-        @heading
-    </h1>
+    <h1 class="govuk-heading-xl">@heading</h1>
+    @if(incomeSources.hasNoIncomeSources){
+        <p class="govuk-body-l">@messages("agent.your-income-source.lead.no-income")</p>
+    } else{
+        <p class="govuk-body-l">@messages("agent.your-income-source.lead.some-income")</p>
+    }
 
-    <p class="govuk-body-l">
-        @messages("agent.your-income-source.lead.no-income")
-    </p>
 
     @selfEmploymentSection
 
