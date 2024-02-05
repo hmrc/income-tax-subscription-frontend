@@ -36,7 +36,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
   }
 
   object IndividualIncomeSource {
-    val title = "Your income sources"
+    val title = "Add your income sources"
     val someIncomeSourcesTitle = "Manage your income sources"
     val heading: String = title
     val paragraph1: String = "You only need to add the income sources that apply to you."
@@ -142,14 +142,14 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       )
       "the are incomplete income sources added" in new TemplateViewTest(
         view = view(IncomeSources(incompleteSelfEmployments, incompleteUKProperty, incompleteForeignProperty)),
-        title = IndividualIncomeSource.heading,
+        title = IndividualIncomeSource.someIncomeSourcesTitle,
         isAgent = false,
         backLink = Some(testBackUrl),
         hasSignOutLink = true
       )
       "the are complete income sources added" in new TemplateViewTest(
         view = view(IncomeSources(completeSelfEmployments, completeUKProperty, completeForeignProperty)),
-        title = IndividualIncomeSource.heading,
+        title = IndividualIncomeSource.someIncomeSourcesTitle,
         isAgent = false,
         backLink = Some(testBackUrl),
         hasSignOutLink = true

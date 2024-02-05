@@ -78,8 +78,7 @@ income-source.foreign-property                                  = Busnes eiddo t
 income-source.foreign-property-hint                             = Incwm o roi eiddo ar osod dramor. Mae hyn yn cynnwys arian rydych chi’n ei ennill drwy asiantaeth gosod eiddo. Gallwch chi fod ag incwm o sawl eiddo mewn un busnes eiddo tramor.
 
 ## Individual your income sources to sign up page
-your-income-source.title                                        = Eich ffynonellau incwm
-your-income-source.heading                                      = Eich ffynonellau incwm
+your-income-source.heading                                      = Ychwanegu eich ffynonellau incwm
 your-income-source.manage.heading                               = Rheoli’ch ffynonellau incwm
 your-income-source.manage.label                                 = Gallwch reoli’r ffynonellau incwm sy’n berthnasol i chi. Mae hyn yn cynnwys gorffen ychwanegu ffynhonnell incwm rydych eisoes wedi’i dechrau, ychwanegu un newydd, neu dynnu un bresennol.
 your-income-source.lead                                         = Dim ond y ffynonellau incwm sy’n berthnasol i chi y mae angen i chi eu hychwanegu.
@@ -680,7 +679,7 @@ agent.income-source.foreign-property            = Busnes eiddo tramor
 agent.income-source.error                       = Dewiswch ffynhonnell incwm eich cleient
 
 ## agent your income sources to sign up page
-agent.your-income-source.heading.no-income                  = Ffynonellau incwm eich cleient
+agent.your-income-source.heading.no-income                  = Ychwanegu ffynonellau incwm eich cleient
 agent.your-income-source.lead.no-income                     = Dim ond y ffynonellau incwm sy’n berthnasol i’ch cleient y mae angen i chi eu hychwanegu.
 agent.your-income-source.heading.some-income                = Rheoli ffynonellau incwm eich cleient
 agent.your-income-source.lead.some-income                   = Gallwch reoli’r ffynonellau incwm sy’n berthnasol i’ch cleient. Mae hyn yn cynnwys gorffen ychwanegu ffynhonnell incwm rydych eisoes wedi’i dechrau, ychwanegu un newydd, neu dynnu un bresennol.
