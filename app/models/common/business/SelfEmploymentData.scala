@@ -16,8 +16,8 @@
 
 package models.common.business
 
+import models.common.{EncryptingAddress, SoleTraderBusiness}
 import play.api.libs.json._
-import uk.gov.hmrc.crypto.Encrypter
 
 case class SelfEmploymentData(id: String,
                               businessStartDate: Option[BusinessStartDate] = None,
@@ -28,9 +28,13 @@ case class SelfEmploymentData(id: String,
 
   val isComplete: Boolean = businessStartDate.isDefined && businessName.isDefined && businessTradeName.isDefined && businessAddress.isDefined
 
-  def encrypt(encrypter: Encrypter): SelfEmploymentData = this.copy(
-    businessName = this.businessName.map(_.encrypt(encrypter)),
-    businessAddress = this.businessAddress.map(_.encrypt(encrypter))
+  def toSoleTraderBusiness: SoleTraderBusiness = SoleTraderBusiness(
+    id = id,
+    confirmed = confirmed,
+    startDate = businessStartDate.map(_.startDate),
+    name = businessName.map(_.businessName),
+    trade = businessTradeName.map(_.businessTradeName),
+    address = businessAddress.map(_.address).map(address => EncryptingAddress(address.lines, address.postcode))
   )
 
 }

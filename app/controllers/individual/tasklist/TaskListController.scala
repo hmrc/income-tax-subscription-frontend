@@ -69,8 +69,7 @@ class TaskListController @Inject()(val taskListView: TaskList,
 
   private def getTaskListModel(reference: String)(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[TaskListModel] = {
     for {
-      businesses <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
-      businessAccountingMethod <- subscriptionDetailsService.fetchSelfEmploymentsAccountingMethod(reference)
+      (businesses, accountingMethod) <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
       property <- subscriptionDetailsService.fetchProperty(reference)
       overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
       selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
@@ -79,7 +78,7 @@ class TaskListController @Inject()(val taskListView: TaskList,
       TaskListModel(
         selectedTaxYear,
         businesses,
-        businessAccountingMethod,
+        accountingMethod,
         property,
         overseasProperty,
         incomeSourcesConfirmed
@@ -113,13 +112,12 @@ class TaskListController @Inject()(val taskListView: TaskList,
       implicit user =>
         withReference { reference =>
           val model = for {
-            selfEmployments <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
-            selfEmploymentsAccountingMethod <- subscriptionDetailsService.fetchSelfEmploymentsAccountingMethod(reference)
+            (selfEmployments, accountingMethod) <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
             property <- subscriptionDetailsService.fetchProperty(reference)
             overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
             selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
           } yield {
-            createIncomeSources(user.nino.get, selfEmployments, selfEmploymentsAccountingMethod.map(AccountingMethodModel.apply), property, overseasProperty, selectedTaxYear)
+            createIncomeSources(user.nino.get, selfEmployments, accountingMethod.map(AccountingMethodModel.apply), property, overseasProperty, selectedTaxYear)
           }
           model.flatMap { model =>
             processFunc(user)(request)(model)

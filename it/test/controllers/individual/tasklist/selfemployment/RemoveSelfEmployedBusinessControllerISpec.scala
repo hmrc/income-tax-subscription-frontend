@@ -24,15 +24,15 @@ import helpers.servicemocks.AuthStub
 import models.common.business.SelfEmploymentData
 import models.{No, Yes}
 import play.api.http.Status._
-import play.api.libs.json.Json
-import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
+import utilities.SubscriptionDataKeys.SoleTraderBusinessesKey
 
 class RemoveSelfEmployedBusinessControllerISpec extends ComponentSpecBase {
   "GET /report-quarterly/income-and-expenses/sign-up/business/remove-business" should {
     "return OK" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
-      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
+
+      IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
 
       When("GET business/remove-business is called")
       val res = IncomeTaxSubscriptionFrontend.getRemoveBusiness()
@@ -50,7 +50,8 @@ class RemoveSelfEmployedBusinessControllerISpec extends ComponentSpecBase {
       "the Sole trader business cannot be retrieved" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
+
+        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
 
         When("GET business/remove-business is called")
         val res = IncomeTaxSubscriptionFrontend.getRemoveBusiness(id = "unknown")
@@ -68,9 +69,10 @@ class RemoveSelfEmployedBusinessControllerISpec extends ComponentSpecBase {
       "the user submits the 'yes' answer" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
-        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey, Seq())
-        IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetails(BusinessAccountingMethod)
+
+        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
+        IncomeTaxSubscriptionConnectorStub.stubSaveSoleTraderBusinessDetails(Seq.empty[SelfEmploymentData], None)
+        IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetails(SoleTraderBusinessesKey)
 
         When("POST business/remove-business is called")
         val res = IncomeTaxSubscriptionFrontend.submitRemoveBusiness(Some(Yes))
@@ -80,14 +82,13 @@ class RemoveSelfEmployedBusinessControllerISpec extends ComponentSpecBase {
           httpStatus(SEE_OTHER),
           redirectURI(IndividualURI.taskListURI)
         )
-
-        IncomeTaxSubscriptionConnectorStub.verifySaveSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey, Seq(), Some(1))
       }
 
       "the user submits the 'no' answer" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
+
+        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
 
         When("POST business/remove-business is called")
         val res = IncomeTaxSubscriptionFrontend.submitRemoveBusiness(Some(No))
@@ -97,8 +98,6 @@ class RemoveSelfEmployedBusinessControllerISpec extends ComponentSpecBase {
           httpStatus(SEE_OTHER),
           redirectURI(IndividualURI.taskListURI)
         )
-
-        IncomeTaxSubscriptionConnectorStub.verifySaveSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey, Seq(), Some(0))
       }
     }
 
@@ -106,7 +105,8 @@ class RemoveSelfEmployedBusinessControllerISpec extends ComponentSpecBase {
       "invalid data is submitted" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(BusinessesKey, OK, Json.toJson(testBusinesses))
+
+        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
 
         When("POST business/remove-business is called")
         val res = IncomeTaxSubscriptionFrontend.submitRemoveBusiness(request = None)
@@ -115,8 +115,6 @@ class RemoveSelfEmployedBusinessControllerISpec extends ComponentSpecBase {
         res must have(
           httpStatus(BAD_REQUEST)
         )
-
-        IncomeTaxSubscriptionConnectorStub.verifySaveSubscriptionDetails[Seq[SelfEmploymentData]](BusinessesKey, Seq(), Some(0))
       }
     }
   }

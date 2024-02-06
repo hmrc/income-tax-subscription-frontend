@@ -73,8 +73,8 @@ class WhatIncomeSourceToSignUpController @Inject()(whatIncomeSourceToSignUp: Wha
   def backUrl: String = controllers.individual.tasklist.routes.TaskListController.show().url
 
   private def selfEmploymentAvailable(reference: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
-    subscriptionDetailsService.fetchAllSelfEmployments(reference).map {
-      _.length < appConfig.maxSelfEmployments
+    subscriptionDetailsService.fetchAllSelfEmployments(reference).map { case (businesses, _) =>
+      businesses.length < appConfig.maxSelfEmployments
     }
   }
 

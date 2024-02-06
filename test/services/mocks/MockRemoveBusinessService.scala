@@ -16,7 +16,6 @@
 
 package services.mocks
 
-import models.common.business.SelfEmploymentData
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, verify, when}
 import org.mockito.stubbing.OngoingStubbing
@@ -36,13 +35,14 @@ trait MockRemoveBusinessService extends UnitTestTrait with MockitoSugar with Bef
     reset(mockRemoveBusinessService)
   }
 
-  def verifyDeleteBusiness(businessId: String, businesses: Seq[SelfEmploymentData]): Unit = {
-    verify(mockRemoveBusinessService).deleteBusiness(ArgumentMatchers.any(), ArgumentMatchers.eq(businessId),
-      ArgumentMatchers.eq(businesses))(ArgumentMatchers.any())
+  def verifyDeleteBusiness(businessId: String): Unit = {
+    verify(mockRemoveBusinessService).deleteBusiness(ArgumentMatchers.any(), ArgumentMatchers.eq(businessId),ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any())
   }
 
   def mockDeleteBusiness(value: Future[Either[_, _]]): OngoingStubbing[Future[Either[_, _]]] = {
-    when(mockRemoveBusinessService.deleteBusiness(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any()))
+    when(mockRemoveBusinessService.deleteBusiness
+    (ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())
+    (ArgumentMatchers.any()))
       .thenReturn(value)
   }
 }

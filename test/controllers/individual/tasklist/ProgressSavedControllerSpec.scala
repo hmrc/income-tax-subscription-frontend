@@ -64,8 +64,8 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
       "Activated"
     )
     mockRetrievalSuccess(
-      new ~(
-        new ~(new ~(new ~(Enrolments(Set(ninoEnrolment, utrEnrolment)), Some(AffinityGroup.Individual)), Some(User)), testConfidenceLevel),
+      new~(
+        new~(new~(new~(Enrolments(Set(ninoEnrolment, utrEnrolment)), Some(AffinityGroup.Individual)), Some(User)), testConfidenceLevel),
         Some(Credentials(testCredId, ""))
       )
     )
@@ -81,9 +81,9 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
     SelfEmploymentData(
       id = "id",
       businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
-      businessName = Some(BusinessNameModel("business name").encrypt(crypto.QueryParameterCrypto)),
+      businessName = Some(BusinessNameModel("business name")),
       businessTradeName = Some(BusinessTradeNameModel("business trade")),
-      businessAddress = Some(BusinessAddressModel(Address(Seq("line 1"), Some("ZZ1 1ZZ"))).encrypt(crypto.QueryParameterCrypto))
+      businessAddress = Some(BusinessAddressModel(Address(Seq("line 1"), Some("ZZ1 1ZZ"))))
     )
   )
 
@@ -132,8 +132,7 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
       "the location parameter is provided" in withController { (controller, mockedView) =>
         mockNinoAndUtrRetrieval()
         mockFetchLastUpdatedTimestamp(Some(testTimestamp))
-        mockFetchAllSelfEmployments(encryptedSelfEmployments)
-        mockFetchSelfEmploymentAccountingMethod(selfEmploymentAccountingMethod)
+        mockFetchAllSelfEmployments(encryptedSelfEmployments, selfEmploymentAccountingMethod.map(_.accountingMethod))
         mockFetchProperty(property)
         mockFetchOverseasProperty(overseasProperty)
         mockFetchSelectedTaxYear(selectedTaxYear)

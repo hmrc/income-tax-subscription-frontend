@@ -42,6 +42,9 @@ class PrePopulationService @Inject()(val subscriptionDetailsService: Subscriptio
   private def populateSubscription(reference: String, prePopData: PrePopData)
                                   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
     // Set up all futures so that they parallelise.
+
+    val maybeAccountingMethod = prePopData.selfEmployments.flatMap(_.flatMap(_.businessAccountingMethod).headOption)
+
     val futureSaveSelfEmployments = prePopData.selfEmployments match {
       case None => Future.successful(())
       case Some(listPrepopSelfEmployment) =>
@@ -55,7 +58,7 @@ class PrePopulationService @Inject()(val subscriptionDetailsService: Subscriptio
           else
             None
         ))
-        subscriptionDetailsService.saveBusinesses(reference, listSelfEmploymentData)
+        subscriptionDetailsService.saveBusinesses(reference, listSelfEmploymentData, maybeAccountingMethod)
     }
 
     val futureSaveUkPropertyInfo = prePopData.ukProperty match {
@@ -69,12 +72,6 @@ class PrePopulationService @Inject()(val subscriptionDetailsService: Subscriptio
         subscriptionDetailsService.saveOverseasProperty(reference, OverseasPropertyModel(op.overseasPropertyAccountingMethod, op.overseasPropertyStartDate))
     }
 
-    val maybeAccountingMethod = prePopData.selfEmployments.flatMap(_.flatMap(_.businessAccountingMethod).headOption)
-    val futureSaveSelfEmploymentsAccountingMethod = maybeAccountingMethod match {
-      case None => Future.successful(())
-      case Some(accountingMethod) => subscriptionDetailsService.saveSelfEmploymentsAccountingMethod(reference, AccountingMethodModel(accountingMethod))
-    }
-
     val futureSavePrePopFlag = subscriptionDetailsService.savePrePopFlag(reference, prepop = true)
 
     // Wait for futures
@@ -82,7 +79,6 @@ class PrePopulationService @Inject()(val subscriptionDetailsService: Subscriptio
       _ <- futureSaveSelfEmployments
       _ <- futureSaveUkPropertyInfo
       _ <- futureSaveOverseasPropertyInfo
-      _ <- futureSaveSelfEmploymentsAccountingMethod
       _ <- futureSavePrePopFlag
     } yield ()
   }

@@ -18,7 +18,6 @@ package models.common.business
 
 import models.common.business.BusinessNameModel.businessNameRegex
 import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.crypto.{Crypted, Decrypter, Encrypter, PlainText}
 
 import scala.language.postfixOps
 
@@ -30,11 +29,6 @@ case class BusinessNameModel(businessName: String) {
     else
       Some(BusinessNameModel(cleanName))
   }
-
-  def encrypt(encrypter: Encrypter): BusinessNameModel = BusinessNameModel(encrypter.encrypt(PlainText(this.businessName)).value)
-
-  def decrypt(decrypter: Decrypter): BusinessNameModel = BusinessNameModel(decrypter.decrypt(Crypted(this.businessName)).value)
-
 }
 
 object BusinessNameModel {

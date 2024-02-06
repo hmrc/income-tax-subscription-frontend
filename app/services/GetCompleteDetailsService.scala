@@ -42,15 +42,13 @@ class GetCompleteDetailsService @Inject()(subscriptionDetailsService: Subscripti
                               (implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Either[GetCompleteDetailsFailure.type, CompleteDetails]] = {
 
     val fetchAllSelfEmployments = subscriptionDetailsService.fetchAllSelfEmployments(reference)
-    val fetchSelfEmploymentsAccountingMethod = subscriptionDetailsService.fetchSelfEmploymentsAccountingMethod(reference)
     val fetchUKProperty = subscriptionDetailsService.fetchProperty(reference)
     val fetchForeignProperty = subscriptionDetailsService.fetchOverseasProperty(reference)
     val fetchSelectedTaxYear = subscriptionDetailsService.fetchSelectedTaxYear(reference)
     val fetchSoftwareFlag = subscriptionDetailsService.fetchSoftwareFlag(reference)
 
     for {
-      selfEmployments <- fetchAllSelfEmployments
-      selfEmploymentsAccountingMethod <- fetchSelfEmploymentsAccountingMethod
+      (selfEmployments, accountingMethod) <- fetchAllSelfEmployments
       ukProperty <- fetchUKProperty
       foreignProperty <- fetchForeignProperty
       selectedTaxYear <- fetchSelectedTaxYear
@@ -58,7 +56,7 @@ class GetCompleteDetailsService @Inject()(subscriptionDetailsService: Subscripti
     } yield {
       createCompleteDetails(
         selfEmployments,
-        selfEmploymentsAccountingMethod,
+        accountingMethod,
         ukProperty,
         foreignProperty,
         selectedTaxYear,

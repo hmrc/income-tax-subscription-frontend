@@ -17,7 +17,6 @@
 package services
 
 import models._
-import models.common.business.{AccountingMethodModel, BusinessNameModel, BusinessTradeNameModel, SelfEmploymentData}
 import models.common.{OverseasPropertyModel, PropertyModel}
 import org.mockito.Mockito.reset
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
@@ -33,25 +32,11 @@ class PrePopulationServiceSpec extends TestPrePopulationService {
     PrePopSelfEmployment(
       Some("testBusinessName2"), "testBusinessTradeName2", None, None, None, Some(Cash))
   ))
-  private val testSelfEmployments = List(
-    SelfEmploymentData(
-      "",
-      None,
-      Some(BusinessNameModel("testBusines Name1").encrypt(crypto.QueryParameterCrypto)),
-    ),
-    SelfEmploymentData(
-      "",
-      None,
-      Some(BusinessNameModel("testBusinessName2").encrypt(crypto.QueryParameterCrypto)),
-      Some(BusinessTradeNameModel("testBusinessTradeName2"))
-    )
-  )
 
   private val ukProperty = Some(PrePopUkProperty(Some(DateModel("1", "1", "2001")), Some(Cash)))
 
   private val overseasProperty = Some(PrePopOverseasProperty(Some(DateModel("2", "2", "2002")), Some(Accruals)))
 
-  private val testBusinessAccountingMethod = AccountingMethodModel(Accruals) // first found, see selfEmploymentsWithAccountingMethod
   private val testUkProperty = PropertyModel(Some(Cash), Some(DateModel("1", "1", "2001")))
   private val testOverseasProperty = OverseasPropertyModel(Some(Accruals), Some(DateModel("2", "2", "2002")))
 
@@ -68,16 +53,14 @@ class PrePopulationServiceSpec extends TestPrePopulationService {
         mockSaveBusinesses(testReference)
         mockSaveUkProperty(testReference)
         mockSaveOverseasProperty(testReference)
-        mockSaveSelfEmploymentsAccountingMethod(testReference)
         mockSavePrePopFlag(testReference)
 
         await(TestPrePopulationService.prePopulate(testReference, data))
 
         verifyFetchPrePopFlag(testReference)
-        verifySaveBusinesses(1, testReference, testSelfEmployments)
+        verifySaveBusinesses(1, testReference)
         verifySaveUkProperty(1, testReference, testUkProperty)
         verifyOverseasPropertySave(Some(testOverseasProperty), Some(testReference))
-        verifySaveSelfEmploymentsAccountingMethod(1, testReference, testBusinessAccountingMethod)
         verifySavePrePopFlag(1, testReference, value = true)
       }
     }
@@ -89,10 +72,9 @@ class PrePopulationServiceSpec extends TestPrePopulationService {
         await(TestPrePopulationService.prePopulate(testReference, data))
 
         verifyFetchPrePopFlag(testReference)
-        verifySaveBusinesses(0, testReference, testSelfEmployments)
+        verifySaveBusinesses(0, testReference)
         verifySaveUkProperty(0, testReference, testUkProperty)
         verifyOverseasPropertySave(None)
-        verifySaveSelfEmploymentsAccountingMethod(0, testReference, testBusinessAccountingMethod)
         verifySavePrePopFlag(0, testReference, value = true)
       }
     }

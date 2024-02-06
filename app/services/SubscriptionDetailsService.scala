@@ -24,7 +24,7 @@ import models.common._
 import models.common.business._
 import models.{AccountingMethod, Current, DateModel, Next}
 import play.api.mvc.{AnyContent, Request}
-import uk.gov.hmrc.crypto.{ApplicationCrypto, Crypted}
+import uk.gov.hmrc.crypto.{ApplicationCrypto, Decrypter, Encrypter}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import utilities.SubscriptionDataKeys
 import utilities.SubscriptionDataKeys._
@@ -38,6 +38,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector,
                                            applicationCrypto: ApplicationCrypto)
                                           (implicit ec: ExecutionContext) {
+
+  implicit val jsonCrypto: Encrypter with Decrypter = applicationCrypto.JsonCrypto
 
   def deleteAll(reference: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
     incomeTaxSubscriptionConnector.deleteAll(reference)
@@ -76,23 +78,22 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
   def fetchProperty(reference: String)(implicit hc: HeaderCarrier): Future[Option[PropertyModel]] =
     incomeTaxSubscriptionConnector.getSubscriptionDetails[PropertyModel](reference, Property)
 
-  def saveBusinesses(reference: String, selfEmploymentData: Seq[SelfEmploymentData])(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
-
-    def encryptBusinessList(businesses: Seq[SelfEmploymentData]): Seq[SelfEmploymentData] = {
-      businesses map {
-        business =>
-          business.copy(
-            businessName = business.businessName.map(name =>
-              name.encrypt(applicationCrypto.QueryParameterCrypto)
-            ),
-            businessAddress = business.businessAddress.map(address =>
-              address.encrypt(applicationCrypto.QueryParameterCrypto)
-            )
-          )
-      }
-    }
-
-    incomeTaxSubscriptionConnector.saveSubscriptionDetails[Seq[SelfEmploymentData]](reference, BusinessesKey, encryptBusinessList(selfEmploymentData))
+  def saveBusinesses(reference: String, selfEmploymentData: Seq[SelfEmploymentData], accountingMethod: Option[AccountingMethod])
+                    (implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
+    val soleTraderBusinesses = SoleTraderBusinesses(
+      businesses = selfEmploymentData.map { se =>
+        SoleTraderBusiness(
+          id = se.id,
+          confirmed = se.confirmed,
+          startDate = se.businessStartDate.map(_.startDate),
+          name = se.businessName.map(_.businessName),
+          trade = se.businessTradeName.map(_.businessTradeName),
+          address = se.businessAddress.map(_.address).map(address => EncryptingAddress(address.lines, address.postcode))
+        )
+      },
+      accountingMethod = accountingMethod
+    )
+    incomeTaxSubscriptionConnector.saveSubscriptionDetails(reference, SoleTraderBusinessesKey, soleTraderBusinesses)(implicitly, SoleTraderBusinesses.encryptedFormat)
   }
 
   def saveProperty(reference: String, property: PropertyModel)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] =
@@ -170,44 +171,19 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
     }
   }
 
-  def fetchAllSelfEmployments(reference: String)(implicit hc: HeaderCarrier): Future[Seq[SelfEmploymentData]] = {
-
-    def decryptBusinessList(businesses: Seq[SelfEmploymentData]): Seq[SelfEmploymentData] = {
-      businesses map {
-        business =>
-          business.copy(
-            businessName = business.businessName.map(name =>
-              BusinessNameModel(applicationCrypto.QueryParameterCrypto.decrypt(Crypted(name.businessName)).value)
-            ),
-            businessAddress = business.businessAddress.map(address =>
-              address.copy(
-                address = Address(
-                  lines = address.address.lines.map(
-                    line => applicationCrypto.QueryParameterCrypto.decrypt(Crypted(line)).value
-                  ),
-                  postcode = address.address.postcode.map(
-                    postcode => applicationCrypto.QueryParameterCrypto.decrypt(Crypted(postcode)).value
-                  )
-                )
-              )
-            )
-          )
-      }
+  def fetchAllSelfEmployments(reference: String)(implicit hc: HeaderCarrier): Future[(Seq[SelfEmploymentData], Option[AccountingMethod])] = {
+    incomeTaxSubscriptionConnector.getSubscriptionDetails[SoleTraderBusinesses](
+      reference = reference,
+      id = SoleTraderBusinessesKey
+    )(implicitly, SoleTraderBusinesses.encryptedFormat) map {
+      case Some(value) => (value.businesses.map(_.toSelfEmploymentData), value.accountingMethod)
+      case None => (Seq.empty[SelfEmploymentData], None)
     }
-
-    incomeTaxSubscriptionConnector.getSubscriptionDetailsSeq[SelfEmploymentData](reference, BusinessesKey).map(decryptBusinessList)
   }
-
-  def fetchSelfEmploymentsAccountingMethod(reference: String)(implicit hc: HeaderCarrier): Future[Option[AccountingMethod]] =
-    incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod)
-      .map(_.map(_.accountingMethod))
-
-  def saveSelfEmploymentsAccountingMethod(reference: String, accountingMethodModel: AccountingMethodModel)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] =
-    incomeTaxSubscriptionConnector.saveSubscriptionDetails[AccountingMethodModel](reference, BusinessAccountingMethod, accountingMethodModel)
 
   def fetchAllIncomeSources(reference: String)(implicit hc: HeaderCarrier): Future[IncomeSources] = {
     for {
-      selfEmployments <- fetchAllSelfEmployments(reference)
+      (selfEmployments, _) <- fetchAllSelfEmployments(reference)
       ukProperty <- fetchProperty(reference)
       foreignProperty <- fetchOverseasProperty(reference)
     } yield {

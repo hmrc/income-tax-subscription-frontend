@@ -24,14 +24,11 @@ import models.common._
 import models.common.business._
 import models.common.subscription.EnrolmentKey
 import models.usermatching.UserDetailsModel
-import uk.gov.hmrc.crypto.ApplicationCrypto
 import utilities.AccountingPeriodUtil
 
 import java.time.LocalDate
 
-object IntegrationTestModels extends ComponentSpecBase {
-
-  val crypto : ApplicationCrypto = app.injector.instanceOf[ApplicationCrypto]
+object IntegrationTestModels {
 
   val testStartDate: DateModel = DateModel.dateConvert(LocalDate.now)
   private val testOneDayAgo: DateModel = DateModel.dateConvert(LocalDate.now.minusDays(1))
@@ -66,29 +63,31 @@ object IntegrationTestModels extends ComponentSpecBase {
   val testPropertyStartDate: PropertyStartDateModel = PropertyStartDateModel(testValidStartDate)
   private val testPropertyStartDateModel: PropertyStartDateModel = PropertyStartDateModel(DateModel("05", "04", "2017"))
   val testInvalidPropertyStartDate: PropertyStartDateModel = PropertyStartDateModel(testInvalidStartDate)
+
   def testBusiness(id: String, confirmed: Boolean = false): SelfEmploymentData = SelfEmploymentData(
     id = id,
     businessStartDate = Some(BusinessStartDate(DateModel("05", "04", "2017"))),
-    businessName = Some(testBusinessName.encrypt(crypto.QueryParameterCrypto)),
+    businessName = Some(testBusinessName),
     businessTradeName = Some(testBusinessTrade),
-    businessAddress = Some(testBusinessAddress.encrypt(crypto.QueryParameterCrypto)),
+    businessAddress = Some(testBusinessAddress),
     confirmed = confirmed
   )
+
   val testBusinesses: Option[Seq[SelfEmploymentData]] = Some(Seq(SelfEmploymentData(
     id = "12345",
     businessStartDate = Some(BusinessStartDate(DateModel("05", "04", "2017"))),
-    businessName = Some(testBusinessName.encrypt(crypto.QueryParameterCrypto)),
+    businessName = Some(testBusinessName),
     businessTradeName = Some(testBusinessTrade),
-    businessAddress = Some(testBusinessAddress.encrypt(crypto.QueryParameterCrypto))
+    businessAddress = Some(testBusinessAddress)
   )))
   private val tooManyBusinesses = 51
   val testTooManyBusinesses: Seq[SelfEmploymentData] = Array.range(1, tooManyBusinesses).map(i =>
     SelfEmploymentData(
       id = i.toString,
       businessStartDate = Some(BusinessStartDate(DateModel("05", "04", "2017"))),
-      businessName = Some(BusinessNameModel(s"${testBusinessName.businessName} $i").encrypt(crypto.QueryParameterCrypto)),
+      businessName = Some(BusinessNameModel(s"${testBusinessName.businessName} $i")),
       businessTradeName = Some(testBusinessTrade),
-      businessAddress = Some(testBusinessAddress.encrypt(crypto.QueryParameterCrypto))
+      businessAddress = Some(testBusinessAddress)
     )).toSeq
 
   val testFullPropertyModel: PropertyModel = PropertyModel(
@@ -104,7 +103,6 @@ object IntegrationTestModels extends ComponentSpecBase {
   )
 
 
-
   private val testBusinessTradeName: BusinessTradeNameModel = BusinessTradeNameModel("test trade name")
   private val testBusinessStartDate: BusinessStartDate = BusinessStartDate(DateModel("05", "04", "2018"))
   private val testId = "testId"
@@ -118,9 +116,9 @@ object IntegrationTestModels extends ComponentSpecBase {
     Seq(SelfEmploymentData(
       id = testId,
       businessStartDate = Some(testBusinessStartDate),
-      businessName = Some(testBusinessName.encrypt(crypto.QueryParameterCrypto)),
+      businessName = Some(testBusinessName),
       businessTradeName = Some(testBusinessTradeName),
-      businessAddress = Some(BusinessAddressModel(Address(Seq("line 1", "line 2"), Some("TF2 1PF"))).encrypt(crypto.QueryParameterCrypto))
+      businessAddress = Some(BusinessAddressModel(Address(Seq("line 1", "line 2"), Some("TF2 1PF"))))
     ))
 
   lazy val testClientDetails: UserDetailsModel = helpers.IntegrationTestModels.testUserDetails

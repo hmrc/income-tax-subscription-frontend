@@ -17,11 +17,12 @@
 package services.mocks
 
 import connectors.IncomeTaxSubscriptionConnector
-import connectors.httpparser.PostSubscriptionDetailsHttpParser.{PostSubscriptionDetailsSuccessResponse, UnexpectedStatusFailure}
+import connectors.httpparser.PostSubscriptionDetailsHttpParser.{PostSubscriptionDetailsResponse, PostSubscriptionDetailsSuccessResponse, UnexpectedStatusFailure}
 import connectors.httpparser.RetrieveReferenceHttpParser
 import connectors.httpparser.RetrieveReferenceHttpParser.{Created, Existence, RetrieveReferenceResponse}
+import models.AccountingMethod
 import models.common._
-import models.common.business.{AccountingMethodModel, BusinessNameModel, SelfEmploymentData}
+import models.common.business.{BusinessNameModel, SelfEmploymentData}
 import models.status.MandationStatusModel
 import org.mockito.ArgumentMatchers.{any, argThat}
 import org.mockito.Mockito._
@@ -35,6 +36,8 @@ import utilities.SubscriptionDataKeys._
 import utilities.{SubscriptionDataKeys, UnitTestTrait}
 
 import scala.concurrent.Future
+
+//scalastyle:off
 
 trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
 
@@ -53,78 +56,72 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
       (ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(flag))
   }
 
-  def mockSaveOverseasProperty(reference: String) =
+  def mockSaveOverseasProperty(reference: String): Unit =
     setupMockSubscriptionDetailsSaveFunctions(reference, SubscriptionDataKeys.OverseasProperty)
 
-  def mockSaveUkProperty(reference: String) =
+  def mockSaveUkProperty(reference: String): Unit =
     setupMockSubscriptionDetailsSaveFunctions(reference, SubscriptionDataKeys.Property)
 
-  def mockSaveBusinesses(reference: String) =
-    setupMockSubscriptionDetailsSaveFunctions(reference, SubscriptionDataKeys.BusinessesKey)
+  def mockSaveBusinesses(reference: String): Unit =
+    setupMockSubscriptionDetailsSaveFunctions(reference, SubscriptionDataKeys.SoleTraderBusinessesKey)
 
-  def mockSaveIncomeSourceConfirmation(reference: String) =
+  def mockSaveIncomeSourceConfirmation(reference: String): Unit =
     setupMockSubscriptionDetailsSaveFunctions(reference, SubscriptionDataKeys.IncomeSourceConfirmation)
 
-  def verifySaveIncomeSourceConfirmation(reference: String, count: Int) =
+  def verifySaveIncomeSourceConfirmation(reference: String, count: Int): Unit =
     verifySubscriptionDetailsSaveWithField(count = count, field = SubscriptionDataKeys.IncomeSourceConfirmation, reference = reference, wanted = true)
 
-  def mockSaveSelfEmploymentsAccountingMethod(reference: String) =
-    setupMockSubscriptionDetailsSaveFunctions(reference, SubscriptionDataKeys.BusinessAccountingMethod)
-
-  def mockSavePrePopFlag(reference: String) =
+  def mockSavePrePopFlag(reference: String): Unit =
     setupMockSubscriptionDetailsSaveFunctions(reference, SubscriptionDataKeys.PrePopFlag)
 
-  def verifySaveOverseasProperty(count: Int, reference: String, overseasPropertyModel: OverseasPropertyModel) =
+  def verifySaveOverseasProperty(count: Int, reference: String, overseasPropertyModel: OverseasPropertyModel): Unit =
     verifySubscriptionDetailsSaveWithField[OverseasPropertyModel](reference, count, SubscriptionDataKeys.OverseasProperty, overseasPropertyModel)
 
-  def verifySaveUkProperty(count: Int, reference: String, propertyModel: PropertyModel) =
+  def verifySaveUkProperty(count: Int, reference: String, propertyModel: PropertyModel): Unit =
     verifySubscriptionDetailsSaveWithField[PropertyModel](reference, count, Property, propertyModel)
 
   // Businesses get a uuid added - need to create a bespoke matcher which ignores id.
   // Businesses passed in need an empty string for id.
-  class BusinessSequenceMatcher(val expectedSeq: Seq[SelfEmploymentData]) extends ArgumentMatcher[Seq[SelfEmploymentData]] {
-    override def matches(providedSeq: Seq[SelfEmploymentData]): Boolean = {
+  class BusinessSequenceMatcher(val expectedSeq: Seq[SoleTraderBusiness]) extends ArgumentMatcher[Seq[SoleTraderBusiness]] {
+    override def matches(providedSeq: Seq[SoleTraderBusiness]): Boolean = {
       providedSeq.forall(provided => expectedSeq.contains(provided.copy(id = "")))
     }
   }
 
-  def verifySaveBusinesses(count: Int, reference: String, businesses: Seq[SelfEmploymentData]) =
-    verify(mockConnector, times(count)).saveSubscriptionDetails[Seq[SelfEmploymentData]](
+  def verifySaveBusinesses(count: Int, reference: String): Future[PostSubscriptionDetailsResponse] =
+    verify(mockConnector, times(count)).saveSubscriptionDetails[SoleTraderBusinesses](
       ArgumentMatchers.eq(reference),
-      ArgumentMatchers.eq(BusinessesKey),
-      argThat(new BusinessSequenceMatcher(businesses)),
+      ArgumentMatchers.eq(SoleTraderBusinessesKey),
+      ArgumentMatchers.any()
     )(ArgumentMatchers.any(), ArgumentMatchers.any())
 
-  def verifyFetchBusinessName(count: Int, reference: String) =
+  def verifyFetchBusinessName(count: Int, reference: String): Future[Option[BusinessNameModel]] =
     verify(mockConnector, times(count)).getSubscriptionDetails[BusinessNameModel](
       ArgumentMatchers.eq(reference),
       ArgumentMatchers.eq(BusinessName)
     )(ArgumentMatchers.any(), ArgumentMatchers.any())
 
-  def verifyFetchSelectedTaxYear(count: Int, reference: String) =
+  def verifyFetchSelectedTaxYear(count: Int, reference: String): Future[Option[AccountingYearModel]] =
     verify(mockConnector, times(count)).getSubscriptionDetails[AccountingYearModel](
       ArgumentMatchers.eq(reference),
       ArgumentMatchers.eq(SelectedTaxYear)
     )(ArgumentMatchers.any(), ArgumentMatchers.any())
 
-  def verifySaveSelectedTaxYear(count: Int, reference: String) =
+  def verifySaveSelectedTaxYear(count: Int, reference: String): Future[PostSubscriptionDetailsResponse] =
     verify(mockConnector, times(count)).saveSubscriptionDetails[AccountingYearModel](
       ArgumentMatchers.eq(reference),
       ArgumentMatchers.eq(SelectedTaxYear),
       ArgumentMatchers.any()
     )(ArgumentMatchers.any(), ArgumentMatchers.any())
 
-  def verifySaveSelfEmploymentsAccountingMethod(count: Int, reference: String, accountingMethodModel: AccountingMethodModel) =
-    verifySubscriptionDetailsSaveWithField[AccountingMethodModel](reference, count, BusinessAccountingMethod, accountingMethodModel)
-
-  def verifySavePrePopFlag(count: Int, reference: String, value: Boolean) =
+  def verifySavePrePopFlag(count: Int, reference: String, value: Boolean): Future[PostSubscriptionDetailsResponse] =
     verify(mockConnector, times(count)).saveSubscriptionDetails[Boolean](
       ArgumentMatchers.eq(reference),
       ArgumentMatchers.eq(PrePopFlag),
       ArgumentMatchers.eq(value)
     )(ArgumentMatchers.any(), ArgumentMatchers.any())
 
-  def verifyFetchPrePopFlag(reference: String) =
+  def verifyFetchPrePopFlag(reference: String): Future[Option[Nothing]] =
     verify(mockConnector, atLeastOnce())
       .getSubscriptionDetails(ArgumentMatchers.eq(reference), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any())
 
@@ -144,10 +141,10 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
     when(mockConnector.retrieveReference(ArgumentMatchers.eq(utr))(ArgumentMatchers.any())) thenReturn Future.successful(response)
   }
 
-  def mockSaveMandationStatus(reference: String) =
+  def mockSaveMandationStatus(reference: String): Unit =
     setupMockSubscriptionDetailsSaveFunctions(reference, SubscriptionDataKeys.MandationStatus)
 
-  def verifySaveMandationStatus(count: Int, reference: String) =
+  def verifySaveMandationStatus(count: Int, reference: String): Future[PostSubscriptionDetailsResponse] =
     verify(mockConnector, times(count)).saveSubscriptionDetails[MandationStatusModel](
       ArgumentMatchers.eq(reference),
       ArgumentMatchers.eq(SubscriptionDataKeys.MandationStatus),
@@ -284,26 +281,21 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
       maybeOverseasPropertyModel match { case None => ArgumentMatchers.any(); case Some(overseasPropertyModel) => ArgumentMatchers.eq(overseasPropertyModel) }
     )(any(), any())
 
-  protected final def mockFetchAllSelfEmployments(selfEmployments: Seq[SelfEmploymentData] = Seq.empty): Unit = {
-    when(mockConnector.getSubscriptionDetailsSeq[SelfEmploymentData](any(), ArgumentMatchers.eq(SubscriptionDataKeys.BusinessesKey))(any(), any()))
-      .thenReturn(Future.successful(selfEmployments))
-  }
-
-  protected final def mockFetchSelfEmploymentAccountingMethod(accountingMethodModel: Option[AccountingMethodModel]): Unit = {
-    when(mockConnector.getSubscriptionDetails[AccountingMethodModel](any(), ArgumentMatchers.eq(SubscriptionDataKeys.BusinessAccountingMethod))(any(), any()))
-      .thenReturn(Future.successful(accountingMethodModel))
+  protected final def mockFetchAllSelfEmployments(selfEmployments: Seq[SelfEmploymentData] = Seq.empty, accountingMethod: Option[AccountingMethod] = None): Unit = {
+    when(mockConnector.getSubscriptionDetails[SoleTraderBusinesses](any(), ArgumentMatchers.eq(SubscriptionDataKeys.SoleTraderBusinessesKey))(any(), any()))
+      .thenReturn(Future.successful(Some(SoleTraderBusinesses(selfEmployments.map(_.toSoleTraderBusiness), accountingMethod = accountingMethod))))
   }
 
   protected final def verifySubscriptionDetailsDeleteAll(deleteAll: Option[Int]): Unit = {
     deleteAll map (count => verify(mockConnector, times(count)).deleteAll(ArgumentMatchers.any())(ArgumentMatchers.any()))
   }
 
-  protected final def mockFetchIncomeSourceConfirmation(flag: Option[Boolean] ): Unit = {
+  protected final def mockFetchIncomeSourceConfirmation(flag: Option[Boolean]): Unit = {
     when(mockConnector.getSubscriptionDetails[Boolean](any(), ArgumentMatchers.eq(SubscriptionDataKeys.IncomeSourceConfirmation))(any(), any()))
       .thenReturn(Future.successful(flag))
   }
 
-  protected final def mockSaveIncomeSourceConfirmation(flag: Option[Boolean] ): Unit = {
+  protected final def mockSaveIncomeSourceConfirmation(flag: Option[Boolean]): Unit = {
     when(mockConnector.getSubscriptionDetails[Boolean](any(), ArgumentMatchers.eq(SubscriptionDataKeys.IncomeSourceConfirmation))(any(), any()))
       .thenReturn(Future.successful(flag))
   }

@@ -17,14 +17,15 @@
 package services
 
 import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscriptionDetailsSuccessResponse
-import models.DateModel
+import models.common.SoleTraderBusinesses
 import models.common.business._
+import models.{Cash, DateModel}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{times, verify}
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import services.mocks.{MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService}
-import utilities.SubscriptionDataKeys.{BusinessAccountingMethod, BusinessesKey}
+import utilities.SubscriptionDataKeys.SoleTraderBusinessesKey
 import utilities.UnitTestTrait
 
 class RemoveBusinessServiceSpec extends UnitTestTrait
@@ -42,16 +43,6 @@ class RemoveBusinessServiceSpec extends UnitTestTrait
       businessAddress = Some(BusinessAddressModel(Address(Seq("line 1"), Some("ZZ1 1ZZ"))))
     )
 
-  private def encryptedTestBusiness(id: String) =
-    SelfEmploymentData(
-      id = id,
-      businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
-      businessName = Some(BusinessNameModel("business name").encrypt(crypto.QueryParameterCrypto)),
-      businessTradeName = Some(BusinessTradeNameModel("business trade")),
-      businessAddress = Some(BusinessAddressModel(Address(Seq("line 1"), Some("ZZ1 1ZZ"))) encrypt (crypto.QueryParameterCrypto))
-    )
-
-
   "mock RemoveBusinessService" must {
 
     object TestRemoveBusiness extends RemoveBusinessService(mockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService)
@@ -59,26 +50,26 @@ class RemoveBusinessServiceSpec extends UnitTestTrait
     "delete and save business details and accounting method" when {
       "a reference, business id and single selfEmploymentsData are passed into the service" in {
         mockSaveBusinesses(testReference)
-        mockDeleteSubscriptionDetails(BusinessAccountingMethod)(Right(DeleteSubscriptionDetailsSuccessResponse))
-        val result = await(TestRemoveBusiness.deleteBusiness(testReference, testBusinessId, Seq(testBusiness("id"))))
+        mockDeleteSubscriptionDetails(SoleTraderBusinessesKey)(Right(DeleteSubscriptionDetailsSuccessResponse))
+        val result = await(TestRemoveBusiness.deleteBusiness(testReference, testBusinessId, Seq(testBusiness("id")), Some(Cash)))
 
         result.isRight shouldBe true
-        verifyDeleteSubscriptionDetails(BusinessAccountingMethod, 1)
-        verifySaveBusinesses(1, testReference, Seq())
+        verifyDeleteSubscriptionDetails(SoleTraderBusinessesKey, 1)
+        verifySaveBusinesses(1, testReference)
       }
     }
 
     "delete and save business details but not accounting method" when {
       "a reference, business id and multiple selfEmploymentsData are passed into the service" in {
         mockSaveBusinesses(testReference)
-        val result = await(TestRemoveBusiness.deleteBusiness(testReference, testBusinessId, Seq(testBusiness("id"), testBusiness("id1"))))
+        val result = await(TestRemoveBusiness.deleteBusiness(testReference, testBusinessId, Seq(testBusiness("id"), testBusiness("id1")), Some(Cash)))
 
         result.isRight shouldBe true
-        verifyDeleteSubscriptionDetails(BusinessAccountingMethod, 0)
-        verify(mockConnector, times(1)).saveSubscriptionDetails[Seq[SelfEmploymentData]](
+        verifyDeleteSubscriptionDetails(SoleTraderBusinessesKey, 0)
+        verify(mockConnector, times(1)).saveSubscriptionDetails[SoleTraderBusinesses](
           ArgumentMatchers.eq(testReference),
-          ArgumentMatchers.eq(BusinessesKey),
-          ArgumentMatchers.eq(Seq(encryptedTestBusiness("id1")))
+          ArgumentMatchers.eq(SoleTraderBusinessesKey),
+          ArgumentMatchers.eq(SoleTraderBusinesses(Seq(testBusiness("id1").toSoleTraderBusiness), Some(Cash)))
         )(ArgumentMatchers.any(), ArgumentMatchers.any())
       }
     }

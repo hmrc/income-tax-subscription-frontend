@@ -22,18 +22,16 @@ object SubscriptionDataKeys {
   val PropertyAccountingMethod = "PropertyAccountingMethod"
   val OverseasPropertyAccountingMethod = "OverseasPropertyAccountingMethod"
   val PropertyStartDate = "PropertyStartDate"
-  val BusinessAccountingMethod = "BusinessAccountingMethod"
   val OverseasPropertyStartDate = "OverseasPropertyStartDate"
   val Property = "Property"
   val OverseasProperty = "OverseasProperty"
   val IncomeSourceConfirmation = "IncomeSourceConfirmation"
+  val SoleTraderBusinessesKey = "SoleTraderBusinesses"
 
   val MandationStatus = "MandationStatus"
 
   val subscriptionId = "subscriptionId"
   val lastUpdatedTimestamp = "lastUpdatedTimestamp"
-
-  val BusinessesKey = "Businesses"
 
   //Boolean flag indicating if pre pop complete, even if there was no pre pop data
   val PrePopFlag = "PrePopFlag"

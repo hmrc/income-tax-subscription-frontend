@@ -19,15 +19,12 @@ package controllers.individual.tasklist.addbusiness
 import config.featureswitch.FeatureSwitch.{ForeignProperty => ForeignPropertyFeature}
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.IndividualURI
-import helpers.IntegrationTestModels.{testBusinesses, testFullOverseasPropertyModel, testFullPropertyModel}
+import helpers.IntegrationTestConstants.IndividualURI.taskListURI
+import helpers.IntegrationTestModels.{testAccountingMethod, testBusiness, testBusinesses, testFullOverseasPropertyModel, testFullPropertyModel}
 import helpers.servicemocks.AuthStub
-import models.{No, Yes}
 import play.api.http.Status._
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys
-import helpers.IntegrationTestConstants.IndividualURI.taskListURI
-import helpers.IntegrationTestModels.{testAccountingMethod, testBusiness, testBusinesses, testFullOverseasPropertyModel, testFullPropertyModel}
 
 class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
 
@@ -44,8 +41,7 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
 
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessesKey, NO_CONTENT)
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessAccountingMethod, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, NO_CONTENT)
 
@@ -61,8 +57,8 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
       "there are multiple income sources added" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessesKey, OK, Json.toJson(testBusinesses))
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
+
+        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(NO_CONTENT, testBusinesses.getOrElse(Seq.empty), Some(testAccountingMethod.accountingMethod))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
 
@@ -83,12 +79,12 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
       "redirect to the task list page and save the income source section completion" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-          SubscriptionDataKeys.BusinessesKey,
+
+        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(
           OK,
-          Json.toJson(Seq(testBusiness("12345", confirmed = true)))
+          Seq(testBusiness("12345", confirmed = true)),
+          Some(testAccountingMethod.accountingMethod)
         )
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
 
@@ -110,12 +106,11 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
       "redirect to the task list page and not save an income source section completion" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-          SubscriptionDataKeys.BusinessesKey,
+        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(
           OK,
-          Json.toJson(Seq(testBusiness("12345", confirmed = true), testBusiness("54321")))
+          Seq(testBusiness("12345", confirmed = true), testBusiness("54321")),
+          Some(testAccountingMethod.accountingMethod)
         )
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessAccountingMethod, OK, Json.toJson(testAccountingMethod))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
 
@@ -135,8 +130,7 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
       "redirect to the task list page and not save an income source section completion" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessesKey, NO_CONTENT)
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.BusinessAccountingMethod, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, NO_CONTENT)
 
