@@ -59,7 +59,7 @@ class ReturnToClientDetailsControllerSpec extends AgentControllerBaseSpec
           subscriptionRequestWithName.post(ReturnToClientDetailsForm.returnToClientDetailsForm, ContinueWithCurrentClient)
         )
         status(result) must be(Status.SEE_OTHER)
-        redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show.url)
+        redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.AccountingPeriodCheckController.show.url)
       }
     }
     "Sign Up Another Client is selected" should {
