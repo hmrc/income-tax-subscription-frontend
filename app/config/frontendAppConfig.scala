@@ -135,16 +135,6 @@ trait AppConfig {
   val eligibilityFeatureSwitchUrl: String
 
 
-
-  def languageMap: Map[String, Lang] = Map(
-    "english" -> Lang("en"),
-    "cymraeg" -> Lang("cy")
-  )
-
-  def routeToSwitchLanguage: String => Call = (lang: String) => controllers.individual.routes.LanguageSwitchController.switchToLanguage(lang)
-
-  def routeToSwitchAgentLanguage: String => Call = (lang: String) => controllers.agent.routes.LanguageSwitchController.switchToLanguage(lang)
-
   def betaFeedbackUrl: String
 
   def betaFeedbackUnauthenticatedUrl: String

@@ -49,9 +49,6 @@ GET         /declined-sign-up-next-year                          controllers.ind
 GET         /what-you-need-to-do                                 controllers.individual.WhatYouNeedToDoController.show
 POST         /what-you-need-to-do                                controllers.individual.WhatYouNeedToDoController.submit
 
-#Language
-GET         /language/:lang                                      controllers.individual.LanguageSwitchController.switchToLanguage(lang: String)
-
 ################## Business Routes
 
 #What Tax Year To Sign Up Routes

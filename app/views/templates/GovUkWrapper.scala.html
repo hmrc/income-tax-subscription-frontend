@@ -19,6 +19,7 @@
 @import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
 @import views.html.templates.FullWidthMainContentLayout
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage._
 
 @this(
     hmrcLayout: HmrcLayout,
@@ -33,10 +34,30 @@
     hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
     hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
     fullWidthMainContentLayout: FullWidthMainContentLayout,
-    defaultMainContent: TwoThirdsMainContent
+    defaultMainContent: TwoThirdsMainContent,
+    hmrcStandardPage: HmrcStandardPage
 )
 
-@(title: String, serviceName: String, serviceUrl: String, optForm: Option[Form[_]] = None, backLink: Option[String] = None, showSignOutLink: Boolean = true, fullWidth: Boolean = false, additionalScripts: Option[Html] = None)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
+@(title: String, serviceName: Option[String], serviceUrl: String, optForm: Option[Form[_]] = None, backLink: Option[String] = None, showSignOutLink: Boolean = true, fullWidth: Boolean = false, additionalScripts: Option[Html] = None)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
+
+@hmrcStandardPage(HmrcStandardPageParams(
+    serviceURLs = ServiceURLs(
+        serviceUrl = Some(serviceUrl),
+        signOutUrl = if(showSignOutLink) Some(controllers.routes.SignOutController.signOut.url) else None
+    ),
+    banners = Banners(
+        phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedbackUnauthenticatedUrl)),
+        userResearchBanner = Some(UserResearchBanner(url = appConfig.urBannerUrl))
+    ),
+    templateOverrides = TemplateOverrides(
+        additionalHeadBlock = Some(additionalHeadBlock)
+    ),
+    serviceName = serviceName,
+    isWelshTranslationAvailable = true,
+    pageTitle = Some(title),
+    backLink = backLink.map(url => BackLink(href = url))
+))(content)
+
 
 @content = {
 
@@ -69,16 +90,5 @@
     }
 }
 
-@hmrcLayout(
-    mainContentLayout = if(fullWidth) { Some(fullWidthMainContentLayout(_)) } else { Some(defaultMainContent(_)) },
-    pageTitle = Some(title),
-    additionalHeadBlock = Some(additionalHeadBlock),
-    serviceName = Some(serviceName),
-    isWelshTranslationAvailable = true,
-    serviceUrl = Some(serviceUrl),
-    backLinkUrl = backLink,
-    signOutUrl = if(showSignOutLink) Some(controllers.routes.SignOutController.signOut.url) else None,
-    phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedbackUnauthenticatedUrl)),
-    userResearchBannerUrl = Some(appConfig.urBannerUrl)
-)(content)
+
 
