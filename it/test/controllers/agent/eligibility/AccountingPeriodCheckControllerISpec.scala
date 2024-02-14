@@ -66,7 +66,7 @@ class AccountingPeriodCheckControllerISpec extends ComponentSpecBase {
 
     "have a view with a back link" in new GetSetup {
       val backLink: Element = doc.getGovukBackLink
-      backLink.attr("href") mustBe controllers.agent.eligibility.routes.PropertyTradingStartAfterController.show().url
+      backLink.attr("href") mustBe controllers.agent.matching.routes.ReturnToClientDetailsController.show.url
       backLink.text mustBe AccountingPeriodCheckMessages.back
     }
 

@@ -218,7 +218,7 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
   }
 
   private def goToSignUpClient(): Result = {
-      Redirect(controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show)
+    Redirect(controllers.agent.eligibility.routes.AccountingPeriodCheckController.show)
   }
 
   private def goToCannotTakePart: Result =

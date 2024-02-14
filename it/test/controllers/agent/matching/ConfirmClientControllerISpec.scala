@@ -159,7 +159,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
         AuditStub.verifyAudit()
       }
     }
-    
+
 
     "the client does not have an SAUTR" should {
       "redirect to the sign up for self assessment page" in {
@@ -199,7 +199,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           AgentServicesStub.stubClientRelationship(testARN, testNino, exists = true)
           EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
           UserLockoutStub.stubUserIsNotLocked(testARN)
-          MandationStatusStub.stubGetMandationStatus(testNino,testUtr)(Voluntary,Voluntary)
+          MandationStatusStub.stubGetMandationStatus(testNino, testUtr)(Voluntary, Voluntary)
 
           When("I call POST /confirm-client")
           val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
@@ -207,7 +207,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           Then("The result must have a status of SEE_OTHER and redirect to Income Source")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(AgentURI.incomeSourcesEligibilityURI)
+            redirectURI(controllers.agent.eligibility.routes.AccountingPeriodCheckController.show.url)
           )
 
           val session = getSessionMap(res)

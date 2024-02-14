@@ -73,7 +73,7 @@ class ReturnToClientDetailsController @Inject()(val auditingService: AuditingSer
             )
           ),
         {
-          case ReturnToClientDetailsModel.ContinueWithCurrentClient => Redirect(controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show)
+          case ReturnToClientDetailsModel.ContinueWithCurrentClient => Redirect(controllers.agent.eligibility.routes.AccountingPeriodCheckController.show)
           case ReturnToClientDetailsModel.SignUpAnotherClient => Redirect(controllers.agent.routes.AddAnotherClientController.addAnother())
         }
       )

@@ -58,7 +58,7 @@ class ReturnToClientDetailsControllerISpec extends ComponentSpecBase {
         Then("Should return a SEE_OTHER with a redirect location of Agent Service Account")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(controllers.agent.eligibility.routes.OtherSourcesOfIncomeController.show.url)
+          redirectURI(controllers.agent.eligibility.routes.AccountingPeriodCheckController.show.url)
         )
       }
       "selecting the Sign Up Another Client radio button" in {
