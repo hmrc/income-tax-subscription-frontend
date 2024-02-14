@@ -71,9 +71,6 @@ GET         /add-another                            controllers.agent.AddAnother
 # No NINO Routes
 GET         /register-for-SA                        controllers.agent.matching.NoSAController.show
 
-#Language
-GET         /language/:lang                         controllers.agent.LanguageSwitchController.switchToLanguage(lang: String)
-
 ######################### Business Routes
 
 #What Tax Year To Sign Up Routes

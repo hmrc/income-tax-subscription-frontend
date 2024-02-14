@@ -34,7 +34,7 @@
 
 @govukWrapper(
     title = prefixedTitle,
-    serviceName = messages("agent.base.service-name"),
+    serviceName = Some(messages("agent.base.service-name")),
     serviceUrl = appConfig.govukGuidanceITSASignUpAgentLink,
     optForm = optForm,
     backLink = backLink,
