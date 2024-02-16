@@ -214,7 +214,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
         "the user has a utr" when {
           "the client is eligible" when {
             "the client has no prepop data, prepop and ITSA mandation status are on" should {
-              s"redirect user to ${controllers.agent.eligibility.routes.AccountingPeriodCheckController.show.url}" in withController { controller =>
+              s"redirect user to ${controllers.agent.matching.routes.HomeController.home.url}" in withController { controller =>
                 mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
                 mockGetEligibilityStatus(utr)(Future.successful(Right(eligibleWithoutPrePop)))
                 mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
@@ -227,7 +227,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
                 val result = await(callSubmit(controller))
 
                 status(result) mustBe SEE_OTHER
-                redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.AccountingPeriodCheckController.show.url)
+                redirectLocation(result) mustBe Some(controllers.agent.matching.routes.HomeController.home.url)
 
                 val session = result.session(request)
 
@@ -243,7 +243,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
             }
 
             "the client has prepop data, prepop and ITSA mandation status are on" should {
-              s"redirect user to ${controllers.agent.eligibility.routes.AccountingPeriodCheckController.show.url}" +
+              s"redirect user to ${controllers.agent.matching.routes.HomeController.home.url}" +
                 s" after saving prepop data" in withController { controller =>
                 mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
                 mockGetEligibilityStatus(utr)(Future.successful(Right(eligibleWithPrePop)))
@@ -258,7 +258,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
                 val result = await(callSubmit(controller))
 
                 status(result) mustBe SEE_OTHER
-                redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.AccountingPeriodCheckController.show.url)
+                redirectLocation(result) mustBe Some(controllers.agent.matching.routes.HomeController.home.url)
 
                 val session = result.session(request)
 
@@ -277,7 +277,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
           "the client is ineligible only for the current year" when {
             "the client has no prepop" when {
 
-              s"redirect user to ${controllers.agent.eligibility.routes.AccountingPeriodCheckController.show.url}" in withController { controller =>
+              s"redirect user to ${controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url}" in withController { controller =>
                 mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
                 mockGetEligibilityStatus(utr)(Future.successful(Right(ineligibleForCurrentYearWithoutPrePop)))
                 setupMockPrePopulateSave(testReference)
@@ -289,7 +289,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
                 val result = await(callSubmit(controller))
 
                 status(result) mustBe SEE_OTHER
-                redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.AccountingPeriodCheckController.show.url)
+                redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
 
                 val session = result.session(request)
 
@@ -304,7 +304,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
             "the client has prepop" when {
               "prepop feature switch is on" should {
 
-                s"redirect user to ${controllers.agent.eligibility.routes.AccountingPeriodCheckController.show.url}" in withController { controller =>
+                s"redirect user to ${controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url}" in withController { controller =>
                   mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
                   mockGetEligibilityStatus(utr)(Future.successful(Right(ineligibleForCurrentYearWithPrePop)))
                   setupMockPrePopulateSave(testReference)
@@ -316,7 +316,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
                   val result = await(callSubmit(controller))
 
                   status(result) mustBe SEE_OTHER
-                  redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.AccountingPeriodCheckController.show.url)
+                  redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
 
                   val session = result.session(request)
 
@@ -330,7 +330,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
                 }
               }
               "prepop feature switch is off" should {
-                s"redirect user to ${controllers.agent.eligibility.routes.AccountingPeriodCheckController.show.url}" in withController { controller =>
+                s"redirect user to ${controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url}" in withController { controller =>
                   mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
                   mockGetEligibilityStatus(utr)(Future.successful(Right(ineligibleForCurrentYearWithPrePop)))
                   setupMockPrePopulateSave(testReference)
@@ -342,7 +342,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
                   val result = await(callSubmit(controller))
 
                   status(result) mustBe SEE_OTHER
-                  redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.AccountingPeriodCheckController.show.url)
+                  redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
 
                   val session = result.session(request)
 

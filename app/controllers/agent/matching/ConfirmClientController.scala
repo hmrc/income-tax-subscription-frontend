@@ -201,7 +201,7 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
           case EligibilityStatus(thisYear, _, prepop) =>
             handlePrepop(reference, prepop) flatMap { _ =>
               withMandationStatus(nino, utr) { mandationStatus =>
-                goToSignUpClient()
+                goToSignUpClient(nextYearOnly = !thisYear)
                   .withJourneyState(AgentUserMatched)
                   .addingToSession(ITSASessionKeys.NINO -> nino)
                   .addingToSession(ITSASessionKeys.UTR -> utr)
@@ -217,8 +217,12 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
     }
   }
 
-  private def goToSignUpClient(): Result = {
-    Redirect(controllers.agent.eligibility.routes.AccountingPeriodCheckController.show)
+  private def goToSignUpClient(nextYearOnly: Boolean): Result = {
+    if (nextYearOnly) {
+      Redirect(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show)
+    } else {
+      Redirect(controllers.agent.matching.routes.HomeController.home)
+    }
   }
 
   private def goToCannotTakePart: Result =

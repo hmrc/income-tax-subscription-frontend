@@ -190,7 +190,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
     }
 
     "the agent is fully qualified" when {
-      "the user is eligible" should {
+      "the user is eligible for the current tax year" should {
         "redirect to the home page" in {
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -204,10 +204,39 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           When("I call POST /confirm-client")
           val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
 
-          Then("The result must have a status of SEE_OTHER and redirect to Income Source")
+          Then("The result must have a status of SEE_OTHER and redirect to the home controller")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(controllers.agent.eligibility.routes.AccountingPeriodCheckController.show.url)
+            redirectURI(controllers.agent.matching.routes.HomeController.home.url)
+          )
+
+          val session = getSessionMap(res)
+          session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
+          session.get(ITSASessionKeys.NINO) mustBe Some(testNino)
+          session.get(ITSASessionKeys.UTR) mustBe Some(testUtr)
+
+          Then("The client matching request must have been audited")
+          AuditStub.verifyAudit()
+        }
+      }
+      "the user is eligible for the next tax year only" should {
+        "redirect to the cannot sign up for this year page" in {
+          Given("I setup the wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          AuthenticatorStub.stubMatchFound(testNino, Some(testUtr))
+          SubscriptionStub.stubGetNoSubscription()
+          AgentServicesStub.stubClientRelationship(testARN, testNino, exists = true)
+          EligibilityStub.stubEligibilityResponseBoth(testUtr)(currentYearResponse = false, nextYearResponse = true)
+          UserLockoutStub.stubUserIsNotLocked(testARN)
+          MandationStatusStub.stubGetMandationStatus(testNino, testUtr)(Voluntary, Voluntary)
+
+          When("I call POST /confirm-client")
+          val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
+
+          Then("The result must have a status of SEE_OTHER and redirect to cannot sign up for this year")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
           )
 
           val session = getSessionMap(res)

@@ -17,6 +17,7 @@
 package controllers.agent.matching
 
 import auth.agent.StatelessController
+import common.Constants.ITSASessionKeys
 import config.AppConfig
 import forms.agent.ReturnToClientDetailsForm
 import models.ReturnToClientDetailsModel
@@ -73,7 +74,12 @@ class ReturnToClientDetailsController @Inject()(val auditingService: AuditingSer
             )
           ),
         {
-          case ReturnToClientDetailsModel.ContinueWithCurrentClient => Redirect(controllers.agent.eligibility.routes.AccountingPeriodCheckController.show)
+          case ReturnToClientDetailsModel.ContinueWithCurrentClient =>
+            if (request.session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY).contains("true")) {
+              Redirect(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show)
+            } else {
+              Redirect(controllers.agent.matching.routes.HomeController.home)
+            }
           case ReturnToClientDetailsModel.SignUpAnotherClient => Redirect(controllers.agent.routes.AddAnotherClientController.addAnother())
         }
       )
