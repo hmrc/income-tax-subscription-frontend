@@ -77,7 +77,7 @@ class AccountingPeriodCheckController @Inject()(val auditingService: AuditingSer
             if (nextYearOnly)
               Redirect(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show)
             else
-              Redirect(controllers.agent.matching.routes.HomeController.home)
+              Redirect(controllers.agent.eligibility.routes.ClientCanSignUpController.show())
           case No =>
             auditingService.audit(EligibilityAnswerAuditModel(eligible = false, "no", "standardAccountingPeriod", user.arn))
             Redirect(routes.CannotTakePartController.show)

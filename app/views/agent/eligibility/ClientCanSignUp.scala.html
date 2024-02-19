@@ -1,0 +1,66 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import forms.agent.ClientCanSignUpForm
+@import forms.submapping.YesNoMapping
+@import models.{No, Yes}
+@import views.html.templates.AgentMainTemplate
+@import views.html.helpers.RadioHelper
+@import views.html.helpers.ContinueButton
+
+@this(
+    mainTemplate: AgentMainTemplate,
+    form : FormWithCSRF,
+    radioHelper: RadioHelper,
+    continueButton: ContinueButton
+)
+
+@(clientCanSignUpForm: Form[YesNo], postAction: Call, clientName: String, clientNino: String, backUrl: String)(implicit request: Request[_], messages: Messages)
+
+@mainTemplate(title = messages("agent.client-can-sign-up.heading"), optForm = Some(clientCanSignUpForm), backLink = Some(backUrl)) {
+
+    <span class="govuk-caption-l">
+      @messages("agent.client-can-sign-up.caption", clientName, clientNino)
+    </span>
+
+    <h1 class="govuk-heading-l">
+      @messages("agent.client-can-sign-up.heading")
+    </h1>
+
+    @form(action = postAction) {
+
+        @radioHelper(
+            field = clientCanSignUpForm(ClientCanSignUpForm.fieldName),
+            legend = messages("agent.client-can-sign-up.question"),
+            isPageHeading = false,
+            headingClasses = "",
+            radioItems = Seq(
+                RadioItem(
+                    content = Text(messages("agent.client-can-sign-up.sign-up-name", clientName)),
+                    value = Some(YesNoMapping.option_yes)
+                ),
+                RadioItem(
+                    content = Text(messages("agent.client-can-sign-up.check-another")),
+                    value = Some(YesNoMapping.option_no)
+                )
+            )
+        )
+
+        @continueButton()
+
+    }
+
+}

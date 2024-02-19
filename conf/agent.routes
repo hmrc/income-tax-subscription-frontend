@@ -29,6 +29,10 @@ POST        /eligibility/property-start-date        controllers.agent.eligibilit
 GET         /eligibility/sole-trader-start-date     controllers.agent.eligibility.SoleTraderController.show()
 POST        /eligibility/sole-trader-start-date     controllers.agent.eligibility.SoleTraderController.submit()
 
+# Client Can Sign Up Page
+GET         /can-sign-up                            controllers.agent.eligibility.ClientCanSignUpController.show()
+POST        /can-sign-up                            controllers.agent.eligibility.ClientCanSignUpController.submit()
+
 GET         /income-source                          controllers.agent.tasklist.addbusiness.WhatIncomeSourceToSignUpController.show()
 POST        /income-source                          controllers.agent.tasklist.addbusiness.WhatIncomeSourceToSignUpController.submit()
 

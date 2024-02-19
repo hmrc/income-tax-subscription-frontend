@@ -20,7 +20,6 @@ import forms.agent.OverseasPropertyStartDateForm.{overseasPropertyStartDateForm,
 import forms.formatters.DateModelMapping.{day, month, year}
 import forms.validation.testutils.DataMap.DataMap
 import models.DateModel
-import models.common.OverseasPropertyStartDateModel
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.data.{Form, FormError}

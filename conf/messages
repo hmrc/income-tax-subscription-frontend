@@ -580,6 +580,14 @@ agent.cannot-sign-up.paragraph1                                 = Your client ca
 agent.cannot-sign-up.yes-no-radio-helper.heading                = Would you like to sign up your client for the next tax year?
 error.agent.cannot-sign-up.invalid                              = You must select ‘yes’ or ‘no’
 
+# Agent Client Can Sign Up Page
+agent.client-can-sign-up.heading                                = You can sign up this client
+agent.client-can-sign-up.caption                                = {0} | {1}
+agent.client-can-sign-up.question                               = What do you want to do next?
+agent.client-can-sign-up.sign-up-name                           = Sign up {0}
+agent.client-can-sign-up.check-another                          = Check if I can sign up another client
+error.agent.client-can-sign-up.invalid                          = Select if you want to sign up this client or check if you can sign up another client.
+
 # Agent declined sign up
 agent.declined-sign-up-next-year.heading                        = What you need to do
 agent.declined-sign-up-next-year.para                           = You’ve chosen not to sign up your client for Making Tax Digital for Income Tax.
