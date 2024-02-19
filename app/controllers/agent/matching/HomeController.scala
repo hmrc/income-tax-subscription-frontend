@@ -47,6 +47,7 @@ class HomeController @Inject()(val auditingService: AuditingService,
       (alreadyInSignUp, ninoPresent, utrPresent, arnMaybe) match {
         // this session has already passed through the throttle
         case (true, _, _, _) => Future.successful(Redirect(controllers.agent.routes.WhatYouNeedToDoController.show()))
+
         // this session is new, has full data
         case (_, true, true, _) =>
           throttlingService.throttled(AgentStartOfJourneyThrottle) {

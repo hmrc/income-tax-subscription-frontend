@@ -16,6 +16,7 @@
 
 package views.agent
 
+import config.featureswitch.FeatureSwitch.EOPSContent
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.HtmlFormat
@@ -26,6 +27,11 @@ import java.time.format.DateTimeFormatter
 import scala.util.Random
 
 class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(EOPSContent)
+  }
 
   private val nameLengthCharacters = 10
   private val clientName = Random.alphanumeric.take(nameLengthCharacters).mkString
@@ -194,7 +200,13 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
           numberedList.selectNth("li", 2).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.NotificationBanner.bulletTwo
         }
 
-        "has a third point" in {
+        "has a third point when feature switch is enabled" in {
+          enable(EOPSContent)
+          numberedList.selectNth("li", 3).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.NotificationBanner.bulletThreeFeatureSwitchEnabled
+        }
+
+        "has a third point when feature switch is disabled" in {
+          disable(EOPSContent)
           numberedList.selectNth("li", 3).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.NotificationBanner.bulletThree
         }
       }
@@ -257,7 +269,13 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
           numberedList.selectNth("li", 3).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.NotificationBanner.bulletThree
         }
 
-        "has a forth point" in {
+        "has a forth point when feature switch is enabled" in {
+          enable(EOPSContent)
+          numberedList.selectNth("li", 4).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.NotificationBanner.bulletFourFeatureSwitchEnabled
+        }
+
+        "has a forth point when feature switch is disabled" in {
+          disable(EOPSContent)
           numberedList.selectNth("li", 4).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.NotificationBanner.bulletFour
         }
 
@@ -345,6 +363,10 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
           val date: String = AccountingPeriodUtil.getFinalDeclarationDate(true).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
           s"Send an end of period statement and submit a final declaration by $date."
         }
+        val bulletThreeFeatureSwitchEnabled: String = {
+          val date: String = AccountingPeriodUtil.getFinalDeclarationDate(true).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
+          s"Submit your client’s final declaration by $date"
+        }
         val bulletFour: String = "Tell HMRC if they stop trading or start a new business."
       }
 
@@ -364,6 +386,7 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
         val bulletTwo: String = "Use software to send us quarterly updates."
         val bulletThree: String = "Complete any missing quarterly updates (if you have chosen to sign up for the current tax year)."
         val bulletFour: String = "Send an end of period statement and submit a final declaration by 31 January following the end of the tax year."
+        val bulletFourFeatureSwitchEnabled: String = "Submit your client’s final declaration by 31 January following the end of the tax year."
         val bulletFive: String = "Tell HMRC if they stop trading or start a new business."
       }
 

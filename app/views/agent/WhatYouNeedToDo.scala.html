@@ -19,6 +19,8 @@
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 @import utilities.AccountingPeriodUtil
 @import uk.gov.hmrc.play.language.LanguageUtils
+@import config.featureswitch.FeatureSwitchingImpl
+@import config.featureswitch.FeatureSwitch.EOPSContent
 
 @this(
   mainTemplate: AgentMainTemplate,
@@ -28,7 +30,8 @@
   languageUtils: LanguageUtils,
   govukInsetText : GovukInsetText,
   hmrcPageHeading: HmrcPageHeading,
-  govukWarningText: GovukWarningText
+  govukWarningText: GovukWarningText,
+  featureSwitching: FeatureSwitchingImpl
 )
 
 @(postAction:Call, eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, clientName: String, clientNino: String)(implicit request: Request[_], messages: Messages)
@@ -93,7 +96,11 @@
   <ol class="govuk-list govuk-list--number">
     <li>@messages("agent.what-you-need-to-do.voluntary-eligible-next-year-only.bullet-1")</li>
     <li>@messages("agent.what-you-need-to-do.voluntary-eligible-next-year-only.bullet-2")</li>
+    @if(featureSwitching.isEnabled(EOPSContent)) {
+      <li>@messages("agent.what-you-need-to-do.voluntary-eligible-next-year-only.bullet-4", languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(true)))</li>
+    } else {
     <li>@messages("agent.what-you-need-to-do.voluntary-eligible-next-year-only.bullet-3", languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(true)))</li>
+    }
   </ol>
 
   @govukInsetText(InsetText(content = Text(messages("agent.what-you-need-to-do.voluntary-eligible-next-year-only.inset-text.para", AccountingPeriodUtil.getCurrentTaxEndYear.toString))))
@@ -106,7 +113,11 @@
     <li>@messages("agent.what-you-need-to-do.voluntary-and-eligible.bullet-1")</li>
     <li>@messages("agent.what-you-need-to-do.voluntary-and-eligible.bullet-2")</li>
     <li>@messages("agent.what-you-need-to-do.voluntary-and-eligible.bullet-3")</li>
-    <li>@messages("agent.what-you-need-to-do.voluntary-and-eligible.bullet-4")</li>
+    @if(featureSwitching.isEnabled(EOPSContent)) {
+      <li>@messages("agent.what-you-need-to-do.voluntary-and-eligible.bullet-5")</li>
+    } else {
+      <li>@messages("agent.what-you-need-to-do.voluntary-and-eligible.bullet-4")</li>
+    }
   </ol>
 
   @govukInsetText(InsetText(content = Text(messages("agent.what-you-need-to-do.voluntary-and-eligible.inset-text.para"))))
