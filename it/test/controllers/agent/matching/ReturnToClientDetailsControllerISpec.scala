@@ -16,6 +16,7 @@
 
 package controllers.agent.matching
 
+import common.Constants.ITSASessionKeys
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import models.ReturnToClientDetailsModel.{ContinueWithCurrentClient, SignUpAnotherClient}
@@ -45,22 +46,47 @@ class ReturnToClientDetailsControllerISpec extends ComponentSpecBase {
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/client/return-to-client-details" should {
-    "redirect to Current Client Eligibility Questions page" when {
-      "selecting the Continue with current client radio button" in {
+    "redirect to home controller" when {
+      "the user is eligible for the current year and selecting the Continue with current client radio button" in {
         val userInput = ContinueWithCurrentClient
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
 
         When("POST /client/return-to-client-details is called")
-        val res = IncomeTaxSubscriptionFrontend.submitReturnToClientDetails(Some(userInput))
+        val res = IncomeTaxSubscriptionFrontend.submitReturnToClientDetails(
+          Some(userInput),
+          ClientData.clientName ++ Map[String, String](ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "false")
+        )
 
         Then("Should return a SEE_OTHER with a redirect location of Agent Service Account")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(controllers.agent.eligibility.routes.AccountingPeriodCheckController.show.url)
+          redirectURI(controllers.agent.matching.routes.HomeController.home.url)
         )
       }
+    }
+    "redirect to the cannot sign up this year page" when {
+      "the user is eligible for the next year only and selecting the continue with current client radio button" in {
+        val userInput = ContinueWithCurrentClient
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+
+        When("POST /client/return-to-client-details is called")
+        val res = IncomeTaxSubscriptionFrontend.submitReturnToClientDetails(
+          Some(userInput),
+          ClientData.clientName ++ Map[String, String](ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "true")
+        )
+
+        Then("Should return a SEE_OTHER with a redirect location of Agent Service Account")
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
+        )
+      }
+    }
+    "redirect to the add another client route" when {
       "selecting the Sign Up Another Client radio button" in {
         val userInput = SignUpAnotherClient
 

@@ -54,12 +54,23 @@ class ReturnToClientDetailsControllerSpec extends AgentControllerBaseSpec
   }
   "submit" when {
     "Continue with current client is selected" should {
-      "Redirect to the Other Sources of income page" in {
-        val result = TestReturnToClientDetails.submit()(
-          subscriptionRequestWithName.post(ReturnToClientDetailsForm.returnToClientDetailsForm, ContinueWithCurrentClient)
-        )
-        status(result) must be(Status.SEE_OTHER)
-        redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.AccountingPeriodCheckController.show.url)
+      "Redirect to the home controller" when {
+        "the user is eligible for the current tax year based on session flags" in {
+          val result = TestReturnToClientDetails.submit()(
+            subscriptionRequestWithName.post(ReturnToClientDetailsForm.returnToClientDetailsForm, ContinueWithCurrentClient)
+          )
+          status(result) must be(Status.SEE_OTHER)
+          redirectLocation(result) mustBe Some(controllers.agent.matching.routes.HomeController.home.url)
+        }
+      }
+      "Redirect to the Cannot Sign Up This Year page" when {
+        "the user is only eligible for the next tax year based on session flags" in {
+          val result = TestReturnToClientDetails.submit()(
+            subscriptionRequestWithNameNextYearOnly.post(ReturnToClientDetailsForm.returnToClientDetailsForm, ContinueWithCurrentClient)
+          )
+          status(result) must be(Status.SEE_OTHER)
+          redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
+        }
       }
     }
     "Sign Up Another Client is selected" should {
