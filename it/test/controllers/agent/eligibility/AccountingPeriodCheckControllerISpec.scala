@@ -152,7 +152,7 @@ class AccountingPeriodCheckControllerISpec extends ComponentSpecBase {
         verifyAudit()
         response must have(
           httpStatus(SEE_OTHER),
-          redirectURI(controllers.agent.matching.routes.HomeController.home.url)
+          redirectURI(controllers.agent.eligibility.routes.ClientCanSignUpController.show().url)
         )
       }
     }

@@ -580,6 +580,14 @@ agent.cannot-sign-up.paragraph1                                 = Gall eich clei
 agent.cannot-sign-up.yes-no-radio-helper.heading                = A hoffech gofrestru ar gyfer y flwyddyn dreth nesaf?
 error.agent.cannot-sign-up.invalid                              = Mae’n rhaid i chi ddewis ‘iawn’ neu ‘na’
 
+# Agent Client Can Sign Up Page
+agent.client-can-sign-up.heading                                = Gallwch gofrestru’r cleient hwn
+agent.client-can-sign-up.caption                                = {0} | {1}
+agent.client-can-sign-up.question                               = Beth hoffech ei wneud nesaf?
+agent.client-can-sign-up.sign-up-name                           = Cofrestru {0}
+agent.client-can-sign-up.check-another                          = Gwirio os gallaf gofrestru cleient arall
+error.agent.client-can-sign-up.invalid                          = Dewiswch a hoffech gofrestru’r cleient hwn, neu wirio os gallwch gofrestru cleient arall.
+
 # Agent declined sign up
 agent.declined-sign-up-next-year.heading                        = Beth y mae angen i chi ei wneud
 agent.declined-sign-up-next-year.para                           = Rydych wedi dewis peidio â chofrestru’ch cleient ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.

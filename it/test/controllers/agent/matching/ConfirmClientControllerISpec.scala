@@ -191,7 +191,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
 
     "the agent is fully qualified" when {
       "the user is eligible for the current tax year" should {
-        "redirect to the home page" in {
+        "redirect to the client can sign up page" in {
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
           AuthenticatorStub.stubMatchFound(testNino, Some(testUtr))
@@ -204,10 +204,10 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           When("I call POST /confirm-client")
           val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
 
-          Then("The result must have a status of SEE_OTHER and redirect to the home controller")
+          Then("The result must have a status of SEE_OTHER and redirect to the client can sign up controller")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(controllers.agent.matching.routes.HomeController.home.url)
+            redirectURI(controllers.agent.eligibility.routes.ClientCanSignUpController.show().url)
           )
 
           val session = getSessionMap(res)

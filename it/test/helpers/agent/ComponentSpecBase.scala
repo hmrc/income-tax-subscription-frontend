@@ -17,7 +17,6 @@
 package helpers.agent
 
 import _root_.common.Constants.ITSASessionKeys
-import utilities.UserMatchingSessionUtil.{firstName, lastName}
 import auth.agent.{AgentJourneyState, AgentSignUp, AgentUserMatching}
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
@@ -28,10 +27,10 @@ import config.featureswitch.FeatureSwitching
 import forms.agent._
 import forms.individual.business.RemoveBusinessForm
 import helpers.IntegrationTestConstants._
-import helpers.{IntegrationTestModels, UserMatchingIntegrationRequestSupport}
 import helpers.agent.WiremockHelper._
 import helpers.agent.servicemocks.WireMockMethods
 import helpers.servicemocks.AuditStub
+import helpers.{IntegrationTestModels, UserMatchingIntegrationRequestSupport}
 import models._
 import models.common._
 import models.usermatching.UserDetailsModel
@@ -56,6 +55,7 @@ import uk.gov.hmrc.crypto.{ApplicationCrypto, Decrypter, Encrypter}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utilities.UserMatchingSessionUtil
+import utilities.UserMatchingSessionUtil.{firstName, lastName}
 
 import java.time.LocalDate
 import java.util.UUID
@@ -261,6 +261,14 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
     def showCannotTakePart: WSResponse = get("/error/cannot-sign-up")
 
+    def showCanSignUp: WSResponse = get("/can-sign-up", ClientData.basicClientData)
+
+    def submitCanSignUp(request: Option[YesNo]): WSResponse = post("/can-sign-up", ClientData.basicClientData)(
+      request.fold(Map.empty[String, Seq[String]])(
+        model => ClientCanSignUpForm.clientCanSignUpForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+      )
+    )
+
     def showCannotSignUpThisYear: WSResponse = get("/error/cannot-sign-up-for-current-year")
 
     def submitCannotSignUpThisYear(request: Option[YesNo]): WSResponse = post("/error/cannot-sign-up-for-current-year")(
@@ -406,7 +414,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
           model =>
             PropertyStartDateForm.propertyStartDateForm(testValidMinStartDate, testValidMaxStartDate, d => d.toString)
               .fill(model).data.map { case (k, v) => (k, Seq(v))
-            }
+              }
         )
       )
     }
@@ -529,10 +537,10 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     def showCannotGoBackToPreviousClient(): WSResponse = get("/cannot-go-back-to-previous-client")
 
     def submitCannotGoBackToPreviousClient(cannotGoBack: Option[CannotGoBack]): WSResponse = post("/cannot-go-back-to-previous-client")(
-        cannotGoBack.fold(Map.empty[String, Seq[String]])(
-          model =>
-            CannotGoBackToPreviousClientForm.cannotGoBackToPreviousClientForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
-        )
+      cannotGoBack.fold(Map.empty[String, Seq[String]])(
+        model =>
+          CannotGoBackToPreviousClientForm.cannotGoBackToPreviousClientForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+      )
     )
 
     def showReturnToClientDetails(sessionData: Map[String, String] = ClientData.clientName): WSResponse = get("/return-to-client-details", sessionData)

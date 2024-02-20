@@ -221,7 +221,7 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
     if (nextYearOnly) {
       Redirect(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show)
     } else {
-      Redirect(controllers.agent.matching.routes.HomeController.home)
+      Redirect(controllers.agent.eligibility.routes.ClientCanSignUpController.show())
     }
   }
 

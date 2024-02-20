@@ -18,8 +18,6 @@ package config
 
 import models.common.subscription.EnrolmentKey
 import play.api.Configuration
-import play.api.i18n.Lang
-import play.api.mvc.Call
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -128,6 +126,7 @@ trait AppConfig {
   def incomeTaxSelfEmploymentsFrontendBusinessAccountingMethodUrl: String
 
   def incomeTaxSelfEmploymentsFrontendClientInitialiseUrl: String
+
   def agentIncomeTaxEligibilityFrontendTermsUrl: String
 
   val incomeTaxViewChangeUrl: String
