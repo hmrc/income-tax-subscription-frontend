@@ -51,7 +51,7 @@ class ClientCanSignUpFormSpec extends PlaySpec with GuiceOneAppPerTest {
       val boundForm: Form[YesNo] = ClientCanSignUpForm.clientCanSignUpForm.bind(Map.empty[String, String])
 
       boundForm.value mustBe None
-      boundForm.errors mustBe Seq(FormError(ClientCanSignUpForm.fieldName, "agent.client-can-sign-up.invalid"))
+      boundForm.errors mustBe Seq(FormError(ClientCanSignUpForm.fieldName, "error.agent.client-can-sign-up.invalid"))
     }
   }
 

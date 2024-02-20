@@ -29,7 +29,7 @@ object ClientCanSignUpForm {
   val clientCanSignUpForm: Form[YesNo] = Form(
     single(
       fieldName -> yesNoMapping(
-        yesNoInvalid = Invalid("agent.client-can-sign-up.invalid")
+        yesNoInvalid = Invalid("error.agent.client-can-sign-up.invalid")
       )
     )
   )
