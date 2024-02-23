@@ -30,6 +30,7 @@
     govukWarningText : GovukWarningText,
     languageUtils: LanguageUtils,
     table: UpdateDeadlineTable,
+    govukInsetText: GovukInsetText,
     accountingPeriodHelper: AccountingPeriodHelper,
     accountingPeriodService: AccountingPeriodService,
     govukNotificationBanner : GovukNotificationBanner,
@@ -156,16 +157,21 @@
       <li>@messages("sign-up-confirmation.final-declaration.bullet1")</li>
       <li>@messages("sign-up-confirmation.final-declaration.bullet2")</li>
     </ul>
-    <a class="govuk-link" href="@{appConfig.onlineServiceAccountUrl}">@messages("sign-up-confirmation.final-declaration.online-services.link-text")</a>
+    @Html(messages(
+    key = "sign-up-confirmation.final-declaration.online-services.link-text",
+    args = <a class="govuk-link" href="https://www.tax.service.gov.uk/account">{messages("sign-up-confirmation.final-declaration.online-services.link")}</a>
+    ))
   </li>
 }
 
 @beforeYouStart = {
   <h3 class="govuk-heading-s">@messages("sign-up-confirmation.before-you-start.heading")</h3>
   <p class="govuk-body">@messages("sign-up-confirmation.before-you-start.para1")</p>
-  <p class="govuk-body">@messages("sign-up-confirmation.before-you-start.para2")</p>
+  @govukInsetText(InsetText(
+    content = Text(Messages("sign-up-confirmation.before-you-start.para2"))
+  ))
   <p class="govuk-body">@messages("sign-up-confirmation.before-you-start.para3")</p>
-  <p>
+  <p class="govuk-body">
     @hmrcNewTabLinkHelper(NewTabLinkHelper(
       messages("sign-up-confirmation.before-you-start.find-software.link-text"),
       Some(appConfig.softwareUrl)
