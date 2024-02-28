@@ -229,7 +229,6 @@ error.property.year.length                                      = Mae’n rhaid 
 agent.property.start-date.heading                               = Pryd y gwnaeth eich cleient ddechrau ei fusnes eiddo yn y DU?
 agent.property.start-date.heading.caption                       = {0} | {1}
 agent.property.start-date.para1                                 = Gall y dyddiad y dechreuodd busnes eich cleient fasnachu fod heddiw, yn y gorffennol neu hyd at 7 diwrnod yn y dyfodol.
-agent.property.start-date.para2                                 = Byddwn yn defnyddio’r dyddiad hwn i gyfrifo ffi Yswiriant Gwladol Dosbarth 2 eich cleient, os yw’n briodol.
 agent.property.start-date.hint                                  = Er enghraifft, 17 8 2014.
 
 # Agent Property Start Date errors
@@ -265,7 +264,6 @@ agent.overseas-property.start-date.title                         = Pryd y gwnaet
 agent.overseas-property.start-date.heading                       = Pryd y gwnaeth eich cleient ddechrau ei fusnes eiddo tramor?
 agent.overseas-property.start-date.heading.caption               = {0} | {1}
 agent.overseas-property.start-date.para1                         = Gall y dyddiad y dechreuodd busnes eich cleient fasnachu fod heddiw, yn y gorffennol neu hyd at 8 diwrnod yn y dyfodol.
-agent.overseas-property.start-date.para2                         = Byddwn yn defnyddio’r dyddiad hwn i gyfrifo ffi Yswiriant Gwladol Dosbarth 2 eich cleient, os yw’n briodol.
 agent.overseas-property.start-date.hint                          = Er enghraifft, 17 8 2014.
 
 # Overseas Property Start Date errors
