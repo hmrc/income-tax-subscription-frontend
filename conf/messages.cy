@@ -203,7 +203,6 @@ business.property.name.heading                                  = Pryd y dechreu
 business.property.name.caption                                  = Eiddo yn y DU
 business.property.para1                                         = Dyma pryd y gwnaethoch ddechrau rhoi unrhyw eiddo yn y DU ar osod.
 business.property.para2                                         = Gall y dyddiad y dechreuodd eich busnes fasnachu fod heddiw, yn y gorffennol neu hyd at 8 diwrnod yn y dyfodol.
-business.property.para3                                         = Byddwn yn defnyddio’r dyddiad hwn i gyfrifo’r ffi Yswiriant Gwladol Dosbarth 2, os yw’n briodol.
 business.property.start-date.hint                               = Er enghraifft, 17 8 2014.
 
 # Property Start Date errors
@@ -256,7 +255,6 @@ overseas.property.name.heading                                   = Pryd y gwnaet
 overseas.property.name.caption                                   = Eiddo tramor
 overseas.property.para1                                          = Dyma pryd y gwnaethoch ddechrau rhoi unrhyw eiddo tramor ar osod.
 overseas.property.para2                                          = Gall y dyddiad y dechreuodd eich busnes fasnachu fod heddiw, yn y gorffennol neu hyd at 7 diwrnod yn y dyfodol
-overseas.property.para3                                          = Byddwn yn defnyddio’r dyddiad hwn i gyfrifo ffi Yswiriant Gwladol Dosbarth 2 eich cleient, os yw’n briodol.
 overseas.property.start-date.hint                                = Er enghraifft, 17 8 2014.
 
 # Agent Overseas Property Start Date

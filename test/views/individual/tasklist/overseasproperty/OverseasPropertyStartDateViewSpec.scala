@@ -36,7 +36,6 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
     val captionVisible = "Foreign property"
     val hintText = "This is when you started letting any foreign property."
     val para1 = "The date your business started trading can be today, in the past or up to 7 days in the future."
-    val para2 = "This is the date we’ll use to calculate Class 2 National Insurance charge, if appropriate."
     val hint = "For example, 17 8 2014."
     val continue = "Continue"
     val saveAndContinue = "Save and continue"
@@ -100,6 +99,10 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
 
     "have a hint text" in new Setup {
       document.selectNth("p", 3).text mustBe OverseasPropertyStartDateMessages.hintText
+    }
+
+    "have a paragraph" in new Setup {
+      document.selectNth("p", 4).text mustBe OverseasPropertyStartDateMessages.para1
     }
 
     "have a form" in new Setup {
