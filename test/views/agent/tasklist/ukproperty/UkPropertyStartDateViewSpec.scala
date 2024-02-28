@@ -58,7 +58,6 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
     val heading: String = title
     val caption: String = "FirstName LastName | ZZ 11 11 11 Z"
     val para1 = "The date your client’s business started trading can be today, in the past or up to 7 days in the future."
-    val para2 = "This is the date we’ll use to calculate your client’s Class 2 National Insurance charge, if appropriate."
     val hint = "For example, 17 8 2014."
     val continue = "Continue"
     val saveAndContinue = "Save and continue"
@@ -108,10 +107,6 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
 
     "have a paragraph One" in{
       document().mainContent.selectNth("p", 1).text() mustBe PropertyStartDateMessages.para1
-    }
-
-    "have a paragraph Two" in{
-      document().mainContent.selectNth("p", 2).text() mustBe PropertyStartDateMessages.para2
     }
 
     "have a Form" in {

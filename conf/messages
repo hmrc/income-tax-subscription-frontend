@@ -230,7 +230,6 @@ error.property.year.length                                      = The year must 
 agent.property.start-date.heading                               = When did your client start their UK property business?
 agent.property.start-date.heading.caption                       = {0} | {1}
 agent.property.start-date.para1                                 = The date your client’s business started trading can be today, in the past or up to 7 days in the future.
-agent.property.start-date.para2                                 = This is the date we’ll use to calculate your client’s Class 2 National Insurance charge, if appropriate.
 agent.property.start-date.hint                                  = For example, 17 8 2014.
 
 # Agent Property Start Date errors
@@ -266,7 +265,6 @@ agent.overseas-property.start-date.title                        = When did your 
 agent.overseas-property.start-date.heading                      = When did your client start their foreign property business?
 agent.overseas-property.start-date.heading.caption              = {0} | {1}
 agent.overseas-property.start-date.para1                        = The date your client’s business started trading can be today, in the past or up to 7 days in the future.
-agent.overseas-property.start-date.para2                        = This is the date we’ll use to calculate your client’s Class 2 National Insurance charge, if appropriate.
 agent.overseas-property.start-date.hint                         = For example, 17 8 2014.
 
 # Overseas Property Start Date errors
