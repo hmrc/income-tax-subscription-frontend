@@ -204,7 +204,6 @@ business.property.name.heading                                  = When did you s
 business.property.name.caption                                  = UK property
 business.property.para1                                         = This is when you started letting any UK property.
 business.property.para2                                         = The date your business started trading can be today, in the past or up to 7 days in the future.
-business.property.para3                                         = This is the date we’ll use to calculate Class 2 National Insurance charge, if appropriate.
 business.property.start-date.hint                               = For example, 17 8 2014.
 
 # Property Start Date errors
@@ -257,7 +256,6 @@ overseas.property.name.heading                                  = When did you s
 overseas.property.name.caption                                  = Foreign property
 overseas.property.para1                                         = This is when you started letting any foreign property.
 overseas.property.para2                                         = The date your business started trading can be today, in the past or up to 7 days in the future.
-overseas.property.para3                                         = This is the date we’ll use to calculate Class 2 National Insurance charge, if appropriate.
 overseas.property.start-date.hint                               = For example, 17 8 2014.
 
 # Agent Overseas Property Start Date
