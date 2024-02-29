@@ -68,7 +68,7 @@ object FeatureSwitch {
 
   case object EOPSContent extends FeatureSwitch {
     override val name = s"$prefix.eops-content"
-    override val displayText = "Enable EOPS content"
+    override val displayText = "Remove EOPS content"
   }
 
 }
