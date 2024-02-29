@@ -24,6 +24,8 @@
 @import utilities.AccountingPeriodUtil
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcNewTabLinkHelper
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
+@import config.featureswitch.FeatureSwitchingImpl
+@import config.featureswitch.FeatureSwitch.EOPSContent
 
 @this(
     agentMainTemplate: AgentMainTemplate,
@@ -36,7 +38,8 @@
     govukWarningText: GovukWarningText,
     govukDetails : GovukDetails,
     hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
-    appConfig: AppConfig
+    appConfig: AppConfig,
+    featureSwitching: FeatureSwitchingImpl
 )
 
 @(mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, taxYearSelectionIsNext : Boolean, userNameMaybe: Option[String], individualUserNino: String, accountingPeriodModel: AccountingPeriodModel)(implicit request: Request[_], messages: Messages)
@@ -47,7 +50,7 @@
 
     <h2 class="govuk-heading-m">@messages("agent.sign-up-confirmation.what-you-will-have-to-do.heading")</h2>
 
-    <ol class="govuk-list govuk-list--number govuk-list--spaced">
+    <div>
         @if(mandatedCurrentYear) {
             @mandatedCurrentYearContent
         } else if (mandatedNextYear && taxYearSelectionIsNext) {
@@ -57,7 +60,7 @@
         } else {
             @voluntaryCurrentYearContent
         }
-    </ol>
+    </div>
 
     @agentServicesAccount
 
@@ -99,31 +102,33 @@
 }
 
 @voluntaryNextYearContent = {
-    <li>@continuingTaxReturn</li>
-    <li>@quarterlyUpdates</li>
-    <li>@periodStatement</li>
-    <li>@finalDeclaration</li>
+    <div>@continuingTaxReturn</div>
+    <div>@quarterlyUpdates</div>
+    @if(featureSwitching.isDisabled(EOPSContent)){
+      <div>@periodStatement</div>
+    }
+    <div>@finalDeclaration</div>
 }
 
 @voluntaryCurrentYearContent = {
-    <li>@quarterlyUpdates</li>
-    <li>@periodStatement</li>
-    <li>@finalDeclaration</li>
+    <div>@quarterlyUpdates</div>
+    @if(featureSwitching.isDisabled(EOPSContent)){
+      <div>@periodStatement</div>
+    }
+    <div>@finalDeclaration</div>
 }
 
 @mandatedCurrentYearContent = {
-    <li>@quarterlyUpdates</li>
-    <li>@periodStatement</li>
-    <li>
-        @finalDeclaration
-    </li>
+    <div>@quarterlyUpdates</div>
+    <div>@periodStatement</div>
+    <div>@finalDeclaration</div>
 }
 
 @mandatedNextYearContent = {
-    <li>@continuingTaxReturn</li>
-    <li>@quarterlyUpdates</li>
-    <li>@periodStatement</li>
-    <li>@finalDeclaration</li>
+    <div>@continuingTaxReturn</div>
+    <div>@quarterlyUpdates</div>
+    <div>@periodStatement</div>
+    <div>@finalDeclaration</div>
 }
 
 @warningText = {
@@ -169,10 +174,10 @@
 
 @periodStatement = {
     <div>
-        <h3 class="govuk-heading-s">@messages("agent.sign-up-confirmation.end-of-period-statement.heading")</h3>
-        <p class="govuk-body">
-            @messages("agent.sign-up-confirmation.end-of-period-statement.para", languageUtils.Dates.formatDate(AccountingPeriodUtil.getEndOfPeriodStatementDate(taxYearSelectionIsNext)))
-        </p>
+      <h3 class="govuk-heading-s">@messages("agent.sign-up-confirmation.end-of-period-statement.heading")</h3>
+      <p class="govuk-body">
+        @messages("agent.sign-up-confirmation.end-of-period-statement.para", languageUtils.Dates.formatDate(AccountingPeriodUtil.getEndOfPeriodStatementDate(taxYearSelectionIsNext)))
+      </p>
     </div>
 }
 
@@ -187,12 +192,12 @@
 
 @mandatedNotificationBanner = {
     <p class="govuk-body">@messages("agent.sign-up-confirmation.mandated-notification-banner.para")</p>
-    <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("agent.sign-up-confirmation.mandated.notification-banner.bullet1")</li>
-        <li>@messages("agent.sign-up-confirmation.mandated.notification-banner.bullet2")</li>
-        <li>@messages("agent.sign-up-confirmation.mandated.notification-banner.bullet3")</li>
-        <li>@messages("agent.sign-up-confirmation.mandated.notification-banner.bullet4")</li>
-    </ul>
+    <div>
+        <p>@messages("agent.sign-up-confirmation.mandated.notification-banner.bullet1")</p>
+        <p>@messages("agent.sign-up-confirmation.mandated.notification-banner.bullet2")</p>
+        <p>@messages("agent.sign-up-confirmation.mandated.notification-banner.bullet3")</p>
+        <p>@messages("agent.sign-up-confirmation.mandated.notification-banner.bullet4")</p>
+    </div>
 }
 
 @agentServicesAccount = {

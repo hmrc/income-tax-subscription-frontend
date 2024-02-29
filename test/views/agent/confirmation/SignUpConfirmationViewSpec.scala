@@ -16,6 +16,7 @@
 
 package views.agent.confirmation
 
+import config.featureswitch.FeatureSwitch.EOPSContent
 import models.common.AccountingPeriodModel
 import models.{DateModel, UpdateDeadline}
 import org.jsoup.Jsoup
@@ -30,6 +31,11 @@ import java.time.format.DateTimeFormatter
 import scala.util.Random
 
 class SignUpConfirmationViewSpec extends ViewSpec {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(EOPSContent)
+  }
 
   val implicitDateFormatter: ImplicitDateFormatter = app.injector.instanceOf[ImplicitDateFormatterImpl]
 
@@ -81,7 +87,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     Jsoup.parse(page(mandatedCurrentYear, mandatedNextYear,selectedTaxYearIsNext, userNameMaybe).body)
 
   "The sign up confirmation view" when {
-    "the user is voluntary and eligible for this year" should {
+    "the user is voluntary and eligible for both years and feature switch is disabled" should {
       def mainContent: Element = document(eligibleNextYearOnly = false, mandatedCurrentYear = false, mandatedNextYear = false, selectedTaxYearIsNext = false).mainContent
 
       "have a header panel" which {
@@ -106,22 +112,21 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "contains what you will have to do heading" in {
-        mainContent.selectNth("h2", 1).text() mustBe SignUpConfirmationMessages.whatToDoHeading
+        mainContent.selectHead("h2").text() mustBe SignUpConfirmationMessages.whatToDoHeading
       }
 
       "have a Quarterly updates section" which {
-        def section: Element = mainContent.selectHead("ol").selectNth("li", 1)
 
         "contains a heading" in {
-          section.selectHead("h3").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesHeading
+          mainContent.selectHead("h3").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesHeading
         }
 
         "contains Quarterly Updates initial paragraph" in {
-          section.selectHead("p").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParagraph
+          mainContent.selectNth("p", 3).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParagraph
         }
 
         "contains a table" in {
-          section.mustHaveTable(
+          mainContent.mustHaveTable(
             tableHeads = List(SignUpConfirmationMessages.quarterlyUpdate, SignUpConfirmationMessages.deadline),
             tableRows = List(
               List(q1Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q1Update.deadline.toLongDateNoYear),
@@ -135,39 +140,37 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains a warning message" in {
-          section.selectHead(".govuk-warning-text").text() mustBe SignUpConfirmationMessages.warningMessage
+          mainContent.selectHead(".govuk-warning-text").text() mustBe SignUpConfirmationMessages.warningMessage
         }
 
         "contains details para1" in {
-          section.selectNth(".govuk-details", 1).selectHead("p").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesDetailsp1
+          mainContent.selectNth(".govuk-details", 1).selectHead("p").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesDetailsp1
         }
 
         "contains details para2" in {
-          section.selectNth(".govuk-details", 1).selectNth("p",2).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesDetailsp2
+          mainContent.selectNth(".govuk-details", 1).selectNth("p",2).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesDetailsp2
         }
       }
 
       "have End of Period section" which {
-        def section: Element = mainContent.selectHead("ol").selectNth("li", 2)
 
         "contains a heading" in {
-          section.selectHead("h3").text() contains SignUpConfirmationMessages.endOfPeriodStatementHeading
+          mainContent.selectNth("h3", 2).text() contains SignUpConfirmationMessages.endOfPeriodStatementHeading
         }
 
         "contains end of period paragraph" in {
-          section.selectHead("p").text() mustBe SignUpConfirmationMessages.endOfPeriodStatementThisYearParagraph
+          mainContent.selectNth("p",6).text() mustBe SignUpConfirmationMessages.endOfPeriodStatementThisYearParagraph
         }
       }
 
       "have Final Declaration section" which {
-        def section: Element = mainContent.selectHead("ol").selectNth("li", 3)
 
         "contains a heading" in {
-          section.selectHead("h3").text() mustBe SignUpConfirmationMessages.finalDeclarationHeading
+          mainContent.selectNth("h3",3).text() mustBe SignUpConfirmationMessages.finalDeclarationHeading
         }
 
         "contains final declaration paragraph" in {
-          section.selectHead("p").text() mustBe SignUpConfirmationMessages.finalDeclarationThisYearParagraph
+          mainContent.selectNth("p", 7).text() mustBe SignUpConfirmationMessages.finalDeclarationThisYearParagraph
         }
       }
 
@@ -177,7 +180,91 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
     }
 
-    "the user is voluntary and eligible for next year only" should {
+    "the user is voluntary and eligible for both years and feature switch is enabled" should {
+
+      def mainContent: Element = document(eligibleNextYearOnly = false, mandatedCurrentYear = false, mandatedNextYear = false, selectedTaxYearIsNext = false).mainContent
+
+      "have a header panel" which {
+        "contains the panel heading" in {
+          mainContent.select(".govuk-panel").select("h1").text() mustBe SignUpConfirmationMessages.panelHeading
+        }
+        "contains the user name and nino" in {
+          mainContent.select(".govuk-panel")
+            .select(".govuk-panel__body")
+            .select("p")
+            .get(0)
+            .text() mustBe SignUpConfirmationMessages.panelUserDetails
+        }
+
+        "contains the description" in {
+          mainContent.select(".govuk-panel")
+            .select(".govuk-panel__body")
+            .select("p")
+            .get(1)
+            .text() mustBe SignUpConfirmationMessages.panelDescription(false)
+        }
+      }
+
+      "contains what you will have to do heading" in {
+        mainContent.selectHead("h2").text() mustBe SignUpConfirmationMessages.whatToDoHeading
+      }
+
+      "have a Quarterly updates section" which {
+
+        "contains a heading" in {
+          mainContent.selectHead("h3").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesHeading
+        }
+
+        "contains Quarterly Updates initial paragraph" in {
+          mainContent.selectNth("p", 3).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParagraph
+        }
+
+        "contains a table" in {
+          mainContent.mustHaveTable(
+            tableHeads = List(SignUpConfirmationMessages.quarterlyUpdate, SignUpConfirmationMessages.deadline),
+            tableRows = List(
+              List(q1Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q1Update.deadline.toLongDateNoYear),
+              List(q2Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q2Update.deadline.toLongDateNoYear),
+              List(q3Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q3Update.deadline.toLongDateNoYear),
+              List(q4Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q4Update.deadline.toLongDateNoYear)
+            ),
+            maybeCaption = Some(SignUpConfirmationMessages.quarterlyUpdatesTableCaptionTitle),
+            hiddenTableCaption = false
+          )
+        }
+
+        "contains a warning message" in {
+          mainContent.selectHead(".govuk-warning-text").text() mustBe SignUpConfirmationMessages.warningMessage
+        }
+
+        "contains details para1" in {
+          mainContent.selectNth(".govuk-details", 1).selectHead("p").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesDetailsp1
+        }
+
+        "contains details para2" in {
+          mainContent.selectNth(".govuk-details", 1).selectNth("p", 2).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesDetailsp2
+        }
+      }
+
+      "have Final Declaration section" which {
+        "contains a heading" in {
+          enable(EOPSContent)
+          mainContent.selectNth("h3",2).text() mustBe SignUpConfirmationMessages.finalDeclarationHeading
+        }
+
+        "contains final declaration paragraph" in {
+          enable(EOPSContent)
+          mainContent.selectNth("p", 6).text() mustBe SignUpConfirmationMessages.finalDeclarationThisYearParagraph
+        }
+      }
+
+      "have a button to sign up another client" in {
+        mainContent.selectHead(".govuk-button").text() mustBe SignUpConfirmationMessages.signUpAnotherClient
+        mainContent.selectHead(".govuk-button").attr("href") mustBe controllers.agent.routes.AddAnotherClientController.addAnother().url
+      }
+    }
+
+    "the user is voluntary and eligible for next year only and feature switch is disabled" should {
       def mainContent: Element = document(eligibleNextYearOnly = true, mandatedCurrentYear = false, mandatedNextYear = false, selectedTaxYearIsNext = true).mainContent
 
       "have a header panel" which {
@@ -203,34 +290,32 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "contains what you will have to do heading" in {
-        mainContent.selectNth("h2", 1).text() mustBe SignUpConfirmationMessages.whatToDoHeading
+        mainContent.selectHead("h2").text() mustBe SignUpConfirmationMessages.whatToDoHeading
       }
 
       "have Self Assessment section" which {
-        def section: Element = mainContent.selectHead("ol").selectNth("li", 1)
 
         "contains a heading" in {
-          section.selectHead("h3").text() mustBe SignUpConfirmationMessages.continueSelfAssessmentHeading
+          mainContent.selectHead("h3").text() mustBe SignUpConfirmationMessages.continueSelfAssessmentHeading
         }
 
         "contains a paragraph" in {
-          section.selectHead("p").text() mustBe SignUpConfirmationMessages.continueSelfAssessmentPara
+          mainContent.selectNth("p", 3).text() mustBe SignUpConfirmationMessages.continueSelfAssessmentPara
         }
       }
 
       "have a Quarterly updates section" which {
-        def section: Element = mainContent.selectHead("ol").selectNth("li", 2)
 
         "contains a heading" in {
-          section.selectHead("h3").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesHeading
+          mainContent.selectNth("h3",2).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesHeading
         }
 
         "contains Quarterly Updates initial paragraph" in {
-          section.selectHead("p").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParagraph
+          mainContent.selectNth("p", 4).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParagraph
         }
 
         "contains a table" in {
-          section.mustHaveTable(
+          mainContent.mustHaveTable(
             tableHeads = List(SignUpConfirmationMessages.quarterlyUpdate, SignUpConfirmationMessages.deadline),
             tableRows = List(
               List(q1Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q1Update.deadline.toLongDateNoYear),
@@ -244,35 +329,125 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains details para1" in {
-          section.selectNth(".govuk-details", 1).selectHead("p").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesDetailsp1
+          mainContent.selectNth(".govuk-details", 1).selectHead("p").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesDetailsp1
         }
 
         "contains details para2" in {
-          section.selectNth(".govuk-details", 1).selectNth("p",2).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesDetailsp2
+          mainContent.selectNth(".govuk-details", 1).selectNth("p",2).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesDetailsp2
         }
       }
 
       "have End of Period section" which {
-        def section: Element = mainContent.selectHead("ol").selectNth("li", 3)
 
         "contains a heading" in {
-          section.selectHead("h3").text() mustBe SignUpConfirmationMessages.endOfPeriodStatementHeading
+          mainContent.selectNth("h3", 3).text() mustBe SignUpConfirmationMessages.endOfPeriodStatementHeading
         }
 
         "contains end of period paragraph" in {
-          section.selectHead("p").text() mustBe SignUpConfirmationMessages.endOfPeriodStatementNextYearParagraph
+          mainContent.selectNth("p", 7).text() mustBe SignUpConfirmationMessages.endOfPeriodStatementNextYearParagraph
         }
       }
 
       "have Final Declaration section" which {
-        def section: Element = mainContent.selectHead("ol").selectNth("li", 4)
 
         "contains a heading" in {
-          section.selectHead("h3").text() mustBe SignUpConfirmationMessages.finalDeclarationHeading
+          mainContent.selectNth("h3", 4).text() mustBe SignUpConfirmationMessages.finalDeclarationHeading
         }
 
         "contains final declaration paragraph" in {
-          section.selectHead("p").text() mustBe SignUpConfirmationMessages.finalDeclarationNextYearParagraph
+          mainContent.selectNth("p",8).text() mustBe SignUpConfirmationMessages.finalDeclarationNextYearParagraph
+        }
+      }
+
+      "have a button to sign up another client" in {
+        mainContent.selectHead(".govuk-button").text() mustBe SignUpConfirmationMessages.signUpAnotherClient
+        mainContent.selectHead(".govuk-button").attr("href") mustBe controllers.agent.routes.AddAnotherClientController.addAnother().url
+      }
+    }
+
+    "the user is voluntary and eligible for next year only and feature switch is enabled" should {
+      def mainContent: Element = document(eligibleNextYearOnly = true, mandatedCurrentYear = false, mandatedNextYear = false, selectedTaxYearIsNext = true).mainContent
+
+      "have a header panel" which {
+        "contains the panel heading" in {
+          mainContent.select(".govuk-panel").select("h1").text() mustBe SignUpConfirmationMessages.panelHeading
+        }
+
+        "contains the user name and nino" in {
+          mainContent.select(".govuk-panel")
+            .select(".govuk-panel__body")
+            .select("p")
+            .get(0)
+            .text() mustBe SignUpConfirmationMessages.panelUserDetails
+        }
+
+        "contains the description" in {
+          mainContent.select(".govuk-panel")
+            .select(".govuk-panel__body")
+            .select("p")
+            .get(1)
+            .text() mustBe SignUpConfirmationMessages.panelDescription(true)
+        }
+      }
+
+      "contains what you will have to do heading" in {
+        mainContent.selectHead("h2").text() mustBe SignUpConfirmationMessages.whatToDoHeading
+      }
+
+      "have Self Assessment section" which {
+
+        "contains a heading" in {
+          mainContent.selectHead("h3").text() mustBe SignUpConfirmationMessages.continueSelfAssessmentHeading
+        }
+
+        "contains a paragraph" in {
+          mainContent.selectNth("p", 3).text() mustBe SignUpConfirmationMessages.continueSelfAssessmentPara
+        }
+      }
+
+      "have a Quarterly updates section" which {
+
+        "contains a heading" in {
+          mainContent.selectNth("h3",2).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesHeading
+        }
+
+        "contains Quarterly Updates initial paragraph" in {
+          mainContent.selectNth("p", 4).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParagraph
+        }
+
+        "contains a table" in {
+          mainContent.mustHaveTable(
+            tableHeads = List(SignUpConfirmationMessages.quarterlyUpdate, SignUpConfirmationMessages.deadline),
+            tableRows = List(
+              List(q1Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q1Update.deadline.toLongDateNoYear),
+              List(q2Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q2Update.deadline.toLongDateNoYear),
+              List(q3Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q3Update.deadline.toLongDateNoYear),
+              List(q4Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q4Update.deadline.toLongDateNoYear)
+            ),
+            maybeCaption = Some(SignUpConfirmationMessages.quarterlyUpdatesTableCaptionTitle),
+            hiddenTableCaption = false
+          )
+        }
+
+        "contains details para1" in {
+          mainContent.selectNth(".govuk-details", 1).selectHead("p").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesDetailsp1
+        }
+
+        "contains details para2" in {
+          mainContent.selectNth(".govuk-details", 1).selectNth("p",2).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesDetailsp2
+        }
+      }
+
+      "have Final Declaration section" which {
+
+        "contains a heading" in {
+          enable(EOPSContent)
+          mainContent.selectNth("h3", 3).text() mustBe SignUpConfirmationMessages.finalDeclarationHeading
+        }
+
+        "contains final declaration paragraph" in {
+          enable(EOPSContent)
+          mainContent.selectNth("p",7).text() mustBe SignUpConfirmationMessages.finalDeclarationNextYearParagraph
         }
       }
 
@@ -312,30 +487,29 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "have Self Assessment section" which {
-        def section: Element = mainContent.selectHead("ol").selectNth("li", 1)
 
         "contains a heading" in {
-          section.selectHead("h3").text() mustBe SignUpConfirmationMessages.continueSelfAssessmentHeading
+          mainContent.selectHead("h3").text() mustBe SignUpConfirmationMessages.continueSelfAssessmentHeading
         }
 
         "contains a paragraph" in {
-          section.selectHead("p").text() mustBe SignUpConfirmationMessages.continueSelfAssessmentPara
+          mainContent.selectNth("p", 3).text() mustBe SignUpConfirmationMessages.continueSelfAssessmentPara
         }
       }
 
       "have a Quarterly updates section" which {
-        def section: Element = mainContent.selectHead("ol").selectNth("li", 2)
+
 
         "contains a heading" in {
-          section.selectHead("h3").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesHeading
+          mainContent.selectNth("h3", 2).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesHeading
         }
 
         "contains Quarterly Updates initial paragraph" in {
-          section.selectHead("p").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParagraph
+          mainContent.selectNth("p", 4).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParagraph
         }
 
         "contains a table" in {
-          section.mustHaveTable(
+          mainContent.mustHaveTable(
             tableHeads = List(SignUpConfirmationMessages.quarterlyUpdate, SignUpConfirmationMessages.deadline),
             tableRows = List(
               List(q1Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q1Update.deadline.toLongDateNoYear),
@@ -350,26 +524,24 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "have End of Period section" which {
-        def section: Element = mainContent.selectHead("ol").selectNth("li", 3)
 
         "contains a heading" in {
-          section.selectHead("h3").text() mustBe SignUpConfirmationMessages.endOfPeriodStatementHeading
+          mainContent.selectNth("h3", 3).text() mustBe SignUpConfirmationMessages.endOfPeriodStatementHeading
         }
 
         "contains end of period paragraph" in {
-          section.selectHead("p").text() mustBe SignUpConfirmationMessages.endOfPeriodStatementNextYearParagraph
+          mainContent.selectNth("p", 7).text() mustBe SignUpConfirmationMessages.endOfPeriodStatementNextYearParagraph
         }
       }
 
       "have Final Declaration section" which {
-        def section: Element = mainContent.selectHead("ol").selectNth("li", 4)
 
         "contains a heading" in {
-          section.selectHead("h3").text() mustBe SignUpConfirmationMessages.finalDeclarationHeading
+          mainContent.selectNth("h3", 4).text() mustBe SignUpConfirmationMessages.finalDeclarationHeading
         }
 
         "contains final declaration paragraph" in {
-          section.selectHead("p").text() mustBe SignUpConfirmationMessages.finalDeclarationNextYearParagraph
+          mainContent.selectNth("p", 8).text() mustBe SignUpConfirmationMessages.finalDeclarationNextYearParagraph
         }
       }
 
@@ -405,22 +577,21 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "contains what you will have to do heading" in {
-        mainContent.selectNth("h2", 1).text() mustBe SignUpConfirmationMessages.whatToDoHeading
+        mainContent.selectHead("h2").text() mustBe SignUpConfirmationMessages.whatToDoHeading
       }
 
       "have a Quarterly updates section" which {
-        def section: Element = mainContent.selectHead("ol").selectNth("li", 1)
 
         "contains a heading" in {
-          section.selectHead("h3").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesHeading
+          mainContent.selectHead("h3").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesHeading
         }
 
         "contains Quarterly Updates initial paragraph" in {
-          section.selectHead("p").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParagraph
+          mainContent.selectNth("p", 3).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParagraph
         }
 
         "contains a table" in {
-          section.mustHaveTable(
+          mainContent.mustHaveTable(
             tableHeads = List(SignUpConfirmationMessages.quarterlyUpdate, SignUpConfirmationMessages.deadline),
             tableRows = List(
               List(q1Update.toRangeString(d => d.toLongDateNoYear, "%s to %s"), q1Update.deadline.toLongDateNoYear),
@@ -435,26 +606,24 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "have End of Period section" which {
-        def section: Element = mainContent.selectHead("ol").selectNth("li", 2)
 
         "contains a heading" in {
-          section.selectHead("h3").text() mustBe SignUpConfirmationMessages.endOfPeriodStatementHeading
+          mainContent.selectNth("h3", 2).text() mustBe SignUpConfirmationMessages.endOfPeriodStatementHeading
         }
 
         "contains end of period paragraph" in {
-          section.selectHead("p").text() mustBe SignUpConfirmationMessages.endOfPeriodStatementThisYearParagraph
+          mainContent.selectNth("p", 6).text() mustBe SignUpConfirmationMessages.endOfPeriodStatementThisYearParagraph
         }
       }
 
       "have Final Declaration section" which {
-        def section: Element = mainContent.selectHead("ol").selectNth("li", 3)
 
         "contains a heading" in {
-          section.selectHead("h3").text() mustBe SignUpConfirmationMessages.finalDeclarationHeading
+          mainContent.selectNth("h3", 3).text() mustBe SignUpConfirmationMessages.finalDeclarationHeading
         }
 
         "contains final declaration paragraph" in {
-          section.selectHead("p").text() mustBe SignUpConfirmationMessages.finalDeclarationThisYearParagraph
+          mainContent.selectNth("p", 7).text() mustBe SignUpConfirmationMessages.finalDeclarationThisYearParagraph
         }
       }
 
