@@ -1150,6 +1150,7 @@ individual.global-check-your-answers.tax-year.heading                           
 individual.global-check-your-answers.tax-year.label                                             = Blwydden treth
 individual.global-check-your-answers.software.heading                                           = Meddalwedd ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 individual.global-check-your-answers.software.label                                             = Meddalwedd sy’n cydweddu
+individual.global-check-your-answers.print-information                                          = Argraffwch eich gwybodaeth
 individual.global-check-your-answers.correct-info.heading                                       = A yw’ch gwybodaeth yn gywir?
 individual.global-check-your-answers.correct-info.para                                          = Drwy gyflwyno, rydych yn cadarnhau, hyd eithaf eich gwybodaeth, fod y manylion a rowch yn gywir.
 individual.global-check-your-answers.change-something                                           = Na, mae angen i fi newid rhywbeth
@@ -1170,6 +1171,7 @@ agent.global-check-your-answers.income-sources.foreign-property.start-date      
 agent.global-check-your-answers.income-sources.foreign-property.accounting-method               = Dull cyfrifyddu
 agent.global-check-your-answers.tax-year.heading                                                = Y flwyddyn dreth a ddewiswyd
 agent.global-check-your-answers.tax-year.label                                                  = Blwyddyn Dreth
+agent.global-check-your-answers.print-information                                               = Argraffwch gadarnhad cofrestriad y cleient hwn
 agent.global-check-your-answers.form.heading                                                    = A yw gwybodaeth eich cleient yn gywir?
 agent.global-check-your-answers.form.para                                                       = Drwy gyflwyno, rydych yn cadarnhau, hyd eithaf eich gwybodaeth, fod y manylion a rowch yn gywir.
 agent.global-check-your-answers.change-something                                                = Na, mae angen i fi newid rhywbeth

@@ -46,9 +46,16 @@
     <h1 class="govuk-heading-l">@messages("agent.global-check-your-answers.heading")</h1>
     @incomeSourcesSection(completeDetails.incomeSources)
     @taxYearSection(completeDetails.taxYear)
-    @correctClientInfo
+
+    <div class="govuk-!-display-none-print govuk-!-margin-bottom-4">
+        <div class="govuk-!-margin-bottom-4">
+            <a href="javascript:window.print()" class="govuk-link">@messages("agent.global-check-your-answers.print-information")</a>
+        </div>
+        @correctClientInfo
+    </div>
+
     @form(action = postAction) {
-        <div class="govuk-button-group">
+        <div class="govuk-button-group govuk-!-display-none-print">
             @signUpMyClientButton()
             <a href="@controllers.agent.tasklist.routes.TaskListController.show().url" id="return_to_tasklist" class="govuk-link">
                 @messages("agent.global-check-your-answers.change-something")
