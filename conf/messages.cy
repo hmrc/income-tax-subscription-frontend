@@ -39,7 +39,6 @@ base.second                                                     = eiliad
 base.seconds                                                    = eiliadau
 base.accounting-method.cash                                     = Cyfrifyddu ar sail arian parod
 base.accounting-method.accruals                                 = Cyfrifyddu traddodiadol
-base.print-this-page                                            = Argraffu’r dudalen hon
 base.warning                                                    = Rhybudd
 base.accept-and-continue                                        = Derbyn ac yn eich blaen
 base.tax-year.current                                           = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
@@ -333,6 +332,7 @@ sign-up-complete.what-now.submit-annual                         = Cyflwynwch eic
 agent.sign-up-confirmation.heading                                                  = Cleient wedi’i gofrestru’n llwyddiannus
 agent.sign-up-confirmation.heading.panel.current                                    = wedi llwyddo i gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, erbyn y flwyddyn dreth bresennol ({0})
 agent.sign-up-confirmation.heading.panel.next                                       = wedi llwyddo i gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, erbyn y flwyddyn dreth nesaf  ({0})
+agent.sign-up-confirmation.print-confirmation                                       = Argraffwch gadarnhad cofrestriad y cleient hwn
 agent.sign-up-confirmation.what-you-will-have-to-do.heading                         = Yr hyn y mae’n rhaid i chi ei wneud nawr
 agent.sign-up-confirmation.quarterly-updates.heading                                = Anfon diweddariadau chwarterol:
 agent.sign-up-confirmation.quarterly-updates.para                                   = Mae’n rhaid i chi anfon diweddariadau chwarterol o incwm a threuliau eich cleient gan ddefnyddio meddalwedd sy’n cydweddu.
@@ -363,6 +363,8 @@ agent.sign-up-confirmation.agent-services-account.link-text                     
 sign-up-confirmation.heading                                         = Rydych wedi cofrestru’n llwyddiannus
 sign-up-confirmation.heading.panel.current                           = Mae wedi llwyddo i gofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm, o ran y flwyddyn dreth bresennol ({0})
 sign-up-confirmation.heading.panel.next                              = Mae wedi llwyddo i gofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm, o ran y flwyddyn dreth nesaf ({0})
+
+sign-up-confirmation.print-confirmation                              = Argraffwch eich cadarnhad
 
 sign-up-confirmation.what-you-must-do.heading                        = Yr hyn y mae’n rhaid i chi ei wneud
 
