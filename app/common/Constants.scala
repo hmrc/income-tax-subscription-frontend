@@ -38,8 +38,6 @@ object Constants {
   }
 
   object ITSASessionKeys {
-
-    val ArnKey = "ARN"
     val MTDITID: String = mtdItsaEnrolmentIdentifierKey
     val RequestURI = "Request-URI"
     val FailedClientMatching = "Failed-Client-Matching"
@@ -52,13 +50,9 @@ object Constants {
     val MANDATED_CURRENT_YEAR = "MANDATED_CURRENT_YEAR"
     val MANDATED_NEXT_YEAR = "MANDATED_NEXT_YEAR"
 
-    val sessionId = "sessionId"
-
     // Data specific to the client that the agent is currently working with.
     val clientData: Seq[String] = Seq(MTDITID, NINO, UTR, ELIGIBLE_NEXT_YEAR_ONLY, MANDATED_CURRENT_YEAR, MANDATED_NEXT_YEAR)
 
-    val StartTime = "StartTime"
-    val ConfirmedAgent = "Confirmed-Agent"
     val IdentityVerificationFlag = "ITSA-Identity-Verification-Flag"
 
     val SPSEntityId: String = "SPS-Entity-ID"

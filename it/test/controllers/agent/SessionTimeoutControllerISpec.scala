@@ -47,11 +47,8 @@ class SessionTimeoutControllerISpec extends ComponentSpecBase with SessionCookie
         AuthStub.stubAuthSuccess()
         val sessionMap = Map(
           ITSASessionKeys.NINO -> testNino,
-          ITSASessionKeys.ArnKey -> testARN,
           ITSASessionKeys.UTR -> testUtr)
         val res = IncomeTaxSubscriptionFrontend.keepAlive(sessionMap)
-        val session = getSessionMap(res)
-        session.get(ITSASessionKeys.ArnKey) mustBe Some(testARN)
         res must have(
           httpStatus(OK)
         )
@@ -65,7 +62,6 @@ class SessionTimeoutControllerISpec extends ComponentSpecBase with SessionCookie
         AuthStub.stubAuthSuccess()
         val sessionMap = Map(
           ITSASessionKeys.NINO -> testNino,
-          ITSASessionKeys.ArnKey -> testARN,
           ITSASessionKeys.UTR -> testUtr)
 
         val res = IncomeTaxSubscriptionFrontend.timeout(sessionMap)

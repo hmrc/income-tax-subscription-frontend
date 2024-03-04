@@ -95,10 +95,6 @@ trait AuthPredicates extends Results with FrontendHeaderCarrierProvider with Log
     if (!user.isAssistant) Right(AuthPredicateSuccess)
     else Left(Future.successful(cannotUseServiceRoute))
 
-  val confirmedAgentPredicate: AuthPredicate[IncomeTaxSAUser] = request => _ =>
-    if (request.session.hasConfirmedAgent) Right(AuthPredicateSuccess)
-    else Left(Future.successful(homeRoute))
-
   val ivPredicate: AuthPredicate[IncomeTaxSAUser] = implicit request => user => {
     if (user.confidenceLevel >= appConfig.identityVerificationRequiredConfidenceLevel) {
       Right(AuthPredicateSuccess)

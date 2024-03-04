@@ -53,8 +53,7 @@ trait SessionCookieBaker {
     Map(
       SessionKeys.sessionId -> SessionId,
       SessionKeys.lastRequestTimestamp -> rollbackTimestamp,
-      SessionKeys.authToken -> "auth",
-      ITSASessionKeys.StartTime -> LocalDateTime.now().toString
+      SessionKeys.authToken -> "auth"
     ) ++ additionalData
   }
 
