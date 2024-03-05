@@ -111,6 +111,12 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
       }
 
+      "have a print link" in {
+        val link = mainContent.selectNth(".govuk-link", 1)
+        link.text mustBe SignUpConfirmationMessages.printLink
+        link.attr("href") mustBe "javascript:window.print()"
+      }
+
       "contains what you will have to do heading" in {
         mainContent.selectHead("h2").text() mustBe SignUpConfirmationMessages.whatToDoHeading
       }
@@ -645,6 +651,8 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       SignUpConfirmationMessages.panelDescriptionNext
     else
       SignUpConfirmationMessages.panelDescriptionThis
+
+    val printLink = "Print this client’s sign up confirmation"
 
     val continueSelfAssessmentHeading           = "Continue Self Assessment for this year"
     val continueSelfAssessmentPara              = s"Your client’s Self Assessment tax return must be submitted as normal on 31 January ${AccountingPeriodUtil.getNextTaxEndYear + 1}."

@@ -46,6 +46,10 @@
     classes = "govuk-!-margin-bottom-4"
   ))
 
+  <div class="govuk-!-margin-bottom-6 govuk-!-display-none-print">
+    <a href="javascript:window.print()" class="govuk-link">@messages("sign-up-confirmation.print-confirmation")</a>
+  </div>
+
   <h2 class="govuk-heading-m">@messages("sign-up-confirmation.what-you-must-do.heading")</h2>
 
   @beforeYouStart
@@ -74,9 +78,6 @@
     } else {}
   </div>
 
-  <div>
-    <a href="javascript:window.print()" class="govuk-link govuk-link--no-underline print-link">@messages("base.print-this-page")</a>
-  </div>
 }
 
 

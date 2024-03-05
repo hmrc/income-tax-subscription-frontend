@@ -105,7 +105,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains a link" in {
-          val link = mainContent().selectNth(".govuk-link", 1)
+          val link = mainContent().selectNth(".govuk-link", 2)
           link.attr("href") mustBe "https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax"
           link.text mustBe SignUpConfirmationMessages.beforeYouStartSection.findSoftwareLinkText
         }
@@ -258,7 +258,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains a paragraph with link" in {
-          val link = mainContent().selectNth("a",4)
+          val link = mainContent().selectNth("a", 5)
           link.attr("href") mustBe "https://www.gov.uk/pay-self-assessment-tax-bill"
           link.text mustBe SignUpConfirmationMessages.payYourTax.linkText
           mainContent().selectNth("p",13).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
@@ -267,7 +267,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
       "contains a preference section" which {
 
-        def preferenceSection(preference: Option[Boolean] = None) : Element = mainContent(preference).selectNth("div",7)
+        def preferenceSection(preference: Option[Boolean] = None) : Element = mainContent(preference).selectNth("div", 8)
 
         "has no retrieved preference content when no preference was provided to the view" in {
           preferenceSection().selectOptionalNth("p", 1) mustBe None
@@ -284,10 +284,6 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
       }
 
-      "contains a button to print the page" in {
-        mainContent().selectHead(".print-link").text() mustBe SignUpConfirmationMessages.printThisPage
-        mainContent().selectHead(".print-link").attr("href") mustBe "javascript:window.print()"
-      }
     }
 
     "the user is voluntary and eligible for next year only" should {
@@ -315,6 +311,12 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
       }
 
+      "have a print link" in {
+        val link = mainContent().selectNth(".govuk-link", 1)
+        link.text mustBe SignUpConfirmationMessages.printLink
+        link.attr("href") mustBe "javascript:window.print()"
+      }
+
       "contains what you you must do heading" in {
         mainContent().selectNth("h2", 1).text() mustBe SignUpConfirmationMessages.whatYouMustDoHeading
       }
@@ -338,7 +340,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains a link" in {
-          val link = mainContent().selectNth(".govuk-link", 1)
+          val link = mainContent().selectNth(".govuk-link", 2)
           link.attr("href") mustBe "https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax"
           link.text mustBe SignUpConfirmationMessages.beforeYouStartSection.findSoftwareLinkText
         }
@@ -487,7 +489,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains a paragraph with link" in {
-          val link = mainContent().selectNth("a",4)
+          val link = mainContent().selectNth("a", 5)
           link.attr("href") mustBe "https://www.gov.uk/pay-self-assessment-tax-bill"
           link.text mustBe SignUpConfirmationMessages.payYourTax.linkText
           mainContent().selectNth("p",13).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
@@ -496,7 +498,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
       "contains a preference section" which {
 
-        def preferenceSection(preference: Option[Boolean] = None) : Element = mainContent(preference).selectNth("div",6)
+        def preferenceSection(preference: Option[Boolean] = None) : Element = mainContent(preference).selectNth("div", 7)
 
         "has no retrieved preference content when no preference was provided to the view" in {
           preferenceSection().selectOptionalNth("p", 1) mustBe None
@@ -511,11 +513,6 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           preferenceSection(preference = Some(false)).selectNth("p", 1).text mustBe SignUpConfirmationMessages.paperPreferencePara
         }
 
-      }
-
-      "contains a button to print the page" in {
-        mainContent().selectHead(".print-link").text() mustBe SignUpConfirmationMessages.printThisPage
-        mainContent().selectHead(".print-link").attr("href") mustBe "javascript:window.print()"
       }
     }
 
@@ -567,7 +564,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains a link" in {
-          val link = mainContent().selectNth(".govuk-link", 1)
+          val link = mainContent().selectNth(".govuk-link", 2)
           link.attr("href") mustBe "https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax"
           link.text mustBe SignUpConfirmationMessages.beforeYouStartSection.findSoftwareLinkText
         }
@@ -716,7 +713,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains a paragraph with link" in {
-          val link = mainContent().selectNth("a",4)
+          val link = mainContent().selectNth("a", 5)
           link.attr("href") mustBe "https://www.gov.uk/pay-self-assessment-tax-bill"
           link.text mustBe SignUpConfirmationMessages.payYourTax.linkText
           mainContent().selectNth("p",13).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
@@ -725,7 +722,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
       "contains a preference section" which {
 
-        def preferenceSection(preference: Option[Boolean] = None) : Element = mainContent(preference).selectNth("div",6)
+        def preferenceSection(preference: Option[Boolean] = None) : Element = mainContent(preference).selectNth("div", 7)
 
         "has no retrieved preference content when no preference was provided to the view" in {
           preferenceSection().selectOptionalNth("p", 1) mustBe None
@@ -740,11 +737,6 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           preferenceSection(preference = Some(false)).selectNth("p", 1).text mustBe SignUpConfirmationMessages.paperPreferencePara
         }
 
-      }
-
-      "contains a button to print the page" in {
-        mainContent().selectHead(".print-link").text() mustBe SignUpConfirmationMessages.printThisPage
-        mainContent().selectHead(".print-link").attr("href") mustBe "javascript:window.print()"
       }
     }
 
@@ -796,7 +788,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains a link" in {
-          val link = mainContent().selectNth(".govuk-link", 1)
+          val link = mainContent().selectNth(".govuk-link", 2)
           link.attr("href") mustBe "https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax"
           link.text mustBe SignUpConfirmationMessages.beforeYouStartSection.findSoftwareLinkText
         }
@@ -949,7 +941,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains a paragraph with link" in {
-          val link = mainContent().selectNth("a",4)
+          val link = mainContent().selectNth("a", 5)
           link.attr("href") mustBe "https://www.gov.uk/pay-self-assessment-tax-bill"
           link.text mustBe SignUpConfirmationMessages.payYourTax.linkText
           mainContent().selectNth("p",13).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
@@ -958,7 +950,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
       "contains a preference section" which {
 
-        def preferenceSection(preference: Option[Boolean] = None) : Element = mainContent(preference).selectNth("div",7)
+        def preferenceSection(preference: Option[Boolean] = None) : Element = mainContent(preference).selectNth("div", 8)
 
         "has no retrieved preference content when no preference was provided to the view" in {
           preferenceSection().selectOptionalNth("p", 1) mustBe None
@@ -972,11 +964,6 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         "has a paper preference when their opt in preference was false " in {
           preferenceSection(preference = Some(false)).selectNth("p", 1).text mustBe SignUpConfirmationMessages.paperPreferencePara
         }
-      }
-
-      "contains a button to print the page" in {
-        mainContent().selectHead(".print-link").text() mustBe SignUpConfirmationMessages.printThisPage
-        mainContent().selectHead(".print-link").attr("href") mustBe "javascript:window.print()"
       }
     }
   }
@@ -1001,8 +988,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     else
       SignUpConfirmationMessages.panelDescriptionThis
 
-    val submitSelfAssessmentHeading = "Submit your Self Assessment tax return for this year"
-    val submitSelfAssessmentPara = s"You must submit your Self Assessment tax return as normal until 31 January ${AccountingPeriodUtil.getCurrentTaxEndYear + 1}."
+    val printLink = "Print your confirmation"
 
     object beforeYouStartSection  {
       val heading = "Before you start"
