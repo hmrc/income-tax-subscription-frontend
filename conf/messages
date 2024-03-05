@@ -1172,7 +1172,7 @@ agent.global-check-your-answers.income-sources.foreign-property.start-date      
 agent.global-check-your-answers.income-sources.foreign-property.accounting-method               = Accounting method
 agent.global-check-your-answers.tax-year.heading                                                = Selected tax year
 agent.global-check-your-answers.tax-year.label                                                  = Tax year
-agent.global-check-your-answers.print-information                                               = Print this client’s sign up confirmation
+agent.global-check-your-answers.print-information                                               = Print this client’s information
 agent.global-check-your-answers.form.heading                                                    = Is your client’s information correct?
 agent.global-check-your-answers.form.para                                                       = By submitting this application you are confirming that, to the best of your knowledge, the details you are providing are correct.
 agent.global-check-your-answers.change-something                                                = No, I need to change something

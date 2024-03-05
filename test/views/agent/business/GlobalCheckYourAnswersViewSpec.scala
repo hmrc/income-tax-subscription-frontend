@@ -453,7 +453,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       def next(year: Int): String = s"Next tax year (6 April ${year - 1} to 5 April $year)"
     }
 
-    val printLink = "Print this client’s sign up confirmation"
+    val printLink = "Print this client’s information"
 
     object correctClientInfo {
       val clientInfoHeading: String = "Is your client’s information correct?"
