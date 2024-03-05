@@ -363,27 +363,6 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       }
     }
 
-    "have a software heading" in {
-      document().mainContent.selectNth("h2", 3).text mustBe GlobalCheckYourAnswersMessages.Software.heading
-    }
-
-    "have a summary list with the compatible software selection" when {
-      "the compatible software choice was Yes" in {
-        val summaryList = document().mainContent
-          .selectNth(".govuk-summary-list", 5)
-        val softwareRow = summaryList.selectHead(".govuk-summary-list__row")
-        softwareRow.selectHead("dt").text mustBe GlobalCheckYourAnswersMessages.Software.key
-        softwareRow.selectHead("dd").text mustBe GlobalCheckYourAnswersMessages.Software.yes
-      }
-      "the compatible software choice was No" in {
-        val summaryList = document(details = completeDetails(hasSoftware = false)).mainContent
-          .selectNth(".govuk-summary-list", 5)
-        val softwareRow = summaryList.selectHead(".govuk-summary-list__row")
-        softwareRow.selectHead("dt").text mustBe GlobalCheckYourAnswersMessages.Software.key
-        softwareRow.selectHead("dd").text mustBe GlobalCheckYourAnswersMessages.Software.no
-      }
-    }
-
     "have a print information link" in {
       val link = document().mainContent.selectHead("div > a.govuk-link")
       link.text mustBe GlobalCheckYourAnswersMessages.printLink
@@ -392,7 +371,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
     "have a correct information section" which {
       "has a heading" in {
-        document().mainContent.selectNth(".govuk-heading-m", 4).text mustBe GlobalCheckYourAnswersMessages.correctInformation.heading
+        document().mainContent.selectNth(".govuk-heading-m", 3).text mustBe GlobalCheckYourAnswersMessages.correctInformation.heading
       }
 
       "has a paragraph" in {
@@ -477,13 +456,6 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       def next(year: Int): String = s"Next tax year (6 April ${year - 1} to 5 April $year)"
     }
 
-    object Software {
-      val heading: String = "Software for Making Tax Digital for Income Tax"
-      val key: String = "Compatible software"
-      val yes: String = "Yes"
-      val no: String = "No"
-    }
-
     val printLink = "Print your information"
 
     object correctInformation {
@@ -531,32 +503,28 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
                        soleTraderBusinesses: Option[SoleTraderBusinesses] = Some(selfEmploymentIncomeSource(Cash)),
                        ukProperty: Option[UKProperty] = Some(ukPropertyIncomeSource(Cash)),
                        foreignProperty: Option[ForeignProperty] = Some(foreignPropertyIncomeSource(Cash)),
-                       taxYear: AccountingYear = Current,
-                       hasSoftware: Boolean = true
+                       taxYear: AccountingYear = Current
                      ): CompleteDetails = CompleteDetails(
     incomeSources = IncomeSources(
       soleTraderBusinesses = soleTraderBusinesses,
       ukProperty = ukProperty,
       foreignProperty = foreignProperty
     ),
-    taxYear = taxYear,
-    hasSoftware = hasSoftware
+    taxYear = taxYear
   )
 
   def minDetails(
                   soleTraderBusinesses: Option[SoleTraderBusinesses] = None,
                   ukProperty: Option[UKProperty] = None,
                   foreignProperty: Option[ForeignProperty] = None,
-                  taxYear: AccountingYear = Current,
-                  hasSoftware: Boolean = true
+                  taxYear: AccountingYear = Current
                 ): CompleteDetails = CompleteDetails(
     incomeSources = IncomeSources(
       soleTraderBusinesses = soleTraderBusinesses,
       ukProperty = ukProperty,
       foreignProperty = foreignProperty
     ),
-    taxYear = taxYear,
-    hasSoftware = hasSoftware
+    taxYear = taxYear
   )
 
 }

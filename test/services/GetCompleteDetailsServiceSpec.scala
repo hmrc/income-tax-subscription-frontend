@@ -88,8 +88,7 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
         accountingMethod = Cash
       ))
     ),
-    taxYear = Current,
-    hasSoftware = true
+    taxYear = Current
   )
 
   "getCompleteSignUpDetails" must {

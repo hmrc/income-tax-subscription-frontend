@@ -101,7 +101,7 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
         accountingMethod = Cash
       ))
     ),
-    taxYear = Current, hasSoftware = true
+    taxYear = Current
   )
 
   "show" must {
