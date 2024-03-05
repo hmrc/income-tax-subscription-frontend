@@ -110,7 +110,6 @@ class HomeController @Inject()(val auditingService: AuditingService,
               handlePrepop(reference, prepopMaybe) flatMap { _ =>
                 withMandationStatus(nino, utr) { mandationStatus =>
                   goToSignUp(thisYear)
-                    .addingToSession(StartTime -> timestamp)
                     .withJourneyState(SignUp)
                     .addingToSession(UTR -> utr)
                     .addingToSession(NINO -> nino)

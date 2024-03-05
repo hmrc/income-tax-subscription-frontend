@@ -16,28 +16,15 @@
 
 package auth.individual
 
-import auth.individual.AuthPredicate.{AuthPredicate, AuthPredicateSuccess}
-import auth.individual.AuthPredicates._
-import auth.individual.JourneyState._
 import common.Constants.ITSASessionKeys
 import play.api.mvc._
 
-import scala.concurrent.Future
-
 trait JourneyState {
   val name: String
-
-  lazy val journeyStatePredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
-    if (request.isInState(this)) Right(AuthPredicateSuccess)
-    else Left(Future.successful(homeRoute))
 }
 
 object SignUp extends JourneyState {
   override val name: String = "signUp"
-}
-
-object UserMatched extends JourneyState {
-  override val name: String = "userMatched"
 }
 
 object ClaimEnrolment extends JourneyState {
@@ -48,22 +35,14 @@ object JourneyState {
 
   implicit class SessionFunctions(session: Session) {
     def isInState(state: JourneyState): Boolean = session.get(ITSASessionKeys.JourneyStateKey) contains state.name
-
-    def hasConfirmedAgent: Boolean = session.get(ITSASessionKeys.ConfirmedAgent).fold(false)(_.toBoolean)
   }
-
 
   implicit class RequestFunctions(request: Request[_]) {
     def isInState(state: JourneyState): Boolean = request.session.isInState(state)
-
-    def hasConfirmedAgent: Boolean = request.session.hasConfirmedAgent
   }
 
   implicit class ResultFunctions(result: Result) {
     def withJourneyState(state: JourneyState)(implicit header: RequestHeader): Result = result.addingToSession(ITSASessionKeys.JourneyStateKey -> state.name)
-
-    def confirmAgent(implicit header: RequestHeader): Result =
-      result.addingToSession(ITSASessionKeys.ConfirmedAgent -> true.toString)
   }
 
 }

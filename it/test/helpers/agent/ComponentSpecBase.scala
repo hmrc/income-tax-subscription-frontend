@@ -80,7 +80,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     )
 
     val detailedClientData = Map(
-      ITSASessionKeys.ArnKey -> testARN,
       ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
       ITSASessionKeys.NINO -> testNino,
       ITSASessionKeys.UTR -> testUtr
@@ -94,7 +93,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     )
 
     val completeClientData = Map(
-      ITSASessionKeys.ArnKey -> testARN,
       ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
       ITSASessionKeys.NINO -> testNino,
       ITSASessionKeys.UTR -> testUtr,
@@ -196,7 +194,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       else
         Map()
       Map(
-        ITSASessionKeys.ArnKey -> testARN,
         ITSASessionKeys.REFERENCE -> "test-reference"
       ) ++ utrKvp ++ stateKvp
     }
