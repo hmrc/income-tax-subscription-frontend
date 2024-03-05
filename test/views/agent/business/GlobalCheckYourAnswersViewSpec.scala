@@ -498,16 +498,14 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
                        soleTraderBusinesses: Option[SoleTraderBusinesses] = Some(selfEmploymentIncomeSource(Cash)),
                        ukProperty: Option[UKProperty] = Some(ukPropertyIncomeSource(Cash)),
                        foreignProperty: Option[ForeignProperty] = Some(foreignPropertyIncomeSource(Cash)),
-                       taxYear: AccountingYear = Current,
-                       hasSoftware: Boolean = true
+                       taxYear: AccountingYear = Current
                      ): CompleteDetails = CompleteDetails(
     incomeSources = IncomeSources(
       soleTraderBusinesses = soleTraderBusinesses,
       ukProperty = ukProperty,
       foreignProperty = foreignProperty
     ),
-    taxYear = taxYear,
-    hasSoftware = hasSoftware
+    taxYear = taxYear
   )
 
   def minDetails(
@@ -515,15 +513,13 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
                   ukProperty: Option[UKProperty] = None,
                   foreignProperty: Option[ForeignProperty] = None,
                   taxYear: AccountingYear = Current,
-                  hasSoftware: Boolean = true
                 ): CompleteDetails = CompleteDetails(
     incomeSources = IncomeSources(
       soleTraderBusinesses = soleTraderBusinesses,
       ukProperty = ukProperty,
       foreignProperty = foreignProperty
     ),
-    taxYear = taxYear,
-    hasSoftware = hasSoftware
+    taxYear = taxYear
   )
 
 }

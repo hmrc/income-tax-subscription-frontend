@@ -1151,8 +1151,6 @@ individual.global-check-your-answers.income-sources.foreign-property.start-date 
 individual.global-check-your-answers.income-sources.foreign-property.accounting-method          = Accounting method
 individual.global-check-your-answers.tax-year.heading                                           = Selected tax year
 individual.global-check-your-answers.tax-year.label                                             = Tax year
-individual.global-check-your-answers.software.heading                                           = Software for Making Tax Digital for Income Tax
-individual.global-check-your-answers.software.label                                             = Compatible software
 individual.global-check-your-answers.print-information                                          = Print your information
 individual.global-check-your-answers.correct-info.heading                                       = Is this information correct?
 individual.global-check-your-answers.correct-info.para                                          = By submitting, you are confirming that, to the best of your knowledge, the details you are providing are correct.

@@ -45,22 +45,19 @@ class AgentGetCompleteDetailsService @Inject()(subscriptionDetailsService: Subsc
     val fetchUKProperty = subscriptionDetailsService.fetchProperty(reference)
     val fetchForeignProperty = subscriptionDetailsService.fetchOverseasProperty(reference)
     val fetchSelectedTaxYear = subscriptionDetailsService.fetchSelectedTaxYear(reference)
-    val fetchSoftwareFlag = subscriptionDetailsService.fetchSoftwareFlag(reference)
 
     for {
       (selfEmployments, accountingMethod) <- fetchAllSelfEmployments
       ukProperty <- fetchUKProperty
       foreignProperty <- fetchForeignProperty
       selectedTaxYear <- fetchSelectedTaxYear
-      softwareFlag <- fetchSoftwareFlag
     } yield {
       createCompleteDetails(
         selfEmployments,
         accountingMethod,
         ukProperty,
         foreignProperty,
-        selectedTaxYear,
-        softwareFlag
+        selectedTaxYear
       )
     }
 
@@ -70,8 +67,8 @@ class AgentGetCompleteDetailsService @Inject()(subscriptionDetailsService: Subsc
                                     selfEmploymentsAccountingMethod: Option[AccountingMethod],
                                     ukPropertyBusiness: Option[PropertyModel],
                                     foreignPropertyBusiness: Option[OverseasPropertyModel],
-                                    selectedTaxYear: Option[AccountingYearModel],
-                                    softwareFlag: Option[Boolean]): Either[GetCompleteDetailsFailure.type, CompleteDetails] = {
+                                    selectedTaxYear: Option[AccountingYearModel]
+                                    ): Either[GetCompleteDetailsFailure.type, CompleteDetails] = {
 
     Try {
       val soleTraderBusinesses: Option[SoleTraderBusinesses] = {
@@ -107,8 +104,7 @@ class AgentGetCompleteDetailsService @Inject()(subscriptionDetailsService: Subsc
 
       CompleteDetails(
         incomeSources = IncomeSources(soleTraderBusinesses, ukProperty, foreignProperty),
-        taxYear = selectedTaxYear.get.accountingYear,
-        hasSoftware = softwareFlag.get
+        taxYear = selectedTaxYear.get.accountingYear
       )
     } match {
       case Failure(_) =>

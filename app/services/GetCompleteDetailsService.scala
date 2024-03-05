@@ -45,22 +45,19 @@ class GetCompleteDetailsService @Inject()(subscriptionDetailsService: Subscripti
     val fetchUKProperty = subscriptionDetailsService.fetchProperty(reference)
     val fetchForeignProperty = subscriptionDetailsService.fetchOverseasProperty(reference)
     val fetchSelectedTaxYear = subscriptionDetailsService.fetchSelectedTaxYear(reference)
-    val fetchSoftwareFlag = subscriptionDetailsService.fetchSoftwareFlag(reference)
 
     for {
       (selfEmployments, accountingMethod) <- fetchAllSelfEmployments
       ukProperty <- fetchUKProperty
       foreignProperty <- fetchForeignProperty
       selectedTaxYear <- fetchSelectedTaxYear
-      softwareFlag <- fetchSoftwareFlag
     } yield {
       createCompleteDetails(
         selfEmployments,
         accountingMethod,
         ukProperty,
         foreignProperty,
-        selectedTaxYear,
-        softwareFlag
+        selectedTaxYear
       )
     }
 
@@ -70,8 +67,8 @@ class GetCompleteDetailsService @Inject()(subscriptionDetailsService: Subscripti
                                     selfEmploymentsAccountingMethod: Option[AccountingMethod],
                                     ukPropertyBusiness: Option[PropertyModel],
                                     foreignPropertyBusiness: Option[OverseasPropertyModel],
-                                    selectedTaxYear: Option[AccountingYearModel],
-                                    softwareFlag: Option[Boolean]): Either[GetCompleteDetailsFailure.type, CompleteDetails] = {
+                                    selectedTaxYear: Option[AccountingYearModel]
+                                    ): Either[GetCompleteDetailsFailure.type, CompleteDetails] = {
 
     Try {
       val soleTraderBusinesses: Option[SoleTraderBusinesses] = {
@@ -107,8 +104,7 @@ class GetCompleteDetailsService @Inject()(subscriptionDetailsService: Subscripti
 
       CompleteDetails(
         incomeSources = IncomeSources(soleTraderBusinesses, ukProperty, foreignProperty),
-        taxYear = selectedTaxYear.get.accountingYear,
-        hasSoftware = softwareFlag.get
+        taxYear = selectedTaxYear.get.accountingYear
       )
     } match {
       case Failure(_) =>
@@ -124,8 +120,7 @@ object GetCompleteDetailsService {
 
   case class CompleteDetails(
                               incomeSources: IncomeSources,
-                              taxYear: AccountingYear,
-                              hasSoftware: Boolean //todo: not yet implemented, may change from boolean to another type
+                              taxYear: AccountingYear
                             )
 
   case class IncomeSources(

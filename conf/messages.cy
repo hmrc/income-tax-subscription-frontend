@@ -1150,8 +1150,6 @@ individual.global-check-your-answers.income-sources.foreign-property.start-date 
 individual.global-check-your-answers.income-sources.foreign-property.accounting-method          = Dull cyfrifyddu
 individual.global-check-your-answers.tax-year.heading                                           = Y flwyddyn dreth a ddewiswyd
 individual.global-check-your-answers.tax-year.label                                             = Blwydden treth
-individual.global-check-your-answers.software.heading                                           = Meddalwedd ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-individual.global-check-your-answers.software.label                                             = Meddalwedd sy’n cydweddu
 individual.global-check-your-answers.print-information                                          = Argraffwch eich gwybodaeth
 individual.global-check-your-answers.correct-info.heading                                       = A yw’ch gwybodaeth yn gywir?
 individual.global-check-your-answers.correct-info.para                                          = Drwy gyflwyno, rydych yn cadarnhau, hyd eithaf eich gwybodaeth, fod y manylion a rowch yn gywir.
