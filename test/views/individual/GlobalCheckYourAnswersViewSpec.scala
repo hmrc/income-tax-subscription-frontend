@@ -363,6 +363,12 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       }
     }
 
+    "have a print information link" in {
+      val link = document().mainContent.selectHead("div > a.govuk-link")
+      link.text mustBe GlobalCheckYourAnswersMessages.printLink
+      link.attr("href") mustBe "javascript:window.print()"
+    }
+
     "have a correct information section" which {
       "has a heading" in {
         document().mainContent.selectNth(".govuk-heading-m", 3).text mustBe GlobalCheckYourAnswersMessages.correctInformation.heading
@@ -449,6 +455,8 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
       def next(year: Int): String = s"Next tax year (6 April ${year - 1} to 5 April $year)"
     }
+
+    val printLink = "Print your information"
 
     object correctInformation {
       val heading: String = "Is this information correct?"
