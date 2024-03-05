@@ -384,6 +384,12 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       }
     }
 
+    "have a print information link" in {
+      val link = document().mainContent.selectHead("div > a.govuk-link")
+      link.text mustBe GlobalCheckYourAnswersMessages.printLink
+      link.attr("href") mustBe "javascript:window.print()"
+    }
+
     "have a correct information section" which {
       "has a heading" in {
         document().mainContent.selectNth(".govuk-heading-m", 4).text mustBe GlobalCheckYourAnswersMessages.correctInformation.heading
@@ -477,6 +483,8 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       val yes: String = "Yes"
       val no: String = "No"
     }
+
+    val printLink = "Print your information"
 
     object correctInformation {
       val heading: String = "Is this information correct?"

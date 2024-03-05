@@ -51,16 +51,22 @@
     @incomeSourcesSection(completeDetails.incomeSources)
     @taxYearSection(completeDetails.taxYear)
     @softwareSection(completeDetails.hasSoftware)
-    @correctInfo()
 
-@form(action = postAction){
-    <div class="govuk-button-group">
-        @readyToSignUpButton()
-        <a href="@controllers.individual.tasklist.routes.TaskListController.show().url" id="return_to_tasklist" class="govuk-link">
-            @messages("individual.global-check-your-answers.change-something")
-        </a>
+    <div class="govuk-!-display-none-print">
+        <div class="govuk-!-margin-bottom-4">
+            <a href="javascript:window.print()" class="govuk-link">@messages("individual.global-check-your-answers.print-information")</a>
+        </div>
+        @correctInfo()
     </div>
-}
+
+    @form(action = postAction){
+        <div class="govuk-button-group govuk-!-display-none-print">
+            @readyToSignUpButton()
+            <a href="@controllers.individual.tasklist.routes.TaskListController.show().url" id="return_to_tasklist" class="govuk-link">
+                @messages("individual.global-check-your-answers.change-something")
+            </a>
+        </div>
+    }
 
 }
 
