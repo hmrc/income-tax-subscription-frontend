@@ -1173,7 +1173,7 @@ agent.global-check-your-answers.income-sources.foreign-property.start-date      
 agent.global-check-your-answers.income-sources.foreign-property.accounting-method               = Dull cyfrifyddu
 agent.global-check-your-answers.tax-year.heading                                                = Y flwyddyn dreth a ddewiswyd
 agent.global-check-your-answers.tax-year.label                                                  = Blwyddyn Dreth
-agent.global-check-your-answers.print-information                                               = Argraffwch gadarnhad cofrestriad y cleient hwn
+agent.global-check-your-answers.print-information                                               = Argraffwch wybodaeth y cleient hwn
 agent.global-check-your-answers.form.heading                                                    = A yw gwybodaeth eich cleient yn gywir?
 agent.global-check-your-answers.form.para                                                       = Drwy gyflwyno, rydych yn cadarnhau, hyd eithaf eich gwybodaeth, fod y manylion a rowch yn gywir.
 agent.global-check-your-answers.change-something                                                = Na, mae angen i fi newid rhywbeth
