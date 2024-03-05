@@ -50,7 +50,6 @@
 
     @incomeSourcesSection(completeDetails.incomeSources)
     @taxYearSection(completeDetails.taxYear)
-    @softwareSection(completeDetails.hasSoftware)
     @correctInfo()
 
 @form(action = postAction){
@@ -170,21 +169,6 @@
             SummaryListRow(
                 key = Key(content = Text(messages("individual.global-check-your-answers.tax-year.label"))),
                 value = Value(content = Text(taxYear(selectedTaxYear)))
-            )
-        )
-    ))
-}
-
-@softwareSection(hasSoftware: Boolean) = {
-    <h2 class="govuk-heading-m">@messages("individual.global-check-your-answers.software.heading")</h2>
-
-    @govukSummaryList(SummaryList(
-        rows = Seq(
-            SummaryListRow(
-                key = Key(content = Text(messages("individual.global-check-your-answers.software.label"))),
-                value = Value(content = Text(messages(
-                    if(hasSoftware) "base.yes" else "base.no"
-                )))
             )
         )
     ))

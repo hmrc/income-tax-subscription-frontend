@@ -39,6 +39,7 @@ base.second                                                     = second
 base.seconds                                                    = seconds
 base.accounting-method.cash                                     = Cash basis accounting
 base.accounting-method.accruals                                 = Traditional accounting
+base.print-this-page                                            = Print this page
 base.warning                                                    = Warning
 base.accept-and-continue                                        = Accept and continue
 base.tax-year.current                                           = Current tax year (6 April {0} to 5 April {1})
@@ -334,7 +335,6 @@ sign-up-complete.what-now.submit-annual                         = Submit your an
 agent.sign-up-confirmation.heading                                                  = Client sign up complete
 agent.sign-up-confirmation.heading.panel.current                                    = is now signed up for Making Tax Digital for Income Tax for the current tax year ({0})
 agent.sign-up-confirmation.heading.panel.next                                       = is now signed up for Making Tax Digital for Income Tax for the next tax year ({0})
-agent.sign-up-confirmation.print-confirmation                                       = Print this client’s sign up confirmation
 agent.sign-up-confirmation.what-you-will-have-to-do.heading                         = What you must do now
 agent.sign-up-confirmation.quarterly-updates.heading                                = Send quarterly updates
 agent.sign-up-confirmation.quarterly-updates.para                                   = You must send quarterly updates of your client’s income and expenses using compatible software.
@@ -361,13 +361,10 @@ agent.sign-up-confirmation.agent-services-account.para                          
 agent.sign-up-confirmation.agent-services-account.link-text                         = Go to your agent services account
 
 ## Sign Up Confirmation page ##
-sign-up-confirmation.heading                                         = Sign up complete
-sign-up-confirmation.heading.panel.current                           = is now signed up for Making Tax Digital for Income Tax for the current tax year ({0})
-sign-up-confirmation.heading.panel.next                              = is now signed up for Making Tax Digital for Income Tax for the next tax year ({0})
-
-sign-up-confirmation.print-confirmation                              = Print your confirmation
-
-sign-up-confirmation.what-you-must-do.heading                        = What you must do
+sign-up-confirmation.heading                                                  = Sign up complete
+sign-up-confirmation.heading.panel.current                                    = is now signed up for Making Tax Digital for Income Tax for the current tax year ({0})
+sign-up-confirmation.heading.panel.next                                       = is now signed up for Making Tax Digital for Income Tax for the next tax year ({0})
+sign-up-confirmation.what-you-must-do.heading                                 = What you must do
 
 sign-up-confirmation.before-you-start.heading                        = Before you start
 sign-up-confirmation.before-you-start.para1                          = To start using Making Tax Digital for Income Tax you must get compatible software. You should check if the software meets your business needs.
@@ -1151,8 +1148,6 @@ individual.global-check-your-answers.income-sources.foreign-property.start-date 
 individual.global-check-your-answers.income-sources.foreign-property.accounting-method          = Accounting method
 individual.global-check-your-answers.tax-year.heading                                           = Selected tax year
 individual.global-check-your-answers.tax-year.label                                             = Tax year
-individual.global-check-your-answers.software.heading                                           = Software for Making Tax Digital for Income Tax
-individual.global-check-your-answers.software.label                                             = Compatible software
 individual.global-check-your-answers.correct-info.heading                                       = Is this information correct?
 individual.global-check-your-answers.correct-info.para                                          = By submitting, you are confirming that, to the best of your knowledge, the details you are providing are correct.
 individual.global-check-your-answers.change-something                                           = No, I need to change something
