@@ -43,6 +43,7 @@ class HomeControllerSpec extends ControllerBaseSpec
   with MockPrePopulationService
   with MockAuditingService
   with MockThrottlingConnector
+  with MockSessionDataService
   with MockMandationStatusConnector {
 
   private val eligibleWithoutPrepopData = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, None)
@@ -67,18 +68,21 @@ class HomeControllerSpec extends ControllerBaseSpec
   }
 
   def testHomeController(showStartPage: Boolean = true): HomeController = new HomeController(
-    mockAuditingService,
-    mockAuthService,
     mockCitizenDetailsService,
     mockGetEligibilityStatusService,
-    MockSubscriptionDetailsService,
-    mockPrePopulationService,
     mockSubscriptionService,
     new ThrottlingService(mockThrottlingConnector, appConfig),
+    mockPrePopulationService,
     mockMandationStatusConnector
-  )(implicitly, MockConfig, mockMessagesControllerComponents)
+  )(
+    mockAuditingService,
+    mockAuthService,
+    MockSubscriptionDetailsService,
+    mockSessionDataService,
+    MockConfig
+  )(implicitly, mockMessagesControllerComponents)
 
-  import TestConstants.{testNino, testReference, testUtr}
+  import TestConstants.{testNino, testUtr}
 
   "home" when {
     "there is no start page" should {

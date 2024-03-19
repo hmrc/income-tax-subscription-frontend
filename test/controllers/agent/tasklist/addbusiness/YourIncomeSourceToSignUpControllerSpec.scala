@@ -16,7 +16,6 @@
 
 package controllers.agent.tasklist.addbusiness
 
-import connectors.subscriptiondata.mocks.MockIncomeTaxSubscriptionConnector
 import controllers.agent.AgentControllerBaseSpec
 import models.common.business._
 import models.common.{IncomeSources, OverseasPropertyModel, PropertyModel}
@@ -27,14 +26,14 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAuditingService, MockSubscriptionDetailsService}
+import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
 import views.html.agent.tasklist.addbusiness.YourIncomeSourceToSignUp
 
 import scala.concurrent.Future
 
 class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
   with MockSubscriptionDetailsService
-  with MockIncomeTaxSubscriptionConnector
+  with MockSessionDataService
   with MockAuditingService {
   override val controllerName: String = "IncomeSourceController"
 
@@ -205,9 +204,12 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
     val yourIncomeSourceToSignUpView: YourIncomeSourceToSignUp = mock[YourIncomeSourceToSignUp]
 
     val controller = new YourIncomeSourceToSignUpController(
-      yourIncomeSourceToSignUpView,
+      yourIncomeSourceToSignUpView
+    )(
       MockSubscriptionDetailsService,
       mockAuditingService,
+      mockSessionDataService,
+      appConfig,
       mockAuthService
     )
 

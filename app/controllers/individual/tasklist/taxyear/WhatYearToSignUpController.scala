@@ -25,7 +25,7 @@ import models.common.AccountingYearModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AccountingPeriodService, AuditingService, AuthService, SubscriptionDetailsService}
+import services._
 import uk.gov.hmrc.http.InternalServerException
 import views.html.individual.tasklist.taxyear.WhatYearToSignUp
 
@@ -34,12 +34,13 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
-                                           val auditingService: AuditingService,
+                                           accountingPeriodService: AccountingPeriodService)
+                                          (val auditingService: AuditingService,
                                            val authService: AuthService,
-                                           accountingPeriodService: AccountingPeriodService,
+                                           val sessionDataService: SessionDataService,
+                                           val appConfig: AppConfig,
                                            val subscriptionDetailsService: SubscriptionDetailsService)
                                           (implicit val ec: ExecutionContext,
-                                           val appConfig: AppConfig,
                                            mcc: MessagesControllerComponents) extends SignUpController with ReferenceRetrieval with TaxYearNavigationHelper {
 
   def view(accountingYearForm: Form[AccountingYear], isEditMode: Boolean)(implicit request: Request[_]): Html = {
@@ -55,7 +56,7 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       handleUnableToSelectTaxYearIndividual(request) {
-        withReference { reference =>
+        withIndividualReference { reference =>
           subscriptionDetailsService.fetchSelectedTaxYear(reference) map { accountingYearModel =>
             Ok(view(accountingYearForm = AccountingYearForm.accountingYearForm.fill(accountingYearModel.map(aym => aym.accountingYear)), isEditMode = isEditMode))
           }
@@ -65,7 +66,7 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withReference { reference =>
+      withIndividualReference { reference =>
         AccountingYearForm.accountingYearForm.bindFromRequest().fold(
           formWithErrors =>
             Future.successful(BadRequest(view(accountingYearForm = formWithErrors, isEditMode = isEditMode))),

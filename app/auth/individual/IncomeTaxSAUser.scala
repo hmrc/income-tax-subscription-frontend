@@ -74,9 +74,6 @@ object IncomeTaxSAUser {
   def fullName(implicit request: Request[AnyContent]): Option[String] =
     request.session.get(ITSASessionKeys.FULLNAME)
 
-  def reference(implicit request: Request[AnyContent]): Option[String] =
-    request.session.get(ITSASessionKeys.REFERENCE)
-
   def spsEntityId(implicit request: Request[AnyContent]): Option[String] =
     request.session.data.get(ITSASessionKeys.SPSEntityId)
 }

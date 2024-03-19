@@ -24,7 +24,7 @@ import models.AccountingMethod
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.tasklist.overseasproperty.OverseasPropertyAccountingMethod
@@ -33,12 +33,14 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class OverseasPropertyAccountingMethodController @Inject()(val auditingService: AuditingService,
+class OverseasPropertyAccountingMethodController @Inject()(overseasPropertyAccountingMethod: OverseasPropertyAccountingMethod)
+                                                          (val auditingService: AuditingService,
                                                            val authService: AuthService,
                                                            val subscriptionDetailsService: SubscriptionDetailsService,
-                                                           overseasPropertyAccountingMethod: OverseasPropertyAccountingMethod)
-                                                          (implicit val ec: ExecutionContext,
                                                            val appConfig: AppConfig,
+                                                           val sessionDataService: SessionDataService)
+                                                          (implicit val ec: ExecutionContext,
+
                                                            mcc: MessagesControllerComponents) extends AuthenticatedController with ReferenceRetrieval {
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>

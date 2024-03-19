@@ -24,13 +24,14 @@ import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.mocks.{MockAccountingPeriodService, MockAuditingService, MockSubscriptionDetailsService, MockWhatYearToSignUp}
+import services.mocks._
 
 import scala.concurrent.Future
 
 class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
   with MockWhatYearToSignUp
   with MockSubscriptionDetailsService
+  with MockSessionDataService
   with MockAccountingPeriodService
   with MockAuditingService {
 
@@ -42,9 +43,12 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
 
   object TestWhatYearToSignUpController extends WhatYearToSignUpController(
     whatYearToSignUp,
+    mockAccountingPeriodService
+  )(
     mockAuditingService,
     mockAuthService,
-    mockAccountingPeriodService,
+    mockSessionDataService,
+    appConfig,
     MockSubscriptionDetailsService
   )
 

@@ -31,7 +31,7 @@ import play.api.http.Status.OK
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAuditingService, MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService}
+import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import utilities.individual.TestConstants.testCredId
@@ -44,7 +44,7 @@ import scala.concurrent.Future
 class ProgressSavedControllerSpec extends ControllerBaseSpec
   with MockAuditingService
   with MockSubscriptionDetailsService
-  with MockIncomeTaxSubscriptionConnector {
+  with MockSessionDataService {
 
   override val controllerName: String = "ProgressSavedController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
@@ -187,12 +187,14 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
 
     val controller = new ProgressSavedController(
       progressSavedView,
+      currentDateProvider,
+      cacheExpiryDateProvider
+    )(
       mockAuditingService,
       mockAuthService,
       MockSubscriptionDetailsService,
-      mockIncomeTaxSubscriptionConnector,
-      currentDateProvider,
-      cacheExpiryDateProvider
+      mockSessionDataService,
+      appConfig
     )
 
     testCode(controller, progressSavedView)

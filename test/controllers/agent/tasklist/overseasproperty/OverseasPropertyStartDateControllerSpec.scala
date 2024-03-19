@@ -27,7 +27,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.agent.mocks.MockAgentAuthService
-import services.mocks.{MockAuditingService, MockSubscriptionDetailsService}
+import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.SubscriptionDataKeys.OverseasPropertyStartDate
 import utilities.TestModels.{testAccountingMethodProperty, testPropertyStartDateModel}
@@ -37,7 +37,12 @@ import java.time.LocalDate
 import scala.concurrent.Future
 
 class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
-  with MockSubscriptionDetailsService with MockAgentAuthService with MockAuditingService with MockOverseasPropertyStartDate with FeatureSwitching {
+  with MockSubscriptionDetailsService
+  with MockAgentAuthService
+  with MockAuditingService
+  with MockSessionDataService
+  with MockOverseasPropertyStartDate
+  with FeatureSwitching {
 
   override def beforeEach(): Unit = {
     disable(featureSwitch = EnableTaskListRedesign)
@@ -52,19 +57,25 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
 
   trait Test {
     val controller = new OverseasPropertyStartDateController(
+      mockOverseasPropertyStartDate
+    )(
       mockAuditingService,
-      mockOverseasPropertyStartDate,
       mockAuthService,
       MockSubscriptionDetailsService,
+      mockSessionDataService,
+      appConfig,
       mockLanguageUtils
     )
   }
 
   object TestOverseasPropertyStartDateController$ extends OverseasPropertyStartDateController(
+    mockOverseasPropertyStartDate
+  )(
     mockAuditingService,
-    mockOverseasPropertyStartDate,
     mockAuthService,
     MockSubscriptionDetailsService,
+    mockSessionDataService,
+    appConfig,
     mockLanguageUtils
   )
 

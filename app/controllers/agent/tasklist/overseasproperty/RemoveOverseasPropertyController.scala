@@ -25,7 +25,7 @@ import models.{No, Yes, YesNo}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.SubscriptionDataKeys
 import views.html.agent.tasklist.overseasproperty.RemoveOverseasPropertyBusiness
@@ -33,13 +33,14 @@ import views.html.agent.tasklist.overseasproperty.RemoveOverseasPropertyBusiness
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class RemoveOverseasPropertyController @Inject()(val auditingService: AuditingService,
-                                                 val authService: AuthService,
-                                                 val subscriptionDetailsService: SubscriptionDetailsService,
-                                                 incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector,
+class RemoveOverseasPropertyController @Inject()(incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector,
                                                  removeOverseasProperty: RemoveOverseasPropertyBusiness)
-                                                (implicit val ec: ExecutionContext,
+                                                (val auditingService: AuditingService,
+                                                 val authService: AuthService,
                                                  val appConfig: AppConfig,
+                                                 val subscriptionDetailsService: SubscriptionDetailsService,
+                                                 val sessionDataService: SessionDataService)
+                                                (implicit val ec: ExecutionContext,
                                                  mcc: MessagesControllerComponents) extends AuthenticatedController with ReferenceRetrieval {
 
   private val form: Form[YesNo] = RemoveClientOverseasPropertyForm.removeClientOverseasPropertyForm

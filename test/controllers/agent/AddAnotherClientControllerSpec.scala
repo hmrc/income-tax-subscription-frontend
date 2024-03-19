@@ -18,15 +18,20 @@ package controllers.agent
 
 import common.Constants.ITSASessionKeys
 import play.api.mvc.{Action, AnyContent, Result}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.mocks.{MockAuditingService, MockSubscriptionDetailsService, MockUserLockoutService}
-import uk.gov.hmrc.http.HttpResponse
+import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService, MockUserLockoutService}
+import uk.gov.hmrc.http.InternalServerException
+import utilities.UserMatchingSessionUtil
 
 import scala.concurrent.Future
 
 
 class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
-  with MockSubscriptionDetailsService with MockUserLockoutService with MockAuditingService {
+  with MockSubscriptionDetailsService
+  with MockUserLockoutService
+  with MockSessionDataService
+  with MockAuditingService {
 
   override val controllerName: String = "addAnotherClientController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -36,28 +41,42 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
   object TestAddAnotherClientController extends AddAnotherClientController(
     mockAuditingService,
     mockAuthService,
+    mockSessionDataService,
     appConfig
   )(executionContext, mockMessagesControllerComponents)
 
+  val fullSessionDetailsRequest = FakeRequest().withSession(
+    ITSASessionKeys.JourneyStateKey -> "test-journey-state",
+    ITSASessionKeys.MTDITID -> "test-mtditid",
+    ITSASessionKeys.NINO -> "test-nino",
+    ITSASessionKeys.UTR -> "test-utr",
+    ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "test-eligible-next-year-only",
+    ITSASessionKeys.MANDATED_CURRENT_YEAR -> "test-mandated-current-year",
+    ITSASessionKeys.MANDATED_NEXT_YEAR -> "test-mandated-next-year",
+    UserMatchingSessionUtil.firstName -> "test-first-name",
+    UserMatchingSessionUtil.lastName -> "test-last-name"
+  )
+
   "AddAnotherClientController.addAnother" should {
 
-    lazy val request = subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "anyValue")
-
-    def call: Future[Result] = TestAddAnotherClientController.addAnother()(request)
+    def call: Future[Result] = TestAddAnotherClientController.addAnother()(fullSessionDetailsRequest)
 
     "redirect to the agent eligibility frontend terms page, clearing Subscription Details and session values" in {
-      mockDeleteAllFromSubscriptionDetails(HttpResponse(OK, ""))
+      mockDeleteReferenceSuccess()
 
       val result: Result = await(call)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.agent.matching.routes.ClientDetailsController.show().url)
+      session(result).data mustBe Map.empty[String, String]
+      result.verifyStoredUserDetailsIs(None)(fullSessionDetailsRequest)
+    }
 
-      result.session(request).get(ITSASessionKeys.MTDITID) mustBe None
-      result.session(request).get(ITSASessionKeys.JourneyStateKey) mustBe None
-      result.session(request).get(ITSASessionKeys.UTR) mustBe None
-      result.session(request).get(ITSASessionKeys.NINO) mustBe None
-      result.verifyStoredUserDetailsIs(None)(request)
+    "throw an InternalServerException if the delete reference call failed" in {
+      mockDeleteReferenceStatusFailure(INTERNAL_SERVER_ERROR)
+
+      intercept[InternalServerException](await(call))
+        .message mustBe s"[AddAnotherClientController][addAnother] - Unexpected status deleting reference from session. Status: $INTERNAL_SERVER_ERROR"
     }
   }
 

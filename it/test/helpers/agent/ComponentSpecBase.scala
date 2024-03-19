@@ -24,6 +24,7 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import config.AppConfig
 import config.featureswitch.FeatureSwitching
+import connectors.stubs.SessionDataConnectorStub.stubGetSessionData
 import forms.agent._
 import forms.individual.business.RemoveBusinessForm
 import helpers.IntegrationTestConstants._
@@ -44,10 +45,11 @@ import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api._
 import play.api.data.Form
 import play.api.http.HeaderNames
+import play.api.http.Status.OK
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.crypto.CookieSigner
-import play.api.libs.json.{JsArray, Writes}
+import play.api.libs.json.{JsArray, JsString, Writes}
 import play.api.libs.ws.{WSClient, WSRequest, WSResponse}
 import play.api.mvc.{Headers, Session}
 import play.api.test.FakeRequest
@@ -69,30 +71,30 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
   object ClientData {
 
-    val clientName = Map(
+    val clientName: Map[String, String] = Map(
       UserMatchingSessionUtil.firstName -> testFirstName,
       UserMatchingSessionUtil.lastName -> testLastName
     )
-    val basicClientData = Map(
+    val basicClientData: Map[String, String] = Map(
       UserMatchingSessionUtil.firstName -> testFirstName,
       UserMatchingSessionUtil.lastName -> testLastName,
       ITSASessionKeys.NINO -> testNino
     )
 
-    val detailedClientData = Map(
+    val detailedClientData: Map[String, String] = Map(
       ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
       ITSASessionKeys.NINO -> testNino,
       ITSASessionKeys.UTR -> testUtr
     )
 
-    val clientDataWithNinoAndUTR = Map(
+    val clientDataWithNinoAndUTR: Map[String, String] = Map(
       UserMatchingSessionUtil.firstName -> testFirstName,
       UserMatchingSessionUtil.lastName -> testLastName,
       ITSASessionKeys.NINO -> testNino,
       ITSASessionKeys.UTR -> testUtr
     )
 
-    val completeClientData = Map(
+    val completeClientData: Map[String, String] = Map(
       ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
       ITSASessionKeys.NINO -> testNino,
       ITSASessionKeys.UTR -> testUtr,
@@ -105,6 +107,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
   implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
+  val reference: String = "test-reference"
 
   val cookieSignerCache: Application => CookieSigner = Application.instanceCache[CookieSigner]
   override lazy val cookieSigner: CookieSigner = cookieSignerCache(app)
@@ -168,6 +171,8 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     super.beforeEach()
     resetWiremock()
     AuditStub.stubAuditing()
+
+    stubGetSessionData(ITSASessionKeys.REFERENCE)(OK, JsString(reference))
   }
 
   override def beforeAll(): Unit = {

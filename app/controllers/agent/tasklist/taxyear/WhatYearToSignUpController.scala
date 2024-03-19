@@ -25,7 +25,7 @@ import models.common.AccountingYearModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AccountingPeriodService, AuditingService, AuthService, SubscriptionDetailsService}
+import services._
 import uk.gov.hmrc.http.InternalServerException
 import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.tasklist.taxyear.WhatYearToSignUp
@@ -35,13 +35,16 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.matching.Regex
 
 @Singleton
-class WhatYearToSignUpController @Inject()(val auditingService: AuditingService,
-                                           val authService: AuthService,
-                                           accountingPeriodService: AccountingPeriodService,
-                                           val subscriptionDetailsService: SubscriptionDetailsService,
+class WhatYearToSignUpController @Inject()(accountingPeriodService: AccountingPeriodService,
                                            whatYearToSignUp: WhatYearToSignUp)
-                                          (implicit val ec: ExecutionContext, mcc: MessagesControllerComponents,
-                                           val appConfig: AppConfig) extends AuthenticatedController with ReferenceRetrieval with TaxYearNavigationHelper  {
+                                          (val auditingService: AuditingService,
+                                           val authService: AuthService,
+                                           val appConfig: AppConfig,
+                                           val subscriptionDetailsService: SubscriptionDetailsService,
+                                           val sessionDataService: SessionDataService)
+                                          (implicit val ec: ExecutionContext,
+                                           mcc: MessagesControllerComponents)
+  extends AuthenticatedController with ReferenceRetrieval with TaxYearNavigationHelper {
 
   private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
 

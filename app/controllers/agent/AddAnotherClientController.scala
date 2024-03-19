@@ -20,8 +20,10 @@ import auth.agent.{AuthPredicates, IncomeTaxAgentUser, StatelessController}
 import auth.individual.AuthPredicate.AuthPredicate
 import common.Constants.ITSASessionKeys
 import config.AppConfig
+import connectors.httpparser.DeleteSessionDataHttpParser
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AuditingService, AuthService}
+import services.{AuditingService, AuthService, SessionDataService}
+import uk.gov.hmrc.http.InternalServerException
 import utilities.UserMatchingSessionUtil.UserMatchingSessionResultUtil
 
 import javax.inject.{Inject, Singleton}
@@ -30,6 +32,7 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class AddAnotherClientController @Inject()(val auditingService: AuditingService,
                                            val authService: AuthService,
+                                           val sessionDataService: SessionDataService,
                                            val appConfig: AppConfig)
                                           (implicit val ec: ExecutionContext,
                                            mcc: MessagesControllerComponents) extends StatelessController {
@@ -37,13 +40,20 @@ class AddAnotherClientController @Inject()(val auditingService: AuditingService,
 
   override val statelessDefaultPredicate: AuthPredicate[IncomeTaxAgentUser] = AuthPredicates.defaultPredicates
 
-  def addAnother(): Action[AnyContent] = Authenticated { implicit request =>
+  def addAnother(): Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
-      Redirect(controllers.agent.matching.routes.ClientDetailsController.show())
-        .removingFromSession(ITSASessionKeys.JourneyStateKey)
-        .removingFromSession(ITSASessionKeys.clientData: _*)
-        .removingFromSession(ITSASessionKeys.REFERENCE)
-        .clearUserName
+      sessionDataService.deleteReference map {
+        case Right(_) =>
+          Redirect(controllers.agent.matching.routes.ClientDetailsController.show())
+            .removingFromSession(ITSASessionKeys.JourneyStateKey)
+            .removingFromSession(ITSASessionKeys.clientData: _*)
+            .clearUserName
+        case Left(DeleteSessionDataHttpParser.UnexpectedStatusFailure(status)) =>
+          throw new InternalServerException(
+            s"[AddAnotherClientController][addAnother] - Unexpected status deleting reference from session. Status: $status"
+          )
+      }
+
   }
 
 }

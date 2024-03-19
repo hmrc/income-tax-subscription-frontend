@@ -29,7 +29,7 @@ import play.twirl.api.HtmlFormat
 import services.GetCompleteDetailsService
 import services.GetCompleteDetailsService._
 import services.individual.mocks.MockSubscriptionOrchestrationService
-import services.mocks.{MockAuditingService, MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService}
+import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.individual.TestConstants.testNino
 import views.html.individual.GlobalCheckYourAnswers
@@ -41,15 +41,18 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
   with MockAuditingService
   with MockSubscriptionDetailsService
   with MockSubscriptionOrchestrationService
-  with MockIncomeTaxSubscriptionConnector {
+  with MockSessionDataService {
 
   object TestGlobalCheckYourAnswersController extends GlobalCheckYourAnswersController(
-    auditingService = mockAuditingService,
-    authService = mockAuthService,
-    subscriptionDetailsService = MockSubscriptionDetailsService,
     subscriptionService = mockSubscriptionOrchestrationService,
     getCompleteDetailsService = mock[GetCompleteDetailsService],
     globalCheckYourAnswers = mock[GlobalCheckYourAnswers]
+  )(
+    auditingService = mockAuditingService,
+    authService = mockAuthService,
+    subscriptionDetailsService = MockSubscriptionDetailsService,
+    sessionDataService = mockSessionDataService,
+    appConfig = appConfig
   )
 
   override val controllerName: String = "GlobalCheckYourAnswersController"
@@ -63,12 +66,15 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
     val mockGlobalCheckYourAnswers: GlobalCheckYourAnswers = mock[GlobalCheckYourAnswers]
 
     val controller: GlobalCheckYourAnswersController = new GlobalCheckYourAnswersController(
-      auditingService = mockAuditingService,
-      authService = mockAuthService,
-      subscriptionDetailsService = MockSubscriptionDetailsService,
       subscriptionService = mockSubscriptionOrchestrationService,
       getCompleteDetailsService = mockGetCompleteDetailsService,
       globalCheckYourAnswers = mockGlobalCheckYourAnswers
+    )(
+      auditingService = mockAuditingService,
+      authService = mockAuthService,
+      subscriptionDetailsService = MockSubscriptionDetailsService,
+      sessionDataService = mockSessionDataService,
+      appConfig = appConfig
     )
   }
 

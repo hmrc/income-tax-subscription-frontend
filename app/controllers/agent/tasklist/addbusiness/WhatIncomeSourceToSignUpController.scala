@@ -25,7 +25,7 @@ import models.IncomeSourcesStatus
 import models.common.{BusinessIncomeSource, OverseasProperty, SelfEmployed, UkProperty}
 import play.api.data.Form
 import play.api.mvc._
-import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import views.html.agent.tasklist.addbusiness.WhatIncomeSourceToSignUp
 
@@ -33,13 +33,14 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class WhatIncomeSourceToSignUpController @Inject()(val whatIncomeSourceToSignUp: WhatIncomeSourceToSignUp,
-                                                   val subscriptionDetailsService: SubscriptionDetailsService,
+class WhatIncomeSourceToSignUpController @Inject()(whatIncomeSourceToSignUp: WhatIncomeSourceToSignUp)
+                                                  (val subscriptionDetailsService: SubscriptionDetailsService,
                                                    val auditingService: AuditingService,
-                                                   val authService: AuthService
-                                                  )(implicit val ec: ExecutionContext,
-                                                    val appConfig: AppConfig,
-                                                    mcc: MessagesControllerComponents) extends AuthenticatedController
+                                                   val sessionDataService: SessionDataService,
+                                                   val authService: AuthService)
+                                                  (implicit val ec: ExecutionContext,
+                                                   val appConfig: AppConfig,
+                                                   mcc: MessagesControllerComponents) extends AuthenticatedController
 
   with ReferenceRetrieval {
   def show(): Action[AnyContent] = Authenticated.async { implicit request =>

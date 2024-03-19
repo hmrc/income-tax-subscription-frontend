@@ -21,6 +21,7 @@ import _root_.common.Constants.ITSASessionKeys._
 import auth.individual.{JourneyState, SignUp, ClaimEnrolment => ClaimEnrolmentJourney}
 import config.AppConfig
 import config.featureswitch.{FeatureSwitch, FeatureSwitching}
+import connectors.stubs.SessionDataConnectorStub.stubGetSessionData
 import forms.individual.business._
 import forms.individual.incomesource.BusinessIncomeSourceForm
 import helpers.IntegrationTestConstants._
@@ -39,9 +40,10 @@ import play.api.http.HeaderNames
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.crypto.CookieSigner
-import play.api.libs.json.{JsArray, JsValue, Writes}
+import play.api.libs.json.{JsArray, JsString, JsValue, Writes}
 import play.api.libs.ws.WSResponse
 import play.api.test.FakeRequest
+import play.api.test.Helpers.OK
 import play.twirl.api.TwirlHelperImports.twirlJavaCollectionToScala
 import uk.gov.hmrc.crypto.{ApplicationCrypto, Decrypter, Encrypter}
 
@@ -67,6 +69,8 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
   override lazy val cookieSigner: CookieSigner = cookieSignerCache(app)
 
   implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
+
+  val reference: String = "test-reference"
 
   def config: Map[String, String] = Map(
     "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
@@ -119,6 +123,8 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
     super.beforeEach()
     resetWiremock()
     AuditStub.stubAuditing()
+
+    stubGetSessionData(REFERENCE)(OK, JsString(reference))
   }
 
   override def beforeAll(): Unit = {

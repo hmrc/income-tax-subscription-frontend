@@ -22,7 +22,7 @@ import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.utils.ReferenceRetrieval
 import models.common.PropertyModel
 import play.api.mvc._
-import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.tasklist.ukproperty.PropertyCheckYourAnswers
@@ -31,13 +31,14 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PropertyCheckYourAnswersController @Inject()(val propertyCheckYourAnswersView: PropertyCheckYourAnswers,
-                                                   val auditingService: AuditingService,
+class PropertyCheckYourAnswersController @Inject()(propertyCheckYourAnswersView: PropertyCheckYourAnswers)
+                                                  (val auditingService: AuditingService,
+                                                   val sessionDataService: SessionDataService,
+                                                   val appConfig: AppConfig,
                                                    val authService: AuthService,
                                                    val subscriptionDetailsService: SubscriptionDetailsService)
                                                   (implicit val ec: ExecutionContext,
-                                                   mcc: MessagesControllerComponents,
-                                                   val appConfig: AppConfig) extends AuthenticatedController with ReferenceRetrieval {
+                                                   mcc: MessagesControllerComponents) extends AuthenticatedController with ReferenceRetrieval {
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>

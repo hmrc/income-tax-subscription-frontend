@@ -25,8 +25,8 @@ import models.common.subscription.CreateIncomeSourcesModel
 import play.api.mvc._
 import play.twirl.api.Html
 import services.GetCompleteDetailsService.CompleteDetails
+import services._
 import services.individual.SubscriptionOrchestrationService
-import services.{AuditingService, AuthService, GetCompleteDetailsService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import views.html.individual.GlobalCheckYourAnswers
 
@@ -34,19 +34,20 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class GlobalCheckYourAnswersController @Inject()(val auditingService: AuditingService,
-                                                 val authService: AuthService,
-                                                 val subscriptionDetailsService: SubscriptionDetailsService,
-                                                 subscriptionService: SubscriptionOrchestrationService,
+class GlobalCheckYourAnswersController @Inject()(subscriptionService: SubscriptionOrchestrationService,
                                                  getCompleteDetailsService: GetCompleteDetailsService,
                                                  globalCheckYourAnswers: GlobalCheckYourAnswers)
+                                                (val auditingService: AuditingService,
+                                                 val authService: AuthService,
+                                                 val subscriptionDetailsService: SubscriptionDetailsService,
+                                                 val sessionDataService: SessionDataService,
+                                                 val appConfig: AppConfig)
                                                 (implicit val ec: ExecutionContext,
-                                                 val appConfig: AppConfig,
                                                  mcc: MessagesControllerComponents) extends SignUpController with ReferenceRetrieval {
 
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withReference { reference =>
+      withIndividualReference { reference =>
         withCompleteDetails(reference) { completeDetails =>
           Future.successful(Ok(view(
             postAction = routes.GlobalCheckYourAnswersController.submit,
@@ -59,7 +60,7 @@ class GlobalCheckYourAnswersController @Inject()(val auditingService: AuditingSe
 
   def submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withReference { reference =>
+      withIndividualReference { reference =>
         withCompleteDetails(reference) { completeDetails =>
           signUp(completeDetails)(
             onSuccessfulSignUp = Redirect(controllers.individual.routes.ConfirmationController.show)

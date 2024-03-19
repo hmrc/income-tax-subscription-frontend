@@ -18,7 +18,7 @@ package controllers.individual.tasklist.addbusiness
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.{ ForeignProperty => ForeignPropertyFeature}
+import config.featureswitch.FeatureSwitch.{ForeignProperty => ForeignPropertyFeature}
 import controllers.utils.ReferenceRetrieval
 import forms.individual.incomesource.BusinessIncomeSourceForm
 import models.IncomeSourcesStatus
@@ -26,7 +26,7 @@ import models.common.{BusinessIncomeSource, OverseasProperty, SelfEmployed, UkPr
 import play.api.data.Form
 import play.api.mvc._
 import play.twirl.api.Html
-import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import views.html.individual.tasklist.addbusiness.WhatIncomeSourceToSignUp
 
@@ -34,9 +34,10 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class WhatIncomeSourceToSignUpController @Inject()(whatIncomeSourceToSignUp: WhatIncomeSourceToSignUp,
-                                                   val subscriptionDetailsService: SubscriptionDetailsService,
+class WhatIncomeSourceToSignUpController @Inject()(whatIncomeSourceToSignUp: WhatIncomeSourceToSignUp)
+                                                  (val subscriptionDetailsService: SubscriptionDetailsService,
                                                    val auditingService: AuditingService,
+                                                   val sessionDataService: SessionDataService,
                                                    val authService: AuthService)
                                                   (implicit val ec: ExecutionContext,
                                                    val appConfig: AppConfig,
@@ -44,7 +45,7 @@ class WhatIncomeSourceToSignUpController @Inject()(whatIncomeSourceToSignUp: Wha
 
   def show(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withReference { reference =>
+      withIndividualReference { reference =>
         withIncomeSourceStatuses(reference) {
           case IncomeSourcesStatus(false, false, false) => Redirect(controllers.individual.tasklist.routes.TaskListController.show())
           case incomeSourcesStatus => Ok(view(businessIncomeSourceForm(incomeSourcesStatus), incomeSourcesStatus))
@@ -54,7 +55,7 @@ class WhatIncomeSourceToSignUpController @Inject()(whatIncomeSourceToSignUp: Wha
 
   def submit(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withReference { reference =>
+      withIndividualReference { reference =>
         withIncomeSourceStatuses(reference) { incomeSourcesStatus =>
           businessIncomeSourceForm(incomeSourcesStatus).bindFromRequest().fold(
             formWithErrors => BadRequest(view(form = formWithErrors, incomeSourcesStatus)),

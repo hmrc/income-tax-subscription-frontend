@@ -17,7 +17,7 @@
 package connectors.stubs
 
 import helpers.servicemocks.WireMockMethods
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsValue, Json, Writes}
 
 object SessionDataConnectorStub extends WireMockMethods {
 
@@ -28,6 +28,21 @@ object SessionDataConnectorStub extends WireMockMethods {
       method = GET,
       uri = sessionDataUri(id)
     ).thenReturn(responseStatus, responseBody)
+  }
+
+  def stubSaveSessionData[T](id: String, data: T)(responseStatus: Int)(implicit writes: Writes[T]): Unit = {
+    when(
+      method = POST,
+      uri = sessionDataUri(id),
+      body = Json.toJson(data)
+    ).thenReturn(responseStatus)
+  }
+
+  def stubDeleteSessionData(id: String)(responseStatus: Int): Unit = {
+    when(
+      method = DELETE,
+      uri = sessionDataUri(id)
+    ).thenReturn(responseStatus)
   }
 
 }

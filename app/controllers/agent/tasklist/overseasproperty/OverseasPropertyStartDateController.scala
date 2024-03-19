@@ -26,7 +26,7 @@ import models.DateModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.ImplicitDateFormatter
@@ -37,13 +37,14 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class OverseasPropertyStartDateController @Inject()(val auditingService: AuditingService,
-                                                    overseasPropertyStartDate: OverseasPropertyStartDate,
+class OverseasPropertyStartDateController @Inject()(overseasPropertyStartDate: OverseasPropertyStartDate)
+                                                   (val auditingService: AuditingService,
                                                     val authService: AuthService,
                                                     val subscriptionDetailsService: SubscriptionDetailsService,
+                                                    val sessionDataService: SessionDataService,
+                                                    val appConfig: AppConfig,
                                                     val languageUtils: LanguageUtils)
                                                    (implicit val ec: ExecutionContext,
-                                                    val appConfig: AppConfig,
                                                     mcc: MessagesControllerComponents)
   extends AuthenticatedController with ImplicitDateFormatter with ReferenceRetrieval {
 

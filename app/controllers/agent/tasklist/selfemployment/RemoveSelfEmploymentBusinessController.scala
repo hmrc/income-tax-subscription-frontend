@@ -18,32 +18,30 @@ package controllers.agent.tasklist.selfemployment
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
-import connectors.IncomeTaxSubscriptionConnector
 import controllers.utils.ReferenceRetrieval
 import forms.agent.RemoveBusinessForm
 import models.common.business.{BusinessNameModel, BusinessTradeNameModel, SelfEmploymentData}
 import models.{No, Yes, YesNo}
 import play.api.data.Form
 import play.api.mvc._
-import services.{AuditingService, AuthService, RemoveBusinessService, SubscriptionDetailsService}
+import services._
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
-import uk.gov.hmrc.play.bootstrap.controller.WithUrlEncodedOnlyFormBinding
 import views.html.agent.tasklist.selfemployment.RemoveSelfEmploymentBusiness
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RemoveSelfEmploymentBusinessController @Inject()(val removeBusinessView: RemoveSelfEmploymentBusiness,
-                                                       val auditingService: AuditingService,
+class RemoveSelfEmploymentBusinessController @Inject()(removeBusinessView: RemoveSelfEmploymentBusiness,
+                                                       removeBusinessService: RemoveBusinessService)
+                                                      (val auditingService: AuditingService,
                                                        val authService: AuthService,
                                                        val subscriptionDetailsService: SubscriptionDetailsService,
-                                                       val removeBusinessService: RemoveBusinessService,
-                                                       val incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector
-                                                      )(implicit val ec: ExecutionContext,
-                                                        val appConfig: AppConfig,
-                                                        mcc: MessagesControllerComponents
-                                                      ) extends AuthenticatedController with ReferenceRetrieval with WithUrlEncodedOnlyFormBinding {
+                                                       val appConfig: AppConfig,
+                                                       val sessionDataService: SessionDataService)
+                                                      (implicit val ec: ExecutionContext,
+                                                       mcc: MessagesControllerComponents) extends AuthenticatedController with ReferenceRetrieval {
+
   def show(businessId: String): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user => {
       withAgentReference { reference =>

@@ -24,8 +24,8 @@ import models.common.subscription.{CreateIncomeSourcesModel, SubscriptionSuccess
 import play.api.mvc._
 import play.twirl.api.Html
 import services.GetCompleteDetailsService.CompleteDetails
+import services._
 import services.agent.SubscriptionOrchestrationService
-import services.{AuditingService, AuthService, GetCompleteDetailsService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import views.html.agent.GlobalCheckYourAnswers
 
@@ -33,14 +33,15 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class GlobalCheckYourAnswersController @Inject()(val auditingService: AuditingService,
-                                                 val authService: AuthService,
-                                                 subscriptionService: SubscriptionOrchestrationService,
-                                                 val subscriptionDetailsService: SubscriptionDetailsService,
+class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalCheckYourAnswers,
                                                  getCompleteDetailsService: GetCompleteDetailsService,
-                                                 globalCheckYourAnswers: GlobalCheckYourAnswers)
-                                                (implicit val ec: ExecutionContext,
+                                                 subscriptionService: SubscriptionOrchestrationService)
+                                                (val auditingService: AuditingService,
+                                                 val authService: AuthService,
+                                                 val subscriptionDetailsService: SubscriptionDetailsService,
                                                  val appConfig: AppConfig,
+                                                 val sessionDataService: SessionDataService)
+                                                (implicit val ec: ExecutionContext,
                                                  mcc: MessagesControllerComponents) extends AuthenticatedController with ReferenceRetrieval {
 
   def show: Action[AnyContent] = Authenticated.async { implicit request =>

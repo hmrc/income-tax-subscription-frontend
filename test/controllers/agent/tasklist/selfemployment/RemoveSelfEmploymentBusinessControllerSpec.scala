@@ -16,10 +16,8 @@
 
 package controllers.agent.tasklist.selfemployment
 
-import connectors.IncomeTaxSubscriptionConnector
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.RemoveBusinessForm
-import models.common.SoleTraderBusinesses
 import models.common.business._
 import models.{DateModel, No, Yes}
 import org.mockito.ArgumentMatchers.any
@@ -30,8 +28,7 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAuditingService, MockIncomeTaxSubscriptionConnector, MockRemoveBusinessService, MockSubscriptionDetailsService}
-import utilities.SubscriptionDataKeys.SoleTraderBusinessesKey
+import services.mocks.{MockAuditingService, MockRemoveBusinessService, MockSessionDataService, MockSubscriptionDetailsService}
 import views.html.agent.tasklist.selfemployment.RemoveSelfEmploymentBusiness
 
 import scala.concurrent.Future
@@ -39,12 +36,11 @@ import scala.concurrent.Future
 class RemoveSelfEmploymentBusinessControllerSpec extends AgentControllerBaseSpec
   with MockAuditingService
   with MockSubscriptionDetailsService
-  with MockIncomeTaxSubscriptionConnector
+  with MockSessionDataService
   with MockRemoveBusinessService {
 
   override val controllerName: String = "RemoveSelfEmploymentBusinessController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
-  override val mockIncomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector = mock[IncomeTaxSubscriptionConnector]
 
   private val testBusinesses = Seq(
     SelfEmploymentData(
@@ -80,9 +76,7 @@ class RemoveSelfEmploymentBusinessControllerSpec extends AgentControllerBaseSpec
   "submit" should {
     "redirect to the task list page" when {
       "the user selects 'yes'" in withController { controller =>
-        // get the businesses
         mockFetchAllSelfEmployments(testBusinesses)
-        // save the businesses with one removed.
         mockDeleteBusiness(Right("dummy"))
 
         val result: Future[Result] = await(controller.submit("id")(
@@ -103,7 +97,6 @@ class RemoveSelfEmploymentBusinessControllerSpec extends AgentControllerBaseSpec
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.agent.tasklist.routes.TaskListController.show().url)
-        verifySelfEmploymentsSave[SoleTraderBusinesses](SoleTraderBusinessesKey, None)
       }
     }
 
@@ -116,7 +109,6 @@ class RemoveSelfEmploymentBusinessControllerSpec extends AgentControllerBaseSpec
         ))
 
         status(result) must be(Status.BAD_REQUEST)
-        verifySelfEmploymentsSave[SoleTraderBusinesses](SoleTraderBusinessesKey, None)
       }
     }
   }
@@ -129,11 +121,13 @@ class RemoveSelfEmploymentBusinessControllerSpec extends AgentControllerBaseSpec
 
     val controller = new RemoveSelfEmploymentBusinessController(
       view,
+      mockRemoveBusinessService
+    )(
       mockAuditingService,
       mockAuthService,
       MockSubscriptionDetailsService,
-      mockRemoveBusinessService,
-      mockIncomeTaxSubscriptionConnector
+      appConfig,
+      mockSessionDataService
     )
 
     testCode(controller)

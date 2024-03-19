@@ -37,9 +37,6 @@ class IncomeTaxAgentUser(val enrolments: Enrolments,
   def clientUtr(implicit request: Request[AnyContent]): Option[String] =
     request.session.get(ITSASessionKeys.UTR)
 
-  def clientReference(implicit request: Request[AnyContent]): Option[String] =
-    request.session.get(ITSASessionKeys.REFERENCE)
-
   def clientName(implicit request: Request[AnyContent]): String = {
     request.fetchClientName.getOrElse(
       throw new InternalServerException("[IncomeTaxAgentUser][clientName] - could not retrieve client name from request session")

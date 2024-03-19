@@ -28,14 +28,16 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAuditingService, MockSubscriptionDetailsService}
+import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
 import utilities.SubscriptionDataKeys.OverseasPropertyAccountingMethod
 import views.html.individual.tasklist.overseasproperty.OverseasPropertyAccountingMethod
 
 import scala.concurrent.Future
 
 class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
-  with MockSubscriptionDetailsService with MockAuditingService {
+  with MockSubscriptionDetailsService
+  with MockSessionDataService
+  with MockAuditingService {
 
   override def beforeEach(): Unit = {
     disable(EnableTaskListRedesign)
@@ -52,10 +54,13 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
       .thenReturn(HtmlFormat.empty)
 
     val controller = new OverseasPropertyAccountingMethodController(
+      overseasPropertyAccountingMethodView
+    )(
       mockAuditingService,
       mockAuthService,
-      MockSubscriptionDetailsService,
-      overseasPropertyAccountingMethodView
+      mockSessionDataService,
+      appConfig,
+      MockSubscriptionDetailsService
     )
 
     testCode(controller)

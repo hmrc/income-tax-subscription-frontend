@@ -17,10 +17,10 @@
 package controllers.agent
 
 import common.Constants.ITSASessionKeys
-import connectors.stubs.IncomeTaxSubscriptionConnectorStub
+import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
-import play.api.http.Status.SEE_OTHER
+import play.api.http.Status.{OK, SEE_OTHER}
 
 
 class AddAnotherClientControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
@@ -29,6 +29,7 @@ class AddAnotherClientControllerISpec extends ComponentSpecBase with SessionCook
     s"clear the Subscription Details and ${ITSASessionKeys.MTDITID} & ${ITSASessionKeys.JourneyStateKey} session variables" in {
       Given("I setup the wiremock stubs")
       AuthStub.stubAuthSuccess()
+      SessionDataConnectorStub.stubDeleteSessionData(ITSASessionKeys.REFERENCE)(OK)
       IncomeTaxSubscriptionConnectorStub.stubSubscriptionDeleteAll()
 
       When("I call GET /add-another")

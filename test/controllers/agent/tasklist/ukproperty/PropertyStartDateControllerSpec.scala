@@ -28,7 +28,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{await, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAuditingService, MockSubscriptionDetailsService}
+import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.TestModels.testFullPropertyModel
 import views.html.agent.tasklist.ukproperty.PropertyStartDate
@@ -37,7 +37,10 @@ import java.time.LocalDate
 import scala.concurrent.Future
 
 class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
-  with MockSubscriptionDetailsService with MockAuditingService with FeatureSwitching {
+  with MockSubscriptionDetailsService
+  with MockAuditingService
+  with MockSessionDataService
+  with FeatureSwitching {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -51,9 +54,12 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
   )
 
   object TestPropertyStartDateController$ extends PropertyStartDateController(
-    mock[PropertyStartDate],
+    mock[PropertyStartDate]
+  )(
     mockAuditingService,
     mockAuthService,
+    mockSessionDataService,
+    appConfig,
     MockSubscriptionDetailsService,
     mockLanguageUtils
   )
@@ -180,9 +186,12 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
       .thenReturn(HtmlFormat.empty)
 
     val controller = new PropertyStartDateController(
-      mockView,
+      mockView
+    )(
       mockAuditingService,
       mockAuthService,
+      mockSessionDataService,
+      appConfig,
       MockSubscriptionDetailsService,
       mockLanguageUtils
     )

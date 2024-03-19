@@ -22,7 +22,7 @@ import controllers.utils.ReferenceRetrieval
 import models.common.IncomeSources
 import play.api.mvc._
 import play.twirl.api.Html
-import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.UserMatchingSessionUtil.{ClientDetails, UserMatchingSessionRequestUtil}
 import views.html.agent.tasklist.addbusiness.YourIncomeSourceToSignUp
@@ -31,12 +31,13 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class YourIncomeSourceToSignUpController @Inject()(val yourIncomeSourceToSignUp: YourIncomeSourceToSignUp,
-                                                   val subscriptionDetailsService: SubscriptionDetailsService,
+class YourIncomeSourceToSignUpController @Inject()(yourIncomeSourceToSignUp: YourIncomeSourceToSignUp)
+                                                  (val subscriptionDetailsService: SubscriptionDetailsService,
                                                    val auditingService: AuditingService,
+                                                   val sessionDataService: SessionDataService,
+                                                   val appConfig: AppConfig,
                                                    val authService: AuthService)
                                                   (implicit val ec: ExecutionContext,
-                                                   val appConfig: AppConfig,
                                                    mcc: MessagesControllerComponents) extends AuthenticatedController with ReferenceRetrieval {
 
   def show: Action[AnyContent] = Authenticated.async { implicit request =>

@@ -16,10 +16,10 @@
 
 package connectors
 
-import connectors.httpparser.GetSessionDataHttpParser.{InvalidJson, UnexpectedStatusFailure}
-import connectors.stubs.SessionDataConnectorStub.stubGetSessionData
+import connectors.httpparser.{DeleteSessionDataHttpParser, GetSessionDataHttpParser, SaveSessionDataHttpParser}
+import connectors.stubs.SessionDataConnectorStub.{stubDeleteSessionData, stubGetSessionData, stubSaveSessionData}
 import helpers.ComponentSpecBase
-import play.api.libs.json.{JsObject, Json, OFormat}
+import play.api.libs.json.{JsValue, Json, OFormat}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -35,15 +35,19 @@ class SessionDataConnectorISpec extends ComponentSpecBase {
     implicit val format: OFormat[DummyModel] = Json.format[DummyModel]
   }
 
+  val dummyModel: DummyModel = DummyModel(body = "Test Body")
+
+  val dummyModelJson: JsValue = Json.obj(
+    "body" -> "Test Body"
+  )
+
   "getSessionData" should {
     "return the provided model" in {
-      val successfulResponseBody: JsObject = Json.obj("body" -> "Test Body")
-
-      stubGetSessionData(id)(OK, successfulResponseBody)
+      stubGetSessionData(id)(OK, dummyModelJson)
 
       val res = connector.getSessionData[DummyModel](id)
 
-      await(res) mustBe Right(Some(DummyModel(body = "Test Body")))
+      await(res) mustBe Right(Some(dummyModel))
     }
 
     "Return InvalidJson" in {
@@ -51,7 +55,7 @@ class SessionDataConnectorISpec extends ComponentSpecBase {
 
       val res = connector.getSessionData[DummyModel](id)
 
-      await(res) mustBe Left(InvalidJson)
+      await(res) mustBe Left(GetSessionDataHttpParser.InvalidJson)
     }
 
     "Return None" in {
@@ -67,8 +71,42 @@ class SessionDataConnectorISpec extends ComponentSpecBase {
 
       val res = connector.getSessionData[DummyModel](id)
 
-      await(res) mustBe Left(UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
+      await(res) mustBe Left(GetSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
 
+    }
+  }
+
+  "saveSessionData" should {
+    "return a success response" in {
+      stubSaveSessionData(id, dummyModel)(OK)
+
+      val res = connector.saveSessionData(id, dummyModel)
+
+      await(res) mustBe Right(SaveSessionDataHttpParser.SaveSessionDataSuccessResponse)
+    }
+    "return an UnexpectedStatusFailure" in {
+      stubSaveSessionData(id, dummyModel)(INTERNAL_SERVER_ERROR)
+
+      val res = connector.saveSessionData(id, dummyModel)
+
+      await(res) mustBe Left(SaveSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
+    }
+  }
+
+  "deleteSessionData" should {
+    "return a success response" in {
+      stubDeleteSessionData(id)(OK)
+
+      val res = connector.deleteSessionData(id)
+
+      await(res) mustBe Right(DeleteSessionDataHttpParser.DeleteSessionDataSuccessResponse)
+    }
+    "return an UnexpectedStatusFailure" in {
+      stubDeleteSessionData(id)(INTERNAL_SERVER_ERROR)
+
+      val res = connector.deleteSessionData(id)
+
+      await(res) mustBe Left(DeleteSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
     }
   }
 

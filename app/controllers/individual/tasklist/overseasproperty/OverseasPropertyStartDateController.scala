@@ -26,7 +26,7 @@ import models.DateModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.ImplicitDateFormatter
@@ -36,19 +36,20 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class OverseasPropertyStartDateController @Inject()(val auditingService: AuditingService,
+class OverseasPropertyStartDateController @Inject()(overseasPropertyStartDateView: OverseasPropertyStartDate)
+                                                   (val auditingService: AuditingService,
                                                     val authService: AuthService,
                                                     val subscriptionDetailsService: SubscriptionDetailsService,
                                                     val languageUtils: LanguageUtils,
-                                                    val overseasPropertyStartDateView: OverseasPropertyStartDate)
-                                                   (implicit val ec: ExecutionContext,
                                                     val appConfig: AppConfig,
+                                                    val sessionDataService: SessionDataService)
+                                                   (implicit val ec: ExecutionContext,
                                                     mcc: MessagesControllerComponents)
   extends SignUpController with ImplicitDateFormatter with ReferenceRetrieval {
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user => {
-      withReference { reference =>
+      withIndividualReference { reference =>
         subscriptionDetailsService.fetchOverseasPropertyStartDate(reference) map { overseasPropertyStartDate =>
           Ok(view(
             overseasPropertyStartDateForm = form.fill(overseasPropertyStartDate),
@@ -61,7 +62,7 @@ class OverseasPropertyStartDateController @Inject()(val auditingService: Auditin
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withReference { reference =>
+      withIndividualReference { reference =>
         form.bindFromRequest().fold(
           formWithErrors =>
             Future.successful(BadRequest(view(overseasPropertyStartDateForm = formWithErrors, isEditMode = isEditMode))),

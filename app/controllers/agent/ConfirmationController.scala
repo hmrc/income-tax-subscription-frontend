@@ -24,7 +24,7 @@ import controllers.utils.ReferenceRetrieval
 import models.Next
 import models.common.AccountingPeriodModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
 import utilities.AccountingPeriodUtil
 import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.confirmation.{SignUpComplete, SignUpConfirmation}
@@ -34,10 +34,11 @@ import scala.concurrent.ExecutionContext
 import scala.util.matching.Regex
 
 @Singleton
-class ConfirmationController @Inject()(val auditingService: AuditingService,
+class ConfirmationController @Inject()(signUpComplete: SignUpComplete,
+                                       signUpConfirmation: SignUpConfirmation)
+                                      (val auditingService: AuditingService,
                                        val authService: AuthService,
-                                       signUpComplete: SignUpComplete,
-                                       signUpConfirmation: SignUpConfirmation,
+                                       val sessionDataService: SessionDataService,
                                        val subscriptionDetailsService: SubscriptionDetailsService)
                                       (implicit val ec: ExecutionContext,
                                        val appConfig: AppConfig,

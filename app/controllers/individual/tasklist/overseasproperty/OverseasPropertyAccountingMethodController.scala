@@ -24,20 +24,22 @@ import models.AccountingMethod
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import views.html.individual.tasklist.overseasproperty.OverseasPropertyAccountingMethod
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class OverseasPropertyAccountingMethodController @Inject()(val auditingService: AuditingService,
+class OverseasPropertyAccountingMethodController @Inject()(overseasPropertyAccountingMethod: OverseasPropertyAccountingMethod)
+                                                          (val auditingService: AuditingService,
                                                            val authService: AuthService,
-                                                           val subscriptionDetailsService: SubscriptionDetailsService,
-                                                           overseasPropertyAccountingMethod: OverseasPropertyAccountingMethod)
-                                                          (implicit val ec: ExecutionContext,
+                                                           val sessionDataService: SessionDataService,
                                                            val appConfig: AppConfig,
+                                                           val subscriptionDetailsService: SubscriptionDetailsService)
+                                                          (implicit val ec: ExecutionContext,
                                                            mcc: MessagesControllerComponents) extends SignUpController with ReferenceRetrieval {
+  
   def view(overseasPropertyAccountingMethodForm: Form[AccountingMethod], isEditMode: Boolean)
           (implicit request: Request[_]): Html = {
     overseasPropertyAccountingMethod(
@@ -50,7 +52,7 @@ class OverseasPropertyAccountingMethodController @Inject()(val auditingService: 
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withReference { reference =>
+      withIndividualReference { reference =>
         subscriptionDetailsService.fetchOverseasPropertyAccountingMethod(reference) map { accountingMethodOverseasProperty =>
           Ok(view(overseasPropertyAccountingMethodForm =
             AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm.fill(accountingMethodOverseasProperty),
@@ -61,7 +63,7 @@ class OverseasPropertyAccountingMethodController @Inject()(val auditingService: 
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withReference { reference =>
+      withIndividualReference { reference =>
         AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm.bindFromRequest().fold(
           formWithErrors =>
             Future.successful(BadRequest(view(overseasPropertyAccountingMethodForm = formWithErrors, isEditMode = isEditMode))),

@@ -25,24 +25,23 @@ import models.{No, Yes, YesNo}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
-import uk.gov.hmrc.play.bootstrap.controller.WithUrlEncodedOnlyFormBinding
 import utilities.SubscriptionDataKeys
 import views.html.individual.tasklist.ukproperty.RemoveUkPropertyBusiness
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class RemoveUkPropertyController @Inject()(val auditingService: AuditingService,
+class RemoveUkPropertyController @Inject()(incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector,
+                                           removeUkProperty: RemoveUkPropertyBusiness)
+                                          (val auditingService: AuditingService,
                                            val authService: AuthService,
                                            val subscriptionDetailsService: SubscriptionDetailsService,
-                                           incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector,
-                                           removeUkProperty: RemoveUkPropertyBusiness)
-                                          (implicit val ec: ExecutionContext,
                                            val appConfig: AppConfig,
-                                           mcc: MessagesControllerComponents) extends SignUpController with WithUrlEncodedOnlyFormBinding
-  with ReferenceRetrieval {
+                                           val sessionDataService: SessionDataService)
+                                          (implicit val ec: ExecutionContext,
+                                           mcc: MessagesControllerComponents) extends SignUpController with ReferenceRetrieval {
 
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
@@ -53,7 +52,7 @@ class RemoveUkPropertyController @Inject()(val auditingService: AuditingService,
     implicit user =>
       form.bindFromRequest().fold(
         hasErrors => Future.successful(BadRequest(view(form = hasErrors))), {
-          case Yes => withReference { reference =>
+          case Yes => withIndividualReference { reference =>
             incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, SubscriptionDataKeys.Property) map {
               case Right(_) => Redirect(controllers.individual.tasklist.routes.TaskListController.show())
               case Left(_) => throw new InternalServerException("[RemoveUkPropertyController][submit] - Could not remove UK property")
