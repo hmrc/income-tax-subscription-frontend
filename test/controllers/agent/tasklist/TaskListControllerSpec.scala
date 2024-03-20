@@ -31,7 +31,7 @@ import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTim
 import play.twirl.api.HtmlFormat
 import services.AccountingPeriodService
 import services.agent.mocks.MockSubscriptionOrchestrationService
-import services.mocks.{MockAuditingService, MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService}
+import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.TestModels.{testAccountingMethod, testSelectedTaxYearCurrent, testValidStartDate}
 import utilities.agent.TestConstants._
@@ -43,7 +43,7 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
   with MockAuditingService
   with MockSubscriptionDetailsService
   with MockSubscriptionOrchestrationService
-  with MockIncomeTaxSubscriptionConnector {
+  with MockSessionDataService {
 
   val accountingPeriodService: AccountingPeriodService = app.injector.instanceOf[AccountingPeriodService]
   val taskList: TaskList = mock[TaskList]
@@ -68,11 +68,11 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
 
   object TestTaskListController extends TaskListController(
     taskList,
-    accountingPeriodService,
+    mockSubscriptionOrchestrationService
+  )(
     mockAuditingService,
     MockSubscriptionDetailsService,
-    mockSubscriptionOrchestrationService,
-    mockIncomeTaxSubscriptionConnector,
+    mockSessionDataService,
     mockAuthService
   )
 

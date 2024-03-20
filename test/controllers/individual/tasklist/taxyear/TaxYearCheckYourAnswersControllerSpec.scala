@@ -27,7 +27,7 @@ import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.AccountingPeriodService
-import services.mocks.{MockAccountingPeriodService, MockAuditingService, MockSubscriptionDetailsService}
+import services.mocks.{MockAccountingPeriodService, MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
 import views.agent.mocks.MockWhatYearToSignUp
 import views.html.individual.tasklist.taxyear.TaxYearCheckYourAnswers
 
@@ -36,6 +36,7 @@ import scala.concurrent.Future
 class TaxYearCheckYourAnswersControllerSpec extends ControllerBaseSpec
   with MockWhatYearToSignUp
   with MockAuditingService
+  with MockSessionDataService
   with MockAccountingPeriodService
   with MockSubscriptionDetailsService {
 
@@ -109,9 +110,12 @@ class TaxYearCheckYourAnswersControllerSpec extends ControllerBaseSpec
 
     val controller = new TaxYearCheckYourAnswersController(
       checkYourAnswersView,
-      accountingPeriodService,
+      accountingPeriodService
+    )(
       mockAuditingService,
+      appConfig,
       mockAuthService,
+      mockSessionDataService,
       MockSubscriptionDetailsService
     )
 

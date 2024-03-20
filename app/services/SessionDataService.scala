@@ -18,7 +18,9 @@ package services
 
 import common.Constants.ITSASessionKeys
 import connectors.SessionDataConnector
-import connectors.httpparser.GetSessionDataHttpParser.GetSessionDataFailure
+import connectors.httpparser.DeleteSessionDataHttpParser.DeleteSessionDataResponse
+import connectors.httpparser.GetSessionDataHttpParser.GetSessionDataResponse
+import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataResponse
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
@@ -27,8 +29,16 @@ import scala.concurrent.Future
 @Singleton
 class SessionDataService @Inject()(sessionDataConnector: SessionDataConnector) {
 
-  def fetchReference(implicit hc: HeaderCarrier): Future[Either[GetSessionDataFailure, Option[String]]] = {
+  def fetchReference(implicit hc: HeaderCarrier): Future[GetSessionDataResponse[String]] = {
     sessionDataConnector.getSessionData[String](ITSASessionKeys.REFERENCE)
+  }
+
+  def saveReference(reference: String)(implicit hc: HeaderCarrier): Future[SaveSessionDataResponse] = {
+    sessionDataConnector.saveSessionData[String](ITSASessionKeys.REFERENCE, reference)
+  }
+
+  def deleteReference(implicit hc: HeaderCarrier): Future[DeleteSessionDataResponse] = {
+    sessionDataConnector.deleteSessionData(ITSASessionKeys.REFERENCE)
   }
 
 }

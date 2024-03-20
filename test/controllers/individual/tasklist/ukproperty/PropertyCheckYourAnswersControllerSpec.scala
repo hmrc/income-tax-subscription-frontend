@@ -27,7 +27,7 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAccountingPeriodService, MockAuditingService, MockSubscriptionDetailsService}
+import services.mocks.{MockAccountingPeriodService, MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
 import views.agent.mocks.MockWhatYearToSignUp
 import views.html.individual.tasklist.ukproperty.PropertyCheckYourAnswers
 
@@ -37,7 +37,9 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
   with MockWhatYearToSignUp
   with MockAuditingService
   with MockAccountingPeriodService
+  with MockSessionDataService
   with MockSubscriptionDetailsService {
+
   override val controllerName: String = "PropertyCheckYourAnswersController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
@@ -174,9 +176,12 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
       .thenReturn(HtmlFormat.empty)
 
     val controller = new PropertyCheckYourAnswersController(
-      view,
+      view
+    )(
       mockAuditingService,
       mockAuthService,
+      appConfig,
+      mockSessionDataService,
       MockSubscriptionDetailsService
     )
 

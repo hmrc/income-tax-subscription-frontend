@@ -25,7 +25,7 @@ import models.{No, Yes, YesNo}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.SubscriptionDataKeys
 import views.html.individual.tasklist.overseasproperty.RemoveOverseasPropertyBusiness
@@ -33,13 +33,14 @@ import views.html.individual.tasklist.overseasproperty.RemoveOverseasPropertyBus
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class RemoveOverseasPropertyController @Inject()(val auditingService: AuditingService,
+class RemoveOverseasPropertyController @Inject()(removeOverseasProperty: RemoveOverseasPropertyBusiness,
+                                                 incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector)
+                                                (val auditingService: AuditingService,
                                                  val authService: AuthService,
                                                  val subscriptionDetailsService: SubscriptionDetailsService,
-                                                 incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector,
-                                                 removeOverseasProperty: RemoveOverseasPropertyBusiness)
-                                                (implicit val ec: ExecutionContext,
                                                  val appConfig: AppConfig,
+                                                 val sessionDataService: SessionDataService)
+                                                (implicit val ec: ExecutionContext,
                                                  mcc: MessagesControllerComponents) extends SignUpController with ReferenceRetrieval {
 
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
@@ -51,7 +52,7 @@ class RemoveOverseasPropertyController @Inject()(val auditingService: AuditingSe
     implicit user =>
       form.bindFromRequest().fold(
         hasErrors => Future.successful(BadRequest(view(form = hasErrors))), {
-          case Yes => withReference { reference =>
+          case Yes => withIndividualReference { reference =>
             incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, SubscriptionDataKeys.OverseasProperty) map {
               case Right(_) => Redirect(controllers.individual.tasklist.routes.TaskListController.show())
               case Left(_) => throw new InternalServerException("[RemoveOverseasPropertyController][submit] - Could not remove overseas property")

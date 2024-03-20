@@ -22,7 +22,7 @@ import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.utils.ReferenceRetrieval
 import models.common.OverseasPropertyModel
 import play.api.mvc._
-import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.tasklist.overseasproperty.OverseasPropertyCheckYourAnswers
@@ -31,13 +31,15 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class OverseasPropertyCheckYourAnswersController @Inject()(val overseasPropertyCheckYourAnswersView: OverseasPropertyCheckYourAnswers,
-                                                           val auditingService: AuditingService,
+class OverseasPropertyCheckYourAnswersController @Inject()(overseasPropertyCheckYourAnswersView: OverseasPropertyCheckYourAnswers)
+                                                          (val auditingService: AuditingService,
                                                            val authService: AuthService,
+                                                           val sessionDataService: SessionDataService,
+                                                           val appConfig: AppConfig,
                                                            val subscriptionDetailsService: SubscriptionDetailsService)
                                                           (implicit val ec: ExecutionContext,
-                                                           mcc: MessagesControllerComponents,
-                                                           val appConfig: AppConfig) extends AuthenticatedController with ReferenceRetrieval {
+                                                           mcc: MessagesControllerComponents) extends AuthenticatedController with ReferenceRetrieval {
+  
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       withAgentReference { reference =>

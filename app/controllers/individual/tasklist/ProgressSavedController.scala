@@ -18,14 +18,13 @@ package controllers.individual.tasklist
 
 import auth.individual.SignUpController
 import config.AppConfig
-import connectors.IncomeTaxSubscriptionConnector
 import controllers.utils.ReferenceRetrieval
 import models.audits.SaveAndComebackAuditing
 import models.audits.SaveAndComebackAuditing.SaveAndComeBackAuditModel
 import models.common.business.AccountingMethodModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.api.{Configuration, Environment}
-import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import utilities.{AccountingPeriodUtil, CacheExpiryDateProvider, CurrentDateProvider}
@@ -35,22 +34,22 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ProgressSavedController @Inject()(val progressSavedView: ProgressSaved,
-                                        val auditingService: AuditingService,
+class ProgressSavedController @Inject()(progressSavedView: ProgressSaved,
+                                        currentDateProvider: CurrentDateProvider,
+                                        cacheExpiryDateProvider: CacheExpiryDateProvider)
+                                       (val auditingService: AuditingService,
                                         val authService: AuthService,
                                         val subscriptionDetailsService: SubscriptionDetailsService,
-                                        val incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector,
-                                        val currentDateProvider: CurrentDateProvider,
-                                        val cacheExpiryDateProvider: CacheExpiryDateProvider)
+                                        val sessionDataService: SessionDataService,
+                                        val appConfig: AppConfig)
                                        (implicit val ec: ExecutionContext,
-                                        val appConfig: AppConfig,
                                         val config: Configuration,
                                         val env: Environment,
                                         mcc: MessagesControllerComponents) extends SignUpController with AuthRedirects with ReferenceRetrieval {
 
   def show(location: Option[String] = None): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withReference { reference =>
+      withIndividualReference { reference =>
         subscriptionDetailsService.fetchLastUpdatedTimestamp(reference) flatMap {
           case Some(timestamp) =>
             location.fold(

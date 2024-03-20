@@ -26,7 +26,7 @@ import models.DateModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.ImplicitDateFormatter
@@ -36,15 +36,15 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PropertyStartDateController @Inject()(val auditingService: AuditingService,
+class PropertyStartDateController @Inject()(propertyStartDate: PropertyStartDate)
+                                           (val auditingService: AuditingService,
                                             val authService: AuthService,
                                             val subscriptionDetailsService: SubscriptionDetailsService,
-                                            val languageUtils: LanguageUtils,
-                                            propertyStartDate: PropertyStartDate)
-                                           (implicit val ec: ExecutionContext,
                                             val appConfig: AppConfig,
-                                            mcc: MessagesControllerComponents) extends SignUpController
-  with ImplicitDateFormatter with ReferenceRetrieval {
+                                            val sessionDataService: SessionDataService,
+                                            val languageUtils: LanguageUtils)
+                                           (implicit val ec: ExecutionContext,
+                                            mcc: MessagesControllerComponents) extends SignUpController with ImplicitDateFormatter with ReferenceRetrieval {
 
   def view(propertyStartDateForm: Form[DateModel], isEditMode: Boolean)
           (implicit request: Request[_]): Html = {
@@ -58,7 +58,7 @@ class PropertyStartDateController @Inject()(val auditingService: AuditingService
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withReference { reference =>
+      withIndividualReference { reference =>
         subscriptionDetailsService.fetchPropertyStartDate(reference) map { propertyStartDate =>
           Ok(view(
             propertyStartDateForm = form.fill(propertyStartDate),
@@ -70,7 +70,7 @@ class PropertyStartDateController @Inject()(val auditingService: AuditingService
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withReference { reference =>
+      withIndividualReference { reference =>
         form.bindFromRequest().fold(
           formWithErrors => {
             Future.successful(BadRequest(view(propertyStartDateForm = formWithErrors, isEditMode = isEditMode)))

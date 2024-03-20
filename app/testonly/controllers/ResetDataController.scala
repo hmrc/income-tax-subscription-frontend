@@ -20,7 +20,7 @@ import common.Constants.ITSASessionKeys
 import connectors.usermatching.CitizenDetailsConnector
 import models.usermatching.CitizenDetails
 import play.api.mvc._
-import services.AuthService
+import services.SessionDataService
 import testonly.connectors.ResetDataConnector
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
@@ -29,8 +29,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 
 class ResetDataController @Inject()(mcc: MessagesControllerComponents,
-                                    authService: AuthService,
                                     citizenDetailsConnector: CitizenDetailsConnector,
+                                    sessionDataService: SessionDataService,
                                     resetDataConnector: ResetDataConnector)
                                    (implicit ec: ExecutionContext) extends FrontendController(mcc) {
 
@@ -54,9 +54,13 @@ class ResetDataController @Inject()(mcc: MessagesControllerComponents,
   }
 
   private def reset(utr: String)(implicit request: Request[AnyContent]): Future[Result] = {
-    resetDataConnector.reset(utr) map {
-      case true => Ok("Successfully reset data").removingFromSession(ITSASessionKeys.REFERENCE)
-      case false => Ok("Error occurred when trying to reset data")
+    resetDataConnector.reset(utr) flatMap {
+      case true =>
+        sessionDataService.deleteReference map {
+          case Right(_) => Ok("Successfully reset data")
+          case Left(_) => InternalServerError("Failed to remove reference from session")
+        }
+      case false => Future.successful(Ok("Error occurred when trying to reset data"))
     }
   }
 

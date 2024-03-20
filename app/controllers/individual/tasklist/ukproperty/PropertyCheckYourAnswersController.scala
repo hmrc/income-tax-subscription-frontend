@@ -23,7 +23,7 @@ import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.utils.ReferenceRetrieval
 import models.common.PropertyModel
 import play.api.mvc._
-import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import views.html.individual.tasklist.ukproperty.PropertyCheckYourAnswers
 
@@ -31,16 +31,18 @@ import javax.inject.Singleton
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PropertyCheckYourAnswersController @Inject()(val propertyCheckYourAnswersView: PropertyCheckYourAnswers,
-                                                   val auditingService: AuditingService,
+class PropertyCheckYourAnswersController @Inject()(propertyCheckYourAnswersView: PropertyCheckYourAnswers)
+                                                  (val auditingService: AuditingService,
                                                    val authService: AuthService,
+                                                   val appConfig: AppConfig,
+                                                   val sessionDataService: SessionDataService,
                                                    val subscriptionDetailsService: SubscriptionDetailsService)
                                                   (implicit val ec: ExecutionContext,
-                                                   val appConfig: AppConfig,
                                                    mcc: MessagesControllerComponents) extends SignUpController with ReferenceRetrieval {
+  
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withReference { reference =>
+      withIndividualReference { reference =>
         withProperty(reference) { property =>
           Future.successful(Ok(
             propertyCheckYourAnswersView(
@@ -55,7 +57,7 @@ class PropertyCheckYourAnswersController @Inject()(val propertyCheckYourAnswersV
 
   def submit(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withReference { reference =>
+      withIndividualReference { reference =>
         withProperty(reference) {
           case property@PropertyModel(Some(_), Some(_), _) =>
             subscriptionDetailsService.saveProperty(reference, property.copy(confirmed = true)).map {

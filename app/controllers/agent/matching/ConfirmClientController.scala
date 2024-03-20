@@ -41,17 +41,18 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourClientDetails,
-                                        val auditingService: AuditingService,
+class ConfirmClientController @Inject()(checkYourClientDetails: CheckYourClientDetails,
+                                        agentQualificationService: AgentQualificationService,
+                                        getEligibilityStatusService: GetEligibilityStatusService,
+                                        mandationStatusConnector: MandationStatusConnector,
+                                        lockOutService: UserLockoutService,
+                                        prePopulationService: PrePopulationService)
+                                       (val auditingService: AuditingService,
                                         val authService: AuthService,
-                                        val agentQualificationService: AgentQualificationService,
-                                        val getEligibilityStatusService: GetEligibilityStatusService,
-                                        val mandationStatusConnector: MandationStatusConnector,
-                                        val lockOutService: UserLockoutService,
-                                        val prePopulationService: PrePopulationService,
+                                        val sessionDataService: SessionDataService,
+                                        val appConfig: AppConfig,
                                         val subscriptionDetailsService: SubscriptionDetailsService)
                                        (implicit val ec: ExecutionContext,
-                                        val appConfig: AppConfig,
                                         mcc: MessagesControllerComponents) extends UserMatchingController with ReferenceRetrieval with FeatureSwitching {
 
   def show(): Action[AnyContent] = Authenticated.async { implicit request =>
@@ -187,10 +188,10 @@ class ConfirmClientController @Inject()(val checkYourClientDetails: CheckYourCli
   }
 
   private def handleApprovedAgent(arn: String, nino: String, utr: String, clientDetails: UserDetailsModel)
-                                 (implicit request: Request[AnyContent], user: IncomeTaxAgentUser): Future[Result] = {
+                                 (implicit request: Request[AnyContent]): Future[Result] = {
     auditDetailsEntered(arn, clientDetails, getCurrentFailureCount(), lockedOut = false)
     withEligibilityResult(utr) { eligibilityResult =>
-      withAgentReference(utr) { reference =>
+      withReference(utr, Some(nino), Some(arn)) { reference =>
         eligibilityResult match {
           case EligibilityStatus(false, false, _) =>
             Future.successful(

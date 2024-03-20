@@ -24,7 +24,7 @@ import models.AccountingMethod
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.tasklist.ukproperty.PropertyAccountingMethod
@@ -33,13 +33,14 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PropertyAccountingMethodController @Inject()(propertyAccountingMethod: PropertyAccountingMethod,
-                                                   val auditingService: AuditingService,
+class PropertyAccountingMethodController @Inject()(propertyAccountingMethod: PropertyAccountingMethod)
+                                                  (val auditingService: AuditingService,
+                                                   val appConfig: AppConfig,
                                                    val authService: AuthService,
+                                                   val sessionDataService: SessionDataService,
                                                    val subscriptionDetailsService: SubscriptionDetailsService)
                                                   (implicit val ec: ExecutionContext,
-                                                   mcc: MessagesControllerComponents,
-                                                   val appConfig: AppConfig) extends AuthenticatedController with ReferenceRetrieval {
+                                                   mcc: MessagesControllerComponents) extends AuthenticatedController with ReferenceRetrieval {
 
   def view(accountingMethodForm: Form[AccountingMethod], isEditMode: Boolean)
           (implicit request: Request[AnyContent]): Html = {

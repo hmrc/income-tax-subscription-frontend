@@ -17,7 +17,6 @@
 package controllers.individual.tasklist.addbusiness
 
 import config.featureswitch.FeatureSwitch.{ForeignProperty => ForeignPropertyFeature}
-import connectors.subscriptiondata.mocks.MockIncomeTaxSubscriptionConnector
 import controllers.individual.ControllerBaseSpec
 import forms.individual.incomesource.BusinessIncomeSourceForm
 import models.common._
@@ -31,14 +30,14 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAuditingService, MockSubscriptionDetailsService}
+import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
 import views.html.individual.tasklist.addbusiness.WhatIncomeSourceToSignUp
 
 import scala.concurrent.Future
 
 class WhatIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService
-  with MockIncomeTaxSubscriptionConnector
+  with MockSessionDataService
   with MockAuditingService {
 
   override def beforeEach(): Unit = {
@@ -204,9 +203,11 @@ class WhatIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
       .thenReturn(HtmlFormat.empty)
 
     val controller = new WhatIncomeSourceToSignUpController(
-      whatIncomeSourceToSignUpView,
+      whatIncomeSourceToSignUpView
+    )(
       MockSubscriptionDetailsService,
       mockAuditingService,
+      mockSessionDataService,
       mockAuthService
     )
 

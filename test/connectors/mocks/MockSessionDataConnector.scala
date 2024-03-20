@@ -17,7 +17,9 @@
 package connectors.mocks
 
 import connectors.SessionDataConnector
+import connectors.httpparser.DeleteSessionDataHttpParser.{DeleteSessionDataFailure, DeleteSessionDataSuccess}
 import connectors.httpparser.GetSessionDataHttpParser.GetSessionDataFailure
+import connectors.httpparser.SaveSessionDataHttpParser.{SaveSessionDataFailure, SaveSessionDataSuccess}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, Suite}
@@ -38,6 +40,18 @@ trait MockSessionDataConnector extends MockitoSugar with BeforeAndAfterEach {
   def mockGetSessionData[T](id: String)
                            (result: Either[GetSessionDataFailure, Option[T]]): Unit = {
     when(mockSessionDataConnector.getSessionData[T](ArgumentMatchers.eq(id))(ArgumentMatchers.any(), ArgumentMatchers.any()))
+      .thenReturn(Future.successful(result))
+  }
+
+  def mockSaveSessionData[T](id: String, data: T)
+                            (result: Either[SaveSessionDataFailure, SaveSessionDataSuccess]): Unit = {
+    when(mockSessionDataConnector.saveSessionData[T](ArgumentMatchers.eq(id), ArgumentMatchers.eq(data))(ArgumentMatchers.any(), ArgumentMatchers.any()))
+      .thenReturn(Future.successful(result))
+  }
+
+  def mockDeleteSessionData(id: String)
+                           (result: Either[DeleteSessionDataFailure, DeleteSessionDataSuccess]): Unit = {
+    when(mockSessionDataConnector.deleteSessionData(ArgumentMatchers.eq(id))(ArgumentMatchers.any()))
       .thenReturn(Future.successful(result))
   }
 

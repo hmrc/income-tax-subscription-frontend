@@ -21,7 +21,6 @@ import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.SPSEntityId
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
-import connectors.IncomeTaxSubscriptionConnector
 import controllers.utils.ReferenceRetrieval
 import models.common.TaskListModel
 import models.common.business.AccountingMethodModel
@@ -38,20 +37,20 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class TaskListController @Inject()(val taskListView: TaskList,
-                                   val accountingPeriodService: AccountingPeriodService,
-                                   val auditingService: AuditingService,
+class TaskListController @Inject()(taskListView: TaskList,
+                                   accountingPeriodService: AccountingPeriodService,
+                                   subscriptionService: SubscriptionOrchestrationService)
+                                  (val auditingService: AuditingService,
                                    val subscriptionDetailsService: SubscriptionDetailsService,
-                                   val subscriptionService: SubscriptionOrchestrationService,
-                                   val incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector,
-                                   val authService: AuthService)
+                                   val sessionDataService: SessionDataService,
+                                   val authService: AuthService,
+                                   val appConfig: AppConfig)
                                   (implicit val ec: ExecutionContext,
-                                   val appConfig: AppConfig,
                                    mcc: MessagesControllerComponents) extends SignUpController with ReferenceRetrieval with Logging {
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user => {
-      withReference { reference =>
+      withIndividualReference { reference =>
         getTaskListModel(reference) map {
           viewModel =>
             Ok(taskListView(
@@ -110,7 +109,7 @@ class TaskListController @Inject()(val taskListView: TaskList,
   private def journeySafeGuard(processFunc: IncomeTaxSAUser => Request[AnyContent] => CreateIncomeSourcesModel => Future[Result]): Action[AnyContent] =
     Authenticated.async { implicit request =>
       implicit user =>
-        withReference { reference =>
+        withIndividualReference { reference =>
           val model = for {
             (selfEmployments, accountingMethod) <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
             property <- subscriptionDetailsService.fetchProperty(reference)

@@ -24,27 +24,27 @@ import connectors.individual.PreferencesFrontendConnector
 import controllers.utils.ReferenceRetrieval
 import models.Next
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
 import views.html.individual.confirmation.{SignUpComplete, SignUpConfirmation}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class ConfirmationController @Inject()(val auditingService: AuditingService,
+class ConfirmationController @Inject()(signUpComplete: SignUpComplete,
+                                       signUpConfirmation: SignUpConfirmation,
+                                       preferencesFrontendConnector: PreferencesFrontendConnector)
+                                      (val auditingService: AuditingService,
                                        val authService: AuthService,
                                        val subscriptionDetailsService: SubscriptionDetailsService,
-                                       val signUpComplete: SignUpComplete,
-                                       val signUpConfirmation: SignUpConfirmation,
-                                       preferencesFrontendConnector: PreferencesFrontendConnector
-                                      )
+                                       val sessionDataService: SessionDataService)
                                       (implicit val ec: ExecutionContext,
                                        val appConfig: AppConfig,
                                        mcc: MessagesControllerComponents) extends PostSubmissionController with ReferenceRetrieval {
 
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withReference { reference =>
+      withIndividualReference { reference =>
         if (isEnabled(ConfirmationPage)) {
           for {
             preference <- preferencesFrontendConnector.getOptedInStatus

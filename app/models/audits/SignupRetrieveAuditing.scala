@@ -22,12 +22,12 @@ object SignupRetrieveAuditing {
 
   val signupRetrieveAuditType = "SignUpRetrieve"
 
-  case class SignupRetrieveAuditModel(userType: String, agentReferenceNumber: Option[String], utr:String, nino:Option[String]) extends AuditModel {
+  case class SignupRetrieveAuditModel(agentReferenceNumber: Option[String], utr: String, nino: Option[String]) extends AuditModel {
     override val transactionName: Option[String] = None
     override val detail: Map[String, String] = Map(
-      "userType" -> userType,
+      "userType" -> (if (agentReferenceNumber.isDefined) "agent" else "individual"),
       "saUtr" -> utr
-    )++ agentReferenceNumber.map(arn => "agentReferenceNumber" -> arn) ++ nino.map(value => "nino" -> value)
+    ) ++ agentReferenceNumber.map(arn => "agentReferenceNumber" -> arn) ++ nino.map(value => "nino" -> value)
 
     override val auditType: String = signupRetrieveAuditType
   }

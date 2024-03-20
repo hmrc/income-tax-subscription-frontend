@@ -24,7 +24,7 @@ import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.mocks.{MockAccountingPeriodService, MockAuditingService, MockSubscriptionDetailsService}
+import services.mocks.{MockAccountingPeriodService, MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
 import views.agent.mocks.MockWhatYearToSignUp
 
 import scala.concurrent.Future
@@ -33,6 +33,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
   with MockWhatYearToSignUp
   with MockSubscriptionDetailsService
   with MockAccountingPeriodService
+  with MockSessionDataService
   with MockAuditingService {
 
   override val controllerName: String = "WhatYearToSignUpMethod"
@@ -42,11 +43,14 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
   )
 
   object TestWhatYearToSignUpController extends WhatYearToSignUpController(
+    mockAccountingPeriodService,
+    whatYearToSignUp
+  )(
     mockAuditingService,
     mockAuthService,
-    mockAccountingPeriodService,
+    appConfig,
     MockSubscriptionDetailsService,
-    whatYearToSignUp
+    mockSessionDataService
   )
 
   "show" should {

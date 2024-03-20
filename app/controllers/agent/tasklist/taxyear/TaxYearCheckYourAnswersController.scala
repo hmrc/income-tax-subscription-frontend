@@ -21,7 +21,7 @@ import config.AppConfig
 import controllers.utils.{ReferenceRetrieval, TaxYearNavigationHelper}
 import models.common.AccountingYearModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.tasklist.taxyear.TaxYearCheckYourAnswers
@@ -31,13 +31,15 @@ import scala.concurrent.ExecutionContext
 import scala.util.matching.Regex
 
 @Singleton
-class TaxYearCheckYourAnswersController @Inject()(val checkYourAnswersView: TaxYearCheckYourAnswers,
-                                                  val auditingService: AuditingService,
+class TaxYearCheckYourAnswersController @Inject()(checkYourAnswersView: TaxYearCheckYourAnswers)
+                                                 (val auditingService: AuditingService,
                                                   val authService: AuthService,
+                                                  val appConfig: AppConfig,
+                                                  val sessionDataService: SessionDataService,
                                                   val subscriptionDetailsService: SubscriptionDetailsService)
                                                  (implicit val ec: ExecutionContext,
-                                                  val appConfig: AppConfig,
-                                                  mcc: MessagesControllerComponents) extends AuthenticatedController with ReferenceRetrieval with TaxYearNavigationHelper {
+                                                  mcc: MessagesControllerComponents)
+  extends AuthenticatedController with ReferenceRetrieval with TaxYearNavigationHelper {
 
   private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
 

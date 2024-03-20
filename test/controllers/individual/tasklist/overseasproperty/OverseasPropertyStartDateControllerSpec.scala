@@ -26,7 +26,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.individual.mocks.MockAuthService
-import services.mocks.{MockAuditingService, MockSubscriptionDetailsService}
+import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
 import utilities.TestModels.testFullOverseasPropertyModel
 import views.individual.mocks.MockOverseasPropertyStartDate
 
@@ -34,7 +34,11 @@ import java.time.LocalDate
 import scala.concurrent.Future
 
 class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
-  with MockSubscriptionDetailsService with MockAuthService with MockAuditingService with MockOverseasPropertyStartDate {
+  with MockSubscriptionDetailsService
+  with MockAuthService
+  with MockAuditingService
+  with MockSessionDataService
+  with MockOverseasPropertyStartDate {
 
   override def beforeEach(): Unit = {
     disable(EnableTaskListRedesign)
@@ -48,11 +52,14 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
   )
 
   object TestOverseasPropertyStartDateController extends OverseasPropertyStartDateController(
+    overseasPropertyStartDate
+  )(
     mockAuditingService,
     mockAuthService,
     MockSubscriptionDetailsService,
     mockLanguageUtils,
-    overseasPropertyStartDate
+    appConfig,
+    mockSessionDataService
   )
 
   "show" should {
@@ -160,11 +167,14 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
 
   private def withController(testCode: OverseasPropertyStartDateController => Any) = {
     val controller = new OverseasPropertyStartDateController(
+      overseasPropertyStartDate
+    )(
       mockAuditingService,
       mockAuthService,
       MockSubscriptionDetailsService,
       mockLanguageUtils,
-      overseasPropertyStartDate
+      appConfig,
+      mockSessionDataService
     )
 
     testCode(controller)

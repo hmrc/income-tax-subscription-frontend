@@ -17,7 +17,7 @@
 package services
 
 import common.Constants.ITSASessionKeys
-import connectors.httpparser.GetSessionDataHttpParser.UnexpectedStatusFailure
+import connectors.httpparser.{DeleteSessionDataHttpParser, GetSessionDataHttpParser, SaveSessionDataHttpParser}
 import connectors.mocks.MockSessionDataConnector
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.INTERNAL_SERVER_ERROR
@@ -51,9 +51,43 @@ class SessionDataServiceSpec extends PlaySpec with MockSessionDataConnector {
     }
     "return an error" when {
       "the connector returns an error" in new Setup {
-        mockGetSessionData(ITSASessionKeys.REFERENCE)(Left(UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
+        mockGetSessionData(ITSASessionKeys.REFERENCE)(Left(GetSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
-        await(service.fetchReference) mustBe Left(UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
+        await(service.fetchReference) mustBe Left(GetSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
+      }
+    }
+  }
+
+  "saveReference" must {
+    "return a success response" when {
+      "the connector returns a success response" in new Setup {
+        mockSaveSessionData(ITSASessionKeys.REFERENCE, testReference)(Right(SaveSessionDataHttpParser.SaveSessionDataSuccessResponse))
+
+        await(service.saveReference(testReference)) mustBe Right(SaveSessionDataHttpParser.SaveSessionDataSuccessResponse)
+      }
+    }
+    "return a failure response" when {
+      "the connector returns a failure response" in new Setup {
+        mockSaveSessionData(ITSASessionKeys.REFERENCE, testReference)(Left(SaveSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
+
+        await(service.saveReference(testReference)) mustBe Left(SaveSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
+      }
+    }
+  }
+
+  "deleteReference" must {
+    "return a success response" when {
+      "the connector returns a success response" in new Setup {
+        mockDeleteSessionData(ITSASessionKeys.REFERENCE)(Right(DeleteSessionDataHttpParser.DeleteSessionDataSuccessResponse))
+
+        await(service.deleteReference) mustBe Right(DeleteSessionDataHttpParser.DeleteSessionDataSuccessResponse)
+      }
+    }
+    "return a failure response" when {
+      "the connector returns a failure response" in new Setup {
+        mockDeleteSessionData(ITSASessionKeys.REFERENCE)(Left(DeleteSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
+
+        await(service.deleteReference) mustBe Left(DeleteSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
       }
     }
   }

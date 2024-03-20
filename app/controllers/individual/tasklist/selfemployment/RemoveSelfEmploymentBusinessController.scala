@@ -18,14 +18,13 @@ package controllers.individual.tasklist.selfemployment
 
 import auth.individual.SignUpController
 import config.AppConfig
-import connectors.IncomeTaxSubscriptionConnector
 import controllers.utils.ReferenceRetrieval
 import forms.individual.business.RemoveBusinessForm
 import models.common.business.{BusinessNameModel, BusinessTradeNameModel, SelfEmploymentData}
 import models.{No, Yes, YesNo}
 import play.api.data.Form
 import play.api.mvc._
-import services.{AuditingService, AuthService, RemoveBusinessService, SubscriptionDetailsService}
+import services._
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import views.html.individual.tasklist.selfemployments.RemoveSelfEmploymentBusiness
 
@@ -33,20 +32,19 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RemoveSelfEmploymentBusinessController @Inject()(val removeBusinessView: RemoveSelfEmploymentBusiness,
-                                                       val auditingService: AuditingService,
+class RemoveSelfEmploymentBusinessController @Inject()(removeBusinessView: RemoveSelfEmploymentBusiness,
+                                                       removeBusinessService: RemoveBusinessService)
+                                                      (val auditingService: AuditingService,
                                                        val authService: AuthService,
                                                        val subscriptionDetailsService: SubscriptionDetailsService,
-                                                       val removeBusinessService: RemoveBusinessService,
-                                                       val incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector
-                                                      )(implicit val ec: ExecutionContext,
-                                                        val appConfig: AppConfig,
-                                                        mcc: MessagesControllerComponents
-                                                      ) extends SignUpController with ReferenceRetrieval {
+                                                       val appConfig: AppConfig,
+                                                       val sessionDataService: SessionDataService)
+                                                      (implicit val ec: ExecutionContext,
+                                                       mcc: MessagesControllerComponents) extends SignUpController with ReferenceRetrieval {
 
   def show(businessId: String): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user => {
-      withReference { reference =>
+      withIndividualReference { reference =>
         withBusinessData(reference, businessId) { (maybeBusinessNameModel, maybeBusinessTradeNameModel) =>
           Future.successful(Ok(view(businessId, form, maybeBusinessNameModel, maybeBusinessTradeNameModel)))
         }
@@ -56,7 +54,7 @@ class RemoveSelfEmploymentBusinessController @Inject()(val removeBusinessView: R
 
   def submit(businessId: String): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user => {
-      withReference { reference =>
+      withIndividualReference { reference =>
         form.bindFromRequest().fold(
           formWithErrors => {
             withBusinessData(reference, businessId) { (maybeBusinessNameModel, maybeBusinessTradeNameModel) =>

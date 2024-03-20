@@ -35,6 +35,7 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
   with MockAccountingPeriodService
   with MockUserMatchingService
   with MockAuditingService
+  with MockSessionDataService
   with MockSpsService {
 
   val mockSignUpComplete: SignUpComplete = mock[SignUpComplete]
@@ -42,10 +43,12 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
 
 
   object TestConfirmationController extends ConfirmationController(
+    mockSignUpComplete,
+    mockSignUpConfirmation
+  )(
     mockAuditingService,
     mockAuthService,
-    mockSignUpComplete,
-    mockSignUpConfirmation,
+    mockSessionDataService,
     MockSubscriptionDetailsService
   )(executionContext, appConfig, mockMessagesControllerComponents)
 

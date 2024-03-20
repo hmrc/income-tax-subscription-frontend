@@ -39,7 +39,6 @@ import utilities.HttpResult.HttpConnectorError
 import utilities.UserMatchingSessionUtil
 import utilities.agent.TestModels.testClientDetails
 import utilities.agent.{TestConstants, TestModels}
-import utilities.individual.TestConstants.testReference
 import views.html.agent.matching.CheckYourClientDetails
 
 import scala.concurrent.Future
@@ -50,6 +49,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
   with MockPrePopulationService
   with MockSubscriptionDetailsService
   with MockGetEligibilityStatusService
+  with MockSessionDataService
   with MockMandationStatusConnector {
 
   private val eligibleWithoutPrePop = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, None)
@@ -522,13 +522,16 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
 
   private def createTestConfirmClientController(mockedView: CheckYourClientDetails) = new ConfirmClientController(
     mockedView,
-    mockAuditingService,
-    mockAuthService,
     mockAgentQualificationService,
     mockGetEligibilityStatusService,
     mockMandationStatusConnector,
     mockUserLockoutService,
-    mockPrePopulationService,
+    mockPrePopulationService
+  )(
+    mockAuditingService,
+    mockAuthService,
+    mockSessionDataService,
+    appConfig,
     MockSubscriptionDetailsService
   )
 }

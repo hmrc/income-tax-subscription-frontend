@@ -20,7 +20,6 @@ import auth.agent.{AuthenticatedController, IncomeTaxAgentUser}
 import common.Constants.ITSASessionKeys
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
-import connectors.IncomeTaxSubscriptionConnector
 import controllers.utils.ReferenceRetrieval
 import models.common.TaskListModel
 import models.common.business.AccountingMethodModel
@@ -39,12 +38,11 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.matching.Regex
 
 @Singleton
-class TaskListController @Inject()(val taskListView: TaskList,
-                                   val accountingPeriodService: AccountingPeriodService,
-                                   val auditingService: AuditingService,
+class TaskListController @Inject()(taskListView: TaskList,
+                                   subscriptionService: SubscriptionOrchestrationService)
+                                  (val auditingService: AuditingService,
                                    val subscriptionDetailsService: SubscriptionDetailsService,
-                                   val subscriptionService: SubscriptionOrchestrationService,
-                                   val incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector,
+                                   val sessionDataService: SessionDataService,
                                    val authService: AuthService)
                                   (implicit val ec: ExecutionContext,
                                    val appConfig: AppConfig,

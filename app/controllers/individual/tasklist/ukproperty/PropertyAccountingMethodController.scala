@@ -24,7 +24,7 @@ import models.AccountingMethod
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import views.html.individual.tasklist.ukproperty.PropertyAccountingMethod
 
@@ -32,13 +32,15 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PropertyAccountingMethodController @Inject()(val auditingService: AuditingService,
-                                                   propertyAccountingMethod: PropertyAccountingMethod,
+class PropertyAccountingMethodController @Inject()(propertyAccountingMethod: PropertyAccountingMethod)
+                                                  (val auditingService: AuditingService,
                                                    val authService: AuthService,
+                                                   val appConfig: AppConfig,
+                                                   val sessionDataService: SessionDataService,
                                                    val subscriptionDetailsService: SubscriptionDetailsService)
                                                   (implicit val ec: ExecutionContext,
-                                                   val appConfig: AppConfig,
                                                    mcc: MessagesControllerComponents) extends SignUpController with ReferenceRetrieval {
+
   def view(accountingMethodPropertyForm: Form[AccountingMethod], isEditMode: Boolean)
           (implicit request: Request[_]): Html = {
     propertyAccountingMethod(
@@ -51,7 +53,7 @@ class PropertyAccountingMethodController @Inject()(val auditingService: Auditing
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withReference { reference =>
+      withIndividualReference { reference =>
         subscriptionDetailsService.fetchAccountingMethodProperty(reference).map { accountingMethodProperty =>
           Ok(view(
             accountingMethodPropertyForm = AccountingMethodPropertyForm.accountingMethodPropertyForm.fill(accountingMethodProperty),
@@ -63,7 +65,7 @@ class PropertyAccountingMethodController @Inject()(val auditingService: Auditing
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withReference { reference =>
+      withIndividualReference { reference =>
         AccountingMethodPropertyForm.accountingMethodPropertyForm.bindFromRequest().fold(
           formWithErrors =>
             Future.successful(BadRequest(view(accountingMethodPropertyForm = formWithErrors, isEditMode = isEditMode))),

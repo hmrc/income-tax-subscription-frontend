@@ -27,14 +27,16 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAuditingService, MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService}
+import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import views.html.agent.tasklist.overseasproperty.OverseasPropertyCheckYourAnswers
 
 import scala.concurrent.Future
 
 class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
-  with MockSubscriptionDetailsService with MockAuditingService with MockIncomeTaxSubscriptionConnector {
+  with MockSubscriptionDetailsService
+  with MockAuditingService
+  with MockSessionDataService {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -185,9 +187,12 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBase
   }
 
   object TestOverseasPropertyCheckYourAnswersController extends OverseasPropertyCheckYourAnswersController(
-    mock[OverseasPropertyCheckYourAnswers],
+    mock[OverseasPropertyCheckYourAnswers]
+  )(
     mockAuditingService,
     mockAuthService,
+    mockSessionDataService,
+    appConfig,
     MockSubscriptionDetailsService
   )
 
@@ -198,12 +203,15 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBase
       .thenReturn(HtmlFormat.empty)
 
     val controller = new OverseasPropertyCheckYourAnswersController(
-      mockView,
+      mockView
+    )(
       mockAuditingService,
       mockAuthService,
+      mockSessionDataService,
+      appConfig,
       MockSubscriptionDetailsService
     )
-
+    
     testCode(controller)
   }
 }

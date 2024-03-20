@@ -25,7 +25,7 @@ import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.mocks.{MockAuditingService, MockSubscriptionDetailsService}
+import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.SubscriptionDataKeys.OverseasPropertyAccountingMethod
 import views.agent.mocks.MockOverseasPropertyAccountingMethod
@@ -33,7 +33,10 @@ import views.agent.mocks.MockOverseasPropertyAccountingMethod
 import scala.concurrent.Future
 
 class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
-  with MockSubscriptionDetailsService with MockAuditingService with MockOverseasPropertyAccountingMethod {
+  with MockSubscriptionDetailsService
+  with MockAuditingService
+  with MockSessionDataService
+  with MockOverseasPropertyAccountingMethod {
 
   override def beforeEach(): Unit = {
     disable(EnableTaskListRedesign)
@@ -47,10 +50,13 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
   )
 
   object TestOverseasPropertyAccountingMethodController extends OverseasPropertyAccountingMethodController(
+    overseasPropertyAccountingMethod
+  )(
     mockAuditingService,
     mockAuthService,
     MockSubscriptionDetailsService,
-    overseasPropertyAccountingMethod
+    appConfig,
+    mockSessionDataService
   )
 
   "show" when {

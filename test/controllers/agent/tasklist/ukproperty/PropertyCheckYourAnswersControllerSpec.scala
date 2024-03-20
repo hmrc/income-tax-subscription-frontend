@@ -27,14 +27,17 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAuditingService, MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService}
+import services.mocks.{MockAuditingService, MockIncomeTaxSubscriptionConnector, MockSessionDataService, MockSubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import views.html.agent.tasklist.ukproperty.PropertyCheckYourAnswers
 
 import scala.concurrent.Future
 
 class PropertyCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
-  with MockSubscriptionDetailsService with MockAuditingService with MockIncomeTaxSubscriptionConnector {
+  with MockSubscriptionDetailsService
+  with MockAuditingService
+  with MockSessionDataService
+  with MockIncomeTaxSubscriptionConnector {
 
   override val controllerName: String = "PropertyCheckYourAnswersController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -48,8 +51,11 @@ class PropertyCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   }
 
   object TestPropertyCheckYourAnswersController extends PropertyCheckYourAnswersController(
-    mock[PropertyCheckYourAnswers],
+    mock[PropertyCheckYourAnswers]
+  )(
     mockAuditingService,
+    mockSessionDataService,
+    appConfig,
     mockAuthService,
     MockSubscriptionDetailsService
   )
@@ -176,8 +182,11 @@ class PropertyCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
       .thenReturn(HtmlFormat.empty)
 
     val controller = new PropertyCheckYourAnswersController(
-      mockView,
+      mockView
+    )(
       mockAuditingService,
+      mockSessionDataService,
+      appConfig,
       mockAuthService,
       MockSubscriptionDetailsService
     )

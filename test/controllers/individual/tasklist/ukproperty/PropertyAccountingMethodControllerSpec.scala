@@ -28,14 +28,16 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAuditingService, MockSubscriptionDetailsService}
+import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
 import utilities.TestModels._
 import views.html.individual.tasklist.ukproperty.PropertyAccountingMethod
 
 import scala.concurrent.Future
 
 class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
-  with MockSubscriptionDetailsService with MockAuditingService {
+  with MockSubscriptionDetailsService
+  with MockSessionDataService
+  with MockAuditingService {
 
   override def beforeEach(): Unit = {
     disable(EnableTaskListRedesign)
@@ -52,9 +54,12 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
       .thenReturn(HtmlFormat.empty)
 
     val controller = new PropertyAccountingMethodController(
+      propertyAccountingMethodView
+    )(
       mockAuditingService,
-      propertyAccountingMethodView,
       mockAuthService,
+      appConfig,
+      mockSessionDataService,
       MockSubscriptionDetailsService
     )
 
