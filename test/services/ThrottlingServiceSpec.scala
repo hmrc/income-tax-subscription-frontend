@@ -18,125 +18,89 @@ package services
 
 import config.featureswitch.FeatureSwitch.ThrottlingFeature
 import config.featureswitch.FeatureSwitching
+import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataSuccessResponse
 import org.mockito.Mockito.{never, times}
 import play.api.mvc.Result
 import play.api.test.Helpers._
-import services.mocks.MockThrottlingConnector
+import services.mocks.{MockSessionDataService, MockThrottlingConnector}
 
-class ThrottlingServiceSpec extends MockThrottlingConnector with FeatureSwitching {
+import scala.concurrent.Future
 
-  val throttlingService = new ThrottlingService(mockThrottlingConnector, appConfig)
+class ThrottlingServiceSpec extends MockThrottlingConnector with MockSessionDataService with FeatureSwitching {
+
+  val throttlingService = new ThrottlingService(mockThrottlingConnector, mockSessionDataService, appConfig)
   val fuzzyResult: Result = mock[Result]
-
-  private def test(throttle: Throttle) = throttlingService.throttled(throttle) {
-    fuzzyResult
-  }
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     enable(ThrottlingFeature)
   }
 
-  "Throttle result" when {
-    "the throttling feature switch is disabled" should {
-      "return None" in {
+  "throttle" should {
+    "return a throttle success" when {
+      "the feature switch is disabled" in {
         disable(ThrottlingFeature)
-        throttlingService.throttleResult(mockThrottle) mustBe None
-        verifyGetThrottleStatusCalls(never())
-      }
-    }
-    "the throttling feature switch is enabled" when {
-      "the throttle is not throttled" should {
-        "return Some(Future(Success(true)))" in {
-          notThrottled()
-          val maybeEventualBoolean = throttlingService.throttleResult(mockThrottle)
-          maybeEventualBoolean.isDefined mustBe true
-          maybeEventualBoolean.get.isCompleted mustBe true
-          maybeEventualBoolean.get.map { a => a mustBe true }
-          verifyGetThrottleStatusCalls(times(1))
-        }
-      }
-      "the throttle is throttled" should {
-        "return Some(Future(Success(false)))" in {
-          throttled()
-          val maybeEventualBoolean = throttlingService.throttleResult(mockThrottle)
-          maybeEventualBoolean.isDefined mustBe true
-          maybeEventualBoolean.get.isCompleted mustBe true
-          maybeEventualBoolean.get.map { a => a mustBe false }
-          verifyGetThrottleStatusCalls(times(1))
-        }
-      }
-    }
-  }
 
-  "Throttling" when {
-    "the throttling feature switch is disabled" should {
-      "return the output Result from the throttled block without calling the throttle" in {
-        disable(ThrottlingFeature)
-        await(test(mockThrottle)) mustBe fuzzyResult
+        val result: Future[Result] = throttlingService.throttled(mockThrottle)(fuzzyResult)
+
+        await(result) mustBe fuzzyResult
+
         verifyGetThrottleStatusCalls(never)
       }
-    }
+      "session indicates the user has already passed through the throttle" in {
+        mockFetchThrottlePassed(mockThrottle)(Right(Some(true)))
 
-    "the throttling feature switch is enabled" when {
-      "using a fail open throttle" when {
-        "throttling succeeds" should {
-          "return the output Result from the throttled block" in {
-            failOpen()
-            notThrottled()
-            await(test(mockThrottle)) mustBe fuzzyResult
-            verifyGetThrottleStatusCalls(times(1))
-          }
-        }
-        "throttling fails" should {
-          "redirect to the url provided by the specified throttle" in {
-            failOpen()
-            throttled()
-            val eventualResult = test(mockThrottle)
-            status(eventualResult) mustBe SEE_OTHER
-            redirectLocation(eventualResult) mustBe Some(failFuzzyUrl)
-            verifyGetThrottleStatusCalls(times(1))
-          }
-        }
-        "throttling throws an exception" should {
-          "redirect to the url provided by the specified throttle" in {
-            failOpen()
-            throttleFail()
-            await(test(mockThrottle)) mustBe fuzzyResult
-            verifyGetThrottleStatusCalls(times(1))
-          }
-        }
+        val result: Future[Result] = throttlingService.throttled(mockThrottle)(fuzzyResult)
+
+        await(result) mustBe fuzzyResult
+
+        verifyGetThrottleStatusCalls(never)
       }
-      "using a fail closed throttle" when {
-        "throttling succeeds" should {
-          "return the output Result from the throttled block" in {
-            failClosed()
-            notThrottled()
-            val eventualResult = test(mockThrottle)
-            await(eventualResult) mustBe fuzzyResult
-            verifyGetThrottleStatusCalls(times(1))
-          }
-        }
-        "throttling fails" should {
-          "redirect to the url provided by the specified throttle" in {
-            failClosed()
-            throttled()
-            val eventualResult = test(mockThrottle)
-            status(eventualResult) mustBe SEE_OTHER
-            redirectLocation(eventualResult) mustBe Some(failFuzzyUrl)
-            verifyGetThrottleStatusCalls(times(1))
-          }
-        }
-        "throttling throws an exception" should {
-          "redirect to the url provided by the specified throttle" in {
-            failClosed()
-            throttleFail()
-            val eventualResult = test(mockThrottle)
-            status(eventualResult) mustBe SEE_OTHER
-            redirectLocation(eventualResult) mustBe Some(failFuzzyUrl)
-            verifyGetThrottleStatusCalls(times(1))
-          }
-        }
+      "the throttle call returned a successful response" in {
+        mockFetchThrottlePassed(mockThrottle)(Right(None))
+        notThrottled()
+        mockSaveThrottlePassed(mockThrottle)(Right(SaveSessionDataSuccessResponse))
+
+        val result: Future[Result] = throttlingService.throttled(mockThrottle)(fuzzyResult)
+
+        await(result) mustBe fuzzyResult
+
+        verifyGetThrottleStatusCalls(times(1))
+      }
+      "the throttle call failed, but the throttle was setup to open on failure" in {
+        mockFetchThrottlePassed(mockThrottle)(Right(None))
+        throttleFail()
+        failOpen()
+        mockSaveThrottlePassed(mockThrottle)(Right(SaveSessionDataSuccessResponse))
+
+        val result: Future[Result] = throttlingService.throttled(mockThrottle)(fuzzyResult)
+
+        await(result) mustBe fuzzyResult
+
+        verifyGetThrottleStatusCalls(times(1))
+      }
+    }
+    "redirect to the throttle call" when {
+      "the throttle call returned false" in {
+        mockFetchThrottlePassed(mockThrottle)(Right(None))
+        throttled()
+
+        val result: Future[Result] = throttlingService.throttled(mockThrottle)(fuzzyResult)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(failFuzzyUrl)
+
+        verifyGetThrottleStatusCalls(times(1))
+      }
+      "the throttle call failed, but the throttle was setup to close on failure" in {
+        mockFetchThrottlePassed(mockThrottle)(Right(None))
+        throttleFail()
+        failClosed()
+
+        val result: Future[Result] = throttlingService.throttled(mockThrottle)(fuzzyResult)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(failFuzzyUrl)
       }
     }
   }

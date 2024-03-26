@@ -801,15 +801,7 @@ agent.sign-up-complete.what-now.agent-services-account          = Gallai gymryd 
 agent.sign-up-complete.what-now.agent-services-account.link     = cyfrif gwasanaethau asiant
 agent.sign-up-complete.what-now.send-quarterly                  = Bydd yn rhaid i chi anfon diweddariadau chwarterol gan ddefnyddio’ch meddalwedd erbyn:
 
-## Agent Action Page
-agent.return-to-client-details.title                                        = Beth hoffech ei wneud nesaf?
-agent.return-to-client-details.heading                                      = Beth hoffech ei wneud nesaf?
-agent.return-to-client-details.continue-signing-up                          = Yn eich blaen i gofrestru {0}
-agent.return-to-client-details.sign-up-another-client                       = Cofrestru cleient arall
-agent.return-to-client-details.error.empty                                  = Mae’n rhaid i chi ddewis yr hyn rydych am ei wneud nesaf cyn mynd yn eich blaen.
-
 ## Errors ##
-
 agent.error.client-details.date-of-birth.invalid-chars                              = Nodwch ddyddiad geni gan ddefnyddio’r rhifau 0 i 9
 agent.error.client-details.date-of-birth.day-month-year.empty                       = Nodwch ddyddiad geni’ch cleient
 agent.error.client-details.date-of-birth.date.empty                                 = Nodwch ddyddiad geni’ch cleient

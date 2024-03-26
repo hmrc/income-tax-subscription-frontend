@@ -85,6 +85,6 @@ class AccountingPeriodCheckController @Inject()(val auditingService: AuditingSer
       )
   }
 
-  def backLink: String = controllers.agent.matching.routes.ReturnToClientDetailsController.show.url
+  def backLink: String = controllers.agent.routes.AddAnotherClientController.addAnother().url
 
 }

@@ -58,6 +58,9 @@ POST        /client-details                         controllers.agent.matching.C
 GET         /confirm-client                         controllers.agent.matching.ConfirmClientController.show()
 POST        /confirm-client                         controllers.agent.matching.ConfirmClientController.submit()
 
+#Confirmed client resolver
+GET         /resolve-confirmed-client               controllers.agent.matching.ConfirmedClientResolver.resolve
+
 # Client not matched routes
 GET         /error/client-details                   controllers.agent.matching.ClientDetailsErrorController.show
 POST        /error/client-details                   controllers.agent.matching.ClientDetailsErrorController.submit
@@ -149,7 +152,3 @@ POST        /final-check-your-answers                            controllers.age
 # Cannot Go Back To Previous Client
 GET         /cannot-go-back-to-previous-client                   controllers.agent.matching.CannotGoBackToPreviousClientController.show
 POST        /cannot-go-back-to-previous-client                   controllers.agent.matching.CannotGoBackToPreviousClientController.submit
-
-# Agetn Action
-GET         /return-to-client-details                            controllers.agent.matching.ReturnToClientDetailsController.show
-POST        /return-to-client-details                            controllers.agent.matching.ReturnToClientDetailsController.submit

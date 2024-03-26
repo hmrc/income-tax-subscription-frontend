@@ -37,6 +37,8 @@ object AuthPredicates extends Results {
 
   lazy val homeRoute: Result = Redirect(controllers.agent.matching.routes.HomeController.index)
 
+  private lazy val addAnotherClientRoute: Result = Redirect(controllers.agent.routes.AddAnotherClientController.addAnother())
+
   val notSubmitted: AuthPredicate[IncomeTaxAgentUser] = request => _ =>
     if (request.session.get(ITSASessionKeys.MTDITID).isEmpty) Right(AuthPredicateSuccess)
     else Left(Future.successful(confirmationRoute))
@@ -61,11 +63,7 @@ object AuthPredicates extends Results {
 
   val userMatchingJourneyPredicate: AuthPredicate[IncomeTaxAgentUser] = request => _ =>
     if (request.session.isInState(AgentUserMatching)) Right(AuthPredicateSuccess)
-    else Left(Future.successful(homeRoute))
-
-  val userMatchedJourneyPredicate: AuthPredicate[IncomeTaxAgentUser] = request => _ =>
-    if (request.session.isInState(AgentUserMatched)) Right(AuthPredicateSuccess)
-    else Left(Future.successful(homeRoute))
+    else Left(Future.successful(addAnotherClientRoute))
 
   val arnPredicate: AuthPredicate[IncomeTaxAgentUser] = _ => user =>
     if (user.enrolments.getEnrolment(Constants.hmrcAsAgent).nonEmpty) Right(AuthPredicateSuccess)

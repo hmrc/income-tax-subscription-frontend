@@ -20,6 +20,7 @@ import _root_.common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.{ELIGIBLE_NEXT_YEAR_ONLY, MANDATED_CURRENT_YEAR, MANDATED_NEXT_YEAR}
 import config.MockConfig
 import config.featureswitch.FeatureSwitch.{PrePopulate, ThrottlingFeature}
+import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataSuccessResponse
 import controllers.individual.ControllerBaseSpec
 import models.status.MandationStatus.{Mandated, Voluntary}
 import models.{EligibilityStatus, PrePopData}
@@ -27,8 +28,8 @@ import org.mockito.Mockito.{never, reset, times}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
-import services.ThrottlingService
 import services.mocks._
+import services.{IndividualStartOfJourneyThrottle, ThrottlingService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.individual.TestConstants
 import utilities.individual.TestConstants.testFullName
@@ -71,7 +72,7 @@ class HomeControllerSpec extends ControllerBaseSpec
     mockCitizenDetailsService,
     mockGetEligibilityStatusService,
     mockSubscriptionService,
-    new ThrottlingService(mockThrottlingConnector, appConfig),
+    new ThrottlingService(mockThrottlingConnector, mockSessionDataService, appConfig),
     mockPrePopulationService,
     mockMandationStatusConnector
   )(
@@ -107,6 +108,8 @@ class HomeControllerSpec extends ControllerBaseSpec
           setupMockGetSubscriptionFound(testNino)
           setupMockSubscriptionDetailsSaveFunctions()
           mockRetrieveReferenceSuccess(testUtr)(testReference)
+          mockFetchThrottlePassed(IndividualStartOfJourneyThrottle)(Right(None))
+          mockSaveThrottlePassed(IndividualStartOfJourneyThrottle)(Right(SaveSessionDataSuccessResponse))
 
           val result = testHomeController().index(fakeRequest)
 
@@ -146,6 +149,8 @@ class HomeControllerSpec extends ControllerBaseSpec
                   mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithoutPrepopData)))
                   mockRetrieveReferenceSuccess(testUtr)(testReference)
                   mockGetMandationStatus(Voluntary, Mandated)
+                  mockFetchThrottlePassed(IndividualStartOfJourneyThrottle)(Right(None))
+                  mockSaveThrottlePassed(IndividualStartOfJourneyThrottle)(Right(SaveSessionDataSuccessResponse))
 
                   enable(PrePopulate)
 
@@ -171,6 +176,8 @@ class HomeControllerSpec extends ControllerBaseSpec
                   setupMockSubscriptionDetailsSaveFunctions()
                   setupMockPrePopulateSave(testReference)
                   mockGetMandationStatus(Mandated, Voluntary)
+                  mockFetchThrottlePassed(IndividualStartOfJourneyThrottle)(Right(None))
+                  mockSaveThrottlePassed(IndividualStartOfJourneyThrottle)(Right(SaveSessionDataSuccessResponse))
 
                   enable(PrePopulate)
 
@@ -198,6 +205,8 @@ class HomeControllerSpec extends ControllerBaseSpec
                 mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithoutPrepopData)))
                 mockRetrieveReferenceSuccess(testUtr)(testReference)
                 mockGetMandationStatus(Voluntary, Voluntary)
+                mockFetchThrottlePassed(IndividualStartOfJourneyThrottle)(Right(None))
+                mockSaveThrottlePassed(IndividualStartOfJourneyThrottle)(Right(SaveSessionDataSuccessResponse))
 
                 val result = await(testHomeController().index(fakeRequest))
 
@@ -220,6 +229,8 @@ class HomeControllerSpec extends ControllerBaseSpec
                 mockLookupUserWithoutUtr(testNino)
                 setupMockGetSubscriptionNotFound(testNino)
                 mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithoutPrepopData)))
+                mockFetchThrottlePassed(IndividualStartOfJourneyThrottle)(Right(None))
+                mockSaveThrottlePassed(IndividualStartOfJourneyThrottle)(Right(SaveSessionDataSuccessResponse))
 
                 val result = testHomeController().index()(fakeRequest)
 
@@ -246,6 +257,8 @@ class HomeControllerSpec extends ControllerBaseSpec
               setupMockPrePopulateSave(testReference)
               enable(PrePopulate)
               mockGetMandationStatus(Voluntary, Voluntary)
+              mockFetchThrottlePassed(IndividualStartOfJourneyThrottle)(Right(None))
+              mockSaveThrottlePassed(IndividualStartOfJourneyThrottle)(Right(SaveSessionDataSuccessResponse))
 
               val result = await(testHomeController().index(fakeRequest))
               status(result) mustBe SEE_OTHER
@@ -265,6 +278,8 @@ class HomeControllerSpec extends ControllerBaseSpec
               mockRetrieveReferenceSuccess(testUtr)(testReference)
               mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleNextYearOnly)))
               mockGetMandationStatus(Voluntary, Voluntary)
+              mockFetchThrottlePassed(IndividualStartOfJourneyThrottle)(Right(None))
+              mockSaveThrottlePassed(IndividualStartOfJourneyThrottle)(Right(SaveSessionDataSuccessResponse))
 
               val result = await(testHomeController().index(fakeRequest))
               status(result) mustBe SEE_OTHER
@@ -285,6 +300,8 @@ class HomeControllerSpec extends ControllerBaseSpec
             setupMockGetSubscriptionNotFound(testNino)
             mockRetrieveReferenceSuccess(testUtr)(testReference)
             mockGetEligibilityStatus(testUtr)(Future.successful(Right(ineligible)))
+            mockFetchThrottlePassed(IndividualStartOfJourneyThrottle)(Right(None))
+            mockSaveThrottlePassed(IndividualStartOfJourneyThrottle)(Right(SaveSessionDataSuccessResponse))
 
             val result = await(testHomeController().index(fakeRequest))
             status(result) mustBe SEE_OTHER
@@ -299,6 +316,8 @@ class HomeControllerSpec extends ControllerBaseSpec
           mockNinoAndUtrRetrieval()
           mockLookupUserWithUtr(testNino)(testUtr, testFullName)
           setupMockGetSubscriptionFailure(testNino)
+          mockFetchThrottlePassed(IndividualStartOfJourneyThrottle)(Right(None))
+          mockSaveThrottlePassed(IndividualStartOfJourneyThrottle)(Right(SaveSessionDataSuccessResponse))
 
           intercept[InternalServerException](await(testHomeController().index(fakeRequest)))
           verifyGetThrottleStatusCalls(times(1))

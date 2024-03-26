@@ -16,23 +16,18 @@
 
 package controllers.agent.matching
 
-import auth.agent.{AgentSignUp, AgentUserMatched, AgentUserMatching}
-import common.Constants.ITSASessionKeys
-import helpers.IntegrationTestConstants.{AgentURI, testNino, testUtr}
+import auth.agent.{AgentSignUp, AgentUserMatching}
+import common.Constants.ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import play.api.http.Status._
 
 class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
-  "GET /" should {
+  s"GET ${routes.HomeController.home.url}" should {
     "return a redirect to the index page" in {
-      Given("I setup the wiremock stubs")
-
-      When("I call GET /")
       val res = IncomeTaxSubscriptionFrontend.startPage()
 
-      Then("the result must have a status of SEE_OTHER and the front page title")
       res must have(
         httpStatus(SEE_OTHER),
         redirectURI(controllers.agent.matching.routes.HomeController.index.url)
@@ -40,87 +35,55 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
     }
   }
 
-  "GET /index" when {
+  s"GET ${routes.HomeController.index.url}" when {
     "auth is successful" when {
-      "journey state is not in session" should {
-        "redirect to client details" in {
-          Given("I setup the wiremock stubs")
+      "the agent is in a user matching state" should {
+        "redirect to the enter client details page" in {
           AuthStub.stubAuthSuccess()
 
-          When("I call GET /index")
-          val res = IncomeTaxSubscriptionFrontend.indexPage(None)
-
-          Then("the result must have a status of SEE_OTHER and a redirect location of /client-details")
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(AgentURI.clientDetailsURI)
-          )
-
-          Then("the JourneyStateKey should be added as UserMatching")
-          getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatching.name)
-        }
-      }
-
-      "journey state is UserMatching" should {
-        "redirect to client details when the agent is authorised" in {
-          Given("I setup the wiremock stubs")
-          AuthStub.stubAuthSuccess()
-
-          When("I call GET /index")
           val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentUserMatching))
 
-          Then("the result must have a status of SEE_OTHER and a redirect location of /client-details")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(AgentURI.clientDetailsURI)
+            redirectURI(routes.ClientDetailsController.show().url)
           )
-
-          Then("the JourneyStateKey should remain as UserMatching")
-          getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatching.name)
         }
       }
+      "the agent is in a sign up state" when {
+        "the client can sign up for next year only" in {
+          AuthStub.stubAuthSuccess()
 
-      "journey state is UserMatched" when {
-        "the matched user has a utr" should {
-          "redirect to client details" should {
-            "redirect to what you need to do page" in {
-              Given("I setup the wiremock stubs")
-              AuthStub.stubAuthSuccess()
+          val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentSignUp), Map(ELIGIBLE_NEXT_YEAR_ONLY -> "true"))
 
-              When("I call GET /index")
-              val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentUserMatched), Map(ITSASessionKeys.NINO -> testNino, ITSASessionKeys.UTR -> testUtr))
-
-              Then("the result must have a status of SEE_OTHER and a redirect location of /what-you-need-to-do")
-              res must have(
-                httpStatus(SEE_OTHER),
-                redirectURI(AgentURI.whatYouNeedToDoURI)
-              )
-
-              Then("the JourneyStateKey should be changed to AgentSignUp")
-              getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
-            }
-          }
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
+          )
         }
+        "the client can sign up for both years" in {
+          AuthStub.stubAuthSuccess()
 
-        "the matched user only has a nino" should {
-          "redirect to client details" in {
-            Given("I setup the wiremock stubs")
-            AuthStub.stubAuthSuccess()
+          val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentSignUp), Map(ELIGIBLE_NEXT_YEAR_ONLY -> "false"))
 
-            When("I call GET /index")
-            val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentUserMatched), Map(ITSASessionKeys.NINO -> testNino))
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(controllers.agent.eligibility.routes.ClientCanSignUpController.show().url)
+          )
+        }
+      }
+      "the agent is in no state" should {
+        "redirect to the add another client route" in {
+          AuthStub.stubAuthSuccess()
 
-            Then("the result must have a status of SEE_OTHER and a redirect location of /register-for-SA")
-            res must have(
-              httpStatus(SEE_OTHER),
-              redirectURI(AgentURI.registerForSAURI)
-            )
+          val res = IncomeTaxSubscriptionFrontend.indexPage(None)
 
-            Then("the JourneyStateKey should be removed")
-            getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe None
-          }
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(controllers.agent.routes.AddAnotherClientController.addAnother().url)
+          )
         }
       }
     }
+
   }
 }

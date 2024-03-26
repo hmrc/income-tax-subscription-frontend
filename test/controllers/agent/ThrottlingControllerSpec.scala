@@ -56,14 +56,12 @@ class ThrottlingControllerSpec extends AgentControllerBaseSpec with MockAuditing
     val startOfJourneyView = mock[ThrottleStartOfJourney]
 
     when(startOfJourneyView(
-      ArgumentMatchers.eq(controllers.agent.matching.routes.HomeController.index.url),
-      ArgumentMatchers.eq(controllers.agent.matching.routes.HomeController.index)
+      ArgumentMatchers.eq(controllers.agent.matching.routes.ConfirmedClientResolver.resolve)
     )(any(), any())).thenReturn(HtmlFormat.empty)
 
     val endOfJourneyView = mock[ThrottleEndOfJourney]
 
     when(endOfJourneyView(
-      ArgumentMatchers.eq(controllers.agent.matching.routes.HomeController.index.url),
       ArgumentMatchers.eq(controllers.agent.tasklist.routes.TaskListController.show())
     )(any(), any())).thenReturn(HtmlFormat.empty)
 

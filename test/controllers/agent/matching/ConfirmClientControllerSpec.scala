@@ -16,47 +16,29 @@
 
 package controllers.agent.matching
 
-import auth.agent.AgentUserMatched
-import common.Constants.ITSASessionKeys
-import config.featureswitch.FeatureSwitch.PrePopulate
+import common.Constants.ITSASessionKeys.FailedClientMatching
 import controllers.agent.AgentControllerBaseSpec
-import models.audits.EnterDetailsAuditing.EnterDetailsAuditModel
-import models.status.MandationStatus.{Mandated, Voluntary}
-import models.{EligibilityStatus, PrePopData}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Request, Result}
-import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, _}
 import play.twirl.api.HtmlFormat
 import services.agent._
-import services.agent.mocks.MockAgentQualificationService
 import services.mocks._
-import uk.gov.hmrc.http.{HttpResponse, InternalServerException}
-import utilities.HttpResult.HttpConnectorError
-import utilities.UserMatchingSessionUtil
-import utilities.agent.TestModels.testClientDetails
+import uk.gov.hmrc.http.InternalServerException
+import utilities.agent.TestConstants.{testARN, testNino, testUtr}
 import utilities.agent.{TestConstants, TestModels}
 import views.html.agent.matching.CheckYourClientDetails
 
 import scala.concurrent.Future
 
 class ConfirmClientControllerSpec extends AgentControllerBaseSpec
-  with MockAgentQualificationService
   with MockUserLockoutService
-  with MockPrePopulationService
   with MockSubscriptionDetailsService
-  with MockGetEligibilityStatusService
-  with MockSessionDataService
-  with MockMandationStatusConnector {
-
-  private val eligibleWithoutPrePop = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, None)
-  private val eligibleWithPrePop = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, Some(mock[PrePopData]))
-  private val ineligibleForCurrentYearWithoutPrePop = EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, None)
-  private val ineligibleForCurrentYearWithPrePop = EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, Some(mock[PrePopData]))
-  private val ineligible = EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = false, None)
+  with MockAuditingService
+  with MockSessionDataService {
 
   override val controllerName: String = "ConfirmClientController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -71,7 +53,6 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockAgentQualificationService)
-    disable(PrePopulate)
   }
 
   def mockOrchestrateAgentQualificationSuccess(arn: String, nino: String, utr: Option[String], preExistingRelationship: Boolean = true): Unit =
@@ -143,369 +124,125 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
   }
 
   "submit" when {
+    "the agent is locked out" should {
+      "redirect to the lockout route" in withController { controller =>
+        setupMockLockedOut(testARN)
 
-    def callSubmit(controller: ConfirmClientController, fakeRequest: FakeRequest[AnyContent] = request): Future[Result] = controller.submit()(fakeRequest)
-
-    "client details are missing from the session" should {
-      s"redirect user to ${controllers.agent.matching.routes.ClientDetailsController.show().url}" in withController { controller =>
-        setupMockNotLockedOut(arn)
-
-        val result = callSubmit(controller, userMatchingRequest.buildRequest(None))
+        val result: Future[Result] = controller.submit()(request)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.agent.matching.routes.ClientDetailsController.show().url)
+        redirectLocation(result) mustBe Some(routes.ClientDetailsLockoutController.show.url)
       }
     }
+    "the lockout status returned an unexpected error" should {
+      "throw an internal server exception" in withController { controller =>
+        setupMockLockStatusFailureResponse(testARN)
 
-    "client details are in session" when {
-      "AgentQualificationService returned UnexpectedFailure" should {
-        "return a InternalServerException" in withController { controller =>
-          mockOrchestrateAgentQualificationFailure(arn, UnexpectedFailure)
-          setupMockNotLockedOut(arn)
-
-          val result = callSubmit(controller)
-
-          intercept[InternalServerException](await(result))
-          verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 0, lockedOut = false))
-        }
+        intercept[InternalServerException](await(controller.submit()(request)))
+          .message mustBe "[ClientDetailsLockoutController][handleLockOut] lockout status failure"
       }
+    }
+    "the agent is not locked out" when {
+      "the agent has no client details saved" should {
+        "redirect to the enter client details page" in withController { controller =>
+          setupMockNotLockedOut(testARN)
 
-      "AgentQualificationService returned NoClientMatched and the agent is not locked out" should {
-        s"redirect user to ${controllers.agent.matching.routes.ClientDetailsErrorController.show.url}" in withController { controller =>
-          mockOrchestrateAgentQualificationFailure(arn, NoClientMatched)
-          setupMockNotLockedOut(arn)
-          setupIncrementNotLockedOut(arn, 0)
-
-          val result = await(callSubmit(controller))
+          val result: Future[Result] = controller.submit()(userMatchingRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.agent.matching.routes.ClientDetailsErrorController.show.url)
-          verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 1, lockedOut = false))
+          redirectLocation(result) mustBe Some(routes.ClientDetailsController.show().url)
         }
       }
+      "the agent has a set of client details saved" when {
+        "there was no client which matched the details entered" should {
+          "redirect to the client details error page" when {
+            "the agent has not been locked out" in withController { controller =>
+              setupMockNotLockedOut(testARN)
+              mockOrchestrateAgentQualificationFailure(testARN, NoClientMatched)
+              setupIncrementNotLockedOut(testARN, 0)
 
-      "AgentQualificationService returned ClientAlreadySubscribed" should {
-        s"redirect user to ${controllers.agent.matching.routes.ClientAlreadySubscribedController.show.url}" in withController { controller =>
-          mockOrchestrateAgentQualificationFailure(arn, ClientAlreadySubscribed)
-          setupMockNotLockedOut(arn)
-
-          val result = await(callSubmit(controller))
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.agent.matching.routes.ClientAlreadySubscribedController.show.url)
-          verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 0, lockedOut = false))
-        }
-      }
-
-      "AgentQualificationService returned UnQualifiedAgent" should {
-        s"redirect user to ${controllers.agent.matching.routes.NoClientRelationshipController.show.url}" in withController { controller =>
-          mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr), preExistingRelationship = false)
-          setupMockNotLockedOut(arn)
-
-          val result = await(callSubmit(controller))
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.agent.matching.routes.NoClientRelationshipController.show.url)
-          verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 0, lockedOut = false))
-        }
-      }
-
-      "AgentQualificationService returned ApprovedAgent" when {
-        "the user has a utr" when {
-          "the client is eligible" when {
-            "the client has no prepop data, prepop and ITSA mandation status are on" should {
-              s"redirect user to ${controllers.agent.eligibility.routes.ClientCanSignUpController.show().url}" in withController { controller =>
-                mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
-                mockGetEligibilityStatus(utr)(Future.successful(Right(eligibleWithoutPrePop)))
-                mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
-                mockGetMandationStatus(Voluntary, Mandated)
-                setupMockNotLockedOut(arn)
-
-                enable(PrePopulate)
-
-
-                val result = await(callSubmit(controller))
-
-                status(result) mustBe SEE_OTHER
-                redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.ClientCanSignUpController.show().url)
-
-                val session = result.session(request)
-
-                session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
-                session.get(ITSASessionKeys.NINO) mustBe Some(nino)
-                session.get(ITSASessionKeys.UTR) mustBe Some(utr)
-                session.get(ITSASessionKeys.MANDATED_CURRENT_YEAR) mustBe Some("false")
-                session.get(ITSASessionKeys.MANDATED_NEXT_YEAR) mustBe Some("true")
-
-                verifyPrePopulationSave(0, testReference)
-                verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 0, lockedOut = false))
-              }
-            }
-
-            "the client has prepop data, prepop and ITSA mandation status are on" should {
-              s"redirect user to ${controllers.agent.eligibility.routes.ClientCanSignUpController.show().url}" +
-                s" after saving prepop data" in withController { controller =>
-                mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
-                mockGetEligibilityStatus(utr)(Future.successful(Right(eligibleWithPrePop)))
-                mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
-                setupMockPrePopulateSave(testReference)
-                mockGetMandationStatus(Mandated, Voluntary)
-                setupMockNotLockedOut(arn)
-
-                enable(PrePopulate)
-
-
-                val result = await(callSubmit(controller))
-
-                status(result) mustBe SEE_OTHER
-                redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.ClientCanSignUpController.show().url)
-
-                val session = result.session(request)
-
-                session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
-                session.get(ITSASessionKeys.NINO) mustBe Some(nino)
-                session.get(ITSASessionKeys.UTR) mustBe Some(utr)
-                session.get(ITSASessionKeys.MANDATED_CURRENT_YEAR) mustBe Some("true")
-                session.get(ITSASessionKeys.MANDATED_NEXT_YEAR) mustBe Some("false")
-
-                verifyPrePopulationSave(1, testReference)
-                verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 0, lockedOut = false))
-              }
-            }
-          }
-
-          "the client is ineligible only for the current year" when {
-            "the client has no prepop" when {
-
-              s"redirect user to ${controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url}" in withController { controller =>
-                mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
-                mockGetEligibilityStatus(utr)(Future.successful(Right(ineligibleForCurrentYearWithoutPrePop)))
-                setupMockPrePopulateSave(testReference)
-                mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
-                setupMockNotLockedOut(arn)
-                mockGetMandationStatus(Voluntary, Voluntary)
-
-
-                val result = await(callSubmit(controller))
-
-                status(result) mustBe SEE_OTHER
-                redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
-
-                val session = result.session(request)
-
-                session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
-                session.get(ITSASessionKeys.NINO) mustBe Some(nino)
-                session.get(ITSASessionKeys.UTR) mustBe Some(utr)
-                session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY) mustBe Some("true")
-
-                verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 0, lockedOut = false))
-              }
-            }
-            "the client has prepop" when {
-              "prepop feature switch is on" should {
-
-                s"redirect user to ${controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url}" in withController { controller =>
-                  mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
-                  mockGetEligibilityStatus(utr)(Future.successful(Right(ineligibleForCurrentYearWithPrePop)))
-                  setupMockPrePopulateSave(testReference)
-                  mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
-                  setupMockNotLockedOut(arn)
-                  enable(PrePopulate)
-                  mockGetMandationStatus(Voluntary, Voluntary)
-
-                  val result = await(callSubmit(controller))
-
-                  status(result) mustBe SEE_OTHER
-                  redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
-
-                  val session = result.session(request)
-
-                  session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
-                  session.get(ITSASessionKeys.NINO) mustBe Some(nino)
-                  session.get(ITSASessionKeys.UTR) mustBe Some(utr)
-                  session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY) mustBe Some("true")
-
-                  verifyPrePopulationSave(1, testReference)
-                  verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 0, lockedOut = false))
-                }
-              }
-              "prepop feature switch is off" should {
-                s"redirect user to ${controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url}" in withController { controller =>
-                  mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
-                  mockGetEligibilityStatus(utr)(Future.successful(Right(ineligibleForCurrentYearWithPrePop)))
-                  setupMockPrePopulateSave(testReference)
-                  mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
-                  setupMockNotLockedOut(arn)
-                  disable(PrePopulate)
-                  mockGetMandationStatus(Voluntary, Voluntary)
-
-                  val result = await(callSubmit(controller))
-
-                  status(result) mustBe SEE_OTHER
-                  redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
-
-                  val session = result.session(request)
-
-                  session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
-                  session.get(ITSASessionKeys.NINO) mustBe Some(nino)
-                  session.get(ITSASessionKeys.UTR) mustBe Some(utr)
-                  session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY) mustBe Some("true")
-
-                  verifyPrePopulationSave(0, testReference)
-                  verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 0, lockedOut = false))
-                }
-              }
-            }
-          }
-
-
-          "the client is ineligible" should {
-            s"redirect user to ${controllers.agent.eligibility.routes.CannotTakePartController.show.url}" in withController { controller =>
-              mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
-              mockGetEligibilityStatus(utr)(Future.successful(Right(ineligible)))
-              mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
-              setupMockNotLockedOut(arn)
-
-              val result = await(callSubmit(controller))
+              val result: Future[Result] = controller.submit()(request)
 
               status(result) mustBe SEE_OTHER
-              redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.CannotTakePartController.show.url)
-
-              result.verifyStoredUserDetailsIs(None)(request)
-
-              verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 0, lockedOut = false))
+              redirectLocation(result) mustBe Some(routes.ClientDetailsErrorController.show.url)
             }
           }
+          "redirect to the client details lockout page" when {
+            "the agent has been locked out" in withController { controller =>
+              setupMockNotLockedOut(testARN)
+              mockOrchestrateAgentQualificationFailure(testARN, NoClientMatched)
+              setupIncrementLockedOut(testARN, 2)
 
-          "the GetEligibilityStatus call fails" should {
-            "throw an exception" in withController { controller =>
-              mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
-              mockGetEligibilityStatus(utr)(Future.successful(Left(HttpConnectorError(HttpResponse(INTERNAL_SERVER_ERROR, "")))))
-              setupMockNotLockedOut(arn)
+              val result: Future[Result] = controller.submit()(request.addingToSession(FailedClientMatching -> 2.toString))
 
-              val result = callSubmit(controller)
-              intercept[InternalServerException](await(result))
+              status(result) mustBe SEE_OTHER
+              redirectLocation(result) mustBe Some(routes.ClientDetailsLockoutController.show.url)
+            }
+          }
+          "throw an internal server exception" when {
+            "there was a problem incrementing the lockout counter" in withController { controller =>
+              setupMockNotLockedOut(testARN)
+              mockOrchestrateAgentQualificationFailure(testARN, NoClientMatched)
+              setupIncrementLockedOutFailure(testARN, 0)
+
+              intercept[InternalServerException](await(controller.submit()(request)))
+                .message mustBe "ConfirmClientController.lockUser failure"
             }
           }
         }
+        "the client entered has already been signed up" should {
+          "redirect to the client already signed up page" in withController { controller =>
+            setupMockNotLockedOut(testARN)
+            mockOrchestrateAgentQualificationFailure(testARN, ClientAlreadySubscribed)
 
-        "the user does not have a utr" should {
-          s"redirect user to ${controllers.agent.matching.routes.NoSAController.show.url}" in withController { controller =>
-            mockOrchestrateAgentQualificationSuccess(arn, nino, None)
-            setupMockNotLockedOut(arn)
-
-            val result = await(callSubmit(controller))
+            val result: Future[Result] = controller.submit()(request)
 
             status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(controllers.agent.matching.routes.HomeController.index.url)
-
-            val session = result.session(userMatchingRequest.withSession(ITSASessionKeys.UTR -> "this will be deleted"))
-            session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
-            session.get(ITSASessionKeys.NINO) mustBe Some(nino)
-            session.get(ITSASessionKeys.UTR) mustBe None
-
-            verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 0, lockedOut = false))
-            session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY) mustBe None
+            redirectLocation(result) mustBe Some(routes.ClientAlreadySubscribedController.show.url)
           }
         }
-      }
-    }
-  }
+        "there was an unexpected failure checking the agent qualification" should {
+          "throw an internal server exception" in withController { controller =>
+            setupMockNotLockedOut(testARN)
+            mockOrchestrateAgentQualificationFailure(testARN, UnexpectedFailure)
 
-  "An agent who is locked out" should {
-    s"be redirect to ${controllers.agent.matching.routes.ClientDetailsLockoutController.show.url} when calling show" in withController { controller =>
-      setupMockLockedOut(arn)
+            intercept[InternalServerException](await(controller.submit()(request)))
+              .message mustBe "[ConfirmClientController][handleUnexpectedFailure] - orchestrate agent qualification failed with an unexpected failure"
+          }
+        }
+        "the agent is not authorised to act on behalf of this client" should {
+          "redirect to the unauthorised agent page" in withController { controller =>
+            setupMockNotLockedOut(testARN)
+            mockOrchestrateAgentQualificationFailure(testARN, UnApprovedAgent(testNino, Some(testUtr)))
 
-      val result = controller.show()(request)
+            val result: Future[Result] = controller.submit()(request)
 
-      status(result) mustBe SEE_OTHER
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(routes.NoClientRelationshipController.show.url)
+          }
+        }
+        "the client is not signed up for self assessment as they have no utr" should {
+          "redirect to the no sa page" in withController { controller =>
+            setupMockNotLockedOut(testARN)
+            mockOrchestrateAgentQualificationSuccess(testARN, testNino, None)
 
-      redirectLocation(result).get mustBe controllers.agent.matching.routes.ClientDetailsLockoutController.show.url
-    }
+            val result: Future[Result] = controller.submit()(request)
 
-    s"be redirect to ${controllers.agent.matching.routes.ClientDetailsLockoutController.show.url} when calling submit" in withController { controller =>
-      setupMockLockedOut(arn)
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(routes.NoSAController.show.url)
+          }
+        }
+        "the agent successfully matches against their client" should {
+          "redirect to the confirmed client resolver" in withController { controller =>
+            setupMockNotLockedOut(testARN)
+            mockOrchestrateAgentQualificationSuccess(testARN, testNino, Some(testUtr))
 
-      val result = controller.submit()(request)
+            val result: Future[Result] = controller.submit()(request)
 
-      status(result) mustBe SEE_OTHER
-
-      redirectLocation(result).get mustBe controllers.agent.matching.routes.ClientDetailsLockoutController.show.url
-    }
-  }
-
-  "An agent who is not yet locked out" when {
-    "they fail client matching for the first time" should {
-      s"have the ${ITSASessionKeys.FailedClientMatching} -> 1 added to session and go to the client match error page" in withController { controller =>
-        mockOrchestrateAgentQualificationFailure(arn, NoClientMatched)
-        setupMockNotLockedOut(arn)
-        setupIncrementNotLockedOut(arn, 0)
-
-        val result = await(controller.submit()(request))
-
-        session(result).get(ITSASessionKeys.FailedClientMatching) mustBe Some(1.toString)
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.agent.matching.routes.ClientDetailsErrorController.show.url)
-
-        verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 1, lockedOut = false))
-      }
-
-      "throw an exception if incrementLockout fails" in withController { controller =>
-        mockOrchestrateAgentQualificationFailure(arn, NoClientMatched)
-        setupMockNotLockedOut(arn)
-        setupIncrementLockedOutFailure(arn, 0)
-
-        val result = controller.submit()(request)
-        intercept[InternalServerException](await(result))
-      }
-    }
-
-    "they matched a client after failing previously" should {
-      s"have the ${ITSASessionKeys.FailedClientMatching} removed from session" in withController { controller =>
-        mockOrchestrateAgentQualificationSuccess(arn, nino, Some(utr))
-        mockRetrieveReferenceSuccessFromSubscriptionDetails(utr)(testReference)
-        mockGetEligibilityStatus(utr)(Future.successful(Right(eligibleWithoutPrePop)))
-        setupMockNotLockedOut(arn)
-        mockGetMandationStatus(Mandated, Voluntary)
-
-        val result = await(controller.submit()(request.withSession(ITSASessionKeys.FailedClientMatching -> 1.toString)))
-
-        result.session(request).get(ITSASessionKeys.FailedClientMatching) mustBe None
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) must not be Some(controllers.agent.matching.routes.ClientDetailsLockoutController.show.url)
-
-        verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 1, lockedOut = false))
-      }
-    }
-
-    s"they failed matching one less than configured max attempts already" should {
-      s"have the ${ITSASessionKeys.FailedClientMatching} and client details removed from session" in withController { controller =>
-        lazy val prevFailedAttempts = appConfig.matchingAttempts - 1
-
-        setupMockNotLockedOut(arn)
-        setupIncrementLockedOut(arn, prevFailedAttempts)
-        mockDeleteAllFromSubscriptionDetails(HttpResponse(OK, ""))
-        mockOrchestrateAgentQualificationFailure(arn, NoClientMatched)
-
-        val result = await(controller.submit()(request.withSession(ITSASessionKeys.FailedClientMatching -> prevFailedAttempts.toString)))
-
-        redirectLocation(result) mustBe Some(controllers.agent.matching.routes.ClientDetailsLockoutController.show.url)
-
-        val session = result.session(request)
-        List(
-          ITSASessionKeys.FailedClientMatching,
-          UserMatchingSessionUtil.firstName,
-          UserMatchingSessionUtil.lastName,
-          UserMatchingSessionUtil.dobD,
-          UserMatchingSessionUtil.dobM,
-          UserMatchingSessionUtil.dobY,
-          UserMatchingSessionUtil.nino
-        ).foreach(session.get(_) mustBe None)
-
-        verifyIncrementLockout(arn, 1)
-        verifyAudit(EnterDetailsAuditModel(arn, testClientDetails, 0, lockedOut = true))
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(routes.ConfirmedClientResolver.resolve.url)
+          }
+        }
       }
     }
   }
@@ -523,10 +260,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
   private def createTestConfirmClientController(mockedView: CheckYourClientDetails) = new ConfirmClientController(
     mockedView,
     mockAgentQualificationService,
-    mockGetEligibilityStatusService,
-    mockMandationStatusConnector,
-    mockUserLockoutService,
-    mockPrePopulationService
+    mockUserLockoutService
   )(
     mockAuditingService,
     mockAuthService,

@@ -16,6 +16,8 @@
 
 package common
 
+import services.Throttle
+
 object Constants {
   val mtdItsaEnrolmentName = "HMRC-MTD-IT"
   val hmrcAsAgent = "HMRC-AS-AGENT"
@@ -49,6 +51,8 @@ object Constants {
     val ELIGIBLE_NEXT_YEAR_ONLY = "ELIGIBLE_NEXT_YEAR_ONLY"
     val MANDATED_CURRENT_YEAR = "MANDATED_CURRENT_YEAR"
     val MANDATED_NEXT_YEAR = "MANDATED_NEXT_YEAR"
+
+    def throttlePassed(throttle: Throttle) = s"throttle-${throttle.throttleId}"
 
     // Data specific to the client that the agent is currently working with.
     val clientData: Seq[String] = Seq(MTDITID, NINO, UTR, ELIGIBLE_NEXT_YEAR_ONLY, MANDATED_CURRENT_YEAR, MANDATED_NEXT_YEAR)

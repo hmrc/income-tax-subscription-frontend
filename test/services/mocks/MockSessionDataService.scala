@@ -16,13 +16,15 @@
 
 package services.mocks
 
-import connectors.httpparser.GetSessionDataHttpParser.{InvalidJson, UnexpectedStatusFailure}
+import connectors.httpparser.DeleteSessionDataHttpParser.DeleteSessionDataResponse
+import connectors.httpparser.GetSessionDataHttpParser.{GetSessionDataResponse, InvalidJson, UnexpectedStatusFailure}
+import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataResponse
 import connectors.httpparser.{DeleteSessionDataHttpParser, SaveSessionDataHttpParser}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
-import services.SessionDataService
+import services.{SessionDataService, Throttle}
 
 import scala.concurrent.Future
 
@@ -73,6 +75,21 @@ trait MockSessionDataService extends MockitoSugar with BeforeAndAfterEach {
   def mockDeleteReferenceStatusFailure(status: Int): Unit = {
     when(mockSessionDataService.deleteReference(ArgumentMatchers.any()))
       .thenReturn(Future.successful(Left(DeleteSessionDataHttpParser.UnexpectedStatusFailure(status))))
+  }
+
+  def mockFetchThrottlePassed(throttle: Throttle)(result: GetSessionDataResponse[Boolean]): Unit = {
+    when(mockSessionDataService.fetchThrottlePassed(ArgumentMatchers.eq(throttle))(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(result))
+  }
+
+  def mockSaveThrottlePassed(throttle: Throttle)(result: SaveSessionDataResponse): Unit = {
+    when(mockSessionDataService.saveThrottlePassed(ArgumentMatchers.eq(throttle))(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(result))
+  }
+
+  def mockDeleteThrottlePassed(throttle: Throttle)(result: DeleteSessionDataResponse): Unit = {
+    when(mockSessionDataService.deleteThrottlePassed(ArgumentMatchers.eq(throttle))(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(result))
   }
 
 }
