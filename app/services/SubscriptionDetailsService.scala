@@ -18,6 +18,7 @@ package services
 
 import common.Constants.ITSASessionKeys
 import connectors.IncomeTaxSubscriptionConnector
+import connectors.httpparser.{DeleteSubscriptionDetailsHttpParser, PostSubscriptionDetailsHttpParser}
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsResponse
 import connectors.httpparser.RetrieveReferenceHttpParser.RetrieveReferenceResponse
 import models.common._
@@ -78,6 +79,20 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
   def fetchProperty(reference: String)(implicit hc: HeaderCarrier): Future[Option[PropertyModel]] =
     incomeTaxSubscriptionConnector.getSubscriptionDetails[PropertyModel](reference, Property)
 
+  def taskListStatusUpdate(reference: String, connector: IncomeTaxSubscriptionConnector, result: PostSubscriptionDetailsResponse)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
+    result match {
+      case Right(value) =>
+        connector.deleteSubscriptionDetails(
+          reference = reference,
+          key = SubscriptionDataKeys.IncomeSourceConfirmation
+        ) map {
+          case Right(_) => Right(value)
+          case Left(DeleteSubscriptionDetailsHttpParser.UnexpectedStatusFailure(status)) => Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(status))
+        }
+      case Left(value) => Future.successful(Left(value))
+    }
+  }
+
   def saveBusinesses(reference: String, selfEmploymentData: Seq[SelfEmploymentData], accountingMethod: Option[AccountingMethod])
                     (implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
     val soleTraderBusinesses = SoleTraderBusinesses(
@@ -93,11 +108,17 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
       },
       accountingMethod = accountingMethod
     )
-    incomeTaxSubscriptionConnector.saveSubscriptionDetails(reference, SoleTraderBusinessesKey, soleTraderBusinesses)(implicitly, SoleTraderBusinesses.encryptedFormat)
+    incomeTaxSubscriptionConnector.saveSubscriptionDetails(reference, SoleTraderBusinessesKey, soleTraderBusinesses)(implicitly, SoleTraderBusinesses.encryptedFormat).flatMap {
+      result =>
+        taskListStatusUpdate(reference, incomeTaxSubscriptionConnector, result)
   }
+    }
 
   def saveProperty(reference: String, property: PropertyModel)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] =
-    incomeTaxSubscriptionConnector.saveSubscriptionDetails[PropertyModel](reference, Property, property)
+    incomeTaxSubscriptionConnector.saveSubscriptionDetails[PropertyModel](reference, Property, property).flatMap {
+      result =>
+        taskListStatusUpdate(reference, incomeTaxSubscriptionConnector, result)
+    }
 
   def fetchOverseasProperty(reference: String)(implicit hc: HeaderCarrier): Future[Option[OverseasPropertyModel]] =
     incomeTaxSubscriptionConnector.getSubscriptionDetails[OverseasPropertyModel](reference, SubscriptionDataKeys.OverseasProperty)
@@ -111,7 +132,10 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
   }
 
   def saveOverseasProperty(reference: String, overseasProperty: OverseasPropertyModel)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] =
-    incomeTaxSubscriptionConnector.saveSubscriptionDetails[OverseasPropertyModel](reference, SubscriptionDataKeys.OverseasProperty, overseasProperty)
+    incomeTaxSubscriptionConnector.saveSubscriptionDetails[OverseasPropertyModel](reference, SubscriptionDataKeys.OverseasProperty, overseasProperty).flatMap {
+      result =>
+        taskListStatusUpdate(reference, incomeTaxSubscriptionConnector, result)
+    }
 
   def fetchPropertyStartDate(reference: String)(implicit hc: HeaderCarrier): Future[Option[DateModel]] =
     fetchProperty(reference).map(_.flatMap(_.startDate))

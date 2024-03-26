@@ -76,6 +76,7 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
 
           mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
           setupMockSubscriptionDetailsSaveFunctions()
+          mockDeleteIncomeSourceConfirmationSuccess()
 
           val result: Future[Result] = await(controller.submit()(subscriptionRequest))
 
@@ -104,6 +105,7 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
         "the user submits a start date and accounting method" in withController { controller =>
           mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
           setupMockSubscriptionDetailsSaveFunctions()
+          mockDeleteIncomeSourceConfirmationSuccess()
 
           val result: Future[Result] = await(controller.submit()(subscriptionRequest))
 

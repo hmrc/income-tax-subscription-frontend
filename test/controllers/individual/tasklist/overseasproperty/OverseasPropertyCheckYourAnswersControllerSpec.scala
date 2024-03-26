@@ -79,6 +79,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
 
           mockFetchOverseasProperty(Some(testProperty))
           setupMockSubscriptionDetailsSaveFunctions()
+          mockDeleteIncomeSourceConfirmationSuccess()
 
           val result: Future[Result] = await(controller.submit()(subscriptionRequest))
 
@@ -109,6 +110,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
 
           mockFetchOverseasProperty(Some(testProperty))
           setupMockSubscriptionDetailsSaveFunctions()
+          mockDeleteIncomeSourceConfirmationSuccess()
 
           val result: Future[Result] = await(controller.submit()(subscriptionRequest))
 

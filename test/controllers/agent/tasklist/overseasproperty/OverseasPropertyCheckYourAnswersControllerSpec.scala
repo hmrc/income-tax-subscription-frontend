@@ -90,6 +90,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBase
               enable(EnableTaskListRedesign)
               mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
               setupMockSubscriptionDetailsSaveFunctions()
+              mockDeleteIncomeSourceConfirmationSuccess()
               val result: Future[Result] = await(controller.submit()(subscriptionRequestWithName))
 
               status(result) mustBe SEE_OTHER
@@ -122,6 +123,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBase
             withController { controller =>
               mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
               setupMockSubscriptionDetailsSaveFunctions()
+              mockDeleteIncomeSourceConfirmationSuccess()
 
               val result: Future[Result] = await(controller.submit()(subscriptionRequestWithName))
 

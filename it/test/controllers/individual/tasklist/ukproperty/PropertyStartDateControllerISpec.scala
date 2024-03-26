@@ -76,6 +76,7 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
           IncomeTaxSubscriptionConnectorStub.stubSaveProperty(PropertyModel(startDate = Some(userInput)))
+          IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
           When("POST /property-start-date is called")
           val res = IncomeTaxSubscriptionFrontend.submitPropertyStartDate(inEditMode = false, Some(userInput))
@@ -100,6 +101,7 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
           )
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testProperty))
           IncomeTaxSubscriptionConnectorStub.stubSaveProperty(testProperty)
+          IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
           When("POST /property-start-date is called")
           val res = IncomeTaxSubscriptionFrontend.submitPropertyStartDate(inEditMode = true, Some(userInput))
@@ -121,6 +123,7 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
           )
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testProperty))
           IncomeTaxSubscriptionConnectorStub.stubSaveProperty(testProperty.copy(startDate = Some(IntegrationTestModels.testValidStartDate2)))
+          IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
           When("POST /property-start-date is called")
           val res = IncomeTaxSubscriptionFrontend.submitPropertyStartDate(inEditMode = true, Some(userInput))

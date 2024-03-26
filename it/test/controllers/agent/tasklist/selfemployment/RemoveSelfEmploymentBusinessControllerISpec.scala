@@ -70,6 +70,7 @@ class RemoveSelfEmploymentBusinessControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
         IncomeTaxSubscriptionConnectorStub.stubSaveSoleTraderBusinessDetails(Seq.empty, None)
         IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetails(SoleTraderBusinessesKey)
+        IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
         When("POST business/remove-business is called")
         val res = IncomeTaxSubscriptionFrontend.submitRemoveBusiness(Some(Yes))
@@ -85,6 +86,7 @@ class RemoveSelfEmploymentBusinessControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
+        IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
         When("POST business/remove-business is called")
         val res = IncomeTaxSubscriptionFrontend.submitRemoveBusiness(Some(No))

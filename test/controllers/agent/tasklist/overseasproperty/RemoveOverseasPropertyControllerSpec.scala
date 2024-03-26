@@ -56,6 +56,7 @@ class RemoveOverseasPropertyControllerSpec extends AgentControllerBaseSpec
     "redirect to the task list page" when {
       "the user selects to remove the business" in withController { controller =>
         mockDeleteSubscriptionDetails(SubscriptionDataKeys.OverseasProperty)(Right(DeleteSubscriptionDetailsSuccessResponse))
+        mockDeleteSubscriptionDetails(SubscriptionDataKeys.IncomeSourceConfirmation)(Right(DeleteSubscriptionDetailsSuccessResponse))
 
         val result: Result = controller.submit(
           subscriptionRequest.withFormUrlEncodedBody(RemoveClientOverseasPropertyForm.yesNo -> YesNoMapping.option_yes)
@@ -65,6 +66,7 @@ class RemoveOverseasPropertyControllerSpec extends AgentControllerBaseSpec
         redirectLocation(result) mustBe Some(controllers.agent.tasklist.routes.TaskListController.show().url)
 
         verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.OverseasProperty, count = 1)
+        verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.IncomeSourceConfirmation, count = 1)
       }
 
 
@@ -77,6 +79,7 @@ class RemoveOverseasPropertyControllerSpec extends AgentControllerBaseSpec
         redirectLocation(result) mustBe Some(controllers.agent.tasklist.routes.TaskListController.show().url)
 
         verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.OverseasProperty, count = 0)
+        verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.IncomeSourceConfirmation, count = 0)
       }
     }
 
@@ -90,12 +93,14 @@ class RemoveOverseasPropertyControllerSpec extends AgentControllerBaseSpec
         contentType(result) mustBe Some(HTML)
 
         verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.OverseasProperty, count = 0)
+        verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.IncomeSourceConfirmation, count = 0)
       }
     }
 
     "throw an exception" when {
       "cannot remove the overseas property" in withController { controller =>
         mockDeleteSubscriptionDetailsFailure(SubscriptionDataKeys.OverseasProperty)
+        mockDeleteSubscriptionDetailsFailure(SubscriptionDataKeys.IncomeSourceConfirmation)
 
         val result = controller.submit(
           subscriptionRequest.withFormUrlEncodedBody(RemoveClientOverseasPropertyForm.yesNo -> YesNoMapping.option_yes)

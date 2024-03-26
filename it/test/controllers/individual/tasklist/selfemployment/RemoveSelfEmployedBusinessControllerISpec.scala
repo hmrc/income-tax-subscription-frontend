@@ -73,6 +73,7 @@ class RemoveSelfEmployedBusinessControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
         IncomeTaxSubscriptionConnectorStub.stubSaveSoleTraderBusinessDetails(Seq.empty[SelfEmploymentData], None)
         IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetails(SoleTraderBusinessesKey)
+        IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
         When("POST business/remove-business is called")
         val res = IncomeTaxSubscriptionFrontend.submitRemoveBusiness(Some(Yes))

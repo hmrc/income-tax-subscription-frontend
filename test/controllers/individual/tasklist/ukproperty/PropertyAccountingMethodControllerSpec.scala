@@ -90,8 +90,10 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
 
     "redirect to uk property check your answers page" when {
       "not in edit mode" in {
-        setupMockSubscriptionDetailsSaveFunctions()
         mockFetchProperty(None)
+        setupMockSubscriptionDetailsSaveFunctions()
+        mockDeleteIncomeSourceConfirmationSuccess()
+
         val goodRequest = callSubmit(isEditMode = false)
 
         await(goodRequest)
@@ -102,8 +104,9 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
       }
 
       "in edit mode" in {
-        setupMockSubscriptionDetailsSaveFunctions()
         mockFetchProperty(Some(testFullPropertyModel))
+        setupMockSubscriptionDetailsSaveFunctions()
+        mockDeleteIncomeSourceConfirmationSuccess()
 
         val goodRequest = controller.submit(isEditMode = true)(
           subscriptionRequest.post(AccountingMethodPropertyForm.accountingMethodPropertyForm, Accruals)

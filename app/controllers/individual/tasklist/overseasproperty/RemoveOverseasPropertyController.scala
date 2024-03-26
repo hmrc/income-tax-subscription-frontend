@@ -53,8 +53,11 @@ class RemoveOverseasPropertyController @Inject()(removeOverseasProperty: RemoveO
       form.bindFromRequest().fold(
         hasErrors => Future.successful(BadRequest(view(form = hasErrors))), {
           case Yes => withIndividualReference { reference =>
-            incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, SubscriptionDataKeys.OverseasProperty) map {
-              case Right(_) => Redirect(controllers.individual.tasklist.routes.TaskListController.show())
+            incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, SubscriptionDataKeys.OverseasProperty) flatMap {
+              case Right(_) => incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, SubscriptionDataKeys.IncomeSourceConfirmation).map {
+                case Right(_) => Redirect(controllers.individual.tasklist.routes.TaskListController.show())
+                case Left(_) => throw new InternalServerException("[RemoveOverseasPropertyController][submit] - Failure to delete income source confirmation")
+              }
               case Left(_) => throw new InternalServerException("[RemoveOverseasPropertyController][submit] - Could not remove overseas property")
             }
           }

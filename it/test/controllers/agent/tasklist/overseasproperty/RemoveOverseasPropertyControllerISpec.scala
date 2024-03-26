@@ -21,6 +21,7 @@ import helpers.IntegrationTestConstants.AgentURI
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import play.api.http.Status._
+import utilities.SubscriptionDataKeys
 import utilities.SubscriptionDataKeys.OverseasProperty
 
 class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
@@ -46,6 +47,7 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetails(OverseasProperty)
+        IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetails(SubscriptionDataKeys.IncomeSourceConfirmation)
 
         When("POST client/business/remove-overseas-property-business is called")
         val res = IncomeTaxSubscriptionFrontend.submitRemoveClientOverseasProperty(Map("yes-no" -> Seq("Yes")))
@@ -57,6 +59,7 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
         )
 
         IncomeTaxSubscriptionConnectorStub.verifyDeleteSubscriptionDetails(OverseasProperty, Some(1))
+        IncomeTaxSubscriptionConnectorStub.verifyDeleteSubscriptionDetails(SubscriptionDataKeys.IncomeSourceConfirmation, Some(1))
       }
 
       "the user submits the 'no' answer" in {

@@ -51,6 +51,7 @@ class RemoveBusinessServiceSpec extends UnitTestTrait
       "a reference, business id and single selfEmploymentsData are passed into the service" in {
         mockSaveBusinesses(testReference)
         mockDeleteSubscriptionDetails(SoleTraderBusinessesKey)(Right(DeleteSubscriptionDetailsSuccessResponse))
+        mockDeleteIncomeSourceConfirmationSuccess()
         val result = await(TestRemoveBusiness.deleteBusiness(testReference, testBusinessId, Seq(testBusiness("id")), Some(Cash)))
 
         result.isRight shouldBe true
@@ -62,6 +63,7 @@ class RemoveBusinessServiceSpec extends UnitTestTrait
     "delete and save business details but not accounting method" when {
       "a reference, business id and multiple selfEmploymentsData are passed into the service" in {
         mockSaveBusinesses(testReference)
+        mockDeleteIncomeSourceConfirmationSuccess()
         val result = await(TestRemoveBusiness.deleteBusiness(testReference, testBusinessId, Seq(testBusiness("id"), testBusiness("id1")), Some(Cash)))
 
         result.isRight shouldBe true

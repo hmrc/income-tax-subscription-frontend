@@ -150,6 +150,12 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
     val response = aResponse().withStatus(Status.INTERNAL_SERVER_ERROR)
     stubFor(mapping.willReturn(response))
   }
+  def stubDeleteIncomeSourceConfirmation(responseStatus: Int): Unit = {
+    when(
+      method = DELETE,
+      uri = subscriptionUri(IncomeSourceConfirmation)
+    ).thenReturn(responseStatus)
+  }
 
   case class SubscriptionData(id: String, data: Map[String, JsValue])
 

@@ -80,6 +80,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(expected)
+        IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
         When("POST /overseas-property-start-date is called")
         val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyStartDate(inEditMode = false, Some(userInput))
@@ -107,6 +108,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
               Json.toJson(expected)
             )
             IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(expected)
+            IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
             When("POST /overseas-property-start-date is called")
             val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyStartDate(inEditMode = true, Some(userInput))
@@ -133,6 +135,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
             Json.toJson(OverseasPropertyModel(startDate = Some(testPropertyStartDate.startDate)))
           )
           IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(expected)
+          IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
           When("POST /overseas-property-start-date is called")
           val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyStartDate(inEditMode = true, Some(userInput))

@@ -83,6 +83,7 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(expected)
+        IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
         When("POST /business/overseas-property-accounting-method is called")
         val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyAccountingMethod(inEditMode = false, Some(userInput))

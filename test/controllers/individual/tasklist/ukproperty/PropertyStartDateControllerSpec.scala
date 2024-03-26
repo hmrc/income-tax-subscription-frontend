@@ -104,8 +104,9 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
 
     "in edit mode" should {
       "redirect to the uk property check your answers page" in {
-        setupMockSubscriptionDetailsSaveFunctions()
         mockFetchProperty(Some(testFullPropertyModel))
+        setupMockSubscriptionDetailsSaveFunctions()
+        mockDeleteIncomeSourceConfirmationSuccess()
 
         val goodRequest = await(callSubmit(isEditMode = true))
 
@@ -117,8 +118,9 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
 
     "not in edit mode" must {
       "redirect to the uk property accounting method page" in {
-        setupMockSubscriptionDetailsSaveFunctions()
         mockFetchProperty(None)
+        setupMockSubscriptionDetailsSaveFunctions()
+        mockDeleteIncomeSourceConfirmationSuccess()
 
         val goodRequest = await(callSubmit(isEditMode = false))
 

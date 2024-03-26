@@ -54,6 +54,7 @@ class PrePopulationServiceSpec extends TestPrePopulationService {
         mockSaveUkProperty(testReference)
         mockSaveOverseasProperty(testReference)
         mockSavePrePopFlag(testReference)
+        mockDeleteIncomeSourceConfirmationSuccess()
 
         await(TestPrePopulationService.prePopulate(testReference, data))
 

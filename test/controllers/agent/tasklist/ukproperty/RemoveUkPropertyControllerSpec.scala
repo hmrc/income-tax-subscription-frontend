@@ -63,12 +63,14 @@ class RemoveUkPropertyControllerSpec extends AgentControllerBaseSpec
         contentType(result) mustBe Some(HTML)
 
         verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.Property, count = 0)
+        verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.IncomeSourceConfirmation, count = 0)
       }
     }
 
     "redirect to the task list page" when {
       "the user selects to remove the business" in withController { controller =>
         mockDeleteSubscriptionDetails(SubscriptionDataKeys.Property)(Right(DeleteSubscriptionDetailsSuccessResponse))
+        mockDeleteSubscriptionDetails(SubscriptionDataKeys.IncomeSourceConfirmation)(Right(DeleteSubscriptionDetailsSuccessResponse))
 
         val result: Result = controller.submit(
           subscriptionRequest.withFormUrlEncodedBody(ClientRemoveUkPropertyForm.yesNo -> YesNoMapping.option_yes)
@@ -78,6 +80,7 @@ class RemoveUkPropertyControllerSpec extends AgentControllerBaseSpec
         redirectLocation(result) mustBe Some(controllers.agent.tasklist.routes.TaskListController.show().url)
 
         verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.Property, count = 1)
+        verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.IncomeSourceConfirmation, count = 1)
       }
 
       "the user selects to not remove the business" in withController { controller =>
@@ -89,12 +92,14 @@ class RemoveUkPropertyControllerSpec extends AgentControllerBaseSpec
         redirectLocation(result) mustBe Some(controllers.agent.tasklist.routes.TaskListController.show().url)
 
         verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.Property, count = 0)
+        verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.IncomeSourceConfirmation, count = 0)
       }
     }
 
     "throw an exception" when {
       "cannot remove the UK property" in withController { controller =>
         mockDeleteSubscriptionDetailsFailure(SubscriptionDataKeys.Property)
+        mockDeleteSubscriptionDetailsFailure(SubscriptionDataKeys.IncomeSourceConfirmation)
 
         val result = controller.submit(
           subscriptionRequest.withFormUrlEncodedBody(ClientRemoveUkPropertyForm.yesNo -> YesNoMapping.option_yes)

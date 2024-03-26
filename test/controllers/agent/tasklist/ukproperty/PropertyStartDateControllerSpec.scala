@@ -103,8 +103,9 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
 
     "in edit mode" should {
       "redirect to the uk property check your answers page" in withController { controller =>
-        setupMockSubscriptionDetailsSaveFunctions()
         mockFetchProperty(Some(testFullPropertyModel))
+        setupMockSubscriptionDetailsSaveFunctions()
+        mockDeleteIncomeSourceConfirmationSuccess()
 
         val goodRequest = callSubmit(controller, isEditMode = true)
 
@@ -118,8 +119,9 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
 
     "redirect to agent uk property check your answers page" when {
       "in edit mode" in withController { controller =>
-        setupMockSubscriptionDetailsSaveFunctions()
         mockFetchProperty(Some(testFullPropertyModel))
+        setupMockSubscriptionDetailsSaveFunctions()
+        mockDeleteIncomeSourceConfirmationSuccess()
         val goodRequest = callSubmit(controller, isEditMode = true)
         await(goodRequest)
         redirectLocation(goodRequest) mustBe Some(routes.PropertyCheckYourAnswersController.show(true).url)

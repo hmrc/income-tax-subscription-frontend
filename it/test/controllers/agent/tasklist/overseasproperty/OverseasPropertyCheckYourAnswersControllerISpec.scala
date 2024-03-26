@@ -79,6 +79,7 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testProperty))
           IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(expectedProperty)
+          IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
           When("POST business/overseas-property-check-your-answers is called")
           val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers(Map(ITSASessionKeys.UTR -> testUtr))
@@ -124,6 +125,7 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testProperty))
           IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(expectedProperty)
+          IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
           When("POST business/overseas-property-check-your-answers is called")
           val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers(Map(ITSASessionKeys.UTR -> testUtr))

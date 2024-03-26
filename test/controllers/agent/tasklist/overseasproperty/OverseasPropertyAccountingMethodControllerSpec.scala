@@ -105,8 +105,9 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
     )
 
     "redirect to agent overseas property check your answers page" in {
-      setupMockSubscriptionDetailsSaveFunctions()
       mockFetchOverseasProperty(Some(OverseasPropertyModel()))
+      setupMockSubscriptionDetailsSaveFunctions()
+      mockDeleteIncomeSourceConfirmationSuccess()
 
       val goodRequest = callSubmit(isEditMode = false)
 
