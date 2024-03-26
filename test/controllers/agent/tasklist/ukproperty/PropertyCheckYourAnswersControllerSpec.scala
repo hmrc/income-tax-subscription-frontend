@@ -95,6 +95,7 @@ class PropertyCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
           enable(EnableTaskListRedesign)
           mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
           setupMockSubscriptionDetailsSaveFunctions()
+          mockDeleteIncomeSourceConfirmationSuccess()
 
           val result: Future[Result] = await(controller.submit()(subscriptionRequestWithName))
           status(result) mustBe SEE_OTHER
@@ -120,6 +121,7 @@ class PropertyCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
         "the user submits valid full data" in withController { controller =>
           mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
           setupMockSubscriptionDetailsSaveFunctions()
+          mockDeleteIncomeSourceConfirmationSuccess()
 
           val result: Future[Result] = await(controller.submit()(subscriptionRequestWithName))
 

@@ -103,6 +103,7 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
           IncomeTaxSubscriptionConnectorStub.stubSaveProperty(
             PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true)
           )
+          IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
           When("POST business/uk-property-check-your-answers is called")
           val res = IncomeTaxSubscriptionFrontend.submitPropertyCheckYourAnswers()
@@ -155,6 +156,7 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
           IncomeTaxSubscriptionConnectorStub.stubSaveProperty(
             PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true)
           )
+          IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
           When("POST business/uk-property-check-your-answers is called")
           val res = IncomeTaxSubscriptionFrontend.submitPropertyCheckYourAnswers()

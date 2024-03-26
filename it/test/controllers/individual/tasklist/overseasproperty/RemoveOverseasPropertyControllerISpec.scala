@@ -22,6 +22,7 @@ import helpers.IntegrationTestConstants.IndividualURI
 import helpers.servicemocks.AuthStub
 import models.{No, Yes}
 import play.api.http.Status._
+import utilities.SubscriptionDataKeys
 import utilities.SubscriptionDataKeys.OverseasProperty
 
 class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
@@ -50,6 +51,7 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetails(OverseasProperty)
+        IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetails(SubscriptionDataKeys.IncomeSourceConfirmation)
 
         When(s"GET ${routes.RemoveOverseasPropertyController.submit.url}")
         val res = IncomeTaxSubscriptionFrontend.submitRemoveOverseasProperty()(Some(Yes))
@@ -61,6 +63,7 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
         )
 
         IncomeTaxSubscriptionConnectorStub.verifyDeleteSubscriptionDetails(OverseasProperty, Some(1))
+        IncomeTaxSubscriptionConnectorStub.verifyDeleteSubscriptionDetails(SubscriptionDataKeys.IncomeSourceConfirmation, Some(1))
       }
 
       "the user selects to not delete their overseas property" in {

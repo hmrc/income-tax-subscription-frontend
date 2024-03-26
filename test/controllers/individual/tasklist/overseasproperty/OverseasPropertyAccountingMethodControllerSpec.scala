@@ -92,6 +92,7 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
       "not in edit mode" in {
         mockFetchOverseasProperty(Some(OverseasPropertyModel()))
         setupMockSubscriptionDetailsSaveFunctions()
+        mockDeleteIncomeSourceConfirmationSuccess()
 
         val goodRequest = callSubmit(isEditMode = false)
 
@@ -104,6 +105,7 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
       "in edit mode" in {
         mockFetchOverseasProperty(Some(OverseasPropertyModel()))
         setupMockSubscriptionDetailsSaveFunctions()
+        mockDeleteIncomeSourceConfirmationSuccess()
 
         val goodRequest = callSubmit(isEditMode = true)
 

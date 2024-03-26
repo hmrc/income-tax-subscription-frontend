@@ -60,12 +60,14 @@ class RemoveUkPropertyControllerSpec extends ControllerBaseSpec
         contentType(result) mustBe Some(HTML)
 
         verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.Property, count = 0)
+        verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.IncomeSourceConfirmation, count = 0)
       }
     }
 
     "redirect to the task list page" when {
       "the user selects to remove the business" in {
         mockDeleteSubscriptionDetails(SubscriptionDataKeys.Property)(Right(DeleteSubscriptionDetailsSuccessResponse))
+        mockDeleteSubscriptionDetails(SubscriptionDataKeys.IncomeSourceConfirmation)(Right(DeleteSubscriptionDetailsSuccessResponse))
 
         val result: Result = TestRemoveUkPropertyController.submit(
           subscriptionRequest.withFormUrlEncodedBody(RemoveUkPropertyForm.yesNo -> YesNoMapping.option_yes)
@@ -75,6 +77,7 @@ class RemoveUkPropertyControllerSpec extends ControllerBaseSpec
         redirectLocation(result) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
 
         verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.Property, count = 1)
+        verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.IncomeSourceConfirmation, count = 1)
       }
 
       "the user selects to not remove the business" in {
@@ -86,12 +89,14 @@ class RemoveUkPropertyControllerSpec extends ControllerBaseSpec
         redirectLocation(result) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
 
         verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.Property, count = 0)
+        verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.IncomeSourceConfirmation, count = 0)
       }
     }
 
     "throw an exception" when {
       "cannot remove the UK property" in {
         mockDeleteSubscriptionDetailsFailure(SubscriptionDataKeys.Property)
+        mockDeleteSubscriptionDetailsFailure(SubscriptionDataKeys.IncomeSourceConfirmation)
 
         val result = TestRemoveUkPropertyController.submit(
           subscriptionRequest.withFormUrlEncodedBody(RemoveUkPropertyForm.yesNo -> YesNoMapping.option_yes)

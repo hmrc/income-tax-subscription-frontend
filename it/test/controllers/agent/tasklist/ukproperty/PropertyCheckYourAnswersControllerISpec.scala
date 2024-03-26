@@ -70,6 +70,7 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubSaveProperty(
           testProperty.copy(confirmed = true)
         )
+        IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
         When("POST business/uk-property-check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.submitPropertyCheckYourAnswers()
@@ -116,6 +117,7 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubSaveProperty(
           testProperty.copy(confirmed = true)
         )
+        IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
         When("POST business/uk-property-check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.submitPropertyCheckYourAnswers()

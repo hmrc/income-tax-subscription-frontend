@@ -17,6 +17,7 @@
 package services.mocks
 
 import connectors.IncomeTaxSubscriptionConnector
+import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscriptionDetailsSuccessResponse
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.{PostSubscriptionDetailsResponse, PostSubscriptionDetailsSuccessResponse, UnexpectedStatusFailure}
 import connectors.httpparser.RetrieveReferenceHttpParser
 import connectors.httpparser.RetrieveReferenceHttpParser.{Created, Existence, RetrieveReferenceResponse}
@@ -300,4 +301,8 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
       .thenReturn(Future.successful(flag))
   }
 
+  protected final def mockDeleteIncomeSourceConfirmationSuccess(): Unit = {
+    when(mockConnector.deleteSubscriptionDetails(any(), ArgumentMatchers.eq(SubscriptionDataKeys.IncomeSourceConfirmation))(any()))
+      .thenReturn(Future.successful(Right(DeleteSubscriptionDetailsSuccessResponse)))
+  }
 }

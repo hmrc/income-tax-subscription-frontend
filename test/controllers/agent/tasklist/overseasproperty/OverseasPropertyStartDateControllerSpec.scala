@@ -119,8 +119,9 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
 
     "redirect to agent foreign property accounting method page" when {
       "not in edit mode and the feature switch is disabled" in {
-        setupMockSubscriptionDetailsSaveFunctions()
         mockFetchOverseasProperty(Some(OverseasPropertyModel()))
+        setupMockSubscriptionDetailsSaveFunctions()
+        mockDeleteIncomeSourceConfirmationSuccess()
 
         val goodRequest = callSubmit(isEditMode = false)
 
@@ -134,8 +135,9 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
 
     "redirect to agent overseas check your answers page" when {
       "in edit mode" in {
-        setupMockSubscriptionDetailsSaveFunctions()
         mockFetchOverseasProperty(Some(OverseasPropertyModel()))
+        setupMockSubscriptionDetailsSaveFunctions()
+        mockDeleteIncomeSourceConfirmationSuccess()
 
         val goodRequest = callSubmit(isEditMode = true)
 

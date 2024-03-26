@@ -80,6 +80,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase  {
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
           IncomeTaxSubscriptionConnectorStub.stubSaveProperty(PropertyModel(accountingMethod = Some(userInput)))
+          IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
           When("POST /business/accounting-method-property is called")
           val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, Some(userInput))
@@ -101,6 +102,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase  {
           )
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
           IncomeTaxSubscriptionConnectorStub.stubSaveProperty(testProperty)
+          IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
           When("POST /business/accounting-method-property is called")
           val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, Some(userInput))
@@ -124,6 +126,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase  {
           )
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testProperty))
           IncomeTaxSubscriptionConnectorStub.stubSaveProperty(testProperty.copy(accountingMethod = Some(userInput)))
+          IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
           When("POST /business/accounting-method-property is called")
           val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = true, Some(userInput))

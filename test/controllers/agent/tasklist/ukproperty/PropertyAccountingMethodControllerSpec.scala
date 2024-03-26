@@ -109,8 +109,9 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
     )
 
     "redirect to agent uk property check your answers page" in {
-      setupMockSubscriptionDetailsSaveFunctions()
       mockFetchProperty(None)
+      setupMockSubscriptionDetailsSaveFunctions()
+      mockDeleteIncomeSourceConfirmationSuccess()
 
       val goodRequest: Future[Result] = callSubmit(isEditMode = false)
 

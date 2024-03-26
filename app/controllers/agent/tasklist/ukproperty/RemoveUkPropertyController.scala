@@ -55,8 +55,11 @@ class RemoveUkPropertyController @Inject()(incomeTaxSubscriptionConnector: Incom
       form.bindFromRequest().fold(
         hasErrors => Future.successful(BadRequest(view(form = hasErrors))), {
           case Yes => withAgentReference { reference =>
-            incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, SubscriptionDataKeys.Property) map {
-              case Right(_) => Redirect(controllers.agent.tasklist.routes.TaskListController.show())
+            incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, SubscriptionDataKeys.Property) flatMap {
+              case Right(_) => incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, SubscriptionDataKeys.IncomeSourceConfirmation).map{
+                case Right(_) =>  Redirect(controllers.agent.tasklist.routes.TaskListController.show())
+                case Left(_) => throw new InternalServerException("[RemoveUkPropertyController][submit] - Failure to delete income source confirmation")
+              }
               case Left(_) => throw new InternalServerException("[RemoveUkPropertyController][submit] - Could not remove UK property")
             }
           }

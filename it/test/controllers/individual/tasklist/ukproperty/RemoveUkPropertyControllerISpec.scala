@@ -21,6 +21,7 @@ import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.IndividualURI
 import helpers.servicemocks.AuthStub
 import play.api.http.Status._
+import utilities.SubscriptionDataKeys
 import utilities.SubscriptionDataKeys.Property
 
 class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
@@ -46,6 +47,7 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetails(Property)
+        IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetails(SubscriptionDataKeys.IncomeSourceConfirmation)
 
         When("POST /business/remove-uk-property-business is called")
         val res = IncomeTaxSubscriptionFrontend.submitRemoveUkProperty(Map("yes-no" -> Seq("Yes")))
@@ -57,6 +59,7 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
         )
 
         IncomeTaxSubscriptionConnectorStub.verifyDeleteSubscriptionDetails(Property, Some(1))
+        IncomeTaxSubscriptionConnectorStub.verifyDeleteSubscriptionDetails(SubscriptionDataKeys.IncomeSourceConfirmation, Some(1))
       }
 
       "the user submits the 'no' answer" in {
