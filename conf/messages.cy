@@ -1051,8 +1051,8 @@ error.remove-overseas-property-business.invalid                 = Dewiswch ‘Ia
 ## Tax Year Check Your Answers
 business.check-your-answers.heading                             = Gwiriwch eich atebion
 business.check-your-answers.content.tax-year.title              = Gwirio’ch atebion – blwyddyn dreth
-business.check-your-answers.content.tax-year.caption            = Y flwyddyn dreth rydych yn cofrestru ar ei chyfer
-business.check-your-answers.content.tax-year.question           = Y flwyddyn dreth rydych yn cofrestru ar ei chyfer
+business.check-your-answers.content.tax-year.caption            = Blwyddyn dreth
+business.check-your-answers.content.tax-year.question           = Blwyddyn dreth
 business.check-your-answers.content.tax-year.question.hidden    = Newid y flwyddyn dreth rydych yn cofrestru ar ei chyfer
 business.check-your-answers.content.tax-year.current-tax-year   = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
 business.check-your-answers.content.tax-year.next-tax-year      = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
