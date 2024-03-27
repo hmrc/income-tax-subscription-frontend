@@ -78,7 +78,7 @@ class OtherSourcesOfIncomeControllerISpec extends ComponentSpecBase {
 
     "have a view with back link" in new GetSetup {
       val backLink: Element = doc.getGovukBackLink
-      backLink.attr("href").mustBe(controllers.agent.matching.routes.ReturnToClientDetailsController.show.url)
+      backLink.attr("href").mustBe(controllers.agent.routes.AddAnotherClientController.addAnother().url)
       backLink.text mustBe OtherSourcesOfIncomeMessages.back
     }
 

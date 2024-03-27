@@ -21,14 +21,17 @@ import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnecto
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import play.api.http.Status.{OK, SEE_OTHER}
+import services.{AgentEndOfJourneyThrottle, AgentStartOfJourneyThrottle}
 
 
 class AddAnotherClientControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
   "GET /add-another" when {
-    s"clear the Subscription Details and ${ITSASessionKeys.MTDITID} & ${ITSASessionKeys.JourneyStateKey} session variables" in {
+    s"clear the Subscription Details session variables" in {
       Given("I setup the wiremock stubs")
       AuthStub.stubAuthSuccess()
+      SessionDataConnectorStub.stubDeleteSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle))(OK)
+      SessionDataConnectorStub.stubDeleteSessionData(ITSASessionKeys.throttlePassed(AgentEndOfJourneyThrottle))(OK)
       SessionDataConnectorStub.stubDeleteSessionData(ITSASessionKeys.REFERENCE)(OK)
       IncomeTaxSubscriptionConnectorStub.stubSubscriptionDeleteAll()
 
@@ -44,7 +47,6 @@ class AddAnotherClientControllerISpec extends ComponentSpecBase with SessionCook
 
       val cookie = getSessionMap(res)
       cookie.keys must not contain ITSASessionKeys.MTDITID
-      cookie.keys must not contain ITSASessionKeys.JourneyStateKey
     }
   }
 

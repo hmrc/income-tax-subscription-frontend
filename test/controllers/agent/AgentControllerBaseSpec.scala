@@ -16,9 +16,9 @@
 
 package controllers.agent
 
-import org.apache.pekko.actor.ActorSystem
-import auth.agent.{AgentSignUp, AgentUserMatched, AgentUserMatching}
+import auth.agent.{AgentSignUp, AgentUserMatching}
 import common.Constants.ITSASessionKeys
+import org.apache.pekko.actor.ActorSystem
 import org.mockito.Mockito
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, AnyContentAsFormUrlEncoded}
@@ -28,6 +28,7 @@ import services.agent.mocks.MockAgentAuthService
 import uk.gov.hmrc.auth.core.{AuthorisationException, InvalidBearerToken}
 import utilities.agent.TestConstants
 import utilities.{UnitTestTrait, UserMatchingSessionUtil}
+
 import scala.language.implicitConversions
 
 trait AgentControllerBaseSpec extends UnitTestTrait with MockAgentAuthService {
@@ -84,21 +85,8 @@ trait AgentControllerBaseSpec extends UnitTestTrait with MockAgentAuthService {
     ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name
   )
 
-  lazy val userMatchedRequest = FakeRequest().withSession(
-    ITSASessionKeys.JourneyStateKey -> AgentUserMatched.name,
-    ITSASessionKeys.NINO -> TestConstants.testNino,
-    ITSASessionKeys.UTR -> TestConstants.testUtr
-  )
-
   lazy val agentSignUpRequest = FakeRequest().withSession(
     ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
-    ITSASessionKeys.NINO -> TestConstants.testNino,
-    ITSASessionKeys.UTR -> TestConstants.testUtr
-  )
-
-
-  lazy val unauthorisedUserMatchedRequest = FakeRequest().withSession(
-    ITSASessionKeys.JourneyStateKey -> AgentUserMatched.name,
     ITSASessionKeys.NINO -> TestConstants.testNino,
     ITSASessionKeys.UTR -> TestConstants.testUtr
   )
@@ -107,12 +95,6 @@ trait AgentControllerBaseSpec extends UnitTestTrait with MockAgentAuthService {
     ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name,
     ITSASessionKeys.NINO -> TestConstants.testNino,
     ITSASessionKeys.UTR -> TestConstants.testUtr
-  )
-
-
-  lazy val userMatchedRequestNoUtr = FakeRequest().withSession(
-    ITSASessionKeys.JourneyStateKey -> AgentUserMatched.name,
-    ITSASessionKeys.NINO -> TestConstants.testNino
   )
 
   lazy val subscriptionRequest = FakeRequest().withSession(

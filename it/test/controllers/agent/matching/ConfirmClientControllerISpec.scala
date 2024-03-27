@@ -17,14 +17,12 @@
 package controllers.agent.matching
 
 import _root_.common.Constants.ITSASessionKeys
-import auth.agent.AgentUserMatched
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.IntegrationTestConstants._
 import helpers.UserMatchingIntegrationResultSupport
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.{AgentServicesStub, AuthStub}
 import helpers.servicemocks.{AuthStub => _, _}
-import models.status.MandationStatus.Voluntary
 import play.api.http.Status._
 
 
@@ -176,11 +174,10 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
         Then("The result must have a status of SEE_OTHER and redirect to index")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(AgentURI.indexURI)
+          redirectURI(AgentURI.registerForSAURI)
         )
 
         val session = getSessionMap(res)
-        session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
         session.get(ITSASessionKeys.NINO) mustBe Some(testNino)
         session.get(ITSASessionKeys.UTR) mustBe None
 
@@ -189,87 +186,30 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
       }
     }
 
-    "the agent is fully qualified" when {
-      "the user is eligible for the current tax year" should {
-        "redirect to the client can sign up page" in {
-          Given("I setup the wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          AuthenticatorStub.stubMatchFound(testNino, Some(testUtr))
-          SubscriptionStub.stubGetNoSubscription()
-          AgentServicesStub.stubClientRelationship(testARN, testNino, exists = true)
-          EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
-          UserLockoutStub.stubUserIsNotLocked(testARN)
-          MandationStatusStub.stubGetMandationStatus(testNino, testUtr)(Voluntary, Voluntary)
+    "the agent is fully qualified" should {
+      "redirect to the confirmed client resolver" in {
+        Given("I setup the wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        AuthenticatorStub.stubMatchFound(testNino, Some(testUtr))
+        SubscriptionStub.stubGetNoSubscription()
+        AgentServicesStub.stubClientRelationship(testARN, testNino, exists = true)
+        UserLockoutStub.stubUserIsNotLocked(testARN)
 
-          When("I call POST /confirm-client")
-          val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
+        When("I call POST /confirm-client")
+        val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
 
-          Then("The result must have a status of SEE_OTHER and redirect to the client can sign up controller")
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(controllers.agent.eligibility.routes.ClientCanSignUpController.show().url)
-          )
+        Then("The result must have a status of SEE_OTHER and redirect to the client can sign up controller")
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(controllers.agent.matching.routes.ConfirmedClientResolver.resolve.url)
+        )
 
-          val session = getSessionMap(res)
-          session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
-          session.get(ITSASessionKeys.NINO) mustBe Some(testNino)
-          session.get(ITSASessionKeys.UTR) mustBe Some(testUtr)
+        val session = getSessionMap(res)
+        session.get(ITSASessionKeys.NINO) mustBe Some(testNino)
+        session.get(ITSASessionKeys.UTR) mustBe Some(testUtr)
 
-          Then("The client matching request must have been audited")
-          AuditStub.verifyAudit()
-        }
-      }
-      "the user is eligible for the next tax year only" should {
-        "redirect to the cannot sign up for this year page" in {
-          Given("I setup the wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          AuthenticatorStub.stubMatchFound(testNino, Some(testUtr))
-          SubscriptionStub.stubGetNoSubscription()
-          AgentServicesStub.stubClientRelationship(testARN, testNino, exists = true)
-          EligibilityStub.stubEligibilityResponseBoth(testUtr)(currentYearResponse = false, nextYearResponse = true)
-          UserLockoutStub.stubUserIsNotLocked(testARN)
-          MandationStatusStub.stubGetMandationStatus(testNino, testUtr)(Voluntary, Voluntary)
-
-          When("I call POST /confirm-client")
-          val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
-
-          Then("The result must have a status of SEE_OTHER and redirect to cannot sign up for this year")
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
-          )
-
-          val session = getSessionMap(res)
-          session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
-          session.get(ITSASessionKeys.NINO) mustBe Some(testNino)
-          session.get(ITSASessionKeys.UTR) mustBe Some(testUtr)
-
-          Then("The client matching request must have been audited")
-          AuditStub.verifyAudit()
-        }
-      }
-      "the user is ineligible" should {
-        "redirect to the ineligible page" in {
-          Given("I setup the wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          AuthenticatorStub.stubMatchFound(testNino, Some(testUtr))
-          SubscriptionStub.stubGetNoSubscription()
-          AgentServicesStub.stubClientRelationship(testARN, testNino, exists = true)
-          EligibilityStub.stubEligibilityResponse(testUtr)(response = false)
-          UserLockoutStub.stubUserIsNotLocked(testARN)
-
-          When("I call POST /confirm-client")
-          val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
-
-          Then("The result must have a status of SEE_OTHER and redirect to cannot take part")
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(controllers.agent.eligibility.routes.CannotTakePartController.show.url)
-          )
-
-          Then("The client matching request must have been audited")
-          AuditStub.verifyAudit()
-        }
+        Then("The client matching request must have been audited")
+        AuditStub.verifyAudit()
       }
     }
   }

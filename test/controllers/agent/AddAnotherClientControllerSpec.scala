@@ -16,11 +16,15 @@
 
 package controllers.agent
 
+import auth.agent.AgentUserMatching
 import common.Constants.ITSASessionKeys
-import play.api.mvc.{Action, AnyContent, Result}
+import common.Constants.ITSASessionKeys.JourneyStateKey
+import connectors.httpparser.DeleteSessionDataHttpParser.{DeleteSessionDataSuccessResponse, UnexpectedStatusFailure}
+import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService, MockUserLockoutService}
+import services.{AgentEndOfJourneyThrottle, AgentStartOfJourneyThrottle}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.UserMatchingSessionUtil
 
@@ -45,7 +49,7 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
     appConfig
   )(executionContext, mockMessagesControllerComponents)
 
-  val fullSessionDetailsRequest = FakeRequest().withSession(
+  val fullSessionDetailsRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
     ITSASessionKeys.JourneyStateKey -> "test-journey-state",
     ITSASessionKeys.MTDITID -> "test-mtditid",
     ITSASessionKeys.NINO -> "test-nino",
@@ -62,21 +66,40 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
     def call: Future[Result] = TestAddAnotherClientController.addAnother()(fullSessionDetailsRequest)
 
     "redirect to the agent eligibility frontend terms page, clearing Subscription Details and session values" in {
+      mockDeleteThrottlePassed(AgentStartOfJourneyThrottle)(Right(DeleteSessionDataSuccessResponse))
+      mockDeleteThrottlePassed(AgentEndOfJourneyThrottle)(Right(DeleteSessionDataSuccessResponse))
       mockDeleteReferenceSuccess()
 
       val result: Result = await(call)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.agent.matching.routes.ClientDetailsController.show().url)
-      session(result).data mustBe Map.empty[String, String]
+      session(result).data mustBe Map(JourneyStateKey -> AgentUserMatching.name)
       result.verifyStoredUserDetailsIs(None)(fullSessionDetailsRequest)
     }
 
-    "throw an InternalServerException if the delete reference call failed" in {
-      mockDeleteReferenceStatusFailure(INTERNAL_SERVER_ERROR)
+    "throw an InternalServerException" when {
+      "the delete start throttle failed" in {
+        mockDeleteThrottlePassed(AgentStartOfJourneyThrottle)(Left(UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
-      intercept[InternalServerException](await(call))
-        .message mustBe s"[AddAnotherClientController][addAnother] - Unexpected status deleting reference from session. Status: $INTERNAL_SERVER_ERROR"
+        intercept[InternalServerException](await(call))
+          .message mustBe s"[AddAnotherClientController][addAnother] - Unexpected failure: ${UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)}"
+      }
+      "the delete end throttle failed" in {
+        mockDeleteThrottlePassed(AgentStartOfJourneyThrottle)(Right(DeleteSessionDataSuccessResponse))
+        mockDeleteThrottlePassed(AgentEndOfJourneyThrottle)(Left(UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
+
+        intercept[InternalServerException](await(call))
+          .message mustBe s"[AddAnotherClientController][addAnother] - Unexpected failure: ${UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)}"
+      }
+      "the delete reference failed" in {
+        mockDeleteThrottlePassed(AgentStartOfJourneyThrottle)(Right(DeleteSessionDataSuccessResponse))
+        mockDeleteThrottlePassed(AgentEndOfJourneyThrottle)(Right(DeleteSessionDataSuccessResponse))
+        mockDeleteReferenceStatusFailure(INTERNAL_SERVER_ERROR)
+
+        intercept[InternalServerException](await(call))
+          .message mustBe s"[AddAnotherClientController][addAnother] - Unexpected failure: ${UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)}"
+      }
     }
   }
 

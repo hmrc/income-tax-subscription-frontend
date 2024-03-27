@@ -27,10 +27,6 @@ object AgentUserMatching extends AgentJourneyState {
   override val name: String = "userMatching"
 }
 
-object AgentUserMatched extends AgentJourneyState {
-  override val name: String = "userMatched"
-}
-
 object AgentSignUp extends AgentJourneyState {
   override val name: String = "signUp"
 }
@@ -39,10 +35,6 @@ object AgentJourneyState {
 
   implicit class SessionFunctions(session: Session) {
     def isInState(state: AgentJourneyState): Boolean = session.get(ITSASessionKeys.JourneyStateKey) contains state.name
-  }
-
-  implicit class RequestFunctions(request: Request[_]) {
-    def isInAgentState(state: AgentJourneyState): Boolean = request.session.isInState(state)
   }
 
   implicit class ResultFunctions(result: Result) {

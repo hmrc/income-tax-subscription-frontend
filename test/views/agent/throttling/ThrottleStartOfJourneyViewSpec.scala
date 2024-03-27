@@ -30,11 +30,8 @@ class ThrottleStartOfJourneyViewSpec extends ViewSpec {
   val throttleStartOfJourneyView: ThrottleStartOfJourney = app.injector.instanceOf[ThrottleStartOfJourney]
   lazy val postAction: Call = controllers.agent.matching.routes.HomeController.index
 
-  private val backLinkTarget = Math.random().toString
-
   def page(): Html = {
     throttleStartOfJourneyView(
-      backLink = backLinkTarget,
       postAction = postAction
     )(request, implicitly)
   }
@@ -69,7 +66,7 @@ class ThrottleStartOfJourneyViewSpec extends ViewSpec {
       document1.select("main").select("form").attr("action") mustBe controllers.agent.matching.routes.HomeController.index.url
     }
     "have a backlink that goes back" in {
-      document1.select(".govuk-back-link").attr("href") mustBe backLinkTarget
+      document1.select(".govuk-back-link").attr("href") mustBe "javascript:history.back()"
     }
   }
 }

@@ -74,12 +74,15 @@ class ClientCanSignUpController @Inject()(val auditingService: AuditingService,
       clientCanSignUpForm.bindFromRequest().fold(
         formWithErrors => BadRequest(clientCanSignUp(formWithErrors, routes.ClientCanSignUpController.submit(), clientName, clientNino, backLink)),
         {
-          case Yes => Redirect(controllers.agent.matching.routes.HomeController.home)
-          case No => Redirect(controllers.agent.routes.AddAnotherClientController.addAnother())
+          case Yes =>
+
+            Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
+          case No =>
+            Redirect(controllers.agent.routes.AddAnotherClientController.addAnother())
         }
       )
   }
 
-  def backLink: String = controllers.agent.matching.routes.ReturnToClientDetailsController.show.url
+  def backLink: String = controllers.agent.routes.AddAnotherClientController.addAnother().url
 
 }

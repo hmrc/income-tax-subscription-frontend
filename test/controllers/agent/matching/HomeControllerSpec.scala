@@ -16,25 +16,23 @@
 
 package controllers.agent.matching
 
-import auth.agent.{AgentSignUp, AgentUserMatching}
-import common.Constants.ITSASessionKeys
+import common.Constants.ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY
 import config.MockConfig
 import config.featureswitch.FeatureSwitch.ThrottlingFeature
 import config.featureswitch.FeatureSwitchingUtil
 import controllers.agent.AgentControllerBaseSpec
-import org.mockito.Mockito.reset
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.ThrottlingService
-import services.mocks.{MockAuditingService, MockThrottlingConnector}
+import services.mocks.{MockAuditingService, MockSessionDataService, MockThrottlingConnector}
 
 import scala.concurrent.Future
 
 class HomeControllerSpec extends AgentControllerBaseSpec
   with MockAuditingService
   with MockThrottlingConnector
+  with MockSessionDataService
   with FeatureSwitchingUtil {
 
   override val controllerName: String = "HomeControllerSpec"
@@ -46,8 +44,7 @@ class HomeControllerSpec extends AgentControllerBaseSpec
   private def testHomeController() = new HomeController(
     mockAuditingService,
     mockAuthService,
-    MockConfig,
-    new ThrottlingService(mockThrottlingConnector, appConfig)
+    MockConfig
   )(executionContext, mockMessagesControllerComponents)
 
   override def beforeEach(): Unit = {
@@ -67,106 +64,39 @@ class HomeControllerSpec extends AgentControllerBaseSpec
     }
   }
 
-  "Calling the index action of the HomeController with an authorised user" when {
+  "index" when {
+    "the journey is in an agent user matching state" should {
+      "redirect to the enter client details page" in {
+        val result: Future[Result] = testHomeController().index()(userMatchingRequest)
 
-    "there is no journey state in session" should {
-      lazy val request = FakeRequest()
-
-      def result: Future[Result] = testHomeController().index()(request)
-
-      s"if the user has arn redirect to ${controllers.agent.matching.routes.ClientDetailsController.show().url}" in {
-        reset(mockAuthService)
-        mockAgent()
-        status(result) must be(Status.SEE_OTHER)
-
-        redirectLocation(result).get mustBe controllers.agent.matching.routes.ClientDetailsController.show().url
-
-        await(result).session(request).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatching.name)
-      }
-
-      s"if the user does not have arn redirect to ${controllers.agent.matching.routes.NotEnrolledAgentServicesController.show.url}" in {
-        reset(mockAuthService)
-        mockNotAgent()
-
-        status(result) must be(Status.SEE_OTHER)
-
-        redirectLocation(result).get mustBe controllers.agent.matching.routes.NotEnrolledAgentServicesController.show.url
-
-        await(result).session(request).get(ITSASessionKeys.JourneyStateKey) mustBe None
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.agent.matching.routes.ClientDetailsController.show().url)
       }
     }
+    "the journey is in an agent sign up state" when {
+      "the user is eligible to sign up for next year only" should {
+        "redirect to the sign up next year only page" in {
+          val result: Future[Result] = testHomeController().index()(agentSignUpRequest.addingToSession(ELIGIBLE_NEXT_YEAR_ONLY -> "true"))
 
-    "journey state is user matching" should {
-      lazy val request = userMatchingRequest
-
-      def result: Future[Result] = testHomeController().index()(request)
-
-      s"redirect user to ${controllers.agent.matching.routes.ClientDetailsController.show().url}" in {
-        status(result) must be(Status.SEE_OTHER)
-
-        redirectLocation(result).get mustBe controllers.agent.matching.routes.ClientDetailsController.show().url
-
-        await(result).session(request).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatching.name)
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
+        }
       }
-    }
+      "the user is eligible to sign up for both tax years" should {
+        "redirect to the client can sign up page" in {
+          val result: Future[Result] = testHomeController().index()(agentSignUpRequest.addingToSession(ELIGIBLE_NEXT_YEAR_ONLY -> "false"))
 
-    "journey state is user matched" when {
-      "the user has a UTR" should {
-        lazy val request = userMatchedRequest
-
-        def result: Future[Result] = testHomeController().index()(request)
-
-        s"redirect user to ${controllers.agent.routes.WhatYouNeedToDoController.show().url}" in {
-          status(result) must be(Status.SEE_OTHER)
-
-          redirectLocation(result).get mustBe controllers.agent.routes.WhatYouNeedToDoController.show().url
-
-          await(result).session(request).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.ClientCanSignUpController.show().url)
         }
       }
     }
+    "the journey has no state" should {
+      "redirect to the add another client route" in {
+        val result: Future[Result] = testHomeController().index()(FakeRequest())
 
-    "journey state is agent sign up" when {
-      "the user has a UTR" should {
-        lazy val request = agentSignUpRequest
-
-        def result: Future[Result] = testHomeController().index()(request)
-
-        s"redirect user to ${controllers.agent.routes.WhatYouNeedToDoController.show().url}" in {
-          status(result) must be(Status.SEE_OTHER)
-
-          redirectLocation(result).get mustBe controllers.agent.routes.WhatYouNeedToDoController.show().url
-
-          await(result).session(request).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
-        }
-      }
-
-      "the user does not have a UTR" should {
-        lazy val request = userMatchedRequestNoUtr
-
-        def result: Future[Result] = testHomeController().index()(request)
-
-        s"redirect user to ${controllers.agent.matching.routes.NoSAController.show.url}" in {
-          status(result) must be(Status.SEE_OTHER)
-
-          redirectLocation(result).get mustBe controllers.agent.matching.routes.NoSAController.show.url
-
-          await(result).session(request).get(ITSASessionKeys.JourneyStateKey) mustBe None
-        }
-      }
-    }
-
-    "the user has an mtd flag" when {
-      "the agent is authorised" should {
-        lazy val request = subscriptionRequest.withSession(ITSASessionKeys.MTDITID -> "any")
-
-        def result: Future[Result] = testHomeController().index()(request)
-
-        s"redirect user to ${controllers.agent.routes.ConfirmationController.show.url}" in {
-          status(result) must be(Status.SEE_OTHER)
-
-          redirectLocation(result).get mustBe controllers.agent.routes.ConfirmationController.show.url
-        }
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.agent.routes.AddAnotherClientController.addAnother().url)
       }
     }
   }

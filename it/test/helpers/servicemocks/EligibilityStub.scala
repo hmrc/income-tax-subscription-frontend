@@ -22,21 +22,30 @@ import play.api.libs.json.Json
 object EligibilityStub extends WireMockMethods {
 
   def stubEligibilityResponse(sautr: String)(response: Boolean): Unit =
-    when (
+    when(
       method = GET,
       uri = s"/income-tax-subscription-eligibility/eligibility/$sautr"
-    ).thenReturn (
+    ).thenReturn(
       status = OK,
       body = Json.obj("eligibleCurrentYear" -> response, "eligibleNextYear" -> false)
     )
 
   def stubEligibilityResponseBoth(sautr: String)(currentYearResponse: Boolean, nextYearResponse: Boolean): Unit =
-    when (
+    when(
       method = GET,
       uri = s"/income-tax-subscription-eligibility/eligibility/$sautr"
-    ).thenReturn (
+    ).thenReturn(
       status = OK,
       body = Json.obj("eligibleCurrentYear" -> currentYearResponse, "eligibleNextYear" -> nextYearResponse)
     )
+
+  def stubEligibilityResponseError(sautr: String): Unit = {
+    when(
+      method = GET,
+      uri = s"/income-tax-subscription-eligibility/eligibility/$sautr"
+    ).thenReturn(
+      status = INTERNAL_SERVER_ERROR
+    )
+  }
 
 }

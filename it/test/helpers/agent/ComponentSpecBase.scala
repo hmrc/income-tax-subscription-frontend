@@ -128,7 +128,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .in(Environment.simple(mode = Mode.Dev))
-    .configure(config)
+    .configure(configuration)
     .build()
 
   implicit lazy val crypto: Encrypter with Decrypter = app.injector.instanceOf[ApplicationCrypto].JsonCrypto
@@ -137,7 +137,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
   lazy val mockPort: String = WiremockHelper.wiremockPort.toString
   lazy val mockUrl = s"http://$mockHost:$mockPort"
 
-  def config: Map[String, String] = Map(
+  def configuration: Map[String, String] = Map(
     "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
     "microservice.services.auth.host" -> mockHost,
     "microservice.services.auth.port" -> mockPort,
@@ -198,9 +198,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
         Map(ITSASessionKeys.JourneyStateKey -> AgentSignUp.name)
       else
         Map()
-      Map(
-        ITSASessionKeys.REFERENCE -> "test-reference"
-      ) ++ utrKvp ++ stateKvp
+      Map[String, String]() ++ utrKvp ++ stateKvp
     }
 
     val headers: Seq[(String, String)] = Seq(
@@ -314,6 +312,10 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     def timeout(sessionKeys: Map[String, String] = Map.empty): WSResponse = get("/timeout", sessionKeys)
 
     def showClientDetails(): WSResponse = get("/client-details", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))
+
+    def getConfirmedClientResolver(sessionData: Map[String, String] = Map.empty): WSResponse = {
+      get("/resolve-confirmed-client", sessionData)
+    }
 
     def submitClientDetails(newSubmission: Option[UserDetailsModel], storedSubmission: Option[UserDetailsModel]): WSResponse =
       post("/client-details", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name).addUserDetails(storedSubmission))(
@@ -542,15 +544,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       cannotGoBack.fold(Map.empty[String, Seq[String]])(
         model =>
           CannotGoBackToPreviousClientForm.cannotGoBackToPreviousClientForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
-      )
-    )
-
-    def showReturnToClientDetails(sessionData: Map[String, String] = ClientData.clientName): WSResponse = get("/return-to-client-details", sessionData)
-
-    def submitReturnToClientDetails(returnToClientDetailsModel: Option[ReturnToClientDetailsModel], sessionData: Map[String, String] = ClientData.clientName): WSResponse = post("/return-to-client-details", sessionData)(
-      returnToClientDetailsModel.fold(Map.empty[String, Seq[String]])(
-        model =>
-          ReturnToClientDetailsForm.returnToClientDetailsForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
       )
     )
 

@@ -803,13 +803,6 @@ agent.sign-up-complete.what-now.agent-services-account          = It may take a 
 agent.sign-up-complete.what-now.agent-services-account.link     = agent service account
 agent.sign-up-complete.what-now.send-quarterly                  = You will need to send quarterly updates using your software by:
 
-## Return To Client Details Page
-agent.return-to-client-details.title                            = What do you want to do next?
-agent.return-to-client-details.heading                          = What do you want to do next?
-agent.return-to-client-details.continue-signing-up              = Continue signing up {0}
-agent.return-to-client-details.sign-up-another-client           = Sign up another client
-agent.return-to-client-details.error.empty                      = You must choose what you want to do next before you can continue.
-
 ## Errors ##
 agent.error.client-details.date-of-birth.invalid-chars                              = Enter a date of birth using numbers 0 to 9
 agent.error.client-details.date-of-birth.day-month-year.empty                       = Enter your client’s date of birth

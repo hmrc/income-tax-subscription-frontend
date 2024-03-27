@@ -16,18 +16,19 @@
 
 package controllers.agent
 
-import auth.agent.{AuthPredicates, IncomeTaxAgentUser, StatelessController}
+import auth.agent.{AgentUserMatching, AuthPredicates, IncomeTaxAgentUser, StatelessController}
 import auth.individual.AuthPredicate.AuthPredicate
+import cats.data.EitherT
 import common.Constants.ITSASessionKeys
 import config.AppConfig
 import connectors.httpparser.DeleteSessionDataHttpParser
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AuditingService, AuthService, SessionDataService}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import services._
 import uk.gov.hmrc.http.InternalServerException
 import utilities.UserMatchingSessionUtil.UserMatchingSessionResultUtil
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AddAnotherClientController @Inject()(val auditingService: AuditingService,
@@ -42,18 +43,21 @@ class AddAnotherClientController @Inject()(val auditingService: AuditingService,
 
   def addAnother(): Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
-      sessionDataService.deleteReference map {
-        case Right(_) =>
-          Redirect(controllers.agent.matching.routes.ClientDetailsController.show())
-            .removingFromSession(ITSASessionKeys.JourneyStateKey)
-            .removingFromSession(ITSASessionKeys.clientData: _*)
-            .clearUserName
-        case Left(DeleteSessionDataHttpParser.UnexpectedStatusFailure(status)) =>
-          throw new InternalServerException(
-            s"[AddAnotherClientController][addAnother] - Unexpected status deleting reference from session. Status: $status"
-          )
+      val sessionClearing: EitherT[Future, DeleteSessionDataHttpParser.DeleteSessionDataFailure, Result] = for {
+        _ <- EitherT(sessionDataService.deleteThrottlePassed(AgentStartOfJourneyThrottle))
+        _ <- EitherT(sessionDataService.deleteThrottlePassed(AgentEndOfJourneyThrottle))
+        _ <- EitherT(sessionDataService.deleteReference)
+      } yield {
+        Redirect(controllers.agent.matching.routes.ClientDetailsController.show())
+          .addingToSession(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name)
+          .removingFromSession(ITSASessionKeys.clientData: _*)
+          .clearUserName
       }
 
+      sessionClearing.value.map {
+        case Left(error) => throw new InternalServerException(s"[AddAnotherClientController][addAnother] - Unexpected failure: $error")
+        case Right(result) => result
+      }
   }
 
 }

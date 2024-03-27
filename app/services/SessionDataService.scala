@@ -41,4 +41,16 @@ class SessionDataService @Inject()(sessionDataConnector: SessionDataConnector) {
     sessionDataConnector.deleteSessionData(ITSASessionKeys.REFERENCE)
   }
 
+  def fetchThrottlePassed(throttle: Throttle)(implicit hc: HeaderCarrier): Future[GetSessionDataResponse[Boolean]] = {
+    sessionDataConnector.getSessionData[Boolean](ITSASessionKeys.throttlePassed(throttle))
+  }
+
+  def saveThrottlePassed(throttle: Throttle)(implicit hc: HeaderCarrier): Future[SaveSessionDataResponse] = {
+    sessionDataConnector.saveSessionData[Boolean](ITSASessionKeys.throttlePassed(throttle), true)
+  }
+
+  def deleteThrottlePassed(throttle: Throttle)(implicit hc: HeaderCarrier): Future[DeleteSessionDataResponse] = {
+    sessionDataConnector.deleteSessionData(ITSASessionKeys.throttlePassed(throttle))
+  }
+
 }

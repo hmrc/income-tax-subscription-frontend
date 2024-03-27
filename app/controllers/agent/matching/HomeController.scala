@@ -17,11 +17,12 @@
 package controllers.agent.matching
 
 import auth.agent.AgentJourneyState._
-import auth.agent.{AgentJourneyState, AgentSignUp, AgentUserMatching, StatelessController}
+import auth.agent._
 import common.Constants.ITSASessionKeys
+import common.Constants.ITSASessionKeys.JourneyStateKey
 import config.AppConfig
 import play.api.mvc._
-import services.{AgentStartOfJourneyThrottle, AuditingService, AuthService, ThrottlingService}
+import services.{AuditingService, AuthService}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -29,8 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class HomeController @Inject()(val auditingService: AuditingService,
                                val authService: AuthService,
-                               val appConfig: AppConfig,
-                               throttlingService: ThrottlingService)
+                               val appConfig: AppConfig)
                               (implicit val ec: ExecutionContext,
                                mcc: MessagesControllerComponents) extends StatelessController {
 
@@ -39,30 +39,20 @@ class HomeController @Inject()(val auditingService: AuditingService,
   }
 
   def index: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
-      val alreadyInSignUp = request.session.isInState(AgentSignUp)
-      val ninoPresent = user.clientNino.isDefined
-      val utrPresent = user.clientUtr.isDefined
-      val arnMaybe = user.arn
-      (alreadyInSignUp, ninoPresent, utrPresent, arnMaybe) match {
-        // this session has already passed through the throttle
-        case (true, _, _, _) => Future.successful(Redirect(controllers.agent.routes.WhatYouNeedToDoController.show()))
-
-        // this session is new, has full data
-        case (_, true, true, _) =>
-          throttlingService.throttled(AgentStartOfJourneyThrottle) {
-            Future.successful(Redirect(controllers.agent.routes.WhatYouNeedToDoController.show()).withJourneyState(AgentSignUp))
-          }
-        // this session has missing data
-        case (_, true, _, _) =>
-          Future.successful(Redirect(controllers.agent.matching.routes.NoSAController.show).removingFromSession(ITSASessionKeys.JourneyStateKey))
-        // Got an agent enrolment only - no user data at all
-        case (_, _, _, _) =>
-          Future.successful(Redirect(controllers.agent.matching.routes.ClientDetailsController.show()).withJourneyState(AgentUserMatching))
+    _ =>
+      if (request.session.get(JourneyStateKey).contains(AgentUserMatching.name)) {
+        Future.successful(Redirect(routes.ClientDetailsController.show()))
+      } else if (request.session.get(JourneyStateKey).contains(AgentSignUp.name)) {
+        if (request.session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY).contains("true")) {
+          Future.successful(Redirect(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show))
+        } else {
+          Future.successful(Redirect(controllers.agent.eligibility.routes.ClientCanSignUpController.show()))
+        }
+      } else {
+        Future.successful(Redirect(controllers.agent.routes.AddAnotherClientController.addAnother()))
       }
   }
 
   implicit val cacheSessionFunctions: Session => SessionFunctions = AgentJourneyState.SessionFunctions
-  implicit val cacheRequestFunctions: Request[_] => RequestFunctions = AgentJourneyState.RequestFunctions
 
 }
