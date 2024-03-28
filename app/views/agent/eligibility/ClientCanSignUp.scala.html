@@ -30,7 +30,7 @@
 
 @(clientCanSignUpForm: Form[YesNo], postAction: Call, clientName: String, clientNino: String, backUrl: String)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("agent.client-can-sign-up.heading"), optForm = Some(clientCanSignUpForm), backLink = Some(backUrl)) {
+@mainTemplate(title = messages("agent.client-can-sign-up.heading"), optForm = Some(clientCanSignUpForm), backLink = Some(backUrl), backLinkContent = Some(messages("agent.client-can-sign-up.back-to-enter-client-details"))) {
 
     <span class="govuk-caption-l">
       @messages("agent.client-can-sign-up.caption", clientName, clientNino)

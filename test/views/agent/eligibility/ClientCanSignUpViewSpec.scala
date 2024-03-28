@@ -59,6 +59,8 @@ class ClientCanSignUpViewSpec extends ViewSpec {
           view = page,
           title = ClientCanSignUpMessages.heading,
           isAgent = true,
+          backLink = Some(testBackUrl),
+          backLinkText = Some(ClientCanSignUpMessages.backLinkText),
           hasSignOutLink = true
         )
       }
@@ -67,6 +69,8 @@ class ClientCanSignUpViewSpec extends ViewSpec {
           view = page,
           title = ClientCanSignUpMessages.heading,
           isAgent = true,
+          backLink = Some(testBackUrl),
+          backLinkText = Some(ClientCanSignUpMessages.backLinkText),
           hasSignOutLink = true,
           error = Some(testFormError)
         )
@@ -121,5 +125,7 @@ class ClientCanSignUpViewSpec extends ViewSpec {
 
     val optionNo = "Check if I can sign up another client"
     val continueButton = "Continue"
+
+    val backLinkText = "Back to enter client details"
   }
 }

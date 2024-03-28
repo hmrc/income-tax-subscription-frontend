@@ -23,7 +23,7 @@
     implicit appConfig: AppConfig
 )
 
-@(title: String, optForm: Option[Form[_]] = None, backLink: Option[String]= None, showSignOutLink: Boolean = true, fullWidth: Boolean = false, additionalScripts: Option[Html] = None)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
+@(title: String, optForm: Option[Form[_]] = None, backLink: Option[String] = None, backLinkContent: Option[String] = None, showSignOutLink: Boolean = true, fullWidth: Boolean = false, additionalScripts: Option[Html] = None)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
 
 @prefixedTitle = @{
     optForm match {
@@ -38,6 +38,7 @@
     serviceUrl = appConfig.govukGuidanceITSASignUpAgentLink,
     optForm = optForm,
     backLink = backLink,
+    backLinkContent = backLinkContent,
     showSignOutLink = showSignOutLink,
     fullWidth = fullWidth,
     additionalScripts = additionalScripts

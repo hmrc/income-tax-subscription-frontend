@@ -583,6 +583,7 @@ error.agent.cannot-sign-up.invalid                              = Mae’n rhaid 
 # Agent Client Can Sign Up Page
 agent.client-can-sign-up.heading                                = Gallwch gofrestru’r cleient hwn
 agent.client-can-sign-up.caption                                = {0} | {1}
+agent.client-can-sign-up.back-to-enter-client-details           = Yn ôl i nodi manylion cleientiaid
 agent.client-can-sign-up.question                               = Beth hoffech ei wneud nesaf?
 agent.client-can-sign-up.sign-up-name                           = Cofrestru {0}
 agent.client-can-sign-up.check-another                          = Gwirio os gallaf gofrestru cleient arall

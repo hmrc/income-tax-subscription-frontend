@@ -54,6 +54,7 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
                          title: String,
                          isAgent: Boolean = false,
                          backLink: Option[String] = None,
+                         backLinkText: Option[String] = None,
                          hasSignOutLink: Boolean = true,
                          error: Option[FormError] = None) {
 
@@ -70,7 +71,7 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
 
     backLink.map { href =>
       val link = document.selectHead(".govuk-back-link")
-      link.text mustBe "Back"
+      link.text mustBe backLinkText.getOrElse("Back")
       link.attr("href") mustBe href
     }
 
