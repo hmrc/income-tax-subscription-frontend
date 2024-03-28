@@ -129,26 +129,21 @@ cannot-take-part.link1                                          = what makes you
 cannot-take-part.inset1                                         = You must submit your Self Assessment tax return as normal.
 
 ##  What You Need To Do (pre-mandation either tax year)  ##
-what-you-need-to-do.heading                                     = What you need to do
-what-you-need-to-do.para-1                                      = By taking part you agree to:
-what-you-need-to-do.bullet-1                                    = Get compatible software to record your income and expenses.
-what-you-need-to-do.bullet-2                                    = Use your software to send us quarterly updates.
-what-you-need-to-do.bullet-3                                    = Complete any missing quarterly updates (if you have chosen to sign up for the current tax year).
-what-you-need-to-do.bullet-4                                    = Send an end of period statement and submit your final declaration by 31 January following the end of the tax year.
-what-you-need-to-do.bullet-5                                    = Submit your final declaration by 31 January following the end of the tax year.
-what-you-need-to-do.inset.para                                  = Signing up to Making Tax Digital for Income Tax is currently voluntary. You can opt out and go back to Self Assessment at any time.
-what-you-need-to-do.para-2                                      = It will be compulsory for some people to use Making Tax Digital for Income Tax from April 2026, depending on their total qualifying income. We’ll send you a letter if this applies to you.
-
-##  What You Need To Do (pre-mandation next tax year only)  ##
-what-you-need-to-do.next-year-only.para-1                        = You can sign up to use Making Tax Digital for Income Tax from 6 April {0}.
-what-you-need-to-do.next-year-only.para-2                        = By taking part you agree to:
-what-you-need-to-do.next-year-only.bullet-1                      = Get compatible software to record your income and expenses from 6 April {0}.
-what-you-need-to-do.next-year-only.bullet-2                      = Use your software to send us quarterly updates.
-what-you-need-to-do.next-year-only.bullet-3                      = Send an end of period statement using your software and send your final declaration by {0}.
-what-you-need-to-do.next-year-only.bullet-4                      = Send your final declaration by {0}
-what-you-need-to-do.next-year-only.inset.para                    = You must continue to submit your Self Assessment tax returns until the year you have signed up.
+what-you-are-agreeing-to.both-pre-mandated-scenarios.heading-1  = What you are agreeing to
+what-you-are-agreeing-to.both-pre-mandated-scenarios.para-1     = If you continue to sign up, you’re agreeing to meet your tax obligations using Making Tax Digital for Income Tax. These include:
+what-you-are-agreeing-to.both-pre-mandated-scenarios.bullet-1   = using software that works with Making Tax Digital for Income Tax
+what-you-are-agreeing-to.both-pre-mandated-scenarios.bullet-2   = keeping digital records of your business income and expenses
+what-you-are-agreeing-to.both-pre-mandated-scenarios.bullet-3   = using compatible software to send us quarterly updates
+what-you-are-agreeing-to.both-pre-mandated-scenarios.bullet-4   = sending any missed quarterly updates - if you’re signing up part way through the current tax year
+what-you-are-agreeing-to.both-pre-mandated-scenarios.bullet-5   = making your final declaration by 31 January after the end of the tax year
+what-you-are-agreeing-to.both-pre-mandated-scenarios.bullet-6   = paying your bill
+what-you-are-agreeing-to.both-pre-mandated-scenarios.para-2     = You’re also agreeing to get points-based penalties if you miss deadlines for submitting your tax return or paying your bill. We’ll write to you when you’re liable for these penalties.
+what-you-are-agreeing-to.both-pre-mandated-scenarios.heading-2  = Opting out
+what-you-are-agreeing-to.both-pre-mandated-scenarios.para-3     = Making Tax Digital for Income Tax is voluntary until 6 April 2026. You can opt out of sending quarterly updates. But if we’ve told you that you’re liable for the points-based penalties, you’ll continue to be liable for them.
+what-you-are-agreeing-to.both-pre-mandated-scenarios.para-4     = From 6 April 2026, some people will need to use Making Tax Digital for Income Tax. They will not be able to opt out. We’ll write to you if this applies to you.
 
 ##  What You Need To Do Current  ##
+what-you-need-to-do.heading                                      = What you need to do
 what-you-need-to-do-current.para-1                               = Based on your previous returns, you need to sign up for Making Tax Digital for Income Tax.
 what-you-need-to-do-current.para-2                               = By signing up you agree to:
 what-you-need-to-do-current.bullet-1                             = Get compatible software to record your income and expenses.
