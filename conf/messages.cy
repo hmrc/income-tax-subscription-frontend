@@ -119,13 +119,12 @@ cannot-use-service.title                                        = Ni allwch ddef
 cannot-use-service.heading                                      = Ni allwch ddefnyddio’r gwasanaeth hwn
 cannot-use-service.line1                                        = Gallwch ond cofrestru os ydych yn weinyddwr.
 
-## Cannot take part page
-cannot-take-part.title                                          = Ni allwch gymryd rhan yn y cynllun peilot hwn ar hyn o bryd
-cannot-take-part.heading                                        = Ni allwch gymryd rhan yn y cynllun peilot hwn ar hyn o bryd
-cannot-take-part.para1                                          = Nid yw cynllun peilot Troi Treth yn Ddigidol ar gyfer Treth Incwm ar gael ar hyn o bryd i bobl sydd ag incwm neu ddidyniadau penodol.
-cannot-take-part.para2                                          = Mae’n bosibl y bydd y gwasanaeth hwn ar gael i chi yn y dyfodol. {0}.
-cannot-take-part.link1                                          = Dysgwch ragor am yr hyn sy’n eich gwneud yn gymwys i gofrestru
-cannot-take-part.inset1                                         = Mae’n rhaid i chi gyflwyno’ch Ffurflen Dreth Hunanasesiad yn ôl yr arfer.
+## Cannot sign up yet page
+cannot-sign-up-yet.title                                          = Ni allwch gofrestru ar hyn o bryd
+cannot-sign-up-yet.heading                                        = Ni allwch gofrestru ar hyn o bryd
+cannot-sign-up-yet.para1                                          = Ni all pobl sydd â mathau penodol o incwm neu ddidyniadau gofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+cannot-sign-up-yet.para2                                          = Yn y dyfodol, mae’n bosibl y caiff y gwasanaeth hwn ei ymestyn i ragor o bobl.
+cannot-sign-up-yet.para3                                          = Yn y cyfamser, mae’n rhaid i chi barhau i gyflwyno’ch Ffurflen Dreth Hunanasesiad yn ôl yr arfer.
 
 ##  What You Need To Do (pre-mandation either tax year)  ##
 what-you-need-to-do.heading                                     = Beth y mae angen i chi ei wneud

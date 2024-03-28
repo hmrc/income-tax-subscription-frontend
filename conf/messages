@@ -120,13 +120,12 @@ cannot-use-service.title                                        = You cannot use
 cannot-use-service.heading                                      = You cannot use this service
 cannot-use-service.line1                                        = You can only sign up if you are an administrator.
 
-## Cannot take part page
-cannot-take-part.title                                          = You cannot take part yet
-cannot-take-part.heading                                        = You cannot take part yet
-cannot-take-part.para1                                          = Making Tax Digital for Income Tax is not currently available people with certain types of income or who have not been trading long enough. You cannot take part yet.
-cannot-take-part.para2                                          = This service may be available to you in the future. Learn more about {0}.
-cannot-take-part.link1                                          = what makes you eligible to sign up
-cannot-take-part.inset1                                         = You must submit your Self Assessment tax return as normal.
+## Cannot sign up yet page
+cannot-sign-up-yet.title                                          = You cannot sign up yet
+cannot-sign-up-yet.heading                                        = You cannot sign up yet
+cannot-sign-up-yet.para1                                          = People with some types of income or deductions cannot sign up to Making Tax Digital for Income Tax.
+cannot-sign-up-yet.para2                                          = In the future, we may extend this service to more people.
+cannot-sign-up-yet.para3                                          = Meanwhile, you must continue to submit your Self Assessment tax return as normal.
 
 ##  What You Need To Do (pre-mandation either tax year)  ##
 what-you-need-to-do.heading                                     = What you need to do
