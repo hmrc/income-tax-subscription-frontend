@@ -50,7 +50,7 @@ class TaxYearCheckYourAnswersViewSpec extends ViewSpec {
       document()
         .mainContent
         .selectHead(s"$sectionId-question")
-        .text() mustBe messages.question
+        .text() mustBe messages.individualQuestion
     }
 
     "display the current in the tax year section answer" in {
