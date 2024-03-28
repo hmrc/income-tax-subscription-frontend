@@ -17,30 +17,32 @@
 @import play.api.i18n.Messages
 @import play.api.mvc.Request
 @import views.html.helpers.SignOutButton
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcNewTabLinkHelper
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 @import views.html.templates.PrincipalMainTemplate
 
 @this(
     mainTemplate: PrincipalMainTemplate,
+    hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
     form: FormWithCSRF,
     signOutButton: SignOutButton
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("cannot-take-part.title"), backLink = Some("javascript:history.back()")) {
+@mainTemplate(title = messages("cannot-sign-up-yet.title")) {
 
-    <h1 class="govuk-heading-l">@messages("cannot-take-part.heading")</h1>
+    <h1 class="govuk-heading-l">@messages("cannot-sign-up-yet.heading")</h1>
 
-    <p class="govuk-body">@messages("cannot-take-part.para1")</p>
+   <p class="govuk-body">
+       <a class="govuk-link" href="https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax">
+           @hmrcNewTabLinkHelper(NewTabLinkHelper(messages("cannot-sign-up-yet.para1")))
+       </a>
+   </p>
 
-    <p class="govuk-body">
-        @Html(messages(
-        "cannot-take-part.para2",
-        <a class="govuk-link" href="https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax">{messages("cannot-take-part.link1")}</a>
-        ))
-    </p>
+    <p class="govuk-body">@messages( "cannot-sign-up-yet.para2")</p>
 
-    <p class="govuk-inset-text">@messages("cannot-take-part.inset1")</p>
+    <p class="govuk-body">@messages("cannot-sign-up-yet.para3")</p>
 
     @signOutButton()
 

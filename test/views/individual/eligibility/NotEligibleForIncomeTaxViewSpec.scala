@@ -25,47 +25,41 @@ class NotEligibleForIncomeTaxViewSpec extends ViewSpec {
 
   "Cannot Sign Up View" should {
     "have a title" in {
-      document.title mustBe s"${CannotTakePartMessages.heading} - Use software to send Income Tax updates - GOV.UK"
+      document.title mustBe s"${CannotSignUpYetMessages.heading} - Use software to send Income Tax updates - GOV.UK"
     }
 
     "have a heading" in {
-      document.mainContent.select("h1").text() mustBe CannotTakePartMessages.heading
+      document.mainContent.select("h1").text() mustBe CannotSignUpYetMessages.heading
     }
 
-    "have paragraph 1" in {
-      document.mainContent.selectFirst("p").text() mustBe CannotTakePartMessages.paragraph1
+    "have paragraph 1 and link" in {
+      val link = document.mainContent.selectHead("p").selectNth("a", 2)
+      link.text() mustBe CannotSignUpYetMessages.paragraph1
+      document.mainContent.selectHead("p").selectNth("a", 1).attr("href") mustBe CannotSignUpYetMessages.linkHref
     }
 
     "have paragraph 2" in {
-      document.mainContent.selectNth("p", 2).text() mustBe CannotTakePartMessages.paragraph2
+      document.mainContent.selectNth("p", 2).text() mustBe CannotSignUpYetMessages.paragraph2
     }
 
-    "have link in paragraph 2" in {
-      val link = document.mainContent.selectNth("p", 2).selectFirst("a")
-      link.text() mustBe CannotTakePartMessages.link
-      link.attr("href") mustBe CannotTakePartMessages.linkHref
+    "have paragraph 3" in {
+      document.mainContent.selectNth("p",3).text() mustBe CannotSignUpYetMessages.paragraph3
     }
-
-    "have a inset text" in {
-      document.mainContent.selectHead(".govuk-inset-text").text() mustBe CannotTakePartMessages.insetText
-    }
-
 
     "has a sign out button" in {
-      document.mainContent.selectHead(".govuk-button").text mustBe CannotTakePartMessages.signoutButton
+      document.mainContent.selectHead(".govuk-button").text mustBe CannotSignUpYetMessages.signoutButton
     }
 
   }
 
   private def document = Jsoup.parse(view().body)
 
-  object CannotTakePartMessages {
-    val heading = "You cannot take part yet"
-    val paragraph1 = "Making Tax Digital for Income Tax is not currently available people with certain types of income or who have not been trading long enough. You cannot take part yet."
-    val paragraph2 = "This service may be available to you in the future. Learn more about what makes you eligible to sign up."
-    val link = "what makes you eligible to sign up"
+  object CannotSignUpYetMessages {
+    val heading = "You cannot sign up yet"
+    val paragraph1 = "People with some types of income or deductions cannot sign up to Making Tax Digital for Income Tax. (opens in new tab)"
+    val paragraph2 = "In the future, we may extend this service to more people."
+    val paragraph3 = "Meanwhile, you must continue to submit your Self Assessment tax return as normal."
     val linkHref = "https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax"
-    val insetText = "You must submit your Self Assessment tax return as normal."
     val signoutButton = "Sign out"
   }
 }
