@@ -20,10 +20,13 @@ import auth.agent.StatelessController
 import config.AppConfig
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
+import uk.gov.hmrc.http.InternalServerException
+import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.eligibility.CannotTakePart
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
+import scala.util.matching.Regex
 
 @Singleton
 class CannotTakePartController @Inject()(val auditingService: AuditingService,
@@ -33,9 +36,26 @@ class CannotTakePartController @Inject()(val auditingService: AuditingService,
                                          mcc: MessagesControllerComponents,
                                          val ec: ExecutionContext) extends StatelessController {
 
+  private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
+
+  private def formatNino(clientNino: String): String = {
+    clientNino match {
+      case ninoRegex(startLetters, firstDigits, secondDigits, thirdDigits, finalLetter) =>
+        s"$startLetters $firstDigits $secondDigits $thirdDigits $finalLetter"
+      case other => other
+    }
+  }
+
   def show: Action[AnyContent] = Authenticated { implicit request =>
-    _ =>
-      Ok(cannotTakePart())
+    implicit user =>
+      Ok(cannotTakePart(
+        clientName = request.fetchClientName.getOrElse(
+          throw new InternalServerException("[ClientCanSignUpController][show] - could not retrieve client name from session")
+        ),
+        clientNino = formatNino(user.clientNino.getOrElse(
+          throw new InternalServerException("[ClientCanSignUpController][show] - could not retrieve client nino from session")
+        ))
+      ))
   }
 
 }

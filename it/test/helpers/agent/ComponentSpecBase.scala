@@ -259,7 +259,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       )
     }
 
-    def showCannotTakePart: WSResponse = get("/error/cannot-sign-up")
+    def showCannotTakePart: WSResponse = get("/error/cannot-sign-up", ClientData.basicClientData)
 
     def showCanSignUp: WSResponse = get("/can-sign-up", ClientData.basicClientData)
 

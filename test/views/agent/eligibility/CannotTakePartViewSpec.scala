@@ -16,17 +16,35 @@
 
 package views.agent.eligibility
 
+import forms.agent.ClientCanSignUpForm
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
+import play.twirl.api.HtmlFormat
 import utilities.ViewSpec
 import views.html.agent.eligibility.CannotTakePart
 
 class CannotTakePartViewSpec extends ViewSpec {
+
+  val clientName: String = "FirstName LastName"
+  val clientNino: String = "AA 11 11 11 A"
+
   private val view = app.injector.instanceOf[CannotTakePart]
+
+  val page: HtmlFormat.Appendable = view(
+    clientName = clientName,
+    clientNino = clientNino
+  )
+
+  val document: Document = Jsoup.parse(page.body)
 
 
   "Cannot Sign Up View" should {
     "have a title" in {
       document.title mustBe s"${CannotTakePartMessages.heading} - Use software to report your client’s Income Tax - GOV.UK"
+    }
+
+    "have a heading caption" in {
+      document.mainContent.selectHead("span.govuk-caption-l").text mustBe s"$clientName | $clientNino"
     }
 
     "have a heading" in {
@@ -41,16 +59,10 @@ class CannotTakePartViewSpec extends ViewSpec {
       document.mainContent.selectNth("p", 2).text() mustBe CannotTakePartMessages.paragraph2
     }
 
-    "have link 1" in {
-      val link = document.mainContent.selectNth("a", 1)
-      link.text() mustBe CannotTakePartMessages.link1
-      link.attr("href") mustBe "https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax"
+    "have paragraph 3" in {
+      document.mainContent.selectNth("p", 3).text() mustBe CannotTakePartMessages.paragraph3
     }
 
-
-    "have inset 1" in {
-      document.mainContent.selectNth("p", 3).text() mustBe CannotTakePartMessages.inset1
-    }
 
     "have a sign up another client link" in {
       val link = document.mainContent.selectHead(".govuk-button")
@@ -58,14 +70,11 @@ class CannotTakePartViewSpec extends ViewSpec {
     }
   }
 
-  private def document = Jsoup.parse(view().body)
-
   object CannotTakePartMessages {
-    val heading = "Your client cannot take part yet"
-    val paragraph1 = "Making Tax Digital For Income Tax is not currently available to people with certain incomes or deductions."
-    val paragraph2 = "However, your client may be able to sign up to Making Tax Digital for Income Tax in the future. Learn more about who’s eligible for Making Tax Digital for Income Tax."
-    val link1 = "who’s eligible for Making Tax Digital for Income Tax"
-    val inset1 = "Your client’s Self Assessment tax return must be submitted as normal."
+    val heading = "You cannot sign up this client yet"
+    val paragraph1 = "People with some types of income or deductions cannot sign up to Making Tax Digital for Income Tax."
+    val paragraph2 = "In the future, we may extend this service to more people."
+    val paragraph3 = "Meanwhile, you or your client must continue to submit their Self Assessment tax return as normal."
     val signUpAnotherClientLink = "Sign up another client"
   }
 }
