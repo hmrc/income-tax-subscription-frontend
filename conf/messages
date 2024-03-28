@@ -584,6 +584,7 @@ error.agent.cannot-sign-up.invalid                              = You must selec
 # Agent Client Can Sign Up Page
 agent.client-can-sign-up.heading                                = You can sign up this client
 agent.client-can-sign-up.caption                                = {0} | {1}
+agent.client-can-sign-up.back-to-enter-client-details           = Back to enter client details
 agent.client-can-sign-up.question                               = What do you want to do next?
 agent.client-can-sign-up.sign-up-name                           = Sign up {0}
 agent.client-can-sign-up.check-another                          = Check if I can sign up another client
