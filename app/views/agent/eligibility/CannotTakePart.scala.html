@@ -26,22 +26,21 @@
         signOutLink: SignOutLink
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@(clientName: String, clientNino: String)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("agent.cannot-take-part.title"), backLink = Some("javascript:history.back()")) {
+@mainTemplate(title = messages("agent.cannot-take-part.title")) {
+
+    <span class="govuk-caption-l">
+      @messages("agent.cannot-take-part.caption", clientName, clientNino)
+    </span>
 
     <h1 class="govuk-heading-l">@messages("agent.cannot-take-part.heading")</h1>
 
     <p class="govuk-body">@messages("agent.cannot-take-part.para1")</p>
 
-    <p class="govuk-body">
-        @Html(messages(
-            "agent.cannot-take-part.para2",
-                <a class="govuk-link" href="https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax">{messages("agent.cannot-take-part.link1")}</a>
-        ))
-    </p>
+    <p class="govuk-body">@messages("agent.cannot-take-part.para2")</p>
 
-    <p class="govuk-inset-text">@messages("agent.cannot-take-part.inset1")</p>
+    <p class="govuk-body">@messages("agent.cannot-take-part.para3")</p>
 
     @form(action = controllers.agent.routes.AddAnotherClientController.addAnother()) {
         <div class="govuk-form-group">

@@ -34,10 +34,10 @@ class CannotTakePartControllerISpec extends ComponentSpecBase {
   }
 
   object CannotTakePartMessages {
-    val title: String = "Your client cannot take part yet"
+    val title: String = "You cannot sign up this client yet"
   }
 
-  "GET /client/other-sources-of-income-error" should {
+  "GET /client/cannot-sign-up" should {
 
     "return a status of OK" in new Setup {
       result.status mustBe OK
