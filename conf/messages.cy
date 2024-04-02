@@ -565,13 +565,13 @@ agent.other-sources-of-income.not-include-point1                = llog banc neu 
 agent.other-sources-of-income.not-include-point2                = difidendau
 agent.other-sources-of-income.invalid                           = Dewiswch ‘Iawn’ os oes gan eich cleient ffynonellau incwm heblaw hunangyflogaeth neu incwm o eiddo
 
-# Agent cannot take part page
-agent.cannot-take-part.title                                    = Ni all eich cleient gymryd rhan eto
-agent.cannot-take-part.heading                                  = Ni all eich cleient gymryd rhan eto
-agent.cannot-take-part.para1                                    = Nid yw cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar gael ar hyn o bryd i bobl sydd ag incwm neu ddidyniadau penodol.
-agent.cannot-take-part.para2                                    = Fodd bynnag, mae’n bosibl y bydd eich cleient yn gallu cofrestru ar gyfer y cynllun Troi Treth yn
-agent.cannot-take-part.link1                                    = Ddigidol ar gyfer Treth Incwm yn y dyfodol. Dysgwch ragor am bwy sy’n gymwys ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
-agent.cannot-take-part.inset1                                   = Mae’n rhaid i Ffurflen Dreth Hunanasesiad eich cleient gael ei chyflwyno yn ôl yr arfer.
+# Agent cannot sign up client page
+agent.cannot-take-part.title                                      = Ni allwch gofrestru’r cleient hwn ar hyn o bryd
+agent.cannot-take-part.caption                                    = {0} | {1}
+agent.cannot-take-part.heading                                    = Ni allwch gofrestru’r cleient hwn ar hyn o bryd
+agent.cannot-take-part.para1                                      = Ni all pobl sydd â mathau penodol o incwm neu ddidyniadau gofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+agent.cannot-take-part.para2                                      = Yn y dyfodol, mae’n bosibl y caiff y gwasanaeth hwn ei ymestyn i ragor o bobl.
+agent.cannot-take-part.para3                                      = Yn y cyfamser, mae’n rhaid i chi neu’ch cleient barhau i gyflwyno’i Ffurflen Dreth Hunanasesiad yn ôl yr arfer.
 
 # Agent cannot sign up page
 agent.cannot-sign-up.heading                                    = Gall eich cleient gofrestru ar gyfer y flwyddyn dreth nesaf

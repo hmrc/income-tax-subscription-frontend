@@ -58,8 +58,8 @@ class ConfirmedClientResolver @Inject()(getEligibilityStatusService: GetEligibil
           case EligibilityStatus(false, false, _) =>
             Future.successful(
               goToCannotTakePart
-                .removingFromSession(FailedClientMatching, JourneyStateKey, UTR, NINO)
-                .clearAllUserDetails
+                .removingFromSession(FailedClientMatching, JourneyStateKey, UTR)
+                .clearUserDetailsExceptName
             )
           case EligibilityStatus(thisYear, _, prepop) =>
             withReference(utr, Some(nino), Some(arn)) { reference =>

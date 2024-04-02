@@ -565,13 +565,13 @@ agent.other-sources-of-income.not-include-point1                = bank and build
 agent.other-sources-of-income.not-include-point2                = dividends
 agent.other-sources-of-income.invalid                           = Select yes if your client has sources of income other than self employment or property income
 
-# Agent cannot take part page
-agent.cannot-take-part.title                                    = Your client cannot take part yet
-agent.cannot-take-part.heading                                  = Your client cannot take part yet
-agent.cannot-take-part.para1                                    = Making Tax Digital For Income Tax is not currently available to people with certain incomes or deductions.
-agent.cannot-take-part.para2                                    = However, your client may be able to sign up to Making Tax Digital for Income Tax in the future. Learn more about {0}.
-agent.cannot-take-part.link1                                    = who’s eligible for Making Tax Digital for Income Tax
-agent.cannot-take-part.inset1                                   = Your client’s Self Assessment tax return must be submitted as normal.
+# Agent cannot sign up client page
+agent.cannot-take-part.title                                      = You cannot sign up this client yet
+agent.cannot-take-part.caption                                    = {0} | {1}
+agent.cannot-take-part.heading                                    = You cannot sign up this client yet
+agent.cannot-take-part.para1                                      = People with some types of income or deductions cannot sign up to Making Tax Digital for Income Tax.
+agent.cannot-take-part.para2                                      = In the future, we may extend this service to more people.
+agent.cannot-take-part.para3                                      = Meanwhile, you or your client must continue to submit their Self Assessment tax return as normal.
 
 
 # Agent cannot sign up page
