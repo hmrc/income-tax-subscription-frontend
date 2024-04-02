@@ -42,23 +42,22 @@ class WhatYouNeedToDoSpec extends ViewSpec {
   def documentNextYearOnlyAndMandated(nextYearMandated: Boolean): Document = Jsoup.parse(pageNextYearOnlyAndMandated(nextYearMandated).body)
 
   object WhatYouNeedToDoMessages {
-    val heading: String = "What you need to do"
-    val paraOne: String = "By taking part you agree to:"
+    val title: String = "What you need to do"
+    val heading: String = "What you are agreeing to"
+    val paraOne: String = "If you continue to sign up, you’re agreeing to meet your tax obligations using Making Tax Digital for Income Tax. These include:"
+    val bulletOne: String = "using software that works with Making Tax Digital for Income Tax"
+    val bulletTwo: String = "keeping digital records of your business income and expenses"
+    val bulletThree: String = "using compatible software to send us quarterly updates"
+    val bulletFour: String = "sending any missed quarterly updates - if you’re signing up part way through the current tax year"
+    val bulletFive: String = "making your final declaration by 31 January after the end of the tax year"
+    val bulletSix: String = "paying your bill"
 
-    object NotificationBanner {
-      val heading: String = "Important"
-      val bulletOne: String = "Get compatible software to record your income and expenses."
-      val bulletTwo: String = "Use your software to send us quarterly updates."
-      val bulletThree: String = "Complete any missing quarterly updates (if you have chosen to sign up for the current tax year)."
-      val bulletFour: String = "Send an end of period statement and submit your final declaration by 31 January following the end of the tax year."
-      val bulletFive: String = "Tell HMRC if you stop trading or start a new business."
-    }
+    val paraTwo: String = "You’re also agreeing to get points-based penalties if you miss deadlines for submitting your tax return or paying your bill. We’ll write to you when you’re liable for these penalties."
 
-    object InsetText {
-      val para: String = "Signing up to Making Tax Digital for Income Tax is currently voluntary. You can opt out and go back to Self Assessment at any time."
-    }
+    val subHeading: String = "Opting out"
 
-    val paraTwo: String = "It will be compulsory for some people to use Making Tax Digital for Income Tax from April 2026, depending on their total qualifying income. We’ll send you a letter if this applies to you."
+    val paraThree: String = "Making Tax Digital for Income Tax is voluntary until 6 April 2026. You can opt out of sending quarterly updates. But if we’ve told you that you’re liable for the points-based penalties, you’ll continue to be liable for them."
+    val paraFour: String = "From 6 April 2026, some people will need to use Making Tax Digital for Income Tax. They will not be able to opt out. We’ll write to you if this applies to you."
   }
 
   object NextYearOnlyWhatYouNeedToDoMessages {
@@ -124,7 +123,7 @@ class WhatYouNeedToDoSpec extends ViewSpec {
 
     "use the correct template details" in new TemplateViewTest(
       view = page(false),
-      title = WhatYouNeedToDoMessages.heading,
+      title = WhatYouNeedToDoMessages.title,
       isAgent = false,
       backLink = None,
       hasSignOutLink = true
@@ -139,80 +138,51 @@ class WhatYouNeedToDoSpec extends ViewSpec {
     }
 
     "has a numbered list" which {
-      def numberedList: Element = document(false).mainContent.selectHead("ol.govuk-list--number")
+      def numberedList: Element = document(false).mainContent.selectHead("ol.govuk-list--bullet")
 
       "has a first point" in {
-        numberedList.selectNth("li", 1).text mustBe WhatYouNeedToDoMessages.NotificationBanner.bulletOne
+        numberedList.selectNth("li", 1).text mustBe WhatYouNeedToDoMessages.bulletOne
       }
 
       "has a second point" in {
-        numberedList.selectNth("li", 2).text mustBe WhatYouNeedToDoMessages.NotificationBanner.bulletTwo
+        numberedList.selectNth("li", 2).text mustBe WhatYouNeedToDoMessages.bulletTwo
       }
 
       "has a third point" in {
-        numberedList.selectNth("li", 3).text mustBe WhatYouNeedToDoMessages.NotificationBanner.bulletThree
+        numberedList.selectNth("li", 3).text mustBe WhatYouNeedToDoMessages.bulletThree
       }
 
       "has a forth point" in {
-        numberedList.selectNth("li", 4).text mustBe WhatYouNeedToDoMessages.NotificationBanner.bulletFour
+        numberedList.selectNth("li", 4).text mustBe WhatYouNeedToDoMessages.bulletFour
       }
-    }
 
-    "has an inset text" in {
-      document(false).selectHead(".govuk-inset-text").text mustBe WhatYouNeedToDoMessages.InsetText.para
+      "has a fifth point" in {
+        numberedList.selectNth("li", 5).text mustBe WhatYouNeedToDoMessages.bulletFive
+      }
+
+      "has a sixth point" in {
+        numberedList.selectNth("li", 6).text mustBe WhatYouNeedToDoMessages.bulletSix
+      }
     }
 
     "have a second paragraph" in {
       document(false).mainContent.selectNth("p", 2).text mustBe WhatYouNeedToDoMessages.paraTwo
     }
 
+    "has a sub heading" in {
+      document(false).mainContent.selectHead("h2").text mustBe WhatYouNeedToDoMessages.subHeading
+    }
+
+    "have a third paragraph" in {
+      document(false).mainContent.selectNth("p", 3).text mustBe WhatYouNeedToDoMessages.paraThree
+    }
+
+    "have a fourth paragraph" in {
+      document(false).mainContent.selectNth("p", 4).text mustBe WhatYouNeedToDoMessages.paraFour
+    }
   }
 
-
-  "NextYearOnlyWhatYouNeedToDo" must {
-
-    "use the correct template details" in new TemplateViewTest(
-      view = page(true),
-      title = NextYearOnlyWhatYouNeedToDoMessages.heading,
-      isAgent = false,
-      backLink = None,
-      hasSignOutLink = true
-    )
-
-    "have a page heading" in {
-      document(true).mainContent.selectHead("h1").text mustBe NextYearOnlyWhatYouNeedToDoMessages.heading
-    }
-
-    "have a first paragraph" in {
-      document(true).mainContent.selectNth("p", 1).text mustBe NextYearOnlyWhatYouNeedToDoMessages.paraOne
-    }
-
-    "have a second paragraph" in {
-      document(true).mainContent.selectNth("p", 2).text mustBe NextYearOnlyWhatYouNeedToDoMessages.paraTwo
-    }
-
-    "has a numbered list" which {
-      def numberedList: Element = document(true).mainContent.selectHead("ol.govuk-list--number")
-
-      "has a first point" in {
-        numberedList.selectNth("li", 1).text mustBe NextYearOnlyWhatYouNeedToDoMessages.NotificationBanner.bulletOne
-      }
-
-      "has a second point" in {
-        numberedList.selectNth("li", 2).text mustBe NextYearOnlyWhatYouNeedToDoMessages.NotificationBanner.bulletTwo
-      }
-
-      "has a third point" in {
-        numberedList.selectNth("li", 3).text mustBe NextYearOnlyWhatYouNeedToDoMessages.NotificationBanner.bulletThree
-      }
-      
-    }
-
-    "has an inset text" in {
-      document(true).selectHead(".govuk-inset-text").text mustBe NextYearOnlyWhatYouNeedToDoMessages.InsetText.para
-    }
-
-  }
+  // Non Mandated next year only test to be incuded here
 
   "WhatYouNeedToDoMandatedCurrent" must {
 

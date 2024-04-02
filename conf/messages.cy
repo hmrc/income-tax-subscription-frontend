@@ -127,26 +127,21 @@ cannot-sign-up-yet.para2                                          = Yn y dyfodol
 cannot-sign-up-yet.para3                                          = Yn y cyfamser, mae’n rhaid i chi barhau i gyflwyno’ch Ffurflen Dreth Hunanasesiad yn ôl yr arfer.
 
 ##  What You Need To Do (pre-mandation either tax year)  ##
-what-you-need-to-do.heading                                     = Beth y mae angen i chi ei wneud
-what-you-need-to-do.para-1                                      = Drwy gymryd rhan, rydych yn cytuno i’r canlynol:
-what-you-need-to-do.bullet-1                                    = Bod â meddalwedd sy’n cydweddu i gofnodi’ch incwm a’ch treuliau.
-what-you-need-to-do.bullet-2                                    = Defnyddio’ch meddalwedd i anfon diweddariadau chwarterol atom.
-what-you-need-to-do.bullet-3                                    = Cwblhewch unrhyw ddiweddariadau chwarterol sydd ar goll (os ydych wedi dewis cofrestru ar gyfer y flwyddyn dreth bresennol).
-what-you-need-to-do.bullet-4                                    = Anfon datganiad diwedd cyfnod a chyflwyno’ch datganiad terfynol erbyn 31 Ionawr yn dilyn diwedd y flwyddyn dreth.
-what-you-need-to-do.bullet-5                                    = Cyflwyno datganiad terfynol eich erbyn 31 Ionawr ar ôl diwedd y flwyddyn dreth.
-what-you-need-to-do.inset.para                                  = Mae cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm yn wirfoddol ar hyn o bryd. Gallwch optio allan a mynd yn ôl i Hunanasesiad ar unrhyw adeg
-what-you-need-to-do.para-2                                      = O fis Ebrill 2026 ymlaen, bydd yn orfodol i rai pobl ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, yn dibynnu ar gyfanswm eu hincwm cymwys. Byddwn yn anfon llythyr atoch os yw hyn yn berthnasol i chi.
-
-##  What You Need To Do (pre-mandation next tax year only)  ##
-what-you-need-to-do.next-year-only.para-1                       = Gallwch gofrestru i ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o 6 Ebrill {0} ymlaen
-what-you-need-to-do.next-year-only.para-2                       = Drwy gymryd rhan, rydych yn cytuno i’r canlynol:
-what-you-need-to-do.next-year-only.bullet-1                     = Cael meddalwedd sy’n cydweddu i gofnodi’ch incwm a’ch treuliau o 6 Ebrill {0} ymlaen.
-what-you-need-to-do.next-year-only.bullet-2                     = Defnyddio’ch meddalwedd i anfon diweddariadau chwarterol atom.
-what-you-need-to-do.next-year-only.bullet-3                     = Anfon datganiad diwedd cyfnod gan ddefnyddio’ch meddalwedd ac anfon eich datganiad terfynol erbyn {0}.
-what-you-need-to-do.next-year-only.bullet-4                     = Cyflwyno datganiad terfynol eich erbyn {0}.
-what-you-need-to-do.next-year-only.inset.para                   = Mae’n rhaid i chi barhau i gyflwyno’ch Ffurflenni Treth Hunanasesiad hyd at y flwyddyn pan wnaethoch gofrestru.
+what-you-are-agreeing-to.both-pre-mandated-scenarios.heading-1  = Yr hyn yr ydych yn cytuno iddo
+what-you-are-agreeing-to.both-pre-mandated-scenarios.para-1     = Os byddwch yn parhau i gofrestru, rydych yn cytuno i fodloni eich ymrwymiadau treth gan ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm. Mae’r rhain yn cynnwys:
+what-you-are-agreeing-to.both-pre-mandated-scenarios.bullet-1   = defnyddio meddalwedd sy’n gweithio gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+what-you-are-agreeing-to.both-pre-mandated-scenarios.bullet-2   = cadw cofnodion digidol o holl incwm a threuliau eich busnes
+what-you-are-agreeing-to.both-pre-mandated-scenarios.bullet-3   = defnyddio meddalwedd sy’n cydweddu er mwyn anfon diweddariadau chwarterol atom
+what-you-are-agreeing-to.both-pre-mandated-scenarios.bullet-4   = anfon unrhyw ddiweddariadau chwarterol coll - os ydych yn cofrestru rhan o’r ffordd drwy’r flwyddyn dreth bresennol
+what-you-are-agreeing-to.both-pre-mandated-scenarios.bullet-5   = gwneud eich datganiad terfynol erbyn 31 Ionawr ar ôl ddiwedd y flwyddyn dreth
+what-you-are-agreeing-to.both-pre-mandated-scenarios.bullet-6   = talu’ch bil
+what-you-are-agreeing-to.both-pre-mandated-scenarios.para-2     = Rydych hefyd yn cytuno y byddwch yn cael cosbau ar sail pwyntiau os ydych yn methu dyddiadau cau ar gyfer cyflwyno Ffurflen dreth neu ar gyfer talu bil. Byddwn yn ysgrifennu atoch pan fyddwch yn agored i’r cosbau hyn.
+what-you-are-agreeing-to.both-pre-mandated-scenarios.heading-2  = Optio allan
+what-you-are-agreeing-to.both-pre-mandated-scenarios.para-3     = Mae’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm yn wirfoddol tan 6 Ebrill 2026. Gallwch optio allan o anfon diweddariadau chwarterol. Ond, os ydym wedi rhoi gwybod i chi eich bod yn agored i’r cosbau ar sail pwyntiau, bydd yn parhau i fod yn atebol amdanynt.
+what-you-are-agreeing-to.both-pre-mandated-scenarios.para-4     = O 6 Ebrill 2026 ymlaen, bydd yn rhaid i rai pobl defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm. Ni fyddant yn gallu optio allan. Byddwn yn ysgrifennu atoch os yw hyn yn berthnasol i chi.
 
 ##  What You Need To Do Current  ##
+what-you-need-to-do.heading                                      = Beth y mae angen i chi ei wneud
 what-you-need-to-do-current.para-1                               = Yn seiliedig ar eich Ffurflenni Treth blaenorol, mae’n rhaid i chi gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
 what-you-need-to-do-current.para-2                               = Drwy gofrestru, rydych yn cytuno i wneud y canlynol:
 what-you-need-to-do-current.bullet-1                             = Cael gafael ar feddalwedd sy’n cydweddu er mwyn cofnodi’ch incwm a’ch treuliau.
