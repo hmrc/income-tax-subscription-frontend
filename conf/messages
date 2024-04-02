@@ -1042,8 +1042,8 @@ error.remove-overseas-property-business.invalid                 = Select yes if 
 ## Tax Year Check Your Answers
 business.check-your-answers.heading                             = Check your answers
 business.check-your-answers.content.tax-year.title              = Check your answers - tax year
-business.check-your-answers.content.tax-year.caption            = Tax year you are signing up for
-business.check-your-answers.content.tax-year.question           = Tax year you are signing up for
+business.check-your-answers.content.tax-year.caption            = Tax year
+business.check-your-answers.content.tax-year.question           = Tax year
 business.check-your-answers.content.tax-year.question.hidden    = Change tax year you are signing up for
 business.check-your-answers.content.tax-year.current-tax-year   = Current tax year (6 April {0} to 5 April {1})
 business.check-your-answers.content.tax-year.next-tax-year      = Next tax year (6 April {0} to 5 April {1})
