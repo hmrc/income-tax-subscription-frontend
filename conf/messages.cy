@@ -134,11 +134,13 @@ what-you-are-agreeing-to.both-pre-mandated-scenarios.bullet-2   = cadw cofnodion
 what-you-are-agreeing-to.both-pre-mandated-scenarios.bullet-3   = defnyddio meddalwedd sy’n cydweddu er mwyn anfon diweddariadau chwarterol atom
 what-you-are-agreeing-to.both-pre-mandated-scenarios.bullet-4   = anfon unrhyw ddiweddariadau chwarterol coll - os ydych yn cofrestru rhan o’r ffordd drwy’r flwyddyn dreth bresennol
 what-you-are-agreeing-to.both-pre-mandated-scenarios.bullet-5   = gwneud eich datganiad terfynol erbyn 31 Ionawr ar ôl ddiwedd y flwyddyn dreth
-what-you-are-agreeing-to.both-pre-mandated-scenarios.bullet-6   = talu’ch bil
-what-you-are-agreeing-to.both-pre-mandated-scenarios.para-2     = Rydych hefyd yn cytuno y byddwch yn cael cosbau ar sail pwyntiau os ydych yn methu dyddiadau cau ar gyfer cyflwyno Ffurflen dreth neu ar gyfer talu bil. Byddwn yn ysgrifennu atoch pan fyddwch yn agored i’r cosbau hyn.
+what-you-are-agreeing-to.both-pre-mandated-scenarios.para-2     = Rydych hefyd yn cytuno y bydd ein cosbau newydd yn berthnasol os byddwch yn methu’r dyddiadau cau ar gyfer:
+what-you-are-agreeing-to.both-pre-mandated-scenarios.bullet-6   = cyflwyno’ch Ffurflen Dreth
+what-you-are-agreeing-to.both-pre-mandated-scenarios.bullet-7   = talu’ch bil
+what-you-are-agreeing-to.both-pre-mandated-scenarios.para-3     = Byddwn yn ysgrifennu atoch pan fyddwch yn agored i’r cosbau hyn.
 what-you-are-agreeing-to.both-pre-mandated-scenarios.heading-2  = Optio allan
-what-you-are-agreeing-to.both-pre-mandated-scenarios.para-3     = Mae’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm yn wirfoddol tan 6 Ebrill 2026. Gallwch optio allan o anfon diweddariadau chwarterol. Ond, os ydym wedi rhoi gwybod i chi eich bod yn agored i’r cosbau ar sail pwyntiau, bydd yn parhau i fod yn atebol amdanynt.
-what-you-are-agreeing-to.both-pre-mandated-scenarios.para-4     = O 6 Ebrill 2026 ymlaen, bydd yn rhaid i rai pobl defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm. Ni fyddant yn gallu optio allan. Byddwn yn ysgrifennu atoch os yw hyn yn berthnasol i chi.
+what-you-are-agreeing-to.both-pre-mandated-scenarios.para-4     = Mae’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm yn wirfoddol tan 6 Ebrill 2026. Gallwch optio allan o anfon diweddariadau chwarterol. Ond, os ydym wedi rhoi gwybod i chi eich bod yn agored i’n cosbau newydd, byddwch yn parhau i fod yn agored iddynt.
+what-you-are-agreeing-to.both-pre-mandated-scenarios.para-5     = O 6 Ebrill 2026 ymlaen, bydd yn rhaid i rai pobl defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm. Ni fyddant yn gallu optio allan. Byddwn yn ysgrifennu atoch os yw hyn yn berthnasol i chi.
 
 ##  What You Need To Do Current  ##
 what-you-need-to-do.heading                                      = Beth y mae angen i chi ei wneud
@@ -599,16 +601,23 @@ declined-sign-up-next-year.heading                              = Beth y mae ang
 declined-sign-up-next-year.para                                 = Rydych wedi dewis peidio â chofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm. Parhewch i gyflwyno’ch Ffurflen Dreth Hunanasesiad flynyddol yn ôl yr arfer.
 
 ## Agent what you need to do page ##
+agent.what-you-need-to-do.title                                                = Beth y mae angen i chi ei wneud
 agent.what-you-need-to-do.heading                                              = Beth y mae angen i chi ei wneud
+agent.what-you-are-agreeing-to.heading                                         = Yr hyn yr ydych yn cytuno iddo
 agent.what-you-need-to-do.caption                                              = {0} | {1}
-agent.what-you-need-to-do.voluntary-and-eligible.para-1                        = Drwy gofrestru, rydych yn cytuno y byddwch chi neu’ch cleient yn gwneud y canlynol:
-agent.what-you-need-to-do.voluntary-and-eligible.bullet-1                      = Cofnodi incwm a threuliau gan ddefnyddio meddalwedd sy’n cydweddu.
-agent.what-you-need-to-do.voluntary-and-eligible.bullet-2                      = Defnyddio meddalwedd i anfon diweddariadau chwarterol atom.
-agent.what-you-need-to-do.voluntary-and-eligible.bullet-3                      = Cwblhewch unrhyw ddiweddariadau chwarterol sydd ar goll (os ydych wedi dewis cofrestru ar gyfer y flwyddyn dreth bresennol).
-agent.what-you-need-to-do.voluntary-and-eligible.bullet-4                      = Sanfon datganiad diwedd cyfnod a chyflwyno datganiad terfynol erbyn 31 Ionawr yn dilyn diwedd y flwyddyn dreth.
-agent.what-you-need-to-do.voluntary-and-eligible.bullet-5                      = Cyflwyno datganiad terfynol eich cleient erbyn 31 Ionawr yn dilyn diwedd y flwyddyn dreth.
-agent.what-you-need-to-do.voluntary-and-eligible.inset-text.para               = Mae defnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm yn wirfoddol ar hyn o bryd. Gall eich cleient optio allan a mynd yn ôl i Hunanasesiad ar unrhyw adeg.
-agent.what-you-need-to-do.voluntary-and-eligible.para-2                        = O fis Ebrill 2026 ymlaen, bydd yn orfodol i rai pobl ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, yn dibynnu ar gyfanswm eu hincwm cymwys. Os yw hyn yn berthnasol i’ch cleient, byddwn yn anfon llythyr ato.
+agent.what-you-are-agreeing-to.voluntary-both-years.para-1                     = Os byddwch yn parhau i gofrestru’r cleient hwn yn wirfoddol, rydych yn cytuno i fodloni ei hymrwymiadau treth gan ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm. Mae’r rhain yn cynnwys:
+agent.what-you-are-agreeing-to.voluntary-both-years.bullet-1                   = defnyddio meddalwedd sy’n gweithio gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+agent.what-you-are-agreeing-to.voluntary-both-years.bullet-2                   = cadw cofnodion digidol o incwm a threuliau busnes eich cleient
+agent.what-you-are-agreeing-to.voluntary-both-years.bullet-3                   = defnyddio meddalwedd sy’n cydweddu er mwyn anfon diweddariadau chwarterol atom
+agent.what-you-are-agreeing-to.voluntary-both-years.bullet-4                   = anfon unrhyw ddiweddariadau chwarterol coll - os ydych yn cofrestru’ch cleient rhan o’r ffordd drwy’r flwyddyn dreth bresennol
+agent.what-you-are-agreeing-to.voluntary-both-years.bullet-5                   = gwneud datganiad terfynol eich cleient erbyn 31 Ionawr ar ôl ddiwedd y flwyddyn dreth
+agent.what-you-are-agreeing-to.voluntary-both-years.para-2                     = Rydych hefyd yn cytuno y bydd eich cleient yn cael cosbau ar sail pwyntiau os yw’n methu dyddiadau cau ar gyfer cyflwyno Ffurflen Dreth neu ar gyfer talu bil. Rydych hefyd yn cytuno y bydd ein cosbau newydd yn berthnasol i’ch cleient os bydd yn methu’r dyddiadau cau ar gyfer:
+agent.what-you-are-agreeing-to.voluntary-both-years.bullet-6                   = cyflwyno ei Ffurflen Dreth
+agent.what-you-are-agreeing-to.voluntary-both-years.bullet-7                   = talu ei fil
+agent.what-you-are-agreeing-to.voluntary-both-years.para-3                     = Byddwn yn ysgrifennu at eich cleient pan fydd yn agored i’r cosbau hyn.
+agent.what-you-are-agreeing-to.voluntary-both-years.sub-heading                = Optio allan
+agent.what-you-are-agreeing-to.voluntary-both-years.para-4                     = Mae’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm yn wirfoddol tan 6 Ebrill 2026. Gall eich cleient optio allan o anfon diweddariadau chwarterol. Ond, os ydym wedi rhoi gwybod i’ch cleient ei fod yn agored i’n cosbau newydd, bydd yn parhau i fod yn agored iddynt.
+agent.what-you-are-agreeing-to.voluntary-both-years.para-5                     = O 6 Ebrill 2026 ymlaen, bydd yn rhaid i rai pobl defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm. Ni fyddant yn gallu optio allan. Byddwn yn ysgrifennu at eich cleient os yw hyn yn berthnasol iddynt hwy.
 
 agent.what-you-need-to-do.voluntary-eligible-next-year-only.para-1             = Gall eich cleient gofrestru i ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o 6 Ebrill {0} ymlaen
 agent.what-you-need-to-do.voluntary-eligible-next-year-only.para-2             = Drwy gofrestru, rydych yn cytuno y byddwch chi neu’ch cleient yn gwneud y canlynol:

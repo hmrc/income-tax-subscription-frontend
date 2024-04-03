@@ -170,7 +170,7 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
 
       "use the correct template details" in new TemplateViewTest(
         view = page(eligibleNextYearOnly = true, mandatedCurrentYear = false, mandatedNextYear = false, clientName, clientNino),
-        title = WhatYouNeedToDoMessages.heading,
+        title = WhatYouNeedToDoMessages.title,
         isAgent = true,
         backLink = None,
         hasSignOutLink = true
@@ -228,6 +228,8 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
         }
       }
     }
+
+
     "the user is voluntary and eligible for both years" should {
       def mainContent: Element = document(
         eligibleNextYearOnly = false,
@@ -250,43 +252,69 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
         mainContent.selectHead(".govuk-caption-l").text contains clientNino
       }
 
+      "have a heading" in {
+        mainContent.selectHead("h1").text contains WhatYouNeedToDoMessages.VoluntaryAndEligible.heading
+      }
+
       "have a first paragraph" in {
         mainContent.selectNth("p", 1).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.paraOne
       }
 
       "have a numbered list" which {
-        def numberedList: Element = mainContent.selectHead("ol.govuk-list--number")
+        def numberedList: Element = mainContent.selectHead("ol.govuk-list--bullet")
 
         "has a first point" in {
-          numberedList.selectNth("li", 1).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.NotificationBanner.bulletOne
+          numberedList.selectNth("li", 1).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.bulletOne
         }
 
         "has a second point" in {
-          numberedList.selectNth("li", 2).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.NotificationBanner.bulletTwo
+          numberedList.selectNth("li", 2).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.bulletTwo
         }
 
         "has a third point" in {
-          numberedList.selectNth("li", 3).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.NotificationBanner.bulletThree
+          numberedList.selectNth("li", 3).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.bulletThree
         }
 
-        "has a forth point when feature switch is enabled" in {
-          enable(EOPSContent)
-          numberedList.selectNth("li", 4).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.NotificationBanner.bulletFourFeatureSwitchEnabled
+        "has a forth point " in {
+          numberedList.selectNth("li", 4).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.bulletFour
         }
 
-        "has a forth point when feature switch is disabled" in {
-          disable(EOPSContent)
-          numberedList.selectNth("li", 4).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.NotificationBanner.bulletFour
+        "has a fifth point " in {
+          numberedList.selectNth("li", 5).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.bulletFive
         }
 
-      }
-
-      "have an inset text" in {
-        mainContent.selectHead(".govuk-inset-text").text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.InsetText.para
       }
 
       "have a second paragraph" in {
         mainContent.selectNth("p", 2).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.paraTwo
+      }
+
+      "have a second numbered list" which {
+        def numberedList: Element = mainContent.selectNth("ol", 2)
+
+        "has a sixth point " in {
+          numberedList.selectNth("li", 1).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.bulletSix
+        }
+
+        "has a seventh point " in {
+          numberedList.selectNth("li", 2).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.bulletSeven
+        }
+      }
+
+      "have a third paragraph" in {
+        mainContent.selectNth("p", 3).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.paraThree
+      }
+
+      "have a sub heading" in {
+        mainContent.selectHead("h2").text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.subHeading
+      }
+
+      "have a fourth paragraph" in {
+        mainContent.selectNth("p", 4).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.paraFour
+      }
+
+      "have a fifth paragraph" in {
+        mainContent.selectNth("p", 5).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.paraFive
       }
 
       "have a form" which {
@@ -326,6 +354,7 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
   }
 
   object WhatYouNeedToDoMessages {
+    val title: String = "What you need to do"
     val heading: String = "What you need to do"
 
     object NotificationBanner {
@@ -379,23 +408,20 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
     }
 
     object VoluntaryAndEligible {
-      val paraOne: String = "By signing up you agree that either you or your client will:"
-
-      object NotificationBanner {
-        val bulletOne: String = "Record income and expenses using compatible software."
-        val bulletTwo: String = "Use software to send us quarterly updates."
-        val bulletThree: String = "Complete any missing quarterly updates (if you have chosen to sign up for the current tax year)."
-        val bulletFour: String = "Send an end of period statement and submit a final declaration by 31 January following the end of the tax year."
-        val bulletFourFeatureSwitchEnabled: String = "Submit your client’s final declaration by 31 January following the end of the tax year."
-        val bulletFive: String = "Tell HMRC if they stop trading or start a new business."
-      }
-
-      object InsetText {
-        val para: String = "Using Making Tax Digital for Income Tax is currently voluntary. Your client can opt out and go back to Self Assessment at any time."
-      }
-
-      val paraTwo: String = "It will be compulsory for some people to use Making Tax Digital for Income Tax from April 2026," +
-        " depending on their total qualifying income. If this applies to your client, we’ll send them a letter."
+      val heading: String = "What you are agreeing to"
+      val paraOne: String = "If you continue to voluntarily sign up this client, you’re agreeing to meet their tax obligations using Making Tax Digital for Income Tax. These include:"
+      val bulletOne: String = "using software that works with Making Tax Digital for Income Tax"
+      val bulletTwo: String = "keeping digital records of your client’s business income and expenses"
+      val bulletThree: String = "using compatible software to send us quarterly updates"
+      val bulletFour: String = "sending any missed quarterly updates - if you’re signing up your client part way through the current tax year"
+      val bulletFive: String = "making their final declaration by 31 January after the end of the tax year"
+      val paraTwo: String = "You’re also agreeing that our new penalties will apply to your client if they miss deadlines for:"
+      val bulletSix: String = "submitting their tax return"
+      val bulletSeven: String = "paying their bill"
+      val paraThree: String = "We’ll write to your client when they’re liable for these penalties."
+      val subHeading: String = "Opting out"
+      val paraFour: String = "Making Tax Digital for Income Tax is voluntary until 6 April 2026. Your client can opt out of sending quarterly updates. But if we’ve told your client they’re liable for our new penalties, they’ll continue to be liable for them."
+      val paraFive: String = "From 6 April 2026, some people will need to use Making Tax Digital for Income Tax. They will not be able to opt out. We’ll write to your client if this applies to them."
     }
 
     object MandatedAndEligibleForNextYearOnly {

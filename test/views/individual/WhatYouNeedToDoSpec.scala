@@ -50,14 +50,17 @@ class WhatYouNeedToDoSpec extends ViewSpec {
     val bulletThree: String = "using compatible software to send us quarterly updates"
     val bulletFour: String = "sending any missed quarterly updates - if you’re signing up part way through the current tax year"
     val bulletFive: String = "making your final declaration by 31 January after the end of the tax year"
-    val bulletSix: String = "paying your bill"
 
-    val paraTwo: String = "You’re also agreeing to get points-based penalties if you miss deadlines for submitting your tax return or paying your bill. We’ll write to you when you’re liable for these penalties."
+    val paraTwo: String = "You’re also agreeing that our new penalties will apply if you miss deadlines for:"
+    val bulletSix: String = "submitting your tax return"
+    val bulletSeven: String = "paying your bill"
+
+    val paraThree: String = "We’ll write to you when you’re liable for these penalties."
 
     val subHeading: String = "Opting out"
 
-    val paraThree: String = "Making Tax Digital for Income Tax is voluntary until 6 April 2026. You can opt out of sending quarterly updates. But if we’ve told you that you’re liable for the points-based penalties, you’ll continue to be liable for them."
-    val paraFour: String = "From 6 April 2026, some people will need to use Making Tax Digital for Income Tax. They will not be able to opt out. We’ll write to you if this applies to you."
+    val paraFour: String = "Making Tax Digital for Income Tax is voluntary until 6 April 2026. You can opt out of sending quarterly updates. But if we’ve told you that you’re liable for our new penalties, you’ll continue to be liable for them."
+    val paraFive: String = "From 6 April 2026, some people will need to use Making Tax Digital for Income Tax. They will not be able to opt out. We’ll write to you if this applies to you."
   }
 
   object NextYearOnlyWhatYouNeedToDoMessages {
@@ -155,30 +158,38 @@ class WhatYouNeedToDoSpec extends ViewSpec {
       "has a forth point" in {
         numberedList.selectNth("li", 4).text mustBe WhatYouNeedToDoMessages.bulletFour
       }
-
-      "has a fifth point" in {
-        numberedList.selectNth("li", 5).text mustBe WhatYouNeedToDoMessages.bulletFive
-      }
-
-      "has a sixth point" in {
-        numberedList.selectNth("li", 6).text mustBe WhatYouNeedToDoMessages.bulletSix
-      }
     }
 
     "have a second paragraph" in {
       document(false).mainContent.selectNth("p", 2).text mustBe WhatYouNeedToDoMessages.paraTwo
     }
 
-    "has a sub heading" in {
-      document(false).mainContent.selectHead("h2").text mustBe WhatYouNeedToDoMessages.subHeading
+    "has a second numbered list" which {
+      def numberedList: Element = document(onlyNextYear = false).mainContent.selectNth("ol", 2)
+
+      "has a fifth point" in {
+        numberedList.selectNth("li", 1).text mustBe WhatYouNeedToDoMessages.bulletSix
+      }
+
+      "has a sixth point" in {
+        numberedList.selectNth("li", 2).text mustBe WhatYouNeedToDoMessages.bulletSeven
+      }
     }
 
     "have a third paragraph" in {
       document(false).mainContent.selectNth("p", 3).text mustBe WhatYouNeedToDoMessages.paraThree
     }
 
+    "has a sub heading" in {
+      document(false).mainContent.selectHead("h2").text mustBe WhatYouNeedToDoMessages.subHeading
+    }
+
     "have a fourth paragraph" in {
       document(false).mainContent.selectNth("p", 4).text mustBe WhatYouNeedToDoMessages.paraFour
+    }
+
+    "have a fifth paragraph" in {
+      document(false).mainContent.selectNth("p", 5).text mustBe WhatYouNeedToDoMessages.paraFive
     }
   }
 
