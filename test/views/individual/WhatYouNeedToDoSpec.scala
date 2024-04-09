@@ -37,12 +37,16 @@ class WhatYouNeedToDoSpec extends ViewSpec {
 
   def pageNextYearOnlyAndMandated(nextYearMandated: Boolean): HtmlFormat.Appendable = whatYouNeedToDo(testCall, onlyNextYear = true, mandatedCurrentYear = false, mandatedNextYear = nextYearMandated)
 
+  def pageVoluntaryNextYear(onlyNextYear: Boolean): HtmlFormat.Appendable = whatYouNeedToDo(testCall, onlyNextYear = true, mandatedCurrentYear = false, mandatedNextYear = false)
+
   def documentCurrentMandated(currentYearMandated: Boolean): Document = Jsoup.parse(pageCurrentMandated(currentYearMandated).body)
 
   def documentNextYearOnlyAndMandated(nextYearMandated: Boolean): Document = Jsoup.parse(pageNextYearOnlyAndMandated(nextYearMandated).body)
 
+  def documentVoluntaryNextYear(onlyNextYear: Boolean): Document = Jsoup.parse(page(onlyNextYear).body)
+
   object WhatYouNeedToDoMessages {
-    val title: String = "What you need to do"
+    val title: String = "What you are agreeing to"
     val heading: String = "What you are agreeing to"
     val paraOne: String = "If you continue to sign up, you’re agreeing to meet your tax obligations using Making Tax Digital for Income Tax. These include:"
     val bulletOne: String = "using software that works with Making Tax Digital for Income Tax"
@@ -64,7 +68,7 @@ class WhatYouNeedToDoSpec extends ViewSpec {
   }
 
   object NextYearOnlyWhatYouNeedToDoMessages {
-    val heading: String = "What you need to do"
+    val heading: String = "What you are agreeing to"
     val paraOne: String = s"You can sign up to use Making Tax Digital for Income Tax from 6 April ${AccountingPeriodUtil.getCurrentTaxEndYear}."
     val paraTwo: String = "By taking part you agree to:"
 
@@ -87,7 +91,7 @@ class WhatYouNeedToDoSpec extends ViewSpec {
 
 
   object WhatYouNeedToDoMandatedCurrent {
-    val heading: String = "What you need to do"
+    val heading: String = "What you are agreeing to"
     val paraOne: String = "Based on your previous returns, you need to sign up for Making Tax Digital for Income Tax."
     val paraTwo: String = "By signing up you agree to:"
 
@@ -108,7 +112,7 @@ class WhatYouNeedToDoSpec extends ViewSpec {
   }
 
   object WhatYouNeedToDoMandatedAndEligibleForNextYearOnly {
-    val heading: String = "What you need to do"
+    val heading: String = "What you are agreeing to"
     val currentTaxYearEndDate: Int = AccountingPeriodUtil.getCurrentTaxEndYear
     val paraOne = s"You can sign up to use Making Tax Digital for Income Tax from 6 April $currentTaxYearEndDate."
     val paraTwo = "By signing up you agree to:"
@@ -120,6 +124,28 @@ class WhatYouNeedToDoSpec extends ViewSpec {
       val bulletTwo: String = "Use your compatible software to send us quarterly updates."
       val bulletThree: String = s"Send an end of period statement and submit your final declaration by $finalDeclarationDate."
     }
+  }
+
+  object VoluntaryNextYearOnly {
+    val title: String = "What you are agreeing to"
+    val heading: String = "What you are agreeing to"
+
+    val paraOne: String = "If you continue to sign up, you need to submit your Self Assessment tax returns as normal for the current tax year."
+    val paraTwo: String = "From the tax year starting on 6 April 2025, you’re agreeing to:"
+    val bulletOne: String = "use software that works with Making Tax Digital for Income Tax"
+    val bulletTwo: String = "keep digital records of your business income and expenses"
+    val bulletThree: String = "use compatible software to send us quarterly updates"
+    val bulletFour: String = "make your final declaration by 31 January after the end of the tax year"
+
+    val paraThree: String = "You’re also agreeing that our new penalties will apply if you miss deadlines for:"
+    val bulletFive: String = "submitting your tax return"
+    val bulletSix: String = "paying your bill"
+
+    val paraFour: String = "We’ll write to you when you’re liable for these penalties."
+
+    val subHeading: String = "Opting out"
+    val paraFive: String = "Making Tax Digital for Income Tax is voluntary until 6 April 2026. You can opt out of sending quarterly updates. But if we’ve told you that you’re liable for our new penalties, you’ll continue to be liable for them."
+    val paraSix: String = "From 6 April 2026, some people will need to use Making Tax Digital for Income Tax. They will not be able to opt out. We’ll write to you if this applies to you."
   }
 
   "WhatYouNeedToDo" must {
@@ -193,7 +219,79 @@ class WhatYouNeedToDoSpec extends ViewSpec {
     }
   }
 
-  // Non Mandated next year only test to be incuded here
+  "WhatYouNeedToDoVoluntaryNextYear" must {
+    "use the correct template details" in new TemplateViewTest(
+      view = pageVoluntaryNextYear(true),
+      title = VoluntaryNextYearOnly.title,
+      isAgent = false,
+      backLink = None,
+      hasSignOutLink = true
+    )
+
+    "have a page heading" in {
+      documentVoluntaryNextYear(true).mainContent.selectHead("h1").text mustBe VoluntaryNextYearOnly.heading
+    }
+
+    "have a first paragraph" in {
+      documentVoluntaryNextYear(true).mainContent.selectNth("p", 1).text mustBe VoluntaryNextYearOnly.paraOne
+    }
+
+    "have a second paragraph" in {
+      documentVoluntaryNextYear(true).mainContent.selectNth("p", 2).text mustBe VoluntaryNextYearOnly.paraTwo
+    }
+
+    "has a numbered list" which {
+      def numberedList: Element = documentVoluntaryNextYear(true).mainContent.selectHead("ol.govuk-list--bullet")
+
+      "has a first point" in {
+        numberedList.selectNth("li", 1).text mustBe VoluntaryNextYearOnly.bulletOne
+      }
+
+      "has a second point" in {
+        numberedList.selectNth("li", 2).text mustBe VoluntaryNextYearOnly.bulletTwo
+      }
+
+      "has a third point" in {
+        numberedList.selectNth("li", 3).text mustBe VoluntaryNextYearOnly.bulletThree
+      }
+
+      "has a fourth point" in {
+        numberedList.selectNth("li", 4).text mustBe VoluntaryNextYearOnly.bulletFour
+      }
+    }
+
+    "have a third paragraph" in {
+      documentVoluntaryNextYear(true).mainContent.selectNth("p", 3).text mustBe VoluntaryNextYearOnly.paraThree
+    }
+
+    "has a second numbered list" which {
+      def numberedList: Element = documentVoluntaryNextYear(true).mainContent.selectNth("ol", 2)
+
+      "has a fifth point" in {
+        numberedList.selectNth("li", 1).text mustBe VoluntaryNextYearOnly.bulletFive
+      }
+
+      "has a sixth point" in {
+        numberedList.selectNth("li", 2).text mustBe VoluntaryNextYearOnly.bulletSix
+      }
+    }
+
+    "have a fourth paragraph" in {
+      documentVoluntaryNextYear(true).mainContent.selectNth("p", 4).text mustBe VoluntaryNextYearOnly.paraFour
+    }
+
+    "has a sub heading" in {
+      documentVoluntaryNextYear(true).mainContent.selectHead("h2").text mustBe VoluntaryNextYearOnly.subHeading
+    }
+
+    "have a fifth paragraph" in {
+      documentVoluntaryNextYear(true).mainContent.selectNth("p", 5).text mustBe VoluntaryNextYearOnly.paraFive
+    }
+
+    "have a sixth paragraph" in {
+      documentVoluntaryNextYear(true).mainContent.selectNth("p", 6).text mustBe VoluntaryNextYearOnly.paraSix
+    }
+  }
 
   "WhatYouNeedToDoMandatedCurrent" must {
 

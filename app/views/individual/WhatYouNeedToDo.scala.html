@@ -44,7 +44,8 @@
     <h1 class="govuk-heading-xl">@messages("what-you-need-to-do.heading")</h1>
     @currentYearMandated
   } else if (onlyNextYear) {
-    @* New what you need to do content goes here for Voluntary next year only scenario. *@
+    <h1 class="govuk-heading-xl">@messages("individual.voluntary-what-you-need-to-do.heading")</h1>
+    @voluntaryNextYear
   } else {
     <h1 class="govuk-heading-xl">@messages("what-you-are-agreeing-to.both-pre-mandated-scenarios.heading-1")</h1>
     @nonMandatedEitherYear
@@ -109,6 +110,31 @@
   </ol>
 }
 
+@voluntaryNextYear = {
+<p class="govuk-body">@messages("individual.voluntary-what-you-need-to-do.para-1")</p>
+<p class="govuk-body">@messages("individual.voluntary-what-you-need-to-do.para-2", languageUtils.Dates.formatDate(AccountingPeriodUtil.getNextTaxYear.startDate.toLocalDate))</p>
+
+<ol class="govuk-list govuk-list--bullet">
+    <li>@messages("individual.voluntary-what-you-need-to-do.bullet-1")</li>
+    <li>@messages("individual.voluntary-what-you-need-to-do.bullet-2")</li>
+    <li>@messages("individual.voluntary-what-you-need-to-do.bullet-3")</li>
+    <li>@messages("individual.voluntary-what-you-need-to-do.bullet-4")</li>
+</ol>
+
+<p class="govuk-body">@messages("individual.voluntary-what-you-need-to-do.para-3")</p>
+
+<ol class="govuk-list govuk-list--bullet">
+    <li>@messages("individual.voluntary-what-you-need-to-do.bullet-5")</li>
+    <li>@messages("individual.voluntary-what-you-need-to-do.bullet-6")</li>
+</ol>
+
+<p class="govuk-body">@messages("individual.voluntary-what-you-need-to-do.para-4")</p>
+
+<h2 class="govuk-heading-m">@messages("individual.voluntary-what-you-need-to-do.heading-2")</h2>
+
+<p class="govuk-body">@messages("individual.voluntary-what-you-need-to-do.para-5")</p>
+<p class="govuk-body">@messages("individual.voluntary-what-you-need-to-do.para-6")</p>
+}
 
 
 
