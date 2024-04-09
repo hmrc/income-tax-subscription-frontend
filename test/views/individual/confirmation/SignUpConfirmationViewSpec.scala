@@ -167,20 +167,8 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           }
         }
 
-        "has Send an end of period statement sub section" which {
-          def endOfPeriodSection: Element = mainContent().selectHead("ol > li:nth-of-type(2)")
-
-          "contains a heading" in {
-            endOfPeriodSection.selectHead("h3").text() contains SignUpConfirmationMessages.whenYouStartSection.endOfPeriod.heading
-          }
-
-          "contains end of period paragraph" in {
-            endOfPeriodSection.selectHead("p").text() mustBe SignUpConfirmationMessages.whenYouStartSection.endOfPeriod.thisYearParagraph
-          }
-        }
-
         "has Submit a final declaration sub section" which {
-          def finalDeclarationSection: Element = mainContent().selectHead("ol > li:nth-of-type(3)")
+          def finalDeclarationSection: Element = mainContent().selectHead("ol > li:nth-of-type(2)")
 
           "contains a heading" in {
             finalDeclarationSection.selectHead("h3").text() contains SignUpConfirmationMessages.whenYouStartSection.finalDeclaration.heading
@@ -214,22 +202,22 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       "contains a Report previous tax year section in third position" which {
 
         "has a heading" in {
-          mainContent().selectNth("h3", 5).text() mustBe SignUpConfirmationMessages.reportPreviousTax.heading
+          mainContent().selectNth("h3", 4).text() mustBe SignUpConfirmationMessages.reportPreviousTax.heading
         }
 
         "has a paragraph" in {
-          mainContent().selectNth("p", 11).text() mustBe SignUpConfirmationMessages.reportPreviousTax.paragraphThisYear
+          mainContent().selectNth("p", 10).text() mustBe SignUpConfirmationMessages.reportPreviousTax.paragraphThisYear
         }
       }
 
       "contains a Pay you tax section in fourth position" which {
 
         "has a heading" in {
-          mainContent().selectNth("h3", 6).text() mustBe SignUpConfirmationMessages.payYourTax.heading
+          mainContent().selectNth("h3", 5).text() mustBe SignUpConfirmationMessages.payYourTax.heading
         }
 
         "has a paragraph" in {
-          mainContent().selectNth("p", 12).text() mustBe SignUpConfirmationMessages.payYourTax.paraOne
+          mainContent().selectNth("p", 11).text() mustBe SignUpConfirmationMessages.payYourTax.paraOne
         }
 
         "contains a bullet list of payment types" which {
@@ -261,7 +249,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           val link = mainContent().selectNth("a", 5)
           link.attr("href") mustBe "https://www.gov.uk/pay-self-assessment-tax-bill"
           link.text mustBe SignUpConfirmationMessages.payYourTax.linkText
-          mainContent().selectNth("p",13).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
+          mainContent().selectNth("p",12).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
         }
       }
 
@@ -398,20 +386,8 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           }
         }
 
-        "has Send an end of period statement sub section" which {
-          def endOfPeriodSection: Element = mainContent().selectHead("ol > li:nth-of-type(2)")
-
-          "contains a heading" in {
-            endOfPeriodSection.selectHead("h3").text() contains SignUpConfirmationMessages.whenYouStartSection.endOfPeriod.heading
-          }
-
-          "contains end of period paragraph" in {
-            endOfPeriodSection.selectHead("p").text() mustBe SignUpConfirmationMessages.whenYouStartSection.endOfPeriod.nextYearParagraph
-          }
-        }
-
         "has Submit a final declaration sub section" which {
-          def finalDeclarationSection: Element = mainContent().selectHead("ol > li:nth-of-type(3)")
+          def finalDeclarationSection: Element = mainContent().selectHead("ol > li:nth-of-type(2)")
 
           "contains a heading" in {
             finalDeclarationSection.selectHead("h3").text() contains SignUpConfirmationMessages.whenYouStartSection.finalDeclaration.heading
@@ -445,22 +421,22 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       "contains a Report previous tax year section in third position" which {
 
         "has a heading" in {
-          mainContent().selectNth("h3", 5).text() mustBe SignUpConfirmationMessages.reportPreviousTax.heading
+          mainContent().selectNth("h3", 4).text() mustBe SignUpConfirmationMessages.reportPreviousTax.heading
         }
 
         "has a paragraph" in {
-          mainContent().selectNth("p", 11).text() mustBe SignUpConfirmationMessages.reportPreviousTax.paragraphNextYear
+          mainContent().selectNth("p", 10).text() mustBe SignUpConfirmationMessages.reportPreviousTax.paragraphNextYear
         }
       }
 
       "contains a Pay your tax section in fourth position" which {
 
         "has a heading" in {
-          mainContent().selectNth("h3", 6).text() mustBe SignUpConfirmationMessages.payYourTax.heading
+          mainContent().selectNth("h3", 5).text() mustBe SignUpConfirmationMessages.payYourTax.heading
         }
 
         "has a paragraph" in {
-          mainContent().selectNth("p", 12).text() mustBe SignUpConfirmationMessages.payYourTax.paraOne
+          mainContent().selectNth("p", 11).text() mustBe SignUpConfirmationMessages.payYourTax.paraOne
         }
 
         "contains a bullet list of payment types" which {
@@ -492,7 +468,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           val link = mainContent().selectNth("a", 5)
           link.attr("href") mustBe "https://www.gov.uk/pay-self-assessment-tax-bill"
           link.text mustBe SignUpConfirmationMessages.payYourTax.linkText
-          mainContent().selectNth("p",13).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
+          mainContent().selectNth("p",12).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
         }
       }
 
@@ -622,20 +598,8 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           }
         }
 
-        "has Send an end of period statement sub section" which {
-          def endOfPeriodSection: Element = mainContent().selectHead("ol > li:nth-of-type(2)")
-
-          "contains a heading" in {
-            endOfPeriodSection.selectHead("h3").text() contains SignUpConfirmationMessages.whenYouStartSection.endOfPeriod.heading
-          }
-
-          "contains end of period paragraph" in {
-            endOfPeriodSection.selectHead("p").text() mustBe SignUpConfirmationMessages.whenYouStartSection.endOfPeriod.nextYearParagraph
-          }
-        }
-
         "has Submit a final declaration sub section" which {
-          def finalDeclarationSection: Element = mainContent().selectHead("ol > li:nth-of-type(3)")
+          def finalDeclarationSection: Element = mainContent().selectHead("ol > li:nth-of-type(2)")
 
           "contains a heading" in {
             finalDeclarationSection.selectHead("h3").text() contains SignUpConfirmationMessages.whenYouStartSection.finalDeclaration.heading
@@ -669,22 +633,22 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       "contains a Report previous tax year section in third position" which {
 
         "has a heading" in {
-          mainContent().selectNth("h3", 5).text() mustBe SignUpConfirmationMessages.reportPreviousTax.heading
+          mainContent().selectNth("h3", 4).text() mustBe SignUpConfirmationMessages.reportPreviousTax.heading
         }
 
         "has a paragraph" in {
-          mainContent().selectNth("p", 11).text() mustBe SignUpConfirmationMessages.reportPreviousTax.paragraphNextYear
+          mainContent().selectNth("p", 10).text() mustBe SignUpConfirmationMessages.reportPreviousTax.paragraphNextYear
         }
       }
 
       "contains a Pay you tax section in fourth position" which {
 
         "has a heading" in {
-          mainContent().selectNth("h3", 6).text() mustBe SignUpConfirmationMessages.payYourTax.heading
+          mainContent().selectNth("h3", 5).text() mustBe SignUpConfirmationMessages.payYourTax.heading
         }
 
         "has a paragraph" in {
-          mainContent().selectNth("p", 12).text() mustBe SignUpConfirmationMessages.payYourTax.paraOne
+          mainContent().selectNth("p", 11).text() mustBe SignUpConfirmationMessages.payYourTax.paraOne
         }
 
         "contains a bullet list of payment types" which {
@@ -716,7 +680,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           val link = mainContent().selectNth("a", 5)
           link.attr("href") mustBe "https://www.gov.uk/pay-self-assessment-tax-bill"
           link.text mustBe SignUpConfirmationMessages.payYourTax.linkText
-          mainContent().selectNth("p",13).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
+          mainContent().selectNth("p",12).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
         }
       }
 
@@ -850,20 +814,8 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           }
         }
 
-        "has Send an end of period statement sub section" which {
-          def endOfPeriodSection: Element = mainContent().selectHead("ol > li:nth-of-type(2)")
-
-          "contains a heading" in {
-            endOfPeriodSection.selectHead("h3").text() contains SignUpConfirmationMessages.whenYouStartSection.endOfPeriod.heading
-          }
-
-          "contains end of period paragraph" in {
-            endOfPeriodSection.selectHead("p").text() mustBe SignUpConfirmationMessages.whenYouStartSection.endOfPeriod.thisYearParagraph
-          }
-        }
-
         "has Submit a final declaration sub section" which {
-          def finalDeclarationSection: Element = mainContent().selectHead("ol > li:nth-of-type(3)")
+          def finalDeclarationSection: Element = mainContent().selectHead("ol > li:nth-of-type(2)")
 
           "contains a heading" in {
             finalDeclarationSection.selectHead("h3").text() contains SignUpConfirmationMessages.whenYouStartSection.finalDeclaration.heading
@@ -897,22 +849,22 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       "contains a Report previous tax year section in third position" which {
 
         "has a heading" in {
-          mainContent().selectNth("h3", 5).text() mustBe SignUpConfirmationMessages.reportPreviousTax.heading
+          mainContent().selectNth("h3", 4).text() mustBe SignUpConfirmationMessages.reportPreviousTax.heading
         }
 
         "has a paragraph" in {
-          mainContent().selectNth("p", 11).text() mustBe SignUpConfirmationMessages.reportPreviousTax.paragraphThisYear
+          mainContent().selectNth("p", 10).text() mustBe SignUpConfirmationMessages.reportPreviousTax.paragraphThisYear
         }
       }
 
       "contains a Pay you tax section in fourth position" which {
 
         "has a heading" in {
-          mainContent().selectNth("h3", 6).text() mustBe SignUpConfirmationMessages.payYourTax.heading
+          mainContent().selectNth("h3", 5).text() mustBe SignUpConfirmationMessages.payYourTax.heading
         }
 
         "has a paragraph" in {
-          mainContent().selectNth("p", 12).text() mustBe SignUpConfirmationMessages.payYourTax.paraOne
+          mainContent().selectNth("p", 11).text() mustBe SignUpConfirmationMessages.payYourTax.paraOne
         }
 
         "contains a bullet list of payment types" which {
@@ -944,7 +896,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           val link = mainContent().selectNth("a", 5)
           link.attr("href") mustBe "https://www.gov.uk/pay-self-assessment-tax-bill"
           link.text mustBe SignUpConfirmationMessages.payYourTax.linkText
-          mainContent().selectNth("p",13).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
+          mainContent().selectNth("p",12).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
         }
       }
 
@@ -1012,14 +964,6 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         val deadline = "Deadline"
 
         val warningMessage = "You must make updates for any quarters you’ve missed."
-      }
-
-      object endOfPeriod {
-        val heading = "Send an end of period statement"
-        val thisYearDate: String = AccountingPeriodUtil.getEndOfPeriodStatementDate(false).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
-        val nextYearDate: String = AccountingPeriodUtil.getEndOfPeriodStatementDate(true).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
-        val thisYearParagraph = s"You must submit an end of period statement using your software by $thisYearDate."
-        val nextYearParagraph = s"You must submit an end of period statement using your software by $nextYearDate."
       }
 
       object finalDeclaration {

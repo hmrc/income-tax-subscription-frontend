@@ -32,6 +32,8 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
   private val accountingPeriodService = app.injector.instanceOf[AccountingPeriodService]
 
   val taxYearEnd: Int = accountingPeriodService.currentTaxYear
+  val taxYearPrevious: Int = taxYearEnd - 1
+  val taxYearNext: Int = taxYearEnd + 1
 
   private val whatYearToSignUp: WhatYearToSignUp = app.injector.instanceOf[WhatYearToSignUp]
   private val fullName = "FirstName LastName"
@@ -235,7 +237,7 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
     val detailsPara2 = "The deadline for both quarterly period dates are the same."
     val updatesHeader = "Quarterly update"
     val deadlineHeader = "Deadline"
-    val paragraph1 = "You or your client can start sending quarterly updates during the current tax year 6 April 2023 to 5 April 2024 or the next tax year 6 April 2024 to 5 April 2025."
+    val paragraph1 = s"You or your client can start sending quarterly updates during the current tax year 6 April ${taxYearPrevious.toString} to 5 April ${taxYearEnd.toString} or the next tax year 6 April ${taxYearEnd.toString} to 5 April ${taxYearNext.toString}."
     val warningText = "! Warning Your client will not be penalised if updates are sent mid-way through the tax year. However, updates need to be made for any missed quarters."
     val paragraph2 = "Submit quarterly updates by the deadline"
     val radioSectionHeading: String = "Select tax year"

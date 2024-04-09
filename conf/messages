@@ -382,9 +382,6 @@ sign-up-confirmation.quarterly-updates.table.caption                 = Quarterly
 sign-up-confirmation.quarterly-updates.link-text                     = Learn more about quarterly updates
 sign-up-confirmation.quarterly-updates.warning.para                  = You must make updates for any quarters you’ve missed.
 
-sign-up-confirmation.end-of-period-statement.heading                 = Send an end of period statement
-sign-up-confirmation.end-of-period-statement.para                    = You must submit an end of period statement using your software by {0}.
-
 sign-up-confirmation.final-declaration.heading                       = Submit a final declaration
 sign-up-confirmation.final-declaration.para1                         = Other income sources should be declared, such as income from employment, dividends or savings. You need to report this income using either your:
 sign-up-confirmation.final-declaration.bullet1                       = compatible software (if it has the functionality)
