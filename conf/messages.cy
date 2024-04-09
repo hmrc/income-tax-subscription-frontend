@@ -381,9 +381,6 @@ sign-up-confirmation.quarterly-updates.table.caption                 = Diweddari
 sign-up-confirmation.quarterly-updates.link-text                     = Dysgwch ragor am ddiweddariadau chwarterol.
 sign-up-confirmation.quarterly-updates.warning.para                  = Mae’n rhai i chi gyflwyno diweddariadau ar gyfer unrhyw chwarterau rydych wedi’u methu.
 
-sign-up-confirmation.end-of-period-statement.heading                 = Anfon datganiad diwedd cyfnod
-sign-up-confirmation.end-of-period-statement.para                    = Mae’n rhaid i chi gyflwyno datganiad diwedd cyfnod gan ddefnyddio’ch meddalwedd erbyn {0}.
-
 sign-up-confirmation.final-declaration.heading                       = Cyflwyno datganiad terfynol
 sign-up-confirmation.final-declaration.para1                         = Dylid datgan ffynhonellau incwm eraill, megis incwm o gyflogaeth, difidendau neu gynilion. Mae angen i chi rhoi gwybod am yr incwm hwn gan ddefnyddio naill ai:
 sign-up-confirmation.final-declaration.bullet1                       = eich meddalwedd sy’n cydweddu (os oes ganddi’r swyddogaeth honno)

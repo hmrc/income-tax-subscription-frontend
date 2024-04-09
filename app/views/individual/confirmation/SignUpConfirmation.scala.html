@@ -56,7 +56,6 @@
   @whenYouStart
   <ol class="govuk-list govuk-list--number govuk-list--spaced">
     @quarterlyUpdates
-    @endOfPeriod
     @finalDeclaration
   </ol>
   @reportPreviousTaxYear
@@ -131,21 +130,6 @@
       messages("sign-up-confirmation.quarterly-updates.link-text"),
       Some("https://www.gov.uk/guidance/using-making-tax-digital-for-income-tax#sending-quarterly-updates-using-compatible-software")
     ))
-  </li>
-}
-
-@endOfPeriod = {
-  <li>
-    @{
-      val statementDueDate = languageUtils.Dates.formatDate(AccountingPeriodUtil.getEndOfPeriodStatementDate(taxYearSelectionIsNext))
-      if (taxYearSelectionIsNext) {
-        <h3 class="govuk-heading-s">{messages("sign-up-confirmation.end-of-period-statement.heading")}</h3>
-        <p class="govuk-body">{messages("sign-up-confirmation.end-of-period-statement.para", statementDueDate)}</p>
-      } else {
-        <h3 class="govuk-heading-s">{messages("sign-up-confirmation.end-of-period-statement.heading")}</h3>
-          <p class="govuk-body">{messages("sign-up-confirmation.end-of-period-statement.para", statementDueDate)}</p>
-      }
-    }
   </li>
 }
 

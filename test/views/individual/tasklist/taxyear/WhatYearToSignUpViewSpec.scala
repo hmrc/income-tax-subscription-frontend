@@ -30,7 +30,10 @@ import views.html.individual.tasklist.taxyear.WhatYearToSignUp
 class WhatYearToSignUpViewSpec extends ViewSpec {
 
   private val accountingPeriodService = app.injector.instanceOf[AccountingPeriodService]
+
   val taxYearEnd: Int = accountingPeriodService.currentTaxYear
+  val taxYearPrevious: Int = taxYearEnd - 1
+  val taxYearNext: Int = taxYearEnd + 1
 
   val whatYearToSignUp: WhatYearToSignUp = app.injector.instanceOf[WhatYearToSignUp]
 
@@ -209,7 +212,7 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
     val returnTableCaption = "Submit quarterly updates by the deadline"
     val updatesHeader = "Quarterly update"
     val deadlineHeader = "Deadline"
-    val paragraph = "You can start sending quarterly updates during the current tax year (6 April 2023 to 5 April 2024) or the next tax year (6 April 2024 to 5 April 2025)."
+    val paragraph = s"You can start sending quarterly updates during the current tax year (6 April ${taxYearPrevious} to 5 April ${taxYearEnd}) or the next tax year (6 April ${taxYearEnd} to 5 April ${taxYearNext})."
     val warningText = "Warning You will not be penalised if you start sending updates mid-way through the tax year. However, you will need to make updates for the quarters you’ve missed."
 
     val currentYearOptionHint = s"Send a final declaration by the 31 January ${(taxYearEnd + 1).toString}."
