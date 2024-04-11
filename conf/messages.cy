@@ -142,6 +142,23 @@ what-you-are-agreeing-to.both-pre-mandated-scenarios.heading-2  = Optio allan
 what-you-are-agreeing-to.both-pre-mandated-scenarios.para-4     = Mae’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm yn wirfoddol tan 6 Ebrill 2026. Gallwch optio allan o anfon diweddariadau chwarterol. Ond, os ydym wedi rhoi gwybod i chi eich bod yn agored i’n cosbau newydd, byddwch yn parhau i fod yn agored iddynt.
 what-you-are-agreeing-to.both-pre-mandated-scenarios.para-5     = O 6 Ebrill 2026 ymlaen, bydd yn rhaid i rai pobl defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm. Ni fyddant yn gallu optio allan. Byddwn yn ysgrifennu atoch os yw hyn yn berthnasol i chi.
 
+##  What You Need To Do (Voluntary next year only scenario) - Individual ##
+
+individual.voluntary-what-you-need-to-do.heading                = Yr hyn yr ydych yn cytuno iddo
+individual.voluntary-what-you-need-to-do.para-1                 = Os byddwch yn parhau i gofrestru, bydd angen i chi gyflwyno eich Ffurflen Dreth Hunanasesiad yn ôl yr arfer ar gyfer y flwyddyn dreth bresennol.
+individual.voluntary-what-you-need-to-do.para-2                 = O’r flwyddyn treth sy’n dechrau ar {0}, rydych yn cytuno i wneud y canlynol:
+individual.voluntary-what-you-need-to-do.bullet-1               = defnyddio meddalwedd sy’n gweithio gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+individual.voluntary-what-you-need-to-do.bullet-2               = cadw cofnodion digidol o holl incwm a threuliau eich busnes
+individual.voluntary-what-you-need-to-do.bullet-3               = defnyddio meddalwedd sy’n cydweddu er mwyn anfon diweddariadau chwarterol atom
+individual.voluntary-what-you-need-to-do.bullet-4               = gwneud eich datganiad terfynol erbyn 31 Ionawr ar ôl ddiwedd y flwyddyn dreth
+individual.voluntary-what-you-need-to-do.para-3                 = Rydych hefyd yn cytuno y bydd ein cosbau newydd yn berthnasol os byddwch yn methu’r dyddiadau cau ar gyfer:
+individual.voluntary-what-you-need-to-do.bullet-5               = cyflwyno’ch Ffurflen Dreth
+individual.voluntary-what-you-need-to-do.bullet-6               = talu’ch bil
+individual.voluntary-what-you-need-to-do.para-4                 = Byddwn yn ysgrifennu atoch pan fyddwch yn agored i’r cosbau hyn.
+individual.voluntary-what-you-need-to-do.heading-2              = Optio allan
+individual.voluntary-what-you-need-to-do.para-5                 = Mae’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm yn wirfoddol tan 6 Ebrill 2026. Gallwch optio allan o anfon diweddariadau chwarterol. Ond, os ydym wedi rhoi gwybod i chi eich bod yn agored i’n cosbau newydd, byddwch yn parhau i fod yn agored iddynt.
+individual.voluntary-what-you-need-to-do.para-6                 = O 6 Ebrill 2026 ymlaen, bydd yn rhaid i rai pobl defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm. Ni fyddant yn gallu optio allan. Byddwn yn ysgrifennu atoch os yw hyn yn berthnasol i chi.
+
 ##  What You Need To Do Current  ##
 what-you-need-to-do.heading                                      = Beth y mae angen i chi ei wneud
 what-you-need-to-do-current.para-1                               = Yn seiliedig ar eich Ffurflenni Treth blaenorol, mae’n rhaid i chi gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
