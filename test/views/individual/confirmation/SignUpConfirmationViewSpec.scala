@@ -976,8 +976,8 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     }
 
     object reportPreviousTax {
-      val thisYear = AccountingPeriodUtil.getCurrentTaxEndYear
-      val nextYear = AccountingPeriodUtil.getNextTaxEndYear
+      val thisYear = AccountingPeriodUtil.getCurrentTaxEndYear - 1
+      val nextYear = AccountingPeriodUtil.getNextTaxEndYear - 1
       val heading = "Report previous tax year"
       val paragraphThisYear = s"You must submit your Self Assessment tax return for the year ended 5 April $thisYear using your HMRC online services account as normal."
       val paragraphNextYear = s"You must submit your Self Assessment tax return for the year ended 5 April $nextYear using your HMRC online services account as normal."
