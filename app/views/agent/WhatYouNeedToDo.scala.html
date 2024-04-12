@@ -55,7 +55,7 @@
     @mandatedAndEligibleNextYearOnlyContent
   } else if (eligibleNextYearOnly) {
     <h1 class="govuk-heading-l">
-      @messages("agent.what-you-need-to-do.heading")
+      @messages("agent.what-you-are-agreeing-to.heading")
     </h1>
     @voluntaryAndEligibleNextYearOnlyContent
   } else {
@@ -99,20 +99,30 @@
 }
 
 @voluntaryAndEligibleNextYearOnlyContent = {
-  <p class="govuk-body">@messages("agent.what-you-need-to-do.voluntary-eligible-next-year-only.para-1", AccountingPeriodUtil.getCurrentTaxEndYear.toString)</p>
-  <p class="govuk-body">@messages("agent.what-you-need-to-do.voluntary-eligible-next-year-only.para-2")</p>
+<p class="govuk-body">@messages("agent.voluntary-what-you-need-to-do.para-1")</p>
+<p class="govuk-body">@messages("agent.voluntary-what-you-need-to-do.para-2", languageUtils.Dates.formatDate(AccountingPeriodUtil.getNextTaxYear.startDate.toLocalDate))</p>
 
-  <ol class="govuk-list govuk-list--number">
-    <li>@messages("agent.what-you-need-to-do.voluntary-eligible-next-year-only.bullet-1")</li>
-    <li>@messages("agent.what-you-need-to-do.voluntary-eligible-next-year-only.bullet-2")</li>
-    @if(featureSwitching.isEnabled(EOPSContent)) {
-      <li>@messages("agent.what-you-need-to-do.voluntary-eligible-next-year-only.bullet-4", languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(true)))</li>
-    } else {
-    <li>@messages("agent.what-you-need-to-do.voluntary-eligible-next-year-only.bullet-3", languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(true)))</li>
-    }
-  </ol>
+<ol class="govuk-list govuk-list--bullet">
+  <li>@messages("agent.voluntary-what-you-need-to-do.bullet-1")</li>
+  <li>@messages("agent.voluntary-what-you-need-to-do.bullet-2")</li>
+  <li>@messages("agent.voluntary-what-you-need-to-do.bullet-3")</li>
+  <li>@messages("agent.voluntary-what-you-need-to-do.bullet-4")</li>
+</ol>
 
-  @govukInsetText(InsetText(content = Text(messages("agent.what-you-need-to-do.voluntary-eligible-next-year-only.inset-text.para", AccountingPeriodUtil.getCurrentTaxEndYear.toString))))
+<p class="govuk-body">@messages("agent.voluntary-what-you-need-to-do.para-3")</p>
+
+<ol class="govuk-list govuk-list--bullet">
+  <li>@messages("agent.voluntary-what-you-need-to-do.bullet-5")</li>
+  <li>@messages("agent.voluntary-what-you-need-to-do.bullet-6")</li>
+</ol>
+
+<p class="govuk-body">@messages("agent.voluntary-what-you-need-to-do.para-4")</p>
+
+<h2 class="govuk-heading-m">@messages("agent.voluntary-what-you-need-to-do.heading-2")</h2>
+
+<p class="govuk-body">@messages("agent.voluntary-what-you-need-to-do.para-5")</p>
+<p class="govuk-body">@messages("agent.voluntary-what-you-need-to-do.para-6")</p>
+
 }
 
 @voluntaryAndEligibleBothYearsContent = {
