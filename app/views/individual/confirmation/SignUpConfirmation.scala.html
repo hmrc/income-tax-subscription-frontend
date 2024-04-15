@@ -165,9 +165,9 @@
 @reportPreviousTaxYear = {
   <h3 class="govuk-heading-s">@messages("sign-up-confirmation.report-previous-tax-year.heading")</h3>
   @if(taxYearSelectionIsNext) {
-    <p class="govuk-body">@messages("sign-up-confirmation.report-previous-tax-year.para", (AccountingPeriodUtil.getNextTaxEndYear - 1).toString)</p>
+    <p class="govuk-body">@messages("sign-up-confirmation.report-previous-tax-year.para", (AccountingPeriodUtil.getCurrentTaxEndYear).toString)</p>
   } else {
-    <p class="govuk-body">@messages("sign-up-confirmation.report-previous-tax-year.para", (AccountingPeriodUtil.getNextTaxEndYear - 2).toString)</p>
+    <p class="govuk-body">@messages("sign-up-confirmation.report-previous-tax-year.para", (AccountingPeriodUtil.getCurrentTaxEndYear - 1).toString)</p>
   }
 }
 
