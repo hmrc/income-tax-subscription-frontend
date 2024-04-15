@@ -181,6 +181,10 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
         mainContent.selectHead(".govuk-caption-l").text contains clientNino
       }
 
+      "have a page heading" in {
+        mainContent.selectHead("h1").text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.heading
+      }
+
       "have a first paragraph" in {
         mainContent.selectNth("p", 1).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.paraOne
       }
@@ -189,43 +193,56 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
         mainContent.selectNth("p", 2).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.paraTwo
       }
 
-      "have a numbered list" which {
-        def numberedList: Element = mainContent.selectHead("ol.govuk-list--number")
+      "has a numbered list" which {
+        def numberedList: Element = mainContent.selectHead("ol.govuk-list--bullet")
 
         "has a first point" in {
-          numberedList.selectNth("li", 1).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.NotificationBanner.bulletOne
+          numberedList.selectNth("li", 1).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.bulletOne
         }
 
         "has a second point" in {
-          numberedList.selectNth("li", 2).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.NotificationBanner.bulletTwo
+          numberedList.selectNth("li", 2).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.bulletTwo
         }
 
-        "has a third point when feature switch is enabled" in {
-          enable(EOPSContent)
-          numberedList.selectNth("li", 3).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.NotificationBanner.bulletThreeFeatureSwitchEnabled
+        "has a third point" in {
+          numberedList.selectNth("li", 3).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.bulletThree
         }
 
-        "has a third point when feature switch is disabled" in {
-          disable(EOPSContent)
-          numberedList.selectNth("li", 3).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.NotificationBanner.bulletThree
+        "has a fourth point" in {
+          numberedList.selectNth("li", 4).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.bulletFour
         }
       }
 
-      "have an inset text" in {
-        mainContent.selectHead(".govuk-inset-text").text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.InsetText.para
+      "have a third paragraph" in {
+        mainContent.selectNth("p", 3).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.paraThree
       }
 
-      "have a form" which {
-        def form: Element = mainContent.selectHead("form")
+      "has a second numbered list" which {
+        def numberedList: Element = mainContent.selectNth("ol", 2)
 
-        "has the correct attributes" in {
-          form.attr("method") mustBe testCall.method
-          form.attr("action") mustBe testCall.url
+        "has a fifth point" in {
+          numberedList.selectNth("li", 1).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.bulletFive
         }
 
-        "has an accept and continue button to submit the form" in {
-          form.selectHead("button").text mustBe WhatYouNeedToDoMessages.acceptAndContinue
+        "has a sixth point" in {
+          numberedList.selectNth("li", 2).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.bulletSix
         }
+      }
+
+      "have a fourth paragraph" in {
+        mainContent.selectNth("p", 4).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.paraFour
+      }
+
+      "has a sub heading" in {
+        mainContent.selectHead("h2").text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.subHeading
+      }
+
+      "have a fifth paragraph" in {
+        mainContent.selectNth("p", 5).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.paraFive
+      }
+
+      "have a sixth paragraph" in {
+        mainContent.selectNth("p", 6).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.paraSix
       }
     }
 
@@ -379,32 +396,24 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
     }
 
     object EligibleNextYearOnly {
-      val paraOne: String = {
-        val year: Int = AccountingPeriodUtil.getCurrentTaxEndYear
-        s"Your client can sign up to use Making Tax Digital for Income Tax from 6 April $year."
-      }
-      val paraTwo: String = "By signing up you agree that either you or your client will:"
+      val heading: String = "What you are agreeing to"
 
-      object NotificationBanner {
-        val bulletOne: String = "Record income and expenses using compatible software."
-        val bulletTwo: String = "Use software to send us quarterly update."
-        val bulletThree: String = {
-          val date: String = AccountingPeriodUtil.getFinalDeclarationDate(true).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
-          s"Send an end of period statement and submit a final declaration by $date."
-        }
-        val bulletThreeFeatureSwitchEnabled: String = {
-          val date: String = AccountingPeriodUtil.getFinalDeclarationDate(true).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
-          s"Submit your client’s final declaration by $date"
-        }
-        val bulletFour: String = "Tell HMRC if they stop trading or start a new business."
-      }
+      val paraOne: String = "If you continue to sign up this client, you need to submit their Self Assessment tax return as normal for the current tax year."
+      val paraTwo: String = "From the tax year starting on 6 April 2025, you’re agreeing to:"
+      val bulletOne: String = "use software that works with Making Tax Digital for Income Tax"
+      val bulletTwo: String = "keep digital records of your client’s business income and expenses"
+      val bulletThree: String = "use compatible software to send us quarterly updates"
+      val bulletFour: String = "make their final declaration by 31 January after the end of each tax year"
 
-      object InsetText {
-        val para: String = {
-          val year: Int = AccountingPeriodUtil.getCurrentTaxEndYear
-          s"Your client’s Self Assessment tax return must be submitted at the end of the $year tax year as normal."
-        }
-      }
+      val paraThree: String = "You’re also agreeing that our new penalties will apply to your client if they miss deadlines for:"
+      val bulletFive: String = "submitting their tax return"
+      val bulletSix: String = "paying their bill"
+
+      val paraFour: String = "We’ll write to your client when they are liable for these penalties."
+
+      val subHeading: String = "Opting out"
+      val paraFive: String = "Making Tax Digital for Income Tax is voluntary until 6 April 2026. Your client can opt out of sending quarterly updates. But if we’ve told your client they’re liable for our new penalties, they’ll continue to be liable for them."
+      val paraSix: String = "From 6 April 2026, some people will need to use Making Tax Digital for Income Tax. They will not be able to opt out. We’ll write to your client if this applies to them."
     }
 
     object VoluntaryAndEligible {
