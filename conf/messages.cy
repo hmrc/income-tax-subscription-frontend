@@ -405,7 +405,7 @@ sign-up-confirmation.final-declaration.bullet2                       = Heich cyf
 sign-up-confirmation.final-declaration.online-services.link-text     = Mae rhagor o wybodaeth yn eich cyfrif gwasanaethau ar-lein CThEF.
 
 sign-up-confirmation.report-previous-tax-year.heading                = Rhoi gwybod am flwyddyn dreth flaenorol
-sign-up-confirmation.report-previous-tax-year.para                   = Bydd yn rhaid i chi gyflwyno’ch Ffurflen Dreth Hunanasesiad am y flwyddyn a ddaw i ben ar 5 Ebrill 2023, gan ddefnyddio’ch cyfrif gwasanaethau ar-lein CThEF yn ôl yr arfer.
+sign-up-confirmation.report-previous-tax-year.para                   = Bydd yn rhaid i chi gyflwyno’ch Ffurflen Dreth Hunanasesiad am y flwyddyn a ddaw i ben ar 5 Ebrill {0}, gan ddefnyddio’ch cyfrif gwasanaethau ar-lein CThEF yn ôl yr arfer.
 
 sign-up-confirmation.pay-your-tax.heading                            = Talu’ch treth
 sign-up-confirmation.pay-your-tax.para1                              = Mae sawl ffordd o dalu’ch treth, gan gynnwys:
