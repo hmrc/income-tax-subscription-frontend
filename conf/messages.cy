@@ -998,6 +998,7 @@ agent.overseas-property.check-your-answers.accounting-method.add      = Ychwaneg
 agent.overseas-property.check-your-answers.accounting-method.change   = Newid y dull cyfrifyddu
 
 ## Agent remove business
+agent.business.remove-sole-trader-business.title                    = A ydych yn siŵr eich bod am ddileu’r busnes hwn?
 agent.business.remove-sole-trader-business.heading                  = A ydych yn siŵr eich bod am ddileu {0}{1}?
 agent.business.remove-sole-trader-business.unnamed                  = A ydych yn siŵr eich bod am ddileu’r busnes hwn{0}?
 agent.business.remove-sole-trader-business.paragraph                = Mae angen ychwanegu pob un o fusnesau unig fasnachwr a busnesau eiddo presennol eich cleient at y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar yr un pryd. Bydd angen i chi ailnodi’r wybodaeth hon os byddwch yn ei dileu ar gam.
@@ -1099,6 +1100,7 @@ business.check-your-answers.content.overseas-property-accounting-method.add     
 business.check-your-answers.content.overseas-property-accounting-method.change   = Newid y dull cyfrifyddu
 
 ## Remove business
+business.remove-sole-trader-business.title        = A ydych yn siŵr eich bod am ddileu’r busnes hwn?
 business.remove-sole-trader-business.heading      = A ydych yn siŵr eich bod am ddileu {0}{1}?
 business.remove-sole-trader-business.unnamed      = A ydych yn siŵr eich bod am ddileu’r busnes hwn{0}?
 business.remove-sole-trader-business.paragraph    = Mae angen ychwanegu pob un o’ch busnesau unig fasnachwr a’ch busnesau eiddo presennol at y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar yr un pryd. Bydd angen i chi ailnodi’r wybodaeth hon os byddwch yn ei dileu ar gam.

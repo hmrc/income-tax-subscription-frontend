@@ -47,7 +47,7 @@ class RemoveSelfEmploymentBusinessViewSpec extends ViewSpec {
     "have the correct template" when {
       "there is no error" in new TemplateViewTest(
         view = page(),
-        title = RemoveSelfEmploymentBusiness.title,
+        title = RemoveSelfEmploymentBusiness.titleWithoutNameOrTradeName,
         isAgent = true,
         backLink = Some(testBackUrl),
         hasSignOutLink = true
@@ -57,7 +57,7 @@ class RemoveSelfEmploymentBusinessViewSpec extends ViewSpec {
         view = page(
           form = RemoveBusinessForm.removeBusinessForm().withError(formError)
         ),
-        title = RemoveSelfEmploymentBusiness.title,
+        title = RemoveSelfEmploymentBusiness.titleWithoutNameOrTradeName,
         isAgent = true,
         backLink = Some(testBackUrl),
         hasSignOutLink = true,
@@ -71,7 +71,7 @@ class RemoveSelfEmploymentBusinessViewSpec extends ViewSpec {
           val view = page()
           new TemplateViewTest(
             view = view,
-            title = RemoveSelfEmploymentBusiness.title,
+            title = RemoveSelfEmploymentBusiness.titleWithoutNameOrTradeName,
             isAgent = true
           ).document.getH1Element.text() mustBe RemoveSelfEmploymentBusiness.title
         }
@@ -79,7 +79,7 @@ class RemoveSelfEmploymentBusinessViewSpec extends ViewSpec {
           val view = page(businessTradeName = None)
           new TemplateViewTest(
             view = view,
-            title = RemoveSelfEmploymentBusiness.titleWithoutBusinessTradeName,
+            title = RemoveSelfEmploymentBusiness.titleWithoutNameOrTradeName,
             isAgent = true
           ).document.getH1Element.text() mustBe RemoveSelfEmploymentBusiness.titleWithoutBusinessTradeName
         }
@@ -89,7 +89,7 @@ class RemoveSelfEmploymentBusinessViewSpec extends ViewSpec {
           val view = page(businessName = None)
           new TemplateViewTest(
             view = view,
-            title = RemoveSelfEmploymentBusiness.titleWithoutBusinessName,
+            title = RemoveSelfEmploymentBusiness.titleWithoutNameOrTradeName,
             isAgent = true
           ).document.getH1Element.text() mustBe RemoveSelfEmploymentBusiness.titleWithoutBusinessName
         }
