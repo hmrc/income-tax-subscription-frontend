@@ -993,6 +993,7 @@ agent.overseas-property.check-your-answers.accounting-method.add      = Add acco
 agent.overseas-property.check-your-answers.accounting-method.change   = Change accounting method
 
 ## Agent remove business
+agent.business.remove-sole-trader-business.title                    = Are you sure you want to delete this business?
 agent.business.remove-sole-trader-business.heading                  = Are you sure you want to delete {0}{1}?
 agent.business.remove-sole-trader-business.unnamed                  = Are you sure you want to delete this business{0}?
 agent.business.remove-sole-trader-business.paragraph                = All your client’s current sole trader and property businesses need to be added to Making Tax Digital for Income Tax at the same time. You will need to re-enter this information if you remove it by mistake.
@@ -1094,6 +1095,7 @@ business.check-your-answers.content.overseas-property-accounting-method.add     
 business.check-your-answers.content.overseas-property-accounting-method.change   = Change accounting method
 
 ## Remove business
+business.remove-sole-trader-business.title        = Are you sure you want to delete this business?
 business.remove-sole-trader-business.heading      = Are you sure you want to delete {0}{1}?
 business.remove-sole-trader-business.unnamed      = Are you sure you want to delete this business{0}?
 business.remove-sole-trader-business.paragraph    = All your current sole trader and property businesses need to be added to Making Tax Digital for Income Tax at the same time. You will need to re-enter this information if you remove it by mistake.

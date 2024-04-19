@@ -48,7 +48,7 @@ class RemoveSelfEmploymentBusinessViewSpec extends ViewSpec {
       "there is no error" when {
         "name and business name are present" in new TemplateViewTest(
           view = page(),
-          title = RemoveBusiness.fullTitle,
+          title = RemoveBusiness.titleWithoutNameOrTradeName,
           backLink = Some(testBackUrl),
         )
 
@@ -58,7 +58,7 @@ class RemoveSelfEmploymentBusinessViewSpec extends ViewSpec {
         view = page(
           form = RemoveBusinessForm.removeBusinessForm().withError(formError)
         ),
-        title = RemoveBusiness.fullTitle,
+        title = RemoveBusiness.titleWithoutNameOrTradeName,
         backLink = Some(testBackUrl),
         error = Some(formError)
       )
@@ -70,14 +70,14 @@ class RemoveSelfEmploymentBusinessViewSpec extends ViewSpec {
           val view = page()
           new TemplateViewTest(
             view = view,
-            title = RemoveBusiness.fullTitle
+            title = RemoveBusiness.titleWithoutNameOrTradeName
           ).document.getH1Element.text() mustBe RemoveBusiness.fullTitle
         }
         "there is no trade name" in {
           val view = page(maybeBusinessTradeName = None)
           new TemplateViewTest(
             view = view,
-            title = RemoveBusiness.titleWithoutTradeName
+            title = RemoveBusiness.titleWithoutNameOrTradeName
           ).document.getH1Element.text() mustBe RemoveBusiness.titleWithoutTradeName
         }
       }
@@ -86,7 +86,7 @@ class RemoveSelfEmploymentBusinessViewSpec extends ViewSpec {
           val view = page(maybeBusinessName = None)
           new TemplateViewTest(
             view = view,
-            title = RemoveBusiness.titleWithoutName
+            title = RemoveBusiness.titleWithoutNameOrTradeName
           ).document.getH1Element.text() mustBe RemoveBusiness.titleWithoutName
         }
         "there is no trade name" in {
