@@ -72,7 +72,8 @@ class OverseasPropertyAccountingMethodViewSpec extends ViewSpec {
         document.select("details summary").text mustBe messages.accordionSummary
       }
       "has content" in new Setup {
-        document.select("details div p").text mustBe messages.accordionContentPara
+        document.select("details div p:nth-of-type(1)").text mustBe messages.accordionSubHeading
+        document.select("details div p:nth-of-type(2)").text mustBe messages.accordionContentPara
         document.select("details ul li").text mustBe Seq(
           messages.accordionContentBullet1,
           messages.accordionContentBullet2
