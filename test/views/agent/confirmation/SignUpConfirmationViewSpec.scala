@@ -128,7 +128,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains Quarterly Updates initial paragraph" in {
-          mainContent.selectNth("p", 3).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParagraph
+          mainContent.selectNth("p", 4).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParagraph
         }
 
         "contains a table" in {
@@ -165,7 +165,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains end of period paragraph" in {
-          mainContent.selectNth("p",6).text() mustBe SignUpConfirmationMessages.endOfPeriodStatementThisYearParagraph
+          mainContent.selectNth("p",7).text() mustBe SignUpConfirmationMessages.endOfPeriodStatementThisYearParagraph
         }
       }
 
@@ -176,7 +176,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains final declaration paragraph" in {
-          mainContent.selectNth("p", 7).text() mustBe SignUpConfirmationMessages.finalDeclarationThisYearParagraph
+          mainContent.selectNth("p", 8).text() mustBe SignUpConfirmationMessages.finalDeclarationThisYearParagraph
         }
       }
 
@@ -222,7 +222,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains Quarterly Updates initial paragraph" in {
-          mainContent.selectNth("p", 3).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParagraph
+          mainContent.selectNth("p", 4).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParagraph
         }
 
         "contains a table" in {
@@ -260,7 +260,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
         "contains final declaration paragraph" in {
           enable(EOPSContent)
-          mainContent.selectNth("p", 6).text() mustBe SignUpConfirmationMessages.finalDeclarationThisYearParagraph
+          mainContent.selectNth("p", 7).text() mustBe SignUpConfirmationMessages.finalDeclarationThisYearParagraph
         }
       }
 
@@ -306,7 +306,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains a paragraph" in {
-          mainContent.selectNth("p", 3).text() mustBe SignUpConfirmationMessages.continueSelfAssessmentPara
+          mainContent.selectNth("p", 4).text() mustBe SignUpConfirmationMessages.continueSelfAssessmentPara
         }
       }
 
@@ -317,7 +317,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains Quarterly Updates initial paragraph" in {
-          mainContent.selectNth("p", 4).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParagraph
+          mainContent.selectNth("p", 5).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParagraph
         }
 
         "contains a table" in {
@@ -350,7 +350,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains end of period paragraph" in {
-          mainContent.selectNth("p", 7).text() mustBe SignUpConfirmationMessages.endOfPeriodStatementNextYearParagraph
+          mainContent.selectNth("p", 8).text() mustBe SignUpConfirmationMessages.endOfPeriodStatementNextYearParagraph
         }
       }
 
@@ -361,7 +361,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains final declaration paragraph" in {
-          mainContent.selectNth("p",8).text() mustBe SignUpConfirmationMessages.finalDeclarationNextYearParagraph
+          mainContent.selectNth("p",9).text() mustBe SignUpConfirmationMessages.finalDeclarationNextYearParagraph
         }
       }
 
@@ -407,7 +407,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains a paragraph" in {
-          mainContent.selectNth("p", 3).text() mustBe SignUpConfirmationMessages.continueSelfAssessmentPara
+          mainContent.selectNth("p", 4).text() mustBe SignUpConfirmationMessages.continueSelfAssessmentPara
         }
       }
 
@@ -418,7 +418,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains Quarterly Updates initial paragraph" in {
-          mainContent.selectNth("p", 4).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParagraph
+          mainContent.selectNth("p", 5).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParagraph
         }
 
         "contains a table" in {
@@ -453,7 +453,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
         "contains final declaration paragraph" in {
           enable(EOPSContent)
-          mainContent.selectNth("p",7).text() mustBe SignUpConfirmationMessages.finalDeclarationNextYearParagraph
+          mainContent.selectNth("p",8).text() mustBe SignUpConfirmationMessages.finalDeclarationNextYearParagraph
         }
       }
 
@@ -499,7 +499,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains a paragraph" in {
-          mainContent.selectNth("p", 3).text() mustBe SignUpConfirmationMessages.continueSelfAssessmentPara
+          mainContent.selectNth("p", 4).text() mustBe SignUpConfirmationMessages.continueSelfAssessmentPara
         }
       }
 
@@ -511,7 +511,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains Quarterly Updates initial paragraph" in {
-          mainContent.selectNth("p", 4).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParagraph
+          mainContent.selectNth("p", 5).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParagraph
         }
 
         "contains a table" in {
@@ -536,7 +536,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains end of period paragraph" in {
-          mainContent.selectNth("p", 7).text() mustBe SignUpConfirmationMessages.endOfPeriodStatementNextYearParagraph
+          mainContent.selectNth("p", 8).text() mustBe SignUpConfirmationMessages.endOfPeriodStatementNextYearParagraph
         }
       }
 
@@ -547,7 +547,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains final declaration paragraph" in {
-          mainContent.selectNth("p", 8).text() mustBe SignUpConfirmationMessages.finalDeclarationNextYearParagraph
+          mainContent.selectNth("p", 9).text() mustBe SignUpConfirmationMessages.finalDeclarationNextYearParagraph
         }
       }
 
@@ -593,7 +593,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains Quarterly Updates initial paragraph" in {
-          mainContent.selectNth("p", 3).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParagraph
+          mainContent.selectNth("p", 4).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesParagraph
         }
 
         "contains a table" in {
@@ -618,7 +618,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains end of period paragraph" in {
-          mainContent.selectNth("p", 6).text() mustBe SignUpConfirmationMessages.endOfPeriodStatementThisYearParagraph
+          mainContent.selectNth("p", 7).text() mustBe SignUpConfirmationMessages.endOfPeriodStatementThisYearParagraph
         }
       }
 
@@ -629,7 +629,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains final declaration paragraph" in {
-          mainContent.selectNth("p", 7).text() mustBe SignUpConfirmationMessages.finalDeclarationThisYearParagraph
+          mainContent.selectNth("p", 8).text() mustBe SignUpConfirmationMessages.finalDeclarationThisYearParagraph
         }
       }
 

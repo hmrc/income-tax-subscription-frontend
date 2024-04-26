@@ -203,7 +203,7 @@ class TaskListViewSpec extends ViewSpec {
         }
 
         "display the sign up incomplete text" in {
-          val incompleteText = document().mainContent.selectNth("p", 4)
+          val incompleteText = document().mainContent.selectNth("p", 5)
           incompleteText.text mustBe signUpIncompleteText
         }
 
@@ -342,7 +342,7 @@ class TaskListViewSpec extends ViewSpec {
         }
 
         "display the sign up incomplete text" in {
-          val incompleteText = document(partialTaskListComplete).mainContent.selectNth("p", 4)
+          val incompleteText = document(partialTaskListComplete).mainContent.selectNth("p", 5)
           incompleteText.text mustBe signUpIncompleteText
         }
 
@@ -436,7 +436,7 @@ class TaskListViewSpec extends ViewSpec {
         }
 
         "display the sign up ready text" in {
-          val incompleteText = document(completedTaskListComplete).mainContent.selectNth("p", 4)
+          val incompleteText = document(completedTaskListComplete).mainContent.selectNth("p", 5)
           incompleteText.text mustBe signUpReadyText
         }
 

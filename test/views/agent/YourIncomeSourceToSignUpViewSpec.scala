@@ -210,10 +210,10 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       }
       "have a final note" which {
         "has a first first paragraph" in new ViewTest(noIncomeSources) {
-          document.mainContent.selectNth("p.govuk-body", 1).text mustBe AgentIncomeSource.finalNoteOne
+          document.mainContent.selectNth("p.govuk-body", 4).text mustBe AgentIncomeSource.finalNoteOne
         }
         "has a second paragraph" in new ViewTest(noIncomeSources) {
-          document.mainContent.selectNth("p.govuk-body", 2).text mustBe AgentIncomeSource.finalNoteTwo
+          document.mainContent.selectNth("p.govuk-body", 5).text mustBe AgentIncomeSource.finalNoteTwo
         }
       }
       "have a form" which {
@@ -407,10 +407,10 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       }
       "have a final note" which {
         "has a first first paragraph" in new ViewTest(incompleteIncomeSources) {
-          document.mainContent.selectNth("p.govuk-body", 1).text mustBe AgentIncomeSource.finalNoteOne
+          document.mainContent.selectNth("p.govuk-body", 2).text mustBe AgentIncomeSource.finalNoteOne
         }
         "has a second paragraph" in new ViewTest(incompleteIncomeSources) {
-          document.mainContent.selectNth("p.govuk-body", 2).text mustBe AgentIncomeSource.finalNoteTwo
+          document.mainContent.selectNth("p.govuk-body", 3).text mustBe AgentIncomeSource.finalNoteTwo
         }
       }
       "have a form" which {
@@ -535,10 +535,10 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       }
       "have a final note" which {
         "has a first first paragraph" in new ViewTest(completeIncomeSources) {
-          document.mainContent.selectNth("p.govuk-body", 1).text mustBe AgentIncomeSource.finalNoteOne
+          document.mainContent.selectNth("p.govuk-body", 2).text mustBe AgentIncomeSource.finalNoteOne
         }
         "has a second paragraph" in new ViewTest(completeIncomeSources) {
-          document.mainContent.selectNth("p.govuk-body", 2).text mustBe AgentIncomeSource.finalNoteTwo
+          document.mainContent.selectNth("p.govuk-body", 3).text mustBe AgentIncomeSource.finalNoteTwo
         }
       }
       "have a form" which {

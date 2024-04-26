@@ -207,10 +207,10 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         }
         "have a final note" which {
           "has a first first paragraph" in new ViewTest(noIncomeSources) {
-            document.mainContent.selectNth("p.govuk-body", 4).text mustBe IndividualIncomeSource.finalNoteOne
+            document.mainContent.selectNth("p.govuk-body", 7).text mustBe IndividualIncomeSource.finalNoteOne
           }
           "has a second paragraph" in new ViewTest(noIncomeSources) {
-            document.mainContent.selectNth("p.govuk-body", 5).text mustBe IndividualIncomeSource.finalNoteTwo
+            document.mainContent.selectNth("p.govuk-body", 8).text mustBe IndividualIncomeSource.finalNoteTwo
           }
         }
         "have a form" which {
@@ -268,7 +268,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 document.mainContent.selectNth("h2", 2).text mustBe IndividualIncomeSource.ukPropertyHeading
               }
               "has a description" in new ViewTest {
-                document.mainContent.selectNth("p", 3).text mustBe IndividualIncomeSource.ukPropertyDescription
+                document.mainContent.selectNth("p", 4).text mustBe IndividualIncomeSource.ukPropertyDescription
               }
               "has a link to add a uk property business" in new ViewTest {
                 val link: Element = document.mainContent.selectNth("a", 2)
@@ -283,7 +283,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                   document.mainContent.selectNth("h2", 3).text mustBe IndividualIncomeSource.foreignPropertyHeading
                 }
                 "has a description" in new ViewTest {
-                  document.mainContent.selectNth("p", 4).text mustBe IndividualIncomeSource.foreignPropertyDescription
+                  document.mainContent.selectNth("p", 6).text mustBe IndividualIncomeSource.foreignPropertyDescription
                 }
                 "has a link to add a foreign property business" in new ViewTest {
                   val link: Element = document.mainContent.selectNth("a", 3)
@@ -354,7 +354,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
               document.mainContent.selectNth("h2", 2).text mustBe IndividualIncomeSource.ukPropertyHeading
             }
             "has a description" in new ViewTest(completeIncomeSources) {
-              document.mainContent.selectNth("p", 3).text mustBe IndividualIncomeSource.ukPropertyDescription
+              document.mainContent.selectNth("p", 4).text mustBe IndividualIncomeSource.ukPropertyDescription
             }
             "has a summary of the added uk property business" in new ViewTest(completeIncomeSources) {
               val summaryList: Element = document.mainContent.selectNth("dl", 2)
@@ -382,7 +382,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 document.mainContent.selectNth("h2", 3).text mustBe IndividualIncomeSource.foreignPropertyHeading
               }
               "has a description" in new ViewTest(completeIncomeSources) {
-                document.mainContent.selectNth("p", 4).text mustBe IndividualIncomeSource.foreignPropertyDescription
+                document.mainContent.selectNth("p", 5).text mustBe IndividualIncomeSource.foreignPropertyDescription
               }
               "has a summary of the added foreign property business" in new ViewTest(completeIncomeSources) {
                 val summaryList: Element = document.mainContent.selectNth("dl", 3)
@@ -413,10 +413,10 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
           "have a final note" which {
             "has a first first paragraph" in new ViewTest(noIncomeSources) {
-              document.mainContent.selectNth("p.govuk-body", 4).text mustBe IndividualIncomeSource.finalNoteOne
+              document.mainContent.selectNth("p.govuk-body", 7).text mustBe IndividualIncomeSource.finalNoteOne
             }
             "has a second paragraph" in new ViewTest(noIncomeSources) {
-              document.mainContent.selectNth("p.govuk-body", 5).text mustBe IndividualIncomeSource.finalNoteTwo
+              document.mainContent.selectNth("p.govuk-body", 8).text mustBe IndividualIncomeSource.finalNoteTwo
             }
           }
 

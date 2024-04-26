@@ -151,9 +151,11 @@
 
 @addBusiness ={
   <div class="app-task-list__post-list">
-    <a href="@controllers.individual.tasklist.addbusiness.routes.WhatIncomeSourceToSignUpController.show().url" id="add_business" class="govuk-link">
-      @{messages(s"${messagePrefix}.content.section2.add")}
-    </a>
+    <p class="govuk-body">
+      <a href="@controllers.individual.tasklist.addbusiness.routes.WhatIncomeSourceToSignUpController.show().url" id="add_business" class="govuk-link">
+        @{messages(s"${messagePrefix}.content.section2.add")}
+      </a>
+    </p>
   </div>
 }
 

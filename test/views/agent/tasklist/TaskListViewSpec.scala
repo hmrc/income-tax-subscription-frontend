@@ -167,7 +167,7 @@ class TaskListViewSpec extends ViewSpec {
           }
 
           "display the sign up incomplete text" in {
-            val incompleteText = doc.mainContent.selectNth("p", 2)
+            val incompleteText = doc.mainContent.selectNth("p", 3)
             incompleteText.text mustBe agentSignUpIncompleteText
           }
 
@@ -306,7 +306,7 @@ class TaskListViewSpec extends ViewSpec {
       }
 
       "display the sign up incomplete text" in {
-        val incompleteText = doc.mainContent.selectNth("p", 2)
+        val incompleteText = doc.mainContent.selectNth("p", 3)
         incompleteText.text mustBe agentSignUpIncompleteText
       }
 
@@ -395,7 +395,7 @@ class TaskListViewSpec extends ViewSpec {
       }
 
       "display the text to let them know they can now sign up" in {
-        doc.mainContent.selectNth("p", 2).text mustBe agentSignUpReadyText
+        doc.mainContent.selectNth("p", 3).text mustBe agentSignUpReadyText
       }
 
       "display the sign up button" in {

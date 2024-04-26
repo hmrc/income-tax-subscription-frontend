@@ -364,7 +364,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     }
 
     "have a print information link" in {
-      val link = document().mainContent.selectHead("div > a.govuk-link")
+      val link = document().mainContent.selectHead("div > p > a.govuk-link")
       link.text mustBe GlobalCheckYourAnswersMessages.printLink
       link.attr("href") mustBe "javascript:window.print()"
     }
@@ -375,7 +375,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       }
 
       "has a paragraph" in {
-        document().mainContent.selectNth("p", 1).text mustBe GlobalCheckYourAnswersMessages.correctInformation.para
+        document().mainContent.selectNth("p", 2).text mustBe GlobalCheckYourAnswersMessages.correctInformation.para
       }
     }
 
