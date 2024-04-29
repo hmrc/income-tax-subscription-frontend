@@ -18,9 +18,9 @@ package services
 
 import common.Constants.ITSASessionKeys
 import connectors.IncomeTaxSubscriptionConnector
-import connectors.httpparser.{DeleteSubscriptionDetailsHttpParser, PostSubscriptionDetailsHttpParser}
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsResponse
 import connectors.httpparser.RetrieveReferenceHttpParser.RetrieveReferenceResponse
+import connectors.httpparser.{DeleteSubscriptionDetailsHttpParser, PostSubscriptionDetailsHttpParser}
 import models.common._
 import models.common.business._
 import models.{AccountingMethod, Current, DateModel, Next}
@@ -111,8 +111,8 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
     incomeTaxSubscriptionConnector.saveSubscriptionDetails(reference, SoleTraderBusinessesKey, soleTraderBusinesses)(implicitly, SoleTraderBusinesses.encryptedFormat).flatMap {
       result =>
         taskListStatusUpdate(reference, incomeTaxSubscriptionConnector, result)
-  }
     }
+  }
 
   def saveProperty(reference: String, property: PropertyModel)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] =
     incomeTaxSubscriptionConnector.saveSubscriptionDetails[PropertyModel](reference, Property, property).flatMap {
@@ -213,4 +213,20 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
       )
     }
   }
+
+  def fetchEligibilityInterruptPassed(reference: String)(implicit hc: HeaderCarrier): Future[Option[Boolean]] = {
+    incomeTaxSubscriptionConnector.getSubscriptionDetails[Boolean](
+      reference = reference,
+      id = EligibilityInterruptPassed
+    )
+  }
+
+  def saveEligibilityInterruptPassed(reference: String)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
+    incomeTaxSubscriptionConnector.saveSubscriptionDetails(
+      reference = reference,
+      id = EligibilityInterruptPassed,
+      data = true
+    )
+  }
+
 }

@@ -27,6 +27,7 @@ object SubscriptionDataKeys {
   val OverseasProperty = "OverseasProperty"
   val IncomeSourceConfirmation = "IncomeSourceConfirmation"
   val SoleTraderBusinessesKey = "SoleTraderBusinesses"
+  val EligibilityInterruptPassed = "EligibilityInterruptPassed"
 
   val MandationStatus = "MandationStatus"
 

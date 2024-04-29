@@ -51,6 +51,7 @@ class ThrottlingService @Inject()(throttlingConnector: ThrottlingConnector,
             case false =>
               Future.successful(Redirect(throttle.callOnFail))
           }
+        case Left(error) => throw new InternalServerException(s"[ThrottlingService][throttled] - Unexpected failure when fetching throttle passed flag: $error")
       }
     } else {
       success

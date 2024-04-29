@@ -19,15 +19,17 @@ package controllers.agent.matching
 import auth.agent.{AgentSignUp, AgentUserMatching}
 import common.Constants.ITSASessionKeys
 import config.featureswitch.FeatureSwitch.ThrottlingFeature
-import connectors.stubs.SessionDataConnectorStub
+import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import helpers.servicemocks.{EligibilityStub, MandationStatusStub, ThrottlingStub}
 import models.status.MandationStatus.{Mandated, Voluntary}
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, NO_CONTENT, OK, SEE_OTHER}
+import play.api.libs.json.JsBoolean
 import play.api.{Configuration, Environment}
 import services.AgentStartOfJourneyThrottle
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
+import utilities.SubscriptionDataKeys
 import utilities.agent.TestConstants.{testNino, testUtr}
 
 class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with AuthRedirects with SessionCookieCrumbler {
@@ -135,13 +137,35 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
 
       "the eligibility of the client check returned eligible for next year only" when {
         "mandation is returned as voluntary for both years" should {
-          "redirect to the sign up next year page" in {
+          "redirect to the what you are agreeing to page when the user has previously started signing up this client" in {
             AuthStub.stubAuthSuccess()
             SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle))(NO_CONTENT)
             ThrottlingStub.stubThrottle(AgentStartOfJourneyThrottle.throttleId)(throttled = false)
             SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle), true)(OK)
             EligibilityStub.stubEligibilityResponseBoth(testUtr)(currentYearResponse = false, nextYearResponse = true)
             MandationStatusStub.stubGetMandationStatus(testNino, testUtr)(Voluntary, Voluntary)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, OK, JsBoolean(true))
+
+            val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
+
+            res must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(controllers.agent.routes.WhatYouNeedToDoController.show().url)
+            )
+
+            getSessionMap(res).get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY) mustBe Some("true")
+            getSessionMap(res).get(ITSASessionKeys.MANDATED_CURRENT_YEAR) mustBe Some("false")
+            getSessionMap(res).get(ITSASessionKeys.MANDATED_NEXT_YEAR) mustBe Some("false")
+            getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
+          }
+          "redirect to the sign up next year page when the user has not previously started signing up this client" in {
+            AuthStub.stubAuthSuccess()
+            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle))(NO_CONTENT)
+            ThrottlingStub.stubThrottle(AgentStartOfJourneyThrottle.throttleId)(throttled = false)
+            SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle), true)(OK)
+            EligibilityStub.stubEligibilityResponseBoth(testUtr)(currentYearResponse = false, nextYearResponse = true)
+            MandationStatusStub.stubGetMandationStatus(testNino, testUtr)(Voluntary, Voluntary)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
 
             val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
 
@@ -157,13 +181,35 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
           }
         }
         "mandation is returned as mandated for both years" should {
-          "redirect to the sign up next year page" in {
+          "redirect to the what you are agreeing to page when the user has previously started signing up their client" in {
             AuthStub.stubAuthSuccess()
             SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle))(NO_CONTENT)
             ThrottlingStub.stubThrottle(AgentStartOfJourneyThrottle.throttleId)(throttled = false)
             SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle), true)(OK)
             EligibilityStub.stubEligibilityResponseBoth(testUtr)(currentYearResponse = false, nextYearResponse = true)
             MandationStatusStub.stubGetMandationStatus(testNino, testUtr)(Mandated, Mandated)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, OK, JsBoolean(true))
+
+            val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
+
+            res must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(controllers.agent.routes.WhatYouNeedToDoController.show().url)
+            )
+
+            getSessionMap(res).get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY) mustBe Some("true")
+            getSessionMap(res).get(ITSASessionKeys.MANDATED_CURRENT_YEAR) mustBe Some("true")
+            getSessionMap(res).get(ITSASessionKeys.MANDATED_NEXT_YEAR) mustBe Some("true")
+            getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
+          }
+          "redirect to the sign up next year page when the user has not previously started signing up their client" in {
+            AuthStub.stubAuthSuccess()
+            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle))(NO_CONTENT)
+            ThrottlingStub.stubThrottle(AgentStartOfJourneyThrottle.throttleId)(throttled = false)
+            SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle), true)(OK)
+            EligibilityStub.stubEligibilityResponseBoth(testUtr)(currentYearResponse = false, nextYearResponse = true)
+            MandationStatusStub.stubGetMandationStatus(testNino, testUtr)(Mandated, Mandated)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
 
             val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
 
@@ -198,13 +244,35 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
 
       "the eligibility of the client check returned eligible for both years" when {
         "mandation is returned as voluntary for both years" should {
-          "redirect to the sign up next year page" in {
+          "redirect to the what you are agreeing to page when the user has previously started signing up their client" in {
             AuthStub.stubAuthSuccess()
             SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle))(NO_CONTENT)
             ThrottlingStub.stubThrottle(AgentStartOfJourneyThrottle.throttleId)(throttled = false)
             SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle), true)(OK)
             EligibilityStub.stubEligibilityResponseBoth(testUtr)(currentYearResponse = true, nextYearResponse = true)
             MandationStatusStub.stubGetMandationStatus(testNino, testUtr)(Voluntary, Voluntary)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, OK, JsBoolean(true))
+
+            val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
+
+            res must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(controllers.agent.routes.WhatYouNeedToDoController.show().url)
+            )
+
+            getSessionMap(res).get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY) mustBe Some("false")
+            getSessionMap(res).get(ITSASessionKeys.MANDATED_CURRENT_YEAR) mustBe Some("false")
+            getSessionMap(res).get(ITSASessionKeys.MANDATED_NEXT_YEAR) mustBe Some("false")
+            getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
+          }
+          "redirect to the sign up next year page when the user has not previously started signing up their client" in {
+            AuthStub.stubAuthSuccess()
+            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle))(NO_CONTENT)
+            ThrottlingStub.stubThrottle(AgentStartOfJourneyThrottle.throttleId)(throttled = false)
+            SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle), true)(OK)
+            EligibilityStub.stubEligibilityResponseBoth(testUtr)(currentYearResponse = true, nextYearResponse = true)
+            MandationStatusStub.stubGetMandationStatus(testNino, testUtr)(Voluntary, Voluntary)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
 
             val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
 
@@ -220,13 +288,35 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
           }
         }
         "mandation is returned as mandated for both years" should {
-          "redirect to the sign up next year page" in {
+          "redirect to the what you are agreeing to page when the user has previously started signing up this client" in {
             AuthStub.stubAuthSuccess()
             SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle))(NO_CONTENT)
             ThrottlingStub.stubThrottle(AgentStartOfJourneyThrottle.throttleId)(throttled = false)
             SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle), true)(OK)
             EligibilityStub.stubEligibilityResponseBoth(testUtr)(currentYearResponse = true, nextYearResponse = true)
             MandationStatusStub.stubGetMandationStatus(testNino, testUtr)(Mandated, Mandated)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, OK, JsBoolean(true))
+
+            val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
+
+            res must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(controllers.agent.routes.WhatYouNeedToDoController.show().url)
+            )
+
+            getSessionMap(res).get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY) mustBe Some("false")
+            getSessionMap(res).get(ITSASessionKeys.MANDATED_CURRENT_YEAR) mustBe Some("true")
+            getSessionMap(res).get(ITSASessionKeys.MANDATED_NEXT_YEAR) mustBe Some("true")
+            getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
+          }
+          "redirect to the sign up next year page when the user has not previously started signing up this client" in {
+            AuthStub.stubAuthSuccess()
+            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle))(NO_CONTENT)
+            ThrottlingStub.stubThrottle(AgentStartOfJourneyThrottle.throttleId)(throttled = false)
+            SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle), true)(OK)
+            EligibilityStub.stubEligibilityResponseBoth(testUtr)(currentYearResponse = true, nextYearResponse = true)
+            MandationStatusStub.stubGetMandationStatus(testNino, testUtr)(Mandated, Mandated)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
 
             val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
 

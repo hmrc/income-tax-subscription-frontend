@@ -21,8 +21,9 @@ import auth.agent._
 import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.JourneyStateKey
 import config.AppConfig
+import controllers.utils.ReferenceRetrieval
 import play.api.mvc._
-import services.{AuditingService, AuthService}
+import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -30,27 +31,40 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class HomeController @Inject()(val auditingService: AuditingService,
                                val authService: AuthService,
-                               val appConfig: AppConfig)
+                               val appConfig: AppConfig,
+                               val subscriptionDetailsService: SubscriptionDetailsService,
+                               val sessionDataService: SessionDataService)
                               (implicit val ec: ExecutionContext,
-                               mcc: MessagesControllerComponents) extends StatelessController {
+                               mcc: MessagesControllerComponents) extends StatelessController with ReferenceRetrieval {
 
   def home: Action[AnyContent] = Action.async {
     Future.successful(Redirect(controllers.agent.matching.routes.HomeController.index))
   }
 
   def index: Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
+    implicit user =>
       if (request.session.get(JourneyStateKey).contains(AgentUserMatching.name)) {
         Future.successful(Redirect(routes.ClientDetailsController.show()))
       } else if (request.session.get(JourneyStateKey).contains(AgentSignUp.name)) {
-        if (request.session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY).contains("true")) {
-          Future.successful(Redirect(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show))
-        } else {
-          Future.successful(Redirect(controllers.agent.eligibility.routes.ClientCanSignUpController.show()))
-        }
+        continueToSignUp
       } else {
         Future.successful(Redirect(controllers.agent.routes.AddAnotherClientController.addAnother()))
       }
+  }
+
+  private def continueToSignUp(implicit request: Request[AnyContent], user: IncomeTaxAgentUser): Future[Result] = {
+    withAgentReference { reference =>
+      subscriptionDetailsService.fetchEligibilityInterruptPassed(reference) map {
+        case Some(_) =>
+          Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
+        case None =>
+          if (request.session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY).contains("true")) {
+            Redirect(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show)
+          } else {
+            Redirect(controllers.agent.eligibility.routes.ClientCanSignUpController.show())
+          }
+      }
+    }
   }
 
   implicit val cacheSessionFunctions: Session => SessionFunctions = AgentJourneyState.SessionFunctions
