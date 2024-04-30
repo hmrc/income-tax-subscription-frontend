@@ -25,7 +25,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.mocks.{MockAuditingService, MockSessionDataService, MockThrottlingConnector}
+import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService, MockThrottlingConnector}
 
 import scala.concurrent.Future
 
@@ -33,7 +33,8 @@ class HomeControllerSpec extends AgentControllerBaseSpec
   with MockAuditingService
   with MockThrottlingConnector
   with MockSessionDataService
-  with FeatureSwitchingUtil {
+  with FeatureSwitchingUtil
+  with MockSubscriptionDetailsService {
 
   override val controllerName: String = "HomeControllerSpec"
 
@@ -44,7 +45,9 @@ class HomeControllerSpec extends AgentControllerBaseSpec
   private def testHomeController() = new HomeController(
     mockAuditingService,
     mockAuthService,
-    MockConfig
+    MockConfig,
+    MockSubscriptionDetailsService,
+    mockSessionDataService
   )(executionContext, mockMessagesControllerComponents)
 
   override def beforeEach(): Unit = {
@@ -74,20 +77,36 @@ class HomeControllerSpec extends AgentControllerBaseSpec
       }
     }
     "the journey is in an agent sign up state" when {
-      "the user is eligible to sign up for next year only" should {
-        "redirect to the sign up next year only page" in {
-          val result: Future[Result] = testHomeController().index()(agentSignUpRequest.addingToSession(ELIGIBLE_NEXT_YEAR_ONLY -> "true"))
+      "the user has previously confirmed to sign up their client" should {
+        "redirect the user to the what you are agreeing to page" in {
+          mockFetchEligibilityInterruptPassed(Some(true))
+
+          val result: Future[Result] = testHomeController().index()(agentSignUpRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
+          redirectLocation(result) mustBe Some(controllers.agent.routes.WhatYouNeedToDoController.show().url)
         }
       }
-      "the user is eligible to sign up for both tax years" should {
-        "redirect to the client can sign up page" in {
-          val result: Future[Result] = testHomeController().index()(agentSignUpRequest.addingToSession(ELIGIBLE_NEXT_YEAR_ONLY -> "false"))
+      "the user has not previously confirmed to sign up their client" when {
+        "the user is eligible to sign up for next year only" should {
+          "redirect to the sign up next year only page" in {
+            mockFetchEligibilityInterruptPassed(None)
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.ClientCanSignUpController.show().url)
+            val result: Future[Result] = testHomeController().index()(agentSignUpRequest.addingToSession(ELIGIBLE_NEXT_YEAR_ONLY -> "true"))
+
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
+          }
+        }
+        "the user is eligible to sign up for both tax years" should {
+          "redirect to the client can sign up page" in {
+            mockFetchEligibilityInterruptPassed(None)
+
+            val result: Future[Result] = testHomeController().index()(agentSignUpRequest.addingToSession(ELIGIBLE_NEXT_YEAR_ONLY -> "false"))
+
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.ClientCanSignUpController.show().url)
+          }
         }
       }
     }

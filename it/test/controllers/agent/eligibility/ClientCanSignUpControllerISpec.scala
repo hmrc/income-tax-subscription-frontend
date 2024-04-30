@@ -16,11 +16,13 @@
 
 package controllers.agent.eligibility
 
+import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import models.{No, Yes}
 import play.api.libs.ws.WSResponse
 import play.api.test.Helpers._
+import utilities.SubscriptionDataKeys
 
 class ClientCanSignUpControllerISpec extends ComponentSpecBase {
 
@@ -44,9 +46,13 @@ class ClientCanSignUpControllerISpec extends ComponentSpecBase {
 
   "POST /client/can-sign-up" when {
     "the user selects continue signing up" should {
-      s"return a redirect to ${controllers.agent.matching.routes.HomeController.home.url}" in {
+      s"return a redirect to ${controllers.agent.routes.WhatYouNeedToDoController.show().url}" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[Boolean](
+          id = SubscriptionDataKeys.EligibilityInterruptPassed,
+          body = true
+        )
 
         When("POST /client/can-sign-up is called")
         val result: WSResponse = IncomeTaxSubscriptionFrontend.submitCanSignUp(Some(Yes))
@@ -55,7 +61,7 @@ class ClientCanSignUpControllerISpec extends ComponentSpecBase {
 
         result must have(
           httpStatus(SEE_OTHER),
-          redirectURI(controllers.agent.matching.routes.HomeController.home.url)
+          redirectURI(controllers.agent.routes.WhatYouNeedToDoController.show().url)
         )
       }
     }

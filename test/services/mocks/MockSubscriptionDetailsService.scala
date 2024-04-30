@@ -305,4 +305,10 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
     when(mockConnector.deleteSubscriptionDetails(any(), ArgumentMatchers.eq(SubscriptionDataKeys.IncomeSourceConfirmation))(any()))
       .thenReturn(Future.successful(Right(DeleteSubscriptionDetailsSuccessResponse)))
   }
+
+  protected final def mockFetchEligibilityInterruptPassed(flag: Option[Boolean]): Unit = {
+    when(mockConnector.getSubscriptionDetails[Boolean](any(), ArgumentMatchers.eq(SubscriptionDataKeys.EligibilityInterruptPassed))(any(), any()))
+      .thenReturn(Future.successful(flag))
+  }
+
 }

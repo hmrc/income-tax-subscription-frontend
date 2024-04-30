@@ -16,9 +16,9 @@
 
 package controllers.agent.matching
 
-import auth.agent.{AgentSignUp, UserMatchingController}
+import auth.agent.{AgentSignUp, IncomeTaxAgentUser, UserMatchingController}
 import common.Constants.ITSASessionKeys
-import common.Constants.ITSASessionKeys.{FailedClientMatching, JourneyStateKey, NINO, UTR}
+import common.Constants.ITSASessionKeys.{FailedClientMatching, JourneyStateKey, UTR}
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.PrePopulate
 import config.featureswitch.FeatureSwitching
@@ -65,11 +65,11 @@ class ConfirmedClientResolver @Inject()(getEligibilityStatusService: GetEligibil
             withReference(utr, Some(nino), Some(arn)) { reference =>
               handlePrepop(reference, prepop) flatMap { _ =>
                 withMandationStatus(nino, utr) { mandationStatus =>
-                  goToSignUpClient(nextYearOnly = !thisYear)
+                  goToSignUpClient(nextYearOnly = !thisYear).map(_
                     .addingToSession(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> (!thisYear).toString)
                     .addingToSession(ITSASessionKeys.MANDATED_CURRENT_YEAR -> (mandationStatus.currentYearStatus == Mandated).toString)
                     .addingToSession(ITSASessionKeys.MANDATED_NEXT_YEAR -> (mandationStatus.nextYearStatus == Mandated).toString)
-                    .addingToSession(JourneyStateKey -> AgentSignUp.name)
+                    .addingToSession(JourneyStateKey -> AgentSignUp.name))
                 }
               }
             }
@@ -91,9 +91,9 @@ class ConfirmedClientResolver @Inject()(getEligibilityStatusService: GetEligibil
   }
 
   private def withMandationStatus(nino: String, utr: String)
-                                 (f: MandationStatusModel => Result)
+                                 (f: MandationStatusModel => Future[Result])
                                  (implicit request: Request[AnyContent]): Future[Result] = {
-    mandationStatusConnector.getMandationStatus(nino, utr) map {
+    mandationStatusConnector.getMandationStatus(nino, utr) flatMap {
       case Left(_) =>
         throw new InternalServerException("[ConfirmClientController][withMandationStatus] - Unexpected failure when receiving mandation status")
       case Right(model) =>
@@ -101,11 +101,19 @@ class ConfirmedClientResolver @Inject()(getEligibilityStatusService: GetEligibil
     }
   }
 
-  private def goToSignUpClient(nextYearOnly: Boolean): Result = {
-    if (nextYearOnly) {
-      Redirect(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show)
-    } else {
-      Redirect(controllers.agent.eligibility.routes.ClientCanSignUpController.show())
+  private def goToSignUpClient(nextYearOnly: Boolean)
+                              (implicit hc: HeaderCarrier, request: Request[AnyContent], user: IncomeTaxAgentUser): Future[Result] = {
+    withAgentReference { reference =>
+      subscriptionDetailsService.fetchEligibilityInterruptPassed(reference) map {
+        case Some(_) =>
+          Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
+        case None =>
+          if (nextYearOnly) {
+            Redirect(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show)
+          } else {
+            Redirect(controllers.agent.eligibility.routes.ClientCanSignUpController.show())
+          }
+      }
     }
   }
 

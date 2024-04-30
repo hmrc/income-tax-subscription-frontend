@@ -17,10 +17,15 @@
 package controllers.agent.matching
 
 import auth.agent.{AgentSignUp, AgentUserMatching}
+import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY
+import connectors.stubs.IncomeTaxSubscriptionConnectorStub
+import helpers.IntegrationTestConstants.testUtr
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import play.api.http.Status._
+import play.api.libs.json.JsBoolean
+import utilities.SubscriptionDataKeys
 
 class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
@@ -50,25 +55,46 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
         }
       }
       "the agent is in a sign up state" when {
-        "the client can sign up for next year only" in {
-          AuthStub.stubAuthSuccess()
+        "the user has previously started signing up this client" should {
+          "redirect to the what you are agreeing to page" in {
+            AuthStub.stubAuthSuccess()
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, OK, JsBoolean(true))
 
-          val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentSignUp), Map(ELIGIBLE_NEXT_YEAR_ONLY -> "true"))
+            val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentSignUp), Map(ITSASessionKeys.UTR -> testUtr))
 
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
-          )
+            res must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(controllers.agent.routes.WhatYouNeedToDoController.show().url)
+            )
+          }
         }
-        "the client can sign up for both years" in {
-          AuthStub.stubAuthSuccess()
+        "the user has not previously started signing up this client" when {
+          "the client can sign up for next year only" should {
+            "redirect to the cannot sign up this year page" in {
+              AuthStub.stubAuthSuccess()
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
 
-          val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentSignUp), Map(ELIGIBLE_NEXT_YEAR_ONLY -> "false"))
+              val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentSignUp), Map(ELIGIBLE_NEXT_YEAR_ONLY -> "true", ITSASessionKeys.UTR -> testUtr))
 
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(controllers.agent.eligibility.routes.ClientCanSignUpController.show().url)
-          )
+              res must have(
+                httpStatus(SEE_OTHER),
+                redirectURI(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
+              )
+            }
+          }
+          "the client can sign up for both years" should {
+            "redirect to the client can sign up page" in {
+              AuthStub.stubAuthSuccess()
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
+
+              val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentSignUp), Map(ELIGIBLE_NEXT_YEAR_ONLY -> "false", ITSASessionKeys.UTR -> testUtr))
+
+              res must have(
+                httpStatus(SEE_OTHER),
+                redirectURI(controllers.agent.eligibility.routes.ClientCanSignUpController.show().url)
+              )
+            }
+          }
         }
       }
       "the agent is in no state" should {

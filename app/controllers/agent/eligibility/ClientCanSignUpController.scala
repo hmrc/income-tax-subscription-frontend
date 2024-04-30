@@ -16,27 +16,30 @@
 
 package controllers.agent.eligibility
 
-import auth.agent.PreSignUpController
+import auth.agent.{IncomeTaxAgentUser, PreSignUpController}
 import config.AppConfig
+import controllers.utils.ReferenceRetrieval
 import forms.agent.ClientCanSignUpForm.clientCanSignUpForm
 import models.{No, Yes}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AuditingService, AuthService}
+import play.api.mvc._
+import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.eligibility.ClientCanSignUp
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 import scala.util.matching.Regex
 
 @Singleton
 class ClientCanSignUpController @Inject()(val auditingService: AuditingService,
                                           clientCanSignUp: ClientCanSignUp,
+                                          val subscriptionDetailsService: SubscriptionDetailsService,
+                                          val sessionDataService: SessionDataService,
                                           val authService: AuthService)
                                          (implicit val appConfig: AppConfig,
                                           mcc: MessagesControllerComponents,
-                                          val ec: ExecutionContext) extends PreSignUpController {
+                                          val ec: ExecutionContext) extends PreSignUpController with ReferenceRetrieval {
 
   private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
 
@@ -62,7 +65,7 @@ class ClientCanSignUpController @Inject()(val auditingService: AuditingService,
         backLink))
   }
 
-  def submit: Action[AnyContent] = Authenticated { implicit request =>
+  def submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       val clientName: String = request.fetchClientName.getOrElse(
         throw new InternalServerException("[ClientCanSignUpController][submit] - could not retrieve client name from session")
@@ -70,17 +73,25 @@ class ClientCanSignUpController @Inject()(val auditingService: AuditingService,
       val clientNino: String = formatNino(user.clientNino.getOrElse(
         throw new InternalServerException("[ClientCanSignUpController][submit] - could not retrieve client nino from session")
       ))
-
       clientCanSignUpForm.bindFromRequest().fold(
-        formWithErrors => BadRequest(clientCanSignUp(formWithErrors, routes.ClientCanSignUpController.submit(), clientName, clientNino, backLink)),
+        formWithErrors => Future.successful(BadRequest(clientCanSignUp(formWithErrors, routes.ClientCanSignUpController.submit(), clientName, clientNino, backLink))),
         {
           case Yes =>
-
-            Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
+            continueToSignUpClient
           case No =>
-            Redirect(controllers.agent.routes.AddAnotherClientController.addAnother())
+            Future.successful(Redirect(controllers.agent.routes.AddAnotherClientController.addAnother()))
         }
       )
+  }
+
+  private def continueToSignUpClient(implicit request: Request[AnyContent], user: IncomeTaxAgentUser): Future[Result] = {
+    withAgentReference { reference =>
+      subscriptionDetailsService.saveEligibilityInterruptPassed(reference) map {
+        case Right(_) => Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
+        case Left(_) => throw new InternalServerException("[ClientCanSignUpController][continueToSignUpClient] - Failed to save eligibility interrupt passed")
+      }
+    }
+
   }
 
   def backLink: String = controllers.agent.routes.AddAnotherClientController.addAnother().url
