@@ -47,7 +47,9 @@
   ))
 
   <div class="govuk-!-margin-bottom-6 govuk-!-display-none-print">
-    <a href="javascript:window.print()" class="govuk-link">@messages("sign-up-confirmation.print-confirmation")</a>
+    <p class="govuk-body">
+      <a href="javascript:window.print()" class="govuk-link">@messages("sign-up-confirmation.print-confirmation")</a>
+    </p>
   </div>
 
   <h2 class="govuk-heading-m">@messages("sign-up-confirmation.what-you-must-do.heading")</h2>
@@ -141,7 +143,9 @@
       <li>@messages("sign-up-confirmation.final-declaration.bullet1")</li>
       <li>@messages("sign-up-confirmation.final-declaration.bullet2")</li>
     </ul>
-    <a class="govuk-link" href="@{appConfig.onlineServiceAccountUrl}">@messages("sign-up-confirmation.final-declaration.online-services.link-text")</a>
+    <p class="govuk-body">
+      <a class="govuk-link" href="@{appConfig.onlineServiceAccountUrl}">@messages("sign-up-confirmation.final-declaration.online-services.link-text")</a>
+    </p>
   </li>
 }
 

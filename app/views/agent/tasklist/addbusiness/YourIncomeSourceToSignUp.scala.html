@@ -126,13 +126,15 @@
     ))
 
     <div id="add-self-employment" class="govuk-!-padding-bottom-6">
-        <a class="govuk-link" href="@appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl">
+        <p class="govuk-body">
+          <a class="govuk-link" href="@appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl">
             @if(incomeSources.selfEmployments.isEmpty) {
                 @messages("agent.your-income-source.self-employed.add-link")
             } else {
                 @messages("agent.your-income-source.self-employed.add-another-link")
             }
-        </a>
+          </a>
+        </p>
     </div>
 }
 
@@ -162,7 +164,9 @@
         ))
     } else {
         <div id="add-uk-property" class="govuk-!-padding-bottom-6">
-            <a class="govuk-link" href="@controllers.agent.tasklist.ukproperty.routes.PropertyStartDateController.show()">@messages("agent.your-income-source.uk-property.add-link")</a>
+            <p class="govuk-body">
+              <a class="govuk-link" href="@controllers.agent.tasklist.ukproperty.routes.PropertyStartDateController.show()">@messages("agent.your-income-source.uk-property.add-link")</a>
+            </p>
         </div>
     }
 
@@ -195,7 +199,9 @@
         ))
     } else {
         <div id="add-foreign-property" class="govuk-!-padding-bottom-6">
+          <p class="govuk-body">
             <a class="govuk-link" href="@controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show()">@messages("agent.your-income-source.foreign-property.add-link")</a>
+          </p>
         </div>
     }
 }

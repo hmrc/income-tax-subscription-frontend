@@ -93,15 +93,15 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains a paragraph one" in {
-          mainContent().selectNth("p", 3).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph1
+          mainContent().selectNth("p", 4).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph1
         }
 
         "contains a paragraph two" in {
-          mainContent().selectNth("p", 4).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph2
+          mainContent().selectNth("p", 5).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph2
         }
 
         "contains a paragraph three" in {
-          mainContent().selectNth("p", 5).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph3
+          mainContent().selectNth("p", 6).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph3
         }
 
         "contains a link" in {
@@ -206,7 +206,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "has a paragraph" in {
-          mainContent().selectNth("p", 10).text() mustBe SignUpConfirmationMessages.reportPreviousTax.paragraphThisYear
+          mainContent().selectNth("p", 12).text() mustBe SignUpConfirmationMessages.reportPreviousTax.paragraphThisYear
         }
       }
 
@@ -217,7 +217,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "has a paragraph" in {
-          mainContent().selectNth("p", 11).text() mustBe SignUpConfirmationMessages.payYourTax.paraOne
+          mainContent().selectNth("p", 13).text() mustBe SignUpConfirmationMessages.payYourTax.paraOne
         }
 
         "contains a bullet list of payment types" which {
@@ -249,7 +249,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           val link = mainContent().selectNth("a", 5)
           link.attr("href") mustBe "https://www.gov.uk/pay-self-assessment-tax-bill"
           link.text mustBe SignUpConfirmationMessages.payYourTax.linkText
-          mainContent().selectNth("p",12).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
+          mainContent().selectNth("p",14).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
         }
       }
 
@@ -316,15 +316,15 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains a paragraph one" in {
-          mainContent().selectNth("p", 3).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph1
+          mainContent().selectNth("p", 4).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph1
         }
 
         "contains a paragraph two" in {
-          mainContent().selectNth("p", 4).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph2
+          mainContent().selectNth("p", 5).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph2
         }
 
         "contains a paragraph three" in {
-          mainContent().selectNth("p", 5).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph3
+          mainContent().selectNth("p", 6).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph3
         }
 
         "contains a link" in {
@@ -425,7 +425,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "has a paragraph" in {
-          mainContent().selectNth("p", 10).text() mustBe SignUpConfirmationMessages.reportPreviousTax.paragraphNextYear
+          mainContent().selectNth("p", 12).text() mustBe SignUpConfirmationMessages.reportPreviousTax.paragraphNextYear
         }
       }
 
@@ -436,7 +436,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "has a paragraph" in {
-          mainContent().selectNth("p", 11).text() mustBe SignUpConfirmationMessages.payYourTax.paraOne
+          mainContent().selectNth("p", 13).text() mustBe SignUpConfirmationMessages.payYourTax.paraOne
         }
 
         "contains a bullet list of payment types" which {
@@ -468,7 +468,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           val link = mainContent().selectNth("a", 5)
           link.attr("href") mustBe "https://www.gov.uk/pay-self-assessment-tax-bill"
           link.text mustBe SignUpConfirmationMessages.payYourTax.linkText
-          mainContent().selectNth("p",12).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
+          mainContent().selectNth("p",14).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
         }
       }
 
@@ -528,15 +528,15 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains a paragraph one" in {
-          mainContent().selectNth("p", 3).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph1
+          mainContent().selectNth("p", 4).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph1
         }
 
         "contains a paragraph two" in {
-          mainContent().selectNth("p", 4).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph2
+          mainContent().selectNth("p", 5).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph2
         }
 
         "contains a paragraph three" in {
-          mainContent().selectNth("p", 5).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph3
+          mainContent().selectNth("p", 6).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph3
         }
 
         "contains a link" in {
@@ -637,7 +637,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "has a paragraph" in {
-          mainContent().selectNth("p", 10).text() mustBe SignUpConfirmationMessages.reportPreviousTax.paragraphNextYear
+          mainContent().selectNth("p", 12).text() mustBe SignUpConfirmationMessages.reportPreviousTax.paragraphNextYear
         }
       }
 
@@ -648,7 +648,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "has a paragraph" in {
-          mainContent().selectNth("p", 11).text() mustBe SignUpConfirmationMessages.payYourTax.paraOne
+          mainContent().selectNth("p", 13).text() mustBe SignUpConfirmationMessages.payYourTax.paraOne
         }
 
         "contains a bullet list of payment types" which {
@@ -680,7 +680,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           val link = mainContent().selectNth("a", 5)
           link.attr("href") mustBe "https://www.gov.uk/pay-self-assessment-tax-bill"
           link.text mustBe SignUpConfirmationMessages.payYourTax.linkText
-          mainContent().selectNth("p",12).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
+          mainContent().selectNth("p",14).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
         }
       }
 
@@ -740,15 +740,15 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains a paragraph one" in {
-          mainContent().selectNth("p", 3).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph1
+          mainContent().selectNth("p", 4).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph1
         }
 
         "contains a paragraph two" in {
-          mainContent().selectNth("p", 4).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph2
+          mainContent().selectNth("p", 5).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph2
         }
 
         "contains a paragraph three" in {
-          mainContent().selectNth("p", 5).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph3
+          mainContent().selectNth("p", 6).text() mustBe SignUpConfirmationMessages.beforeYouStartSection.paragraph3
         }
 
         "contains a link" in {
@@ -853,7 +853,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "has a paragraph" in {
-          mainContent().selectNth("p", 10).text() mustBe SignUpConfirmationMessages.reportPreviousTax.paragraphThisYear
+          mainContent().selectNth("p", 12).text() mustBe SignUpConfirmationMessages.reportPreviousTax.paragraphThisYear
         }
       }
 
@@ -864,7 +864,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "has a paragraph" in {
-          mainContent().selectNth("p", 11).text() mustBe SignUpConfirmationMessages.payYourTax.paraOne
+          mainContent().selectNth("p", 13).text() mustBe SignUpConfirmationMessages.payYourTax.paraOne
         }
 
         "contains a bullet list of payment types" which {
@@ -896,7 +896,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           val link = mainContent().selectNth("a", 5)
           link.attr("href") mustBe "https://www.gov.uk/pay-self-assessment-tax-bill"
           link.text mustBe SignUpConfirmationMessages.payYourTax.linkText
-          mainContent().selectNth("p",12).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
+          mainContent().selectNth("p",14).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
         }
       }
 

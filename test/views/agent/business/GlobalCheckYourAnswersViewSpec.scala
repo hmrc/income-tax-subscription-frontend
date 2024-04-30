@@ -363,7 +363,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     }
 
     "have a print information link" in {
-      val link = document().mainContent.selectHead("div > a.govuk-link")
+      val link = document().mainContent.selectHead("div > p > a.govuk-link")
       link.text mustBe GlobalCheckYourAnswersMessages.printLink
       link.attr("href") mustBe "javascript:window.print()"
     }
@@ -373,7 +373,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     }
 
     "have a client information paragraph" in {
-      document().mainContent.selectNth("p", 7).text mustBe GlobalCheckYourAnswersMessages.correctClientInfo.clientInfoPara
+      document().mainContent.selectNth("p", 8).text mustBe GlobalCheckYourAnswersMessages.correctClientInfo.clientInfoPara
     }
 
     "have a form" which {
