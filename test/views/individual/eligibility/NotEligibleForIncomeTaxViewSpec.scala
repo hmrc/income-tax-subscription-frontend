@@ -33,13 +33,10 @@ class NotEligibleForIncomeTaxViewSpec extends ViewSpec {
     }
 
     "have paragraph 1 and link" in {
-      val paragraph = document.mainContent.selectHead("p").selectNth("a", 1)
-      paragraph.text() mustBe CannotSignUpYetMessages.paragraph1
-
-      val link = document.getElementById("cannot-sign-up-yet-link")
-      link.attr(
-        "href"
-      ) mustBe CannotSignUpYetMessages.linkHref
+      val paragraph = document.mainContent.selectHead("p")
+      val link = document.mainContent.selectHead("a")
+      paragraph.text mustBe CannotSignUpYetMessages.paragraph1
+      link.attr("href") mustBe CannotSignUpYetMessages.linkHref
     }
 
     "have paragraph 2" in {
