@@ -17,12 +17,14 @@
 @import play.api.i18n.Messages
 @import play.api.mvc.Request
 @import views.html.helpers.SignOutButton
+@import views.html.templates.PrincipalMainTemplate
+@import config.AppConfig
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcNewTabLinkHelper
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
-@import views.html.templates.PrincipalMainTemplate
 
 @this(
     mainTemplate: PrincipalMainTemplate,
+    appConfig: AppConfig,
     hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
     form: FormWithCSRF,
     signOutButton: SignOutButton
@@ -34,10 +36,8 @@
 
     <h1 class="govuk-heading-l">@messages("cannot-sign-up-yet.heading")</h1>
 
-   <p class="govuk-body">
-       <a class="govuk-link" href="https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax">
-           @hmrcNewTabLinkHelper(NewTabLinkHelper(messages("cannot-sign-up-yet.para1")))
-       </a>
+   <p class="govuk-body" id="cannot-sign-up-yet-link">
+       @hmrcNewTabLinkHelper(NewTabLinkHelper(messages("cannot-sign-up-yet.para1"), Some(appConfig.govukGuidanceITSAQualifyingIncomeLink)))
    </p>
 
     <p class="govuk-body">@messages( "cannot-sign-up-yet.para2")</p>

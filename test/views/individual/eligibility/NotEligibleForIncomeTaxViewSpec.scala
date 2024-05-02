@@ -33,9 +33,10 @@ class NotEligibleForIncomeTaxViewSpec extends ViewSpec {
     }
 
     "have paragraph 1 and link" in {
-      val link = document.mainContent.selectHead("p").selectNth("a", 2)
-      link.text() mustBe CannotSignUpYetMessages.paragraph1
-      document.mainContent.selectHead("p").selectNth("a", 1).attr("href") mustBe CannotSignUpYetMessages.linkHref
+      val paragraph = document.mainContent.selectHead("p")
+      val link = document.mainContent.selectHead("a")
+      paragraph.text mustBe CannotSignUpYetMessages.paragraph1
+      link.attr("href") mustBe CannotSignUpYetMessages.linkHref
     }
 
     "have paragraph 2" in {
@@ -59,7 +60,7 @@ class NotEligibleForIncomeTaxViewSpec extends ViewSpec {
     val paragraph1 = "People with some types of income or deductions cannot sign up to Making Tax Digital for Income Tax. (opens in new tab)"
     val paragraph2 = "In the future, we may extend this service to more people."
     val paragraph3 = "Meanwhile, you must continue to submit your Self Assessment tax return as normal."
-    val linkHref = "https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax"
+    val linkHref = "https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax#find-out-about-qualifying-income"
     val signoutButton = "Sign out"
   }
 }
