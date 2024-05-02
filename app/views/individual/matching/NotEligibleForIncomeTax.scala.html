@@ -37,10 +37,7 @@
     <h1 class="govuk-heading-l">@messages("cannot-sign-up-yet.heading")</h1>
 
    <p class="govuk-body" id="cannot-sign-up-yet-link">
-       @Html(messages(
-       key = "cannot-sign-up-yet.para1",
-       args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("cannot-sign-up-yet.link"), Some(appConfig.govukGuidanceITSAQualifyingIncomeLink)))
-       ))
+       @hmrcNewTabLinkHelper(NewTabLinkHelper(messages("cannot-sign-up-yet.para1"), Some(appConfig.govukGuidanceITSAQualifyingIncomeLink)))
    </p>
 
     <p class="govuk-body">@messages( "cannot-sign-up-yet.para2")</p>

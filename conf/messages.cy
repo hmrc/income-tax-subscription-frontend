@@ -122,8 +122,7 @@ cannot-use-service.line1                                        = Gallwch ond co
 ## Cannot sign up yet page
 cannot-sign-up-yet.title                                          = Ni allwch gofrestru ar hyn o bryd
 cannot-sign-up-yet.heading                                        = Ni allwch gofrestru ar hyn o bryd
-cannot-sign-up-yet.para1                                          = {0}
-cannot-sign-up-yet.link                                           = Ni all pobl sydd â mathau penodol o incwm neu ddidyniadau gofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+cannot-sign-up-yet.para1                                          = Ni all pobl sydd â mathau penodol o incwm neu ddidyniadau gofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm.
 cannot-sign-up-yet.para2                                          = Yn y dyfodol, mae’n bosibl y caiff y gwasanaeth hwn ei ymestyn i ragor o bobl.
 cannot-sign-up-yet.para3                                          = Yn y cyfamser, mae’n rhaid i chi barhau i gyflwyno’ch Ffurflen Dreth Hunanasesiad yn ôl yr arfer.
 
