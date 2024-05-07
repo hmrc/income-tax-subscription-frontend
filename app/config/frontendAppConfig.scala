@@ -78,6 +78,7 @@ trait AppConfig {
   val govukGuidanceITSASignUpIndivLink: String
   val govukGuidanceITSASignUpAgentLink: String
   val govukGuidanceITSAQualifyingIncomeLink: String
+  val govukGuidanceITSAWhoCanSignUpVoluntarily: String
   val govukGuidanceITSAUsingMTDLink: String
   val govUkSendingReturnsUrl: String
   val citizenDetailsURL: String
@@ -248,6 +249,7 @@ class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Con
   override lazy val govukGuidanceITSASignUpIndivLink: String = s"$govukGuidanceLink/sign-up-your-business-for-making-tax-digital-for-income-tax"
   override lazy val govukGuidanceITSASignUpAgentLink: String = s"$govukGuidanceLink/sign-up-your-client-for-making-tax-digital-for-income-tax"
   override lazy val govukGuidanceITSAQualifyingIncomeLink: String = s"$govukGuidanceLink/check-if-youre-eligible-for-making-tax-digital-for-income-tax#find-out-about-qualifying-income"
+  override lazy val govukGuidanceITSAWhoCanSignUpVoluntarily: String = s"$govukGuidanceLink/sign-up-your-business-for-making-tax-digital-for-income-tax#who-can-sign-up-voluntarily"
   override lazy val govukGuidanceITSAUsingMTDLink: String = s"$govukGuidanceLink/using-making-tax-digital-for-income-tax#who-can-use-making-tax-digital-for-income-tax"
 
   override lazy val govUkSendingReturnsUrl: String = s"https://www.gov.uk/self-assessment-tax-returns/sending-return"

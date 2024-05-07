@@ -57,6 +57,7 @@ trait MockConfig extends UnitTestTrait with AppConfig {
   override lazy val govukGuidanceITSASignUpIndivLink: String = "https://www.gov.uk/guidance/sign-up-your-business-for-making-tax-digital-for-income-tax"
   override lazy val govukGuidanceITSASignUpAgentLink: String = "https://www.gov.uk/guidance/sign-up-your-client-for-making-tax-digital-for-income-tax"
   override lazy val govukGuidanceITSAQualifyingIncomeLink: String = "https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax#find-out-about-qualifying-income"
+  override lazy val govukGuidanceITSAWhoCanSignUpVoluntarily: String = "https://www.gov.uk/guidance/sign-up-your-business-for-making-tax-digital-for-income-tax#who-can-sign-up-voluntarily"
   override lazy val govukGuidanceITSAUsingMTDLink: String = s"https://www.gov.uk/guidance/using-making-tax-digital-for-income-tax#who-can-use-making-tax-digital-for-income-tax"
 
   override lazy val govUkSendingReturnsUrl: String = "https://www.gov.uk/self-assessment-tax-returns/sending-return"

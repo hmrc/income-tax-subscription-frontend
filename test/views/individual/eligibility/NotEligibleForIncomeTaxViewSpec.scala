@@ -60,7 +60,7 @@ class NotEligibleForIncomeTaxViewSpec extends ViewSpec {
     val paragraph1 = "People with some types of income or deductions cannot sign up to Making Tax Digital for Income Tax. (opens in new tab)"
     val paragraph2 = "In the future, we may extend this service to more people."
     val paragraph3 = "Meanwhile, you must continue to submit your Self Assessment tax return as normal."
-    val linkHref = "https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax#find-out-about-qualifying-income"
+    val linkHref = "https://www.gov.uk/guidance/sign-up-your-business-for-making-tax-digital-for-income-tax#who-can-sign-up-voluntarily"
     val signoutButton = "Sign out"
   }
 }
