@@ -43,16 +43,16 @@ class ServiceNameViewSpec extends ViewSpecTrait {
       "passing in an individual service name" in {
         val serviceName = "Use software to send Income Tax updates"
         val serviceUrl = appConfig.govukGuidanceITSASignUpIndivLink
-        document(isAgent = false).getElementsByClass("hmrc-header__service-name").text() mustBe serviceName
-        document(isAgent = false).getElementsByClass("hmrc-header__service-name--linked").attr("href") mustBe serviceUrl
+        document(isAgent = false).getElementsByClass("govuk-header__service-name").text() mustBe serviceName
+        document(isAgent = false).getElementsByClass("govuk-header__service-name").attr("href") mustBe serviceUrl
 
       }
 
       "passing in an agent service name" in {
         val serviceName = "Use software to report your client’s Income Tax"
         val serviceUrl = appConfig.govukGuidanceITSASignUpAgentLink
-        document(isAgent = true).getElementsByClass("hmrc-header__service-name").text() mustBe serviceName
-        document(isAgent = true).getElementsByClass("hmrc-header__service-name--linked").attr("href") mustBe serviceUrl
+        document(isAgent = true).getElementsByClass("govuk-header__service-name").text() mustBe serviceName
+        document(isAgent = true).getElementsByClass("govuk-header__service-name").attr("href") mustBe serviceUrl
       }
     }
   }

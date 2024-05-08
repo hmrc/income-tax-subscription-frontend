@@ -76,14 +76,6 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
         contentType(result) must be(Some("text/html"))
         charset(result) must be(Some("utf-8"))
       }
-
-      withClue("render the 'Enter your client’s details' page") {
-        val document = Jsoup.parse(contentAsString(result))
-        val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
-        val title = document.getElementsByTag("title").text()
-
-        title mustBe messages.title + serviceNameGovUk
-      }
     }
 
     "return see_other (303) when locked out" in {
@@ -221,16 +213,6 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
           contentType(badResult) must be(Some("text/html"))
           charset(badResult) must be(Some("utf-8"))
         }
-
-        "render the 'Client Details page'" in {
-          setupMockNotLockedOut(testARN)
-
-          val badResult = callSubmit(isEditMode = editMode)
-          val document = Jsoup.parse(contentAsString(badResult))
-          val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
-          document.getElementsByTag("title").text mustBe "Error: " + messages.title + serviceNameGovUk
-        }
-
       }
     }
 

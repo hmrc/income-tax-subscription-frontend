@@ -16,6 +16,6 @@
 
 package views.helpers.models.tasklist
 
-case class TaskListItem(content : String, href : Option[String] = None, tagLabel : String, isComplete : Boolean, action : Option[TaskListItemAction] = None)
+import play.twirl.api.Html
 
-case class TaskListItemAction(content : String, hiddenContent : String, href : String)
+case class CustomTaskListSection(h2Content : String, sectionStart : Option[String] = None, sectionEnd : Option[Html] = None, taskListItems : Seq[CustomTaskListItem])
