@@ -38,13 +38,13 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with 
   val testTaxYear: String = testAccountingPeriodThisYear.toLongTaxYear
 
   "createSubscriptionFromTaskList" should {
-    def res: Future[Either[ConnectorError, SubscriptionSuccess]] = {
+    def res: Future[Either[ConnectorError, Option[SubscriptionSuccess]]] = {
       TestSubscriptionOrchestrationService.createSubscriptionFromTaskList(testARN, testNino, testUtr, testCreateIncomeSourcesThisYear)
     }
 
     "return a success" when {
       "all services succeed" in {
-        mockSignUpIncomeSourcesSuccess(testNino, testTaxYear)
+        mockSignUpSuccess(testNino, testTaxYear)
         mockCreateIncomeSourcesFromTaskListSuccess(testMTDID, testCreateIncomeSourcesThisYear)
         mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(Right(AutoEnrolmentService.EnrolmentAssigned))
         mockAgentSpsConnectorSuccess(testARN, testUtr, testNino, testMTDID)
@@ -53,6 +53,14 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with 
 
         await(res) mustBe testSubscriptionSuccess
         verifyAgentSpsConnector(testARN, testUtr, testNino, testMTDID, 1)
+      }
+      "the sign up indicated the customer was already signed up" in {
+        mockAlreadySignedUp(testNino, testTaxYear)
+
+        val res = TestSubscriptionOrchestrationService.createSubscriptionFromTaskList(testARN, testNino, testUtr, testCreateIncomeSourcesThisYear)
+
+        await(res) mustBe Right(None)
+        verifyAgentSpsConnector(testARN, testUtr, testNino, testMTDID, 0)
       }
     }
 
@@ -64,7 +72,7 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with 
       }
 
       "create income sources from task list request fail and returns an error" in {
-        mockSignUpIncomeSourcesSuccess(testNino, testTaxYear)
+        mockSignUpSuccess(testNino, testTaxYear)
         mockCreateIncomeSourcesFromTaskListFailure(testMTDID, testCreateIncomeSourcesThisYear)
 
         whenReady(res)(_ mustBe testCreateSubscriptionFromTaskListFailure)

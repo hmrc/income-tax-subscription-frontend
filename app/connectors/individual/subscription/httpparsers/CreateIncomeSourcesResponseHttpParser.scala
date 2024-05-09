@@ -16,18 +16,18 @@
 
 package connectors.individual.subscription.httpparsers
 
-import models.common.subscription.{CreateIncomeSourcesFailure, CreateIncomeSourcesFailureResponse, CreateIncomeSourcesSuccess}
+import models.common.subscription.{CreateIncomeSourcesFailure, CreateIncomeSourcesSuccess}
 import play.api.http.Status.NO_CONTENT
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 object CreateIncomeSourcesResponseHttpParser {
-  type PostCreateIncomeSourceResponse = Either[CreateIncomeSourcesFailure, CreateIncomeSourcesSuccess]
+  type PostCreateIncomeSourceResponse = Either[CreateIncomeSourcesFailure, CreateIncomeSourcesSuccess.type]
 
   implicit object PostCreateIncomeSourcesResponseHttpReads extends HttpReads[PostCreateIncomeSourceResponse] {
     override def read(method: String, url: String, response: HttpResponse): PostCreateIncomeSourceResponse = {
       response.status match {
-        case NO_CONTENT => Right(CreateIncomeSourcesSuccess())
-        case status => Left(CreateIncomeSourcesFailureResponse(status))
+        case NO_CONTENT => Right(CreateIncomeSourcesSuccess)
+        case status => Left(CreateIncomeSourcesFailure(status))
       }
     }
   }

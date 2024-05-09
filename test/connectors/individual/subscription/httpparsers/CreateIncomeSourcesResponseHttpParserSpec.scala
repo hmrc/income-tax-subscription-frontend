@@ -17,7 +17,7 @@
 package connectors.individual.subscription.httpparsers
 
 import connectors.individual.subscription.httpparsers.CreateIncomeSourcesResponseHttpParser.PostCreateIncomeSourcesResponseHttpReads
-import models.common.subscription.{CreateIncomeSourcesFailureResponse, CreateIncomeSourcesSuccess}
+import models.common.subscription.{CreateIncomeSourcesFailure, CreateIncomeSourcesSuccess}
 import org.scalatest.EitherValues
 import play.api.http.Status._
 import uk.gov.hmrc.http.HttpResponse
@@ -34,7 +34,7 @@ class CreateIncomeSourcesResponseHttpParserSpec extends UnitTestTrait with Eithe
 
         val res = PostCreateIncomeSourcesResponseHttpReads.read(testHttpVerb, testUri, httpResponse)
 
-        res.value mustBe CreateIncomeSourcesSuccess()
+        res.value mustBe CreateIncomeSourcesSuccess
       }
 
       "parse any other http status as a CreateIncomeSourcesFailureResponse" in {
@@ -42,7 +42,7 @@ class CreateIncomeSourcesResponseHttpParserSpec extends UnitTestTrait with Eithe
 
         val res = PostCreateIncomeSourcesResponseHttpReads.read(testHttpVerb, testUri, httpResponse)
 
-        res.left.value mustBe CreateIncomeSourcesFailureResponse(BAD_REQUEST)
+        res.left.value mustBe CreateIncomeSourcesFailure(BAD_REQUEST)
       }
     }
   }

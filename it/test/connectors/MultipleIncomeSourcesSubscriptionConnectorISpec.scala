@@ -20,7 +20,8 @@ import connectors.individual.subscription.MultipleIncomeSourcesSubscriptionConne
 import connectors.stubs.MultipleIncomeSourcesSubscriptionAPIStub._
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.{testMtdId, testNino}
-import models.common.subscription._
+import models.common.subscription.SignUpSourcesFailure.{BadlyFormattedSignUpIncomeSourcesResponse, SignUpIncomeSourcesFailureResponse}
+import models.common.subscription.SignUpSuccessResponse.SignUpSuccessful
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -39,7 +40,7 @@ class MultipleIncomeSourcesSubscriptionConnectorISpec extends ComponentSpecBase 
 
       val res = TestMisSubscriptionConnector.signUp(testNino, testTaxYear)
 
-      await(res) mustBe Right(SignUpIncomeSourcesSuccess(testMtdId))
+      await(res) mustBe Right(SignUpSuccessful(testMtdId))
     }
     "return BadlyFormattedSignUpIncomeSourcesResponse when the response is malformed" in {
       stubPostSignUp(testNino, testTaxYear)(OK, Json.obj("not" -> "correct"))

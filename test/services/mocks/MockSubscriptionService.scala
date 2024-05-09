@@ -57,8 +57,11 @@ trait MockSubscriptionService extends UnitTestTrait with MockitoSugar with Befor
       .thenReturn(result)
   }
 
-  def mockSignUpIncomeSourcesSuccess(nino: String, taxYear: String): Unit =
+  def mockSignUpSuccess(nino: String, taxYear: String): Unit =
     mockSignUpIncomeSources(nino, taxYear)(Future.successful(testSignUpIncomeSourcesSuccess))
+
+  def mockAlreadySignedUp(nino: String, taxYear: String): Unit =
+    mockSignUpIncomeSources(nino, taxYear)(Future.successful(testAlreadySignUpIncomeSources))
 
   def mockSignUpIncomeSourcesFailure(nino: String, taxYear: String): Unit =
     mockSignUpIncomeSources(nino, taxYear)(Future.successful(testSignUpIncomeSourcesFailure))

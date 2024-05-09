@@ -19,14 +19,25 @@ package models.common.subscription
 import models.ConnectorError
 import play.api.libs.json.{Json, OFormat}
 
-case class SignUpIncomeSourcesSuccess(mtdbsa: String)
+sealed trait SignUpSuccessResponse
 
-object SignUpIncomeSourcesSuccess {
-  implicit val format: OFormat[SignUpIncomeSourcesSuccess] = Json.format[SignUpIncomeSourcesSuccess]
+object SignUpSuccessResponse {
+
+  case class SignUpSuccessful(mtdbsa: String) extends SignUpSuccessResponse
+
+  case object AlreadySignedUp extends SignUpSuccessResponse
+
+  implicit val format: OFormat[SignUpSuccessful] = Json.format[SignUpSuccessful]
+
 }
 
 sealed trait SignUpIncomeSourcesFailure extends ConnectorError
 
-case object BadlyFormattedSignUpIncomeSourcesResponse extends SignUpIncomeSourcesFailure
+object SignUpSourcesFailure {
 
-case class SignUpIncomeSourcesFailureResponse(status: Int) extends SignUpIncomeSourcesFailure
+  case object BadlyFormattedSignUpIncomeSourcesResponse extends SignUpIncomeSourcesFailure
+
+  case class SignUpIncomeSourcesFailureResponse(status: Int) extends SignUpIncomeSourcesFailure
+
+}
+

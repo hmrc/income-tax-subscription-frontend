@@ -113,8 +113,10 @@ class TaskListController @Inject()(taskListView: TaskList,
           val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
 
           subscriptionService.createSubscriptionFromTaskList(arn, nino, utr, incomeSourceModel)(headerCarrier) map {
-            case Right(SubscriptionSuccess(id)) =>
+            case Right(Some(SubscriptionSuccess(id))) =>
               Redirect(controllers.agent.routes.ConfirmationController.show).addingToSession(ITSASessionKeys.MTDITID -> id)
+            case Right(None) =>
+              Redirect(controllers.agent.routes.ConfirmationController.show).addingToSession(ITSASessionKeys.MTDITID -> "already-signed-up")
             case Left(failure) =>
               throw new InternalServerException(s"[TaskListController][submit] - failure response received from submission: ${failure.toString}")
           }

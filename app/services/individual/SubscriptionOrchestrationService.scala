@@ -19,7 +19,7 @@ package services.individual
 import cats.data.EitherT
 import cats.implicits._
 import models.ConnectorError
-import models.common.subscription.{CreateIncomeSourcesModel, SubscriptionSuccess}
+import models.common.subscription.{CreateIncomeSourcesModel, SignUpSuccessResponse, SubscriptionSuccess}
 import services.{SPSService, SubscriptionService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
@@ -44,7 +44,7 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
   def signUpAndCreateIncomeSourcesFromTaskList(nino: String,
                                                createIncomeSourceModel: CreateIncomeSourcesModel,
                                                maybeSpsEntityId: Option[String] = None)
-                                              (implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {
+                                              (implicit hc: HeaderCarrier): Future[Either[ConnectorError, Option[SubscriptionSuccess]]] = {
     val taxYear: String = {
       createIncomeSourceModel.ukProperty.map(_.accountingPeriod.toLongTaxYear) orElse
         createIncomeSourceModel.overseasProperty.map(_.accountingPeriod.toLongTaxYear) orElse
@@ -53,18 +53,22 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
       "[SubscriptionOrchestrationService][signUpAndCreateIncomeSourcesFromTaskList] - Unable to retrieve any tax year from income sources"
     ))
 
-    val res = for {
-      signUpResponse <- EitherT(subscriptionService.signUpIncomeSources(nino, taxYear))
-      mtdbsa = signUpResponse.mtdbsa
-      _ <- EitherT(subscriptionService.createIncomeSourcesFromTaskList(mtdbsa, createIncomeSourceModel))
-      _ <- EitherT(knownFactsService.addKnownFacts(mtdbsa, nino))
-      _ <- EitherT(enrolAndRefresh(mtdbsa, nino))
-      _ = spsService.confirmPreferences(mtdbsa, maybeSpsEntityId)
-    } yield {
-      SubscriptionSuccess(mtdbsa)
+    val result: EitherT[Future, ConnectorError, Option[SubscriptionSuccess]] = {
+      EitherT(subscriptionService.signUpIncomeSources(nino, taxYear)).flatMap {
+        case SignUpSuccessResponse.SignUpSuccessful(mtdbsa) =>
+          for {
+            _ <- EitherT(subscriptionService.createIncomeSourcesFromTaskList(mtdbsa, createIncomeSourceModel))
+            _ <- EitherT(knownFactsService.addKnownFacts(mtdbsa, nino))
+            _ <- EitherT(enrolAndRefresh(mtdbsa, nino))
+            _ = spsService.confirmPreferences(mtdbsa, maybeSpsEntityId)
+          } yield {
+            Some(SubscriptionSuccess(mtdbsa))
+          }
+        case SignUpSuccessResponse.AlreadySignedUp => EitherT[Future, ConnectorError, Option[SubscriptionSuccess]](Future.successful(Right(None)))
+      }
     }
 
-    res.value
-  }
+    result.value
 
+  }
 }

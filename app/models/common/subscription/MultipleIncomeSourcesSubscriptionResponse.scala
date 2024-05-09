@@ -18,10 +18,6 @@ package models.common.subscription
 
 import models.ConnectorError
 
-case class CreateIncomeSourcesSuccess()
+case object CreateIncomeSourcesSuccess
 
-sealed trait CreateIncomeSourcesFailure extends ConnectorError
-
-case object BadlyFormattedCreateIncomeSourcesResponse extends CreateIncomeSourcesFailure
-
-case class CreateIncomeSourcesFailureResponse(status: Int) extends CreateIncomeSourcesFailure
+case class CreateIncomeSourcesFailure(status: Int) extends ConnectorError

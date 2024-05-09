@@ -218,6 +218,40 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             )
           }
         }
+        "sign up returns a response indicating the customer is already signed up" in {
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+
+          IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty), Some(testAccountingMethod.accountingMethod))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+            Property,
+            OK,
+            Json.toJson(testFullPropertyModel.copy(
+              accountingMethod = Some(testUkProperty(Next).accountingMethod),
+              startDate = Some(testUkProperty(Next).tradingStartDate)
+            ))
+          )
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+            OverseasProperty,
+            OK,
+            Json.toJson(testFullOverseasPropertyModel.copy(
+              accountingMethod = Some(testOverseasProperty(Next).accountingMethod),
+              startDate = Some(testOverseasProperty(Next).tradingStartDate)
+            ))
+          )
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearNextConfirmed))
+
+          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getNextTaxYear.toLongTaxYear)(UNPROCESSABLE_ENTITY)
+
+          When("POST /client/final-check-your-answers is called")
+          val res = IncomeTaxSubscriptionFrontend.submitAgentGlobalCheckYourAnswers(Some(Yes))()
+
+          Then("Should redirect to the confirmation page")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(AgentURI.confirmationURI)
+          )
+        }
       }
       "return INTERNAL SERVER ERROR" when {
         "sign up failed" in {

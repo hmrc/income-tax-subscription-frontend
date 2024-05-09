@@ -16,11 +16,9 @@
 
 package services.agent
 
-import cats.data.EitherT
-import cats.implicits._
 import connectors.agent.AgentSPSConnector
 import models.ConnectorError
-import models.common.subscription.{CreateIncomeSourcesModel, CreateIncomeSourcesSuccess, SubscriptionSuccess}
+import models.common.subscription.{CreateIncomeSourcesModel, SignUpSuccessResponse, SubscriptionSuccess}
 import services.SubscriptionService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
@@ -37,25 +35,25 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
                                      nino: String,
                                      utr: String,
                                      createIncomeSourcesModel: CreateIncomeSourcesModel)
-                                    (implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {
+                                    (implicit hc: HeaderCarrier): Future[Either[ConnectorError, Option[SubscriptionSuccess]]] = {
 
     signUpAndCreateIncomeSourcesFromTaskList(nino, createIncomeSourcesModel) flatMap {
-      case right@Right(subscriptionSuccess) => {
+      case right@Right(Some(subscriptionSuccess)) =>
         autoEnrolmentService.autoClaimEnrolment(utr, nino, subscriptionSuccess.mtditId) flatMap {
           case Right(_) =>
-            confirmAgentEnrollmentToSps(arn, nino, utr, right.value.mtditId)
+            confirmAgentEnrollmentToSps(arn, nino, utr, subscriptionSuccess.mtditId)
               .map(_ => right)
           case Left(_) =>
             Future.successful(right)
         }
-      }
+      case Right(None) => Future.successful(Right(None))
       case left => Future.successful(left)
     }
 
   }
 
   private[services] def signUpAndCreateIncomeSourcesFromTaskList(nino: String, createIncomeSourcesModel: CreateIncomeSourcesModel)
-                                                                (implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {
+                                                                (implicit hc: HeaderCarrier): Future[Either[ConnectorError, Option[SubscriptionSuccess]]] = {
 
     val taxYear: String = {
       createIncomeSourcesModel.ukProperty.map(_.accountingPeriod.toLongTaxYear) orElse
@@ -65,13 +63,16 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
       "[SubscriptionOrchestrationService][signUpAndCreateIncomeSourcesFromTaskList] - Unable to retrieve any tax year from income sources"
     ))
 
-    val res = for {
-      signUpResponse <- EitherT(subscriptionService.signUpIncomeSources(nino, taxYear))
-      mtdbsa = signUpResponse.mtdbsa
-      _ <- EitherT[Future, ConnectorError, CreateIncomeSourcesSuccess](subscriptionService.createIncomeSourcesFromTaskList(mtdbsa, createIncomeSourcesModel))
-    } yield SubscriptionSuccess(mtdbsa)
-
-    res.value
+    subscriptionService.signUpIncomeSources(nino, taxYear) flatMap {
+      case Right(SignUpSuccessResponse.SignUpSuccessful(mtdbsa)) =>
+        subscriptionService.createIncomeSourcesFromTaskList(mtdbsa, createIncomeSourcesModel) map {
+          case Right(_) => Right(Some(SubscriptionSuccess(mtdbsa)))
+          case Left(error) => Left(error)
+        }
+      case Right(SignUpSuccessResponse.AlreadySignedUp) =>
+        Future.successful(Right(None))
+      case Left(error) => Future.successful(Left(error))
+    }
   }
 
   private[services] def confirmAgentEnrollmentToSps(arn: String, nino: String, sautr: String, mtditId: String)
