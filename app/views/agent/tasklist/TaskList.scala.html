@@ -42,19 +42,6 @@
 
 @messagePrefix = @{"agent.business.task-list"}
 
-@taskListApplicationStatus = {
-  <h2 class="govuk-heading-m govuk-!-margin-bottom-2 govuk-!-margin-top-2" id="taskListStatus" >@applicationStatus</h2>
-  <p class="app-task-list__item govuk-body govuk-!-padding-bottom-7" id="taskListCompletedSummary">@messages(s"${messagePrefix}.content.summary", viewModel.sectionsComplete(featureSwitching.isEnabled(EnableTaskListRedesign)), viewModel.sectionsTotal(featureSwitching.isEnabled(EnableTaskListRedesign)))</p>
-}
-
-@applicationStatus = @{
-  if(viewModel.taskListComplete(featureSwitching.isEnabled(EnableTaskListRedesign))) {
-    messages(s"${messagePrefix}.heading.complete")
-  } else {
-    messages(s"${messagePrefix}.heading.incomplete")
-  }
-}
-
 @clientInformation = {
   <div class="client-details app-task-list__post-list">
       @govukSummaryList(SummaryList(
@@ -290,10 +277,6 @@
   <h1 class="govuk-heading-xl">@messages(s"${messagePrefix}.title")</h1>
 
   @form(action = postAction) {
-
-    @taskListApplicationStatus
-
-    <div class="govuk-!-padding-top-7">
       @taskListHelper(
         Seq(
             yourClientsInformation,
@@ -302,8 +285,6 @@
         )
       )
       @signUpSectionContent
-    </div>
-
   }
 
 }

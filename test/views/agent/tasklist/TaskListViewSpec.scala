@@ -136,14 +136,6 @@ class TaskListViewSpec extends ViewSpec {
 
       "display the dynamic content correctly" when {
         "there is no user data" must {
-          "display the application is incomplete" in {
-            doc.getElementById("taskListStatus").text mustBe subHeadingIncomplete
-          }
-
-          "display the number of sections complete out of the total" in {
-            doc.mainContent.getElementById("taskListCompletedSummary").text mustBe contentSummary(1, 3)
-          }
-
           "in the client information section: have a client name, nino and utr" in {
             doc.mainContent.getElementsByClass("govuk-summary-list__key").text contains s"Client: $clientName | $clientNino |$clientUtr"
           }
@@ -167,7 +159,7 @@ class TaskListViewSpec extends ViewSpec {
           }
 
           "display the sign up incomplete text" in {
-            val incompleteText = doc.mainContent.selectNth("p", 3)
+            val incompleteText = doc.mainContent.selectNth("p", 2)
             incompleteText.text mustBe agentSignUpIncompleteText
           }
 
@@ -180,15 +172,6 @@ class TaskListViewSpec extends ViewSpec {
     }
     "given partial task list model" must {
       def doc = document(partialTaskList)
-
-      "display the application is incomplete" in {
-        doc.getElementById("taskListStatus").text mustBe subHeadingIncomplete
-      }
-
-      "display the number of sections complete out of the total" in {
-        doc.mainContent.getElementById("taskListCompletedSummary").text mustBe
-          contentSummary(numberComplete = 1, numberTotal = 6)
-      }
 
       "in the client information section: have a client name, nino and utr" in {
         doc.mainContent.getElementsByClass("govuk-summary-list__key").text contains s"Client: $clientName | $clientNino |$clientUtr"
@@ -306,7 +289,7 @@ class TaskListViewSpec extends ViewSpec {
       }
 
       "display the sign up incomplete text" in {
-        val incompleteText = doc.mainContent.selectNth("p", 3)
+        val incompleteText = doc.mainContent.selectNth("p", 2)
         incompleteText.text mustBe agentSignUpIncompleteText
       }
 
@@ -317,14 +300,6 @@ class TaskListViewSpec extends ViewSpec {
 
     "given complete task list model" must {
       def doc = document(completeTaskList)
-
-      "display the application is complete" in {
-        doc.getElementById("taskListStatus").text mustBe subHeadingComplete
-      }
-
-      "display the number of sections complete out of the total" in {
-        doc.mainContent.getElementById("taskListCompletedSummary").text mustBe contentSummary(5, 5)
-      }
 
       "in the client information section: have a client name, nino and utr" in {
         doc.mainContent.getElementsByClass("govuk-summary-list__key").text contains s"Client: $clientName | $clientNino |$clientUtr"
@@ -395,7 +370,7 @@ class TaskListViewSpec extends ViewSpec {
       }
 
       "display the text to let them know they can now sign up" in {
-        doc.mainContent.selectNth("p", 3).text mustBe agentSignUpReadyText
+        doc.mainContent.selectNth("p", 2).text mustBe agentSignUpReadyText
       }
 
       "display the sign up button" in {
