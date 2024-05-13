@@ -19,6 +19,8 @@ package connectors.individual.subscription.mocks
 import connectors.individual.subscription.MultipleIncomeSourcesSubscriptionConnector
 import connectors.individual.subscription.httpparsers.CreateIncomeSourcesResponseHttpParser.PostCreateIncomeSourceResponse
 import connectors.individual.subscription.httpparsers.SignUpIncomeSourcesResponseHttpParser.PostSignUpIncomeSourcesResponse
+import models.common.subscription.SignUpSourcesFailure.SignUpIncomeSourcesFailureResponse
+import models.common.subscription.SignUpSuccessResponse.SignUpSuccessful
 import models.common.subscription._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
@@ -38,13 +40,10 @@ trait MockMisSubscriptionConnector extends UnitTestTrait with MockitoSugar {
       .thenReturn(result)
 
   def setupMockSignUpIncomeSourcesSuccess(nino: String, taxYear: String): Unit =
-    setupMockMisSignUp(nino, taxYear)(Future.successful(Right(SignUpIncomeSourcesSuccess(testMTDID))))
+    setupMockMisSignUp(nino, taxYear)(Future.successful(Right(SignUpSuccessful(testMTDID))))
 
   def setupMockSignUpIncomeSourcesFailure(nino: String, taxYear: String): Unit =
     setupMockMisSignUp(nino, taxYear)(Future.successful(Left(SignUpIncomeSourcesFailureResponse(BAD_REQUEST))))
-
-  def setupMockSignUpIncomeSourcesBadFormatting(nino: String, taxYear: String): Unit =
-    setupMockMisSignUp(nino, taxYear)(Future.successful(Left(BadlyFormattedSignUpIncomeSourcesResponse)))
 
   def setupMockSignUpIncomeSourcesException(nino: String, taxYear: String): Unit =
     setupMockMisSignUp(nino, taxYear)(Future.failed(testException))
@@ -59,10 +58,7 @@ trait MockMisSubscriptionConnector extends UnitTestTrait with MockitoSugar {
     setupMockCreateIncomeSourcesFromTaskList(mtdbsa, model)(Future.successful(testCreateIncomeSourcesFromTaskListSuccess))
 
   def setupMockCreateIncomeSourcesFromTaskListFailure(mtdbsa: String, model: CreateIncomeSourcesModel): Unit =
-    setupMockCreateIncomeSourcesFromTaskList(mtdbsa, model)(Future.successful(Left(CreateIncomeSourcesFailureResponse(BAD_REQUEST))))
-
-  def setupMockCreateIncomeSourcesFromTaskListBadFormatting(mtdbsa: String, model: CreateIncomeSourcesModel): Unit =
-    setupMockCreateIncomeSourcesFromTaskList(mtdbsa, model)(Future.successful(Left(BadlyFormattedCreateIncomeSourcesResponse)))
+    setupMockCreateIncomeSourcesFromTaskList(mtdbsa, model)(Future.successful(Left(CreateIncomeSourcesFailure(BAD_REQUEST))))
 
   def setupMockCreateIncomeSourcesFromTaskListException(mtdbsa: String, model: CreateIncomeSourcesModel): Unit =
     setupMockCreateIncomeSourcesFromTaskList(mtdbsa, model)(Future.failed(testException))

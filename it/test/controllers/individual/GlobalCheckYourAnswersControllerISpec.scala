@@ -19,7 +19,7 @@ package controllers.individual
 import common.Constants.ITSASessionKeys.SPSEntityId
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, MultipleIncomeSourcesSubscriptionAPIStub}
 import helpers.IntegrationTestConstants._
-import helpers.IntegrationTestModels.{testAccountingYearCurrent, testAccountingYearCurrentConfirmed, testAccountingYearNextConfirmed, testBusinesses, testFullOverseasPropertyModel, testFullPropertyModel, testMTDITEnrolmentKey}
+import helpers.IntegrationTestModels._
 import helpers.WiremockHelper.verifyPost
 import helpers._
 import helpers.servicemocks.{AuthStub, ChannelPreferencesStub, TaxEnrolmentsStub}
@@ -158,6 +158,42 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             val expectedSPSBody: SPSPayload = SPSPayload(testEntityId, s"HMRC-MTD-IT~MTDITID~$testMtdId")
             verifyPost("/channel-preferences/confirm", Some(Json.toJson(expectedSPSBody).toString), Some(1))
           }
+          "sign up indicated the customer is already signed up" in {
+            Given("I setup the Wiremock stubs")
+            AuthStub.stubAuthSuccess()
+            IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty), Some(testAccountMethod))
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+              Property,
+              OK,
+              Json.toJson(testFullPropertyModel.copy(
+                accountingMethod = Some(testUkProperty().accountingMethod),
+                startDate = Some(testUkProperty().tradingStartDate)
+              ))
+            )
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+              OverseasProperty,
+              OK,
+              Json.toJson(testFullOverseasPropertyModel.copy(
+                accountingMethod = Some(testOverseasProperty().accountingMethod),
+                startDate = Some(testOverseasProperty().tradingStartDate)
+              ))
+            )
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
+
+            MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear)(UNPROCESSABLE_ENTITY)
+
+            When("POST /final-check-your-answers is called")
+            val testEntityId: String = "testEntityId"
+            val res = IncomeTaxSubscriptionFrontend.submitGlobalCheckYourAnswers(Map(SPSEntityId -> testEntityId))
+
+            Then("Should redirect to the confirmation page")
+            res must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(IndividualURI.confirmationURI)
+            )
+
+            verifyPost("/channel-preferences/confirm", count = Some(0))
+          }
         }
         "signing up for the next tax year" when {
           "all calls were successful" in {
@@ -214,6 +250,42 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
 
             val expectedSPSBody: SPSPayload = SPSPayload(testEntityId, s"HMRC-MTD-IT~MTDITID~$testMtdId")
             verifyPost("/channel-preferences/confirm", Some(Json.toJson(expectedSPSBody).toString), Some(1))
+          }
+          "sign up indicated the customer is already signed up" in {
+            Given("I setup the Wiremock stubs")
+            AuthStub.stubAuthSuccess()
+            IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty), Some(testAccountMethod))
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+              Property,
+              OK,
+              Json.toJson(testFullPropertyModel.copy(
+                accountingMethod = Some(testUkProperty().accountingMethod),
+                startDate = Some(testUkProperty().tradingStartDate)
+              ))
+            )
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+              OverseasProperty,
+              OK,
+              Json.toJson(testFullOverseasPropertyModel.copy(
+                accountingMethod = Some(testOverseasProperty().accountingMethod),
+                startDate = Some(testOverseasProperty().tradingStartDate)
+              ))
+            )
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearNextConfirmed))
+
+            MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getNextTaxYear.toLongTaxYear)(UNPROCESSABLE_ENTITY)
+
+            When("POST /final-check-your-answers is called")
+            val testEntityId: String = "testEntityId"
+            val res = IncomeTaxSubscriptionFrontend.submitGlobalCheckYourAnswers(Map(SPSEntityId -> testEntityId))
+
+            Then("Should redirect to the confirmation page")
+            res must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(IndividualURI.confirmationURI)
+            )
+
+            verifyPost("/channel-preferences/confirm", count = Some(0))
           }
         }
       }

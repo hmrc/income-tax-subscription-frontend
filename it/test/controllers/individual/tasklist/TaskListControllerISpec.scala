@@ -374,6 +374,29 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
             }
           }
         }
+        "sign up indicates the user was already signed up" in {
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+
+          IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty), Some(testAccountingMethod.accountingMethod))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
+
+          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear)(UNPROCESSABLE_ENTITY)
+
+          When("POST /business/task-list is called")
+          val testEntityId: String = "testEntityId"
+          val res = IncomeTaxSubscriptionFrontend.submitTaskList(Map(SPSEntityId -> testEntityId))
+
+          Then("Should return a SEE_OTHER with a redirect location of confirmation")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(IndividualURI.confirmationURI)
+          )
+
+          verifyPost("/channel-preferences/confirm", count = Some(0))
+        }
       }
 
       "the subscription failed" should {

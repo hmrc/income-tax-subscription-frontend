@@ -16,21 +16,26 @@
 
 package connectors.individual.subscription.httpparsers
 
-import models.common.subscription.{BadlyFormattedSignUpIncomeSourcesResponse, SignUpIncomeSourcesFailure, SignUpIncomeSourcesFailureResponse, SignUpIncomeSourcesSuccess}
-import play.api.http.Status.OK
+import models.common.subscription.SignUpSourcesFailure.{BadlyFormattedSignUpIncomeSourcesResponse, SignUpIncomeSourcesFailureResponse}
+import models.common.subscription.SignUpSuccessResponse.{AlreadySignedUp, SignUpSuccessful}
+import models.common.subscription.{SignUpIncomeSourcesFailure, SignUpSuccessResponse}
+import play.api.http.Status.{OK, UNPROCESSABLE_ENTITY}
+import play.api.libs.json.JsSuccess
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 object SignUpIncomeSourcesResponseHttpParser {
-  type PostSignUpIncomeSourcesResponse = Either[SignUpIncomeSourcesFailure, SignUpIncomeSourcesSuccess]
+
+  type PostSignUpIncomeSourcesResponse = Either[SignUpIncomeSourcesFailure, SignUpSuccessResponse]
 
   implicit object PostMultipleIncomeSourcesSignUpResponseHttpReads extends HttpReads[PostSignUpIncomeSourcesResponse] {
     override def read(method: String, url: String, response: HttpResponse): PostSignUpIncomeSourcesResponse = {
       response.status match {
         case OK =>
-          response.json.asOpt[SignUpIncomeSourcesSuccess] match {
-            case Some(successResponse) => Right(successResponse)
+          response.json.validate[SignUpSuccessful] match {
+            case JsSuccess(successResponse, _) => Right(successResponse)
             case _ => Left(BadlyFormattedSignUpIncomeSourcesResponse)
           }
+        case UNPROCESSABLE_ENTITY => Right(AlreadySignedUp)
         case status => Left(SignUpIncomeSourcesFailureResponse(status))
       }
     }

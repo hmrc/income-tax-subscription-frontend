@@ -17,7 +17,8 @@
 package connectors.individual.subscription.httpparsers
 
 import connectors.individual.subscription.httpparsers.SignUpIncomeSourcesResponseHttpParser.PostMultipleIncomeSourcesSignUpResponseHttpReads
-import models.common.subscription.{BadlyFormattedSignUpIncomeSourcesResponse, SignUpIncomeSourcesFailureResponse, SignUpIncomeSourcesSuccess}
+import models.common.subscription.SignUpSourcesFailure.{BadlyFormattedSignUpIncomeSourcesResponse, SignUpIncomeSourcesFailureResponse}
+import models.common.subscription.SignUpSuccessResponse.SignUpSuccessful
 import org.scalatest.EitherValues
 import play.api.http.Status._
 import play.api.libs.json.Json
@@ -32,11 +33,11 @@ class SignUpIncomeSourcesResponseHttpParserSpec extends UnitTestTrait with Eithe
   "MultipleIncomeSourcesSignUpResponseHttpReads" when {
     "read" should {
       "parse a correctly formatted OK response as a SignUpIncomeSourcesSuccess" in {
-        val httpResponse = HttpResponse(OK, json = Json.toJson(SignUpIncomeSourcesSuccess(testMTDID)), Map.empty)
+        val httpResponse = HttpResponse(OK, json = Json.toJson(SignUpSuccessful(testMTDID)), Map.empty)
 
         val res = PostMultipleIncomeSourcesSignUpResponseHttpReads.read(testHttpVerb, testUri, httpResponse)
 
-        res.value mustBe SignUpIncomeSourcesSuccess(testMTDID)
+        res.value mustBe SignUpSuccessful(testMTDID)
       }
 
       "parse an incorrectly formatted OK response as a BadlyFormattedSignUpIncomeSourcesResponse" in {

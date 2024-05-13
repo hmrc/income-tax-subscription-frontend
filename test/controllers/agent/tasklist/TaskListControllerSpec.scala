@@ -16,6 +16,7 @@
 
 package controllers.agent.tasklist
 
+import common.Constants.ITSASessionKeys
 import config.featureswitch.FeatureSwitch.{EnableTaskListRedesign, ThrottlingFeature}
 import controllers.agent.AgentControllerBaseSpec
 import models.common.business._
@@ -27,7 +28,7 @@ import org.mockito.Mockito.{reset, when}
 import play.api.http.Status
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK}
 import play.api.mvc.{Action, AnyContent, Codec, Result}
-import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
+import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, session, status}
 import play.twirl.api.HtmlFormat
 import services.AccountingPeriodService
 import services.agent.mocks.MockSubscriptionOrchestrationService
@@ -129,30 +130,59 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
         redirectLocation(result) mustBe Some(controllers.agent.routes.GlobalCheckYourAnswersController.show.url)
       }
     }
-    "the task list redesign feature switch is disabled" should {
-      "sign up income source is successful" should {
-        "return status (SEE_OTHER - 303) and redirect to the confirmation page" in {
-          setupMockSubscriptionDetailsSaveFunctions()
-          mockFetchAllSelfEmployments()
-          mockFetchProperty(Some(PropertyModel(
-            accountingMethod = Some(testAccountingMethod.accountingMethod),
-            startDate = Some(testValidStartDate),
-            confirmed = true
-          )))
-          mockFetchOverseasProperty(Some(OverseasPropertyModel(
-            accountingMethod = Some(testAccountingMethod.accountingMethod),
-            startDate = Some(testValidStartDate),
-            confirmed = true
-          )))
-          mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
+    "the task list redesign feature switch is disabled" when {
+      "sign up income source is successful" when {
+        "a success with mtditid response is returned" should {
+          "return status (SEE_OTHER - 303) and redirect to the confirmation page with mtditid added to session" in {
+            setupMockSubscriptionDetailsSaveFunctions()
+            mockFetchAllSelfEmployments()
+            mockFetchProperty(Some(PropertyModel(
+              accountingMethod = Some(testAccountingMethod.accountingMethod),
+              startDate = Some(testValidStartDate),
+              confirmed = true
+            )))
+            mockFetchOverseasProperty(Some(OverseasPropertyModel(
+              accountingMethod = Some(testAccountingMethod.accountingMethod),
+              startDate = Some(testValidStartDate),
+              confirmed = true
+            )))
+            mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
 
-          val testIncomeSourceModel = testCreateIncomeSourcesThisYear.copy(soleTraderBusinesses = None)
-          mockCreateSubscriptionFromTaskListSuccess(testARN, testNino, testUtr, testIncomeSourceModel)
+            val testIncomeSourceModel = testCreateIncomeSourcesThisYear.copy(soleTraderBusinesses = None)
+            mockCreateSubscriptionFromTaskListSuccess(testARN, testNino, testUtr, testIncomeSourceModel)
 
-          val result: Future[Result] = TestTaskListController.submit()(subscriptionRequestWithName)
+            val result: Future[Result] = TestTaskListController.submit()(subscriptionRequestWithName)
 
-          status(result) must be(Status.SEE_OTHER)
-          redirectLocation(result) mustBe Some(controllers.agent.routes.ConfirmationController.show.url)
+            status(result) must be(Status.SEE_OTHER)
+            redirectLocation(result) mustBe Some(controllers.agent.routes.ConfirmationController.show.url)
+            session(result).get(ITSASessionKeys.MTDITID) mustBe Some(testMTDID)
+          }
+        }
+        "a success with no mtditid indicating already signed up is returned" should {
+          "return status (SEE_OTHER - 303) and redirect to the confirmation page with already signed up as the mtditid" in {
+            setupMockSubscriptionDetailsSaveFunctions()
+            mockFetchAllSelfEmployments()
+            mockFetchProperty(Some(PropertyModel(
+              accountingMethod = Some(testAccountingMethod.accountingMethod),
+              startDate = Some(testValidStartDate),
+              confirmed = true
+            )))
+            mockFetchOverseasProperty(Some(OverseasPropertyModel(
+              accountingMethod = Some(testAccountingMethod.accountingMethod),
+              startDate = Some(testValidStartDate),
+              confirmed = true
+            )))
+            mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
+
+            val testIncomeSourceModel = testCreateIncomeSourcesThisYear.copy(soleTraderBusinesses = None)
+            mockCreateSubscriptionFromTaskListAlreadySignedUp(testARN, testNino, testUtr, testIncomeSourceModel)
+
+            val result: Future[Result] = TestTaskListController.submit()(subscriptionRequestWithName)
+
+            status(result) must be(Status.SEE_OTHER)
+            redirectLocation(result) mustBe Some(controllers.agent.routes.ConfirmationController.show.url)
+            session(result).get(ITSASessionKeys.MTDITID) mustBe Some("already-signed-up")
+          }
         }
       }
 

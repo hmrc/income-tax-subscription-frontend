@@ -61,15 +61,21 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
     implicit user =>
       withAgentReference { reference =>
         withCompleteDetails(reference) { completeDetails =>
-          signUp(completeDetails)(
-            onSuccessfulSignUp = id => Redirect(controllers.agent.routes.ConfirmationController.show).addingToSession(ITSASessionKeys.MTDITID -> id)
-          )
+          signUp(completeDetails) {
+            case Some(id) =>
+              Redirect(controllers.agent.routes.ConfirmationController.show)
+                .addingToSession(ITSASessionKeys.MTDITID -> id)
+            case None =>
+              Redirect(controllers.agent.routes.ConfirmationController.show)
+                .addingToSession(ITSASessionKeys.MTDITID -> "already-signed-up")
+
+          }
         }
       }
   }
 
   private def signUp(completeDetails: CompleteDetails)
-                    (onSuccessfulSignUp: String => Result)
+                    (onSuccessfulSignUp: Option[String] => Result)
                     (implicit request: Request[AnyContent], user: IncomeTaxAgentUser): Future[Result] = {
     val nino = user.clientNino.get
     val utr = user.clientUtr.get
@@ -81,8 +87,10 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
       utr = utr,
       createIncomeSourcesModel = CreateIncomeSourcesModel.createIncomeSources(nino, completeDetails)
     )(headerCarrier) map {
-      case Right(SubscriptionSuccess(id)) =>
-        onSuccessfulSignUp(id)
+      case Right(Some(SubscriptionSuccess(id))) =>
+        onSuccessfulSignUp(Some(id))
+      case Right(None) =>
+        onSuccessfulSignUp(None)
       case Left(failure) =>
         throw new InternalServerException(
           s"[GlobalCheckYourAnswersController][submit] - failure response received from submission: ${failure.toString}"

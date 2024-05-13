@@ -561,6 +561,32 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
             val cookieMap = getSessionMap(res)
             cookieMap(ITSASessionKeys.MTDITID) mustBe testMtdId
           }
+          "the sign up indicated the client is already signed up" in {
+            Given("I setup the Wiremock stubs")
+            AuthStub.stubAuthSuccess()
+
+            IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty), Some(testAccountMethod))
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
+
+            MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear)(UNPROCESSABLE_ENTITY)
+
+            When("I call POST /task-list")
+            val res = IncomeTaxSubscriptionFrontend.submitTaskList()
+
+            Then("The result must have a status of SEE_OTHER and redirect to the confirmation page")
+            res must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(AgentURI.confirmationURI)
+            )
+
+            verifyPost("/channel-preferences/enrolment", count = Some(0))
+
+            val cookieMap = getSessionMap(res)
+            cookieMap(ITSASessionKeys.MTDITID) mustBe "already-signed-up"
+
+          }
         }
       }
       "fail to sign up the client" when {

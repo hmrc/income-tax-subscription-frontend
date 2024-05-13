@@ -16,9 +16,8 @@
 
 package services.individual.mocks
 
-import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import models.ConnectorError
-import models.common.subscription.CreateIncomeSourcesModel
+import models.common.subscription.{CreateIncomeSourcesModel, SubscriptionSuccess}
 import org.mockito.ArgumentMatchers.{any, eq => eql}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -56,7 +55,7 @@ trait MockSubscriptionOrchestrationService extends UnitTestTrait with MockitoSug
 
   private def mockSignUpAndCreateIncomeSourcesFromTaskList(nino: String,
                                                            createIncomeSourcesModel: CreateIncomeSourcesModel
-                                                          )(result: Future[SubscriptionResponse]): Unit = {
+                                                          )(result: Future[Either[ConnectorError, Option[SubscriptionSuccess]]]): Unit = {
     when(mockSubscriptionOrchestrationService.signUpAndCreateIncomeSourcesFromTaskList(
       eql(nino),
       eql(createIncomeSourcesModel),

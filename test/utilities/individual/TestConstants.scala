@@ -19,6 +19,8 @@ package utilities.individual
 import common.Constants.GovernmentGateway.{MTDITID, NINO, ggFriendlyName, ggPortalId}
 import common.Constants.mtdItsaEnrolmentName
 import models.common.business._
+import models.common.subscription.SignUpSourcesFailure.SignUpIncomeSourcesFailureResponse
+import models.common.subscription.SignUpSuccessResponse.{AlreadySignedUp, SignUpSuccessful}
 import models.common.subscription._
 import models.common.{OverseasPropertyStartDateModel, PropertyStartDateModel}
 import models.usermatching.{LockedOut, UserMatchFailureResponseModel, UserMatchSuccessResponseModel}
@@ -104,7 +106,7 @@ object TestConstants {
 
   val testEnrolFailure = Left(EnrolFailure(testErrorMessage))
 
-  val testSubscriptionSuccess = Right(SubscriptionSuccess(testMTDID))
+  val testSubscriptionSuccess = Right(Some(SubscriptionSuccess(testMTDID)))
 
   val testSubscriptionFailure = Left(SubscriptionFailureResponse(INTERNAL_SERVER_ERROR))
 
@@ -124,17 +126,19 @@ object TestConstants {
 
   val testEnrolmentRequest = EmacEnrolmentRequest(testCredId, testNino)
 
-  val testSignUpIncomeSourcesSuccess = Right(SignUpIncomeSourcesSuccess(testMTDID))
+  val testSignUpIncomeSourcesSuccess = Right(SignUpSuccessful(testMTDID))
+
+  val testAlreadySignUpIncomeSources = Right(AlreadySignedUp)
 
   val testSignUpIncomeSourcesFailure = Left(SignUpIncomeSourcesFailureResponse(INTERNAL_SERVER_ERROR))
 
-  val testCreateIncomeSourcesSuccess = Right(CreateIncomeSourcesSuccess())
+  val testCreateIncomeSourcesSuccess = Right(CreateIncomeSourcesSuccess)
 
-  val testCreateIncomeSourcesFailure = Left(CreateIncomeSourcesFailureResponse(INTERNAL_SERVER_ERROR))
+  val testCreateIncomeSourcesFailure = Left(CreateIncomeSourcesFailure(INTERNAL_SERVER_ERROR))
 
-  val testCreateIncomeSourcesFromTaskListSuccess = Right(CreateIncomeSourcesSuccess())
+  val testCreateIncomeSourcesFromTaskListSuccess = Right(CreateIncomeSourcesSuccess)
 
-  val testCreateIncomeSourcesFromTaskListFailure = Left(CreateIncomeSourcesFailureResponse(INTERNAL_SERVER_ERROR))
+  val testCreateIncomeSourcesFromTaskListFailure = Left(CreateIncomeSourcesFailure(INTERNAL_SERVER_ERROR))
 
   lazy val testSelfEmploymentData: Seq[SelfEmploymentData] =
     Seq(SelfEmploymentData

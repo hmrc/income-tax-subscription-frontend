@@ -19,6 +19,8 @@ package services
 import connectors.individual.subscription.httpparsers.CreateIncomeSourcesResponseHttpParser.PostCreateIncomeSourceResponse
 import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import connectors.individual.subscription.httpparsers.SignUpIncomeSourcesResponseHttpParser.PostSignUpIncomeSourcesResponse
+import models.common.subscription.SignUpSourcesFailure.SignUpIncomeSourcesFailureResponse
+import models.common.subscription.SignUpSuccessResponse.SignUpSuccessful
 import models.common.subscription._
 import org.scalatest.EitherValues
 import org.scalatest.matchers.should.Matchers._
@@ -66,17 +68,12 @@ class SubscriptionServiceSpec extends TestSubscriptionService
 
     "return the mtdbsa id when the signUp is successful" in {
       setupMockSignUpIncomeSourcesSuccess(testNino, testTaxYear)
-      call.value shouldBe SignUpIncomeSourcesSuccess(testMTDID)
+      call.value shouldBe SignUpSuccessful(testMTDID)
     }
 
     "return the error if sign up fails on bad request" in {
       setupMockSignUpIncomeSourcesFailure(testNino, testTaxYear)
       call.left.value shouldBe SignUpIncomeSourcesFailureResponse(BAD_REQUEST)
-    }
-
-    "return the error if sign up fails on bad formatting" in {
-      setupMockSignUpIncomeSourcesBadFormatting(testNino, testTaxYear)
-      call.left.value shouldBe BadlyFormattedSignUpIncomeSourcesResponse
     }
 
     "return the error if subscription throws an exception" in {
@@ -94,19 +91,13 @@ class SubscriptionServiceSpec extends TestSubscriptionService
     "return the list of income source ids when the create is successful" in {
       setupMockCreateIncomeSourcesFromTaskListSuccess(testMTDID,
         testCreateIncomeSources)
-      await(call).value shouldBe CreateIncomeSourcesSuccess()
+      await(call).value shouldBe CreateIncomeSourcesSuccess
     }
 
     "return the error if create fails on bad request" in {
       setupMockCreateIncomeSourcesFromTaskListFailure(testMTDID,
         testCreateIncomeSources)
-      await(call).left.value shouldBe CreateIncomeSourcesFailureResponse(BAD_REQUEST)
-    }
-
-    "return the error if create fails on bad formatting" in {
-      setupMockCreateIncomeSourcesFromTaskListBadFormatting(testMTDID,
-        testCreateIncomeSources)
-      await(call).left.value shouldBe BadlyFormattedCreateIncomeSourcesResponse
+      await(call).left.value shouldBe CreateIncomeSourcesFailure(BAD_REQUEST)
     }
 
     "return the error if subscription throws an exception" in {

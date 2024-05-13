@@ -33,19 +33,25 @@ class SubscriptionOrchestrationServiceSpec extends UnitTestTrait with ScalaFutur
   val testTaxYear: String = testAccountingPeriodThisYear.toLongTaxYear
 
   "signUpAndCreateIncomeSourcesFromTaskList" should {
-    def res: Future[Either[ConnectorError, SubscriptionSuccess]] =
+    def res: Future[Either[ConnectorError, Option[SubscriptionSuccess]]] =
       TestSubscriptionOrchestrationService.signUpAndCreateIncomeSourcesFromTaskList(
         testNino,
         testCreateIncomeSources
       )
 
-    "return a success when all incometax.business.services succeed" in {
-      mockSignUpIncomeSourcesSuccess(testNino, testTaxYear)
+    "return a success with an mtditid when all api calls were successful" in {
+      mockSignUpSuccess(testNino, testTaxYear)
       mockCreateIncomeSourcesFromTaskListSuccess(testMTDID, testCreateIncomeSources)
       mockAddKnownFactsSuccess(testMTDID, testNino)
       mockEnrolSuccess(testMTDID, testNino)
 
       await(res) mustBe testSubscriptionSuccess
+    }
+
+    "return a success without an mtditid when the sign up indicated the user was already signed up" in {
+      mockAlreadySignedUp(testNino, testTaxYear)
+
+      await(res) mustBe Right(None)
     }
 
     "return a failure" when {
@@ -56,7 +62,7 @@ class SubscriptionOrchestrationServiceSpec extends UnitTestTrait with ScalaFutur
       }
 
       "create income sources from task list request fail and returns an error" in {
-        mockSignUpIncomeSourcesSuccess(testNino, testTaxYear)
+        mockSignUpSuccess(testNino, testTaxYear)
         mockCreateIncomeSourcesFromTaskListFailure(testMTDID, testCreateIncomeSources)
 
         await(res) mustBe testCreateIncomeSourcesFromTaskListFailure
@@ -69,14 +75,14 @@ class SubscriptionOrchestrationServiceSpec extends UnitTestTrait with ScalaFutur
       }
 
       "create income sources from task list throws an exception" in {
-        mockSignUpIncomeSourcesSuccess(testNino, testTaxYear)
+        mockSignUpSuccess(testNino, testTaxYear)
         mockCreateIncomeSourcesFromTaskListException(testMTDID, testCreateIncomeSources)
 
         await(res.failed) mustBe testException
       }
 
       "add known facts returns an error" in {
-        mockSignUpIncomeSourcesSuccess(testNino, testTaxYear)
+        mockSignUpSuccess(testNino, testTaxYear)
         mockCreateIncomeSourcesFromTaskListSuccess(testMTDID, testCreateIncomeSources)
         mockAddKnownFactsFailure(testMTDID, testNino)
 
@@ -84,7 +90,7 @@ class SubscriptionOrchestrationServiceSpec extends UnitTestTrait with ScalaFutur
       }
 
       "add known facts returns an exception" in {
-        mockSignUpIncomeSourcesSuccess(testNino, testTaxYear)
+        mockSignUpSuccess(testNino, testTaxYear)
         mockCreateIncomeSourcesFromTaskListSuccess(testMTDID, testCreateIncomeSources)
         mockAddKnownFactsException(testMTDID, testNino)
 

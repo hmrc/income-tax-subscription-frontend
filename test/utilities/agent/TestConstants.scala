@@ -19,6 +19,7 @@ package utilities.agent
 import common.Constants.{agentServiceIdentifierKey, hmrcAsAgent, mtdItsaEnrolmentIdentifierKey, mtdItsaEnrolmentName}
 import models.DateModel
 import models.common.business.{Address, BusinessAddressModel, BusinessStartDate, SelfEmploymentData}
+import models.common.subscription.SignUpSourcesFailure.SignUpIncomeSourcesFailureResponse
 import models.common.subscription._
 import models.usermatching.LockedOut
 import play.api.http.Status.INTERNAL_SERVER_ERROR
@@ -76,19 +77,19 @@ object TestConstants {
 
   val testCredId = UUID.randomUUID().toString
 
-  val testSubscriptionSuccess = Right(SubscriptionSuccess(testMTDID))
+  val testSubscriptionSuccess = Right(Some(SubscriptionSuccess(testMTDID)))
 
   val testSubscriptionFailure = Left(SubscriptionFailureResponse(INTERNAL_SERVER_ERROR))
 
   val testSignUpIncomeSourcesFailure = Left(SignUpIncomeSourcesFailureResponse(INTERNAL_SERVER_ERROR))
 
-  val testCreateIncomeSourcesFailure = Left(CreateIncomeSourcesFailureResponse(INTERNAL_SERVER_ERROR))
+  val testCreateIncomeSourcesFailure = Left(CreateIncomeSourcesFailure(INTERNAL_SERVER_ERROR))
 
   val testKnownFactsSuccess = Right(KnownFactsSuccess)
 
   val testKnownFactsFailure = Left(KnownFactsFailure(testErrorMessage))
 
-  val testCreateSubscriptionFromTaskListFailure = Left(CreateIncomeSourcesFailureResponse(INTERNAL_SERVER_ERROR))
+  val testCreateSubscriptionFromTaskListFailure = Left(CreateIncomeSourcesFailure(INTERNAL_SERVER_ERROR))
 
   lazy val testLockoutResponse: LockedOut = individual.TestConstants.testLockoutResponse
 
