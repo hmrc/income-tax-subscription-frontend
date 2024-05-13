@@ -82,7 +82,7 @@
 }
 
 @informationAboutYou = @{
-  TaskListSection(
+  CustomTaskListSection(
     h2Content = messages(s"${messagePrefix}.user-information.heading"),
     sectionEnd = Some(userInformation),
     taskListItems = Seq()
@@ -111,28 +111,28 @@
 }
 
 @selectTaxYear = @{
-    TaskListSection(
+    CustomTaskListSection(
       h2Content = messages(s"${messagePrefix}.content.selected-tax-year.heading"),
       sectionStart = Some(messages(s"${messagePrefix}.content.selected-tax-year.para")),
       taskListItems = Seq(
         if(viewModel.taxYearSelectedAndConfirmed) {
           if(!viewModel.permitTaxYearChange) {
-            TaskListItem(
+            CustomTaskListItem(
                content = {taxYearText},
                tagLabel = messages(s"${messagePrefix}.status.completed"),
                isComplete = true)
           } else {
-            TaskListItem(
+            CustomTaskListItem(
               content = {taxYearText},
               href = Some(controllers.individual.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.show(editMode=true).url),
               tagLabel = messages(s"${messagePrefix}.status.completed"), isComplete = true)
           }
         } else if (viewModel.taxYearSelectedNotConfirmed) {
-            TaskListItem(content = messages(s"${messagePrefix}.content.section1.action"),
+            CustomTaskListItem(content = messages(s"${messagePrefix}.content.section1.action"),
               href = Some(controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url),
               tagLabel = messages(s"${messagePrefix}.status.in-progress"), isComplete = false)
         } else {
-            TaskListItem(content = messages(s"${messagePrefix}.content.section1.action"),
+            CustomTaskListItem(content = messages(s"${messagePrefix}.content.section1.action"),
               href = Some(controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url),
               tagLabel = messages(s"${messagePrefix}.status.not-started"), isComplete = false)
         }
@@ -160,30 +160,30 @@
 }
 
 @businesses = @{
-  TaskListSection(
+  CustomTaskListSection(
     h2Content = messages(s"${messagePrefix}.content.section2-income-sources.heading"),
     sectionStart = Some(messages(s"${messagePrefix}.content.section2-income-sources.para", appConfig.maxSelfEmployments)),
     sectionEnd = if (viewModel.canAddMoreBusinesses(appConfig.maxSelfEmployments)) Some(addBusiness) else None,
     taskListItems = viewModel.selfEmployments.map(se =>
       if(se.confirmed && viewModel.selfEmploymentAccountingMethod.isDefined) {
-        TaskListItem(
+        CustomTaskListItem(
           content = businessName(viewModel.selfEmployments.indexOf(se), se.businessName, se.businessTradeName),
           href = Some(s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${se.id}&isEditMode=true"),
           tagLabel = messages(s"${messagePrefix}.status.completed"),
           isComplete = true,
-          action = Some(TaskListItemAction(
+          action = Some(CustomTaskListItemAction(
             content = messages("base.remove"),
             hiddenContent = messages(s"${messagePrefix}.content.section2.remove-sole-trader-business", businessName(viewModel.selfEmployments.indexOf(se), se.businessName, se.businessTradeName)),
             href = controllers.individual.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show(se.id).url
           ))
         )
       } else {
-        TaskListItem(
+        CustomTaskListItem(
           content = businessName(viewModel.selfEmployments.indexOf(se), se.businessName, se.businessTradeName),
           href = Some(s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${se.id}&isEditMode=true"),
           tagLabel = messages(s"${messagePrefix}.status.incomplete"),
           isComplete = false,
-          action = Some(TaskListItemAction(
+          action = Some(CustomTaskListItemAction(
             content = messages("base.remove"),
             hiddenContent = messages(s"${messagePrefix}.content.section2.remove-sole-trader-business", businessName(viewModel.selfEmployments.indexOf(se), se.businessName, se.businessTradeName)),
             href = controllers.individual.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show(se.id).url
@@ -192,24 +192,24 @@
       }
     )++ viewModel.ukProperty.map(ukps =>
       if(viewModel.ukPropertyComplete) {
-        TaskListItem(
+        CustomTaskListItem(
           content = messages(s"${messagePrefix}.content.section2.property.uk"),
           href = Some(controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url),
           tagLabel = messages(s"${messagePrefix}.status.completed"),
           isComplete = true,
-          action = Some(TaskListItemAction(
+          action = Some(CustomTaskListItemAction(
             content = messages("base.remove"),
             hiddenContent = messages(s"${messagePrefix}.content.section2.remove-uk-property"),
             href = controllers.individual.tasklist.ukproperty.routes.RemoveUkPropertyController.show.url
           ))
         )
       } else {
-        TaskListItem(
+        CustomTaskListItem(
           content = messages(s"${messagePrefix}.content.section2.property.uk"),
           href = Some(controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url),
           tagLabel = messages(s"${messagePrefix}.status.incomplete"),
           isComplete = false,
-          action = Some(TaskListItemAction(
+          action = Some(CustomTaskListItemAction(
             content = messages("base.remove"),
             hiddenContent = messages(s"${messagePrefix}.content.section2.remove-uk-property"),
             href = controllers.individual.tasklist.ukproperty.routes.RemoveUkPropertyController.show.url
@@ -218,24 +218,24 @@
       }
     )++ viewModel.overseasProperty.map(_ =>
       if(viewModel.overseasPropertyComplete) {
-        TaskListItem(
+        CustomTaskListItem(
           content = messages(s"${messagePrefix}.content.section2.property.overseas"),
           href = Some(controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url),
           tagLabel = messages(s"${messagePrefix}.status.completed"),
           isComplete = true,
-          action = Some(TaskListItemAction(
+          action = Some(CustomTaskListItemAction(
             content = messages("base.remove"),
             hiddenContent = messages(s"${messagePrefix}.content.section2.remove-overseas-property"),
             href = controllers.individual.tasklist.overseasproperty.routes.RemoveOverseasPropertyController.show.url
           ))
         )
       } else {
-        TaskListItem(
+        CustomTaskListItem(
           content = messages(s"${messagePrefix}.content.section2.property.overseas"),
           href = Some(controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url),
           tagLabel = messages(s"${messagePrefix}.status.incomplete"),
           isComplete = false,
-          action = Some(TaskListItemAction(
+          action = Some(CustomTaskListItemAction(
             content = messages("base.remove"),
             hiddenContent = messages(s"${messagePrefix}.content.section2.remove-overseas-property"),
             href = controllers.individual.tasklist.overseasproperty.routes.RemoveOverseasPropertyController.show.url
@@ -247,11 +247,11 @@
 }
 
 @addIncomeSources = @{
-  TaskListSection(
+  CustomTaskListSection(
     h2Content = messages(s"${messagePrefix}.content.section2-income-sources.heading"),
     sectionStart = Some(messages(s"${messagePrefix}.content.section2-income-sources.para")),
     taskListItems = Seq(
-      TaskListItem(
+      CustomTaskListItem(
         content = if(viewModel.incomeSourcesComplete) {
           messages(s"${messagePrefix}.content.section2-income-sources.view-text")
         } else {

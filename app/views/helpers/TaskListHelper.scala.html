@@ -18,7 +18,7 @@
 
 @this(govukTag : GovukTag)
 
-@(sections : Seq[TaskListSection])
+@(sections : Seq[CustomTaskListSection])
 
 <ol class="app-task-list">
     @sections.zip(1 to sections.length).map { case (section, index) =>
@@ -26,7 +26,7 @@
     }
 </ol>
 
-@taskListSection(section : TaskListSection, index: Int) = {
+@taskListSection(section : CustomTaskListSection, index: Int) = {
     <li>
         <h2 class="app-task-list__section govuk-heading-m">
             <span class="app-task-list__section-number">@index.</span>
@@ -44,7 +44,7 @@
     </li>
 }
 
-@taskListItem(item : TaskListItem, itemIndex: Int, sectionIndex: Int) = {
+@taskListItem(item : CustomTaskListItem, itemIndex: Int, sectionIndex: Int) = {
     <li class="app-task-list__item">
        <span class="app-task-list__task-name">
            @item.href.map{link=>
