@@ -914,9 +914,6 @@ agent.no-sa.line-1                                              = I ddefnyddio�
 
 # Agent Task List
 agent.business.task-list.title                                              = Cofrestru’ch cleient ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-agent.business.task-list.heading.incomplete                                 = Cais heb ei gwblhau?
-agent.business.task-list.heading.complete                                   = Cais wedi’i gwblhau
-agent.business.task-list.content.summary                                    = Rydych wedi llenwi {0} allan o {1} adran.
 agent.business.task-list.client-information.heading                         = Gwybodaeth eich cleient
 agent.business.task-list.client-information.name                            = Enw
 agent.business.task-list.client-information.nino                            = Rhif Yswiriant Gwladol
@@ -1031,9 +1028,6 @@ business.task-list.user-information.heading                     = Gwybodaeth amd
 business.task-list.user-information.nino                        = Rhif Yswiriant Gwladol
 business.task-list.user-information.name                        = Enw
 business.task-list.user-information.utr                         = Cyfeirnod Unigryw y Trethdalwr (UTR)
-business.task-list.heading.incomplete                           = Cais heb ei gwblhau
-business.task-list.heading.complete                             = Cais wedi’i gwblhau
-business.task-list.content.summary                              = Rydych wedi llenwi {0} allan o {1} adran.
 business.task-list.content.section1                             = Dewiswch flwyddyn dreth i gofrestru
 business.task-list.content.section1.action                      = Dewiswch flwyddyn dreth
 business.task-list.content.section1.current-tax-year            = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})

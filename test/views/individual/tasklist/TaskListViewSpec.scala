@@ -135,15 +135,6 @@ class TaskListViewSpec extends ViewSpec {
 
     "display the dynamic content correctly" when {
       "there is no user data" must {
-        "display the application is incomplete" in {
-          document().getElementById("taskListStatus").text mustBe messages.subHeadingIncomplete
-        }
-
-
-        "display the number of sections complete out of the total" in {
-          document().mainContent.getElementById("taskListCompletedSummary").text mustBe contentSummary(1, 3)
-        }
-
         "in the information section: display heading" in {
           document().mainContent.selectHead(selectorForUserInformation).selectHead("h2").text mustBe item1
         }
@@ -203,7 +194,7 @@ class TaskListViewSpec extends ViewSpec {
         }
 
         "display the sign up incomplete text" in {
-          val incompleteText = document().mainContent.selectNth("p", 5)
+          val incompleteText = document().mainContent.selectNth("p", 4)
           incompleteText.text mustBe signUpIncompleteText
         }
 
@@ -215,15 +206,6 @@ class TaskListViewSpec extends ViewSpec {
       }
 
       "there is partial user data" must {
-        "display the application is incomplete" in {
-          document(partialTaskListComplete).getElementById("taskListStatus").text mustBe messages.subHeadingIncomplete
-        }
-
-        "display the number of sections complete out of the total" in {
-          document(partialTaskListComplete).mainContent.getElementById("taskListCompletedSummary").text mustBe
-            contentSummary(numberComplete = 1, numberTotal = 6)
-        }
-
         "in the user information section: display heading, name, nino and utr" in {
           val userInfo = document().mainContent.selectHead(selectorForUserInformation)
           userInfo.selectHead("h2").text mustBe item1
@@ -342,7 +324,7 @@ class TaskListViewSpec extends ViewSpec {
         }
 
         "display the sign up incomplete text" in {
-          val incompleteText = document(partialTaskListComplete).mainContent.selectNth("p", 5)
+          val incompleteText = document(partialTaskListComplete).mainContent.selectNth("p", 4)
           incompleteText.text mustBe signUpIncompleteText
         }
 
@@ -352,14 +334,6 @@ class TaskListViewSpec extends ViewSpec {
       }
 
       "there is full user data" must {
-        "display the application is complete" in {
-          document(completedTaskListComplete).getElementById("taskListStatus").text mustBe messages.subHeadingComplete
-        }
-
-        "display the number of sections complete out of the total" in {
-          document(completedTaskListComplete).mainContent.getElementById("taskListCompletedSummary").text mustBe contentSummary(5, 5)
-        }
-
         "in the user information section: display heading, name, nino and utr" in {
           val userInfo = document().mainContent.selectHead(selectorForUserInformation)
           userInfo.selectHead("h2").text mustBe item1
@@ -436,7 +410,7 @@ class TaskListViewSpec extends ViewSpec {
         }
 
         "display the sign up ready text" in {
-          val incompleteText = document(completedTaskListComplete).mainContent.selectNth("p", 5)
+          val incompleteText = document(completedTaskListComplete).mainContent.selectNth("p", 4)
           incompleteText.text mustBe signUpReadyText
         }
 

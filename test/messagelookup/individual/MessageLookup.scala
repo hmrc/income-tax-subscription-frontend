@@ -296,11 +296,6 @@ object MessageLookup {
     val userInfoContent = "Full name: individualUserFullName National Insurance number: individualUserNino Unique Taxpayer Reference (UTR): individualUTRNumber"
     val userInfoPartialContent = "National Insurance number: individualUserNino Unique Taxpayer Reference (UTR): individualUTRNumber"
 
-    val subHeadingComplete = "Application complete"
-    val subHeadingIncomplete = "Application incomplete"
-
-    def contentSummary(numberComplete: Int, numberTotal: Int) = s"You have completed $numberComplete of $numberTotal sections."
-
     val item1 = "1. Information about you"
     val item2 = "2. Your income sources"
     val item3 = "3. Choose a tax year"
