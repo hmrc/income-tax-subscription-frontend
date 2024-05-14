@@ -63,7 +63,7 @@ class RemoveSelfEmploymentBusinessController @Inject()(removeBusinessView: Remov
           },
           {
             case Yes => fetchBusinessesAndRemoveThisBusiness(businessId, reference)
-            case No => Future.successful(Redirect(controllers.agent.tasklist.routes.TaskListController.show()))
+            case No => Future.successful(Redirect(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show))
           }
         )
       }
@@ -74,7 +74,7 @@ class RemoveSelfEmploymentBusinessController @Inject()(removeBusinessView: Remov
     subscriptionDetailsService.fetchAllSelfEmployments(reference)
       .flatMap { case (businesses, accountingMethod) => removeBusinessService.deleteBusiness(reference, businessId, businesses, accountingMethod) }
       .map {
-        case Right(_) => Redirect(controllers.agent.tasklist.routes.TaskListController.show())
+        case Right(_) => Redirect(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
         case Left(reason) => throw new RuntimeException(reason.toString)
       }
   }
@@ -109,7 +109,7 @@ class RemoveSelfEmploymentBusinessController @Inject()(removeBusinessView: Remov
       businessName = maybeBusinessNameModel.map(_.businessName),
       businessTradeName = maybeBusinessTradeNameModel.map(_.businessTradeName),
       postAction = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.submit(businessId),
-      backUrl = controllers.agent.tasklist.routes.TaskListController.show().url
+      backUrl = controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
     )
 
   private def form: Form[YesNo] = RemoveBusinessForm.removeBusinessForm()

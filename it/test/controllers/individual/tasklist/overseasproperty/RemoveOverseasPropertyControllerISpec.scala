@@ -59,7 +59,7 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
         Then("Should return a SEE_OTHER status")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(IndividualURI.taskListURI)
+          redirectURI(IndividualURI.yourIncomeSourcesURI)
         )
 
         IncomeTaxSubscriptionConnectorStub.verifyDeleteSubscriptionDetails(OverseasProperty, Some(1))
@@ -76,7 +76,7 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
         Then("Should return a SEE_OTHER status")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(IndividualURI.taskListURI)
+          redirectURI(IndividualURI.yourIncomeSourcesURI)
         )
 
         IncomeTaxSubscriptionConnectorStub.verifyDeleteSubscriptionDetails(OverseasProperty, Some(0))

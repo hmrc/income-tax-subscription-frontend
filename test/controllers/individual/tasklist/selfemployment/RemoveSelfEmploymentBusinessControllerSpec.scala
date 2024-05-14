@@ -90,7 +90,7 @@ class RemoveSelfEmploymentBusinessControllerSpec extends ControllerBaseSpec
           subscriptionRequest.post(RemoveBusinessForm.removeBusinessForm(), Yes)
         ))
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
+        redirectLocation(result) mustBe Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
         verifyDeleteBusiness(businessId = "id")
       }
 
@@ -102,7 +102,7 @@ class RemoveSelfEmploymentBusinessControllerSpec extends ControllerBaseSpec
         ))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
+        redirectLocation(result) mustBe Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
         verifySelfEmploymentsSave[SoleTraderBusinesses](SoleTraderBusinessesKey, None)
       }
     }

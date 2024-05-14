@@ -84,7 +84,7 @@ class RemoveSelfEmploymentBusinessControllerSpec extends AgentControllerBaseSpec
         ))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.agent.tasklist.routes.TaskListController.show().url)
+        redirectLocation(result) mustBe Some(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
         verifyDeleteBusiness(businessId = "id")
       }
 
@@ -96,7 +96,7 @@ class RemoveSelfEmploymentBusinessControllerSpec extends AgentControllerBaseSpec
         ))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.agent.tasklist.routes.TaskListController.show().url)
+        redirectLocation(result) mustBe Some(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
       }
     }
 

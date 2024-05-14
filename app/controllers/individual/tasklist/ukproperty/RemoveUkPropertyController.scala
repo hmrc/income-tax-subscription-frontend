@@ -55,13 +55,13 @@ class RemoveUkPropertyController @Inject()(incomeTaxSubscriptionConnector: Incom
           case Yes => withIndividualReference { reference =>
             incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, SubscriptionDataKeys.Property) flatMap {
               case Right(_) => incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, SubscriptionDataKeys.IncomeSourceConfirmation).map {
-                case Right(_) => Redirect(controllers.individual.tasklist.routes.TaskListController.show())
+                case Right(_) => Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
                 case Left(_) => throw new InternalServerException("[RemoveUkPropertyController][submit] - Failure to delete income source confirmation")
               }
               case Left(_) => throw new InternalServerException("[RemoveUkPropertyController][submit] - Could not remove UK property")
             }
           }
-          case No => Future.successful(Redirect(controllers.individual.tasklist.routes.TaskListController.show()))
+          case No => Future.successful(Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show))
         }
       )
   }
@@ -69,7 +69,7 @@ class RemoveUkPropertyController @Inject()(incomeTaxSubscriptionConnector: Incom
   private def view(form: Form[YesNo])(implicit request: Request[_]): Html = removeUkProperty(
     yesNoForm = form,
     postAction = controllers.individual.tasklist.ukproperty.routes.RemoveUkPropertyController.submit,
-    backUrl = controllers.individual.tasklist.routes.TaskListController.show().url
+    backUrl = controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
   )
 
   private val form: Form[YesNo] = RemoveUkPropertyForm.removeUkPropertyForm

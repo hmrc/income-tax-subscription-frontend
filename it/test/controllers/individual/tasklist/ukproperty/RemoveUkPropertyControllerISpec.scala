@@ -42,7 +42,7 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/business/remove-uk-property-business" should {
-    "redirect to the task list page" when {
+    "redirect to the manage income sources page" when {
       "the user submits the 'yes' answer" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -55,7 +55,7 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
         Then("Should return a SEE_OTHER with a redirect location of task list page")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(IndividualURI.taskListURI)
+          redirectURI(IndividualURI.yourIncomeSourcesURI)
         )
 
         IncomeTaxSubscriptionConnectorStub.verifyDeleteSubscriptionDetails(Property, Some(1))
@@ -72,7 +72,7 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
         Then("Should return a SEE_OTHER with a redirect location of task list page")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(IndividualURI.taskListURI)
+          redirectURI(IndividualURI.yourIncomeSourcesURI)
         )
 
         IncomeTaxSubscriptionConnectorStub.verifyDeleteSubscriptionDetails(Property, Some(0))
