@@ -63,7 +63,7 @@ class RemoveSelfEmploymentBusinessControllerISpec extends ComponentSpecBase {
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/client/business/remove-business" should {
-    "redirect to the task list page" when {
+    "redirect to the manage income sources page" when {
       "the user submits the 'yes' answer" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -78,7 +78,7 @@ class RemoveSelfEmploymentBusinessControllerISpec extends ComponentSpecBase {
         Then("Should return a SEE_OTHER with a redirect location of task list page")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(AgentURI.taskListURI)
+          redirectURI(AgentURI.yourIncomeSourcesURI)
         )
       }
 
@@ -94,7 +94,7 @@ class RemoveSelfEmploymentBusinessControllerISpec extends ComponentSpecBase {
         Then("Should return a SEE_OTHER with a redirect location of task list page")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(AgentURI.taskListURI)
+          redirectURI(AgentURI.yourIncomeSourcesURI)
         )
       }
 
