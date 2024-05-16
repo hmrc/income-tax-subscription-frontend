@@ -63,7 +63,6 @@ GET         /resolve-confirmed-client               controllers.agent.matching.C
 
 # Client not matched routes
 GET         /error/client-details                   controllers.agent.matching.ClientDetailsErrorController.show
-POST        /error/client-details                   controllers.agent.matching.ClientDetailsErrorController.submit
 
 # Client Lockout
 GET         /error/lockout                          controllers.agent.matching.ClientDetailsLockoutController.show

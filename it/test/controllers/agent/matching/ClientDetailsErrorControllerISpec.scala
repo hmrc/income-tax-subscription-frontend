@@ -33,7 +33,7 @@ class ClientDetailsErrorControllerISpec extends ComponentSpecBase {
       Then("Should return a OK with the no matching client page")
       res must have(
         httpStatus(OK),
-        pageTitle(messages("agent.client-details-error.title") + serviceNameGovUk)
+        pageTitle(messages("agent.client-details-error.heading") + serviceNameGovUk)
       )
     }
   }

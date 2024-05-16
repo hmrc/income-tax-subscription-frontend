@@ -16,38 +16,50 @@
 
 package views.agent.matching
 
-import messagelookup.agent.MessageLookup.{Base => common, ClientDetailsError => messages}
-import play.api.mvc.{AnyContentAsEmpty, Call}
-import play.api.test.FakeRequest
+import org.jsoup.Jsoup
+import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.HtmlFormat
-import views.ViewSpecTrait
+import utilities.ViewSpec
 import views.html.agent.matching.ClientDetailsError
 
-class ClientDetailsErrorViewSpec extends ViewSpecTrait {
-
-  val action: Call = ViewSpecTrait.testCall
-  val request: FakeRequest[AnyContentAsEmpty.type] = ViewSpecTrait.viewTestRequest
+class ClientDetailsErrorViewSpec extends ViewSpec {
 
   lazy val clientDetailsError: ClientDetailsError = app.injector.instanceOf[ClientDetailsError]
-  lazy val page: HtmlFormat.Appendable = clientDetailsError(action)(request, implicitly)
+  lazy val page: HtmlFormat.Appendable = clientDetailsError()(request, implicitly)
+  lazy val document: Document = Jsoup.parse(page.body)
+  lazy val mainContent: Element = document.mainContent
 
-
-  "The Client Details Error view" should {
-    val testPage = TestView(
-      name = "Client Details Error",
-      title = messages.title,
-      heading = messages.heading,
-      page = page,
-      isAgent = true
+  "ClientDetailsError" must {
+    "be using the correct template" in new TemplateViewTest(
+      page,
+      title = ClientDetailsErrorMessages.heading,
+      isAgent = true,
+      backLink = None,
+      hasSignOutLink = true
     )
 
-    testPage.mustHavePara(messages.line1)
+    "have a heading" in {
+      mainContent.getH1Element.text mustBe ClientDetailsErrorMessages.heading
+    }
 
-    val form = testPage.getForm("Client Details Error form")(actionCall = action)
+    "have a first line" in {
+      mainContent.selectNth("p", 1).text mustBe ClientDetailsErrorMessages.lineOne
+    }
 
-    form.mustHaveContinueButtonWithText(common.tryAgain)
+    "have a second line" in {
+      val secondLine = mainContent.selectNth("p", 2)
+      secondLine.text mustBe ClientDetailsErrorMessages.lineTwo
 
-    testPage.mustHaveSignOutLinkGovUk(common.signOut, Some(request.path))
+      val link = secondLine.selectHead("a")
+      link.text mustBe ClientDetailsErrorMessages.lineTwoLink
+      link.attr("href") mustBe controllers.agent.routes.AddAnotherClientController.addAnother().url
+    }
+  }
 
+  object ClientDetailsErrorMessages {
+    val heading: String = "There is a problem"
+    val lineOne: String = "The details you entered do not match our records."
+    val lineTwoLink: String = "try again"
+    val lineTwo: String = s"Check the details and $lineTwoLink."
   }
 }
