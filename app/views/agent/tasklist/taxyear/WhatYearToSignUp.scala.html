@@ -41,15 +41,6 @@
 
 }
 
-@optionCurrentContent = {
-  <p>@messages("agent.business.what-year-to-sign-up.option-current-hint", (endYearOfCurrentTaxPeriod + 1).toString)</p>
-}
-
-@optionNextContent = {
-  <p>@messages("agent.business.what-year-to-sign-up.option-next-hint", (endYearOfCurrentTaxPeriod + 2).toString)</p>
-}
-
-
 @mainTemplate(title = messages("agent.business.what-year-to-sign-up.title"), optForm = Some(accountingYearForm), backLink = backUrl) {
   @form(action = postAction) {
 
@@ -87,12 +78,12 @@ content = HtmlContent(quarterDayTb)
         RadioItem(
           content = Text(messages("agent.business.what-year-to-sign-up.option-1", (endYearOfCurrentTaxPeriod - 1).toString, endYearOfCurrentTaxPeriod.toString)),
           value = Some(Current.toString),
-          hint = Some(Hint(content = HtmlContent(optionCurrentContent))),
+          hint = Some(Hint(content = Text(messages("agent.business.what-year-to-sign-up.option-current-hint", (endYearOfCurrentTaxPeriod + 1).toString))))
         ),
         RadioItem(
           content = Text(messages("agent.business.what-year-to-sign-up.option-2", endYearOfCurrentTaxPeriod.toString, (endYearOfCurrentTaxPeriod + 1).toString)),
           value = Some(Next.toString),
-          hint = Some(Hint(content = HtmlContent(optionNextContent))),
+          hint = Some(Hint(content = Text(messages("agent.business.what-year-to-sign-up.option-next-hint", (endYearOfCurrentTaxPeriod + 2).toString))))
         )
       )
     )
