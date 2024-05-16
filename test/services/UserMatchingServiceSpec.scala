@@ -16,7 +16,6 @@
 
 package services
 
-import models.usermatching.UserMatchUnexpectedError
 import play.api.test.Helpers._
 import services.mocks.TestUserMatchingService
 import utilities.TestModels._
@@ -37,16 +36,10 @@ class UserMatchingServiceSpec extends TestUserMatchingService {
       await(result) mustBe Right(Some(testMatchNoUtrModel))
     }
 
-    "return None if authenticator response with Unauthorized but with a matching error message" in {
+    "return None if the connector returned a no details response" in {
       mockUserMatchNotFound(testUserDetails)
       val result = TestUserMatchingService.matchUser(testUserDetails)
       await(result) mustBe Right(None)
-    }
-
-    "return Left(error) if authenticator response with an error status" in {
-      mockUserMatchFailure(testUserDetails)
-      val result = TestUserMatchingService.matchUser(testUserDetails)
-      await(result) mustBe Left(UserMatchUnexpectedError)
     }
 
     "throw InternalServerException if authenticator response with an unexpected status" in {

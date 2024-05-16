@@ -114,6 +114,27 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
       }
     }
 
+    "the client is deceased, indicated by 424 status from authenticator" should {
+      "redirect the user to the client details error page" in {
+        Given("I setup the wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        UserLockoutStub.stubUserIsNotLocked(testARN)
+        AuthenticatorStub.stubMatchDeceased()
+
+        When("I call POST /confirm-client")
+        val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
+
+        Then("The result must have a status of SEE_OTHER and redirect to client details error page")
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(AgentURI.clientDetailsErrorURI)
+        )
+
+        val cookie = getSessionMap(res)
+        cookie.keys must contain(ITSASessionKeys.FailedClientMatching)
+      }
+    }
+
     "the client is already subscribed" should {
       "redirect the user to client already subscribed page" in {
         Given("I setup the wiremock stubs")

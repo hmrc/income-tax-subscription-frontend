@@ -39,6 +39,13 @@ object AuthenticatorStub extends WireMockMethods {
       .thenReturn(status = Status.UNAUTHORIZED, returnMessage)
   }
 
+  def stubMatchDeceased(): Unit = {
+    val model = UserMatchRequestModel.apply(IntegrationTestModels.testUserDetails)
+
+    when(method = POST, uri = "/authenticator/match", body = model)
+      .thenReturn(status = Status.FAILED_DEPENDENCY, "")
+  }
+
   def stubMatchFailure(): Unit = {
     val model = UserMatchRequestModel.apply(IntegrationTestModels.testUserDetails)
 

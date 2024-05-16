@@ -17,20 +17,20 @@
 package connectors.usermatching.httpparsers
 
 import connectors.usermatching.httpparsers.MatchUserHttpParser.MatchUserHttpReads
-import models.usermatching.{UserMatchFailureResponseModel, UserMatchSuccessResponseModel, UserMatchUnexpectedError}
-import org.scalatest.EitherValues
+import models.usermatching.{UserMatchFailureResponseModel, UserMatchSuccessResponseModel}
+import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.{JsError, Json}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpResponse
 import utilities.TestModels._
-import utilities.UnitTestTrait
 import utilities.individual.TestConstants._
 
-class MatchUserHttpParserSpec extends UnitTestTrait with EitherValues {
+class MatchUserHttpParserSpec extends PlaySpec {
+
   "MatchUserHttpReads" when {
     "read" should {
       val testUrl = "/"
-      val testMethod = "get"
+      val testMethod = "GET"
 
       "return user details if authenticator response with OK and valid JSON" in {
         val testUserDetailsMatch = UserMatchSuccessResponseModel(
@@ -43,7 +43,7 @@ class MatchUserHttpParserSpec extends UnitTestTrait with EitherValues {
 
         val httpResponse = HttpResponse(status = OK, json = Json.toJson(testUserDetailsMatch), Map.empty)
 
-        MatchUserHttpReads.read(testMethod, testUrl, httpResponse).value mustBe Some(testUserDetailsMatch)
+        MatchUserHttpReads.read(testMethod, testUrl, httpResponse) mustBe Right(Some(testUserDetailsMatch))
       }
 
       "return error if authenticator returns an invalid json" in {
@@ -57,7 +57,7 @@ class MatchUserHttpParserSpec extends UnitTestTrait with EitherValues {
 
         val expectedJsError = json.validate[UserMatchSuccessResponseModel].asInstanceOf[JsError]
 
-        MatchUserHttpReads.read(testMethod, testUrl, httpResponse).left.value mustBe UserMatchFailureResponseModel(expectedJsError)
+        MatchUserHttpReads.read(testMethod, testUrl, httpResponse) mustBe Left(UserMatchFailureResponseModel(expectedJsError))
       }
 
       "return none if authenticator returns an UNAUTHORIZED without an unexpected error" in {
@@ -67,7 +67,16 @@ class MatchUserHttpParserSpec extends UnitTestTrait with EitherValues {
           headers = Map.empty
         )
 
-        MatchUserHttpReads.read(testMethod, testUrl, httpResponse).value mustBe empty
+        MatchUserHttpReads.read(testMethod, testUrl, httpResponse) mustBe Right(None)
+      }
+
+      "return none if authenticator returns a FAILED_DEPENDENCY (424) status" in {
+        val httpResponse = HttpResponse(
+          status = FAILED_DEPENDENCY,
+          body = ""
+        )
+
+        MatchUserHttpReads.read(testMethod, testUrl, httpResponse) mustBe Right(None)
       }
 
       "return an error if authenticator returns an UNAUTHORIZED response that cannot be parsed" in {
@@ -81,27 +90,13 @@ class MatchUserHttpParserSpec extends UnitTestTrait with EitherValues {
 
         val expectedJsError = json.validate[UserMatchFailureResponseModel].asInstanceOf[JsError]
 
-        MatchUserHttpReads.read(testMethod, testUrl, httpResponse).left.value mustBe UserMatchFailureResponseModel(expectedJsError)
-      }
-
-      "return an error if authenticator returns an UNAUTHORIZED response that contains an unexpected error" in {
-        val json = Json.obj(
-          "errors" -> "Internal error: unexpected result from matching"
-        )
-
-        val httpResponse = HttpResponse(
-          status = UNAUTHORIZED,
-          json = json,
-          headers = Map.empty
-        )
-
-        MatchUserHttpReads.read(testMethod, testUrl, httpResponse).left.value mustBe UserMatchUnexpectedError
+        MatchUserHttpReads.read(testMethod, testUrl, httpResponse) mustBe Left(UserMatchFailureResponseModel(expectedJsError))
       }
 
       "return error if authenticator returns another status" in {
         val httpResponse = HttpResponse(BAD_REQUEST, "")
 
-        MatchUserHttpReads.read(testMethod, testUrl, httpResponse).left.value mustBe UserMatchFailureResponseModel(httpResponse)
+        MatchUserHttpReads.read(testMethod, testUrl, httpResponse) mustBe Left(UserMatchFailureResponseModel(httpResponse))
       }
     }
   }
