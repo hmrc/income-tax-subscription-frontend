@@ -355,19 +355,12 @@ agent.sign-up-confirmation.quarterly-updates.table.caption                      
 agent.sign-up-confirmation.quarterly-updates.table.caption.title                    = Cyflwynwch ddiweddariadau chwarterol erbyn y dyddiad cau
 agent.sign-up-confirmation.quarterly-updates.table.para1                            = Gallwch ddewis anfon diweddariadau eich cleient yn ôl dyddiadau ar gyfer cyfnodau chwarterol calendr. Mae’n rhaid dewis yr opsiwn hwn yn y feddalwedd sy’n cydweddu cyn gwneud y diweddariad cyntaf.
 agent.sign-up-confirmation.quarterly-updates.table.para2                            = Mae’r dyddiad cau ar gyfer y ddau gyfnod chwarterol yr un peth.
-agent.sign-up-confirmation.end-of-period-statement.heading                          = Anfon datganiad diwedd cyfnod
-agent.sign-up-confirmation.end-of-period-statement.para                             = Mae’n rhaid i chi neu’ch cleient gyflwyno datganiad diwedd cyfnod, gan ddefnyddio’ch meddalwedd, erbyn {0}.
 agent.sign-up-confirmation.final-declaration.heading                                = Cyflwyno datganiad terfynol a thalu
 agent.sign-up-confirmation.final-declaration.para                                   = Mae’n rhaid i chi neu’ch cleient gyflwyno datganiad terfynol erbyn {0}. Mae’n rhaid iddo hefyd dalu’r dreth sydd arno.
 agent.sign-up-confirmation.warning.para                                             = Mae’n rhai i chi gyflwyno diweddariadau ar gyfer unrhyw chwarterau rydych wedi’u methu.
 
 agent.sign-up-confirmation.voluntary-next-year.self-assessment.heading              = Parhau â’r Hunanasesiad ar gyfer y flwyddyn hon
 agent.sign-up-confirmation.voluntary-next-year.self-assessment.para                 = Mae’n rhaid cyflwyno Ffurflen Dreth Hunanasesiad eich cleient, yn ôl yr arfer, erbyn 31 Ionawr  {0}.
-agent.sign-up-confirmation.mandated-notification-banner.para                        = Mae’n bosibl y codir cosb ar eich cleient os bydd yn methu’r dyddiadau cau ar gyfer y canlynol:
-agent.sign-up-confirmation.mandated.notification-banner.bullet1                     = diweddariadau chwarterol
-agent.sign-up-confirmation.mandated.notification-banner.bullet2                     = datganiad diwedd cyfnod
-agent.sign-up-confirmation.mandated.notification-banner.bullet3                     = datganiad terfynol
-agent.sign-up-confirmation.mandated.notification-banner.bullet4                     = taliad treth
 
 agent.sign-up-confirmation.agent-services-account.heading                           = Eich cyfrif gwasanaethau asiant
 agent.sign-up-confirmation.agent-services-account.para                              = Awdurdodi cyfrifau eich cleientiaid, a’u rheoli.

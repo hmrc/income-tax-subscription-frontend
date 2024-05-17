@@ -16,7 +16,6 @@
 
 package views.agent
 
-import config.featureswitch.FeatureSwitch.EOPSContent
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.HtmlFormat
@@ -30,7 +29,6 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    disable(EOPSContent)
   }
 
   private val nameLengthCharacters = 10
