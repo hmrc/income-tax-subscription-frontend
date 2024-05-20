@@ -16,7 +16,8 @@
 
 package controllers.agent.eligibility
 
-import auth.agent.{IncomeTaxAgentUser, PreSignUpController}
+import auth.agent.{AgentSignUp, IncomeTaxAgentUser, PreSignUpController}
+import common.Constants.ITSASessionKeys.JourneyStateKey
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
 import forms.agent.ClientCanSignUpForm.clientCanSignUpForm
@@ -74,7 +75,14 @@ class ClientCanSignUpController @Inject()(val auditingService: AuditingService,
         throw new InternalServerException("[ClientCanSignUpController][submit] - could not retrieve client nino from session")
       ))
       clientCanSignUpForm.bindFromRequest().fold(
-        formWithErrors => Future.successful(BadRequest(clientCanSignUp(formWithErrors, routes.ClientCanSignUpController.submit(), clientName, clientNino, backLink))),
+        formWithErrors =>
+          Future.successful(BadRequest(clientCanSignUp(
+            formWithErrors,
+            routes.ClientCanSignUpController.submit(),
+            clientName,
+            clientNino,
+            backLink
+          ))),
         {
           case Yes =>
             continueToSignUpClient
@@ -87,8 +95,11 @@ class ClientCanSignUpController @Inject()(val auditingService: AuditingService,
   private def continueToSignUpClient(implicit request: Request[AnyContent], user: IncomeTaxAgentUser): Future[Result] = {
     withAgentReference { reference =>
       subscriptionDetailsService.saveEligibilityInterruptPassed(reference) map {
-        case Right(_) => Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
-        case Left(_) => throw new InternalServerException("[ClientCanSignUpController][continueToSignUpClient] - Failed to save eligibility interrupt passed")
+        case Right(_) =>
+          Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
+            .addingToSession(JourneyStateKey -> AgentSignUp.name)
+        case Left(_) =>
+          throw new InternalServerException("[ClientCanSignUpController][continueToSignUpClient] - Failed to save eligibility interrupt passed")
       }
     }
 

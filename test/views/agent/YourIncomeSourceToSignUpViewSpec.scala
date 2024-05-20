@@ -16,7 +16,6 @@
 
 package views.agent
 
-import config.featureswitch.FeatureSwitch.ForeignProperty
 import models.common.business._
 import models.common.{IncomeSources, OverseasPropertyModel, PropertyModel}
 import models.{Cash, DateModel}
@@ -32,7 +31,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    disable(ForeignProperty)
   }
 
   object AgentIncomeSource {
@@ -121,10 +119,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     )
   }
 
-  class ViewTest(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None),
-                 foreignPropertyEnabled: Boolean = true) {
-
-    if (foreignPropertyEnabled) enable(ForeignProperty)
+  class ViewTest(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None)) {
 
     val document: Document = Jsoup.parse(view(incomeSources).body)
 
@@ -190,22 +185,14 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           link.attr("href") mustBe AgentIncomeSource.ukPropertyLink
         }
       }
-      "have a foreign property section" when {
-        "the foreign property feature switch is enabled" which {
-          "has a heading" in new ViewTest(noIncomeSources) {
-            document.mainContent.selectNth("h2", 3).text mustBe AgentIncomeSource.foreignPropertyHeading
-          }
-          "has an add business link" in new ViewTest(noIncomeSources) {
-            val link: Element = document.mainContent.getElementById("add-foreign-property").selectHead("a")
-            link.text mustBe AgentIncomeSource.foreignPropertyLinkText
-            link.attr("href") mustBe AgentIncomeSource.foreignPropertyLink
-          }
+      "have a foreign property section" which {
+        "has a heading" in new ViewTest(noIncomeSources) {
+          document.mainContent.selectNth("h2", 3).text mustBe AgentIncomeSource.foreignPropertyHeading
         }
-      }
-      "have no foreign property section" when {
-        "the foreign property feature switch is disabled" in new ViewTest(noIncomeSources, foreignPropertyEnabled = false) {
-          document.mainContent.selectOptionalNth("h2", 3) mustBe None
-          document.mainContent.selectOptionally("#add-foreign-property") mustBe None
+        "has an add business link" in new ViewTest(noIncomeSources) {
+          val link: Element = document.mainContent.getElementById("add-foreign-property").selectHead("a")
+          link.text mustBe AgentIncomeSource.foreignPropertyLinkText
+          link.attr("href") mustBe AgentIncomeSource.foreignPropertyLink
         }
       }
       "have a final note" which {
@@ -371,38 +358,30 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           }
         }
       }
-      "have a foreign property section" when {
-        "the foreign property feature switch is enabled" which {
-          "has a heading" in new ViewTest(incompleteIncomeSources) {
-            document.mainContent.selectNth("h2", 3).text mustBe AgentIncomeSource.foreignPropertyHeading
-          }
-          "has a summary of the incomplete foreign property" which {
-            def foreignPropertySummary(document: Document): Element = document.mainContent.selectNth("dl", 3).selectHead("div.govuk-summary-list__row")
-
-            "has a label" in new ViewTest(incompleteIncomeSources) {
-              foreignPropertySummary(document).selectHead("dt").text mustBe AgentIncomeSource.foreignPropertyLabel
-            }
-            "has a set of actions" which {
-              def actions(document: Document): Element = foreignPropertySummary(document).selectHead("dd").selectHead("ul")
-
-              "has a change action" in new ViewTest(incompleteIncomeSources) {
-                val link: Element = actions(document).selectNth("li", 1)
-                link.selectHead("span[aria-hidden=true]").text mustBe AgentIncomeSource.change
-                link.selectHead("span.govuk-visually-hidden").text mustBe AgentIncomeSource.foreignPropertyChange
-              }
-              "has a remove action" in new ViewTest(incompleteIncomeSources) {
-                val link: Element = actions(document).selectNth("li", 2)
-                link.selectHead("span[aria-hidden=true]").text mustBe AgentIncomeSource.remove
-                link.selectHead("span.govuk-visually-hidden").text mustBe AgentIncomeSource.foreignPropertyRemove
-              }
-            }
-          }
+      "have a foreign property section" which {
+        "has a heading" in new ViewTest(incompleteIncomeSources) {
+          document.mainContent.selectNth("h2", 3).text mustBe AgentIncomeSource.foreignPropertyHeading
         }
-      }
-      "have no foreign property section" when {
-        "the foreign property feature switch is disabled" in new ViewTest(incompleteIncomeSources, foreignPropertyEnabled = false) {
-          document.mainContent.selectOptionalNth("h2", 3) mustBe None
-          document.mainContent.selectOptionally("#add-foreign-property") mustBe None
+        "has a summary of the incomplete foreign property" which {
+          def foreignPropertySummary(document: Document): Element = document.mainContent.selectNth("dl", 3).selectHead("div.govuk-summary-list__row")
+
+          "has a label" in new ViewTest(incompleteIncomeSources) {
+            foreignPropertySummary(document).selectHead("dt").text mustBe AgentIncomeSource.foreignPropertyLabel
+          }
+          "has a set of actions" which {
+            def actions(document: Document): Element = foreignPropertySummary(document).selectHead("dd").selectHead("ul")
+
+            "has a change action" in new ViewTest(incompleteIncomeSources) {
+              val link: Element = actions(document).selectNth("li", 1)
+              link.selectHead("span[aria-hidden=true]").text mustBe AgentIncomeSource.change
+              link.selectHead("span.govuk-visually-hidden").text mustBe AgentIncomeSource.foreignPropertyChange
+            }
+            "has a remove action" in new ViewTest(incompleteIncomeSources) {
+              val link: Element = actions(document).selectNth("li", 2)
+              link.selectHead("span[aria-hidden=true]").text mustBe AgentIncomeSource.remove
+              link.selectHead("span.govuk-visually-hidden").text mustBe AgentIncomeSource.foreignPropertyRemove
+            }
+          }
         }
       }
       "have a final note" which {
@@ -499,38 +478,30 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           }
         }
       }
-      "have a foreign property section" when {
-        "the foreign property feature switch is enabled" which {
-          "has a heading" in new ViewTest(completeIncomeSources) {
-            document.mainContent.selectNth("h2", 3).text mustBe AgentIncomeSource.foreignPropertyHeading
-          }
-          "has a summary of the incomplete foreign property" which {
-            def foreignPropertySummary(document: Document): Element = document.mainContent.selectNth("dl", 3).selectHead("div.govuk-summary-list__row")
-
-            "has a label" in new ViewTest(completeIncomeSources) {
-              foreignPropertySummary(document).selectHead("dt").text mustBe AgentIncomeSource.foreignPropertyLabel
-            }
-            "has a set of actions" which {
-              def actions(document: Document): Element = foreignPropertySummary(document).selectHead("dd").selectHead("ul")
-
-              "has a change action" in new ViewTest(completeIncomeSources) {
-                val link: Element = actions(document).selectNth("li", 1)
-                link.selectHead("span[aria-hidden=true]").text mustBe AgentIncomeSource.change
-                link.selectHead("span.govuk-visually-hidden").text mustBe AgentIncomeSource.foreignPropertyChange
-              }
-              "has a remove action" in new ViewTest(completeIncomeSources) {
-                val link: Element = actions(document).selectNth("li", 2)
-                link.selectHead("span[aria-hidden=true]").text mustBe AgentIncomeSource.remove
-                link.selectHead("span.govuk-visually-hidden").text mustBe AgentIncomeSource.foreignPropertyRemove
-              }
-            }
-          }
+      "have a foreign property section" which {
+        "has a heading" in new ViewTest(completeIncomeSources) {
+          document.mainContent.selectNth("h2", 3).text mustBe AgentIncomeSource.foreignPropertyHeading
         }
-      }
-      "have no foreign property section" when {
-        "the foreign property feature switch is disabled" in new ViewTest(completeIncomeSources, foreignPropertyEnabled = false) {
-          document.mainContent.selectOptionalNth("h2", 3) mustBe None
-          document.mainContent.selectOptionally("#add-foreign-property") mustBe None
+        "has a summary of the incomplete foreign property" which {
+          def foreignPropertySummary(document: Document): Element = document.mainContent.selectNth("dl", 3).selectHead("div.govuk-summary-list__row")
+
+          "has a label" in new ViewTest(completeIncomeSources) {
+            foreignPropertySummary(document).selectHead("dt").text mustBe AgentIncomeSource.foreignPropertyLabel
+          }
+          "has a set of actions" which {
+            def actions(document: Document): Element = foreignPropertySummary(document).selectHead("dd").selectHead("ul")
+
+            "has a change action" in new ViewTest(completeIncomeSources) {
+              val link: Element = actions(document).selectNth("li", 1)
+              link.selectHead("span[aria-hidden=true]").text mustBe AgentIncomeSource.change
+              link.selectHead("span.govuk-visually-hidden").text mustBe AgentIncomeSource.foreignPropertyChange
+            }
+            "has a remove action" in new ViewTest(completeIncomeSources) {
+              val link: Element = actions(document).selectNth("li", 2)
+              link.selectHead("span[aria-hidden=true]").text mustBe AgentIncomeSource.remove
+              link.selectHead("span.govuk-visually-hidden").text mustBe AgentIncomeSource.foreignPropertyRemove
+            }
+          }
         }
       }
       "have a final note" which {

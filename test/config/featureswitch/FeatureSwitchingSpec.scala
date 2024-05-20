@@ -46,32 +46,6 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
     }
   }
 
-  "ForeignProperty" should {
-    "return true if ForeignProperty feature switch is enabled in sys.props" in {
-      enable(ForeignProperty)
-      isEnabled(ForeignProperty) mustBe true
-    }
-    "return false if ForeignProperty feature switch is disabled in sys.props" in {
-      disable(ForeignProperty)
-      isEnabled(ForeignProperty) mustBe false
-    }
-
-    "return false if ForeignProperty feature switch does not exist" in {
-      when(mockConfig.getOptional[String]("feature-switch.enable-foreign-property")).thenReturn(None)
-      isEnabled(ForeignProperty) mustBe false
-    }
-
-    "return false if ForeignProperty feature switch is not in sys.props but is set to off in config" in {
-      when(mockConfig.getOptional[String]("feature-switch.enable-foreign-property")).thenReturn(Some(FEATURE_SWITCH_OFF))
-      isEnabled(ForeignProperty) mustBe false
-    }
-
-    "return true if ForeignProperty feature switch is not in sys.props but is set to on in config" in {
-      when(mockConfig.getOptional[String]("feature-switch.enable-foreign-property")).thenReturn(Some(FEATURE_SWITCH_ON))
-      isEnabled(ForeignProperty) mustBe true
-    }
-  }
-
   "PrePopulate" should {
     "return true if PrePopulate feature switch is enabled in sys.props" in {
       enable(PrePopulate)

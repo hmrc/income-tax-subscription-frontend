@@ -16,7 +16,6 @@
 
 package controllers.individual.tasklist.addbusiness
 
-import config.featureswitch.FeatureSwitch.{ForeignProperty => ForeignPropertyFeature}
 import controllers.individual.ControllerBaseSpec
 import models.common.business._
 import models.common.{IncomeSources, OverseasPropertyModel, PropertyModel}
@@ -39,7 +38,6 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    disable(ForeignPropertyFeature)
   }
 
   override val controllerName: String = "YourIncomeSourceToSignUpController"

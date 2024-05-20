@@ -16,7 +16,6 @@
 
 package views.agent.tasklist.addbusiness
 
-import config.featureswitch.FeatureSwitch.ForeignProperty
 import forms.agent.BusinessIncomeSourceForm
 import forms.agent.BusinessIncomeSourceForm.incomeSourceKey
 import models.IncomeSourcesStatus
@@ -33,7 +32,6 @@ class WhatIncomeSourceToSignUpViewSpec extends ViewSpec {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    disable(ForeignProperty)
   }
 
   object AgentIncomeSource {
@@ -88,14 +86,8 @@ class WhatIncomeSourceToSignUpViewSpec extends ViewSpec {
       document().selectHead("h1").text mustBe AgentIncomeSource.heading
     }
 
-    "have paragraph 1" which {
-      "mentions overseas property when enabled" in {
-        enable(ForeignProperty)
-        document().selectHead(".govuk-inset-text").selectNth("p", 1).text mustBe AgentIncomeSource.paragraph1Overseas
-      }
-      "does not mention overseas property when not enabled" in {
-        document().selectHead(".govuk-inset-text").selectNth("p", 1).text mustBe AgentIncomeSource.paragraph1
-      }
+    "have paragraph 1" in {
+      document().selectHead(".govuk-inset-text").selectNth("p", 1).text mustBe AgentIncomeSource.paragraph1Overseas
     }
 
     "have paragraph 2" in {

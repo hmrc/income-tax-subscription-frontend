@@ -16,7 +16,6 @@
 
 package controllers.individual.tasklist.addbusiness
 
-import config.featureswitch.FeatureSwitch.{ForeignProperty => ForeignPropertyFeature}
 import controllers.individual.ControllerBaseSpec
 import forms.individual.incomesource.BusinessIncomeSourceForm
 import models.common._
@@ -42,7 +41,6 @@ class WhatIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    disable(ForeignPropertyFeature)
   }
 
   override val controllerName: String = "WhatIncomeSourceToSignUpController"
@@ -76,7 +74,7 @@ class WhatIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
   }
 
   "show" should {
-    "return 200 OK status if _anything_ is available and foreign property is allowed" when {
+    "return 200 OK status if _anything_ is available" when {
       List(
         IncomeSourcesStatus(selfEmploymentAvailable = true, ukPropertyAvailable = true, overseasPropertyAvailable = true),
         IncomeSourcesStatus(selfEmploymentAvailable = true, ukPropertyAvailable = true, overseasPropertyAvailable = false),
@@ -89,8 +87,6 @@ class WhatIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
         s"self employment available = ${incomeSourcesStatus.selfEmploymentAvailable}, " +
           s"uk property available = ${incomeSourcesStatus.ukPropertyAvailable} and " +
           s"overseas property available = ${incomeSourcesStatus.overseasPropertyAvailable}" in withController { controller =>
-          enable(ForeignPropertyFeature)
-
           mockIncomeSourcesStatus(incomeSourcesStatus)
 
           val result = await(controller.show()(subscriptionRequest))
@@ -102,28 +98,11 @@ class WhatIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
     }
 
     "redirect to task list" when {
-      "only foreign property is available but foreign property is not allowed" when {
-        val incomeSourcesStatus = IncomeSourcesStatus(selfEmploymentAvailable = false, ukPropertyAvailable = false, overseasPropertyAvailable = true)
-        s"self employment available = ${incomeSourcesStatus.selfEmploymentAvailable}," +
-          s"uk property available = ${incomeSourcesStatus.ukPropertyAvailable} and" +
-          s"overseas property available = ${incomeSourcesStatus.overseasPropertyAvailable}" in withController { controller =>
-          disable(ForeignPropertyFeature)
-
-          mockIncomeSourcesStatus(incomeSourcesStatus)
-
-          val result = await(controller.show()(subscriptionRequest))
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result).get mustBe controllers.individual.tasklist.routes.TaskListController.show().url
-        }
-      }
-      "nothing is available even though foreign property is allowed" when {
+      "nothing is available" when {
         val incomeSourcesStatus = IncomeSourcesStatus(selfEmploymentAvailable = false, ukPropertyAvailable = false, overseasPropertyAvailable = false)
         s"self employment available = ${incomeSourcesStatus.selfEmploymentAvailable}," +
           s"uk property available = ${incomeSourcesStatus.ukPropertyAvailable} and" +
           s"overseas property available = ${incomeSourcesStatus.overseasPropertyAvailable}" in withController { controller =>
-          enable(ForeignPropertyFeature)
-
           mockIncomeSourcesStatus(incomeSourcesStatus)
 
           val result = await(controller.show()(subscriptionRequest))
@@ -172,7 +151,6 @@ class WhatIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
     }
 
     "redirect to the overseas property start date page" in withController { controller =>
-      enable(ForeignPropertyFeature)
       setupMockSubscriptionDetailsSaveFunctions()
       mockIncomeSourcesStatus()
 
@@ -184,8 +162,6 @@ class WhatIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
 
     "return a BAD_REQUEST (400)" when {
       "no option was selected" in withController { controller =>
-        enable(ForeignPropertyFeature)
-
         mockIncomeSourcesStatus()
 
         val result = controller.submit()(subscriptionRequest)

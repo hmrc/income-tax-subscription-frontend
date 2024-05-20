@@ -16,9 +16,9 @@
 
 package views.individual.tasklist.addbusiness
 
-import config.featureswitch.FeatureSwitch.ForeignProperty
 import models.common.business._
 import models.common.{IncomeSources, OverseasPropertyModel, PropertyModel}
+import models.{Cash, DateModel}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.api.mvc.Call
@@ -26,13 +26,11 @@ import play.twirl.api.Html
 import utilities.ViewSpec
 import views.ViewSpecTrait
 import views.html.individual.tasklist.addbusiness.YourIncomeSourceToSignUp
-import models.{Cash, DateModel}
 
 class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    disable(ForeignProperty)
   }
 
   object IndividualIncomeSource {
@@ -122,11 +120,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     )
   }
 
-  class ViewTest(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None),
-                 foreignPropertyEnabled: Boolean = true) {
-
-    if (foreignPropertyEnabled) enable(ForeignProperty)
-
+  class ViewTest(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None)) {
     val document: Document = Jsoup.parse(view(incomeSources).body)
 
   }
@@ -187,22 +181,14 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           link.text mustBe IndividualIncomeSource.ukPropertyLinkText
           link.attr("href") mustBe controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.show().url
         }
-        "have a foreign property section" when {
-          "the foreign property feature switch is enabled" which {
-            "has a heading" in new ViewTest(noIncomeSources) {
-              document.mainContent.selectNth("h2", 3).text mustBe IndividualIncomeSource.foreignPropertyHeading
-            }
-            "has an add business link" in new ViewTest(noIncomeSources) {
-              val link: Element = document.mainContent.getElementById("add-foreign-property").selectHead("a")
-              link.text mustBe IndividualIncomeSource.foreignPropertyLinkText
-              link.attr("href") mustBe controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show().url
-            }
+        "have a foreign property section" which {
+          "has a heading" in new ViewTest(noIncomeSources) {
+            document.mainContent.selectNth("h2", 3).text mustBe IndividualIncomeSource.foreignPropertyHeading
           }
-        }
-        "have no foreign property section" when {
-          "the foreign property feature switch is disabled" in new ViewTest(noIncomeSources, foreignPropertyEnabled = false) {
-            document.mainContent.selectOptionalNth("h2", 3) mustBe None
-            document.mainContent.selectOptionally("#add-foreign-property") mustBe None
+          "has an add business link" in new ViewTest(noIncomeSources) {
+            val link: Element = document.mainContent.getElementById("add-foreign-property").selectHead("a")
+            link.text mustBe IndividualIncomeSource.foreignPropertyLinkText
+            link.attr("href") mustBe controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show().url
           }
         }
         "have a final note" which {
@@ -277,27 +263,20 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
               }
             }
 
-            "have a section for foreign property" when {
-              "the foreign property feature switch is enabled" which {
-                "has a heading" in new ViewTest {
-                  document.mainContent.selectNth("h2", 3).text mustBe IndividualIncomeSource.foreignPropertyHeading
-                }
-                "has a description" in new ViewTest {
-                  document.mainContent.selectNth("p", 6).text mustBe IndividualIncomeSource.foreignPropertyDescription
-                }
-                "has a link to add a foreign property business" in new ViewTest {
-                  val link: Element = document.mainContent.selectNth("a", 3)
-                  link.text mustBe IndividualIncomeSource.foreignPropertyLinkText
-                  link.attr("href") mustBe controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show().url
-                }
+            "have a section for foreign property" which {
+              "has a heading" in new ViewTest {
+                document.mainContent.selectNth("h2", 3).text mustBe IndividualIncomeSource.foreignPropertyHeading
+              }
+              "has a description" in new ViewTest {
+                document.mainContent.selectNth("p", 6).text mustBe IndividualIncomeSource.foreignPropertyDescription
+              }
+              "has a link to add a foreign property business" in new ViewTest {
+                val link: Element = document.mainContent.selectNth("a", 3)
+                link.text mustBe IndividualIncomeSource.foreignPropertyLinkText
+                link.attr("href") mustBe controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show().url
               }
             }
 
-            "have no section for foreign property" when {
-              "the foreign property feature switch is not enabled" in new ViewTest(foreignPropertyEnabled = false) {
-                document.mainContent.selectOptionalNth("h2", 3) mustBe None
-              }
-            }
           }
         }
 
@@ -376,38 +355,30 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
             }
           }
 
-          "have a section for foreign property" when {
-            "the foreign property feature switch is enabled" which {
-              "has a heading" in new ViewTest(completeIncomeSources) {
-                document.mainContent.selectNth("h2", 3).text mustBe IndividualIncomeSource.foreignPropertyHeading
-              }
-              "has a description" in new ViewTest(completeIncomeSources) {
-                document.mainContent.selectNth("p", 5).text mustBe IndividualIncomeSource.foreignPropertyDescription
-              }
-              "has a summary of the added foreign property business" in new ViewTest(completeIncomeSources) {
-                val summaryList: Element = document.mainContent.selectNth("dl", 3)
-                val row: Element = summaryList.selectNth("div.govuk-summary-list__row", 1)
-
-                row.selectHead("dt").text mustBe IndividualIncomeSource.foreignPropertyLabel
-
-                val actions: Element = row.selectHead("dd")
-                val changeLink: Element = actions.selectHead("ul").selectNth("li", 1).selectHead("a")
-                changeLink.selectHead("span[aria-hidden=true]").text mustBe IndividualIncomeSource.change
-                changeLink.selectHead("span.govuk-visually-hidden").text mustBe IndividualIncomeSource.foreignPropertyChange
-
-                val removeLink: Element = actions.selectHead("ul").selectNth("li", 2).selectHead("a")
-                removeLink.selectHead("span[aria-hidden=true]").text mustBe IndividualIncomeSource.remove
-                removeLink.selectHead("span.govuk-visually-hidden").text mustBe IndividualIncomeSource.foreignPropertyRemove
-              }
-              "has no link to add a foreign property business" in new ViewTest(completeIncomeSources) {
-                document.mainContent.selectOptionally("#add-foreign-property") mustBe None
-              }
+          "have a section for foreign property" which {
+            "has a heading" in new ViewTest(completeIncomeSources) {
+              document.mainContent.selectNth("h2", 3).text mustBe IndividualIncomeSource.foreignPropertyHeading
             }
-          }
+            "has a description" in new ViewTest(completeIncomeSources) {
+              document.mainContent.selectNth("p", 5).text mustBe IndividualIncomeSource.foreignPropertyDescription
+            }
+            "has a summary of the added foreign property business" in new ViewTest(completeIncomeSources) {
+              val summaryList: Element = document.mainContent.selectNth("dl", 3)
+              val row: Element = summaryList.selectNth("div.govuk-summary-list__row", 1)
 
-          "have no section for foreign property" when {
-            "the foreign property feature switch is not enabled" in new ViewTest(completeIncomeSources, false) {
-              document.mainContent.selectOptionalNth("h2", 3) mustBe None
+              row.selectHead("dt").text mustBe IndividualIncomeSource.foreignPropertyLabel
+
+              val actions: Element = row.selectHead("dd")
+              val changeLink: Element = actions.selectHead("ul").selectNth("li", 1).selectHead("a")
+              changeLink.selectHead("span[aria-hidden=true]").text mustBe IndividualIncomeSource.change
+              changeLink.selectHead("span.govuk-visually-hidden").text mustBe IndividualIncomeSource.foreignPropertyChange
+
+              val removeLink: Element = actions.selectHead("ul").selectNth("li", 2).selectHead("a")
+              removeLink.selectHead("span[aria-hidden=true]").text mustBe IndividualIncomeSource.remove
+              removeLink.selectHead("span.govuk-visually-hidden").text mustBe IndividualIncomeSource.foreignPropertyRemove
+            }
+            "has no link to add a foreign property business" in new ViewTest(completeIncomeSources) {
+              document.mainContent.selectOptionally("#add-foreign-property") mustBe None
             }
           }
 

@@ -16,7 +16,6 @@
 
 package controllers.individual.tasklist.addbusiness
 
-import config.featureswitch.FeatureSwitch.{ForeignProperty => ForeignPropertyFeature}
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.IndividualURI
@@ -32,7 +31,6 @@ import utilities.SubscriptionDataKeys
 class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
   override def beforeEach(): Unit = {
     super.beforeEach()
-    disable(ForeignPropertyFeature)
   }
 
   val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
@@ -119,8 +117,6 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
     "redirect to the overseas property start date page" in {
       Given("I setup the wiremock stubs")
       AuthStub.stubAuthSuccess()
-      And("Foreign property feature switch is enabled")
-      enable(ForeignPropertyFeature)
 
       IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(NO_CONTENT)
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT)
@@ -139,8 +135,6 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
 
     "return a BAD_REQUEST (400)" when {
       "no input is selected" in {
-        enable(ForeignPropertyFeature)
-
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
 
@@ -159,8 +153,6 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
       }
 
       "self employment is selected but the user already has 50 self employment businesses" in {
-        enable(ForeignPropertyFeature)
-
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
 
@@ -180,8 +172,6 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
       }
 
       "uk property is selected but the user already has started uk property" in {
-        enable(ForeignPropertyFeature)
-
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
 
@@ -205,8 +195,6 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
       }
 
       "overseas property is started but the user already has started overseas property" in {
-        enable(ForeignPropertyFeature)
-
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
 
@@ -217,25 +205,6 @@ class WhatIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
           responseStatus = OK,
           responseBody = Json.toJson(OverseasPropertyModel(accountingMethod = Some(Cash)))
         )
-
-        When(s"POST ${routes.WhatIncomeSourceToSignUpController.submit().url} is called")
-        val userInput = OverseasProperty
-        val res = IncomeTaxSubscriptionFrontend.submitBusinessIncomeSource(Some(userInput))
-
-        Then(s"Should return $BAD_REQUEST with the income source page plus error")
-        res must have(
-          httpStatus(BAD_REQUEST),
-          pageTitle(s"Error: ${messages("income-source.title")}$serviceNameGovUk")
-        )
-      }
-
-      "overseas property but the overseas property feature switch is disabled" in {
-        Given("I setup the wiremock stubs")
-        AuthStub.stubAuthSuccess()
-
-        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(NO_CONTENT)
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT)
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, NO_CONTENT)
 
         When(s"POST ${routes.WhatIncomeSourceToSignUpController.submit().url} is called")
         val userInput = OverseasProperty

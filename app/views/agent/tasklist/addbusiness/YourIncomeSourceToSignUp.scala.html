@@ -14,8 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.featureswitch.FeatureSwitchingImpl
-@import config.featureswitch.FeatureSwitch.ForeignProperty
 @import views.html.templates.AgentMainTemplate
 @import views.html.helpers.{RadioHelper, ContinueButton, SaveAndContinueButtonHelper}
 @import models.common.BusinessIncomeSource
@@ -33,7 +31,6 @@
     radioHelper: RadioHelper,
     continueButton: ContinueButton,
     saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
-    featureSwitching: FeatureSwitchingImpl,
     hmrcListWithActions : HmrcListWithActions
 )
 
@@ -68,9 +65,7 @@
 
     @ukPropertySection
 
-    @if(featureSwitching.isEnabled(ForeignProperty)) {
-        @foreignPropertySection
-    }
+    @foreignPropertySection
 
     <p class="govuk-body">
         @messages("agent.your-income-source.final-note.para-one")

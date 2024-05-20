@@ -16,11 +16,10 @@
 
 package controllers.individual.tasklist.addbusiness
 
-import config.featureswitch.FeatureSwitch.{ForeignProperty => ForeignPropertyFeature}
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.IndividualURI.taskListURI
-import helpers.IntegrationTestModels.{testAccountingMethod, testBusiness, testBusinesses, testFullOverseasPropertyModel, testFullPropertyModel}
+import helpers.IntegrationTestModels._
 import helpers.servicemocks.AuthStub
 import play.api.http.Status._
 import play.api.libs.json.Json
@@ -30,7 +29,6 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    disable(ForeignPropertyFeature)
   }
 
   val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"

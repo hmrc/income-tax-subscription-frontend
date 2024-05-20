@@ -16,7 +16,6 @@
 
 package views.individual.tasklist.addbusiness
 
-import config.featureswitch.FeatureSwitch.ForeignProperty
 import forms.individual.incomesource.BusinessIncomeSourceForm
 import forms.individual.incomesource.BusinessIncomeSourceForm.incomeSourceKey
 import models.IncomeSourcesStatus
@@ -34,7 +33,6 @@ class WhatIncomeSourceToSignUpViewSpec extends ViewSpec {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    disable(ForeignProperty)
   }
 
   object IndividualIncomeSource {
@@ -79,11 +77,8 @@ class WhatIncomeSourceToSignUpViewSpec extends ViewSpec {
                     ukPropertyAvailable = true,
                     overseasPropertyAvailable = true
                   ),
-                  hasError: Boolean = false,
-                  overseasEnabled: Boolean = false
+                  hasError: Boolean = false
                 ) {
-
-    if (overseasEnabled) enable(ForeignProperty)
 
     val document: Document = Jsoup.parse(view(
       incomeSourcesStatus = incomeSourcesStatus,
@@ -119,13 +114,8 @@ class WhatIncomeSourceToSignUpViewSpec extends ViewSpec {
       document.selectHead("h1").text mustBe IndividualIncomeSource.heading
     }
 
-    "have paragraph 1 in an inset text block" which {
-      "mentions overseas property when enabled" in new ViewTest(overseasEnabled = true) {
-        document.selectHead(".govuk-inset-text").selectNth("p", 1).text mustBe IndividualIncomeSource.paragraph1Overseas
-      }
-      "does not mention overseas property when disabled" in new ViewTest(overseasEnabled = false) {
-        document.selectHead(".govuk-inset-text").selectNth("p", 1).text mustBe IndividualIncomeSource.paragraph1
-      }
+    "have paragraph 1 in an inset text block" in new ViewTest() {
+      document.selectHead(".govuk-inset-text").selectNth("p", 1).text mustBe IndividualIncomeSource.paragraph1Overseas
     }
 
     "have a form to submit the checkboxes" in new ViewTest {

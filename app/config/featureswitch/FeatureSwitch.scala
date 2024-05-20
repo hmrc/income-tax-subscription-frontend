@@ -25,7 +25,6 @@ object FeatureSwitch {
   val prefix = "feature-switch"
 
   val switches: Set[FeatureSwitch] = Set(
-    ForeignProperty,
     PrePopulate,
     ThrottlingFeature,
     ConfirmationPage,
@@ -40,11 +39,6 @@ object FeatureSwitch {
     }
 
   def get(str: String): Option[FeatureSwitch] = switches find (_.name == str)
-
-  case object ForeignProperty extends FeatureSwitch {
-    override val name = s"$prefix.enable-foreign-property"
-    override val displayText = "Foreign property"
-  }
 
   case object PrePopulate extends FeatureSwitch {
     override val name = s"$prefix.prepopulate"
