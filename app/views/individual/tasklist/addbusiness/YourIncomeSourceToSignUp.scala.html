@@ -14,8 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.featureswitch.FeatureSwitchingImpl
-@import config.featureswitch.FeatureSwitch.ForeignProperty
 @import config.AppConfig
 @import play.api.data.Form
 @import models.common._
@@ -29,10 +27,9 @@
     continueButton: ContinueButton,
     appConfig: AppConfig,
     hmrcListWithActions : HmrcListWithActions,
-    featureSwitching: FeatureSwitchingImpl,
     radioHelper: RadioHelper,
     form: FormWithCSRF,
-    saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
+    saveAndContinueButtonHelper: SaveAndContinueButtonHelper
 )
 
 @(postAction: Call, backUrl: String, incomeSources: IncomeSources)( implicit request: Request[_], messages: Messages)
@@ -61,9 +58,7 @@
 
     @ukPropertySection
 
-    @if(featureSwitching.isEnabled(ForeignProperty)) {
-        @foreignPropertySection
-    }
+    @foreignPropertySection
 
     <p class="govuk-body">
     @messages("your-income-source.final-note.para-one")

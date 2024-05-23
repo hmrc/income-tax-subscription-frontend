@@ -14,8 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.featureswitch.FeatureSwitchingImpl
-@import config.featureswitch.FeatureSwitch.ForeignProperty
 @import views.html.templates.AgentMainTemplate
 @import views.html.helpers.RadioHelper
 @import views.html.helpers.ContinueButton
@@ -30,8 +28,7 @@
   agentMainTemplate: AgentMainTemplate,
   form: FormWithCSRF,
   radioHelper: RadioHelper,
-  continueButton: ContinueButton,
-  featureSwitching: FeatureSwitchingImpl
+  continueButton: ContinueButton
 )
 
 @(
@@ -85,11 +82,7 @@
 
   <div class="govuk-inset-text">
     <p class="govuk-body govuk-!-margin-bottom-6">
-      @if(featureSwitching.isEnabled(ForeignProperty)) {
-        @messages("agent.income-source.paragraph1-overseas", appConfig.maxSelfEmployments)
-      } else {
-        @messages("agent.income-source.paragraph1")
-      }
+      @messages("agent.income-source.paragraph1-overseas", appConfig.maxSelfEmployments)
     </p>
     <p class="govuk-body">@messages("agent.income-source.paragraph2")</p>
   </div>

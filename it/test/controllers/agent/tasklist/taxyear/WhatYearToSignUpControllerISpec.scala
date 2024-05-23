@@ -17,7 +17,6 @@
 package controllers.agent.tasklist.taxyear
 
 import common.Constants.ITSASessionKeys
-import config.featureswitch.FeatureSwitch.ForeignProperty
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.IntegrationTestConstants.{AgentURI, testFirstName, testLastName, testNino}
 import helpers.IntegrationTestModels.testAccountingYearCurrent
@@ -35,7 +34,6 @@ import java.time.LocalDate
 class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
 
   override def beforeEach(): Unit = {
-    disable(ForeignProperty)
     super.beforeEach()
   }
 

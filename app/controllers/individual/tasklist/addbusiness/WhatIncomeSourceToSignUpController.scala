@@ -18,7 +18,6 @@ package controllers.individual.tasklist.addbusiness
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.{ForeignProperty => ForeignPropertyFeature}
 import controllers.utils.ReferenceRetrieval
 import forms.individual.incomesource.BusinessIncomeSourceForm
 import models.IncomeSourcesStatus
@@ -62,8 +61,7 @@ class WhatIncomeSourceToSignUpController @Inject()(whatIncomeSourceToSignUp: Wha
             {
               case SelfEmployed => Redirect(appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl)
               case UkProperty => Redirect(controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.show())
-              case OverseasProperty if isEnabled(ForeignPropertyFeature) =>
-                Redirect(controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show())
+              case OverseasProperty => Redirect(controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show())
               case _ => throw new InternalServerException("[WhatIncomeSourceToSignUpController][submit] - The foreign property feature switch is disabled")
             }
           )
@@ -84,11 +82,7 @@ class WhatIncomeSourceToSignUpController @Inject()(whatIncomeSourceToSignUp: Wha
   }
 
   private def overseasPropertyAvailable(reference: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
-    if (isEnabled(ForeignPropertyFeature)) {
-      subscriptionDetailsService.fetchOverseasProperty(reference) map (_.isEmpty)
-    } else {
-      Future.successful(false)
-    }
+    subscriptionDetailsService.fetchOverseasProperty(reference) map (_.isEmpty)
   }
 
   private def withIncomeSourceStatuses(reference: String)(f: IncomeSourcesStatus => Result)(implicit hc: HeaderCarrier): Future[Result] = {
