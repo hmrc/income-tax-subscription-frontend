@@ -2,10 +2,6 @@
 GET         /                                       controllers.agent.matching.HomeController.home
 GET         /index                                  controllers.agent.matching.HomeController.index
 
-# Other sources of income
-GET         /eligibility/income-sources             controllers.agent.eligibility.OtherSourcesOfIncomeController.show
-POST        /eligibility/income-sources             controllers.agent.eligibility.OtherSourcesOfIncomeController.submit
-
 # Cannot sign up page
 GET         /error/cannot-sign-up                   controllers.agent.eligibility.CannotTakePartController.show
 
@@ -16,18 +12,6 @@ POST        /error/cannot-sign-up-for-current-year  controllers.agent.eligibilit
 # Declined sign up next year
 GET         /declined-sign-up-next-year       controllers.agent.DeclinedSignUpNextYearController.show
 POST        /declined-sign-up-next-year       controllers.agent.DeclinedSignUpNextYearController.submit
-
-# Accounting period check page
-GET         /eligibility/accounting-period-check    controllers.agent.eligibility.AccountingPeriodCheckController.show
-POST        /eligibility/accounting-period-check    controllers.agent.eligibility.AccountingPeriodCheckController.submit
-
-# Property business start date after
-GET         /eligibility/property-start-date        controllers.agent.eligibility.PropertyTradingStartAfterController.show()
-POST        /eligibility/property-start-date        controllers.agent.eligibility.PropertyTradingStartAfterController.submit()
-
-# Sole Trader Page
-GET         /eligibility/sole-trader-start-date     controllers.agent.eligibility.SoleTraderController.show()
-POST        /eligibility/sole-trader-start-date     controllers.agent.eligibility.SoleTraderController.submit()
 
 # Client Can Sign Up Page
 GET         /can-sign-up                            controllers.agent.eligibility.ClientCanSignUpController.show()
