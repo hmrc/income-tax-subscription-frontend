@@ -16,7 +16,6 @@
 
 package views.agent.confirmation
 
-import config.featureswitch.FeatureSwitch.EOPSContent
 import models.common.AccountingPeriodModel
 import models.{DateModel, UpdateDeadline}
 import org.jsoup.Jsoup
@@ -34,7 +33,6 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    disable(EOPSContent)
   }
 
   val implicitDateFormatter: ImplicitDateFormatter = app.injector.instanceOf[ImplicitDateFormatterImpl]
@@ -84,7 +82,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     signUpConfirmation(mandatedCurrentYear, mandatedNextYear, selectedTaxYearIsNext, userNameMaybe, testNino, testAccountingPeriodModel)
 
   def document(eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, selectedTaxYearIsNext: Boolean, userNameMaybe: Option[String] = Some(testName)): Document =
-    Jsoup.parse(page(mandatedCurrentYear, mandatedNextYear,selectedTaxYearIsNext, userNameMaybe).body)
+    Jsoup.parse(page(mandatedCurrentYear, mandatedNextYear, selectedTaxYearIsNext, userNameMaybe).body)
 
   "The sign up confirmation view" when {
     "the user is voluntary and eligible for both years and feature switch is disabled" should {
@@ -154,29 +152,18 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains details para2" in {
-          mainContent.selectNth(".govuk-details", 1).selectNth("p",2).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesDetailsp2
-        }
-      }
-
-      "have End of Period section" which {
-
-        "contains a heading" in {
-          mainContent.selectNth("h3", 2).text() contains SignUpConfirmationMessages.endOfPeriodStatementHeading
-        }
-
-        "contains end of period paragraph" in {
-          mainContent.selectNth("p",7).text() mustBe SignUpConfirmationMessages.endOfPeriodStatementThisYearParagraph
+          mainContent.selectNth(".govuk-details", 1).selectNth("p", 2).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesDetailsp2
         }
       }
 
       "have Final Declaration section" which {
 
         "contains a heading" in {
-          mainContent.selectNth("h3",3).text() mustBe SignUpConfirmationMessages.finalDeclarationHeading
+          mainContent.selectNth("h3", 2).text() mustBe SignUpConfirmationMessages.finalDeclarationHeading
         }
 
         "contains final declaration paragraph" in {
-          mainContent.selectNth("p", 8).text() mustBe SignUpConfirmationMessages.finalDeclarationThisYearParagraph
+          mainContent.selectNth("p", 7).text() mustBe SignUpConfirmationMessages.finalDeclarationThisYearParagraph
         }
       }
 
@@ -254,12 +241,10 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
       "have Final Declaration section" which {
         "contains a heading" in {
-          enable(EOPSContent)
-          mainContent.selectNth("h3",2).text() mustBe SignUpConfirmationMessages.finalDeclarationHeading
+          mainContent.selectNth("h3", 2).text() mustBe SignUpConfirmationMessages.finalDeclarationHeading
         }
 
         "contains final declaration paragraph" in {
-          enable(EOPSContent)
           mainContent.selectNth("p", 7).text() mustBe SignUpConfirmationMessages.finalDeclarationThisYearParagraph
         }
       }
@@ -313,7 +298,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       "have a Quarterly updates section" which {
 
         "contains a heading" in {
-          mainContent.selectNth("h3",2).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesHeading
+          mainContent.selectNth("h3", 2).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesHeading
         }
 
         "contains Quarterly Updates initial paragraph" in {
@@ -339,29 +324,18 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains details para2" in {
-          mainContent.selectNth(".govuk-details", 1).selectNth("p",2).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesDetailsp2
-        }
-      }
-
-      "have End of Period section" which {
-
-        "contains a heading" in {
-          mainContent.selectNth("h3", 3).text() mustBe SignUpConfirmationMessages.endOfPeriodStatementHeading
-        }
-
-        "contains end of period paragraph" in {
-          mainContent.selectNth("p", 8).text() mustBe SignUpConfirmationMessages.endOfPeriodStatementNextYearParagraph
+          mainContent.selectNth(".govuk-details", 1).selectNth("p", 2).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesDetailsp2
         }
       }
 
       "have Final Declaration section" which {
 
         "contains a heading" in {
-          mainContent.selectNth("h3", 4).text() mustBe SignUpConfirmationMessages.finalDeclarationHeading
+          mainContent.selectNth("h3", 3).text() mustBe SignUpConfirmationMessages.finalDeclarationHeading
         }
 
         "contains final declaration paragraph" in {
-          mainContent.selectNth("p",9).text() mustBe SignUpConfirmationMessages.finalDeclarationNextYearParagraph
+          mainContent.selectNth("p", 8).text() mustBe SignUpConfirmationMessages.finalDeclarationNextYearParagraph
         }
       }
 
@@ -414,7 +388,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       "have a Quarterly updates section" which {
 
         "contains a heading" in {
-          mainContent.selectNth("h3",2).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesHeading
+          mainContent.selectNth("h3", 2).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesHeading
         }
 
         "contains Quarterly Updates initial paragraph" in {
@@ -440,20 +414,18 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "contains details para2" in {
-          mainContent.selectNth(".govuk-details", 1).selectNth("p",2).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesDetailsp2
+          mainContent.selectNth(".govuk-details", 1).selectNth("p", 2).text() mustBe SignUpConfirmationMessages.quarterlyUpdatesDetailsp2
         }
       }
 
       "have Final Declaration section" which {
 
         "contains a heading" in {
-          enable(EOPSContent)
           mainContent.selectNth("h3", 3).text() mustBe SignUpConfirmationMessages.finalDeclarationHeading
         }
 
         "contains final declaration paragraph" in {
-          enable(EOPSContent)
-          mainContent.selectNth("p",8).text() mustBe SignUpConfirmationMessages.finalDeclarationNextYearParagraph
+          mainContent.selectNth("p", 8).text() mustBe SignUpConfirmationMessages.finalDeclarationNextYearParagraph
         }
       }
 
@@ -529,25 +501,14 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
       }
 
-      "have End of Period section" which {
-
-        "contains a heading" in {
-          mainContent.selectNth("h3", 3).text() mustBe SignUpConfirmationMessages.endOfPeriodStatementHeading
-        }
-
-        "contains end of period paragraph" in {
-          mainContent.selectNth("p", 8).text() mustBe SignUpConfirmationMessages.endOfPeriodStatementNextYearParagraph
-        }
-      }
-
       "have Final Declaration section" which {
 
         "contains a heading" in {
-          mainContent.selectNth("h3", 4).text() mustBe SignUpConfirmationMessages.finalDeclarationHeading
+          mainContent.selectNth("h3", 3).text() mustBe SignUpConfirmationMessages.finalDeclarationHeading
         }
 
         "contains final declaration paragraph" in {
-          mainContent.selectNth("p", 9).text() mustBe SignUpConfirmationMessages.finalDeclarationNextYearParagraph
+          mainContent.selectNth("p", 8).text() mustBe SignUpConfirmationMessages.finalDeclarationNextYearParagraph
         }
       }
 
@@ -611,25 +572,14 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
       }
 
-      "have End of Period section" which {
-
-        "contains a heading" in {
-          mainContent.selectNth("h3", 2).text() mustBe SignUpConfirmationMessages.endOfPeriodStatementHeading
-        }
-
-        "contains end of period paragraph" in {
-          mainContent.selectNth("p", 7).text() mustBe SignUpConfirmationMessages.endOfPeriodStatementThisYearParagraph
-        }
-      }
-
       "have Final Declaration section" which {
 
         "contains a heading" in {
-          mainContent.selectNth("h3", 3).text() mustBe SignUpConfirmationMessages.finalDeclarationHeading
+          mainContent.selectNth("h3", 2).text() mustBe SignUpConfirmationMessages.finalDeclarationHeading
         }
 
         "contains final declaration paragraph" in {
-          mainContent.selectNth("p", 8).text() mustBe SignUpConfirmationMessages.finalDeclarationThisYearParagraph
+          mainContent.selectNth("p", 7).text() mustBe SignUpConfirmationMessages.finalDeclarationThisYearParagraph
         }
       }
 
@@ -641,11 +591,11 @@ class SignUpConfirmationViewSpec extends ViewSpec {
   }
 
   private object SignUpConfirmationMessages {
-    val whatToDoHeading                         = "What you must do now"
-    val panelHeading                            = "Client sign up complete"
-    val panelUserDetails                        = s"$testName | $testNino"
-    val panelDescriptionThis                    = s"is now signed up for Making Tax Digital for Income Tax for the current tax year (${startDate.day} April 2010 to ${endDate.day} April 2011)"
-    val panelDescriptionNext                    = s"is now signed up for Making Tax Digital for Income Tax for the next tax year (${startDate.day} April 2010 to ${endDate.day} April 2011)"
+    val whatToDoHeading = "What you must do now"
+    val panelHeading = "Client sign up complete"
+    val panelUserDetails = s"$testName | $testNino"
+    val panelDescriptionThis = s"is now signed up for Making Tax Digital for Income Tax for the current tax year (${startDate.day} April 2010 to ${endDate.day} April 2011)"
+    val panelDescriptionNext = s"is now signed up for Making Tax Digital for Income Tax for the next tax year (${startDate.day} April 2010 to ${endDate.day} April 2011)"
 
     def panelDescription(yearIsNext: Boolean): String = if (yearIsNext)
       SignUpConfirmationMessages.panelDescriptionNext
@@ -654,33 +604,27 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
     val printLink = "Print this client’s sign up confirmation"
 
-    val continueSelfAssessmentHeading           = "Continue Self Assessment for this year"
-    val continueSelfAssessmentPara              = s"Your client’s Self Assessment tax return must be submitted as normal on 31 January ${AccountingPeriodUtil.getNextTaxEndYear + 1}."
+    val continueSelfAssessmentHeading = "Continue Self Assessment for this year"
+    val continueSelfAssessmentPara = s"Your client’s Self Assessment tax return must be submitted as normal on 31 January ${AccountingPeriodUtil.getNextTaxEndYear + 1}."
 
-    val quarterlyUpdatesHeading                 = "Send quarterly updates"
-    val quarterlyUpdatesParagraph               = "You must send quarterly updates of your client’s income and expenses using compatible software."
-    val quarterlyUpdatesTableCaption            = "Quarterly update deadlines"
-    val quarterlyUpdatesTableCaptionTitle       = "Submit quarterly updates by the deadline"
-    val quarterlyUpdate                         = "Quarterly update"
-    val deadline                                = "Deadline"
-    val quarterlyUpdatesDetailsp1               = "You can choose to send your client’s updates by calendar quarterly period dates. This must be selected in the compatible software before the first update is made."
-    val quarterlyUpdatesDetailsp2               = "The deadline for both quarterly period dates are the same."
+    val quarterlyUpdatesHeading = "Send quarterly updates"
+    val quarterlyUpdatesParagraph = "You must send quarterly updates of your client’s income and expenses using compatible software."
+    val quarterlyUpdatesTableCaption = "Quarterly update deadlines"
+    val quarterlyUpdatesTableCaptionTitle = "Submit quarterly updates by the deadline"
+    val quarterlyUpdate = "Quarterly update"
+    val deadline = "Deadline"
+    val quarterlyUpdatesDetailsp1 = "You can choose to send your client’s updates by calendar quarterly period dates. This must be selected in the compatible software before the first update is made."
+    val quarterlyUpdatesDetailsp2 = "The deadline for both quarterly period dates are the same."
 
-    val warningMessage                          = "! Warning You must make updates for any quarters you’ve missed."
+    val warningMessage = "! Warning You must make updates for any quarters you’ve missed."
 
-    val endOfPeriodStatementHeading             = "Send an end of period statement"
-    val endOfPeriodStatementThisYearDate: String = AccountingPeriodUtil.getEndOfPeriodStatementDate(false).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
-    val endOfPeriodStatementNextYearDate: String = AccountingPeriodUtil.getEndOfPeriodStatementDate(true).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
-    val endOfPeriodStatementThisYearParagraph   = s"Either you or your client must submit an end of period statement using your software by $endOfPeriodStatementThisYearDate."
-    val endOfPeriodStatementNextYearParagraph   = s"Either you or your client must submit an end of period statement using your software by $endOfPeriodStatementNextYearDate."
-
-    val finalDeclarationHeading                 = "Submit a final declaration and pay"
+    val finalDeclarationHeading = "Submit a final declaration and pay"
     val finalDeclarationThisYearDate: String = AccountingPeriodUtil.getFinalDeclarationDate(false).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
     val finalDeclarationNextYearDate: String = AccountingPeriodUtil.getFinalDeclarationDate(true).format(DateTimeFormatter.ofPattern("D MMMM YYYY"))
-    val finalDeclarationThisYearParagraph       = s"A final declaration must be submitted by either you or your client by $finalDeclarationThisYearDate. They must also pay the tax they owe."
-    val finalDeclarationNextYearParagraph       = s"A final declaration must be submitted by either you or your client by $finalDeclarationNextYearDate. They must also pay the tax they owe."
+    val finalDeclarationThisYearParagraph = s"A final declaration must be submitted by either you or your client by $finalDeclarationThisYearDate. They must also pay the tax they owe."
+    val finalDeclarationNextYearParagraph = s"A final declaration must be submitted by either you or your client by $finalDeclarationNextYearDate. They must also pay the tax they owe."
 
-    val signUpAnotherClient                     = "Sign up another client"
+    val signUpAnotherClient = "Sign up another client"
 
   }
 

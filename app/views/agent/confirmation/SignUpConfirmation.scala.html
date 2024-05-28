@@ -24,8 +24,6 @@
 @import utilities.AccountingPeriodUtil
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcNewTabLinkHelper
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
-@import config.featureswitch.FeatureSwitchingImpl
-@import config.featureswitch.FeatureSwitch.EOPSContent
 
 @this(
     agentMainTemplate: AgentMainTemplate,
@@ -38,8 +36,7 @@
     govukWarningText: GovukWarningText,
     govukDetails : GovukDetails,
     hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
-    appConfig: AppConfig,
-    featureSwitching: FeatureSwitchingImpl
+    appConfig: AppConfig
 )
 
 @(mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, taxYearSelectionIsNext : Boolean, userNameMaybe: Option[String], individualUserNino: String, accountingPeriodModel: AccountingPeriodModel)(implicit request: Request[_], messages: Messages)
@@ -110,30 +107,22 @@
 @voluntaryNextYearContent = {
     <div>@continuingTaxReturn</div>
     <div>@quarterlyUpdates</div>
-    @if(featureSwitching.isDisabled(EOPSContent)){
-      <div>@periodStatement</div>
-    }
     <div>@finalDeclaration</div>
 }
 
 @voluntaryCurrentYearContent = {
     <div>@quarterlyUpdates</div>
-    @if(featureSwitching.isDisabled(EOPSContent)){
-      <div>@periodStatement</div>
-    }
     <div>@finalDeclaration</div>
 }
 
 @mandatedCurrentYearContent = {
     <div>@quarterlyUpdates</div>
-    <div>@periodStatement</div>
     <div>@finalDeclaration</div>
 }
 
 @mandatedNextYearContent = {
     <div>@continuingTaxReturn</div>
     <div>@quarterlyUpdates</div>
-    <div>@periodStatement</div>
     <div>@finalDeclaration</div>
 }
 
@@ -178,31 +167,12 @@
     </div>
 }
 
-@periodStatement = {
-    <div>
-      <h3 class="govuk-heading-s">@messages("agent.sign-up-confirmation.end-of-period-statement.heading")</h3>
-      <p class="govuk-body">
-        @messages("agent.sign-up-confirmation.end-of-period-statement.para", languageUtils.Dates.formatDate(AccountingPeriodUtil.getEndOfPeriodStatementDate(taxYearSelectionIsNext)))
-      </p>
-    </div>
-}
-
 @finalDeclaration = {
     <div>
         <h3 class="govuk-heading-s">@messages("agent.sign-up-confirmation.final-declaration.heading")</h3>
         <p class="govuk-body">
             @messages("agent.sign-up-confirmation.final-declaration.para", languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(taxYearSelectionIsNext)))
         </p>
-    </div>
-}
-
-@mandatedNotificationBanner = {
-    <p class="govuk-body">@messages("agent.sign-up-confirmation.mandated-notification-banner.para")</p>
-    <div>
-        <p>@messages("agent.sign-up-confirmation.mandated.notification-banner.bullet1")</p>
-        <p>@messages("agent.sign-up-confirmation.mandated.notification-banner.bullet2")</p>
-        <p>@messages("agent.sign-up-confirmation.mandated.notification-banner.bullet3")</p>
-        <p>@messages("agent.sign-up-confirmation.mandated.notification-banner.bullet4")</p>
     </div>
 }
 

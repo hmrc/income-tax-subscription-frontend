@@ -19,8 +19,6 @@
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 @import utilities.AccountingPeriodUtil
 @import uk.gov.hmrc.play.language.LanguageUtils
-@import config.featureswitch.FeatureSwitchingImpl
-@import config.featureswitch.FeatureSwitch.EOPSContent
 
 @this(
   mainTemplate: AgentMainTemplate,
@@ -30,8 +28,7 @@
   languageUtils: LanguageUtils,
   govukInsetText : GovukInsetText,
   hmrcPageHeading: HmrcPageHeading,
-  govukWarningText: GovukWarningText,
-  featureSwitching: FeatureSwitchingImpl
+  govukWarningText: GovukWarningText
 )
 
 @(postAction:Call, eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, clientName: String, clientNino: String)(implicit request: Request[_], messages: Messages)
