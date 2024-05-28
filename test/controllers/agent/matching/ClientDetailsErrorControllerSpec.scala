@@ -33,7 +33,7 @@ class ClientDetailsErrorControllerSpec extends AgentControllerBaseSpec with Mock
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
   val mockClientDetailsError: ClientDetailsError = mock[ClientDetailsError]
-  when(mockClientDetailsError(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
+  when(mockClientDetailsError()(ArgumentMatchers.any(), ArgumentMatchers.any()))
     .thenReturn(HtmlFormat.empty)
 
   object TestClientDetailsErrorController extends ClientDetailsErrorController(
@@ -54,20 +54,6 @@ class ClientDetailsErrorControllerSpec extends AgentControllerBaseSpec with Mock
       contentType(result) must be(Some("text/html"))
       charset(result) must be(Some("utf-8"))
     }
-  }
-
-  "Calling the 'submit' action of the ClientDetailsErrorController" should {
-
-    lazy val result = TestClientDetailsErrorController.submit(userMatchingRequest)
-
-    "return 303" in {
-      status(result) must be(Status.SEE_OTHER)
-    }
-
-    "Redirect to the 'Client details' page" in {
-      redirectLocation(result).get mustBe controllers.agent.matching.routes.ClientDetailsController.show().url
-    }
-
   }
 
   authorisationTests()

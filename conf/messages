@@ -682,9 +682,10 @@ agent.property-trading-after.line2.point2                       = part of your p
 agent.property-trading-after.error.summary                      = Select yes if your client owns a property business that began trading on or after {0}
 
 # Client details page
-agent.client-details-error.title                                = There is a problem
 agent.client-details-error.heading                              = There is a problem
-agent.client-details-error.line-1                               = The details you’ve entered are not on our system.
+agent.client-details-error.line-1                               = The details you entered do not match our records.
+agent.client-details-error.line-2                               = Check the details and {0}.
+agent.client-details-error.line-2.link                          = try again
 
 # Client Details Lockout
 agent.client-details-lockout.title                              = You’ve been locked out

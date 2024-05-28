@@ -15,27 +15,23 @@
  *@
 
 @import views.agent.helpers._
-@import views.html.helpers.{ContinueButton, SignOutLink}
 @import views.html.templates.AgentMainTemplate
 
 @this(
     mainTemplate: AgentMainTemplate,
-    form: FormWithCSRF,
-    signOutLink: SignOutLink,
-    continueButton: ContinueButton
+    form: FormWithCSRF
 )
 
-@(postAction: Call)(implicit request: Request[_], messages: Messages)
+@()(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = Messages("agent.client-details-error.title")) {
-    <h1 class="govuk-heading-l">@Messages("agent.client-details-error.heading")</h1>
-    <p class="govuk-body">@Messages("agent.client-details-error.line-1")</p>
-    <div class="form-group">
-    @form(action = postAction) {
-        @continueButton(Some(messages("base.try-again")))
-    }
-        @signOutLink()
-    </div>
+@mainTemplate(title = messages("agent.client-details-error.heading")) {
 
+    <h1 class="govuk-heading-l">@messages("agent.client-details-error.heading")</h1>
+
+    <p class="govuk-body">@messages("agent.client-details-error.line-1")</p>
+
+    <p class="govuk-body">
+        @Html(messages("agent.client-details-error.line-2", <a href={controllers.agent.routes.AddAnotherClientController.addAnother().url}>{messages("agent.client-details-error.line-2.link")}</a>))
+    </p>
 
 }

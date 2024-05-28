@@ -33,16 +33,8 @@ class ClientDetailsErrorController @Inject()(val auditingService: AuditingServic
                                              val appConfig: AppConfig,
                                              mcc: MessagesControllerComponents) extends UserMatchingController {
 
-  lazy val show: Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      Future.successful(Ok(clientDetailsError(
-        postAction = controllers.agent.matching.routes.ClientDetailsErrorController.submit
-      )))
-  }
-
-  lazy val submit: Action[AnyContent] = Authenticated.async { _ =>
-    _ =>
-      Future.successful(Redirect(controllers.agent.matching.routes.ClientDetailsController.show()))
+  def show: Action[AnyContent] = Authenticated.async { implicit request =>
+    _ => Future.successful(Ok(clientDetailsError()))
   }
 
 }

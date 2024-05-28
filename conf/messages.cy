@@ -681,9 +681,10 @@ agent.property-trading-after.line2.point2                       = rhan o’ch ei
 agent.property-trading-after.error.summary                      = Dewiswch ‘Iawn’ os yw’ch cleient yn berchen ar fusnes eiddo a ddechreuodd fasnachu ar neu ar ôl {0}
 
 # Client details page
-agent.client-details-error.title                                = Mae problem wedi codi
 agent.client-details-error.heading                              = Mae problem wedi codi
-agent.client-details-error.line-1                               = Nid yw’r manylion rydych wedi’u nodi ar ein system.
+agent.client-details-error.line-1                               = Nid yw’r manylion a nodwyd gennych yn cyd-fynd â’n cofnodion.
+agent.client-details-error.line-2                               = Gwiriwch y manylion a {0}.
+agent.client-details-error.line-2.link                          = rhowch gynnig arall arni
 
 # Client Details Lockout
 agent.client-details-lockout.title                              = Rydych wedi cael eich cloi allan
