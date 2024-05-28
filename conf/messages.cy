@@ -563,21 +563,6 @@ agent.base.change                                               = Newid
 agent.base.yes                                                  = Iawn
 agent.base.no                                                   = Na
 
-# Agent other sources of income page
-agent.other-sources-of-income.title                             = Ar wahân i hunangyflogaeth neu roi eiddo ar osod, a oes gan eich cleient unrhyw ffynonellau incwm eraill?
-agent.other-sources-of-income.heading                           = Ar wahân i hunangyflogaeth neu roi eiddo ar osod, a oes gan eich cleient unrhyw ffynonellau incwm eraill?
-agent.other-sources-of-income.caption                           = {0} | {1}
-agent.other-sources-of-income.include                           = Gallai hyn gynnwys:
-agent.other-sources-of-income.include-point1                    = TWE fel cyflogai
-agent.other-sources-of-income.include-point2                    = pensiynau neu flwydd-daliadau’r DU
-agent.other-sources-of-income.include-point3                    = buddsoddiadau y tu allan i’r DU
-agent.other-sources-of-income.include-point4                    = enillion cyfalaf
-agent.other-sources-of-income.include-point5                    = budd-daliadau trethadwy’r Wladwriaeth
-agent.other-sources-of-income.not-include                       = Nid yw hyn yn cynnwys:
-agent.other-sources-of-income.not-include-point1                = llog banc neu gymdeithas adeiladu
-agent.other-sources-of-income.not-include-point2                = difidendau
-agent.other-sources-of-income.invalid                           = Dewiswch ‘Iawn’ os oes gan eich cleient ffynonellau incwm heblaw hunangyflogaeth neu incwm o eiddo
-
 # Agent cannot sign up client page
 agent.cannot-take-part.title                                      = Ni allwch gofrestru’r cleient hwn ar hyn o bryd
 agent.cannot-take-part.caption                                    = {0} | {1}
@@ -666,27 +651,6 @@ agent.what-you-need-to-do.mandated-and-eligible-next-year-only.bullet-1        =
 agent.what-you-need-to-do.mandated-and-eligible-next-year-only.bullet-2        = Defnyddio meddalwedd i anfon diweddariadau chwarterol atom.
 agent.what-you-need-to-do.mandated-and-eligible-next-year-only.bullet-3        = Anfon datganiad diwedd cyfnod a chyflwyno’ch datganiad terfynol erbyn {0}.
 
-# Agent accounting period check page
-agent.accounting-period-check.title                             = A yw holl gyfnodau cyfrifyddu busnes eich cleient yn rhedeg o 6 Ebrill i 5 Ebrill?
-agent.accounting-period-check.heading                           = A yw holl gyfnodau cyfrifyddu busnes eich cleient yn rhedeg o 6 Ebrill i 5 Ebrill?
-agent.accounting-period-check.include                           = Dyddiadau’r flwyddyn dreth
-agent.accounting-period-check.caption                           = {0} | {1}
-agent.accounting-period-check.hint                              = Mae’r flwyddyn dreth yn rhedeg o 6 Ebrill i 5 Ebrill. Mae angen i’r cyfnod cyfrifyddu ar gyfer hunangyflogaeth neu incwm o eiddo’ch cleient gyfateb â hyn os hoffech ei gofrestru ar gyfer y gwasanaeth hwn.
-agent.accounting-period-check.invalid                           = Dewiswch ‘Iawn’ os yw holl gyfnodau cyfrifyddu busnes eich cleient o 6 Ebrill i 5 Ebrill
-
-# Agent property trading after date page
-agent.property-trading-after.title                              = A wnaeth eich cleient ddechrau rhoi eiddo ar osod ar neu ar ôl {0}?
-agent.property-trading-after.heading                            = A wnaeth eich cleient ddechrau rhoi eiddo ar osod ar neu ar ôl {0}?
-agent.property-trading-after.caption                            = {0} | {1}
-agent.property-trading-after.line                               = Mae hyn yn cynnwys bod yn landlord neu ddefnyddio asiantaeth gosod ar gyfer y canlynol:
-agent.property-trading-after.line.point1                        = eiddo yn y DU
-agent.property-trading-after.line.point2                        = eiddo tramor
-agent.property-trading-after.line.point3                        = llety gwyliau
-agent.property-trading-after.line2                              = Nid yw hyn yn cynnwys rhoi’r canlynol ar osod:
-agent.property-trading-after.line2.point1                       = ystafell
-agent.property-trading-after.line2.point2                       = rhan o’ch eiddo
-agent.property-trading-after.error.summary                      = Dewiswch ‘Iawn’ os yw’ch cleient yn berchen ar fusnes eiddo a ddechreuodd fasnachu ar neu ar ôl {0}
-
 # Client details page
 agent.client-details-error.title                                = Mae problem wedi codi
 agent.client-details-error.heading                              = Mae problem wedi codi
@@ -762,9 +726,6 @@ agent.business.what-year-to-sign-up.option-next-hint          = Bydd yn rhaid i 
 agent.business.what-year-to-sign-up.table.title               = Dyddiadau cau ar gyfer diweddariadau chwarterol
 agent.business.what-year-to-sign-up.table.details.p1          = Gallwch ddewis anfon diweddariadau eich cleient yn ôl dyddiadau ar gyfer cyfnodau chwarterol calendr. Mae’n rhaid dewis yr opsiwn hwn yn y feddalwedd sy’n cydweddu cyn gwneud y diweddariad cyntaf.
 agent.business.what-year-to-sign-up.table.details.p2          = Mae’r dyddiad cau ar gyfer y ddau gyfnod chwarterol yr un peth.
-# Agent Sole trader page
-agent.eligibility.sole-trader.heading                         = A ddechreuodd busnes eich cleient fasnachu ar neu ar ôl {0}?
-agent.eligibility.sole-trader.caption                         = {0} | {1}
 
 # Agent Property Accounting Method Page
 agent.property.accounting-method.heading                        = Pa ddull cyfrifo y mae’ch cleient yn ei ddefnyddio ar gyfer ei fusnes eiddo yn y DU?

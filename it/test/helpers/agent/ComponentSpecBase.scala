@@ -234,21 +234,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       )
     }
 
-    def showOtherSourcesOfIncome(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/eligibility/income-sources", sessionData)
-
-    def submitOtherSourcesOfIncome(request: Option[YesNo], sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = post("/eligibility/income-sources", sessionData)(
-      request.fold(Map.empty[String, Seq[String]])(
-        model => OtherSourcesOfIncomeForm.otherSourcesOfIncomeForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
-      )
-    )
-
-    def showPropertyTradingStartAfter(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/eligibility/property-start-date", sessionData)
-
-    def submitPropertyTradingStartAfter(request: Option[YesNo], sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = post("/eligibility/property-start-date", sessionData)(
-      request.fold(Map.empty[String, Seq[String]])(
-        model => PropertyTradingStartDateForm.propertyTradingStartDateForm("").fill(model).data.map { case (k, v) => (k, Seq(v)) }
-      )
-    )
 
     def getAgentGlobalCheckYourAnswers(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
       get("/final-check-your-answers", sessionData)
@@ -274,22 +259,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     def submitCannotSignUpThisYear(request: Option[YesNo]): WSResponse = post("/error/cannot-sign-up-for-current-year")(
       request.fold(Map.empty[String, Seq[String]])(
         model => CannotSignUpThisYearForm.cannotSignUpThisYearForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
-      )
-    )
-
-    def showSoleTrader(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/eligibility/sole-trader-start-date", sessionData)
-
-    def submitSoleTraderForm(request: Option[YesNo], sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = post("/eligibility/sole-trader-start-date", sessionData)(
-      request.fold(Map.empty[String, Seq[String]])(
-        model => SoleTraderForm.soleTraderForm("").fill(model).data.map { case (k, v) => (k, Seq(v)) }
-      )
-    )
-
-    def showAccountingPeriodCheck(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/eligibility/accounting-period-check", sessionData)
-
-    def submitAccountingPeriodCheck(request: Option[YesNo], sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = post("/eligibility/accounting-period-check", sessionData)(
-      request.fold(Map.empty[String, Seq[String]])(
-        model => AccountingPeriodCheckForm.accountingPeriodCheckForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
       )
     )
 
