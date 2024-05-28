@@ -83,10 +83,6 @@ trait MockAuthenticatiorConnector extends UnitTestTrait with MockitoSugar {
     mockUserMatch(userDetails)(Future.successful(Right(None)))
   }
 
-  def mockUserMatchFailure(userDetails: UserDetailsModel): Unit = {
-    mockUserMatch(userDetails)(Future.successful(Left(UserMatchUnexpectedError)))
-  }
-
   def mockUserMatchException(userDetails: UserDetailsModel): Unit =
     mockUserMatch(userDetails)(Future.failed(testException))
 }

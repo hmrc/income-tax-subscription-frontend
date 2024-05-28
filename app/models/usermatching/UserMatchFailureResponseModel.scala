@@ -22,8 +22,6 @@ import uk.gov.hmrc.http.HttpResponse
 // the response from authenticator/match with message to indicate why matching failed
 case class UserMatchFailureResponseModel(errors: String)
 
-object UserMatchUnexpectedError extends UserMatchFailureResponseModel("Internal error: unexpected result from matching")
-
 object UserMatchFailureResponseModel {
   implicit val format: OFormat[UserMatchFailureResponseModel] = Json.format[UserMatchFailureResponseModel]
 

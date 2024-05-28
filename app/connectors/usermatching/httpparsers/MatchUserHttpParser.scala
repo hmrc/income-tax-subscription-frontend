@@ -16,8 +16,8 @@
 
 package connectors.usermatching.httpparsers
 
-import models.usermatching.{UserMatchFailureResponseModel, UserMatchSuccessResponseModel, UserMatchUnexpectedError}
-import play.api.http.Status.{OK, UNAUTHORIZED}
+import models.usermatching.{UserMatchFailureResponseModel, UserMatchSuccessResponseModel}
+import play.api.http.Status.{FAILED_DEPENDENCY, OK, UNAUTHORIZED}
 import play.api.libs.json.{JsError, JsSuccess}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
@@ -30,18 +30,18 @@ object MatchUserHttpParser {
         case OK => response.json.validate[UserMatchSuccessResponseModel] match {
           case JsSuccess(userDetails, _) =>
             Right(Some(userDetails))
-          case error @ JsError(_) =>
+          case error@JsError(_) =>
             Left(UserMatchFailureResponseModel(error))
         }
         case UNAUTHORIZED =>
           response.json.validate[UserMatchFailureResponseModel] match {
-            case JsSuccess(UserMatchUnexpectedError, _) =>
-              Left(UserMatchUnexpectedError)
             case JsSuccess(_, _) =>
               Right(None)
-            case error @ JsError(_) =>
+            case error@JsError(_) =>
               Left(UserMatchFailureResponseModel(error))
           }
+        case FAILED_DEPENDENCY =>
+          Right(None)
         case _ =>
           Left(UserMatchFailureResponseModel(response))
       }
