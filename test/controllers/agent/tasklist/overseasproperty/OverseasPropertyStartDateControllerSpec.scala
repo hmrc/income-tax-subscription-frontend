@@ -16,7 +16,6 @@
 
 package controllers.agent.tasklist.overseasproperty
 
-import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import config.featureswitch.FeatureSwitching
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.OverseasPropertyStartDateForm
@@ -43,11 +42,6 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
   with MockSessionDataService
   with MockOverseasPropertyStartDate
   with FeatureSwitching {
-
-  override def beforeEach(): Unit = {
-    disable(featureSwitch = EnableTaskListRedesign)
-    super.beforeEach()
-  }
 
   override val controllerName: String = "OverseasPropertyStartDateController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -171,31 +165,17 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
     }
 
     "The back url is not in edit mode" when {
-      "save and retrieve is enabled and feature switch is disabled" when {
-        "redirect to agent income source page" in new Test {
-          controller.backUrl(isEditMode = false) mustBe
-            controllers.agent.tasklist.addbusiness.routes.WhatIncomeSourceToSignUpController.show().url
-        }
-      }
-    }
-
-    "The back url is not in edit mode" when {
-      "save and retrieve is enabled and feature switch is enabled" when {
-        "redirect to agent new income source page" in new Test {
-          enable(featureSwitch = EnableTaskListRedesign)
-          controller.backUrl(isEditMode = false) mustBe
-            controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
-        }
+      "redirect to income source page" in new Test {
+        controller.backUrl(isEditMode = false) mustBe
+          controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
       }
     }
 
     "The back url is in edit mode" when {
-      "save and retrieve is enabled" when {
-        "the user click back url" should {
-          "redirect to agent overseas property check your answer page" in new Test {
-            controller.backUrl(isEditMode = true) mustBe
-              routes.OverseasPropertyCheckYourAnswersController.show(true).url
-          }
+      "the user click back url" should {
+        "redirect to agent overseas property check your answer page" in new Test {
+          controller.backUrl(isEditMode = true) mustBe
+            routes.OverseasPropertyCheckYourAnswersController.show(true).url
         }
       }
     }

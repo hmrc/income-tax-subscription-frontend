@@ -18,7 +18,6 @@ package controllers.individual.tasklist.overseasproperty
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.utils.ReferenceRetrieval
 import forms.individual.business.OverseasPropertyStartDateForm
 import forms.individual.business.OverseasPropertyStartDateForm._
@@ -84,11 +83,7 @@ class OverseasPropertyStartDateController @Inject()(overseasPropertyStartDateVie
     if (isEditMode) {
       routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
     } else {
-      if (isEnabled(EnableTaskListRedesign)) {
-        controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
-      } else {
-        controllers.individual.tasklist.addbusiness.routes.WhatIncomeSourceToSignUpController.show().url
-      }
+      controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
     }
   }
 

@@ -18,7 +18,6 @@ package controllers.individual.tasklist.ukproperty
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.utils.ReferenceRetrieval
 import forms.individual.business.PropertyStartDateForm
 import forms.individual.business.PropertyStartDateForm._
@@ -92,10 +91,8 @@ class PropertyStartDateController @Inject()(propertyStartDate: PropertyStartDate
   def backUrl(isEditMode: Boolean): String = {
     if (isEditMode) {
       routes.PropertyCheckYourAnswersController.show(editMode = true).url
-    } else if (isEnabled(EnableTaskListRedesign)) {
-      controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
     } else {
-      controllers.individual.tasklist.addbusiness.routes.WhatIncomeSourceToSignUpController.show().url
+      controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
     }
   }
 

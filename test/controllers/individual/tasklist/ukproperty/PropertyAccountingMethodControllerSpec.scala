@@ -16,7 +16,6 @@
 
 package controllers.individual.tasklist.ukproperty
 
-import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.individual.ControllerBaseSpec
 import forms.individual.business.AccountingMethodPropertyForm
 import models.common.PropertyModel
@@ -38,11 +37,6 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockSessionDataService
   with MockAuditingService {
-
-  override def beforeEach(): Unit = {
-    disable(EnableTaskListRedesign)
-    super.beforeEach()
-  }
 
   override val controllerName: String = "PropertyAccountingMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()

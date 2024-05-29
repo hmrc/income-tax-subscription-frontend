@@ -18,10 +18,8 @@ package controllers.agent.matching
 
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.ClientDetailsForm
-import messagelookup.agent.MessageLookup.{ClientDetails => messages}
 import models.DateModel
 import models.usermatching.UserDetailsModel
-import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc._
 import play.api.test.FakeRequest

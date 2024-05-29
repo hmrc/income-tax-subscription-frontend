@@ -16,7 +16,6 @@
 
 package controllers.individual.tasklist.overseasproperty
 
-import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.individual.ControllerBaseSpec
 import forms.individual.business.OverseasPropertyStartDateForm
 import models.common.OverseasPropertyModel
@@ -39,11 +38,6 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
   with MockAuditingService
   with MockSessionDataService
   with MockOverseasPropertyStartDate {
-
-  override def beforeEach(): Unit = {
-    disable(EnableTaskListRedesign)
-    super.beforeEach()
-  }
 
   override val controllerName: String = "OverseasPropertyStartDateController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -151,18 +145,10 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
         }
       }
 
-      "not in edit mode and taskList redesign is enabled" should {
+      "not in edit mode" should {
         "redirect to what income source to sign up page" in withController { controller =>
-          enable(EnableTaskListRedesign)
           controller.backUrl(isEditMode = false) mustBe
             controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
-        }
-      }
-
-      "not in edit mode and taskList redesign is not enabled" should {
-        "redirect to what income source to sign up page" in withController { controller =>
-          controller.backUrl(isEditMode = false) mustBe
-            controllers.individual.tasklist.addbusiness.routes.WhatIncomeSourceToSignUpController.show().url
         }
       }
     }

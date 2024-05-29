@@ -19,7 +19,6 @@ package controllers.individual.tasklist.ukproperty
 import auth.individual.SignUpController
 import com.google.inject.Inject
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.utils.ReferenceRetrieval
 import models.common.PropertyModel
 import play.api.mvc._
@@ -39,7 +38,7 @@ class PropertyCheckYourAnswersController @Inject()(propertyCheckYourAnswersView:
                                                    val subscriptionDetailsService: SubscriptionDetailsService)
                                                   (implicit val ec: ExecutionContext,
                                                    mcc: MessagesControllerComponents) extends SignUpController with ReferenceRetrieval {
-  
+
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       withIndividualReference { reference =>
@@ -70,11 +69,7 @@ class PropertyCheckYourAnswersController @Inject()(propertyCheckYourAnswersView:
   }
 
   def continueLocation: Call = {
-    if (isEnabled(EnableTaskListRedesign)) {
-      controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show
-    } else {
-      controllers.individual.tasklist.routes.TaskListController.show()
-    }
+    controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show
   }
 
   def backUrl(isEditMode: Boolean): String = {

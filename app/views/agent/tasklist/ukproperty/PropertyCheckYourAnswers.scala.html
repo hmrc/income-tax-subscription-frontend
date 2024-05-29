@@ -18,16 +18,13 @@
 @import views.html.templates.AgentMainTemplate
 @import views.html.helpers.{CheckYourAnswers, CheckYourAnswersRow}
 @import utilities.UserMatchingSessionUtil.ClientDetails
-@import config.featureswitch.FeatureSwitchingImpl
-@import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 
 
 @this(
         mainTemplate: AgentMainTemplate,
         checkYourAnswers: CheckYourAnswers,
         checkYourAnswersRow: CheckYourAnswersRow,
-        hmrcPageHeading: HmrcPageHeading,
-        featureSwitching: FeatureSwitchingImpl
+        hmrcPageHeading: HmrcPageHeading
 )
 
 @(

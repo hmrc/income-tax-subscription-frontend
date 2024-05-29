@@ -18,7 +18,6 @@ package controllers.individual.tasklist.overseasproperty
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.utils.ReferenceRetrieval
 import models.common.OverseasPropertyModel
 import play.api.mvc._
@@ -67,11 +66,7 @@ class OverseasPropertyCheckYourAnswersController @Inject()(view: OverseasPropert
   }
 
   def continueLocation: Call = {
-    if (isEnabled(EnableTaskListRedesign)) {
-      controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show
-    } else {
-      controllers.individual.tasklist.routes.TaskListController.show()
-    }
+    controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show
   }
 
   def backUrl(isEditMode: Boolean): String =

@@ -26,8 +26,7 @@ object FeatureSwitch {
 
   val switches: Set[FeatureSwitch] = Set(
     PrePopulate,
-    ThrottlingFeature,
-    EnableTaskListRedesign
+    ThrottlingFeature
   )
 
   def apply(str: String): FeatureSwitch =
@@ -46,11 +45,6 @@ object FeatureSwitch {
   case object ThrottlingFeature extends FeatureSwitch {
     override val name = s"$prefix.throttle"
     override val displayText = "Throttle"
-  }
-
-  case object EnableTaskListRedesign extends FeatureSwitch {
-    override val name = s"$prefix.enable-task-list-redesign"
-    override val displayText = "Enable the task list redesign"
   }
 
 }

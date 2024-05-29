@@ -16,7 +16,6 @@
 
 package controllers.individual.tasklist.overseasproperty
 
-import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub.subscriptionUri
 import helpers.ComponentSpecBase
@@ -30,11 +29,6 @@ import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys.OverseasProperty
 
 class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(EnableTaskListRedesign)
-  }
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/overseas-property-check-your-answers" should {
     "return OK" in {
@@ -72,11 +66,10 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/business/overseas-property-check-your-answers" should {
-    "redirect to the your income sources page if the task list redesign feature switch is enabled" when {
+    "redirect to the your income sources page" when {
+
       "the user has answered all the questions for uk property" should {
         "save the property answers" in {
-          enable(EnableTaskListRedesign)
-
           val testProperty = OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))
           val expectedProperty = testProperty.copy(confirmed = true)
 
@@ -104,8 +97,6 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
 
       "the user has answered partial questions for uk property" should {
         "not save the property answers" in {
-          enable(EnableTaskListRedesign)
-
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(OverseasPropertyModel(accountingMethod = Some(Cash))))
@@ -117,54 +108,6 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
           res must have(
             httpStatus(SEE_OTHER),
             redirectURI(IndividualURI.yourIncomeSourcesURI)
-          )
-
-          verifyPost(subscriptionUri(OverseasProperty), count = Some(0))
-        }
-      }
-    }
-    "redirect to the task list page if the task list redesign feature switch is disabled" when {
-      "the user has answered all the questions for uk property" should {
-        "save the property answers" in {
-          val testProperty = OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))
-          val expectedProperty = testProperty.copy(confirmed = true)
-
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK,
-            Json.toJson(testProperty))
-
-          IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(expectedProperty)
-          IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
-
-          When("POST business/overseas-property-check-your-answers is called")
-          val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers()
-
-          Then("Should return a SEE_OTHER with a redirect location of task list page")
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(IndividualURI.taskListURI)
-          )
-
-          IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(expectedProperty, Some(1))
-        }
-      }
-
-      "the user has answered partial questions for uk property" should {
-        "not save the property answers" in {
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK,
-            Json.toJson(OverseasPropertyModel(accountingMethod = Some(Cash))))
-
-          When("POST business/overseas-property-check-your-answers is called")
-          val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers()
-
-          Then("Should return a SEE_OTHER with a redirect location of task list page")
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(IndividualURI.taskListURI)
           )
 
           verifyPost(subscriptionUri(OverseasProperty), count = Some(0))

@@ -16,7 +16,6 @@
 
 package controllers.individual.tasklist.ukproperty
 
-import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.individual.ControllerBaseSpec
 import models.common.PropertyModel
 import models.{Cash, DateModel}
@@ -43,11 +42,6 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
   override val controllerName: String = "PropertyCheckYourAnswersController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
-  override def beforeEach(): Unit = {
-    disable(EnableTaskListRedesign)
-    super.beforeEach()
-  }
-
   "show" should {
     "return an OK status with the property CYA page" in withController { controller =>
       mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash))))
@@ -68,63 +62,30 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
     }
   }
 
-  "submit" when {
-    "the task list redesign feature switch is enabled" should {
-      "redirect to the your income sources page and confirm the uk property details" when {
-        "the user submits a start date and accounting method" in withController { controller =>
-          enable(EnableTaskListRedesign)
+  "submit" should {
+    "redirect to the your income sources page and confirm the uk property details" when {
+      "the user submits a start date and accounting method" in withController { controller =>
+        mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
+        setupMockSubscriptionDetailsSaveFunctions()
+        mockDeleteIncomeSourceConfirmationSuccess()
 
-          mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
-          setupMockSubscriptionDetailsSaveFunctions()
-          mockDeleteIncomeSourceConfirmationSuccess()
+        val result: Future[Result] = await(controller.submit()(subscriptionRequest))
 
-          val result: Future[Result] = await(controller.submit()(subscriptionRequest))
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
-          verifyPropertySave(Some(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true)))
-        }
-      }
-      "redirect to the your income sources page but don't confirm the uk property details" when {
-        "the user submits partial data" in withController { controller =>
-          enable(EnableTaskListRedesign)
-
-          mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash))))
-          setupMockSubscriptionDetailsSaveFunctions()
-
-          val result: Future[Result] = await(controller.submit()(subscriptionRequest))
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
-          verifyPropertySave(None)
-        }
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
+        verifyPropertySave(Some(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true)))
       }
     }
-    "the task list redesign feature switch is disabled" should {
-      "redirect to the task list and confirm the uk property details" when {
-        "the user submits a start date and accounting method" in withController { controller =>
-          mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
-          setupMockSubscriptionDetailsSaveFunctions()
-          mockDeleteIncomeSourceConfirmationSuccess()
+    "redirect to the your income sources page but don't confirm the uk property details" when {
+      "the user submits partial data" in withController { controller =>
+        mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash))))
+        setupMockSubscriptionDetailsSaveFunctions()
 
-          val result: Future[Result] = await(controller.submit()(subscriptionRequest))
+        val result: Future[Result] = await(controller.submit()(subscriptionRequest))
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
-          verifyPropertySave(Some(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true)))
-        }
-      }
-      "redirect to the task list but don't confirm the uk property details" when {
-        "the user submits partial data" in withController { controller =>
-          mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash))))
-          setupMockSubscriptionDetailsSaveFunctions()
-
-          val result: Future[Result] = await(controller.submit()(subscriptionRequest))
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
-          verifyPropertySave(None)
-        }
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
+        verifyPropertySave(None)
       }
     }
   }
@@ -152,16 +113,8 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
 
   "backUrl" should {
     "in edit mode " when {
-      "TaskList is not enabled " should {
-        "return the task list page" in withController { controller =>
-          controller.backUrl(true) mustBe controllers.individual.tasklist.routes.TaskListController.show().url
-        }
-      }
-      "TaskList is enabled " should {
-        "return the your income source page" in withController { controller =>
-          enable(EnableTaskListRedesign)
-          controller.backUrl(true) mustBe controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
-        }
+      "return the task list page" in withController { controller =>
+        controller.backUrl(true) mustBe controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
       }
     }
     "go to the property accounting method page" when {

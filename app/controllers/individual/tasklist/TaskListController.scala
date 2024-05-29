@@ -17,20 +17,13 @@
 package controllers.individual.tasklist
 
 import auth.individual.{IncomeTaxSAUser, SignUpController}
-import common.Constants.ITSASessionKeys
-import common.Constants.ITSASessionKeys.SPSEntityId
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.utils.ReferenceRetrieval
 import models.common.TaskListModel
-import models.common.business.AccountingMethodModel
-import models.common.subscription.CreateIncomeSourcesModel
-import models.common.subscription.CreateIncomeSourcesModel.createIncomeSources
 import play.api.Logging
 import play.api.mvc._
 import services._
-import services.individual.SubscriptionOrchestrationService
-import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
+import uk.gov.hmrc.http.HeaderCarrier
 import views.html.individual.tasklist.TaskList
 
 import javax.inject.{Inject, Singleton}
@@ -38,8 +31,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class TaskListController @Inject()(taskListView: TaskList,
-                                   accountingPeriodService: AccountingPeriodService,
-                                   subscriptionService: SubscriptionOrchestrationService)
+                                   accountingPeriodService: AccountingPeriodService)
                                   (val auditingService: AuditingService,
                                    val subscriptionDetailsService: SubscriptionDetailsService,
                                    val sessionDataService: SessionDataService,
@@ -68,7 +60,7 @@ class TaskListController @Inject()(taskListView: TaskList,
 
   private def getTaskListModel(reference: String)(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[TaskListModel] = {
     for {
-      (businesses, accountingMethod) <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
+      (businesses, _) <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
       property <- subscriptionDetailsService.fetchProperty(reference)
       overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
       selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
@@ -77,7 +69,6 @@ class TaskListController @Inject()(taskListView: TaskList,
       TaskListModel(
         selectedTaxYear,
         businesses,
-        accountingMethod,
         property,
         overseasProperty,
         incomeSourcesConfirmed
@@ -85,42 +76,11 @@ class TaskListController @Inject()(taskListView: TaskList,
     }
   }
 
-  def submit: Action[AnyContent] = journeySafeGuard { implicit user =>
-    implicit request =>
-      incomeSourcesModel =>
-        if (isEnabled(EnableTaskListRedesign)) {
-          Future.successful(Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show))
-        } else {
-          val nino = user.nino.get
-          val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
-          val session = request.session
-
-          subscriptionService.signUpAndCreateIncomeSourcesFromTaskList(
-            nino, incomeSourcesModel, maybeSpsEntityId = session.get(SPSEntityId)
-          )(headerCarrier) map {
-            case Right(_) =>
-              Redirect(controllers.individual.routes.ConfirmationController.show)
-            case Left(failure) =>
-              throw new InternalServerException(s"[TaskListController][submit] - failure response received from submission: ${failure.toString}")
-          }
-        }
+  def submit: Action[AnyContent] = {
+    Authenticated { _ =>
+      _ =>
+        Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
+    }
   }
 
-  private def journeySafeGuard(processFunc: IncomeTaxSAUser => Request[AnyContent] => CreateIncomeSourcesModel => Future[Result]): Action[AnyContent] =
-    Authenticated.async { implicit request =>
-      implicit user =>
-        withIndividualReference { reference =>
-          val model = for {
-            (selfEmployments, accountingMethod) <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
-            property <- subscriptionDetailsService.fetchProperty(reference)
-            overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
-            selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
-          } yield {
-            createIncomeSources(user.nino.get, selfEmployments, accountingMethod.map(AccountingMethodModel.apply), property, overseasProperty, selectedTaxYear)
-          }
-          model.flatMap { model =>
-            processFunc(user)(request)(model)
-          }
-        }
-    }
 }

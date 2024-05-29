@@ -63,19 +63,6 @@ iv-failure.took-too-long                                        = you took too l
 iv-failure.failed-questions                                     = you have failed to answer enough questions correctly
 iv-failure.could-not-match-details                              = we could not match your details to our system
 
-## Individual what income source to sign up page
-income-source.title                                             = Add an income source
-income-source.heading                                           = Add an income source
-income-source.para1                                             = You can add your other sole trader businesses if you have more than one. If you have income from property, you can also add it.
-income-source.para1-overseas                                    = You must add all of your sole trader businesses if you have more than one. If you have income from property, you must also add it. You can add one UK property business and one overseas property business.
-income-source.para2                                             = Renting out a property includes using a letting agency.
-income-source.self-employed                                     = Sole trader business
-income-source.self-employed-hint                                = A business you run as an individual. If you have other sole trader businesses, you can add them.
-income-source.uk-property                                       = UK property business
-income-source.uk-property-hint                                  = Income from property in the UK. This includes money you earn through a lettings or rental agency.You can have incomes from multiple properties in a single UK property business.
-income-source.foreign-property                                  = Overseas property business
-income-source.foreign-property-hint                             = Income from renting property abroad. This includes money you earn through a lettings or rental agency. You can have incomes from multiple properties in a single overseas property business.
-
 ## Individual your income sources to sign up page
 your-income-source.heading                                      = Add your income sources
 your-income-source.manage.heading                               = Manage your income sources
@@ -666,16 +653,6 @@ agent.client-details.summary.last-name                          = Last name
 agent.client-details.summary.nino                               = National Insurance number
 agent.client-details.summary.dob                                = Date of birth
 
-## agent what income source to sign up page
-agent.income-source.heading                     = What source of income do you want to sign up?
-agent.income-source.paragraph1                  = If your client is self-employed, you must add all of their sole trader businesses if they have more than one. If they have income from property you must add it, but this is limited to one UK property business.
-agent.income-source.paragraph1-overseas         = Your client can have up to {0} sole trader businesses. However, they can have only one UK property business and one overseas property.
-agent.income-source.paragraph2                  = Renting out a property includes using a letting agency.
-agent.income-source.self-employed               = Sole trader business
-agent.income-source.uk-property                 = UK property business
-agent.income-source.foreign-property            = Overseas property business
-agent.income-source.error                       = Select your client’s source of income
-
 ## agent your income sources to sign up page
 agent.your-income-source.heading.no-income                          = Add your client’s income sources
 agent.your-income-source.lead.no-income                             = You only need to add the income sources that apply to your client.
@@ -879,14 +856,6 @@ agent.business.task-list.content.tax-year.heading                           = Ch
 agent.business.task-list.content.tax-year.action                            = Select tax year
 agent.business.task-list.content.tax-year.current-tax-year                  = Current tax year (6 April {0} to 5 April {1})
 agent.business.task-list.content.tax-year.next-tax-year                     = Next tax year (6 April {0} to 5 April {1})
-agent.business.task-list.content.income-sources.heading                     = Tell us about your client’s income
-agent.business.task-list.content.income-sources.business                    = Business {0}
-agent.business.task-list.content.income-sources.add                         = Add a business
-agent.business.task-list.content.income-sources.property.uk                 = UK property business
-agent.business.task-list.content.income-sources.property.overseas           = Overseas property business
-agent.business.task-list.content.income-sources.remove-sole-trader-business = Remove {0}
-agent.business.task-list.content.income-sources.remove-uk-property          = Remove UK property business
-agent.business.task-list.content.income-sources.remove-overseas-property    = Remove overseas property business
 agent.business.task-list.content.add-income.heading                         = Your client’s income sources
 agent.business.task-list.content.add-income.add-text                        = Add your client’s income sources
 agent.business.task-list.content.add-income.view-text                       = View and manage your client’s income sources
@@ -992,15 +961,6 @@ business.task-list.content.section1.current-tax-year            = Current tax ye
 business.task-list.content.section1.next-tax-year               = Next tax year (6 April {0} to 5 April {1})
 business.task-list.content.selected-tax-year.heading            = Choose a tax year
 business.task-list.content.selected-tax-year.para               = Select when you want to start using Making Tax Digital for Income Tax.
-business.task-list.content.section2                             = Tell us about your income
-business.task-list.content.section2.business                    = Business {0}
-business.task-list.content.section2.add                         = Add an income source
-business.task-list.content.section2.property.uk                 = UK property business
-business.task-list.content.section2.property.overseas           = Overseas property business
-business.task-list.content.section2.remove-sole-trader-business = Remove {0}
-business.task-list.content.section2.remove-uk-property          = Remove UK property business
-business.task-list.content.section2.remove-overseas-property    = Remove overseas property business
-business.task-list.content.section2.para                        = You must add all your sole trader businesses, up to a maximum of {0}. You do not need to add your PAYE earnings. But you must add any property businesses you have, which is limited to one UK property business and one overseas property business.
 business.task-list.content.section2-income-sources.heading      = Your income sources
 business.task-list.content.section2-income-sources.para         = Add any sole trader or UK and foreign property income sources you have.
 business.task-list.content.section2-income-sources.view-text    = View and manage your income sources

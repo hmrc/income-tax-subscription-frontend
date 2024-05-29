@@ -16,7 +16,6 @@
 
 package controllers.agent.tasklist.overseasproperty
 
-import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.agent.AgentControllerBaseSpec
 import models.common.OverseasPropertyModel
 import models.{Cash, DateModel}
@@ -37,11 +36,6 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBase
   with MockSubscriptionDetailsService
   with MockAuditingService
   with MockSessionDataService {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(EnableTaskListRedesign)
-  }
 
   override val controllerName: String = "OverseasPropertyCheckYourAnswersController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -81,70 +75,33 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBase
     }
   }
 
-  "submit" when {
-    "the task list redesign feature switch is enabled" should {
-      "redirect to the your income sources page" when {
-        "the user answer all the answers for the overseas property" should {
-          "save the overseas property answers" in {
-            withController { controller =>
-              enable(EnableTaskListRedesign)
-              mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
-              setupMockSubscriptionDetailsSaveFunctions()
-              mockDeleteIncomeSourceConfirmationSuccess()
-              val result: Future[Result] = await(controller.submit()(subscriptionRequestWithName))
+  "submit" should {
+    "redirect to the your income sources page" when {
+      "the user answer all the answers for the overseas property" should {
+        "save the overseas property answers" in {
+          withController { controller =>
+            mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
+            setupMockSubscriptionDetailsSaveFunctions()
+            mockDeleteIncomeSourceConfirmationSuccess()
+            val result: Future[Result] = await(controller.submit()(subscriptionRequestWithName))
 
-              status(result) mustBe SEE_OTHER
-              redirectLocation(result) mustBe Some(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
-              verifyOverseasPropertySave(Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true)))
-            }
-          }
-        }
-
-        "the user answer partial answers for the overseas property" should {
-          "not save the overseas property answers" in {
-            withController { controller =>
-              enable(EnableTaskListRedesign)
-              mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
-
-              val result: Future[Result] = await(controller.submit()(subscriptionRequestWithName))
-
-              status(result) mustBe SEE_OTHER
-              redirectLocation(result) mustBe Some(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
-              verifyOverseasPropertySave(None)
-            }
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
+            verifyOverseasPropertySave(Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true)))
           }
         }
       }
-    }
-    "the task list redesign feature switch is disabled" should {
-      "redirect to the task list" when {
-        "the user answer all the answers for the overseas property" should {
-          "save the overseas property answers" in {
-            withController { controller =>
-              mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
-              setupMockSubscriptionDetailsSaveFunctions()
-              mockDeleteIncomeSourceConfirmationSuccess()
 
-              val result: Future[Result] = await(controller.submit()(subscriptionRequestWithName))
+      "the user answer partial answers for the overseas property" should {
+        "not save the overseas property answers" in {
+          withController { controller =>
+            mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
 
-              status(result) mustBe SEE_OTHER
-              redirectLocation(result) mustBe Some(controllers.agent.tasklist.routes.TaskListController.show().url)
-              verifyOverseasPropertySave(Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true)))
-            }
-          }
-        }
+            val result: Future[Result] = await(controller.submit()(subscriptionRequestWithName))
 
-        "the user answer partial answers for the overseas property" should {
-          "not save the overseas property answers" in {
-            withController { controller =>
-              mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
-
-              val result: Future[Result] = await(controller.submit()(subscriptionRequestWithName))
-
-              status(result) mustBe SEE_OTHER
-              redirectLocation(result) mustBe Some(controllers.agent.tasklist.routes.TaskListController.show().url)
-              verifyOverseasPropertySave(None)
-            }
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
+            verifyOverseasPropertySave(None)
           }
         }
       }
@@ -175,9 +132,9 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBase
   }
 
   "backUrl" should {
-    "go to the task list page" when {
+    "go to the your income sources page" when {
       "in edit mode" in withController { controller =>
-        controller.backUrl(true) mustBe controllers.agent.tasklist.routes.TaskListController.show().url
+        controller.backUrl(true) mustBe controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
       }
     }
 
@@ -213,7 +170,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBase
       appConfig,
       MockSubscriptionDetailsService
     )
-    
+
     testCode(controller)
   }
 }

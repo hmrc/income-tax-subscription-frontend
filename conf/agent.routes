@@ -17,9 +17,6 @@ POST        /declined-sign-up-next-year       controllers.agent.DeclinedSignUpNe
 GET         /can-sign-up                            controllers.agent.eligibility.ClientCanSignUpController.show()
 POST        /can-sign-up                            controllers.agent.eligibility.ClientCanSignUpController.submit()
 
-GET         /income-source                          controllers.agent.tasklist.addbusiness.WhatIncomeSourceToSignUpController.show()
-POST        /income-source                          controllers.agent.tasklist.addbusiness.WhatIncomeSourceToSignUpController.submit()
-
 # Confirmation Routes
 GET         /confirmation                           controllers.agent.ConfirmationController.show
 POST        /confirmation                           controllers.agent.ConfirmationController.submit
