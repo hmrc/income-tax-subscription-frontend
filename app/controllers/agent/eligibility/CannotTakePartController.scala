@@ -16,7 +16,7 @@
 
 package controllers.agent.eligibility
 
-import auth.agent.{PreSignUpController, StatelessController}
+import auth.agent.PreSignUpController
 import config.AppConfig
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
