@@ -20,6 +20,7 @@ import auth.agent.{AgentSignUp, AgentUserMatching}
 import common.Constants.ITSASessionKeys
 import config.featureswitch.FeatureSwitch.ThrottlingFeature
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
+import helpers.IntegrationTestConstants.AgentURI
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import helpers.servicemocks.{EligibilityStub, MandationStatusStub, ThrottlingStub}
@@ -29,7 +30,7 @@ import play.api.libs.json.JsBoolean
 import play.api.{Configuration, Environment}
 import services.AgentStartOfJourneyThrottle
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
-import utilities.SubscriptionDataKeys
+import utilities.{SubscriptionDataKeys, UserMatchingSessionUtil}
 import utilities.agent.TestConstants.{testNino, testUtr}
 
 class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with AuthRedirects with SessionCookieCrumbler {
@@ -126,12 +127,22 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle), true)(OK)
           EligibilityStub.stubEligibilityResponseBoth(testUtr)(currentYearResponse = false, nextYearResponse = false)
 
-          val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
+          val fullSession = session ++ Map(
+            ITSASessionKeys.FailedClientMatching -> "1",
+            UserMatchingSessionUtil.dobD -> "DOBD",
+            UserMatchingSessionUtil.dobM -> "DOBM",
+            UserMatchingSessionUtil.dobY -> "DOBY",
+            UserMatchingSessionUtil.nino -> "MatchingNino",
+          )
+
+          val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(fullSession)
 
           res must have(
             httpStatus(SEE_OTHER),
             redirectURI(controllers.agent.eligibility.routes.CannotTakePartController.show.url)
           )
+
+          getSessionMap(res) - "ts" - "sessionId" - "authToken" mustBe Map(ITSASessionKeys.NINO -> testNino, ITSASessionKeys.UTR -> testUtr)
         }
       }
 
