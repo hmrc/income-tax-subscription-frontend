@@ -70,7 +70,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
   val reference: String = "test-reference"
 
-  def config: Map[String, String] = Map(
+  def configuration: Map[String, String] = Map(
     "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
     "microservice.services.auth.host" -> mockHost,
     "microservice.services.auth.port" -> mockPort,
@@ -110,7 +110,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .in(Environment.simple(mode = Mode.Dev))
-    .configure(config)
+    .configure(configuration)
     .build()
 
   implicit lazy val crypto: Encrypter with Decrypter = app.injector.instanceOf[ApplicationCrypto].JsonCrypto
@@ -205,6 +205,8 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
     def submitYourIncomeSources(): WSResponse = post("/details/your-income-source")(Map.empty[String, Seq[String]])
 
     def businessYourIncomeSource(): WSResponse = get("/details/your-income-source")
+
+    def showBusinessAlreadyRemoved(): WSResponse = get("/error/business-already-removed")
 
     def thankYou(): WSResponse = get("/thank-you")
 

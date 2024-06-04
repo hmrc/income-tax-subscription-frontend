@@ -17,6 +17,8 @@ POST        /declined-sign-up-next-year       controllers.agent.DeclinedSignUpNe
 GET         /can-sign-up                            controllers.agent.eligibility.ClientCanSignUpController.show()
 POST        /can-sign-up                            controllers.agent.eligibility.ClientCanSignUpController.submit()
 
+GET         /error/business-already-removed         controllers.agent.tasklist.addbusiness.BusinessAlreadyRemovedController.show()
+
 # Confirmation Routes
 GET         /confirmation                           controllers.agent.ConfirmationController.show
 POST        /confirmation                           controllers.agent.ConfirmationController.submit

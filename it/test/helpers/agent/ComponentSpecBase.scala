@@ -262,6 +262,8 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       )
     )
 
+    def showBusinessAlreadyRemoved(): WSResponse = get("/error/business-already-removed")
+
     def whatYouNeedToDo(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/what-you-need-to-do", sessionData)
 
     def submitWhatYouNeedToDo(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = post("/what-you-need-to-do", sessionData)(Map.empty)
