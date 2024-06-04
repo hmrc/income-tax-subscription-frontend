@@ -16,7 +16,7 @@
 
 package controllers.agent.eligibility
 
-import auth.agent.StatelessController
+import auth.agent.PreSignUpController
 import config.AppConfig
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
@@ -34,7 +34,7 @@ class CannotTakePartController @Inject()(val auditingService: AuditingService,
                                          cannotTakePart: CannotTakePart)
                                         (implicit val appConfig: AppConfig,
                                          mcc: MessagesControllerComponents,
-                                         val ec: ExecutionContext) extends StatelessController {
+                                         val ec: ExecutionContext) extends PreSignUpController {
 
   private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
 
@@ -50,12 +50,11 @@ class CannotTakePartController @Inject()(val auditingService: AuditingService,
     implicit user =>
       Ok(cannotTakePart(
         clientName = request.fetchClientName.getOrElse(
-          throw new InternalServerException("[ClientCanSignUpController][show] - could not retrieve client name from session")
+          throw new InternalServerException("[CannotTakePartController][show] - could not retrieve client name from session")
         ),
         clientNino = formatNino(user.clientNino.getOrElse(
-          throw new InternalServerException("[ClientCanSignUpController][show] - could not retrieve client nino from session")
+          throw new InternalServerException("[CannotTakePartController][show] - could not retrieve client nino from session")
         ))
       ))
   }
-
 }

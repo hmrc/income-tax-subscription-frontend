@@ -16,21 +16,23 @@
 
 package controllers.agent.eligibility
 
-import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
+import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
+import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.libs.ws.WSResponse
-import play.api.test.Helpers._
+import play.api.{Configuration, Environment}
+import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 
-class CannotTakePartControllerISpec extends ComponentSpecBase {
+class CannotTakePartControllerISpec extends ComponentSpecBase with AuthRedirects with SessionCookieCrumbler {
 
-  trait Setup {
+  class Setup(sessionData: Map[String, String] = ClientData.clientDataWithNinoAndUTR) {
     AuthStub.stubAuthSuccess()
 
-    val result: WSResponse = IncomeTaxSubscriptionFrontend.showCannotTakePart
-    val doc: Document = Jsoup.parse(result.body)
-    val pageContent: Element = doc.mainContent
+    val result: WSResponse = IncomeTaxSubscriptionFrontend.showCannotTakePart(sessionData)
+    lazy val doc: Document = Jsoup.parse(result.body)
+    lazy val pageContent: Element = doc.mainContent
   }
 
   object CannotTakePartMessages {
@@ -39,17 +41,31 @@ class CannotTakePartControllerISpec extends ComponentSpecBase {
 
   "GET /client/cannot-sign-up" should {
 
-    "return a status of OK" in new Setup {
+    "return a status of OK" in new Setup() {
       result.status mustBe OK
     }
 
     "return a page" which {
 
-      "has the correct title" in new Setup {
+      "has the correct title" in new Setup() {
         val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
         doc.title mustBe CannotTakePartMessages.title + serviceNameGovUk
       }
 
     }
+
+    "when the back button is pressed from 'enter client details' page" should {
+      "redirect the client to 'you cannot go back to previous client' page" in new Setup(ClientData.basicClientData) {
+
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(controllers.agent.matching.routes.CannotGoBackToPreviousClientController.show.url)
+        )
+      }
+    }
+
   }
+
+  override val env: Environment = app.injector.instanceOf[Environment]
+  override val config: Configuration = app.injector.instanceOf[Configuration]
 }

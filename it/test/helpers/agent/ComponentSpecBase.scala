@@ -211,7 +211,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       FakeRequest().withHeaders(Headers(headers: _*)),
       Session()
     )
-
+    // TODO: Remove the withUTR and withJourneyStateSignUp boolean parameters, they make diagnosing session data issues difficult
     def get(uri: String, additionalCookies: Map[String, String] = Map.empty, withUTR: Boolean = true, withJourneyStateSignUp: Boolean = true): WSResponse =
       buildClient(uri)
         .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(defaultCookies(withUTR, withJourneyStateSignUp) ++ additionalCookies))
@@ -244,7 +244,8 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       )
     }
 
-    def showCannotTakePart: WSResponse = get("/error/cannot-sign-up", ClientData.basicClientData)
+    def showCannotTakePart(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse =
+      get("/error/cannot-sign-up", sessionData, withUTR = false, withJourneyStateSignUp = false)
 
     def showCanSignUp: WSResponse = get("/can-sign-up", ClientData.basicClientData)
 
