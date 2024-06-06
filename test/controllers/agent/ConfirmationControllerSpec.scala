@@ -27,7 +27,7 @@ import play.twirl.api.HtmlFormat
 import services.mocks._
 import utilities.TestModels
 import utilities.agent.TestModels._
-import views.html.agent.confirmation.{SignUpComplete, SignUpConfirmation}
+import views.html.agent.confirmation.SignUpConfirmation
 
 
 class ConfirmationControllerSpec extends AgentControllerBaseSpec
@@ -38,12 +38,10 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
   with MockSessionDataService
   with MockSpsService {
 
-  val mockSignUpComplete: SignUpComplete = mock[SignUpComplete]
   val mockSignUpConfirmation: SignUpConfirmation = mock[SignUpConfirmation]
 
 
   object TestConfirmationController extends ConfirmationController(
-    mockSignUpComplete,
     mockSignUpConfirmation
   )(
     mockAuditingService,
@@ -67,8 +65,8 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
   )
 
   private def mockCall() =
-    when(mockSignUpComplete(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())
-    (ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(HtmlFormat.empty)
+    when(mockSignUpConfirmation(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())
+    (ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(HtmlFormat.empty)
 
 
   "ConfirmationController" when {

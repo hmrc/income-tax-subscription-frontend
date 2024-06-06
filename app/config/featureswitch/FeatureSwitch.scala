@@ -27,7 +27,6 @@ object FeatureSwitch {
   val switches: Set[FeatureSwitch] = Set(
     PrePopulate,
     ThrottlingFeature,
-    ConfirmationPage,
     EnableTaskListRedesign
   )
 
@@ -47,11 +46,6 @@ object FeatureSwitch {
   case object ThrottlingFeature extends FeatureSwitch {
     override val name = s"$prefix.throttle"
     override val displayText = "Throttle"
-  }
-
-  case object ConfirmationPage extends FeatureSwitch {
-    override val name: String = s"$prefix.enable-confirmation-page"
-    override val displayText: String = "Sign up confirmation page"
   }
 
   case object EnableTaskListRedesign extends FeatureSwitch {
