@@ -17,7 +17,6 @@
 package controllers.individual
 
 import common.Constants.ITSASessionKeys.MANDATED_CURRENT_YEAR
-import config.featureswitch.FeatureSwitch.ConfirmationPage
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, PreferencesFrontendConnectorStub}
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.IndividualURI
@@ -31,51 +30,17 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    disable(ConfirmationPage)
   }
 
   val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
 
   "GET /confirmation" when {
     "the user is enrolled" when {
-      "the confirmation page feature switch is disabled" should {
-        "return the sign up complete page" when {
-          "the user signed up for the current tax year" in {
-            Given("I setup the Wiremock stubs")
-            AuthStub.stubEnrolled()
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
-
-            When("GET /confirmation is called")
-            val res = IncomeTaxSubscriptionFrontend.confirmation()
-
-            Then("Should return a OK with the confirmation page")
-            res must have(
-              httpStatus(OK),
-              pageTitle(messages("sign-up-complete.heading") + serviceNameGovUk)
-            )
-          }
-          "the user signed up for the next tax year" in {
-            Given("I setup the Wiremock stubs")
-            AuthStub.stubEnrolled()
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearNext))
-
-            When("GET /confirmation is called")
-            val res = IncomeTaxSubscriptionFrontend.confirmation()
-
-            Then("Should return a OK with the confirmation page")
-            res must have(
-              httpStatus(OK),
-              pageTitle(messages("sign-up-complete.heading") + serviceNameGovUk)
-            )
-          }
-        }
-      }
       "the confirmation page feature switch is enabled" should {
         "return the sign up confirmation page" when {
           "the user signed up for the current tax year" when {
             "the user is mandated for current year" when {
               "the user has no digital preference available" in {
-                enable(ConfirmationPage)
 
                 Given("I setup the Wiremock stubs")
                 AuthStub.stubEnrolled()
@@ -92,7 +57,6 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
                 )
               }
               "the user has a paper preference" in {
-                enable(ConfirmationPage)
 
                 Given("I setup the Wiremock stubs")
                 AuthStub.stubEnrolled()
@@ -109,7 +73,6 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
                 )
               }
               "the user has a digital preference" in {
-                enable(ConfirmationPage)
 
                 Given("I setup the Wiremock stubs")
                 AuthStub.stubEnrolled()
@@ -128,7 +91,6 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
             }
             "the user is not mandated for current year" when {
               "the user has no digital preference available" in {
-                enable(ConfirmationPage)
 
                 Given("I setup the Wiremock stubs")
                 AuthStub.stubEnrolled()
@@ -145,7 +107,6 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
                 )
               }
               "the user has a paper preference" in {
-                enable(ConfirmationPage)
 
                 Given("I setup the Wiremock stubs")
                 AuthStub.stubEnrolled()
@@ -162,7 +123,6 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
                 )
               }
               "the user has a digital preference" in {
-                enable(ConfirmationPage)
 
                 Given("I setup the Wiremock stubs")
                 AuthStub.stubEnrolled()
@@ -182,7 +142,6 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
           }
           "the user signed up for the next tax year" when {
             "the user has no digital preference available" in {
-              enable(ConfirmationPage)
 
               Given("I setup the Wiremock stubs")
               AuthStub.stubEnrolled()
@@ -199,7 +158,6 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
               )
             }
             "the user has a paper preference" in {
-              enable(ConfirmationPage)
 
               Given("I setup the Wiremock stubs")
               AuthStub.stubEnrolled()
@@ -216,7 +174,6 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
               )
             }
             "the user has a digital preference" in {
-              enable(ConfirmationPage)
 
               Given("I setup the Wiremock stubs")
               AuthStub.stubEnrolled()

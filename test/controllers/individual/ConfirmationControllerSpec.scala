@@ -17,7 +17,6 @@
 package controllers.individual
 
 import common.Constants.ITSASessionKeys.MANDATED_CURRENT_YEAR
-import config.featureswitch.FeatureSwitch.ConfirmationPage
 import connectors.individual.PreferencesFrontendConnector
 import org.mockito.ArgumentMatchers.{any, eq => matches}
 import org.mockito.Mockito.{reset, when}
@@ -29,7 +28,7 @@ import services.mocks._
 import uk.gov.hmrc.http.NotFoundException
 import utilities.TestModels.{testSelectedTaxYearCurrent, testSelectedTaxYearNext}
 import utilities.individual.TestConstants.testNino
-import views.html.individual.confirmation.{SignUpComplete, SignUpConfirmation}
+import views.html.individual.confirmation.SignUpConfirmation
 
 import scala.concurrent.Future
 
@@ -40,20 +39,16 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
   with MockSessionDataService
   with MockAuditingService {
 
-  val mockSignUpComplete: SignUpComplete = mock[SignUpComplete]
   val mockSignUpConfirmation: SignUpConfirmation = mock[SignUpConfirmation]
   val mockPreferencesFrontendConnector: PreferencesFrontendConnector = mock[PreferencesFrontendConnector]
 
   override def beforeEach(): Unit = {
-    reset(mockSignUpComplete)
     reset(mockSignUpConfirmation)
     reset(mockPreferencesFrontendConnector)
-    disable(ConfirmationPage)
     super.beforeEach()
   }
 
   object TestConfirmationController extends ConfirmationController(
-    mockSignUpComplete,
     mockSignUpConfirmation,
     mockPreferencesFrontendConnector
   )(
@@ -88,41 +83,11 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
   }
 
   "show" when {
-    "the confirmation page feature switch is disabled" must {
-      "return the sign up complete page" when {
-        "the user signed up for the current tax year" in {
-          mockAuthEnrolled()
-          mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
-
-          when(mockSignUpComplete(matches(false), matches(routes.ConfirmationController.submit))(any(), any()))
-            .thenReturn(HtmlFormat.empty)
-
-          val result: Future[Result] = TestConfirmationController.show(subscriptionRequest)
-
-          status(result) mustBe OK
-          contentType(result) mustBe Some(HTML)
-        }
-        "the user signed up for the next tax year" in {
-          mockAuthEnrolled()
-          mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
-
-          when(mockSignUpComplete(matches(true), matches(routes.ConfirmationController.submit))(any(), any()))
-            .thenReturn(HtmlFormat.empty)
-
-          val result: Future[Result] = TestConfirmationController.show(subscriptionRequest)
-
-          status(result) mustBe OK
-          contentType(result) mustBe Some(HTML)
-        }
-      }
-    }
     "the confirmation page feature switch is enabled" must {
       "return the sign up confirmation page" when {
         "the user signed up for the current tax year" when {
           "the user is mandated for current year" when {
             "the user has no digital preference available" in {
-              enable(ConfirmationPage)
-
               mockAuthEnrolled()
               mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
               when(mockPreferencesFrontendConnector.getOptedInStatus(any())) thenReturn Future.successful(None)
@@ -135,7 +100,6 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
               contentType(result) mustBe Some(HTML)
             }
             "the user has a paper preference" in {
-              enable(ConfirmationPage)
 
               mockAuthEnrolled()
               mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
@@ -149,7 +113,6 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
               contentType(result) mustBe Some(HTML)
             }
             "the user has a digital preference" in {
-              enable(ConfirmationPage)
 
               mockAuthEnrolled()
               mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
@@ -165,7 +128,6 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
           }
           "the user is not mandated for current year" when {
             "the user has no digital preference available" in {
-              enable(ConfirmationPage)
 
               mockAuthEnrolled()
               mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
@@ -179,7 +141,6 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
               contentType(result) mustBe Some(HTML)
             }
             "the user has a paper preference" in {
-              enable(ConfirmationPage)
 
               mockAuthEnrolled()
               mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
@@ -193,7 +154,6 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
               contentType(result) mustBe Some(HTML)
             }
             "the user has a digital preference" in {
-              enable(ConfirmationPage)
 
               mockAuthEnrolled()
               mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
@@ -210,7 +170,6 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
         }
         "the user signed up for the next tax year" when {
           "the user has no digital preference available" in {
-            enable(ConfirmationPage)
 
             mockAuthEnrolled()
             mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
@@ -224,7 +183,6 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
             contentType(result) mustBe Some(HTML)
           }
           "the user has a paper preference" in {
-            enable(ConfirmationPage)
 
             mockAuthEnrolled()
             mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
@@ -238,7 +196,6 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
             contentType(result) mustBe Some(HTML)
           }
           "the user has a digital preference" in {
-            enable(ConfirmationPage)
 
             mockAuthEnrolled()
             mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))

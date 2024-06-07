@@ -19,20 +19,18 @@ package controllers.individual
 import auth.individual.{IncomeTaxSAUser, PostSubmissionController}
 import common.Constants.ITSASessionKeys
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.ConfirmationPage
 import connectors.individual.PreferencesFrontendConnector
 import controllers.utils.ReferenceRetrieval
 import models.Next
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
-import views.html.individual.confirmation.{SignUpComplete, SignUpConfirmation}
+import views.html.individual.confirmation.SignUpConfirmation
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class ConfirmationController @Inject()(signUpComplete: SignUpComplete,
-                                       signUpConfirmation: SignUpConfirmation,
+class ConfirmationController @Inject()(signUpConfirmation: SignUpConfirmation,
                                        preferencesFrontendConnector: PreferencesFrontendConnector)
                                       (val auditingService: AuditingService,
                                        val authService: AuthService,
@@ -45,7 +43,6 @@ class ConfirmationController @Inject()(signUpComplete: SignUpComplete,
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       withIndividualReference { reference =>
-        if (isEnabled(ConfirmationPage)) {
           for {
             preference <- preferencesFrontendConnector.getOptedInStatus
             selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
@@ -63,18 +60,6 @@ class ConfirmationController @Inject()(signUpComplete: SignUpComplete,
               preference = preference
             ))
           }
-        } else {
-          for {
-            selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
-          } yield {
-            val taxYearSelectionIsNext = selectedTaxYear.map(_.accountingYear).contains(Next)
-            Ok(signUpComplete(
-              taxYearSelectionIsNext = taxYearSelectionIsNext,
-              postAction = routes.ConfirmationController.submit
-            ))
-          }
-        }
-
       }
   }
 
