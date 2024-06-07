@@ -67,8 +67,5 @@ class ThrottleEndOfJourneyViewSpec extends ViewSpec {
     "have a form that continues" in {
       document1.select("main").select("form").attr("action") mustBe controllers.agent.tasklist.routes.TaskListController.show().url
     }
-    "have a backlink that goes back" in {
-      document1.select(".govuk-back-link").attr("href") mustBe "javascript:history.back()"
-    }
   }
 }

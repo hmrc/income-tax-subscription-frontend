@@ -301,7 +301,8 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       "have a print link" in {
         val link = mainContent().selectNth(".govuk-link", 1)
         link.text mustBe SignUpConfirmationMessages.printLink
-        link.attr("href") mustBe "javascript:window.print()"
+        link.attr("data-module") mustBe "hmrc-print-link"
+        link.attr("href") mustBe "#"
       }
 
       "contains what you you must do heading" in {
