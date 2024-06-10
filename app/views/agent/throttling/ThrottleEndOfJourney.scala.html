@@ -25,7 +25,7 @@
 
 @(postAction: Call)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("agent.throttle-end.title"), backLink = Some("javascript:history.back()"), showSignOutLink = true) {
+@mainTemplate(title = messages("agent.throttle-end.title"), showSignOutLink = true) {
    <h1 class="govuk-heading-l">@messages("agent.throttle-end.heading")</h1>
 
    <p class="govuk-body">@messages("agent.throttle-end.line-1")</p>

@@ -65,8 +65,5 @@ class ThrottleStartOfJourneyViewSpec extends ViewSpec {
     "have a form that continues" in {
       document1.select("main").select("form").attr("action") mustBe controllers.agent.matching.routes.HomeController.index.url
     }
-    "have a backlink that goes back" in {
-      document1.select(".govuk-back-link").attr("href") mustBe "javascript:history.back()"
-    }
   }
 }

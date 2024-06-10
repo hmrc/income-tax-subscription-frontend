@@ -365,7 +365,8 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     "have a print information link" in {
       val link = document().mainContent.selectHead("div > p > a.govuk-link")
       link.text mustBe GlobalCheckYourAnswersMessages.printLink
-      link.attr("href") mustBe "javascript:window.print()"
+      link.attr("data-module") mustBe "hmrc-print-link"
+      link.attr("href") mustBe "#"
     }
 
     "have a correct client infromation heading" in {
