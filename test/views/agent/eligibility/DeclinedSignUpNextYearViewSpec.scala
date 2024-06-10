@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.agent
+package views.agent.eligibility
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}

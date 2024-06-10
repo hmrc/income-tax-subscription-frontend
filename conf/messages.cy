@@ -63,6 +63,18 @@ iv-failure.took-too-long                                        = gwnaethoch gym
 iv-failure.failed-questions                                     = rydych wedi methu ag ateb digon o gwestiynau’n gywir
 iv-failure.could-not-match-details                              = nid oeddem yn gallu paru’ch manylion â’r hyn sydd ar ein system
 
+#Business Already Removed
+business-already-removed.title                                  = Rydych eisoes wedi dileu’r ffynhonnell incwm hon
+business-already-removed.heading                                = Rydych eisoes wedi dileu’r ffynhonnell incwm hon
+business-already-removed.back-to-income-sources-para            = Ewch yn ôl i’ch
+business-already-removed.back-to-income-sources-link-text       = ffynonellau incwm
+
+#Agent Business Already Removed
+agent.business-already-removed.title                            = Rydych eisoes wedi dileu’r ffynhonnell incwm hon
+agent.business-already-removed.heading                          = Rydych eisoes wedi dileu’r ffynhonnell incwm hon
+agent.business-already-removed.back-to-income-sources-para      = Ewch yn ôl i
+agent.business-already-removed.back-to-income-sources-link-text = ffynonellau incwm eich cleient
+
 ## Individual your income sources to sign up page
 your-income-source.heading                                      = Ychwanegu eich ffynonellau incwm
 your-income-source.manage.heading                               = Rheoli’ch ffynonellau incwm

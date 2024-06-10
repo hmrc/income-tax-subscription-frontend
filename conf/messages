@@ -63,6 +63,18 @@ iv-failure.took-too-long                                        = you took too l
 iv-failure.failed-questions                                     = you have failed to answer enough questions correctly
 iv-failure.could-not-match-details                              = we could not match your details to our system
 
+#Business Already Removed
+business-already-removed.title                                  = You have already removed this income source
+business-already-removed.heading                                = You have already removed this income source
+business-already-removed.back-to-income-sources-para            = Go back to {0}
+business-already-removed.back-to-income-sources-link-text       = your income sources
+
+#Agent Business Already Removed
+agent.business-already-removed.title                            = You have already removed this income source
+agent.business-already-removed.heading                          = You have already removed this income source
+agent.business-already-removed.back-to-income-sources-para      = Go back to {0}
+agent.business-already-removed.back-to-income-sources-link-text = your client’s income sources
+
 ## Individual your income sources to sign up page
 your-income-source.heading                                      = Add your income sources
 your-income-source.manage.heading                               = Manage your income sources
@@ -290,7 +302,7 @@ error.overseas.property.year.length                             = The year must 
 ## Timeout page ##
 timeout.title                                                   = Your session has timed out
 timeout.heading                                                 = Your session has timed out
-timeout.return-to-home                                            = To sign up for quarterly reporting, you’ll have to <a class="govuk-link" href="{0}" rel="external">sign in</a> using your Government Gateway ID.
+timeout.return-to-home                                           = To sign up for quarterly reporting, you’ll have to <a class="govuk-link" href="{0}" rel="external">sign in</a> using your Government Gateway ID.
 
 ## Already enrolled page ##
 already-enrolled.title                                          = You’ve already signed up

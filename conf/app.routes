@@ -13,6 +13,8 @@ GET         /logout                                              controllers.Sig
 GET         /sps-handoff                                         controllers.individual.sps.SPSHandoffController.redirectToSPS
 GET         /sps-callback                                        controllers.individual.sps.SPSCallbackController.callback(entityId: Option[String] ?= None)
 
+GET         /error/business-already-removed                      controllers.individual.tasklist.addbusiness.BusinessAlreadyRemovedController.show()
+
 # Confirmation Routes
 GET         /confirmation                                        controllers.individual.ConfirmationController.show
 POST        /confirmation                                        controllers.individual.ConfirmationController.submit
