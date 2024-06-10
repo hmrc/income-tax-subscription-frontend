@@ -18,7 +18,6 @@ package controllers.agent.tasklist.overseasproperty
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.utils.ReferenceRetrieval
 import models.common.OverseasPropertyModel
 import play.api.mvc._
@@ -39,7 +38,7 @@ class OverseasPropertyCheckYourAnswersController @Inject()(overseasPropertyCheck
                                                            val subscriptionDetailsService: SubscriptionDetailsService)
                                                           (implicit val ec: ExecutionContext,
                                                            mcc: MessagesControllerComponents) extends AuthenticatedController with ReferenceRetrieval {
-  
+
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       withAgentReference { reference =>
@@ -73,11 +72,7 @@ class OverseasPropertyCheckYourAnswersController @Inject()(overseasPropertyCheck
   }
 
   def continueLocation: Call = {
-    if (isEnabled(EnableTaskListRedesign)) {
-      controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show
-    } else {
-      controllers.agent.tasklist.routes.TaskListController.show()
-    }
+    controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show
   }
 
   def backUrl(isEditMode: Boolean): String = {

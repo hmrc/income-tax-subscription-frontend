@@ -16,7 +16,6 @@
 
 package views.agent.tasklist.ukproperty
 
-import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import models.common.PropertyModel
 import models.{Accruals, Cash, DateModel}
 import org.jsoup.Jsoup
@@ -93,7 +92,6 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
 
     "display property details" when {
       "all the answers have been completed" which {
-        disable(EnableTaskListRedesign)
         assertRow(
           document(viewModel = completeCashProperty),
           section = "start date",

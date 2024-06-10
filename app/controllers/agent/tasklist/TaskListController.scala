@@ -16,19 +16,13 @@
 
 package controllers.agent.tasklist
 
-import auth.agent.{AuthenticatedController, IncomeTaxAgentUser}
-import common.Constants.ITSASessionKeys
+import auth.agent.AuthenticatedController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.utils.ReferenceRetrieval
 import models.common.TaskListModel
-import models.common.business.AccountingMethodModel
-import models.common.subscription.CreateIncomeSourcesModel.createIncomeSources
-import models.common.subscription.{CreateIncomeSourcesModel, SubscriptionSuccess}
 import play.api.Logging
 import play.api.mvc._
 import services._
-import services.agent.SubscriptionOrchestrationService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.tasklist.TaskList
@@ -38,8 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.matching.Regex
 
 @Singleton
-class TaskListController @Inject()(taskListView: TaskList,
-                                   subscriptionService: SubscriptionOrchestrationService)
+class TaskListController @Inject()(taskListView: TaskList)
                                   (val auditingService: AuditingService,
                                    val subscriptionDetailsService: SubscriptionDetailsService,
                                    val sessionDataService: SessionDataService,
@@ -85,7 +78,7 @@ class TaskListController @Inject()(taskListView: TaskList,
   private def getTaskListModel(reference: String)(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[TaskListModel] = {
     for {
       selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
-      (businesses, accountingMethod) <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
+      (businesses, _) <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
       property <- subscriptionDetailsService.fetchProperty(reference)
       overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
       incomeSourcesConfirmed <- subscriptionDetailsService.fetchIncomeSourcesConfirmation(reference)
@@ -93,7 +86,6 @@ class TaskListController @Inject()(taskListView: TaskList,
       TaskListModel(
         selectedTaxYear,
         businesses,
-        accountingMethod,
         property,
         overseasProperty,
         incomeSourcesConfirmed
@@ -101,52 +93,10 @@ class TaskListController @Inject()(taskListView: TaskList,
     }
   }
 
-  def submit: Action[AnyContent] = journeySafeGuard { implicit user =>
-    implicit request =>
-      incomeSourceModel =>
-        if (isEnabled(EnableTaskListRedesign)) {
-          Future.successful(Redirect(controllers.agent.routes.GlobalCheckYourAnswersController.show))
-        } else {
-          val nino = user.clientNino.get
-          val arn = user.arn
-          val utr = user.clientUtr.get
-          val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
-
-          subscriptionService.createSubscriptionFromTaskList(arn, nino, utr, incomeSourceModel)(headerCarrier) map {
-            case Right(Some(SubscriptionSuccess(id))) =>
-              Redirect(controllers.agent.routes.ConfirmationController.show).addingToSession(ITSASessionKeys.MTDITID -> id)
-            case Right(None) =>
-              Redirect(controllers.agent.routes.ConfirmationController.show).addingToSession(ITSASessionKeys.MTDITID -> "already-signed-up")
-            case Left(failure) =>
-              throw new InternalServerException(s"[TaskListController][submit] - failure response received from submission: ${failure.toString}")
-          }
-        }
+  def submit: Action[AnyContent] = Authenticated { _ =>
+    _ =>
+      Redirect(controllers.agent.routes.GlobalCheckYourAnswersController.show)
   }
-
-  private def journeySafeGuard(processFunc: IncomeTaxAgentUser => Request[AnyContent] => CreateIncomeSourcesModel => Future[Result]): Action[AnyContent] =
-    Authenticated.async { implicit request =>
-      implicit user =>
-        withAgentReference { reference =>
-          val model = for {
-            (selfEmployments, accountingMethod) <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
-            property <- subscriptionDetailsService.fetchProperty(reference)
-            overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
-            selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
-          } yield {
-            createIncomeSources(
-              nino = user.clientNino.get,
-              selfEmployments = selfEmployments,
-              selfEmploymentsAccountingMethod = accountingMethod.map(AccountingMethodModel.apply),
-              property = property,
-              overseasProperty = overseasProperty,
-              accountingYear = selectedTaxYear
-            )
-          }
-          model.flatMap { model =>
-            processFunc(user)(request)(model)
-          }
-        }
-    }
 
 }
 

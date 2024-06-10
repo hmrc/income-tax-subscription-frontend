@@ -18,7 +18,6 @@ package controllers.agent.tasklist.ukproperty
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.utils.ReferenceRetrieval
 import models.common.PropertyModel
 import play.api.mvc._
@@ -73,11 +72,7 @@ class PropertyCheckYourAnswersController @Inject()(propertyCheckYourAnswersView:
   }
 
   def continueLocation: Call = {
-    if (isEnabled(EnableTaskListRedesign)) {
-      controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show
-    } else {
-      controllers.agent.tasklist.routes.TaskListController.show()
-    }
+    controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show
   }
 
   def backUrl(isEditMode: Boolean): String = {

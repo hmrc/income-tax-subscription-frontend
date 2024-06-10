@@ -13,9 +13,6 @@ GET         /logout                                              controllers.Sig
 GET         /sps-handoff                                         controllers.individual.sps.SPSHandoffController.redirectToSPS
 GET         /sps-callback                                        controllers.individual.sps.SPSCallbackController.callback(entityId: Option[String] ?= None)
 
-GET         /details/income-source                               controllers.individual.tasklist.addbusiness.WhatIncomeSourceToSignUpController.show()
-POST        /details/income-source                               controllers.individual.tasklist.addbusiness.WhatIncomeSourceToSignUpController.submit()
-
 # Confirmation Routes
 GET         /confirmation                                        controllers.individual.ConfirmationController.show
 POST        /confirmation                                        controllers.individual.ConfirmationController.submit

@@ -16,7 +16,6 @@
 
 package controllers.agent.tasklist.ukproperty
 
-import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import config.featureswitch.FeatureSwitching
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.PropertyStartDateForm
@@ -41,11 +40,6 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
   with MockAuditingService
   with MockSessionDataService
   with FeatureSwitching {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(featureSwitch = EnableTaskListRedesign)
-  }
 
   override val controllerName: String = "PropertyStartDateController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -154,7 +148,7 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
     "The back url is not in edit mode" should {
       "redirect back to agent what income source page" in withController { controller =>
         controller.backUrl(isEditMode = false) mustBe
-          controllers.agent.tasklist.addbusiness.routes.WhatIncomeSourceToSignUpController.show().url
+          controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
       }
     }
 
@@ -165,18 +159,11 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
           routes.PropertyCheckYourAnswersController.show(true).url
       }
     }
-    "Not in Edit mode the back url with feature switch enabled" should {
+    "Not in Edit mode the back url" should {
       "redirect to new client's income sources" in withController { controller =>
-        enable(featureSwitch = EnableTaskListRedesign)
         controller.backUrl(isEditMode = false) mustBe
           controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
       }
-    }
-    "Not in Edit mode the back url with feature switch disabled" should {
-      "redirect to current client's income sources" in withController(controller =>
-        controller.backUrl(isEditMode = false) mustBe
-          controllers.agent.tasklist.addbusiness.routes.WhatIncomeSourceToSignUpController.show().url
-      )
     }
 
   }

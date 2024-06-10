@@ -23,11 +23,9 @@ import config.AppConfig
 import config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import connectors.stubs.SessionDataConnectorStub.stubGetSessionData
 import forms.individual.business._
-import forms.individual.incomesource.BusinessIncomeSourceForm
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import models._
-import models.common._
 import org.jsoup.nodes.Element
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
@@ -202,8 +200,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
     def incomeSource(): WSResponse = get("/details/income-receive")
 
-    def businessIncomeSource(): WSResponse = get("/details/income-source")
-
     def yourIncomeSources(): WSResponse = get("/details/your-income-source")
 
     def submitYourIncomeSources(): WSResponse = post("/details/your-income-source")(Map.empty[String, Seq[String]])
@@ -377,22 +373,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
     def submitMaintenance(): WSResponse = post("/error/maintenance")(Map.empty)
 
     def submitAddMTDITOverview(): WSResponse = post("/claim-enrolment/overview", Map(JourneyStateKey -> ClaimEnrolmentJourney.name))(Map.empty)
-
-    def submitBusinessIncomeSource(request: Option[BusinessIncomeSource],
-                                   incomeSourcesStatus: IncomeSourcesStatus = IncomeSourcesStatus(
-                                     selfEmploymentAvailable = true,
-                                     ukPropertyAvailable = true,
-                                     overseasPropertyAvailable = true
-                                   )): WSResponse = {
-      val uri = s"/details/income-source"
-      post(uri)(
-        request.fold(Map.empty[String, Seq[String]])(
-          model =>
-            BusinessIncomeSourceForm.businessIncomeSourceForm(incomeSourcesStatus)
-              .fill(model).data.map { case (k, v) => (k, Seq(v)) }
-        )
-      )
-    }
 
     def confirmation(): WSResponse = confirmation(Map.empty)
 

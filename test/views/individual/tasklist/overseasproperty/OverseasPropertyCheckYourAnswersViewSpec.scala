@@ -16,7 +16,6 @@
 
 package views.individual.tasklist.overseasproperty
 
-import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import models.common.OverseasPropertyModel
 import models.{Accruals, Cash, DateModel}
 import org.jsoup.Jsoup
@@ -25,11 +24,6 @@ import utilities.ViewSpec
 import views.html.individual.tasklist.overseasproperty.OverseasPropertyCheckYourAnswers
 
 class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
-
-  override def beforeEach(): Unit = {
-    disable(EnableTaskListRedesign)
-    super.beforeEach()
-  }
 
   private val view = app.injector.instanceOf[OverseasPropertyCheckYourAnswers]
 
@@ -179,7 +173,7 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
         controllers.individual.tasklist.routes.ProgressSavedController.show().url + "?location=overseas-property-check-your-answers"
     }
   }
-  
+
   private def page(viewModel: OverseasPropertyModel) = view(
     viewModel,
     postAction = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.submit(),

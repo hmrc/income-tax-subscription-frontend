@@ -301,7 +301,7 @@ object MessageLookup {
     val item3 = "3. Choose a tax year"
     val item2Para = "Add any sole trader or UK and foreign property income sources you have."
     val agentItem1 = "1. Your client’s information"
-    val agentItem2 = "2. Tell us about your client’s income"
+    val agentItem2 = "2. Your client’s income sources"
     val agentItem3 = "3. Choose a tax year to sign up"
     val signUpIncompleteText = "You need to complete all sections above before you can sign up."
     val signUpReadyText = "You can now sign up."

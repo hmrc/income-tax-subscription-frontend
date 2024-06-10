@@ -16,7 +16,6 @@
 
 package views.agent.eligibility
 
-import forms.agent.ClientCanSignUpForm
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.twirl.api.HtmlFormat

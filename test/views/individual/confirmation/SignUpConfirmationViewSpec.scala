@@ -26,7 +26,6 @@ import views.html.individual.confirmation.SignUpConfirmation
 
 import java.time.LocalDate
 import java.time.Month._
-import java.time.format.DateTimeFormatter
 import scala.util.Random
 
 //scalastyle:off
@@ -222,7 +221,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
         "contains a bullet list of payment types" which {
 
-          def bulletList = mainContent().selectNth("ul",3)
+          def bulletList = mainContent().selectNth("ul", 3)
 
           "has a first item" in {
             bulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.payYourTax.bulletOne
@@ -249,13 +248,13 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           val link = mainContent().selectNth("a", 5)
           link.attr("href") mustBe "https://www.gov.uk/pay-self-assessment-tax-bill"
           link.text mustBe SignUpConfirmationMessages.payYourTax.linkText
-          mainContent().selectNth("p",14).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
+          mainContent().selectNth("p", 14).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
         }
       }
 
       "contains a preference section" which {
 
-        def preferenceSection(preference: Option[Boolean] = None) : Element = mainContent(preference).selectNth("div", 8)
+        def preferenceSection(preference: Option[Boolean] = None): Element = mainContent(preference).selectNth("div", 8)
 
         "has no retrieved preference content when no preference was provided to the view" in {
           preferenceSection().selectOptionalNth("p", 1) mustBe None
@@ -441,7 +440,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
         "contains a bullet list of payment types" which {
 
-          def bulletList = mainContent().selectNth("ul",3)
+          def bulletList = mainContent().selectNth("ul", 3)
 
           "has a first item" in {
             bulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.payYourTax.bulletOne
@@ -468,13 +467,13 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           val link = mainContent().selectNth("a", 5)
           link.attr("href") mustBe "https://www.gov.uk/pay-self-assessment-tax-bill"
           link.text mustBe SignUpConfirmationMessages.payYourTax.linkText
-          mainContent().selectNth("p",14).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
+          mainContent().selectNth("p", 14).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
         }
       }
 
       "contains a preference section" which {
 
-        def preferenceSection(preference: Option[Boolean] = None) : Element = mainContent(preference).selectNth("div", 7)
+        def preferenceSection(preference: Option[Boolean] = None): Element = mainContent(preference).selectNth("div", 7)
 
         "has no retrieved preference content when no preference was provided to the view" in {
           preferenceSection().selectOptionalNth("p", 1) mustBe None
@@ -653,7 +652,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
         "contains a bullet list of payment types" which {
 
-          def bulletList = mainContent().selectNth("ul",3)
+          def bulletList = mainContent().selectNth("ul", 3)
 
           "has a first item" in {
             bulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.payYourTax.bulletOne
@@ -680,13 +679,13 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           val link = mainContent().selectNth("a", 5)
           link.attr("href") mustBe "https://www.gov.uk/pay-self-assessment-tax-bill"
           link.text mustBe SignUpConfirmationMessages.payYourTax.linkText
-          mainContent().selectNth("p",14).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
+          mainContent().selectNth("p", 14).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
         }
       }
 
       "contains a preference section" which {
 
-        def preferenceSection(preference: Option[Boolean] = None) : Element = mainContent(preference).selectNth("div", 7)
+        def preferenceSection(preference: Option[Boolean] = None): Element = mainContent(preference).selectNth("div", 7)
 
         "has no retrieved preference content when no preference was provided to the view" in {
           preferenceSection().selectOptionalNth("p", 1) mustBe None
@@ -869,7 +868,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
         "contains a bullet list of payment types" which {
 
-          def bulletList = mainContent().selectNth("ul",3)
+          def bulletList = mainContent().selectNth("ul", 3)
 
           "has a first item" in {
             bulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.payYourTax.bulletOne
@@ -896,13 +895,13 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           val link = mainContent().selectNth("a", 5)
           link.attr("href") mustBe "https://www.gov.uk/pay-self-assessment-tax-bill"
           link.text mustBe SignUpConfirmationMessages.payYourTax.linkText
-          mainContent().selectNth("p",14).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
+          mainContent().selectNth("p", 14).text() mustBe SignUpConfirmationMessages.payYourTax.paraTwo
         }
       }
 
       "contains a preference section" which {
 
-        def preferenceSection(preference: Option[Boolean] = None) : Element = mainContent(preference).selectNth("div", 8)
+        def preferenceSection(preference: Option[Boolean] = None): Element = mainContent(preference).selectNth("div", 8)
 
         "has no retrieved preference content when no preference was provided to the view" in {
           preferenceSection().selectOptionalNth("p", 1) mustBe None
@@ -942,7 +941,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
     val printLink = "Print your confirmation"
 
-    object beforeYouStartSection  {
+    object beforeYouStartSection {
       val heading = "Before you start"
       val paragraph1 = "To start using Making Tax Digital for Income Tax you must get compatible software. You should check if the software meets your business needs."
       val paragraph2 = "For example, if you want to update your income and expenses by calendar quarterly period dates you must choose software that supports this."

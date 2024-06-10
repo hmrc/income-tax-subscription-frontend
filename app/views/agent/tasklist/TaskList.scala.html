@@ -23,8 +23,6 @@
 @import views.html.templates.AgentMainTemplate
 @import views.html.helpers.TaskListHelper
 @import views.helpers.models.tasklist._
-@import config.featureswitch.FeatureSwitchingImpl
-@import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 
 @this(
     mainTemplate: AgentMainTemplate,
@@ -34,11 +32,10 @@
     saveAndContinueButton: ButtonHelper,
     taskListHelper : TaskListHelper,
     govukTag : GovukTag,
-    govukSummaryList: GovukSummaryList,
-    featureSwitching: FeatureSwitchingImpl
+    govukSummaryList: GovukSummaryList
 )
 
-@(postAction: Call, viewModel: TaskListModel, clientName: String, clientNino: String, clientUtr: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(postAction: Call, viewModel: TaskListModel, clientName: String, clientNino: String, clientUtr: String)(implicit request: Request[_], messages: Messages)
 
 @messagePrefix = @{"agent.business.task-list"}
 
@@ -124,111 +121,6 @@
   )
 }
 
-@businessName(index: Int, businessName: Option[BusinessNameModel], businessTradeName: Option[BusinessTradeNameModel]) =@{
-  (businessName, businessTradeName) match {
-    case (None, None) => messages(s"${messagePrefix}.content.income-sources.business", index + 1)
-    case (None, Some(businessTradeNameModel)) => businessTradeNameModel.businessTradeName
-    case (Some(businessNameModel), None) => businessNameModel.businessName
-    case (Some(businessNameModel), Some(businessTradeNameModel)) => s"${businessNameModel.businessName} ${businessTradeNameModel.businessTradeName}"
-  }
-}
-
-@addBusiness ={
-  <div class="app-task-list__items">
-    <p class="govuk-body">
-      <a href="@controllers.agent.tasklist.addbusiness.routes.WhatIncomeSourceToSignUpController.show().url" id="add_business" class="govuk-link">
-        @{messages(s"${messagePrefix}.content.income-sources.add")}
-      </a>
-    </p>
-  </div>
-}
-
-@businesses = @{
-  CustomTaskListSection(
-    h2Content = messages(s"${messagePrefix}.content.income-sources.heading"),
-    sectionEnd = if (viewModel.canAddMoreBusinesses(appConfig.maxSelfEmployments)) Some(addBusiness) else None,
-    taskListItems = viewModel.selfEmployments.map(se =>
-      if(se.confirmed && viewModel.selfEmploymentAccountingMethod.isDefined) {
-        CustomTaskListItem(
-          content = businessName(viewModel.selfEmployments.indexOf(se), se.businessName, se.businessTradeName),
-          href = Some(s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${se.id}&isEditMode=true"),
-          tagLabel = messages(s"${messagePrefix}.status.completed"),
-          isComplete = true,
-          action = Some(CustomTaskListItemAction(
-            content = messages("base.remove"),
-            hiddenContent = messages(s"${messagePrefix}.content.income-sources.remove-sole-trader-business", businessName(viewModel.selfEmployments.indexOf(se), se.businessName, se.businessTradeName)),
-            href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show(se.id).url
-          ))
-        )
-      } else {
-        CustomTaskListItem(
-          content = businessName(viewModel.selfEmployments.indexOf(se), se.businessName, se.businessTradeName),
-          href = Some(s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${se.id}&isEditMode=true"),
-          tagLabel = messages(s"${messagePrefix}.status.incomplete"),
-          isComplete = false,
-          action = Some(CustomTaskListItemAction(
-            content = messages("base.remove"),
-            hiddenContent = messages(s"${messagePrefix}.content.income-sources.remove-sole-trader-business", businessName(viewModel.selfEmployments.indexOf(se), se.businessName, se.businessTradeName)),
-            href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show(se.id).url
-          ))
-        )
-      }
-    ) ++ viewModel.ukProperty.map(ukps =>
-      if(viewModel.ukPropertyComplete) {
-        CustomTaskListItem(
-          content = messages(s"${messagePrefix}.content.income-sources.property.uk"),
-          href = Some(controllers.agent.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url),
-          tagLabel = messages(s"${messagePrefix}.status.completed"),
-          isComplete = true,
-          action = Some(CustomTaskListItemAction(
-            content = messages("base.remove"),
-            hiddenContent = messages(s"${messagePrefix}.content.income-sources.remove-uk-property"),
-            href = controllers.agent.tasklist.ukproperty.routes.RemoveUkPropertyController.show.url
-          ))
-        )
-      } else {
-        CustomTaskListItem(
-          content = messages(s"${messagePrefix}.content.income-sources.property.uk"),
-          href = Some(controllers.agent.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url),
-          tagLabel = messages(s"${messagePrefix}.status.incomplete"),
-          isComplete = false,
-          action = Some(CustomTaskListItemAction(
-            content = messages("base.remove"),
-            hiddenContent = messages(s"${messagePrefix}.content.income-sources.remove-uk-property"),
-            href = controllers.agent.tasklist.ukproperty.routes.RemoveUkPropertyController.show.url
-          ))
-        )
-      }
-    )++ viewModel.overseasProperty.map(_ =>
-      if(viewModel.overseasPropertyComplete) {
-        CustomTaskListItem(
-          content = messages(s"${messagePrefix}.content.income-sources.property.overseas"),
-          href = Some(controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url),
-          tagLabel = messages(s"${messagePrefix}.status.completed"),
-          isComplete = true,
-          action = Some(CustomTaskListItemAction(
-            content = messages("base.remove"),
-            hiddenContent = messages(s"${messagePrefix}.content.income-sources.remove-overseas-property"),
-            href = controllers.agent.tasklist.overseasproperty.routes.RemoveOverseasPropertyController.show.url
-          ))
-        )
-      } else {
-        CustomTaskListItem(
-          content = messages(s"${messagePrefix}.content.income-sources.property.overseas"),
-          href = Some(controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url),
-          tagLabel = messages(s"${messagePrefix}.status.incomplete"),
-          isComplete = false,
-          action = Some(CustomTaskListItemAction(
-            content = messages("base.remove"),
-            hiddenContent = messages(s"${messagePrefix}.content.income-sources.remove-overseas-property"),
-            href = controllers.agent.tasklist.overseasproperty.routes.RemoveOverseasPropertyController.show.url
-          ))
-        )
-      }
-    )
-  )
-}
-
 @addIncomeSources = @{
   CustomTaskListSection(
     h2Content = messages(s"${messagePrefix}.content.add-income.heading"),
@@ -254,13 +146,13 @@
 }
 
 @signUpSectionContent = {
-    @if(viewModel.taskListComplete(featureSwitching.isEnabled(EnableTaskListRedesign))) {
+    @if(viewModel.taskListComplete) {
         <div class="app-task-list__pre-list">
-          <p class="govuk-body">
-            @messages(s"${messagePrefix}.content.action-complete")
-          </p>
-          @continueButton(Some(messages("base.submit-and-continue")))
-          @saveAndComeBackButton
+            <p class="govuk-body">
+                @messages(s"${messagePrefix}.content.action-complete")
+            </p>
+            @continueButton(Some(messages("base.submit-and-continue")))
+            @saveAndComeBackButton
         </div>
     } else {
         <p class="govuk-body app-task-list__pre-list">@messages(s"${messagePrefix}.content.action-needed")</p>
@@ -268,7 +160,7 @@
     }
 }
 
-@saveAndComeBackButton =@{
+@saveAndComeBackButton = @{
   saveAndContinueButton(messages("base.save-and-come-back-later"), Some("govuk-button--secondary"), Some(controllers.agent.tasklist.routes.ProgressSavedController.show(Some("task-list")).url))
 }
 
@@ -280,7 +172,7 @@
       @taskListHelper(
         Seq(
             yourClientsInformation,
-            if(featureSwitching.isEnabled(EnableTaskListRedesign)) addIncomeSources else businesses,
+            addIncomeSources,
             selectTaxYear
         )
       )

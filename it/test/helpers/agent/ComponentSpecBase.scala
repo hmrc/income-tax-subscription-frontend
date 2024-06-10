@@ -33,7 +33,6 @@ import helpers.agent.servicemocks.WireMockMethods
 import helpers.servicemocks.AuditStub
 import helpers.{IntegrationTestModels, UserMatchingIntegrationRequestSupport}
 import models._
-import models.common._
 import models.usermatching.UserDetailsModel
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
@@ -348,23 +347,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
     def submitYourIncomeSourcesAgent(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
       post("/your-income-source", sessionData)(Map.empty)
-    }
-
-    def agentBusinessIncomeSource(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/your-income-source", sessionData)
-
-    def submitBusinessIncomeSource(request: Option[BusinessIncomeSource],
-                                   incomeSourcesStatus: IncomeSourcesStatus = IncomeSourcesStatus(
-                                     selfEmploymentAvailable = true,
-                                     ukPropertyAvailable = true,
-                                     overseasPropertyAvailable = true
-                                   )): WSResponse = {
-      post("/income-source")(
-        request.fold(Map.empty[String, Seq[String]])(
-          model =>
-            BusinessIncomeSourceForm.businessIncomeSourceForm(incomeSourcesStatus)
-              .fill(model).data.map { case (k, v) => (k, Seq(v)) }
-        )
-      )
     }
 
     def accountingYear(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/business/what-year-to-sign-up", sessionData)

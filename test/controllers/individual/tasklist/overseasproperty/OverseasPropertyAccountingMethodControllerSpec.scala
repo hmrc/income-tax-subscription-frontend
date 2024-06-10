@@ -16,7 +16,6 @@
 
 package controllers.individual.tasklist.overseasproperty
 
-import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.individual.ControllerBaseSpec
 import forms.individual.business.AccountingMethodOverseasPropertyForm
 import models.Cash
@@ -38,11 +37,6 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockSessionDataService
   with MockAuditingService {
-
-  override def beforeEach(): Unit = {
-    disable(EnableTaskListRedesign)
-    super.beforeEach()
-  }
 
   override val controllerName: String = "ForeignPropertyAccountingMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()

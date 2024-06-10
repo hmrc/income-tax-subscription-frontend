@@ -16,7 +16,6 @@
 
 package controllers.individual.tasklist.ukproperty
 
-import config.featureswitch.FeatureSwitch.EnableTaskListRedesign
 import controllers.individual.ControllerBaseSpec
 import forms.individual.business.PropertyStartDateForm
 import models.DateModel
@@ -38,11 +37,6 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
   with MockAuditingService
   with MockSessionDataService
   with MockPropertyStartDate {
-
-  override def beforeEach(): Unit = {
-    disable(EnableTaskListRedesign)
-    super.beforeEach()
-  }
 
   override val controllerName: String = "PropertyStartDateController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -162,18 +156,10 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
       }
     }
 
-    "The back url is not in edit mode and Tasklist redesign is enabled" should {
+    "The back url is not in edit mode" should {
       "redirect back to what income source page" in new Test {
-        enable(EnableTaskListRedesign)
         controller.backUrl(isEditMode = false) mustBe
           controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
-      }
-    }
-
-    "The back url is not in edit mode and Tasklist redesign is  not enabled" should {
-      "redirect back to what income source page" in new Test {
-        controller.backUrl(isEditMode = false) mustBe
-          controllers.individual.tasklist.addbusiness.routes.WhatIncomeSourceToSignUpController.show().url
       }
     }
   }

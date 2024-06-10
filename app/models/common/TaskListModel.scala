@@ -16,12 +16,10 @@
 
 package models.common
 
-import models.AccountingMethod
 import models.common.business.SelfEmploymentData
 
 case class TaskListModel(taxYearSelection: Option[AccountingYearModel],
                          selfEmployments: Seq[SelfEmploymentData],
-                         selfEmploymentAccountingMethod: Option[AccountingMethod],
                          ukProperty: Option[PropertyModel],
                          overseasProperty: Option[OverseasPropertyModel],
                          incomeSourcesConfirmed: Option[Boolean]) {
@@ -34,41 +32,19 @@ case class TaskListModel(taxYearSelection: Option[AccountingYearModel],
 
   val permitTaxYearChange: Boolean = taxYearSelection.exists(taxYear => taxYear.editable)
 
-  val ukPropertyComplete: Boolean = ukProperty.exists(_.confirmed)
-
-  val selfEmploymentsComplete: Boolean = selfEmployments.nonEmpty && selfEmployments.forall(_.confirmed) && selfEmploymentAccountingMethod.isDefined
-
-  val overseasPropertyComplete: Boolean = overseasProperty.exists(_.confirmed)
-
   val incomeSourcesComplete: Boolean = incomeSourcesConfirmed.contains(true)
 
-  def sectionsTotal(taskListRedesignEnabled: Boolean = false): Int = {
-    if (taskListRedesignEnabled) {
-      3 // always this many sections in new design, no longer counting individual businesses
-    } else {
-      Math.max(3, 2 + selfEmployments.size + ukProperty.size + overseasProperty.size)
-    }
+  def sectionsTotal: Int = {
+    3
   }
 
-  def sectionsComplete(taskListRedesignEnabled: Boolean = false): Int = {
-    if (taskListRedesignEnabled) {
-      (if (taxYearSelectedAndConfirmed) 1 else 0) +
-        (if (incomeSourcesComplete) 1 else 0) + 1
-    } else {
-      (if (taxYearSelectedAndConfirmed) 1 else 0) +
-        selfEmployments.count { business => business.confirmed && selfEmploymentAccountingMethod.isDefined } +
-        (if (ukPropertyComplete) 1 else 0) +
-        (if (overseasPropertyComplete) 1 else 0) + 1
-    }
+  def sectionsComplete: Int = {
+    (if (taxYearSelectedAndConfirmed) 1 else 0) +
+      (if (incomeSourcesComplete) 1 else 0) + 1
   }
 
-  def canAddMoreBusinesses(maxSelfEmployments: Int): Boolean =
-    selfEmployments.size < maxSelfEmployments ||
-      ukProperty.isEmpty ||
-      overseasProperty.isEmpty
-
-  def taskListComplete(taskListRedesignEnabled: Boolean = false): Boolean = {
-    sectionsComplete(taskListRedesignEnabled) == sectionsTotal(taskListRedesignEnabled)
+  def taskListComplete: Boolean = {
+    sectionsComplete == sectionsTotal
   }
 
 }

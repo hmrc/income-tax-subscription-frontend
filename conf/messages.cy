@@ -63,19 +63,6 @@ iv-failure.took-too-long                                        = gwnaethoch gym
 iv-failure.failed-questions                                     = rydych wedi methu ag ateb digon o gwestiynau’n gywir
 iv-failure.could-not-match-details                              = nid oeddem yn gallu paru’ch manylion â’r hyn sydd ar ein system
 
-## Individual what income source to sign up page
-income-source.title                                             = Ychwanegu ffynhonnell incwm
-income-source.heading                                           = Ychwanegu ffynhonnell incwm
-income-source.para1                                             = Gallwch ychwanegu eich busnesau unig fasnachwr eraill os oes gennych chi fwy nag un. Os oes gennych chi incwm o eiddo, gallwch ei ychwanegu hefyd.
-income-source.para1-overseas                                    = Os ydych yn hunangyflogedig, mae’n rhaid i chi ychwanegu bob un o’ch busnesau unig fasnachwr os oes gennych fwy nag un. Os oes gennych incwm o eiddo mae’n rhaid i chi ei ychwanegu. Mae hyn wedi’i gyfyngu i un busnes eiddo yn y DU ac un busnes eiddo tramor y gallwch ei gael.
-income-source.para2                                             = Mae rhoi eiddo ar osod yn cynnwys defnyddio asiantaeth gosod eiddo.
-income-source.self-employed                                     = Busnes unig fasnachwr
-income-source.self-employed-hint                                = Busnes rydych chi’n ei redeg fel unigolyn. Os oes gennych chi fusnesau eraill fel unig fasnachwr, gallwch eu hychwanegu.
-income-source.uk-property                                       = Busnes eiddo yn y DU
-income-source.uk-property-hint                                  = Incwm o eiddo yn y DU. Mae hyn yn cynnwys arian rydych chi’n ei ennill drwy asiantaeth gosod eiddo. Gallwch chi fod ag incwm o sawl eiddo mewn un busnes eiddo yn y DU.
-income-source.foreign-property                                  = Busnes eiddo tramor
-income-source.foreign-property-hint                             = Incwm o roi eiddo ar osod dramor. Mae hyn yn cynnwys arian rydych chi’n ei ennill drwy asiantaeth gosod eiddo. Gallwch chi fod ag incwm o sawl eiddo mewn un busnes eiddo tramor.
-
 ## Individual your income sources to sign up page
 your-income-source.heading                                      = Ychwanegu eich ffynonellau incwm
 your-income-source.manage.heading                               = Rheoli’ch ffynonellau incwm
@@ -664,16 +651,6 @@ agent.client-details.summary.last-name                          = Enw olaf
 agent.client-details.summary.nino                               = Rhif Yswiriant Gwladol
 agent.client-details.summary.dob                                = Dyddiad geni
 
-## agent what income source to sign up page
-agent.income-source.heading                     = Pa ffynhonnell incwm ydych chi am ei chofrestru?
-agent.income-source.paragraph1                  = Os yw’ch cleient yn hunangyflogedig, mae’n rhaid i chi ychwanegu bob un o’i fusnesau unig fasnachwr os oes ganddo fwy nag un. Os oes ganddo incwm o eiddo mae’n rhaid i chi ei ychwanegu, ond mae hyn wedi’i gyfyngu i un busnes eiddo yn y DU.
-agent.income-source.paragraph1-overseas         = Gall eich cleient gael hyd at {0} o fusnesau unig fasnachwr. Fodd bynnag, dim ond un busnes eiddo yn y DU ac un eiddo ar osod dramor y gellir ei gael.
-agent.income-source.paragraph2                  = Mae rhoi eiddo ar osod yn cynnwys defnyddio asiantaeth gosod eiddo.
-agent.income-source.self-employed               = Busnes unig fasnachwr
-agent.income-source.uk-property                 = Busnes eiddo yn y DU
-agent.income-source.foreign-property            = Busnes eiddo tramor
-agent.income-source.error                       = Dewiswch ffynhonnell incwm eich cleient
-
 ## agent your income sources to sign up page
 agent.your-income-source.heading.no-income                  = Ychwanegu ffynonellau incwm eich cleient
 agent.your-income-source.lead.no-income                     = Dim ond y ffynonellau incwm sy’n berthnasol i’ch cleient y mae angen i chi eu hychwanegu.
@@ -877,14 +854,6 @@ agent.business.task-list.content.tax-year.heading                           = De
 agent.business.task-list.content.tax-year.action                            = Dewiswch y flwyddyn dreth
 agent.business.task-list.content.tax-year.current-tax-year                  = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
 agent.business.task-list.content.tax-year.next-tax-year                     = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
-agent.business.task-list.content.income-sources.heading                     = Rhoi gwybod i ni am incwm eich cleient
-agent.business.task-list.content.income-sources.business                    = Busnes {0}
-agent.business.task-list.content.income-sources.add                         = Ychwanegu busnes
-agent.business.task-list.content.income-sources.property.uk                 = Busnes eiddo yn y DU
-agent.business.task-list.content.income-sources.property.overseas           = Busnes eiddo tramor
-agent.business.task-list.content.income-sources.remove-sole-trader-business = Tynnu {0}
-agent.business.task-list.content.income-sources.remove-uk-property          = Tynnu busnes eiddo yn y DU
-agent.business.task-list.content.income-sources.remove-overseas-property    = Tynnu busnes eiddo tramor
 agent.business.task-list.content.add-income.heading                         = Ffynonellau incwm eich cleient
 agent.business.task-list.content.add-income.add-text                        = Ychwanegu ffynonellau incwm eich cleient
 agent.business.task-list.content.add-income.view-text                       = Bwrw golwg dros ffynonellau incwm eich cleient a’u rheoli
@@ -989,15 +958,6 @@ business.task-list.content.section1.current-tax-year            = Blwyddyn dreth
 business.task-list.content.section1.next-tax-year               = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
 business.task-list.content.selected-tax-year.heading            = Dewiswch flwyddyn dreth
 business.task-list.content.selected-tax-year.para               = Dewiswch pryd yr hoffech ddechrau defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
-business.task-list.content.section2                             = Rhowch wybod i ni am eich incwm
-business.task-list.content.section2.business                    = Busnes {0}
-business.task-list.content.section2.add                         = Ychwanegu ffynhonnell incwm
-business.task-list.content.section2.property.uk                 = Busnes eiddo yn y DU
-business.task-list.content.section2.property.overseas           = Busnes eiddo tramor
-business.task-list.content.section2.remove-sole-trader-business = Tynnu {0}
-business.task-list.content.section2.remove-uk-property          = Tynnu busnes eiddo yn y DU
-business.task-list.content.section2.remove-overseas-property    = Tynnu busnes eiddo tramor
-business.task-list.content.section2.para                        = Mae’n rhaid i chi ychwanegu bob un o’ch busnesau unig fasnachwr, hyd at uchafswm o {0}. Nid oes angen i chi ychwanegu eich enillion TWE. Ond, mae’n rhaid i chi ychwanegu unrhyw fusnes eiddo sydd gennych. Mae hyn wedi’i gyfyngu i un busnes eiddo yn y DU ac un busnes eiddo dramor.
 business.task-list.content.section2-income-sources.heading      = Eich ffynonellau incwm
 business.task-list.content.section2-income-sources.para         = Ychwanegwch unrhyw ffynonellau incwm unig fasnachwr neu ffynonellau incwm o eiddo yn y DU ac eiddo tramor sydd gennych.
 business.task-list.content.section2-income-sources.view-text    = Bwrw golwg dros eich ffynonellau incwm a’u rheoli

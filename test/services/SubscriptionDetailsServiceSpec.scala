@@ -16,24 +16,15 @@
 
 package services
 
-import com.github.tomakehurst.wiremock.http.Response.response
 import common.Constants.ITSASessionKeys
 import connectors.IncomeTaxSubscriptionConnector
-import connectors.httpparser.DeleteSubscriptionDetailsHttpParser
-import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscriptionDetailsSuccessResponse
-import connectors.httpparser.PostSubscriptionDetailsHttpParser.{PostSubscriptionDetailsResponse, PostSubscriptionDetailsSuccessResponse}
-import models.{DateModel, Next}
-import models.common.{AccountingYearModel, PropertyModel}
-import org.mockito.Mockito.{verify, when}
-import org.scalatest.concurrent.Futures._
+import models.Next
+import models.common.AccountingYearModel
 import org.scalatest.matchers.should.Matchers._
 import play.api.test.FakeRequest
 import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.SubscriptionDataKeys._
 import utilities.{SubscriptionDataKeys, UnitTestTrait}
-
-import scala.concurrent.Future
 
 class SubscriptionDetailsServiceSpec extends UnitTestTrait
   with MockSubscriptionDetailsService {
