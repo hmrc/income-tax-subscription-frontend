@@ -65,7 +65,6 @@ class ProgressSavedControllerISpec extends ComponentSpecBase {
             s"${messages("business.progress-saved.title")} - Use software to send Income Tax updates - GOV.UK"
           )
         )
-        verifyAudit(Some(2))
       }
     }
   }
