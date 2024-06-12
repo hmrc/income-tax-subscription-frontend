@@ -45,7 +45,7 @@ class RemoveSelfEmploymentBusinessControllerISpec extends ComponentSpecBase {
       )
     }
 
-    "return INTERNAL_SERVER_ERROR" when {
+    "redirect to Business Already Removed" when {
       "the Sole trader business cannot be retrieved" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -54,10 +54,12 @@ class RemoveSelfEmploymentBusinessControllerISpec extends ComponentSpecBase {
         When("GET business/remove-business is called")
         val res = IncomeTaxSubscriptionFrontend.getRemoveBusiness(id = "unknown")
 
-        Then("Should return INTERNAL_SERVER_ERROR")
+
         res must have(
-          httpStatus(INTERNAL_SERVER_ERROR)
+          httpStatus(SEE_OTHER)
         )
+
+        redirectURI(controllers.agent.tasklist.addbusiness.routes.BusinessAlreadyRemovedController.show().url)
       }
     }
   }

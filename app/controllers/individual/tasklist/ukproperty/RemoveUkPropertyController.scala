@@ -44,8 +44,14 @@ class RemoveUkPropertyController @Inject()(incomeTaxSubscriptionConnector: Incom
                                            mcc: MessagesControllerComponents) extends SignUpController with ReferenceRetrieval {
 
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      Future.successful(Ok(view(form)))
+    implicit user => withIndividualReference { reference =>
+      subscriptionDetailsService.fetchProperty(reference) map {
+        case Some(_) =>
+          Ok(view(form))
+        case None =>
+          Redirect(controllers.individual.tasklist.addbusiness.routes.BusinessAlreadyRemovedController.show())
+      }
+    }
   }
 
   def submit: Action[AnyContent] = Authenticated.async { implicit request =>
