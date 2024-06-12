@@ -20,7 +20,10 @@ import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.IntegrationTestConstants.AgentURI
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
+import models.Cash
+import models.common.PropertyModel
 import play.api.http.Status._
+import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys
 import utilities.SubscriptionDataKeys.Property
 
@@ -29,6 +32,8 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
     "return OK" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property,OK,
+          Json.toJson(PropertyModel(accountingMethod = Some(Cash))))
 
         When("GET client/business/remove-uk-property-business is called")
         val res = IncomeTaxSubscriptionFrontend.getClientRemoveUkProperty
@@ -38,6 +43,21 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
           httpStatus(OK),
           pageTitle(messages("agent.remove-uk-property-business.heading") + serviceNameGovUk)
         )
+    }
+
+    "redirect to Business Already removed page" in {
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubAuthSuccess()
+      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property,NO_CONTENT,
+        Json.toJson(PropertyModel(accountingMethod = Some(Cash))))
+
+      When("GET client/business/remove-uk-property-business is called")
+      val res = IncomeTaxSubscriptionFrontend.getClientRemoveUkProperty
+      Then("Should return a OK with the client remove Uk property confirmation page displaying")
+      res must have(
+        httpStatus(SEE_OTHER),
+        redirectURI(controllers.agent.tasklist.addbusiness.routes.BusinessAlreadyRemovedController.show().url)
+      )
     }
   }
 

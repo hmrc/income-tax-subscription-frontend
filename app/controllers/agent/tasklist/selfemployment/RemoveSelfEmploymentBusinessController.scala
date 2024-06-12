@@ -25,7 +25,7 @@ import models.{No, Yes, YesNo}
 import play.api.data.Form
 import play.api.mvc._
 import services._
-import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
+import uk.gov.hmrc.http.HeaderCarrier
 import views.html.agent.tasklist.selfemployment.RemoveSelfEmploymentBusiness
 
 import javax.inject.{Inject, Singleton}
@@ -88,7 +88,7 @@ class RemoveSelfEmploymentBusinessController @Inject()(removeBusinessView: Remov
     fetchBusinessData(reference, businessId).flatMap {
       case Some(SelfEmploymentData(_, _, maybeBusinessNameModel, maybeBusinessTradeNameModel, _, _)) =>
         f(maybeBusinessNameModel, maybeBusinessTradeNameModel)
-      case _ => Future.failed(new InternalServerException("[RemoveBusinessController] - Could not retrieve business details"))
+      case _ => Future.successful(Redirect(controllers.agent.tasklist.addbusiness.routes.BusinessAlreadyRemovedController.show().url))
     }
   }
 

@@ -22,7 +22,6 @@ import models.common.business._
 import models.{DateModel, No, Yes}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Codec, Result}
@@ -63,12 +62,13 @@ class RemoveSelfEmploymentBusinessControllerSpec extends AgentControllerBaseSpec
       charset(result) mustBe Some(Codec.utf_8.charset)
     }
 
-    "throw an exception" when {
+    "redirect to Business Already Removed" when {
       "the Sole trader business cannot be retrieved" in withController { controller =>
         mockFetchAllSelfEmployments(testBusinesses)
 
         val result: Future[Result] = await(controller.show("unknown")(subscriptionRequest))
-        result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.agent.tasklist.addbusiness.routes.BusinessAlreadyRemovedController.show().url)
       }
     }
   }

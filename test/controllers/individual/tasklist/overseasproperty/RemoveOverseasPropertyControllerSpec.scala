@@ -21,6 +21,8 @@ import connectors.subscriptiondata.mocks.MockIncomeTaxSubscriptionConnector
 import controllers.individual.ControllerBaseSpec
 import forms.individual.business.RemoveOverseasPropertyForm
 import forms.submapping.YesNoMapping
+import models.Cash
+import models.common.OverseasPropertyModel
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
@@ -49,9 +51,20 @@ class RemoveOverseasPropertyControllerSpec extends ControllerBaseSpec
 
   "show" should {
     "return OK and display the remove overseas property page" in withController { controller =>
+      mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
       val result: Future[Result] = controller.show(subscriptionRequest)
       status(result) mustBe OK
       contentType(result) mustBe Some(HTML)
+    }
+
+    "redirect to Business Already Removed page" when {
+      "no uk property business exists" in withController { controller =>
+        mockFetchOverseasProperty(None)
+        val result: Future[Result] = controller.show(subscriptionRequest)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.individual.tasklist.addbusiness.routes.BusinessAlreadyRemovedController.show().url)
+      }
     }
   }
 

@@ -21,6 +21,8 @@ import connectors.subscriptiondata.mocks.MockIncomeTaxSubscriptionConnector
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.ClientRemoveUkPropertyForm
 import forms.submapping.YesNoMapping
+import models.Cash
+import models.common.PropertyModel
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
@@ -45,10 +47,21 @@ class RemoveUkPropertyControllerSpec extends AgentControllerBaseSpec
 
   "show" when {
     "return OK and display the client remove Uk property page" in withController { controller =>
+      mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash))))
       val result: Future[Result] = controller.show(subscriptionRequest)
 
       status(result) mustBe OK
       contentType(result) mustBe Some(HTML)
+    }
+
+    "redirect to Business Already Removed page" when {
+      "no uk property business exists" in  withController { controller =>
+        mockFetchProperty(None)
+        val result: Future[Result] = controller.show(subscriptionRequest)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.agent.tasklist.addbusiness.routes.BusinessAlreadyRemovedController.show().url)
+      }
     }
   }
 

@@ -46,8 +46,15 @@ class RemoveOverseasPropertyController @Inject()(incomeTaxSubscriptionConnector:
   private val form: Form[YesNo] = RemoveClientOverseasPropertyForm.removeClientOverseasPropertyForm
 
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      Future.successful(Ok(view(form)))
+    implicit user => withAgentReference { reference =>
+
+      subscriptionDetailsService.fetchOverseasProperty(reference) map{
+        case Some(_) =>
+          Ok(view(form))
+        case None =>
+          Redirect(controllers.agent.tasklist.addbusiness.routes.BusinessAlreadyRemovedController.show())
+      }
+    }
   }
 
   def submit: Action[AnyContent] = Authenticated.async { implicit request =>

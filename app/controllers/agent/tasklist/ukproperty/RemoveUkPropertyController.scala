@@ -46,8 +46,15 @@ class RemoveUkPropertyController @Inject()(incomeTaxSubscriptionConnector: Incom
   private val form: Form[YesNo] = ClientRemoveUkPropertyForm.removeUkPropertyForm
 
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      Future.successful(Ok(view(form)))
+    implicit user => withAgentReference { reference =>
+
+      subscriptionDetailsService.fetchProperty(reference) map{
+        case Some(_) =>
+          Ok(view(form))
+        case None =>
+          Redirect(controllers.agent.tasklist.addbusiness.routes.BusinessAlreadyRemovedController.show())
+      }
+    }
   }
 
   def submit: Action[AnyContent] = Authenticated.async { implicit request =>

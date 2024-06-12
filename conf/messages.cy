@@ -66,13 +66,13 @@ iv-failure.could-not-match-details                              = nid oeddem yn 
 #Business Already Removed
 business-already-removed.title                                  = Rydych eisoes wedi dileu’r ffynhonnell incwm hon
 business-already-removed.heading                                = Rydych eisoes wedi dileu’r ffynhonnell incwm hon
-business-already-removed.back-to-income-sources-para            = Ewch yn ôl i’ch
+business-already-removed.back-to-income-sources-para            = Ewch yn ôl i’ch {0}
 business-already-removed.back-to-income-sources-link-text       = ffynonellau incwm
 
 #Agent Business Already Removed
 agent.business-already-removed.title                            = Rydych eisoes wedi dileu’r ffynhonnell incwm hon
 agent.business-already-removed.heading                          = Rydych eisoes wedi dileu’r ffynhonnell incwm hon
-agent.business-already-removed.back-to-income-sources-para      = Ewch yn ôl i
+agent.business-already-removed.back-to-income-sources-para      = Ewch yn ôl i {0}
 agent.business-already-removed.back-to-income-sources-link-text = ffynonellau incwm eich cleient
 
 ## Individual your income sources to sign up page
