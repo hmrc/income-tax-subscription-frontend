@@ -1083,7 +1083,6 @@ individual.global-check-your-answers.income-sources.self-employment.heading     
 individual.global-check-your-answers.income-sources.self-employment.name                        = Enw’r busnes
 individual.global-check-your-answers.income-sources.self-employment.start-date                  = Dyddiad dechrau masnachu
 individual.global-check-your-answers.income-sources.self-employment.address                     = Cyfeiriad
-individual.global-check-your-answers.income-sources.self-employment-accounting-method.heading   = Dull cyfrifyddu busnesau unig fasnachwr
 individual.global-check-your-answers.income-sources.self-employment.accounting-method           = Dull cyfrifyddu
 individual.global-check-your-answers.income-sources.uk-property.heading                         = Busnes eiddo yn y DU
 individual.global-check-your-answers.income-sources.uk-property.start-date                      = Dyddiad dechrau
@@ -1104,7 +1103,6 @@ agent.global-check-your-answers.income-sources.heading                          
 agent.global-check-your-answers.income-sources.self-employment.name                             = Enw’r
 agent.global-check-your-answers.income-sources.self-employment.start-date                       = Dyddiad dechrau masnachu
 agent.global-check-your-answers.income-sources.self-employment.address                          = Cyfeiriad
-agent.global-check-your-answers.income-sources.self-employment-accounting-method.heading        = Dull cyfrifyddu busnesau unig fasnachwr
 agent.global-check-your-answers.income-sources.self-employment.accounting-method                = Dull cyfrifyddu
 agent.global-check-your-answers.income-sources.uk-property.heading                              = Busnes eiddo yn y DU
 agent.global-check-your-answers.income-sources.uk-property.start-date                           = Dyddiad dechrau

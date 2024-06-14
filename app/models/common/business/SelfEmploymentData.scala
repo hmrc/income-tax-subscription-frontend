@@ -16,6 +16,7 @@
 
 package models.common.business
 
+import models.AccountingMethod
 import models.common.{EncryptingAddress, SoleTraderBusiness}
 import play.api.libs.json._
 
@@ -24,9 +25,16 @@ case class SelfEmploymentData(id: String,
                               businessName: Option[BusinessNameModel] = None,
                               businessTradeName: Option[BusinessTradeNameModel] = None,
                               businessAddress: Option[BusinessAddressModel] = None,
+                              accountingMethod: Option[AccountingMethod] = None,
                               confirmed: Boolean = false) {
 
-  val isComplete: Boolean = businessStartDate.isDefined && businessName.isDefined && businessTradeName.isDefined && businessAddress.isDefined
+  val isComplete: Boolean = {
+    businessStartDate.isDefined &&
+      businessName.isDefined &&
+      businessTradeName.isDefined &&
+      businessAddress.isDefined &&
+      accountingMethod.isDefined
+  }
 
   def toSoleTraderBusiness: SoleTraderBusiness = SoleTraderBusiness(
     id = id,
@@ -34,7 +42,8 @@ case class SelfEmploymentData(id: String,
     startDate = businessStartDate.map(_.startDate),
     name = businessName.map(_.businessName),
     trade = businessTradeName.map(_.businessTradeName),
-    address = businessAddress.map(_.address).map(address => EncryptingAddress(address.lines, address.postcode))
+    address = businessAddress.map(_.address).map(address => EncryptingAddress(address.lines, address.postcode)),
+    accountingMethod = accountingMethod
   )
 
 }

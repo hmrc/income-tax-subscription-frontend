@@ -79,7 +79,7 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
   def fetchProperty(reference: String)(implicit hc: HeaderCarrier): Future[Option[PropertyModel]] =
     incomeTaxSubscriptionConnector.getSubscriptionDetails[PropertyModel](reference, Property)
 
-  def taskListStatusUpdate(reference: String, connector: IncomeTaxSubscriptionConnector, result: PostSubscriptionDetailsResponse)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
+  private def taskListStatusUpdate(reference: String, connector: IncomeTaxSubscriptionConnector, result: PostSubscriptionDetailsResponse)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
     result match {
       case Right(value) =>
         connector.deleteSubscriptionDetails(
@@ -93,7 +93,7 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
     }
   }
 
-  def saveBusinesses(reference: String, selfEmploymentData: Seq[SelfEmploymentData], accountingMethod: Option[AccountingMethod])
+  def saveBusinesses(reference: String, selfEmploymentData: Seq[SelfEmploymentData])
                     (implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
     val soleTraderBusinesses = SoleTraderBusinesses(
       businesses = selfEmploymentData.map { se =>
@@ -105,8 +105,7 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
           trade = se.businessTradeName.map(_.businessTradeName),
           address = se.businessAddress.map(_.address).map(address => EncryptingAddress(address.lines, address.postcode))
         )
-      },
-      accountingMethod = accountingMethod
+      }
     )
     incomeTaxSubscriptionConnector.saveSubscriptionDetails(reference, SoleTraderBusinessesKey, soleTraderBusinesses)(implicitly, SoleTraderBusinesses.encryptedFormat).flatMap {
       result =>
@@ -190,19 +189,19 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
     }
   }
 
-  def fetchAllSelfEmployments(reference: String)(implicit hc: HeaderCarrier): Future[(Seq[SelfEmploymentData], Option[AccountingMethod])] = {
+  def fetchAllSelfEmployments(reference: String)(implicit hc: HeaderCarrier): Future[Seq[SelfEmploymentData]] = {
     incomeTaxSubscriptionConnector.getSubscriptionDetails[SoleTraderBusinesses](
       reference = reference,
       id = SoleTraderBusinessesKey
     )(implicitly, SoleTraderBusinesses.encryptedFormat) map {
-      case Some(value) => (value.businesses.map(_.toSelfEmploymentData), value.accountingMethod)
-      case None => (Seq.empty[SelfEmploymentData], None)
+      case Some(value) => value.businesses.map(_.toSelfEmploymentData)
+      case None => Seq.empty[SelfEmploymentData]
     }
   }
 
   def fetchAllIncomeSources(reference: String)(implicit hc: HeaderCarrier): Future[IncomeSources] = {
     for {
-      (selfEmployments, _) <- fetchAllSelfEmployments(reference)
+      selfEmployments <- fetchAllSelfEmployments(reference)
       ukProperty <- fetchProperty(reference)
       foreignProperty <- fetchOverseasProperty(reference)
     } yield {

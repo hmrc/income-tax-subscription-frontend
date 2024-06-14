@@ -27,11 +27,11 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PrePopulationService @Inject()(val subscriptionDetailsService: SubscriptionDetailsService
-                                    ) extends Logging {
+class PrePopulationService @Inject()(val subscriptionDetailsService: SubscriptionDetailsService)
+                                    (implicit ec: ExecutionContext) extends Logging {
 
   def prePopulate(reference: String, prepop: PrePopData)
-                 (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = for {
+                 (implicit hc: HeaderCarrier): Future[Unit] = for {
     flag <- subscriptionDetailsService.fetchPrePopFlag(reference)
     _ <- flag match {
       case None => populateSubscription(reference, prepop)
@@ -40,25 +40,25 @@ class PrePopulationService @Inject()(val subscriptionDetailsService: Subscriptio
   } yield ()
 
   private def populateSubscription(reference: String, prePopData: PrePopData)
-                                  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
+                                  (implicit hc: HeaderCarrier): Future[Unit] = {
     // Set up all futures so that they parallelise.
-
-    val maybeAccountingMethod = prePopData.selfEmployments.flatMap(_.flatMap(_.businessAccountingMethod).headOption)
 
     val futureSaveSelfEmployments = prePopData.selfEmployments match {
       case None => Future.successful(())
       case Some(listPrepopSelfEmployment) =>
         val listSelfEmploymentData = listPrepopSelfEmployment.map(se => SelfEmploymentData(
-          UUID.randomUUID().toString,
-          se.businessStartDate.map(date => BusinessStartDate(date)),
-          se.businessName.flatMap(name => BusinessNameModel(name).toCleanOption),
-          BusinessTradeNameModel(se.businessTradeName).toCleanOption,
-          if (se.businessAddressPostCode.isDefined || se.businessAddressFirstLine.isDefined)
+          id = UUID.randomUUID().toString,
+          businessStartDate = se.businessStartDate.map(date => BusinessStartDate(date)),
+          businessName = se.businessName.flatMap(name => BusinessNameModel(name).toCleanOption),
+          businessTradeName = BusinessTradeNameModel(se.businessTradeName).toCleanOption,
+          businessAddress = if (se.businessAddressPostCode.isDefined || se.businessAddressFirstLine.isDefined) {
             Some(BusinessAddressModel(address = Address(se.businessAddressFirstLine.toList, se.businessAddressPostCode)))
-          else
+          } else {
             None
+          },
+          accountingMethod = se.businessAccountingMethod
         ))
-        subscriptionDetailsService.saveBusinesses(reference, listSelfEmploymentData, maybeAccountingMethod)
+        subscriptionDetailsService.saveBusinesses(reference, listSelfEmploymentData)
     }
 
     val futureSaveUkPropertyInfo = prePopData.ukProperty match {

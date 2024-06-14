@@ -16,7 +16,7 @@
 
 package models.audits
 
-import models.common.business.{AccountingMethodModel, Address, SelfEmploymentData}
+import models.common.business.{Address, SelfEmploymentData}
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
 import models.{Current, Next}
 import play.api.libs.json.Format.GenericFormat
@@ -24,12 +24,12 @@ import play.api.libs.json._
 import services.JsonAuditModel
 
 object SaveAndComebackAuditing {
-  val signUpSaveAndComeBackAudit: String = "SignUpSaveAndComeBack"
+  private val signUpSaveAndComeBackAudit: String = "SignUpSaveAndComeBack"
   val individualUserType: String = "individual"
   val agentUserType: String = "agent"
 
   val ukPropertyIncomeSource = "ukProperty"
-  val overseasPropertyIncomeSource = "foreignProperty"
+  private val overseasPropertyIncomeSource = "foreignProperty"
   val selfEmploymentIncomeSource = "selfEmployment"
 
   case class SaveAndComeBackAuditModel(
@@ -41,7 +41,6 @@ object SaveAndComebackAuditing {
                                         currentTaxYear: Int,
                                         selectedTaxYear: Option[AccountingYearModel],
                                         selfEmployments: Seq[SelfEmploymentData],
-                                        maybeSelfEmploymentAccountingMethod: Option[AccountingMethodModel],
                                         maybePropertyModel: Option[PropertyModel],
                                         maybeOverseasPropertyModel: Option[OverseasPropertyModel]
                                       ) extends JsonAuditModel {
@@ -64,14 +63,14 @@ object SaveAndComebackAuditing {
     }
     }
     val income: Seq[JsValue] = Seq() ++ ukPropertyAsJson ++ overseasPropertyAsJson ++
-      selfEmploymentAsJson(selfEmployments, maybeSelfEmploymentAccountingMethod)
+      selfEmploymentAsJson(selfEmployments)
 
     override val detail: JsValue = Json.obj(
       "userType" -> userType,
       "saUtr" -> utr,
       "nino" -> nino,
       "saveAndRetrieveLocation" -> saveAndRetrieveLocation,
-      "income" -> JsArray(income)
+      "income" -> income
     ) ++ selectedTaxYear.fold(Json.obj()) {
       case AccountingYearModel(Next, _, _) => Json.obj("taxYear" -> s"$currentTaxYear-${currentTaxYear + 1}")
       case AccountingYearModel(Current, _, _) => Json.obj("taxYear" -> s"${currentTaxYear - 1}-$currentTaxYear")
@@ -79,23 +78,20 @@ object SaveAndComebackAuditing {
   }
 
   private def selfEmploymentAsJson(
-                                    selfEmployments: Seq[SelfEmploymentData],
-                                    maybeSelfEmploymentAccountingMethod: Option[AccountingMethodModel]
+                                    selfEmployments: Seq[SelfEmploymentData]
                                   ): Option[JsValue] =
     selfEmployments match {
       case Seq() => None
       case _ => Some(
         Json.toJson(AuditDetailSelfEmploymentIncome(
           incomeSource = selfEmploymentIncomeSource,
-          numberOfBusinesses = s"${
-            selfEmployments.size
-          }",
-          accountingType = maybeSelfEmploymentAccountingMethod.map(_.accountingMethod.toString),
+          numberOfBusinesses = selfEmployments.size.toString,
           businesses = selfEmployments.map(se => AuditDetailBusinessIncome(
             businessName = se.businessName.map(_.businessName),
             businessCommencementDate = se.businessStartDate.map(_.startDate.toDesDateFormat),
             businessTrade = se.businessTradeName.map(_.businessTradeName),
-            businessAddress = se.businessAddress.map(_.address)
+            businessAddress = se.businessAddress.map(_.address),
+            accountingType = se.accountingMethod.map(_.toString)
           ))
         )))
     }
@@ -114,7 +110,6 @@ object AuditDetailPropertyIncome {
 case class AuditDetailSelfEmploymentIncome(
                                             incomeSource: String,
                                             numberOfBusinesses: String,
-                                            accountingType: Option[String],
                                             businesses: Seq[AuditDetailBusinessIncome]
                                           )
 
@@ -126,7 +121,8 @@ case class AuditDetailBusinessIncome(
                                       businessName: Option[String],
                                       businessCommencementDate: Option[String],
                                       businessTrade: Option[String],
-                                      businessAddress: Option[Address]
+                                      businessAddress: Option[Address],
+                                      accountingType: Option[String]
                                     )
 
 object AuditDetailBusinessIncome {

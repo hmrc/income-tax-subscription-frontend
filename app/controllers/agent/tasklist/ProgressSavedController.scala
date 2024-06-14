@@ -21,7 +21,6 @@ import config.AppConfig
 import controllers.utils.ReferenceRetrieval
 import models.audits.SaveAndComebackAuditing
 import models.audits.SaveAndComebackAuditing.SaveAndComeBackAuditModel
-import models.common.business.AccountingMethodModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.api.{Configuration, Environment}
 import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
@@ -78,7 +77,7 @@ class ProgressSavedController @Inject()(progressSavedView: ProgressSaved,
                                )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[SaveAndComeBackAuditModel] = {
 
     for {
-      (businesses, accountingMethod) <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
+      businesses <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
       property <- subscriptionDetailsService.fetchProperty(reference)
       overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
       selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
@@ -92,7 +91,6 @@ class ProgressSavedController @Inject()(progressSavedView: ProgressSaved,
         currentTaxYear = AccountingPeriodUtil.getTaxEndYear(currentDateProvider.getCurrentDate),
         selectedTaxYear = selectedTaxYear,
         selfEmployments = businesses,
-        maybeSelfEmploymentAccountingMethod = accountingMethod.map(AccountingMethodModel.apply),
         maybePropertyModel = property,
         maybeOverseasPropertyModel = overseasProperty
       )

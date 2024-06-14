@@ -72,7 +72,7 @@ class RemoveSelfEmploymentBusinessController @Inject()(removeBusinessView: Remov
 
   private def fetchBusinessesAndRemoveThisBusiness(businessId: String, reference: String)(implicit headerCarrier: HeaderCarrier) = {
     subscriptionDetailsService.fetchAllSelfEmployments(reference)
-      .flatMap { case (businesses, accountingMethod) => removeBusinessService.deleteBusiness(reference, businessId, businesses, accountingMethod) }
+      .flatMap { businesses => removeBusinessService.deleteBusiness(reference, businessId, businesses) }
       .map {
         case Right(_) => Redirect(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
         case Left(reason) => throw new RuntimeException(reason.toString)
@@ -86,14 +86,14 @@ class RemoveSelfEmploymentBusinessController @Inject()(removeBusinessView: Remov
                                 implicit hc: HeaderCarrier
                               ): Future[Result] = {
     fetchBusinessData(reference, businessId).flatMap {
-      case Some(SelfEmploymentData(_, _, maybeBusinessNameModel, maybeBusinessTradeNameModel, _, _)) =>
+      case Some(SelfEmploymentData(_, _, maybeBusinessNameModel, maybeBusinessTradeNameModel, _, _, _)) =>
         f(maybeBusinessNameModel, maybeBusinessTradeNameModel)
       case _ => Future.successful(Redirect(controllers.agent.tasklist.addbusiness.routes.BusinessAlreadyRemovedController.show().url))
     }
   }
 
   private def fetchBusinessData(reference: String, id: String)(implicit hc: HeaderCarrier): Future[Option[SelfEmploymentData]] = {
-    subscriptionDetailsService.fetchAllSelfEmployments(reference).map { case (businesses, _) =>
+    subscriptionDetailsService.fetchAllSelfEmployments(reference).map { businesses =>
       businesses.find(_.id == id)
     }
   }

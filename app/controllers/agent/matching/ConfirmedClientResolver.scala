@@ -18,7 +18,7 @@ package controllers.agent.matching
 
 import auth.agent.{AgentSignUp, IncomeTaxAgentUser, UserMatchingController}
 import common.Constants.ITSASessionKeys
-import common.Constants.ITSASessionKeys.{FailedClientMatching, JourneyStateKey, UTR}
+import common.Constants.ITSASessionKeys.{FailedClientMatching, JourneyStateKey}
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.PrePopulate
 import config.featureswitch.FeatureSwitching

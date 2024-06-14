@@ -47,14 +47,13 @@ class GetCompleteDetailsService @Inject()(subscriptionDetailsService: Subscripti
     val fetchSelectedTaxYear = subscriptionDetailsService.fetchSelectedTaxYear(reference)
 
     for {
-      (selfEmployments, accountingMethod) <- fetchAllSelfEmployments
+      selfEmployments <- fetchAllSelfEmployments
       ukProperty <- fetchUKProperty
       foreignProperty <- fetchForeignProperty
       selectedTaxYear <- fetchSelectedTaxYear
     } yield {
       createCompleteDetails(
         selfEmployments,
-        accountingMethod,
         ukProperty,
         foreignProperty,
         selectedTaxYear
@@ -64,27 +63,28 @@ class GetCompleteDetailsService @Inject()(subscriptionDetailsService: Subscripti
   }
 
   private def createCompleteDetails(selfEmployments: Seq[SelfEmploymentData],
-                                    selfEmploymentsAccountingMethod: Option[AccountingMethod],
                                     ukPropertyBusiness: Option[PropertyModel],
                                     foreignPropertyBusiness: Option[OverseasPropertyModel],
                                     selectedTaxYear: Option[AccountingYearModel]
-                                    ): Either[GetCompleteDetailsFailure.type, CompleteDetails] = {
+                                   ): Either[GetCompleteDetailsFailure.type, CompleteDetails] = {
 
     Try {
       val soleTraderBusinesses: Option[SoleTraderBusinesses] = {
-        selfEmploymentsAccountingMethod map { accountingMethod =>
-          SoleTraderBusinesses(
-            accountingMethod = accountingMethod,
+        if (selfEmployments.isEmpty) {
+          None
+        } else {
+          Some(SoleTraderBusinesses(
             businesses = selfEmployments.map { selfEmploymentData =>
               SoleTraderBusiness(
                 id = selfEmploymentData.id,
                 name = selfEmploymentData.businessName.get.businessName,
                 trade = selfEmploymentData.businessTradeName.get.businessTradeName,
                 startDate = selfEmploymentData.businessStartDate.get.startDate.toLocalDate,
-                address = selfEmploymentData.businessAddress.get.address
+                address = selfEmploymentData.businessAddress.get.address,
+                accountingMethod = selfEmploymentData.accountingMethod.get
               )
             }
-          )
+          ))
         }
       }
 
@@ -130,7 +130,6 @@ object GetCompleteDetailsService {
                           )
 
   case class SoleTraderBusinesses(
-                                   accountingMethod: AccountingMethod,
                                    businesses: Seq[SoleTraderBusiness]
                                  )
 
@@ -139,7 +138,8 @@ object GetCompleteDetailsService {
                                  name: String,
                                  trade: String,
                                  startDate: LocalDate,
-                                 address: Address
+                                 address: Address,
+                                 accountingMethod: AccountingMethod
                                )
 
   case class UKProperty(

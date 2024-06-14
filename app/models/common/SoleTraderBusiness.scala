@@ -16,8 +16,8 @@
 
 package models.common
 
-import models.DateModel
 import models.common.business._
+import models.{AccountingMethod, DateModel}
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import play.api.libs.json._
 import uk.gov.hmrc.crypto.Sensitive.SensitiveString
@@ -29,13 +29,16 @@ case class SoleTraderBusiness(id: String,
                               startDate: Option[DateModel] = None,
                               name: Option[String] = None,
                               trade: Option[String] = None,
-                              address: Option[EncryptingAddress] = None) {
+                              address: Option[EncryptingAddress] = None,
+                              accountingMethod: Option[AccountingMethod] = None
+                             ) {
   def toSelfEmploymentData: SelfEmploymentData = SelfEmploymentData(
     id = id,
     businessStartDate = startDate.map(BusinessStartDate.apply),
     businessName = name.map(BusinessNameModel.apply),
     businessTradeName = trade.map(BusinessTradeNameModel.apply),
     businessAddress = address.map(_.toNormalAddress).map(BusinessAddressModel.apply),
+    accountingMethod = accountingMethod,
     confirmed = confirmed
   )
 }
@@ -54,10 +57,11 @@ object SoleTraderBusiness {
         (__ \ "startDate").readNullable[DateModel] and
         (__ \ "name").readNullable[SensitiveString] and
         (__ \ "trade").readNullable[String] and
-        (__ \ "address").readNullable[EncryptingAddress]
+        (__ \ "address").readNullable[EncryptingAddress] and
+        (__ \ "accountingMethod").readNullable[AccountingMethod]
       )(
-      (id, confirmed, startDate, name, trade, address) =>
-        SoleTraderBusiness.apply(id, confirmed, startDate, name.map(_.decryptedValue), trade, address)
+      (id, confirmed, startDate, name, trade, address, accountingMethod) =>
+        SoleTraderBusiness.apply(id, confirmed, startDate, name.map(_.decryptedValue), trade, address, accountingMethod)
     )
 
     val writes: OWrites[SoleTraderBusiness] = (
@@ -66,7 +70,8 @@ object SoleTraderBusiness {
         (__ \ "startDate").writeNullable[DateModel] and
         (__ \ "name").writeNullable[SensitiveString] and
         (__ \ "trade").writeNullable[String] and
-        (__ \ "address").writeNullable[EncryptingAddress]
+        (__ \ "address").writeNullable[EncryptingAddress] and
+        (__ \ "accountingMethod").writeNullable[AccountingMethod]
       )(
       soleTraderBusiness =>
         (
@@ -75,7 +80,8 @@ object SoleTraderBusiness {
           soleTraderBusiness.startDate,
           soleTraderBusiness.name.map(SensitiveString.apply),
           soleTraderBusiness.trade,
-          soleTraderBusiness.address
+          soleTraderBusiness.address,
+          soleTraderBusiness.accountingMethod
         )
     )
 

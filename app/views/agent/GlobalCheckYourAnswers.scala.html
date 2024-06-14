@@ -93,37 +93,21 @@
 
         @govukSummaryList(SummaryList(
             rows = Seq(
-                Some(SummaryListRow(
+                SummaryListRow(
                     key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.self-employment.name"))),
                     value = Value(content = Text(business.name))
-                )),
-                Some(SummaryListRow(
+                ),
+                SummaryListRow(
                     key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.self-employment.start-date"))),
                     value = Value(content = Text(business.startDate.toLongDate))
-                )),
-                Some(SummaryListRow(
+                ),
+                SummaryListRow(
                     key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.self-employment.address"))),
                     value = Value(content = Text(business.address.toString))
-                )),
-                if(soleTraderBusinesses.businesses.size == 1) {
-                    Some(SummaryListRow(
-                        key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.self-employment.accounting-method"))),
-                        value = Value(content = Text(accountingMethod(soleTraderBusinesses.accountingMethod)))
-                    ))
-                } else {
-                    None
-                }
-            ).flatten
-        ))
-    }
-
-    @if(soleTraderBusinesses.businesses.size > 1) {
-        <h2 class="govuk-heading-m">@messages("agent.global-check-your-answers.income-sources.self-employment-accounting-method.heading")</h2>
-        @govukSummaryList(SummaryList(
-            rows = Seq(
+                ),
                 SummaryListRow(
                     key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.self-employment.accounting-method"))),
-                    value = Value(content = Text(accountingMethod(soleTraderBusinesses.accountingMethod)))
+                    value = Value(content = Text(accountingMethod(business.accountingMethod)))
                 )
             )
         ))
