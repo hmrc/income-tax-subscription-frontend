@@ -26,6 +26,7 @@ object FeatureSwitch {
 
   val switches: Set[FeatureSwitch] = Set(
     PrePopulate,
+    SoleTraderAccountingMethod,
     ThrottlingFeature
   )
 
@@ -40,6 +41,11 @@ object FeatureSwitch {
   case object PrePopulate extends FeatureSwitch {
     override val name = s"$prefix.prepopulate"
     override val displayText = "Prepopulate"
+  }
+
+  case object SoleTraderAccountingMethod extends FeatureSwitch {
+    override val name = s"$prefix.sole-trader-accounting-method"
+    override val displayText = "Sole Trader Accounting Method"
   }
 
   case object ThrottlingFeature extends FeatureSwitch {

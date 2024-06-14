@@ -73,6 +73,33 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
     }
   }
 
+  "Sole Trader Accounting Method" should {
+    "return true if sole trader accounting method feature switch is enabled in sys.props" in {
+      enable(SoleTraderAccountingMethod)
+      isEnabled(SoleTraderAccountingMethod) mustBe true
+    }
+    "return false if sole trader accounting method feature switch is disabled in sys.props" in {
+      disable(SoleTraderAccountingMethod)
+      isEnabled(SoleTraderAccountingMethod) mustBe false
+    }
+
+    "return false if sole trader accounting method feature switch does not exist" in {
+      when(mockConfig.getOptional[String]("feature-switch.sole-trader-accounting-method")).thenReturn(None)
+      isEnabled(SoleTraderAccountingMethod) mustBe false
+    }
+
+    "return false if sole trader accounting method feature switch is not in sys.props but is set to off in config" in {
+
+      when(mockConfig.getOptional[String]("feature-switch.sole-trader-accounting-method")).thenReturn(Some(FEATURE_SWITCH_OFF))
+      isEnabled(SoleTraderAccountingMethod) mustBe false
+    }
+
+    "return true if sole trader accounting method feature switch is not in sys.props but is set to on in config" in {
+      when(mockConfig.getOptional[String]("feature-switch.sole-trader-accounting-method")).thenReturn(Some(FEATURE_SWITCH_ON))
+      isEnabled(SoleTraderAccountingMethod) mustBe true
+    }
+  }
+
   "Throttle" should {
     "return true if Throttle feature switch is enabled in sys.props" in {
       enable(ThrottlingFeature)
