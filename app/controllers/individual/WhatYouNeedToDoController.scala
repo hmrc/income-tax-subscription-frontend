@@ -20,25 +20,36 @@ import auth.individual.SignUpController
 import common.Constants.ITSASessionKeys
 import config.AppConfig
 import play.api.mvc._
-import services.{AuditingService, AuthService}
+import services.{AuditingService, AuthService, MandationStatusService}
 import views.html.individual.WhatYouNeedToDo
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo)
+class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
+                                          mandationStatusService: MandationStatusService)
                                          (val auditingService: AuditingService,
                                           val appConfig: AppConfig,
                                           val authService: AuthService)
                                          (implicit mcc: MessagesControllerComponents, val ec: ExecutionContext) extends SignUpController {
 
-  val show: Action[AnyContent] = Authenticated { implicit request =>
-    _ =>
+  val show: Action[AnyContent] = Authenticated.async { implicit request =>
+    implicit user =>
       val nextYearOnly = request.session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY).contains("true")
-      val mandatedCurrentYear = request.session.get(ITSASessionKeys.MANDATED_CURRENT_YEAR).contains("true")
-      val mandatedNextYear = request.session.get(ITSASessionKeys.MANDATED_NEXT_YEAR).contains("true")
-      Ok(whatYouNeedToDo(postAction = routes.WhatYouNeedToDoController.submit, nextYearOnly, mandatedCurrentYear, mandatedNextYear))
+
+      mandationStatusService.getMandationStatus(
+        user.getNino,
+        user.getUtr
+      ) map { mandationStatus =>
+        Ok(whatYouNeedToDo(
+          routes.WhatYouNeedToDoController.submit,
+          nextYearOnly,
+          mandationStatus.currentYearStatus.isMandated,
+          mandationStatus.nextYearStatus.isMandated
+        ))
+      }
+
   }
 
   val submit: Action[AnyContent] = Authenticated { _ =>

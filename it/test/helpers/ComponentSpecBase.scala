@@ -246,7 +246,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
     def alreadyEnrolled(): WSResponse = get("/already-enrolled")
 
-    def whatYouNeedToDo(): WSResponse = get("/what-you-need-to-do")
+    def whatYouNeedToDo(session: Map[String, String] = Map.empty): WSResponse = get("/what-you-need-to-do", session)
 
     def submitWhatYouNeedToDo(): WSResponse = post("/what-you-need-to-do")(Map.empty)
 

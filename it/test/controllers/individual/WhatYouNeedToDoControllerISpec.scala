@@ -16,10 +16,15 @@
 
 package controllers.individual
 
+import common.Constants.ITSASessionKeys
+import connectors.stubs.SessionDataConnectorStub
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.IndividualURI
+import helpers.IntegrationTestConstants.{IndividualURI, testNino, testUtr}
 import helpers.servicemocks.AuthStub
+import models.status.MandationStatus.Voluntary
+import models.status.MandationStatusModel
 import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.libs.json.Json
 
 class WhatYouNeedToDoControllerISpec extends ComponentSpecBase {
 
@@ -29,9 +34,15 @@ class WhatYouNeedToDoControllerISpec extends ComponentSpecBase {
     "return OK with the page content" in {
       Given("I am authenticated")
       AuthStub.stubAuthSuccess()
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
 
       When(s"GET ${routes.WhatYouNeedToDoController.show.url} is called")
-      val result = IncomeTaxSubscriptionFrontend.whatYouNeedToDo()
+      val result = IncomeTaxSubscriptionFrontend.whatYouNeedToDo(
+        Map(
+          ITSASessionKeys.NINO -> testNino,
+          ITSASessionKeys.UTR -> testUtr
+        )
+      )
 
       Then("The result should be OK with page content")
       result must have(

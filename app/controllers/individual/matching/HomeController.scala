@@ -18,15 +18,11 @@ package controllers.individual.matching
 
 import auth.individual.JourneyState._
 import auth.individual.{IncomeTaxSAUser, SignUp, StatelessController, UserIdentifiers}
-import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys._
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.PrePopulate
-import connectors.MandationStatusConnector
 import controllers.utils.ReferenceRetrieval
 import models.common.subscription.SubscriptionSuccess
-import models.status.MandationStatus.Mandated
-import models.status.MandationStatusModel
 import models.usermatching.CitizenDetails
 import models.{EligibilityStatus, PrePopData}
 import play.api.mvc._
@@ -42,8 +38,7 @@ class HomeController @Inject()(citizenDetailsService: CitizenDetailsService,
                                getEligibilityStatusService: GetEligibilityStatusService,
                                subscriptionService: SubscriptionService,
                                throttlingService: ThrottlingService,
-                               prePopulationService: PrePopulationService,
-                               mandationStatusConnector: MandationStatusConnector)
+                               prePopulationService: PrePopulationService)
                               (val auditingService: AuditingService,
                                val authService: AuthService,
                                val subscriptionDetailsService: SubscriptionDetailsService,
@@ -108,30 +103,15 @@ class HomeController @Inject()(citizenDetailsService: CitizenDetailsService,
             case EligibilityStatus(false, false, _) =>
               Future.successful(Redirect(controllers.individual.controllist.routes.NotEligibleForIncomeTaxController.show()))
             case EligibilityStatus(thisYear, _, prepopMaybe) =>
-              handlePrepop(reference, prepopMaybe) flatMap { _ =>
-                withMandationStatus(nino, utr) { mandationStatus =>
-                  goToSignUp(thisYear)
-                    .withJourneyState(SignUp)
-                    .addingToSession(UTR -> utr)
-                    .addingToSession(NINO -> nino)
-                    .addingToSession(ITSASessionKeys.MANDATED_CURRENT_YEAR -> (mandationStatus.currentYearStatus == Mandated).toString)
-                    .addingToSession(ITSASessionKeys.MANDATED_NEXT_YEAR -> (mandationStatus.nextYearStatus == Mandated).toString)
-                    .addingToSession(ELIGIBLE_NEXT_YEAR_ONLY -> (!thisYear).toString)
-                }
+              handlePrepop(reference, prepopMaybe) map { _ =>
+                goToSignUp(thisYear)
+                  .withJourneyState(SignUp)
+                  .addingToSession(UTR -> utr)
+                  .addingToSession(NINO -> nino)
+                  .addingToSession(ELIGIBLE_NEXT_YEAR_ONLY -> (!thisYear).toString)
               }
           }
         }
-    }
-  }
-
-  private def withMandationStatus(nino: String, utr: String)
-                                 (f: MandationStatusModel => Result)
-                                 (implicit request: Request[AnyContent]): Future[Result] = {
-    mandationStatusConnector.getMandationStatus(nino, utr) map {
-      case Left(_) =>
-        throw new InternalServerException("[HomeController][withMandationStatus] - Unexpected failure when receiving mandation status")
-      case Right(model) =>
-        f(model)
     }
   }
 

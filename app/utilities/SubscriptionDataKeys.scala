@@ -29,8 +29,6 @@ object SubscriptionDataKeys {
   val SoleTraderBusinessesKey = "SoleTraderBusinesses"
   val EligibilityInterruptPassed = "EligibilityInterruptPassed"
 
-  val MandationStatus = "MandationStatus"
-
   val subscriptionId = "subscriptionId"
   val lastUpdatedTimestamp = "lastUpdatedTimestamp"
 

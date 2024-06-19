@@ -18,14 +18,11 @@ package controllers.agent.matching
 
 import auth.agent.{AgentSignUp, IncomeTaxAgentUser, UserMatchingController}
 import common.Constants.ITSASessionKeys
-import common.Constants.ITSASessionKeys.{FailedClientMatching, JourneyStateKey, UTR}
+import common.Constants.ITSASessionKeys.{FailedClientMatching, JourneyStateKey}
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.PrePopulate
 import config.featureswitch.FeatureSwitching
-import connectors.MandationStatusConnector
 import controllers.utils.ReferenceRetrieval
-import models.status.MandationStatus.Mandated
-import models.status.MandationStatusModel
 import models.{EligibilityStatus, PrePopData}
 import play.api.mvc._
 import services._
@@ -36,7 +33,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ConfirmedClientResolver @Inject()(getEligibilityStatusService: GetEligibilityStatusService,
-                                        mandationStatusConnector: MandationStatusConnector,
                                         throttlingService: ThrottlingService,
                                         prePopulationService: PrePopulationService)
                                        (val auditingService: AuditingService,
@@ -63,17 +59,16 @@ class ConfirmedClientResolver @Inject()(getEligibilityStatusService: GetEligibil
             )
           case EligibilityStatus(thisYear, _, prepop) =>
             withReference(utr, Some(nino), Some(arn)) { reference =>
-              handlePrepop(reference, prepop) flatMap { _ =>
-                withMandationStatus(nino, utr) { mandationStatus =>
-                  goToSignUpClient(nextYearOnly = !thisYear).map(_
-                    .addingToSession(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> (!thisYear).toString)
-                    .addingToSession(ITSASessionKeys.MANDATED_CURRENT_YEAR -> (mandationStatus.currentYearStatus == Mandated).toString)
-                    .addingToSession(ITSASessionKeys.MANDATED_NEXT_YEAR -> (mandationStatus.nextYearStatus == Mandated).toString)
-                    .addingToSession(JourneyStateKey -> AgentSignUp.name))
-                }
+              for {
+                _ <- handlePrepop(reference, prepop)
+                result <- goToSignUpClient(nextYearOnly = !thisYear)
+              } yield {
+                result.addingToSession(
+                  ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> (!thisYear).toString,
+                  JourneyStateKey -> AgentSignUp.name
+                )
               }
             }
-
         }
       }
   }
@@ -87,17 +82,6 @@ class ConfirmedClientResolver @Inject()(getEligibilityStatusService: GetEligibil
         )
       case Right(result) =>
         f(result)
-    }
-  }
-
-  private def withMandationStatus(nino: String, utr: String)
-                                 (f: MandationStatusModel => Future[Result])
-                                 (implicit request: Request[AnyContent]): Future[Result] = {
-    mandationStatusConnector.getMandationStatus(nino, utr) flatMap {
-      case Left(_) =>
-        throw new InternalServerException("[ConfirmClientController][withMandationStatus] - Unexpected failure when receiving mandation status")
-      case Right(model) =>
-        f(model)
     }
   }
 

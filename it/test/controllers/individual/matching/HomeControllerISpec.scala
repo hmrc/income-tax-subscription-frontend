@@ -17,13 +17,20 @@
 package controllers.individual.matching
 
 import common.Constants.ITSASessionKeys
+import connectors.stubs.SessionDataConnectorStub
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks._
 import helpers.{ComponentSpecBase, SessionCookieCrumbler}
-import models.status.MandationStatus.Voluntary
 import play.api.http.Status._
+import play.api.libs.json.JsBoolean
+import services.IndividualStartOfJourneyThrottle
 
 class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.throttlePassed(IndividualStartOfJourneyThrottle))(OK, JsBoolean(true))
+  }
 
   "GET /report-quarterly/income-and-expenses/sign-up" should {
     "return the guidance page" in {
@@ -60,14 +67,12 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
       "the user does not have a subscription" when {
         "the user is eligible" when {
-
           "redirect to the SPSHandoff controller" in {
             Given("I setup the Wiremock stubs")
             AuthStub.stubAuthSuccess()
             CitizenDetailsStub.stubCIDUserWithNinoAndUtrAndName(testNino, testUtr, testFirstName, testLastName)
             SubscriptionStub.stubGetNoSubscription()
             EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
-            MandationStatusStub.stubGetMandationStatus(testNino, testUtr)(Voluntary, Voluntary)
             When("GET /index is called")
             val res = IncomeTaxSubscriptionFrontend.indexPage()
 
@@ -127,7 +132,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
               SubscriptionStub.stubGetNoSubscription()
               CitizenDetailsStub.stubCIDUserWithNinoAndUtrAndName(testNino, testUtr, testFirstName, testLastName)
               EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
-              MandationStatusStub.stubGetMandationStatus(testNino, testUtr)(Voluntary, Voluntary)
+
               When("GET /index is called")
               val res = IncomeTaxSubscriptionFrontend.indexPage()
 
@@ -151,7 +156,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
                 SubscriptionStub.stubGetNoSubscription()
                 CitizenDetailsStub.stubCIDUserWithNinoAndUtrAndNoName(testNino, testUtr)
                 EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
-                MandationStatusStub.stubGetMandationStatus(testNino, testUtr)(Voluntary, Voluntary)
+
                 When("GET /index is called")
                 val res = IncomeTaxSubscriptionFrontend.indexPage()
 

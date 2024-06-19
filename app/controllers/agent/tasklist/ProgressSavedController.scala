@@ -16,7 +16,7 @@
 
 package controllers.agent.tasklist
 
-import auth.agent.AuthenticatedController
+import auth.agent.{AuthenticatedController, IncomeTaxAgentUser}
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
 import models.audits.SaveAndComebackAuditing
@@ -58,7 +58,7 @@ class ProgressSavedController @Inject()(progressSavedView: ProgressSaved,
                 Future.successful(Ok(progressSavedView(cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime), signInUrl, clientDetails = request.clientDetails)))
               )(location => {
                 for {
-                  saveAndComebackAuditData <- retrieveAuditData(reference, user.arn, user.clientUtr, user.clientNino, location)
+                  saveAndComebackAuditData <- retrieveAuditData(reference, user.arn, location)
                   _ <- auditingService.audit(saveAndComebackAuditData)
                 } yield {
                   Ok(progressSavedView(cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime), signInUrl, clientDetails = request.clientDetails))
@@ -72,23 +72,21 @@ class ProgressSavedController @Inject()(progressSavedView: ProgressSaved,
   private def retrieveAuditData(
                                  reference: String,
                                  arn: String,
-                                 maybeUtr: Option[String],
-                                 maybeNino: Option[String],
                                  location: String
-                               )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[SaveAndComeBackAuditModel] = {
+                               )(implicit request: Request[AnyContent], user: IncomeTaxAgentUser, hc: HeaderCarrier): Future[SaveAndComeBackAuditModel] = {
 
     for {
       (businesses, accountingMethod) <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
       property <- subscriptionDetailsService.fetchProperty(reference)
       overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
-      selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
+      selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getClientNino, user.getClientUtr)
     } yield {
       SaveAndComeBackAuditModel(
         userType = SaveAndComebackAuditing.agentUserType,
         maybeAgentReferenceNumber = Some(arn),
-        utr = maybeUtr.getOrElse(throw new Exception("[ProgressSavedController][show] - could not retrieve utr from session")),
+        utr = user.getClientUtr,
         saveAndRetrieveLocation = location,
-        nino = maybeNino.getOrElse(throw new Exception("[ProgressSavedController][show] - could not retrieve nino from session")),
+        nino = user.getClientNino,
         currentTaxYear = AccountingPeriodUtil.getTaxEndYear(currentDateProvider.getCurrentDate),
         selectedTaxYear = selectedTaxYear,
         selfEmployments = businesses,

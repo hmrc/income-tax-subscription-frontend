@@ -20,9 +20,7 @@ import auth.agent.AuthenticatedController
 import common.Constants.ITSASessionKeys
 import config.AppConfig
 import play.api.mvc._
-import services.{AuditingService, AuthService}
-import uk.gov.hmrc.http.InternalServerException
-import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
+import services.{AuditingService, AuthService, MandationStatusService}
 import views.html.agent.WhatYouNeedToDo
 
 import javax.inject.{Inject, Singleton}
@@ -30,7 +28,8 @@ import scala.concurrent.ExecutionContext
 import scala.util.matching.Regex
 
 @Singleton
-class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo)
+class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
+                                          mandationStatusService: MandationStatusService)
                                          (val auditingService: AuditingService,
                                           val appConfig: AppConfig,
                                           val authService: AuthService)
@@ -46,27 +45,28 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo)
     }
   }
 
-  def show: Action[AnyContent] = Authenticated { implicit request =>
+  def show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       val eligibleNextYearOnly: Boolean = request.session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY).contains("true")
-      val mandatedCurrentYear: Boolean = request.session.get(ITSASessionKeys.MANDATED_CURRENT_YEAR).contains("true")
-      val mandatedNextYear: Boolean = request.session.get(ITSASessionKeys.MANDATED_NEXT_YEAR).contains("true")
-      Ok(whatYouNeedToDo(
-        postAction = routes.WhatYouNeedToDoController.submit,
-        eligibleNextYearOnly = eligibleNextYearOnly,
-        mandatedCurrentYear = mandatedCurrentYear,
-        mandatedNextYear = mandatedNextYear,
-        clientName = request.fetchClientName.getOrElse(
-          throw new InternalServerException("[AccountingPeriodCheckController][show] - could not retrieve client name from session")
-        ),
-        clientNino = formatNino(user.clientNino.getOrElse(
-          throw new InternalServerException("[AccountingPeriodCheckController][show] - could not retrieve client nino from session")
+
+      mandationStatusService.getMandationStatus(
+        nino = user.getClientNino,
+        utr = user.getClientUtr
+      ) map { mandationStatus =>
+        Ok(whatYouNeedToDo(
+          postAction = routes.WhatYouNeedToDoController.submit,
+          eligibleNextYearOnly = eligibleNextYearOnly,
+          mandatedCurrentYear = mandationStatus.currentYearStatus.isMandated,
+          mandatedNextYear = mandationStatus.nextYearStatus.isMandated,
+          clientName = user.clientName,
+          clientNino = formatNino(user.getClientNino)
         ))
-      ))
+      }
   }
 
-  val submit: Action[AnyContent] = Authenticated { _ => _ =>
-    Redirect(controllers.agent.tasklist.routes.TaskListController.show())
+  val submit: Action[AnyContent] = Authenticated { _ =>
+    _ =>
+      Redirect(controllers.agent.tasklist.routes.TaskListController.show())
   }
 
 }

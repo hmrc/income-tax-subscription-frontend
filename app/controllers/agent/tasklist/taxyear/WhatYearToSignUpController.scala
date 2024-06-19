@@ -41,6 +41,7 @@ class WhatYearToSignUpController @Inject()(accountingPeriodService: AccountingPe
                                            val authService: AuthService,
                                            val appConfig: AppConfig,
                                            val subscriptionDetailsService: SubscriptionDetailsService,
+                                           val mandationStatusService: MandationStatusService,
                                            val sessionDataService: SessionDataService)
                                           (implicit val ec: ExecutionContext,
                                            mcc: MessagesControllerComponents)
@@ -76,9 +77,9 @@ class WhatYearToSignUpController @Inject()(accountingPeriodService: AccountingPe
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      handleUnableToSelectTaxYearAgent(request) {
+      handleUnableToSelectTaxYearAgent {
         withAgentReference { reference =>
-          subscriptionDetailsService.fetchSelectedTaxYear(reference) map { accountingYearModel =>
+          subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getClientNino, user.getClientUtr) map { accountingYearModel =>
             Ok(view(accountingYearForm = AccountingYearForm.accountingYearForm.fill(
               accountingYearModel.map(aym => aym.accountingYear)),
               clientName = request.fetchClientName.getOrElse(

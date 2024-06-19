@@ -91,9 +91,6 @@ object UserMatchingSessionUtil {
         case _ => None
       }
 
-    def fetchClientNino: Option[String] =
-      request.session.get(nino)
-
     def fetchConfirmedClientNino: Option[String] =
       request.session.get(ITSASessionKeys.NINO)
 

@@ -21,6 +21,7 @@ import connectors.SessionDataConnector
 import connectors.httpparser.DeleteSessionDataHttpParser.DeleteSessionDataResponse
 import connectors.httpparser.GetSessionDataHttpParser.GetSessionDataResponse
 import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataResponse
+import models.status.MandationStatusModel
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
@@ -51,6 +52,18 @@ class SessionDataService @Inject()(sessionDataConnector: SessionDataConnector) {
 
   def deleteThrottlePassed(throttle: Throttle)(implicit hc: HeaderCarrier): Future[DeleteSessionDataResponse] = {
     sessionDataConnector.deleteSessionData(ITSASessionKeys.throttlePassed(throttle))
+  }
+
+  def fetchMandationStatus(implicit hc: HeaderCarrier): Future[GetSessionDataResponse[MandationStatusModel]] = {
+    sessionDataConnector.getSessionData[MandationStatusModel](ITSASessionKeys.MANDATION_STATUS)
+  }
+
+  def saveMandationStatus(mandationStatus: MandationStatusModel)(implicit hc: HeaderCarrier): Future[SaveSessionDataResponse] = {
+    sessionDataConnector.saveSessionData(ITSASessionKeys.MANDATION_STATUS, mandationStatus)
+  }
+
+  def deleteMandationStatus(implicit hc: HeaderCarrier): Future[DeleteSessionDataResponse] = {
+    sessionDataConnector.deleteSessionData(ITSASessionKeys.MANDATION_STATUS)
   }
 
 }

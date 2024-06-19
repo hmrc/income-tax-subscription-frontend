@@ -17,6 +17,7 @@
 package controllers.agent
 
 import common.Constants.ITSASessionKeys
+import models.status.MandationStatus.Voluntary
 import models.usermatching.UserDetailsModel
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
@@ -25,6 +26,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import services.mocks._
+import uk.gov.hmrc.http.InternalServerException
 import utilities.TestModels
 import utilities.agent.TestModels._
 import views.html.agent.confirmation.SignUpConfirmation
@@ -36,13 +38,14 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
   with MockUserMatchingService
   with MockAuditingService
   with MockSessionDataService
+  with MockMandationStatusService
   with MockSpsService {
 
   val mockSignUpConfirmation: SignUpConfirmation = mock[SignUpConfirmation]
 
-
   object TestConfirmationController extends ConfirmationController(
-    mockSignUpConfirmation
+    mockSignUpConfirmation,
+    mockMandationStatusService
   )(
     mockAuditingService,
     mockAuthService,
@@ -80,9 +83,13 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
     "submitted is in session" should {
       "return OK" in {
         mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
-
+        mockGetMandationService(userDetails.nino, "test-utr")(Voluntary, Voluntary)
         mockCall()
-        val result = TestConfirmationController.show(subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "any").buildRequest(Some(userDetails)))
+        val result = TestConfirmationController.show(
+          subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "any")
+            .buildRequest(Some(userDetails))
+            .addingToSession(ITSASessionKeys.UTR -> "test-utr")
+        )
         status(result) mustBe OK
       }
     }
@@ -91,22 +98,24 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
       "return an exception" in {
         mockCall()
 
-
-        val exception = intercept[Exception](await(TestConfirmationController.show(subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "any"))))
-        exception.getMessage mustBe "[ConfirmationController][show]-could not retrieve client name from session"
+        val exception = intercept[InternalServerException](await(TestConfirmationController.show(
+          subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "any")
+        )))
+        exception.getMessage mustBe "[ConfirmationController][show] - could not retrieve client name from session"
       }
     }
 
     "submitted is in session and new Confirmation content applies" should {
       "return OK" in {
         mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
-
+        mockGetMandationService(userDetails.nino, "test-utr")(Voluntary, Voluntary)
         mockCall()
 
         val result = TestConfirmationController.show(
           subscriptionRequest
             .addingToSession(ITSASessionKeys.MTDITID -> "any")
             .buildRequest(Some(userDetails))
+            .addingToSession(ITSASessionKeys.UTR -> "test-utr")
         )
 
         status(result) mustBe OK

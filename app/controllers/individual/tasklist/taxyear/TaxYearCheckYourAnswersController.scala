@@ -35,6 +35,7 @@ class TaxYearCheckYourAnswersController @Inject()(checkYourAnswersView: TaxYearC
                                                   val appConfig: AppConfig,
                                                   val authService: AuthService,
                                                   val sessionDataService: SessionDataService,
+                                                  val mandationStatusService: MandationStatusService,
                                                   val subscriptionDetailsService: SubscriptionDetailsService)
                                                  (implicit val ec: ExecutionContext,
                                                   mcc: MessagesControllerComponents)
@@ -42,9 +43,9 @@ class TaxYearCheckYourAnswersController @Inject()(checkYourAnswersView: TaxYearC
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      handleUnableToSelectTaxYearIndividual(request) {
+      handleUnableToSelectTaxYearIndividual {
         withIndividualReference { reference =>
-          subscriptionDetailsService.fetchSelectedTaxYear(reference) map { maybeAccountingYearModel =>
+          subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getNino, user.getUtr) map { maybeAccountingYearModel =>
             Ok(checkYourAnswersView(
               postAction = controllers.individual.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.submit(),
               viewModel = maybeAccountingYearModel,
@@ -59,7 +60,7 @@ class TaxYearCheckYourAnswersController @Inject()(checkYourAnswersView: TaxYearC
   def submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       withIndividualReference { reference =>
-        subscriptionDetailsService.fetchSelectedTaxYear(reference) flatMap { maybeAccountingYearModel =>
+        subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getNino, user.getUtr) flatMap { maybeAccountingYearModel =>
           val accountingYearModel: AccountingYearModel = maybeAccountingYearModel.getOrElse(
             throw new InternalServerException("[TaxYearCheckYourAnswersController][submit] - Could not retrieve accounting year")
           )

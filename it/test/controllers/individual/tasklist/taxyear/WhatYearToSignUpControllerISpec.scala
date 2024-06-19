@@ -17,13 +17,15 @@
 package controllers.individual.tasklist.taxyear
 
 import common.Constants.ITSASessionKeys
-import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails
+import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels.testAccountingYearCurrent
 import helpers.servicemocks.AuthStub
 import models.common.AccountingYearModel
+import models.status.MandationStatus.{Mandated, Voluntary}
+import models.status.MandationStatusModel
 import models.{Current, Next}
 import play.api.http.Status._
 import play.api.libs.json.Json
@@ -41,6 +43,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
 
         When("GET /business/what-year-to-sign-up is called")
         val res = IncomeTaxSubscriptionFrontend.accountingYear()
@@ -65,7 +68,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
-
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
 
         When("GET /business/what-year-to-sign-up is called")
         val res = IncomeTaxSubscriptionFrontend.accountingYear()
@@ -84,11 +87,10 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Mandated, Voluntary)))
 
         When("GET /business/what-year-to-sign-up is called")
-        val res = IncomeTaxSubscriptionFrontend.getTaxYearCheckYourAnswers(Map(
-          ITSASessionKeys.MANDATED_CURRENT_YEAR -> "true"
-        ))
+        val res = IncomeTaxSubscriptionFrontend.getTaxYearCheckYourAnswers()
 
         Then("Should return SEE_OTHER to task list page")
         res must have(
@@ -100,6 +102,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
 
         When("GET /business/what-year-to-sign-up is called")
         val res = IncomeTaxSubscriptionFrontend.getTaxYearCheckYourAnswers(Map(

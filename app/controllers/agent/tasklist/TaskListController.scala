@@ -16,7 +16,7 @@
 
 package controllers.agent.tasklist
 
-import auth.agent.AuthenticatedController
+import auth.agent.{AuthenticatedController, IncomeTaxAgentUser}
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
 import models.common.TaskListModel
@@ -75,9 +75,9 @@ class TaskListController @Inject()(taskListView: TaskList)
     }
   }
 
-  private def getTaskListModel(reference: String)(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[TaskListModel] = {
+  private def getTaskListModel(reference: String)(implicit hc: HeaderCarrier, request: Request[AnyContent], user: IncomeTaxAgentUser): Future[TaskListModel] = {
     for {
-      selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
+      selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getClientNino, user.getClientUtr)
       (businesses, _) <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
       property <- subscriptionDetailsService.fetchProperty(reference)
       overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)

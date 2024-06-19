@@ -20,11 +20,13 @@ import controllers.individual.ControllerBaseSpec
 import forms.individual.business.AccountingYearForm
 import models.Current
 import models.common.AccountingYearModel
+import models.status.MandationStatus.Voluntary
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks._
+import utilities.individual.TestConstants.{testNino, testUtr}
 
 import scala.concurrent.Future
 
@@ -49,12 +51,14 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
     mockAuthService,
     mockSessionDataService,
     appConfig,
+    mockMandationStatusService,
     MockSubscriptionDetailsService
   )
 
   "show" should {
     "display the What Year To Sign Up view with pre-saved tax year option and return OK (200)" when {
       "there is a pre-saved tax year option in Subscription Details " in {
+        mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
         mockView()
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
 
@@ -68,6 +72,7 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
 
     "display the What Year To Sign Up view with empty form and return OK (200)" when {
       "there is a no pre-saved tax year option in Subscription Details " in {
+        mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
         mockView()
         mockFetchSelectedTaxYear(None)
 
@@ -75,7 +80,6 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
 
         status(result) must be(Status.OK)
         verifyFetchSelectedTaxYear(1, "test-reference")
-
       }
     }
   }

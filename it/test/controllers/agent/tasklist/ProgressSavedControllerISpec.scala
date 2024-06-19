@@ -16,12 +16,15 @@
 
 package controllers.agent.tasklist
 
-import connectors.stubs.IncomeTaxSubscriptionConnectorStub
+import common.Constants.ITSASessionKeys
+import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import helpers.servicemocks.AuditStub.{stubAuditing, verifyAudit}
+import models.status.MandationStatus.Voluntary
+import models.status.MandationStatusModel
 import play.api.http.Status.{NO_CONTENT, OK}
-import play.api.libs.json.{JsNumber, JsObject}
+import play.api.libs.json.{JsNumber, JsObject, Json}
 import utilities.SubscriptionDataKeys._
 
 class ProgressSavedControllerISpec extends ComponentSpecBase {
@@ -55,6 +58,7 @@ class ProgressSavedControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
 
         When("GET /business/progress-saved is called")
         val res = IncomeTaxSubscriptionFrontend.getProgressSaved(saveAndRetrieveLocation = Some("test-location"))

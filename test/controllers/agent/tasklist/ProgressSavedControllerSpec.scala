@@ -17,13 +17,13 @@
 package controllers.agent.tasklist
 
 import auth.agent.AgentSignUp
-import common.Constants
 import common.Constants.ITSASessionKeys
 import controllers.agent.AgentControllerBaseSpec
 import models.audits.SaveAndComebackAuditing
 import models.audits.SaveAndComebackAuditing.SaveAndComeBackAuditModel
 import models.common.business._
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel, TimestampModel}
+import models.status.MandationStatus.Voluntary
 import models.{Cash, DateModel, Next}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{verify, when}
@@ -35,10 +35,8 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, status}
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
-import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import utilities.UserMatchingSessionUtil.{firstName, lastName}
-import utilities.agent.TestConstants.testCredId
+import utilities.agent.TestConstants.{testARN, testNino, testUtr}
 import utilities.{CacheExpiryDateProvider, CurrentDateProvider}
 import views.html.agent.tasklist.ProgressSaved
 
@@ -53,17 +51,6 @@ class ProgressSavedControllerSpec extends AgentControllerBaseSpec
   override val controllerName: String = "ProgressSavedController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
   implicit lazy val config: Configuration = app.injector.instanceOf[Configuration]
-
-  override def mockAgent(): Unit = {
-    val arnEnrolment = Enrolment(
-      Constants.hmrcAsAgent,
-      Seq(EnrolmentIdentifier(Constants.agentServiceIdentifierKey, "XLAT00000144276")),
-      "Activated"
-    )
-    mockRetrievalSuccess(
-      new~(new~(new~(new~(Enrolments(Set(arnEnrolment)), Some(AffinityGroup.Agent)), Some(User)), testConfidenceLevel), Some(Credentials(testCredId, "")))
-    )
-  }
 
   private val testTimestamp = TimestampModel(
     LocalDateTime.of(1970, 1, 1, 1, 0, 0, 0)
@@ -108,7 +95,6 @@ class ProgressSavedControllerSpec extends AgentControllerBaseSpec
       "the location parameter is not provided" in withController { (controller, mockedView) =>
         mockFetchLastUpdatedTimestamp(Some(testTimestamp))
 
-
         val result: Future[Result] = await(controller.show()(subscriptionRequestWithName))
 
         status(result) mustBe OK
@@ -119,18 +105,18 @@ class ProgressSavedControllerSpec extends AgentControllerBaseSpec
       }
 
       "the saveAndRetrieveLocation parameter is provided" in withController { (controller, mockedView) =>
-        mockAgent()
         mockFetchLastUpdatedTimestamp(Some(testTimestamp))
         mockFetchLastUpdatedTimestamp(Some(testTimestamp))
         mockFetchAllSelfEmployments(selfEmployments, selfEmploymentAccountingMethod.map(_.accountingMethod))
         mockFetchProperty(property)
         mockFetchOverseasProperty(overseasProperty)
         mockFetchSelectedTaxYear(selectedTaxYear)
+        mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
 
         val testRequest = FakeRequest().withSession(
           ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
-          ITSASessionKeys.NINO -> "KS969148D",
-          ITSASessionKeys.UTR -> "1234567890",
+          ITSASessionKeys.NINO -> testNino,
+          ITSASessionKeys.UTR -> testUtr,
           firstName -> "FirstName",
           lastName -> "LastName",
           ITSASessionKeys.REFERENCE -> "test-reference"
@@ -146,9 +132,9 @@ class ProgressSavedControllerSpec extends AgentControllerBaseSpec
 
         verifyAudit(SaveAndComeBackAuditModel(
           userType = SaveAndComebackAuditing.agentUserType,
-          utr = "1234567890",
-          nino = "KS969148D",
-          maybeAgentReferenceNumber = Some("XLAT00000144276"),
+          utr = testUtr,
+          nino = testNino,
+          maybeAgentReferenceNumber = Some(testARN),
           saveAndRetrieveLocation = "test-location",
           currentTaxYear = currentYear,
           selectedTaxYear = selectedTaxYear,

@@ -20,11 +20,13 @@ import controllers.agent.AgentControllerBaseSpec
 import forms.agent.AccountingYearForm
 import models.Current
 import models.common.AccountingYearModel
+import models.status.MandationStatus.Voluntary
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.{MockAccountingPeriodService, MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
+import utilities.agent.TestConstants.{testNino, testUtr}
 import views.agent.mocks.MockWhatYearToSignUp
 
 import scala.concurrent.Future
@@ -50,6 +52,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
     mockAuthService,
     appConfig,
     MockSubscriptionDetailsService,
+    mockMandationStatusService,
     mockSessionDataService
   )
 
@@ -58,6 +61,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
       "there is a pre-saved tax year option in Subscription Details " in {
         mockView()
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
+        mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
 
         val result = await(TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequestWithName))
 
@@ -70,6 +74,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
       "there is a no pre-saved tax year option in Subscription Details " in {
         mockView()
         mockFetchSelectedTaxYear(None)
+        mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
 
         val result = await(TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequestWithName))
 

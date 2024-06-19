@@ -17,6 +17,7 @@
 package controllers.agent
 
 import common.Constants.ITSASessionKeys
+import models.status.MandationStatus.{Mandated, Voluntary}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -24,17 +25,18 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.MockAuditingService
-import utilities.agent.TestConstants.{testFormattedNino, testName}
+import services.mocks.{MockAuditingService, MockMandationStatusService}
+import utilities.agent.TestConstants.{testFormattedNino, testName, testNino, testUtr}
 import views.html.agent.WhatYouNeedToDo
 
 import scala.concurrent.Future
 
-class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec with MockAuditingService {
+class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec with MockAuditingService with MockMandationStatusService {
 
 
   object TestWhatYouNeedToDoController extends WhatYouNeedToDoController(
-    mock[WhatYouNeedToDo]
+    mock[WhatYouNeedToDo],
+    mockMandationStatusService
   )(
     mockAuditingService,
     appConfig,
@@ -43,7 +45,7 @@ class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec with Mo
 
   trait Setup {
     val whatYouNeedToDo: WhatYouNeedToDo = mock[WhatYouNeedToDo]
-    val controller: WhatYouNeedToDoController = new WhatYouNeedToDoController(whatYouNeedToDo)(
+    val controller: WhatYouNeedToDoController = new WhatYouNeedToDoController(whatYouNeedToDo, mockMandationStatusService)(
       mockAuditingService,
       appConfig,
       mockAuthService
@@ -60,6 +62,8 @@ class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec with Mo
   "show" must {
     "return OK with the page content" when {
       "the user is completely voluntary and is eligible for both years" in new Setup {
+        mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(false),
@@ -71,9 +75,7 @@ class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec with Mo
 
         val result: Future[Result] = controller.show(
           subscriptionRequestWithName.withSession(
-            ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "false",
-            ITSASessionKeys.MANDATED_CURRENT_YEAR -> "false",
-            ITSASessionKeys.MANDATED_NEXT_YEAR -> "false"
+            ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "false"
           )
         )
 
@@ -82,6 +84,8 @@ class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec with Mo
       }
 
       "the user is voluntary but only eligibile for next year" in new Setup {
+        mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(true),
@@ -93,9 +97,7 @@ class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec with Mo
 
         val result: Future[Result] = controller.show(
           subscriptionRequestWithName.withSession(
-            ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "true",
-            ITSASessionKeys.MANDATED_CURRENT_YEAR -> "false",
-            ITSASessionKeys.MANDATED_NEXT_YEAR -> "false"
+            ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "true"
           )
         )
 
@@ -103,6 +105,8 @@ class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec with Mo
         contentType(result) mustBe Some(HTML)
       }
       "the user is mandated for the current year and eligible for all" in new Setup {
+        mockGetMandationService(testNino, testUtr)(Mandated, Voluntary)
+
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(false),
@@ -114,9 +118,7 @@ class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec with Mo
 
         val result: Future[Result] = controller.show(
           subscriptionRequestWithName.withSession(
-            ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "false",
-            ITSASessionKeys.MANDATED_CURRENT_YEAR -> "true",
-            ITSASessionKeys.MANDATED_NEXT_YEAR -> "false"
+            ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "false"
           )
         )
 
@@ -124,6 +126,8 @@ class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec with Mo
         contentType(result) mustBe Some(HTML)
       }
       "the user is mandated for the next year and eligible for all" in new Setup {
+        mockGetMandationService(testNino, testUtr)(Voluntary, Mandated)
+
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(false),
@@ -135,9 +139,7 @@ class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec with Mo
 
         val result: Future[Result] = controller.show(
           subscriptionRequestWithName.withSession(
-            ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "false",
-            ITSASessionKeys.MANDATED_CURRENT_YEAR -> "false",
-            ITSASessionKeys.MANDATED_NEXT_YEAR -> "true"
+            ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "false"
           )
         )
 

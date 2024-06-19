@@ -16,7 +16,7 @@
 
 package controllers.individual.tasklist
 
-import auth.individual.SignUpController
+import auth.individual.{IncomeTaxSAUser, SignUpController}
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
 import models.audits.SaveAndComebackAuditing
@@ -56,7 +56,7 @@ class ProgressSavedController @Inject()(progressSavedView: ProgressSaved,
               Future.successful(Ok(progressSavedView(cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime), signInUrl)))
             )(location => {
               for {
-                saveAndComebackAuditData <- retrieveAuditData(reference, user.utr, user.nino, location)
+                saveAndComebackAuditData <- retrieveAuditData(reference, location)
                 _ <- auditingService.audit(saveAndComebackAuditData)
               } yield {
                 Ok(progressSavedView(cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime), signInUrl))
@@ -69,21 +69,19 @@ class ProgressSavedController @Inject()(progressSavedView: ProgressSaved,
 
   private def retrieveAuditData(
                                  reference: String,
-                                 maybeUtr: Option[String],
-                                 maybeNino: Option[String],
                                  location: String
-                               )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[SaveAndComeBackAuditModel] = {
+                               )(implicit request: Request[AnyContent], user: IncomeTaxSAUser, hc: HeaderCarrier): Future[SaveAndComeBackAuditModel] = {
 
     for {
       (businesses, accountingMethod) <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
       property <- subscriptionDetailsService.fetchProperty(reference)
       overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
-      selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
+      selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getNino, user.getUtr)
     } yield {
       SaveAndComeBackAuditModel(
         userType = SaveAndComebackAuditing.individualUserType,
-        utr = maybeUtr.getOrElse(throw new Exception("[ProgressSavedController][show] - could not retrieve utr from session")),
-        nino = maybeNino.getOrElse(throw new Exception("[ProgressSavedController][show] - could not retrieve nino from session")),
+        utr = user.getUtr,
+        nino = user.getNino,
         saveAndRetrieveLocation = location,
         currentTaxYear = AccountingPeriodUtil.getTaxEndYear(currentDateProvider.getCurrentDate),
         selectedTaxYear = selectedTaxYear,

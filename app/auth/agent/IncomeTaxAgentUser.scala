@@ -43,4 +43,20 @@ class IncomeTaxAgentUser(val enrolments: Enrolments,
     )
   }
 
+  def getClientNino(implicit request: Request[AnyContent]): String = {
+    request.session.get(ITSASessionKeys.NINO) match {
+      case Some(nino) => nino
+      case None => throw new InternalServerException("[IncomeTaxAgentUser][getClientNino] - Nino not found in session")
+    }
+  }
+
+  def getClientUtr(implicit request: Request[AnyContent]): String = {
+    request.session.get(ITSASessionKeys.UTR) match {
+      case Some(nino) => nino
+      case None => throw new InternalServerException("[IncomeTaxAgentUser][getClientUtr] - UTR not found in session")
+    }
+  }
+
+
+
 }

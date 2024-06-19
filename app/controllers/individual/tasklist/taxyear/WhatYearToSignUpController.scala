@@ -39,6 +39,7 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
                                            val authService: AuthService,
                                            val sessionDataService: SessionDataService,
                                            val appConfig: AppConfig,
+                                           val mandationStatusService: MandationStatusService,
                                            val subscriptionDetailsService: SubscriptionDetailsService)
                                           (implicit val ec: ExecutionContext,
                                            mcc: MessagesControllerComponents) extends SignUpController with ReferenceRetrieval with TaxYearNavigationHelper {
@@ -55,9 +56,9 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      handleUnableToSelectTaxYearIndividual(request) {
+      handleUnableToSelectTaxYearIndividual {
         withIndividualReference { reference =>
-          subscriptionDetailsService.fetchSelectedTaxYear(reference) map { accountingYearModel =>
+          subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getNino, user.getUtr) map { accountingYearModel =>
             Ok(view(accountingYearForm = AccountingYearForm.accountingYearForm.fill(accountingYearModel.map(aym => aym.accountingYear)), isEditMode = isEditMode))
           }
         }

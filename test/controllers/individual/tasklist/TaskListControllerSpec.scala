@@ -20,6 +20,7 @@ import config.featureswitch.FeatureSwitch.ThrottlingFeature
 import controllers.individual.ControllerBaseSpec
 import models.common.business._
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
+import models.status.MandationStatus.Voluntary
 import models.{Cash, DateModel, Next}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -30,6 +31,7 @@ import play.twirl.api.HtmlFormat
 import services.AccountingPeriodService
 import services.individual.mocks.MockSubscriptionOrchestrationService
 import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
+import utilities.agent.TestConstants.{testNino, testUtr}
 import views.html.individual.tasklist.TaskList
 
 import scala.concurrent.Future
@@ -75,6 +77,7 @@ class TaskListControllerSpec extends ControllerBaseSpec
   "show" should {
     "return an OK status with the task list page" in {
       mockTaskList()
+      mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
       mockFetchIncomeSourceConfirmation(Some(true))
       mockFetchAllSelfEmployments(Seq(
         SelfEmploymentData(
