@@ -24,6 +24,7 @@ import config.AppConfig
 import config.featureswitch.FeatureSwitch.PrePopulate
 import connectors.MandationStatusConnector
 import controllers.utils.ReferenceRetrieval
+import models.audits.SignupStartedAuditing
 import models.common.subscription.SubscriptionSuccess
 import models.status.MandationStatus.Mandated
 import models.status.MandationStatusModel
@@ -60,7 +61,9 @@ class HomeController @Inject()(citizenDetailsService: CitizenDetailsService,
   def index: Action[AnyContent] =
     Authenticated.async { implicit request =>
       implicit user =>
-        getCompletedUserIdentifiers(user) flatMap {
+        val userIdentifiers = getCompletedUserIdentifiers(user)
+        userIdentifiers.foreach(identifiers => startIndividualSignupAudit(identifiers.utrMaybe, identifiers.ninoMaybe))
+        userIdentifiers.flatMap {
           // No NINO, should never happen
           case UserIdentifiers(None, _, _, _) => throw new InternalServerException("[HomeController][index] - Could not retrieve nino from user")
           // No UTR for NINO. Not registered for self assessment
@@ -154,4 +157,13 @@ class HomeController @Inject()(citizenDetailsService: CitizenDetailsService,
       case Some(prepop) if isEnabled(PrePopulate) => prePopulationService.prePopulate(reference, prepop)
       case _ => Future.successful(())
     }
+
+ private def startIndividualSignupAudit (utr: Option[String], nino: Option[String])(implicit request: Request[_]) = {
+   val auditModel = SignupStartedAuditing.SignupStartedAuditModel(
+      agentReferenceNumber = None,
+      utr = utr,
+      nino = nino
+    )
+    auditingService.audit(auditModel)
+  }
 }

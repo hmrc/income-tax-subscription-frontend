@@ -19,6 +19,7 @@ package controllers.agent.matching
 import auth.agent.{IncomeTaxAgentUser, UserMatchingController}
 import config.AppConfig
 import forms.agent.ClientDetailsForm.clientDetailsForm
+import models.audits.SignupStartedAuditing
 import models.usermatching.{NotLockedOut, UserDetailsModel}
 import play.api.data.Form
 import play.api.mvc._
@@ -39,12 +40,15 @@ class ClientDetailsController @Inject()(val auditingService: AuditingService,
                                         mcc: MessagesControllerComponents,
                                         val appConfig: AppConfig) extends UserMatchingController {
 
-  def view(clientDetailsForm: Form[UserDetailsModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
+  def view(clientDetailsForm: Form[UserDetailsModel], isEditMode: Boolean)(implicit request: Request[_]): Html ={
+    val agentReferenceNumber: Option[String] = request.session.get("agentReferenceNumber")
+    startAgentSignupAudit(agentReferenceNumber)
     clientDetails(
       clientDetailsForm,
       controllers.agent.matching.routes.ClientDetailsController.submit(editMode = isEditMode),
       isEditMode
     )
+}
 
   private def handleLockOut(f: => Future[Result])(implicit user: IncomeTaxAgentUser, request: Request[_]): Future[Result] = {
     lockOutService.getLockoutStatus(user.arn) flatMap {
@@ -70,6 +74,14 @@ class ClientDetailsController @Inject()(val auditingService: AuditingService,
             Future.successful(Redirect(routes.ConfirmClientController.show()).saveUserDetails(clientDetails))
         )
       }
+  }
+  private def startAgentSignupAudit (agentReferenceNumber: Option[String])(implicit request: Request[_]) = {
+    val auditModel = SignupStartedAuditing.SignupStartedAuditModel(
+      agentReferenceNumber = agentReferenceNumber,
+      utr = None,
+      nino = None
+    )
+    auditingService.audit(auditModel)
   }
 
 }
