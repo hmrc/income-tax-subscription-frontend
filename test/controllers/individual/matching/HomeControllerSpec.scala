@@ -17,13 +17,12 @@
 package controllers.individual.matching
 
 import _root_.common.Constants.ITSASessionKeys
-import common.Constants.ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY
 import config.MockConfig
 import config.featureswitch.FeatureSwitch.{PrePopulate, ThrottlingFeature}
 import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataSuccessResponse
 import controllers.individual.ControllerBaseSpec
+import models.EligibilityStatus
 import models.status.MandationStatus.{Mandated, Voluntary}
-import models.{EligibilityStatus, PrePopData}
 import org.mockito.Mockito.{never, reset, times}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
@@ -33,8 +32,6 @@ import services.{IndividualStartOfJourneyThrottle, ThrottlingService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.individual.TestConstants
 import utilities.individual.TestConstants.testFullName
-
-import scala.concurrent.Future
 
 class HomeControllerSpec extends ControllerBaseSpec
   with MockSubscriptionService
@@ -47,11 +44,9 @@ class HomeControllerSpec extends ControllerBaseSpec
   with MockSessionDataService
   with MockMandationStatusConnector {
 
-  private val eligibleWithoutPrepopData = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, None)
-  private val eligibleWithPrepopData = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, Some(mock[PrePopData]))
-  private val ineligible = EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = false, None)
-  private val eligibleNextYearOnly = EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, None)
-  private val eligibleNextYearOnlyWithPrepopData = EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, Some(mock[PrePopData]))
+  private val eligible = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)
+  private val ineligible = EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = false)
+  private val eligibleNextYearOnly = EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true)
 
   override val controllerName: String = "HomeControllerSpec"
 
@@ -145,7 +140,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                   mockNinoAndUtrRetrieval()
                   mockLookupUserWithUtr(testNino)(testUtr, testFullName)
                   setupMockGetSubscriptionNotFound(testNino)
-                  mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithoutPrepopData)))
+                  mockGetEligibilityStatus(testUtr)(eligible)
                   mockRetrieveReferenceSuccess(testUtr)(testReference)
                   mockGetMandationStatus(testNino, testUtr)(Voluntary, Mandated)
                   mockFetchThrottlePassed(IndividualStartOfJourneyThrottle)(Right(None))
@@ -159,36 +154,8 @@ class HomeControllerSpec extends ControllerBaseSpec
 
                   verifyPrePopulationSave(0, testReference)
                   verifyGetThrottleStatusCalls(times(1))
-
-                  result.session(fakeRequest).data must contain(ELIGIBLE_NEXT_YEAR_ONLY -> "false")
                 }
               }
-
-              "PrePopulate and ITSA mandation status are on and there is PrePop data" when {
-                "redirect to SPSHandoff controller after saving prepop informtion" in {
-                  mockNinoAndUtrRetrieval()
-                  mockLookupUserWithUtr(testNino)(testUtr, testFullName)
-                  setupMockGetSubscriptionNotFound(testNino)
-                  mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithPrepopData)))
-                  mockRetrieveReferenceSuccess(testUtr)(testReference)
-                  setupMockSubscriptionDetailsSaveFunctions()
-                  setupMockPrePopulateSave(testReference)
-                  mockGetMandationStatus(testNino, testUtr)(Mandated, Voluntary)
-                  mockFetchThrottlePassed(IndividualStartOfJourneyThrottle)(Right(None))
-                  mockSaveThrottlePassed(IndividualStartOfJourneyThrottle)(Right(SaveSessionDataSuccessResponse))
-
-                  enable(PrePopulate)
-
-                  val result = await(testHomeController().index(fakeRequest))
-                  status(result) must be(Status.SEE_OTHER)
-                  redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url
-
-                  verifyPrePopulationSave(1, testReference)
-                  verifyGetThrottleStatusCalls(times(1))
-                  result.session(fakeRequest).data must contain(ELIGIBLE_NEXT_YEAR_ONLY -> "false")
-                }
-              }
-
             }
           }
 
@@ -198,7 +165,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                 mockNinoRetrieval()
                 mockLookupUserWithUtr(testNino)(testUtr, testFullName)
                 setupMockGetSubscriptionNotFound(testNino)
-                mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithoutPrepopData)))
+                mockGetEligibilityStatus(testUtr)(eligible)
                 mockRetrieveReferenceSuccess(testUtr)(testReference)
                 mockGetMandationStatus(testNino, testUtr)(Voluntary, Voluntary)
                 mockFetchThrottlePassed(IndividualStartOfJourneyThrottle)(Right(None))
@@ -213,7 +180,6 @@ class HomeControllerSpec extends ControllerBaseSpec
                 session(result).get(ITSASessionKeys.FULLNAME) mustBe Some(testFullName)
 
                 verifyGetThrottleStatusCalls(times(1))
-                result.session(fakeRequest).data must contain(ELIGIBLE_NEXT_YEAR_ONLY -> "false")
               }
             }
 
@@ -221,10 +187,6 @@ class HomeControllerSpec extends ControllerBaseSpec
               "redirect to the no SA page" in {
                 mockNinoRetrieval()
                 mockLookupUserWithoutUtr(testNino)
-                setupMockGetSubscriptionNotFound(testNino)
-                mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithoutPrepopData)))
-                mockFetchThrottlePassed(IndividualStartOfJourneyThrottle)(Right(None))
-                mockSaveThrottlePassed(IndividualStartOfJourneyThrottle)(Right(SaveSessionDataSuccessResponse))
 
                 val result = testHomeController().index()(fakeRequest)
 
@@ -240,46 +202,22 @@ class HomeControllerSpec extends ControllerBaseSpec
 
         }
 
-        "the user is not eligible this year, but is eligible next year" when {
-          "user has prepop and prepop is enabled" should {
-            "redirect to the Cannot Sign Up This Year page" in {
-              mockNinoAndUtrRetrieval()
-              mockLookupUserWithUtr(testNino)(testUtr, testFullName)
-              setupMockGetSubscriptionNotFound(testNino)
-              mockRetrieveReferenceSuccess(testUtr)(testReference)
-              mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleNextYearOnlyWithPrepopData)))
-              setupMockPrePopulateSave(testReference)
-              enable(PrePopulate)
-              mockGetMandationStatus(testNino, testUtr)(Voluntary, Voluntary)
-              mockFetchThrottlePassed(IndividualStartOfJourneyThrottle)(Right(None))
-              mockSaveThrottlePassed(IndividualStartOfJourneyThrottle)(Right(SaveSessionDataSuccessResponse))
+        "the user is not eligible this year, but is eligible next year" should {
+          "redirect to the Cannot Sign Up This Year page" in {
+            mockNinoAndUtrRetrieval()
+            mockLookupUserWithUtr(testNino)(testUtr, testFullName)
+            setupMockGetSubscriptionNotFound(testNino)
+            mockRetrieveReferenceSuccess(testUtr)(testReference)
+            mockGetEligibilityStatus(testUtr)(eligibleNextYearOnly)
+            mockGetMandationStatus(testNino, testUtr)(Voluntary, Voluntary)
+            mockFetchThrottlePassed(IndividualStartOfJourneyThrottle)(Right(None))
+            mockSaveThrottlePassed(IndividualStartOfJourneyThrottle)(Right(SaveSessionDataSuccessResponse))
 
-              val result = await(testHomeController().index(fakeRequest))
-              status(result) mustBe SEE_OTHER
-              redirectLocation(result) mustBe Some(controllers.individual.controllist.routes.CannotSignUpThisYearController.show.url)
-              verifyGetThrottleStatusCalls(times(1))
-              verifyPrePopulationSave(1, testReference)
-              result.session(fakeRequest).data must contain(ELIGIBLE_NEXT_YEAR_ONLY -> "true")
-            }
-          }
-          "user has no prepop and prepop is enabled" should {
-            "redirect to the Cannot Sign Up This Year page" in {
-              mockNinoAndUtrRetrieval()
-              mockLookupUserWithUtr(testNino)(testUtr, testFullName)
-              setupMockGetSubscriptionNotFound(testNino)
-              mockRetrieveReferenceSuccess(testUtr)(testReference)
-              mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleNextYearOnly)))
-              mockGetMandationStatus(testNino, testUtr)(Voluntary, Voluntary)
-              mockFetchThrottlePassed(IndividualStartOfJourneyThrottle)(Right(None))
-              mockSaveThrottlePassed(IndividualStartOfJourneyThrottle)(Right(SaveSessionDataSuccessResponse))
-
-              val result = await(testHomeController().index(fakeRequest))
-              status(result) mustBe SEE_OTHER
-              redirectLocation(result) mustBe Some(controllers.individual.controllist.routes.CannotSignUpThisYearController.show.url)
-              verifyGetThrottleStatusCalls(times(1))
-              verifyPrePopulationSave(0, testReference)
-              result.session(fakeRequest).data must contain(ELIGIBLE_NEXT_YEAR_ONLY -> "true")
-            }
+            val result = await(testHomeController().index(fakeRequest))
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(controllers.individual.controllist.routes.CannotSignUpThisYearController.show.url)
+            verifyGetThrottleStatusCalls(times(1))
+            verifyPrePopulationSave(0, testReference)
           }
         }
 
@@ -289,7 +227,7 @@ class HomeControllerSpec extends ControllerBaseSpec
             mockLookupUserWithUtr(testNino)(testUtr, testFullName)
             setupMockGetSubscriptionNotFound(testNino)
             mockRetrieveReferenceSuccess(testUtr)(testReference)
-            mockGetEligibilityStatus(testUtr)(Future.successful(Right(ineligible)))
+            mockGetEligibilityStatus(testUtr)(ineligible)
             mockFetchThrottlePassed(IndividualStartOfJourneyThrottle)(Right(None))
             mockSaveThrottlePassed(IndividualStartOfJourneyThrottle)(Right(SaveSessionDataSuccessResponse))
 

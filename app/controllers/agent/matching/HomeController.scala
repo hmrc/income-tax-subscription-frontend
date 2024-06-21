@@ -18,12 +18,11 @@ package controllers.agent.matching
 
 import auth.agent.AgentJourneyState._
 import auth.agent._
-import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.JourneyStateKey
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
 import play.api.mvc._
-import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
+import services._
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,6 +33,7 @@ class HomeController @Inject()(val auditingService: AuditingService,
                                val appConfig: AppConfig,
                                val subscriptionDetailsService: SubscriptionDetailsService,
                                val sessionDataService: SessionDataService)
+                              (getEligibilityStatusService: GetEligibilityStatusService)
                               (implicit val ec: ExecutionContext,
                                mcc: MessagesControllerComponents) extends StatelessController with ReferenceRetrieval {
 
@@ -54,14 +54,16 @@ class HomeController @Inject()(val auditingService: AuditingService,
 
   private def continueToSignUp(implicit request: Request[AnyContent], user: IncomeTaxAgentUser): Future[Result] = {
     withAgentReference { reference =>
-      subscriptionDetailsService.fetchEligibilityInterruptPassed(reference) map {
+      subscriptionDetailsService.fetchEligibilityInterruptPassed(reference) flatMap {
         case Some(_) =>
-          Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
+          Future.successful(Redirect(controllers.agent.routes.WhatYouNeedToDoController.show()))
         case None =>
-          if (request.session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY).contains("true")) {
-            Redirect(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show)
-          } else {
-            Redirect(controllers.agent.eligibility.routes.ClientCanSignUpController.show())
+          getEligibilityStatusService.getEligibilityStatus(user.getClientUtr) map { eligibilityStatus =>
+            if (eligibilityStatus.eligibleNextYearOnly) {
+              Redirect(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show)
+            } else {
+              Redirect(controllers.agent.eligibility.routes.ClientCanSignUpController.show())
+            }
           }
       }
     }

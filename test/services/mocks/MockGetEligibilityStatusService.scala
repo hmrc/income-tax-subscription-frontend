@@ -16,33 +16,34 @@
 
 package services.mocks
 
-import models.EligibilityStatus
 import connectors.individual.eligibility.mocks.MockGetEligibilityStatusConnector
+import models.EligibilityStatus
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import services.GetEligibilityStatusService
-import utilities.HttpResult.HttpResult
 import utilities.UnitTestTrait
 
 import scala.concurrent.Future
 
 trait MockGetEligibilityStatusService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
-  val mockGetEligibilityStatusService = mock[GetEligibilityStatusService]
+
+  val mockGetEligibilityStatusService: GetEligibilityStatusService = mock[GetEligibilityStatusService]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockGetEligibilityStatusService)
   }
 
-  def mockGetEligibilityStatus(sautr: String)(result: Future[HttpResult[EligibilityStatus]]): Unit =
-    when(mockGetEligibilityStatusService.getEligibilityStatus(ArgumentMatchers.eq(sautr))(ArgumentMatchers.any())).thenReturn(result)
-
+  def mockGetEligibilityStatus(sautr: String)(result: EligibilityStatus): Unit = {
+    when(mockGetEligibilityStatusService.getEligibilityStatus(ArgumentMatchers.eq(sautr))(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(result))
+  }
 }
 
-trait TestGetEligibilityStatusService extends MockGetEligibilityStatusConnector {
+trait TestGetEligibilityStatusService extends MockGetEligibilityStatusConnector with MockSessionDataService {
 
-  object TestGetEligibilityStatusService extends GetEligibilityStatusService(mockGetEligibilityStatusConnector)
+  object TestGetEligibilityStatusService extends GetEligibilityStatusService(mockGetEligibilityStatusConnector, mockSessionDataService)
 
 }

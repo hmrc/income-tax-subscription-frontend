@@ -18,13 +18,13 @@ package controllers.agent.matching
 
 import auth.agent.{AgentSignUp, AgentUserMatching}
 import common.Constants.ITSASessionKeys
-import common.Constants.ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY
-import connectors.stubs.IncomeTaxSubscriptionConnectorStub
-import helpers.IntegrationTestConstants.testUtr
+import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
+import helpers.IntegrationTestConstants.{SessionId, testUtr}
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
+import models.EligibilityStatus
 import play.api.http.Status._
-import play.api.libs.json.JsBoolean
+import play.api.libs.json.{JsBoolean, Json}
 import utilities.SubscriptionDataKeys
 
 class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
@@ -73,8 +73,9 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
             "redirect to the cannot sign up this year page" in {
               AuthStub.stubAuthSuccess()
               IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
+              SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true)))
 
-              val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentSignUp), Map(ELIGIBLE_NEXT_YEAR_ONLY -> "true", ITSASessionKeys.UTR -> testUtr))
+              val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentSignUp), Map(ITSASessionKeys.UTR -> testUtr))
 
               res must have(
                 httpStatus(SEE_OTHER),
@@ -86,8 +87,9 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
             "redirect to the client can sign up page" in {
               AuthStub.stubAuthSuccess()
               IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
+              SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
 
-              val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentSignUp), Map(ELIGIBLE_NEXT_YEAR_ONLY -> "false", ITSASessionKeys.UTR -> testUtr))
+              val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentSignUp), Map(ITSASessionKeys.UTR -> testUtr))
 
               res must have(
                 httpStatus(SEE_OTHER),

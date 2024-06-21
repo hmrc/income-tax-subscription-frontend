@@ -16,16 +16,17 @@
 
 package controllers.agent.matching
 
-import common.Constants.ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY
 import config.MockConfig
 import config.featureswitch.FeatureSwitch.ThrottlingFeature
 import config.featureswitch.FeatureSwitchingUtil
 import controllers.agent.AgentControllerBaseSpec
+import models.EligibilityStatus
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService, MockThrottlingConnector}
+import utilities.agent.TestConstants.testUtr
 
 import scala.concurrent.Future
 
@@ -48,7 +49,7 @@ class HomeControllerSpec extends AgentControllerBaseSpec
     MockConfig,
     MockSubscriptionDetailsService,
     mockSessionDataService
-  )(executionContext, mockMessagesControllerComponents)
+  )(mockGetEligibilityStatusService)(executionContext, mockMessagesControllerComponents)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -91,8 +92,9 @@ class HomeControllerSpec extends AgentControllerBaseSpec
         "the user is eligible to sign up for next year only" should {
           "redirect to the sign up next year only page" in {
             mockFetchEligibilityInterruptPassed(None)
+            mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
 
-            val result: Future[Result] = testHomeController().index()(agentSignUpRequest.addingToSession(ELIGIBLE_NEXT_YEAR_ONLY -> "true"))
+            val result: Future[Result] = testHomeController().index()(agentSignUpRequest)
 
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
@@ -101,8 +103,9 @@ class HomeControllerSpec extends AgentControllerBaseSpec
         "the user is eligible to sign up for both tax years" should {
           "redirect to the client can sign up page" in {
             mockFetchEligibilityInterruptPassed(None)
+            mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
 
-            val result: Future[Result] = testHomeController().index()(agentSignUpRequest.addingToSession(ELIGIBLE_NEXT_YEAR_ONLY -> "false"))
+            val result: Future[Result] = testHomeController().index()(agentSignUpRequest)
 
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.ClientCanSignUpController.show().url)

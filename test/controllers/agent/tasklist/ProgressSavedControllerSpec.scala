@@ -24,7 +24,7 @@ import models.audits.SaveAndComebackAuditing.SaveAndComeBackAuditModel
 import models.common.business._
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel, TimestampModel}
 import models.status.MandationStatus.Voluntary
-import models.{Cash, DateModel, Next}
+import models.{Cash, DateModel, EligibilityStatus, Next}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
@@ -112,6 +112,7 @@ class ProgressSavedControllerSpec extends AgentControllerBaseSpec
         mockFetchOverseasProperty(overseasProperty)
         mockFetchSelectedTaxYear(selectedTaxYear)
         mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+        mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
 
         val testRequest = FakeRequest().withSession(
           ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,

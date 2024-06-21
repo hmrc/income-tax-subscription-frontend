@@ -39,12 +39,12 @@ import scala.concurrent.Future
 
 //scalastyle:off
 
-trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach with MockMandationStatusService {
+trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach with MockMandationStatusService with MockGetEligibilityStatusService {
 
   val mockConnector: IncomeTaxSubscriptionConnector = mock[IncomeTaxSubscriptionConnector]
   val crypto: ApplicationCrypto = app.injector.instanceOf[ApplicationCrypto]
 
-  object MockSubscriptionDetailsService extends SubscriptionDetailsService(mockConnector, mockMandationStatusService, crypto)
+  object MockSubscriptionDetailsService extends SubscriptionDetailsService(mockConnector, mockMandationStatusService, mockGetEligibilityStatusService, crypto)
 
   override def beforeEach(): Unit = {
     super.beforeEach()

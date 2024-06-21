@@ -21,6 +21,7 @@ import connectors.stubs.SessionDataConnectorStub
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.{IndividualURI, testNino, testUtr}
 import helpers.servicemocks.AuthStub
+import models.EligibilityStatus
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
 import play.api.http.Status.{OK, SEE_OTHER}
@@ -35,6 +36,7 @@ class WhatYouNeedToDoControllerISpec extends ComponentSpecBase {
       Given("I am authenticated")
       AuthStub.stubAuthSuccess()
       SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
 
       When(s"GET ${routes.WhatYouNeedToDoController.show.url} is called")
       val result = IncomeTaxSubscriptionFrontend.whatYouNeedToDo(

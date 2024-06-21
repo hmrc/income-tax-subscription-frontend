@@ -17,6 +17,7 @@
 package controllers.agent
 
 import common.Constants.ITSASessionKeys
+import models.EligibilityStatus
 import models.status.MandationStatus.Voluntary
 import models.usermatching.UserDetailsModel
 import org.mockito.ArgumentMatchers
@@ -28,6 +29,7 @@ import play.twirl.api.HtmlFormat
 import services.mocks._
 import uk.gov.hmrc.http.InternalServerException
 import utilities.TestModels
+import utilities.agent.TestConstants.testUtr
 import utilities.agent.TestModels._
 import views.html.agent.confirmation.SignUpConfirmation
 
@@ -84,6 +86,7 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
       "return OK" in {
         mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
         mockGetMandationService(userDetails.nino, "test-utr")(Voluntary, Voluntary)
+        mockGetEligibilityStatus("test-utr")(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockCall()
         val result = TestConfirmationController.show(
           subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "any")
@@ -109,6 +112,7 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
       "return OK" in {
         mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
         mockGetMandationService(userDetails.nino, "test-utr")(Voluntary, Voluntary)
+        mockGetEligibilityStatus("test-utr")(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockCall()
 
         val result = TestConfirmationController.show(

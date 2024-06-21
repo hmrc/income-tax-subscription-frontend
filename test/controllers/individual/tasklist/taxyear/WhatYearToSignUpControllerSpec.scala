@@ -18,9 +18,9 @@ package controllers.individual.tasklist.taxyear
 
 import controllers.individual.ControllerBaseSpec
 import forms.individual.business.AccountingYearForm
-import models.Current
 import models.common.AccountingYearModel
 import models.status.MandationStatus.Voluntary
+import models.{Current, EligibilityStatus}
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
@@ -35,6 +35,7 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockSessionDataService
   with MockAccountingPeriodService
+  with MockGetEligibilityStatusService
   with MockAuditingService {
 
   override val controllerName: String = "WhatYearToSignUpMethod"
@@ -51,6 +52,7 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
     mockAuthService,
     mockSessionDataService,
     appConfig,
+    mockGetEligibilityStatusService,
     mockMandationStatusService,
     MockSubscriptionDetailsService
   )
@@ -59,6 +61,7 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
     "display the What Year To Sign Up view with pre-saved tax year option and return OK (200)" when {
       "there is a pre-saved tax year option in Subscription Details " in {
         mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+        mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockView()
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
 
@@ -73,6 +76,8 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
     "display the What Year To Sign Up view with empty form and return OK (200)" when {
       "there is a no pre-saved tax year option in Subscription Details " in {
         mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+        mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+        
         mockView()
         mockFetchSelectedTaxYear(None)
 

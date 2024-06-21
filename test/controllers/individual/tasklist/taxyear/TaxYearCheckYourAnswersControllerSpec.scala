@@ -16,11 +16,10 @@
 
 package controllers.individual.tasklist.taxyear
 
-import common.Constants.ITSASessionKeys
 import controllers.individual.ControllerBaseSpec
-import models.Current
 import models.common.AccountingYearModel
 import models.status.MandationStatus.{Mandated, Voluntary}
+import models.{Current, EligibilityStatus}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
@@ -29,7 +28,7 @@ import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.AccountingPeriodService
-import services.mocks.{MockAccountingPeriodService, MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
+import services.mocks._
 import utilities.individual.TestConstants.{testNino, testUtr}
 import views.agent.mocks.MockWhatYearToSignUp
 import views.html.individual.tasklist.taxyear.TaxYearCheckYourAnswers
@@ -41,6 +40,7 @@ class TaxYearCheckYourAnswersControllerSpec extends ControllerBaseSpec
   with MockAuditingService
   with MockSessionDataService
   with MockAccountingPeriodService
+  with MockGetEligibilityStatusService
   with MockSubscriptionDetailsService {
 
   override val controllerName: String = "CheckYourAnswersController"
@@ -62,6 +62,7 @@ class TaxYearCheckYourAnswersControllerSpec extends ControllerBaseSpec
     "return an OK status with the check your answers page" in withController { controller =>
       mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
       mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+      mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
 
       val result: Future[Result] = await(controller.show(false)(subscriptionRequest))
 
@@ -75,6 +76,7 @@ class TaxYearCheckYourAnswersControllerSpec extends ControllerBaseSpec
       "mandated for the current tax year" in withController { controller =>
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
         mockGetMandationService(testNino, testUtr)(Mandated, Voluntary)
+        mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
 
         val result: Future[Result] = await(controller.show(false)(subscriptionRequest))
 
@@ -84,8 +86,9 @@ class TaxYearCheckYourAnswersControllerSpec extends ControllerBaseSpec
       "eligible for next year only" in withController { controller =>
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
         mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+        mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
 
-        val result: Future[Result] = await(controller.show(false)(subscriptionRequest.withSession(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "true")))
+        val result: Future[Result] = await(controller.show(false)(subscriptionRequest))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
@@ -96,6 +99,7 @@ class TaxYearCheckYourAnswersControllerSpec extends ControllerBaseSpec
   "submit" should {
     "redirect to the task list when the submission is successful" in withController { controller =>
       mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+      mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
       mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
       setupMockSubscriptionDetailsSaveFunctions()
 
@@ -110,6 +114,7 @@ class TaxYearCheckYourAnswersControllerSpec extends ControllerBaseSpec
     "throw an exception" when {
       "accounting year cannot be retrieved" in withController { controller =>
         mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+        mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockFetchSelectedTaxYear(None)
 
         val result: Future[Result] = await(controller.submit()(subscriptionRequest))
@@ -119,6 +124,7 @@ class TaxYearCheckYourAnswersControllerSpec extends ControllerBaseSpec
 
       "accounting year cannot be confirmed" in withController { controller =>
         mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+        mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
         setupMockSubscriptionDetailsSaveFunctionsFailure()
 
@@ -143,6 +149,7 @@ class TaxYearCheckYourAnswersControllerSpec extends ControllerBaseSpec
       appConfig,
       mockAuthService,
       mockSessionDataService,
+      mockGetEligibilityStatusService,
       mockMandationStatusService,
       MockSubscriptionDetailsService
     )

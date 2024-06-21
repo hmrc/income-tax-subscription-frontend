@@ -16,11 +16,13 @@
 
 package services
 
+import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataSuccessResponse
+import connectors.httpparser.{GetSessionDataHttpParser, SaveSessionDataHttpParser}
 import models.EligibilityStatus
-import play.api.libs.json.JsError
-import play.api.test.Helpers._
+import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR}
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import services.mocks.TestGetEligibilityStatusService
-import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.http.{HttpResponse, InternalServerException}
 import utilities.HttpResult.HttpConnectorError
 import utilities.individual.TestConstants.testUtr
 
@@ -28,45 +30,48 @@ import scala.concurrent.Future
 
 class GetEligibilityStatusServiceSpec extends TestGetEligibilityStatusService {
 
-  private val eligible = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, None)
-  private val ineligible = EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = false, None)
-  "getEligibilityStatus" should {
-    "return eligible" when {
-      "the GetEligibilityStatusConnector returns OK and true" in {
-        mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligible)))
+  val eligibilityStatus: EligibilityStatus = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)
 
-        val res = await(TestGetEligibilityStatusService.getEligibilityStatus(testUtr))
+  "getEligibilityStatus" must {
+    "return the eligibility status from session" when {
+      "available in session" in {
+        mockFetchEligibilityStatus(Right(Some(eligibilityStatus)))
 
-        res mustBe Right(eligible)
+        await(TestGetEligibilityStatusService.getEligibilityStatus(testUtr)) mustBe eligibilityStatus
       }
     }
-    "return ineligible" when {
-      "the GetEligibilityStatusConnector returns OK and false" in {
-        mockGetEligibilityStatus(testUtr)(Future.successful(Right(ineligible)))
+    "return the eligibility status from the API and save to session" when {
+      "not available in session" in {
+        mockFetchEligibilityStatus(Right(None))
+        mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibilityStatus)))
+        mockSaveEligibilityStatus(eligibilityStatus)(Right(SaveSessionDataSuccessResponse))
 
-        val res = await(TestGetEligibilityStatusService.getEligibilityStatus(testUtr))
-
-        res mustBe Right(ineligible)
+        await(TestGetEligibilityStatusService.getEligibilityStatus(testUtr)) mustBe eligibilityStatus
       }
     }
-    "return InvalidJsonError" when {
-      "the GetEligibilityStatusConnector returns OK and cannot parse the received json" in {
-        val httpResponse = HttpResponse(OK, "")
-        mockGetEligibilityStatus(testUtr)(Future.successful(Left(HttpConnectorError(httpResponse, Some(JsError("Invalid Json"))))))
+    "throw an exception" when {
+      "there was a problem retrieving the eligibility status from session" in {
+        mockFetchEligibilityStatus(Left(GetSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
-        val res = await(TestGetEligibilityStatusService.getEligibilityStatus(testUtr))
-
-        res mustBe Left(HttpConnectorError(httpResponse, Some(JsError("Invalid Json"))))
+        intercept[InternalServerException](await(TestGetEligibilityStatusService.getEligibilityStatus(testUtr)))
+          .message mustBe "[GetEligibilityStatusService][getEligibilityStatus] - failure fetching eligibility status from session: UnexpectedStatusFailure(500)"
       }
-    }
-    "return GetEligibilityStatusConnectorFailure" when {
-      "the GetEligibilityStatusConnector returns any other HTTP status code" in {
+      "there was a problem retrieving the eligibility status from the API" in {
         val httpResponse = HttpResponse(BAD_REQUEST, "")
+
+        mockFetchEligibilityStatus(Right(None))
         mockGetEligibilityStatus(testUtr)(Future.successful(Left(HttpConnectorError(httpResponse))))
 
-        val res = await(TestGetEligibilityStatusService.getEligibilityStatus(testUtr))
+        intercept[InternalServerException](await(TestGetEligibilityStatusService.getEligibilityStatus(testUtr)))
+          .message mustBe "[GetEligibilityStatusService][getEligibilityStatus] - failure fetching eligibility status from API: status = 400, body = "
+      }
+      "there was a problem saving the eligibility status to session" in {
+        mockFetchEligibilityStatus(Right(None))
+        mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibilityStatus)))
+        mockSaveEligibilityStatus(eligibilityStatus)(Left(SaveSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
-        res mustBe Left(HttpConnectorError(httpResponse))
+        intercept[InternalServerException](await(TestGetEligibilityStatusService.getEligibilityStatus(testUtr)))
+          .message mustBe "[GetEligibilityStatusService][getEligibilityStatus] - failure saving eligibility status to session: UnexpectedStatusFailure(500)"
       }
     }
   }

@@ -48,7 +48,7 @@ object Constants {
     val UTR = "UTR"
     val FULLNAME: String = "FULLNAME"
     val REFERENCE = "reference"
-    val ELIGIBLE_NEXT_YEAR_ONLY = "ELIGIBLE_NEXT_YEAR_ONLY"
+    val ELIGIBILITY_STATUS = "ELIGIBILITY_STATUS"
     val MANDATION_STATUS = "MANDATION_STATUS"
 
     def throttlePassed(throttle: Throttle) = s"throttle-${throttle.throttleId}"

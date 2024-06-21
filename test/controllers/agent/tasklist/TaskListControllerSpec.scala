@@ -21,7 +21,7 @@ import controllers.agent.AgentControllerBaseSpec
 import models.common.business._
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
 import models.status.MandationStatus.Voluntary
-import models.{Cash, DateModel, Next}
+import models.{Cash, DateModel, EligibilityStatus, Next}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import play.api.http.Status
@@ -98,6 +98,7 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
       )))
       mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
       mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+      mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
 
       val result: Future[Result] = TestTaskListController.show()(subscriptionRequestWithName)
 

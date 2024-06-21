@@ -61,7 +61,9 @@ object PrePopData {
 }
 
 
-case class EligibilityStatus(eligibleCurrentYear: Boolean, eligibleNextYear: Boolean, prepopData: Option[PrePopData])
+case class EligibilityStatus(eligibleCurrentYear: Boolean, eligibleNextYear: Boolean) {
+  val eligibleNextYearOnly: Boolean = !eligibleCurrentYear && eligibleNextYear
+}
 
 object EligibilityStatus {
   implicit val format: OFormat[EligibilityStatus] = Json.format[EligibilityStatus]

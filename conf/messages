@@ -428,8 +428,8 @@ error.date.empty                                                = You must enter
 error.date.invalid                                              = You must enter a valid date
 
 error.accounting-method.empty                                   = Select how you record your income and expenses for your self-employed business
-error.accounting-method-property.empty                          = Select if you use cash basis accounting or traditional accounting
 error.accounting-method.invalid                                 = Select how you record your income and expenses for your self-employed business
+error.accounting-method-property.empty                          = Select if you use cash basis accounting or traditional accounting
 error.accounting-method-property.invalid                        = Select if you use cash basis accounting or traditional accounting
 
 #Overseas Property accounting method errors

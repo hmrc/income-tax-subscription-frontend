@@ -39,6 +39,7 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
                                            val authService: AuthService,
                                            val sessionDataService: SessionDataService,
                                            val appConfig: AppConfig,
+                                           val getEligibilityStatusService: GetEligibilityStatusService,
                                            val mandationStatusService: MandationStatusService,
                                            val subscriptionDetailsService: SubscriptionDetailsService)
                                           (implicit val ec: ExecutionContext,
