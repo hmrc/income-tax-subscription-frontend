@@ -41,8 +41,6 @@ class ClientDetailsController @Inject()(val auditingService: AuditingService,
                                         val appConfig: AppConfig) extends UserMatchingController {
 
   def view(clientDetailsForm: Form[UserDetailsModel], isEditMode: Boolean)(implicit request: Request[_]): Html ={
-    val agentReferenceNumber: Option[String] = request.session.get("agentReferenceNumber")
-    startAgentSignupAudit(agentReferenceNumber)
     clientDetails(
       clientDetailsForm,
       controllers.agent.matching.routes.ClientDetailsController.submit(editMode = isEditMode),
@@ -60,6 +58,8 @@ class ClientDetailsController @Inject()(val auditingService: AuditingService,
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
+      val agentReferenceNumber: Option[String] = Some(user.arn)
+      startAgentSignupAudit(agentReferenceNumber)
       handleLockOut {
         Future.successful(Ok(view(clientDetailsForm.fill(request.fetchUserDetails), isEditMode = isEditMode)))
       }
