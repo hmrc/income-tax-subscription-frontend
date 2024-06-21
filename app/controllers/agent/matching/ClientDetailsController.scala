@@ -58,8 +58,7 @@ class ClientDetailsController @Inject()(val auditingService: AuditingService,
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      val agentReferenceNumber: Option[String] = Some(user.arn)
-      startAgentSignupAudit(agentReferenceNumber)
+      startAgentSignupAudit(agentReferenceNumber = Some(user.arn))
       handleLockOut {
         Future.successful(Ok(view(clientDetailsForm.fill(request.fetchUserDetails), isEditMode = isEditMode)))
       }
