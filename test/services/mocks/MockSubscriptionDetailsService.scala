@@ -24,7 +24,6 @@ import connectors.httpparser.RetrieveReferenceHttpParser.{Created, Existence, Re
 import models.AccountingMethod
 import models.common._
 import models.common.business.{BusinessNameModel, SelfEmploymentData}
-import models.status.MandationStatusModel
 import org.mockito.ArgumentMatchers.{any, argThat}
 import org.mockito.Mockito._
 import org.mockito.{ArgumentMatcher, ArgumentMatchers}
@@ -40,12 +39,12 @@ import scala.concurrent.Future
 
 //scalastyle:off
 
-trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
+trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach with MockMandationStatusService {
 
   val mockConnector: IncomeTaxSubscriptionConnector = mock[IncomeTaxSubscriptionConnector]
   val crypto: ApplicationCrypto = app.injector.instanceOf[ApplicationCrypto]
 
-  object MockSubscriptionDetailsService extends SubscriptionDetailsService(mockConnector, crypto)
+  object MockSubscriptionDetailsService extends SubscriptionDetailsService(mockConnector, mockMandationStatusService, crypto)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -141,16 +140,6 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
   def mockRetrieveReference(utr: String)(response: RetrieveReferenceResponse): Unit = {
     when(mockConnector.retrieveReference(ArgumentMatchers.eq(utr))(ArgumentMatchers.any())) thenReturn Future.successful(response)
   }
-
-  def mockSaveMandationStatus(reference: String): Unit =
-    setupMockSubscriptionDetailsSaveFunctions(reference, SubscriptionDataKeys.MandationStatus)
-
-  def verifySaveMandationStatus(count: Int, reference: String): Future[PostSubscriptionDetailsResponse] =
-    verify(mockConnector, times(count)).saveSubscriptionDetails[MandationStatusModel](
-      ArgumentMatchers.eq(reference),
-      ArgumentMatchers.eq(SubscriptionDataKeys.MandationStatus),
-      ArgumentMatchers.any()
-    )(ArgumentMatchers.any(), ArgumentMatchers.any())
 
   protected final def verifySubscriptionDetailsFetchWithField[T](reference: String, count: Int, field: String): Unit =
     verify(mockConnector, times(count))

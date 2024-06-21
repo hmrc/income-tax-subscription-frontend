@@ -55,8 +55,6 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
     ITSASessionKeys.NINO -> "test-nino",
     ITSASessionKeys.UTR -> "test-utr",
     ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "test-eligible-next-year-only",
-    ITSASessionKeys.MANDATED_CURRENT_YEAR -> "test-mandated-current-year",
-    ITSASessionKeys.MANDATED_NEXT_YEAR -> "test-mandated-next-year",
     UserMatchingSessionUtil.firstName -> "test-first-name",
     UserMatchingSessionUtil.lastName -> "test-last-name"
   )
@@ -68,6 +66,7 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
     "redirect to the agent eligibility frontend terms page, clearing Subscription Details and session values" in {
       mockDeleteThrottlePassed(AgentStartOfJourneyThrottle)(Right(DeleteSessionDataSuccessResponse))
       mockDeleteThrottlePassed(AgentEndOfJourneyThrottle)(Right(DeleteSessionDataSuccessResponse))
+      mockDeleteMandationStatus(Right(DeleteSessionDataSuccessResponse))
       mockDeleteReferenceSuccess()
 
       val result: Result = await(call)
@@ -92,9 +91,18 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
         intercept[InternalServerException](await(call))
           .message mustBe s"[AddAnotherClientController][addAnother] - Unexpected failure: ${UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)}"
       }
+      "the delete mandation status failed" in {
+        mockDeleteThrottlePassed(AgentStartOfJourneyThrottle)(Right(DeleteSessionDataSuccessResponse))
+        mockDeleteThrottlePassed(AgentEndOfJourneyThrottle)(Right(DeleteSessionDataSuccessResponse))
+        mockDeleteMandationStatus(Left(UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
+
+        intercept[InternalServerException](await(call))
+          .message mustBe s"[AddAnotherClientController][addAnother] - Unexpected failure: ${UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)}"
+      }
       "the delete reference failed" in {
         mockDeleteThrottlePassed(AgentStartOfJourneyThrottle)(Right(DeleteSessionDataSuccessResponse))
         mockDeleteThrottlePassed(AgentEndOfJourneyThrottle)(Right(DeleteSessionDataSuccessResponse))
+        mockDeleteMandationStatus(Right(DeleteSessionDataSuccessResponse))
         mockDeleteReferenceStatusFailure(INTERNAL_SERVER_ERROR)
 
         intercept[InternalServerException](await(call))

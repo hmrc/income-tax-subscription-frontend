@@ -35,8 +35,8 @@ trait MockMandationStatusConnector extends UnitTestTrait with MockitoSugar with 
     reset(mockMandationStatusConnector)
   }
 
-  def mockGetMandationStatus(current: MandationStatus, next: MandationStatus): Unit = {
-    when(mockMandationStatusConnector.getMandationStatus(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any()))
+  def mockGetMandationStatus(nino: String, utr: String)(current: MandationStatus, next: MandationStatus): Unit = {
+    when(mockMandationStatusConnector.getMandationStatus(ArgumentMatchers.eq(nino), ArgumentMatchers.eq(utr))(ArgumentMatchers.any()))
       .thenReturn(Right(MandationStatusModel(current, next)))
   }
 

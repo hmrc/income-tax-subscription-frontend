@@ -16,10 +16,12 @@
 
 package models.status
 
+import models.status.MandationStatus.Mandated
 import play.api.libs.json._
 
 sealed trait MandationStatus {
   def value: String
+  val isMandated: Boolean = this == Mandated
 }
 
 object MandationStatus {

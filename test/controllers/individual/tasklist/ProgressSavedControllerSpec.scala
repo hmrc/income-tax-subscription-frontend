@@ -16,12 +16,12 @@
 
 package controllers.individual.tasklist
 
-import common.Constants
 import controllers.individual.ControllerBaseSpec
 import models.audits.SaveAndComebackAuditing
 import models.audits.SaveAndComebackAuditing.SaveAndComeBackAuditModel
 import models.common.business._
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel, TimestampModel}
+import models.status.MandationStatus.Voluntary
 import models.{Cash, DateModel, Next}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{verify, when}
@@ -32,9 +32,7 @@ import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, status}
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
-import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
-import utilities.individual.TestConstants.testCredId
+import utilities.individual.TestConstants.{testNino, testUtr}
 import utilities.{CacheExpiryDateProvider, CurrentDateProvider}
 import views.html.individual.tasklist.ProgressSaved
 
@@ -49,27 +47,6 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
   override val controllerName: String = "ProgressSavedController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
   implicit lazy val config: Configuration = app.injector.instanceOf[Configuration]
-
-  override def mockNinoAndUtrRetrieval(): Unit = {
-    val ninoEnrolment = Enrolment(
-      Constants.ninoEnrolmentName,
-      Seq(EnrolmentIdentifier(Constants.ninoEnrolmentIdentifierKey, "GA714758A")),
-      "Activated"
-    )
-
-
-    val utrEnrolment = Enrolment(
-      Constants.utrEnrolmentName,
-      Seq(EnrolmentIdentifier(Constants.utrEnrolmentIdentifierKey, "4f7d0ced-89ed-4488-859d-a51ec979a9a6")),
-      "Activated"
-    )
-    mockRetrievalSuccess(
-      new~(
-        new~(new~(new~(Enrolments(Set(ninoEnrolment, utrEnrolment)), Some(AffinityGroup.Individual)), Some(User)), testConfidenceLevel),
-        Some(Credentials(testCredId, ""))
-      )
-    )
-  }
 
   private val testTimestamp = TimestampModel(
     LocalDateTime.of(1970, 1, 1, 1, 0, 0, 0)
@@ -130,12 +107,12 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
       }
 
       "the location parameter is provided" in withController { (controller, mockedView) =>
-        mockNinoAndUtrRetrieval()
         mockFetchLastUpdatedTimestamp(Some(testTimestamp))
         mockFetchAllSelfEmployments(encryptedSelfEmployments, selfEmploymentAccountingMethod.map(_.accountingMethod))
         mockFetchProperty(property)
         mockFetchOverseasProperty(overseasProperty)
         mockFetchSelectedTaxYear(selectedTaxYear)
+        mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
 
         val result: Future[Result] = await(controller.show(location = Some("test-location"))(subscriptionRequest))
 
@@ -148,8 +125,8 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
 
         verifyAudit(SaveAndComeBackAuditModel(
           userType = SaveAndComebackAuditing.individualUserType,
-          utr = "4f7d0ced-89ed-4488-859d-a51ec979a9a6",
-          nino = "GA714758A",
+          utr = testUtr,
+          nino = testNino,
           saveAndRetrieveLocation = "test-location",
           currentTaxYear = currentYear,
           selectedTaxYear = selectedTaxYear,

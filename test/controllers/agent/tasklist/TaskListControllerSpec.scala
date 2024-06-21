@@ -20,6 +20,7 @@ import config.featureswitch.FeatureSwitch.ThrottlingFeature
 import controllers.agent.AgentControllerBaseSpec
 import models.common.business._
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
+import models.status.MandationStatus.Voluntary
 import models.{Cash, DateModel, Next}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -31,6 +32,8 @@ import play.twirl.api.HtmlFormat
 import services.AccountingPeriodService
 import services.agent.mocks.MockSubscriptionOrchestrationService
 import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
+import utilities.agent.TestConstants.testUtr
+import utilities.individual.TestConstants.testNino
 import views.html.agent.tasklist.TaskList
 
 import scala.concurrent.Future
@@ -94,6 +97,7 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
         confirmed = true
       )))
       mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
+      mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
 
       val result: Future[Result] = TestTaskListController.show()(subscriptionRequestWithName)
 

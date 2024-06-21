@@ -20,6 +20,7 @@ import auth.agent.{AgentUserMatching, AuthPredicates, IncomeTaxAgentUser, Statel
 import auth.individual.AuthPredicate.AuthPredicate
 import cats.data.EitherT
 import common.Constants.ITSASessionKeys
+import common.Constants.ITSASessionKeys.{ELIGIBLE_NEXT_YEAR_ONLY, MTDITID, NINO, UTR}
 import config.AppConfig
 import connectors.httpparser.DeleteSessionDataHttpParser
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -46,11 +47,12 @@ class AddAnotherClientController @Inject()(val auditingService: AuditingService,
       val sessionClearing: EitherT[Future, DeleteSessionDataHttpParser.DeleteSessionDataFailure, Result] = for {
         _ <- EitherT(sessionDataService.deleteThrottlePassed(AgentStartOfJourneyThrottle))
         _ <- EitherT(sessionDataService.deleteThrottlePassed(AgentEndOfJourneyThrottle))
+        _ <- EitherT(sessionDataService.deleteMandationStatus)
         _ <- EitherT(sessionDataService.deleteReference)
       } yield {
         Redirect(controllers.agent.matching.routes.ClientDetailsController.show())
           .addingToSession(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name)
-          .removingFromSession(ITSASessionKeys.clientData: _*)
+          .removingFromSession(MTDITID, NINO, UTR, ELIGIBLE_NEXT_YEAR_ONLY)
           .clearUserName
       }
 

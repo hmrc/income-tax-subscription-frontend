@@ -17,13 +17,13 @@
 package controllers.agent
 
 import auth.agent.PostSubmissionController
-import common.Constants.ITSASessionKeys
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
 import models.Next
 import models.common.AccountingPeriodModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
+import services._
+import uk.gov.hmrc.http.InternalServerException
 import utilities.AccountingPeriodUtil
 import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.confirmation.SignUpConfirmation
@@ -32,8 +32,8 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class ConfirmationController @Inject()(
-                                       signUpConfirmation: SignUpConfirmation)
+class ConfirmationController @Inject()(signUpConfirmation: SignUpConfirmation,
+                                       mandationStatusService: MandationStatusService)
                                       (val auditingService: AuditingService,
                                        val authService: AuthService,
                                        val sessionDataService: SessionDataService,
@@ -44,23 +44,29 @@ class ConfirmationController @Inject()(
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-
-      val clientName = request.fetchClientName.getOrElse(throw new Exception("[ConfirmationController][show]-could not retrieve client name from session"))
-      val clientNino = user.clientNino.getOrElse(throw new Exception("[ConfirmationController][show]-could not retrieve client nino from session"))
+      val clientName = request.fetchClientName
+        .getOrElse(throw new InternalServerException("[ConfirmationController][show] - could not retrieve client name from session"))
 
       withAgentReference { reference =>
-        subscriptionDetailsService.fetchSelectedTaxYear(reference) map { taxYearSelection =>
-            val isNextYear = taxYearSelection.map(_.accountingYear).contains(Next)
-            val accountingPeriodModel: AccountingPeriodModel = if (isNextYear) AccountingPeriodUtil.getNextTaxYear else AccountingPeriodUtil.getCurrentTaxYear
-            val mandatedCurrentYear: Boolean = request.session.get(ITSASessionKeys.MANDATED_CURRENT_YEAR).contains("true")
-            val mandatedNextYear: Boolean = request.session.get(ITSASessionKeys.MANDATED_NEXT_YEAR).contains("true")
-            Ok(signUpConfirmation(
-              mandatedCurrentYear = mandatedCurrentYear,
-              mandatedNextYear = mandatedNextYear,
-              isNextYear,
-              Some(clientName),
-              clientNino,
-              accountingPeriodModel))
+        for {
+          taxYearSelection <- subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getClientNino, user.getClientUtr)
+          mandationStatus <- mandationStatusService.getMandationStatus(user.getClientNino, user.getClientUtr)
+        } yield {
+          val isNextYear = taxYearSelection.map(_.accountingYear).contains(Next)
+          val accountingPeriodModel: AccountingPeriodModel = if (isNextYear) {
+            AccountingPeriodUtil.getNextTaxYear
+          } else {
+            AccountingPeriodUtil.getCurrentTaxYear
+          }
+
+          Ok(signUpConfirmation(
+            mandatedCurrentYear = mandationStatus.currentYearStatus.isMandated,
+            mandatedNextYear = mandationStatus.nextYearStatus.isMandated,
+            isNextYear,
+            Some(clientName),
+            user.getClientNino,
+            accountingPeriodModel
+          ))
         }
       }
   }
@@ -68,7 +74,8 @@ class ConfirmationController @Inject()(
   val submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       withAgentReference { reference =>
-        subscriptionDetailsService.deleteAll(reference).map(_ => Redirect(controllers.agent.routes.AddAnotherClientController.addAnother()))
+        subscriptionDetailsService.deleteAll(reference)
+          .map(_ => Redirect(controllers.agent.routes.AddAnotherClientController.addAnother()))
       }
   }
 

@@ -16,11 +16,14 @@
 
 package controllers.agent.tasklist
 
+import common.Constants.ITSASessionKeys
 import connectors.stubs._
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels.{testBusinessName => _, _}
 import helpers.agent.servicemocks._
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
+import models.status.MandationStatus.Voluntary
+import models.status.MandationStatusModel
 import play.api.http.Status._
 import play.api.libs.json.Json
 import play.api.test.Helpers.NO_CONTENT
@@ -39,6 +42,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(IncomeSourceConfirmation, NO_CONTENT)
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
 
         val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
 

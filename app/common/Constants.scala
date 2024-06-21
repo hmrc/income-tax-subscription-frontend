@@ -49,13 +49,9 @@ object Constants {
     val FULLNAME: String = "FULLNAME"
     val REFERENCE = "reference"
     val ELIGIBLE_NEXT_YEAR_ONLY = "ELIGIBLE_NEXT_YEAR_ONLY"
-    val MANDATED_CURRENT_YEAR = "MANDATED_CURRENT_YEAR"
-    val MANDATED_NEXT_YEAR = "MANDATED_NEXT_YEAR"
+    val MANDATION_STATUS = "MANDATION_STATUS"
 
     def throttlePassed(throttle: Throttle) = s"throttle-${throttle.throttleId}"
-
-    // Data specific to the client that the agent is currently working with.
-    val clientData: Seq[String] = Seq(MTDITID, NINO, UTR, ELIGIBLE_NEXT_YEAR_ONLY, MANDATED_CURRENT_YEAR, MANDATED_NEXT_YEAR)
 
     val IdentityVerificationFlag = "ITSA-Identity-Verification-Flag"
 

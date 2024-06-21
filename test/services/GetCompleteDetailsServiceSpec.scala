@@ -18,6 +18,7 @@ package services
 
 import models.common.business._
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
+import models.status.MandationStatus.Voluntary
 import models.{Cash, Current, DateModel}
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.play.PlaySpec
@@ -26,6 +27,7 @@ import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import services.GetCompleteDetailsService._
 import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.HeaderCarrier
+import utilities.individual.TestConstants.{testNino, testUtr}
 
 import java.time.LocalDate
 import scala.concurrent.Future
@@ -97,10 +99,11 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
         mockFetchAllSelfEmployments(Seq(selfEmployment), Some(selfEmploymentsAccountingMethod.accountingMethod))
         mockFetchProperty(Some(ukProperty))
         mockFetchOverseasProperty(Some(foreignProperty))
+        mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
         mockFetchSelectedTaxYear(Some(accountingYear))
 
         val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
-          service.getCompleteSignUpDetails("reference")(FakeRequest(), HeaderCarrier())
+          service.getCompleteSignUpDetails("reference", testNino, testUtr)(FakeRequest(), HeaderCarrier())
         }
 
         await(result) mustBe Right(completeDetails)
@@ -112,10 +115,11 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
         mockFetchAllSelfEmployments(Seq(selfEmployment), Some(selfEmploymentsAccountingMethod.accountingMethod))
         mockFetchProperty(Some(ukProperty))
         mockFetchOverseasProperty(Some(foreignProperty))
+        mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
         mockFetchSelectedTaxYear(None)
 
         val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
-          service.getCompleteSignUpDetails("reference")(FakeRequest(), HeaderCarrier())
+          service.getCompleteSignUpDetails("reference", testNino, testUtr)(FakeRequest(), HeaderCarrier())
         }
 
         await(result) mustBe Left(GetCompleteDetailsFailure)
@@ -125,10 +129,11 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
           mockFetchAllSelfEmployments(Seq(selfEmployment.copy(businessName = None)), Some(selfEmploymentsAccountingMethod.accountingMethod))
           mockFetchProperty(Some(ukProperty))
           mockFetchOverseasProperty(Some(foreignProperty))
+          mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
           mockFetchSelectedTaxYear(Some(accountingYear))
 
           val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
-            service.getCompleteSignUpDetails("reference")(FakeRequest(), HeaderCarrier())
+            service.getCompleteSignUpDetails("reference", testNino, testUtr)(FakeRequest(), HeaderCarrier())
           }
 
           await(result) mustBe Left(GetCompleteDetailsFailure)
@@ -137,10 +142,11 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
           mockFetchAllSelfEmployments(Seq(selfEmployment.copy(businessTradeName = None)), Some(selfEmploymentsAccountingMethod.accountingMethod))
           mockFetchProperty(Some(ukProperty))
           mockFetchOverseasProperty(Some(foreignProperty))
+          mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
           mockFetchSelectedTaxYear(Some(accountingYear))
 
           val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
-            service.getCompleteSignUpDetails("reference")(FakeRequest(), HeaderCarrier())
+            service.getCompleteSignUpDetails("reference", testNino, testUtr)(FakeRequest(), HeaderCarrier())
           }
 
           await(result) mustBe Left(GetCompleteDetailsFailure)
@@ -149,10 +155,11 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
           mockFetchAllSelfEmployments(Seq(selfEmployment.copy(businessStartDate = None)), Some(selfEmploymentsAccountingMethod.accountingMethod))
           mockFetchProperty(Some(ukProperty))
           mockFetchOverseasProperty(Some(foreignProperty))
+          mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
           mockFetchSelectedTaxYear(Some(accountingYear))
 
           val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
-            service.getCompleteSignUpDetails("reference")(FakeRequest(), HeaderCarrier())
+            service.getCompleteSignUpDetails("reference", testNino, testUtr)(FakeRequest(), HeaderCarrier())
           }
 
           await(result) mustBe Left(GetCompleteDetailsFailure)
@@ -161,10 +168,11 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
           mockFetchAllSelfEmployments(Seq(selfEmployment.copy(businessAddress = None)), Some(selfEmploymentsAccountingMethod.accountingMethod))
           mockFetchProperty(Some(ukProperty))
           mockFetchOverseasProperty(Some(foreignProperty))
+          mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
           mockFetchSelectedTaxYear(Some(accountingYear))
 
           val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
-            service.getCompleteSignUpDetails("reference")(FakeRequest(), HeaderCarrier())
+            service.getCompleteSignUpDetails("reference", testNino, testUtr)(FakeRequest(), HeaderCarrier())
           }
 
           await(result) mustBe Left(GetCompleteDetailsFailure)
@@ -175,10 +183,11 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
           mockFetchAllSelfEmployments(Seq(selfEmployment), Some(selfEmploymentsAccountingMethod.accountingMethod))
           mockFetchProperty(Some(ukProperty.copy(startDate = None)))
           mockFetchOverseasProperty(Some(foreignProperty))
+          mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
           mockFetchSelectedTaxYear(Some(accountingYear))
 
           val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
-            service.getCompleteSignUpDetails("reference")(FakeRequest(), HeaderCarrier())
+            service.getCompleteSignUpDetails("reference", testNino, testUtr)(FakeRequest(), HeaderCarrier())
           }
 
           await(result) mustBe Left(GetCompleteDetailsFailure)
@@ -187,10 +196,11 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
           mockFetchAllSelfEmployments(Seq(selfEmployment), Some(selfEmploymentsAccountingMethod.accountingMethod))
           mockFetchProperty(Some(ukProperty.copy(accountingMethod = None)))
           mockFetchOverseasProperty(Some(foreignProperty))
+          mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
           mockFetchSelectedTaxYear(Some(accountingYear))
 
           val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
-            service.getCompleteSignUpDetails("reference")(FakeRequest(), HeaderCarrier())
+            service.getCompleteSignUpDetails("reference", testNino, testUtr)(FakeRequest(), HeaderCarrier())
           }
 
           await(result) mustBe Left(GetCompleteDetailsFailure)
@@ -201,10 +211,11 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
           mockFetchAllSelfEmployments(Seq(selfEmployment), Some(selfEmploymentsAccountingMethod.accountingMethod))
           mockFetchProperty(Some(ukProperty))
           mockFetchOverseasProperty(Some(foreignProperty.copy(startDate = None)))
+          mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
           mockFetchSelectedTaxYear(Some(accountingYear))
 
           val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
-            service.getCompleteSignUpDetails("reference")(FakeRequest(), HeaderCarrier())
+            service.getCompleteSignUpDetails("reference", testNino, testUtr)(FakeRequest(), HeaderCarrier())
           }
 
           await(result) mustBe Left(GetCompleteDetailsFailure)
@@ -213,10 +224,11 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
           mockFetchAllSelfEmployments(Seq(selfEmployment), Some(selfEmploymentsAccountingMethod.accountingMethod))
           mockFetchProperty(Some(ukProperty))
           mockFetchOverseasProperty(Some(foreignProperty.copy(accountingMethod = None)))
+          mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
           mockFetchSelectedTaxYear(Some(accountingYear))
 
           val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
-            service.getCompleteSignUpDetails("reference")(FakeRequest(), HeaderCarrier())
+            service.getCompleteSignUpDetails("reference", testNino, testUtr)(FakeRequest(), HeaderCarrier())
           }
 
           await(result) mustBe Left(GetCompleteDetailsFailure)

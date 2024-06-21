@@ -20,6 +20,7 @@ import common.Constants
 import common.Constants.ITSASessionKeys
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.http.InternalServerException
 
 trait IncomeTaxUser {
   val enrolments: Enrolments
@@ -43,10 +44,24 @@ class IncomeTaxSAUser(val enrolments: Enrolments,
     }
   }
 
+  def getNino(implicit request: Request[AnyContent]): String = {
+    nino match {
+      case Some(value) => value
+      case None => throw new InternalServerException("[IncomeTaxSAUser][getNino] - Unable to retrieve nino")
+    }
+  }
+
   def utr(implicit request: Request[AnyContent]): Option[String] = {
     getEnrolment(Constants.utrEnrolmentName) match {
       case None => request.session.get(ITSASessionKeys.UTR)
       case x => x
+    }
+  }
+
+  def getUtr(implicit request: Request[AnyContent]): String = {
+    utr match {
+      case Some(value) => value
+      case None => throw new InternalServerException("[IncomeTaxSAUser][getUtr] - Unable to retrieve utr")
     }
   }
 

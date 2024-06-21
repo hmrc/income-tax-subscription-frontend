@@ -17,10 +17,13 @@
 package controllers.agent
 
 import common.Constants.ITSASessionKeys
-import connectors.stubs.IncomeTaxSubscriptionConnectorStub
+import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
+import models.status.MandationStatus.Voluntary
+import models.status.MandationStatusModel
 import play.api.http.Status.{NOT_FOUND, NO_CONTENT, OK}
+import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys._
 
 class ConfirmationControllerISpec extends ComponentSpecBase {
@@ -30,6 +33,10 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
       "call subscription on the back end service" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(
+          responseStatus = OK,
+          responseBody = Json.toJson(MandationStatusModel(Voluntary, Voluntary))
+        )
 
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
 

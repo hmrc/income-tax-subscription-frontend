@@ -16,33 +16,52 @@
 
 package controllers.utils
 
+import auth.agent.IncomeTaxAgentUser
+import auth.individual.IncomeTaxSAUser
 import common.Constants.ITSASessionKeys
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{AnyContent, Request, Result}
+import services.MandationStatusService
+import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 trait TaxYearNavigationHelper {
 
-  def handleUnableToSelectTaxYearIndividual(request: Request[AnyContent])(ableToSelect: Future[Result]): Future[Result] = {
-    val mandatedCurrentYear: Boolean = request.session.get(ITSASessionKeys.MANDATED_CURRENT_YEAR).contains("true")
+  val mandationStatusService: MandationStatusService
+
+  def handleUnableToSelectTaxYearIndividual(ableToSelect: Future[Result])
+                                           (implicit request: Request[AnyContent],
+                                            user: IncomeTaxSAUser,
+                                            hc: HeaderCarrier,
+                                            ec: ExecutionContext): Future[Result] = {
+
     val eligibleNextYearOnly: Boolean = request.session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY).contains("true")
 
-    if (mandatedCurrentYear || eligibleNextYearOnly) {
-      Future.successful(Redirect(controllers.individual.tasklist.routes.TaskListController.show()))
-    } else {
-      ableToSelect
+    mandationStatusService.getMandationStatus(user.getNino, user.getUtr) flatMap { mandationStatus =>
+      if (mandationStatus.currentYearStatus.isMandated || eligibleNextYearOnly) {
+        Future.successful(Redirect(controllers.individual.tasklist.routes.TaskListController.show()))
+      } else {
+        ableToSelect
+      }
     }
+
   }
 
-  def handleUnableToSelectTaxYearAgent(request: Request[AnyContent])(ableToSelect: Future[Result]): Future[Result] = {
-    val mandatedCurrentYear: Boolean = request.session.get(ITSASessionKeys.MANDATED_CURRENT_YEAR).contains("true")
+  def handleUnableToSelectTaxYearAgent(ableToSelect: Future[Result])
+                                      (implicit request: Request[AnyContent],
+                                       user: IncomeTaxAgentUser,
+                                       hc: HeaderCarrier,
+                                       ec: ExecutionContext): Future[Result] = {
+
     val eligibleNextYearOnly: Boolean = request.session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY).contains("true")
 
-    if (mandatedCurrentYear || eligibleNextYearOnly) {
-      Future.successful(Redirect(controllers.agent.tasklist.routes.TaskListController.show()))
-    } else {
-      ableToSelect
+    mandationStatusService.getMandationStatus(user.getClientNino, user.getClientUtr) flatMap { mandationStatus =>
+      if (mandationStatus.currentYearStatus.isMandated || eligibleNextYearOnly) {
+        Future.successful(Redirect(controllers.agent.tasklist.routes.TaskListController.show()))
+      } else {
+        ableToSelect
+      }
     }
   }
 

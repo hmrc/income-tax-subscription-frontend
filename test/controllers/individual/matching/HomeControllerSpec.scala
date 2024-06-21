@@ -17,7 +17,7 @@
 package controllers.individual.matching
 
 import _root_.common.Constants.ITSASessionKeys
-import common.Constants.ITSASessionKeys.{ELIGIBLE_NEXT_YEAR_ONLY, MANDATED_CURRENT_YEAR, MANDATED_NEXT_YEAR}
+import common.Constants.ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY
 import config.MockConfig
 import config.featureswitch.FeatureSwitch.{PrePopulate, ThrottlingFeature}
 import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataSuccessResponse
@@ -73,8 +73,7 @@ class HomeControllerSpec extends ControllerBaseSpec
     mockGetEligibilityStatusService,
     mockSubscriptionService,
     new ThrottlingService(mockThrottlingConnector, mockSessionDataService, appConfig),
-    mockPrePopulationService,
-    mockMandationStatusConnector
+    mockPrePopulationService
   )(
     mockAuditingService,
     mockAuthService,
@@ -148,7 +147,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                   setupMockGetSubscriptionNotFound(testNino)
                   mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithoutPrepopData)))
                   mockRetrieveReferenceSuccess(testUtr)(testReference)
-                  mockGetMandationStatus(Voluntary, Mandated)
+                  mockGetMandationStatus(testNino, testUtr)(Voluntary, Mandated)
                   mockFetchThrottlePassed(IndividualStartOfJourneyThrottle)(Right(None))
                   mockSaveThrottlePassed(IndividualStartOfJourneyThrottle)(Right(SaveSessionDataSuccessResponse))
 
@@ -160,9 +159,8 @@ class HomeControllerSpec extends ControllerBaseSpec
 
                   verifyPrePopulationSave(0, testReference)
                   verifyGetThrottleStatusCalls(times(1))
+
                   result.session(fakeRequest).data must contain(ELIGIBLE_NEXT_YEAR_ONLY -> "false")
-                  result.session(fakeRequest).data must contain(MANDATED_CURRENT_YEAR -> "false")
-                  result.session(fakeRequest).data must contain(MANDATED_NEXT_YEAR -> "true")
                 }
               }
 
@@ -175,7 +173,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                   mockRetrieveReferenceSuccess(testUtr)(testReference)
                   setupMockSubscriptionDetailsSaveFunctions()
                   setupMockPrePopulateSave(testReference)
-                  mockGetMandationStatus(Mandated, Voluntary)
+                  mockGetMandationStatus(testNino, testUtr)(Mandated, Voluntary)
                   mockFetchThrottlePassed(IndividualStartOfJourneyThrottle)(Right(None))
                   mockSaveThrottlePassed(IndividualStartOfJourneyThrottle)(Right(SaveSessionDataSuccessResponse))
 
@@ -188,8 +186,6 @@ class HomeControllerSpec extends ControllerBaseSpec
                   verifyPrePopulationSave(1, testReference)
                   verifyGetThrottleStatusCalls(times(1))
                   result.session(fakeRequest).data must contain(ELIGIBLE_NEXT_YEAR_ONLY -> "false")
-                  result.session(fakeRequest).data must contain(MANDATED_CURRENT_YEAR -> "true")
-                  result.session(fakeRequest).data must contain(MANDATED_NEXT_YEAR -> "false")
                 }
               }
 
@@ -204,7 +200,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                 setupMockGetSubscriptionNotFound(testNino)
                 mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleWithoutPrepopData)))
                 mockRetrieveReferenceSuccess(testUtr)(testReference)
-                mockGetMandationStatus(Voluntary, Voluntary)
+                mockGetMandationStatus(testNino, testUtr)(Voluntary, Voluntary)
                 mockFetchThrottlePassed(IndividualStartOfJourneyThrottle)(Right(None))
                 mockSaveThrottlePassed(IndividualStartOfJourneyThrottle)(Right(SaveSessionDataSuccessResponse))
 
@@ -218,8 +214,6 @@ class HomeControllerSpec extends ControllerBaseSpec
 
                 verifyGetThrottleStatusCalls(times(1))
                 result.session(fakeRequest).data must contain(ELIGIBLE_NEXT_YEAR_ONLY -> "false")
-                result.session(fakeRequest).data must contain(MANDATED_CURRENT_YEAR -> "false")
-                result.session(fakeRequest).data must contain(MANDATED_NEXT_YEAR -> "false")
               }
             }
 
@@ -256,7 +250,7 @@ class HomeControllerSpec extends ControllerBaseSpec
               mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleNextYearOnlyWithPrepopData)))
               setupMockPrePopulateSave(testReference)
               enable(PrePopulate)
-              mockGetMandationStatus(Voluntary, Voluntary)
+              mockGetMandationStatus(testNino, testUtr)(Voluntary, Voluntary)
               mockFetchThrottlePassed(IndividualStartOfJourneyThrottle)(Right(None))
               mockSaveThrottlePassed(IndividualStartOfJourneyThrottle)(Right(SaveSessionDataSuccessResponse))
 
@@ -266,8 +260,6 @@ class HomeControllerSpec extends ControllerBaseSpec
               verifyGetThrottleStatusCalls(times(1))
               verifyPrePopulationSave(1, testReference)
               result.session(fakeRequest).data must contain(ELIGIBLE_NEXT_YEAR_ONLY -> "true")
-              result.session(fakeRequest).data must contain(MANDATED_CURRENT_YEAR -> "false")
-              result.session(fakeRequest).data must contain(MANDATED_NEXT_YEAR -> "false")
             }
           }
           "user has no prepop and prepop is enabled" should {
@@ -277,7 +269,7 @@ class HomeControllerSpec extends ControllerBaseSpec
               setupMockGetSubscriptionNotFound(testNino)
               mockRetrieveReferenceSuccess(testUtr)(testReference)
               mockGetEligibilityStatus(testUtr)(Future.successful(Right(eligibleNextYearOnly)))
-              mockGetMandationStatus(Voluntary, Voluntary)
+              mockGetMandationStatus(testNino, testUtr)(Voluntary, Voluntary)
               mockFetchThrottlePassed(IndividualStartOfJourneyThrottle)(Right(None))
               mockSaveThrottlePassed(IndividualStartOfJourneyThrottle)(Right(SaveSessionDataSuccessResponse))
 
@@ -287,8 +279,6 @@ class HomeControllerSpec extends ControllerBaseSpec
               verifyGetThrottleStatusCalls(times(1))
               verifyPrePopulationSave(0, testReference)
               result.session(fakeRequest).data must contain(ELIGIBLE_NEXT_YEAR_ONLY -> "true")
-              result.session(fakeRequest).data must contain(MANDATED_CURRENT_YEAR -> "false")
-              result.session(fakeRequest).data must contain(MANDATED_NEXT_YEAR -> "false")
             }
           }
         }

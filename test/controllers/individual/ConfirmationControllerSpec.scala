@@ -16,8 +16,8 @@
 
 package controllers.individual
 
-import common.Constants.ITSASessionKeys.MANDATED_CURRENT_YEAR
 import connectors.individual.PreferencesFrontendConnector
+import models.status.MandationStatus.{Mandated, Voluntary}
 import org.mockito.ArgumentMatchers.{any, eq => matches}
 import org.mockito.Mockito.{reset, when}
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -27,7 +27,7 @@ import play.twirl.api.HtmlFormat
 import services.mocks._
 import uk.gov.hmrc.http.NotFoundException
 import utilities.TestModels.{testSelectedTaxYearCurrent, testSelectedTaxYearNext}
-import utilities.individual.TestConstants.testNino
+import utilities.individual.TestConstants.{testNino, testUtr}
 import views.html.individual.confirmation.SignUpConfirmation
 
 import scala.concurrent.Future
@@ -50,6 +50,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
 
   object TestConfirmationController extends ConfirmationController(
     mockSignUpConfirmation,
+    mockMandationStatusService,
     mockPreferencesFrontendConnector
   )(
     mockAuditingService,
@@ -88,18 +89,21 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
         "the user signed up for the current tax year" when {
           "the user is mandated for current year" when {
             "the user has no digital preference available" in {
+              mockGetMandationService(testNino, testUtr)(Mandated, Voluntary)
+
               mockAuthEnrolled()
               mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
               when(mockPreferencesFrontendConnector.getOptedInStatus(any())) thenReturn Future.successful(None)
               when(mockSignUpConfirmation(matches(true), matches(false), any(), matches(testNino), matches(None))(any(), any(), any()))
                 .thenReturn(HtmlFormat.empty)
 
-              val result: Future[Result] = TestConfirmationController.show(subscriptionRequest.withSession(MANDATED_CURRENT_YEAR -> "true"))
+              val result: Future[Result] = TestConfirmationController.show(subscriptionRequest)
 
               status(result) mustBe OK
               contentType(result) mustBe Some(HTML)
             }
             "the user has a paper preference" in {
+              mockGetMandationService(testNino, testUtr)(Mandated, Voluntary)
 
               mockAuthEnrolled()
               mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
@@ -107,12 +111,13 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
               when(mockSignUpConfirmation(matches(true), matches(false), any(), matches(testNino), matches(Some(false)))(any(), any(), any()))
                 .thenReturn(HtmlFormat.empty)
 
-              val result: Future[Result] = TestConfirmationController.show(subscriptionRequest.withSession(MANDATED_CURRENT_YEAR -> "true"))
+              val result: Future[Result] = TestConfirmationController.show(subscriptionRequest)
 
               status(result) mustBe OK
               contentType(result) mustBe Some(HTML)
             }
             "the user has a digital preference" in {
+              mockGetMandationService(testNino, testUtr)(Mandated, Voluntary)
 
               mockAuthEnrolled()
               mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
@@ -120,7 +125,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
               when(mockSignUpConfirmation(matches(true), matches(false), any(), matches(testNino), matches(Some(true)))(any(), any(), any()))
                 .thenReturn(HtmlFormat.empty)
 
-              val result: Future[Result] = TestConfirmationController.show(subscriptionRequest.withSession(MANDATED_CURRENT_YEAR -> "true"))
+              val result: Future[Result] = TestConfirmationController.show(subscriptionRequest)
 
               status(result) mustBe OK
               contentType(result) mustBe Some(HTML)
@@ -128,6 +133,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
           }
           "the user is not mandated for current year" when {
             "the user has no digital preference available" in {
+              mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
 
               mockAuthEnrolled()
               mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
@@ -141,6 +147,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
               contentType(result) mustBe Some(HTML)
             }
             "the user has a paper preference" in {
+              mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
 
               mockAuthEnrolled()
               mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
@@ -154,6 +161,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
               contentType(result) mustBe Some(HTML)
             }
             "the user has a digital preference" in {
+              mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
 
               mockAuthEnrolled()
               mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
@@ -170,6 +178,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
         }
         "the user signed up for the next tax year" when {
           "the user has no digital preference available" in {
+            mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
 
             mockAuthEnrolled()
             mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
@@ -183,6 +192,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
             contentType(result) mustBe Some(HTML)
           }
           "the user has a paper preference" in {
+            mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
 
             mockAuthEnrolled()
             mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
@@ -196,6 +206,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
             contentType(result) mustBe Some(HTML)
           }
           "the user has a digital preference" in {
+            mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
 
             mockAuthEnrolled()
             mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))

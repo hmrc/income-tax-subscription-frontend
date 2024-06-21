@@ -112,8 +112,8 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
 
   private def withCompleteDetails(reference: String)
                                  (f: CompleteDetails => Future[Result])
-                                 (implicit request: Request[AnyContent]): Future[Result] = {
-    getCompleteDetailsService.getCompleteSignUpDetails(reference) flatMap {
+                                 (implicit request: Request[AnyContent], user: IncomeTaxAgentUser): Future[Result] = {
+    getCompleteDetailsService.getCompleteSignUpDetails(reference, user.getClientNino, user.getClientUtr) flatMap {
       case Right(completeDetails) => f(completeDetails)
       case Left(_) => Future.successful(Redirect(controllers.agent.tasklist.routes.TaskListController.show()))
     }

@@ -16,10 +16,15 @@
 
 package controllers.agent
 
+import common.Constants.ITSASessionKeys
+import connectors.stubs.SessionDataConnectorStub
 import helpers.IntegrationTestConstants.AgentURI
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
+import models.status.MandationStatus.Voluntary
+import models.status.MandationStatusModel
 import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.libs.json.Json
 
 class WhatYouNeedToDoControllerISpec extends ComponentSpecBase {
 
@@ -29,6 +34,7 @@ class WhatYouNeedToDoControllerISpec extends ComponentSpecBase {
     "return OK with the page content" in {
       Given("I am authenticated")
       AuthStub.stubAuthSuccess()
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
 
       When(s"GET ${routes.WhatYouNeedToDoController.show().url} is called")
       val result = IncomeTaxSubscriptionFrontend.whatYouNeedToDo()
@@ -45,6 +51,7 @@ class WhatYouNeedToDoControllerISpec extends ComponentSpecBase {
     "return a SEE_OTHER to the task list page" in {
       Given("I am authenticated")
       AuthStub.stubAuthSuccess()
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
 
       When(s"POST ${routes.WhatYouNeedToDoController.submit.url} is called")
       val result = IncomeTaxSubscriptionFrontend.submitWhatYouNeedToDo()
