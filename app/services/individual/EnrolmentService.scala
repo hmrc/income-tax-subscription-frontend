@@ -38,14 +38,14 @@ class EnrolmentService @Inject()(config: AppConfig,
 
   def enrol(mtditId: String, nino: String)(implicit hc: HeaderCarrier): Future[Either[EnrolFailure, EnrolSuccess.type]] = {
     authConnector.authorise(EmptyPredicate, credentials and groupIdentifier) flatMap {
-      case Some(Credentials(ggCred, GGProviderId)) ~ Some(groupId) =>
+      case Some(Credentials(credId, _)) ~ Some(groupId) =>
         val enrolmentKey = EnrolmentKey(Constants.mtdItsaEnrolmentName, MTDITID -> mtditId)
-        val enrolmentRequest = EmacEnrolmentRequest(ggCred, nino)
+        val enrolmentRequest = EmacEnrolmentRequest(credId, nino)
         enrolmentStoreConnector.allocateEnrolment(groupId, enrolmentKey, enrolmentRequest)
       case Some(_) ~ None =>
-        Future.failed(new InternalServerException("Failed to enrol - user did not have a group identifier (not a valid GG user)"))
+        Future.failed(new InternalServerException("Failed to enrol - user did not have a group identifier (not a valid user)"))
       case _ ~ _ =>
-        Future.failed(new InternalServerException("Failed to enrol - user had a different auth provider ID (not a valid GG user)"))
+        Future.failed(new InternalServerException("Failed to enrol - user had a different auth provider ID (not a valid user)"))
     }
   }
 

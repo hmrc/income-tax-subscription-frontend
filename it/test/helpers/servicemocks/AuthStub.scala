@@ -100,7 +100,7 @@ object AuthStub extends WireMockMethods {
       "confidenceLevel" -> confidenceLevel,
       "optionalCredentials" -> Json.obj(
         "providerId" -> testCredId,
-        "providerType" -> Constants.GovernmentGateway.GGProviderId
+        "providerType" -> "CustomProvider"
       ),
       "groupIdentifier" -> testGroupId,
       "credentialRole" -> "User"

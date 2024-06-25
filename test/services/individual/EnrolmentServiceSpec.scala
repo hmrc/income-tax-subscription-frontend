@@ -34,21 +34,21 @@ class EnrolmentServiceSpec extends UnitTestTrait with TestEnrolmentService with 
     def result: Future[Either[EnrolFailure, EnrolSuccess.type]] = TestEnrolmentServiceFeatureSwitched.enrol(testMTDID, testNino)
 
     "return a success from the EnrolmentStoreConnector" in {
-      mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new ~(Some(Credentials(testCredId, GGProviderId)), Some(testGroupId)))
+      mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new ~(Some(Credentials(testCredId, "")), Some(testGroupId)))
       mockAllocateEnrolmentSuccess(testGroupId, testEnrolmentKey, testEnrolmentRequest)
 
       whenReady(result)(_ mustBe Right(EnrolSuccess))
     }
 
     "return a failure from the EnrolmentStoreConnector" in {
-      mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new ~(Some(Credentials(testCredId, GGProviderId)), Some(testGroupId)))
+      mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new ~(Some(Credentials(testCredId, "")), Some(testGroupId)))
       mockAllocateEnrolmentFailure(testGroupId, testEnrolmentKey, testEnrolmentRequest)
 
       whenReady(result)(_ mustBe Left(EnrolFailure(testErrorMessage)))
     }
 
     "pass through the exception if the EnrolmentStoreConnector fails" in {
-      mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new ~(Some(Credentials(testCredId, GGProviderId)), Some(testGroupId)))
+      mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new ~(Some(Credentials(testCredId, "")), Some(testGroupId)))
       mockAllocateEnrolmentException(testGroupId, testEnrolmentKey, testEnrolmentRequest)
 
       whenReady(result.failed)(_ mustBe testException)
