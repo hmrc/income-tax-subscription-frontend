@@ -19,6 +19,7 @@ package controllers.individual.iv
 import auth.individual.StatelessController
 import common.Constants.ITSASessionKeys
 import config.AppConfig
+import models.audits.EligibilityAuditing.EligibilityAuditModel
 import models.audits.IVOutcomeFailureAuditing.IVOutcomeFailureAuditModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
@@ -41,6 +42,13 @@ class IVFailureController @Inject()(val authService: AuthService,
     _ =>
       if (request.session.get(ITSASessionKeys.IdentityVerificationFlag).nonEmpty) {
         request.getQueryString("journeyId").foreach(id => auditingService.audit(IVOutcomeFailureAuditModel(id)))
+        auditingService.audit(EligibilityAuditModel(
+          agentReferenceNumber = None,
+          utr = None,
+          nino = None,
+          eligibility = "ineligible",
+          failureReason = Some("iv-failure")
+        ))
         Future.successful(Ok(view).removingFromSession(ITSASessionKeys.IdentityVerificationFlag))
       } else {
         Future.successful(Ok(view))
