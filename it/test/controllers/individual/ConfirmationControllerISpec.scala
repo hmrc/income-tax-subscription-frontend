@@ -22,6 +22,7 @@ import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.IndividualURI
 import helpers.IntegrationTestModels.{testAccountingYearCurrent, testAccountingYearNext}
 import helpers.servicemocks.AuthStub
+import models.EligibilityStatus
 import models.status.MandationStatus.{Mandated, Voluntary}
 import models.status.MandationStatusModel
 import play.api.http.Status._
@@ -48,6 +49,7 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
                 IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
                 PreferencesFrontendConnectorStub.stubGetOptedInStatus(None)
                 SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Mandated, Voluntary)))
+                SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
 
                 When("GET /confirmation is called")
                 val res = IncomeTaxSubscriptionFrontend.confirmation()
@@ -65,7 +67,7 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
                 IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
                 PreferencesFrontendConnectorStub.stubGetOptedInStatus(Some(false))
                 SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Mandated, Voluntary)))
-
+                SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
 
                 When("GET /confirmation is called")
                 val res = IncomeTaxSubscriptionFrontend.confirmation()
@@ -83,6 +85,7 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
                 IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
                 PreferencesFrontendConnectorStub.stubGetOptedInStatus(Some(true))
                 SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Mandated, Voluntary)))
+                SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
 
                 When("GET /confirmation is called")
                 val res = IncomeTaxSubscriptionFrontend.confirmation()
@@ -101,6 +104,7 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
                 IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
                 PreferencesFrontendConnectorStub.stubGetOptedInStatus(None)
                 SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
+                SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
 
                 When("GET /confirmation is called")
                 val res = IncomeTaxSubscriptionFrontend.confirmation()
@@ -118,7 +122,7 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
                 IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
                 PreferencesFrontendConnectorStub.stubGetOptedInStatus(Some(false))
                 SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
-
+                SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
 
                 When("GET /confirmation is called")
                 val res = IncomeTaxSubscriptionFrontend.confirmation()
@@ -136,6 +140,7 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
                 IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
                 PreferencesFrontendConnectorStub.stubGetOptedInStatus(Some(true))
                 SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
+                SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
 
                 When("GET /confirmation is called")
                 val res = IncomeTaxSubscriptionFrontend.confirmation()
@@ -156,6 +161,7 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
               IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearNext))
               PreferencesFrontendConnectorStub.stubGetOptedInStatus(None)
               SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
+              SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
 
               When("GET /confirmation is called")
               val res = IncomeTaxSubscriptionFrontend.confirmation()
@@ -173,6 +179,7 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
               IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearNext))
               PreferencesFrontendConnectorStub.stubGetOptedInStatus(Some(false))
               SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
+              SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
 
               When("GET /confirmation is called")
               val res = IncomeTaxSubscriptionFrontend.confirmation()
@@ -190,6 +197,7 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
               IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearNext))
               PreferencesFrontendConnectorStub.stubGetOptedInStatus(Some(true))
               SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
+              SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
 
               When("GET /confirmation is called")
               val res = IncomeTaxSubscriptionFrontend.confirmation()

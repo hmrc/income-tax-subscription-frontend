@@ -16,7 +16,6 @@
 
 package services
 
-import common.Constants.ITSASessionKeys
 import connectors.IncomeTaxSubscriptionConnector
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsResponse
 import connectors.httpparser.RetrieveReferenceHttpParser.RetrieveReferenceResponse
@@ -24,7 +23,6 @@ import connectors.httpparser.{DeleteSubscriptionDetailsHttpParser, PostSubscript
 import models.common._
 import models.common.business._
 import models.{AccountingMethod, Current, DateModel, Next}
-import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, Decrypter, Encrypter}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import utilities.SubscriptionDataKeys
@@ -38,6 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector,
                                            mandationStatusService: MandationStatusService,
+                                           eligibilityStatusService: GetEligibilityStatusService,
                                            applicationCrypto: ApplicationCrypto)
                                           (implicit ec: ExecutionContext) {
 
@@ -53,29 +52,27 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
   def savePrePopFlag(reference: String, prepop: Boolean)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] =
     incomeTaxSubscriptionConnector.saveSubscriptionDetails[Boolean](reference, PrePopFlag, prepop)
 
-  private def getEligibilityNextYearOnlyFromSession(implicit request: Request[AnyContent]) = {
-    request.session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY).exists(_.toBoolean)
+  private def getEligibilityNextYearOnly(utr: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
+    eligibilityStatusService.getEligibilityStatus(utr).map(_.eligibleNextYearOnly)
   }
 
-  private def getMandationForCurrentYearFromSession(nino: String, utr: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
+  private def getMandationForCurrentYear(nino: String, utr: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
     mandationStatusService.getMandationStatus(nino, utr).map(_.currentYearStatus.isMandated)
   }
 
-  def fetchSelectedTaxYear(reference: String, nino: String, utr: String)(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Option[AccountingYearModel]] = {
-
-    incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingYearModel](reference, SubscriptionDataKeys.SelectedTaxYear).map(_.map(_.copy(editable = true))) flatMap {
-      case Some(value) =>
-        Future.successful(Some(value))
-      case None =>
-        getMandationForCurrentYearFromSession(nino, utr) map { mandatedCurrentYear =>
-          if (mandatedCurrentYear) {
-            Some(AccountingYearModel(Current, confirmed = true, editable = false))
-          } else if (getEligibilityNextYearOnlyFromSession) {
-            Some(AccountingYearModel(Next, confirmed = true, editable = false))
-          } else {
-            None
-          }
-        }
+  def fetchSelectedTaxYear(reference: String, nino: String, utr: String)(implicit hc: HeaderCarrier): Future[Option[AccountingYearModel]] = {
+    for {
+      storedTaxYear <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingYearModel](reference, SubscriptionDataKeys.SelectedTaxYear)
+      mandatedCurrentYear <- getMandationForCurrentYear(nino, utr)
+      eligibleNextYearOnly <- getEligibilityNextYearOnly(utr)
+    } yield {
+      if (mandatedCurrentYear) {
+        Some(AccountingYearModel(Current, confirmed = true, editable = false))
+      } else if (eligibleNextYearOnly) {
+        Some(AccountingYearModel(Next, confirmed = true, editable = false))
+      } else {
+        storedTaxYear
+      }
     }
   }
 

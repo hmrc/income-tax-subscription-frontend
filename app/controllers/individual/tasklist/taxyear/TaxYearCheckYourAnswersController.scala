@@ -35,6 +35,7 @@ class TaxYearCheckYourAnswersController @Inject()(checkYourAnswersView: TaxYearC
                                                   val appConfig: AppConfig,
                                                   val authService: AuthService,
                                                   val sessionDataService: SessionDataService,
+                                                  val getEligibilityStatusService: GetEligibilityStatusService,
                                                   val mandationStatusService: MandationStatusService,
                                                   val subscriptionDetailsService: SubscriptionDetailsService)
                                                  (implicit val ec: ExecutionContext,

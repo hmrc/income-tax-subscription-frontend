@@ -20,7 +20,6 @@ import models.common.business.{Address, SelfEmploymentData}
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
 import models.{AccountingMethod, AccountingYear}
 import play.api.Logging
-import play.api.mvc.{AnyContent, Request}
 import services.GetCompleteDetailsService._
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -39,7 +38,7 @@ class GetCompleteDetailsService @Inject()(subscriptionDetailsService: Subscripti
   * Returns a complete model if all data is present
   */
   def getCompleteSignUpDetails(reference: String, nino: String, utr: String)
-                              (implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Either[GetCompleteDetailsFailure.type, CompleteDetails]] = {
+                              (implicit hc: HeaderCarrier): Future[Either[GetCompleteDetailsFailure.type, CompleteDetails]] = {
 
     val fetchAllSelfEmployments = subscriptionDetailsService.fetchAllSelfEmployments(reference)
     val fetchUKProperty = subscriptionDetailsService.fetchProperty(reference)

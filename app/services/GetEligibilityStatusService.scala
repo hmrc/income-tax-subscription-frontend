@@ -18,17 +18,43 @@ package services
 
 import connectors.individual.eligibility.GetEligibilityStatusConnector
 import models.EligibilityStatus
-import uk.gov.hmrc.http.HeaderCarrier
-import utilities.HttpResult.HttpResult
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class GetEligibilityStatusService @Inject()(getEligibilityStatusConnector: GetEligibilityStatusConnector) {
+class GetEligibilityStatusService @Inject()(getEligibilityStatusConnector: GetEligibilityStatusConnector,
+                                            sessionDataService: SessionDataService)
+                                           (implicit ec: ExecutionContext) {
 
-  def getEligibilityStatus(sautr: String)(implicit hc: HeaderCarrier): Future[HttpResult[EligibilityStatus]] =
-    getEligibilityStatusConnector.getEligibilityStatus(sautr)
+  def getEligibilityStatus(sautr: String)(implicit hc: HeaderCarrier): Future[EligibilityStatus] = {
+    sessionDataService.fetchEligibilityStatus flatMap {
+      case Right(Some(value)) => Future.successful(value)
+      case Right(None) =>
+        getEligibilityStatusConnector.getEligibilityStatus(sautr) flatMap {
+          case Right(value) =>
+            sessionDataService.saveEligibilityStatus(value) map {
+              case Right(_) => value
+              case Left(error) => throw new SaveToSessionException(error.toString)
+            }
+          case Left(error) => throw new FetchFromAPIException(s"status = ${error.httpResponse.status}, body = ${error.httpResponse.body}")
+        }
+      case Left(error) => throw new FetchFromSessionException(error.toString)
+    }
+  }
+
+  private class FetchFromSessionException(error: String) extends InternalServerException(
+    s"[GetEligibilityStatusService][getEligibilityStatus] - failure fetching eligibility status from session: $error"
+  )
+
+  private class FetchFromAPIException(error: String) extends InternalServerException(
+    s"[GetEligibilityStatusService][getEligibilityStatus] - failure fetching eligibility status from API: $error"
+  )
+
+  private class SaveToSessionException(error: String) extends InternalServerException(
+    s"[GetEligibilityStatusService][getEligibilityStatus] - failure saving eligibility status to session: $error"
+  )
 
 }
 

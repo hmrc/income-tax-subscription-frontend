@@ -30,7 +30,7 @@ class EligibilitySpec extends PlaySpec with GuiceOneServerPerSuite {
           |  "eligibleCurrentYear": true,
           |  "eligibleNextYear": true
           |}""".stripMargin
-      Json.parse(valueWithoutPrepop).validate[EligibilityStatus] mustBe (JsSuccess(EligibilityStatus(true, true, None)))
+      Json.parse(valueWithoutPrepop).validate[EligibilityStatus] mustBe JsSuccess(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
     }
 
     "handle old value of 'eligible'" in {
@@ -40,7 +40,7 @@ class EligibilitySpec extends PlaySpec with GuiceOneServerPerSuite {
           |  "eligibleCurrentYear": true,
           |  "eligibleNextYear": true
           |}""".stripMargin
-      Json.parse(valueWithoutPrepop).validate[EligibilityStatus] mustBe (JsSuccess(EligibilityStatus(true, true, None)))
+      Json.parse(valueWithoutPrepop).validate[EligibilityStatus] mustBe JsSuccess(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
     }
 
     "handle empty prepopData" in {
@@ -50,7 +50,7 @@ class EligibilitySpec extends PlaySpec with GuiceOneServerPerSuite {
           |  "eligibleNextYear": true,
           |  "prepopData": {}
           |}""".stripMargin
-      Json.parse(valueWithEmptyPrepop).validate[EligibilityStatus] mustBe (JsSuccess(EligibilityStatus(true, true, Some(PrePopData(None, None, None)))))
+      Json.parse(valueWithEmptyPrepop).validate[EligibilityStatus] mustBe JsSuccess(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
     }
 
     "handle trivial prepopData" in {
@@ -62,7 +62,7 @@ class EligibilitySpec extends PlaySpec with GuiceOneServerPerSuite {
           |    "selfEmployments": []
           |  }
           |}""".stripMargin
-      Json.parse(valueWithTrivialPrepop).validate[EligibilityStatus] mustBe (JsSuccess(EligibilityStatus(true, true, Some(PrePopData(Some(List.empty), None, None)))))
+      Json.parse(valueWithTrivialPrepop).validate[EligibilityStatus] mustBe JsSuccess(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
     }
 
     "handle minimal prepopData" in {
@@ -74,21 +74,19 @@ class EligibilitySpec extends PlaySpec with GuiceOneServerPerSuite {
           |    }
           |  ]
           |}""".stripMargin
-      Json.parse(minimalPrepop).validate[PrePopData] mustBe (
-        JsSuccess(
-          PrePopData(
-            Some(List(
-              PrePopSelfEmployment(
-                None,
-                "B",
-                None,
-                None,
-                None,
-                None)
-            )),
-            None,
-            None
-          )
+      Json.parse(minimalPrepop).validate[PrePopData] mustBe JsSuccess(
+        PrePopData(
+          Some(List(
+            PrePopSelfEmployment(
+              None,
+              "B",
+              None,
+              None,
+              None,
+              None)
+          )),
+          None,
+          None
         )
       )
     }
@@ -139,24 +137,22 @@ class EligibilitySpec extends PlaySpec with GuiceOneServerPerSuite {
           |}""".stripMargin
       val parseResult = Json.parse(fullPrepop).validate[PrePopData]
       parseResult.isSuccess mustBe true
-      parseResult.get mustBe (
-        PrePopData(
-          Some(List(
-            PrePopSelfEmployment(
-              Some("A"),
-              "B",
-              Some("C"),
-              Some("D"),
-              Some(DateModel("E1", "E2", "E3")),
-              Some(Cash))
-          )),
-          Some(PrePopUkProperty(
-            Some(DateModel("J1", "J2", "J3")),
-            Some(Cash))),
-          Some(PrePopOverseasProperty(
-            Some(DateModel("L1", "L2", "L3")),
-            Some(Accruals)))
-        )
+      parseResult.get mustBe PrePopData(
+        Some(List(
+          PrePopSelfEmployment(
+            Some("A"),
+            "B",
+            Some("C"),
+            Some("D"),
+            Some(DateModel("E1", "E2", "E3")),
+            Some(Cash))
+        )),
+        Some(PrePopUkProperty(
+          Some(DateModel("J1", "J2", "J3")),
+          Some(Cash))),
+        Some(PrePopOverseasProperty(
+          Some(DateModel("L1", "L2", "L3")),
+          Some(Accruals)))
       )
     }
 

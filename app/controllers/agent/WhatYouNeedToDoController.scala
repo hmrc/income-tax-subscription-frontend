@@ -17,10 +17,9 @@
 package controllers.agent
 
 import auth.agent.AuthenticatedController
-import common.Constants.ITSASessionKeys
 import config.AppConfig
 import play.api.mvc._
-import services.{AuditingService, AuthService, MandationStatusService}
+import services.{AuditingService, AuthService, GetEligibilityStatusService, MandationStatusService}
 import views.html.agent.WhatYouNeedToDo
 
 import javax.inject.{Inject, Singleton}
@@ -29,6 +28,7 @@ import scala.util.matching.Regex
 
 @Singleton
 class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
+                                          eligibilityStatusService: GetEligibilityStatusService,
                                           mandationStatusService: MandationStatusService)
                                          (val auditingService: AuditingService,
                                           val appConfig: AppConfig,
@@ -47,15 +47,13 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
 
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      val eligibleNextYearOnly: Boolean = request.session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY).contains("true")
-
-      mandationStatusService.getMandationStatus(
-        nino = user.getClientNino,
-        utr = user.getClientUtr
-      ) map { mandationStatus =>
+      for {
+        eligibilityStatus <- eligibilityStatusService.getEligibilityStatus(user.getClientUtr)
+        mandationStatus <- mandationStatusService.getMandationStatus(user.getClientNino, user.getClientUtr)
+      } yield {
         Ok(whatYouNeedToDo(
           postAction = routes.WhatYouNeedToDoController.submit,
-          eligibleNextYearOnly = eligibleNextYearOnly,
+          eligibleNextYearOnly = eligibilityStatus.eligibleNextYearOnly,
           mandatedCurrentYear = mandationStatus.currentYearStatus.isMandated,
           mandatedNextYear = mandationStatus.nextYearStatus.isMandated,
           clientName = user.clientName,

@@ -17,9 +17,9 @@
 package controllers.agent.tasklist.taxyear
 
 import controllers.agent.AgentControllerBaseSpec
-import models.Current
 import models.common.AccountingYearModel
 import models.status.MandationStatus.Voluntary
+import models.{Current, EligibilityStatus}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
@@ -57,6 +57,7 @@ class TaxYearCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   "show" should {
     "return an OK status with the check your answers page" in withController { controller =>
       mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+      mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
       mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
 
       val result: Future[Result] = await(controller.show(false)(subscriptionRequestWithName))
@@ -72,6 +73,7 @@ class TaxYearCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   "submit" should {
     "redirect to the task list when the submission is successful" in withController { controller =>
       mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+      mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
       mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
       setupMockSubscriptionDetailsSaveFunctions()
 
@@ -86,6 +88,7 @@ class TaxYearCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
     "throw an exception" when {
       "the accounting year cannot be retrieved" in withController { controller =>
         mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+        mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockFetchSelectedTaxYear(None)
 
         val result: Future[Result] = await(controller.submit()(subscriptionRequestWithName))
@@ -95,6 +98,7 @@ class TaxYearCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
 
       "the accounting year cannot be confirmed" in withController { controller =>
         mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+        mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
         setupMockSubscriptionDetailsSaveFunctionsFailure()
 
@@ -118,6 +122,7 @@ class TaxYearCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
       mockAuthService,
       appConfig,
       mockSessionDataService,
+      mockGetEligibilityStatusService,
       mockMandationStatusService,
       MockSubscriptionDetailsService
     )

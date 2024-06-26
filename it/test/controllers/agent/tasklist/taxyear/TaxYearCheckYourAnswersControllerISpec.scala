@@ -22,7 +22,7 @@ import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnecto
 import helpers.IntegrationTestConstants.{AgentURI, testFirstName, testLastName, testNino}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
-import models.Current
+import models.{Current, EligibilityStatus}
 import models.common.AccountingYearModel
 import models.status.MandationStatus.{Mandated, Voluntary}
 import models.status.MandationStatusModel
@@ -39,6 +39,7 @@ class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
       AuthStub.stubAuthSuccess()
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
       SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
 
       When("GET /client/business/tax-year-check-your-answers is called")
       val res = IncomeTaxSubscriptionFrontend.getTaxYearCheckYourAnswers()
@@ -57,6 +58,7 @@ class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Mandated, Voluntary)))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
 
         When("GET /client/business/tax-year-check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.getTaxYearCheckYourAnswers(Map(
@@ -76,13 +78,13 @@ class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true)))
 
         When("GET /client/business/tax-year-check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.getTaxYearCheckYourAnswers(Map(
           UserMatchingSessionUtil.firstName -> testFirstName,
           UserMatchingSessionUtil.lastName -> testLastName,
-          ITSASessionKeys.NINO -> testNino,
-          ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "true"
+          ITSASessionKeys.NINO -> testNino
         ))
 
         Then("Should return SEE_OTHER to task list page")
@@ -104,6 +106,8 @@ class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
         val unconfirmedTaxYear = AccountingYearModel(Current)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(unconfirmedTaxYear))
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYearModel](SelectedTaxYear, unconfirmedTaxYear.copy(confirmed = true))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
 
         When("GET /client/business/tax-year-check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.submitTaxYearCheckYourAnswers()

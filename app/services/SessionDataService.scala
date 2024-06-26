@@ -21,6 +21,7 @@ import connectors.SessionDataConnector
 import connectors.httpparser.DeleteSessionDataHttpParser.DeleteSessionDataResponse
 import connectors.httpparser.GetSessionDataHttpParser.GetSessionDataResponse
 import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataResponse
+import models.EligibilityStatus
 import models.status.MandationStatusModel
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -64,6 +65,18 @@ class SessionDataService @Inject()(sessionDataConnector: SessionDataConnector) {
 
   def deleteMandationStatus(implicit hc: HeaderCarrier): Future[DeleteSessionDataResponse] = {
     sessionDataConnector.deleteSessionData(ITSASessionKeys.MANDATION_STATUS)
+  }
+
+  def fetchEligibilityStatus(implicit hc: HeaderCarrier): Future[GetSessionDataResponse[EligibilityStatus]] = {
+    sessionDataConnector.getSessionData[EligibilityStatus](ITSASessionKeys.ELIGIBILITY_STATUS)
+  }
+
+  def saveEligibilityStatus(eligibilityStatus: EligibilityStatus)(implicit hc: HeaderCarrier): Future[SaveSessionDataResponse] = {
+    sessionDataConnector.saveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, eligibilityStatus)
+  }
+
+  def deleteEligibilityStatus(implicit hc: HeaderCarrier): Future[DeleteSessionDataResponse] = {
+    sessionDataConnector.deleteSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)
   }
 
 }

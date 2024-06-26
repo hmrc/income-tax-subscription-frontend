@@ -33,6 +33,7 @@ class AddAnotherClientControllerISpec extends ComponentSpecBase with SessionCook
       SessionDataConnectorStub.stubDeleteSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle))(OK)
       SessionDataConnectorStub.stubDeleteSessionData(ITSASessionKeys.throttlePassed(AgentEndOfJourneyThrottle))(OK)
       SessionDataConnectorStub.stubDeleteSessionData(ITSASessionKeys.MANDATION_STATUS)(OK)
+      SessionDataConnectorStub.stubDeleteSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK)
       SessionDataConnectorStub.stubDeleteSessionData(ITSASessionKeys.REFERENCE)(OK)
       IncomeTaxSubscriptionConnectorStub.stubSubscriptionDeleteAll()
 

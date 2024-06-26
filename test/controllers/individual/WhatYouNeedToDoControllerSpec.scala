@@ -16,7 +16,7 @@
 
 package controllers.individual
 
-import common.Constants.ITSASessionKeys
+import models.EligibilityStatus
 import models.status.MandationStatus.{Mandated, Voluntary}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -25,17 +25,18 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAuditingService, MockMandationStatusService}
+import services.mocks.{MockAuditingService, MockGetEligibilityStatusService, MockMandationStatusService}
 import utilities.individual.TestConstants.{testNino, testUtr}
 import views.html.individual.WhatYouNeedToDo
 
 import scala.concurrent.Future
 
-class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec with MockAuditingService with MockMandationStatusService {
+class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec with MockAuditingService with MockMandationStatusService with MockGetEligibilityStatusService {
 
   object TestWhatYouNeedToDoController extends WhatYouNeedToDoController(
     mock[WhatYouNeedToDo],
-    mockMandationStatusService
+    mockMandationStatusService,
+    mockGetEligibilityStatusService
   )(
     mockAuditingService,
     appConfig,
@@ -44,7 +45,7 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec with MockAuditing
 
   trait Setup {
     val whatYouNeedToDo: WhatYouNeedToDo = mock[WhatYouNeedToDo]
-    val controller: WhatYouNeedToDoController = new WhatYouNeedToDoController(whatYouNeedToDo, mockMandationStatusService)(
+    val controller: WhatYouNeedToDoController = new WhatYouNeedToDoController(whatYouNeedToDo, mockMandationStatusService, mockGetEligibilityStatusService)(
       mockAuditingService,
       appConfig,
       mockAuthService
@@ -59,8 +60,9 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec with MockAuditing
 
   "show" must {
     "return OK with the page content" when {
-      "the session contains mandated and eligible for next year only flag of true" in new Setup {
+      "the session contains mandated and eligible for only next year" in new Setup {
         mockGetMandationService(testNino, testUtr)(Voluntary, Mandated)
+        mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
 
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
@@ -70,15 +72,14 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec with MockAuditing
         )(any(), any()))
           .thenReturn(HtmlFormat.empty)
 
-        val result: Future[Result] = controller.show(
-          subscriptionRequest.withSession(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "true")
-        )
+        val result: Future[Result] = controller.show(subscriptionRequest)
 
         status(result) mustBe OK
         contentType(result) mustBe Some(HTML)
       }
-      "the session contains a eligible only next year flag of false" in new Setup {
+      "the session contains a eligible for both years" in new Setup {
         mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+        mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
 
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
@@ -88,13 +89,14 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec with MockAuditing
         )(any(), any()))
           .thenReturn(HtmlFormat.empty)
 
-        val result: Future[Result] = controller.show(subscriptionRequest.withSession(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "false"))
+        val result: Future[Result] = controller.show(subscriptionRequest)
 
         status(result) mustBe OK
         contentType(result) mustBe Some(HTML)
       }
-      "the session contains a eligible only next year flag of true" in new Setup {
+      "the session contains a eligible for next year only" in new Setup {
         mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+        mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
 
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
@@ -104,13 +106,14 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec with MockAuditing
         )(any(), any()))
           .thenReturn(HtmlFormat.empty)
 
-        val result: Future[Result] = controller.show(subscriptionRequest.withSession(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> "true"))
+        val result: Future[Result] = controller.show(subscriptionRequest)
 
         status(result) mustBe OK
         contentType(result) mustBe Some(HTML)
       }
       "the session contains a mandated current year flag of true" in new Setup {
         mockGetMandationService(testNino, testUtr)(Mandated, Voluntary)
+        mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
 
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),

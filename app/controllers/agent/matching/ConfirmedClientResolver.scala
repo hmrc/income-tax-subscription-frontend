@@ -17,7 +17,6 @@
 package controllers.agent.matching
 
 import auth.agent.{AgentSignUp, IncomeTaxAgentUser, UserMatchingController}
-import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.{FailedClientMatching, JourneyStateKey}
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.PrePopulate
@@ -26,7 +25,7 @@ import controllers.utils.ReferenceRetrieval
 import models.{EligibilityStatus, PrePopData}
 import play.api.mvc._
 import services._
-import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
+import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -45,44 +44,31 @@ class ConfirmedClientResolver @Inject()(getEligibilityStatusService: GetEligibil
 
   def resolve: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      val utr: String = user.clientUtr.getOrElse(throw new InternalServerException("[ConfirmedClientResolver][resolve] - utr not present"))
-      val nino: String = user.clientNino.getOrElse(throw new InternalServerException("[ConfirmedClientResolver][resolve] - nino not present"))
+      val utr: String = user.getClientUtr
+      val nino: String = user.getClientNino
       val arn: String = user.arn
 
       throttlingService.throttled(AgentStartOfJourneyThrottle) {
-        withEligibilityResult(utr) {
-          case EligibilityStatus(false, false, _) =>
+        getEligibilityStatusService.getEligibilityStatus(utr) flatMap {
+          case EligibilityStatus(false, false) =>
             Future.successful(
               goToCannotTakePart
                 .removingFromSession(FailedClientMatching, JourneyStateKey)
                 .clearUserDetailsExceptName
             )
-          case EligibilityStatus(thisYear, _, prepop) =>
+          case EligibilityStatus(thisYear, _) =>
             withReference(utr, Some(nino), Some(arn)) { reference =>
               for {
-                _ <- handlePrepop(reference, prepop)
+                _ <- handlePrepop(reference, None)
                 result <- goToSignUpClient(nextYearOnly = !thisYear)
               } yield {
                 result.addingToSession(
-                  ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY -> (!thisYear).toString,
                   JourneyStateKey -> AgentSignUp.name
                 )
               }
             }
         }
       }
-  }
-
-  private def withEligibilityResult(utr: String)(f: EligibilityStatus => Future[Result])
-                                   (implicit request: Request[AnyContent]): Future[Result] = {
-    getEligibilityStatusService.getEligibilityStatus(utr) flatMap {
-      case Left(value) =>
-        throw new InternalServerException(
-          s"[ConfirmClientController][withEligibilityResult] - call to control list failed with status: ${value.httpResponse.status}"
-        )
-      case Right(result) =>
-        f(result)
-    }
   }
 
   private def goToSignUpClient(nextYearOnly: Boolean)

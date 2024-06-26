@@ -20,6 +20,7 @@ import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
+import models.EligibilityStatus
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
 import play.api.http.Status.{NOT_FOUND, NO_CONTENT, OK}
@@ -33,13 +34,15 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
       "call subscription on the back end service" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(
           responseStatus = OK,
           responseBody = Json.toJson(MandationStatusModel(Voluntary, Voluntary))
         )
-
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
-
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(
+          responseStatus = OK,
+          responseBody = Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+        )
 
         When("I call GET /confirmation")
         val res = IncomeTaxSubscriptionFrontend.showConfirmation(hasSubmitted = true, "Test", "User", "A111111AA")

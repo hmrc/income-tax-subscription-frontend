@@ -18,10 +18,9 @@ package controllers.utils
 
 import auth.agent.IncomeTaxAgentUser
 import auth.individual.IncomeTaxSAUser
-import common.Constants.ITSASessionKeys
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{AnyContent, Request, Result}
-import services.MandationStatusService
+import services.{GetEligibilityStatusService, MandationStatusService}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -29,6 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 trait TaxYearNavigationHelper {
 
   val mandationStatusService: MandationStatusService
+  val getEligibilityStatusService: GetEligibilityStatusService
 
   def handleUnableToSelectTaxYearIndividual(ableToSelect: Future[Result])
                                            (implicit request: Request[AnyContent],
@@ -36,13 +36,16 @@ trait TaxYearNavigationHelper {
                                             hc: HeaderCarrier,
                                             ec: ExecutionContext): Future[Result] = {
 
-    val eligibleNextYearOnly: Boolean = request.session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY).contains("true")
-
     mandationStatusService.getMandationStatus(user.getNino, user.getUtr) flatMap { mandationStatus =>
-      if (mandationStatus.currentYearStatus.isMandated || eligibleNextYearOnly) {
-        Future.successful(Redirect(controllers.individual.tasklist.routes.TaskListController.show()))
-      } else {
-        ableToSelect
+      getEligibilityStatusService.getEligibilityStatus(user.getUtr) flatMap { eligibilityStatus =>
+        val isMandatedCurrentYear: Boolean = mandationStatus.currentYearStatus.isMandated
+        val isEligibleNextYearOnly: Boolean = eligibilityStatus.eligibleNextYearOnly
+
+        if (isMandatedCurrentYear || isEligibleNextYearOnly) {
+          Future.successful(Redirect(controllers.individual.tasklist.routes.TaskListController.show()))
+        } else {
+          ableToSelect
+        }
       }
     }
 
@@ -54,13 +57,16 @@ trait TaxYearNavigationHelper {
                                        hc: HeaderCarrier,
                                        ec: ExecutionContext): Future[Result] = {
 
-    val eligibleNextYearOnly: Boolean = request.session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY).contains("true")
-
     mandationStatusService.getMandationStatus(user.getClientNino, user.getClientUtr) flatMap { mandationStatus =>
-      if (mandationStatus.currentYearStatus.isMandated || eligibleNextYearOnly) {
-        Future.successful(Redirect(controllers.agent.tasklist.routes.TaskListController.show()))
-      } else {
-        ableToSelect
+      getEligibilityStatusService.getEligibilityStatus(user.getClientUtr) flatMap { eligibilityStatus =>
+        val isMandatedCurrentYear: Boolean = mandationStatus.currentYearStatus.isMandated
+        val isEligibleNextYearOnly: Boolean = eligibilityStatus.eligibleNextYearOnly
+
+        if (isMandatedCurrentYear || isEligibleNextYearOnly) {
+          Future.successful(Redirect(controllers.agent.tasklist.routes.TaskListController.show()))
+        } else {
+          ableToSelect
+        }
       }
     }
   }

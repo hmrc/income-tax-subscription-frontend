@@ -19,14 +19,12 @@ package services
 import models.common.business._
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
 import models.status.MandationStatus.Voluntary
-import models.{Cash, Current, DateModel}
+import models.{Cash, Current, DateModel, EligibilityStatus}
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.play.PlaySpec
-import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import services.GetCompleteDetailsService._
 import services.mocks.MockSubscriptionDetailsService
-import uk.gov.hmrc.http.HeaderCarrier
 import utilities.individual.TestConstants.{testNino, testUtr}
 
 import java.time.LocalDate
@@ -100,10 +98,11 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
         mockFetchProperty(Some(ukProperty))
         mockFetchOverseasProperty(Some(foreignProperty))
         mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+        mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockFetchSelectedTaxYear(Some(accountingYear))
 
         val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
-          service.getCompleteSignUpDetails("reference", testNino, testUtr)(FakeRequest(), HeaderCarrier())
+          service.getCompleteSignUpDetails("reference", testNino, testUtr)(hc)
         }
 
         await(result) mustBe Right(completeDetails)
@@ -116,10 +115,11 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
         mockFetchProperty(Some(ukProperty))
         mockFetchOverseasProperty(Some(foreignProperty))
         mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+        mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockFetchSelectedTaxYear(None)
 
         val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
-          service.getCompleteSignUpDetails("reference", testNino, testUtr)(FakeRequest(), HeaderCarrier())
+          service.getCompleteSignUpDetails("reference", testNino, testUtr)(hc)
         }
 
         await(result) mustBe Left(GetCompleteDetailsFailure)
@@ -130,10 +130,11 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
           mockFetchProperty(Some(ukProperty))
           mockFetchOverseasProperty(Some(foreignProperty))
           mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+          mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
           mockFetchSelectedTaxYear(Some(accountingYear))
 
           val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
-            service.getCompleteSignUpDetails("reference", testNino, testUtr)(FakeRequest(), HeaderCarrier())
+            service.getCompleteSignUpDetails("reference", testNino, testUtr)(hc)
           }
 
           await(result) mustBe Left(GetCompleteDetailsFailure)
@@ -143,10 +144,11 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
           mockFetchProperty(Some(ukProperty))
           mockFetchOverseasProperty(Some(foreignProperty))
           mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+          mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
           mockFetchSelectedTaxYear(Some(accountingYear))
 
           val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
-            service.getCompleteSignUpDetails("reference", testNino, testUtr)(FakeRequest(), HeaderCarrier())
+            service.getCompleteSignUpDetails("reference", testNino, testUtr)(hc)
           }
 
           await(result) mustBe Left(GetCompleteDetailsFailure)
@@ -156,10 +158,11 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
           mockFetchProperty(Some(ukProperty))
           mockFetchOverseasProperty(Some(foreignProperty))
           mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+          mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
           mockFetchSelectedTaxYear(Some(accountingYear))
 
           val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
-            service.getCompleteSignUpDetails("reference", testNino, testUtr)(FakeRequest(), HeaderCarrier())
+            service.getCompleteSignUpDetails("reference", testNino, testUtr)(hc)
           }
 
           await(result) mustBe Left(GetCompleteDetailsFailure)
@@ -169,10 +172,11 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
           mockFetchProperty(Some(ukProperty))
           mockFetchOverseasProperty(Some(foreignProperty))
           mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+          mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
           mockFetchSelectedTaxYear(Some(accountingYear))
 
           val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
-            service.getCompleteSignUpDetails("reference", testNino, testUtr)(FakeRequest(), HeaderCarrier())
+            service.getCompleteSignUpDetails("reference", testNino, testUtr)(hc)
           }
 
           await(result) mustBe Left(GetCompleteDetailsFailure)
@@ -184,10 +188,11 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
           mockFetchProperty(Some(ukProperty.copy(startDate = None)))
           mockFetchOverseasProperty(Some(foreignProperty))
           mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+          mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
           mockFetchSelectedTaxYear(Some(accountingYear))
 
           val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
-            service.getCompleteSignUpDetails("reference", testNino, testUtr)(FakeRequest(), HeaderCarrier())
+            service.getCompleteSignUpDetails("reference", testNino, testUtr)(hc)
           }
 
           await(result) mustBe Left(GetCompleteDetailsFailure)
@@ -197,10 +202,11 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
           mockFetchProperty(Some(ukProperty.copy(accountingMethod = None)))
           mockFetchOverseasProperty(Some(foreignProperty))
           mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+          mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
           mockFetchSelectedTaxYear(Some(accountingYear))
 
           val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
-            service.getCompleteSignUpDetails("reference", testNino, testUtr)(FakeRequest(), HeaderCarrier())
+            service.getCompleteSignUpDetails("reference", testNino, testUtr)(hc)
           }
 
           await(result) mustBe Left(GetCompleteDetailsFailure)
@@ -212,10 +218,11 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
           mockFetchProperty(Some(ukProperty))
           mockFetchOverseasProperty(Some(foreignProperty.copy(startDate = None)))
           mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+          mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
           mockFetchSelectedTaxYear(Some(accountingYear))
 
           val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
-            service.getCompleteSignUpDetails("reference", testNino, testUtr)(FakeRequest(), HeaderCarrier())
+            service.getCompleteSignUpDetails("reference", testNino, testUtr)(hc)
           }
 
           await(result) mustBe Left(GetCompleteDetailsFailure)
@@ -225,10 +232,11 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
           mockFetchProperty(Some(ukProperty))
           mockFetchOverseasProperty(Some(foreignProperty.copy(accountingMethod = None)))
           mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+          mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
           mockFetchSelectedTaxYear(Some(accountingYear))
 
           val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
-            service.getCompleteSignUpDetails("reference", testNino, testUtr)(FakeRequest(), HeaderCarrier())
+            service.getCompleteSignUpDetails("reference", testNino, testUtr)(hc)
           }
 
           await(result) mustBe Left(GetCompleteDetailsFailure)

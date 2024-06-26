@@ -17,10 +17,9 @@
 package controllers.individual
 
 import auth.individual.SignUpController
-import common.Constants.ITSASessionKeys
 import config.AppConfig
 import play.api.mvc._
-import services.{AuditingService, AuthService, MandationStatusService}
+import services.{AuditingService, AuthService, GetEligibilityStatusService, MandationStatusService}
 import views.html.individual.WhatYouNeedToDo
 
 import javax.inject.{Inject, Singleton}
@@ -28,7 +27,8 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
-                                          mandationStatusService: MandationStatusService)
+                                          mandationStatusService: MandationStatusService,
+                                          getEligibilityStatusService: GetEligibilityStatusService)
                                          (val auditingService: AuditingService,
                                           val appConfig: AppConfig,
                                           val authService: AuthService)
@@ -36,20 +36,17 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      val nextYearOnly = request.session.get(ITSASessionKeys.ELIGIBLE_NEXT_YEAR_ONLY).contains("true")
-
-      mandationStatusService.getMandationStatus(
-        user.getNino,
-        user.getUtr
-      ) map { mandationStatus =>
+      for {
+        mandationStatus <- mandationStatusService.getMandationStatus(user.getNino, user.getUtr)
+        eligibilityStatus <- getEligibilityStatusService.getEligibilityStatus(user.getUtr)
+      } yield {
         Ok(whatYouNeedToDo(
-          routes.WhatYouNeedToDoController.submit,
-          nextYearOnly,
-          mandationStatus.currentYearStatus.isMandated,
-          mandationStatus.nextYearStatus.isMandated
+          postAction = routes.WhatYouNeedToDoController.submit,
+          onlyNextYear = eligibilityStatus.eligibleNextYearOnly,
+          mandatedCurrentYear = mandationStatus.currentYearStatus.isMandated,
+          mandatedNextYear = mandationStatus.nextYearStatus.isMandated
         ))
       }
-
   }
 
   val submit: Action[AnyContent] = Authenticated { _ =>

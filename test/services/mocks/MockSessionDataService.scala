@@ -20,6 +20,7 @@ import connectors.httpparser.DeleteSessionDataHttpParser.DeleteSessionDataRespon
 import connectors.httpparser.GetSessionDataHttpParser.{GetSessionDataResponse, InvalidJson, UnexpectedStatusFailure}
 import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataResponse
 import connectors.httpparser.{DeleteSessionDataHttpParser, SaveSessionDataHttpParser}
+import models.EligibilityStatus
 import models.status.MandationStatusModel
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, when}
@@ -105,6 +106,21 @@ trait MockSessionDataService extends MockitoSugar with BeforeAndAfterEach {
 
   def mockDeleteMandationStatus(result: DeleteSessionDataResponse): Unit = {
     when(mockSessionDataService.deleteMandationStatus(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(result))
+  }
+
+  def mockFetchEligibilityStatus(result: GetSessionDataResponse[EligibilityStatus]): Unit = {
+    when(mockSessionDataService.fetchEligibilityStatus(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(result))
+  }
+
+  def mockSaveEligibilityStatus(eligibilityStatus: EligibilityStatus)(result: SaveSessionDataResponse): Unit = {
+    when(mockSessionDataService.saveEligibilityStatus(ArgumentMatchers.eq(eligibilityStatus))(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(result))
+  }
+
+  def mockDeleteEligibilityStatus(result: DeleteSessionDataResponse): Unit = {
+    when(mockSessionDataService.deleteEligibilityStatus(ArgumentMatchers.any()))
       .thenReturn(Future.successful(result))
   }
 

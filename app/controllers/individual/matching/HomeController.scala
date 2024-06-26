@@ -97,22 +97,15 @@ class HomeController @Inject()(citizenDetailsService: CitizenDetailsService,
   private def handleNoSubscriptionFound(utr: String, nino: String)
                                        (implicit hc: HeaderCarrier, request: Request[AnyContent]) = {
     getEligibilityStatusService.getEligibilityStatus(utr) flatMap {
-      // Check eligibility (this is complete, and gives us the control list response including pre-pop information)
-      case Left(_) =>
-        throw new InternalServerException(s"[HomeController] [index] Could not retrieve eligibility status")
-      case Right(result) =>
+      case EligibilityStatus(false, false) =>
+        Future.successful(Redirect(controllers.individual.controllist.routes.NotEligibleForIncomeTaxController.show()))
+      case EligibilityStatus(thisYear, _) =>
         withReference(utr, Some(nino), None) { reference =>
-          result match {
-            case EligibilityStatus(false, false, _) =>
-              Future.successful(Redirect(controllers.individual.controllist.routes.NotEligibleForIncomeTaxController.show()))
-            case EligibilityStatus(thisYear, _, prepopMaybe) =>
-              handlePrepop(reference, prepopMaybe) map { _ =>
-                goToSignUp(thisYear)
-                  .withJourneyState(SignUp)
-                  .addingToSession(UTR -> utr)
-                  .addingToSession(NINO -> nino)
-                  .addingToSession(ELIGIBLE_NEXT_YEAR_ONLY -> (!thisYear).toString)
-              }
+          handlePrepop(reference, None) map { _ =>
+            goToSignUp(thisYear)
+              .withJourneyState(SignUp)
+              .addingToSession(UTR -> utr)
+              .addingToSession(NINO -> nino)
           }
         }
     }
@@ -132,6 +125,7 @@ class HomeController @Inject()(citizenDetailsService: CitizenDetailsService,
     Redirect(location)
   }
 
+  //TODO: re-implement when pre-pop is required
   private def handlePrepop(reference: String, prepopMaybe: Option[PrePopData])(implicit hc: HeaderCarrier) =
     prepopMaybe match {
       case Some(prepop) if isEnabled(PrePopulate) => prePopulationService.prePopulate(reference, prepop)
