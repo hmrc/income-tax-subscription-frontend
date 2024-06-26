@@ -26,7 +26,8 @@ object FeatureSwitch {
 
   val switches: Set[FeatureSwitch] = Set(
     PrePopulate,
-    ThrottlingFeature
+    ThrottlingFeature,
+    AgentStreamline
   )
 
   def apply(str: String): FeatureSwitch =
@@ -45,6 +46,11 @@ object FeatureSwitch {
   case object ThrottlingFeature extends FeatureSwitch {
     override val name = s"$prefix.throttle"
     override val displayText = "Throttle"
+  }
+
+  case object AgentStreamline extends FeatureSwitch {
+    override val name: String = s"$prefix.enable-agent-streamline"
+    override val displayText: String = "AgentStreamline"
   }
 
 }
