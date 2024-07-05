@@ -21,43 +21,44 @@ import config.AppConfig
 import controllers.utils.ReferenceRetrieval
 import models.common.PropertyModel
 import play.api.mvc._
-import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
+import services.agent.ClientDetailsRetrieval
+import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
-import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.tasklist.ukproperty.PropertyCheckYourAnswers
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PropertyCheckYourAnswersController @Inject()(propertyCheckYourAnswersView: PropertyCheckYourAnswers)
+class PropertyCheckYourAnswersController @Inject()(propertyCheckYourAnswersView: PropertyCheckYourAnswers,
+                                                   subscriptionDetailsService: SubscriptionDetailsService,
+                                                   clientDetailsRetrieval: ClientDetailsRetrieval,
+                                                   referenceRetrieval: ReferenceRetrieval)
                                                   (val auditingService: AuditingService,
-                                                   val sessionDataService: SessionDataService,
                                                    val appConfig: AppConfig,
-                                                   val authService: AuthService,
-                                                   val subscriptionDetailsService: SubscriptionDetailsService)
+                                                   val authService: AuthService)
                                                   (implicit val ec: ExecutionContext,
-                                                   mcc: MessagesControllerComponents) extends AuthenticatedController with ReferenceRetrieval {
+                                                   mcc: MessagesControllerComponents) extends AuthenticatedController {
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withAgentReference { reference =>
+      referenceRetrieval.getAgentReference flatMap { reference =>
         withProperty(reference) { property =>
-          Future.successful(Ok(
-            propertyCheckYourAnswersView(
+          clientDetailsRetrieval.getClientDetails map { clientDetails =>
+            Ok(propertyCheckYourAnswersView(
               viewModel = property,
               routes.PropertyCheckYourAnswersController.submit(),
               backUrl(isEditMode),
-              clientDetails = request.clientDetails
-            )
-          ))
+              clientDetails = clientDetails
+            ))
+          }
         }
       }
   }
 
   def submit(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withAgentReference { reference =>
+      referenceRetrieval.getAgentReference flatMap { reference =>
         withProperty(reference) { property =>
           if (property.accountingMethod.isDefined && property.startDate.isDefined) {
             subscriptionDetailsService.saveProperty(reference, property.copy(confirmed = true)) map {

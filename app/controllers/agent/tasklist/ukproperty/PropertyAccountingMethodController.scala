@@ -24,55 +24,64 @@ import models.AccountingMethod
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
+import services.agent.ClientDetailsRetrieval
+import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
-import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
+import utilities.UserMatchingSessionUtil.ClientDetails
 import views.html.agent.tasklist.ukproperty.PropertyAccountingMethod
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
-class PropertyAccountingMethodController @Inject()(propertyAccountingMethod: PropertyAccountingMethod)
+class PropertyAccountingMethodController @Inject()(propertyAccountingMethod: PropertyAccountingMethod,
+                                                   subscriptionDetailsService: SubscriptionDetailsService,
+                                                   clientDetailsRetrieval: ClientDetailsRetrieval,
+                                                   referenceRetrieval: ReferenceRetrieval)
                                                   (val auditingService: AuditingService,
                                                    val appConfig: AppConfig,
-                                                   val authService: AuthService,
-                                                   val sessionDataService: SessionDataService,
-                                                   val subscriptionDetailsService: SubscriptionDetailsService)
+                                                   val authService: AuthService)
                                                   (implicit val ec: ExecutionContext,
-                                                   mcc: MessagesControllerComponents) extends AuthenticatedController with ReferenceRetrieval {
+                                                   mcc: MessagesControllerComponents) extends AuthenticatedController {
 
-  def view(accountingMethodForm: Form[AccountingMethod], isEditMode: Boolean)
+  def view(accountingMethodForm: Form[AccountingMethod], isEditMode: Boolean, clientDetails: ClientDetails)
           (implicit request: Request[AnyContent]): Html = {
     propertyAccountingMethod(
       accountingMethodForm = accountingMethodForm,
       postAction = controllers.agent.tasklist.ukproperty.routes.PropertyAccountingMethodController.submit(editMode = isEditMode),
       isEditMode = isEditMode,
       backUrl = backUrl(isEditMode),
-      clientDetails = request.clientDetails
+      clientDetails = clientDetails
     )
   }
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withAgentReference { reference =>
-        subscriptionDetailsService.fetchAccountingMethodProperty(reference) map { accountingMethod =>
-          Ok(view(
-            accountingMethodForm = AccountingMethodPropertyForm.accountingMethodPropertyForm.fill(accountingMethod),
-            isEditMode = isEditMode
-          ))
-        }
+      for {
+        reference <- referenceRetrieval.getAgentReference
+        clientDetails <- clientDetailsRetrieval.getClientDetails
+        accountingMethod <- subscriptionDetailsService.fetchAccountingMethodProperty(reference)
+      } yield {
+        Ok(view(
+          accountingMethodForm = AccountingMethodPropertyForm.accountingMethodPropertyForm.fill(accountingMethod),
+          isEditMode = isEditMode,
+          clientDetails = clientDetails
+        ))
       }
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withAgentReference { reference =>
+      referenceRetrieval.getAgentReference flatMap { reference =>
         AccountingMethodPropertyForm.accountingMethodPropertyForm.bindFromRequest().fold(
-          formWithErrors => Future.successful(BadRequest(view(
-            accountingMethodForm = formWithErrors,
-            isEditMode = isEditMode
-          ))),
+          formWithErrors =>
+            clientDetailsRetrieval.getClientDetails map { clientDetails =>
+              BadRequest(view(
+                accountingMethodForm = formWithErrors,
+                isEditMode = isEditMode,
+                clientDetails = clientDetails
+              ))
+            },
           accountingMethodProperty => {
             subscriptionDetailsService.saveAccountingMethodProperty(reference, accountingMethodProperty) map {
               case Right(_) => Redirect(controllers.agent.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(isEditMode))

@@ -26,16 +26,16 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks._
-import utilities.individual.TestConstants.{testNino, testUtr}
+import utilities.individual.TestConstants.testUtr
 
 import scala.concurrent.Future
 
 class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
   with MockWhatYearToSignUp
   with MockSubscriptionDetailsService
-  with MockSessionDataService
   with MockAccountingPeriodService
   with MockGetEligibilityStatusService
+  with MockReferenceRetrieval
   with MockAuditingService {
 
   override val controllerName: String = "WhatYearToSignUpMethod"
@@ -46,21 +46,21 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
 
   object TestWhatYearToSignUpController extends WhatYearToSignUpController(
     whatYearToSignUp,
-    mockAccountingPeriodService
+    mockAccountingPeriodService,
+    mockReferenceRetrieval,
+    MockSubscriptionDetailsService
   )(
     mockAuditingService,
     mockAuthService,
-    mockSessionDataService,
     appConfig,
     mockGetEligibilityStatusService,
     mockMandationStatusService,
-    MockSubscriptionDetailsService
   )
 
   "show" should {
     "display the What Year To Sign Up view with pre-saved tax year option and return OK (200)" when {
       "there is a pre-saved tax year option in Subscription Details " in {
-        mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+        mockGetMandationService(testUtr)(Voluntary, Voluntary)
         mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockView()
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
@@ -75,9 +75,9 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
 
     "display the What Year To Sign Up view with empty form and return OK (200)" when {
       "there is a no pre-saved tax year option in Subscription Details " in {
-        mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+        mockGetMandationService(testUtr)(Voluntary, Voluntary)
         mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
-        
+
         mockView()
         mockFetchSelectedTaxYear(None)
 

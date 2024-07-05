@@ -16,11 +16,9 @@
 
 package utilities
 
-import common.Constants.ITSASessionKeys
 import models.DateModel
 import models.usermatching.UserDetailsModel
 import play.api.mvc.{AnyContent, Request, Result}
-import uk.gov.hmrc.http.InternalServerException
 
 import scala.util.matching.Regex
 
@@ -90,16 +88,6 @@ object UserMatchingSessionUtil {
           Some(f + " " + l)
         case _ => None
       }
-
-    def fetchConfirmedClientNino: Option[String] =
-      request.session.get(ITSASessionKeys.NINO)
-
-    def clientDetails: ClientDetails = {
-      (request.fetchClientName, request.fetchConfirmedClientNino) match {
-        case (Some(name), Some(nino)) => ClientDetails(name, nino)
-        case _ => throw new InternalServerException("[IncomeTaxAgentUser][clientDetails] - could not retrieve client details from session")
-      }
-    }
 
   }
 

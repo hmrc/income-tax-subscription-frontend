@@ -26,8 +26,7 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAuditingService, MockIncomeTaxSubscriptionConnector, MockSessionDataService, MockSubscriptionDetailsService}
-import uk.gov.hmrc.http.InternalServerException
+import services.mocks._
 import views.html.agent.tasklist.ukproperty.PropertyCheckYourAnswers
 
 import scala.concurrent.Future
@@ -35,7 +34,8 @@ import scala.concurrent.Future
 class PropertyCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockAuditingService
-  with MockSessionDataService
+  with MockClientDetailsRetrieval
+  with MockReferenceRetrieval
   with MockIncomeTaxSubscriptionConnector {
 
   override val controllerName: String = "PropertyCheckYourAnswersController"
@@ -45,24 +45,17 @@ class PropertyCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   )
 
   object TestPropertyCheckYourAnswersController extends PropertyCheckYourAnswersController(
-    mock[PropertyCheckYourAnswers]
+    mock[PropertyCheckYourAnswers],
+    MockSubscriptionDetailsService,
+    mockClientDetailsRetrieval,
+    mockReferenceRetrieval
   )(
     mockAuditingService,
-    mockSessionDataService,
     appConfig,
-    mockAuthService,
-    MockSubscriptionDetailsService
+    mockAuthService
   )
 
   "show" should {
-    "return an InternalServerException" when {
-      "there are missing client details in session" in withController { controller =>
-        mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash))))
-
-        intercept[InternalServerException](await(controller.show(false)(subscriptionRequest)))
-          .message mustBe "[IncomeTaxAgentUser][clientDetails] - could not retrieve client details from session"
-      }
-    }
     "return an OK status with the property CYA page" in withController { controller =>
       mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash))))
 
@@ -148,13 +141,14 @@ class PropertyCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
       .thenReturn(HtmlFormat.empty)
 
     val controller = new PropertyCheckYourAnswersController(
-      mockView
+      mockView,
+      MockSubscriptionDetailsService,
+      mockClientDetailsRetrieval,
+      mockReferenceRetrieval
     )(
       mockAuditingService,
-      mockSessionDataService,
       appConfig,
-      mockAuthService,
-      MockSubscriptionDetailsService
+      mockAuthService
     )
 
     testCode(controller)

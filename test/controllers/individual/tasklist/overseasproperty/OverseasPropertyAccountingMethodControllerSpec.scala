@@ -27,7 +27,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
+import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSubscriptionDetailsService}
 import utilities.SubscriptionDataKeys.OverseasPropertyAccountingMethod
 import views.html.individual.tasklist.overseasproperty.OverseasPropertyAccountingMethod
 
@@ -35,7 +35,7 @@ import scala.concurrent.Future
 
 class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService
-  with MockSessionDataService
+  with MockReferenceRetrieval
   with MockAuditingService {
 
   override val controllerName: String = "ForeignPropertyAccountingMethod"
@@ -48,13 +48,13 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
       .thenReturn(HtmlFormat.empty)
 
     val controller = new OverseasPropertyAccountingMethodController(
-      overseasPropertyAccountingMethodView
+      overseasPropertyAccountingMethodView,
+      MockSubscriptionDetailsService,
+      mockReferenceRetrieval
     )(
       mockAuditingService,
       mockAuthService,
-      mockSessionDataService,
-      appConfig,
-      MockSubscriptionDetailsService
+      appConfig
     )
 
     testCode(controller)

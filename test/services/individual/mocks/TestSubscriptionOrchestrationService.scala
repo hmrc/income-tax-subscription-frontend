@@ -57,7 +57,6 @@ trait MockSubscriptionOrchestrationService extends UnitTestTrait with MockitoSug
                                                            createIncomeSourcesModel: CreateIncomeSourcesModel
                                                           )(result: Future[Either[ConnectorError, Option[SubscriptionSuccess]]]): Unit = {
     when(mockSubscriptionOrchestrationService.signUpAndCreateIncomeSourcesFromTaskList(
-      eql(nino),
       eql(createIncomeSourcesModel),
       any()
     )(any[HeaderCarrier])).thenReturn(result)

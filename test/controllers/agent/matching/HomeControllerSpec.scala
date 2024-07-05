@@ -25,7 +25,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService, MockThrottlingConnector}
+import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSubscriptionDetailsService, MockThrottlingConnector}
 import utilities.agent.TestConstants.testUtr
 
 import scala.concurrent.Future
@@ -33,7 +33,7 @@ import scala.concurrent.Future
 class HomeControllerSpec extends AgentControllerBaseSpec
   with MockAuditingService
   with MockThrottlingConnector
-  with MockSessionDataService
+  with MockReferenceRetrieval
   with FeatureSwitchingUtil
   with MockSubscriptionDetailsService {
 
@@ -46,10 +46,12 @@ class HomeControllerSpec extends AgentControllerBaseSpec
   private def testHomeController() = new HomeController(
     mockAuditingService,
     mockAuthService,
-    MockConfig,
+    MockConfig
+  )(
+    mockGetEligibilityStatusService,
     MockSubscriptionDetailsService,
-    mockSessionDataService
-  )(mockGetEligibilityStatusService)(executionContext, mockMessagesControllerComponents)
+    mockReferenceRetrieval
+  )(executionContext, mockMessagesControllerComponents)
 
   override def beforeEach(): Unit = {
     super.beforeEach()

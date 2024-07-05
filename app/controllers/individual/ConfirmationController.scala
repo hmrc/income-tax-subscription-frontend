@@ -31,35 +31,34 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class ConfirmationController @Inject()(signUpConfirmation: SignUpConfirmation,
                                        mandationStatusService: MandationStatusService,
-                                       preferencesFrontendConnector: PreferencesFrontendConnector)
+                                       ninoService: NinoService,
+                                       referenceRetrieval: ReferenceRetrieval,
+                                       preferencesFrontendConnector: PreferencesFrontendConnector,
+                                       subscriptionDetailsService: SubscriptionDetailsService)
                                       (val auditingService: AuditingService,
-                                       val authService: AuthService,
-                                       val subscriptionDetailsService: SubscriptionDetailsService,
-                                       val sessionDataService: SessionDataService)
+                                       val authService: AuthService)
                                       (implicit val ec: ExecutionContext,
                                        val appConfig: AppConfig,
-                                       mcc: MessagesControllerComponents) extends PostSubmissionController with ReferenceRetrieval {
+                                       mcc: MessagesControllerComponents) extends PostSubmissionController {
 
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withIndividualReference { reference =>
-        for {
-          preference <- preferencesFrontendConnector.getOptedInStatus
-          selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getNino, user.getUtr)
-          mandationStatus <- mandationStatusService.getMandationStatus(user.getNino, user.getUtr)
-        } yield {
-          val taxYearSelectionIsNext = selectedTaxYear.map(_.accountingYear).contains(Next)
+      for {
+        reference <- referenceRetrieval.getIndividualReference
+        preference <- preferencesFrontendConnector.getOptedInStatus
+        nino <- ninoService.getNino
+        selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getUtr)
+        mandationStatus <- mandationStatusService.getMandationStatus(user.getUtr)
+      } yield {
+        val taxYearSelectionIsNext = selectedTaxYear.map(_.accountingYear).contains(Next)
 
-          Ok(signUpConfirmation(
-            mandatedCurrentYear = mandationStatus.currentYearStatus.isMandated,
-            taxYearSelectionIsNext = taxYearSelectionIsNext,
-            individualUserNameMaybe = IncomeTaxSAUser.fullName,
-            individualUserNino = user.nino.getOrElse(
-              throw new Exception("[ConfirmationController][show]-could not retrieve individual nino from session")
-            ),
-            preference = preference
-          ))
-        }
+        Ok(signUpConfirmation(
+          mandatedCurrentYear = mandationStatus.currentYearStatus.isMandated,
+          taxYearSelectionIsNext = taxYearSelectionIsNext,
+          individualUserNameMaybe = IncomeTaxSAUser.fullName,
+          individualUserNino = nino,
+          preference = preference
+        ))
       }
   }
 

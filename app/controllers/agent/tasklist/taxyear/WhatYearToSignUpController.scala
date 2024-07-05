@@ -26,27 +26,28 @@ import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services._
+import services.agent.ClientDetailsRetrieval
 import uk.gov.hmrc.http.InternalServerException
-import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.tasklist.taxyear.WhatYearToSignUp
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 import scala.util.matching.Regex
 
 @Singleton
 class WhatYearToSignUpController @Inject()(accountingPeriodService: AccountingPeriodService,
+                                           referenceRetrieval: ReferenceRetrieval,
+                                           clientDetailsRetrieval: ClientDetailsRetrieval,
+                                           subscriptionDetailsService: SubscriptionDetailsService,
                                            whatYearToSignUp: WhatYearToSignUp)
                                           (val auditingService: AuditingService,
                                            val authService: AuthService,
                                            val appConfig: AppConfig,
-                                           val subscriptionDetailsService: SubscriptionDetailsService,
                                            val getEligibilityStatusService: GetEligibilityStatusService,
-                                           val mandationStatusService: MandationStatusService,
-                                           val sessionDataService: SessionDataService)
+                                           val mandationStatusService: MandationStatusService)
                                           (implicit val ec: ExecutionContext,
                                            mcc: MessagesControllerComponents)
-  extends AuthenticatedController with ReferenceRetrieval with TaxYearNavigationHelper {
+  extends AuthenticatedController with TaxYearNavigationHelper {
 
   private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
 
@@ -79,30 +80,29 @@ class WhatYearToSignUpController @Inject()(accountingPeriodService: AccountingPe
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       handleUnableToSelectTaxYearAgent {
-        withAgentReference { reference =>
-          subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getClientNino, user.getClientUtr) map { accountingYearModel =>
-            Ok(view(accountingYearForm = AccountingYearForm.accountingYearForm.fill(
-              accountingYearModel.map(aym => aym.accountingYear)),
-              clientName = request.fetchClientName.getOrElse(
-                throw new InternalServerException("[AccountingPeriodCheckController][show] - could not retrieve client name from session")
-              ),
-              clientNino = formatNino(user.clientNino.getOrElse(
-                throw new InternalServerException("[AccountingPeriodCheckController][show] - could not retrieve client nino from session")
-              )),
-              isEditMode = isEditMode))
-          }
+        for {
+          reference <- referenceRetrieval.getAgentReference
+          accountingYearModel <- subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getClientUtr)
+          clientDetails <- clientDetailsRetrieval.getClientDetails
+        } yield {
+          Ok(view(
+            accountingYearForm = AccountingYearForm.accountingYearForm.fill(accountingYearModel.map(aym => aym.accountingYear)),
+            clientName = clientDetails.name,
+            clientNino = formatNino(clientDetails.nino),
+            isEditMode = isEditMode
+          ))
         }
       }
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      val clientName = request.fetchClientName.get
-      val clientNino = user.clientNino.get
-      withAgentReference { reference =>
+      referenceRetrieval.getAgentReference flatMap { reference =>
         AccountingYearForm.accountingYearForm.bindFromRequest().fold(
           formWithErrors =>
-            Future.successful(BadRequest(view(accountingYearForm = formWithErrors, clientName, clientNino, isEditMode = isEditMode))),
+            clientDetailsRetrieval.getClientDetails map { clientDetails =>
+              BadRequest(view(accountingYearForm = formWithErrors, clientDetails.name, clientDetails.nino, isEditMode = isEditMode))
+            },
           accountingYear => {
             subscriptionDetailsService.saveSelectedTaxYear(reference, AccountingYearModel(accountingYear)) map {
               case Right(_) => Redirect(controllers.agent.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.show())

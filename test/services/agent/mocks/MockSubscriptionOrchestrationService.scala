@@ -39,13 +39,11 @@ trait MockSubscriptionOrchestrationService extends UnitTestTrait with MockitoSug
   }
 
   private def mockCreateSubscriptionFromTaskList(arn: String,
-                                                 nino: String,
                                                  utr: String,
                                                  createIncomeSourceModel: CreateIncomeSourcesModel)
                                                 (result: Future[Either[ConnectorError, Option[SubscriptionSuccess]]]) = {
     when(mockSubscriptionOrchestrationService.createSubscriptionFromTaskList(
       ArgumentMatchers.eq(arn),
-      ArgumentMatchers.eq(nino),
       ArgumentMatchers.eq(utr),
       ArgumentMatchers.eq(createIncomeSourceModel)
     )(ArgumentMatchers.any[HeaderCarrier])) thenReturn result
@@ -53,21 +51,18 @@ trait MockSubscriptionOrchestrationService extends UnitTestTrait with MockitoSug
   }
 
   def mockCreateSubscriptionFromTaskListSuccess(arn: String,
-                                                nino: String,
                                                 utr: String,
                                                 createIncomeSourceModel: CreateIncomeSourcesModel): Unit =
-    mockCreateSubscriptionFromTaskList(arn, nino, utr, createIncomeSourceModel)(Future.successful(testSubscriptionSuccess))
+    mockCreateSubscriptionFromTaskList(arn, utr, createIncomeSourceModel)(Future.successful(testSubscriptionSuccess))
 
   def mockCreateSubscriptionFromTaskListAlreadySignedUp(arn: String,
-                                                        nino: String,
                                                         utr: String,
                                                         createIncomeSourceModel: CreateIncomeSourcesModel): Unit = {
-    mockCreateSubscriptionFromTaskList(arn, nino, utr, createIncomeSourceModel)(Future.successful(Right(None)))
+    mockCreateSubscriptionFromTaskList(arn, utr, createIncomeSourceModel)(Future.successful(Right(None)))
   }
 
   def mockCreateSubscriptionFromTaskListFailure(arn: String,
-                                                nino: String,
                                                 utr: String,
                                                 createIncomeSourceModel: CreateIncomeSourcesModel): Unit =
-    mockCreateSubscriptionFromTaskList(arn, nino, utr, createIncomeSourceModel)(Future.successful(testSubscriptionFailure))
+    mockCreateSubscriptionFromTaskList(arn, utr, createIncomeSourceModel)(Future.successful(testSubscriptionFailure))
 }

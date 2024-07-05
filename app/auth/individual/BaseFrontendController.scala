@@ -18,17 +18,16 @@ package auth.individual
 
 import auth.individual.AuthPredicate._
 import config.featureswitch.FeatureSwitching
-
-import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.AuthService
+import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.~
-import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 abstract class BaseFrontendController @Inject()(implicit val mcc: MessagesControllerComponents)
@@ -50,7 +49,7 @@ abstract class BaseFrontendController @Inject()(implicit val mcc: MessagesContro
     protected def asyncInternal(predicate: AuthPredicate[User])(action: ActionBody[User]): Action[AnyContent] =
       Action.async { implicit request =>
         authService.authorised().retrieve(allEnrolments and affinityGroup and credentialRole and confidenceLevel and credentials) {
-          case enrolments ~ affinity ~ role ~ confidence ~ credentials=>
+          case enrolments ~ affinity ~ role ~ confidence ~ credentials =>
             implicit val user: User = getUser(enrolments, affinity, role, confidence,
               credentials.map(_.providerId).getOrElse(throw UnsupportedAuthProvider()))
 

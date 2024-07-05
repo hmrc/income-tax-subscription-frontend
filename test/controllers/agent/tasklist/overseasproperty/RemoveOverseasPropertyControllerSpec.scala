@@ -30,7 +30,7 @@ import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
+import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSubscriptionDetailsService}
 import utilities.SubscriptionDataKeys
 import views.html.agent.tasklist.overseasproperty.RemoveOverseasPropertyBusiness
 
@@ -39,7 +39,7 @@ import scala.concurrent.Future
 class RemoveOverseasPropertyControllerSpec extends AgentControllerBaseSpec
   with MockAuditingService
   with MockSubscriptionDetailsService
-  with MockSessionDataService
+  with MockReferenceRetrieval
   with MockIncomeTaxSubscriptionConnector {
 
   override val controllerName: String = "RemoveOverseasPropertyController"
@@ -131,13 +131,13 @@ class RemoveOverseasPropertyControllerSpec extends AgentControllerBaseSpec
 
     val controller = new RemoveOverseasPropertyController(
       mockIncomeTaxSubscriptionConnector,
+      mockReferenceRetrieval,
+      MockSubscriptionDetailsService,
       view
     )(
       mockAuditingService,
       mockAuthService,
-      appConfig,
-      MockSubscriptionDetailsService,
-      mockSessionDataService
+      appConfig
     )
 
     testCode(controller)

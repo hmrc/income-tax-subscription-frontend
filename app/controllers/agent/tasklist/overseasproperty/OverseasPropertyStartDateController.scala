@@ -25,47 +25,51 @@ import models.DateModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
+import services.agent.ClientDetailsRetrieval
+import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.ImplicitDateFormatter
-import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
+import utilities.UserMatchingSessionUtil.ClientDetails
 import views.html.agent.tasklist.overseasproperty.OverseasPropertyStartDate
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
-class OverseasPropertyStartDateController @Inject()(overseasPropertyStartDate: OverseasPropertyStartDate)
+class OverseasPropertyStartDateController @Inject()(overseasPropertyStartDate: OverseasPropertyStartDate,
+                                                    subscriptionDetailsService: SubscriptionDetailsService,
+                                                    clientDetailsRetrieval: ClientDetailsRetrieval,
+                                                    referenceRetrieval: ReferenceRetrieval)
                                                    (val auditingService: AuditingService,
                                                     val authService: AuthService,
-                                                    val subscriptionDetailsService: SubscriptionDetailsService,
-                                                    val sessionDataService: SessionDataService,
                                                     val appConfig: AppConfig,
                                                     val languageUtils: LanguageUtils)
                                                    (implicit val ec: ExecutionContext,
                                                     mcc: MessagesControllerComponents)
-  extends AuthenticatedController with ImplicitDateFormatter with ReferenceRetrieval {
+  extends AuthenticatedController with ImplicitDateFormatter {
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withAgentReference { reference =>
-        subscriptionDetailsService.fetchOverseasPropertyStartDate(reference) map { overseasPropertyStartDate =>
-          Ok(view(
-            overseasPropertyStartDateForm = form.fill(overseasPropertyStartDate), isEditMode
-          ))
-        }
+      for {
+        reference <- referenceRetrieval.getAgentReference
+        clientDetails <- clientDetailsRetrieval.getClientDetails
+        startDate <- subscriptionDetailsService.fetchOverseasPropertyStartDate(reference)
+      } yield {
+        Ok(view(
+          overseasPropertyStartDateForm = form.fill(startDate), isEditMode, clientDetails
+        ))
       }
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withAgentReference { reference =>
+      referenceRetrieval.getAgentReference flatMap { reference =>
         form.bindFromRequest().fold(
           formWithErrors =>
-            Future.successful(
-              BadRequest(view(overseasPropertyStartDateForm = formWithErrors, isEditMode = isEditMode))
-            ),
+            clientDetailsRetrieval.getClientDetails map { clientDetails =>
+              BadRequest(view(overseasPropertyStartDateForm = formWithErrors, isEditMode = isEditMode, clientDetails))
+            },
           startDate =>
             subscriptionDetailsService.saveOverseasPropertyStartDate(reference, startDate) map {
               case Right(_) =>
@@ -74,7 +78,8 @@ class OverseasPropertyStartDateController @Inject()(overseasPropertyStartDate: O
                 } else {
                   Redirect(routes.OverseasPropertyAccountingMethodController.show())
                 }
-              case Left(_) => throw new InternalServerException("[OverseasPropertyStartDateController][submit] - Could not save start date")
+              case Left(_) =>
+                throw new InternalServerException("[OverseasPropertyStartDateController][submit] - Could not save start date")
             }
         )
       }
@@ -88,14 +93,14 @@ class OverseasPropertyStartDateController @Inject()(overseasPropertyStartDate: O
     }
   }
 
-  private def view(overseasPropertyStartDateForm: Form[DateModel], isEditMode: Boolean)
+  private def view(overseasPropertyStartDateForm: Form[DateModel], isEditMode: Boolean, clientDetails: ClientDetails)
                   (implicit request: Request[AnyContent]): Html = {
     overseasPropertyStartDate(
       overseasPropertyStartDateForm = overseasPropertyStartDateForm,
       routes.OverseasPropertyStartDateController.submit(editMode = isEditMode),
       backUrl(isEditMode),
       isEditMode,
-      clientDetails = request.clientDetails
+      clientDetails = clientDetails
     )
   }
 

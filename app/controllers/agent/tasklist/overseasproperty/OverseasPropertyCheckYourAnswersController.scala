@@ -21,43 +21,44 @@ import config.AppConfig
 import controllers.utils.ReferenceRetrieval
 import models.common.OverseasPropertyModel
 import play.api.mvc._
-import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
+import services.agent.ClientDetailsRetrieval
+import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
-import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.tasklist.overseasproperty.OverseasPropertyCheckYourAnswers
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class OverseasPropertyCheckYourAnswersController @Inject()(overseasPropertyCheckYourAnswersView: OverseasPropertyCheckYourAnswers)
+class OverseasPropertyCheckYourAnswersController @Inject()(overseasPropertyCheckYourAnswersView: OverseasPropertyCheckYourAnswers,
+                                                           subscriptionDetailsService: SubscriptionDetailsService,
+                                                           clientDetailsRetrieval: ClientDetailsRetrieval,
+                                                           referenceRetrieval: ReferenceRetrieval)
                                                           (val auditingService: AuditingService,
                                                            val authService: AuthService,
-                                                           val sessionDataService: SessionDataService,
-                                                           val appConfig: AppConfig,
-                                                           val subscriptionDetailsService: SubscriptionDetailsService)
+                                                           val appConfig: AppConfig)
                                                           (implicit val ec: ExecutionContext,
-                                                           mcc: MessagesControllerComponents) extends AuthenticatedController with ReferenceRetrieval {
+                                                           mcc: MessagesControllerComponents) extends AuthenticatedController {
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withAgentReference { reference =>
+      referenceRetrieval.getAgentReference flatMap { reference =>
         withOverseasProperty(reference) { property =>
-          Future.successful(Ok(
-            overseasPropertyCheckYourAnswersView(
+          clientDetailsRetrieval.getClientDetails map { clientDetails =>
+            Ok(overseasPropertyCheckYourAnswersView(
               viewModel = property,
               routes.OverseasPropertyCheckYourAnswersController.submit(),
               backUrl(isEditMode),
-              clientDetails = request.clientDetails
-            )
-          ))
+              clientDetails = clientDetails
+            ))
+          }
         }
       }
   }
 
   def submit(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withAgentReference { reference =>
+      referenceRetrieval.getAgentReference flatMap { reference =>
         withOverseasProperty(reference) { property =>
           if (property.accountingMethod.isDefined && property.startDate.isDefined) {
             subscriptionDetailsService.saveOverseasProperty(reference, property.copy(confirmed = true)) map {

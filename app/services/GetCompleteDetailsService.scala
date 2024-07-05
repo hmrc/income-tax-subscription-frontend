@@ -37,13 +37,13 @@ class GetCompleteDetailsService @Inject()(subscriptionDetailsService: Subscripti
   * Returns a failure if any data is missing
   * Returns a complete model if all data is present
   */
-  def getCompleteSignUpDetails(reference: String, nino: String, utr: String)
+  def getCompleteSignUpDetails(reference: String, utr: String)
                               (implicit hc: HeaderCarrier): Future[Either[GetCompleteDetailsFailure.type, CompleteDetails]] = {
 
     val fetchAllSelfEmployments = subscriptionDetailsService.fetchAllSelfEmployments(reference)
     val fetchUKProperty = subscriptionDetailsService.fetchProperty(reference)
     val fetchForeignProperty = subscriptionDetailsService.fetchOverseasProperty(reference)
-    val fetchSelectedTaxYear = subscriptionDetailsService.fetchSelectedTaxYear(reference, nino, utr)
+    val fetchSelectedTaxYear = subscriptionDetailsService.fetchSelectedTaxYear(reference, utr)
 
     for {
       (selfEmployments, accountingMethod) <- fetchAllSelfEmployments

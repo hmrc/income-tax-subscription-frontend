@@ -22,23 +22,24 @@ import common.Constants.ITSASessionKeys
 import config.AppConfig
 import models.audits.IVOutcomeSuccessAuditing.IVOutcomeSuccessAuditModel
 import play.api.mvc._
-import services.{AuditingService, AuthService}
-import uk.gov.hmrc.http.InternalServerException
+import services.{AuditingService, AuthService, NinoService}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IVSuccessController @Inject()(val appConfig: AppConfig,
                                     val authService: AuthService,
+                                    val ninoService: NinoService,
                                     val auditingService: AuditingService)
                                    (implicit val ec: ExecutionContext,
                                     mcc: MessagesControllerComponents) extends StatelessController {
 
   def success: Action[AnyContent] = Authenticated.asyncUnrestricted { implicit request =>
-    implicit user =>
+    _ =>
       if (request.session.get(ITSASessionKeys.IdentityVerificationFlag).nonEmpty) {
-        val nino: String = user.nino.getOrElse(throw new InternalServerException("[IVSuccessController][success] - Could not retrieve nino after iv success"))
-        auditingService.audit(IVOutcomeSuccessAuditModel(nino))
+        ninoService.getNino map { nino =>
+          auditingService.audit(IVOutcomeSuccessAuditModel(nino))
+        }
       }
       if (request.session.isInState(ClaimEnrolmentJourney)) {
         Future.successful(

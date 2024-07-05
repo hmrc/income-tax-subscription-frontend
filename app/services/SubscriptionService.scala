@@ -43,8 +43,7 @@ class SubscriptionService @Inject()(multipleIncomeSourcesSubscriptionConnector: 
   }
 
   def createIncomeSourcesFromTaskList(mtdbsa: String,
-                                      createIncomeSourcesModel: CreateIncomeSourcesModel
-                                     )
+                                      createIncomeSourcesModel: CreateIncomeSourcesModel)
                                      (implicit hc: HeaderCarrier): Future[PostCreateIncomeSourceResponse] = {
     logger.debug(s"Create IncomeSources request for MTDSA Id:$mtdbsa from task list")
 

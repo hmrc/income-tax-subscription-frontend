@@ -54,10 +54,6 @@ class IncomeTaxSAUserSpec extends PlaySpec with GuiceOneServerPerTest {
         ""
       )
 
-      s"have the expected NINO $testNino" in {
-        user.nino mustBe Some(testNino)
-      }
-
       s"have the expected UTR $testUtr" in {
         user.utr mustBe Some(testUtr)
       }
@@ -71,7 +67,6 @@ class IncomeTaxSAUserSpec extends PlaySpec with GuiceOneServerPerTest {
       val confidenceLevel = ConfidenceLevel.L50
 
       implicit lazy val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
-        ITSASessionKeys.NINO -> testNino,
         ITSASessionKeys.UTR -> testUtr
       )
 
@@ -82,10 +77,6 @@ class IncomeTaxSAUserSpec extends PlaySpec with GuiceOneServerPerTest {
         confidenceLevel,
         ""
       )
-
-      s"have the expected NINO $testNino" in {
-        user.nino mustBe Some(testNino)
-      }
 
       s"have the expected UTR $testUtr" in {
         user.utr mustBe Some(testUtr)

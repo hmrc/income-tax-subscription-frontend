@@ -22,7 +22,7 @@ import config.AppConfig
 import controllers.utils.ReferenceRetrieval
 import models.common.PropertyModel
 import play.api.mvc._
-import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import views.html.individual.tasklist.ukproperty.PropertyCheckYourAnswers
 
@@ -30,18 +30,18 @@ import javax.inject.Singleton
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PropertyCheckYourAnswersController @Inject()(propertyCheckYourAnswersView: PropertyCheckYourAnswers)
+class PropertyCheckYourAnswersController @Inject()(propertyCheckYourAnswersView: PropertyCheckYourAnswers,
+                                                   subscriptionDetailsService: SubscriptionDetailsService,
+                                                   referenceRetrieval: ReferenceRetrieval)
                                                   (val auditingService: AuditingService,
                                                    val authService: AuthService,
-                                                   val appConfig: AppConfig,
-                                                   val sessionDataService: SessionDataService,
-                                                   val subscriptionDetailsService: SubscriptionDetailsService)
+                                                   val appConfig: AppConfig)
                                                   (implicit val ec: ExecutionContext,
-                                                   mcc: MessagesControllerComponents) extends SignUpController with ReferenceRetrieval {
+                                                   mcc: MessagesControllerComponents) extends SignUpController {
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withIndividualReference { reference =>
+      referenceRetrieval.getIndividualReference flatMap { reference =>
         withProperty(reference) { property =>
           Future.successful(Ok(
             propertyCheckYourAnswersView(
@@ -56,7 +56,7 @@ class PropertyCheckYourAnswersController @Inject()(propertyCheckYourAnswersView:
 
   def submit(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withIndividualReference { reference =>
+      referenceRetrieval.getIndividualReference flatMap { reference =>
         withProperty(reference) {
           case property@PropertyModel(Some(_), Some(_), _) =>
             subscriptionDetailsService.saveProperty(reference, property.copy(confirmed = true)).map {

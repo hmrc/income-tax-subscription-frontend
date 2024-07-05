@@ -23,9 +23,9 @@ import controllers.utils.ReferenceRetrieval
 import forms.agent.ClientCanSignUpForm.clientCanSignUpForm
 import models.{No, Yes}
 import play.api.mvc._
-import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
+import services.agent.ClientDetailsRetrieval
+import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
-import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.eligibility.ClientCanSignUp
 
 import javax.inject.{Inject, Singleton}
@@ -33,14 +33,15 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.matching.Regex
 
 @Singleton
-class ClientCanSignUpController @Inject()(val auditingService: AuditingService,
-                                          clientCanSignUp: ClientCanSignUp,
-                                          val subscriptionDetailsService: SubscriptionDetailsService,
-                                          val sessionDataService: SessionDataService,
+class ClientCanSignUpController @Inject()(clientCanSignUp: ClientCanSignUp,
+                                          subscriptionDetailsService: SubscriptionDetailsService,
+                                          clientDetailsRetrieval: ClientDetailsRetrieval,
+                                          referenceRetrieval: ReferenceRetrieval)
+                                         (val auditingService: AuditingService,
                                           val authService: AuthService)
                                          (implicit val appConfig: AppConfig,
                                           mcc: MessagesControllerComponents,
-                                          val ec: ExecutionContext) extends PreSignUpController with ReferenceRetrieval {
+                                          val ec: ExecutionContext) extends PreSignUpController {
 
   private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
 
@@ -52,37 +53,32 @@ class ClientCanSignUpController @Inject()(val auditingService: AuditingService,
     }
   }
 
-  def show: Action[AnyContent] = Authenticated { implicit request =>
-    implicit user =>
-      Ok(clientCanSignUp(
-        clientCanSignUpForm,
-        routes.ClientCanSignUpController.submit(),
-        clientName = request.fetchClientName.getOrElse(
-          throw new InternalServerException("[ClientCanSignUpController][show] - could not retrieve client name from session")
-        ),
-        clientNino = formatNino(user.clientNino.getOrElse(
-          throw new InternalServerException("[ClientCanSignUpController][show] - could not retrieve client nino from session")
-        )),
-        backLink))
+  def show: Action[AnyContent] = Authenticated.async { implicit request =>
+    _ =>
+      clientDetailsRetrieval.getClientDetails map { clientDetails =>
+        Ok(clientCanSignUp(
+          clientCanSignUpForm,
+          routes.ClientCanSignUpController.submit(),
+          clientName = clientDetails.name,
+          clientNino = formatNino(clientDetails.nino),
+          backUrl = backLink
+        ))
+      }
   }
 
   def submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      val clientName: String = request.fetchClientName.getOrElse(
-        throw new InternalServerException("[ClientCanSignUpController][submit] - could not retrieve client name from session")
-      )
-      val clientNino: String = formatNino(user.clientNino.getOrElse(
-        throw new InternalServerException("[ClientCanSignUpController][submit] - could not retrieve client nino from session")
-      ))
       clientCanSignUpForm.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(clientCanSignUp(
-            formWithErrors,
-            routes.ClientCanSignUpController.submit(),
-            clientName,
-            clientNino,
-            backLink
-          ))),
+          clientDetailsRetrieval.getClientDetails map { clientDetails =>
+            BadRequest(clientCanSignUp(
+              formWithErrors,
+              routes.ClientCanSignUpController.submit(),
+              clientDetails.name,
+              formatNino(clientDetails.nino),
+              backLink
+            ))
+          },
         {
           case Yes =>
             continueToSignUpClient
@@ -90,10 +86,11 @@ class ClientCanSignUpController @Inject()(val auditingService: AuditingService,
             Future.successful(Redirect(controllers.agent.routes.AddAnotherClientController.addAnother()))
         }
       )
+
   }
 
   private def continueToSignUpClient(implicit request: Request[AnyContent], user: IncomeTaxAgentUser): Future[Result] = {
-    withAgentReference { reference =>
+    referenceRetrieval.getAgentReference flatMap { reference =>
       subscriptionDetailsService.saveEligibilityInterruptPassed(reference) map {
         case Right(_) =>
           Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())

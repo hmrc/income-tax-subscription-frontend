@@ -18,11 +18,13 @@ package controllers.individual.claimenrolment.sps
 
 import _root_.common.Constants.ITSASessionKeys
 import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
+import connectors.stubs.SessionDataConnectorStub
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.{IndividualURI, basGatewaySignIn}
+import helpers.IntegrationTestConstants.{IndividualURI, basGatewaySignIn, testNino}
 import helpers.WiremockHelper.verifyPost
 import helpers.servicemocks.{AuthStub, SubscriptionStub}
 import play.api.http.Status._
+import play.api.libs.json.{JsString, Json}
 
 class SPSCallbackForClaimEnrolControllerISpec extends ComponentSpecBase {
 
@@ -47,9 +49,10 @@ class SPSCallbackForClaimEnrolControllerISpec extends ComponentSpecBase {
         "link user's enrolment id to SPS and redirect the user to the Claim Enrolment Confirmation page" in {
           AuthStub.stubAuthSuccess()
           SubscriptionStub.stubGetSubscriptionFound()
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
-
-          val res = IncomeTaxSubscriptionFrontend.claimEnrolSpsCallback(hasEntityId = true,
+          val res = IncomeTaxSubscriptionFrontend.claimEnrolSpsCallback(
+            hasEntityId = true,
             sessionKeys = Map(
               ITSASessionKeys.JourneyStateKey -> ClaimEnrolmentJourney.name
             )
@@ -64,11 +67,12 @@ class SPSCallbackForClaimEnrolControllerISpec extends ComponentSpecBase {
 
       "mtditid retrieves failed" should {
         "throw InternalServerException" in {
-
           AuthStub.stubAuthSuccess()
           SubscriptionStub.stubGetNoSubscription()
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
-          val res = IncomeTaxSubscriptionFrontend.claimEnrolSpsCallback(hasEntityId = true,
+          val res = IncomeTaxSubscriptionFrontend.claimEnrolSpsCallback(
+            hasEntityId = true,
             sessionKeys = Map(
               ITSASessionKeys.JourneyStateKey -> ClaimEnrolmentJourney.name
             )

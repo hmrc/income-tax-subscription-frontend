@@ -34,7 +34,7 @@ import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
+import services.mocks.{MockAuditingService, MockClientDetailsRetrieval, MockReferenceRetrieval, MockSubscriptionDetailsService}
 import utilities.UserMatchingSessionUtil.{firstName, lastName}
 import utilities.agent.TestConstants.{testARN, testNino, testUtr}
 import utilities.{CacheExpiryDateProvider, CurrentDateProvider}
@@ -45,7 +45,8 @@ import scala.concurrent.Future
 
 class ProgressSavedControllerSpec extends AgentControllerBaseSpec
   with MockAuditingService
-  with MockSessionDataService
+  with MockReferenceRetrieval
+  with MockClientDetailsRetrieval
   with MockSubscriptionDetailsService {
 
   override val controllerName: String = "ProgressSavedController"
@@ -111,12 +112,11 @@ class ProgressSavedControllerSpec extends AgentControllerBaseSpec
         mockFetchProperty(property)
         mockFetchOverseasProperty(overseasProperty)
         mockFetchSelectedTaxYear(selectedTaxYear)
-        mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+        mockGetMandationService(testUtr)(Voluntary, Voluntary)
         mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
 
         val testRequest = FakeRequest().withSession(
           ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
-          ITSASessionKeys.NINO -> testNino,
           ITSASessionKeys.UTR -> testUtr,
           firstName -> "FirstName",
           lastName -> "LastName",
@@ -174,12 +174,13 @@ class ProgressSavedControllerSpec extends AgentControllerBaseSpec
     val controller = new ProgressSavedController(
       progressSavedView,
       currentDateProvider,
+      MockSubscriptionDetailsService,
+      mockReferenceRetrieval,
+      mockClientDetailsRetrieval,
       cacheExpiryDateProvider
     )(
       mockAuditingService,
       mockAuthService,
-      MockSubscriptionDetailsService,
-      mockSessionDataService,
       appConfig,
       config,
       env

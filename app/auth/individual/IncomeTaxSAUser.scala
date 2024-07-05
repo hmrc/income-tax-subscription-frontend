@@ -27,29 +27,13 @@ trait IncomeTaxUser {
   val affinityGroup: Option[AffinityGroup]
 }
 
-case class UserIdentifiers(ninoMaybe: Option[String], utrMaybe: Option[String], nameMaybe: Option[String], entityIdMaybe: Option[String])
-
+case class UserIdentifiers(utrMaybe: Option[String], nameMaybe: Option[String], entityIdMaybe: Option[String])
 
 class IncomeTaxSAUser(val enrolments: Enrolments,
                       val affinityGroup: Option[AffinityGroup],
                       val credentialRole: Option[CredentialRole],
                       val confidenceLevel: ConfidenceLevel,
                       val userId: String) extends IncomeTaxUser {
-
-
-  def nino(implicit request: Request[AnyContent]): Option[String] = {
-    getEnrolment(Constants.ninoEnrolmentName) match {
-      case None => request.session.get(ITSASessionKeys.NINO)
-      case x => x
-    }
-  }
-
-  def getNino(implicit request: Request[AnyContent]): String = {
-    nino match {
-      case Some(value) => value
-      case None => throw new InternalServerException("[IncomeTaxSAUser][getNino] - Unable to retrieve nino")
-    }
-  }
 
   def utr(implicit request: Request[AnyContent]): Option[String] = {
     getEnrolment(Constants.utrEnrolmentName) match {
@@ -80,7 +64,7 @@ class IncomeTaxSAUser(val enrolments: Enrolments,
   }
 
   def getUserIdentifiersFromSession()(implicit request: Request[AnyContent]): UserIdentifiers =
-    UserIdentifiers(nino, utr, IncomeTaxSAUser.fullName, IncomeTaxSAUser.spsEntityId)
+    UserIdentifiers(utr, IncomeTaxSAUser.fullName, IncomeTaxSAUser.spsEntityId)
 
   lazy val mtdItsaRef: Option[String] = getEnrolment(Constants.mtdItsaEnrolmentName)
 }

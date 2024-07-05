@@ -37,7 +37,7 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       for {
-        mandationStatus <- mandationStatusService.getMandationStatus(user.getNino, user.getUtr)
+        mandationStatus <- mandationStatusService.getMandationStatus(user.getUtr)
         eligibilityStatus <- getEligibilityStatusService.getEligibilityStatus(user.getUtr)
       } yield {
         Ok(whatYouNeedToDo(

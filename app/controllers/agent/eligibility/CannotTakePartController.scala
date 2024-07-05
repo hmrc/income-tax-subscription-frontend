@@ -19,9 +19,8 @@ package controllers.agent.eligibility
 import auth.agent.PreSignUpController
 import config.AppConfig
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.agent.ClientDetailsRetrieval
 import services.{AuditingService, AuthService}
-import uk.gov.hmrc.http.InternalServerException
-import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.eligibility.CannotTakePart
 
 import javax.inject.{Inject, Singleton}
@@ -30,7 +29,8 @@ import scala.util.matching.Regex
 
 @Singleton
 class CannotTakePartController @Inject()(val auditingService: AuditingService,
-                                         val authService: AuthService,
+                                         val authService: AuthService)
+                                        (clientDetailsRetrieval: ClientDetailsRetrieval,
                                          cannotTakePart: CannotTakePart)
                                         (implicit val appConfig: AppConfig,
                                          mcc: MessagesControllerComponents,
@@ -46,15 +46,13 @@ class CannotTakePartController @Inject()(val auditingService: AuditingService,
     }
   }
 
-  def show: Action[AnyContent] = Authenticated { implicit request =>
-    implicit user =>
-      Ok(cannotTakePart(
-        clientName = request.fetchClientName.getOrElse(
-          throw new InternalServerException("[CannotTakePartController][show] - could not retrieve client name from session")
-        ),
-        clientNino = formatNino(user.clientNino.getOrElse(
-          throw new InternalServerException("[CannotTakePartController][show] - could not retrieve client nino from session")
+  def show: Action[AnyContent] = Authenticated.async { implicit request =>
+    _ =>
+      clientDetailsRetrieval.getClientDetails map { clientDetails =>
+        Ok(cannotTakePart(
+          clientName = clientDetails.name,
+          clientNino = formatNino(clientDetails.nino)
         ))
-      ))
+      }
   }
 }

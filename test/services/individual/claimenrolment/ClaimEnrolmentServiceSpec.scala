@@ -27,7 +27,7 @@ import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import services.agent.CheckEnrolmentAllocationService.{EnrolmentAlreadyAllocated, EnrolmentNotAllocated, EnrolmentStoreProxyInvalidJsonResponse, UnexpectedEnrolmentStoreProxyFailure}
 import services.individual.claimenrolment.ClaimEnrolmentService._
 import services.individual.mocks.{MockEnrolmentService, MockKnownFactsService}
-import services.mocks.{MockCheckEnrolmentAllocationService, MockSubscriptionService}
+import services.mocks.{MockCheckEnrolmentAllocationService, MockNinoService, MockSubscriptionService}
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import uk.gov.hmrc.auth.core._
 import utilities.individual.TestConstants.{testEnrolmentKey, testGroupId, testMTDID, testNino}
@@ -39,10 +39,12 @@ class ClaimEnrolmentServiceSpec extends PlaySpec
   with MockSubscriptionService
   with MockCheckEnrolmentAllocationService
   with MockKnownFactsService
+  with MockNinoService
   with MockEnrolmentService {
 
   object TestClaimEnrolmentService extends ClaimEnrolmentService(
     mockSubscriptionService,
+    mockNinoService,
     mockCheckEnrolmentAllocationService,
     mockKnownFactsService,
     mockEnrolmentService
@@ -72,16 +74,10 @@ class ClaimEnrolmentServiceSpec extends PlaySpec
   )
 
   "claimEnrolment" when {
-    "the user doesn't have a nino in their user profile" should {
-      "return a ClaimEnrolmentError" in {
-        val result: Future[ClaimEnrolmentResponse] = TestClaimEnrolmentService.claimEnrolment(implicitly, userWithNoNino, implicitly)
-
-        await(result) mustBe Left(ClaimEnrolmentError("[ClaimEnrolmentService][getNino] - Could not retrieve nino from user profile"))
-      }
-    }
     "the user has a nino in their user profile" when {
       "the user is not signed up to mtd income tax" should {
         "return a NotSubscribed" in {
+          mockGetNino(testNino)
           setupMockGetSubscriptionNotFound(testNino)
 
           val result: Future[ClaimEnrolmentResponse] = TestClaimEnrolmentService.claimEnrolment
@@ -91,6 +87,7 @@ class ClaimEnrolmentServiceSpec extends PlaySpec
       }
       "there was an unexpected response when checking if the user is subscribed" should {
         "return a ClaimEnrolmentError" in {
+          mockGetNino(testNino)
           setupMockGetSubscriptionFailure(testNino)
 
           val result: Future[ClaimEnrolmentResponse] = TestClaimEnrolmentService.claimEnrolment
@@ -103,6 +100,7 @@ class ClaimEnrolmentServiceSpec extends PlaySpec
       "the user is signed up to mtd income tax" when {
         "the enrolment is already allocated" should {
           "return a AlreadySignedUp" in {
+            mockGetNino(testNino)
             setupMockGetSubscriptionFound(testNino)
             mockGetGroupIdForEnrolment(testEnrolmentKey)(Left(EnrolmentAlreadyAllocated(testGroupId)))
 
@@ -113,6 +111,7 @@ class ClaimEnrolmentServiceSpec extends PlaySpec
         }
         "the response was invalid when checking if the enrolment is already allocated" should {
           "return a ClaimEnrolmentError" in {
+            mockGetNino(testNino)
             setupMockGetSubscriptionFound(testNino)
             mockGetGroupIdForEnrolment(testEnrolmentKey)(Left(EnrolmentStoreProxyInvalidJsonResponse))
 
@@ -123,6 +122,7 @@ class ClaimEnrolmentServiceSpec extends PlaySpec
         }
         "there was an unexpected response when checking if the enrolment is already allocated" should {
           "return a ClaimEnrolmentError" in {
+            mockGetNino(testNino)
             setupMockGetSubscriptionFound(testNino)
             mockGetGroupIdForEnrolment(testEnrolmentKey)(Left(UnexpectedEnrolmentStoreProxyFailure(INTERNAL_SERVER_ERROR)))
 
@@ -136,6 +136,7 @@ class ClaimEnrolmentServiceSpec extends PlaySpec
         "the enrolment is not allocated elsewhere" when {
           "there was a problem adding known facts for the enrolment" should {
             "return a ClaimEnrolmentError" in {
+              mockGetNino(testNino)
               setupMockGetSubscriptionFound(testNino)
               mockGetGroupIdForEnrolment(testEnrolmentKey)(Right(EnrolmentNotAllocated))
               mockAddKnownFactsFailure(mtditid = testMTDID, nino = testNino)
@@ -150,6 +151,7 @@ class ClaimEnrolmentServiceSpec extends PlaySpec
           "adding known facts for the enrolment was successful" when {
             "there was a problem allocating the enrolment" should {
               "return a ClaimEnrolmentError" in {
+                mockGetNino(testNino)
                 setupMockGetSubscriptionFound(testNino)
                 mockGetGroupIdForEnrolment(testEnrolmentKey)(Right(EnrolmentNotAllocated))
                 mockAddKnownFactsSuccess(mtditid = testMTDID, nino = testNino)
@@ -164,6 +166,7 @@ class ClaimEnrolmentServiceSpec extends PlaySpec
             }
             "allocating the enrolment was successful" should {
               "return a ClaimEnrolmentSuccess" in {
+                mockGetNino(testNino)
                 setupMockGetSubscriptionFound(testNino)
                 mockGetGroupIdForEnrolment(testEnrolmentKey)(Right(EnrolmentNotAllocated))
                 mockAddKnownFactsSuccess(mtditid = testMTDID, nino = testNino)

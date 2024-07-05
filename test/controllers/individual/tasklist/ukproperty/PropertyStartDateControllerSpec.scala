@@ -24,7 +24,7 @@ import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
+import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSubscriptionDetailsService}
 import utilities.SubscriptionDataKeys.PropertyStartDate
 import utilities.TestModels.testFullPropertyModel
 import views.individual.mocks.MockPropertyStartDate
@@ -35,7 +35,7 @@ import scala.concurrent.Future
 class PropertyStartDateControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockAuditingService
-  with MockSessionDataService
+  with MockReferenceRetrieval
   with MockPropertyStartDate {
 
   override val controllerName: String = "PropertyStartDateController"
@@ -45,25 +45,25 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
   )
 
   object TestPropertyStartDateController extends PropertyStartDateController(
-    propertyStartDate
+    propertyStartDate,
+    MockSubscriptionDetailsService,
+    mockReferenceRetrieval
   )(
     mockAuditingService,
     mockAuthService,
-    MockSubscriptionDetailsService,
     appConfig,
-    mockSessionDataService,
     mockLanguageUtils
   )
 
   trait Test {
     val controller = new PropertyStartDateController(
-      propertyStartDate
+      propertyStartDate,
+      MockSubscriptionDetailsService,
+      mockReferenceRetrieval
     )(
       mockAuditingService,
       mockAuthService,
-      MockSubscriptionDetailsService,
       appConfig,
-      mockSessionDataService,
       mockLanguageUtils
     )
   }

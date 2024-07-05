@@ -27,7 +27,7 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAuditingService, MockRemoveBusinessService, MockSessionDataService, MockSubscriptionDetailsService}
+import services.mocks._
 import views.html.agent.tasklist.selfemployment.RemoveSelfEmploymentBusiness
 
 import scala.concurrent.Future
@@ -35,7 +35,7 @@ import scala.concurrent.Future
 class RemoveSelfEmploymentBusinessControllerSpec extends AgentControllerBaseSpec
   with MockAuditingService
   with MockSubscriptionDetailsService
-  with MockSessionDataService
+  with MockReferenceRetrieval
   with MockRemoveBusinessService {
 
   override val controllerName: String = "RemoveSelfEmploymentBusinessController"
@@ -121,13 +121,13 @@ class RemoveSelfEmploymentBusinessControllerSpec extends AgentControllerBaseSpec
 
     val controller = new RemoveSelfEmploymentBusinessController(
       view,
+      mockReferenceRetrieval,
+      MockSubscriptionDetailsService,
       mockRemoveBusinessService
     )(
       mockAuditingService,
       mockAuthService,
-      MockSubscriptionDetailsService,
-      appConfig,
-      mockSessionDataService
+      appConfig
     )
 
     testCode(controller)

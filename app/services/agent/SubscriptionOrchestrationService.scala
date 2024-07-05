@@ -32,16 +32,14 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
                                                 (implicit ec: ExecutionContext) {
 
   def createSubscriptionFromTaskList(arn: String,
-                                     nino: String,
                                      utr: String,
                                      createIncomeSourcesModel: CreateIncomeSourcesModel)
                                     (implicit hc: HeaderCarrier): Future[Either[ConnectorError, Option[SubscriptionSuccess]]] = {
-
-    signUpAndCreateIncomeSourcesFromTaskList(nino, createIncomeSourcesModel) flatMap {
+    signUpAndCreateIncomeSourcesFromTaskList(createIncomeSourcesModel.nino, createIncomeSourcesModel) flatMap {
       case right@Right(Some(subscriptionSuccess)) =>
-        autoEnrolmentService.autoClaimEnrolment(utr, nino, subscriptionSuccess.mtditId) flatMap {
+        autoEnrolmentService.autoClaimEnrolment(utr, createIncomeSourcesModel.nino, subscriptionSuccess.mtditId) flatMap {
           case Right(_) =>
-            confirmAgentEnrollmentToSps(arn, nino, utr, subscriptionSuccess.mtditId)
+            confirmAgentEnrollmentToSps(arn, createIncomeSourcesModel.nino, utr, subscriptionSuccess.mtditId)
               .map(_ => right)
           case Left(_) =>
             Future.successful(right)

@@ -56,14 +56,14 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
     eligibilityStatusService.getEligibilityStatus(utr).map(_.eligibleNextYearOnly)
   }
 
-  private def getMandationForCurrentYear(nino: String, utr: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
-    mandationStatusService.getMandationStatus(nino, utr).map(_.currentYearStatus.isMandated)
+  private def getMandationForCurrentYear(utr: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
+    mandationStatusService.getMandationStatus(utr).map(_.currentYearStatus.isMandated)
   }
 
-  def fetchSelectedTaxYear(reference: String, nino: String, utr: String)(implicit hc: HeaderCarrier): Future[Option[AccountingYearModel]] = {
+  def fetchSelectedTaxYear(reference: String, utr: String)(implicit hc: HeaderCarrier): Future[Option[AccountingYearModel]] = {
     for {
       storedTaxYear <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingYearModel](reference, SubscriptionDataKeys.SelectedTaxYear)
-      mandatedCurrentYear <- getMandationForCurrentYear(nino, utr)
+      mandatedCurrentYear <- getMandationForCurrentYear(utr)
       eligibleNextYearOnly <- getEligibilityNextYearOnly(utr)
     } yield {
       if (mandatedCurrentYear) {

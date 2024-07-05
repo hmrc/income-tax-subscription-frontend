@@ -21,7 +21,7 @@ import config.AppConfig
 import play.api.data.Form
 import play.api.mvc._
 import play.twirl.api.Html
-import services.{AuditingService, AuthService}
+import services.{AuditingService, AuthService, NinoService}
 import testonly.connectors.individual.ClearPreferencesConnector
 import testonly.form.individual.ClearPreferencesForm.clearPreferenceForm
 import testonly.models.preferences.{ClearPreferencesModel, ClearPreferencesResult, Cleared, NoPreferences}
@@ -34,6 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class ClearPreferencesController @Inject()(val auditingService: AuditingService,
                                            clearPreferences: ClearPreferences,
+                                           ninoService: NinoService,
                                            val authService: AuthService,
                                            clearPreferencesConnector: ClearPreferencesConnector)
                                           (implicit val ec: ExecutionContext,
@@ -49,10 +50,9 @@ class ClearPreferencesController @Inject()(val auditingService: AuditingService,
   }
 
   val clear: Action[AnyContent] = Authenticated.asyncUnrestricted { implicit request =>
-    implicit user =>
-      user.nino match {
-        case None => Future.failed[Result](new InternalServerException("clear preferences controller, no nino"))
-        case Some(nino) => clearUser(nino) map {
+    _ =>
+      ninoService.getNino flatMap { nino =>
+        clearUser(nino) map {
           case Cleared(_) => Ok("Preferences cleared")
           case NoPreferences(_) => Ok("No preferences found")
         }

@@ -33,7 +33,6 @@ import scala.concurrent.Future
 class SPSCallbackForClaimEnrolControllerSpec extends ControllerBaseSpec with MockAuditingService with MockSpsService
   with MockClaimEnrolmentService {
 
-
   object TestSPSCallbackForClaimEnrolController extends SPSCallbackForClaimEnrolController(
     mockAuditingService,
     mockAuthService,
@@ -54,7 +53,6 @@ class SPSCallbackForClaimEnrolControllerSpec extends ControllerBaseSpec with Moc
     }
     FakeRequest("GET", controllers.individual.claimenrolment.sps.routes.SPSCallbackForClaimEnrolController.callback.url + entityIdParam).withSession(
       ITSASessionKeys.JourneyStateKey -> ClaimEnrolmentJourney.name,
-      ITSASessionKeys.NINO -> TestConstants.testNino,
       ITSASessionKeys.UTR -> TestConstants.testUtr
     )
   }

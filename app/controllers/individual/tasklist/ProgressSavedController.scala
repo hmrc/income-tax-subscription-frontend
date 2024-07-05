@@ -24,7 +24,7 @@ import models.audits.SaveAndComebackAuditing.SaveAndComeBackAuditModel
 import models.common.business.AccountingMethodModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.api.{Configuration, Environment}
-import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, NinoService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import utilities.{AccountingPeriodUtil, CacheExpiryDateProvider, CurrentDateProvider}
@@ -36,20 +36,21 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class ProgressSavedController @Inject()(progressSavedView: ProgressSaved,
                                         currentDateProvider: CurrentDateProvider,
-                                        cacheExpiryDateProvider: CacheExpiryDateProvider)
+                                        cacheExpiryDateProvider: CacheExpiryDateProvider,
+                                        ninoService: NinoService,
+                                        subscriptionDetailsService: SubscriptionDetailsService,
+                                        referenceRetrieval: ReferenceRetrieval)
                                        (val auditingService: AuditingService,
                                         val authService: AuthService,
-                                        val subscriptionDetailsService: SubscriptionDetailsService,
-                                        val sessionDataService: SessionDataService,
                                         val appConfig: AppConfig)
                                        (implicit val ec: ExecutionContext,
                                         val config: Configuration,
                                         val env: Environment,
-                                        mcc: MessagesControllerComponents) extends SignUpController with AuthRedirects with ReferenceRetrieval {
+                                        mcc: MessagesControllerComponents) extends SignUpController with AuthRedirects {
 
   def show(location: Option[String] = None): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withIndividualReference { reference =>
+      referenceRetrieval.getIndividualReference flatMap { reference =>
         subscriptionDetailsService.fetchLastUpdatedTimestamp(reference) flatMap {
           case Some(timestamp) =>
             location.fold(
@@ -73,15 +74,16 @@ class ProgressSavedController @Inject()(progressSavedView: ProgressSaved,
                                )(implicit request: Request[AnyContent], user: IncomeTaxSAUser, hc: HeaderCarrier): Future[SaveAndComeBackAuditModel] = {
 
     for {
+      nino <- ninoService.getNino
       (businesses, accountingMethod) <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
       property <- subscriptionDetailsService.fetchProperty(reference)
       overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
-      selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getNino, user.getUtr)
+      selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getUtr)
     } yield {
       SaveAndComeBackAuditModel(
         userType = SaveAndComebackAuditing.individualUserType,
         utr = user.getUtr,
-        nino = user.getNino,
+        nino = nino,
         saveAndRetrieveLocation = location,
         currentTaxYear = AccountingPeriodUtil.getTaxEndYear(currentDateProvider.getCurrentDate),
         selectedTaxYear = selectedTaxYear,

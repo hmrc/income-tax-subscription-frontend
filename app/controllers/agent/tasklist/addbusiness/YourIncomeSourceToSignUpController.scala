@@ -22,39 +22,44 @@ import controllers.utils.ReferenceRetrieval
 import models.common.IncomeSources
 import play.api.mvc._
 import play.twirl.api.Html
-import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
+import services.agent.ClientDetailsRetrieval
+import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
-import utilities.UserMatchingSessionUtil.{ClientDetails, UserMatchingSessionRequestUtil}
+import utilities.UserMatchingSessionUtil.ClientDetails
 import views.html.agent.tasklist.addbusiness.YourIncomeSourceToSignUp
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class YourIncomeSourceToSignUpController @Inject()(yourIncomeSourceToSignUp: YourIncomeSourceToSignUp)
-                                                  (val subscriptionDetailsService: SubscriptionDetailsService,
-                                                   val auditingService: AuditingService,
-                                                   val sessionDataService: SessionDataService,
+class YourIncomeSourceToSignUpController @Inject()(yourIncomeSourceToSignUp: YourIncomeSourceToSignUp,
+                                                   subscriptionDetailsService: SubscriptionDetailsService,
+                                                   clientDetailsRetrieval: ClientDetailsRetrieval,
+                                                   referenceRetrieval: ReferenceRetrieval)
+                                                  (val auditingService: AuditingService,
                                                    val appConfig: AppConfig,
                                                    val authService: AuthService)
                                                   (implicit val ec: ExecutionContext,
-                                                   mcc: MessagesControllerComponents) extends AuthenticatedController with ReferenceRetrieval {
+                                                   mcc: MessagesControllerComponents) extends AuthenticatedController {
 
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withAgentReference { reference =>
-        subscriptionDetailsService.fetchAllIncomeSources(reference) map { incomeSources =>
-          Ok(view(
-            incomeSources,
-            clientDetails = request.clientDetails
-          ))
-        }
+      for {
+        reference <- referenceRetrieval.getAgentReference
+        clientDetails <- clientDetailsRetrieval.getClientDetails
+        incomeSources <- subscriptionDetailsService.fetchAllIncomeSources(reference)
+      } yield {
+        Ok(view(
+          incomeSources,
+          clientDetails = clientDetails
+        ))
       }
+
   }
 
   def submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withAgentReference { reference =>
+      referenceRetrieval.getAgentReference flatMap { reference =>
         val continue: Result = Redirect(controllers.agent.tasklist.routes.TaskListController.show())
 
         subscriptionDetailsService.fetchAllIncomeSources(reference) flatMap { incomeSources =>

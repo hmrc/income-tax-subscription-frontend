@@ -20,8 +20,6 @@ import auth.agent.{IncomeTaxAgentUser, UserMatchingController}
 import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.FailedClientMatching
 import config.AppConfig
-import config.featureswitch.FeatureSwitching
-import controllers.utils.ReferenceRetrieval
 import models.audits.EligibilityAuditing.EligibilityAuditModel
 import models.audits.EnterDetailsAuditing.EnterDetailsAuditModel
 import models.usermatching.{LockedOut, NotLockedOut, UserDetailsModel}
@@ -45,7 +43,7 @@ class ConfirmClientController @Inject()(checkYourClientDetails: CheckYourClientD
                                         val appConfig: AppConfig,
                                         val subscriptionDetailsService: SubscriptionDetailsService)
                                        (implicit val ec: ExecutionContext,
-                                        mcc: MessagesControllerComponents) extends UserMatchingController with ReferenceRetrieval with FeatureSwitching {
+                                        mcc: MessagesControllerComponents) extends UserMatchingController {
 
   def show(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
@@ -66,8 +64,8 @@ class ConfirmClientController @Inject()(checkYourClientDetails: CheckYourClientD
             case Left(ClientAlreadySubscribed) => Future.successful(handleClientAlreadySubscribed(user.arn, clientDetails))
             case Left(UnexpectedFailure) => Future.successful(handleUnexpectedFailure(user.arn, clientDetails))
             case Left(_: UnApprovedAgent) => Future.successful(handleUnapprovedAgent(user.arn, clientDetails))
-            case Right(ApprovedAgent(nino, None)) => Future.successful(handleApprovedAgentWithoutClientUTR(user.arn, nino, clientDetails))
-            case Right(ApprovedAgent(nino, Some(utr))) => Future.successful(handleApprovedAgent(user.arn, nino, utr, clientDetails))
+            case Right(ApprovedAgent(_, None)) => Future.successful(handleApprovedAgentWithoutClientUTR(user.arn, clientDetails))
+            case Right(ApprovedAgent(_, Some(utr))) => handleApprovedAgent(user.arn, utr, clientDetails)
           }
         }
       }
@@ -175,7 +173,7 @@ class ConfirmClientController @Inject()(checkYourClientDetails: CheckYourClientD
     Redirect(controllers.agent.matching.routes.NoClientRelationshipController.show).removingFromSession(FailedClientMatching)
   }
 
-  private def handleApprovedAgentWithoutClientUTR(arn: String, nino: String, clientDetails: UserDetailsModel)
+  private def handleApprovedAgentWithoutClientUTR(arn: String, clientDetails: UserDetailsModel)
                                                  (implicit request: Request[AnyContent]): Result = {
     auditDetailsEntered(arn, clientDetails, getCurrentFailureCount(), lockedOut = false)
     auditingService.audit(EligibilityAuditModel(
@@ -186,18 +184,21 @@ class ConfirmClientController @Inject()(checkYourClientDetails: CheckYourClientD
       failureReason = Some("no-self-assessment")
     ))
     Redirect(controllers.agent.matching.routes.NoSAController.show)
-      .addingToSession(ITSASessionKeys.NINO -> nino)
       .removingFromSession(FailedClientMatching)
   }
 
-  private def handleApprovedAgent(arn: String, nino: String, utr: String, clientDetails: UserDetailsModel)
-                                 (implicit request: Request[AnyContent]): Result = {
+  private def handleApprovedAgent(arn: String, utr: String, clientDetails: UserDetailsModel)
+                                 (implicit request: Request[AnyContent]): Future[Result] = {
     auditDetailsEntered(arn, clientDetails, getCurrentFailureCount(), lockedOut = false)
-    Redirect(routes.ConfirmedClientResolver.resolve)
-      .addingToSession(ITSASessionKeys.NINO -> nino)
-      .addingToSession(ITSASessionKeys.UTR -> utr)
-      .removingFromSession(FailedClientMatching)
-      .clearUserDetailsExceptName
+    sessionDataService.saveNino(clientDetails.nino) map {
+      case Right(_) =>
+        Redirect(routes.ConfirmedClientResolver.resolve)
+          .addingToSession(ITSASessionKeys.UTR -> utr)
+          .removingFromSession(FailedClientMatching)
+          .clearUserDetailsExceptName
+      case Left(_) => throw new InternalServerException("[ConfirmClientController][handleApprovedAgent] - failure when saving nino to session")
+    }
+
   }
 
 }

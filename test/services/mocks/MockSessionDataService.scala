@@ -35,13 +35,9 @@ trait MockSessionDataService extends MockitoSugar with BeforeAndAfterEach {
 
   val mockSessionDataService: SessionDataService = mock[SessionDataService]
 
-  val testReference: String = "test-reference"
-
   override def beforeEach(): Unit = {
     reset(mockSessionDataService)
     super.beforeEach()
-
-    mockFetchReferenceSuccess(Some(testReference))
   }
 
   def mockFetchReferenceSuccess(reference: Option[String]): Unit = {
@@ -121,6 +117,21 @@ trait MockSessionDataService extends MockitoSugar with BeforeAndAfterEach {
 
   def mockDeleteEligibilityStatus(result: DeleteSessionDataResponse): Unit = {
     when(mockSessionDataService.deleteEligibilityStatus(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(result))
+  }
+
+  def mockFetchNino(result: GetSessionDataResponse[String]): Unit = {
+    when(mockSessionDataService.fetchNino(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(result))
+  }
+
+  def mockSaveNino(nino: String)(result: SaveSessionDataResponse): Unit = {
+    when(mockSessionDataService.saveNino(ArgumentMatchers.eq(nino))(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(result))
+  }
+
+  def mockDeleteNino(result: DeleteSessionDataResponse): Unit = {
+    when(mockSessionDataService.deleteNino(ArgumentMatchers.any()))
       .thenReturn(Future.successful(result))
   }
 

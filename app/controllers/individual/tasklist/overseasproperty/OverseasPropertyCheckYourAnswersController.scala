@@ -21,7 +21,7 @@ import config.AppConfig
 import controllers.utils.ReferenceRetrieval
 import models.common.OverseasPropertyModel
 import play.api.mvc._
-import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import views.html.individual.tasklist.overseasproperty.OverseasPropertyCheckYourAnswers
 
@@ -29,18 +29,18 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class OverseasPropertyCheckYourAnswersController @Inject()(view: OverseasPropertyCheckYourAnswers)
+class OverseasPropertyCheckYourAnswersController @Inject()(view: OverseasPropertyCheckYourAnswers,
+                                                           subscriptionDetailsService: SubscriptionDetailsService,
+                                                           referenceRetrieval: ReferenceRetrieval)
                                                           (val auditingService: AuditingService,
                                                            val authService: AuthService,
-                                                           val subscriptionDetailsService: SubscriptionDetailsService,
-                                                           val appConfig: AppConfig,
-                                                           val sessionDataService: SessionDataService)
+                                                           val appConfig: AppConfig)
                                                           (implicit val ec: ExecutionContext,
-                                                           mcc: MessagesControllerComponents) extends SignUpController with ReferenceRetrieval {
+                                                           mcc: MessagesControllerComponents) extends SignUpController {
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withIndividualReference { reference =>
+      referenceRetrieval.getIndividualReference flatMap { reference =>
         withProperty(reference) { property =>
           Future.successful(Ok(view(
             property,
@@ -53,7 +53,7 @@ class OverseasPropertyCheckYourAnswersController @Inject()(view: OverseasPropert
 
   def submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withIndividualReference { reference =>
+      referenceRetrieval.getIndividualReference flatMap { reference =>
         withProperty(reference) {
           case property@OverseasPropertyModel(Some(_), Some(_), _) =>
             subscriptionDetailsService.saveOverseasProperty(reference, property.copy(confirmed = true)) map {

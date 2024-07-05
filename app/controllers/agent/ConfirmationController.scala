@@ -23,9 +23,8 @@ import models.Next
 import models.common.AccountingPeriodModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services._
-import uk.gov.hmrc.http.InternalServerException
+import services.agent.ClientDetailsRetrieval
 import utilities.AccountingPeriodUtil
-import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.confirmation.SignUpConfirmation
 
 import javax.inject.{Inject, Singleton}
@@ -33,47 +32,45 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class ConfirmationController @Inject()(signUpConfirmation: SignUpConfirmation,
+                                       referenceRetrieval: ReferenceRetrieval,
+                                       clientDetailsRetrieval: ClientDetailsRetrieval,
+                                       subscriptionDetailsService: SubscriptionDetailsService,
                                        mandationStatusService: MandationStatusService)
                                       (val auditingService: AuditingService,
-                                       val authService: AuthService,
-                                       val sessionDataService: SessionDataService,
-                                       val subscriptionDetailsService: SubscriptionDetailsService)
+                                       val authService: AuthService)
                                       (implicit val ec: ExecutionContext,
                                        val appConfig: AppConfig,
-                                       mcc: MessagesControllerComponents) extends PostSubmissionController with ReferenceRetrieval {
+                                       mcc: MessagesControllerComponents) extends PostSubmissionController {
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      val clientName = request.fetchClientName
-        .getOrElse(throw new InternalServerException("[ConfirmationController][show] - could not retrieve client name from session"))
-
-      withAgentReference { reference =>
-        for {
-          taxYearSelection <- subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getClientNino, user.getClientUtr)
-          mandationStatus <- mandationStatusService.getMandationStatus(user.getClientNino, user.getClientUtr)
-        } yield {
-          val isNextYear = taxYearSelection.map(_.accountingYear).contains(Next)
-          val accountingPeriodModel: AccountingPeriodModel = if (isNextYear) {
-            AccountingPeriodUtil.getNextTaxYear
-          } else {
-            AccountingPeriodUtil.getCurrentTaxYear
-          }
-
-          Ok(signUpConfirmation(
-            mandatedCurrentYear = mandationStatus.currentYearStatus.isMandated,
-            mandatedNextYear = mandationStatus.nextYearStatus.isMandated,
-            isNextYear,
-            Some(clientName),
-            user.getClientNino,
-            accountingPeriodModel
-          ))
+      for {
+        reference <- referenceRetrieval.getAgentReference
+        clientDetails <- clientDetailsRetrieval.getClientDetails
+        taxYearSelection <- subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getClientUtr)
+        mandationStatus <- mandationStatusService.getMandationStatus(user.getClientUtr)
+      } yield {
+        val isNextYear = taxYearSelection.map(_.accountingYear).contains(Next)
+        val accountingPeriodModel: AccountingPeriodModel = if (isNextYear) {
+          AccountingPeriodUtil.getNextTaxYear
+        } else {
+          AccountingPeriodUtil.getCurrentTaxYear
         }
+
+        Ok(signUpConfirmation(
+          mandatedCurrentYear = mandationStatus.currentYearStatus.isMandated,
+          mandatedNextYear = mandationStatus.nextYearStatus.isMandated,
+          isNextYear,
+          Some(clientDetails.name),
+          clientDetails.formattedNino,
+          accountingPeriodModel
+        ))
       }
   }
 
   val submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withAgentReference { reference =>
+      referenceRetrieval.getAgentReference flatMap { reference =>
         subscriptionDetailsService.deleteAll(reference)
           .map(_ => Redirect(controllers.agent.routes.AddAnotherClientController.addAnother()))
       }

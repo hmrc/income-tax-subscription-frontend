@@ -16,24 +16,27 @@
 
 package controllers.agent.tasklist.overseasproperty
 
-import connectors.stubs.IncomeTaxSubscriptionConnectorStub
-import helpers.IntegrationTestConstants.AgentURI
+import common.Constants.ITSASessionKeys
+import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
+import helpers.IntegrationTestConstants.{AgentURI, testNino}
 import helpers.IntegrationTestModels.testFullOverseasPropertyModel
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import models.Cash
 import models.common.OverseasPropertyModel
 import play.api.http.Status._
-import play.api.libs.json.Json
+import play.api.libs.json.{JsString, Json}
 import utilities.SubscriptionDataKeys.OverseasProperty
 
 class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase {
+
   "GET /report-quarterly/income-and-expenses/sign-up/client/business/overseas-property-accounting-method" when {
     "Subscription details returns pre-populated data" should {
       "show the foreign property accounting method page with an option selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
         When("GET /business/overseas-property-accounting-method is called")
         val res = IncomeTaxSubscriptionFrontend.overseasPropertyAccountingMethod()
@@ -56,9 +59,9 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
         When("GET /business/overseas-property-accounting-method is called")
-
         val res = IncomeTaxSubscriptionFrontend.overseasPropertyAccountingMethod()
 
         val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
@@ -102,6 +105,7 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
       "not select a radio button on the Overseas Property Accounting Method page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
         When("POST /business/overseas-property-accounting-method is called")
         val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyAccountingMethod(inEditMode = false, None)

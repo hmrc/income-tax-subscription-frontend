@@ -26,7 +26,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.agent.mocks.MockAgentAuthService
-import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
+import services.mocks.{MockAuditingService, MockClientDetailsRetrieval, MockReferenceRetrieval, MockSubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.SubscriptionDataKeys.OverseasPropertyStartDate
 import utilities.TestModels.{testAccountingMethodProperty, testPropertyStartDateModel}
@@ -39,7 +39,8 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockAgentAuthService
   with MockAuditingService
-  with MockSessionDataService
+  with MockReferenceRetrieval
+  with MockClientDetailsRetrieval
   with MockOverseasPropertyStartDate
   with FeatureSwitching {
 
@@ -51,38 +52,31 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
 
   trait Test {
     val controller = new OverseasPropertyStartDateController(
-      mockOverseasPropertyStartDate
+      mockOverseasPropertyStartDate,
+      MockSubscriptionDetailsService,
+      mockClientDetailsRetrieval,
+      mockReferenceRetrieval
     )(
       mockAuditingService,
       mockAuthService,
-      MockSubscriptionDetailsService,
-      mockSessionDataService,
       appConfig,
       mockLanguageUtils
     )
   }
 
   object TestOverseasPropertyStartDateController$ extends OverseasPropertyStartDateController(
-    mockOverseasPropertyStartDate
+    mockOverseasPropertyStartDate,
+    MockSubscriptionDetailsService,
+    mockClientDetailsRetrieval,
+    mockReferenceRetrieval
   )(
     mockAuditingService,
     mockAuthService,
-    MockSubscriptionDetailsService,
-    mockSessionDataService,
     appConfig,
     mockLanguageUtils
   )
 
   "show" should {
-    "throw an InternalServerException" when {
-      "there are no client details in session" in new Test {
-        mockFetchOverseasProperty(None)
-
-        intercept[InternalServerException](await(controller.show(isEditMode = false)(subscriptionRequest)))
-          .message mustBe "[IncomeTaxAgentUser][clientDetails] - could not retrieve client details from session"
-      }
-    }
-
     "display the foreign property start date view and return OK (200) without fetching income source" in new Test {
       lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequestWithName))
 

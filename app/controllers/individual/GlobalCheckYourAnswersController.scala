@@ -36,18 +36,18 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class GlobalCheckYourAnswersController @Inject()(subscriptionService: SubscriptionOrchestrationService,
                                                  getCompleteDetailsService: GetCompleteDetailsService,
+                                                 ninoService: NinoService,
+                                                 referenceRetrieval: ReferenceRetrieval,
                                                  globalCheckYourAnswers: GlobalCheckYourAnswers)
                                                 (val auditingService: AuditingService,
                                                  val authService: AuthService,
-                                                 val subscriptionDetailsService: SubscriptionDetailsService,
-                                                 val sessionDataService: SessionDataService,
                                                  val appConfig: AppConfig)
                                                 (implicit val ec: ExecutionContext,
-                                                 mcc: MessagesControllerComponents) extends SignUpController with ReferenceRetrieval {
+                                                 mcc: MessagesControllerComponents) extends SignUpController {
 
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withIndividualReference { reference =>
+      referenceRetrieval.getIndividualReference flatMap { reference =>
         withCompleteDetails(reference) { completeDetails =>
           Future.successful(Ok(view(
             postAction = routes.GlobalCheckYourAnswersController.submit,
@@ -60,7 +60,7 @@ class GlobalCheckYourAnswersController @Inject()(subscriptionService: Subscripti
 
   def submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withIndividualReference { reference =>
+      referenceRetrieval.getIndividualReference flatMap { reference =>
         withCompleteDetails(reference) { completeDetails =>
           signUp(completeDetails)(
             onSuccessfulSignUp = Redirect(controllers.individual.routes.ConfirmationController.show)
@@ -71,22 +71,22 @@ class GlobalCheckYourAnswersController @Inject()(subscriptionService: Subscripti
 
   private def signUp(completeDetails: CompleteDetails)
                     (onSuccessfulSignUp: Result)
-                    (implicit request: Request[AnyContent], user: IncomeTaxSAUser): Future[Result] = {
-    val nino = user.nino.get
+                    (implicit request: Request[AnyContent]): Future[Result] = {
     val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
     val session = request.session
 
-    subscriptionService.signUpAndCreateIncomeSourcesFromTaskList(
-      nino = nino,
-      createIncomeSourceModel = CreateIncomeSourcesModel.createIncomeSources(nino, completeDetails),
-      maybeSpsEntityId = session.get(SPSEntityId)
-    )(headerCarrier) map {
-      case Right(_) =>
-        onSuccessfulSignUp
-      case Left(failure) =>
-        throw new InternalServerException(
-          s"[GlobalCheckYourAnswersController][submit] - failure response received from submission: ${failure.toString}"
-        )
+    ninoService.getNino flatMap { nino =>
+      subscriptionService.signUpAndCreateIncomeSourcesFromTaskList(
+        createIncomeSourceModel = CreateIncomeSourcesModel.createIncomeSources(nino, completeDetails),
+        maybeSpsEntityId = session.get(SPSEntityId)
+      )(headerCarrier) map {
+        case Right(_) =>
+          onSuccessfulSignUp
+        case Left(failure) =>
+          throw new InternalServerException(
+            s"[GlobalCheckYourAnswersController][submit] - failure response received from submission: ${failure.toString}"
+          )
+      }
     }
   }
 
@@ -106,7 +106,7 @@ class GlobalCheckYourAnswersController @Inject()(subscriptionService: Subscripti
   private def withCompleteDetails(reference: String)
                                  (f: CompleteDetails => Future[Result])
                                  (implicit request: Request[AnyContent], user: IncomeTaxSAUser): Future[Result] = {
-    getCompleteDetailsService.getCompleteSignUpDetails(reference, user.getNino, user.getUtr) flatMap {
+    getCompleteDetailsService.getCompleteSignUpDetails(reference, user.getUtr) flatMap {
       case Right(completeDetails) => f(completeDetails)
       case Left(_) => Future.successful(Redirect(tasklist.routes.TaskListController.show()))
     }

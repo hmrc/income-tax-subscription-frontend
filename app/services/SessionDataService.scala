@@ -79,4 +79,16 @@ class SessionDataService @Inject()(sessionDataConnector: SessionDataConnector) {
     sessionDataConnector.deleteSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)
   }
 
+  def fetchNino(implicit hc: HeaderCarrier): Future[GetSessionDataResponse[String]] = {
+    sessionDataConnector.getSessionData[String](ITSASessionKeys.NINO)
+  }
+
+  def saveNino(nino: String)(implicit hc: HeaderCarrier): Future[SaveSessionDataResponse] = {
+    sessionDataConnector.saveSessionData(ITSASessionKeys.NINO, nino)
+  }
+
+  def deleteNino(implicit hc: HeaderCarrier): Future[DeleteSessionDataResponse] = {
+    sessionDataConnector.deleteSessionData(ITSASessionKeys.NINO)
+  }
+
 }

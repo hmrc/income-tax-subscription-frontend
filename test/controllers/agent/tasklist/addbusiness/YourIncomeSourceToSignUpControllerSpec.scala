@@ -26,17 +26,18 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
+import services.mocks.{MockAuditingService, MockClientDetailsRetrieval, MockReferenceRetrieval, MockSubscriptionDetailsService}
 import views.html.agent.tasklist.addbusiness.YourIncomeSourceToSignUp
 
 import scala.concurrent.Future
 
 class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
   with MockSubscriptionDetailsService
-  with MockSessionDataService
+  with MockClientDetailsRetrieval
+  with MockReferenceRetrieval
   with MockAuditingService {
-  override val controllerName: String = "IncomeSourceController"
 
+  override val controllerName: String = "IncomeSourceController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
 
@@ -204,11 +205,12 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
     val yourIncomeSourceToSignUpView: YourIncomeSourceToSignUp = mock[YourIncomeSourceToSignUp]
 
     val controller = new YourIncomeSourceToSignUpController(
-      yourIncomeSourceToSignUpView
-    )(
+      yourIncomeSourceToSignUpView,
       MockSubscriptionDetailsService,
+      mockClientDetailsRetrieval,
+      mockReferenceRetrieval
+    )(
       mockAuditingService,
-      mockSessionDataService,
       appConfig,
       mockAuthService
     )

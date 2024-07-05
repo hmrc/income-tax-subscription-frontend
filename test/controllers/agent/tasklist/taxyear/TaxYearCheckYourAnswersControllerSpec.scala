@@ -27,8 +27,8 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAccountingPeriodService, MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
-import utilities.agent.TestConstants.{testNino, testUtr}
+import services.mocks._
+import utilities.agent.TestConstants.testUtr
 import views.agent.mocks.MockWhatYearToSignUp
 import views.html.agent.tasklist.taxyear.TaxYearCheckYourAnswers
 
@@ -38,7 +38,8 @@ class TaxYearCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   with MockWhatYearToSignUp
   with MockAuditingService
   with MockAccountingPeriodService
-  with MockSessionDataService
+  with MockReferenceRetrieval
+  with MockClientDetailsRetrieval
   with MockSubscriptionDetailsService {
 
   override val controllerName: String = "CheckYourAnswersController"
@@ -56,7 +57,7 @@ class TaxYearCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
 
   "show" should {
     "return an OK status with the check your answers page" in withController { controller =>
-      mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+      mockGetMandationService(testUtr)(Voluntary, Voluntary)
       mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
       mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
 
@@ -72,7 +73,7 @@ class TaxYearCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
 
   "submit" should {
     "redirect to the task list when the submission is successful" in withController { controller =>
-      mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+      mockGetMandationService(testUtr)(Voluntary, Voluntary)
       mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
       mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
       setupMockSubscriptionDetailsSaveFunctions()
@@ -87,7 +88,7 @@ class TaxYearCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
 
     "throw an exception" when {
       "the accounting year cannot be retrieved" in withController { controller =>
-        mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+        mockGetMandationService(testUtr)(Voluntary, Voluntary)
         mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockFetchSelectedTaxYear(None)
 
@@ -97,7 +98,7 @@ class TaxYearCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
       }
 
       "the accounting year cannot be confirmed" in withController { controller =>
-        mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+        mockGetMandationService(testUtr)(Voluntary, Voluntary)
         mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
         setupMockSubscriptionDetailsSaveFunctionsFailure()
@@ -116,15 +117,16 @@ class TaxYearCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
       .thenReturn(HtmlFormat.empty)
 
     val controller = new TaxYearCheckYourAnswersController(
-      checkYourAnswersView
+      checkYourAnswersView,
+      MockSubscriptionDetailsService,
+      mockClientDetailsRetrieval,
+      mockReferenceRetrieval
     )(
       mockAuditingService,
       mockAuthService,
       appConfig,
-      mockSessionDataService,
       mockGetEligibilityStatusService,
-      mockMandationStatusService,
-      MockSubscriptionDetailsService
+      mockMandationStatusService
     )
 
     testCode(controller)

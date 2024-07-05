@@ -22,12 +22,12 @@ import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnecto
 import helpers.IntegrationTestConstants.{AgentURI, testFirstName, testLastName, testNino}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
-import models.{Current, EligibilityStatus}
 import models.common.AccountingYearModel
 import models.status.MandationStatus.{Mandated, Voluntary}
 import models.status.MandationStatusModel
+import models.{Current, EligibilityStatus}
 import play.api.http.Status._
-import play.api.libs.json.Json
+import play.api.libs.json.{JsString, Json}
 import utilities.SubscriptionDataKeys.SelectedTaxYear
 import utilities.UserMatchingSessionUtil
 
@@ -40,6 +40,7 @@ class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
       SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
       SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
       When("GET /client/business/tax-year-check-your-answers is called")
       val res = IncomeTaxSubscriptionFrontend.getTaxYearCheckYourAnswers()
@@ -59,12 +60,12 @@ class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Mandated, Voluntary)))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
         When("GET /client/business/tax-year-check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.getTaxYearCheckYourAnswers(Map(
           UserMatchingSessionUtil.firstName -> testFirstName,
-          UserMatchingSessionUtil.lastName -> testLastName,
-          ITSASessionKeys.NINO -> testNino
+          UserMatchingSessionUtil.lastName -> testLastName
         ))
 
         Then("Should return SEE_OTHER to task list page")
@@ -79,12 +80,12 @@ class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true)))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
         When("GET /client/business/tax-year-check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.getTaxYearCheckYourAnswers(Map(
           UserMatchingSessionUtil.firstName -> testFirstName,
-          UserMatchingSessionUtil.lastName -> testLastName,
-          ITSASessionKeys.NINO -> testNino
+          UserMatchingSessionUtil.lastName -> testLastName
         ))
 
         Then("Should return SEE_OTHER to task list page")
@@ -95,7 +96,6 @@ class TaxYearCheckYourAnswersControllerISpec extends ComponentSpecBase {
       }
     }
   }
-
 
   "POST /report-quarterly/income-and-expenses/sign-up/client/business/tax-year-check-your-answers" should {
     "redirect to the task list" when {

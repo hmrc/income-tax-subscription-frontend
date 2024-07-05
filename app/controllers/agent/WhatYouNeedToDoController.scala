@@ -19,6 +19,7 @@ package controllers.agent
 import auth.agent.AuthenticatedController
 import config.AppConfig
 import play.api.mvc._
+import services.agent.ClientDetailsRetrieval
 import services.{AuditingService, AuthService, GetEligibilityStatusService, MandationStatusService}
 import views.html.agent.WhatYouNeedToDo
 
@@ -28,6 +29,7 @@ import scala.util.matching.Regex
 
 @Singleton
 class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
+                                          clientDetailsRetrieval: ClientDetailsRetrieval,
                                           eligibilityStatusService: GetEligibilityStatusService,
                                           mandationStatusService: MandationStatusService)
                                          (val auditingService: AuditingService,
@@ -48,16 +50,17 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       for {
+        clientDetails <- clientDetailsRetrieval.getClientDetails
         eligibilityStatus <- eligibilityStatusService.getEligibilityStatus(user.getClientUtr)
-        mandationStatus <- mandationStatusService.getMandationStatus(user.getClientNino, user.getClientUtr)
+        mandationStatus <- mandationStatusService.getMandationStatus(user.getClientUtr)
       } yield {
         Ok(whatYouNeedToDo(
           postAction = routes.WhatYouNeedToDoController.submit,
           eligibleNextYearOnly = eligibilityStatus.eligibleNextYearOnly,
           mandatedCurrentYear = mandationStatus.currentYearStatus.isMandated,
           mandatedNextYear = mandationStatus.nextYearStatus.isMandated,
-          clientName = user.clientName,
-          clientNino = formatNino(user.getClientNino)
+          clientName = clientDetails.name,
+          clientNino = formatNino(clientDetails.nino)
         ))
       }
   }

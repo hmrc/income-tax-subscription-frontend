@@ -25,18 +25,21 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAuditingService, MockGetEligibilityStatusService, MockMandationStatusService}
-import utilities.agent.TestConstants.{testFormattedNino, testName, testNino, testUtr}
+import services.mocks.{MockAuditingService, MockClientDetailsRetrieval, MockGetEligibilityStatusService, MockMandationStatusService}
+import utilities.agent.TestConstants.{testFormattedNino, testName, testUtr}
 import views.html.agent.WhatYouNeedToDo
 
 import scala.concurrent.Future
 
 class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec
-  with MockAuditingService with MockMandationStatusService with MockGetEligibilityStatusService {
-
+  with MockAuditingService
+  with MockMandationStatusService
+  with MockClientDetailsRetrieval
+  with MockGetEligibilityStatusService {
 
   object TestWhatYouNeedToDoController extends WhatYouNeedToDoController(
     mock[WhatYouNeedToDo],
+    mockClientDetailsRetrieval,
     mockGetEligibilityStatusService,
     mockMandationStatusService
   )(
@@ -47,7 +50,12 @@ class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec
 
   trait Setup {
     val whatYouNeedToDo: WhatYouNeedToDo = mock[WhatYouNeedToDo]
-    val controller: WhatYouNeedToDoController = new WhatYouNeedToDoController(whatYouNeedToDo, mockGetEligibilityStatusService, mockMandationStatusService)(
+    val controller: WhatYouNeedToDoController = new WhatYouNeedToDoController(
+      whatYouNeedToDo,
+      mockClientDetailsRetrieval,
+      mockGetEligibilityStatusService,
+      mockMandationStatusService
+    )(
       mockAuditingService,
       appConfig,
       mockAuthService
@@ -64,7 +72,7 @@ class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec
   "show" must {
     "return OK with the page content" when {
       "the user is completely voluntary and is eligible for both years" in new Setup {
-        mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+        mockGetMandationService(testUtr)(Voluntary, Voluntary)
         mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
 
         when(whatYouNeedToDo(
@@ -85,7 +93,7 @@ class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec
       }
 
       "the user is voluntary but only eligibile for next year" in new Setup {
-        mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+        mockGetMandationService(testUtr)(Voluntary, Voluntary)
         mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
 
         when(whatYouNeedToDo(
@@ -105,7 +113,7 @@ class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec
         contentType(result) mustBe Some(HTML)
       }
       "the user is mandated for the current year and eligible for all" in new Setup {
-        mockGetMandationService(testNino, testUtr)(Mandated, Voluntary)
+        mockGetMandationService(testUtr)(Mandated, Voluntary)
         mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
 
         when(whatYouNeedToDo(
@@ -125,7 +133,7 @@ class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec
         contentType(result) mustBe Some(HTML)
       }
       "the user is mandated for the next year and eligible for all" in new Setup {
-        mockGetMandationService(testNino, testUtr)(Voluntary, Mandated)
+        mockGetMandationService(testUtr)(Voluntary, Mandated)
         mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
 
         when(whatYouNeedToDo(

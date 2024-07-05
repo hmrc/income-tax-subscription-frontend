@@ -27,7 +27,7 @@ import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, contentType, defaultAwaitTimeout, redirectLocation, status}
-import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
+import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSubscriptionDetailsService}
 import utilities.SubscriptionDataKeys
 import views.individual.mocks.MockRemoveUkProperty
 
@@ -37,7 +37,7 @@ class RemoveUkPropertyControllerSpec extends ControllerBaseSpec
   with MockRemoveUkProperty
   with MockAuditingService
   with MockSubscriptionDetailsService
-  with MockSessionDataService
+  with MockReferenceRetrieval
   with MockIncomeTaxSubscriptionConnector {
 
   "show" should {
@@ -128,12 +128,12 @@ class RemoveUkPropertyControllerSpec extends ControllerBaseSpec
 
   object TestRemoveUkPropertyController extends RemoveUkPropertyController(
     mockIncomeTaxSubscriptionConnector,
+    mockReferenceRetrieval,
+    MockSubscriptionDetailsService,
     removeUkProperty
   )(
     mockAuditingService,
     mockAuthService,
-    MockSubscriptionDetailsService,
-    appConfig,
-    mockSessionDataService
+    appConfig
   )
 }

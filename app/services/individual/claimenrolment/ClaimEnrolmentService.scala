@@ -16,56 +16,42 @@
 
 package services.individual.claimenrolment
 
-import auth.individual.IncomeTaxSAUser
 import cats.data.EitherT
 import cats.implicits._
+import common.Constants.{mtdItsaEnrolmentIdentifierKey, mtdItsaEnrolmentName}
 import models.common.subscription.EnrolmentKey
-import play.api.mvc.{AnyContent, Request}
-import services.SubscriptionService
 import services.agent.CheckEnrolmentAllocationService
 import services.agent.CheckEnrolmentAllocationService.{EnrolmentAlreadyAllocated, EnrolmentStoreProxyInvalidJsonResponse, UnexpectedEnrolmentStoreProxyFailure}
 import services.individual.claimenrolment.ClaimEnrolmentService._
 import services.individual.{EnrolmentService, KnownFactsService}
+import services.{NinoService, SubscriptionService}
 import uk.gov.hmrc.http.HeaderCarrier
-import common.Constants.{mtdItsaEnrolmentIdentifierKey, mtdItsaEnrolmentName}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ClaimEnrolmentService @Inject()(subscriptionService: SubscriptionService,
+                                      ninoService: NinoService,
                                       checkEnrolmentAllocationService: CheckEnrolmentAllocationService,
                                       knownFactsService: KnownFactsService,
                                       enrolmentService: EnrolmentService)(implicit ec: ExecutionContext) {
 
-  def claimEnrolment(implicit request: Request[AnyContent], user: IncomeTaxSAUser, hc: HeaderCarrier): Future[ClaimEnrolmentResponse] = {
-    val claimEnrolmentResult = for {
-      nino <- EitherT(getNino)
-      mtditid <- EitherT(getMtditid(nino))
-      _ <- EitherT(getEnrolmentAllocation(nino, mtditid))
-      _ <- EitherT(addKnownFacts(nino, mtditid))
-      allocationResult <- EitherT(allocateEnrolment(nino, mtditid))
-    } yield allocationResult
+  def claimEnrolment(implicit hc: HeaderCarrier): Future[ClaimEnrolmentResponse] = {
+    ninoService.getNino flatMap { nino =>
+      val claimEnrolmentResult = for {
+        mtditid <- EitherT(getMtditid(nino))
+        _ <- EitherT(getEnrolmentAllocation(nino, mtditid))
+        _ <- EitherT(addKnownFacts(nino, mtditid))
+        allocationResult <- EitherT(allocateEnrolment(nino, mtditid))
+      } yield allocationResult
 
-    claimEnrolmentResult.value
+      claimEnrolmentResult.value
+    }
   }
 
-  def getMtditidFromSubscription(implicit request: Request[AnyContent], user: IncomeTaxSAUser,
-                                 hc: HeaderCarrier): Future[Either[ClaimEnrolmentFailure, String]] = {
-    val mtdIdFromSub = for {
-      nino <- EitherT(getNino)
-      mtditid <- EitherT(getMtditid(nino))
-    } yield mtditid
-
-    mtdIdFromSub.value
-
-  }
-
-  private def getNino(implicit request: Request[AnyContent], user: IncomeTaxSAUser): Future[Either[ClaimEnrolmentFailure, String]] = {
-    user.nino match {
-      case Some(nino) =>
-        Future.successful(Right(nino))
-      case None =>
-        Future.successful(Left(ClaimEnrolmentError("[ClaimEnrolmentService][getNino] - Could not retrieve nino from user profile")))
+  def getMtditidFromSubscription(implicit hc: HeaderCarrier): Future[Either[ClaimEnrolmentFailure, String]] = {
+    ninoService.getNino flatMap { nino =>
+      getMtditid(nino)
     }
   }
 

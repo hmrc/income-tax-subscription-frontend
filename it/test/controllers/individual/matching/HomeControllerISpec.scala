@@ -23,7 +23,7 @@ import helpers.servicemocks._
 import helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import models.EligibilityStatus
 import play.api.http.Status._
-import play.api.libs.json.JsBoolean
+import play.api.libs.json.{JsBoolean, JsString}
 import services.IndividualStartOfJourneyThrottle
 
 class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
@@ -54,6 +54,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
           AuthStub.stubAuthSuccess()
           CitizenDetailsStub.stubCIDUserWithNinoAndUtrAndName(testNino, testUtr, testFirstName, testLastName)
           SubscriptionStub.stubGetSubscriptionFound()
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
           When("GET /index is called")
           val res = IncomeTaxSubscriptionFrontend.indexPage()
@@ -76,6 +77,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
             SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(NO_CONTENT)
             EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
             SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = false))(OK)
+            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
             When("GET /index is called")
             val res = IncomeTaxSubscriptionFrontend.indexPage()
@@ -97,6 +99,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
             SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(NO_CONTENT)
             EligibilityStub.stubEligibilityResponse(testUtr)(response = false)
             SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = false))(OK)
+            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
             When("GET /index is called")
             val res = IncomeTaxSubscriptionFrontend.indexPage()
@@ -116,6 +119,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
           AuthStub.stubAuthSuccess()
           CitizenDetailsStub.stubCIDUserWithNinoAndUtrAndName(testNino, testUtr, testFirstName, testLastName)
           SubscriptionStub.stubGetSubscriptionFail()
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
           When("GET /index is called")
           val res = IncomeTaxSubscriptionFrontend.indexPage()
@@ -140,6 +144,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
               SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(NO_CONTENT)
               EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
               SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = false))(OK)
+              SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
               When("GET /index is called")
               val res = IncomeTaxSubscriptionFrontend.indexPage()
@@ -166,6 +171,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
                 SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(NO_CONTENT)
                 EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
                 SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = false))(OK)
+                SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
                 When("GET /index is called")
                 val res = IncomeTaxSubscriptionFrontend.indexPage()
@@ -194,6 +200,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
           CitizenDetailsStub.stubCIDUserWithNinoAndUtrAndName(testNino, testUtr, testFirstName, testLastName)
           SubscriptionStub.stubGetNoSubscription()
           CitizenDetailsStub.stubCIDUserWithNoUtr(testNino)
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
           When("GET /index is called")
           val res = IncomeTaxSubscriptionFrontend.indexPage()
@@ -216,7 +223,8 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
           AuthStub.stubAuthNoUtr()
           SubscriptionStub.stubGetNoSubscription()
           CitizenDetailsStub.stubCIDNotFound(testNino)
-
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+          
           When("GET /index is called")
           val res = IncomeTaxSubscriptionFrontend.indexPage()
 

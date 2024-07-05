@@ -16,10 +16,13 @@
 
 package controllers.agent.eligibility
 
-import connectors.stubs.IncomeTaxSubscriptionConnectorStub
+import common.Constants.ITSASessionKeys
+import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
+import helpers.IntegrationTestConstants.testNino
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import models.{No, Yes}
+import play.api.libs.json.{JsString, Json}
 import play.api.libs.ws.WSResponse
 import play.api.test.Helpers._
 import utilities.SubscriptionDataKeys
@@ -27,10 +30,10 @@ import utilities.SubscriptionDataKeys
 class ClientCanSignUpControllerISpec extends ComponentSpecBase {
 
   "GET /client/can-sign-up" should {
-
     "return a status of OK" in {
       Given("I setup the wiremock stubs")
       AuthStub.stubAuthSuccess()
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
       When("GET /client/can-sign-up is called")
       val result: WSResponse = IncomeTaxSubscriptionFrontend.showCanSignUp
@@ -41,7 +44,6 @@ class ClientCanSignUpControllerISpec extends ComponentSpecBase {
         httpContentType(HTML)
       )
     }
-
   }
 
   "POST /client/can-sign-up" when {
@@ -85,6 +87,7 @@ class ClientCanSignUpControllerISpec extends ComponentSpecBase {
       "return a status of BAD_REQUEST" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
         When("POST /client/can-sign-up is called")
         val result: WSResponse = IncomeTaxSubscriptionFrontend.submitCanSignUp(None)

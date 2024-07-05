@@ -49,7 +49,7 @@ trait AuthPredicates extends Results with FrontendHeaderCarrierProvider with Log
       auditingService.audit(EligibilityAuditModel(
         agentReferenceNumber = None,
         utr = user.utr,
-        nino = user.nino,
+        nino = None, //todo: can't get nino here yet, will add when we establish better auth
         eligibility = "ineligible",
         failureReason = Some("already-signed-up-with-mtd-id")
       ))
@@ -108,13 +108,12 @@ trait AuthPredicates extends Results with FrontendHeaderCarrierProvider with Log
       auditingService.audit(EligibilityAuditModel(
         agentReferenceNumber = None,
         utr = user.utr,
-        nino = user.nino,
+        nino = None, //todo: can't get nino here yet, will add when we establish better auth
         eligibility = "ineligible",
         failureReason = Some("user-type-assistant")
       ))
       Left(Future.successful(cannotUseServiceRoute))
     }
-
 
 
   val ivPredicate: AuthPredicate[IncomeTaxSAUser] = implicit request => user => {

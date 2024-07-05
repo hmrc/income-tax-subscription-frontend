@@ -17,8 +17,8 @@
 package controllers.agent.tasklist.overseasproperty
 
 import _root_.common.Constants.ITSASessionKeys
-import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub.subscriptionUri
+import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.IntegrationTestConstants._
 import helpers.agent.ComponentSpecBase
 import helpers.agent.WiremockHelper.verifyPost
@@ -26,7 +26,7 @@ import helpers.agent.servicemocks.AuthStub
 import models.common.OverseasPropertyModel
 import models.{Cash, DateModel}
 import play.api.http.Status._
-import play.api.libs.json.Json
+import play.api.libs.json.{JsString, Json}
 import utilities.SubscriptionDataKeys.OverseasProperty
 import utilities.UserMatchingSessionUtil
 
@@ -37,14 +37,14 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(OverseasPropertyModel(accountingMethod = Some(Cash))))
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
       When("GET business/overseas-property-check-your-answers is called")
       val res = IncomeTaxSubscriptionFrontend.getOverseasPropertyCheckYourAnswers(
         Map(
           ITSASessionKeys.UTR -> testUtr,
           UserMatchingSessionUtil.firstName -> testFirstName,
-          UserMatchingSessionUtil.lastName -> testLastName,
-          ITSASessionKeys.NINO -> testNino
+          UserMatchingSessionUtil.lastName -> testLastName
         )
       )
 

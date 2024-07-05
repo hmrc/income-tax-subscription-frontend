@@ -41,8 +41,7 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
     res.value
   }
 
-  def signUpAndCreateIncomeSourcesFromTaskList(nino: String,
-                                               createIncomeSourceModel: CreateIncomeSourcesModel,
+  def signUpAndCreateIncomeSourcesFromTaskList(createIncomeSourceModel: CreateIncomeSourcesModel,
                                                maybeSpsEntityId: Option[String] = None)
                                               (implicit hc: HeaderCarrier): Future[Either[ConnectorError, Option[SubscriptionSuccess]]] = {
     val taxYear: String = {
@@ -54,12 +53,12 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
     ))
 
     val result: EitherT[Future, ConnectorError, Option[SubscriptionSuccess]] = {
-      EitherT(subscriptionService.signUpIncomeSources(nino, taxYear)).flatMap {
+      EitherT(subscriptionService.signUpIncomeSources(createIncomeSourceModel.nino, taxYear)).flatMap {
         case SignUpSuccessResponse.SignUpSuccessful(mtdbsa) =>
           for {
             _ <- EitherT(subscriptionService.createIncomeSourcesFromTaskList(mtdbsa, createIncomeSourceModel))
-            _ <- EitherT(knownFactsService.addKnownFacts(mtdbsa, nino))
-            _ <- EitherT(enrolAndRefresh(mtdbsa, nino))
+            _ <- EitherT(knownFactsService.addKnownFacts(mtdbsa, createIncomeSourceModel.nino))
+            _ <- EitherT(enrolAndRefresh(mtdbsa, createIncomeSourceModel.nino))
             _ = spsService.confirmPreferences(mtdbsa, maybeSpsEntityId)
           } yield {
             Some(SubscriptionSuccess(mtdbsa))

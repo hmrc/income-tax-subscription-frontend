@@ -30,12 +30,12 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class HomeController @Inject()(val auditingService: AuditingService,
                                val authService: AuthService,
-                               val appConfig: AppConfig,
-                               val subscriptionDetailsService: SubscriptionDetailsService,
-                               val sessionDataService: SessionDataService)
-                              (getEligibilityStatusService: GetEligibilityStatusService)
+                               val appConfig: AppConfig)
+                              (getEligibilityStatusService: GetEligibilityStatusService,
+                               subscriptionDetailsService: SubscriptionDetailsService,
+                               referenceRetrieval: ReferenceRetrieval)
                               (implicit val ec: ExecutionContext,
-                               mcc: MessagesControllerComponents) extends StatelessController with ReferenceRetrieval {
+                               mcc: MessagesControllerComponents) extends StatelessController {
 
   def home: Action[AnyContent] = Action.async {
     Future.successful(Redirect(controllers.agent.matching.routes.HomeController.index))
@@ -53,7 +53,7 @@ class HomeController @Inject()(val auditingService: AuditingService,
   }
 
   private def continueToSignUp(implicit request: Request[AnyContent], user: IncomeTaxAgentUser): Future[Result] = {
-    withAgentReference { reference =>
+    referenceRetrieval.getAgentReference flatMap { reference =>
       subscriptionDetailsService.fetchEligibilityInterruptPassed(reference) flatMap {
         case Some(_) =>
           Future.successful(Redirect(controllers.agent.routes.WhatYouNeedToDoController.show()))

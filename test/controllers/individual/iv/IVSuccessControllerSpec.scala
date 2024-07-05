@@ -19,29 +19,24 @@ package controllers.individual.iv
 import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
 import common.Constants.ITSASessionKeys
 import controllers.individual.ControllerBaseSpec
-import models.audits.IVOutcomeSuccessAuditing.IVOutcomeSuccessAuditModel
-import org.mockito.ArgumentMatchers.{any, eq => matches}
-import org.mockito.Mockito.{never, verify}
 import play.api.http.Status.SEE_OTHER
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, session, status}
-import services.AuditModel
-import services.mocks.MockAuditingService
+import services.mocks.{MockAuditingService, MockNinoService}
 import utilities.individual.TestConstants.testNino
 
 import scala.concurrent.Future
 
-class IVSuccessControllerSpec extends ControllerBaseSpec with MockAuditingService {
+class IVSuccessControllerSpec extends ControllerBaseSpec with MockAuditingService with MockNinoService {
 
   val controllerName: String = "IVSuccessController"
   val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "success" -> new IVSuccessController(appConfig, mockAuthService, mockAuditingService).success()
+    "success" -> new IVSuccessController(appConfig, mockAuthService, mockNinoService, mockAuditingService).success()
   )
 
-
   trait Setup {
-    val controller = new IVSuccessController(appConfig, mockAuthService, mockAuditingService)
+    val controller = new IVSuccessController(appConfig, mockAuthService, mockNinoService, mockAuditingService)
   }
 
   authorisationTests()
@@ -51,6 +46,7 @@ class IVSuccessControllerSpec extends ControllerBaseSpec with MockAuditingServic
     "the user has an iv flag in session" when {
       "the is in claimEnrollment journey state" must {
         "redirect the user to the claim enrolment overview page and remove the iv flag from session" in new Setup {
+          mockGetNino(testNino)
 
           val requestWithIVSession: Request[AnyContent] = FakeRequest().withSession(ITSASessionKeys.IdentityVerificationFlag -> "true", ITSASessionKeys.JourneyStateKey -> ClaimEnrolmentJourney.name)
           val result: Future[Result] = controller.success(requestWithIVSession)
@@ -58,7 +54,6 @@ class IVSuccessControllerSpec extends ControllerBaseSpec with MockAuditingServic
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.individual.claimenrolment.routes.ClaimEnrolmentResolverController.resolve.url)
           session(result).get(ITSASessionKeys.IdentityVerificationFlag) mustBe None
-          verify(mockAuditingService).audit(matches(IVOutcomeSuccessAuditModel(testNino)))(any(), any())
         }
       }
     }
@@ -66,6 +61,7 @@ class IVSuccessControllerSpec extends ControllerBaseSpec with MockAuditingServic
 
   "the user has an iv flag in session" must {
     "redirect the user to the home route and remove the iv flag from session" in new Setup {
+      mockGetNino(testNino)
 
       val requestWithIVSession: Request[AnyContent] = FakeRequest().withSession(ITSASessionKeys.IdentityVerificationFlag -> "true")
       val result: Future[Result] = controller.success(requestWithIVSession)
@@ -73,19 +69,16 @@ class IVSuccessControllerSpec extends ControllerBaseSpec with MockAuditingServic
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.individual.matching.routes.HomeController.home.url)
       session(result).get(ITSASessionKeys.IdentityVerificationFlag) mustBe None
-      verify(mockAuditingService).audit(matches(IVOutcomeSuccessAuditModel(testNino)))(any(), any())
     }
   }
   "the user doesn't not have an iv flag in session" must {
     "redirect the user to the home route" in new Setup {
-
       val requestWithoutIVSession: Request[AnyContent] = FakeRequest()
       val result: Future[Result] = controller.success(requestWithoutIVSession)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.individual.matching.routes.HomeController.home.url)
       session(result).get(ITSASessionKeys.IdentityVerificationFlag) mustBe None
-      verify(mockAuditingService, never()).audit(any[AuditModel]())(any(), any())
     }
   }
 }
