@@ -878,7 +878,6 @@ agent.business.task-list.status.incomplete                                  = In
 agent.business.task-list.status.in-progress                                 = In progress
 agent.business.task-list.status.not-started                                 = Not started
 
-
 # Agent Overseas Property Start Date Page errors
 agent.error.overseas.property.day-month-year.empty              = Enter the date your client’s overseas property business started trading
 agent.error.overseas.property.month-year.empty                  = The date must include a month and a year

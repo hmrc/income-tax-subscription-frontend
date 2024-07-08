@@ -22,6 +22,7 @@ import common.Constants.ITSASessionKeys._
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.PrePopulate
 import controllers.utils.ReferenceRetrieval
+import models.audits.EligibilityAuditing.EligibilityAuditModel
 import models.audits.SignupStartedAuditing
 import models.common.subscription.SubscriptionSuccess
 import models.usermatching.CitizenDetails
@@ -62,7 +63,15 @@ class HomeController @Inject()(citizenDetailsService: CitizenDetailsService,
           // No NINO, should never happen
           case UserIdentifiers(None, _, _, _) => throw new InternalServerException("[HomeController][index] - Could not retrieve nino from user")
           // No UTR for NINO. Not registered for self assessment
-          case UserIdentifiers(_, None, _, _) => Future.successful(Redirect(routes.NoSAController.show).removingFromSession(JourneyStateKey))
+          case UserIdentifiers(nino, None, _, _) =>
+            auditingService.audit(EligibilityAuditModel(
+              agentReferenceNumber = None,
+              utr = None,
+              nino = nino,
+              eligibility = "ineligible",
+              failureReason = Some("no-self-assessment")
+            ))
+            Future.successful(Redirect(routes.NoSAController.show).removingFromSession(JourneyStateKey))
           // Already seen this session, must have pressed back.
           case UserIdentifiers(_, Some(_), _, entityIdMaybe@Some(_)) if request.session.isInState(SignUp) =>
             Future.successful(Redirect(controllers.individual.sps.routes.SPSCallbackController.callback(entityIdMaybe)))
@@ -97,11 +106,26 @@ class HomeController @Inject()(citizenDetailsService: CitizenDetailsService,
   private def handleNoSubscriptionFound(utr: String, nino: String)
                                        (implicit hc: HeaderCarrier, request: Request[AnyContent]) = {
     getEligibilityStatusService.getEligibilityStatus(utr) flatMap {
+      // Check eligibility (this is complete, and gives us the control list response including pre-pop information)
       case EligibilityStatus(false, false) =>
+        auditingService.audit(EligibilityAuditModel(
+          agentReferenceNumber = None,
+          utr = Some(utr),
+          nino = Some(nino),
+          eligibility = "ineligible",
+          failureReason = Some("control-list-ineligible")
+        ))
         Future.successful(Redirect(controllers.individual.controllist.routes.NotEligibleForIncomeTaxController.show()))
       case EligibilityStatus(thisYear, _) =>
         withReference(utr, Some(nino), None) { reference =>
           handlePrepop(reference, None) map { _ =>
+            auditingService.audit(EligibilityAuditModel(
+              agentReferenceNumber = None,
+              utr = Some(utr),
+              nino = Some(nino),
+              eligibility = if (thisYear) "eligible" else "eligible - next year only",
+              failureReason = None
+            ))
             goToSignUp(thisYear)
               .withJourneyState(SignUp)
               .addingToSession(UTR -> utr)
@@ -109,6 +133,7 @@ class HomeController @Inject()(citizenDetailsService: CitizenDetailsService,
           }
         }
     }
+
   }
 
   private def getSubscription(nino: String)(implicit request: Request[AnyContent]): Future[Option[SubscriptionSuccess]] =
@@ -125,7 +150,6 @@ class HomeController @Inject()(citizenDetailsService: CitizenDetailsService,
     Redirect(location)
   }
 
-  //TODO: re-implement when pre-pop is required
   private def handlePrepop(reference: String, prepopMaybe: Option[PrePopData])(implicit hc: HeaderCarrier) =
     prepopMaybe match {
       case Some(prepop) if isEnabled(PrePopulate) => prePopulationService.prePopulate(reference, prepop)

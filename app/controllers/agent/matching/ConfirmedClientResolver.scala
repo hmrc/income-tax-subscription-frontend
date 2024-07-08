@@ -17,15 +17,17 @@
 package controllers.agent.matching
 
 import auth.agent.{AgentSignUp, IncomeTaxAgentUser, UserMatchingController}
+import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.{FailedClientMatching, JourneyStateKey}
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.PrePopulate
 import config.featureswitch.FeatureSwitching
 import controllers.utils.ReferenceRetrieval
+import models.audits.EligibilityAuditing.EligibilityAuditModel
 import models.{EligibilityStatus, PrePopData}
 import play.api.mvc._
 import services._
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -44,13 +46,20 @@ class ConfirmedClientResolver @Inject()(getEligibilityStatusService: GetEligibil
 
   def resolve: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      val utr: String = user.getClientUtr
-      val nino: String = user.getClientNino
+      val utr: String = user.clientUtr.getOrElse(throw new InternalServerException("[ConfirmedClientResolver][resolve] - utr not present"))
+      val nino: String = user.clientNino.getOrElse(throw new InternalServerException("[ConfirmedClientResolver][resolve] - nino not present"))
       val arn: String = user.arn
 
       throttlingService.throttled(AgentStartOfJourneyThrottle) {
         getEligibilityStatusService.getEligibilityStatus(utr) flatMap {
           case EligibilityStatus(false, false) =>
+            auditingService.audit(EligibilityAuditModel(
+              agentReferenceNumber = Some(arn),
+              utr = Some(utr),
+              nino = Some(nino),
+              eligibility = "ineligible",
+              failureReason = Some("control-list-ineligible")
+            ))
             Future.successful(
               goToCannotTakePart
                 .removingFromSession(FailedClientMatching, JourneyStateKey)
@@ -74,6 +83,13 @@ class ConfirmedClientResolver @Inject()(getEligibilityStatusService: GetEligibil
   private def goToSignUpClient(nextYearOnly: Boolean)
                               (implicit hc: HeaderCarrier, request: Request[AnyContent], user: IncomeTaxAgentUser): Future[Result] = {
     withAgentReference { reference =>
+      auditingService.audit(EligibilityAuditModel(
+        agentReferenceNumber = Some(user.arn),
+        utr = user.clientUtr,
+        nino = user.clientNino,
+        eligibility = if(nextYearOnly) "eligible - next tax year only" else "eligible",
+        failureReason = None
+      ))
       subscriptionDetailsService.fetchEligibilityInterruptPassed(reference) map {
         case Some(_) =>
           Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
