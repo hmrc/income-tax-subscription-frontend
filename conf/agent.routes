@@ -78,6 +78,10 @@ POST        /business/accounting-method-property                controllers.agen
 GET         /business/property-commencement-date                controllers.agent.tasklist.ukproperty.PropertyStartDateController.show(editMode: Boolean ?= false)
 POST        /business/property-commencement-date                controllers.agent.tasklist.ukproperty.PropertyStartDateController.submit(editMode: Boolean ?= false)
 
+# AgentStreamline UK Property Income Sources
+GET         /business/income-sources-property                   controllers.agent.tasklist.ukproperty.PropertyIncomeSourcesController.show(editMode: Boolean ?= false)
+POST        /business/income-sources-property                   controllers.agent.tasklist.ukproperty.PropertyIncomeSourcesController.submit(editMode: Boolean ?= false)
+
 #Overseas Property Start Date Routes
 GET         /business/overseas-commencement-date                controllers.agent.tasklist.overseasproperty.OverseasPropertyStartDateController.show(editMode: Boolean ?= false)
 POST        /business/overseas-commencement-date                controllers.agent.tasklist.overseasproperty.OverseasPropertyStartDateController.submit(editMode: Boolean ?= false)

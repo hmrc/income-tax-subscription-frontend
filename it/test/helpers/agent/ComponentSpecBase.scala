@@ -461,6 +461,17 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       )
     }
 
+    def ukPropertyIncomeSources(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
+      get("/business/income-sources-property", sessionData)
+    }
+
+    def submitUkPropertyIncomeSources(isEditMode: Boolean, startDate: Option[DateModel], accountingMethod: Option[AccountingMethod], sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
+      val uri = s"/business/income-sources-property?editMode=$isEditMode"
+      post(uri, sessionData)(
+        UkPropertyIncomeSourcesForm.createPropertyMapData(startDate, accountingMethod).map { case (k, v) => (k, Seq(v)) }
+      )
+    }
+
     def submitOverseasPropertyAccountingMethod(inEditMode: Boolean, request: Option[AccountingMethod], sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
       val uri = s"/business/overseas-property-accounting-method?editMode=$inEditMode"
       post(uri, sessionData)(

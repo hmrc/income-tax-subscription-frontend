@@ -245,6 +245,20 @@ agent.property.start-date.heading.caption                       = {0} | {1}
 agent.property.start-date.para1                                 = Gall y dyddiad y dechreuodd busnes eich cleient fasnachu fod heddiw, yn y gorffennol neu hyd at 7 diwrnod yn y dyfodol.
 agent.property.start-date.hint                                  = Er enghraifft, 17 8 2014.
 
+# Agent Property Income Source
+agent.property.income-source.heading                            = Eiddo eich cleient yn y DU
+agent.property.income-source.heading.caption                    = {0} | {1}
+agent.property.income-source.para1                              = Pa ddull cyfrifo y mae’ch cleient yn ei ddefnyddio ar gyfer ei fusnes eiddo yn y DU?
+agent.property.income-source.hint                               = Er enghraifft, 17 8 2014
+agent.property.income-source.para2                              = Pa ddull cyfrifo y mae’ch cleient yn ei ddefnyddio ar gyfer ei fusnes eiddo yn y DU?
+agent.property.income-source.radio.cash                         = Cyfrifyddu ar sail arian parod
+agent.property.income-source.radio.accruals                     = Cyfrifyddu traddodiadol
+agent.property.income-source.details.summary                    = Help gyda dull cyfrifyddu
+agent.property.income-source.details.subheading                 = Enghraifft
+agent.property.income-source.details.content.para               = Creodd eich cleient anfoneb i rywun ym mis Mawrth 2024, ond ni dderbyniodd yr arian tan fis Mai 2024. Os ydych yn rhoi gwybod i CThEF eich cleient wedi cael yr incwm hwn ym:
+agent.property.income-source.details.content.bullet1            = mis Mai 2024, mae eich cleient yn defnyddio cyfrifyddu ar sail arian parod
+agent.property.income-source.details.content.bullet2            = mis Mawrth 2024, mae eich cleient yn defnyddio cyfrifyddu traddodiadol
+
 # Agent Property Start Date errors
 agent.error.property.day-month-year.empty                       = Nodwch y dyddiad y dechreuodd eich busnes eiddo yn y DU fasnachu
 agent.error.property.day.empty                                  = Mae’n rhaid i’r dyddiad gynnwys diwrnod
