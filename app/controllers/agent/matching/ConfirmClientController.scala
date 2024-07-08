@@ -22,6 +22,7 @@ import common.Constants.ITSASessionKeys.FailedClientMatching
 import config.AppConfig
 import config.featureswitch.FeatureSwitching
 import controllers.utils.ReferenceRetrieval
+import models.audits.EligibilityAuditing.EligibilityAuditModel
 import models.audits.EnterDetailsAuditing.EnterDetailsAuditModel
 import models.usermatching.{LockedOut, NotLockedOut, UserDetailsModel}
 import play.api.mvc._
@@ -117,10 +118,24 @@ class ConfirmClientController @Inject()(checkYourClientDetails: CheckYourClientD
     lockOutService.incrementLockout(arn, currentFailureCount) map {
       case Right(LockoutUpdate(NotLockedOut, Some(newCount))) =>
         auditDetailsEntered(arn, clientDetails, newCount, lockedOut = false)
+        auditingService.audit(EligibilityAuditModel(
+          agentReferenceNumber = Some(arn),
+          utr = None,
+          nino = None,
+          eligibility = "ineligible",
+          failureReason = Some("failed-client-match-no-lock-out")
+        ))
         Redirect(controllers.agent.matching.routes.ClientDetailsErrorController.show)
           .addingToSession(FailedClientMatching -> newCount.toString)
       case Right(LockoutUpdate(_: LockedOut, None)) =>
         auditDetailsEntered(arn, clientDetails, 0, lockedOut = true)
+        auditingService.audit(EligibilityAuditModel(
+          agentReferenceNumber = Some(arn),
+          utr = None,
+          nino = None,
+          eligibility = "ineligible",
+          failureReason = Some("failed-client-match-locked-out")
+        ))
         Redirect(controllers.agent.matching.routes.ClientDetailsLockoutController.show)
           .removingFromSession(FailedClientMatching)
           .clearAllUserDetails
@@ -131,6 +146,13 @@ class ConfirmClientController @Inject()(checkYourClientDetails: CheckYourClientD
   private def handleClientAlreadySubscribed(arn: String, clientDetails: UserDetailsModel)
                                            (implicit request: Request[AnyContent]): Result = {
     auditDetailsEntered(arn, clientDetails, getCurrentFailureCount(), lockedOut = false)
+    auditingService.audit(EligibilityAuditModel(
+      agentReferenceNumber = Some(arn),
+      utr = None,
+      nino = Some(clientDetails.nino),
+      eligibility = "ineligible",
+      failureReason = Some("client-already-signed-up")
+    ))
     Redirect(controllers.agent.matching.routes.ClientAlreadySubscribedController.show).removingFromSession(FailedClientMatching)
   }
 
@@ -143,12 +165,26 @@ class ConfirmClientController @Inject()(checkYourClientDetails: CheckYourClientD
   private def handleUnapprovedAgent(arn: String, clientDetails: UserDetailsModel)
                                    (implicit request: Request[AnyContent]): Result = {
     auditDetailsEntered(arn, clientDetails, getCurrentFailureCount(), lockedOut = false)
+    auditingService.audit(EligibilityAuditModel(
+      agentReferenceNumber = Some(arn),
+      utr = None,
+      nino = Some(clientDetails.nino),
+      eligibility = "ineligible",
+      failureReason = Some("no-agent-client-relationship")
+    ))
     Redirect(controllers.agent.matching.routes.NoClientRelationshipController.show).removingFromSession(FailedClientMatching)
   }
 
   private def handleApprovedAgentWithoutClientUTR(arn: String, nino: String, clientDetails: UserDetailsModel)
                                                  (implicit request: Request[AnyContent]): Result = {
     auditDetailsEntered(arn, clientDetails, getCurrentFailureCount(), lockedOut = false)
+    auditingService.audit(EligibilityAuditModel(
+      agentReferenceNumber = Some(arn),
+      utr = None,
+      nino = Some(clientDetails.nino),
+      eligibility = "ineligible",
+      failureReason = Some("no-self-assessment")
+    ))
     Redirect(controllers.agent.matching.routes.NoSAController.show)
       .addingToSession(ITSASessionKeys.NINO -> nino)
       .removingFromSession(FailedClientMatching)

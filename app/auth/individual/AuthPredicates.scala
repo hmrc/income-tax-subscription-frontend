@@ -22,6 +22,7 @@ import cats.implicits._
 import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.JourneyStateKey
 import config.AppConfig
+import models.audits.EligibilityAuditing.EligibilityAuditModel
 import models.audits.IVHandoffAuditing.IVHandoffAuditModel
 import play.api.Logging
 import play.api.mvc.{Result, Results}
@@ -42,9 +43,18 @@ trait AuthPredicates extends Results with FrontendHeaderCarrierProvider with Log
 
   lazy val alreadyEnrolled: Result = Redirect(controllers.individual.matching.routes.AlreadyEnrolledController.show)
 
-  val mtdidPredicate: AuthPredicate[IncomeTaxSAUser] = _ => user =>
+  val mtdidPredicate: AuthPredicate[IncomeTaxSAUser] = implicit request => user =>
     if (user.mtdItsaRef.isEmpty) Right(AuthPredicateSuccess)
-    else Left(Future.successful(alreadyEnrolled))
+    else {
+      auditingService.audit(EligibilityAuditModel(
+        agentReferenceNumber = None,
+        utr = user.utr,
+        nino = user.nino,
+        eligibility = "ineligible",
+        failureReason = Some("already-signed-up-with-mtd-id")
+      ))
+      Left(Future.successful(alreadyEnrolled))
+    }
 
   val enrolledPredicate: AuthPredicate[IncomeTaxSAUser] = _ => user =>
     if (user.mtdItsaRef.nonEmpty) Right(AuthPredicateSuccess)
@@ -69,7 +79,8 @@ trait AuthPredicates extends Results with FrontendHeaderCarrierProvider with Log
   val affinityPredicate: AuthPredicate[IncomeTaxSAUser] = _ => user =>
     user.affinityGroup match {
       case Some(Individual) | Some(Organisation) => Right(AuthPredicateSuccess)
-      case _ => Left(Future.successful(wrongAffinity))
+      case _ =>
+        Left(Future.successful(wrongAffinity))
     }
 
   val signUpJourneyPredicate: AuthPredicate[IncomeTaxSAUser] = request => _ =>
@@ -91,9 +102,20 @@ trait AuthPredicates extends Results with FrontendHeaderCarrierProvider with Log
     if (request.session.isInState(SignUp)) Right(AuthPredicateSuccess)
     else Left(Future.successful(homeRoute))
 
-  val administratorRolePredicate: AuthPredicate[IncomeTaxSAUser] = _ => user =>
+  val administratorRolePredicate: AuthPredicate[IncomeTaxSAUser] = implicit request => user =>
     if (!user.isAssistant) Right(AuthPredicateSuccess)
-    else Left(Future.successful(cannotUseServiceRoute))
+    else {
+      auditingService.audit(EligibilityAuditModel(
+        agentReferenceNumber = None,
+        utr = user.utr,
+        nino = user.nino,
+        eligibility = "ineligible",
+        failureReason = Some("user-type-assistant")
+      ))
+      Left(Future.successful(cannotUseServiceRoute))
+    }
+
+
 
   val ivPredicate: AuthPredicate[IncomeTaxSAUser] = implicit request => user => {
     if (user.confidenceLevel >= appConfig.identityVerificationRequiredConfidenceLevel) {
