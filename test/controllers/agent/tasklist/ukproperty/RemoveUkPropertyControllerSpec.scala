@@ -30,7 +30,7 @@ import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
+import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSubscriptionDetailsService}
 import utilities.SubscriptionDataKeys
 import views.html.agent.tasklist.ukproperty.RemoveUkPropertyBusiness
 
@@ -39,7 +39,7 @@ import scala.concurrent.Future
 class RemoveUkPropertyControllerSpec extends AgentControllerBaseSpec
   with MockAuditingService
   with MockSubscriptionDetailsService
-  with MockSessionDataService
+  with MockReferenceRetrieval
   with MockIncomeTaxSubscriptionConnector {
 
   override val controllerName: String = "RemoveUkPropertyController"
@@ -55,7 +55,7 @@ class RemoveUkPropertyControllerSpec extends AgentControllerBaseSpec
     }
 
     "redirect to Business Already Removed page" when {
-      "no uk property business exists" in  withController { controller =>
+      "no uk property business exists" in withController { controller =>
         mockFetchProperty(None)
         val result: Future[Result] = controller.show(subscriptionRequest)
 
@@ -130,13 +130,13 @@ class RemoveUkPropertyControllerSpec extends AgentControllerBaseSpec
 
     val controller = new RemoveUkPropertyController(
       mockIncomeTaxSubscriptionConnector,
-      view
+      view,
+      MockSubscriptionDetailsService,
+      mockReferenceRetrieval
     )(
       mockAuditingService,
       mockAuthService,
-      MockSubscriptionDetailsService,
-      appConfig,
-      mockSessionDataService
+      appConfig
     )
 
     testCode(controller)

@@ -25,8 +25,8 @@ import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.mocks.{MockAccountingPeriodService, MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
-import utilities.agent.TestConstants.{testNino, testUtr}
+import services.mocks._
+import utilities.agent.TestConstants.testUtr
 import views.agent.mocks.MockWhatYearToSignUp
 
 import scala.concurrent.Future
@@ -35,7 +35,8 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
   with MockWhatYearToSignUp
   with MockSubscriptionDetailsService
   with MockAccountingPeriodService
-  with MockSessionDataService
+  with MockClientDetailsRetrieval
+  with MockReferenceRetrieval
   with MockAuditingService {
 
   override val controllerName: String = "WhatYearToSignUpMethod"
@@ -46,15 +47,16 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
 
   object TestWhatYearToSignUpController extends WhatYearToSignUpController(
     mockAccountingPeriodService,
+    mockReferenceRetrieval,
+    mockClientDetailsRetrieval,
+    MockSubscriptionDetailsService,
     whatYearToSignUp
   )(
     mockAuditingService,
     mockAuthService,
     appConfig,
-    MockSubscriptionDetailsService,
     mockGetEligibilityStatusService,
-    mockMandationStatusService,
-    mockSessionDataService
+    mockMandationStatusService
   )
 
   "show" should {
@@ -63,7 +65,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
         mockView()
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
         mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
-        mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+        mockGetMandationService(testUtr)(Voluntary, Voluntary)
 
         val result = await(TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequestWithName))
 
@@ -77,7 +79,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
         mockView()
         mockFetchSelectedTaxYear(None)
         mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
-        mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+        mockGetMandationService(testUtr)(Voluntary, Voluntary)
 
         val result = await(TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequestWithName))
 

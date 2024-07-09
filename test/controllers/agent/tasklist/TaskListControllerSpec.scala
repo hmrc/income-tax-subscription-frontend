@@ -31,9 +31,8 @@ import play.api.test.Helpers.{HTML, charset, contentType, defaultAwaitTimeout, r
 import play.twirl.api.HtmlFormat
 import services.AccountingPeriodService
 import services.agent.mocks.MockSubscriptionOrchestrationService
-import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
+import services.mocks.{MockAuditingService, MockClientDetailsRetrieval, MockReferenceRetrieval, MockSubscriptionDetailsService}
 import utilities.agent.TestConstants.testUtr
-import utilities.individual.TestConstants.testNino
 import views.html.agent.tasklist.TaskList
 
 import scala.concurrent.Future
@@ -42,7 +41,8 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
   with MockAuditingService
   with MockSubscriptionDetailsService
   with MockSubscriptionOrchestrationService
-  with MockSessionDataService {
+  with MockReferenceRetrieval
+  with MockClientDetailsRetrieval {
 
   val accountingPeriodService: AccountingPeriodService = app.injector.instanceOf[AccountingPeriodService]
   val taskList: TaskList = mock[TaskList]
@@ -65,11 +65,12 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
   }
 
   object TestTaskListController extends TaskListController(
-    taskList
+    taskList,
+    mockClientDetailsRetrieval,
+    mockReferenceRetrieval,
+    MockSubscriptionDetailsService
   )(
     mockAuditingService,
-    MockSubscriptionDetailsService,
-    mockSessionDataService,
     mockAuthService
   )
 
@@ -97,7 +98,7 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
         confirmed = true
       )))
       mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
-      mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+      mockGetMandationService(testUtr)(Voluntary, Voluntary)
       mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
 
       val result: Future[Result] = TestTaskListController.show()(subscriptionRequestWithName)

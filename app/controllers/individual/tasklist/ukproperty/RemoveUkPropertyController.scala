@@ -25,7 +25,7 @@ import models.{No, Yes, YesNo}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.SubscriptionDataKeys
 import views.html.individual.tasklist.ukproperty.RemoveUkPropertyBusiness
@@ -34,31 +34,32 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveUkPropertyController @Inject()(incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector,
+                                           referenceRetrieval: ReferenceRetrieval,
+                                           subscriptionDetailsService: SubscriptionDetailsService,
                                            removeUkProperty: RemoveUkPropertyBusiness)
                                           (val auditingService: AuditingService,
                                            val authService: AuthService,
-                                           val subscriptionDetailsService: SubscriptionDetailsService,
-                                           val appConfig: AppConfig,
-                                           val sessionDataService: SessionDataService)
+                                           val appConfig: AppConfig)
                                           (implicit val ec: ExecutionContext,
-                                           mcc: MessagesControllerComponents) extends SignUpController with ReferenceRetrieval {
+                                           mcc: MessagesControllerComponents) extends SignUpController {
 
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user => withIndividualReference { reference =>
-      subscriptionDetailsService.fetchProperty(reference) map {
-        case Some(_) =>
-          Ok(view(form))
-        case None =>
-          Redirect(controllers.individual.tasklist.addbusiness.routes.BusinessAlreadyRemovedController.show())
+    implicit user =>
+      referenceRetrieval.getIndividualReference flatMap { reference =>
+        subscriptionDetailsService.fetchProperty(reference) map {
+          case Some(_) =>
+            Ok(view(form))
+          case None =>
+            Redirect(controllers.individual.tasklist.addbusiness.routes.BusinessAlreadyRemovedController.show())
+        }
       }
-    }
   }
 
   def submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       form.bindFromRequest().fold(
         hasErrors => Future.successful(BadRequest(view(form = hasErrors))), {
-          case Yes => withIndividualReference { reference =>
+          case Yes => referenceRetrieval.getIndividualReference flatMap { reference =>
             incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, SubscriptionDataKeys.Property) flatMap {
               case Right(_) => incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, SubscriptionDataKeys.IncomeSourceConfirmation).map {
                 case Right(_) => Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)

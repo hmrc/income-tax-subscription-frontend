@@ -18,6 +18,7 @@ package controllers.agent.tasklist
 
 import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
+import helpers.IntegrationTestConstants.testNino
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import helpers.servicemocks.AuditStub.stubAuditing
@@ -25,7 +26,7 @@ import models.EligibilityStatus
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
 import play.api.http.Status.{NO_CONTENT, OK}
-import play.api.libs.json.{JsNumber, JsObject, Json}
+import play.api.libs.json.{JsNumber, JsObject, JsString, Json}
 import utilities.SubscriptionDataKeys._
 
 class ProgressSavedControllerISpec extends ComponentSpecBase {
@@ -36,6 +37,7 @@ class ProgressSavedControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(lastUpdatedTimestamp, OK, JsObject(Seq(("$date", JsNumber(1)))))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
         When("GET /business/progress-saved is called")
         val res = IncomeTaxSubscriptionFrontend.getProgressSaved()
@@ -53,7 +55,6 @@ class ProgressSavedControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         stubAuditing()
-
         IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(lastUpdatedTimestamp, OK, JsObject(Seq(("$date", JsNumber(1)))))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
@@ -61,6 +62,7 @@ class ProgressSavedControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
         When("GET /business/progress-saved is called")
         val res = IncomeTaxSubscriptionFrontend.getProgressSaved(saveAndRetrieveLocation = Some("test-location"))

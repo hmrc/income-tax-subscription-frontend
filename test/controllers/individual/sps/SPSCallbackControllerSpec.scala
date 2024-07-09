@@ -49,7 +49,6 @@ class SPSCallbackControllerSpec extends ControllerBaseSpec with MockAuditingServ
     }
     FakeRequest("GET", controllers.individual.sps.routes.SPSCallbackController.callback(None).url + entityIdParam).withSession(
       ITSASessionKeys.JourneyStateKey -> SignUp.name,
-      ITSASessionKeys.NINO -> TestConstants.testNino,
       ITSASessionKeys.UTR -> TestConstants.testUtr
     )
   }

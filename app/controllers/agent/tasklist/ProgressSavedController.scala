@@ -24,10 +24,10 @@ import models.audits.SaveAndComebackAuditing.SaveAndComeBackAuditModel
 import models.common.business.AccountingMethodModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.api.{Configuration, Environment}
-import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
+import services.agent.ClientDetailsRetrieval
+import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
-import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import utilities.{AccountingPeriodUtil, CacheExpiryDateProvider, CurrentDateProvider}
 import views.html.agent.tasklist.ProgressSaved
 
@@ -37,34 +37,37 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class ProgressSavedController @Inject()(progressSavedView: ProgressSaved,
                                         currentDateProvider: CurrentDateProvider,
+                                        subscriptionDetailsService: SubscriptionDetailsService,
+                                        referenceRetrieval: ReferenceRetrieval,
+                                        clientDetailsRetrieval: ClientDetailsRetrieval,
                                         cacheExpiryDateProvider: CacheExpiryDateProvider)
                                        (val auditingService: AuditingService,
                                         val authService: AuthService,
-                                        val subscriptionDetailsService: SubscriptionDetailsService,
-                                        val sessionDataService: SessionDataService,
                                         val appConfig: AppConfig,
                                         val config: Configuration,
                                         val env: Environment)
                                        (implicit val ec: ExecutionContext,
-                                        mcc: MessagesControllerComponents) extends AuthenticatedController with AuthRedirects with ReferenceRetrieval {
+                                        mcc: MessagesControllerComponents) extends AuthenticatedController with AuthRedirects {
 
   def show(location: Option[String] = None): Action[AnyContent] = Authenticated.async {
     implicit request =>
       implicit user =>
-        withAgentReference { reference =>
-          subscriptionDetailsService.fetchLastUpdatedTimestamp(reference) flatMap {
-            case Some(timestamp) =>
-              location.fold(
-                Future.successful(Ok(progressSavedView(cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime), signInUrl, clientDetails = request.clientDetails)))
-              )(location => {
-                for {
-                  saveAndComebackAuditData <- retrieveAuditData(reference, user.arn, location)
-                  _ <- auditingService.audit(saveAndComebackAuditData)
-                } yield {
-                  Ok(progressSavedView(cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime), signInUrl, clientDetails = request.clientDetails))
-                }
-              })
-            case None => throw new InternalServerException("[ProgressSavedController][show] - The last updated timestamp cannot be retrieved")
+        referenceRetrieval.getAgentReference flatMap { reference =>
+          clientDetailsRetrieval.getClientDetails flatMap { clientDetails =>
+            subscriptionDetailsService.fetchLastUpdatedTimestamp(reference) flatMap {
+              case Some(timestamp) =>
+                location.fold(
+                  Future.successful(Ok(progressSavedView(cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime), signInUrl, clientDetails = clientDetails)))
+                )(location => {
+                  for {
+                    saveAndComebackAuditData <- retrieveAuditData(reference, user.arn, location)
+                    _ <- auditingService.audit(saveAndComebackAuditData)
+                  } yield {
+                    Ok(progressSavedView(cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime), signInUrl, clientDetails = clientDetails))
+                  }
+                })
+              case None => throw new InternalServerException("[ProgressSavedController][show] - The last updated timestamp cannot be retrieved")
+            }
           }
         }
   }
@@ -76,17 +79,18 @@ class ProgressSavedController @Inject()(progressSavedView: ProgressSaved,
                                )(implicit request: Request[AnyContent], user: IncomeTaxAgentUser, hc: HeaderCarrier): Future[SaveAndComeBackAuditModel] = {
 
     for {
+      clientDetails <- clientDetailsRetrieval.getClientDetails
       (businesses, accountingMethod) <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
       property <- subscriptionDetailsService.fetchProperty(reference)
       overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
-      selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getClientNino, user.getClientUtr)
+      selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getClientUtr)
     } yield {
       SaveAndComeBackAuditModel(
         userType = SaveAndComebackAuditing.agentUserType,
         maybeAgentReferenceNumber = Some(arn),
         utr = user.getClientUtr,
         saveAndRetrieveLocation = location,
-        nino = user.getClientNino,
+        nino = clientDetails.nino,
         currentTaxYear = AccountingPeriodUtil.getTaxEndYear(currentDateProvider.getCurrentDate),
         selectedTaxYear = selectedTaxYear,
         selfEmployments = businesses,

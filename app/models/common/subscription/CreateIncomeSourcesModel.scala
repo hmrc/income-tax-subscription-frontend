@@ -119,8 +119,7 @@ object CreateIncomeSourcesModel {
                           selfEmploymentsAccountingMethod: Option[AccountingMethodModel] = None,
                           property: Option[PropertyModel] = None,
                           overseasProperty: Option[OverseasPropertyModel] = None,
-                          accountingYear: Option[AccountingYearModel] = None
-                         ): CreateIncomeSourcesModel = {
+                          accountingYear: Option[AccountingYearModel] = None): CreateIncomeSourcesModel = {
 
     val accountingPeriod: AccountingPeriodModel = {
       accountingYear match {

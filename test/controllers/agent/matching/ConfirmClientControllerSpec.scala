@@ -17,6 +17,8 @@
 package controllers.agent.matching
 
 import common.Constants.ITSASessionKeys.FailedClientMatching
+import connectors.httpparser.SaveSessionDataHttpParser
+import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataSuccessResponse
 import controllers.agent.AgentControllerBaseSpec
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -232,15 +234,28 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
             redirectLocation(result) mustBe Some(routes.NoSAController.show.url)
           }
         }
-        "the agent successfully matches against their client" should {
-          "redirect to the confirmed client resolver" in withController { controller =>
-            setupMockNotLockedOut(testARN)
-            mockOrchestrateAgentQualificationSuccess(testARN, testNino, Some(testUtr))
+        "the agent successfully matches against their client" when {
+          "saving the nino to session was successful" should {
+            "redirect to the confirmed client resolver" in withController { controller =>
+              setupMockNotLockedOut(testARN)
+              mockOrchestrateAgentQualificationSuccess(testARN, testNino, Some(testUtr))
+              mockSaveNino(testNino)(Right(SaveSessionDataSuccessResponse))
 
-            val result: Future[Result] = controller.submit()(request)
+              val result: Future[Result] = controller.submit()(request)
 
-            status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(routes.ConfirmedClientResolver.resolve.url)
+              status(result) mustBe SEE_OTHER
+              redirectLocation(result) mustBe Some(routes.ConfirmedClientResolver.resolve.url)
+            }
+          }
+          "saving the nino to session had a failure" should {
+            "throw an InternalServerException" in withController { controller =>
+              setupMockNotLockedOut(testARN)
+              mockOrchestrateAgentQualificationSuccess(testARN, testNino, Some(testUtr))
+              mockSaveNino(testNino)(Left(SaveSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
+
+              intercept[InternalServerException](await(controller.submit()(request)))
+                .message mustBe "[ConfirmClientController][handleApprovedAgent] - failure when saving nino to session"
+            }
           }
         }
       }

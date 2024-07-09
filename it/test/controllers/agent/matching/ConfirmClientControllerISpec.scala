@@ -17,7 +17,7 @@
 package controllers.agent.matching
 
 import _root_.common.Constants.ITSASessionKeys
-import connectors.stubs.IncomeTaxSubscriptionConnectorStub
+import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.IntegrationTestConstants._
 import helpers.UserMatchingIntegrationResultSupport
 import helpers.agent.ComponentSpecBase
@@ -28,9 +28,7 @@ import play.api.http.Status._
 
 class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIntegrationResultSupport {
 
-
   "POST /confirm-client" when {
-
     "general error occured" should {
       "show error page" in {
         Given("I setup the wiremock stubs")
@@ -199,7 +197,6 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
         )
 
         val session = getSessionMap(res)
-        session.get(ITSASessionKeys.NINO) mustBe Some(testNino)
         session.get(ITSASessionKeys.UTR) mustBe None
 
         Then("The client matching request must have been audited")
@@ -215,6 +212,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
         SubscriptionStub.stubGetNoSubscription()
         AgentServicesStub.stubClientRelationship(testARN, testNino, exists = true)
         UserLockoutStub.stubUserIsNotLocked(testARN)
+        SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.NINO, testNino)(OK)
 
         When("I call POST /confirm-client")
         val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
@@ -226,7 +224,6 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
         )
 
         val session = getSessionMap(res)
-        session.get(ITSASessionKeys.NINO) mustBe Some(testNino)
         session.get(ITSASessionKeys.UTR) mustBe Some(testUtr)
 
         Then("The client matching request must have been audited")

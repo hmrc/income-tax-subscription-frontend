@@ -77,25 +77,21 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     val basicClientData: Map[String, String] = Map(
       UserMatchingSessionUtil.firstName -> testFirstName,
       UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.NINO -> testNino
     )
 
     val detailedClientData: Map[String, String] = Map(
       ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
-      ITSASessionKeys.NINO -> testNino,
       ITSASessionKeys.UTR -> testUtr
     )
 
     val clientDataWithNinoAndUTR: Map[String, String] = Map(
       UserMatchingSessionUtil.firstName -> testFirstName,
       UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.NINO -> testNino,
       ITSASessionKeys.UTR -> testUtr
     )
 
     val completeClientData: Map[String, String] = Map(
       ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
-      ITSASessionKeys.NINO -> testNino,
       ITSASessionKeys.UTR -> testUtr,
       firstName -> "FirstName",
       lastName -> "LastName"
@@ -210,6 +206,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       FakeRequest().withHeaders(Headers(headers: _*)),
       Session()
     )
+
     // TODO: Remove the withUTR and withJourneyStateSignUp boolean parameters, they make diagnosing session data issues difficult
     def get(uri: String, additionalCookies: Map[String, String] = Map.empty, withUTR: Boolean = true, withJourneyStateSignUp: Boolean = true): WSResponse =
       buildClient(uri)
@@ -302,10 +299,10 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     def showConfirmation(hasSubmitted: Boolean, firstName: String, lastName: String, nino: String): WSResponse =
       if (hasSubmitted)
         get("/confirmation", Map(ITSASessionKeys.MTDITID -> testMtdId, UserMatchingSessionUtil.firstName -> firstName,
-          UserMatchingSessionUtil.lastName -> lastName, ITSASessionKeys.NINO -> nino))
+          UserMatchingSessionUtil.lastName -> lastName))
       else
         get("/confirmation", Map[String, String](UserMatchingSessionUtil.firstName -> firstName,
-          UserMatchingSessionUtil.lastName -> lastName, ITSASessionKeys.NINO -> nino))
+          UserMatchingSessionUtil.lastName -> lastName))
 
     def feedback(): WSResponse = get("/feedback-submitted")
 

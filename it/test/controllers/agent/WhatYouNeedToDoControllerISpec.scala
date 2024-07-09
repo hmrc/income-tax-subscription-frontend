@@ -18,14 +18,14 @@ package controllers.agent
 
 import common.Constants.ITSASessionKeys
 import connectors.stubs.SessionDataConnectorStub
-import helpers.IntegrationTestConstants.AgentURI
+import helpers.IntegrationTestConstants.{AgentURI, testNino}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import models.EligibilityStatus
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
 import play.api.http.Status.{OK, SEE_OTHER}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsString, Json}
 
 class WhatYouNeedToDoControllerISpec extends ComponentSpecBase {
 
@@ -37,6 +37,7 @@ class WhatYouNeedToDoControllerISpec extends ComponentSpecBase {
       AuthStub.stubAuthSuccess()
       SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
       SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
       When(s"GET ${routes.WhatYouNeedToDoController.show().url} is called")
       val result = IncomeTaxSubscriptionFrontend.whatYouNeedToDo()

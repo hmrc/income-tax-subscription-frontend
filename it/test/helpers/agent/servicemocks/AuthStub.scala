@@ -17,7 +17,7 @@
 package helpers.agent.servicemocks
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import common.Constants.{GovernmentGateway, agentServiceIdentifierKey, hmrcAsAgent}
+import common.Constants.{agentServiceIdentifierKey, hmrcAsAgent}
 import helpers.IntegrationTestConstants._
 import play.api.http.Status._
 import play.api.libs.json.{JsObject, Json}
@@ -48,7 +48,7 @@ object AuthStub extends WireMockMethods {
   )
 
   private def successfulAuthResponse(affinityGroup: AffinityGroup, confidenceLevel: ConfidenceLevel, enrolments: JsObject*): JsObject =
-  //Written out manually as the json writer for Enrolment doesn't match the reader
+    //Written out manually as the json writer for Enrolment doesn't match the reader
     Json.obj(
       "allEnrolments" -> enrolments,
       "affinityGroup" -> affinityGroup,

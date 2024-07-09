@@ -29,7 +29,7 @@ import play.twirl.api.HtmlFormat
 import services.GetCompleteDetailsService
 import services.GetCompleteDetailsService._
 import services.individual.mocks.MockSubscriptionOrchestrationService
-import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
+import services.mocks.{MockAuditingService, MockNinoService, MockReferenceRetrieval, MockSubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.individual.TestConstants.testNino
 import views.html.individual.GlobalCheckYourAnswers
@@ -41,17 +41,18 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
   with MockAuditingService
   with MockSubscriptionDetailsService
   with MockSubscriptionOrchestrationService
-  with MockSessionDataService {
+  with MockNinoService
+  with MockReferenceRetrieval {
 
   object TestGlobalCheckYourAnswersController extends GlobalCheckYourAnswersController(
     subscriptionService = mockSubscriptionOrchestrationService,
     getCompleteDetailsService = mock[GetCompleteDetailsService],
+    ninoService = mockNinoService,
+    referenceRetrieval = mockReferenceRetrieval,
     globalCheckYourAnswers = mock[GlobalCheckYourAnswers]
   )(
     auditingService = mockAuditingService,
     authService = mockAuthService,
-    subscriptionDetailsService = MockSubscriptionDetailsService,
-    sessionDataService = mockSessionDataService,
     appConfig = appConfig
   )
 
@@ -68,12 +69,12 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
     val controller: GlobalCheckYourAnswersController = new GlobalCheckYourAnswersController(
       subscriptionService = mockSubscriptionOrchestrationService,
       getCompleteDetailsService = mockGetCompleteDetailsService,
+      ninoService = mockNinoService,
+      referenceRetrieval = mockReferenceRetrieval,
       globalCheckYourAnswers = mockGlobalCheckYourAnswers
     )(
       auditingService = mockAuditingService,
       authService = mockAuthService,
-      subscriptionDetailsService = MockSubscriptionDetailsService,
-      sessionDataService = mockSessionDataService,
       appConfig = appConfig
     )
   }
@@ -113,7 +114,7 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
   "show" must {
     "redirect to the task list page" when {
       "a failure is returned from the get complete details service" in new Setup {
-        when(mockGetCompleteDetailsService.getCompleteSignUpDetails(any(), any(), any())(any()))
+        when(mockGetCompleteDetailsService.getCompleteSignUpDetails(any(), any())(any()))
           .thenReturn(Future.successful(Left(GetCompleteDetailsService.GetCompleteDetailsFailure)))
 
         val result: Future[Result] = controller.show(subscriptionRequest)
@@ -124,7 +125,7 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
     }
     "return OK with the page content" when {
       "complete details are successfully received" in new Setup {
-        when(mockGetCompleteDetailsService.getCompleteSignUpDetails(any(), any(), any())(any()))
+        when(mockGetCompleteDetailsService.getCompleteSignUpDetails(any(), any())(any()))
           .thenReturn(Future.successful(Right(completeDetails)))
 
         when(mockGlobalCheckYourAnswers(
@@ -145,7 +146,7 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
   "submit" must {
     "redirect to the task list page" when {
       "a failure is returned from the get complete details service" in new Setup {
-        when(mockGetCompleteDetailsService.getCompleteSignUpDetails(any(), any(), any())(any()))
+        when(mockGetCompleteDetailsService.getCompleteSignUpDetails(any(), any())(any()))
           .thenReturn(Future.successful(Left(GetCompleteDetailsService.GetCompleteDetailsFailure)))
 
         val result: Future[Result] = controller.submit(subscriptionRequest)
@@ -157,9 +158,9 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
 
     "redirect to the confirmation page" when {
       "the submission of the users details was successful" in new Setup {
-        when(mockGetCompleteDetailsService.getCompleteSignUpDetails(any(), any(), any())(any()))
+        when(mockGetCompleteDetailsService.getCompleteSignUpDetails(any(), any())(any()))
           .thenReturn(Future.successful(Right(completeDetails)))
-
+        mockGetNino(testNino)
         mockSignUpAndCreateIncomeSourcesFromTaskListSuccess(nino = testNino, CreateIncomeSourcesModel.createIncomeSources(testNino, completeDetails))
 
         val result: Future[Result] = controller.submit(subscriptionRequest)
@@ -171,9 +172,9 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
 
     "throw an InternalServerException" when {
       "a failure is returned from the subscription orchestration submission" in new Setup {
-        when(mockGetCompleteDetailsService.getCompleteSignUpDetails(any(), any(), any())(any()))
+        when(mockGetCompleteDetailsService.getCompleteSignUpDetails(any(), any())(any()))
           .thenReturn(Future.successful(Right(completeDetails)))
-
+        mockGetNino(testNino)
         mockSignUpAndCreateIncomeSourcesFromTaskListFailure(nino = testNino, CreateIncomeSourcesModel.createIncomeSources(testNino, completeDetails))
 
         intercept[InternalServerException](await(controller.submit(subscriptionRequest)))

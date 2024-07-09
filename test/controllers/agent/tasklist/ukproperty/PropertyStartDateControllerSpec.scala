@@ -27,8 +27,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{await, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
-import uk.gov.hmrc.http.InternalServerException
+import services.mocks.{MockAuditingService, MockClientDetailsRetrieval, MockReferenceRetrieval, MockSubscriptionDetailsService}
 import utilities.TestModels.testFullPropertyModel
 import views.html.agent.tasklist.ukproperty.PropertyStartDate
 
@@ -38,7 +37,8 @@ import scala.concurrent.Future
 class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockAuditingService
-  with MockSessionDataService
+  with MockReferenceRetrieval
+  with MockClientDetailsRetrieval
   with FeatureSwitching {
 
   override val controllerName: String = "PropertyStartDateController"
@@ -48,26 +48,18 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
   )
 
   object TestPropertyStartDateController$ extends PropertyStartDateController(
-    mock[PropertyStartDate]
+    mock[PropertyStartDate],
+    MockSubscriptionDetailsService,
+    mockClientDetailsRetrieval,
+    mockReferenceRetrieval
   )(
     mockAuditingService,
     mockAuthService,
-    mockSessionDataService,
     appConfig,
-    MockSubscriptionDetailsService,
     mockLanguageUtils
   )
 
   "show" should {
-    "throw an InternalServerException" when {
-      "there are no client details in session" in withController { controller =>
-        mockFetchProperty(None)
-
-        intercept[InternalServerException](await(controller.show(isEditMode = false)(subscriptionRequest)))
-          .message mustBe "[IncomeTaxAgentUser][clientDetails] - could not retrieve client details from session"
-      }
-    }
-
     "display the property start date view and return OK (200)" in withController { controller =>
       lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequestWithName))
 
@@ -175,13 +167,14 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
       .thenReturn(HtmlFormat.empty)
 
     val controller = new PropertyStartDateController(
-      mockView
+      mockView,
+      MockSubscriptionDetailsService,
+      mockClientDetailsRetrieval,
+      mockReferenceRetrieval
     )(
       mockAuditingService,
       mockAuthService,
-      mockSessionDataService,
       appConfig,
-      MockSubscriptionDetailsService,
       mockLanguageUtils
     )
 

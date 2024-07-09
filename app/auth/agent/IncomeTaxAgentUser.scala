@@ -31,9 +31,6 @@ class IncomeTaxAgentUser(val enrolments: Enrolments,
 
   lazy val arn: String = getArnFromEnrolments(enrolments).get
 
-  def clientNino(implicit request: Request[AnyContent]): Option[String] =
-    request.session.get(ITSASessionKeys.NINO)
-
   def clientUtr(implicit request: Request[AnyContent]): Option[String] =
     request.session.get(ITSASessionKeys.UTR)
 
@@ -41,13 +38,6 @@ class IncomeTaxAgentUser(val enrolments: Enrolments,
     request.fetchClientName.getOrElse(
       throw new InternalServerException("[IncomeTaxAgentUser][clientName] - could not retrieve client name from request session")
     )
-  }
-
-  def getClientNino(implicit request: Request[AnyContent]): String = {
-    request.session.get(ITSASessionKeys.NINO) match {
-      case Some(nino) => nino
-      case None => throw new InternalServerException("[IncomeTaxAgentUser][getClientNino] - Nino not found in session")
-    }
   }
 
   def getClientUtr(implicit request: Request[AnyContent]): String = {

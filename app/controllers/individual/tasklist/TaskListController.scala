@@ -31,28 +31,30 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class TaskListController @Inject()(taskListView: TaskList,
+                                   ninoService: NinoService,
+                                   referenceRetrieval: ReferenceRetrieval,
+                                   subscriptionDetailsService: SubscriptionDetailsService,
                                    accountingPeriodService: AccountingPeriodService)
                                   (val auditingService: AuditingService,
-                                   val subscriptionDetailsService: SubscriptionDetailsService,
-                                   val sessionDataService: SessionDataService,
                                    val authService: AuthService,
                                    val appConfig: AppConfig)
                                   (implicit val ec: ExecutionContext,
-                                   mcc: MessagesControllerComponents) extends SignUpController with ReferenceRetrieval with Logging {
+                                   mcc: MessagesControllerComponents) extends SignUpController with Logging {
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user => {
-      withIndividualReference { reference =>
-        getTaskListModel(reference) map {
-          viewModel =>
+      referenceRetrieval.getIndividualReference flatMap { reference =>
+        getTaskListModel(reference) flatMap { viewModel =>
+          ninoService.getNino map { nino =>
             Ok(taskListView(
               postAction = controllers.individual.tasklist.routes.TaskListController.submit(),
               viewModel = viewModel,
               accountingPeriodService = accountingPeriodService,
-              individualUserNino = user.nino.get,
+              individualUserNino = nino,
               IncomeTaxSAUser.fullName,
               utrNumber = user.utr.get
             ))
+          }
         }
       }
     }
@@ -63,7 +65,7 @@ class TaskListController @Inject()(taskListView: TaskList,
       (businesses, _) <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
       property <- subscriptionDetailsService.fetchProperty(reference)
       overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
-      selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getNino, user.getUtr)
+      selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getUtr)
       incomeSourcesConfirmed <- subscriptionDetailsService.fetchIncomeSourcesConfirmation(reference)
     } yield {
       TaskListModel(

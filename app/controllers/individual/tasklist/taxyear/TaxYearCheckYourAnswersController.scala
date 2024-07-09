@@ -30,23 +30,23 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class TaxYearCheckYourAnswersController @Inject()(checkYourAnswersView: TaxYearCheckYourAnswers,
-                                                  accountingPeriodService: AccountingPeriodService)
+                                                  referenceRetrieval: ReferenceRetrieval,
+                                                  accountingPeriodService: AccountingPeriodService,
+                                                  subscriptionDetailsService: SubscriptionDetailsService)
                                                  (val auditingService: AuditingService,
                                                   val appConfig: AppConfig,
                                                   val authService: AuthService,
-                                                  val sessionDataService: SessionDataService,
                                                   val getEligibilityStatusService: GetEligibilityStatusService,
-                                                  val mandationStatusService: MandationStatusService,
-                                                  val subscriptionDetailsService: SubscriptionDetailsService)
+                                                  val mandationStatusService: MandationStatusService)
                                                  (implicit val ec: ExecutionContext,
                                                   mcc: MessagesControllerComponents)
-  extends SignUpController with ReferenceRetrieval with TaxYearNavigationHelper {
+  extends SignUpController with TaxYearNavigationHelper {
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       handleUnableToSelectTaxYearIndividual {
-        withIndividualReference { reference =>
-          subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getNino, user.getUtr) map { maybeAccountingYearModel =>
+        referenceRetrieval.getIndividualReference flatMap { reference =>
+          subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getUtr) map { maybeAccountingYearModel =>
             Ok(checkYourAnswersView(
               postAction = controllers.individual.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.submit(),
               viewModel = maybeAccountingYearModel,
@@ -60,8 +60,8 @@ class TaxYearCheckYourAnswersController @Inject()(checkYourAnswersView: TaxYearC
 
   def submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withIndividualReference { reference =>
-        subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getNino, user.getUtr) flatMap { maybeAccountingYearModel =>
+      referenceRetrieval.getIndividualReference flatMap { reference =>
+        subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getUtr) flatMap { maybeAccountingYearModel =>
           val accountingYearModel: AccountingYearModel = maybeAccountingYearModel.getOrElse(
             throw new InternalServerException("[TaxYearCheckYourAnswersController][submit] - Could not retrieve accounting year")
           )

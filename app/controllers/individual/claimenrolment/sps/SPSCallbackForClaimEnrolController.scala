@@ -37,7 +37,7 @@ class SPSCallbackForClaimEnrolController @Inject()(val auditingService: Auditing
                                                    mcc: MessagesControllerComponents) extends BaseClaimEnrolmentController {
 
   def callback: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
+    _ =>
       request.queryString.get("entityId").flatMap(_.headOption) match {
         case Some(entityId) =>
           claimEnrolmentService.getMtditidFromSubscription flatMap {

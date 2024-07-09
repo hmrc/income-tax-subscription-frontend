@@ -22,7 +22,7 @@ import controllers.utils.ReferenceRetrieval
 import models.common.IncomeSources
 import play.api.mvc._
 import play.twirl.api.Html
-import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import views.html.individual.tasklist.addbusiness.YourIncomeSourceToSignUp
 
@@ -30,18 +30,18 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class YourIncomeSourceToSignUpController @Inject()(yourIncomeSourceToSignUp: YourIncomeSourceToSignUp)
-                                                  (val subscriptionDetailsService: SubscriptionDetailsService,
-                                                   val auditingService: AuditingService,
-                                                   val sessionDataService: SessionDataService,
+class YourIncomeSourceToSignUpController @Inject()(yourIncomeSourceToSignUp: YourIncomeSourceToSignUp,
+                                                   subscriptionDetailsService: SubscriptionDetailsService,
+                                                   referenceRetrieval: ReferenceRetrieval)
+                                                  (val auditingService: AuditingService,
                                                    val appConfig: AppConfig,
                                                    val authService: AuthService)
                                                   (implicit val ec: ExecutionContext,
-                                                   mcc: MessagesControllerComponents) extends SignUpController with ReferenceRetrieval {
+                                                   mcc: MessagesControllerComponents) extends SignUpController {
 
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withIndividualReference { reference =>
+      referenceRetrieval.getIndividualReference flatMap { reference =>
         subscriptionDetailsService.fetchAllIncomeSources(reference) map { incomeSources =>
           Ok(view(
             incomeSources
@@ -52,7 +52,7 @@ class YourIncomeSourceToSignUpController @Inject()(yourIncomeSourceToSignUp: You
 
   def submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withIndividualReference { reference =>
+      referenceRetrieval.getIndividualReference flatMap { reference =>
         val continue: Result = Redirect(controllers.individual.tasklist.routes.TaskListController.show())
 
         subscriptionDetailsService.fetchAllIncomeSources(reference) flatMap { incomeSources =>

@@ -27,7 +27,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
+import services.mocks.{MockAuditingService, MockClientDetailsRetrieval, MockReferenceRetrieval, MockSubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import views.html.agent.tasklist.ukproperty.PropertyAccountingMethod
 
@@ -36,7 +36,8 @@ import scala.concurrent.Future
 class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockAuditingService
-  with MockSessionDataService {
+  with MockClientDetailsRetrieval
+  with MockReferenceRetrieval {
 
   override val controllerName: String = "PropertyAccountingMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
@@ -48,28 +49,20 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
       .thenReturn(HtmlFormat.empty)
 
     val controller = new PropertyAccountingMethodController(
-      propertyAccountingMethodView
+      propertyAccountingMethodView,
+      MockSubscriptionDetailsService,
+      mockClientDetailsRetrieval,
+      mockReferenceRetrieval
     )(
       mockAuditingService,
       appConfig,
-      mockAuthService,
-      mockSessionDataService,
-      MockSubscriptionDetailsService
+      mockAuthService
     )
 
     testCode(controller)
   }
 
   "show" when {
-    "there are missing client details" should {
-      "throw an InternalServerException" in withController { controller =>
-        mockFetchProperty(None)
-
-        intercept[InternalServerException](await(controller.show(isEditMode = false)(subscriptionRequest)))
-          .message mustBe "[IncomeTaxAgentUser][clientDetails] - could not retrieve client details from session"
-      }
-    }
-
     "there is no previous selected answer" should {
       "display the property accounting method view and return OK (200)" in withController { controller =>
         mockFetchProperty(None)

@@ -23,7 +23,6 @@ import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import utilities.UnitTestTrait
-import common.Constants.GovernmentGateway._
 import utilities.individual.TestConstants._
 
 import scala.concurrent.Future
@@ -34,21 +33,21 @@ class EnrolmentServiceSpec extends UnitTestTrait with TestEnrolmentService with 
     def result: Future[Either[EnrolFailure, EnrolSuccess.type]] = TestEnrolmentServiceFeatureSwitched.enrol(testMTDID, testNino)
 
     "return a success from the EnrolmentStoreConnector" in {
-      mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new ~(Some(Credentials(testCredId, "")), Some(testGroupId)))
+      mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new~(Some(Credentials(testCredId, "")), Some(testGroupId)))
       mockAllocateEnrolmentSuccess(testGroupId, testEnrolmentKey, testEnrolmentRequest)
 
       whenReady(result)(_ mustBe Right(EnrolSuccess))
     }
 
     "return a failure from the EnrolmentStoreConnector" in {
-      mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new ~(Some(Credentials(testCredId, "")), Some(testGroupId)))
+      mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new~(Some(Credentials(testCredId, "")), Some(testGroupId)))
       mockAllocateEnrolmentFailure(testGroupId, testEnrolmentKey, testEnrolmentRequest)
 
       whenReady(result)(_ mustBe Left(EnrolFailure(testErrorMessage)))
     }
 
     "pass through the exception if the EnrolmentStoreConnector fails" in {
-      mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new ~(Some(Credentials(testCredId, "")), Some(testGroupId)))
+      mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new~(Some(Credentials(testCredId, "")), Some(testGroupId)))
       mockAllocateEnrolmentException(testGroupId, testEnrolmentKey, testEnrolmentRequest)
 
       whenReady(result.failed)(_ mustBe testException)

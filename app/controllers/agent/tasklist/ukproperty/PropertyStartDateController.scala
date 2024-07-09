@@ -18,7 +18,6 @@ package controllers.agent.tasklist.ukproperty
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
-import config.featureswitch.FeatureSwitching
 import controllers.utils.ReferenceRetrieval
 import forms.agent.PropertyStartDateForm
 import forms.agent.PropertyStartDateForm.propertyStartDateForm
@@ -26,47 +25,53 @@ import models.DateModel
 import play.api.data.Form
 import play.api.mvc._
 import play.twirl.api.Html
-import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
+import services.agent.ClientDetailsRetrieval
+import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.ImplicitDateFormatter
-import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
+import utilities.UserMatchingSessionUtil.ClientDetails
 import views.html.agent.tasklist.ukproperty.PropertyStartDate
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
-class PropertyStartDateController @Inject()(propertyStartDate: PropertyStartDate)
+class PropertyStartDateController @Inject()(propertyStartDate: PropertyStartDate,
+                                            subscriptionDetailsService: SubscriptionDetailsService,
+                                            clientDetailsRetrieval: ClientDetailsRetrieval,
+                                            referenceRetrieval: ReferenceRetrieval)
                                            (val auditingService: AuditingService,
                                             val authService: AuthService,
-                                            val sessionDataService: SessionDataService,
                                             val appConfig: AppConfig,
-                                            val subscriptionDetailsService: SubscriptionDetailsService,
                                             val languageUtils: LanguageUtils)
                                            (implicit val ec: ExecutionContext,
-                                            mcc: MessagesControllerComponents) extends AuthenticatedController
-  with ImplicitDateFormatter with ReferenceRetrieval with FeatureSwitching {
+                                            mcc: MessagesControllerComponents) extends AuthenticatedController with ImplicitDateFormatter {
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withAgentReference { reference =>
-        subscriptionDetailsService.fetchPropertyStartDate(reference) map { propertyStartDate =>
-          Ok(view(
-            propertyStartDateForm = form.fill(propertyStartDate),
-            isEditMode = isEditMode
-          ))
-        }
+      for {
+        reference <- referenceRetrieval.getAgentReference
+        startDate <- subscriptionDetailsService.fetchPropertyStartDate(reference)
+        clientDetails <- clientDetailsRetrieval.getClientDetails
+      } yield {
+        Ok(view(
+          propertyStartDateForm = form.fill(startDate),
+          isEditMode = isEditMode,
+          clientDetails = clientDetails
+        ))
       }
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withAgentReference { reference =>
+      referenceRetrieval.getAgentReference flatMap { reference =>
         form.bindFromRequest().fold(
           formWithErrors =>
-            Future.successful(BadRequest(view(
-              propertyStartDateForm = formWithErrors, isEditMode = isEditMode
-            ))),
+            clientDetailsRetrieval.getClientDetails map { clientDetails =>
+              BadRequest(view(
+                propertyStartDateForm = formWithErrors, isEditMode = isEditMode, clientDetails = clientDetails
+              ))
+            },
           startDate =>
             subscriptionDetailsService.savePropertyStartDate(reference, startDate) map {
               case Right(_) =>
@@ -93,14 +98,14 @@ class PropertyStartDateController @Inject()(propertyStartDate: PropertyStartDate
     propertyStartDateForm(PropertyStartDateForm.minStartDate, PropertyStartDateForm.maxStartDate, d => d.toLongDate)
   }
 
-  private def view(propertyStartDateForm: Form[DateModel], isEditMode: Boolean)
+  private def view(propertyStartDateForm: Form[DateModel], isEditMode: Boolean, clientDetails: ClientDetails)
                   (implicit request: Request[AnyContent]): Html = {
     propertyStartDate(
       propertyStartDateForm = propertyStartDateForm,
       postAction = controllers.agent.tasklist.ukproperty.routes.PropertyStartDateController.submit(editMode = isEditMode),
       isEditMode = isEditMode,
       backUrl = backUrl(isEditMode),
-      clientDetails = request.clientDetails
+      clientDetails = clientDetails
     )
   }
 }

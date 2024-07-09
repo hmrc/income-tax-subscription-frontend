@@ -22,7 +22,7 @@ import models.status.MandationStatus.Voluntary
 import models.{EligibilityStatus, Next}
 import org.scalatest.matchers.should.Matchers._
 import services.mocks.MockSubscriptionDetailsService
-import utilities.individual.TestConstants.{testNino, testUtr}
+import utilities.individual.TestConstants.testUtr
 import utilities.{SubscriptionDataKeys, UnitTestTrait}
 
 class SubscriptionDetailsServiceSpec extends UnitTestTrait
@@ -39,11 +39,11 @@ class SubscriptionDetailsServiceSpec extends UnitTestTrait
   "mock Subscription Details  service" should {
 
     "return next year when the ELIGIBLE_NEXT_YEAR_ONLY session variable is set" in {
-      mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+      mockGetMandationService(testUtr)(Voluntary, Voluntary)
       mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
       mockFetchSelectedTaxYear(None)
 
-      val testResultEventually = subscriptionDetailsService.fetchSelectedTaxYear(testReference, testNino, testUtr)(hc)
+      val testResultEventually = subscriptionDetailsService.fetchSelectedTaxYear(testReference, testUtr)(hc)
       testResultEventually.map(testResult => {
         testResult.isEmpty mustBe false
         testResult.get.confirmed mustBe true
@@ -53,10 +53,10 @@ class SubscriptionDetailsServiceSpec extends UnitTestTrait
     }
 
     "return empty db value when the ELIGIBLE_NEXT_YEAR_ONLY session variable is not set and no value found" in {
-      mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+      mockGetMandationService(testUtr)(Voluntary, Voluntary)
 
       mockFetchSelectedTaxYear(None)
-      val testResultEventually = subscriptionDetailsService.fetchSelectedTaxYear(testReference, testNino, testUtr)(hc)
+      val testResultEventually = subscriptionDetailsService.fetchSelectedTaxYear(testReference, testUtr)(hc)
       testResultEventually.map(testResult => {
         testResult.isEmpty mustBe true
       })
@@ -64,10 +64,10 @@ class SubscriptionDetailsServiceSpec extends UnitTestTrait
     }
 
     "return editable db value when the ELIGIBLE_NEXT_YEAR_ONLY session variable is not set" in {
-      mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+      mockGetMandationService(testUtr)(Voluntary, Voluntary)
 
       mockFetchSelectedTaxYear(Some(AccountingYearModel(Next, confirmed = true, editable = false)))
-      val testResultEventually = subscriptionDetailsService.fetchSelectedTaxYear(testReference, testNino, testUtr)(hc)
+      val testResultEventually = subscriptionDetailsService.fetchSelectedTaxYear(testReference, testUtr)(hc)
       testResultEventually.map(testResult => {
         testResult.isEmpty mustBe false
         testResult.get.confirmed mustBe true

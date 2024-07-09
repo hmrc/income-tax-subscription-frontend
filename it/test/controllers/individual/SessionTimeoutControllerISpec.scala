@@ -48,11 +48,9 @@ class SessionTimeoutControllerISpec extends ComponentSpecBase with SessionCookie
       "return an OK and keep the session" in {
         AuthStub.stubAuthSuccess()
         val sessionMap = Map(
-          ITSASessionKeys.NINO -> testNino,
           ITSASessionKeys.UTR -> testUtr)
         val res = IncomeTaxSubscriptionFrontend.keepAlive(sessionMap)
         val session = getSessionMap(res)
-        session.get(ITSASessionKeys.NINO) mustBe Some(testNino)
         session.get(ITSASessionKeys.UTR) mustBe Some(testUtr)
         res must have(
           httpStatus(OK)
@@ -66,7 +64,6 @@ class SessionTimeoutControllerISpec extends ComponentSpecBase with SessionCookie
       "redirect and sign out the user" in {
         AuthStub.stubAuthSuccess()
         val sessionMap = Map(
-          ITSASessionKeys.NINO -> testNino,
           ITSASessionKeys.UTR -> testUtr)
 
         val res = IncomeTaxSubscriptionFrontend.timeout(sessionMap)
@@ -75,7 +72,6 @@ class SessionTimeoutControllerISpec extends ComponentSpecBase with SessionCookie
           redirectURI("http://localhost:9553/bas-gateway/sign-in?continue_url=%2Freport-quarterly%2Fincome-and-expenses%2Fsign-up&origin=income-tax-subscription-frontend")
         )
         val session = getSessionMap(res)
-        session.keys mustNot contain(ITSASessionKeys.NINO)
         session.keys mustNot contain(testNino)
       }
     }

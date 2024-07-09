@@ -27,7 +27,9 @@ import utilities.agent.TestConstants._
 
 import scala.concurrent.Future
 
-class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with MockAutoEnrolmentService with MockAgentSPSConnector {
+class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService
+  with MockAutoEnrolmentService
+  with MockAgentSPSConnector {
 
   object TestSubscriptionOrchestrationService extends SubscriptionOrchestrationService(
     mockSubscriptionService,
@@ -39,7 +41,7 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with 
 
   "createSubscriptionFromTaskList" should {
     def res: Future[Either[ConnectorError, Option[SubscriptionSuccess]]] = {
-      TestSubscriptionOrchestrationService.createSubscriptionFromTaskList(testARN, testNino, testUtr, testCreateIncomeSourcesThisYear)
+      TestSubscriptionOrchestrationService.createSubscriptionFromTaskList(testARN, testUtr, testCreateIncomeSourcesThisYear)
     }
 
     "return a success" when {
@@ -49,7 +51,7 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with 
         mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(Right(AutoEnrolmentService.EnrolmentAssigned))
         mockAgentSpsConnectorSuccess(testARN, testUtr, testNino, testMTDID)
 
-        val res = TestSubscriptionOrchestrationService.createSubscriptionFromTaskList(testARN, testNino, testUtr, testCreateIncomeSourcesThisYear)
+        val res = TestSubscriptionOrchestrationService.createSubscriptionFromTaskList(testARN, testUtr, testCreateIncomeSourcesThisYear)
 
         await(res) mustBe testSubscriptionSuccess
         verifyAgentSpsConnector(testARN, testUtr, testNino, testMTDID, 1)
@@ -57,7 +59,7 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService with 
       "the sign up indicated the customer was already signed up" in {
         mockAlreadySignedUp(testNino, testTaxYear)
 
-        val res = TestSubscriptionOrchestrationService.createSubscriptionFromTaskList(testARN, testNino, testUtr, testCreateIncomeSourcesThisYear)
+        val res = TestSubscriptionOrchestrationService.createSubscriptionFromTaskList(testARN, testUtr, testCreateIncomeSourcesThisYear)
 
         await(res) mustBe Right(None)
         verifyAgentSpsConnector(testARN, testUtr, testNino, testMTDID, 0)

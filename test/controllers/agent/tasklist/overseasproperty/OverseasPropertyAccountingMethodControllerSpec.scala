@@ -24,7 +24,7 @@ import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
+import services.mocks.{MockAuditingService, MockClientDetailsRetrieval, MockReferenceRetrieval, MockSubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.SubscriptionDataKeys.OverseasPropertyAccountingMethod
 import views.agent.mocks.MockOverseasPropertyAccountingMethod
@@ -34,7 +34,8 @@ import scala.concurrent.Future
 class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockAuditingService
-  with MockSessionDataService
+  with MockReferenceRetrieval
+  with MockClientDetailsRetrieval
   with MockOverseasPropertyAccountingMethod {
 
   override val controllerName: String = "OverseasPropertyAccountingMethod"
@@ -44,27 +45,17 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
   )
 
   object TestOverseasPropertyAccountingMethodController extends OverseasPropertyAccountingMethodController(
-    overseasPropertyAccountingMethod
+    overseasPropertyAccountingMethod,
+    MockSubscriptionDetailsService,
+    mockClientDetailsRetrieval,
+    mockReferenceRetrieval
   )(
     mockAuditingService,
     mockAuthService,
-    MockSubscriptionDetailsService,
-    appConfig,
-    mockSessionDataService
+    appConfig
   )
 
   "show" when {
-
-    "there are missing client details" should {
-      "throw an InternalServerException" in {
-        mockFetchOverseasProperty(None)
-        mockOverseasPropertyAccountingMethod()
-
-        intercept[InternalServerException](await(TestOverseasPropertyAccountingMethodController.show(isEditMode = false)(subscriptionRequest)))
-          .message mustBe "[IncomeTaxAgentUser][clientDetails] - could not retrieve client details from session"
-      }
-    }
-
     "display the overseas property accounting method view and return OK (200)" when {
       "there is no previously selected accounting method" in {
         lazy val result = await(TestOverseasPropertyAccountingMethodController.show(isEditMode = false)(subscriptionRequestWithName))

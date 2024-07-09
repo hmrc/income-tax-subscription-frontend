@@ -26,7 +26,7 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
+import services.mocks.{MockAuditingService, MockClientDetailsRetrieval, MockReferenceRetrieval, MockSubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import views.html.agent.tasklist.overseasproperty.OverseasPropertyCheckYourAnswers
 
@@ -35,7 +35,8 @@ import scala.concurrent.Future
 class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockAuditingService
-  with MockSessionDataService {
+  with MockReferenceRetrieval
+  with MockClientDetailsRetrieval {
 
   override val controllerName: String = "OverseasPropertyCheckYourAnswersController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -44,14 +45,6 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBase
   )
 
   "show" should {
-    "return an InternalServerException" when {
-      "there are missing client details in session" in withController { controller =>
-        mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
-
-        intercept[InternalServerException](await(controller.show(false)(subscriptionRequest)))
-          .message mustBe "[IncomeTaxAgentUser][clientDetails] - could not retrieve client details from session"
-      }
-    }
     "return an OK status with the property CYA page" in {
       withController { controller =>
         mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
@@ -146,13 +139,14 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBase
   }
 
   object TestOverseasPropertyCheckYourAnswersController extends OverseasPropertyCheckYourAnswersController(
-    mock[OverseasPropertyCheckYourAnswers]
+    mock[OverseasPropertyCheckYourAnswers],
+    MockSubscriptionDetailsService,
+    mockClientDetailsRetrieval,
+    mockReferenceRetrieval
   )(
     mockAuditingService,
     mockAuthService,
-    mockSessionDataService,
-    appConfig,
-    MockSubscriptionDetailsService
+    appConfig
   )
 
   private def withController(testCode: OverseasPropertyCheckYourAnswersController => Any): Unit = {
@@ -162,13 +156,14 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends AgentControllerBase
       .thenReturn(HtmlFormat.empty)
 
     val controller = new OverseasPropertyCheckYourAnswersController(
-      mockView
+      mockView,
+      MockSubscriptionDetailsService,
+      mockClientDetailsRetrieval,
+      mockReferenceRetrieval
     )(
       mockAuditingService,
       mockAuthService,
-      mockSessionDataService,
-      appConfig,
-      MockSubscriptionDetailsService
+      appConfig
     )
 
     testCode(controller)

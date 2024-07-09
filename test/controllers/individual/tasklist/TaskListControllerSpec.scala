@@ -30,8 +30,9 @@ import play.api.test.Helpers.{HTML, charset, contentType, defaultAwaitTimeout, r
 import play.twirl.api.HtmlFormat
 import services.AccountingPeriodService
 import services.individual.mocks.MockSubscriptionOrchestrationService
-import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
-import utilities.agent.TestConstants.{testNino, testUtr}
+import services.mocks.{MockAuditingService, MockNinoService, MockReferenceRetrieval, MockSubscriptionDetailsService}
+import utilities.agent.TestConstants.testUtr
+import utilities.individual.TestConstants.testNino
 import views.html.individual.tasklist.TaskList
 
 import scala.concurrent.Future
@@ -40,7 +41,8 @@ class TaskListControllerSpec extends ControllerBaseSpec
   with MockAuditingService
   with MockSubscriptionDetailsService
   with MockSubscriptionOrchestrationService
-  with MockSessionDataService {
+  with MockNinoService
+  with MockReferenceRetrieval {
 
   val accountingPeriodService: AccountingPeriodService = app.injector.instanceOf[AccountingPeriodService]
   val taskList: TaskList = mock[TaskList]
@@ -65,11 +67,12 @@ class TaskListControllerSpec extends ControllerBaseSpec
 
   object TestTaskListController extends TaskListController(
     taskList,
+    mockNinoService,
+    mockReferenceRetrieval,
+    MockSubscriptionDetailsService,
     accountingPeriodService
   )(
     mockAuditingService,
-    MockSubscriptionDetailsService,
-    mockSessionDataService,
     mockAuthService,
     appConfig
   )
@@ -77,7 +80,8 @@ class TaskListControllerSpec extends ControllerBaseSpec
   "show" should {
     "return an OK status with the task list page" in {
       mockTaskList()
-      mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+      mockGetNino(testNino)
+      mockGetMandationService(testUtr)(Voluntary, Voluntary)
       mockFetchIncomeSourceConfirmation(Some(true))
       mockFetchAllSelfEmployments(Seq(
         SelfEmploymentData(

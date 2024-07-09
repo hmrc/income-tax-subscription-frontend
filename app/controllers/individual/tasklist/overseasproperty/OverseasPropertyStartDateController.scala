@@ -25,7 +25,7 @@ import models.DateModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.ImplicitDateFormatter
@@ -35,20 +35,20 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class OverseasPropertyStartDateController @Inject()(overseasPropertyStartDateView: OverseasPropertyStartDate)
+class OverseasPropertyStartDateController @Inject()(overseasPropertyStartDateView: OverseasPropertyStartDate,
+                                                    subscriptionDetailsService: SubscriptionDetailsService,
+                                                    referenceRetrieval: ReferenceRetrieval)
                                                    (val auditingService: AuditingService,
                                                     val authService: AuthService,
-                                                    val subscriptionDetailsService: SubscriptionDetailsService,
                                                     val languageUtils: LanguageUtils,
-                                                    val appConfig: AppConfig,
-                                                    val sessionDataService: SessionDataService)
+                                                    val appConfig: AppConfig)
                                                    (implicit val ec: ExecutionContext,
                                                     mcc: MessagesControllerComponents)
-  extends SignUpController with ImplicitDateFormatter with ReferenceRetrieval {
+  extends SignUpController with ImplicitDateFormatter {
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user => {
-      withIndividualReference { reference =>
+      referenceRetrieval.getIndividualReference flatMap { reference =>
         subscriptionDetailsService.fetchOverseasPropertyStartDate(reference) map { overseasPropertyStartDate =>
           Ok(view(
             overseasPropertyStartDateForm = form.fill(overseasPropertyStartDate),
@@ -61,7 +61,7 @@ class OverseasPropertyStartDateController @Inject()(overseasPropertyStartDateVie
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withIndividualReference { reference =>
+      referenceRetrieval.getIndividualReference flatMap { reference =>
         form.bindFromRequest().fold(
           formWithErrors =>
             Future.successful(BadRequest(view(overseasPropertyStartDateForm = formWithErrors, isEditMode = isEditMode))),

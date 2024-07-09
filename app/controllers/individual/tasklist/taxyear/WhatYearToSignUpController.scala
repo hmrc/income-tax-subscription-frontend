@@ -34,16 +34,16 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
-                                           accountingPeriodService: AccountingPeriodService)
+                                           accountingPeriodService: AccountingPeriodService,
+                                           referenceRetrieval: ReferenceRetrieval,
+                                           subscriptionDetailsService: SubscriptionDetailsService)
                                           (val auditingService: AuditingService,
                                            val authService: AuthService,
-                                           val sessionDataService: SessionDataService,
                                            val appConfig: AppConfig,
                                            val getEligibilityStatusService: GetEligibilityStatusService,
-                                           val mandationStatusService: MandationStatusService,
-                                           val subscriptionDetailsService: SubscriptionDetailsService)
+                                           val mandationStatusService: MandationStatusService)
                                           (implicit val ec: ExecutionContext,
-                                           mcc: MessagesControllerComponents) extends SignUpController with ReferenceRetrieval with TaxYearNavigationHelper {
+                                           mcc: MessagesControllerComponents) extends SignUpController with TaxYearNavigationHelper {
 
   def view(accountingYearForm: Form[AccountingYear], isEditMode: Boolean)(implicit request: Request[_]): Html = {
     whatYearToSignUp(
@@ -58,8 +58,8 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       handleUnableToSelectTaxYearIndividual {
-        withIndividualReference { reference =>
-          subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getNino, user.getUtr) map { accountingYearModel =>
+        referenceRetrieval.getIndividualReference flatMap { reference =>
+          subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getUtr) map { accountingYearModel =>
             Ok(view(accountingYearForm = AccountingYearForm.accountingYearForm.fill(accountingYearModel.map(aym => aym.accountingYear)), isEditMode = isEditMode))
           }
         }
@@ -68,7 +68,7 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withIndividualReference { reference =>
+      referenceRetrieval.getIndividualReference flatMap { reference =>
         AccountingYearForm.accountingYearForm.bindFromRequest().fold(
           formWithErrors =>
             Future.successful(BadRequest(view(accountingYearForm = formWithErrors, isEditMode = isEditMode))),

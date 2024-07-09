@@ -87,19 +87,16 @@ trait AgentControllerBaseSpec extends UnitTestTrait with MockAgentAuthService {
 
   lazy val agentSignUpRequest = FakeRequest().withSession(
     ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
-    ITSASessionKeys.NINO -> TestConstants.testNino,
     ITSASessionKeys.UTR -> TestConstants.testUtr
   )
 
   lazy val unauthorisedUserMatchingRequest = FakeRequest().withSession(
     ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name,
-    ITSASessionKeys.NINO -> TestConstants.testNino,
     ITSASessionKeys.UTR -> TestConstants.testUtr
   )
 
   lazy val subscriptionRequest = FakeRequest().withSession(
     ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
-    ITSASessionKeys.NINO -> TestConstants.testNino,
     ITSASessionKeys.UTR -> TestConstants.testUtr,
     ITSASessionKeys.REFERENCE -> "test-reference"
   ).withMethod("POST")
@@ -108,7 +105,6 @@ trait AgentControllerBaseSpec extends UnitTestTrait with MockAgentAuthService {
     ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
     UserMatchingSessionUtil.firstName -> "FirstName",
     UserMatchingSessionUtil.lastName -> "LastName",
-    ITSASessionKeys.NINO -> TestConstants.testNino,
     ITSASessionKeys.UTR -> TestConstants.testUtr,
     ITSASessionKeys.REFERENCE -> "test-reference"
   )
@@ -117,7 +113,6 @@ trait AgentControllerBaseSpec extends UnitTestTrait with MockAgentAuthService {
     ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
     UserMatchingSessionUtil.firstName -> "FirstName",
     UserMatchingSessionUtil.lastName -> "LastName",
-    ITSASessionKeys.NINO -> TestConstants.testNino,
     ITSASessionKeys.UTR -> TestConstants.testUtr,
     ITSASessionKeys.REFERENCE -> "test-reference"
   )

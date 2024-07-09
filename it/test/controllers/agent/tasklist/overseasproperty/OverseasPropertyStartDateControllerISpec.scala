@@ -16,15 +16,16 @@
 
 package controllers.agent.tasklist.overseasproperty
 
-import connectors.stubs.IncomeTaxSubscriptionConnectorStub
-import helpers.IntegrationTestConstants.AgentURI
+import common.Constants.ITSASessionKeys
+import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
+import helpers.IntegrationTestConstants.{AgentURI, testNino}
 import helpers.IntegrationTestModels
 import helpers.IntegrationTestModels._
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import models.common.OverseasPropertyModel
 import play.api.http.Status._
-import play.api.libs.json.Json
+import play.api.libs.json.{JsString, Json}
 import utilities.SubscriptionDataKeys.OverseasProperty
 
 class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
@@ -38,6 +39,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
           OK,
           Json.toJson(OverseasPropertyModel(startDate = Some(testPropertyStartDate.startDate)))
         )
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
         When("GET /overseas-property-start-date is called")
         val res = IncomeTaxSubscriptionFrontend.overseasPropertyStartDate()
@@ -57,6 +59,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
         When("GET /overseas-property-start-date is called")
         val res = IncomeTaxSubscriptionFrontend.overseasPropertyStartDate()
@@ -154,6 +157,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
         "do not enter start date" in {
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
           When("POST /overseas-property-start-date is called")
           val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyStartDate(inEditMode = false, None)
@@ -170,6 +174,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
           When("POST /overseas-property-start-date is called")
           val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyStartDate(inEditMode = false, Some(userInput))

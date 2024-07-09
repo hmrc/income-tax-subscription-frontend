@@ -35,7 +35,6 @@ class SubscriptionOrchestrationServiceSpec extends UnitTestTrait with ScalaFutur
   "signUpAndCreateIncomeSourcesFromTaskList" should {
     def res: Future[Either[ConnectorError, Option[SubscriptionSuccess]]] =
       TestSubscriptionOrchestrationService.signUpAndCreateIncomeSourcesFromTaskList(
-        testNino,
         testCreateIncomeSources
       )
 

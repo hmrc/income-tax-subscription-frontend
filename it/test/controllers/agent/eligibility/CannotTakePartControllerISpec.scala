@@ -16,11 +16,15 @@
 
 package controllers.agent.eligibility
 
+import common.Constants.ITSASessionKeys
+import connectors.stubs.SessionDataConnectorStub
+import helpers.IntegrationTestConstants.testNino
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.libs.json.JsString
 import play.api.libs.ws.WSResponse
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
@@ -29,6 +33,7 @@ class CannotTakePartControllerISpec extends ComponentSpecBase with AuthRedirects
 
   class Setup(sessionData: Map[String, String] = ClientData.clientDataWithNinoAndUTR) {
     AuthStub.stubAuthSuccess()
+    SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
     val result: WSResponse = IncomeTaxSubscriptionFrontend.showCannotTakePart(sessionData)
     lazy val doc: Document = Jsoup.parse(result.body)

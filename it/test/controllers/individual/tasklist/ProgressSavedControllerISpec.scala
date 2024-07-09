@@ -19,16 +19,18 @@ package controllers.individual.tasklist
 import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.ComponentSpecBase
+import helpers.IntegrationTestConstants.testNino
 import helpers.servicemocks.AuditStub.stubAuditing
 import helpers.servicemocks.AuthStub
 import models.EligibilityStatus
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
 import play.api.http.Status.{NO_CONTENT, OK}
-import play.api.libs.json.{JsNumber, JsObject, Json}
+import play.api.libs.json.{JsNumber, JsObject, JsString, Json}
 import utilities.SubscriptionDataKeys._
 
 class ProgressSavedControllerISpec extends ComponentSpecBase {
+
   "GET /report-quarterly/income-and-expenses/sign-up/business/progress-saved" should {
     "return OK" when {
       "the location is not provided" in {
@@ -52,7 +54,6 @@ class ProgressSavedControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         stubAuditing()
-
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(lastUpdatedTimestamp, OK, JsObject(Seq(("$date", JsNumber(1)))))
         IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
@@ -60,7 +61,8 @@ class ProgressSavedControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
-        
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+
         When("GET /business/progress-saved is called")
         val res = IncomeTaxSubscriptionFrontend.getProgressSaved(saveAndRetrieveLocation = Some("test-location"))
 

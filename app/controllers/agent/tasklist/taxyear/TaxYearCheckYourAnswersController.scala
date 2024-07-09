@@ -22,8 +22,8 @@ import controllers.utils.{ReferenceRetrieval, TaxYearNavigationHelper}
 import models.common.AccountingYearModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services._
+import services.agent.ClientDetailsRetrieval
 import uk.gov.hmrc.http.InternalServerException
-import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 import views.html.agent.tasklist.taxyear.TaxYearCheckYourAnswers
 
 import javax.inject.{Inject, Singleton}
@@ -31,17 +31,18 @@ import scala.concurrent.ExecutionContext
 import scala.util.matching.Regex
 
 @Singleton
-class TaxYearCheckYourAnswersController @Inject()(checkYourAnswersView: TaxYearCheckYourAnswers)
+class TaxYearCheckYourAnswersController @Inject()(checkYourAnswersView: TaxYearCheckYourAnswers,
+                                                  subscriptionDetailsService: SubscriptionDetailsService,
+                                                  clientDetailsRetrieval: ClientDetailsRetrieval,
+                                                  referenceRetrieval: ReferenceRetrieval)
                                                  (val auditingService: AuditingService,
                                                   val authService: AuthService,
                                                   val appConfig: AppConfig,
-                                                  val sessionDataService: SessionDataService,
                                                   val getEligibilityStatusService: GetEligibilityStatusService,
-                                                  val mandationStatusService: MandationStatusService,
-                                                  val subscriptionDetailsService: SubscriptionDetailsService)
+                                                  val mandationStatusService: MandationStatusService)
                                                  (implicit val ec: ExecutionContext,
                                                   mcc: MessagesControllerComponents)
-  extends AuthenticatedController with ReferenceRetrieval with TaxYearNavigationHelper {
+  extends AuthenticatedController with TaxYearNavigationHelper {
 
   private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
 
@@ -56,28 +57,26 @@ class TaxYearCheckYourAnswersController @Inject()(checkYourAnswersView: TaxYearC
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       handleUnableToSelectTaxYearAgent {
-        withAgentReference { reference =>
-          subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getClientNino, user.getClientUtr) map { maybeAccountingYearModel =>
-            Ok(checkYourAnswersView(
-              postAction = controllers.agent.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.submit(),
-              viewModel = maybeAccountingYearModel,
-              clientName = request.fetchClientName.getOrElse(
-                throw new InternalServerException("[TaxYearCheckYourAnswersController][show] - could not retrieve client name from session")
-              ),
-              clientNino = formatNino(user.clientNino.getOrElse(
-                throw new InternalServerException("[TaxYearCheckYourAnswersController][show] - could not retrieve client nino from session")
-              )),
-              backUrl = backUrl(isEditMode)
-            ))
-          }
+        for {
+          reference <- referenceRetrieval.getAgentReference
+          clientDetails <- clientDetailsRetrieval.getClientDetails
+          accountingMethod <- subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getClientUtr)
+        } yield {
+          Ok(checkYourAnswersView(
+            postAction = controllers.agent.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.submit(),
+            viewModel = accountingMethod,
+            clientName = clientDetails.name,
+            clientNino = formatNino(clientDetails.nino),
+            backUrl = backUrl(isEditMode)
+          ))
         }
       }
   }
 
   def submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withAgentReference { reference =>
-        subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getClientNino, user.getClientUtr) flatMap { maybeAccountingYearModel =>
+      referenceRetrieval.getAgentReference flatMap { reference =>
+        subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getClientUtr) flatMap { maybeAccountingYearModel =>
           val accountingYearModel: AccountingYearModel = maybeAccountingYearModel.getOrElse(
             throw new InternalServerException("[TaxYearCheckYourAnswersController][submit] - Could not retrieve accounting year")
           )

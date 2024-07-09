@@ -25,7 +25,7 @@ import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import helpers.servicemocks.{EligibilityStub, ThrottlingStub}
 import models.EligibilityStatus
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, NO_CONTENT, OK, SEE_OTHER}
-import play.api.libs.json.JsBoolean
+import play.api.libs.json.{JsBoolean, JsString}
 import play.api.{Configuration, Environment}
 import services.AgentStartOfJourneyThrottle
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
@@ -36,7 +36,6 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
 
   val session: Map[String, String] = Map(
     ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name,
-    ITSASessionKeys.NINO -> testNino,
     ITSASessionKeys.UTR -> testUtr
   )
 
@@ -63,7 +62,7 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
       "return an internal server error" in {
         AuthStub.stubAuthSuccess()
 
-        val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session - ITSASessionKeys.NINO)
+        val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
 
         res must have(
           httpStatus(INTERNAL_SERVER_ERROR)
@@ -127,6 +126,7 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
           SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(NO_CONTENT)
           EligibilityStub.stubEligibilityResponseBoth(testUtr)(currentYearResponse = false, nextYearResponse = false)
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = false))(OK)
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
           val fullSession = session ++ Map(
             ITSASessionKeys.FailedClientMatching -> "1",
@@ -143,7 +143,7 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
             redirectURI(controllers.agent.eligibility.routes.CannotTakePartController.show.url)
           )
 
-          getSessionMap(res) - "ts" - "sessionId" - "authToken" mustBe Map(ITSASessionKeys.NINO -> testNino, ITSASessionKeys.UTR -> testUtr)
+          getSessionMap(res) - "ts" - "sessionId" - "authToken" mustBe Map(ITSASessionKeys.UTR -> testUtr)
         }
       }
 
@@ -156,6 +156,7 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
           SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(NO_CONTENT)
           EligibilityStub.stubEligibilityResponseBoth(testUtr)(currentYearResponse = false, nextYearResponse = true)
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))(OK)
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, OK, JsBoolean(true))
 
@@ -176,7 +177,7 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
           SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(NO_CONTENT)
           EligibilityStub.stubEligibilityResponseBoth(testUtr)(currentYearResponse = false, nextYearResponse = true)
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))(OK)
-
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
 
           val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
@@ -201,7 +202,7 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
           EligibilityStub.stubEligibilityResponseBoth(testUtr)(currentYearResponse = true, nextYearResponse = true)
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))(OK)
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, OK, JsBoolean(true))
-
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
           val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
 
           res must have(
@@ -221,7 +222,7 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))(OK)
 
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
-
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
           val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
 
           res must have(

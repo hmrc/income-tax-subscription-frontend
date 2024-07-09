@@ -26,7 +26,7 @@ import models.EligibilityStatus
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
 import play.api.http.Status._
-import play.api.libs.json.Json
+import play.api.libs.json.{JsString, Json}
 import play.api.test.Helpers.NO_CONTENT
 import utilities.SubscriptionDataKeys._
 
@@ -45,6 +45,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(IncomeSourceConfirmation, NO_CONTENT)
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
         val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
 
@@ -68,6 +69,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(IncomeSourceConfirmation, NO_CONTENT)
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
         val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
 
@@ -91,6 +93,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(IncomeSourceConfirmation, OK, Json.toJson(true))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
         val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
 

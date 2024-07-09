@@ -36,7 +36,7 @@ trait TaxYearNavigationHelper {
                                             hc: HeaderCarrier,
                                             ec: ExecutionContext): Future[Result] = {
 
-    mandationStatusService.getMandationStatus(user.getNino, user.getUtr) flatMap { mandationStatus =>
+    mandationStatusService.getMandationStatus(user.getUtr) flatMap { mandationStatus =>
       getEligibilityStatusService.getEligibilityStatus(user.getUtr) flatMap { eligibilityStatus =>
         val isMandatedCurrentYear: Boolean = mandationStatus.currentYearStatus.isMandated
         val isEligibleNextYearOnly: Boolean = eligibilityStatus.eligibleNextYearOnly
@@ -57,7 +57,7 @@ trait TaxYearNavigationHelper {
                                        hc: HeaderCarrier,
                                        ec: ExecutionContext): Future[Result] = {
 
-    mandationStatusService.getMandationStatus(user.getClientNino, user.getClientUtr) flatMap { mandationStatus =>
+    mandationStatusService.getMandationStatus(user.getClientUtr) flatMap { mandationStatus =>
       getEligibilityStatusService.getEligibilityStatus(user.getClientUtr) flatMap { eligibilityStatus =>
         val isMandatedCurrentYear: Boolean = mandationStatus.currentYearStatus.isMandated
         val isEligibleNextYearOnly: Boolean = eligibilityStatus.eligibleNextYearOnly

@@ -23,8 +23,8 @@ import models.common.TaskListModel
 import play.api.Logging
 import play.api.mvc._
 import services._
-import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
-import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
+import services.agent.ClientDetailsRetrieval
+import uk.gov.hmrc.http.HeaderCarrier
 import views.html.agent.tasklist.TaskList
 
 import javax.inject.{Inject, Singleton}
@@ -32,14 +32,15 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.matching.Regex
 
 @Singleton
-class TaskListController @Inject()(taskListView: TaskList)
+class TaskListController @Inject()(taskListView: TaskList,
+                                   clientDetailsRetrieval: ClientDetailsRetrieval,
+                                   referenceRetrieval: ReferenceRetrieval,
+                                   subscriptionDetailsService: SubscriptionDetailsService)
                                   (val auditingService: AuditingService,
-                                   val subscriptionDetailsService: SubscriptionDetailsService,
-                                   val sessionDataService: SessionDataService,
                                    val authService: AuthService)
                                   (implicit val ec: ExecutionContext,
                                    val appConfig: AppConfig,
-                                   mcc: MessagesControllerComponents) extends AuthenticatedController with ReferenceRetrieval with Logging {
+                                   mcc: MessagesControllerComponents) extends AuthenticatedController with Logging {
 
   private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
 
@@ -54,30 +55,25 @@ class TaskListController @Inject()(taskListView: TaskList)
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user => {
-      withAgentReference { reference =>
-        getTaskListModel(reference) map {
-          viewModel =>
-            Ok(taskListView(
-              postAction = controllers.agent.tasklist.routes.TaskListController.submit(),
-              viewModel = viewModel,
-              clientName = request.fetchClientName.getOrElse(
-                throw new InternalServerException("[TaskListController][show] - could not retrieve client name from session")
-              ),
-              clientNino = formatNino(user.clientNino.getOrElse(
-                throw new InternalServerException("[TaskListController][show] - could not retrieve client nino from session")
-              )),
-              clientUtr = user.clientUtr.getOrElse(
-                throw new InternalServerException("[TaskListController][show] - could not retrieve client utr from session")
-              )
-            ))
-        }
+      for {
+        reference <- referenceRetrieval.getAgentReference
+        clientDetails <- clientDetailsRetrieval.getClientDetails
+        viewModel <- getTaskListModel(reference)
+      } yield {
+        Ok(taskListView(
+          postAction = controllers.agent.tasklist.routes.TaskListController.submit(),
+          viewModel = viewModel,
+          clientName = clientDetails.name,
+          clientNino = formatNino(clientDetails.nino),
+          clientUtr = user.getClientUtr
+        ))
       }
     }
   }
 
   private def getTaskListModel(reference: String)(implicit hc: HeaderCarrier, request: Request[AnyContent], user: IncomeTaxAgentUser): Future[TaskListModel] = {
     for {
-      selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getClientNino, user.getClientUtr)
+      selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getClientUtr)
       (businesses, _) <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
       property <- subscriptionDetailsService.fetchProperty(reference)
       overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)

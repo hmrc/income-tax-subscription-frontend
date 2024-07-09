@@ -16,13 +16,15 @@
 
 package controllers.agent.tasklist.addbusiness
 
-import connectors.stubs.IncomeTaxSubscriptionConnectorStub
+import common.Constants.ITSASessionKeys
+import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.IntegrationTestConstants.AgentURI.taskListURI
+import helpers.IntegrationTestConstants.testNino
 import helpers.IntegrationTestModels.{testBusiness, testBusinesses, testFullOverseasPropertyModel, testFullPropertyModel}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import play.api.http.Status._
-import play.api.libs.json.Json
+import play.api.libs.json.{JsString, Json}
 import utilities.SubscriptionDataKeys
 
 class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
@@ -37,6 +39,7 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, NO_CONTENT)
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
         When(s"GET ${routes.YourIncomeSourceToSignUpController.show.url} is called")
         val res = IncomeTaxSubscriptionFrontend.yourIncomeSourcesAgent()
@@ -53,6 +56,7 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
         When(s"GET ${routes.YourIncomeSourceToSignUpController.show.url} is called")
         val res = IncomeTaxSubscriptionFrontend.yourIncomeSourcesAgent()

@@ -16,8 +16,9 @@
 
 package controllers.agent.tasklist.ukproperty
 
-import connectors.stubs.IncomeTaxSubscriptionConnectorStub
-import helpers.IntegrationTestConstants.AgentURI
+import common.Constants.ITSASessionKeys
+import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
+import helpers.IntegrationTestConstants.{AgentURI, testNino}
 import helpers.IntegrationTestModels
 import helpers.IntegrationTestModels.{testFullPropertyModel, testPropertyStartDate}
 import helpers.agent.ComponentSpecBase
@@ -25,16 +26,18 @@ import helpers.agent.servicemocks.AuthStub
 import models.DateModel
 import models.common.PropertyModel
 import play.api.http.Status._
-import play.api.libs.json.Json
+import play.api.libs.json.{JsString, Json}
 import utilities.SubscriptionDataKeys.Property
 
 class PropertyStartDateControllerISpec extends ComponentSpecBase {
+
   "GET /report-quarterly/income-and-expenses/sign-up/client/business/property-commencement-date" when {
     "the Subscription Details Connector returns all data" should {
       "show the property commencement date page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
         When("GET /property-commencement-date is called")
         val res = IncomeTaxSubscriptionFrontend.ukPropertyStartDate()
@@ -53,6 +56,7 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
         When("GET /property-commencement-date is called")
         val res = IncomeTaxSubscriptionFrontend.ukPropertyStartDate()
@@ -147,6 +151,7 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
         When("POST /property-commencement-date is called")
         val res = IncomeTaxSubscriptionFrontend.submitUkPropertyStartDate(isEditMode = false, None)
@@ -164,6 +169,7 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
         When("POST /property-commencement-date is called")
         val res = IncomeTaxSubscriptionFrontend.submitUkPropertyStartDate(isEditMode = false, Some(userInput))

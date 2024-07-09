@@ -19,7 +19,7 @@ package controllers.individual
 import common.Constants.ITSASessionKeys
 import connectors.stubs.SessionDataConnectorStub
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.{IndividualURI, testNino, testUtr}
+import helpers.IntegrationTestConstants.{IndividualURI, testUtr}
 import helpers.servicemocks.AuthStub
 import models.EligibilityStatus
 import models.status.MandationStatus.Voluntary
@@ -41,7 +41,6 @@ class WhatYouNeedToDoControllerISpec extends ComponentSpecBase {
       When(s"GET ${routes.WhatYouNeedToDoController.show.url} is called")
       val result = IncomeTaxSubscriptionFrontend.whatYouNeedToDo(
         Map(
-          ITSASessionKeys.NINO -> testNino,
           ITSASessionKeys.UTR -> testUtr
         )
       )

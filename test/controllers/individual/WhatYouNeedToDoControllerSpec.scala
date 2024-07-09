@@ -26,7 +26,7 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockAuditingService, MockGetEligibilityStatusService, MockMandationStatusService}
-import utilities.individual.TestConstants.{testNino, testUtr}
+import utilities.individual.TestConstants.testUtr
 import views.html.individual.WhatYouNeedToDo
 
 import scala.concurrent.Future
@@ -61,7 +61,7 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec with MockAuditing
   "show" must {
     "return OK with the page content" when {
       "the session contains mandated and eligible for only next year" in new Setup {
-        mockGetMandationService(testNino, testUtr)(Voluntary, Mandated)
+        mockGetMandationService(testUtr)(Voluntary, Mandated)
         mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
 
         when(whatYouNeedToDo(
@@ -78,7 +78,7 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec with MockAuditing
         contentType(result) mustBe Some(HTML)
       }
       "the session contains a eligible for both years" in new Setup {
-        mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+        mockGetMandationService(testUtr)(Voluntary, Voluntary)
         mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
 
         when(whatYouNeedToDo(
@@ -95,7 +95,7 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec with MockAuditing
         contentType(result) mustBe Some(HTML)
       }
       "the session contains a eligible for next year only" in new Setup {
-        mockGetMandationService(testNino, testUtr)(Voluntary, Voluntary)
+        mockGetMandationService(testUtr)(Voluntary, Voluntary)
         mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
 
         when(whatYouNeedToDo(
@@ -112,7 +112,7 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec with MockAuditing
         contentType(result) mustBe Some(HTML)
       }
       "the session contains a mandated current year flag of true" in new Setup {
-        mockGetMandationService(testNino, testUtr)(Mandated, Voluntary)
+        mockGetMandationService(testUtr)(Mandated, Voluntary)
         mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
 
         when(whatYouNeedToDo(

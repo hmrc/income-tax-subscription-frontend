@@ -40,14 +40,14 @@ class HomeController @Inject()(citizenDetailsService: CitizenDetailsService,
                                getEligibilityStatusService: GetEligibilityStatusService,
                                subscriptionService: SubscriptionService,
                                throttlingService: ThrottlingService,
-                               prePopulationService: PrePopulationService)
+                               prePopulationService: PrePopulationService,
+                               ninoService: NinoService,
+                               referenceRetrieval: ReferenceRetrieval)
                               (val auditingService: AuditingService,
                                val authService: AuthService,
-                               val subscriptionDetailsService: SubscriptionDetailsService,
-                               val sessionDataService: SessionDataService,
                                val appConfig: AppConfig)
                               (implicit val ec: ExecutionContext,
-                               mcc: MessagesControllerComponents) extends StatelessController with ReferenceRetrieval {
+                               mcc: MessagesControllerComponents) extends StatelessController {
 
   def home: Action[AnyContent] = Action {
     val redirect = routes.HomeController.index
@@ -58,52 +58,60 @@ class HomeController @Inject()(citizenDetailsService: CitizenDetailsService,
     Authenticated.async { implicit request =>
       implicit user =>
         val userIdentifiers = getCompletedUserIdentifiers(user)
-        userIdentifiers.foreach(identifiers => startIndividualSignupAudit(identifiers.utrMaybe, identifiers.ninoMaybe))
+        userIdentifiers.foreach(identifiers => startIndividualSignupAudit(identifiers.utrMaybe))
         userIdentifiers.flatMap {
-          // No NINO, should never happen
-          case UserIdentifiers(None, _, _, _) => throw new InternalServerException("[HomeController][index] - Could not retrieve nino from user")
           // No UTR for NINO. Not registered for self assessment
-          case UserIdentifiers(nino, None, _, _) =>
-            auditingService.audit(EligibilityAuditModel(
-              agentReferenceNumber = None,
-              utr = None,
-              nino = nino,
-              eligibility = "ineligible",
-              failureReason = Some("no-self-assessment")
-            ))
-            Future.successful(Redirect(routes.NoSAController.show).removingFromSession(JourneyStateKey))
+          case UserIdentifiers(None, _, _) =>
+            for {
+              nino <- ninoService.getNino
+              _ <- auditingService.audit(EligibilityAuditModel(
+                agentReferenceNumber = None,
+                utr = None,
+                nino = Some(nino),
+                eligibility = "ineligible",
+                failureReason = Some("no-self-assessment")
+              ))
+            } yield {
+              Redirect(routes.NoSAController.show).removingFromSession(JourneyStateKey)
+            }
           // Already seen this session, must have pressed back.
-          case UserIdentifiers(_, Some(_), _, entityIdMaybe@Some(_)) if request.session.isInState(SignUp) =>
+          case UserIdentifiers(Some(_), _, entityIdMaybe@Some(_)) if request.session.isInState(SignUp) =>
             Future.successful(Redirect(controllers.individual.sps.routes.SPSCallbackController.callback(entityIdMaybe)))
           // New user, with relevant information, try to subscribe them
-          case UserIdentifiers(Some(nino), Some(utr), fullName, _) => tryToSubscribe(nino, utr, fullName)
+          case UserIdentifiers(Some(utr), fullName, _) => tryToSubscribe(utr, fullName)
         }
     }
 
-  private def tryToSubscribe(nino: String, utr: String, fullNameMaybe: Option[String])(implicit request: Request[AnyContent]) =
+  private def tryToSubscribe(utr: String, fullNameMaybe: Option[String])(implicit request: Request[AnyContent]) =
     throttlingService.throttled(IndividualStartOfJourneyThrottle) {
-      getSubscription(nino) flatMap {
-        case Some(SubscriptionSuccess(_)) => // found an already existing subscription, go to claim it
-          Future.successful(Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show.url))
-        case None => // did not find a subscription, continue into sign up journey
-          handleNoSubscriptionFound(utr, nino)
-      } map { response =>
-        val cookiesToAdd = fullNameMaybe map (fullName => FULLNAME -> fullName)
-        response.addingToSession(cookiesToAdd.toSeq: _*)
+      ninoService.getNino flatMap { nino =>
+        getSubscription(nino) flatMap {
+          case Some(SubscriptionSuccess(_)) => // found an already existing subscription, go to claim it
+            Future.successful(Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show.url))
+          case None => // did not find a subscription, continue into sign up journey
+            handleNoSubscriptionFound(nino, utr)
+        } map { response =>
+          val cookiesToAdd = fullNameMaybe map (fullName => FULLNAME -> fullName)
+          response.addingToSession(cookiesToAdd.toSeq: _*)
+        }
       }
     }
 
   private def getCompletedUserIdentifiers(user: IncomeTaxSAUser)
                                          (implicit request: Request[AnyContent]): Future[UserIdentifiers] = {
     user.getUserIdentifiersFromSession() match {
-      case notCompletedLookup@UserIdentifiers(Some(nino), None, _, _) =>
-        citizenDetailsService.lookupCitizenDetails(nino)
-          .map { case CitizenDetails(utrMaybe, nameMaybe) => notCompletedLookup.copy(utrMaybe = utrMaybe).copy(nameMaybe = nameMaybe) }
+      case notCompletedLookup@UserIdentifiers(None, _, _) =>
+        for {
+          nino <- ninoService.getNino
+          CitizenDetails(utrMaybe, nameMaybe) <- citizenDetailsService.lookupCitizenDetails(nino)
+        } yield {
+          notCompletedLookup.copy(utrMaybe = utrMaybe, nameMaybe = nameMaybe)
+        }
       case userIdentifiers => Future.successful(userIdentifiers)
     }
   }
 
-  private def handleNoSubscriptionFound(utr: String, nino: String)
+  private def handleNoSubscriptionFound(nino: String, utr: String)
                                        (implicit hc: HeaderCarrier, request: Request[AnyContent]) = {
     getEligibilityStatusService.getEligibilityStatus(utr) flatMap {
       // Check eligibility (this is complete, and gives us the control list response including pre-pop information)
@@ -117,7 +125,7 @@ class HomeController @Inject()(citizenDetailsService: CitizenDetailsService,
         ))
         Future.successful(Redirect(controllers.individual.controllist.routes.NotEligibleForIncomeTaxController.show()))
       case EligibilityStatus(thisYear, _) =>
-        withReference(utr, Some(nino), None) { reference =>
+        referenceRetrieval.getReference(utr, None) flatMap { reference =>
           handlePrepop(reference, None) map { _ =>
             auditingService.audit(EligibilityAuditModel(
               agentReferenceNumber = None,
@@ -129,7 +137,6 @@ class HomeController @Inject()(citizenDetailsService: CitizenDetailsService,
             goToSignUp(thisYear)
               .withJourneyState(SignUp)
               .addingToSession(UTR -> utr)
-              .addingToSession(NINO -> nino)
           }
         }
     }
@@ -156,12 +163,14 @@ class HomeController @Inject()(citizenDetailsService: CitizenDetailsService,
       case _ => Future.successful(())
     }
 
- private def startIndividualSignupAudit (utr: Option[String], nino: Option[String])(implicit request: Request[_]) = {
-   val auditModel = SignupStartedAuditing.SignupStartedAuditModel(
-      agentReferenceNumber = None,
-      utr = utr,
-      nino = nino
-    )
-    auditingService.audit(auditModel)
+  private def startIndividualSignupAudit(utr: Option[String])(implicit request: Request[_]) = {
+    ninoService.getNino flatMap { nino =>
+      val auditModel = SignupStartedAuditing.SignupStartedAuditModel(
+        agentReferenceNumber = None,
+        utr = utr,
+        nino = Some(nino)
+      )
+      auditingService.audit(auditModel)
+    }
   }
 }

@@ -33,18 +33,18 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class RemoveSelfEmploymentBusinessController @Inject()(removeBusinessView: RemoveSelfEmploymentBusiness,
+                                                       referenceRetrieval: ReferenceRetrieval,
+                                                       subscriptionDetailsService: SubscriptionDetailsService,
                                                        removeBusinessService: RemoveBusinessService)
                                                       (val auditingService: AuditingService,
                                                        val authService: AuthService,
-                                                       val subscriptionDetailsService: SubscriptionDetailsService,
-                                                       val appConfig: AppConfig,
-                                                       val sessionDataService: SessionDataService)
+                                                       val appConfig: AppConfig)
                                                       (implicit val ec: ExecutionContext,
-                                                       mcc: MessagesControllerComponents) extends AuthenticatedController with ReferenceRetrieval {
+                                                       mcc: MessagesControllerComponents) extends AuthenticatedController {
 
   def show(businessId: String): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user => {
-      withAgentReference { reference =>
+      referenceRetrieval.getAgentReference flatMap { reference =>
         withBusinessData(reference, businessId) { (maybeBusinessNameModel, maybeBusinessTradeNameModel) =>
           Future.successful(Ok(view(businessId, form, maybeBusinessNameModel, maybeBusinessTradeNameModel)))
         }
@@ -54,7 +54,7 @@ class RemoveSelfEmploymentBusinessController @Inject()(removeBusinessView: Remov
 
   def submit(businessId: String): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user => {
-      withAgentReference { reference =>
+      referenceRetrieval.getAgentReference flatMap { reference =>
         form.bindFromRequest().fold(
           formWithErrors => {
             withBusinessData(reference, businessId) { (maybeBusinessNameModel, maybeBusinessTradeNameModel) =>

@@ -27,7 +27,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService}
+import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSubscriptionDetailsService}
 import utilities.TestModels._
 import views.html.individual.tasklist.ukproperty.PropertyAccountingMethod
 
@@ -35,7 +35,7 @@ import scala.concurrent.Future
 
 class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService
-  with MockSessionDataService
+  with MockReferenceRetrieval
   with MockAuditingService {
 
   override val controllerName: String = "PropertyAccountingMethod"
@@ -48,13 +48,13 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
       .thenReturn(HtmlFormat.empty)
 
     val controller = new PropertyAccountingMethodController(
-      propertyAccountingMethodView
+      propertyAccountingMethodView,
+      MockSubscriptionDetailsService,
+      mockReferenceRetrieval
     )(
       mockAuditingService,
       mockAuthService,
-      appConfig,
-      mockSessionDataService,
-      MockSubscriptionDetailsService
+      appConfig
     )
 
     testCode(controller)

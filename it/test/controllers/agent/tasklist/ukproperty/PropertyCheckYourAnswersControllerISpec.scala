@@ -16,16 +16,17 @@
 
 package controllers.agent.tasklist.ukproperty
 
-import connectors.stubs.IncomeTaxSubscriptionConnectorStub
+import common.Constants.ITSASessionKeys
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub.subscriptionUri
-import helpers.IntegrationTestConstants.AgentURI
+import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
+import helpers.IntegrationTestConstants.{AgentURI, testNino}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.WiremockHelper.verifyPost
 import helpers.agent.servicemocks.AuthStub
 import models.common.PropertyModel
 import models.{Cash, DateModel}
 import play.api.http.Status._
-import play.api.libs.json.Json
+import play.api.libs.json.{JsString, Json}
 import utilities.SubscriptionDataKeys.Property
 
 class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
@@ -35,6 +36,7 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(PropertyModel(accountingMethod = Some(Cash))))
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
       When("GET business/uk-property-check-your-answers is called")
       val res = IncomeTaxSubscriptionFrontend.getPropertyCheckYourAnswers()

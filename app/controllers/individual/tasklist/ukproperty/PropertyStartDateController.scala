@@ -25,7 +25,7 @@ import models.DateModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.ImplicitDateFormatter
@@ -35,15 +35,15 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PropertyStartDateController @Inject()(propertyStartDate: PropertyStartDate)
+class PropertyStartDateController @Inject()(propertyStartDate: PropertyStartDate,
+                                            subscriptionDetailsService: SubscriptionDetailsService,
+                                            referenceRetrieval: ReferenceRetrieval)
                                            (val auditingService: AuditingService,
                                             val authService: AuthService,
-                                            val subscriptionDetailsService: SubscriptionDetailsService,
                                             val appConfig: AppConfig,
-                                            val sessionDataService: SessionDataService,
                                             val languageUtils: LanguageUtils)
                                            (implicit val ec: ExecutionContext,
-                                            mcc: MessagesControllerComponents) extends SignUpController with ImplicitDateFormatter with ReferenceRetrieval {
+                                            mcc: MessagesControllerComponents) extends SignUpController with ImplicitDateFormatter {
 
   def view(propertyStartDateForm: Form[DateModel], isEditMode: Boolean)
           (implicit request: Request[_]): Html = {
@@ -57,19 +57,20 @@ class PropertyStartDateController @Inject()(propertyStartDate: PropertyStartDate
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withIndividualReference { reference =>
-        subscriptionDetailsService.fetchPropertyStartDate(reference) map { propertyStartDate =>
-          Ok(view(
-            propertyStartDateForm = form.fill(propertyStartDate),
-            isEditMode = isEditMode
-          ))
-        }
+      for {
+        reference <- referenceRetrieval.getIndividualReference
+        startDate <- subscriptionDetailsService.fetchPropertyStartDate(reference)
+      } yield {
+        Ok(view(
+          propertyStartDateForm = form.fill(startDate),
+          isEditMode = isEditMode
+        ))
       }
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      withIndividualReference { reference =>
+      referenceRetrieval.getIndividualReference flatMap { reference =>
         form.bindFromRequest().fold(
           formWithErrors => {
             Future.successful(BadRequest(view(propertyStartDateForm = formWithErrors, isEditMode = isEditMode)))
