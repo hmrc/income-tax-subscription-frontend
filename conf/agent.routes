@@ -90,6 +90,11 @@ POST        /business/overseas-commencement-date                controllers.agen
 GET         /business/overseas-property-accounting-method        controllers.agent.tasklist.overseasproperty.OverseasPropertyAccountingMethodController.show(editMode: Boolean ?= false)
 POST        /business/overseas-property-accounting-method        controllers.agent.tasklist.overseasproperty.OverseasPropertyAccountingMethodController.submit(editMode: Boolean ?= false)
 
+#Agent Streamline Foreign Property Incomes Sources Routes
+GET         /business/income-sources-foreign-property            controllers.agent.tasklist.overseasproperty.IncomeSourcesOverseasPropertyController.show(editMode: Boolean ?= false)
+POST        /business/income-sources-foreign-property            controllers.agent.tasklist.overseasproperty.IncomeSourcesOverseasPropertyController.submit(editMode: Boolean ?= false)
+
+
 GET         /keep-alive                                         controllers.agent.SessionTimeoutController.keepAlive
 GET         /timeout                                            controllers.agent.SessionTimeoutController.timeout
 

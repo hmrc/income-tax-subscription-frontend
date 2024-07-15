@@ -736,6 +736,22 @@ agent.property.accounting-method.radio.accruals                 = Traditional ac
 agent.overseas-property.accounting-method.heading               = What accounting method does your client use for their foreign property business?
 agent.overseas-property.accounting-method.heading.caption       = {0} | {1}
 
+#Agent Overseas Property Incomes Sources Page
+agent.foreign-property.income-sources.title                                         = Your client’s foreign property
+agent.foreign-property.income-sources.caption                                       = {0} | {1}
+agent.foreign-property.income-sources.heading                                       = Your client’s foreign property
+agent.foreign-property.income-sources.start-date.heading                            = When did your client’s foreign property business start?
+agent.foreign-property.income-sources.start-date.hint                               = For example, 17 8 2014
+agent.foreign-property.income-sources.accounting-method.heading                     = What accounting method does your client use for their foreign property business?
+agent.foreign-property.income-sources.accounting-method.accordion.summary           = Help with accounting method
+agent.foreign-property.income-sources.accounting-method.accordion.subheading        = Example
+agent.foreign-property.income-sources.accounting-method.accordion.content.para      = Your client created an invoice for someone in March 2017, but did not receive the money until May 2017. If your client tells HMRC they received this income in:
+agent.foreign-property.income-sources.accounting-method.accordion.content.bullet1   = May 2017, they use cash basis accounting
+agent.foreign-property.income-sources.accounting-method.accordion.content.bullet2   = March 2017, you use traditional accounting
+agent.foreign-property.income-sources.accounting-method.radio.cash                  = Cash basis accounting
+agent.foreign-property.income-sources.accounting-method.radio.accruals              = Traditional accounting
+
+
 ## Business Name
 agent.business.name.title                                       = Business name
 agent.business.name.heading                                     = What’s the name of your client’s business?

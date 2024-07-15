@@ -734,6 +734,21 @@ agent.property.accounting-method.radio.accruals                 = Cyfrifyddu tra
 agent.overseas-property.accounting-method.heading               = Pa ddull cyfrifo y mae’ch cleient yn ei ddefnyddio ar gyfer ei fusnes eiddo tramor?
 agent.overseas-property.accounting-method.heading.caption       = {0} | {1}
 
+#Agent Overseas Property Incomes Sources Page
+agent.foreign-property.income-sources.title                                         = Eiddo tramor eich cleient
+agent.foreign-property.income-sources.caption                                       = {0} | {1}
+agent.foreign-property.income-sources.heading                                       = Eiddo tramor eich cleient
+agent.foreign-property.income-sources.start-date.heading                            = Pryd gwnaeth busnes eiddo tramor eich cleient ddechrau?
+agent.foreign-property.income-sources.start-date.hint                               = Er enghraifft, 17 8 2014
+agent.foreign-property.income-sources.accounting-method.heading                     = Pa ddull cyfrifo y mae’ch cleient yn ei ddefnyddio ar gyfer ei fusnes eiddo tramor?
+agent.foreign-property.income-sources.accounting-method.accordion.summary           = Help gyda dull cyfrifyddu
+agent.foreign-property.income-sources.accounting-method.accordion.subheading        = Enghraifft
+agent.foreign-property.income-sources.accounting-method.accordion.content.para      = Creodd eich cleient anfoneb i rywun ym mis Mawrth 2024, ond ni dderbyniodd yr arian tan fis Mai 2024. Os ydych yn rhoi gwybod i CThEF eich cleient wedi cael yr incwm hwn ym:
+agent.foreign-property.income-sources.accounting-method.accordion.content.bullet1   = mis Mai 2024, mae eich cleient yn defnyddio cyfrifyddu ar sail arian parod
+agent.foreign-property.income-sources.accounting-method.accordion.content.bullet2   = mis Mawrth 2024, mae eich cleient yn defnyddio cyfrifyddu traddodiadol
+agent.foreign-property.income-sources.accounting-method.radio.cash                  = Cyfrifyddu ar sail arian parod
+agent.foreign-property.income-sources.accounting-method.radio.accruals              = Cyfrifyddu traddodiadol
+
 ## Business Name
 agent.business.name.title                                       = Enw’r busnes
 agent.business.name.heading                                     = Beth yw enw busnes eich cleient?

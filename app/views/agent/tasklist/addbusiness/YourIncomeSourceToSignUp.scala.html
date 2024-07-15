@@ -19,6 +19,8 @@
 @import config.AppConfig
 @import models.common._
 @import models.common.business._
+@import config.featureswitch.FeatureSwitchingImpl
+@import config.featureswitch.FeatureSwitch.AgentStreamline
 @import utilities.UserMatchingSessionUtil.ClientDetails
 @import uk.gov.hmrc.hmrcfrontend.views.html.components._
 @import utilities.UserMatchingSessionUtil.ClientDetails
@@ -30,9 +32,9 @@
     appConfig: AppConfig,
     form: FormWithCSRF,
     radioHelper: RadioHelper,
+    featureSwitching: FeatureSwitchingImpl,
     continueButton: ContinueButton,
     saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
-    featureSwitching: FeatureSwitchingImpl,
     hmrcListWithActions : HmrcListWithActions
 )
 
@@ -201,7 +203,11 @@
     } else {
         <div id="add-foreign-property" class="govuk-!-padding-bottom-6">
           <p class="govuk-body">
-            <a class="govuk-link" href="@controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show()">@messages("agent.your-income-source.foreign-property.add-link")</a>
+            @if(featureSwitching.isEnabled(AgentStreamline)) {
+              <a class="govuk-link" href="@controllers.agent.tasklist.overseasproperty.routes.IncomeSourcesOverseasPropertyController.show()">@messages("agent.your-income-source.foreign-property.add-link")</a>
+            } else {
+              <a class="govuk-link" href="@controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show()">@messages("agent.your-income-source.foreign-property.add-link")</a>
+            }
           </p>
         </div>
     }

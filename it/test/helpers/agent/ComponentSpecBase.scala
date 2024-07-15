@@ -358,6 +358,15 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
     def overseasPropertyAccountingMethod(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/business/overseas-property-accounting-method", sessionData)
 
+    def overseasPropertyIncomeSources(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/business/income-sources-foreign-property", sessionData)
+
+    def submitOverseasPropertyIncomeSources(isEditMode: Boolean, startDate: Option[DateModel], accountingMethod: Option[AccountingMethod], sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
+      val uri = s"/business/income-sources-foreign-property?editMode=$isEditMode"
+      post(uri, sessionData)(
+        IncomeSourcesOverseasPropertyForm.createOverseasPropertyMapData(startDate, accountingMethod).map { case (k, v) => (k, Seq(v)) }
+      )
+    }
+
     def ukPropertyStartDate(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/business/property-commencement-date", sessionData)
 
     def submitUkPropertyStartDate(isEditMode: Boolean = false, request: Option[DateModel], sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
