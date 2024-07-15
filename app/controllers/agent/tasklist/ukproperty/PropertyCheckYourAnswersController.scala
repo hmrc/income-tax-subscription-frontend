@@ -18,6 +18,7 @@ package controllers.agent.tasklist.ukproperty
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.AgentStreamline
 import controllers.utils.ReferenceRetrieval
 import models.common.PropertyModel
 import play.api.mvc._
@@ -79,9 +80,10 @@ class PropertyCheckYourAnswersController @Inject()(propertyCheckYourAnswersView:
   def backUrl(isEditMode: Boolean): String = {
     if (isEditMode) {
       continueLocation.url
+    } else if (isEnabled(AgentStreamline)) {
+      routes.PropertyIncomeSourcesController.show().url
     } else {
       routes.PropertyAccountingMethodController.show().url
-
     }
   }
 

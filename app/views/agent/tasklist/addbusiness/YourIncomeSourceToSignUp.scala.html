@@ -22,6 +22,8 @@
 @import utilities.UserMatchingSessionUtil.ClientDetails
 @import uk.gov.hmrc.hmrcfrontend.views.html.components._
 @import utilities.UserMatchingSessionUtil.ClientDetails
+@import config.featureswitch.FeatureSwitchingImpl
+@import config.featureswitch.FeatureSwitch.AgentStreamline
 
 @this(
     agentMainTemplate: AgentMainTemplate,
@@ -30,6 +32,7 @@
     radioHelper: RadioHelper,
     continueButton: ContinueButton,
     saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
+    featureSwitching: FeatureSwitchingImpl,
     hmrcListWithActions : HmrcListWithActions
 )
 
@@ -159,7 +162,11 @@
     } else {
         <div id="add-uk-property" class="govuk-!-padding-bottom-6">
             <p class="govuk-body">
-              <a class="govuk-link" href="@controllers.agent.tasklist.ukproperty.routes.PropertyStartDateController.show()">@messages("agent.your-income-source.uk-property.add-link")</a>
+                @if(featureSwitching.isEnabled(AgentStreamline)) {
+                <a class="govuk-link" href="@controllers.agent.tasklist.ukproperty.routes.PropertyIncomeSourcesController.show()">@messages("agent.your-income-source.uk-property.add-link")</a>
+                } else {
+                <a class="govuk-link" href="@controllers.agent.tasklist.ukproperty.routes.PropertyStartDateController.show()">@messages("agent.your-income-source.uk-property.add-link")</a>
+                }
             </p>
         </div>
     }
