@@ -16,12 +16,15 @@
 
 @import models.common.OverseasPropertyModel
 @import views.html.templates.AgentMainTemplate
+@import config.featureswitch.FeatureSwitchingImpl
+@import config.featureswitch.FeatureSwitch.AgentStreamline
 @import views.html.helpers.{CheckYourAnswers, CheckYourAnswersRow}
 @import utilities.UserMatchingSessionUtil.ClientDetails
 
 @this(
         mainTemplate: AgentMainTemplate,
         checkYourAnswers: CheckYourAnswers,
+        featureSwitching: FeatureSwitchingImpl,
         checkYourAnswersRow: CheckYourAnswersRow
 )
 
@@ -63,7 +66,12 @@
             question = messages("agent.overseas-property.check-your-answers.start-date.question"),
             answer = startDate(viewModel.startDate),
             changeText = if(viewModel.startDate.isDefined) None else Some(messages("base.add")),
-            changeUrl = Some(controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show(editMode = true).url),
+            changeUrl =
+              if(featureSwitching.isEnabled(AgentStreamline)) {
+                Some(controllers.agent.tasklist.overseasproperty.routes.IncomeSourcesOverseasPropertyController.show(editMode = true).url)
+              } else {
+                Some(controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show(editMode = true).url)
+              },
             hiddenContent =
                     if(viewModel.startDate.isDefined)
                         messages("agent.overseas-property.check-your-answers.start-date.change")
@@ -75,7 +83,12 @@
             question = messages("agent.overseas-property.check-your-answers.accounting-method.question"),
             answer = accountingMethod(viewModel.accountingMethod),
             changeText = if(viewModel.accountingMethod.isDefined) None else Some(messages("base.add")),
-            changeUrl = Some(controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyAccountingMethodController.show(editMode = true).url),
+            changeUrl =
+              if(featureSwitching.isEnabled(AgentStreamline)) {
+                Some(controllers.agent.tasklist.overseasproperty.routes.IncomeSourcesOverseasPropertyController.show(editMode = true).url)
+              } else {
+                Some(controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyAccountingMethodController.show(editMode = true).url)
+              },
             hiddenContent =
                     if(viewModel.accountingMethod.isDefined)
                         messages("agent.overseas-property.check-your-answers.accounting-method.change")

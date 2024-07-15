@@ -18,6 +18,7 @@ package controllers.agent.tasklist.overseasproperty
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.AgentStreamline
 import controllers.utils.ReferenceRetrieval
 import models.common.OverseasPropertyModel
 import play.api.mvc._
@@ -79,6 +80,8 @@ class OverseasPropertyCheckYourAnswersController @Inject()(overseasPropertyCheck
   def backUrl(isEditMode: Boolean): String = {
     if (isEditMode) {
       continueLocation.url
+    } else if (isEnabled(AgentStreamline)) {
+      routes.IncomeSourcesOverseasPropertyController.show().url
     } else {
       routes.OverseasPropertyAccountingMethodController.show().url
     }
