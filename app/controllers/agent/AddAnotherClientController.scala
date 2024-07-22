@@ -45,12 +45,7 @@ class AddAnotherClientController @Inject()(val auditingService: AuditingService,
   def addAnother(): Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
       val sessionClearing: EitherT[Future, DeleteSessionDataHttpParser.DeleteSessionDataFailure, Result] = for {
-        _ <- EitherT(sessionDataService.deleteThrottlePassed(AgentStartOfJourneyThrottle))
-        _ <- EitherT(sessionDataService.deleteThrottlePassed(AgentEndOfJourneyThrottle))
-        _ <- EitherT(sessionDataService.deleteMandationStatus)
-        _ <- EitherT(sessionDataService.deleteEligibilityStatus)
-        _ <- EitherT(sessionDataService.deleteNino)
-        _ <- EitherT(sessionDataService.deleteReference)
+        _ <- EitherT(sessionDataService.deleteSessionAll)
       } yield {
         Redirect(controllers.agent.matching.routes.ClientDetailsController.show())
           .addingToSession(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name)

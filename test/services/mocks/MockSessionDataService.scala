@@ -105,6 +105,11 @@ trait MockSessionDataService extends MockitoSugar with BeforeAndAfterEach {
       .thenReturn(Future.successful(result))
   }
 
+  def mockDeleteSessionAll(result: DeleteSessionDataResponse): Unit = {
+    when(mockSessionDataService.deleteSessionAll(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(result))
+  }
+
   def mockFetchEligibilityStatus(result: GetSessionDataResponse[EligibilityStatus]): Unit = {
     when(mockSessionDataService.fetchEligibilityStatus(ArgumentMatchers.any()))
       .thenReturn(Future.successful(result))

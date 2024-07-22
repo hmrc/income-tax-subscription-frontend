@@ -44,8 +44,16 @@ class IncomeTaxSubscriptionConnector @Inject()(appConfig: AppConfig,
     appConfig.microServiceUrl + s"/income-tax-subscription/subscription-data/$reference"
   }
 
+  def deleteSessionURL(): String = {
+    appConfig.microServiceUrl + s"/income-tax-subscription/subscription-data"
+  }
+
   def deleteAll(reference: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
     http.DELETE[HttpResponse](deleteURL(reference))
+  }
+
+  def deleteAllSession()(implicit hc: HeaderCarrier): Future[HttpResponse] = {
+    http.DELETE[HttpResponse](deleteSessionURL())
   }
 
   def deleteSubscriptionDetails(reference: String, key: String)
