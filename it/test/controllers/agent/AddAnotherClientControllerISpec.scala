@@ -30,12 +30,7 @@ class AddAnotherClientControllerISpec extends ComponentSpecBase with SessionCook
     s"clear the Subscription Details session variables" in {
       Given("I setup the wiremock stubs")
       AuthStub.stubAuthSuccess()
-      SessionDataConnectorStub.stubDeleteSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle))(OK)
-      SessionDataConnectorStub.stubDeleteSessionData(ITSASessionKeys.throttlePassed(AgentEndOfJourneyThrottle))(OK)
-      SessionDataConnectorStub.stubDeleteSessionData(ITSASessionKeys.MANDATION_STATUS)(OK)
-      SessionDataConnectorStub.stubDeleteSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK)
-      SessionDataConnectorStub.stubDeleteSessionData(ITSASessionKeys.NINO)(OK)
-      SessionDataConnectorStub.stubDeleteSessionData(ITSASessionKeys.REFERENCE)(OK)
+      SessionDataConnectorStub.stubDeleteAllSessionData()(OK)
       IncomeTaxSubscriptionConnectorStub.stubSubscriptionDeleteAll()
 
       When("I call GET /add-another")

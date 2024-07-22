@@ -62,12 +62,7 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
     def call: Future[Result] = TestAddAnotherClientController.addAnother()(fullSessionDetailsRequest)
 
     "redirect to the agent eligibility frontend terms page, clearing Subscription Details and session values" in {
-      mockDeleteThrottlePassed(AgentStartOfJourneyThrottle)(Right(DeleteSessionDataSuccessResponse))
-      mockDeleteThrottlePassed(AgentEndOfJourneyThrottle)(Right(DeleteSessionDataSuccessResponse))
-      mockDeleteMandationStatus(Right(DeleteSessionDataSuccessResponse))
-      mockDeleteEligibilityStatus(Right(DeleteSessionDataSuccessResponse))
-      mockDeleteNino(Right(DeleteSessionDataSuccessResponse))
-      mockDeleteReferenceSuccess()
+      mockDeleteSessionAll(Right(DeleteSessionDataSuccessResponse))
 
       val result: Result = await(call)
 
@@ -78,53 +73,8 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
     }
 
     "throw an InternalServerException" when {
-      "the delete start throttle failed" in {
-        mockDeleteThrottlePassed(AgentStartOfJourneyThrottle)(Left(UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
-
-        intercept[InternalServerException](await(call))
-          .message mustBe s"[AddAnotherClientController][addAnother] - Unexpected failure: ${UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)}"
-      }
-      "the delete end throttle failed" in {
-        mockDeleteThrottlePassed(AgentStartOfJourneyThrottle)(Right(DeleteSessionDataSuccessResponse))
-        mockDeleteThrottlePassed(AgentEndOfJourneyThrottle)(Left(UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
-
-        intercept[InternalServerException](await(call))
-          .message mustBe s"[AddAnotherClientController][addAnother] - Unexpected failure: ${UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)}"
-      }
-      "the delete mandation status failed" in {
-        mockDeleteThrottlePassed(AgentStartOfJourneyThrottle)(Right(DeleteSessionDataSuccessResponse))
-        mockDeleteThrottlePassed(AgentEndOfJourneyThrottle)(Right(DeleteSessionDataSuccessResponse))
-        mockDeleteMandationStatus(Left(UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
-
-        intercept[InternalServerException](await(call))
-          .message mustBe s"[AddAnotherClientController][addAnother] - Unexpected failure: ${UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)}"
-      }
-      "the delete eligibility status failed" in {
-        mockDeleteThrottlePassed(AgentStartOfJourneyThrottle)(Right(DeleteSessionDataSuccessResponse))
-        mockDeleteThrottlePassed(AgentEndOfJourneyThrottle)(Right(DeleteSessionDataSuccessResponse))
-        mockDeleteMandationStatus(Right(DeleteSessionDataSuccessResponse))
-        mockDeleteEligibilityStatus(Left(UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
-
-        intercept[InternalServerException](await(call))
-          .message mustBe s"[AddAnotherClientController][addAnother] - Unexpected failure: ${UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)}"
-      }
-      "the delete nino failed" in {
-        mockDeleteThrottlePassed(AgentStartOfJourneyThrottle)(Right(DeleteSessionDataSuccessResponse))
-        mockDeleteThrottlePassed(AgentEndOfJourneyThrottle)(Right(DeleteSessionDataSuccessResponse))
-        mockDeleteMandationStatus(Right(DeleteSessionDataSuccessResponse))
-        mockDeleteEligibilityStatus(Right(DeleteSessionDataSuccessResponse))
-        mockDeleteNino(Left(UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
-
-        intercept[InternalServerException](await(call))
-          .message mustBe s"[AddAnotherClientController][addAnother] - Unexpected failure: ${UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)}"
-      }
-      "the delete reference failed" in {
-        mockDeleteThrottlePassed(AgentStartOfJourneyThrottle)(Right(DeleteSessionDataSuccessResponse))
-        mockDeleteThrottlePassed(AgentEndOfJourneyThrottle)(Right(DeleteSessionDataSuccessResponse))
-        mockDeleteMandationStatus(Right(DeleteSessionDataSuccessResponse))
-        mockDeleteEligibilityStatus(Right(DeleteSessionDataSuccessResponse))
-        mockDeleteNino(Right(DeleteSessionDataSuccessResponse))
-        mockDeleteReferenceStatusFailure(INTERNAL_SERVER_ERROR)
+      "the delete entire session failed" in {
+        mockDeleteSessionAll(Left(UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
         intercept[InternalServerException](await(call))
           .message mustBe s"[AddAnotherClientController][addAnother] - Unexpected failure: ${UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)}"

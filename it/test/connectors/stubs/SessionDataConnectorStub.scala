@@ -22,6 +22,7 @@ import play.api.libs.json.{JsValue, Json, Writes}
 object SessionDataConnectorStub extends WireMockMethods {
 
   private def sessionDataUri(id: String) = s"/income-tax-subscription/session-data/id/$id"
+  private def sessionIdDataUri() = s"/income-tax-subscription/session-data/id"
 
   def stubGetSessionData(id: String)(responseStatus: Int, responseBody: JsValue = Json.obj()): Unit = {
     when(
@@ -42,6 +43,13 @@ object SessionDataConnectorStub extends WireMockMethods {
     when(
       method = DELETE,
       uri = sessionDataUri(id)
+    ).thenReturn(responseStatus)
+  }
+
+  def stubDeleteAllSessionData()(responseStatus: Int): Unit = {
+    when(
+      method = DELETE,
+      uri = sessionIdDataUri()
     ).thenReturn(responseStatus)
   }
 
