@@ -33,14 +33,14 @@ class CacheExpiryDateProviderTest extends AnyWordSpecLike with Matchers with Opt
       implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
       val provider = app.injector.instanceOf[CacheExpiryDateProvider]
       val aDate = LocalDateTime.of(1980, 1, 1, 0, 0, 0, 0)
-      provider.format(aDate) should be("Tuesday, 1 January 1980")
+      provider.format(aDate) should be("Tuesday 1 January 1980")
     }
 
     "also handle Welsh language translation" in {
       implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest().withCookies(Cookie("PLAY_LANG", "cy")))
       val provider = app.injector.instanceOf[CacheExpiryDateProvider]
       val aDate = LocalDateTime.of(1980, 1, 1, 0, 0, 0, 0)
-      provider.format(aDate) should be("Dydd Mawrth, 1 Ionawr 1980")
+      provider.format(aDate) should be("Dydd Mawrth 1 Ionawr 1980")
     }
   }
 
@@ -49,7 +49,7 @@ class CacheExpiryDateProviderTest extends AnyWordSpecLike with Matchers with Opt
       implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
       val provider = app.injector.instanceOf[CacheExpiryDateProvider]
       val aDate = LocalDateTime.of(2021, 10, 8, 0, 0, 0, 0)
-      provider.expiryDateOf(aDate) should be("Sunday, 7 November 2021")
+      provider.expiryDateOf(aDate) should be("Sunday 7 November 2021")
     }
   }
 

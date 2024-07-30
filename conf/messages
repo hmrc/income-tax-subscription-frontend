@@ -1062,7 +1062,6 @@ business.remove-sole-trader-business.paragraph    = All your current sole trader
 error.remove-sole-trader-business.invalid         = Select yes if you want to remove business
 
 ## Progress saved
-business.progress-saved.success                                 = Progress saved
 business.progress-saved.title                                   = We have saved your progress
 business.progress-saved.content.summary                         = We’ll save your data until {0}
 business.progress-saved.content.subheading                      = What happens next
