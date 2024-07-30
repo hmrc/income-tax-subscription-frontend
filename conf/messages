@@ -1062,15 +1062,13 @@ business.remove-sole-trader-business.paragraph    = All your current sole trader
 error.remove-sole-trader-business.invalid         = Select yes if you want to remove business
 
 ## Progress saved
-business.progress-saved.title                                   = Your progress has been saved
-business.progress-saved.content.summary                         = We will keep your information until {0}.
+business.progress-saved.success                                 = Progress saved
+business.progress-saved.title                                   = We have saved your progress
+business.progress-saved.content.summary                         = We’ll save your data until {0}
 business.progress-saved.content.subheading                      = What happens next
-business.progress-saved.content.paragraph1                      = You can:
-business.progress-saved.content.paragraph2.part1                = If you sign out, you will need to come back to your
-business.progress-saved.content.paragraph2.part2                = to continue. We suggest you bookmark this to make it easier to find when you return.
-business.progress-saved.content.sign-up-link                    = continue signing up for Making Tax Digital for Income Tax
-business.progress-saved.content.sign-out-link                   = sign out and come back later
-business.progress-saved.content.sign-in-link                    = Government Gateway login
+business.progress-saved.content.paragraph1                      = If you sign out, you’ll need to sign in again using the same Government Gateway user ID.
+business.progress-saved.content.paragraph2                      = Or you can
+business.progress-saved.content.sign-up-link                    = continue signing up
 
 ## Remove UK property business
 remove-uk-property-business.heading                            = Are you sure you want to delete your UK property business?

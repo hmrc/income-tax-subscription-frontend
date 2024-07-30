@@ -344,16 +344,13 @@ object MessageLookup {
   }
 
   object ProgressSaved {
-    val title = "Your progress has been saved - Use software to send Income Tax updates - GOV.UK"
-    val heading = "Your progress has been saved"
+    val title = "We have saved your progress - Use software to send Income Tax updates - GOV.UK"
 
-    def contentSummary(expirationDate: String) = s"We will keep your information until $expirationDate."
+    def contentSummary(expirationDate: String) = s"We’ll save your data until $expirationDate"
 
     val subheading = "What happens next"
-    val paragraph1 = "You can:"
-    val bullet1 = "continue signing up for Making Tax Digital for Income Tax"
-    val bullet2 = "sign out and come back later"
-    val paragraph2 = "If you sign out, you will need to come back to your Government Gateway login to continue. We suggest you bookmark this to make it easier to find when you return."
+    val paragraph1 = "If you sign out, you’ll need to sign in again using the same Government Gateway user ID."
+    val paragraph2 = "Or you can continue signing up"
   }
 
   object AffinityGroup {
