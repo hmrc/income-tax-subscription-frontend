@@ -29,7 +29,7 @@ class CacheExpiryDateProvider @Inject()(val languageUtils: LanguageUtils) {
 
   def format(dateTime: LocalDateTime)(implicit messages: Messages): String = {
     languageUtils.Dates.formatEasyReadingTimestamp(Option(dateTime), "")(messages)
-      .replaceFirst("^.*, ", "").replaceFirst(" (?=\\d)", ", ")
+      .replaceFirst("^.*, ", "")
   }
 
   def expiryDateOf(dateTime: LocalDateTime)(implicit messages: Messages): String = {

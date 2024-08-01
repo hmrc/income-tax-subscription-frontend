@@ -30,40 +30,24 @@ class ProgressSavedViewSpec extends ViewSpec {
       document().title mustBe ProgressSaved.title
     }
 
-    "have a heading" in {
-      document().select(".govuk-panel__title").text mustBe ProgressSaved.heading
-    }
-
     "have a summary" in {
-      document().select(".govuk-panel__body").text mustBe ProgressSaved.contentSummary("Monday, 20 October 2021")
+      document().select(".govuk-notification-banner__heading strong").text mustBe ProgressSaved.contentSummary("Monday, 20 October 2021")
     }
 
     "have a subheading" in {
-      document().mainContent.select("h2").text mustBe ProgressSaved.subheading
+      document().select("h1.govuk-heading-l").text mustBe ProgressSaved.subheading
     }
 
     "have a paragraph 1" in {
-      document().mainContent.selectNth("p.govuk-body", 1).text mustBe ProgressSaved.paragraph1
-    }
-
-    "have a bullet 1" in {
-      document().select(".govuk-list--bullet").select("li:nth-of-type(1)").text mustBe ProgressSaved.bullet1
-    }
-
-    "have a bullet 2" in {
-      document().select(".govuk-list--bullet").select("li:nth-of-type(2)").text mustBe ProgressSaved.bullet2
+      document().select("p.govuk-body").get(0).text mustBe ProgressSaved.paragraph1
     }
 
     "have a paragraph 2" in {
-      document().mainContent.selectNth("p.govuk-body", 2).text mustBe ProgressSaved.paragraph2
+      document().select("p.govuk-body").get(1).text mustBe ProgressSaved.paragraph2
     }
 
     "have a sign up link" in {
-      document().mainContent.select("a.sign-up-link").attr("href") mustBe controllers.individual.tasklist.routes.TaskListController.show().url
-    }
-
-    "have a sign out link" in {
-      document().mainContent.select("a.sign-out-link").attr("href") mustBe SignOutController.signOut.url
+      document().select("a.sign-up-link").attr("href") mustBe controllers.individual.tasklist.routes.TaskListController.show().url
     }
   }
 

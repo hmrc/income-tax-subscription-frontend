@@ -1059,15 +1059,12 @@ business.remove-sole-trader-business.paragraph    = Mae angen ychwanegu pob un o
 error.remove-sole-trader-business.invalid         = Dewiswch ‘Iawn’ os ydych am ddileu’r busnes
 
 ## Progress saved
-business.progress-saved.title                                   = Mae eich cynnydd hyd yma wedi’i gadw
-business.progress-saved.content.summary                         = Byddwn yn cadw eich gwybodaeth tan {0}.
+business.progress-saved.title                                   = Rydym wedi cadw’ch cynnydd
+business.progress-saved.content.summary                         = Byddwn yn cadw’ch data tan {0}
 business.progress-saved.content.subheading                      = Yr hyn sy’n digwydd nesaf
-business.progress-saved.content.paragraph1                      = Gallwch wneud y canlynol:
-business.progress-saved.content.paragraph2.part1                = Os byddwch yn allgofnodi, bydd angen i chi ddod yn ôl i’ch
-business.progress-saved.content.paragraph2.part2                = i barhau. Rydym yn awgrymu eich bod yn rhoi nod tudalen yma i’w gwneud yn haws dod o hyd i’r dudalen pan fyddwch yn dod yn ôl.
-business.progress-saved.content.sign-up-link                    = parhau i gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-business.progress-saved.content.sign-out-link                   = allgofnodi a dod yn ôl yn nes ymlaen
-business.progress-saved.content.sign-in-link                    = manylion mewngofnodi Porth y Llywodraeth
+business.progress-saved.content.paragraph1                      = Os byddwch yn allgofnodi, bydd angen i chi fewngofnodi eto gan ddefnyddio’r un Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth.
+business.progress-saved.content.paragraph2                      = Fel arall, gallwch
+business.progress-saved.content.sign-up-link                    = fynd yn eich blaen i gofrestru
 
 ## Remove UK property business
 remove-uk-property-business.heading                            = A ydych yn siŵr eich bod am ddileu’ch busnes eiddo yn y DU?
