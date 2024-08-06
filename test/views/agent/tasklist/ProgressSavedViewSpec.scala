@@ -27,15 +27,14 @@ class ProgressSavedViewSpec extends ViewSpec {
 
   object ProgressSaved {
     val title = "Your progress has been saved - Use software to report your client’s Income Tax - GOV.UK"
-    val heading = "Your progress has been saved"
 
-    def contentSummary(clientName: String , expirationDate: String) = s"We will keep $clientName’s information until $expirationDate."
+    def contentSummary(expirationDate: String) = s"We will keep your client’s data until $expirationDate."
 
     val subheading = "What you can do next"
     val paragraph1 = "You can:"
     val bullet1 = "continue signing up this client"
     val bullet2 = "sign up another client"
-    val paragraph2 = "If you sign out, you will need to come back to your Government Gateway login to continue. We suggest you bookmark this to make it easier to find when you return."
+    val paragraph2 = "If you sign out, you’ll need to sign in again using the same Government Gateway User ID."
   }
 
   "Progress saved view" must {
@@ -43,16 +42,12 @@ class ProgressSavedViewSpec extends ViewSpec {
       document().title mustBe ProgressSaved.title
     }
 
-    "have a heading" in {
-      document().select(".govuk-panel__title").text mustBe ProgressSaved.heading
-    }
-
     "have a summary" in {
-      document().select(".govuk-panel__body").text mustBe ProgressSaved.contentSummary("FirstName LastName", "Monday, 20 October 2021")
+      document().select(".govuk-notification-banner__heading").text mustBe ProgressSaved.contentSummary("Monday, 20 October 2021")
     }
 
     "have a subheading" in {
-      document().mainContent.select("h2").text mustBe ProgressSaved.subheading
+      document().mainContent.select("h1").text mustBe ProgressSaved.subheading
     }
 
     "have a paragraph 1" in {
@@ -69,10 +64,6 @@ class ProgressSavedViewSpec extends ViewSpec {
 
     "have a paragraph 2" in {
       document().mainContent.selectNth("p.govuk-body", 2).text mustBe ProgressSaved.paragraph2
-    }
-
-    "have a paragraph 2 link" in {
-      document().mainContent.selectNth("p.govuk-body", 2).select("a").attr("href") mustBe "sign-in"
     }
 
     "have a sign up link" in {

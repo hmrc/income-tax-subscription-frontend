@@ -16,9 +16,11 @@
 
 @import views.html.templates.AgentMainTemplate
 @import utilities.UserMatchingSessionUtil.ClientDetails
+@import views.html.helpers.NotificationBanner
 
 @this(
-  mainTemplate: AgentMainTemplate
+  mainTemplate: AgentMainTemplate,
+  govukNotificationBanner : GovukNotificationBanner
 )
 
 @(
@@ -27,21 +29,18 @@
   clientDetails: ClientDetails
 )(implicit request: Request[_], messages: Messages)
 
-@signInLink = {
-  <a href="@signInUrl" class="govuk-link sign-in-link">@messages("agent.business.progress-saved.content.sign-in-link")</a>
-}
-
 @mainTemplate(title = messages("agent.business.progress-saved.title")) {
-  <div class="govuk-panel govuk-panel--confirmation">
-    <h1 class="govuk-panel__title">
-      @messages("agent.business.progress-saved.title")
-    </h1>
-    <div class="govuk-panel__body">
-      @messages("agent.business.progress-saved.content.summary", clientDetails.name, expirationDate)
-    </div>
-  </div>
+  @govukNotificationBanner(NotificationBanner(
+    content = HtmlContent(
+      s"""
+      <h3 class="govuk-notification-banner__heading">
+        ${messages("agent.business.progress-saved.content.summary", expirationDate)}
+      </h3>"""
+    ),
+    bannerType = Some("success")
+  ))
 
-  <h2 class="govuk-heading-m">@messages("agent.business.progress-saved.content.subheading")</h2>
+  <h1 class="govuk-heading-l">@messages("agent.business.progress-saved.content.subheading")</h1>
 
   <p class="govuk-body">
   @messages("agent.business.progress-saved.content.paragraph1")
@@ -57,6 +56,6 @@
   </ul>
 
   <p class="govuk-body">
-    @Html(messages("agent.business.progress-saved.content.paragraph2", signInLink))
+    @Html(messages("agent.business.progress-saved.content.paragraph2"))
   </p>
 }
