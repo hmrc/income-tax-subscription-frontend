@@ -896,7 +896,6 @@ agent.business.task-list.content.tax-year.action                            = De
 agent.business.task-list.content.tax-year.current-tax-year                  = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
 agent.business.task-list.content.tax-year.next-tax-year                     = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
 agent.business.task-list.content.add-income.heading                         = Ffynonellau incwm eich cleient
-agent.business.task-list.content.add-income.add-text                        = Ychwanegu ffynonellau incwm eich cleient
 agent.business.task-list.content.add-income.view-text                       = Bwrw golwg dros ffynonellau incwm eich cleient a’u rheoli
 agent.business.task-list.content.action-needed                              = Mae’n rhaid i chi gwblhau pob adran uchod cyn i chi allu cadarnhau a chofrestru’ch cleient.
 agent.business.task-list.content.action-complete                            = Gallwch gofrestru’ch cleient nawr.
@@ -904,6 +903,13 @@ agent.business.task-list.status.completed                                   = We
 agent.business.task-list.status.incomplete                                  = Heb ei gwblhau
 agent.business.task-list.status.in-progress                                 = Ar waith
 agent.business.task-list.status.not-started                                 = Heb ddechrau
+agent.business.task-list.review-sign-up.heading                             = Gwirio a chofrestru
+agent.business.task-list.review-sign-up.link-text                           = Chofrestru’ch cleient
+agent.business.task-list.status.cannot-start                                = Methu dechrau ar y funud
+agent.business.task-list.content.details.heading                            = Yr hyn sydd ei angen arnom er mwyn cofrestru’ch cleient
+agent.business.task-list.content.add-income.hint                            = Dylech gynnwys pob un o ffynonellau incwm unig fasnachwr neu incwm o eiddo eich cleient
+agent.business.task-list.content.tax-year.hint                              = Gallwch gofrestru eich cleient yn ystod y flwyddyn dreth bresennol, neu o’r flwyddyn dreth nesaf ymlaen
+agent.business.task-list.content.next-tax-year.hint                         = Gallwch gofrestru’ch cleient o’r flwyddyn dreth nesaf ymlaen yn unig
 
 # Agent Overseas Property Start Date Page errors
 agent.error.overseas.property.day-month-year.empty              = Nodwch y dyddiad y dechreuodd busnes eiddo tramor eich cleient fasnachu
