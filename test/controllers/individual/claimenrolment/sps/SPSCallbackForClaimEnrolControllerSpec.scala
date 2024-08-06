@@ -26,7 +26,6 @@ import play.api.test.Helpers.{await, defaultAwaitTimeout, redirectLocation, stat
 import services.individual.claimenrolment.ClaimEnrolmentService.ClaimEnrolmentError
 import services.mocks.{MockAuditingService, MockClaimEnrolmentService, MockSpsService}
 import uk.gov.hmrc.http.InternalServerException
-import utilities.individual.TestConstants
 
 import scala.concurrent.Future
 
@@ -52,8 +51,7 @@ class SPSCallbackForClaimEnrolControllerSpec extends ControllerBaseSpec with Moc
       ""
     }
     FakeRequest("GET", controllers.individual.claimenrolment.sps.routes.SPSCallbackForClaimEnrolController.callback.url + entityIdParam).withSession(
-      ITSASessionKeys.JourneyStateKey -> ClaimEnrolmentJourney.name,
-      ITSASessionKeys.UTR -> TestConstants.testUtr
+      ITSASessionKeys.JourneyStateKey -> ClaimEnrolmentJourney.name
     )
   }
 

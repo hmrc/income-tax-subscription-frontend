@@ -21,12 +21,11 @@ import common.Constants.ITSASessionKeys
 import org.apache.pekko.actor.ActorSystem
 import org.mockito.Mockito
 import play.api.data.Form
-import play.api.mvc.{Action, AnyContent, AnyContentAsFormUrlEncoded}
+import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.agent.mocks.MockAgentAuthService
 import uk.gov.hmrc.auth.core.{AuthorisationException, InvalidBearerToken}
-import utilities.agent.TestConstants
 import utilities.{UnitTestTrait, UserMatchingSessionUtil}
 
 import scala.language.implicitConversions
@@ -74,47 +73,44 @@ trait AgentControllerBaseSpec extends UnitTestTrait with MockAgentAuthService {
     }
 
     def removeFromSession(sessionKeys: String*): FakeRequest[C] = {
-      FakeRequest().withSession(fakeRequest.session.data.filter { case (k, v) => !sessionKeys.contains(k) }.toSeq: _*)
+      FakeRequest().withSession(fakeRequest.session.data.filter { case (k, _) => !sessionKeys.contains(k) }.toSeq: _*)
         .withBody(fakeRequest.body)
     }
   }
 
-  lazy val fakeRequest = FakeRequest()
+  lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
-  lazy val userMatchingRequest = FakeRequest().withSession(
+  lazy val userMatchingRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
     ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name
   )
 
-  lazy val agentSignUpRequest = FakeRequest().withSession(
+  lazy val agentSignUpRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
     ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
-    ITSASessionKeys.UTR -> TestConstants.testUtr
+    ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true"
   )
 
-  lazy val unauthorisedUserMatchingRequest = FakeRequest().withSession(
+  lazy val unauthorisedUserMatchingRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
     ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name,
-    ITSASessionKeys.UTR -> TestConstants.testUtr
+    ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true"
   )
 
-  lazy val subscriptionRequest = FakeRequest().withSession(
+  lazy val subscriptionRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
     ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
-    ITSASessionKeys.UTR -> TestConstants.testUtr,
-    ITSASessionKeys.REFERENCE -> "test-reference"
+    ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true"
   ).withMethod("POST")
 
-  lazy val subscriptionRequestWithName = FakeRequest().withSession(
+  lazy val subscriptionRequestWithName: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
     ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
     UserMatchingSessionUtil.firstName -> "FirstName",
     UserMatchingSessionUtil.lastName -> "LastName",
-    ITSASessionKeys.UTR -> TestConstants.testUtr,
-    ITSASessionKeys.REFERENCE -> "test-reference"
+    ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true"
   )
 
-  lazy val subscriptionRequestWithNameNextYearOnly = FakeRequest().withSession(
+  lazy val subscriptionRequestWithNameNextYearOnly: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
     ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
     UserMatchingSessionUtil.firstName -> "FirstName",
     UserMatchingSessionUtil.lastName -> "LastName",
-    ITSASessionKeys.UTR -> TestConstants.testUtr,
-    ITSASessionKeys.REFERENCE -> "test-reference"
+    ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true"
   )
 
 }

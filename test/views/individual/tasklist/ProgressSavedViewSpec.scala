@@ -16,7 +16,6 @@
 
 package views.individual.tasklist
 
-import controllers.SignOutController
 import messagelookup.individual.MessageLookup.ProgressSaved
 import org.jsoup.Jsoup
 import utilities.ViewSpec

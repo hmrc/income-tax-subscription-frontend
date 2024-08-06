@@ -27,7 +27,6 @@ import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockAuditingService, MockClientDetailsRetrieval, MockReferenceRetrieval, MockSubscriptionDetailsService}
-import uk.gov.hmrc.http.InternalServerException
 import views.html.agent.tasklist.overseasproperty.OverseasPropertyCheckYourAnswers
 
 import scala.concurrent.Future

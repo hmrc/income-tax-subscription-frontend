@@ -32,6 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class TaskListController @Inject()(taskListView: TaskList,
                                    ninoService: NinoService,
+                                   utrService: UTRService,
                                    referenceRetrieval: ReferenceRetrieval,
                                    subscriptionDetailsService: SubscriptionDetailsService,
                                    accountingPeriodService: AccountingPeriodService)
@@ -42,30 +43,31 @@ class TaskListController @Inject()(taskListView: TaskList,
                                    mcc: MessagesControllerComponents) extends SignUpController with Logging {
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user => {
-      referenceRetrieval.getIndividualReference flatMap { reference =>
-        getTaskListModel(reference) flatMap { viewModel =>
-          ninoService.getNino map { nino =>
-            Ok(taskListView(
-              postAction = controllers.individual.tasklist.routes.TaskListController.submit(),
-              viewModel = viewModel,
-              accountingPeriodService = accountingPeriodService,
-              individualUserNino = nino,
-              IncomeTaxSAUser.fullName,
-              utrNumber = user.utr.get
-            ))
-          }
-        }
+    _ => {
+      for {
+        reference <- referenceRetrieval.getIndividualReference
+        viewModel <- getTaskListModel(reference)
+        nino <- ninoService.getNino
+        utr <- utrService.getUTR
+      } yield {
+        Ok(taskListView(
+          postAction = controllers.individual.tasklist.routes.TaskListController.submit(),
+          viewModel = viewModel,
+          accountingPeriodService = accountingPeriodService,
+          individualUserNino = nino,
+          IncomeTaxSAUser.fullName,
+          utrNumber = utr
+        ))
       }
     }
   }
 
-  private def getTaskListModel(reference: String)(implicit request: Request[AnyContent], user: IncomeTaxSAUser, hc: HeaderCarrier): Future[TaskListModel] = {
+  private def getTaskListModel(reference: String)(implicit hc: HeaderCarrier): Future[TaskListModel] = {
     for {
       (businesses, _) <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
       property <- subscriptionDetailsService.fetchProperty(reference)
       overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
-      selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getUtr)
+      selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
       incomeSourcesConfirmed <- subscriptionDetailsService.fetchIncomeSourcesConfirmation(reference)
     } yield {
       TaskListModel(

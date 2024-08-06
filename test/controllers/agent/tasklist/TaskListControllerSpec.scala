@@ -31,7 +31,7 @@ import play.api.test.Helpers.{HTML, charset, contentType, defaultAwaitTimeout, r
 import play.twirl.api.HtmlFormat
 import services.AccountingPeriodService
 import services.agent.mocks.MockSubscriptionOrchestrationService
-import services.mocks.{MockAuditingService, MockClientDetailsRetrieval, MockReferenceRetrieval, MockSubscriptionDetailsService}
+import services.mocks._
 import utilities.agent.TestConstants.testUtr
 import views.html.agent.tasklist.TaskList
 
@@ -42,6 +42,7 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockSubscriptionOrchestrationService
   with MockReferenceRetrieval
+  with MockUTRService
   with MockClientDetailsRetrieval {
 
   val accountingPeriodService: AccountingPeriodService = app.injector.instanceOf[AccountingPeriodService]
@@ -68,6 +69,7 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
     taskList,
     mockClientDetailsRetrieval,
     mockReferenceRetrieval,
+    mockUTRService,
     MockSubscriptionDetailsService
   )(
     mockAuditingService,
@@ -98,8 +100,9 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
         confirmed = true
       )))
       mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
-      mockGetMandationService(testUtr)(Voluntary, Voluntary)
-      mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+      mockGetMandationService(Voluntary, Voluntary)
+      mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+      mockGetUTR(testUtr)
 
       val result: Future[Result] = TestTaskListController.show()(subscriptionRequestWithName)
 

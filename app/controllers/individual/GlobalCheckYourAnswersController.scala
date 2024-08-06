@@ -16,7 +16,7 @@
 
 package controllers.individual
 
-import auth.individual.{IncomeTaxSAUser, SignUpController}
+import auth.individual.SignUpController
 import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.SPSEntityId
 import config.AppConfig
@@ -46,7 +46,7 @@ class GlobalCheckYourAnswersController @Inject()(subscriptionService: Subscripti
                                                  mcc: MessagesControllerComponents) extends SignUpController {
 
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
+    _ =>
       referenceRetrieval.getIndividualReference flatMap { reference =>
         withCompleteDetails(reference) { completeDetails =>
           Future.successful(Ok(view(
@@ -59,7 +59,7 @@ class GlobalCheckYourAnswersController @Inject()(subscriptionService: Subscripti
   }
 
   def submit: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
+    _ =>
       referenceRetrieval.getIndividualReference flatMap { reference =>
         withCompleteDetails(reference) { completeDetails =>
           signUp(completeDetails)(
@@ -105,8 +105,8 @@ class GlobalCheckYourAnswersController @Inject()(subscriptionService: Subscripti
 
   private def withCompleteDetails(reference: String)
                                  (f: CompleteDetails => Future[Result])
-                                 (implicit request: Request[AnyContent], user: IncomeTaxSAUser): Future[Result] = {
-    getCompleteDetailsService.getCompleteSignUpDetails(reference, user.getUtr) flatMap {
+                                 (implicit request: Request[AnyContent]): Future[Result] = {
+    getCompleteDetailsService.getCompleteSignUpDetails(reference) flatMap {
       case Right(completeDetails) => f(completeDetails)
       case Left(_) => Future.successful(Redirect(tasklist.routes.TaskListController.show()))
     }

@@ -69,7 +69,13 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
   )
 
   private def mockCall() =
-    when(mockSignUpConfirmation(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())
+    when(mockSignUpConfirmation(
+      ArgumentMatchers.any(),
+      ArgumentMatchers.any(),
+      ArgumentMatchers.any(),
+      ArgumentMatchers.any(),
+      ArgumentMatchers.any(),
+      ArgumentMatchers.any())
     (ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(HtmlFormat.empty)
 
 
@@ -84,13 +90,12 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
     "submitted is in session" should {
       "return OK" in {
         mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
-        mockGetMandationService("test-utr")(Voluntary, Voluntary)
-        mockGetEligibilityStatus("test-utr")(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+        mockGetMandationService(Voluntary, Voluntary)
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockCall()
         val result = TestConfirmationController.show(
           subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "any")
             .buildRequest(Some(userDetails))
-            .addingToSession(ITSASessionKeys.UTR -> "test-utr")
         )
         status(result) mustBe OK
       }
@@ -99,15 +104,14 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
     "submitted is in session and new Confirmation content applies" should {
       "return OK" in {
         mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
-        mockGetMandationService("test-utr")(Voluntary, Voluntary)
-        mockGetEligibilityStatus("test-utr")(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+        mockGetMandationService(Voluntary, Voluntary)
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockCall()
 
         val result = TestConfirmationController.show(
           subscriptionRequest
             .addingToSession(ITSASessionKeys.MTDITID -> "any")
             .buildRequest(Some(userDetails))
-            .addingToSession(ITSASessionKeys.UTR -> "test-utr")
         )
 
         status(result) mustBe OK

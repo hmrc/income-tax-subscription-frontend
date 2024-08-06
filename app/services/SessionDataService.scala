@@ -95,4 +95,16 @@ class SessionDataService @Inject()(sessionDataConnector: SessionDataConnector) {
     sessionDataConnector.deleteSessionData(ITSASessionKeys.NINO)
   }
 
+  def fetchUTR(implicit hc: HeaderCarrier): Future[GetSessionDataResponse[String]] = {
+    sessionDataConnector.getSessionData[String](ITSASessionKeys.UTR)
+  }
+
+  def saveUTR(utr: String)(implicit hc: HeaderCarrier): Future[SaveSessionDataResponse] = {
+    sessionDataConnector.saveSessionData(ITSASessionKeys.UTR, utr)
+  }
+
+  def deleteUTR(implicit hc: HeaderCarrier): Future[DeleteSessionDataResponse] = {
+    sessionDataConnector.deleteSessionData(ITSASessionKeys.UTR)
+  }
+
 }

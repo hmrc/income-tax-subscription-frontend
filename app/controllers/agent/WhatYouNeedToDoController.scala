@@ -48,11 +48,11 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
   }
 
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
+    _ =>
       for {
         clientDetails <- clientDetailsRetrieval.getClientDetails
-        eligibilityStatus <- eligibilityStatusService.getEligibilityStatus(user.getClientUtr)
-        mandationStatus <- mandationStatusService.getMandationStatus(user.getClientUtr)
+        eligibilityStatus <- eligibilityStatusService.getEligibilityStatus
+        mandationStatus <- mandationStatusService.getMandationStatus
       } yield {
         Ok(whatYouNeedToDo(
           postAction = routes.WhatYouNeedToDoController.submit,

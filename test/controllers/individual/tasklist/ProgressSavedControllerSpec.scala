@@ -31,7 +31,7 @@ import play.api.http.Status.OK
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAuditingService, MockNinoService, MockReferenceRetrieval, MockSubscriptionDetailsService}
+import services.mocks._
 import utilities.individual.TestConstants.{testNino, testUtr}
 import utilities.{CacheExpiryDateProvider, CurrentDateProvider}
 import views.html.individual.tasklist.ProgressSaved
@@ -43,7 +43,8 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
   with MockAuditingService
   with MockSubscriptionDetailsService
   with MockReferenceRetrieval
-  with MockNinoService {
+  with MockNinoService
+  with MockUTRService {
 
   override val controllerName: String = "ProgressSavedController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
@@ -113,9 +114,10 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
         mockFetchProperty(property)
         mockFetchOverseasProperty(overseasProperty)
         mockFetchSelectedTaxYear(selectedTaxYear)
-        mockGetMandationService(testUtr)(Voluntary, Voluntary)
-        mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+        mockGetMandationService(Voluntary, Voluntary)
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockGetNino(testNino)
+        mockGetUTR(testUtr)
 
         val result: Future[Result] = await(controller.show(location = Some("test-location"))(subscriptionRequest))
 
@@ -170,6 +172,7 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
       currentDateProvider,
       cacheExpiryDateProvider,
       mockNinoService,
+      mockUTRService,
       MockSubscriptionDetailsService,
       mockReferenceRetrieval
     )(

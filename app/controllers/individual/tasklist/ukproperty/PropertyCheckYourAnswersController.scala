@@ -40,7 +40,7 @@ class PropertyCheckYourAnswersController @Inject()(propertyCheckYourAnswersView:
                                                    mcc: MessagesControllerComponents) extends SignUpController {
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
+    _ =>
       referenceRetrieval.getIndividualReference flatMap { reference =>
         withProperty(reference) { property =>
           Future.successful(Ok(
@@ -55,7 +55,7 @@ class PropertyCheckYourAnswersController @Inject()(propertyCheckYourAnswersView:
   }
 
   def submit(): Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
+    _ =>
       referenceRetrieval.getIndividualReference flatMap { reference =>
         withProperty(reference) {
           case property@PropertyModel(Some(_), Some(_), _) =>

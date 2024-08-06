@@ -43,7 +43,7 @@ class RemoveSelfEmploymentBusinessController @Inject()(removeBusinessView: Remov
                                                        mcc: MessagesControllerComponents) extends SignUpController {
 
   def show(businessId: String): Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user => {
+    _ => {
       referenceRetrieval.getIndividualReference flatMap { reference =>
         withBusinessData(reference, businessId) { (maybeBusinessNameModel, maybeBusinessTradeNameModel) =>
           Future.successful(Ok(view(businessId, form, maybeBusinessNameModel, maybeBusinessTradeNameModel)))
@@ -53,7 +53,7 @@ class RemoveSelfEmploymentBusinessController @Inject()(removeBusinessView: Remov
   }
 
   def submit(businessId: String): Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user => {
+    _ => {
       referenceRetrieval.getIndividualReference flatMap { reference =>
         form.bindFromRequest().fold(
           formWithErrors => {

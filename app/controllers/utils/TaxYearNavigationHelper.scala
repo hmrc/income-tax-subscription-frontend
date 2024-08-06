@@ -16,10 +16,8 @@
 
 package controllers.utils
 
-import auth.agent.IncomeTaxAgentUser
-import auth.individual.IncomeTaxSAUser
+import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
-import play.api.mvc.{AnyContent, Request, Result}
 import services.{GetEligibilityStatusService, MandationStatusService}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -31,13 +29,11 @@ trait TaxYearNavigationHelper {
   val getEligibilityStatusService: GetEligibilityStatusService
 
   def handleUnableToSelectTaxYearIndividual(ableToSelect: Future[Result])
-                                           (implicit request: Request[AnyContent],
-                                            user: IncomeTaxSAUser,
-                                            hc: HeaderCarrier,
+                                           (implicit hc: HeaderCarrier,
                                             ec: ExecutionContext): Future[Result] = {
 
-    mandationStatusService.getMandationStatus(user.getUtr) flatMap { mandationStatus =>
-      getEligibilityStatusService.getEligibilityStatus(user.getUtr) flatMap { eligibilityStatus =>
+    mandationStatusService.getMandationStatus flatMap { mandationStatus =>
+      getEligibilityStatusService.getEligibilityStatus flatMap { eligibilityStatus =>
         val isMandatedCurrentYear: Boolean = mandationStatus.currentYearStatus.isMandated
         val isEligibleNextYearOnly: Boolean = eligibilityStatus.eligibleNextYearOnly
 
@@ -48,17 +44,14 @@ trait TaxYearNavigationHelper {
         }
       }
     }
-
   }
 
   def handleUnableToSelectTaxYearAgent(ableToSelect: Future[Result])
-                                      (implicit request: Request[AnyContent],
-                                       user: IncomeTaxAgentUser,
-                                       hc: HeaderCarrier,
+                                      (implicit hc: HeaderCarrier,
                                        ec: ExecutionContext): Future[Result] = {
 
-    mandationStatusService.getMandationStatus(user.getClientUtr) flatMap { mandationStatus =>
-      getEligibilityStatusService.getEligibilityStatus(user.getClientUtr) flatMap { eligibilityStatus =>
+    mandationStatusService.getMandationStatus flatMap { mandationStatus =>
+      getEligibilityStatusService.getEligibilityStatus flatMap { eligibilityStatus =>
         val isMandatedCurrentYear: Boolean = mandationStatus.currentYearStatus.isMandated
         val isEligibleNextYearOnly: Boolean = eligibilityStatus.eligibleNextYearOnly
 
@@ -70,5 +63,4 @@ trait TaxYearNavigationHelper {
       }
     }
   }
-
 }

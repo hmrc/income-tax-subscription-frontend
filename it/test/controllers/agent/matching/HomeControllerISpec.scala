@@ -19,7 +19,6 @@ package controllers.agent.matching
 import auth.agent.{AgentSignUp, AgentUserMatching}
 import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
-import helpers.IntegrationTestConstants.{SessionId, testUtr}
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import models.EligibilityStatus
@@ -60,7 +59,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
             AuthStub.stubAuthSuccess()
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, OK, JsBoolean(true))
 
-            val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentSignUp), Map(ITSASessionKeys.UTR -> testUtr))
+            val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentSignUp))
 
             res must have(
               httpStatus(SEE_OTHER),
@@ -75,7 +74,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
               IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
               SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true)))
 
-              val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentSignUp), Map(ITSASessionKeys.UTR -> testUtr))
+              val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentSignUp))
 
               res must have(
                 httpStatus(SEE_OTHER),
@@ -89,7 +88,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
               IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
               SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
 
-              val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentSignUp), Map(ITSASessionKeys.UTR -> testUtr))
+              val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentSignUp))
 
               res must have(
                 httpStatus(SEE_OTHER),

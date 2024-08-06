@@ -114,7 +114,7 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
   "show" must {
     "redirect to the task list page" when {
       "a failure is returned from the get complete details service" in new Setup {
-        when(mockGetCompleteDetailsService.getCompleteSignUpDetails(any(), any())(any()))
+        when(mockGetCompleteDetailsService.getCompleteSignUpDetails(any())(any()))
           .thenReturn(Future.successful(Left(GetCompleteDetailsService.GetCompleteDetailsFailure)))
 
         val result: Future[Result] = controller.show(subscriptionRequest)
@@ -125,7 +125,7 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
     }
     "return OK with the page content" when {
       "complete details are successfully received" in new Setup {
-        when(mockGetCompleteDetailsService.getCompleteSignUpDetails(any(), any())(any()))
+        when(mockGetCompleteDetailsService.getCompleteSignUpDetails(any())(any()))
           .thenReturn(Future.successful(Right(completeDetails)))
 
         when(mockGlobalCheckYourAnswers(
@@ -146,7 +146,7 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
   "submit" must {
     "redirect to the task list page" when {
       "a failure is returned from the get complete details service" in new Setup {
-        when(mockGetCompleteDetailsService.getCompleteSignUpDetails(any(), any())(any()))
+        when(mockGetCompleteDetailsService.getCompleteSignUpDetails(any())(any()))
           .thenReturn(Future.successful(Left(GetCompleteDetailsService.GetCompleteDetailsFailure)))
 
         val result: Future[Result] = controller.submit(subscriptionRequest)
@@ -158,7 +158,7 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
 
     "redirect to the confirmation page" when {
       "the submission of the users details was successful" in new Setup {
-        when(mockGetCompleteDetailsService.getCompleteSignUpDetails(any(), any())(any()))
+        when(mockGetCompleteDetailsService.getCompleteSignUpDetails(any())(any()))
           .thenReturn(Future.successful(Right(completeDetails)))
         mockGetNino(testNino)
         mockSignUpAndCreateIncomeSourcesFromTaskListSuccess(nino = testNino, CreateIncomeSourcesModel.createIncomeSources(testNino, completeDetails))
@@ -172,7 +172,7 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
 
     "throw an InternalServerException" when {
       "a failure is returned from the subscription orchestration submission" in new Setup {
-        when(mockGetCompleteDetailsService.getCompleteSignUpDetails(any(), any())(any()))
+        when(mockGetCompleteDetailsService.getCompleteSignUpDetails(any())(any()))
           .thenReturn(Future.successful(Right(completeDetails)))
         mockGetNino(testNino)
         mockSignUpAndCreateIncomeSourcesFromTaskListFailure(nino = testNino, CreateIncomeSourcesModel.createIncomeSources(testNino, completeDetails))

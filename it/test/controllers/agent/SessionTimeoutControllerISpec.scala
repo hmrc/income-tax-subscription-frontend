@@ -16,8 +16,7 @@
 
 package controllers.agent
 
-import common.Constants.ITSASessionKeys
-import helpers.IntegrationTestConstants.{testARN, testUtr}
+import helpers.IntegrationTestConstants.testARN
 import helpers.SessionCookieCrumbler
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
@@ -45,9 +44,8 @@ class SessionTimeoutControllerISpec extends ComponentSpecBase with SessionCookie
     "an agent user chooses to not time out" should {
       "return an OK and keep the session" in {
         AuthStub.stubAuthSuccess()
-        val sessionMap = Map(
-          ITSASessionKeys.UTR -> testUtr)
-        val res = IncomeTaxSubscriptionFrontend.keepAlive(sessionMap)
+
+        val res = IncomeTaxSubscriptionFrontend.keepAlive()
         res must have(
           httpStatus(OK)
         )
@@ -59,10 +57,8 @@ class SessionTimeoutControllerISpec extends ComponentSpecBase with SessionCookie
     "a  user times out" should {
       "redirect and sign out the user" in {
         AuthStub.stubAuthSuccess()
-        val sessionMap = Map(
-          ITSASessionKeys.UTR -> testUtr)
 
-        val res = IncomeTaxSubscriptionFrontend.timeout(sessionMap)
+        val res = IncomeTaxSubscriptionFrontend.timeout()
 
         res must have(
           httpStatus(SEE_OTHER),

@@ -58,7 +58,7 @@ class HomeController @Inject()(val auditingService: AuditingService,
         case Some(_) =>
           Future.successful(Redirect(controllers.agent.routes.WhatYouNeedToDoController.show()))
         case None =>
-          getEligibilityStatusService.getEligibilityStatus(user.getClientUtr) map { eligibilityStatus =>
+          getEligibilityStatusService.getEligibilityStatus map { eligibilityStatus =>
             if (eligibilityStatus.eligibleNextYearOnly) {
               Redirect(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show)
             } else {

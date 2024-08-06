@@ -20,7 +20,7 @@ import auth.agent.{AgentUserMatching, AuthPredicates, IncomeTaxAgentUser, Statel
 import auth.individual.AuthPredicate.AuthPredicate
 import cats.data.EitherT
 import common.Constants.ITSASessionKeys
-import common.Constants.ITSASessionKeys.{MTDITID, UTR}
+import common.Constants.ITSASessionKeys.{CLIENT_DETAILS_CONFIRMED, MTDITID}
 import config.AppConfig
 import connectors.httpparser.DeleteSessionDataHttpParser
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -49,7 +49,7 @@ class AddAnotherClientController @Inject()(val auditingService: AuditingService,
       } yield {
         Redirect(controllers.agent.matching.routes.ClientDetailsController.show())
           .addingToSession(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name)
-          .removingFromSession(MTDITID, UTR)
+          .removingFromSession(MTDITID, CLIENT_DETAILS_CONFIRMED)
           .clearUserName
       }
 

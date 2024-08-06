@@ -51,7 +51,7 @@ class OverseasPropertyAccountingMethodController @Inject()(overseasPropertyAccou
   }
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
+    _ =>
       referenceRetrieval.getIndividualReference flatMap { reference =>
         subscriptionDetailsService.fetchOverseasPropertyAccountingMethod(reference) map { accountingMethodOverseasProperty =>
           Ok(view(overseasPropertyAccountingMethodForm =
@@ -62,7 +62,7 @@ class OverseasPropertyAccountingMethodController @Inject()(overseasPropertyAccou
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
+    _ =>
       referenceRetrieval.getIndividualReference flatMap { reference =>
         AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm.bindFromRequest().fold(
           formWithErrors =>

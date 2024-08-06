@@ -42,7 +42,6 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
       When("GET business/overseas-property-check-your-answers is called")
       val res = IncomeTaxSubscriptionFrontend.getOverseasPropertyCheckYourAnswers(
         Map(
-          ITSASessionKeys.UTR -> testUtr,
           UserMatchingSessionUtil.firstName -> testFirstName,
           UserMatchingSessionUtil.lastName -> testLastName
         )
@@ -74,7 +73,7 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
           IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
           When("POST business/overseas-property-check-your-answers is called")
-          val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers(Map(ITSASessionKeys.UTR -> testUtr))
+          val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers()
 
           Then("Should return a SEE_OTHER with a redirect location of the your income sources page")
           res must have(
@@ -91,7 +90,7 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(OverseasPropertyModel(accountingMethod = Some(Cash))))
           When("POST business/overseas-property-check-your-answers is called")
-          val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers(Map(ITSASessionKeys.UTR -> testUtr))
+          val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers()
 
           Then("Should return a SEE_OTHER with a redirect location of the your income sources page")
           res must have(

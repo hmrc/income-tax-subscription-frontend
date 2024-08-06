@@ -26,21 +26,24 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class MandationStatusService @Inject()(mandationStatusConnector: MandationStatusConnector,
                                        ninoService: NinoService,
+                                       utrService: UTRService,
                                        sessionDataService: SessionDataService)
                                       (implicit ec: ExecutionContext) {
 
-  def getMandationStatus(utr: String)(implicit hc: HeaderCarrier): Future[MandationStatusModel] = {
+  def getMandationStatus(implicit hc: HeaderCarrier): Future[MandationStatusModel] = {
     sessionDataService.fetchMandationStatus flatMap {
       case Right(Some(mandationStatus)) => Future.successful(mandationStatus)
       case Right(None) =>
         ninoService.getNino flatMap { nino =>
-          mandationStatusConnector.getMandationStatus(nino = nino, utr = utr) flatMap {
-            case Right(mandationStatus) =>
-              sessionDataService.saveMandationStatus(mandationStatus) map {
-                case Right(_) => mandationStatus
-                case Left(error) => throw new SaveToSessionException(error.toString)
-              }
-            case Left(error) => throw new FetchFromAPIException(error.toString)
+          utrService.getUTR flatMap { utr =>
+            mandationStatusConnector.getMandationStatus(nino = nino, utr = utr) flatMap {
+              case Right(mandationStatus) =>
+                sessionDataService.saveMandationStatus(mandationStatus) map {
+                  case Right(_) => mandationStatus
+                  case Left(error) => throw new SaveToSessionException(error.toString)
+                }
+              case Left(error) => throw new FetchFromAPIException(error.toString)
+            }
           }
         }
       case Left(error) => throw new FetchFromSessionException(error.toString)

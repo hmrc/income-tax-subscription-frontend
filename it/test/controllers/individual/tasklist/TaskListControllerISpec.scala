@@ -44,6 +44,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
         val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
 
@@ -68,6 +69,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(IncomeSourceConfirmation, NO_CONTENT)
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
         val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
 
@@ -93,6 +95,7 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(IncomeSourceConfirmation, OK, Json.toJson(true))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
         val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
 

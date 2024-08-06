@@ -235,16 +235,30 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
           }
         }
         "the agent successfully matches against their client" when {
-          "saving the nino to session was successful" should {
-            "redirect to the confirmed client resolver" in withController { controller =>
-              setupMockNotLockedOut(testARN)
-              mockOrchestrateAgentQualificationSuccess(testARN, testNino, Some(testUtr))
-              mockSaveNino(testNino)(Right(SaveSessionDataSuccessResponse))
+          "saving the nino to session was successful" when {
+            "saving the utr to session was successful" should {
+              "redirect to the confirmed client resolver" in withController { controller =>
+                setupMockNotLockedOut(testARN)
+                mockOrchestrateAgentQualificationSuccess(testARN, testNino, Some(testUtr))
+                mockSaveNino(testNino)(Right(SaveSessionDataSuccessResponse))
+                mockSaveUTR(testUtr)(Right(SaveSessionDataSuccessResponse))
 
-              val result: Future[Result] = controller.submit()(request)
+                val result: Future[Result] = controller.submit()(request)
 
-              status(result) mustBe SEE_OTHER
-              redirectLocation(result) mustBe Some(routes.ConfirmedClientResolver.resolve.url)
+                status(result) mustBe SEE_OTHER
+                redirectLocation(result) mustBe Some(routes.ConfirmedClientResolver.resolve.url)
+              }
+            }
+            "saving the utr to session had a failure" should {
+              "throw an InternalServerException" in withController { controller =>
+                setupMockNotLockedOut(testARN)
+                mockOrchestrateAgentQualificationSuccess(testARN, testNino, Some(testUtr))
+                mockSaveNino(testNino)(Right(SaveSessionDataSuccessResponse))
+                mockSaveUTR(testUtr)(Left(SaveSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
+
+                intercept[InternalServerException](await(controller.submit()(request)))
+                  .message mustBe "[ConfirmClientController][handleApprovedAgent] - failure when saving utr to session"
+              }
             }
           }
           "saving the nino to session had a failure" should {

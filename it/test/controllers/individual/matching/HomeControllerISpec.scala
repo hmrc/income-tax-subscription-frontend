@@ -55,6 +55,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
           CitizenDetailsStub.stubCIDUserWithNinoAndUtrAndName(testNino, testUtr, testFirstName, testLastName)
           SubscriptionStub.stubGetSubscriptionFound()
           SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(NO_CONTENT)
 
           When("GET /index is called")
           val res = IncomeTaxSubscriptionFrontend.indexPage()
@@ -78,6 +79,8 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
             EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
             SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = false))(OK)
             SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+            SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
 
             When("GET /index is called")
             val res = IncomeTaxSubscriptionFrontend.indexPage()
@@ -100,6 +103,8 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
             EligibilityStub.stubEligibilityResponse(testUtr)(response = false)
             SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = false))(OK)
             SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+            SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
 
             When("GET /index is called")
             val res = IncomeTaxSubscriptionFrontend.indexPage()
@@ -145,6 +150,8 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
               EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
               SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = false))(OK)
               SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+              SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+              SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
 
               When("GET /index is called")
               val res = IncomeTaxSubscriptionFrontend.indexPage()
@@ -154,13 +161,6 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
                 httpStatus(SEE_OTHER),
                 redirectURI(IndividualURI.spsHandoffRouteURI)
               )
-
-              val cookie = getSessionMap(res)
-              cookie.keys must contain(ITSASessionKeys.UTR)
-              cookie(ITSASessionKeys.UTR) mustBe testUtr
-
-              cookie.keys must contain(ITSASessionKeys.FULLNAME)
-              cookie(ITSASessionKeys.FULLNAME) mustBe testFullName
             }
             "the user has no name" should {
               "continue normally" in {
@@ -172,6 +172,8 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
                 EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
                 SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = false))(OK)
                 SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+                SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+                SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
 
                 When("GET /index is called")
                 val res = IncomeTaxSubscriptionFrontend.indexPage()
@@ -183,8 +185,6 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
                 )
 
                 val cookie = getSessionMap(res)
-                cookie.keys must contain(ITSASessionKeys.UTR)
-                cookie(ITSASessionKeys.UTR) mustBe testUtr
 
                 cookie.keys must not contain ITSASessionKeys.FULLNAME
               }
@@ -201,6 +201,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
           SubscriptionStub.stubGetNoSubscription()
           CitizenDetailsStub.stubCIDUserWithNoUtr(testNino)
           SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(NO_CONTENT)
 
           When("GET /index is called")
           val res = IncomeTaxSubscriptionFrontend.indexPage()
@@ -212,7 +213,6 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
           )
 
           val cookie = getSessionMap(res)
-          cookie.keys must not contain ITSASessionKeys.UTR
           cookie.keys must not contain ITSASessionKeys.FULLNAME
         }
       }
@@ -224,7 +224,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
           SubscriptionStub.stubGetNoSubscription()
           CitizenDetailsStub.stubCIDNotFound(testNino)
           SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-          
+
           When("GET /index is called")
           val res = IncomeTaxSubscriptionFrontend.indexPage()
 
@@ -235,7 +235,6 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
           )
 
           val cookie = getSessionMap(res)
-          cookie.keys must not contain ITSASessionKeys.UTR
           cookie.keys must not contain ITSASessionKeys.FULLNAME
         }
       }

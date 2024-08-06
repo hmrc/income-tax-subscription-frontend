@@ -44,7 +44,7 @@ class RemoveOverseasPropertyController @Inject()(removeOverseasProperty: RemoveO
                                                  mcc: MessagesControllerComponents) extends SignUpController {
 
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
+    _ =>
       referenceRetrieval.getIndividualReference flatMap { reference =>
         subscriptionDetailsService.fetchOverseasProperty(reference) map {
           case Some(_) =>
@@ -56,7 +56,7 @@ class RemoveOverseasPropertyController @Inject()(removeOverseasProperty: RemoveO
   }
 
   def submit: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
+    _ =>
       form.bindFromRequest().fold(
         hasErrors => Future.successful(BadRequest(view(form = hasErrors))), {
           case Yes => referenceRetrieval.getIndividualReference flatMap { reference =>

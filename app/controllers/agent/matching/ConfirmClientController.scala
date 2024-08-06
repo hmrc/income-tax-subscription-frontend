@@ -190,12 +190,16 @@ class ConfirmClientController @Inject()(checkYourClientDetails: CheckYourClientD
   private def handleApprovedAgent(arn: String, nino: String, utr: String, clientDetails: UserDetailsModel)
                                  (implicit request: Request[AnyContent]): Future[Result] = {
     auditDetailsEntered(arn, clientDetails, getCurrentFailureCount(), lockedOut = false)
-    sessionDataService.saveNino(nino) map {
+    sessionDataService.saveNino(nino) flatMap {
       case Right(_) =>
-        Redirect(routes.ConfirmedClientResolver.resolve)
-          .addingToSession(ITSASessionKeys.UTR -> utr)
-          .removingFromSession(FailedClientMatching)
-          .clearUserDetailsExceptName
+        sessionDataService.saveUTR(utr) map {
+          case Right(_) =>
+            Redirect(routes.ConfirmedClientResolver.resolve)
+              .addingToSession(ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true")
+              .removingFromSession(FailedClientMatching)
+              .clearUserDetailsExceptName
+          case Left(_) => throw new InternalServerException("[ConfirmClientController][handleApprovedAgent] - failure when saving utr to session")
+        }
       case Left(_) => throw new InternalServerException("[ConfirmClientController][handleApprovedAgent] - failure when saving nino to session")
     }
 

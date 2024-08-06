@@ -20,34 +20,19 @@ import common.Constants
 import common.Constants.ITSASessionKeys
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.http.InternalServerException
 
 trait IncomeTaxUser {
   val enrolments: Enrolments
   val affinityGroup: Option[AffinityGroup]
 }
 
-case class UserIdentifiers(utrMaybe: Option[String], nameMaybe: Option[String], entityIdMaybe: Option[String])
+case class UserIdentifiers(nameMaybe: Option[String], entityIdMaybe: Option[String])
 
 class IncomeTaxSAUser(val enrolments: Enrolments,
                       val affinityGroup: Option[AffinityGroup],
                       val credentialRole: Option[CredentialRole],
                       val confidenceLevel: ConfidenceLevel,
                       val userId: String) extends IncomeTaxUser {
-
-  def utr(implicit request: Request[AnyContent]): Option[String] = {
-    getEnrolment(Constants.utrEnrolmentName) match {
-      case None => request.session.get(ITSASessionKeys.UTR)
-      case x => x
-    }
-  }
-
-  def getUtr(implicit request: Request[AnyContent]): String = {
-    utr match {
-      case Some(value) => value
-      case None => throw new InternalServerException("[IncomeTaxSAUser][getUtr] - Unable to retrieve utr")
-    }
-  }
 
   lazy val isAssistant: Boolean = credentialRole match {
     case Some(Assistant) => true
@@ -63,8 +48,9 @@ class IncomeTaxSAUser(val enrolments: Enrolments,
     }
   }
 
-  def getUserIdentifiersFromSession()(implicit request: Request[AnyContent]): UserIdentifiers =
-    UserIdentifiers(utr, IncomeTaxSAUser.fullName, IncomeTaxSAUser.spsEntityId)
+  def getSPSEntityId(implicit request: Request[AnyContent]): Option[String] = {
+    request.session.get(ITSASessionKeys.SPSEntityId)
+  }
 
   lazy val mtdItsaRef: Option[String] = getEnrolment(Constants.mtdItsaEnrolmentName)
 }
@@ -72,7 +58,4 @@ class IncomeTaxSAUser(val enrolments: Enrolments,
 object IncomeTaxSAUser {
   def fullName(implicit request: Request[AnyContent]): Option[String] =
     request.session.get(ITSASessionKeys.FULLNAME)
-
-  def spsEntityId(implicit request: Request[AnyContent]): Option[String] =
-    request.session.data.get(ITSASessionKeys.SPSEntityId)
 }

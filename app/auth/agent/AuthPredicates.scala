@@ -48,7 +48,7 @@ object AuthPredicates extends Results {
     else Left(Future.failed(new NotFoundException("auth.AuthPredicates.hasSubmitted")))
 
   val hasClientDetails: AuthPredicate[IncomeTaxAgentUser] = request => _ =>
-    if (request.session.get(ITSASessionKeys.UTR).isDefined) Right(AuthPredicateSuccess)
+    if (request.session.get(ITSASessionKeys.CLIENT_DETAILS_CONFIRMED).isDefined) Right(AuthPredicateSuccess)
     else Left(Future.successful(Redirect(controllers.agent.matching.routes.CannotGoBackToPreviousClientController.show)))
 
   val timeoutPredicate: AuthPredicate[IncomeTaxAgentUser] = request => _ =>

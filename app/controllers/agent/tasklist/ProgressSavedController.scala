@@ -16,7 +16,7 @@
 
 package controllers.agent.tasklist
 
-import auth.agent.{AuthenticatedController, IncomeTaxAgentUser}
+import auth.agent.AuthenticatedController
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
 import models.audits.SaveAndComebackAuditing
@@ -25,7 +25,7 @@ import models.common.business.AccountingMethodModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.api.{Configuration, Environment}
 import services.agent.ClientDetailsRetrieval
-import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SubscriptionDetailsService, UTRService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import utilities.{AccountingPeriodUtil, CacheExpiryDateProvider, CurrentDateProvider}
@@ -39,6 +39,7 @@ class ProgressSavedController @Inject()(progressSavedView: ProgressSaved,
                                         currentDateProvider: CurrentDateProvider,
                                         subscriptionDetailsService: SubscriptionDetailsService,
                                         referenceRetrieval: ReferenceRetrieval,
+                                        utrService: UTRService,
                                         clientDetailsRetrieval: ClientDetailsRetrieval,
                                         cacheExpiryDateProvider: CacheExpiryDateProvider)
                                        (val auditingService: AuditingService,
@@ -76,19 +77,20 @@ class ProgressSavedController @Inject()(progressSavedView: ProgressSaved,
                                  reference: String,
                                  arn: String,
                                  location: String
-                               )(implicit request: Request[AnyContent], user: IncomeTaxAgentUser, hc: HeaderCarrier): Future[SaveAndComeBackAuditModel] = {
+                               )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[SaveAndComeBackAuditModel] = {
 
     for {
       clientDetails <- clientDetailsRetrieval.getClientDetails
+      utr <- utrService.getUTR
       (businesses, accountingMethod) <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
       property <- subscriptionDetailsService.fetchProperty(reference)
       overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
-      selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getClientUtr)
+      selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
     } yield {
       SaveAndComeBackAuditModel(
         userType = SaveAndComebackAuditing.agentUserType,
         maybeAgentReferenceNumber = Some(arn),
-        utr = user.getClientUtr,
+        utr = utr,
         saveAndRetrieveLocation = location,
         nino = clientDetails.nino,
         currentTaxYear = AccountingPeriodUtil.getTaxEndYear(currentDateProvider.getCurrentDate),

@@ -17,11 +17,8 @@
 package auth.individual
 
 import common.Constants
-import common.Constants.ITSASessionKeys
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneServerPerTest
-import play.api.mvc.AnyContentAsEmpty
-import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.ConfidenceLevel.L50
 import uk.gov.hmrc.auth.core._
 import utilities.individual.TestConstants.{testCredId, testNino, testUtr}
@@ -30,8 +27,6 @@ class IncomeTaxSAUserSpec extends PlaySpec with GuiceOneServerPerTest {
 
   "IncomeTaxSAUser" when {
     "Nino and UTR are retrieved from auth" should {
-      implicit lazy val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
-
       val confidenceLevel = L50
 
       val fullEnrolments = Enrolments(
@@ -54,10 +49,6 @@ class IncomeTaxSAUserSpec extends PlaySpec with GuiceOneServerPerTest {
         ""
       )
 
-      s"have the expected UTR $testUtr" in {
-        user.utr mustBe Some(testUtr)
-      }
-
       s"have the confidence level of $confidenceLevel" in {
         user.confidenceLevel mustBe confidenceLevel
       }
@@ -66,10 +57,6 @@ class IncomeTaxSAUserSpec extends PlaySpec with GuiceOneServerPerTest {
     "Nino and UTR are stored in session after being pulled from CID" should {
       val confidenceLevel = ConfidenceLevel.L50
 
-      implicit lazy val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
-        ITSASessionKeys.UTR -> testUtr
-      )
-
       lazy val user = new IncomeTaxSAUser(
         Enrolments(Set.empty),
         None,
@@ -77,10 +64,6 @@ class IncomeTaxSAUserSpec extends PlaySpec with GuiceOneServerPerTest {
         confidenceLevel,
         ""
       )
-
-      s"have the expected UTR $testUtr" in {
-        user.utr mustBe Some(testUtr)
-      }
 
       "have the default confidence level of 50" in {
         user.confidenceLevel mustBe ConfidenceLevel.L50

@@ -52,19 +52,19 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
   def savePrePopFlag(reference: String, prepop: Boolean)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] =
     incomeTaxSubscriptionConnector.saveSubscriptionDetails[Boolean](reference, PrePopFlag, prepop)
 
-  private def getEligibilityNextYearOnly(utr: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
-    eligibilityStatusService.getEligibilityStatus(utr).map(_.eligibleNextYearOnly)
+  private def getEligibilityNextYearOnly(implicit hc: HeaderCarrier): Future[Boolean] = {
+    eligibilityStatusService.getEligibilityStatus.map(_.eligibleNextYearOnly)
   }
 
-  private def getMandationForCurrentYear(utr: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
-    mandationStatusService.getMandationStatus(utr).map(_.currentYearStatus.isMandated)
+  private def getMandationForCurrentYear(implicit hc: HeaderCarrier): Future[Boolean] = {
+    mandationStatusService.getMandationStatus.map(_.currentYearStatus.isMandated)
   }
 
-  def fetchSelectedTaxYear(reference: String, utr: String)(implicit hc: HeaderCarrier): Future[Option[AccountingYearModel]] = {
+  def fetchSelectedTaxYear(reference: String)(implicit hc: HeaderCarrier): Future[Option[AccountingYearModel]] = {
     for {
       storedTaxYear <- incomeTaxSubscriptionConnector.getSubscriptionDetails[AccountingYearModel](reference, SubscriptionDataKeys.SelectedTaxYear)
-      mandatedCurrentYear <- getMandationForCurrentYear(utr)
-      eligibleNextYearOnly <- getEligibilityNextYearOnly(utr)
+      mandatedCurrentYear <- getMandationForCurrentYear
+      eligibleNextYearOnly <- getEligibilityNextYearOnly
     } yield {
       if (mandatedCurrentYear) {
         Some(AccountingYearModel(Current, confirmed = true, editable = false))

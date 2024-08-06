@@ -140,4 +140,19 @@ trait MockSessionDataService extends MockitoSugar with BeforeAndAfterEach {
       .thenReturn(Future.successful(result))
   }
 
+  def mockFetchUTR(result: GetSessionDataResponse[String]): Unit = {
+    when(mockSessionDataService.fetchUTR(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(result))
+  }
+
+  def mockSaveUTR(utr: String)(result: SaveSessionDataResponse): Unit = {
+    when(mockSessionDataService.saveUTR(ArgumentMatchers.eq(utr))(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(result))
+  }
+
+  def mockDeleteUTR(result: DeleteSessionDataResponse): Unit = {
+    when(mockSessionDataService.deleteUTR(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(result))
+  }
+
 }
