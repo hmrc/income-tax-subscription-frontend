@@ -64,8 +64,8 @@ class ConfirmClientController @Inject()(checkYourClientDetails: CheckYourClientD
             case Left(ClientAlreadySubscribed) => Future.successful(handleClientAlreadySubscribed(user.arn, clientDetails))
             case Left(UnexpectedFailure) => Future.successful(handleUnexpectedFailure(user.arn, clientDetails))
             case Left(_: UnApprovedAgent) => Future.successful(handleUnapprovedAgent(user.arn, clientDetails))
-            case Right(ApprovedAgent(_, None)) => Future.successful(handleApprovedAgentWithoutClientUTR(user.arn, clientDetails))
-            case Right(ApprovedAgent(_, Some(utr))) => handleApprovedAgent(user.arn, utr, clientDetails)
+            case Right(ApprovedAgent(nino, None)) => Future.successful(handleApprovedAgentWithoutClientUTR(user.arn, nino, clientDetails))
+            case Right(ApprovedAgent(nino, Some(utr))) => handleApprovedAgent(user.arn, nino, utr, clientDetails)
           }
         }
       }
@@ -173,13 +173,13 @@ class ConfirmClientController @Inject()(checkYourClientDetails: CheckYourClientD
     Redirect(controllers.agent.matching.routes.NoClientRelationshipController.show).removingFromSession(FailedClientMatching)
   }
 
-  private def handleApprovedAgentWithoutClientUTR(arn: String, clientDetails: UserDetailsModel)
+  private def handleApprovedAgentWithoutClientUTR(arn: String, nino: String, clientDetails: UserDetailsModel)
                                                  (implicit request: Request[AnyContent]): Result = {
     auditDetailsEntered(arn, clientDetails, getCurrentFailureCount(), lockedOut = false)
     auditingService.audit(EligibilityAuditModel(
       agentReferenceNumber = Some(arn),
       utr = None,
-      nino = Some(clientDetails.nino),
+      nino = Some(nino),
       eligibility = "ineligible",
       failureReason = Some("no-self-assessment")
     ))
@@ -187,10 +187,10 @@ class ConfirmClientController @Inject()(checkYourClientDetails: CheckYourClientD
       .removingFromSession(FailedClientMatching)
   }
 
-  private def handleApprovedAgent(arn: String, utr: String, clientDetails: UserDetailsModel)
+  private def handleApprovedAgent(arn: String, nino: String, utr: String, clientDetails: UserDetailsModel)
                                  (implicit request: Request[AnyContent]): Future[Result] = {
     auditDetailsEntered(arn, clientDetails, getCurrentFailureCount(), lockedOut = false)
-    sessionDataService.saveNino(clientDetails.nino) map {
+    sessionDataService.saveNino(nino) map {
       case Right(_) =>
         Redirect(routes.ConfirmedClientResolver.resolve)
           .addingToSession(ITSASessionKeys.UTR -> utr)
