@@ -30,13 +30,11 @@ import services.AccountingPeriodService
 import utilities.AccountingPeriodUtil.getCurrentTaxEndYear
 import utilities.ViewSpec
 import views.html.agent.tasklist.TaskList
+import controllers.agent.tasklist.taxyear.routes
 
 import scala.util.Random
 
 class TaskListViewSpec extends ViewSpec {
-
-  val selectorForFirstBusiness = "ol > li:nth-of-type(2) > ul:nth-of-type(1)"
-  val selectorForFirstParaOfBusiness = "ol > li:nth-of-type(2)"
 
   val taskListView: TaskList = app.injector.instanceOf[TaskList]
 
@@ -58,14 +56,26 @@ class TaskListViewSpec extends ViewSpec {
 
   private val emptyTaskList = customTaskListModel()
 
-  private val partialTaskList = customTaskListModel(
-    taxYearSelection = Some(AccountingYearModel(Current)),
-    selfEmployments = Seq(
-      SelfEmploymentData("id1", businessName = Some(BusinessNameModel("Name1"))),
-      SelfEmploymentData("id2", businessName = Some(BusinessNameModel("Name2")), businessTradeName = Some(BusinessTradeNameModel("TradeName")))
-    ),
-    ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")))),
-    overseasProperty = Some(OverseasPropertyModel(startDate = Some(DateModel("1", "2", "3"))))
+  private val partialTaskListIncomeOnly = customTaskListModel(
+    taxYearSelection = None,
+    selfEmployments = Seq(SelfEmploymentData(
+      id = "id1",
+      businessStartDate = Some(BusinessStartDate(DateModel("1", "2", "1980"))),
+      businessName = Some(BusinessNameModel("Name1")),
+      businessTradeName = Some(BusinessTradeNameModel("TradeName")),
+      businessAddress = Some(BusinessAddressModel(Address(Seq("line1"), Some("Postcode")))),
+      confirmed = true
+    )),
+    ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
+    overseasProperty = Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("1", "2", "3")), confirmed = true)),
+    incomeSourcesConfirmed = Some(true)
+  )
+
+  private val partialTaskListTaxYearOnly = customTaskListModel(
+    taxYearSelection = Some(AccountingYearModel(Current, confirmed = true)),
+    selfEmployments = Nil,
+    ukProperty = None,
+    overseasProperty = None
   )
 
   private val completeTaskList = TaskListModel(
@@ -105,7 +115,7 @@ class TaskListViewSpec extends ViewSpec {
 
   def document(taskList: TaskListModel): Document = Jsoup.parse(page(taskList).body)
 
-  "business task list view" when {
+  "Task List view" when {
 
     "given empty task list model" must {
       def doc = document(emptyTaskList)
@@ -115,15 +125,12 @@ class TaskListViewSpec extends ViewSpec {
       }
 
       "have a contents list" in {
-        val contentList = doc.select("ol").select("h2")
+        val contentList = doc.select("h2")
         contentList.text() must include(agentItem1)
         contentList.text() must include(agentItem2)
         contentList.text() must include(agentItem3)
       }
 
-      "display the save and come back later button" in {
-        doc.mainContent.getElementsByClass("govuk-button--secondary").text mustBe saveAndComeBackLater
-      }
 
       "display the dynamic content correctly" when {
         "there is no user data" must {
@@ -131,151 +138,222 @@ class TaskListViewSpec extends ViewSpec {
             doc.mainContent.getElementsByClass("govuk-summary-list__key").text contains s"Client: $clientName | $clientNino |$clientUtr"
           }
 
-          "display the add your income sources link and tag" in {
+          "display income sources and select tax year items with links, hints and incomplete status" in {
 
-            val incomeSourcesSection = doc.mainContent.selectHead(".app-task-list").selectNth("li", 2)
-            val incomeSourcesRow = incomeSourcesSection.selectHead("ul").selectHead("li")
+            val clientIncomeSources = doc.mainContent.selectHead("ul").selectHead("li")
+            val clientIncomeSourcesTag = doc.mainContent.selectHead("ul").selectHead("li").selectHead("#client-details-1-status")
 
-            val incomeSourcesLink = incomeSourcesRow.selectNth("span", 1).selectHead("a")
-            incomeSourcesLink.text mustBe addYourClientsIncomeSource
-            incomeSourcesLink.attr("href") mustBe controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
+            clientIncomeSources.selectHead("a").text mustBe addYourClientsIncomeSource
+            clientIncomeSources.selectHead("a").attr("href") mustBe controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
+            clientIncomeSourcesTag.text mustBe incomplete
+            clientIncomeSources.select("#client-details-1-hint").text mustBe addYourClientsIncomeSourceHint
 
-            val incomeSourcesTag = incomeSourcesRow.selectNth("span", 2)
-            incomeSourcesTag.selectHead("strong").text mustBe notStarted
+            val clientSelectTaxYear = doc.mainContent.selectHead("ul").selectNth("li", 2)
+            val clientSelectTaxYearTag = doc.mainContent.selectHead("ul").selectNth("li", 2).selectHead("#client-details-2-status")
 
-            incomeSourcesLink.attr("aria-describedby") mustBe incomeSourcesTag.id
+            clientSelectTaxYear.selectHead("a").text mustBe selectTaxYear
+            clientSelectTaxYear.selectHead("a").attr("href") mustBe controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+            clientSelectTaxYearTag.text mustBe incomplete
+            clientSelectTaxYear.select("#client-details-2-hint").text mustBe selectTaxYearHintBoth
 
-            doc.mainContent.selectOptionally("#add_business") mustBe None
           }
 
-          "in the select tax year section: display the select tax year link with status incomplete" when {
-            "the user has not selected any tax year to sign up" in {
-              val selectTaxYearSection = doc.mainContent.selectHead(".app-task-list").selectHead("li:nth-of-type(3)")
-              val selectTaxYearRow = selectTaxYearSection.selectHead("ul").selectHead("li")
-              val selectTaxYearLink = selectTaxYearRow.selectNth("span", 1).selectHead("a")
-              selectTaxYearLink.text mustBe selectTaxYear
-              selectTaxYearLink.attr("href") mustBe controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
-              selectTaxYearRow.selectNth("span", 2).text mustBe notStarted
-              selectTaxYearRow.selectHead("strong").attr("class") mustBe "govuk-tag govuk-tag--grey"
-            }
+          "display Review and sign up with disabled link and status" in {
+
+            val signUpYourClient = doc.mainContent.selectNth("ul", 2).selectHead("li").selectHead("div")
+            val signUpYourClientTag = doc.mainContent.selectNth("ul", 2).selectHead("li").select("#sign-up-section-1-status")
+
+            signUpYourClient.text mustBe signUpClientLinkText
+            signUpYourClientTag.text mustBe cannotStart
+
           }
 
-          "display the sign up incomplete text" in {
-            val incompleteText = doc.mainContent.selectHead("p")
-            incompleteText.text mustBe agentSignUpIncompleteText
+          "display the save and come back later button" in {
+            doc.mainContent.getElementsByClass("govuk-button--secondary").text mustBe saveAndComeBackLater
           }
 
-          "do not display the sign up button" in {
-            doc.mainContent.selectOptionally("button") mustBe None
-          }
         }
 
       }
     }
-    "given partial task list model" must {
-      def doc = document(partialTaskList)
+
+
+    "given partial Task List model with only income sources completed" must {
+      def doc = document(partialTaskListIncomeOnly)
+
+      "have a title" in {
+        doc.title mustBe agentTitle
+      }
+
+      "have a contents list" in {
+        val contentList = doc.select("h2")
+        contentList.text() must include(agentItem1)
+        contentList.text() must include(agentItem2)
+        contentList.text() must include(agentItem3)
+      }
 
       "in the client information section: have a client name, nino and utr" in {
         doc.mainContent.getElementsByClass("govuk-summary-list__key").text contains s"Client: $clientName | $clientNino |$clientUtr"
       }
 
-      "display the add your income sources link and tag" in {
+      "display income sources item with complete status and select tax year item with incomplete status both with links and hints" in {
 
-        val incomeSourcesSection = doc.mainContent.selectHead(".app-task-list").selectNth("li", 2)
-        val incomeSourcesRow = incomeSourcesSection.selectHead("ul").selectHead("li")
+        val clientIncomeSources = doc.mainContent.selectHead("ul").selectHead("li")
+        val clientIncomeSourcesTag = doc.mainContent.selectHead("ul").selectHead("li").selectHead("#client-details-1-status")
 
-        val incomeSourcesLink = incomeSourcesRow.selectNth("span", 1).selectHead("a")
-        incomeSourcesLink.text mustBe addYourClientsIncomeSource
-        incomeSourcesLink.attr("href") mustBe controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
+        clientIncomeSources.selectHead("a").text mustBe addYourClientsIncomeSource
+        clientIncomeSources.selectHead("a").attr("href") mustBe controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
+        clientIncomeSourcesTag.text mustBe complete
+        clientIncomeSources.select("#client-details-1-hint").text mustBe addYourClientsIncomeSourceHint
 
-        val incomeSourcesTag = incomeSourcesRow.selectNth("span", 2)
-        incomeSourcesTag.selectHead("strong").text mustBe incomplete
+        val clientSelectTaxYear = doc.mainContent.selectHead("ul").selectNth("li", 2)
+        val clientSelectTaxYearTag = doc.mainContent.selectHead("ul").selectNth("li", 2).selectHead("#client-details-2-status")
 
-        incomeSourcesLink.attr("aria-describedby") mustBe incomeSourcesTag.id
+        clientSelectTaxYear.selectHead("a").text mustBe selectTaxYear
+        clientSelectTaxYear.selectHead("a").attr("href") mustBe controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+        clientSelectTaxYearTag.text mustBe incomplete
+        clientSelectTaxYear.select("#client-details-2-hint").text mustBe selectTaxYearHintBoth
 
-        doc.mainContent.selectOptionally("#add_business") mustBe None
       }
 
-      "in the select tax year section: display the select tax year link with status in progress" when {
-        "the user has selected the tax year but not confirmed the answer in tax year CYA page" in {
-          val selectTaxYearSection = doc.mainContent.selectHead(".app-task-list").selectHead("li:nth-of-type(3)")
-          val selectTaxYearRow = selectTaxYearSection.selectHead("ul").selectHead("li")
-          val selectTaxYearLink = selectTaxYearRow.selectNth("span", 1).selectHead("a")
-          selectTaxYearLink.text mustBe selectTaxYear
-          selectTaxYearLink.attr("href") mustBe controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
-          selectTaxYearRow.selectNth("span", 2).text mustBe inProgress
-          selectTaxYearRow.selectHead("strong").attr("class") mustBe "govuk-tag govuk-tag--grey"
-        }
+      "display Review and sign up with disabled link and status" in {
+
+        val signUpYourClient = doc.mainContent.selectNth("ul", 2).selectHead("li").selectHead("div")
+        val signUpYourClientTag = doc.mainContent.selectNth("ul", 2).selectHead("li").select("#sign-up-section-1-status")
+
+        signUpYourClient.text mustBe signUpClientLinkText
+        signUpYourClientTag.text mustBe cannotStart
+
       }
 
-      "display the sign up incomplete text" in {
-        val incompleteText = doc.mainContent.selectHead("p")
-        incompleteText.text mustBe agentSignUpIncompleteText
+      "display the save and come back later button" in {
+        doc.mainContent.getElementsByClass("govuk-button--secondary").text mustBe saveAndComeBackLater
       }
 
-      "do not display the sign up button" in {
-        doc.mainContent.selectOptionally("button") mustBe None
+    }
+
+    "given partial Task List model with only tax year completed" must {
+      def doc = document(partialTaskListTaxYearOnly)
+
+      "have a title" in {
+        doc.title mustBe agentTitle
       }
+
+      "have a contents list" in {
+        val contentList = doc.select("h2")
+        contentList.text() must include(agentItem1)
+        contentList.text() must include(agentItem2)
+        contentList.text() must include(agentItem3)
+      }
+
+      "in the client information section: have a client name, nino and utr" in {
+        doc.mainContent.getElementsByClass("govuk-summary-list__key").text contains s"Client: $clientName | $clientNino |$clientUtr"
+      }
+
+      "display income sources item with incomplete status and select tax year item with complete status both with links and hints" in {
+
+        val clientIncomeSources = doc.mainContent.selectHead("ul").selectHead("li")
+        val clientIncomeSourcesTag = doc.mainContent.selectHead("ul").selectHead("li").selectHead("#client-details-1-status")
+
+        clientIncomeSources.selectHead("a").text mustBe addYourClientsIncomeSource
+        clientIncomeSources.selectHead("a").attr("href") mustBe controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
+        clientIncomeSourcesTag.text mustBe incomplete
+        clientIncomeSources.select("#client-details-1-hint").text mustBe addYourClientsIncomeSourceHint
+
+        val clientSelectTaxYear = doc.mainContent.selectHead("ul").selectNth("li", 2)
+        val clientSelectTaxYearTag = doc.mainContent.selectHead("ul").selectNth("li", 2).selectHead("#client-details-2-status")
+
+        clientSelectTaxYear.selectHead("a").text mustBe selectTaxYear
+        clientSelectTaxYear.selectHead("a").attr("href") mustBe routes.TaxYearCheckYourAnswersController.show(editMode = true).url
+        clientSelectTaxYearTag.text mustBe complete
+        clientSelectTaxYear.select("#client-details-2-hint").text mustBe selectTaxYearHintBoth
+
+      }
+
+      "display Review and sign up with disabled link and status" in {
+
+        val signUpYourClient = doc.mainContent.selectNth("ul", 2).selectHead("li").selectHead("div")
+        val signUpYourClientTag = doc.mainContent.selectNth("ul", 2).selectHead("li").select("#sign-up-section-1-status")
+
+        signUpYourClient.text mustBe signUpClientLinkText
+        signUpYourClientTag.text mustBe cannotStart
+
+      }
+
+      "display the save and come back later button" in {
+        doc.mainContent.getElementsByClass("govuk-button--secondary").text mustBe saveAndComeBackLater
+      }
+
     }
 
 
     "given complete task list model" must {
       def doc = document(completeTaskList)
 
+      "have a title" in {
+        doc.title mustBe agentTitle
+      }
+
+      "have a contents list" in {
+        val contentList = doc.select("h2")
+        contentList.text() must include(agentItem1)
+        contentList.text() must include(agentItem2)
+        contentList.text() must include(agentItem3)
+      }
+
       "in the client information section: have a client name, nino and utr" in {
         doc.mainContent.getElementsByClass("govuk-summary-list__key").text contains s"Client: $clientName | $clientNino |$clientUtr"
       }
 
-      "display the view your income sources link and tag" in {
+      "display income sources and select tax year as complete status with links, hint" in {
 
-        val incomeSourcesSection = doc.mainContent.selectHead(".app-task-list").selectNth("li", 2)
-        val incomeSourcesRow = incomeSourcesSection.selectHead("ul").selectHead("li")
+        val clientIncomeSources = doc.mainContent.selectHead("ul").selectHead("li")
+        val clientIncomeSourcesTag = doc.mainContent.selectHead("ul").selectHead("li").selectHead("#client-details-1-status")
 
-        val incomeSourcesLink = incomeSourcesRow.selectNth("span", 1).selectHead("a")
-        incomeSourcesLink.text mustBe viewYourClientsIncomeSources
-        incomeSourcesLink.attr("href") mustBe controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
+        clientIncomeSources.selectHead("a").text mustBe addYourClientsIncomeSource
+        clientIncomeSources.selectHead("a").attr("href") mustBe controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
+        clientIncomeSourcesTag.text mustBe complete
+        clientIncomeSources.select("#client-details-1-hint").text mustBe addYourClientsIncomeSourceHint
 
-        val incomeSourcesTag = incomeSourcesRow.selectNth("span", 2)
-        incomeSourcesTag.selectHead("strong").text mustBe complete
+        val clientSelectTaxYear = doc.mainContent.selectHead("ul").selectNth("li", 2)
+        val clientSelectTaxYearTag = doc.mainContent.selectHead("ul").selectNth("li", 2).selectHead("#client-details-2-status")
 
-        incomeSourcesLink.attr("aria-describedby") mustBe incomeSourcesTag.id
+        clientSelectTaxYear.selectHead("a").text mustBe selectTaxYear
+        clientSelectTaxYear.selectHead("a").attr("href") mustBe routes.TaxYearCheckYourAnswersController.show(editMode = true).url
+        clientSelectTaxYearTag.text mustBe complete
+        clientSelectTaxYear.select("#client-details-2-hint").text mustBe selectTaxYearHintBoth
 
-        doc.mainContent.selectOptionally("#add_business") mustBe None
       }
 
-      "display a complete tax year with an edit link to the Tax Year CYA" when {
-        "the user has selected the tax year and confirmed the answer in tax year CYA page" in {
-          val selectTaxYearSection = doc.mainContent.selectHead(".app-task-list").selectHead("li:nth-of-type(3)")
-          val selectTaxYearRow = selectTaxYearSection.selectHead("ul").selectHead("li")
-          val selectTaxYearLink = selectTaxYearRow.selectNth("span", 1).selectHead("a")
-          selectTaxYearLink.text mustBe SelectedTaxYear.next(accountingPeriodService.currentTaxYear, accountingPeriodService.currentTaxYear + 1)
-          selectTaxYearLink.attr("href") mustBe controllers.agent.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.show(editMode = true).url
-          selectTaxYearRow.selectNth("span", 2).text mustBe complete
-          selectTaxYearRow.selectHead("strong").attr("class") mustBe "govuk-tag"
-        }
+      "display Review and sign up with active link and status" in {
+
+        val signUpYourClient = doc.mainContent.selectNth("ul", 2).selectHead("li").selectHead("div")
+        val signUpYourClientTag = doc.mainContent.selectNth("ul", 2).selectHead("li").select("#sign-up-section-1-status")
+
+        signUpYourClient.selectHead("a").text mustBe signUpClientLinkText
+        signUpYourClient.selectHead("a").attr("href") mustBe controllers.agent.routes.GlobalCheckYourAnswersController.show.url
+        signUpYourClientTag.text mustBe incomplete
+
       }
 
-      "display the text to let them know they can now sign up" in {
-        doc.mainContent.selectHead("p").text mustBe agentSignUpReadyText
-      }
-
-      "display the sign up button" in {
-        doc.mainContent.selectHead("button").text mustBe submitContinue
+      "display the save and come back later button" in {
+        doc.mainContent.getElementsByClass("govuk-button--secondary").text mustBe saveAndComeBackLater
       }
 
     }
 
     "given a forced year in the task list model" must {
       val doc = document(forcedYearTaskList)
-      "display the select tax year with status complete and no link" when {
-        "the user has not selected any tax year to sign up" in {
-          val selectTaxYearSection = doc.mainContent.selectNth("ul", 2)
-          val selectTaxYearText = selectTaxYearSection.selectNth("span", 1)
-          selectTaxYearText.text mustBe next(getCurrentTaxEndYear, getCurrentTaxEndYear + 1)
-          selectTaxYearSection.selectNth("span", 2).text mustBe complete
-          selectTaxYearSection.selectHead("strong").attr("class") mustBe "govuk-tag"
-          selectTaxYearText.select("a").size() mustBe 0
-        }
+
+      "display select tax year as complete status with links, hint" in {
+
+        val clientSelectTaxYear = doc.mainContent.selectHead("ul").selectNth("li", 2)
+        val clientSelectTaxYearTag = doc.mainContent.selectHead("ul").selectNth("li", 2).selectHead("#client-details-2-status")
+
+        clientSelectTaxYear.select("a").size() mustBe 0
+        clientSelectTaxYear.selectHead("div").text mustBe next(getCurrentTaxEndYear, getCurrentTaxEndYear + 1) + " " + selectNextTaxYearHint
+        clientSelectTaxYearTag.text mustBe complete
+
       }
     }
   }
