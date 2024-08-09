@@ -60,7 +60,7 @@ class TaxYearCheckYourAnswersController @Inject()(checkYourAnswersView: TaxYearC
         for {
           reference <- referenceRetrieval.getAgentReference
           clientDetails <- clientDetailsRetrieval.getClientDetails
-          accountingMethod <- subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getClientUtr)
+          accountingMethod <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
         } yield {
           Ok(checkYourAnswersView(
             postAction = controllers.agent.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.submit(),
@@ -76,7 +76,7 @@ class TaxYearCheckYourAnswersController @Inject()(checkYourAnswersView: TaxYearC
   def submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       referenceRetrieval.getAgentReference flatMap { reference =>
-        subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getClientUtr) flatMap { maybeAccountingYearModel =>
+        subscriptionDetailsService.fetchSelectedTaxYear(reference) flatMap { maybeAccountingYearModel =>
           val accountingYearModel: AccountingYearModel = maybeAccountingYearModel.getOrElse(
             throw new InternalServerException("[TaxYearCheckYourAnswersController][submit] - Could not retrieve accounting year")
           )

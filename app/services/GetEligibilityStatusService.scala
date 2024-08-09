@@ -25,20 +25,23 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class GetEligibilityStatusService @Inject()(getEligibilityStatusConnector: GetEligibilityStatusConnector,
+                                            utrService: UTRService,
                                             sessionDataService: SessionDataService)
                                            (implicit ec: ExecutionContext) {
 
-  def getEligibilityStatus(sautr: String)(implicit hc: HeaderCarrier): Future[EligibilityStatus] = {
+  def getEligibilityStatus(implicit hc: HeaderCarrier): Future[EligibilityStatus] = {
     sessionDataService.fetchEligibilityStatus flatMap {
       case Right(Some(value)) => Future.successful(value)
       case Right(None) =>
-        getEligibilityStatusConnector.getEligibilityStatus(sautr) flatMap {
-          case Right(value) =>
-            sessionDataService.saveEligibilityStatus(value) map {
-              case Right(_) => value
-              case Left(error) => throw new SaveToSessionException(error.toString)
-            }
-          case Left(error) => throw new FetchFromAPIException(s"status = ${error.httpResponse.status}, body = ${error.httpResponse.body}")
+        utrService.getUTR flatMap { utr =>
+          getEligibilityStatusConnector.getEligibilityStatus(utr) flatMap {
+            case Right(value) =>
+              sessionDataService.saveEligibilityStatus(value) map {
+                case Right(_) => value
+                case Left(error) => throw new SaveToSessionException(error.toString)
+              }
+            case Left(error) => throw new FetchFromAPIException(s"status = ${error.httpResponse.status}, body = ${error.httpResponse.body}")
+          }
         }
       case Left(error) => throw new FetchFromSessionException(error.toString)
     }

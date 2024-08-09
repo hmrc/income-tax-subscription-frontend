@@ -16,8 +16,7 @@
 
 package controllers.individual
 
-import _root_.common.Constants.ITSASessionKeys
-import helpers.IntegrationTestConstants.{testNino, testUtr}
+import helpers.IntegrationTestConstants.testNino
 import helpers.servicemocks.AuthStub
 import helpers.{ComponentSpecBase, CustomMatchers, SessionCookieCrumbler}
 import play.api.http.Status.{OK, SEE_OTHER}
@@ -47,11 +46,9 @@ class SessionTimeoutControllerISpec extends ComponentSpecBase with SessionCookie
     "a  user chooses to not time out" should {
       "return an OK and keep the session" in {
         AuthStub.stubAuthSuccess()
-        val sessionMap = Map(
-          ITSASessionKeys.UTR -> testUtr)
-        val res = IncomeTaxSubscriptionFrontend.keepAlive(sessionMap)
-        val session = getSessionMap(res)
-        session.get(ITSASessionKeys.UTR) mustBe Some(testUtr)
+
+        val res = IncomeTaxSubscriptionFrontend.keepAlive()
+
         res must have(
           httpStatus(OK)
         )
@@ -63,10 +60,9 @@ class SessionTimeoutControllerISpec extends ComponentSpecBase with SessionCookie
     "a user times out" should {
       "redirect and sign out the user" in {
         AuthStub.stubAuthSuccess()
-        val sessionMap = Map(
-          ITSASessionKeys.UTR -> testUtr)
 
-        val res = IncomeTaxSubscriptionFrontend.timeout(sessionMap)
+        val res = IncomeTaxSubscriptionFrontend.timeout()
+
         res must have(
           httpStatus(SEE_OTHER),
           redirectURI("http://localhost:9553/bas-gateway/sign-in?continue_url=%2Freport-quarterly%2Fincome-and-expenses%2Fsign-up&origin=income-tax-subscription-frontend")

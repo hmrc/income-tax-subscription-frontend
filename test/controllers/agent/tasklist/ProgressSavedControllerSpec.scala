@@ -34,7 +34,7 @@ import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAuditingService, MockClientDetailsRetrieval, MockReferenceRetrieval, MockSubscriptionDetailsService}
+import services.mocks._
 import utilities.UserMatchingSessionUtil.{firstName, lastName}
 import utilities.agent.TestConstants.{testARN, testNino, testUtr}
 import utilities.{CacheExpiryDateProvider, CurrentDateProvider}
@@ -47,6 +47,7 @@ class ProgressSavedControllerSpec extends AgentControllerBaseSpec
   with MockAuditingService
   with MockReferenceRetrieval
   with MockClientDetailsRetrieval
+  with MockUTRService
   with MockSubscriptionDetailsService {
 
   override val controllerName: String = "ProgressSavedController"
@@ -112,15 +113,15 @@ class ProgressSavedControllerSpec extends AgentControllerBaseSpec
         mockFetchProperty(property)
         mockFetchOverseasProperty(overseasProperty)
         mockFetchSelectedTaxYear(selectedTaxYear)
-        mockGetMandationService(testUtr)(Voluntary, Voluntary)
-        mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+        mockGetMandationService(Voluntary, Voluntary)
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+        mockGetUTR(testUtr)
 
         val testRequest = FakeRequest().withSession(
           ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
-          ITSASessionKeys.UTR -> testUtr,
+          ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true",
           firstName -> "FirstName",
-          lastName -> "LastName",
-          ITSASessionKeys.REFERENCE -> "test-reference"
+          lastName -> "LastName"
         ).withMethod("POST")
 
         val result: Future[Result] = await(controller.show(location = Some("test-location"))(testRequest))
@@ -176,6 +177,7 @@ class ProgressSavedControllerSpec extends AgentControllerBaseSpec
       currentDateProvider,
       MockSubscriptionDetailsService,
       mockReferenceRetrieval,
+      mockUTRService,
       mockClientDetailsRetrieval,
       cacheExpiryDateProvider
     )(

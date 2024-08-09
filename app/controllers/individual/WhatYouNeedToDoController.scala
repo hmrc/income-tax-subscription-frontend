@@ -35,10 +35,10 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
                                          (implicit mcc: MessagesControllerComponents, val ec: ExecutionContext) extends SignUpController {
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
+    _ =>
       for {
-        mandationStatus <- mandationStatusService.getMandationStatus(user.getUtr)
-        eligibilityStatus <- getEligibilityStatusService.getEligibilityStatus(user.getUtr)
+        mandationStatus <- mandationStatusService.getMandationStatus
+        eligibilityStatus <- getEligibilityStatusService.getEligibilityStatus
       } yield {
         Ok(whatYouNeedToDo(
           postAction = routes.WhatYouNeedToDoController.submit,

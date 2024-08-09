@@ -34,7 +34,8 @@ class AlreadyEnrolledController @Inject()(val auditingService: AuditingService,
                                           mcc: MessagesControllerComponents) extends PostSubmissionController {
 
   val show: Action[AnyContent] = Authenticated { implicit request =>
-    _ => Ok(alreadyEnrolledView())
+    _ =>
+      Ok(alreadyEnrolledView())
   }
 
 }

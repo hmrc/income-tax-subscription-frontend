@@ -30,9 +30,8 @@ import play.api.test.Helpers.{HTML, charset, contentType, defaultAwaitTimeout, r
 import play.twirl.api.HtmlFormat
 import services.AccountingPeriodService
 import services.individual.mocks.MockSubscriptionOrchestrationService
-import services.mocks.{MockAuditingService, MockNinoService, MockReferenceRetrieval, MockSubscriptionDetailsService}
-import utilities.agent.TestConstants.testUtr
-import utilities.individual.TestConstants.testNino
+import services.mocks._
+import utilities.individual.TestConstants.{testNino, testUtr}
 import views.html.individual.tasklist.TaskList
 
 import scala.concurrent.Future
@@ -42,6 +41,7 @@ class TaskListControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockSubscriptionOrchestrationService
   with MockNinoService
+  with MockUTRService
   with MockReferenceRetrieval {
 
   val accountingPeriodService: AccountingPeriodService = app.injector.instanceOf[AccountingPeriodService]
@@ -68,6 +68,7 @@ class TaskListControllerSpec extends ControllerBaseSpec
   object TestTaskListController extends TaskListController(
     taskList,
     mockNinoService,
+    mockUTRService,
     mockReferenceRetrieval,
     MockSubscriptionDetailsService,
     accountingPeriodService
@@ -81,7 +82,8 @@ class TaskListControllerSpec extends ControllerBaseSpec
     "return an OK status with the task list page" in {
       mockTaskList()
       mockGetNino(testNino)
-      mockGetMandationService(testUtr)(Voluntary, Voluntary)
+      mockGetUTR(testUtr)
+      mockGetMandationService(Voluntary, Voluntary)
       mockFetchIncomeSourceConfirmation(Some(true))
       mockFetchAllSelfEmployments(Seq(
         SelfEmploymentData(
@@ -103,7 +105,7 @@ class TaskListControllerSpec extends ControllerBaseSpec
         confirmed = true
       )))
       mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
-      mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+      mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
 
       val result: Future[Result] = TestTaskListController.show()(subscriptionRequest)
 

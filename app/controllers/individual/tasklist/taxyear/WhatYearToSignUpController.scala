@@ -56,10 +56,10 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
   }
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
+    _ =>
       handleUnableToSelectTaxYearIndividual {
         referenceRetrieval.getIndividualReference flatMap { reference =>
-          subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getUtr) map { accountingYearModel =>
+          subscriptionDetailsService.fetchSelectedTaxYear(reference) map { accountingYearModel =>
             Ok(view(accountingYearForm = AccountingYearForm.accountingYearForm.fill(accountingYearModel.map(aym => aym.accountingYear)), isEditMode = isEditMode))
           }
         }
@@ -67,7 +67,7 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
+    _ =>
       referenceRetrieval.getIndividualReference flatMap { reference =>
         AccountingYearForm.accountingYearForm.bindFromRequest().fold(
           formWithErrors =>

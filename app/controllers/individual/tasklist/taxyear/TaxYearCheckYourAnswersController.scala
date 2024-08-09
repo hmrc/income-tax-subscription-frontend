@@ -43,10 +43,10 @@ class TaxYearCheckYourAnswersController @Inject()(checkYourAnswersView: TaxYearC
   extends SignUpController with TaxYearNavigationHelper {
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
+    _ =>
       handleUnableToSelectTaxYearIndividual {
         referenceRetrieval.getIndividualReference flatMap { reference =>
-          subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getUtr) map { maybeAccountingYearModel =>
+          subscriptionDetailsService.fetchSelectedTaxYear(reference) map { maybeAccountingYearModel =>
             Ok(checkYourAnswersView(
               postAction = controllers.individual.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.submit(),
               viewModel = maybeAccountingYearModel,
@@ -59,9 +59,9 @@ class TaxYearCheckYourAnswersController @Inject()(checkYourAnswersView: TaxYearC
   }
 
   def submit: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
+    _ =>
       referenceRetrieval.getIndividualReference flatMap { reference =>
-        subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getUtr) flatMap { maybeAccountingYearModel =>
+        subscriptionDetailsService.fetchSelectedTaxYear(reference) flatMap { maybeAccountingYearModel =>
           val accountingYearModel: AccountingYearModel = maybeAccountingYearModel.getOrElse(
             throw new InternalServerException("[TaxYearCheckYourAnswersController][submit] - Could not retrieve accounting year")
           )

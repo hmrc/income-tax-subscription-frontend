@@ -94,7 +94,7 @@ class HomeControllerSpec extends AgentControllerBaseSpec
         "the user is eligible to sign up for next year only" should {
           "redirect to the sign up next year only page" in {
             mockFetchEligibilityInterruptPassed(None)
-            mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
+            mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
 
             val result: Future[Result] = testHomeController().index()(agentSignUpRequest)
 
@@ -105,7 +105,7 @@ class HomeControllerSpec extends AgentControllerBaseSpec
         "the user is eligible to sign up for both tax years" should {
           "redirect to the client can sign up page" in {
             mockFetchEligibilityInterruptPassed(None)
-            mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+            mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
 
             val result: Future[Result] = testHomeController().index()(agentSignUpRequest)
 

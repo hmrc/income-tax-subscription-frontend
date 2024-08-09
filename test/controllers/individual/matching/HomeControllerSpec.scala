@@ -72,6 +72,7 @@ class HomeControllerSpec extends ControllerBaseSpec
     new ThrottlingService(mockThrottlingConnector, mockSessionDataService, appConfig),
     mockPrePopulationService,
     mockNinoService,
+    mockSessionDataService,
     mockReferenceRetrieval
   )(
     mockAuditingService,
@@ -100,6 +101,7 @@ class HomeControllerSpec extends ControllerBaseSpec
       "the user already has an MTDIT subscription on ETMP" should {
         "redirect to the claim subscription page" in {
           mockGetNino(testNino)
+          mockFetchUTR(Right(None))
           mockNinoAndUtrRetrieval()
           mockLookupUserWithUtr(testNino)(testUtr, testFullName)
           setupMockGetSubscriptionFound(testNino)
@@ -121,6 +123,7 @@ class HomeControllerSpec extends ControllerBaseSpec
         "redirect to the sps callback route with the already stored entity id" in {
           mockNinoAndUtrRetrieval()
           mockGetNino(testNino)
+          mockFetchUTR(Right(None))
           mockLookupUserWithUtr(testNino)(testUtr, testFullName)
           setupMockGetSubscriptionFound(testNino)
           setupMockSubscriptionDetailsSaveFunctions()
@@ -143,9 +146,11 @@ class HomeControllerSpec extends ControllerBaseSpec
                 "redirect to SPSHandoff controller" in {
                   mockNinoAndUtrRetrieval()
                   mockGetNino(testNino)
+                  mockFetchUTR(Right(None))
+                  mockSaveUTR(testUtr)(Right(SaveSessionDataSuccessResponse))
                   mockLookupUserWithUtr(testNino)(testUtr, testFullName)
                   setupMockGetSubscriptionNotFound(testNino)
-                  mockGetEligibilityStatus(testUtr)(eligible)
+                  mockGetEligibilityStatus(eligible)
                   mockRetrieveReferenceSuccess(testUtr)(testReference)
                   mockGetMandationStatus(testNino, testUtr)(Voluntary, Mandated)
                   mockFetchThrottlePassed(IndividualStartOfJourneyThrottle)(Right(None))
@@ -169,9 +174,11 @@ class HomeControllerSpec extends ControllerBaseSpec
               "redirect to SPSHandoff controller" in {
                 mockNinoRetrieval()
                 mockGetNino(testNino)
+                mockFetchUTR(Right(None))
+                mockSaveUTR(testUtr)(Right(SaveSessionDataSuccessResponse))
                 mockLookupUserWithUtr(testNino)(testUtr, testFullName)
                 setupMockGetSubscriptionNotFound(testNino)
-                mockGetEligibilityStatus(testUtr)(eligible)
+                mockGetEligibilityStatus(eligible)
                 mockRetrieveReferenceSuccess(testUtr)(testReference)
                 mockGetMandationStatus(testNino, testUtr)(Voluntary, Voluntary)
                 mockFetchThrottlePassed(IndividualStartOfJourneyThrottle)(Right(None))
@@ -182,7 +189,6 @@ class HomeControllerSpec extends ControllerBaseSpec
                 status(result) mustBe SEE_OTHER
                 redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url
 
-                session(result).get(ITSASessionKeys.UTR) mustBe Some(testUtr)
                 session(result).get(ITSASessionKeys.FULLNAME) mustBe Some(testFullName)
 
                 verifyGetThrottleStatusCalls(times(1))
@@ -193,6 +199,8 @@ class HomeControllerSpec extends ControllerBaseSpec
               "redirect to the no SA page" in {
                 mockNinoRetrieval()
                 mockGetNino(testNino)
+                mockFetchUTR(Right(None))
+                mockSaveUTR(testUtr)(Right(SaveSessionDataSuccessResponse))
                 mockLookupUserWithoutUtr(testNino)
 
                 val result = testHomeController().index()(fakeRequest)
@@ -200,7 +208,6 @@ class HomeControllerSpec extends ControllerBaseSpec
                 status(result) mustBe SEE_OTHER
                 redirectLocation(result).get mustBe controllers.individual.matching.routes.NoSAController.show.url
 
-                session(result).get(ITSASessionKeys.UTR) mustBe None
                 session(result).get(ITSASessionKeys.FULLNAME) mustBe None
                 verifyGetThrottleStatusCalls(never())
               }
@@ -213,10 +220,12 @@ class HomeControllerSpec extends ControllerBaseSpec
           "redirect to the Cannot Sign Up This Year page" in {
             mockNinoAndUtrRetrieval()
             mockGetNino(testNino)
+            mockFetchUTR(Right(None))
+            mockSaveUTR(testUtr)(Right(SaveSessionDataSuccessResponse))
             mockLookupUserWithUtr(testNino)(testUtr, testFullName)
             setupMockGetSubscriptionNotFound(testNino)
             mockRetrieveReferenceSuccess(testUtr)(testReference)
-            mockGetEligibilityStatus(testUtr)(eligibleNextYearOnly)
+            mockGetEligibilityStatus(eligibleNextYearOnly)
             mockGetMandationStatus(testNino, testUtr)(Voluntary, Voluntary)
             mockFetchThrottlePassed(IndividualStartOfJourneyThrottle)(Right(None))
             mockSaveThrottlePassed(IndividualStartOfJourneyThrottle)(Right(SaveSessionDataSuccessResponse))
@@ -233,10 +242,12 @@ class HomeControllerSpec extends ControllerBaseSpec
           "redirect to the Not eligible page" in {
             mockNinoAndUtrRetrieval()
             mockGetNino(testNino)
+            mockFetchUTR(Right(None))
+            mockSaveUTR(testUtr)(Right(SaveSessionDataSuccessResponse))
             mockLookupUserWithUtr(testNino)(testUtr, testFullName)
             setupMockGetSubscriptionNotFound(testNino)
             mockRetrieveReferenceSuccess(testUtr)(testReference)
-            mockGetEligibilityStatus(testUtr)(ineligible)
+            mockGetEligibilityStatus(ineligible)
             mockFetchThrottlePassed(IndividualStartOfJourneyThrottle)(Right(None))
             mockSaveThrottlePassed(IndividualStartOfJourneyThrottle)(Right(SaveSessionDataSuccessResponse))
 
@@ -252,6 +263,8 @@ class HomeControllerSpec extends ControllerBaseSpec
         "return an error page" in {
           mockNinoAndUtrRetrieval()
           mockGetNino(testNino)
+          mockFetchUTR(Right(None))
+          mockSaveUTR(testUtr)(Right(SaveSessionDataSuccessResponse))
           mockLookupUserWithUtr(testNino)(testUtr, testFullName)
           setupMockGetSubscriptionFailure(testNino)
           mockFetchThrottlePassed(IndividualStartOfJourneyThrottle)(Right(None))

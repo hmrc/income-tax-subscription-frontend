@@ -47,7 +47,7 @@ class OverseasPropertyStartDateController @Inject()(overseasPropertyStartDateVie
   extends SignUpController with ImplicitDateFormatter {
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user => {
+    _ => {
       referenceRetrieval.getIndividualReference flatMap { reference =>
         subscriptionDetailsService.fetchOverseasPropertyStartDate(reference) map { overseasPropertyStartDate =>
           Ok(view(
@@ -60,7 +60,7 @@ class OverseasPropertyStartDateController @Inject()(overseasPropertyStartDateVie
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
+    _ =>
       referenceRetrieval.getIndividualReference flatMap { reference =>
         form.bindFromRequest().fold(
           formWithErrors =>

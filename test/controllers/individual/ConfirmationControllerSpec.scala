@@ -28,7 +28,7 @@ import play.twirl.api.HtmlFormat
 import services.mocks._
 import uk.gov.hmrc.http.NotFoundException
 import utilities.TestModels.{testSelectedTaxYearCurrent, testSelectedTaxYearNext}
-import utilities.individual.TestConstants.{testNino, testUtr}
+import utilities.individual.TestConstants.testNino
 import views.html.individual.confirmation.SignUpConfirmation
 
 import scala.concurrent.Future
@@ -92,8 +92,8 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
         "the user signed up for the current tax year" when {
           "the user is mandated for current year" when {
             "the user has no digital preference available" in {
-              mockGetMandationService(testUtr)(Mandated, Voluntary)
-              mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+              mockGetMandationService(Mandated, Voluntary)
+              mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
               mockGetNino(testNino)
               mockAuthEnrolled()
               mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
@@ -108,8 +108,8 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
               contentType(result) mustBe Some(HTML)
             }
             "the user has a paper preference" in {
-              mockGetMandationService(testUtr)(Mandated, Voluntary)
-              mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+              mockGetMandationService(Mandated, Voluntary)
+              mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
               mockGetNino(testNino)
               mockAuthEnrolled()
               mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
@@ -123,8 +123,8 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
               contentType(result) mustBe Some(HTML)
             }
             "the user has a digital preference" in {
-              mockGetMandationService(testUtr)(Mandated, Voluntary)
-              mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+              mockGetMandationService(Mandated, Voluntary)
+              mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
               mockGetNino(testNino)
               mockAuthEnrolled()
               mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
@@ -140,8 +140,8 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
           }
           "the user is not mandated for current year" when {
             "the user has no digital preference available" in {
-              mockGetMandationService(testUtr)(Voluntary, Voluntary)
-              mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+              mockGetMandationService(Voluntary, Voluntary)
+              mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
               mockGetNino(testNino)
               mockAuthEnrolled()
               mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
@@ -155,8 +155,8 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
               contentType(result) mustBe Some(HTML)
             }
             "the user has a paper preference" in {
-              mockGetMandationService(testUtr)(Voluntary, Voluntary)
-              mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+              mockGetMandationService(Voluntary, Voluntary)
+              mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
               mockGetNino(testNino)
               mockAuthEnrolled()
               mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
@@ -170,8 +170,8 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
               contentType(result) mustBe Some(HTML)
             }
             "the user has a digital preference" in {
-              mockGetMandationService(testUtr)(Voluntary, Voluntary)
-              mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+              mockGetMandationService(Voluntary, Voluntary)
+              mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
               mockGetNino(testNino)
               mockAuthEnrolled()
               mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
@@ -188,8 +188,8 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
         }
         "the user signed up for the next tax year" when {
           "the user has no digital preference available" in {
-            mockGetMandationService(testUtr)(Voluntary, Voluntary)
-            mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+            mockGetMandationService(Voluntary, Voluntary)
+            mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
             mockGetNino(testNino)
             mockAuthEnrolled()
             mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
@@ -203,8 +203,8 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
             contentType(result) mustBe Some(HTML)
           }
           "the user has a paper preference" in {
-            mockGetMandationService(testUtr)(Voluntary, Voluntary)
-            mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+            mockGetMandationService(Voluntary, Voluntary)
+            mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
             mockGetNino(testNino)
             mockAuthEnrolled()
             mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
@@ -218,8 +218,8 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
             contentType(result) mustBe Some(HTML)
           }
           "the user has a digital preference" in {
-            mockGetMandationService(testUtr)(Voluntary, Voluntary)
-            mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+            mockGetMandationService(Voluntary, Voluntary)
+            mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
             mockGetNino(testNino)
             mockAuthEnrolled()
             mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))

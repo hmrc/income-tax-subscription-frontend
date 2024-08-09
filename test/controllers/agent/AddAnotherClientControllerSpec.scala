@@ -24,7 +24,6 @@ import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.{MockAuditingService, MockSessionDataService, MockSubscriptionDetailsService, MockUserLockoutService}
-import services.{AgentEndOfJourneyThrottle, AgentStartOfJourneyThrottle}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.UserMatchingSessionUtil
 
@@ -52,7 +51,7 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
   val fullSessionDetailsRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
     ITSASessionKeys.JourneyStateKey -> "test-journey-state",
     ITSASessionKeys.MTDITID -> "test-mtditid",
-    ITSASessionKeys.UTR -> "test-utr",
+    ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true",
     UserMatchingSessionUtil.firstName -> "test-first-name",
     UserMatchingSessionUtil.lastName -> "test-last-name"
   )

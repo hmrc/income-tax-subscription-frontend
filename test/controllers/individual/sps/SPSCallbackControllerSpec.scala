@@ -25,7 +25,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout, redirectLocation, status}
 import services.mocks.MockAuditingService
 import uk.gov.hmrc.http.InternalServerException
-import utilities.individual.TestConstants
 
 import scala.concurrent.Future
 
@@ -48,8 +47,7 @@ class SPSCallbackControllerSpec extends ControllerBaseSpec with MockAuditingServ
       ""
     }
     FakeRequest("GET", controllers.individual.sps.routes.SPSCallbackController.callback(None).url + entityIdParam).withSession(
-      ITSASessionKeys.JourneyStateKey -> SignUp.name,
-      ITSASessionKeys.UTR -> TestConstants.testUtr
+      ITSASessionKeys.JourneyStateKey -> SignUp.name
     )
   }
 

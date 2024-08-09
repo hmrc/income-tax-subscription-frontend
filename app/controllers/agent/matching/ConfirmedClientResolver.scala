@@ -36,6 +36,7 @@ class ConfirmedClientResolver @Inject()(getEligibilityStatusService: GetEligibil
                                         referenceRetrieval: ReferenceRetrieval,
                                         subscriptionDetailsService: SubscriptionDetailsService,
                                         ninoService: NinoService,
+                                        utrService: UTRService,
                                         prePopulationService: PrePopulationService)
                                        (val auditingService: AuditingService,
                                         val authService: AuthService,
@@ -45,14 +46,14 @@ class ConfirmedClientResolver @Inject()(getEligibilityStatusService: GetEligibil
 
   def resolve: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      val utr: String = user.getClientUtr
       val arn: String = user.arn
 
       throttlingService.throttled(AgentStartOfJourneyThrottle) {
-        getEligibilityStatusService.getEligibilityStatus(utr) flatMap {
+        getEligibilityStatusService.getEligibilityStatus flatMap {
           case EligibilityStatus(false, false) =>
             for {
               nino <- ninoService.getNino
+              utr <- utrService.getUTR
               _ <- auditingService.audit(EligibilityAuditModel(
                 agentReferenceNumber = Some(arn),
                 utr = Some(utr),
@@ -66,7 +67,7 @@ class ConfirmedClientResolver @Inject()(getEligibilityStatusService: GetEligibil
                 .clearUserDetailsExceptName
             }
           case EligibilityStatus(thisYear, _) =>
-            referenceRetrieval.getReference(utr, Some(arn)) flatMap { reference =>
+            referenceRetrieval.getReference(Some(arn)) flatMap { reference =>
               for {
                 _ <- handlePrepop(reference, None)
                 result <- goToSignUpClient(nextYearOnly = !thisYear)
@@ -85,9 +86,10 @@ class ConfirmedClientResolver @Inject()(getEligibilityStatusService: GetEligibil
     for {
       reference <- referenceRetrieval.getAgentReference
       nino <- ninoService.getNino
+      utr <- utrService.getUTR
       _ <- auditingService.audit(EligibilityAuditModel(
         agentReferenceNumber = Some(user.arn),
-        utr = user.clientUtr,
+        utr = Some(utr),
         nino = Some(nino),
         eligibility = if (nextYearOnly) "eligible - next tax year only" else "eligible",
         failureReason = None

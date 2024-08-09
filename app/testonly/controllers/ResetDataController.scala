@@ -16,7 +16,6 @@
 
 package testonly.controllers
 
-import common.Constants.ITSASessionKeys
 import connectors.usermatching.CitizenDetailsConnector
 import models.usermatching.CitizenDetails
 import play.api.mvc._
@@ -35,9 +34,10 @@ class ResetDataController @Inject()(mcc: MessagesControllerComponents,
                                    (implicit ec: ExecutionContext) extends FrontendController(mcc) {
 
   def resetWithoutIdentifiers: Action[AnyContent] = Action.async { implicit request =>
-    request.session.get(ITSASessionKeys.UTR) match {
-      case Some(utr) => reset(utr)
-      case None => Future.successful(Ok("No session data found"))
+    sessionDataService.fetchUTR flatMap {
+      case Right(Some(utr)) => reset(utr)
+      case Right(None) => Future.successful(Ok("No session data found"))
+      case Left(_) => Future.successful(Ok("Error occurred when fetching utr from session, unable to reset data"))
     }
   }
 

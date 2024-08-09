@@ -42,13 +42,13 @@ class ConfirmationController @Inject()(signUpConfirmation: SignUpConfirmation,
                                        mcc: MessagesControllerComponents) extends PostSubmissionController {
 
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
+    _ =>
       for {
         reference <- referenceRetrieval.getIndividualReference
         preference <- preferencesFrontendConnector.getOptedInStatus
         nino <- ninoService.getNino
-        selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getUtr)
-        mandationStatus <- mandationStatusService.getMandationStatus(user.getUtr)
+        selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
+        mandationStatus <- mandationStatusService.getMandationStatus
       } yield {
         val taxYearSelectionIsNext = selectedTaxYear.map(_.accountingYear).contains(Next)
 

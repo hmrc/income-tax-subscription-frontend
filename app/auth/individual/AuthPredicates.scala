@@ -48,7 +48,7 @@ trait AuthPredicates extends Results with FrontendHeaderCarrierProvider with Log
     else {
       auditingService.audit(EligibilityAuditModel(
         agentReferenceNumber = None,
-        utr = user.utr,
+        utr = None, // todo: same as below
         nino = None, //todo: can't get nino here yet, will add when we establish better auth
         eligibility = "ineligible",
         failureReason = Some("already-signed-up-with-mtd-id")
@@ -107,7 +107,7 @@ trait AuthPredicates extends Results with FrontendHeaderCarrierProvider with Log
     else {
       auditingService.audit(EligibilityAuditModel(
         agentReferenceNumber = None,
-        utr = user.utr,
+        utr = None, //todo: same as below
         nino = None, //todo: can't get nino here yet, will add when we establish better auth
         eligibility = "ineligible",
         failureReason = Some("user-type-assistant")

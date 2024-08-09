@@ -27,7 +27,6 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.agent.mocks.MockAgentAuthService
 import services.mocks.{MockAuditingService, MockClientDetailsRetrieval, MockReferenceRetrieval, MockSubscriptionDetailsService}
-import uk.gov.hmrc.http.InternalServerException
 import utilities.SubscriptionDataKeys.OverseasPropertyStartDate
 import utilities.TestModels.{testAccountingMethodProperty, testPropertyStartDateModel}
 import views.agent.mocks.MockOverseasPropertyStartDate

@@ -40,7 +40,6 @@ trait MockReferenceRetrieval extends MockitoSugar with BeforeAndAfterEach {
   def mockReference(): Unit = {
     when(mockReferenceRetrieval.getIndividualReference(
       ArgumentMatchers.any(),
-      ArgumentMatchers.any(),
       ArgumentMatchers.any()
     )).thenReturn(Future.successful(testReference))
 
@@ -51,7 +50,6 @@ trait MockReferenceRetrieval extends MockitoSugar with BeforeAndAfterEach {
     )).thenReturn(Future.successful(testReference))
 
     when(mockReferenceRetrieval.getReference(
-      ArgumentMatchers.any(),
       ArgumentMatchers.any()
     )(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(testReference))
   }

@@ -36,14 +36,14 @@ trait MockGetEligibilityStatusService extends UnitTestTrait with MockitoSugar wi
     reset(mockGetEligibilityStatusService)
   }
 
-  def mockGetEligibilityStatus(sautr: String)(result: EligibilityStatus): Unit = {
-    when(mockGetEligibilityStatusService.getEligibilityStatus(ArgumentMatchers.eq(sautr))(ArgumentMatchers.any()))
+  def mockGetEligibilityStatus(result: EligibilityStatus): Unit = {
+    when(mockGetEligibilityStatusService.getEligibilityStatus(ArgumentMatchers.any()))
       .thenReturn(Future.successful(result))
   }
 }
 
-trait TestGetEligibilityStatusService extends MockGetEligibilityStatusConnector with MockSessionDataService {
+trait TestGetEligibilityStatusService extends MockGetEligibilityStatusConnector with MockSessionDataService with MockUTRService {
 
-  object TestGetEligibilityStatusService extends GetEligibilityStatusService(mockGetEligibilityStatusConnector, mockSessionDataService)
+  object TestGetEligibilityStatusService extends GetEligibilityStatusService(mockGetEligibilityStatusConnector, mockUTRService, mockSessionDataService)
 
 }

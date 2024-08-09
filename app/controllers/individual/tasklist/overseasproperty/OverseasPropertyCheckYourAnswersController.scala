@@ -39,7 +39,7 @@ class OverseasPropertyCheckYourAnswersController @Inject()(view: OverseasPropert
                                                            mcc: MessagesControllerComponents) extends SignUpController {
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
+    _ =>
       referenceRetrieval.getIndividualReference flatMap { reference =>
         withProperty(reference) { property =>
           Future.successful(Ok(view(
@@ -52,7 +52,7 @@ class OverseasPropertyCheckYourAnswersController @Inject()(view: OverseasPropert
   }
 
   def submit: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
+    _ =>
       referenceRetrieval.getIndividualReference flatMap { reference =>
         withProperty(reference) {
           case property@OverseasPropertyModel(Some(_), Some(_), _) =>

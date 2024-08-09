@@ -16,15 +16,15 @@
 
 package controllers.individual.tasklist
 
-import auth.individual.{IncomeTaxSAUser, SignUpController}
+import auth.individual.SignUpController
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
 import models.audits.SaveAndComebackAuditing
 import models.audits.SaveAndComebackAuditing.SaveAndComeBackAuditModel
 import models.common.business.AccountingMethodModel
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.api.{Configuration, Environment}
-import services.{AuditingService, AuthService, NinoService, SubscriptionDetailsService}
+import services._
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import utilities.{AccountingPeriodUtil, CacheExpiryDateProvider, CurrentDateProvider}
@@ -38,6 +38,7 @@ class ProgressSavedController @Inject()(progressSavedView: ProgressSaved,
                                         currentDateProvider: CurrentDateProvider,
                                         cacheExpiryDateProvider: CacheExpiryDateProvider,
                                         ninoService: NinoService,
+                                        utrService: UTRService,
                                         subscriptionDetailsService: SubscriptionDetailsService,
                                         referenceRetrieval: ReferenceRetrieval)
                                        (val auditingService: AuditingService,
@@ -49,7 +50,7 @@ class ProgressSavedController @Inject()(progressSavedView: ProgressSaved,
                                         mcc: MessagesControllerComponents) extends SignUpController with AuthRedirects {
 
   def show(location: Option[String] = None): Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
+    _ =>
       referenceRetrieval.getIndividualReference flatMap { reference =>
         subscriptionDetailsService.fetchLastUpdatedTimestamp(reference) flatMap {
           case Some(timestamp) =>
@@ -68,21 +69,19 @@ class ProgressSavedController @Inject()(progressSavedView: ProgressSaved,
       }
   }
 
-  private def retrieveAuditData(
-                                 reference: String,
-                                 location: String
-                               )(implicit request: Request[AnyContent], user: IncomeTaxSAUser, hc: HeaderCarrier): Future[SaveAndComeBackAuditModel] = {
+  private def retrieveAuditData(reference: String, location: String)(implicit hc: HeaderCarrier): Future[SaveAndComeBackAuditModel] = {
 
     for {
       nino <- ninoService.getNino
+      utr <- utrService.getUTR
       (businesses, accountingMethod) <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
       property <- subscriptionDetailsService.fetchProperty(reference)
       overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
-      selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getUtr)
+      selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
     } yield {
       SaveAndComeBackAuditModel(
         userType = SaveAndComebackAuditing.individualUserType,
-        utr = user.getUtr,
+        utr = utr,
         nino = nino,
         saveAndRetrieveLocation = location,
         currentTaxYear = AccountingPeriodUtil.getTaxEndYear(currentDateProvider.getCurrentDate),

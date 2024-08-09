@@ -56,7 +56,7 @@ class PropertyStartDateController @Inject()(propertyStartDate: PropertyStartDate
   }
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
+    _ =>
       for {
         reference <- referenceRetrieval.getIndividualReference
         startDate <- subscriptionDetailsService.fetchPropertyStartDate(reference)
@@ -69,7 +69,7 @@ class PropertyStartDateController @Inject()(propertyStartDate: PropertyStartDate
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
+    _ =>
       referenceRetrieval.getIndividualReference flatMap { reference =>
         form.bindFromRequest().fold(
           formWithErrors => {

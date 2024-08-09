@@ -37,6 +37,7 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
                                                  getCompleteDetailsService: GetCompleteDetailsService,
                                                  referenceRetrieval: ReferenceRetrieval,
                                                  ninoService: NinoService,
+                                                 utrService: UTRService,
                                                  subscriptionService: SubscriptionOrchestrationService)
                                                 (val auditingService: AuditingService,
                                                  val authService: AuthService,
@@ -79,23 +80,24 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
   private def signUp(completeDetails: CompleteDetails)
                     (onSuccessfulSignUp: Option[String] => Result)
                     (implicit request: Request[AnyContent], user: IncomeTaxAgentUser): Future[Result] = {
-    val utr = user.clientUtr.get
     val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
 
     ninoService.getNino flatMap { nino =>
-      subscriptionService.createSubscriptionFromTaskList(
-        arn = user.arn,
-        utr = utr,
-        createIncomeSourcesModel = CreateIncomeSourcesModel.createIncomeSources(nino, completeDetails)
-      )(headerCarrier) map {
-        case Right(Some(SubscriptionSuccess(id))) =>
-          onSuccessfulSignUp(Some(id))
-        case Right(None) =>
-          onSuccessfulSignUp(None)
-        case Left(failure) =>
-          throw new InternalServerException(
-            s"[GlobalCheckYourAnswersController][submit] - failure response received from submission: ${failure.toString}"
-          )
+      utrService.getUTR flatMap { utr =>
+        subscriptionService.createSubscriptionFromTaskList(
+          arn = user.arn,
+          utr = utr,
+          createIncomeSourcesModel = CreateIncomeSourcesModel.createIncomeSources(nino, completeDetails)
+        )(headerCarrier) map {
+          case Right(Some(SubscriptionSuccess(id))) =>
+            onSuccessfulSignUp(Some(id))
+          case Right(None) =>
+            onSuccessfulSignUp(None)
+          case Left(failure) =>
+            throw new InternalServerException(
+              s"[GlobalCheckYourAnswersController][submit] - failure response received from submission: ${failure.toString}"
+            )
+        }
       }
     }
   }
@@ -114,8 +116,8 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
 
   private def withCompleteDetails(reference: String)
                                  (f: CompleteDetails => Future[Result])
-                                 (implicit request: Request[AnyContent], user: IncomeTaxAgentUser): Future[Result] = {
-    getCompleteDetailsService.getCompleteSignUpDetails(reference, user.getClientUtr) flatMap {
+                                 (implicit request: Request[AnyContent]): Future[Result] = {
+    getCompleteDetailsService.getCompleteSignUpDetails(reference) flatMap {
       case Right(completeDetails) => f(completeDetails)
       case Left(_) => Future.successful(Redirect(controllers.agent.tasklist.routes.TaskListController.show()))
     }

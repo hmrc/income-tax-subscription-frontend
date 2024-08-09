@@ -16,28 +16,27 @@
 
 package services.mocks
 
-import models.status.{MandationStatus, MandationStatusModel}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
-import services.MandationStatusService
+import services.UTRService
 
 import scala.concurrent.Future
 
-trait MockMandationStatusService extends MockitoSugar with BeforeAndAfterEach {
+trait MockUTRService extends MockitoSugar with BeforeAndAfterEach {
   suite: Suite =>
 
-  val mockMandationStatusService: MandationStatusService = mock[MandationStatusService]
+  val mockUTRService: UTRService = mock[UTRService]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockMandationStatusService)
+    reset(mockUTRService)
   }
 
-  def mockGetMandationService(currentYear: MandationStatus, nextYear: MandationStatus): Unit = {
-    when(mockMandationStatusService.getMandationStatus(ArgumentMatchers.any())).thenReturn(
-      Future.successful(MandationStatusModel(currentYearStatus = currentYear, nextYearStatus = nextYear))
+  def mockGetUTR(utr: String): Unit = {
+    when(mockUTRService.getUTR(ArgumentMatchers.any())).thenReturn(
+      Future.successful(utr)
     )
   }
 

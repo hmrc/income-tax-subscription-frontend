@@ -82,7 +82,7 @@ class WhatYearToSignUpController @Inject()(accountingPeriodService: AccountingPe
       handleUnableToSelectTaxYearAgent {
         for {
           reference <- referenceRetrieval.getAgentReference
-          accountingYearModel <- subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getClientUtr)
+          accountingYearModel <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
           clientDetails <- clientDetailsRetrieval.getClientDetails
         } yield {
           Ok(view(

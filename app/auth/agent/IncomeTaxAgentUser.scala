@@ -17,7 +17,6 @@
 package auth.agent
 
 import auth.individual.IncomeTaxUser
-import common.Constants.ITSASessionKeys
 import common.Extractors
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.auth.core._
@@ -31,22 +30,10 @@ class IncomeTaxAgentUser(val enrolments: Enrolments,
 
   lazy val arn: String = getArnFromEnrolments(enrolments).get
 
-  def clientUtr(implicit request: Request[AnyContent]): Option[String] =
-    request.session.get(ITSASessionKeys.UTR)
-
   def clientName(implicit request: Request[AnyContent]): String = {
     request.fetchClientName.getOrElse(
       throw new InternalServerException("[IncomeTaxAgentUser][clientName] - could not retrieve client name from request session")
     )
   }
-
-  def getClientUtr(implicit request: Request[AnyContent]): String = {
-    request.session.get(ITSASessionKeys.UTR) match {
-      case Some(nino) => nino
-      case None => throw new InternalServerException("[IncomeTaxAgentUser][getClientUtr] - UTR not found in session")
-    }
-  }
-
-
 
 }

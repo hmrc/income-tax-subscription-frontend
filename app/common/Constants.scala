@@ -46,6 +46,7 @@ object Constants {
     val JourneyStateKey = "Journey-State"
     val NINO = "NINO"
     val UTR = "UTR"
+    val CLIENT_DETAILS_CONFIRMED = "CLIENT_DETAILS_CONFIRMED"
     val FULLNAME: String = "FULLNAME"
     val REFERENCE = "reference"
     val ELIGIBILITY_STATUS = "ELIGIBILITY_STATUS"

@@ -392,7 +392,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
     def submitPropertyAccountingMethod(inEditMode: Boolean, request: Option[AccountingMethod]): WSResponse = {
       val uri = s"/business/accounting-method-property?editMode-=$inEditMode"
-      post(uri, Map(ITSASessionKeys.UTR -> testUtr))(
+      post(uri, Map(ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true"))(
         request.fold(Map.empty[String, Seq[String]])(
           model =>
             AccountingMethodPropertyForm.accountingMethodPropertyForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
@@ -432,7 +432,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
       val testValidMaxStartDate = LocalDate.now.minusYears(1)
       val testValidMinStartDate = LocalDate.of(1900, 1, 1)
       val uri = s"/business/overseas-property-start-date?editMode=$inEditMode"
-      post(uri, Map(ITSASessionKeys.UTR -> testUtr))(
+      post(uri, Map(ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true"))(
         request.fold(Map.empty[String, Seq[String]])(
           model =>
             OverseasPropertyStartDateForm.overseasPropertyStartDateForm(testValidMinStartDate, testValidMaxStartDate, d => d.toString)

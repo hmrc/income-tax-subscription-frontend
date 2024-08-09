@@ -18,7 +18,6 @@ package controllers.utils
 
 import auth.agent.IncomeTaxAgentUser
 import auth.individual.IncomeTaxSAUser
-import common.Constants.ITSASessionKeys
 import connectors.httpparser.RetrieveReferenceHttpParser
 import models.audits.SignupRetrieveAuditing.SignupRetrieveAuditModel
 import org.mockito.ArgumentMatchers
@@ -30,14 +29,18 @@ import play.api.mvc.{AnyContent, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, contentAsString, defaultAwaitTimeout, status}
 import services.AuditingService
-import services.mocks.{MockNinoService, MockSessionDataService, MockSubscriptionDetailsService}
+import services.mocks.{MockNinoService, MockSessionDataService, MockSubscriptionDetailsService, MockUTRService}
 import uk.gov.hmrc.auth.core.{ConfidenceLevel, Enrolment, EnrolmentIdentifier, Enrolments}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 
 import scala.concurrent.Future
 
-class ReferenceRetrievalSpec extends PlaySpec with MockSubscriptionDetailsService with MockSessionDataService with MockNinoService {
+class ReferenceRetrievalSpec extends PlaySpec
+  with MockSubscriptionDetailsService
+  with MockSessionDataService
+  with MockNinoService
+  with MockUTRService {
 
   val mockAuditingService: AuditingService = mock[AuditingService]
 
@@ -50,6 +53,7 @@ class ReferenceRetrievalSpec extends PlaySpec with MockSubscriptionDetailsServic
     MockSubscriptionDetailsService,
     mockSessionDataService,
     mockNinoService,
+    mockUTRService,
     mockAuditingService
   )(executionContext)
 
@@ -64,8 +68,7 @@ class ReferenceRetrievalSpec extends PlaySpec with MockSubscriptionDetailsServic
     Enrolments(Set(Enrolment("HMRC-AS-AGENT", Seq(EnrolmentIdentifier("ARN", arn)), "activated", None)))
     , None, ConfidenceLevel.L50)
 
-  implicit val request: Request[AnyContent] = FakeRequest().withSession(ITSASessionKeys.UTR -> utr)
-  val requestWithoutUTR: Request[AnyContent] = FakeRequest()
+  implicit val request: Request[AnyContent] = FakeRequest()
 
   "getIndividualReference" should {
     "return the reference requested" when {
@@ -82,6 +85,7 @@ class ReferenceRetrievalSpec extends PlaySpec with MockSubscriptionDetailsServic
       "the reference was not found in the session store so retrieved existing reference from subscription data" in {
         mockFetchReferenceSuccess(None)
         mockGetNino(nino)
+        mockGetUTR(utr)
         mockRetrieveReferenceSuccess(utr, RetrieveReferenceHttpParser.Existing)(reference)
         when(mockAuditingService.audit(ArgumentMatchers.eq(SignupRetrieveAuditModel(None, utr, Some(nino))))(ArgumentMatchers.any(), ArgumentMatchers.any()))
           .thenReturn(Future.successful(AuditResult.Success))
@@ -97,6 +101,7 @@ class ReferenceRetrievalSpec extends PlaySpec with MockSubscriptionDetailsServic
       "the reference was not found in the session store so retrieved a newly created reference" in {
         mockFetchReferenceSuccess(None)
         mockGetNino(nino)
+        mockGetUTR(utr)
         mockRetrieveReferenceSuccess(utr, RetrieveReferenceHttpParser.Created)(reference)
         mockSaveReferenceSuccess(reference)
 
@@ -109,11 +114,6 @@ class ReferenceRetrievalSpec extends PlaySpec with MockSubscriptionDetailsServic
       }
     }
     "throw an InternalServerException" when {
-      "utr was not available" in {
-        intercept[InternalServerException](await(TestReferenceRetrieval.getIndividualReference(implicitly, requestWithoutUTR, implicitly) flatMap { _ =>
-          Future.successful(Ok("test-utr-failure"))
-        })).message mustBe s"[ReferenceRetrieval][getIndividualReference] - Unable to retrieve users utr"
-      }
       "an unexpected status error was returned from the session store" in {
         mockFetchReferenceStatusFailure(INTERNAL_SERVER_ERROR)
 
@@ -131,6 +131,7 @@ class ReferenceRetrievalSpec extends PlaySpec with MockSubscriptionDetailsServic
       "an unexpected status error was returned from the subscription data" in {
         mockFetchReferenceSuccess(None)
         mockGetNino(nino)
+        mockGetUTR(utr)
         mockRetrieveReference(utr)(Left(RetrieveReferenceHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
         intercept[InternalServerException](await(TestReferenceRetrieval.getIndividualReference flatMap { _ =>
@@ -140,6 +141,7 @@ class ReferenceRetrievalSpec extends PlaySpec with MockSubscriptionDetailsServic
       "a json parse error was returned when retrieving the reference from subscription data" in {
         mockFetchReferenceSuccess(None)
         mockGetNino(nino)
+        mockGetUTR(utr)
         mockRetrieveReference(utr)(Left(RetrieveReferenceHttpParser.InvalidJsonFailure))
 
         intercept[InternalServerException](await(TestReferenceRetrieval.getIndividualReference flatMap { _ =>
@@ -149,6 +151,7 @@ class ReferenceRetrievalSpec extends PlaySpec with MockSubscriptionDetailsServic
       "an unexpected status error was returned when saving the reference to session" in {
         mockFetchReferenceSuccess(None)
         mockGetNino(nino)
+        mockGetUTR(utr)
         mockRetrieveReferenceSuccess(utr, RetrieveReferenceHttpParser.Created)(reference)
         mockSaveReferenceStatusFailure(reference)(INTERNAL_SERVER_ERROR)
 
@@ -174,6 +177,7 @@ class ReferenceRetrievalSpec extends PlaySpec with MockSubscriptionDetailsServic
       "the reference was not found in the session store so retrieved existing reference from subscription data" in {
         mockFetchReferenceSuccess(None)
         mockGetNino(nino)
+        mockGetUTR(utr)
         mockRetrieveReferenceSuccess(utr, RetrieveReferenceHttpParser.Existing)(reference)
         when(mockAuditingService.audit(ArgumentMatchers.eq(SignupRetrieveAuditModel(Some(arn), utr, Some(nino))))(
           ArgumentMatchers.any(), ArgumentMatchers.any()
@@ -190,6 +194,7 @@ class ReferenceRetrievalSpec extends PlaySpec with MockSubscriptionDetailsServic
       "the reference was not found in the session store so retrieved a newly created reference" in {
         mockFetchReferenceSuccess(None)
         mockGetNino(nino)
+        mockGetUTR(utr)
         mockRetrieveReferenceSuccess(utr, RetrieveReferenceHttpParser.Created)(reference)
         mockSaveReferenceSuccess(reference)
 
@@ -202,11 +207,6 @@ class ReferenceRetrievalSpec extends PlaySpec with MockSubscriptionDetailsServic
       }
     }
     "throw an InternalServerException" when {
-      "utr was not available" in {
-        intercept[InternalServerException](await(TestReferenceRetrieval.getAgentReference(implicitly, requestWithoutUTR, implicitly) flatMap { _ =>
-          Future.successful(Ok("test-utr-failure"))
-        })).message mustBe s"[ReferenceRetrieval][getAgentReference] - Unable to retrieve clients utr"
-      }
       "an unexpected status error was returned from the session store" in {
         mockFetchReferenceStatusFailure(INTERNAL_SERVER_ERROR)
 
@@ -225,6 +225,7 @@ class ReferenceRetrievalSpec extends PlaySpec with MockSubscriptionDetailsServic
       "an unexpected status error was returned from the subscription data" in {
         mockFetchReferenceSuccess(None)
         mockGetNino(nino)
+        mockGetUTR(utr)
         mockRetrieveReference(utr)(Left(RetrieveReferenceHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
         intercept[InternalServerException](await(TestReferenceRetrieval.getAgentReference flatMap { _ =>
@@ -234,6 +235,7 @@ class ReferenceRetrievalSpec extends PlaySpec with MockSubscriptionDetailsServic
       "a json parse error was returned when retrieving the reference from subscription data" in {
         mockFetchReferenceSuccess(None)
         mockGetNino(nino)
+        mockGetUTR(utr)
         mockRetrieveReference(utr)(Left(RetrieveReferenceHttpParser.InvalidJsonFailure))
 
         intercept[InternalServerException](await(TestReferenceRetrieval.getAgentReference flatMap { _ =>
@@ -243,6 +245,7 @@ class ReferenceRetrievalSpec extends PlaySpec with MockSubscriptionDetailsServic
       "an unexpected status error was returned when saving the reference to session" in {
         mockFetchReferenceSuccess(None)
         mockGetNino(nino)
+        mockGetUTR(utr)
         mockRetrieveReferenceSuccess(utr, RetrieveReferenceHttpParser.Created)(reference)
         mockSaveReferenceStatusFailure(reference)(INTERNAL_SERVER_ERROR)
 

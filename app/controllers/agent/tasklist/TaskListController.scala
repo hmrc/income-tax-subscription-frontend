@@ -16,7 +16,7 @@
 
 package controllers.agent.tasklist
 
-import auth.agent.{AuthenticatedController, IncomeTaxAgentUser}
+import auth.agent.AuthenticatedController
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
 import models.common.TaskListModel
@@ -35,6 +35,7 @@ import scala.util.matching.Regex
 class TaskListController @Inject()(taskListView: TaskList,
                                    clientDetailsRetrieval: ClientDetailsRetrieval,
                                    referenceRetrieval: ReferenceRetrieval,
+                                   utrService: UTRService,
                                    subscriptionDetailsService: SubscriptionDetailsService)
                                   (val auditingService: AuditingService,
                                    val authService: AuthService)
@@ -59,21 +60,22 @@ class TaskListController @Inject()(taskListView: TaskList,
         reference <- referenceRetrieval.getAgentReference
         clientDetails <- clientDetailsRetrieval.getClientDetails
         viewModel <- getTaskListModel(reference)
+        utr <- utrService.getUTR
       } yield {
         Ok(taskListView(
           postAction = controllers.agent.tasklist.routes.TaskListController.submit(),
           viewModel = viewModel,
           clientName = clientDetails.name,
           clientNino = formatNino(clientDetails.nino),
-          clientUtr = user.getClientUtr
+          clientUtr = utr
         ))
       }
     }
   }
 
-  private def getTaskListModel(reference: String)(implicit hc: HeaderCarrier, request: Request[AnyContent], user: IncomeTaxAgentUser): Future[TaskListModel] = {
+  private def getTaskListModel(reference: String)(implicit hc: HeaderCarrier): Future[TaskListModel] = {
     for {
-      selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference, user.getClientUtr)
+      selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
       (businesses, _) <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
       property <- subscriptionDetailsService.fetchProperty(reference)
       overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)

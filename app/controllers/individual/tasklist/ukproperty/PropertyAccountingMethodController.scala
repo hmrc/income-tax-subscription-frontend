@@ -52,7 +52,7 @@ class PropertyAccountingMethodController @Inject()(propertyAccountingMethod: Pro
   }
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
+    _ =>
       referenceRetrieval.getIndividualReference flatMap { reference =>
         subscriptionDetailsService.fetchAccountingMethodProperty(reference).map { accountingMethodProperty =>
           Ok(view(
@@ -64,7 +64,7 @@ class PropertyAccountingMethodController @Inject()(propertyAccountingMethod: Pro
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
+    _ =>
       referenceRetrieval.getIndividualReference flatMap { reference =>
         AccountingMethodPropertyForm.accountingMethodPropertyForm.bindFromRequest().fold(
           formWithErrors =>

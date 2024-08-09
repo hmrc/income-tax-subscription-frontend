@@ -196,9 +196,6 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           redirectURI(AgentURI.registerForSAURI)
         )
 
-        val session = getSessionMap(res)
-        session.get(ITSASessionKeys.UTR) mustBe None
-
         Then("The client matching request must have been audited")
         AuditStub.verifyAudit()
       }
@@ -213,6 +210,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
         AgentServicesStub.stubClientRelationship(testARN, testNino, exists = true)
         UserLockoutStub.stubUserIsNotLocked(testARN)
         SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.NINO, testNino)(OK)
+        SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
 
         When("I call POST /confirm-client")
         val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
@@ -222,9 +220,6 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           httpStatus(SEE_OTHER),
           redirectURI(controllers.agent.matching.routes.ConfirmedClientResolver.resolve.url)
         )
-
-        val session = getSessionMap(res)
-        session.get(ITSASessionKeys.UTR) mustBe Some(testUtr)
 
         Then("The client matching request must have been audited")
         AuditStub.verifyAudit()

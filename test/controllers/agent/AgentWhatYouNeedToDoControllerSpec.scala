@@ -72,8 +72,8 @@ class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec
   "show" must {
     "return OK with the page content" when {
       "the user is completely voluntary and is eligible for both years" in new Setup {
-        mockGetMandationService(testUtr)(Voluntary, Voluntary)
-        mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+        mockGetMandationService(Voluntary, Voluntary)
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
 
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
@@ -93,8 +93,8 @@ class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec
       }
 
       "the user is voluntary but only eligibile for next year" in new Setup {
-        mockGetMandationService(testUtr)(Voluntary, Voluntary)
-        mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
+        mockGetMandationService(Voluntary, Voluntary)
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
 
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
@@ -113,8 +113,8 @@ class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec
         contentType(result) mustBe Some(HTML)
       }
       "the user is mandated for the current year and eligible for all" in new Setup {
-        mockGetMandationService(testUtr)(Mandated, Voluntary)
-        mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+        mockGetMandationService(Mandated, Voluntary)
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
 
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
@@ -133,8 +133,8 @@ class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec
         contentType(result) mustBe Some(HTML)
       }
       "the user is mandated for the next year and eligible for all" in new Setup {
-        mockGetMandationService(testUtr)(Voluntary, Mandated)
-        mockGetEligibilityStatus(testUtr)(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+        mockGetMandationService(Voluntary, Mandated)
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
 
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),

@@ -19,7 +19,7 @@ package controllers.individual
 import common.Constants.ITSASessionKeys
 import connectors.stubs.SessionDataConnectorStub
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.{IndividualURI, testUtr}
+import helpers.IntegrationTestConstants.IndividualURI
 import helpers.servicemocks.AuthStub
 import models.EligibilityStatus
 import models.status.MandationStatus.Voluntary
@@ -39,11 +39,7 @@ class WhatYouNeedToDoControllerISpec extends ComponentSpecBase {
       SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
 
       When(s"GET ${routes.WhatYouNeedToDoController.show.url} is called")
-      val result = IncomeTaxSubscriptionFrontend.whatYouNeedToDo(
-        Map(
-          ITSASessionKeys.UTR -> testUtr
-        )
-      )
+      val result = IncomeTaxSubscriptionFrontend.whatYouNeedToDo()
 
       Then("The result should be OK with page content")
       result must have(

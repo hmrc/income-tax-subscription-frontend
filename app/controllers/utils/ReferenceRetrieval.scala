@@ -17,11 +17,10 @@
 package controllers.utils
 
 import auth.agent.IncomeTaxAgentUser
-import auth.individual.IncomeTaxSAUser
 import connectors.httpparser.{GetSessionDataHttpParser, RetrieveReferenceHttpParser, SaveSessionDataHttpParser}
 import models.audits.SignupRetrieveAuditing.SignupRetrieveAuditModel
 import play.api.mvc.{AnyContent, Request}
-import services.{AuditingService, NinoService, SessionDataService, SubscriptionDetailsService}
+import services._
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import javax.inject.{Inject, Singleton}
@@ -31,35 +30,28 @@ import scala.concurrent.{ExecutionContext, Future}
 class ReferenceRetrieval @Inject()(subscriptionDetailsService: SubscriptionDetailsService,
                                    sessionDataService: SessionDataService,
                                    ninoService: NinoService,
+                                   utrService: UTRService,
                                    auditingService: AuditingService)
                                   (implicit ec: ExecutionContext) {
 
-  def getIndividualReference(implicit hc: HeaderCarrier, request: Request[AnyContent], user: IncomeTaxSAUser): Future[String] = {
-    getReference(
-      utr = user.utr.getOrElse(
-        throw new InternalServerException("[ReferenceRetrieval][getIndividualReference] - Unable to retrieve users utr")
-      ),
-      arn = None
-    )
+  def getIndividualReference(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[String] = {
+    getReference(arn = None)
   }
 
   def getAgentReference(implicit hc: HeaderCarrier, request: Request[AnyContent], user: IncomeTaxAgentUser): Future[String] = {
-    getReference(
-      user.clientUtr.getOrElse(
-        throw new InternalServerException("[ReferenceRetrieval][getAgentReference] - Unable to retrieve clients utr")
-      ),
-      arn = Some(user.arn)
-    )
+    getReference(arn = Some(user.arn))
   }
 
-  def getReference(utr: String, arn: Option[String])
-                   (implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[String] = {
+  def getReference(arn: Option[String])
+                  (implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[String] = {
 
     sessionDataService.fetchReference.flatMap {
       case Right(Some(reference)) => Future.successful(reference)
       case Right(None) =>
         ninoService.getNino flatMap { nino =>
-          handleReferenceNotFound(nino, utr, arn)
+          utrService.getUTR flatMap { utr =>
+            handleReferenceNotFound(nino, utr, arn)
+          }
         }
       case Left(GetSessionDataHttpParser.InvalidJson) =>
         throw new InternalServerException(s"[ReferenceRetrieval][withReference] - Unable to parse json returned from session")

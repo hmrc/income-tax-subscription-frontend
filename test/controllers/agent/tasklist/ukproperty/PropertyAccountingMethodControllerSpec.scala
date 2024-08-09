@@ -28,7 +28,6 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockAuditingService, MockClientDetailsRetrieval, MockReferenceRetrieval, MockSubscriptionDetailsService}
-import uk.gov.hmrc.http.InternalServerException
 import views.html.agent.tasklist.ukproperty.PropertyAccountingMethod
 
 import scala.concurrent.Future
