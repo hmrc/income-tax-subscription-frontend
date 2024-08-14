@@ -50,7 +50,7 @@ class ReferenceRetrievalSpec extends PlaySpec
   }
 
   object TestReferenceRetrieval extends ReferenceRetrieval(
-    MockSubscriptionDetailsService,
+    mockSubscriptionDetailsService,
     mockSessionDataService,
     mockNinoService,
     mockUTRService,
@@ -86,7 +86,7 @@ class ReferenceRetrievalSpec extends PlaySpec
         mockFetchReferenceSuccess(None)
         mockGetNino(nino)
         mockGetUTR(utr)
-        mockRetrieveReferenceSuccess(utr, RetrieveReferenceHttpParser.Existing)(reference)
+        mockFetchReference(utr)(Right(RetrieveReferenceHttpParser.Existing(reference)))
         when(mockAuditingService.audit(ArgumentMatchers.eq(SignupRetrieveAuditModel(None, utr, Some(nino))))(ArgumentMatchers.any(), ArgumentMatchers.any()))
           .thenReturn(Future.successful(AuditResult.Success))
         mockSaveReferenceSuccess(reference)
@@ -102,9 +102,8 @@ class ReferenceRetrievalSpec extends PlaySpec
         mockFetchReferenceSuccess(None)
         mockGetNino(nino)
         mockGetUTR(utr)
-        mockRetrieveReferenceSuccess(utr, RetrieveReferenceHttpParser.Created)(reference)
+        mockFetchReference(utr)(Right(RetrieveReferenceHttpParser.Created(reference)))
         mockSaveReferenceSuccess(reference)
-
         val result = TestReferenceRetrieval.getIndividualReference flatMap { reference =>
           Future.successful(Ok(reference))
         }
@@ -132,7 +131,7 @@ class ReferenceRetrievalSpec extends PlaySpec
         mockFetchReferenceSuccess(None)
         mockGetNino(nino)
         mockGetUTR(utr)
-        mockRetrieveReference(utr)(Left(RetrieveReferenceHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
+        mockFetchReference(utr)(Left(RetrieveReferenceHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
         intercept[InternalServerException](await(TestReferenceRetrieval.getIndividualReference flatMap { _ =>
           Future.successful(Ok("test-reference-status-failure"))
@@ -142,7 +141,7 @@ class ReferenceRetrievalSpec extends PlaySpec
         mockFetchReferenceSuccess(None)
         mockGetNino(nino)
         mockGetUTR(utr)
-        mockRetrieveReference(utr)(Left(RetrieveReferenceHttpParser.InvalidJsonFailure))
+        mockFetchReference(utr)(Left(RetrieveReferenceHttpParser.InvalidJsonFailure))
 
         intercept[InternalServerException](await(TestReferenceRetrieval.getIndividualReference flatMap { _ =>
           Future.successful(Ok("test-reference-json-failure"))
@@ -152,7 +151,7 @@ class ReferenceRetrievalSpec extends PlaySpec
         mockFetchReferenceSuccess(None)
         mockGetNino(nino)
         mockGetUTR(utr)
-        mockRetrieveReferenceSuccess(utr, RetrieveReferenceHttpParser.Created)(reference)
+        mockFetchReference(utr)(Right(RetrieveReferenceHttpParser.Created(reference)))
         mockSaveReferenceStatusFailure(reference)(INTERNAL_SERVER_ERROR)
 
         intercept[InternalServerException](await(TestReferenceRetrieval.getIndividualReference flatMap { _ =>
@@ -178,7 +177,7 @@ class ReferenceRetrievalSpec extends PlaySpec
         mockFetchReferenceSuccess(None)
         mockGetNino(nino)
         mockGetUTR(utr)
-        mockRetrieveReferenceSuccess(utr, RetrieveReferenceHttpParser.Existing)(reference)
+        mockFetchReference(utr)(Right(RetrieveReferenceHttpParser.Existing(reference)))
         when(mockAuditingService.audit(ArgumentMatchers.eq(SignupRetrieveAuditModel(Some(arn), utr, Some(nino))))(
           ArgumentMatchers.any(), ArgumentMatchers.any()
         )).thenReturn(Future.successful(AuditResult.Success))
@@ -195,7 +194,7 @@ class ReferenceRetrievalSpec extends PlaySpec
         mockFetchReferenceSuccess(None)
         mockGetNino(nino)
         mockGetUTR(utr)
-        mockRetrieveReferenceSuccess(utr, RetrieveReferenceHttpParser.Created)(reference)
+        mockFetchReference(utr)(Right(RetrieveReferenceHttpParser.Created(reference)))
         mockSaveReferenceSuccess(reference)
 
         val result = TestReferenceRetrieval.getAgentReference flatMap { reference =>
@@ -226,7 +225,7 @@ class ReferenceRetrievalSpec extends PlaySpec
         mockFetchReferenceSuccess(None)
         mockGetNino(nino)
         mockGetUTR(utr)
-        mockRetrieveReference(utr)(Left(RetrieveReferenceHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
+        mockFetchReference(utr)(Left(RetrieveReferenceHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
         intercept[InternalServerException](await(TestReferenceRetrieval.getAgentReference flatMap { _ =>
           Future.successful(Ok("test-reference-status-failure"))
@@ -236,7 +235,7 @@ class ReferenceRetrievalSpec extends PlaySpec
         mockFetchReferenceSuccess(None)
         mockGetNino(nino)
         mockGetUTR(utr)
-        mockRetrieveReference(utr)(Left(RetrieveReferenceHttpParser.InvalidJsonFailure))
+        mockFetchReference(utr)(Left(RetrieveReferenceHttpParser.InvalidJsonFailure))
 
         intercept[InternalServerException](await(TestReferenceRetrieval.getAgentReference flatMap { _ =>
           Future.successful(Ok("test-reference-json-failure"))
@@ -246,7 +245,7 @@ class ReferenceRetrievalSpec extends PlaySpec
         mockFetchReferenceSuccess(None)
         mockGetNino(nino)
         mockGetUTR(utr)
-        mockRetrieveReferenceSuccess(utr, RetrieveReferenceHttpParser.Created)(reference)
+        mockFetchReference(utr)(Right(RetrieveReferenceHttpParser.Created(reference)))
         mockSaveReferenceStatusFailure(reference)(INTERNAL_SERVER_ERROR)
 
         intercept[InternalServerException](await(TestReferenceRetrieval.getAgentReference flatMap { _ =>

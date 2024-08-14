@@ -50,9 +50,3 @@ trait MockPrePopulationService extends UnitTestTrait with MockitoSugar with Befo
     )(ArgumentMatchers.any(), ArgumentMatchers.any())
 
 }
-
-trait TestPrePopulationService extends MockSubscriptionDetailsService {
-
-  object TestPrePopulationService extends PrePopulationService(MockSubscriptionDetailsService)
-
-}

@@ -295,6 +295,6 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
     mockAuthService,
     mockSessionDataService,
     appConfig,
-    MockSubscriptionDetailsService
+    mockSubscriptionDetailsService
   )
 }

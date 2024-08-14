@@ -70,7 +70,7 @@ class TaskListControllerSpec extends ControllerBaseSpec
     mockNinoService,
     mockUTRService,
     mockReferenceRetrieval,
-    MockSubscriptionDetailsService,
+    mockSubscriptionDetailsService,
     accountingPeriodService
   )(
     mockAuditingService,

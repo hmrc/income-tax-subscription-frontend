@@ -129,7 +129,7 @@ class RemoveUkPropertyControllerSpec extends ControllerBaseSpec
   object TestRemoveUkPropertyController extends RemoveUkPropertyController(
     mockIncomeTaxSubscriptionConnector,
     mockReferenceRetrieval,
-    MockSubscriptionDetailsService,
+    mockSubscriptionDetailsService,
     removeUkProperty
   )(
     mockAuditingService,

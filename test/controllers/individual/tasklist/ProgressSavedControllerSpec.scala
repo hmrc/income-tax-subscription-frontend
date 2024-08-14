@@ -173,7 +173,7 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
       cacheExpiryDateProvider,
       mockNinoService,
       mockUTRService,
-      MockSubscriptionDetailsService,
+      mockSubscriptionDetailsService,
       mockReferenceRetrieval
     )(
       mockAuditingService,

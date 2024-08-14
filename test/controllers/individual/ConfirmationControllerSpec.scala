@@ -56,7 +56,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
     mockNinoService,
     mockReferenceRetrieval,
     mockPreferencesFrontendConnector,
-    MockSubscriptionDetailsService
+    mockSubscriptionDetailsService
   )(
     mockAuditingService,
     mockAuthService

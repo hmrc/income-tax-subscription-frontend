@@ -16,12 +16,13 @@
 
 package services.mocks
 
+import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscriptionDetailsSuccess
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, verify, when}
-import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import services.RemoveBusinessService
+import services.RemoveBusinessService.RemoveBusinessFailure
 import utilities.UnitTestTrait
 
 import scala.concurrent.Future
@@ -36,10 +37,10 @@ trait MockRemoveBusinessService extends UnitTestTrait with MockitoSugar with Bef
   }
 
   def verifyDeleteBusiness(businessId: String): Unit = {
-    verify(mockRemoveBusinessService).deleteBusiness(ArgumentMatchers.any(), ArgumentMatchers.eq(businessId),ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any())
+    verify(mockRemoveBusinessService).deleteBusiness(ArgumentMatchers.any(), ArgumentMatchers.eq(businessId), ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any())
   }
 
-  def mockDeleteBusiness(value: Future[Either[_, _]]): OngoingStubbing[Future[Either[_, _]]] = {
+  def mockDeleteBusiness(value: Future[Either[RemoveBusinessFailure, DeleteSubscriptionDetailsSuccess]]): Unit = {
     when(mockRemoveBusinessService.deleteBusiness
     (ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())
     (ArgumentMatchers.any()))

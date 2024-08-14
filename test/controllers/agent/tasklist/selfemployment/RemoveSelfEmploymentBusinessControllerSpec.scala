@@ -16,6 +16,7 @@
 
 package controllers.agent.tasklist.selfemployment
 
+import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscriptionDetailsSuccessResponse
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.RemoveBusinessForm
 import models.common.business._
@@ -77,7 +78,7 @@ class RemoveSelfEmploymentBusinessControllerSpec extends AgentControllerBaseSpec
     "redirect to the task list page" when {
       "the user selects 'yes'" in withController { controller =>
         mockFetchAllSelfEmployments(testBusinesses)
-        mockDeleteBusiness(Right("dummy"))
+        mockDeleteBusiness(Right(DeleteSubscriptionDetailsSuccessResponse))
 
         val result: Future[Result] = await(controller.submit("id")(
           subscriptionRequest.post(RemoveBusinessForm.removeBusinessForm(), Yes)
@@ -122,7 +123,7 @@ class RemoveSelfEmploymentBusinessControllerSpec extends AgentControllerBaseSpec
     val controller = new RemoveSelfEmploymentBusinessController(
       view,
       mockReferenceRetrieval,
-      MockSubscriptionDetailsService,
+      mockSubscriptionDetailsService,
       mockRemoveBusinessService
     )(
       mockAuditingService,

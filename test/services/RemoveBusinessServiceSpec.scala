@@ -17,16 +17,14 @@
 package services
 
 import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscriptionDetailsSuccessResponse
-import models.common.SoleTraderBusinesses
+import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
+import connectors.httpparser.{DeleteSubscriptionDetailsHttpParser, PostSubscriptionDetailsHttpParser}
 import models.common.business._
 import models.{Cash, DateModel}
-import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.{times, verify}
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import services.mocks.{MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService}
-import utilities.SubscriptionDataKeys.SoleTraderBusinessesKey
-import utilities.UnitTestTrait
+import utilities.{SubscriptionDataKeys, UnitTestTrait}
 
 class RemoveBusinessServiceSpec extends UnitTestTrait
   with MockIncomeTaxSubscriptionConnector with MockSubscriptionDetailsService {
@@ -43,36 +41,49 @@ class RemoveBusinessServiceSpec extends UnitTestTrait
       businessAddress = Some(BusinessAddressModel(Address(Seq("line 1"), Some("ZZ1 1ZZ"))))
     )
 
-  "mock RemoveBusinessService" must {
+  object TestRemoveBusiness extends RemoveBusinessService(
+    mockIncomeTaxSubscriptionConnector,
+    mockSubscriptionDetailsService
+  )
 
-    object TestRemoveBusiness extends RemoveBusinessService(mockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService)
+  "deleteBusiness" must {
+    "remove the business from the businesses list and delete the sole trader businesses" when {
+      "only a single business exists in the businesses list and is flagged for removal" in {
+        mockSaveBusinesses(Seq.empty, Some(Cash))(Right(PostSubscriptionDetailsSuccessResponse))
+        mockDeleteSubscriptionDetails(SubscriptionDataKeys.SoleTraderBusinessesKey)(Right(DeleteSubscriptionDetailsSuccessResponse))
 
-    "delete and save business details and accounting method" when {
-      "a reference, business id and single selfEmploymentsData are passed into the service" in {
-        mockSaveBusinesses(testReference)
-        mockDeleteSubscriptionDetails(SoleTraderBusinessesKey)(Right(DeleteSubscriptionDetailsSuccessResponse))
-        mockDeleteIncomeSourceConfirmationSuccess()
-        val result = await(TestRemoveBusiness.deleteBusiness(testReference, testBusinessId, Seq(testBusiness("id")), Some(Cash)))
+        val result = TestRemoveBusiness.deleteBusiness(testReference, testBusinessId, Seq(testBusiness("id")), Some(Cash))
 
-        result.isRight shouldBe true
-        verifyDeleteSubscriptionDetails(SoleTraderBusinessesKey, 1)
-        verifySaveBusinesses(1, testReference)
+        await(result) mustBe Right(DeleteSubscriptionDetailsSuccessResponse)
       }
     }
+    "remove the business from the business list but don't delete anything" when {
+      "the business to remove was not the only business" in {
+        mockSaveBusinesses(Seq(testBusiness("id2")), Some(Cash))(Right(PostSubscriptionDetailsSuccessResponse))
 
-    "delete and save business details but not accounting method" when {
-      "a reference, business id and multiple selfEmploymentsData are passed into the service" in {
-        mockSaveBusinesses(testReference)
-        mockDeleteIncomeSourceConfirmationSuccess()
-        val result = await(TestRemoveBusiness.deleteBusiness(testReference, testBusinessId, Seq(testBusiness("id"), testBusiness("id1")), Some(Cash)))
+        val result = TestRemoveBusiness.deleteBusiness(testReference, testBusinessId, Seq(testBusiness("id"), testBusiness("id2")), Some(Cash))
 
-        result.isRight shouldBe true
-        verifyDeleteSubscriptionDetails(SoleTraderBusinessesKey, 0)
-        verify(mockConnector, times(1)).saveSubscriptionDetails[SoleTraderBusinesses](
-          ArgumentMatchers.eq(testReference),
-          ArgumentMatchers.eq(SoleTraderBusinessesKey),
-          ArgumentMatchers.eq(SoleTraderBusinesses(Seq(testBusiness("id1").toSoleTraderBusiness), Some(Cash)))
-        )(ArgumentMatchers.any(), ArgumentMatchers.any())
+        await(result) mustBe Right(DeleteSubscriptionDetailsSuccessResponse)
+      }
+    }
+    "return a failure response" when {
+      "saving the businesses failed" in {
+        mockSaveBusinesses(Seq.empty, Some(Cash))(Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
+
+        val result = TestRemoveBusiness.deleteBusiness(testReference, testBusinessId, Seq(testBusiness("id")), Some(Cash))
+
+        await(result) mustBe Left(RemoveBusinessService.SaveBusinessFailure)
+      }
+
+      "deleting the remnants of the businesses" in {
+        mockSaveBusinesses(Seq.empty, Some(Cash))(Right(PostSubscriptionDetailsSuccessResponse))
+        mockDeleteSubscriptionDetails(SubscriptionDataKeys.SoleTraderBusinessesKey)(
+          Left(DeleteSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
+        )
+
+        val result = TestRemoveBusiness.deleteBusiness(testReference, testBusinessId, Seq(testBusiness("id")), Some(Cash))
+
+        await(result) mustBe Left(RemoveBusinessService.DeleteBusinessesFailure)
       }
     }
   }

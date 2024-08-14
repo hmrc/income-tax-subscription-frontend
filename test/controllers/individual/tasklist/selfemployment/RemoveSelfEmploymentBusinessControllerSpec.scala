@@ -17,6 +17,7 @@
 package controllers.individual.tasklist.selfemployment
 
 import connectors.IncomeTaxSubscriptionConnector
+import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscriptionDetailsSuccessResponse
 import controllers.individual.ControllerBaseSpec
 import forms.individual.business.RemoveBusinessForm
 import models.common.SoleTraderBusinesses
@@ -84,7 +85,7 @@ class RemoveSelfEmploymentBusinessControllerSpec extends ControllerBaseSpec
         // get the businesses
         mockFetchAllSelfEmployments(testBusinesses)
         // save the businesses with one removed.
-        mockDeleteBusiness(Right("dummy"))
+        mockDeleteBusiness(Right(DeleteSubscriptionDetailsSuccessResponse))
 
         val result: Future[Result] = await(controller.submit("id")(
           subscriptionRequest.post(RemoveBusinessForm.removeBusinessForm(), Yes)
@@ -130,7 +131,7 @@ class RemoveSelfEmploymentBusinessControllerSpec extends ControllerBaseSpec
     val controller = new RemoveSelfEmploymentBusinessController(
       view,
       mockReferenceRetrieval,
-      MockSubscriptionDetailsService,
+      mockSubscriptionDetailsService,
       mockRemoveBusinessService
     )(
       mockAuditingService,

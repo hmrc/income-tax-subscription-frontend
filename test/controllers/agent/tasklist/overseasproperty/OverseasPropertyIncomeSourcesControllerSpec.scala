@@ -15,6 +15,8 @@
  */
 
 package controllers.agent.tasklist.overseasproperty
+
+import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.IncomeSourcesOverseasPropertyForm
 import models.common.OverseasPropertyModel
@@ -49,7 +51,7 @@ class OverseasPropertyIncomeSourcesControllerSpec extends AgentControllerBaseSpe
       overseasPropertyIncomeSourcesView,
       mockReferenceRetrieval,
       mockClientDetailsRetrieval,
-      MockSubscriptionDetailsService,
+      mockSubscriptionDetailsService,
     )(
       mockAuditingService,
       mockAuthService,
@@ -119,45 +121,38 @@ class OverseasPropertyIncomeSourcesControllerSpec extends AgentControllerBaseSpe
         val badRequest = callSubmit(maybeStartDate = None, maybeAccountingMethod = None, isEditMode = false)
 
         status(badRequest) must be(Status.BAD_REQUEST)
-
-        await(badRequest)
-        verifyOverseasPropertySave(None)
       }
 
       "only start date is submitted" in {
         val badRequest = callSubmit(maybeStartDate = Some(DateModel("10", "10", "2020")), maybeAccountingMethod = None, isEditMode = false)
 
         status(badRequest) must be(Status.BAD_REQUEST)
-
-        await(badRequest)
-        verifyOverseasPropertySave(None)
       }
 
       "only accounting method is submitted" in {
         val badRequest = callSubmit(maybeStartDate = None, maybeAccountingMethod = Some(Cash), isEditMode = false)
 
         status(badRequest) must be(Status.BAD_REQUEST)
-
-        await(badRequest)
-        verifyOverseasPropertySave(None)
       }
     }
 
     "redirect to check your answers page" when {
       "full data is submitted" in {
-        mockFetchOverseasProperty(None)
-        setupMockSubscriptionDetailsSaveFunctions()
-        mockDeleteIncomeSourceConfirmationSuccess()
+        val overseasPropertyModel: OverseasPropertyModel = OverseasPropertyModel(
+          accountingMethod = Some(Cash), startDate = Some(DateModel("10", "10", "2020"))
+        )
 
-        val goodRequest = callSubmit(isEditMode = false,
-          maybeStartDate = Some(DateModel("10", "10", "2020")), maybeAccountingMethod = Some(Cash),
+        mockFetchOverseasProperty(None)
+        mockSaveOverseasProperty(overseasPropertyModel)(Right(PostSubscriptionDetailsSuccessResponse))
+
+        val goodRequest = callSubmit(
+          isEditMode = false,
+          maybeStartDate = overseasPropertyModel.startDate,
+          maybeAccountingMethod = overseasPropertyModel.accountingMethod
         )
 
         status(goodRequest) must be(Status.SEE_OTHER)
         redirectLocation(goodRequest) mustBe Some(routes.OverseasPropertyCheckYourAnswersController.show().url)
-
-        await(goodRequest)
-        verifyOverseasPropertySave(Some(OverseasPropertyModel(startDate = Some(DateModel("10", "10", "2020")), accountingMethod = Some(Cash))))
       }
     }
   }

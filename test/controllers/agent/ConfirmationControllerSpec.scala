@@ -47,7 +47,7 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
     mockSignUpConfirmation,
     mockReferenceRetrieval,
     mockClientDetailsRetrieval,
-    MockSubscriptionDetailsService,
+    mockSubscriptionDetailsService,
     mockMandationStatusService
   )(
     mockAuditingService,

@@ -16,10 +16,11 @@
 
 package controllers.agent.tasklist.ukproperty
 
+import connectors.httpparser.PostSubscriptionDetailsHttpParser
+import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.AccountingMethodPropertyForm
 import models.Cash
-import models.common.PropertyModel
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
@@ -49,7 +50,7 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
     val controller = new PropertyAccountingMethodController(
       propertyAccountingMethodView,
-      MockSubscriptionDetailsService,
+      mockSubscriptionDetailsService,
       mockClientDetailsRetrieval,
       mockReferenceRetrieval
     )(
@@ -64,7 +65,7 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
   "show" when {
     "there is no previous selected answer" should {
       "display the property accounting method view and return OK (200)" in withController { controller =>
-        mockFetchProperty(None)
+        mockFetchPropertyAccountingMethod(None)
 
         val result = await(controller.show(isEditMode = false)(subscriptionRequestWithName))
 
@@ -74,7 +75,7 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
     "there is a previous selected answer CASH" should {
       "display the property accounting method view with the previous selected answer CASH and return OK (200)" in withController { controller =>
-        mockFetchProperty(Some(PropertyModel(Some(Cash))))
+        mockFetchPropertyAccountingMethod(Some(Cash))
 
         val result = await(controller.show(isEditMode = false)(subscriptionRequestWithName))
 
@@ -94,9 +95,7 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
     )
 
     "redirect to agent uk property check your answers page" in {
-      mockFetchProperty(None)
-      setupMockSubscriptionDetailsSaveFunctions()
-      mockDeleteIncomeSourceConfirmationSuccess()
+      mockSavePropertyAccountingMethod(Cash)(Right(PostSubscriptionDetailsSuccessResponse))
 
       val goodRequest: Future[Result] = callSubmit(isEditMode = false)
 
@@ -104,7 +103,6 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
       redirectLocation(goodRequest) mustBe Some(routes.PropertyCheckYourAnswersController.show().url)
 
       await(goodRequest)
-      verifyPropertySave(Some(PropertyModel(accountingMethod = Some(Cash))))
     }
 
     "return bad request status (400)" when {
@@ -114,14 +112,12 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
         status(badRequest) must be(Status.BAD_REQUEST)
 
         await(badRequest)
-        verifyPropertySave(None)
       }
     }
 
     "throw an exception" when {
       "cannot save the accounting method" in {
-        setupMockSubscriptionDetailsSaveFunctionsFailure()
-        mockFetchProperty(None)
+        mockSavePropertyAccountingMethod(Cash)(Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
         val goodRequest: Future[Result] = callSubmit(isEditMode = false)
 

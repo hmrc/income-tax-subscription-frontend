@@ -16,6 +16,8 @@
 
 package controllers.individual.tasklist.taxyear
 
+import connectors.httpparser.PostSubscriptionDetailsHttpParser
+import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.individual.ControllerBaseSpec
 import models.common.AccountingYearModel
 import models.status.MandationStatus.{Mandated, Voluntary}
@@ -23,7 +25,7 @@ import models.{Current, EligibilityStatus}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
-import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
@@ -68,8 +70,6 @@ class TaxYearCheckYourAnswersControllerSpec extends ControllerBaseSpec
       status(result) mustBe OK
       contentType(result) mustBe Some(HTML)
       charset(result) mustBe Some(Codec.utf_8.charset)
-
-      verifyFetchSelectedTaxYear(1, "test-reference")
     }
     "redirect to the task list page" when {
       "mandated for the current tax year" in withController { controller =>
@@ -100,14 +100,12 @@ class TaxYearCheckYourAnswersControllerSpec extends ControllerBaseSpec
       mockGetMandationService(Voluntary, Voluntary)
       mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
       mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
-      setupMockSubscriptionDetailsSaveFunctions()
+      mockSaveSelectedTaxYear(AccountingYearModel(Current, confirmed = true))(Right(PostSubscriptionDetailsSuccessResponse))
 
       val result: Future[Result] = await(controller.submit()(subscriptionRequest))
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
-      verifySaveSelectedTaxYear(1, "test-reference")
-      verifyFetchSelectedTaxYear(1, "test-reference")
     }
 
     "throw an exception" when {
@@ -125,7 +123,9 @@ class TaxYearCheckYourAnswersControllerSpec extends ControllerBaseSpec
         mockGetMandationService(Voluntary, Voluntary)
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
-        setupMockSubscriptionDetailsSaveFunctionsFailure()
+        mockSaveSelectedTaxYear(AccountingYearModel(Current, confirmed = true))(
+          Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
+        )
 
         val result: Future[Result] = await(controller.submit()(subscriptionRequest))
 
@@ -144,7 +144,7 @@ class TaxYearCheckYourAnswersControllerSpec extends ControllerBaseSpec
       checkYourAnswersView,
       mockReferenceRetrieval,
       accountingPeriodService,
-      MockSubscriptionDetailsService
+      mockSubscriptionDetailsService
     )(
       mockAuditingService,
       appConfig,

@@ -131,7 +131,7 @@ class RemoveUkPropertyControllerSpec extends AgentControllerBaseSpec
     val controller = new RemoveUkPropertyController(
       mockIncomeTaxSubscriptionConnector,
       view,
-      MockSubscriptionDetailsService,
+      mockSubscriptionDetailsService,
       mockReferenceRetrieval
     )(
       mockAuditingService,

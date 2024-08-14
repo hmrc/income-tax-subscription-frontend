@@ -16,6 +16,7 @@
 
 package controllers.individual.tasklist.addbusiness
 
+import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.individual.ControllerBaseSpec
 import models.common.business._
 import models.common.{IncomeSources, OverseasPropertyModel, PropertyModel}
@@ -47,9 +48,7 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
   "show" should {
     "return OK status" when {
       "there are no income sources added" in new Setup {
-        mockFetchAllSelfEmployments(Seq.empty)
-        mockFetchProperty(None)
-        mockFetchOverseasProperty(None)
+        mockFetchAllIncomeSources(IncomeSources(Seq.empty, None, None))
 
         mockYourIncomeSourceToSignUpView(IncomeSources(Seq.empty[SelfEmploymentData], None, None))
 
@@ -59,12 +58,11 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
         contentType(result) mustBe Some(HTML)
       }
       "there are multiple different income sources added" in new Setup {
-        mockFetchAllSelfEmployments(Seq(
-          testSelfEmployment("id"),
-          testSelfEmployment("id2")
+        mockFetchAllIncomeSources(IncomeSources(
+          Seq(testSelfEmployment("id"), testSelfEmployment("id2")),
+          Some(testUkProperty),
+          Some(testForeignProperty)
         ))
-        mockFetchProperty(Some(testUkProperty))
-        mockFetchOverseasProperty(Some(testForeignProperty))
 
         mockYourIncomeSourceToSignUpView(
           IncomeSources(
@@ -88,112 +86,106 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
   "submit" should {
     "redirect to the task list page and save the income sources section as complete" when {
       "all income sources are complete" in new Setup {
-        mockFetchAllSelfEmployments(Seq(
-          testSelfEmployment("id"),
-          testSelfEmployment("id2")
+        mockFetchAllIncomeSources(IncomeSources(
+          Seq(testSelfEmployment("id"), testSelfEmployment("id2")),
+          Some(testUkProperty),
+          Some(testForeignProperty)
         ))
-        mockFetchProperty(Some(testUkProperty))
-        mockFetchOverseasProperty(Some(testForeignProperty))
-        mockSaveIncomeSourceConfirmation("test-reference")
+        mockSaveIncomeSourceConfirmation(Right(PostSubscriptionDetailsSuccessResponse))
 
         val result: Future[Result] = controller.submit(subscriptionRequest)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
-
-        verifySaveIncomeSourceConfirmation(reference = "test-reference", count = 1)
       }
       "only self employment income sources are added and complete" in new Setup {
-        mockFetchAllSelfEmployments(Seq(
-          testSelfEmployment("id"),
-          testSelfEmployment("id2")
+        mockFetchAllIncomeSources(IncomeSources(
+          Seq(testSelfEmployment("id"), testSelfEmployment("id2")),
+          None,
+          None,
         ))
-        mockFetchProperty(None)
-        mockFetchOverseasProperty(None)
-        mockSaveIncomeSourceConfirmation("test-reference")
+        mockSaveIncomeSourceConfirmation(Right(PostSubscriptionDetailsSuccessResponse))
 
         val result: Future[Result] = controller.submit(subscriptionRequest)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
-
-        verifySaveIncomeSourceConfirmation(reference = "test-reference", count = 1)
       }
       "only uk property income sources are added and complete" in new Setup {
-        mockFetchAllSelfEmployments(Seq.empty[SelfEmploymentData])
-        mockFetchProperty(Some(testUkProperty))
-        mockFetchOverseasProperty(None)
-        mockSaveIncomeSourceConfirmation("test-reference")
+        mockFetchAllIncomeSources(IncomeSources(
+          Seq.empty,
+          Some(testUkProperty),
+          None
+        ))
+        mockSaveIncomeSourceConfirmation(Right(PostSubscriptionDetailsSuccessResponse))
 
         val result: Future[Result] = controller.submit(subscriptionRequest)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
-
-        verifySaveIncomeSourceConfirmation(reference = "test-reference", count = 1)
       }
       "only foreign property income sources are added and complete" in new Setup {
-        mockFetchAllSelfEmployments(Seq.empty[SelfEmploymentData])
-        mockFetchProperty(Some(testUkProperty))
-        mockFetchOverseasProperty(Some(testForeignProperty))
-        mockSaveIncomeSourceConfirmation("test-reference")
+        mockFetchAllIncomeSources(IncomeSources(
+          Seq.empty,
+          None,
+          Some(testForeignProperty)
+        ))
+        mockSaveIncomeSourceConfirmation(Right(PostSubscriptionDetailsSuccessResponse))
 
         val result: Future[Result] = controller.submit(subscriptionRequest)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
-
-        verifySaveIncomeSourceConfirmation(reference = "test-reference", count = 1)
       }
     }
     "redirect to the task list page" when {
       "self employment income sources are not complete" in new Setup {
-        mockFetchAllSelfEmployments(Seq(testSelfEmployment("id").copy(confirmed = false)))
-        mockFetchProperty(Some(testUkProperty))
-        mockFetchOverseasProperty(Some(testForeignProperty))
+        mockFetchAllIncomeSources(IncomeSources(
+          Seq(testSelfEmployment("id").copy(confirmed = false)),
+          Some(testUkProperty),
+          Some(testForeignProperty)
+        ))
 
         val result: Future[Result] = controller.submit(subscriptionRequest)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
-
-        verifySaveIncomeSourceConfirmation(reference = "test-reference", count = 0)
       }
       "uk property income sources are not complete" in new Setup {
-        mockFetchAllSelfEmployments(Seq(testSelfEmployment("id")))
-        mockFetchProperty(Some(testUkProperty.copy(confirmed = false)))
-        mockFetchOverseasProperty(Some(testForeignProperty))
+        mockFetchAllIncomeSources(IncomeSources(
+          Seq(testSelfEmployment("id")),
+          Some(testUkProperty.copy(confirmed = false)),
+          Some(testForeignProperty)
+        ))
 
         val result: Future[Result] = controller.submit(subscriptionRequest)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
-
-        verifySaveIncomeSourceConfirmation(reference = "test-reference", count = 0)
       }
       "overseas property income sources are not complete" in new Setup {
-        mockFetchAllSelfEmployments(Seq(testSelfEmployment("id")))
-        mockFetchProperty(Some(testUkProperty))
-        mockFetchOverseasProperty(Some(testForeignProperty.copy(confirmed = false)))
+        mockFetchAllIncomeSources(IncomeSources(
+          Seq(testSelfEmployment("id")),
+          Some(testUkProperty),
+          Some(testForeignProperty.copy(confirmed = false))
+        ))
 
         val result: Future[Result] = controller.submit(subscriptionRequest)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
-
-        verifySaveIncomeSourceConfirmation(reference = "test-reference", count = 0)
       }
       "no income sources have been added" in new Setup {
-        mockFetchAllSelfEmployments(Seq.empty[SelfEmploymentData])
-        mockFetchProperty(None)
-        mockFetchOverseasProperty(None)
+        mockFetchAllIncomeSources(IncomeSources(
+          Seq.empty,
+          None,
+          None
+        ))
 
         val result: Future[Result] = controller.submit(subscriptionRequest)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
-
-        verifySaveIncomeSourceConfirmation(reference = "test-reference", count = 0)
       }
     }
   }
@@ -209,7 +201,7 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
 
     val controller = new YourIncomeSourceToSignUpController(
       yourIncomeSourceToSignUpView,
-      MockSubscriptionDetailsService,
+      mockSubscriptionDetailsService,
       mockReferenceRetrieval
     )(
       mockAuditingService,
