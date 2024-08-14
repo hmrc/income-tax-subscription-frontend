@@ -17,13 +17,14 @@
 package controllers.agent
 
 import common.Constants.ITSASessionKeys
+import config.featureswitch.FeatureSwitch.CheckClientRelationship
 import connectors.agent.httpparsers.QueryUsersHttpParser.principalUserIdKey
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, MultipleIncomeSourcesSubscriptionAPIStub, SessionDataConnectorStub, UsersGroupsSearchStub}
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
 import helpers.WiremockHelper.verifyPost
 import helpers.agent._
-import helpers.agent.servicemocks.AuthStub
+import helpers.agent.servicemocks.{AgentServicesStub, AuthStub}
 import helpers.servicemocks.EnrolmentStoreProxyStub
 import helpers.servicemocks.EnrolmentStoreProxyStub.jsonResponseBody
 import models.common.subscription.CreateIncomeSourcesModel
@@ -104,6 +105,10 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
 
+        if(isEnabled(CheckClientRelationship)) {
+          AgentServicesStub.stubClientRelationship(testARN, testNino, exists = true)
+        }
+
         When("POST /final-check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.submitAgentGlobalCheckYourAnswers(None)()
 
@@ -143,6 +148,10 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
             SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
             SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+
+            if(isEnabled(CheckClientRelationship)) {
+              AgentServicesStub.stubClientRelationship(testARN, testNino, exists = true)
+            }
 
             MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear)(OK)
             MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
@@ -208,6 +217,10 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
             SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
             SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+
+            if(isEnabled(CheckClientRelationship)) {
+              AgentServicesStub.stubClientRelationship(testARN, testNino, exists = true)
+            }
 
             MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getNextTaxYear.toLongTaxYear)(OK)
             MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
