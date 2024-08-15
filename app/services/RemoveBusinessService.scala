@@ -17,8 +17,10 @@
 package services
 
 import connectors.IncomeTaxSubscriptionConnector
+import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.{DeleteSubscriptionDetailsSuccess, DeleteSubscriptionDetailsSuccessResponse}
 import models.AccountingMethod
 import models.common.business.SelfEmploymentData
+import services.RemoveBusinessService.{DeleteBusinessesFailure, RemoveBusinessFailure, SaveBusinessFailure}
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.SubscriptionDataKeys.SoleTraderBusinessesKey
 
@@ -33,14 +35,31 @@ class RemoveBusinessService @Inject()(val incomeTaxSubscriptionConnector: Income
 
   def deleteBusiness(reference: String, businessId: String, businesses: Seq[SelfEmploymentData], accountingMethod: Option[AccountingMethod])(
     implicit hc: HeaderCarrier
-  ): Future[Either[_, _]] = {
+  ): Future[Either[RemoveBusinessFailure, DeleteSubscriptionDetailsSuccess]] = {
     val remainingBusinesses = businesses.filterNot(_.id == businessId)
+
     subscriptionDetailsService.saveBusinesses(reference, remainingBusinesses, accountingMethod)
       .flatMap {
-        case Right(_) if remainingBusinesses.isEmpty => incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, SoleTraderBusinessesKey)
-        case saveResult@Right(_) => Future.successful(saveResult)
-        case fail@Left(_) => Future.successful(fail)
+        case Right(_) => if (remainingBusinesses.isEmpty) {
+          incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, SoleTraderBusinessesKey) map {
+            case Right(value) => Right(value)
+            case Left(_) => Left(DeleteBusinessesFailure)
+          }
+        } else {
+          Future.successful(Right(DeleteSubscriptionDetailsSuccessResponse))
+        }
+        case Left(_) => Future.successful(Left(SaveBusinessFailure))
       }
   }
+
+}
+
+object RemoveBusinessService {
+
+  sealed trait RemoveBusinessFailure
+
+  case object SaveBusinessFailure extends RemoveBusinessFailure
+
+  case object DeleteBusinessesFailure extends RemoveBusinessFailure
 
 }

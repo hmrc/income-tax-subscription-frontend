@@ -16,6 +16,7 @@
 
 package controllers.agent.tasklist.ukproperty
 
+import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.UkPropertyIncomeSourcesForm
 import models.common.PropertyModel
@@ -50,7 +51,7 @@ class PropertyIncomeSourcesControllerSpec extends AgentControllerBaseSpec
       propertyIncomeSourcesView,
       mockReferenceRetrieval,
       mockClientDetailsRetrieval,
-      MockSubscriptionDetailsService,
+      mockSubscriptionDetailsService,
     )(
       mockAuditingService,
       mockAuthService,
@@ -122,7 +123,6 @@ class PropertyIncomeSourcesControllerSpec extends AgentControllerBaseSpec
         status(badRequest) must be(Status.BAD_REQUEST)
 
         await(badRequest)
-        verifyPropertySave(None)
       }
 
       "only start date is submitted" in {
@@ -131,7 +131,6 @@ class PropertyIncomeSourcesControllerSpec extends AgentControllerBaseSpec
         status(badRequest) must be(Status.BAD_REQUEST)
 
         await(badRequest)
-        verifyPropertySave(None)
       }
 
       "only accounting method is submitted" in {
@@ -140,15 +139,12 @@ class PropertyIncomeSourcesControllerSpec extends AgentControllerBaseSpec
         status(badRequest) must be(Status.BAD_REQUEST)
 
         await(badRequest)
-        verifyPropertySave(None)
       }
     }
 
     "redirect to check your answers page" when {
       "full data is submitted" in {
-        mockFetchProperty(None)
-        setupMockSubscriptionDetailsSaveFunctions()
-        mockDeleteIncomeSourceConfirmationSuccess()
+        mockSaveProperty(PropertyModel(Some(Cash), Some(DateModel("10", "10", "2020"))))(Right(PostSubscriptionDetailsSuccessResponse))
 
         val goodRequest = callSubmit(isEditMode = false,
           maybeStartDate = Some(DateModel("10", "10", "2020")), maybeAccountingMethod = Some(Cash),
@@ -158,7 +154,6 @@ class PropertyIncomeSourcesControllerSpec extends AgentControllerBaseSpec
         redirectLocation(goodRequest) mustBe Some(routes.PropertyCheckYourAnswersController.show().url)
 
         await(goodRequest)
-        verifyPropertySave(Some(PropertyModel(startDate = Some(DateModel("10", "10", "2020")), accountingMethod = Some(Cash))))
       }
     }
   }

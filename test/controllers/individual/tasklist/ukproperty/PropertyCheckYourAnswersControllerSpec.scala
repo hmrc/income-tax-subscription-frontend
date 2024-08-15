@@ -16,13 +16,15 @@
 
 package controllers.individual.tasklist.ukproperty
 
+import connectors.httpparser.PostSubscriptionDetailsHttpParser
+import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.individual.ControllerBaseSpec
 import models.common.PropertyModel
 import models.{Cash, DateModel}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
-import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
@@ -66,26 +68,24 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
     "redirect to the your income sources page and confirm the uk property details" when {
       "the user submits a start date and accounting method" in withController { controller =>
         mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
-        setupMockSubscriptionDetailsSaveFunctions()
-        mockDeleteIncomeSourceConfirmationSuccess()
+        mockSaveProperty(PropertyModel(Some(Cash), Some(DateModel("10", "11", "2021")), confirmed = true))(
+          Right(PostSubscriptionDetailsSuccessResponse)
+        )
 
         val result: Future[Result] = await(controller.submit()(subscriptionRequest))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
-        verifyPropertySave(Some(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true)))
       }
     }
     "redirect to the your income sources page but don't confirm the uk property details" when {
       "the user submits partial data" in withController { controller =>
         mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash))))
-        setupMockSubscriptionDetailsSaveFunctions()
 
         val result: Future[Result] = await(controller.submit()(subscriptionRequest))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
-        verifyPropertySave(None)
       }
     }
   }
@@ -101,8 +101,10 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
       }
 
       "cannot confirm property details" in withController { controller =>
-        mockFetchProperty(None)
-        setupMockSubscriptionDetailsSaveFunctionsFailure()
+        mockFetchProperty(Some(PropertyModel(Some(Cash), Some(DateModel("1", "1", "1980")))))
+        mockSaveProperty(PropertyModel(Some(Cash), Some(DateModel("1", "1", "1980")), confirmed = true))(
+          Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
+        )
 
         val result: Future[Result] = await(controller.submit()(subscriptionRequest))
 
@@ -132,7 +134,7 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
 
     val controller = new PropertyCheckYourAnswersController(
       view,
-      MockSubscriptionDetailsService,
+      mockSubscriptionDetailsService,
       mockReferenceRetrieval
     )(
       mockAuditingService,

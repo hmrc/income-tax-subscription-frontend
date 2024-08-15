@@ -49,7 +49,7 @@ class HomeControllerSpec extends AgentControllerBaseSpec
     MockConfig
   )(
     mockGetEligibilityStatusService,
-    MockSubscriptionDetailsService,
+    mockSubscriptionDetailsService,
     mockReferenceRetrieval
   )(executionContext, mockMessagesControllerComponents)
 

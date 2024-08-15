@@ -16,13 +16,15 @@
 
 package controllers.individual.tasklist.overseasproperty
 
+import connectors.httpparser.PostSubscriptionDetailsHttpParser
+import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.individual.ControllerBaseSpec
 import models.common.OverseasPropertyModel
 import models.{Cash, DateModel}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
-import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
@@ -67,14 +69,14 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
         val testProperty = OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))
 
         mockFetchOverseasProperty(Some(testProperty))
-        setupMockSubscriptionDetailsSaveFunctions()
-        mockDeleteIncomeSourceConfirmationSuccess()
+        mockSaveOverseasProperty(testProperty.copy(confirmed = true))(
+          Right(PostSubscriptionDetailsSuccessResponse)
+        )
 
         val result: Future[Result] = await(controller.submit()(subscriptionRequest))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
-        verifyOverseasPropertySave(Some(testProperty.copy(confirmed = true)))
       }
 
       "the user submits valid partial data" should {
@@ -85,7 +87,6 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
-          verifyOverseasPropertySave(None)
         }
       }
     }
@@ -103,7 +104,9 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
 
       "cannot confirm overseas property details" in withController { controller =>
         mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
-        setupMockSubscriptionDetailsSaveFunctionsFailure()
+        mockSaveOverseasProperty(OverseasPropertyModel(Some(Cash), Some(DateModel("10", "11", "2021")), confirmed = true))(
+          Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
+        )
 
         val result: Future[Result] = await(controller.submit()(subscriptionRequest))
 
@@ -133,7 +136,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
 
     val controller = new OverseasPropertyCheckYourAnswersController(
       view,
-      MockSubscriptionDetailsService,
+      mockSubscriptionDetailsService,
       mockReferenceRetrieval
     )(
       mockAuditingService,

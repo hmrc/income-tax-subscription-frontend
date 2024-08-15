@@ -16,17 +16,17 @@
 
 package controllers.individual.tasklist.overseasproperty
 
+import connectors.httpparser.PostSubscriptionDetailsHttpParser
+import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.individual.ControllerBaseSpec
 import forms.individual.business.OverseasPropertyStartDateForm
-import models.common.OverseasPropertyModel
-import models.{Cash, DateModel}
+import models.DateModel
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.individual.mocks.MockAuthService
 import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSubscriptionDetailsService}
-import utilities.TestModels.testFullOverseasPropertyModel
 import views.individual.mocks.MockOverseasPropertyStartDate
 
 import java.time.LocalDate
@@ -47,7 +47,7 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
 
   object TestOverseasPropertyStartDateController extends OverseasPropertyStartDateController(
     overseasPropertyStartDate,
-    MockSubscriptionDetailsService,
+    mockSubscriptionDetailsService,
     mockReferenceRetrieval
   )(
     mockAuditingService,
@@ -59,12 +59,11 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
   "show" should {
     "display the foreign property start date view and return OK (200)" in withController { controller =>
       mockOverseasPropertyStartDateView()
-      mockFetchOverseasProperty(Some(OverseasPropertyModel(startDate = Some(DateModel("22", "11", "2021")))))
+      mockFetchOverseasPropertyStartDate(Some(DateModel("22", "11", "2021")))
 
       lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
 
       status(result) must be(Status.OK)
-      verifySubscriptionDetailsFetchAll(Some(1))
     }
   }
 
@@ -86,9 +85,7 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
 
     "in edit mode" should {
       "redirect to overseas property check your answers page" in withController { controller =>
-        mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("22", "11", "2021")))))
-        setupMockSubscriptionDetailsSaveFunctions()
-        mockDeleteIncomeSourceConfirmationSuccess()
+        mockSaveOverseasPropertyStartDate(testValidMaxStartDate)(Right(PostSubscriptionDetailsSuccessResponse))
 
         val goodRequest = callPost(controller, isEditMode = true)
 
@@ -96,21 +93,17 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
 
         status(goodRequest) mustBe SEE_OTHER
         redirectLocation(goodRequest) mustBe Some(routes.OverseasPropertyCheckYourAnswersController.show(true).url)
-        verifyOverseasPropertySave(Some(testFullOverseasPropertyModel.copy(startDate = Some(testValidMaxDate), confirmed = false)))
       }
     }
 
     "not in edit mode" should {
       "redirect to the overseas property accounting method page" in withController { controller =>
-        mockFetchOverseasProperty(None)
-        setupMockSubscriptionDetailsSaveFunctions()
-        mockDeleteIncomeSourceConfirmationSuccess()
+        mockSaveOverseasPropertyStartDate(testValidMaxStartDate)(Right(PostSubscriptionDetailsSuccessResponse))
 
         val goodRequest = await(callPost(controller, isEditMode = false))
 
         status(goodRequest) mustBe SEE_OTHER
         redirectLocation(goodRequest) mustBe Some(routes.OverseasPropertyAccountingMethodController.show().url)
-        verifyOverseasPropertySave(Some(OverseasPropertyModel(startDate = Some(testValidMaxDate))))
       }
     }
 
@@ -123,14 +116,14 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
         status(badRequest) must be(Status.BAD_REQUEST)
 
         await(badRequest)
-        verifyOverseasPropertySave(None)
       }
     }
 
     "throw an exception" when {
       "cannot save the start date" in withController { controller =>
-        mockFetchOverseasProperty(Some(OverseasPropertyModel()))
-        setupMockSubscriptionDetailsSaveFunctionsFailure()
+        mockSaveOverseasPropertyStartDate(testValidMaxStartDate)(
+          Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
+        )
 
         val goodRequest = callPost(controller, isEditMode = false)
         goodRequest.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
@@ -157,7 +150,7 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
   private def withController(testCode: OverseasPropertyStartDateController => Any) = {
     val controller = new OverseasPropertyStartDateController(
       overseasPropertyStartDate,
-      MockSubscriptionDetailsService,
+      mockSubscriptionDetailsService,
       mockReferenceRetrieval
     )(
       mockAuditingService,

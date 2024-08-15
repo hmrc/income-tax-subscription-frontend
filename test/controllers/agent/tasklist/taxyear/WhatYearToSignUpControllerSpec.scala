@@ -16,6 +16,8 @@
 
 package controllers.agent.tasklist.taxyear
 
+import connectors.httpparser.PostSubscriptionDetailsHttpParser
+import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.AccountingYearForm
 import models.common.AccountingYearModel
@@ -48,7 +50,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
     mockAccountingPeriodService,
     mockReferenceRetrieval,
     mockClientDetailsRetrieval,
-    MockSubscriptionDetailsService,
+    mockSubscriptionDetailsService,
     whatYearToSignUp
   )(
     mockAuditingService,
@@ -69,7 +71,6 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
         val result = await(TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequestWithName))
 
         status(result) must be(Status.OK)
-        verifyFetchSelectedTaxYear(1, "test-reference")
       }
     }
 
@@ -83,7 +84,6 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
         val result = await(TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequestWithName))
 
         status(result) must be(Status.OK)
-        verifyFetchSelectedTaxYear(1, "test-reference")
       }
     }
   }
@@ -101,28 +101,22 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
     "redirect to tax year check your answers page" when {
       "not in edit mode" in {
         mockView()
-        setupMockSubscriptionDetailsSaveFunctions()
+        mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
+
         val goodRequest = callSubmit(isEditMode = false)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.agent.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.show().url)
-
+        redirectLocation(goodRequest) mustBe Some(routes.TaxYearCheckYourAnswersController.show().url)
         status(goodRequest) must be(Status.SEE_OTHER)
-
-        await(goodRequest)
-        verifySaveSelectedTaxYear(1, "test-reference")
       }
 
       "in edit mode" in {
         mockView()
-        setupMockSubscriptionDetailsSaveFunctions()
+        mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
+
         val goodRequest = callSubmit(isEditMode = true)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.agent.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.show().url)
-
+        redirectLocation(goodRequest) mustBe Some(routes.TaxYearCheckYourAnswersController.show().url)
         status(goodRequest) must be(Status.SEE_OTHER)
-
-        await(goodRequest)
-        verifySaveSelectedTaxYear(1, "test-reference")
       }
     }
 
@@ -139,7 +133,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
     "throw an exception" when {
       "there is a failure while saving the tax year" in {
         mockView()
-        setupMockSubscriptionDetailsSaveFunctionsFailure()
+        mockSaveSelectedTaxYear(AccountingYearModel(Current))(Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
         val goodRequest = callSubmit(isEditMode = false)
 

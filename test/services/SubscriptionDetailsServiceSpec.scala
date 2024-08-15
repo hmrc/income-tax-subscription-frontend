@@ -16,31 +16,43 @@
 
 package services
 
-import connectors.IncomeTaxSubscriptionConnector
 import models.common.AccountingYearModel
 import models.status.MandationStatus.Voluntary
-import models.{EligibilityStatus, Next}
+import models.{Current, EligibilityStatus, Next}
+import org.scalatest.matchers.must.Matchers
 import org.scalatest.matchers.should.Matchers._
-import services.mocks.MockSubscriptionDetailsService
-import utilities.{SubscriptionDataKeys, UnitTestTrait}
+import org.scalatestplus.play.PlaySpec
+import services.mocks.{MockGetEligibilityStatusService, MockIncomeTaxSubscriptionConnector, MockMandationStatusService}
+import uk.gov.hmrc.crypto.ApplicationCrypto
+import utilities.SubscriptionDataKeys
 
-class SubscriptionDetailsServiceSpec extends UnitTestTrait
-  with MockSubscriptionDetailsService {
+class SubscriptionDetailsServiceSpec extends PlaySpec
+  with Matchers
+  with MockMandationStatusService
+  with MockIncomeTaxSubscriptionConnector
+  with MockGetEligibilityStatusService {
 
   val test: Map[String, String] = Map.empty
 
   val newTest: Map[String, String] = test ++ Some("" -> "")
 
-  override val mockConnector: IncomeTaxSubscriptionConnector = mock[IncomeTaxSubscriptionConnector]
-  val subscriptionDetailsService: SubscriptionDetailsService = MockSubscriptionDetailsService
+  val crypto: ApplicationCrypto = app.injector.instanceOf[ApplicationCrypto]
+
+  val subscriptionDetailsService: SubscriptionDetailsService = new SubscriptionDetailsService(
+    mockIncomeTaxSubscriptionConnector,
+    mockMandationStatusService,
+    mockGetEligibilityStatusService,
+    crypto
+  )
+
   val testReference = "test-reference"
 
   "mock Subscription Details  service" should {
 
     "return next year when the ELIGIBLE_NEXT_YEAR_ONLY session variable is set" in {
+      mockGetSelfEmployments(SubscriptionDataKeys.SelectedTaxYear)(None)
       mockGetMandationService(Voluntary, Voluntary)
       mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
-      mockFetchSelectedTaxYear(None)
 
       val testResultEventually = subscriptionDetailsService.fetchSelectedTaxYear(testReference)(hc)
       testResultEventually.map(testResult => {
@@ -52,20 +64,20 @@ class SubscriptionDetailsServiceSpec extends UnitTestTrait
     }
 
     "return empty db value when the ELIGIBLE_NEXT_YEAR_ONLY session variable is not set and no value found" in {
+      mockGetSelfEmployments(SubscriptionDataKeys.SelectedTaxYear)(None)
       mockGetMandationService(Voluntary, Voluntary)
 
-      mockFetchSelectedTaxYear(None)
+
       val testResultEventually = subscriptionDetailsService.fetchSelectedTaxYear(testReference)(hc)
       testResultEventually.map(testResult => {
         testResult.isEmpty mustBe true
       })
-      verifySubscriptionDetailsFetchWithField(testReference, 1, SubscriptionDataKeys.SelectedTaxYear)
     }
 
     "return editable db value when the ELIGIBLE_NEXT_YEAR_ONLY session variable is not set" in {
+      mockGetSelfEmployments(SubscriptionDataKeys.SelectedTaxYear)(Some(AccountingYearModel(Current)))
       mockGetMandationService(Voluntary, Voluntary)
 
-      mockFetchSelectedTaxYear(Some(AccountingYearModel(Next, confirmed = true, editable = false)))
       val testResultEventually = subscriptionDetailsService.fetchSelectedTaxYear(testReference)(hc)
       testResultEventually.map(testResult => {
         testResult.isEmpty mustBe false
@@ -73,7 +85,6 @@ class SubscriptionDetailsServiceSpec extends UnitTestTrait
         testResult.get.editable mustBe true
         testResult.get.accountingYear mustBe Next
       })
-      verifySubscriptionDetailsFetchWithField(testReference, 1, SubscriptionDataKeys.SelectedTaxYear)
     }
   }
 }

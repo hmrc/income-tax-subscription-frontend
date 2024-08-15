@@ -23,10 +23,9 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.http.Status
 import play.api.http.Status._
 import services.{LockoutUpdate, UserLockoutService}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.HeaderCarrier
 import utilities.individual.TestConstants.{testException, testLockoutResponse}
 import utilities.{UnitTestTrait, UserMatchingTestSupport}
 
@@ -69,12 +68,12 @@ trait MockUserLockoutService extends UnitTestTrait with MockitoSugar with Before
   }
 
   def setupIncrementNotLockedOut(token: String, currentFailedMatches: Int): Unit = {
-    val returnedFailures: Option[Int] = if(appConfig.matchingAttempts - 1 == currentFailedMatches) None else Some(currentFailedMatches + 1)
+    val returnedFailures: Option[Int] = if (appConfig.matchingAttempts - 1 == currentFailedMatches) None else Some(currentFailedMatches + 1)
     mockIncrementLockout(token, currentFailedMatches)(Future.successful(Right(LockoutUpdate(NotLockedOut, returnedFailures))))
   }
 
   def setupIncrementLockedOut(token: String, currentFailedMatches: Int): Unit = {
-    val returnedFailures: Option[Int] = if(appConfig.matchingAttempts - 1 == currentFailedMatches) None else Some(currentFailedMatches + 1)
+    val returnedFailures: Option[Int] = if (appConfig.matchingAttempts - 1 == currentFailedMatches) None else Some(currentFailedMatches + 1)
     mockIncrementLockout(token, currentFailedMatches)(Future.successful(Right(LockoutUpdate(testLockoutResponse, returnedFailures))))
   }
 
@@ -94,13 +93,12 @@ trait TestUserLockoutService extends MockUserLockoutConnector
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    mockDeleteAllFromSubscriptionDetails(HttpResponse(Status.OK, ""))
   }
 
   object TestUserLockoutService extends UserLockoutService(
     appConfig,
     mockUserLockoutConnector,
-    MockSubscriptionDetailsService
+    mockSubscriptionDetailsService
   )
 
 }

@@ -175,7 +175,7 @@ class ProgressSavedControllerSpec extends AgentControllerBaseSpec
     val controller = new ProgressSavedController(
       progressSavedView,
       currentDateProvider,
-      MockSubscriptionDetailsService,
+      mockSubscriptionDetailsService,
       mockReferenceRetrieval,
       mockUTRService,
       mockClientDetailsRetrieval,

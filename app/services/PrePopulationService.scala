@@ -21,14 +21,13 @@ import models.common.business._
 import models.common.{OverseasPropertyModel, PropertyModel}
 import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
+import utilities.UUIDProvider
 
-import java.util.UUID
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PrePopulationService @Inject()(val subscriptionDetailsService: SubscriptionDetailsService
-                                    ) extends Logging {
+class PrePopulationService @Inject()(val subscriptionDetailsService: SubscriptionDetailsService, uuidProvider: UUIDProvider) extends Logging {
 
   def prePopulate(reference: String, prepop: PrePopData)
                  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = for {
@@ -49,7 +48,7 @@ class PrePopulationService @Inject()(val subscriptionDetailsService: Subscriptio
       case None => Future.successful(())
       case Some(listPrepopSelfEmployment) =>
         val listSelfEmploymentData = listPrepopSelfEmployment.map(se => SelfEmploymentData(
-          UUID.randomUUID().toString,
+          uuidProvider.getUUID,
           se.businessStartDate.map(date => BusinessStartDate(date)),
           se.businessName.flatMap(name => BusinessNameModel(name).toCleanOption),
           BusinessTradeNameModel(se.businessTradeName).toCleanOption,

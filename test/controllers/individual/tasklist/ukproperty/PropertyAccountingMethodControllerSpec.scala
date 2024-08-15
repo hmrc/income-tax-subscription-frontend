@@ -16,10 +16,11 @@
 
 package controllers.individual.tasklist.ukproperty
 
+import connectors.httpparser.PostSubscriptionDetailsHttpParser
+import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.individual.ControllerBaseSpec
 import forms.individual.business.AccountingMethodPropertyForm
-import models.common.PropertyModel
-import models.{AccountingMethod, Accruals, Cash}
+import models.{Accruals, Cash}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
@@ -28,7 +29,6 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSubscriptionDetailsService}
-import utilities.TestModels._
 import views.html.individual.tasklist.ukproperty.PropertyAccountingMethod
 
 import scala.concurrent.Future
@@ -49,7 +49,7 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
 
     val controller = new PropertyAccountingMethodController(
       propertyAccountingMethodView,
-      MockSubscriptionDetailsService,
+      mockSubscriptionDetailsService,
       mockReferenceRetrieval
     )(
       mockAuditingService,
@@ -62,7 +62,7 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
 
   "show" should {
     "display the property accounting method view and return OK (200)" in withController { controller =>
-      mockFetchProperty(None)
+      mockFetchPropertyAccountingMethod(Some(Cash))
 
       lazy val result = await(controller.show(isEditMode = false)(subscriptionRequest))
 
@@ -80,35 +80,25 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
       subscriptionRequest
     )
 
-    val testAccountingMethod: AccountingMethod = Cash
-
     "redirect to uk property check your answers page" when {
       "not in edit mode" in {
-        mockFetchProperty(None)
-        setupMockSubscriptionDetailsSaveFunctions()
-        mockDeleteIncomeSourceConfirmationSuccess()
+        mockSavePropertyAccountingMethod(Cash)(Right(PostSubscriptionDetailsSuccessResponse))
 
         val goodRequest = callSubmit(isEditMode = false)
 
         await(goodRequest)
 
         redirectLocation(goodRequest) mustBe Some(routes.PropertyCheckYourAnswersController.show().url)
-
-        verifyPropertySave(Some(PropertyModel(accountingMethod = Some(testAccountingMethod))))
       }
 
       "in edit mode" in {
-        mockFetchProperty(Some(testFullPropertyModel))
-        setupMockSubscriptionDetailsSaveFunctions()
-        mockDeleteIncomeSourceConfirmationSuccess()
+        mockSavePropertyAccountingMethod(Accruals)(Right(PostSubscriptionDetailsSuccessResponse))
 
         val goodRequest = controller.submit(isEditMode = true)(
           subscriptionRequest.post(AccountingMethodPropertyForm.accountingMethodPropertyForm, Accruals)
         )
 
         redirectLocation(goodRequest) mustBe Some(routes.PropertyCheckYourAnswersController.show(true).url)
-
-        verifyPropertySave(Some(testFullPropertyModel.copy(accountingMethod = Some(Accruals), confirmed = false)))
       }
     }
 
@@ -119,14 +109,12 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
         status(badRequest) must be(Status.BAD_REQUEST)
 
         await(badRequest)
-        verifyPropertySave(None)
       }
     }
 
     "throw an exception" when {
       "cannot save the accounting method" in {
-        setupMockSubscriptionDetailsSaveFunctionsFailure()
-        mockFetchProperty(None)
+        mockSavePropertyAccountingMethod(Cash)(Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
         val goodRequest: Future[Result] = callSubmit(isEditMode = false)
 

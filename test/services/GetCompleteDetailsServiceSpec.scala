@@ -33,7 +33,7 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
 
   trait Setup {
     val service: GetCompleteDetailsService = new GetCompleteDetailsService(
-      subscriptionDetailsService = MockSubscriptionDetailsService
+      subscriptionDetailsService = mockSubscriptionDetailsService
     )
   }
 

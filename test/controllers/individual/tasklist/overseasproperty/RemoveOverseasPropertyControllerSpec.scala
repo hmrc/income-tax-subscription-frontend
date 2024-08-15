@@ -133,7 +133,7 @@ class RemoveOverseasPropertyControllerSpec extends ControllerBaseSpec
     val controller = new RemoveOverseasPropertyController(
       view,
       mockReferenceRetrieval,
-      MockSubscriptionDetailsService,
+      mockSubscriptionDetailsService,
       mockIncomeTaxSubscriptionConnector
     )(
       mockAuditingService,
@@ -147,7 +147,7 @@ class RemoveOverseasPropertyControllerSpec extends ControllerBaseSpec
   object TestRemoveOverseasPropertyController extends RemoveOverseasPropertyController(
     mockRemoveOverseasProperty,
     mockReferenceRetrieval,
-    MockSubscriptionDetailsService,
+    mockSubscriptionDetailsService,
     mockIncomeTaxSubscriptionConnector
   )(
     mockAuditingService,

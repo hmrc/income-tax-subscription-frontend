@@ -16,17 +16,16 @@
 
 package controllers.individual.tasklist.ukproperty
 
+import connectors.httpparser.PostSubscriptionDetailsHttpParser
+import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.individual.ControllerBaseSpec
 import forms.individual.business.PropertyStartDateForm
 import models.DateModel
-import models.common.PropertyModel
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSubscriptionDetailsService}
-import utilities.SubscriptionDataKeys.PropertyStartDate
-import utilities.TestModels.testFullPropertyModel
 import views.individual.mocks.MockPropertyStartDate
 
 import java.time.LocalDate
@@ -46,7 +45,7 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
 
   object TestPropertyStartDateController extends PropertyStartDateController(
     propertyStartDate,
-    MockSubscriptionDetailsService,
+    mockSubscriptionDetailsService,
     mockReferenceRetrieval
   )(
     mockAuditingService,
@@ -58,7 +57,7 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
   trait Test {
     val controller = new PropertyStartDateController(
       propertyStartDate,
-      MockSubscriptionDetailsService,
+      mockSubscriptionDetailsService,
       mockReferenceRetrieval
     )(
       mockAuditingService,
@@ -71,12 +70,11 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
   "show" should {
     "display the property accounting method view and return OK (200)" in new Test {
       mockPropertyStartDate()
+      mockFetchPropertyStartDate(None)
 
-      lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
-      mockFetchProperty(None)
+      val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
 
       status(result) must be(Status.OK)
-      verifySubscriptionDetailsSave(PropertyStartDate, 0)
     }
   }
 
@@ -98,29 +96,23 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
 
     "in edit mode" should {
       "redirect to the uk property check your answers page" in {
-        mockFetchProperty(Some(testFullPropertyModel))
-        setupMockSubscriptionDetailsSaveFunctions()
-        mockDeleteIncomeSourceConfirmationSuccess()
+        mockSavePropertyStartDate(testPropertyStartDateModel)(Right(PostSubscriptionDetailsSuccessResponse))
 
         val goodRequest = await(callSubmit(isEditMode = true))
 
         status(goodRequest) mustBe SEE_OTHER
         redirectLocation(goodRequest) mustBe Some(routes.PropertyCheckYourAnswersController.show(true).url)
-        verifyPropertySave(Some(testFullPropertyModel.copy(startDate = Some(testValidMaxDate), confirmed = false)))
       }
     }
 
     "not in edit mode" must {
       "redirect to the uk property accounting method page" in {
-        mockFetchProperty(None)
-        setupMockSubscriptionDetailsSaveFunctions()
-        mockDeleteIncomeSourceConfirmationSuccess()
+        mockSavePropertyStartDate(testPropertyStartDateModel)(Right(PostSubscriptionDetailsSuccessResponse))
 
         val goodRequest = await(callSubmit(isEditMode = false))
 
         status(goodRequest) mustBe SEE_OTHER
         redirectLocation(goodRequest) mustBe Some(routes.PropertyAccountingMethodController.show().url)
-        verifyPropertySave(Some(PropertyModel(startDate = Some(testValidMaxDate))))
       }
     }
 
@@ -133,15 +125,12 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
         status(badRequest) must be(Status.BAD_REQUEST)
 
         await(badRequest)
-        verifyPropertySave(None)
-        verifySubscriptionDetailsFetchAll(Some(0))
       }
     }
 
     "throw an exception" when {
       "cannot save the start date" in {
-        setupMockSubscriptionDetailsSaveFunctionsFailure()
-        mockFetchProperty(None)
+        mockSavePropertyStartDate(testPropertyStartDateModel)(Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
         val goodRequest: Future[Result] = callSubmit(isEditMode = false)
 

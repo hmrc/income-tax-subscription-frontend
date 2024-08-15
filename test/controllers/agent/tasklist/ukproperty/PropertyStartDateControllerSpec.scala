@@ -17,6 +17,8 @@
 package controllers.agent.tasklist.ukproperty
 
 import config.featureswitch.FeatureSwitching
+import connectors.httpparser.PostSubscriptionDetailsHttpParser
+import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.PropertyStartDateForm
 import models.DateModel
@@ -24,11 +26,11 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status
+import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{await, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockAuditingService, MockClientDetailsRetrieval, MockReferenceRetrieval, MockSubscriptionDetailsService}
-import utilities.TestModels.testFullPropertyModel
 import views.html.agent.tasklist.ukproperty.PropertyStartDate
 
 import java.time.LocalDate
@@ -49,7 +51,7 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
 
   object TestPropertyStartDateController$ extends PropertyStartDateController(
     mock[PropertyStartDate],
-    MockSubscriptionDetailsService,
+    mockSubscriptionDetailsService,
     mockClientDetailsRetrieval,
     mockReferenceRetrieval
   )(
@@ -61,9 +63,9 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
 
   "show" should {
     "display the property start date view and return OK (200)" in withController { controller =>
-      lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequestWithName))
+      mockFetchPropertyStartDate(None)
 
-      mockFetchProperty(None)
+      val result: Result = await(controller.show(isEditMode = false)(subscriptionRequestWithName))
 
       status(result) must be(Status.OK)
     }
@@ -71,7 +73,6 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
 
   "submit" when {
     val testValidMaxStartDate: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(1))
-
     val testPropertyStartDateModel: DateModel = testValidMaxStartDate
 
     def callSubmit(controller: PropertyStartDateController, isEditMode: Boolean): Future[Result] =
@@ -89,9 +90,7 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
 
     "in edit mode" should {
       "redirect to the uk property check your answers page" in withController { controller =>
-        mockFetchProperty(Some(testFullPropertyModel))
-        setupMockSubscriptionDetailsSaveFunctions()
-        mockDeleteIncomeSourceConfirmationSuccess()
+        mockSavePropertyStartDate(testPropertyStartDateModel)(Right(PostSubscriptionDetailsSuccessResponse))
 
         val goodRequest = callSubmit(controller, isEditMode = true)
 
@@ -99,20 +98,17 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
         await(goodRequest)
 
         redirectLocation(goodRequest) mustBe Some(routes.PropertyCheckYourAnswersController.show(true).url)
-        verifyPropertySave(Some(testFullPropertyModel.copy(startDate = Some(testValidMaxStartDate), confirmed = false)))
       }
     }
 
     "redirect to agent uk property check your answers page" when {
       "in edit mode" in withController { controller =>
-        mockFetchProperty(Some(testFullPropertyModel))
-        setupMockSubscriptionDetailsSaveFunctions()
-        mockDeleteIncomeSourceConfirmationSuccess()
+        mockSavePropertyStartDate(testPropertyStartDateModel)(Right(PostSubscriptionDetailsSuccessResponse))
+
         val goodRequest = callSubmit(controller, isEditMode = true)
         await(goodRequest)
         redirectLocation(goodRequest) mustBe Some(routes.PropertyCheckYourAnswersController.show(true).url)
 
-        verifyPropertySave(Some(testFullPropertyModel.copy(startDate = Some(testValidMaxStartDate), confirmed = false)))
       }
     }
 
@@ -128,8 +124,7 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
 
     "throw an exception" when {
       "cannot save the start date" in withController { controller =>
-        setupMockSubscriptionDetailsSaveFunctionsFailure()
-        mockFetchProperty(None)
+        mockSavePropertyStartDate(testPropertyStartDateModel)(Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
         val goodRequest: Future[Result] = callSubmit(controller, isEditMode = false)
 
@@ -168,7 +163,7 @@ class PropertyStartDateControllerSpec extends AgentControllerBaseSpec
 
     val controller = new PropertyStartDateController(
       mockView,
-      MockSubscriptionDetailsService,
+      mockSubscriptionDetailsService,
       mockClientDetailsRetrieval,
       mockReferenceRetrieval
     )(

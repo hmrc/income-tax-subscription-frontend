@@ -16,16 +16,15 @@
 
 package controllers.agent.tasklist.overseasproperty
 
+import connectors.httpparser.PostSubscriptionDetailsHttpParser
 import controllers.agent.AgentControllerBaseSpec
 import forms.agent.AccountingMethodOverseasPropertyForm
 import models.Cash
-import models.common.OverseasPropertyModel
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.{MockAuditingService, MockClientDetailsRetrieval, MockReferenceRetrieval, MockSubscriptionDetailsService}
-import utilities.SubscriptionDataKeys.OverseasPropertyAccountingMethod
 import views.agent.mocks.MockOverseasPropertyAccountingMethod
 
 import scala.concurrent.Future
@@ -45,7 +44,7 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
 
   object TestOverseasPropertyAccountingMethodController extends OverseasPropertyAccountingMethodController(
     overseasPropertyAccountingMethod,
-    MockSubscriptionDetailsService,
+    mockSubscriptionDetailsService,
     mockClientDetailsRetrieval,
     mockReferenceRetrieval
   )(
@@ -58,23 +57,19 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
     "display the overseas property accounting method view and return OK (200)" when {
       "there is no previously selected accounting method" in {
         lazy val result = await(TestOverseasPropertyAccountingMethodController.show(isEditMode = false)(subscriptionRequestWithName))
-        mockFetchOverseasProperty(None)
+        mockFetchOverseasPropertyAccountingMethod(None)
         mockOverseasPropertyAccountingMethod()
 
         status(result) must be(Status.OK)
-        verifyOverseasPropertySave(None)
       }
 
       "there is a previously selected answer of CASH" in {
         lazy val result = await(TestOverseasPropertyAccountingMethodController.show(isEditMode = false)(subscriptionRequestWithName))
 
-        mockFetchOverseasProperty(Some(OverseasPropertyModel(
-          accountingMethod = Some(Cash)
-        )))
+        mockFetchOverseasPropertyAccountingMethod(Some(Cash))
         mockOverseasPropertyAccountingMethod()
 
         status(result) must be(Status.OK)
-        verifyOverseasPropertySave(None)
       }
     }
   }
@@ -89,9 +84,9 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
     )
 
     "redirect to agent overseas property check your answers page" in {
-      mockFetchOverseasProperty(Some(OverseasPropertyModel()))
-      setupMockSubscriptionDetailsSaveFunctions()
-      mockDeleteIncomeSourceConfirmationSuccess()
+      mockSaveOverseasAccountingMethodProperty(Cash)(
+        Right(PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse)
+      )
 
       val goodRequest = callSubmit(isEditMode = false)
 
@@ -100,7 +95,6 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
       redirectLocation(goodRequest) mustBe Some(routes.OverseasPropertyCheckYourAnswersController.show().url)
 
       await(goodRequest)
-      verifyOverseasPropertySave(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
     }
 
     "return bad request status (400)" when {
@@ -112,15 +106,14 @@ class OverseasPropertyAccountingMethodControllerSpec extends AgentControllerBase
         status(badRequest) must be(Status.BAD_REQUEST)
 
         await(badRequest)
-        verifySubscriptionDetailsSave(OverseasPropertyAccountingMethod, 0)
-        verifySubscriptionDetailsFetchAll(Some(0))
       }
     }
 
     "throw an exception" when {
       "cannot save the accounting method" in {
-        mockFetchOverseasProperty(Some(OverseasPropertyModel()))
-        setupMockSubscriptionDetailsSaveFunctionsFailure()
+        mockSaveOverseasAccountingMethodProperty(Cash)(
+          Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
+        )
 
         val goodRequest = callSubmit(isEditMode = false)
         goodRequest.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]

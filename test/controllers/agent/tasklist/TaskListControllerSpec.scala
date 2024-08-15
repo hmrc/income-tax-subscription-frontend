@@ -17,6 +17,7 @@
 package controllers.agent.tasklist
 
 import config.featureswitch.FeatureSwitch.ThrottlingFeature
+import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.agent.AgentControllerBaseSpec
 import models.common.business._
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
@@ -70,7 +71,7 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
     mockClientDetailsRetrieval,
     mockReferenceRetrieval,
     mockUTRService,
-    MockSubscriptionDetailsService
+    mockSubscriptionDetailsService
   )(
     mockAuditingService,
     mockAuthService
@@ -79,7 +80,6 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
   "show" should {
     "return an OK status with the task list page" in {
       mockTaskList()
-      mockSaveIncomeSourceConfirmation(Some(true))
       mockFetchAllSelfEmployments(Seq(
         SelfEmploymentData(
           id = "id",
@@ -100,6 +100,7 @@ class TaskListControllerSpec extends AgentControllerBaseSpec
         confirmed = true
       )))
       mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
+      mockFetchIncomeSourceConfirmation(Some(true))
       mockGetMandationService(Voluntary, Voluntary)
       mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
       mockGetUTR(testUtr)
