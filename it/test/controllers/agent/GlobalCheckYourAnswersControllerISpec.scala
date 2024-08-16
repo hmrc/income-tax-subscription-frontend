@@ -107,6 +107,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
 
         if(isEnabled(CheckClientRelationship)) {
           AgentServicesStub.stubClientRelationship(testARN, testNino, exists = true)
+          AgentServicesStub.stubMTDClientRelationship(testARN, testNino, exists = true)
         }
 
         When("POST /final-check-your-answers is called")
@@ -151,6 +152,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
 
             if(isEnabled(CheckClientRelationship)) {
               AgentServicesStub.stubClientRelationship(testARN, testNino, exists = true)
+              AgentServicesStub.stubMTDClientRelationship(testARN, testNino, exists = true)
             }
 
             MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear)(OK)
@@ -220,6 +222,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
 
             if(isEnabled(CheckClientRelationship)) {
               AgentServicesStub.stubClientRelationship(testARN, testNino, exists = true)
+              AgentServicesStub.stubMTDClientRelationship(testARN, testNino, exists = true)
             }
 
             MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getNextTaxYear.toLongTaxYear)(OK)

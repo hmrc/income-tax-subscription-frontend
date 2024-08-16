@@ -44,11 +44,28 @@ class AgentServicesConnector @Inject()(appConfig: AppConfig,
     }
   }
 
+  def agentMTDClientURL(arn: String, nino: String): String = {
+    appConfig.agentMicroserviceUrl + AgentServicesConnector.agentMTDClientURI(arn, nino)
+  }
+
+  def isMTDPreExistingRelationship (arn: String, nino: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
+    val url = agentMTDClientURL(arn, nino)
+
+    http.GET[HttpResponse](url).map {
+      case res if res.status == Status.OK => true
+      case res if res.status == Status.NOT_FOUND => false
+      case res => throw new InternalServerException(s"[AgentServicesConnector][isMTDPreExistingRelationship] failure, status: ${res.status} body=${res.body}")
+    }
+  }
+
 }
 
 object AgentServicesConnector {
 
   def agentClientURI(arn: String, nino: String): String =
     s"/agent-client-relationships/agent/$arn/service/IR-SA/client/ni/$nino"
+
+  def agentMTDClientURI(arn: String, nino: String): String =
+    s"/agent-client-relationships/agent/$arn/service/HMRC-MTD-IT/client/ni/$nino"
 
 }
