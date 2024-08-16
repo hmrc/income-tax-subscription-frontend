@@ -70,6 +70,7 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
         withCompleteDetails(reference) { completeDetails =>
           if(isEnabled(CheckClientRelationship)) {
             clientRelationshipService.isPreExistingRelationship(user.arn, nino)
+            clientRelationshipService.isMTDPreExistingRelationship(user.arn, nino)
           }
           signUp(completeDetails) {
             case Some(id) =>
