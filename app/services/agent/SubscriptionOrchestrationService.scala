@@ -16,6 +16,9 @@
 
 package services.agent
 
+import config.AppConfig
+import config.featureswitch.FeatureSwitch.CheckClientRelationship
+import config.featureswitch.FeatureSwitching
 import connectors.agent.AgentSPSConnector
 import models.ConnectorError
 import models.common.subscription.{CreateIncomeSourcesModel, SignUpSuccessResponse, SubscriptionSuccess}
@@ -28,8 +31,10 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class SubscriptionOrchestrationService @Inject()(subscriptionService: SubscriptionService,
                                                  autoEnrolmentService: AutoEnrolmentService,
+                                                 clientRelationshipService: ClientRelationshipService,
                                                  agentSPSConnector: AgentSPSConnector)
-                                                (implicit ec: ExecutionContext) {
+                                                (val appConfig: AppConfig)
+                                                (implicit ec: ExecutionContext) extends FeatureSwitching {
 
   def createSubscriptionFromTaskList(arn: String,
                                      utr: String,
@@ -39,9 +44,15 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
       case right@Right(Some(subscriptionSuccess)) =>
         autoEnrolmentService.autoClaimEnrolment(utr, createIncomeSourcesModel.nino, subscriptionSuccess.mtditId) flatMap {
           case Right(_) =>
+            if (isEnabled(CheckClientRelationship)) {
+              clientRelationshipService.isMTDPreExistingRelationship(arn, createIncomeSourcesModel.nino)
+            }
             confirmAgentEnrollmentToSps(arn, createIncomeSourcesModel.nino, utr, subscriptionSuccess.mtditId)
               .map(_ => right)
           case Left(_) =>
+            if (isEnabled(CheckClientRelationship)) {
+              clientRelationshipService.isMTDPreExistingRelationship(arn, createIncomeSourcesModel.nino)
+            }
             Future.successful(right)
         }
       case Right(None) => Future.successful(Right(None))

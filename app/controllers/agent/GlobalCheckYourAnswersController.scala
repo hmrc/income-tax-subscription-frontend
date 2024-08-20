@@ -19,16 +19,13 @@ package controllers.agent
 import auth.agent.{AuthenticatedController, IncomeTaxAgentUser}
 import common.Constants.ITSASessionKeys
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.CheckClientRelationship
-import config.featureswitch.FeatureSwitchingImpl
 import controllers.utils.ReferenceRetrieval
 import models.common.subscription.{CreateIncomeSourcesModel, SubscriptionSuccess}
 import play.api.mvc._
 import play.twirl.api.Html
 import services.GetCompleteDetailsService.CompleteDetails
 import services._
-import services.agent.{ClientRelationshipService, SubscriptionOrchestrationService}
-import testonly.form.agent.NinoForm.nino
+import services.agent.SubscriptionOrchestrationService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import views.html.agent.GlobalCheckYourAnswers
 
@@ -41,8 +38,7 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
                                                  referenceRetrieval: ReferenceRetrieval,
                                                  ninoService: NinoService,
                                                  utrService: UTRService,
-                                                 subscriptionService: SubscriptionOrchestrationService,
-                                                 clientRelationshipService: ClientRelationshipService)
+                                                 subscriptionService: SubscriptionOrchestrationService)
                                                 (val auditingService: AuditingService,
                                                  val authService: AuthService,
                                                  val subscriptionDetailsService: SubscriptionDetailsService,
@@ -68,10 +64,6 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
     implicit user =>
       referenceRetrieval.getAgentReference flatMap { reference =>
         withCompleteDetails(reference) { completeDetails =>
-          if(isEnabled(CheckClientRelationship)) {
-            clientRelationshipService.isPreExistingRelationship(user.arn, nino)
-            clientRelationshipService.isMTDPreExistingRelationship(user.arn, nino)
-          }
           signUp(completeDetails) {
             case Some(id) =>
               Redirect(controllers.agent.routes.ConfirmationController.show)

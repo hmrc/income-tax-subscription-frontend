@@ -16,11 +16,13 @@
 
 package services.agent
 
+import config.MockConfig
+import config.featureswitch.FeatureSwitch
 import models.ConnectorError
 import models.common.subscription.SubscriptionSuccess
 import org.scalatest.concurrent.ScalaFutures.whenReady
 import play.api.test.Helpers._
-import services.agent.mocks.MockAgentSPSConnector
+import services.agent.mocks.{MockAgentSPSConnector, MockClientRelationshipService}
 import services.mocks.{MockAutoEnrolmentService, MockSubscriptionService}
 import utilities.TestModels.testAccountingPeriodThisYear
 import utilities.agent.TestConstants._
@@ -29,13 +31,20 @@ import scala.concurrent.Future
 
 class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService
   with MockAutoEnrolmentService
+  with MockClientRelationshipService
   with MockAgentSPSConnector {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    enable(FeatureSwitch.CheckClientRelationship)
+  }
 
   object TestSubscriptionOrchestrationService extends SubscriptionOrchestrationService(
     mockSubscriptionService,
     mockAutoEnrolmentService,
+    mockClientRelationshipService,
     mockAgentSpsConnector
-  )
+  )(MockConfig)
 
   val testTaxYear: String = testAccountingPeriodThisYear.toLongTaxYear
 
