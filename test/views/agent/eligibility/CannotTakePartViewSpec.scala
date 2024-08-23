@@ -17,7 +17,7 @@
 package views.agent.eligibility
 
 import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
+import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.HtmlFormat
 import utilities.ViewSpec
 import views.html.agent.eligibility.CannotTakePart
@@ -36,44 +36,70 @@ class CannotTakePartViewSpec extends ViewSpec {
 
   val document: Document = Jsoup.parse(page.body)
 
+  "CannotSignUp" must {
+    "use the correct template" in new TemplateViewTest(
+      view = page,
+      title = CannotTakePartMessages.heading,
+      isAgent = true,
+      hasSignOutLink = true
+    )
 
-  "Cannot Sign Up View" should {
-    "have a title" in {
-      document.title mustBe s"${CannotTakePartMessages.heading} - Use software to report your client’s Income Tax - GOV.UK"
+    "have a heading" in {
+      document.getH1Element.text mustBe CannotTakePartMessages.heading
     }
 
-    "have a heading caption" in {
+    "have a caption" in {
       document.mainContent.selectHead("span.govuk-caption-l").text mustBe s"$clientName | $clientNino"
     }
 
-    "have a heading" in {
-      document.mainContent.select("h1").text() mustBe CannotTakePartMessages.heading
+    "have a subheading" in {
+      document.mainContent.selectHead("h2").text mustBe CannotTakePartMessages.subheading
     }
 
-    "have paragraph 1" in {
-      document.mainContent.selectNth("p", 1).text() mustBe CannotTakePartMessages.paragraph1
+    "have a first paragraph" in {
+      document.mainContent.selectNth("p", 1).text mustBe CannotTakePartMessages.paragraph1
     }
 
-    "have paragraph 2" in {
-      document.mainContent.selectNth("p", 2).text() mustBe CannotTakePartMessages.paragraph2
+    "have a second paragraph" in {
+      val paragraph: Element = document.mainContent.selectNth("p", 2)
+      paragraph.text mustBe CannotTakePartMessages.paragraph2
+
+      val link: Element = paragraph.selectHead("a")
+      link.text mustBe CannotTakePartMessages.paragraph2LinkText
+      link.attr("href") mustBe "https://www.gov.uk/guidance/sign-up-your-client-for-making-tax-digital-for-income-tax#who-can-sign-up-voluntarily"
     }
 
-    "have paragraph 3" in {
-      document.mainContent.selectNth("p", 3).text() mustBe CannotTakePartMessages.paragraph3
+    "have a third paragraph" in {
+      val paragraph: Element = document.mainContent.selectNth("p", 3)
+      paragraph.text mustBe CannotTakePartMessages.paragraph3
+
+      val link: Element = paragraph.selectHead("a")
+      link.text mustBe CannotTakePartMessages.paragraph3LinkText
+      link.attr("href") mustBe "https://www.gov.uk/email/subscriptions/single-page/new?topic_id=sign-up-your-client-for-making-tax-digital-for-income-tax"
     }
 
+    "have a form" which {
+      def form: Element = document.mainContent.getForm
 
-    "have a sign up another client link" in {
-      val link = document.mainContent.selectHead(".govuk-button")
-      link.text() mustBe CannotTakePartMessages.signUpAnotherClientLink
+      "has the correct attributes" in {
+        form.attr("method") mustBe "GET"
+        form.attr("action") mustBe controllers.agent.routes.AddAnotherClientController.addAnother().url
+      }
+
+      "have a sign up another client link" in {
+        form.selectHead(".govuk-button").text() mustBe CannotTakePartMessages.signUpAnotherClientLink
+      }
     }
   }
 
   object CannotTakePartMessages {
-    val heading = "You cannot sign up this client yet"
-    val paragraph1 = "People with some types of income or deductions cannot sign up to Making Tax Digital for Income Tax."
-    val paragraph2 = "In the future, we may extend this service to more people."
-    val paragraph3 = "Meanwhile, you or your client must continue to submit their Self Assessment tax return as normal."
+    val heading = "You cannot sign up this client voluntarily"
+    val subheading = "What happens next"
+    val paragraph1 = "You’ll need to make sure your client submits their Self Assessment tax return as normal."
+    val paragraph2 = "You can find out who can and cannot sign up voluntarily (opens in new tab)."
+    val paragraph2LinkText = "who can and cannot sign up voluntarily (opens in new tab)"
+    val paragraph3 = "You can also sign up to get emails when that page is updated (opens in new tab)."
+    val paragraph3LinkText = "sign up to get emails when that page is updated (opens in new tab)"
     val signUpAnotherClientLink = "Sign up another client"
   }
 }

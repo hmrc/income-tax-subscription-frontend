@@ -41,7 +41,7 @@ class CannotTakePartControllerISpec extends ComponentSpecBase with AuthRedirects
   }
 
   object CannotTakePartMessages {
-    val title: String = "You cannot sign up this client yet"
+    val title: String = "You cannot sign up this client voluntarily"
   }
 
   "GET /client/cannot-sign-up" should {
