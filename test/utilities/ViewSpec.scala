@@ -22,9 +22,10 @@ import models.{No, UpdateDeadline, Yes}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
+import org.scalatest.Checkpoints.Checkpoint
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import org.scalatest.{Assertion, BeforeAndAfterEach}
+import org.scalatest.{Assertion, BeforeAndAfterEach, Succeeded}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.data.FormError
 import play.api.i18n.{Lang, Messages, MessagesApi}
@@ -194,7 +195,126 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
 
   }
 
+  case class SummaryListActionValues(href: String, text: String, visuallyHidden: String)
+
+  case class SummaryListRowValues(key: String, value: Option[String], actions: Seq[SummaryListActionValues])
+
   implicit class ElementTests(element: Element) {
+
+    //scalastyle:off
+    def mustHaveSummaryCard(selector: String)(title: String, cardActions: Seq[SummaryListActionValues], rows: Seq[SummaryListRowValues]): Assertion = {
+      val checkpoint: Checkpoint = new Checkpoint()
+
+      val card: Element = element.selectHead(selector)
+
+      val titleWrapper: Element = card.selectHead(".govuk-summary-card__title-wrapper")
+
+      checkpoint {
+        titleWrapper.selectHead("h2").text mustBe title
+      }
+
+      cardActions match {
+        case Nil =>
+          checkpoint {
+            titleWrapper.selectOptionally(".govuk-summary-card__actions") mustBe None
+          }
+        case cardActionValues :: Nil =>
+          val cardLink: Element = titleWrapper
+            .selectHead("div.govuk-summary-card__actions")
+            .selectHead(".govuk-summary-card__action")
+            .selectHead("a")
+
+          checkpoint {
+            cardLink.text mustBe cardActionValues.text
+          }
+          checkpoint {
+            cardLink.attr("href") mustBe cardActionValues.href
+          }
+          checkpoint {
+            cardLink.selectHead("span.govuk-visually-hidden").text mustBe cardActionValues.visuallyHidden
+          }
+        case cardActionsValues =>
+          cardActionsValues.zip(1 to cardActionsValues.length) foreach { case (action, actionIndex) =>
+            val cardLink: Element = titleWrapper
+              .selectHead(".govuk-summary-card__actions")
+              .selectHead(s".govuk-summary-card__action:nth-of-type($actionIndex)")
+              .selectHead("a")
+
+            checkpoint {
+              cardLink.text mustBe action.text
+            }
+            checkpoint {
+              cardLink.attr("href") mustBe action.href
+            }
+            checkpoint {
+              cardLink.selectHead("span.govuk-visually-hidden").text mustBe action.visuallyHidden
+            }
+          }
+      }
+
+      val cardContent: Element = card.selectHead(".govuk-summary-card__content")
+
+      checkpoint {
+        cardContent.mustHaveSummaryList(".govuk-summary-list")(rows)
+      }
+
+      checkpoint.reportAll()
+      Succeeded
+    }
+    //scalastyle:on
+
+    def mustHaveSummaryList(selector: String)(rows: Seq[SummaryListRowValues]): Assertion = {
+      val checkpoint: Checkpoint = new Checkpoint()
+
+      val summaryList = element.selectHead(selector)
+
+      rows.zip(1 to rows.length) foreach { case (rowData, rowIndex) =>
+        val row = summaryList.selectHead(s".govuk-summary-list__row:nth-of-type($rowIndex)")
+
+        checkpoint {
+          row.selectHead("dt.govuk-summary-list__key").text mustBe rowData.key
+        }
+
+        checkpoint {
+          row.selectHead("dd.govuk-summary-list__value").text mustBe rowData.value.getOrElse("")
+        }
+
+        rowData.actions match {
+          case Nil =>
+            checkpoint {
+              row.selectOptionally("dd.govuk-summary-list__actions") mustBe None
+            }
+          case actionValues :: Nil =>
+            val link = row.selectHead("dd.govuk-summary-list__actions").selectHead("a")
+
+            checkpoint {
+              link.attr("href") mustBe actionValues.href
+            }
+            checkpoint {
+              link.text mustBe actionValues.text
+            }
+            checkpoint {
+              link.selectHead("span.govuk-visually-hidden").text mustBe actionValues.visuallyHidden
+            }
+          case actionsValues =>
+            actionsValues.zip(1 to actionsValues.length) foreach { case (actionValues, actionIndex) =>
+              val link = row.selectHead("dd.govuk-summary-list__actions").selectHead(s"a:nth-of-type($actionIndex)")
+              checkpoint {
+                link.attr("href") mustBe actionValues.href
+              }
+              checkpoint {
+                link.text mustBe actionValues.text
+              }
+              checkpoint {
+                link.selectHead("span.govuk-visually-hidden").text mustBe actionValues.visuallyHidden
+              }
+            }
+        }
+      }
+
+      checkpoint.reportAll()
+      Succeeded
+    }
 
     def mustHaveRadioInput(name: String, radioItems: Seq[RadioItem]): Assertion = {
       radioItems.zip(1 to radioItems.length) map { case (radioItem, index) =>
