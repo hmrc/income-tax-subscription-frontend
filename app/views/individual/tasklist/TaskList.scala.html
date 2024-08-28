@@ -19,7 +19,6 @@
 @import models.common.business.{BusinessNameModel, BusinessTradeNameModel}
 @import services.AccountingPeriodService
 @import views.html.helpers.ContinueButton
-@import views.html.helpers.TaskListHelper
 @import views.html.helpers.ButtonHelper
 @import views.html.templates.PrincipalMainTemplate
 @import views.helpers.models.tasklist._
@@ -28,11 +27,11 @@
 @this(
     mainTemplate: PrincipalMainTemplate,
     form: FormWithCSRF,
-    govukSummaryList : GovukSummaryList,
+    govukSummaryList: GovukSummaryList,
+    govukTaskList: GovukTaskList,
     continueButton: ContinueButton,
     saveAndContinueButton: ButtonHelper,
     govukTag : GovukTag,
-    taskListHelper : TaskListHelper,
     appConfig: AppConfig
 )
 
@@ -40,142 +39,135 @@
 
 @messagePrefix = @{"business.task-list"}
 
-@userInformation = {
-  <div class="client-details app-task-list__post-list ">
-      @govukSummaryList(SummaryList(
-        rows = Seq(
-        maybeIndividualUserFullName.map { individualUserFullName =>
-          SummaryListRow(
-            key = Key(
-              content = Text(messages(s"${messagePrefix}.user-information.name")),
-              classes = "govuk-!-width-two-thirds"
-            ),
-            value = Value(
-              content = Text(individualUserFullName)
-            )
-          )},
-          Some(SummaryListRow(
-            key = Key(
-              content = Text(messages(s"${messagePrefix}.user-information.nino")),
-              classes = "govuk-!-width-two-thirds"
-            ),
-            value = Value(
-              content = Text(individualUserNino)
-            )
-          )),
-          Some(SummaryListRow(
-            key = Key(
-              content = Text(messages(s"${messagePrefix}.user-information.utr")),
-              classes = "govuk-!-width-two-thirds"
-            ),
-            value = Value(
-              content = Text(utrNumber)
-            )
-          ))
-        ).flatten,
-        classes = "govuk-summary-list--no-border govuk-!-padding-4"
-      ))
-  </div>
-}
-
-@informationAboutYou = @{
-  CustomTaskListSection(
-    h2Content = messages(s"${messagePrefix}.user-information.heading"),
-    sectionEnd = Some(userInformation),
-    taskListItems = Seq()
-  )
-}
-
 @taxYearText = @{
-    viewModel.taxYearSelection.map(_.accountingYear) match {
-    case Some(Current) => messages(s"${messagePrefix}.content.section1.current-tax-year", (accountingPeriodService.currentTaxYear - 1).toString, accountingPeriodService.currentTaxYear.toString)
-    case Some(Next) => messages(s"${messagePrefix}.content.section1.next-tax-year", accountingPeriodService.currentTaxYear.toString, (accountingPeriodService.currentTaxYear + 1).toString)
-    case None => messages(s"${messagePrefix}.content.section1.action")
-  }
+viewModel.taxYearSelection.map(_.accountingYear) match {
+        case Some(Current) => messages(s"${messagePrefix}.content.section1.current-tax-year", (accountingPeriodService.currentTaxYear - 1).toString, accountingPeriodService.currentTaxYear.toString)
+        case Some(Next) => messages(s"${messagePrefix}.content.section1.next-tax-year", accountingPeriodService.currentTaxYear.toString, (accountingPeriodService.currentTaxYear + 1).toString)
+        case None => messages(s"${messagePrefix}.content.section1.action")
+    }
 }
 
-@selectTaxYear = @{
-    CustomTaskListSection(
-      h2Content = messages(s"${messagePrefix}.content.selected-tax-year.heading"),
-      sectionStart = Some(messages(s"${messagePrefix}.content.selected-tax-year.para")),
-      taskListItems = Seq(
-        if(viewModel.taxYearSelectedAndConfirmed) {
-          if(!viewModel.permitTaxYearChange) {
-            CustomTaskListItem(
-               content = {taxYearText},
-               tagLabel = messages(s"${messagePrefix}.status.completed"),
-               isComplete = true)
-          } else {
-            CustomTaskListItem(
-              content = {taxYearText},
-              href = Some(controllers.individual.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.show(editMode=true).url),
-              tagLabel = messages(s"${messagePrefix}.status.completed"), isComplete = true)
-          }
-        } else if (viewModel.taxYearSelectedNotConfirmed) {
-            CustomTaskListItem(content = messages(s"${messagePrefix}.content.section1.action"),
-              href = Some(controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url),
-              tagLabel = messages(s"${messagePrefix}.status.in-progress"), isComplete = false)
-        } else {
-            CustomTaskListItem(content = messages(s"${messagePrefix}.content.section1.action"),
-              href = Some(controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url),
-              tagLabel = messages(s"${messagePrefix}.status.not-started"), isComplete = false)
-        }
-      )
-    )
+@taskListCompleteTag() = @{
+    TaskListItemStatus(content = Text(messages("business.task-list.status.completed")))
 }
 
-@addIncomeSources = @{
-  CustomTaskListSection(
-    h2Content = messages(s"${messagePrefix}.content.section2-income-sources.heading"),
-    sectionStart = Some(messages(s"${messagePrefix}.content.section2-income-sources.para")),
-    taskListItems = Seq(
-      CustomTaskListItem(
-        content = if(viewModel.incomeSourcesComplete) {
-          messages(s"${messagePrefix}.content.section2-income-sources.view-text")
-        } else {
-          messages(s"${messagePrefix}.content.section2-income-sources.add-text")
-        },
-        href = Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url),
-        tagLabel = if(viewModel.incomeSourcesComplete) {
-          messages(s"${messagePrefix}.status.completed")
-        } else if (viewModel.hasAnyBusiness) {
-          messages(s"${messagePrefix}.status.incomplete")
-        } else {
-          messages(s"${messagePrefix}.status.not-started")
-        },
-        isComplete = viewModel.incomeSourcesComplete
-      )
-    )
-  )
+@taskListIncompleteTag() = @{
+    TaskListItemStatus(Some(Tag(content = Text(messages("business.task-list.status.incomplete")))))
 }
 
-@signUpSectionContent = {
-  @if(viewModel.taskListComplete) {
-    <div class = "app-task-list__pre-list">
-      <p class="govuk-body">@messages(s"${messagePrefix}.content.action-complete")</p>
-      @continueButton(Some(messages(s"${messagePrefix}.content.check-and-continue")))
-      @saveAndComeBackButton
-    </div>
-  } else {
-    <p class="govuk-body app-task-list__pre-list">@messages(s"${messagePrefix}.content.action-needed-new")</p>
-    <div class="app-task-list__pre-list"> @saveAndComeBackButton </div>
-  }
+@taskListNotStartedTag() = @{
+    TaskListItemStatus(content = Text(messages("business.task-list.status.cannot-start")))
 }
 
-@saveAndComeBackButton =@{
-  saveAndContinueButton(messages("base.save-and-come-back-later"), Some("govuk-button--secondary"), Some(controllers.individual.tasklist.routes.ProgressSavedController.show(Some("task-list")).url))
+@saveAndComeBackButton = @{
+    saveAndContinueButton(messages("base.save-and-come-back-later"), Some("govuk-button--secondary"), Some(controllers.individual.tasklist.routes.ProgressSavedController.show(Some("task-list")).url))
 }
 
 @mainTemplate(title = messages("business.task-list.title")) {
+
    <h1 class="govuk-heading-xl">@messages(s"${messagePrefix}.title")</h1>
+
       @form(action = postAction){
-          @taskListHelper(
-            Seq(
-              informationAboutYou,
-              addIncomeSources,
-              selectTaxYear
+
+    <h2 class="govuk-heading-m">@messages("business.task-list.user-information.heading")</h2>
+
+    <div class="client-details app-task-list__post-list">
+        @govukSummaryList(SummaryList(
+            rows = Seq(
+                maybeIndividualUserFullName.map { individualUserFullName =>
+                    SummaryListRow(
+                        key = Key(
+                        content = Text(messages(s"${messagePrefix}.user-information.name")),
+                        classes = "govuk-!-width-two-thirds"
+                    ),
+                    value = Value(
+                        content = Text(individualUserFullName)
+                    )
+                )},
+                    Some(SummaryListRow(
+                        key = Key(
+                        content = Text(messages(s"${messagePrefix}.user-information.nino")),
+                        classes = "govuk-!-width-two-thirds"
+                    ),
+                    value = Value(
+                        content = Text(individualUserNino)
+                    )
+                )),
+                    Some(SummaryListRow(
+                        key = Key(
+                        content = Text(messages(s"${messagePrefix}.user-information.utr")),
+                        classes = "govuk-!-width-two-thirds"
+                ),
+                value = Value(
+                        content = Text(utrNumber)
+                )
+            ))
+                ).flatten,
+                    classes = "govuk-summary-list--no-border govuk-!-padding-4"
+            ))
+    </div>
+
+    <h2 class="govuk-heading-m">@messages("business.task-list.user-information.income.heading")</h2>
+
+        @govukTaskList(TaskList(
+            items = Seq(
+                TaskListItem(
+                    title = TaskListItemTitle(
+                        content = Text(messages("business.task-list.content.add-income.heading"))
+                ),
+                status = if(viewModel.incomeSourcesComplete) { taskListCompleteTag } else { taskListIncompleteTag },
+                href = Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url),
+                hint = Some(Hint(
+                    content = Text(messages("business.task-list.content.add-income.hint"))
+                ))
+            ),
+            TaskListItem(
+                title = TaskListItemTitle(
+                    content = if(viewModel.permitTaxYearChange) Text(messages("business.task-list.content.tax-year.action")) else Text(taxYearText)
+                ),
+                status = if(viewModel.taxYearSelectedAndConfirmed) { taskListCompleteTag } else { taskListIncompleteTag },
+                href = if(viewModel.permitTaxYearChange) {
+                Some(if(viewModel.taxYearSelectedAndConfirmed) {
+                    controllers.individual.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.show(editMode=true).url
+                } else {
+                    controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+                })} else None,
+                    hint = Some(Hint(
+                        content = if(viewModel.permitTaxYearChange) { Text(messages("business.task-list.content.tax-year.hint"))
+                    } else {
+                        Text(messages("business.task-list.content.next-tax-year.hint"))
+                    }
+                ))
             )
-          )
-          @signUpSectionContent
+        ),
+        idPrefix = "client-details"
+))
+
+<h2 class="govuk-heading-m">@messages("business.task-list.review-sign-up.heading")</h2>
+
+    @govukTaskList(TaskList(
+        items = Seq(
+            TaskListItem(
+                title = TaskListItemTitle(
+                    content = Text(messages("business.task-list.review-sign-up.link-text"))
+            ),
+            status = if(viewModel.taskListComplete) { taskListIncompleteTag } else { taskListNotStartedTag },
+            href = if (viewModel.taskListComplete) {
+                Some(controllers.individual.routes.GlobalCheckYourAnswersController.show.url)
+            } else {
+                None
+            },
+            hint = if(!viewModel.taskListComplete) {
+                Some(Hint(content = Text(messages("business.task-list.review-sign-up.hint"))))
+                } else {
+                    None
+            }
+        )
+    ),
+        idPrefix = "sign-up-section"
+))
+
+@saveAndComeBackButton
+
       }
 }

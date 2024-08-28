@@ -34,6 +34,7 @@ import play.api.test.FakeRequest
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
+import org.scalatest.Checkpoints.Checkpoint
 
 import java.time.LocalDate
 import scala.jdk.CollectionConverters._
@@ -195,6 +196,8 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
 
   }
 
+  case class TaskListItemValues(text: String, link: Option[String], hint: Option[String], tagText: String, tagColor: Option[String])
+
   case class SummaryListActionValues(href: String, text: String, visuallyHidden: String)
 
   case class SummaryListRowValues(key: String, value: Option[String], actions: Seq[SummaryListActionValues])
@@ -316,6 +319,74 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
       Succeeded
     }
 
+    //scalastyle:off
+    def mustHaveTaskList(selector: String)(idPrefix: String, items: Seq[TaskListItemValues]): Assertion = {
+      val checkpoint: Checkpoint = new Checkpoint()
+
+      val taskList: Element = element.selectHead(selector)
+
+      items.zip(1 to items.length) foreach { case (itemValues, itemIndex) =>
+        val taskListItem: Element = taskList.selectHead(s"li.govuk-task-list__item:nth-of-type($itemIndex)")
+        val taskListNameAndHint: Element = taskListItem.selectHead(".govuk-task-list__name-and-hint")
+        val taskListStatus: Element = taskListItem.selectHead(".govuk-task-list__status")
+
+        itemValues.link map { linkHref =>
+          val taskListItemLink: Element = taskListNameAndHint.selectHead(".govuk-task-list__link")
+          checkpoint {
+            taskListItemLink.attr("href") mustBe linkHref
+          }
+          checkpoint {
+            taskListItemLink.text mustBe itemValues.text
+          }
+
+          val expectedAriaDescribedBy: String = Seq(
+            itemValues.hint.map(_ => s"$idPrefix-$itemIndex-hint"),
+            Some(s"$idPrefix-$itemIndex-status")
+          ).flatten.mkString(" ")
+
+          checkpoint {
+            taskListItemLink.attr("aria-describedby") mustBe expectedAriaDescribedBy
+          }
+        } getOrElse {
+          checkpoint {
+            taskListNameAndHint.selectHead("div > div").text mustBe itemValues.text
+          }
+        }
+
+        itemValues.hint foreach { hint =>
+          val taskListHint: Element = taskListNameAndHint.selectHead(".govuk-task-list__hint")
+
+          checkpoint {
+            taskListHint.text() mustBe hint
+          }
+          checkpoint {
+            taskListHint.id mustBe s"$idPrefix-$itemIndex-hint"
+          }
+        }
+
+        checkpoint {
+          taskListStatus.id mustBe s"$idPrefix-$itemIndex-status"
+        }
+
+        itemValues.tagColor map { tagColour =>
+          val tag = taskListStatus.selectHead("strong")
+          checkpoint {
+            tag.text mustBe itemValues.tagText
+          }
+          checkpoint {
+            if (tagColour == "blue") tag.attr("class") mustBe "govuk-tag" else tag.attr("class") mustBe s"govuk-tag govuk-tag--$tagColour"
+          }
+        } getOrElse {
+          checkpoint {
+            taskListStatus.text mustBe itemValues.tagText
+          }
+        }
+
+      }
+      checkpoint.reportAll()
+      Succeeded
+    }
+    //scalastyle:on
     def mustHaveRadioInput(name: String, radioItems: Seq[RadioItem]): Assertion = {
       radioItems.zip(1 to radioItems.length) map { case (radioItem, index) =>
         val radioElement: Element = element.selectNth(".govuk-radios__item", index)

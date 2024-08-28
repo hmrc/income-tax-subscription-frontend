@@ -998,12 +998,19 @@ agent.cannot-go-back-previous-client.error.empty                = Mae’n rhaid 
 
 ## Task List
 business.task-list.title                                        = Cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-business.task-list.user-information.heading                     = Gwybodaeth amdanoch chi
+business.task-list.user-information.heading                     = Eich manylion
+business.task-list.user-information.income.heading              = Yr hyn sydd ei angen arnom er mwyn eich cofrestru
+business.task-list.review-sign-up.heading                       = Gwirio a chofrestru
+business.task-list.content.add-income.hint                      = Dylech gynnwys pob un o’ch ffynonellau incwm unig fasnachwr neu’ch ffynonellau incwm o eiddo
+business.task-list.content.tax-year.hint                        = Gallwch gofrestru yn ystod y flwyddyn dreth bresennol, neu o’r flwyddyn dreth nesaf ymlaen
+business.task-list.content.next-tax-year.hint                   = Gallwch gofrestru o’r flwyddyn dreth nesaf ymlaen yn unig
+business.task-list.review-sign-up.link-text                     = Chofrestru’ch cleient
+business.task-list.review-sign-up.hint                          = Cyn i chi gofrestru, cwblhewch eich manylion incwm a nodwch eich blwyddyn dreth gychwynnol
 business.task-list.user-information.nino                        = Rhif Yswiriant Gwladol
 business.task-list.user-information.name                        = Enw
 business.task-list.user-information.utr                         = Cyfeirnod Unigryw y Trethdalwr (UTR)
 business.task-list.content.section1                             = Dewiswch flwyddyn dreth i gofrestru
-business.task-list.content.section1.action                      = Dewiswch flwyddyn dreth
+business.task-list.content.tax-year.action                      = Dewiswch flwyddyn dreth
 business.task-list.content.section1.current-tax-year            = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
 business.task-list.content.section1.next-tax-year               = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
 business.task-list.content.selected-tax-year.heading            = Dewiswch flwyddyn dreth
@@ -1011,7 +1018,7 @@ business.task-list.content.selected-tax-year.para               = Dewiswch pryd 
 business.task-list.content.section2-income-sources.heading      = Eich ffynonellau incwm
 business.task-list.content.section2-income-sources.para         = Ychwanegwch unrhyw ffynonellau incwm unig fasnachwr neu ffynonellau incwm o eiddo yn y DU ac eiddo tramor sydd gennych.
 business.task-list.content.section2-income-sources.view-text    = Bwrw golwg dros eich ffynonellau incwm a’u rheoli
-business.task-list.content.section2-income-sources.add-text     = Ychwanegu eich ffynonellau incwm
+business.task-list.content.add-income.heading                   = Eich ffynonellau incwm
 business.task-list.content.section3                             = Cofrestru
 business.task-list.content.action-needed                        = Mae’n rhaid i chi gwblhau pob adran uchod cyn i chi allu cadarnhau a chofrestru.
 business.task-list.content.action-needed-new                    = Mae’n rhaid i chi lenwi pob un o’r adrannau uchod cyn i chi allu cofrestru.
@@ -1021,6 +1028,7 @@ business.task-list.status.completed                             = Wedi’i gwblh
 business.task-list.status.incomplete                            = Heb ei gwblhau
 business.task-list.status.in-progress                           = Ar waith
 business.task-list.status.not-started                           = Heb ddechrau
+business.task-list.status.cannot-start                          = Methu dechrau ar y funud
 business.task-list.accounting-period-confirm                    = Cyfnod cyfrifyddu wedi’i gadarnhau: 6 Ebrill i 5 Ebrill
 
 # Remove overseas property business

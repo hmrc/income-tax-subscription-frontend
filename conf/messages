@@ -999,12 +999,19 @@ agent.cannot-go-back-previous-client.error.empty                = You must choos
 
 ## Task List
 business.task-list.title                                        = Sign up for Making Tax Digital for Income Tax
-business.task-list.user-information.heading                     = Information about you
+business.task-list.user-information.heading                     = Your details
+business.task-list.user-information.income.heading              = What we need to sign you up
+business.task-list.review-sign-up.heading                       = Review and sign up
+business.task-list.content.add-income.hint                      = Include any of your sole trader or property income sources
+business.task-list.content.tax-year.hint                        = You can sign up during the current tax year or from next tax year
+business.task-list.content.next-tax-year.hint                   = You can only sign up from next tax year
+business.task-list.review-sign-up.link-text                     = Sign up
+business.task-list.review-sign-up.hint                          = Complete your income details and starting tax year before you sign up
 business.task-list.user-information.nino                        = National Insurance number
 business.task-list.user-information.name                        = Name
 business.task-list.user-information.utr                         = Unique Taxpayer Reference (UTR)
 business.task-list.content.section1                             = Choose a tax year to sign up
-business.task-list.content.section1.action                      = Select tax year
+business.task-list.content.tax-year.action                      = Select tax year
 business.task-list.content.section1.current-tax-year            = Current tax year (6 April {0} to 5 April {1})
 business.task-list.content.section1.next-tax-year               = Next tax year (6 April {0} to 5 April {1})
 business.task-list.content.selected-tax-year.heading            = Choose a tax year
@@ -1012,7 +1019,7 @@ business.task-list.content.selected-tax-year.para               = Select when yo
 business.task-list.content.section2-income-sources.heading      = Your income sources
 business.task-list.content.section2-income-sources.para         = Add any sole trader or UK and foreign property income sources you have.
 business.task-list.content.section2-income-sources.view-text    = View and manage your income sources
-business.task-list.content.section2-income-sources.add-text     = Add your income sources
+business.task-list.content.add-income.heading                   = Your income sources
 business.task-list.content.section3                             = Sign up
 business.task-list.content.action-needed                        = You need to complete all sections above before you can confirm and sign up.
 business.task-list.content.action-needed-new                    = You need to complete all sections above before you can sign up.
@@ -1022,6 +1029,7 @@ business.task-list.status.completed                             = Completed
 business.task-list.status.incomplete                            = Incomplete
 business.task-list.status.in-progress                           = In progress
 business.task-list.status.not-started                           = Not started
+business.task-list.status.cannot-start                          = Cannot start yet
 business.task-list.accounting-period-confirm                    = Accounting period confirmed: 6 April to 5 April
 
 
