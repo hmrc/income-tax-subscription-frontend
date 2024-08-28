@@ -26,7 +26,6 @@
 
 @this(
     mainTemplate: PrincipalMainTemplate,
-    form: FormWithCSRF,
     govukSummaryList: GovukSummaryList,
     govukTaskList: GovukTaskList,
     continueButton: ContinueButton,
@@ -35,12 +34,49 @@
     appConfig: AppConfig
 )
 
-@(postAction: Call, viewModel: TaskListModel, accountingPeriodService: AccountingPeriodService, individualUserNino: String,  maybeIndividualUserFullName: Option[String], utrNumber : String)(implicit request: Request[_], messages: Messages)
+@(viewModel: TaskListModel, accountingPeriodService: AccountingPeriodService, individualUserNino: String,  maybeIndividualUserFullName: Option[String], utrNumber : String)(implicit request: Request[_], messages: Messages)
 
 @messagePrefix = @{"business.task-list"}
 
+@userInformation = {
+  <div class="client-details app-task-list__post-list">
+      @govukSummaryList(SummaryList(
+        rows = Seq(
+          maybeIndividualUserFullName.map { individualUserFullName => SummaryListRow(
+            key = Key(
+              content = Text(messages(s"${messagePrefix}.user-information.name")),
+              classes = "govuk-!-width-two-thirds"
+            ),
+            value = Value(
+              content = Text(individualUserFullName)
+            )
+          )},
+          Some(SummaryListRow(
+            key = Key(
+              content = Text(messages(s"${messagePrefix}.user-information.nino")),
+              classes = "govuk-!-width-two-thirds"
+            ),
+            value = Value(
+              content = Text(individualUserNino)
+            )
+          )),
+          Some(SummaryListRow(
+            key = Key(
+              content = Text(messages(s"${messagePrefix}.user-information.utr")),
+              classes = "govuk-!-width-two-thirds"
+            ),
+            value = Value(
+              content = Text(utrNumber)
+            )
+          ))
+        ).flatten,
+        classes = "govuk-summary-list--no-border govuk-!-padding-4"
+      ))
+  </div>
+}
+
 @taxYearText = @{
-viewModel.taxYearSelection.map(_.accountingYear) match {
+    viewModel.taxYearSelection.map(_.accountingYear) match {
         case Some(Current) => messages(s"${messagePrefix}.content.section1.current-tax-year", (accountingPeriodService.currentTaxYear - 1).toString, accountingPeriodService.currentTaxYear.toString)
         case Some(Next) => messages(s"${messagePrefix}.content.section1.next-tax-year", accountingPeriodService.currentTaxYear.toString, (accountingPeriodService.currentTaxYear + 1).toString)
         case None => messages(s"${messagePrefix}.content.section1.action")
@@ -65,9 +101,7 @@ viewModel.taxYearSelection.map(_.accountingYear) match {
 
 @mainTemplate(title = messages("business.task-list.title")) {
 
-   <h1 class="govuk-heading-xl">@messages(s"${messagePrefix}.title")</h1>
-
-      @form(action = postAction){
+    <h1 class="govuk-heading-xl">@messages(s"${messagePrefix}.title")</h1>
 
     <h2 class="govuk-heading-m">@messages("business.task-list.user-information.heading")</h2>
 
@@ -84,38 +118,28 @@ viewModel.taxYearSelection.map(_.accountingYear) match {
                         content = Text(individualUserFullName)
                     )
                 )},
-                    Some(SummaryListRow(
-                        key = Key(
-                        content = Text(messages(s"${messagePrefix}.user-information.nino")),
-                        classes = "govuk-!-width-two-thirds"
-                    ),
-                    value = Value(
-                        content = Text(individualUserNino)
-                    )
+                Some(SummaryListRow(
+                    key = Key(content = Text(messages(s"${messagePrefix}.user-information.nino")), classes = "govuk-!-width-two-thirds" ),
+                    value = Value(content = Text(individualUserNino))
                 )),
-                    Some(SummaryListRow(
-                        key = Key(
-                        content = Text(messages(s"${messagePrefix}.user-information.utr")),
-                        classes = "govuk-!-width-two-thirds"
-                ),
-                value = Value(
-                        content = Text(utrNumber)
-                )
-            ))
-                ).flatten,
-                    classes = "govuk-summary-list--no-border govuk-!-padding-4"
-            ))
+                Some(SummaryListRow(
+                    key = Key(content = Text(messages(s"${messagePrefix}.user-information.utr")), classes = "govuk-!-width-two-thirds"),
+                    value = Value(content = Text(utrNumber))
+                ))
+            ).flatten,
+            classes = "govuk-summary-list--no-border govuk-!-padding-4"
+        ))
     </div>
 
     <h2 class="govuk-heading-m">@messages("business.task-list.user-information.income.heading")</h2>
 
-        @govukTaskList(TaskList(
-            items = Seq(
-                TaskListItem(
-                    title = TaskListItemTitle(
-                        content = Text(messages("business.task-list.content.add-income.heading"))
+    @govukTaskList(TaskList(
+        items = Seq(
+            TaskListItem(
+                title = TaskListItemTitle(
+                    content = Text(messages("business.task-list.content.add-income.heading"))
                 ),
-                status = if(viewModel.incomeSourcesComplete) { taskListCompleteTag } else { taskListIncompleteTag },
+                status = if(viewModel.incomeSourcesComplete) { taskListCompleteTag() } else { taskListIncompleteTag() },
                 href = Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url),
                 hint = Some(Hint(
                     content = Text(messages("business.task-list.content.add-income.hint"))
@@ -125,15 +149,16 @@ viewModel.taxYearSelection.map(_.accountingYear) match {
                 title = TaskListItemTitle(
                     content = if(viewModel.permitTaxYearChange) Text(messages("business.task-list.content.tax-year.action")) else Text(taxYearText)
                 ),
-                status = if(viewModel.taxYearSelectedAndConfirmed) { taskListCompleteTag } else { taskListIncompleteTag },
+                status = if(viewModel.taxYearSelectedAndConfirmed) { taskListCompleteTag() } else { taskListIncompleteTag() },
                 href = if(viewModel.permitTaxYearChange) {
-                Some(if(viewModel.taxYearSelectedAndConfirmed) {
-                    controllers.individual.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.show(editMode=true).url
-                } else {
-                    controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
-                })} else None,
-                    hint = Some(Hint(
-                        content = if(viewModel.permitTaxYearChange) { Text(messages("business.task-list.content.tax-year.hint"))
+                    Some(if(viewModel.taxYearSelectedAndConfirmed) {
+                        controllers.individual.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.show(editMode=true).url
+                    } else {
+                        controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+                    })} else None,
+                hint = Some(Hint(
+                    content = if(viewModel.permitTaxYearChange) {
+                        Text(messages("business.task-list.content.tax-year.hint"))
                     } else {
                         Text(messages("business.task-list.content.next-tax-year.hint"))
                     }
@@ -141,33 +166,30 @@ viewModel.taxYearSelection.map(_.accountingYear) match {
             )
         ),
         idPrefix = "client-details"
-))
+    ))
 
-<h2 class="govuk-heading-m">@messages("business.task-list.review-sign-up.heading")</h2>
+    <h2 class="govuk-heading-m">@messages("business.task-list.review-sign-up.heading")</h2>
 
     @govukTaskList(TaskList(
         items = Seq(
             TaskListItem(
-                title = TaskListItemTitle(
-                    content = Text(messages("business.task-list.review-sign-up.link-text"))
-            ),
-            status = if(viewModel.taskListComplete) { taskListIncompleteTag } else { taskListNotStartedTag },
-            href = if (viewModel.taskListComplete) {
-                Some(controllers.individual.routes.GlobalCheckYourAnswersController.show.url)
-            } else {
-                None
-            },
-            hint = if(!viewModel.taskListComplete) {
-                Some(Hint(content = Text(messages("business.task-list.review-sign-up.hint"))))
+                title = TaskListItemTitle(content = Text(messages("business.task-list.review-sign-up.link-text"))),
+                status = if(viewModel.taskListComplete) { taskListIncompleteTag() } else { taskListNotStartedTag() },
+                href = if (viewModel.taskListComplete) {
+                    Some(controllers.individual.routes.GlobalCheckYourAnswersController.show.url)
                 } else {
                     None
-            }
-        )
-    ),
+                },
+                hint = if(!viewModel.taskListComplete) {
+                    Some(Hint(content = Text(messages("business.task-list.review-sign-up.hint"))))
+                } else {
+                    None
+                }
+            )
+        ),
         idPrefix = "sign-up-section"
-))
+    ))
 
-@saveAndComeBackButton
+    @saveAndComeBackButton
 
-      }
 }

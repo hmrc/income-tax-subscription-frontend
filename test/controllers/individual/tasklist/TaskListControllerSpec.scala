@@ -24,9 +24,9 @@ import models.status.MandationStatus.Voluntary
 import models.{Cash, DateModel, EligibilityStatus, Next}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
-import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.http.Status.OK
 import play.api.mvc.{Action, AnyContent, Codec, Result}
-import play.api.test.Helpers.{HTML, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
+import play.api.test.Helpers.{HTML, charset, contentType, defaultAwaitTimeout, status}
 import play.twirl.api.HtmlFormat
 import services.AccountingPeriodService
 import services.individual.mocks.MockSubscriptionOrchestrationService
@@ -49,8 +49,7 @@ class TaskListControllerSpec extends ControllerBaseSpec
 
   override val controllerName: String = "TaskListController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestTaskListController.show,
-    "submit" -> TestTaskListController.submit
+    "show" -> TestTaskListController.show
   )
 
   override def beforeEach(): Unit = {
@@ -61,7 +60,7 @@ class TaskListControllerSpec extends ControllerBaseSpec
   }
 
   def mockTaskList(): Unit = {
-    when(taskList(any(), any(), any(), any(), any(), any())(any(), any()))
+    when(taskList(any(), any(), any(), any(), any())(any(), any()))
       .thenReturn(HtmlFormat.empty)
   }
 
@@ -112,15 +111,6 @@ class TaskListControllerSpec extends ControllerBaseSpec
       status(result) mustBe OK
       contentType(result) mustBe Some(HTML)
       charset(result) mustBe Some(Codec.utf_8.charset)
-    }
-  }
-
-  "submit" when {
-    "redirect to the global check your answers page" in {
-      val result: Future[Result] = TestTaskListController.submit()(subscriptionRequest)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.individual.routes.GlobalCheckYourAnswersController.show.url)
     }
   }
 }
