@@ -570,13 +570,15 @@ agent.base.yes                                                  = Yes
 agent.base.no                                                   = No
 
 # Agent cannot sign up client page
-agent.cannot-take-part.title                                      = You cannot sign up this client yet
+agent.cannot-take-part.heading                                    = You cannot sign up this client voluntarily
 agent.cannot-take-part.caption                                    = {0} | {1}
-agent.cannot-take-part.heading                                    = You cannot sign up this client yet
-agent.cannot-take-part.para1                                      = People with some types of income or deductions cannot sign up to Making Tax Digital for Income Tax.
-agent.cannot-take-part.para2                                      = In the future, we may extend this service to more people.
-agent.cannot-take-part.para3                                      = Meanwhile, you or your client must continue to submit their Self Assessment tax return as normal.
-
+agent.cannot-take-part.subheading                                 = What happens next
+agent.cannot-take-part.para1                                      = You’ll need to make sure your client submits their Self Assessment tax return as normal.
+agent.cannot-take-part.para2                                      = You can find out {0}.
+agent.cannot-take-part.para2.link-text                            = who can and cannot sign up voluntarily
+agent.cannot-take-part.para2.link-href                            = https://www.gov.uk/guidance/sign-up-your-client-for-making-tax-digital-for-income-tax#who-can-sign-up-voluntarily
+agent.cannot-take-part.para3                                      = You can also {0}.
+agent.cannot-take-part.para3.link-text                            = sign up to get emails when that page is updated
 
 # Agent cannot sign up page
 agent.cannot-sign-up.heading                                    = Your client can sign up for the next tax year

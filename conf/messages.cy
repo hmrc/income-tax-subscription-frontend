@@ -570,12 +570,16 @@ agent.base.yes                                                  = Iawn
 agent.base.no                                                   = Na
 
 # Agent cannot sign up client page
-agent.cannot-take-part.title                                      = Ni allwch gofrestru’r cleient hwn ar hyn o bryd
+# Agent cannot sign up client page
+agent.cannot-take-part.heading                                    = Ni allwch gofrestru’r cleient hwn yn wirfoddol
 agent.cannot-take-part.caption                                    = {0} | {1}
-agent.cannot-take-part.heading                                    = Ni allwch gofrestru’r cleient hwn ar hyn o bryd
-agent.cannot-take-part.para1                                      = Ni all pobl sydd â mathau penodol o incwm neu ddidyniadau gofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm.
-agent.cannot-take-part.para2                                      = Yn y dyfodol, mae’n bosibl y caiff y gwasanaeth hwn ei ymestyn i ragor o bobl.
-agent.cannot-take-part.para3                                      = Yn y cyfamser, mae’n rhaid i chi neu’ch cleient barhau i gyflwyno’i Ffurflen Dreth Hunanasesiad yn ôl yr arfer.
+agent.cannot-take-part.subheading                                 = Yr hyn sy’n digwydd nesaf
+agent.cannot-take-part.para1                                      = Bydd angen i chi sicrhau bod eich cleient yn cyflwyno ei Ffurflen Dreth Hunanasesiad yn ôl yr arfer.
+agent.cannot-take-part.para2                                      = Gallwch weld {0}.
+agent.cannot-take-part.para2.link-text                            = pwy sy’n gallu cofrestru yn wirfoddol a phwy na all wneud hynny
+agent.cannot-take-part.para2.link-href                            = https://www.gov.uk/guidance/sign-up-your-client-for-making-tax-digital-for-income-tax.cy#pwy-syn-gallu-cofrestrun-wirfoddol
+agent.cannot-take-part.para3                                      = Gallwch hefyd {0}.
+agent.cannot-take-part.para3.link-text                            = gofrestru i gael negeseuon e-bost pan fydd y dudalen honno’n cael ei diweddaru
 
 # Agent cannot sign up page
 agent.cannot-sign-up.heading                                    = Gall eich cleient gofrestru ar gyfer y flwyddyn dreth nesaf
