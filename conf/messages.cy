@@ -691,15 +691,12 @@ agent.your-income-source.self-employed.business-name-para   = Enw’r busnes
 agent.your-income-source.self-employed.label-none           = Busnes {0}
 agent.your-income-source.self-employed.add-link             = Ychwanegu ffynhonnell incwm unig fasnachwr
 agent.your-income-source.self-employed.add-another-link     = Ychwanegu ffynhonnell incwm unig fasnachwr
-agent.your-income-source.self-employed.hidden               = {0}
 agent.your-income-source.uk-property                        = Eiddo yn y DU
 agent.your-income-source.property.start-date-para           = Dyddiad dechrau
 agent.your-income-source.property.start-date                = {0}
 agent.your-income-source.uk-property.add-link               = Ychwanegu ffynhonnell incwm busnes eiddo yn y DU
-agent.your-income-source.uk-property.hidden                 = Ffynhonnell incwm o eiddo yn y DU
 agent.your-income-source.foreign-property                   = Busnes eiddo tramor
 agent.your-income-source.foreign-property.add-link          = Ychwanegu ffynhonnell incwm eiddo tramor
-agent.your-income-source.foreign-property.hidden            = Ffynhonnell incwm o eiddo tramor
 agent.your-income-source.final-note.para-one                = Mae’n rhaid i chi ychwanegu holl ffynonellau incwm eich cleient er mwyn mynd yn eich blaen i gofrestru. Gallwch wneud hynny nawr, neu ddod yn ôl yn nes ymlaen.
 agent.your-income-source.final-note.para-two                = Gellir newid yr wybodaeth am ffynonellau incwm eich cleient ar unrhyw adeg.
 

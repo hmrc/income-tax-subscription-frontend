@@ -202,10 +202,21 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
   implicit class ElementTests(element: Element) {
 
     //scalastyle:off
-    def mustHaveSummaryCard(selector: String)(title: String, cardActions: Seq[SummaryListActionValues], rows: Seq[SummaryListRowValues]): Assertion = {
+    def mustHaveSummaryCard(selector: String, nth: Option[Int] = None)
+                           (title: String, cardActions: Seq[SummaryListActionValues], rows: Seq[SummaryListRowValues]): Assertion = {
+
       val checkpoint: Checkpoint = new Checkpoint()
 
-      val card: Element = element.selectHead(selector)
+      val card: Element = nth match {
+        case Some(number) if number == 0 => fail(s"Invalid nth selector of $number, must be >= 1")
+        case Some(number) => element
+          .selectSeq(selector)
+          .lift(number - 1)
+          .getOrElse(fail(s"No elements returned for selector: $selector number $number"))
+        case None => element
+          .selectHead(selector)
+      }
+
 
       val titleWrapper: Element = card.selectHead(".govuk-summary-card__title-wrapper")
 

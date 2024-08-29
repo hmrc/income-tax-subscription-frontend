@@ -138,12 +138,12 @@
           ActionItem(
             href = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${business.id}&isEditMode=true",
             content = Text(messages("base.change")),
-            visuallyHiddenText = Some(messages("agent.your-income-source.self-employed.hidden", selfEmploymentLabel(business, index)))
+            visuallyHiddenText = business.businessName.map(_.businessName)
           ),
           ActionItem(
             href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show(business.id).url,
             content = Text(messages("base.remove")),
-            visuallyHiddenText = Some(messages("agent.your-income-source.self-employed.hidden", selfEmploymentLabel(business, index)))
+            visuallyHiddenText = business.businessName.map(_.businessName)
           )
         )
       ))
@@ -184,29 +184,27 @@
           items = Seq(
             ActionItem(
               href = controllers.agent.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url,
-              content = Text(messages("base.change")),
-              visuallyHiddenText = Some(messages("agent.your-income-source.uk-property.hidden")),
+              content = Text(messages("base.change"))
             ),
             ActionItem(
               href = controllers.agent.tasklist.ukproperty.routes.RemoveUkPropertyController.show.url,
-              content = Text(messages("base.remove")),
-                visuallyHiddenText = Some(messages("agent.your-income-source.uk-property.hidden")),
-              )
+              content = Text(messages("base.remove"))
             )
-          ))
+          )
         ))
       ))
-    }.getOrElse {
-      <div id="add-uk-property" class="govuk-!-padding-bottom-6">
-        <p class="govuk-body">
-          @if(featureSwitching.isEnabled(AgentStreamline)) {
-            <a class="govuk-link" href="@controllers.agent.tasklist.ukproperty.routes.PropertyIncomeSourcesController.show()">@messages("agent.your-income-source.uk-property.add-link")</a>
-          } else {
-            <a class="govuk-link" href="@controllers.agent.tasklist.ukproperty.routes.PropertyStartDateController.show()">@messages("agent.your-income-source.uk-property.add-link")</a>
-          }
-        </p>
-      </div>
-    }
+    ))
+  }.getOrElse {
+    <div id="add-uk-property" class="govuk-!-padding-bottom-6">
+      <p class="govuk-body">
+        @if(featureSwitching.isEnabled(AgentStreamline)) {
+          <a class="govuk-link" href="@controllers.agent.tasklist.ukproperty.routes.PropertyIncomeSourcesController.show()">@messages("agent.your-income-source.uk-property.add-link")</a>
+        } else {
+          <a class="govuk-link" href="@controllers.agent.tasklist.ukproperty.routes.PropertyStartDateController.show()">@messages("agent.your-income-source.uk-property.add-link")</a>
+        }
+      </p>
+    </div>
+  }
 }
 
 
@@ -230,13 +228,11 @@
           items = Seq(
             ActionItem(
               href = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url,
-              content = Text(messages("base.change")),
-              visuallyHiddenText = Some(messages("agent.your-income-source.foreign-property.hidden")),
+              content = Text(messages("base.change"))
             ),
             ActionItem(
               href = controllers.agent.tasklist.overseasproperty.routes.RemoveOverseasPropertyController.show.url,
-              content = Text(messages("base.remove")),
-              visuallyHiddenText = Some(messages("agent.your-income-source.foreign-property.hidden")),
+              content = Text(messages("base.remove"))
             )
           )
         ))
