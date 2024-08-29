@@ -695,15 +695,12 @@ agent.your-income-source.self-employed.business-name-para           = Business n
 agent.your-income-source.self-employed.label-none                   = Business {0}
 agent.your-income-source.self-employed.add-link                     = Add sole trader income source
 agent.your-income-source.self-employed.add-another-link             = Add another sole trader income source
-agent.your-income-source.self-employed.hidden                       = {0}
 agent.your-income-source.uk-property                                = UK property
 agent.your-income-source.property.start-date-para                   = Start date
 agent.your-income-source.property.start-date                        = {0}
 agent.your-income-source.uk-property.add-link                       = Add UK property income source
-agent.your-income-source.uk-property.hidden                         = UK property income source
 agent.your-income-source.foreign-property                           = Foreign property
 agent.your-income-source.foreign-property.add-link                  = Add foreign property income source
-agent.your-income-source.foreign-property.hidden                    = Foreign property income source
 agent.your-income-source.final-note.para-one                        = You must add all your client’s income sources to continue to sign up. You can do this now or come back later.
 agent.your-income-source.final-note.para-two                        = Your client’s income source information can be changed at anytime.
 

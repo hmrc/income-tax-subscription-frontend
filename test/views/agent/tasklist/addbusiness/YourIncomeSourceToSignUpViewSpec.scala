@@ -46,9 +46,10 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     val soleTrader = "Sole trader businesses"
     val soleTraderLinkText = "Add sole trader income source"
     val anotherSoleTraderLinkText = "Add another sole trader income source"
+    val soleTraderBusinessNameKey = "Business name"
     val soleTraderLink: String = appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl
-    val soleTraderChangeLinkOne:String = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=idOne&isEditMode=true"
-    val soleTraderChangeLinkTwo:String = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=idTwo&isEditMode=true"
+    val soleTraderChangeLinkOne: String = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=idOne&isEditMode=true"
+    val soleTraderChangeLinkTwo: String = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=idTwo&isEditMode=true"
     val soleTraderChangeLinkThree: String = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=idThree&isEditMode=true"
     val soleTraderChangeLinkFour: String = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=idFour&isEditMode=true"
     val soleTraderRemoveLinkOne: String = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idOne").url
@@ -57,12 +58,14 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     val soleTraderRemoveLinkFour: String = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idFour").url
     val ukProperty = "UK property"
     val ukPropertyTitle = "UK property"
+    val ukPropertyStartDate = "Start date"
     val ukPropertyLinkText = "Add UK property income source"
     val ukPropertyLink: String = controllers.agent.tasklist.ukproperty.routes.PropertyStartDateController.show().url
     val ukPropertyChangeLink: String = controllers.agent.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url
     val ukPropertyRemoveLink: String = controllers.agent.tasklist.ukproperty.routes.RemoveUkPropertyController.show.url
     val foreignPropertyHeading = "Foreign property"
     val foreignPropertyTitle = "Foreign property"
+    val foreignPropertyStartDate = "Start date"
     val foreignPropertyLinkText = "Add foreign property income source"
     val foreignPropertyLink: String = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show().url
     val foreignPropertyChangeLink: String = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
@@ -82,11 +85,11 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
     def selfEmploymentRemove(name: String) = s"$name"
 
-    val ukPropertyChange = "UK property income source (UK property)"
-    val ukPropertyRemove = "UK property income source (UK property)"
+    val ukPropertyChange = "(UK property)"
+    val ukPropertyRemove = "(UK property)"
 
-    val foreignPropertyChange = "Foreign property income source (Foreign property)"
-    val foreignPropertyRemove = "Foreign property income source (Foreign property)"
+    val foreignPropertyChange = "(Foreign property)"
+    val foreignPropertyRemove = "(Foreign property)"
   }
 
   private val incomeSourceView = app.injector.instanceOf[YourIncomeSourceToSignUp]
@@ -110,7 +113,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
   ))
   val completeForeignProperty: Option[OverseasPropertyModel] = Some(OverseasPropertyModel(
     accountingMethod = Some(Cash),
-    startDate = Some(DateModel("1", "1", "1982")),
+    startDate = Some(DateModel("2", "2", "1982")),
     confirmed = true
   ))
 
@@ -120,8 +123,8 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     SelfEmploymentData("idThree", None, None, businessTradeName = Some(BusinessTradeNameModel("business trade"))),
     SelfEmploymentData("idFour")
   )
-  val incompleteUKProperty: Option[PropertyModel] = Some(PropertyModel())
-  val incompleteForeignProperty: Option[OverseasPropertyModel] = Some(OverseasPropertyModel())
+  val incompleteUKProperty: Option[PropertyModel] = Some(PropertyModel(startDate = Some(DateModel("1", "1", "1981"))))
+  val incompleteForeignProperty: Option[OverseasPropertyModel] = Some(OverseasPropertyModel(startDate = Some(DateModel("2", "2", "1982"))))
 
   def view(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None)): Html = {
     incomeSourceView(
@@ -171,7 +174,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       "have a heading for the page" in new ViewTest(noIncomeSources) {
         document.mainContent.getH1Element.text mustBe AgentIncomeSource.headingNoIncomeAdded
       }
-      "have a caption with the clien's details" in new ViewTest(noIncomeSources) {
+      "have a caption with the client's details" in new ViewTest(noIncomeSources) {
         document.mainContent.selectHead("span.govuk-caption-l").text mustBe s"${clientDetails.name} | ${clientDetails.formattedNino}"
       }
       "have a lead paragraph" in new ViewTest(noIncomeSources) {
@@ -247,125 +250,106 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         "has a heading" in new ViewTest(incompleteIncomeSources) {
           document.mainContent.selectNth("h2", 1).text mustBe AgentIncomeSource.soleTrader
         }
-        "has a summary of incomplete self employed businesses" which {
-          def selfEmploymentSummary(document: Document): Element = document.mainContent
-            .selectNth("div.govuk-summary-card", 1)
-
-          "has a first business" which {
-            def businessSummary(document: Document): Element = selfEmploymentSummary(document)
-              .selectHead("div.govuk-summary-card__title-wrapper")
-
-            "has a title" in new ViewTest(incompleteIncomeSources) {
-              businessSummary(document).selectHead(".govuk-summary-card__title").text mustBe "business trade"
-            }
-
-            "has a set of actions" which {
-              def actions(document: Document): Element = businessSummary(document)
-                .selectHead(".govuk-summary-card__actions").selectHead("ul")
-
-              "has a change action" in new ViewTest(incompleteIncomeSources) {
-                val link: Element = actions(document).selectNth("li", 1).selectHead("a")
-                link.text mustBe AgentIncomeSource.change + " " + AgentIncomeSource
-                  .selfEmploymentChange("business trade - business name (business trade)")
-                link.attr("href") mustBe AgentIncomeSource.soleTraderChangeLinkOne
-              }
-              "has a remove action" in new ViewTest(incompleteIncomeSources) {
-                val link: Element = actions(document).selectNth("li", 2).selectHead("a")
-                link.text mustBe AgentIncomeSource.remove + " " + AgentIncomeSource
-                  .selfEmploymentRemove("business trade - business name (business trade)")
-                link.attr("href") mustBe AgentIncomeSource.soleTraderRemoveLinkOne
-              }
-            }
-          }
-
-          "has a second business" which {
-            def selfEmploymentSummary(document: Document): Element = document.mainContent
-              .selectNth("div.govuk-summary-card", 2)
-
-            def businessSummary(document: Document): Element = selfEmploymentSummary(document)
-              .selectHead("div.govuk-summary-card__title-wrapper")
-
-            "has a title" in new ViewTest(incompleteIncomeSources) {
-              businessSummary(document).selectHead(".govuk-summary-card__title").text mustBe "Business 2"
-            }
-            "has a set of actions" which {
-              def actions(document: Document): Element = businessSummary(document)
-                .selectHead(".govuk-summary-card__actions").selectHead("ul")
-
-              "has a change action" in new ViewTest(incompleteIncomeSources) {
-                val link: Element = actions(document).selectNth("li", 1).selectHead("a")
-                link.text mustBe AgentIncomeSource.change + " " + AgentIncomeSource
-                  .selfEmploymentChange("business name (Business 2)")
-                link.attr("href") mustBe AgentIncomeSource.soleTraderChangeLinkTwo
-              }
-              "has a remove action" in new ViewTest(incompleteIncomeSources) {
-                val link: Element = actions(document).selectNth("li", 2).selectHead("a")
-                link.text mustBe AgentIncomeSource.remove + " " + AgentIncomeSource
-                  .selfEmploymentRemove("business name (Business 2)")
-                link.attr("href") mustBe AgentIncomeSource.soleTraderRemoveLinkTwo
-              }
-            }
-          }
-
-          "has a third business" which {
-
-            def selfEmploymentSummary(document: Document): Element = document.mainContent
-              .selectNth("div.govuk-summary-card", 3)
-
-            def businessSummary(document: Document): Element = selfEmploymentSummary(document)
-              .selectHead("div.govuk-summary-card__title-wrapper")
-
-            "has a title" in new ViewTest(incompleteIncomeSources) {
-              businessSummary(document).selectHead(".govuk-summary-card__title").text mustBe "business trade"
-            }
-            "has a set of actions" which {
-              def actions(document: Document): Element = businessSummary(document)
-                .selectHead(".govuk-summary-card__actions").selectHead("ul")
-
-              "has a change action" in new ViewTest(incompleteIncomeSources) {
-                val link: Element = actions(document).selectNth("li", 1).selectHead("a")
-                link.text mustBe AgentIncomeSource.change + " " + AgentIncomeSource
-                  .selfEmploymentChange("business trade (business trade)")
-                link.attr("href") mustBe AgentIncomeSource.soleTraderChangeLinkThree
-              }
-              "has a remove action" in new ViewTest(incompleteIncomeSources) {
-                val link: Element = actions(document).selectNth("li", 2).selectHead("a")
-                link.text mustBe AgentIncomeSource.remove + " " + AgentIncomeSource
-                  .selfEmploymentRemove("business trade (business trade)")
-                link.attr("href") mustBe AgentIncomeSource.soleTraderRemoveLinkThree
-              }
-            }
-          }
-          "has a forth business" which {
-
-            def selfEmploymentSummary(document: Document): Element = document.mainContent
-              .selectNth("div.govuk-summary-card", 4)
-
-            def businessSummary(document: Document): Element = selfEmploymentSummary(document)
-              .selectHead("div.govuk-summary-card__title-wrapper")
-
-            "has a tittle" in new ViewTest(incompleteIncomeSources) {
-              businessSummary(document).selectHead(".govuk-summary-card__title").text mustBe "Business 4"
-            }
-            "has a set of actions" which {
-              def actions(document: Document): Element = businessSummary(document)
-                .selectHead(".govuk-summary-card__actions").selectHead("ul")
-
-              "has a change action" in new ViewTest(incompleteIncomeSources) {
-                val link: Element = actions(document).selectNth("li", 1).selectHead("a")
-                link.text mustBe AgentIncomeSource.change + " " + AgentIncomeSource
-                  .selfEmploymentChange("Business 4 (Business 4)")
-                link.attr("href") mustBe AgentIncomeSource.soleTraderChangeLinkFour
-              }
-              "has a remove action" in new ViewTest(incompleteIncomeSources) {
-                val link: Element = actions(document).selectNth("li", 2).selectHead("a")
-                link.text mustBe AgentIncomeSource.remove + " " + AgentIncomeSource
-                  .selfEmploymentRemove("Business 4 (Business 4)")
-                link.attr("href") mustBe AgentIncomeSource.soleTraderRemoveLinkFour
-              }
-            }
-          }
+        "has a first business card" in new ViewTest(incompleteIncomeSources) {
+          document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
+            title = "business trade",
+            cardActions = Seq(
+              SummaryListActionValues(
+                href = AgentIncomeSource.soleTraderChangeLinkOne,
+                text = s"${AgentIncomeSource.change} business name (business trade)",
+                visuallyHidden = s"business name (business trade)"
+              ),
+              SummaryListActionValues(
+                href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idOne").url,
+                text = s"${AgentIncomeSource.remove} business name (business trade)",
+                visuallyHidden = s"business name (business trade)"
+              )
+            ),
+            rows = Seq(
+              SummaryListRowValues(
+                key = AgentIncomeSource.soleTraderBusinessNameKey,
+                value = Some("business name"),
+                actions = Seq.empty
+              )
+            )
+          )
         }
+
+        "has a second business card" in new ViewTest(incompleteIncomeSources) {
+          document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(2))(
+            title = "Business 2",
+            cardActions = Seq(
+              SummaryListActionValues(
+                href = AgentIncomeSource.soleTraderChangeLinkTwo,
+                text = s"${AgentIncomeSource.change} business name (Business 2)",
+                visuallyHidden = s"business name (Business 2)"
+              ),
+              SummaryListActionValues(
+                href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idTwo").url,
+                text = s"${AgentIncomeSource.remove} business name (Business 2)",
+                visuallyHidden = s"business name (Business 2)"
+              )
+            ),
+            rows = Seq(
+              SummaryListRowValues(
+                key = AgentIncomeSource.soleTraderBusinessNameKey,
+                value = Some("business name"),
+                actions = Seq.empty
+              )
+            )
+          )
+        }
+
+        "has a third business card" in new ViewTest(incompleteIncomeSources) {
+          document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(3))(
+            title = "business trade",
+            cardActions = Seq(
+              SummaryListActionValues(
+                href = AgentIncomeSource.soleTraderChangeLinkThree,
+                text = s"${AgentIncomeSource.change} (business trade)",
+                visuallyHidden = s"(business trade)"
+              ),
+              SummaryListActionValues(
+                href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idThree").url,
+                text = s"${AgentIncomeSource.remove} (business trade)",
+                visuallyHidden = s"(business trade)"
+              )
+            ),
+            rows = Seq(
+              SummaryListRowValues(
+                key = AgentIncomeSource.soleTraderBusinessNameKey,
+                value = Some("Business 3"),
+                actions = Seq.empty
+              )
+            )
+          )
+        }
+
+        "has a forth business card" in new ViewTest(incompleteIncomeSources) {
+          document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(4))(
+            title = "Business 4",
+            cardActions = Seq(
+              SummaryListActionValues(
+                href = AgentIncomeSource.soleTraderChangeLinkFour,
+                text = s"${AgentIncomeSource.change} (Business 4)",
+                visuallyHidden = s"(Business 4)"
+              ),
+              SummaryListActionValues(
+                href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idFour").url,
+                text = s"${AgentIncomeSource.remove} (Business 4)",
+                visuallyHidden = s"(Business 4)"
+              )
+            ),
+            rows = Seq(
+              SummaryListRowValues(
+                key = AgentIncomeSource.soleTraderBusinessNameKey,
+                value = Some("Business 4"),
+                actions = Seq.empty
+              )
+            )
+          )
+        }
+
         "has an add business link" in new ViewTest(incompleteIncomeSources) {
           val link: Element = document.mainContent.getElementById("add-self-employment").selectHead("a")
           link.text mustBe AgentIncomeSource.anotherSoleTraderLinkText
@@ -376,58 +360,58 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         "has a heading" in new ViewTest(incompleteIncomeSources) {
           document.mainContent.selectNth("h2", 6).text mustBe AgentIncomeSource.ukProperty
         }
-        "has a summary of the incomplete uk property" which {
-          def ukPropertySummary(document: Document): Element = document.mainContent
-            .selectNth("div.govuk-summary-card", 5)
-
-          "has a title" in new ViewTest(incompleteIncomeSources) {
-            ukPropertySummary(document).selectHead(".govuk-summary-card__title")
-              .text mustBe AgentIncomeSource.ukPropertyTitle
-          }
-          "has a set of actions" which {
-            def actions(document: Document): Element = ukPropertySummary(document)
-              .selectHead(".govuk-summary-card__actions").selectHead("ul")
-
-            "has a change action" in new ViewTest(incompleteIncomeSources) {
-              val link: Element = actions(document).selectNth("li", 1).selectHead("a")
-              link.text mustBe AgentIncomeSource.change + " " + AgentIncomeSource.ukPropertyChange
-              link.attr("href") mustBe AgentIncomeSource.ukPropertyChangeLink
-            }
-            "has a remove action" in new ViewTest(incompleteIncomeSources) {
-              val link: Element = actions(document).selectNth("li", 2).selectHead("a")
-              link.text mustBe AgentIncomeSource.remove + " " + AgentIncomeSource.ukPropertyRemove
-              link.attr("href") mustBe AgentIncomeSource.ukPropertyRemoveLink
-            }
-          }
+        "has a summary card" in new ViewTest(incompleteIncomeSources) {
+          document.mainContent.mustHaveSummaryCard("div.govuk-summary-card", Some(5))(
+            title = AgentIncomeSource.ukPropertyTitle,
+            cardActions = Seq(
+              SummaryListActionValues(
+                href = AgentIncomeSource.ukPropertyChangeLink,
+                text = s"${AgentIncomeSource.change} ${AgentIncomeSource.ukPropertyChange}",
+                visuallyHidden = AgentIncomeSource.ukPropertyChange
+              ),
+              SummaryListActionValues(
+                href = AgentIncomeSource.ukPropertyRemoveLink,
+                text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.ukPropertyRemove}",
+                visuallyHidden = AgentIncomeSource.ukPropertyRemove
+              )
+            ),
+            rows = Seq(
+              SummaryListRowValues(
+                key = AgentIncomeSource.ukPropertyStartDate,
+                value = Some("1 January 1981"),
+                actions = Seq.empty
+              )
+            )
+          )
         }
       }
       "have a foreign property section" which {
         "has a heading" in new ViewTest(incompleteIncomeSources) {
           document.mainContent.selectNth("h2", 8).text mustBe AgentIncomeSource.foreignPropertyHeading
         }
-        "has a summary of the incomplete foreign property" which {
-          def foreignPropertySummary(document: Document): Element = document.mainContent
-            .selectNth("div.govuk-summary-card", 6)
-
-          "has a title" in new ViewTest(incompleteIncomeSources) {
-            foreignPropertySummary(document).selectHead(".govuk-summary-card__title")
-              .text mustBe AgentIncomeSource.foreignPropertyTitle
-          }
-          "has a set of actions" which {
-            def actions(document: Document): Element = foreignPropertySummary(document)
-              .selectHead(".govuk-summary-card__actions").selectHead("ul")
-
-            "has a change action" in new ViewTest(incompleteIncomeSources) {
-              val link: Element = actions(document).selectNth("li", 1).selectHead("a")
-              link.text mustBe AgentIncomeSource.change + " " + AgentIncomeSource.foreignPropertyChange
-              link.attr("href") mustBe AgentIncomeSource.foreignPropertyChangeLink
-            }
-            "has a remove action" in new ViewTest(incompleteIncomeSources) {
-              val link: Element = actions(document).selectNth("li", 2).selectHead("a")
-              link.text mustBe AgentIncomeSource.remove + " " + AgentIncomeSource.foreignPropertyRemove
-              link.attr("href") mustBe AgentIncomeSource.foreignPropertyRemoveLink
-            }
-          }
+        "has a summary card" in new ViewTest(incompleteIncomeSources) {
+          document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(6))(
+            title = AgentIncomeSource.foreignPropertyTitle,
+            cardActions = Seq(
+              SummaryListActionValues(
+                href = AgentIncomeSource.foreignPropertyChangeLink,
+                text = s"${AgentIncomeSource.change} ${AgentIncomeSource.foreignPropertyChange}",
+                visuallyHidden = AgentIncomeSource.foreignPropertyChange
+              ),
+              SummaryListActionValues(
+                href = AgentIncomeSource.foreignPropertyRemoveLink,
+                text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.foreignPropertyRemove}",
+                visuallyHidden = AgentIncomeSource.foreignPropertyRemove
+              )
+            ),
+            rows = Seq(
+              SummaryListRowValues(
+                key = AgentIncomeSource.foreignPropertyStartDate,
+                value = Some("2 February 1982"),
+                actions = Seq.empty
+              )
+            )
+          )
         }
       }
       "have a final note" which {
@@ -461,7 +445,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       "have a heading for the page" in new ViewTest(completeIncomeSources) {
         document.mainContent.getH1Element.text mustBe AgentIncomeSource.headingIncompleteIncomeAdded
       }
-      "have a caption with the clien's details" in new ViewTest(completeIncomeSources) {
+      "have a caption with the client's details" in new ViewTest(completeIncomeSources) {
         document.mainContent.selectHead("span.govuk-caption-l")
           .text mustBe s"${clientDetails.name} | ${clientDetails.formattedNino}"
       }
@@ -472,31 +456,29 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         "has a heading" in new ViewTest(completeIncomeSources) {
           document.mainContent.selectNth("h2", 1).text mustBe AgentIncomeSource.soleTrader
         }
-        "has a summary of complete self employed businesses" which {
-          def selfEmploymentSummary(document: Document): Element = document.mainContent.
-            selectNth("div.govuk-summary-card", 1)
-
-          "has a title" in new ViewTest(completeIncomeSources) {
-            selfEmploymentSummary(document).selectHead(".govuk-summary-card__title").text mustBe "business trade"
-          }
-          "has a set of actions" which {
-            def actions(document: Document): Element = selfEmploymentSummary(document).
-              selectHead(".govuk-summary-card__actions").selectHead("ul")
-
-            "has a change action" in new ViewTest(completeIncomeSources) {
-              val link: Element = actions(document).selectNth("li", 1).selectHead("a")
-              link.text mustBe AgentIncomeSource.change + " " + AgentIncomeSource
-                .selfEmploymentChange("business trade - business name (business trade)")
-              link.attr("href") mustBe AgentIncomeSource.soleTraderChangeLinkOne
-
-            }
-            "has a remove action" in new ViewTest(completeIncomeSources) {
-              val link: Element = actions(document).selectNth("li", 2).selectHead("a")
-              link.text mustBe AgentIncomeSource.remove + " " + AgentIncomeSource
-                .selfEmploymentRemove("business trade - business name (business trade)")
-              link.attr("href") mustBe AgentIncomeSource.soleTraderRemoveLinkOne
-            }
-          }
+        "has a summary card" in new ViewTest(completeIncomeSources) {
+          document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
+            title = "business trade",
+            cardActions = Seq(
+              SummaryListActionValues(
+                href = AgentIncomeSource.soleTraderChangeLinkOne,
+                text = s"${AgentIncomeSource.change} business name (business trade)",
+                visuallyHidden = s"business name (business trade)"
+              ),
+              SummaryListActionValues(
+                href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idOne").url,
+                text = s"${AgentIncomeSource.remove} business name (business trade)",
+                visuallyHidden = s"business name (business trade)"
+              )
+            ),
+            rows = Seq(
+              SummaryListRowValues(
+                key = AgentIncomeSource.soleTraderBusinessNameKey,
+                value = Some("business name"),
+                actions = Seq.empty
+              )
+            )
+          )
         }
         "has an add business link" in new ViewTest(completeIncomeSources) {
           val link: Element = document.mainContent.getElementById("add-self-employment").selectHead("a")
@@ -508,58 +490,58 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         "has a heading" in new ViewTest(completeIncomeSources) {
           document.mainContent.selectNth("h2", 3).text mustBe AgentIncomeSource.ukProperty
         }
-        "has a summary of the incomplete uk property" which {
-          def ukPropertySummary(document: Document): Element = document.mainContent
-            .selectNth("div.govuk-summary-card", 2)
-
-          "has a title" in new ViewTest(completeIncomeSources) {
-            ukPropertySummary(document).selectHead(".govuk-summary-card__title")
-              .text mustBe AgentIncomeSource.ukPropertyTitle
-          }
-          "has a set of actions" which {
-            def actions(document: Document): Element = ukPropertySummary(document)
-              .selectHead(".govuk-summary-card__actions").selectHead("ul")
-
-            "has a change action" in new ViewTest(completeIncomeSources) {
-              val link: Element = actions(document).selectNth("li", 1).selectHead("a")
-              link.text mustBe AgentIncomeSource.change + " " + AgentIncomeSource.ukPropertyChange
-              link.attr("href") mustBe AgentIncomeSource.ukPropertyChangeLink
-            }
-            "has a remove action" in new ViewTest(completeIncomeSources) {
-              val link: Element = actions(document).selectNth("li", 2).selectHead("a")
-              link.text mustBe AgentIncomeSource.remove + " " + AgentIncomeSource.ukPropertyRemove
-              link.attr("href") mustBe AgentIncomeSource.ukPropertyRemoveLink
-            }
-          }
+        "has a summary card" in new ViewTest(completeIncomeSources) {
+          document.mainContent.mustHaveSummaryCard("div.govuk-summary-card", Some(2))(
+            title = AgentIncomeSource.ukPropertyTitle,
+            cardActions = Seq(
+              SummaryListActionValues(
+                href = AgentIncomeSource.ukPropertyChangeLink,
+                text = s"${AgentIncomeSource.change} ${AgentIncomeSource.ukPropertyChange}",
+                visuallyHidden = AgentIncomeSource.ukPropertyChange
+              ),
+              SummaryListActionValues(
+                href = AgentIncomeSource.ukPropertyRemoveLink,
+                text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.ukPropertyRemove}",
+                visuallyHidden = AgentIncomeSource.ukPropertyRemove
+              )
+            ),
+            rows = Seq(
+              SummaryListRowValues(
+                key = AgentIncomeSource.ukPropertyStartDate,
+                value = Some("1 January 1981"),
+                actions = Seq.empty
+              )
+            )
+          )
         }
       }
       "have a foreign property section" which {
         "has a heading" in new ViewTest(completeIncomeSources) {
           document.mainContent.selectNth("h2", 5).text mustBe AgentIncomeSource.foreignPropertyHeading
         }
-        "has a summary of the incomplete foreign property" which {
-          def foreignPropertySummary(document: Document): Element = document.mainContent
-            .selectNth("div.govuk-summary-card", 3)
-
-          "has a title" in new ViewTest(completeIncomeSources) {
-            foreignPropertySummary(document).selectHead(".govuk-summary-card__title")
-              .text mustBe AgentIncomeSource.foreignPropertyTitle
-          }
-          "has a set of actions" which {
-            def actions(document: Document): Element = foreignPropertySummary(document)
-              .selectHead(".govuk-summary-card__actions").selectHead("ul")
-
-            "has a change action" in new ViewTest(completeIncomeSources) {
-              val link: Element = actions(document).selectNth("li", 1).selectHead("a")
-              link.text mustBe AgentIncomeSource.change + " " + AgentIncomeSource.foreignPropertyChange
-              link.attr("href") mustBe AgentIncomeSource.foreignPropertyChangeLink
-            }
-            "has a remove action" in new ViewTest(completeIncomeSources) {
-              val link: Element = actions(document).selectNth("li", 2).selectHead("a")
-              link.text mustBe AgentIncomeSource.remove + " " + AgentIncomeSource.foreignPropertyRemove
-              link.attr("href") mustBe AgentIncomeSource.foreignPropertyRemoveLink
-            }
-          }
+        "has a summary card" in new ViewTest(completeIncomeSources) {
+          document.mainContent.mustHaveSummaryCard("div.govuk-summary-card", Some(3))(
+            title = AgentIncomeSource.foreignPropertyTitle,
+            cardActions = Seq(
+              SummaryListActionValues(
+                href = AgentIncomeSource.foreignPropertyChangeLink,
+                text = s"${AgentIncomeSource.change} ${AgentIncomeSource.foreignPropertyChange}",
+                visuallyHidden = AgentIncomeSource.foreignPropertyChange
+              ),
+              SummaryListActionValues(
+                href = AgentIncomeSource.foreignPropertyRemoveLink,
+                text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.foreignPropertyRemove}",
+                visuallyHidden = AgentIncomeSource.foreignPropertyRemove
+              )
+            ),
+            rows = Seq(
+              SummaryListRowValues(
+                key = AgentIncomeSource.foreignPropertyStartDate,
+                value = Some("2 February 1982"),
+                actions = Seq.empty
+              )
+            )
+          )
         }
       }
       "have a final note" which {
