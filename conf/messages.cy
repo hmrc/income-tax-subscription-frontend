@@ -1046,8 +1046,8 @@ business.check-your-answers.content.accounting-method.accruals  = Cyfrifyddu tra
 
 
 ## UK property check your answers
-business.check-your-answers.content.uk-property.title                           = Gwirio’ch atebion – busnes eiddo yn y DU
-business.check-your-answers.content.uk-property.caption                         = Manylion y busnes eiddo yn y DU a nodwyd gennych
+business.check-your-answers.content.uk-property.title                           = Gwirio’ch atebion – Eiddo yn y DU
+business.check-your-answers.content.uk-property.caption                         = Eiddo yn y DU
 business.check-your-answers.content.uk-property-start-date.question             = Dyddiad dechrau
 business.check-your-answers.content.uk-property-start-date.add                  = Ychwanegu dyddiad dechrau
 business.check-your-answers.content.uk-property-start-date.change               = Newid dyddiad dechrau

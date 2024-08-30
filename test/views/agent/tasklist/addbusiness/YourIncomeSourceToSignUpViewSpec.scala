@@ -136,9 +136,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
   }
 
   class ViewTest(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None)) {
-
     val document: Document = Jsoup.parse(view(incomeSources).body)
-
   }
 
   "YourIncomeSourceToSignUp" should {

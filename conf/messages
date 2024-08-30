@@ -1047,7 +1047,7 @@ business.check-your-answers.content.accounting-method.cash      = Cash basis acc
 business.check-your-answers.content.accounting-method.accruals  = Traditional accounting
 
 ## UK property check your answers
-business.check-your-answers.content.uk-property.title                         = Check your answers - UK property business
+business.check-your-answers.content.uk-property.title                         = Check your answers - UK property
 business.check-your-answers.content.uk-property.caption                       = UK property
 business.check-your-answers.content.uk-property-start-date.question           = Start date
 business.check-your-answers.content.uk-property-start-date.add                = Add Start date

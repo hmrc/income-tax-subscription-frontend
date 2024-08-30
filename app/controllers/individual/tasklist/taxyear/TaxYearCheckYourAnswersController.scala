@@ -31,7 +31,6 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class TaxYearCheckYourAnswersController @Inject()(checkYourAnswersView: TaxYearCheckYourAnswers,
                                                   referenceRetrieval: ReferenceRetrieval,
-                                                  accountingPeriodService: AccountingPeriodService,
                                                   subscriptionDetailsService: SubscriptionDetailsService)
                                                  (val auditingService: AuditingService,
                                                   val appConfig: AppConfig,
@@ -50,7 +49,6 @@ class TaxYearCheckYourAnswersController @Inject()(checkYourAnswersView: TaxYearC
             Ok(checkYourAnswersView(
               postAction = controllers.individual.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.submit(),
               viewModel = maybeAccountingYearModel,
-              accountingPeriodService = accountingPeriodService,
               backUrl = backUrl(isEditMode)
             ))
           }
