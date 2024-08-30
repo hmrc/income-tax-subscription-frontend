@@ -63,7 +63,7 @@ class ConfirmClientController @Inject()(checkYourClientDetails: CheckYourClientD
             case Left(NoClientMatched) => handleFailedClientMatch(user.arn, clientDetails)
             case Left(ClientAlreadySubscribed) => Future.successful(handleClientAlreadySubscribed(user.arn, clientDetails))
             case Left(UnexpectedFailure) => Future.successful(handleUnexpectedFailure(user.arn, clientDetails))
-            case Left(_: UnApprovedAgent) => Future.successful(handleUnapprovedAgent(user.arn, clientDetails))
+            case Left(UnApprovedAgent(nino, _)) => handleUnapprovedAgent(nino, user.arn, clientDetails)
             case Right(ApprovedAgent(nino, None)) => Future.successful(handleApprovedAgentWithoutClientUTR(user.arn, nino, clientDetails))
             case Right(ApprovedAgent(nino, Some(utr))) => handleApprovedAgent(user.arn, nino, utr, clientDetails)
           }
@@ -160,8 +160,8 @@ class ConfirmClientController @Inject()(checkYourClientDetails: CheckYourClientD
     throw new InternalServerException("[ConfirmClientController][handleUnexpectedFailure] - orchestrate agent qualification failed with an unexpected failure")
   }
 
-  private def handleUnapprovedAgent(arn: String, clientDetails: UserDetailsModel)
-                                   (implicit request: Request[AnyContent]): Result = {
+  private def handleUnapprovedAgent(nino: String, arn: String, clientDetails: UserDetailsModel)
+                                   (implicit request: Request[AnyContent]): Future[Result] = {
     auditDetailsEntered(arn, clientDetails, getCurrentFailureCount(), lockedOut = false)
     auditingService.audit(EligibilityAuditModel(
       agentReferenceNumber = Some(arn),
@@ -170,7 +170,10 @@ class ConfirmClientController @Inject()(checkYourClientDetails: CheckYourClientD
       eligibility = "ineligible",
       failureReason = Some("no-agent-client-relationship")
     ))
-    Redirect(controllers.agent.matching.routes.NoClientRelationshipController.show).removingFromSession(FailedClientMatching)
+    sessionDataService.saveNino(nino) map {
+      case Right(_) => Redirect(controllers.agent.matching.routes.NoClientRelationshipController.show).removingFromSession(FailedClientMatching)
+      case Left(_) => throw new InternalServerException("[ConfirmClientController][handleUnapprovedAgent] - failure when saving nino to session")
+    }
   }
 
   private def handleApprovedAgentWithoutClientUTR(arn: String, nino: String, clientDetails: UserDetailsModel)

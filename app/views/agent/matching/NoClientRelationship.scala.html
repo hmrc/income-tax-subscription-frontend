@@ -27,11 +27,30 @@
     signOutLink: SignOutLink
 )
 
-@(postAction: Call)(implicit request: Request[_], messages: Messages)
+@(postAction: Call, clientName: String, clientNino: String)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = Messages("agent.no-client-relationship.title")) {
+@mainTemplate(title = messages("agent.no-client-relationship.title")) {
 
-    <h1 class="govuk-heading-l">@Messages("agent.no-client-relationship.heading")</h1>
+    <span class="govuk-caption-l">@messages("agent.no-client-relationship.caption", clientName, clientNino)</span>
+    <h1 class="govuk-heading-l">@messages("agent.no-client-relationship.heading")</h1>
+
+    <p class="govuk-body">@messages("agent.no-client-relationship.para1")</p>
+
+    <p class="govuk-body">@messages("agent.no-client-relationship.para2")</p>
+
+    <ol class="govuk-list govuk-list--number">
+        <li>@Html(messages(
+            key = "agent.no-client-relationship.bullet1",
+            args = hmrcNewTabLinkHelper(
+            NewTabLinkHelper(messages("agent.no-client-relationship.link"),
+            Some("https://www.tax.service.gov.uk/agent-services-account/home#tax-services-accordion-content-1")))))
+        </li>
+        <li>@messages("agent.no-client-relationship.bullet2")</li>
+        <li>@messages("agent.no-client-relationship.bullet3")</li>
+    </ol>
+
+    <p class="govuk-body">@messages("agent.no-client-relationship.para3")</p>
+
 
     <p class="govuk-body">
         @Html(messages(
@@ -44,7 +63,6 @@
 
         <div class="govuk-form-group">
                 <div>@continueButton(alternateText = Some(Messages("agent.base.sign-up-another-client")))</div>
-                <div>@signOutLink()</div>
         </div>
 
     }
