@@ -51,7 +51,6 @@ class TaskListController @Inject()(taskListView: TaskList,
         utr <- utrService.getUTR
       } yield {
         Ok(taskListView(
-          postAction = controllers.individual.tasklist.routes.TaskListController.submit(),
           viewModel = viewModel,
           accountingPeriodService = accountingPeriodService,
           individualUserNino = nino,
@@ -77,13 +76,6 @@ class TaskListController @Inject()(taskListView: TaskList,
         overseasProperty,
         incomeSourcesConfirmed
       )
-    }
-  }
-
-  def submit: Action[AnyContent] = {
-    Authenticated { _ =>
-      _ =>
-        Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
     }
   }
 

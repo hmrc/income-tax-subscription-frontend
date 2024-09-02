@@ -16,7 +16,7 @@
 
 package views.agent.tasklist
 
-import messagelookup.individual.MessageLookup.Summary.SelectedTaxYear
+import controllers.agent.tasklist.taxyear.routes
 import messagelookup.individual.MessageLookup.Summary.SelectedTaxYear.next
 import messagelookup.individual.MessageLookup.TaskList._
 import models._
@@ -30,7 +30,6 @@ import services.AccountingPeriodService
 import utilities.AccountingPeriodUtil.getCurrentTaxEndYear
 import utilities.ViewSpec
 import views.html.agent.tasklist.TaskList
-import controllers.agent.tasklist.taxyear.routes
 
 import scala.util.Random
 
@@ -131,15 +130,29 @@ class TaskListViewSpec extends ViewSpec {
         contentList.text() must include(agentItem3)
       }
 
+      "display the clients information" in {
+        document(emptyTaskList).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+          SummaryListRowValues(
+            key = UserInformation.name,
+            value = Some(clientName),
+            actions = Seq.empty
+          ),
+          SummaryListRowValues(
+            key = UserInformation.nino,
+            value = Some(clientNino),
+            actions = Seq.empty
+          ),
+          SummaryListRowValues(
+            key = UserInformation.utr,
+            value = Some(clientUtr),
+            actions = Seq.empty
+          )
+        ))
+      }
 
       "display the dynamic content correctly" when {
         "there is no user data" must {
-          "in the client information section: have a client name, nino and utr" in {
-            doc.mainContent.getElementsByClass("govuk-summary-list__key").text contains s"Client: $clientName | $clientNino |$clientUtr"
-          }
-
           "display income sources and select tax year items with links, hints and incomplete status" in {
-
             val clientIncomeSources = doc.mainContent.selectHead("ul").selectHead("li")
             val clientIncomeSourcesTag = doc.mainContent.selectHead("ul").selectHead("li").selectHead("#client-details-1-status")
 
@@ -192,10 +205,6 @@ class TaskListViewSpec extends ViewSpec {
         contentList.text() must include(agentItem3)
       }
 
-      "in the client information section: have a client name, nino and utr" in {
-        doc.mainContent.getElementsByClass("govuk-summary-list__key").text contains s"Client: $clientName | $clientNino |$clientUtr"
-      }
-
       "display income sources item with complete status and select tax year item with incomplete status both with links and hints" in {
 
         val clientIncomeSources = doc.mainContent.selectHead("ul").selectHead("li")
@@ -244,10 +253,6 @@ class TaskListViewSpec extends ViewSpec {
         contentList.text() must include(agentItem1)
         contentList.text() must include(agentItem2)
         contentList.text() must include(agentItem3)
-      }
-
-      "in the client information section: have a client name, nino and utr" in {
-        doc.mainContent.getElementsByClass("govuk-summary-list__key").text contains s"Client: $clientName | $clientNino |$clientUtr"
       }
 
       "display income sources item with incomplete status and select tax year item with complete status both with links and hints" in {

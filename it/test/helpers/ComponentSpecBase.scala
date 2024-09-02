@@ -274,10 +274,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
       get("/business/task-list", sessionData)
     }
 
-    def submitTaskList(sessionData: Map[String, String] = Map.empty): WSResponse = {
-      post("/business/task-list", sessionData)(Map.empty)
-    }
-
     def getGlobalCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse = {
       get("/final-check-your-answers", sessionData)
     }

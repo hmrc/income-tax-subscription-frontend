@@ -292,9 +292,12 @@ object MessageLookup {
     val heading = "Sign up for Making Tax Digital for Income Tax"
     val title = s"$heading - Use software to send Income Tax updates - GOV.UK"
 
-    val userInfoHeading = "Your information"
-    val userInfoContent = "Full name: individualUserFullName National Insurance number: individualUserNino Unique Taxpayer Reference (UTR): individualUTRNumber"
-    val userInfoPartialContent = "National Insurance number: individualUserNino Unique Taxpayer Reference (UTR): individualUTRNumber"
+    object UserInformation {
+      val heading = "Your information"
+      val name: String = "Name"
+      val nino: String = "National Insurance number"
+      val utr: String = "Unique Taxpayer Reference (UTR)"
+    }
 
     val item1 = "Your details"
     val item2 = "What we need to sign you up"

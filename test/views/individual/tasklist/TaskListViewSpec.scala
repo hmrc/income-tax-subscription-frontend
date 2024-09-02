@@ -16,7 +16,6 @@
 
 package views.individual.tasklist
 
-import messagelookup.individual.MessageLookup.Summary.SelectedTaxYear
 import messagelookup.individual.MessageLookup.Summary.SelectedTaxYear.next
 import messagelookup.individual.MessageLookup.TaskList._
 import messagelookup.individual.MessageLookup.{TaskList => messages}
@@ -25,7 +24,6 @@ import models.common.business._
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel, TaskListModel}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.mvc.Call
 import play.twirl.api.Html
 import services.AccountingPeriodService
 import utilities.AccountingPeriodUtil.getCurrentTaxEndYear
@@ -35,15 +33,9 @@ import views.html.individual.tasklist.TaskList
 
 class TaskListViewSpec extends ViewSpec {
 
-  val selectorForUserInformation = "ol > li:nth-of-type(1)"
-  val selectorForFirstBusiness = "ol > li:nth-of-type(2) > ul:nth-of-type(1)"
-  val selectorForFirstParaOfBusiness = "ol > li:nth-of-type(2)"
-
   val taskListView: TaskList = app.injector.instanceOf[TaskList]
 
   val accountingPeriodService: AccountingPeriodService = app.injector.instanceOf[AccountingPeriodService]
-
-  lazy val postAction: Call = controllers.individual.tasklist.routes.TaskListController.submit()
 
   def customTaskListModel(taxYearSelection: Option[AccountingYearModel] = None,
                           selfEmployments: Seq[SelfEmploymentData] = Nil,
@@ -101,7 +93,6 @@ class TaskListViewSpec extends ViewSpec {
   )
 
   def page(taskList: TaskListModel = customTaskListModel(), maybeIndividualUserFullName: Option[String], utrNumber: String): Html = taskListView(
-    postAction = postAction,
     viewModel = taskList,
     accountingPeriodService = accountingPeriodService,
     individualUserNino = "individualUserNino",
@@ -135,6 +126,47 @@ class TaskListViewSpec extends ViewSpec {
 
     "display the save and come back later button" in {
       document().mainContent.getElementsByClass("govuk-button--secondary").text mustBe messages.saveAndComeBackLater
+    }
+
+    "display a section for the users information" which {
+      "contains a full name" when {
+        "a full name is available" in {
+          document().mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+            SummaryListRowValues(
+              key = UserInformation.name,
+              value = Some("individualUserFullName"),
+              actions = Seq.empty
+            ),
+            SummaryListRowValues(
+              key = UserInformation.nino,
+              value = Some("individualUserNino"),
+              actions = Seq.empty
+            ),
+            SummaryListRowValues(
+              key = UserInformation.utr,
+              value = Some(testUtr),
+              actions = Seq.empty
+            )
+          ))
+        }
+      }
+      "contains no name" when {
+        "no name is available" in {
+          document(maybeIndividualUserFullName = None).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+            SummaryListRowValues(
+              key = UserInformation.nino,
+              value = Some("individualUserNino"),
+              actions = Seq.empty
+            ),
+            SummaryListRowValues(
+              key = UserInformation.utr,
+              value = Some(testUtr),
+              actions = Seq.empty
+            )
+          ))
+        }
+      }
+
     }
 
     "display the dynamic content correctly" when {
@@ -214,7 +246,7 @@ class TaskListViewSpec extends ViewSpec {
               ),
               TaskListItemValues(
                 text = selectTaxYear,
-                link = Some(controllers.individual.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.show(editMode=true).url),
+                link = Some(controllers.individual.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.show(editMode = true).url),
                 hint = Some(selectYourTaxYearHintBoth),
                 tagText = complete,
                 tagColor = None
@@ -253,7 +285,7 @@ class TaskListViewSpec extends ViewSpec {
               ),
               TaskListItemValues(
                 text = selectTaxYear,
-                link = Some(controllers.individual.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.show(editMode=true).url),
+                link = Some(controllers.individual.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.show(editMode = true).url),
                 hint = Some(selectYourTaxYearHintBoth),
                 tagText = complete,
                 tagColor = None
@@ -292,6 +324,6 @@ class TaskListViewSpec extends ViewSpec {
       individualSelectTaxYear.selectHead("div").text mustBe next(getCurrentTaxEndYear, getCurrentTaxEndYear + 1) + " " + selectYourNextTaxYearHint
       individualSelectTaxYearTag.text mustBe complete
 
-      }
     }
+  }
 }

@@ -40,7 +40,7 @@
 @messagePrefix = @{"agent.business.task-list"}
 
 @taxYearText = @{
-viewModel.taxYearSelection.map(_.accountingYear) match {
+  viewModel.taxYearSelection.map(_.accountingYear) match {
     case Some(Current) => messages(s"${messagePrefix}.content.tax-year.current-tax-year", (accountingPeriodService.currentTaxYear - 1).toString, accountingPeriodService.currentTaxYear.toString)
     case Some(Next) => messages(s"${messagePrefix}.content.tax-year.next-tax-year", accountingPeriodService.currentTaxYear.toString, (accountingPeriodService.currentTaxYear + 1).toString)
     case None => messages(s"${messagePrefix}.content.tax-year.action")
@@ -72,95 +72,96 @@ viewModel.taxYearSelection.map(_.accountingYear) match {
     <h2 class="govuk-heading-m">@messages("agent.business.task-list.client-information.heading")</h2>
 
     <div class="client-details app-task-list__post-list">
-    @govukSummaryList(SummaryList(
-        rows = Seq(
-            SummaryListRow(
-                key = Key(
-                content = Text(messages(s"${messagePrefix}.client-information.name")),
-                classes = "govuk-!-width-two-thirds"
-            ),
-            value = Value(
-                content = Text(clientName)
-            )
-        ),
-            SummaryListRow(
-                key = Key(
-                content = Text(messages(s"${messagePrefix}.client-information.nino")),
-                classes = "govuk-!-width-two-thirds"
-            ),
-            value = Value(
-                content = Text(clientNino)
-            )
-        ),
-            SummaryListRow(
-                key = Key(
-                content = Text(messages(s"${messagePrefix}.client-information.utr")),
-                classes = "govuk-!-width-two-thirds"
-            ),
-            value = Value(
-                content = Text(clientUtr)
-            )
-        )
-    ),
+        @govukSummaryList(SummaryList(
+            rows = Seq(
+                SummaryListRow(
+                    key = Key(
+                        content = Text(messages(s"${messagePrefix}.client-information.name")),
+                        classes = "govuk-!-width-two-thirds"
+                    ),
+                    value = Value(
+                        content = Text(clientName)
+                    )
+                ),
+                SummaryListRow(
+                    key = Key(
+                        content = Text(messages(s"${messagePrefix}.client-information.nino")),
+                        classes = "govuk-!-width-two-thirds"
+                    ),
+                    value = Value(
+                        content = Text(clientNino)
+                    )
+                ),
+                SummaryListRow(
+                    key = Key(
+                        content = Text(messages(s"${messagePrefix}.client-information.utr")),
+                        classes = "govuk-!-width-two-thirds"
+                    ),
+                    value = Value(
+                        content = Text(clientUtr)
+                    )
+                )
+             ),
             classes = "govuk-summary-list--no-border govuk-!-padding-4"
-))
+        ))
     </div>
 
-<h2 class="govuk-heading-m">@messages("agent.business.task-list.content.details.heading")</h2>
+    <h2 class="govuk-heading-m">@messages("agent.business.task-list.content.details.heading")</h2>
 
     @govukTaskList(TaskList(
         items = Seq(
             TaskListItem(
                 title = TaskListItemTitle(
                     content = Text(messages("agent.business.task-list.content.add-income.heading"))
-            ),
-            status = if(viewModel.incomeSourcesComplete) { taskListCompleteTag } else { taskListIncompleteTag },
-            href = Some(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url),
-            hint = Some(Hint(
-                content = Text(messages("agent.business.task-list.content.add-income.hint"))
-            ))
-        ),
-        TaskListItem(
-            title = TaskListItemTitle(
-                content = if(viewModel.permitTaxYearChange) Text(messages("agent.business.task-list.content.tax-year.action")) else Text(taxYearText)
-            ),
-            status = if(viewModel.taxYearSelectedAndConfirmed) { taskListCompleteTag } else { taskListIncompleteTag },
-            href = if(viewModel.permitTaxYearChange) {
-            Some(if(viewModel.taxYearSelectedAndConfirmed) {
-                controllers.agent.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.show(editMode=true).url
-            } else {
-                controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
-            })} else None,
+                ),
+                status = if(viewModel.incomeSourcesComplete) { taskListCompleteTag() } else { taskListIncompleteTag() },
+                href = Some(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url),
                 hint = Some(Hint(
-                    content = if(viewModel.permitTaxYearChange) { Text(messages("agent.business.task-list.content.tax-year.hint"))
+                    content = Text(messages("agent.business.task-list.content.add-income.hint"))
+                ))
+            ),
+            TaskListItem(
+                title = TaskListItemTitle(
+                    content = if(viewModel.permitTaxYearChange) Text(messages("agent.business.task-list.content.tax-year.action")) else Text(taxYearText)
+                ),
+                status = if(viewModel.taxYearSelectedAndConfirmed) { taskListCompleteTag() } else { taskListIncompleteTag() },
+                href = if(viewModel.permitTaxYearChange) {
+                Some(if(viewModel.taxYearSelectedAndConfirmed) {
+                    controllers.agent.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.show(editMode=true).url
                 } else {
-                    Text(messages("agent.business.task-list.content.next-tax-year.hint"))
-                }
-            ))
-        )
-    ),
-    idPrefix = "client-details"
-))
+                    controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+                })} else None,
+                hint = Some(Hint(
+                    content = if(viewModel.permitTaxYearChange) {
+                        Text(messages("agent.business.task-list.content.tax-year.hint"))
+                    } else {
+                        Text(messages("agent.business.task-list.content.next-tax-year.hint"))
+                    }
+                ))
+            )
+        ),
+        idPrefix = "client-details"
+    ))
 
-<h2 class="govuk-heading-m">@messages("agent.business.task-list.review-sign-up.heading")</h2>
+    <h2 class="govuk-heading-m">@messages("agent.business.task-list.review-sign-up.heading")</h2>
 
     @govukTaskList(TaskList(
         items = Seq(
             TaskListItem(
                 title = TaskListItemTitle(
                     content = Text(messages("agent.business.task-list.review-sign-up.link-text"))
-            ),
-            status = if(viewModel.taskListComplete) { taskListIncompleteTag } else { taskListNotStartedTag },
-            href = if (viewModel.taskListComplete) {
-                Some(controllers.agent.routes.GlobalCheckYourAnswersController.show.url)
-            } else {
-                None
-            }
-        )
-    ),
+                ),
+                status = if(viewModel.taskListComplete) { taskListIncompleteTag() } else { taskListNotStartedTag() },
+                href = if (viewModel.taskListComplete) {
+                    Some(controllers.agent.routes.GlobalCheckYourAnswersController.show.url)
+                } else {
+                    None
+                }
+            )
+        ),
         idPrefix = "sign-up-section"
     ))
 
-@saveAndComeBackButton
+    @saveAndComeBackButton
 
 }}

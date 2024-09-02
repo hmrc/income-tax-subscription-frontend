@@ -35,7 +35,7 @@ import java.time.LocalDate
 
 class OverseasPropertyIncomeSourcesViewSpec extends ViewSpec {
 
-  object OverseasProppertyIncomeSourcesMessages{
+  object OverseasProppertyIncomeSourcesMessages {
     val title = "Your client’s foreign property"
     val heading: String = title
     val caption = "FirstName LastName | ZZ 11 11 11 Z"
@@ -48,7 +48,7 @@ class OverseasPropertyIncomeSourcesViewSpec extends ViewSpec {
     val detailsSubheading = "Example"
     val detailsContentPara = "Your client created an invoice for someone in March 2017, but did not receive the money until May 2017. If your client tells HMRC they received this income in:"
     val detailsBullet1 = "May 2017, they use cash basis accounting"
-    val detailsBullet2 =  "March 2017, you use traditional accounting"
+    val detailsBullet2 = "March 2017, you use traditional accounting"
   }
 
   val testErrorStartDate: FormError = FormError("startDate", "agent.error.property.day-month-year.empty")

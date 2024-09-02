@@ -111,26 +111,4 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
     }
   }
 
-  "POST /report-quarterly/income-and-expenses/sign-up/business/task-list" when {
-    "the task list redesign feature switch is enabled" should {
-      "redirect to the global check your answers page" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-
-        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty), Some(testAccountingMethod.accountingMethod))
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
-
-        When("POST /business/task-list is called")
-        val res = IncomeTaxSubscriptionFrontend.submitTaskList()
-
-        Then("Should return a SEE_OTHER with a redirect location of confirmation")
-        res must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(IndividualURI.globalCheckYourAnswersURI)
-        )
-      }
-    }
-  }
 }
