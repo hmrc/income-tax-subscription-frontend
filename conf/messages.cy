@@ -766,10 +766,16 @@ agent.client-already-subscribed.heading                         = Mae’ch cleie
 agent.client-already-subscribed.para1                           = Mae manylion y cleient hwn eisoes yn cael eu defnyddio.
 
 ## No client relationship page ##
-agent.no-client-relationship.title                              = Nid ydych wedi’ch awdurdodi ar gyfer y cleient hwn
-agent.no-client-relationship.heading                            = Nid ydych wedi’ch awdurdodi ar gyfer y cleient hwn
-agent.no-client-relationship.para1                              = Er mwyn eich awdurdodi fel ei asiant, mae angen i’ch cleient {0} gan ddefnyddio ei fanylion Porth Llywodraeth ei hun. Ar ôl iddo wneud hyn, gallwch ddod yn ôl i gofrestru’ch cleient.
-agent.no-client-relationship.link                               = fewngofnodi i’r gwasanaeth hwn
+agent.no-client-relationship.title                              = Mae problem wedi codi
+agent.no-client-relationship.heading                            = Mae problem wedi codi
+agent.no-client-relationship.caption                            = {0} | {1}
+agent.no-client-relationship.para1                              = Ni allwn ddod o hyd i awdurdodiad eich cleient yn eich cyfrif gwasanaethau asiant.
+agent.no-client-relationship.para2                              = Mae angen i chi wneud y canlynol:
+agent.no-client-relationship.bullet1                            = Gwirio’ch {0}
+agent.no-client-relationship.bullet2                            = Sicrhau eich bod wedi copïo ar draws yr holl awdurdodiadau presennol ar gyfer eich holl gleientiaid a’ch holl IDs ar gyfer Porth y Llywodraeth.
+agent.no-client-relationship.bullet3                            = Os nad oes gennych awdurdodiad y cleient hwn o hyd, bydd angen i chi gael awdurdodiad newydd oddi wrtho.
+agent.no-client-relationship.para3                              = Pan gewch awdurdodiad eich cleient, gallwch ddod yn ôl i’w gofrestru.
+agent.no-client-relationship.link                               = cyfrif gwasanaethau asiant
 
 ## Client cannot report property page ##
 agent.cannot-report-property-yet.title                          = Ni allwch ddefnyddio meddalwedd i roi gwybod am incwm eich cleient o eiddo ar hyn o bryd

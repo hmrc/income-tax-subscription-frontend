@@ -217,6 +217,9 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
             setupMockNotLockedOut(testARN)
             mockOrchestrateAgentQualificationFailure(testARN, UnApprovedAgent(testNino, Some(testUtr)))
 
+            when(mockSessionDataService.saveNino(ArgumentMatchers.anyString())(ArgumentMatchers.any()))
+              .thenReturn(Future.successful(Right(SaveSessionDataSuccessResponse)))
+
             val result: Future[Result] = controller.submit()(request)
 
             status(result) mustBe SEE_OTHER

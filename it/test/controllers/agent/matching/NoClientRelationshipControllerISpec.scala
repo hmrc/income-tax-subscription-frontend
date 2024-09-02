@@ -16,18 +16,24 @@
 
 package controllers.agent.matching
 
+import common.Constants.ITSASessionKeys
+import connectors.stubs.SessionDataConnectorStub
 import controllers.agent.routes
+import helpers.IntegrationTestConstants.testNino
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
+import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.libs.json.JsString
 import play.api.libs.ws.WSResponse
-import play.api.test.Helpers.{OK, SEE_OTHER}
 
 class NoClientRelationshipControllerISpec extends ComponentSpecBase  {
 
   trait Setup {
     AuthStub.stubAuthSuccess()
+
+    SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
     val result: WSResponse = IncomeTaxSubscriptionFrontend.getNoClientRelationship
 
@@ -35,12 +41,15 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase  {
   }
 
   object NoClientRelationshipMessages {
-    val title: String = "You’re not authorised for this client"
-    val heading: String = "You’re not authorised for this client"
-    val para1: String = "To authorise you as their agent, your client needs to sign into this service (opens in new tab) " +
-      "using their own Government Gateway details. Once they have done this, you can come back to sign up your client."
+    val title: String = "There is a problem"
+    val heading: String = "There is a problem"
+    val para1: String ="We cannot find your client’s authorisation in your agent services account."
+    val para2: String = "You need to:"
+    val bullet1: String = "Check your " + "agent services account (opens in new tab)"
+    val bullet2: String = "Make sure you have copied across all existing authorisations for all your clients and all your Government Gateway user IDs."
+    val bullet3: String = "If you still do not have this client’s authorisation, you’ll need to get a new authorisation from them."
+    val para3: String = "When you have your client’s authorisation, you can come back to sign them up."
     val button: String = "Sign up another client"
-    val signOut: String = "Sign out"
   }
 
   "GET /error/no-client-relationship" should {
@@ -59,9 +68,27 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase  {
       doc.body().getH1Element.text mustBe NoClientRelationshipMessages.heading
     }
 
-    "have a paragraph explaining why they are not authorised" in new Setup {
+    "have the first paragraph" in new Setup {
       private val content = doc.body().getElementById("main-content")
       content.getNthParagraph(1).text mustBe NoClientRelationshipMessages.para1
+    }
+
+    "have the second paragraph" in new Setup {
+      private val content = doc.body().getElementById("main-content")
+      content.getNthParagraph(2).text mustBe NoClientRelationshipMessages.para2
+    }
+
+    "have a list of bullet points" in new Setup {
+      private val bulletPoints = doc.body().select(".govuk-list.govuk-list--number li")
+      bulletPoints.size mustBe 3
+      bulletPoints.get(0).text mustBe NoClientRelationshipMessages.bullet1
+      bulletPoints.get(1).text mustBe NoClientRelationshipMessages.bullet2
+      bulletPoints.get(2).text mustBe NoClientRelationshipMessages.bullet3
+    }
+
+    "have the third paragraph" in new Setup {
+      private val content = doc.body().getElementById("main-content")
+      content.getNthParagraph(3).text mustBe NoClientRelationshipMessages.para3
     }
 
     "have a Sign up another client button" in new Setup {
@@ -70,15 +97,8 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase  {
       submitButton.text mustBe NoClientRelationshipMessages.button
     }
 
-    "have a Sign Out link" in new Setup {
-      private val content = doc.body().getElementById("main-content")
-      val signOutLink: Element = content.getLink("sign-out-button")
-      signOutLink.attr("href") mustBe controllers.SignOutController.signOut.url
-      signOutLink.text mustBe NoClientRelationshipMessages.signOut
-    }
-
     "have a view with a link" in new Setup {
-      doc.mainContent.selectHead("a").attr("href") mustBe "https://www.gov.uk/guidance/client-authorisation-an-overview"
+      doc.mainContent.selectHead("a").attr("href") mustBe "https://www.tax.service.gov.uk/agent-services-account/home#tax-services-accordion-content-1"
     }
 
     "return SEE_OTHER when selecting clicking sign up another client" in new Setup {

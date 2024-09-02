@@ -18,24 +18,48 @@ package controllers.agent.matching
 
 import auth.agent.UserMatchingController
 import config.AppConfig
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
+import play.twirl.api.Html
+import services.agent.ClientDetailsRetrieval
 import services.{AuditingService, AuthService}
 import views.html.agent.matching.NoClientRelationship
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.matching.Regex
 
 @Singleton
 class NoClientRelationshipController @Inject()(val auditingService: AuditingService,
                                                val authService: AuthService,
+                                               clientDetailsRetrieval: ClientDetailsRetrieval,
                                                noClientRelationship: NoClientRelationship)
                                               (implicit val ec: ExecutionContext,
                                                mcc: MessagesControllerComponents,
                                                val appConfig: AppConfig) extends UserMatchingController {
 
+  private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
+
+  private def formatNino(clientNino: String): String = {
+    clientNino match {
+      case ninoRegex(startLetters, firstDigits, secondDigits, thirdDigits, finalLetter) =>
+        s"$startLetters $firstDigits $secondDigits $thirdDigits $finalLetter"
+      case other => other
+    }
+  }
+
+  def view(clientName: String, clientNino: String)(implicit request: Request[_]): Html = {
+    noClientRelationship(
+      postAction = controllers.agent.matching.routes.NoClientRelationshipController.submit,
+      clientName,
+      clientNino
+    )
+  }
+
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
-      Future.successful(Ok(noClientRelationship(postAction = controllers.agent.matching.routes.NoClientRelationshipController.submit)))
+      clientDetailsRetrieval.getClientDetails map {
+        clientDetails => Ok(view(clientDetails.name, clientDetails.nino))
+      }
   }
 
   val submit: Action[AnyContent] = Authenticated.async { _ =>

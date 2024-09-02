@@ -767,10 +767,16 @@ agent.client-already-subscribed.heading                         = Your client ha
 agent.client-already-subscribed.para1                           = This client’s details are already in use.
 
 ## No client relationship page ##
-agent.no-client-relationship.title                              = You’re not authorised for this client
-agent.no-client-relationship.heading                            = You’re not authorised for this client
-agent.no-client-relationship.para1                              = To authorise you as their agent, your client needs to {0} using their own Government Gateway details. Once they have done this, you can come back to sign up your client.
-agent.no-client-relationship.link                               = sign into this service
+agent.no-client-relationship.title                              = There is a problem
+agent.no-client-relationship.heading                            = There is a problem
+agent.no-client-relationship.caption                            = {0} | {1}
+agent.no-client-relationship.para1                              = We cannot find your client’s authorisation in your agent services account.
+agent.no-client-relationship.para2                              = You need to:
+agent.no-client-relationship.bullet1                            = Check your {0}
+agent.no-client-relationship.bullet2                            = Make sure you have copied across all existing authorisations for all your clients and all your Government Gateway user IDs.
+agent.no-client-relationship.bullet3                            = If you still do not have this client’s authorisation, you’ll need to get a new authorisation from them.
+agent.no-client-relationship.para3                              = When you have your client’s authorisation, you can come back to sign them up.
+agent.no-client-relationship.link                               = agent services account
 
 ## Client cannot report property page ##
 agent.cannot-report-property-yet.title                          = You can’t use software to report your client’s property income yet
