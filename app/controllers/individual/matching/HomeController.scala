@@ -75,10 +75,12 @@ class HomeController @Inject()(citizenDetailsService: CitizenDetailsService,
               Redirect(routes.NoSAController.show).removingFromSession(JourneyStateKey)
             }
           case (Some(utr), name) =>
-            user.getSPSEntityId match {
-              case Some(entityId) if request.session.isInState(SignUp) =>
-                Future.successful(Redirect(controllers.individual.sps.routes.SPSCallbackController.callback(Some(entityId))))
-              case _ => tryToSubscribe(utr, name)
+            startIndividualSignupAudit(Some(utr)) flatMap { _ =>
+              user.getSPSEntityId match {
+                case Some(entityId) if request.session.isInState(SignUp) =>
+                  Future.successful(Redirect(controllers.individual.sps.routes.SPSCallbackController.callback(Some(entityId))))
+                case _ => tryToSubscribe(utr, name)
+              }
             }
         }
     }
