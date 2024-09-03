@@ -22,7 +22,7 @@
   appConfig: AppConfig
 )
 
-@(isIndividual: Boolean, saveAndContinueText: Option[String] = None, saveAndReturnReference: Option[String], disabled: Boolean = false)(implicit messages: Messages)
+@(isIndividual: Boolean, saveAndContinueText: Option[String] = None, saveAndReturnReference: Option[String])(implicit messages: Messages)
 
 @href = @{
     if(isIndividual) {
@@ -35,8 +35,7 @@
 <div class="govuk-button-group">
 
     @buttonHelper(
-      buttonText = saveAndContinueText.getOrElse(messages("base.save-and-continue")),
-      disabled = disabled
+      buttonText = saveAndContinueText.getOrElse(messages("base.save-and-continue"))
     )
 
     @saveAndReturnReference.map { location =>

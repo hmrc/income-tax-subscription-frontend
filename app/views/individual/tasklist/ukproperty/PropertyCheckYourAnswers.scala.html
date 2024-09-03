@@ -16,19 +16,76 @@
 
 @import models.common.PropertyModel
 @import views.html.templates.PrincipalMainTemplate
-@import views.html.helpers.{CheckYourAnswers, CheckYourAnswersRow}
+@import views.html.helpers.SaveAndContinueButtonHelper
 
 @this(
-        mainTemplate: PrincipalMainTemplate,
-        checkYourAnswers: CheckYourAnswers,
-        checkYourAnswersRow: CheckYourAnswersRow
+    mainTemplate: PrincipalMainTemplate,
+    form: FormWithCSRF,
+    govukSummaryList: GovukSummaryList,
+    hmrcPageHeading: HmrcPageHeading,
+    saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
 )
 
 @(
-        viewModel: PropertyModel,
-        postAction: Call,
-        backUrl: String
+    viewModel: PropertyModel,
+    postAction: Call,
+    backUrl: String
 )(implicit request: Request[_], messages: Messages)
+
+@mainTemplate(
+    title = messages("business.check-your-answers.content.uk-property.title"),
+    backLink = Some(backUrl)
+) {
+
+    @hmrcPageHeading(PageHeading(
+        text = messages("business.check-your-answers.heading"),
+        section = Some(messages("business.check-your-answers.content.uk-property.caption")),
+        headingClasses = Some("govuk-heading-l"),
+        captionClasses = Some("govuk-caption-l")
+    ))
+
+    @govukSummaryList(SummaryList(
+        rows = Seq(
+            SummaryListRow(
+                key = Key(content = Text(messages("business.check-your-answers.content.uk-property-start-date.question"))),
+                value = Value(content = Text(startDate(viewModel.startDate))),
+                actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
+                            href = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.show(editMode = true).url,
+                            content = Text(messages(if(viewModel.startDate.isDefined) "base.change" else "base.add")),
+                            visuallyHiddenText = Some(messages("business.check-your-answers.content.uk-property-start-date.question"))
+                        )
+                    )
+                ))
+            ),
+            SummaryListRow(
+                key = Key(content = Text(messages("business.check-your-answers.content.uk-property-accounting-method.question"))),
+                value = Value(content = Text(accountingMethod(viewModel.accountingMethod))),
+                actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
+                            href = controllers.individual.tasklist.ukproperty.routes.PropertyAccountingMethodController.show(editMode = true).url,
+                            content = Text(messages(if(viewModel.startDate.isDefined) "base.change" else "base.add")),
+                            visuallyHiddenText = Some(messages("business.check-your-answers.content.uk-property-accounting-method.question"))
+                        )
+                    )
+                ))
+            )
+        )
+    ))
+
+    @form(action = postAction) {
+
+        @saveAndContinueButtonHelper(
+            isIndividual = true,
+            saveAndContinueText = Some(messages("base.confirm-and-continue")),
+            saveAndReturnReference = Some("uk-property-check-your-answers")
+        )
+
+    }
+
+}
 
 @startDate(maybeStartDate: Option[DateModel]) = @{
     maybeStartDate match {
@@ -42,41 +99,5 @@
         case Some(Cash) => messages("business.check-your-answers.content.accounting-method.cash")
         case Some(Accruals) => messages("business.check-your-answers.content.accounting-method.accruals")
         case None => ""
-    }
-}
-
-@mainTemplate(title = messages("business.check-your-answers.content.uk-property.title"), backLink = Some(backUrl)) {
-    @checkYourAnswers(
-        heading = messages("business.check-your-answers.heading"),
-        caption = messages("business.check-your-answers.content.uk-property.caption"),
-        isIndividual = true,
-        postAction = postAction,
-        saveAndContinue = !viewModel.confirmed,
-        saveAndReturnReference = Some("uk-property-check-your-answers")
-    ) {
-        @checkYourAnswersRow(
-            field = "start-date",
-            question = messages("business.check-your-answers.content.uk-property-start-date.question"),
-            answer = startDate(viewModel.startDate),
-            changeText = if(viewModel.startDate.isDefined) None else Some(messages("base.add")),
-            changeUrl = Some(controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.show(editMode = true).url),
-            hiddenContent =
-                    if(viewModel.startDate.isDefined)
-                        messages("business.check-your-answers.content.uk-property-start-date.change")
-                    else
-                        messages("business.check-your-answers.content.uk-property-start-date.add")
-        )
-        @checkYourAnswersRow(
-            field = "accounting-method",
-            question = messages("business.check-your-answers.content.uk-property-accounting-method.question"),
-            answer = accountingMethod(viewModel.accountingMethod),
-            changeText = if(viewModel.accountingMethod.isDefined) None else Some(messages("base.add")),
-            changeUrl = Some(controllers.individual.tasklist.ukproperty.routes.PropertyAccountingMethodController.show(editMode = true).url),
-            hiddenContent =
-                    if(viewModel.accountingMethod.isDefined)
-                        messages("business.check-your-answers.content.uk-property-accounting-method.change")
-                    else
-                        messages("business.check-your-answers.content.uk-property-accounting-method.add")
-        )
     }
 }

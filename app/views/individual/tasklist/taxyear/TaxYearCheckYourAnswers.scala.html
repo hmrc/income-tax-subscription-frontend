@@ -17,21 +17,62 @@
 @import models.common.AccountingYearModel
 @import services.AccountingPeriodService
 @import views.html.templates.PrincipalMainTemplate
-@import views.html.helpers.{CheckYourAnswers, CheckYourAnswersRow, ContinueButton}
+@import views.html.helpers.SaveAndContinueButtonHelper
 
 @this(
-        mainTemplate: PrincipalMainTemplate,
-        checkYourAnswers: CheckYourAnswers,
-        checkYourAnswersRow: CheckYourAnswersRow,
-        continueButton: ContinueButton
+    mainTemplate: PrincipalMainTemplate,
+    form: FormWithCSRF,
+    govukSummaryList: GovukSummaryList,
+    hmrcPageHeading: HmrcPageHeading,
+    saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
+    accountingPeriodService: AccountingPeriodService
 )
 
 @(
-        postAction: Call,
-        viewModel: Option[AccountingYearModel],
-        accountingPeriodService: AccountingPeriodService,
-        backUrl: String
+    postAction: Call,
+    viewModel: Option[AccountingYearModel],
+    backUrl: String
 )(implicit request: Request[_], messages: Messages)
+
+@mainTemplate(
+    title = messages("business.check-your-answers.content.tax-year.title"),
+    backLink = Some(backUrl)
+) {
+
+    @hmrcPageHeading(PageHeading(
+        text = messages("business.check-your-answers.heading"),
+        section = Some(messages("business.check-your-answers.content.tax-year.caption")),
+        headingClasses = Some("govuk-heading-l"),
+        captionClasses = Some("govuk-caption-l")
+    ))
+
+    @govukSummaryList(SummaryList(
+        rows = Seq(
+            SummaryListRow(
+                key = Key(content = Text(messages("business.check-your-answers.content.tax-year.question"))),
+                value = Value(content = Text(taxYear(viewModel))),
+                actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
+                            href = controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show(editMode = true).url,
+                            content = Text(messages("base.change")),
+                            visuallyHiddenText = Some(messages("business.check-your-answers.content.tax-year.question"))
+                        )
+                    )
+                ))
+            )
+        )
+    ))
+
+    @form(action = postAction) {
+        @saveAndContinueButtonHelper(
+            isIndividual = true,
+            saveAndContinueText = Some(messages("base.confirm-and-continue")),
+            saveAndReturnReference = Some("tax-year-check-your-answers")
+        )
+    }
+
+}
 
 @taxYear(accountingYear: Option[AccountingYearModel]) = @{
     accountingYear.map(_.accountingYear) match {
@@ -39,17 +80,4 @@
         case Some(Next) => messages("business.check-your-answers.content.tax-year.next-tax-year", accountingPeriodService.currentTaxYear.toString, (accountingPeriodService.currentTaxYear + 1).toString)
         case None => ""
     }
-}
-
-@mainTemplate(title = messages("business.check-your-answers.content.tax-year.title"), backLink = Some(backUrl)) {
-    @checkYourAnswers(heading = messages("business.check-your-answers.heading"), caption = messages("business.check-your-answers.content.tax-year.caption"), isIndividual = true, postAction = postAction) {
-        @checkYourAnswersRow(
-            field = "tax-year",
-            question = messages("business.check-your-answers.content.tax-year.question"),
-            answer = taxYear(viewModel),
-            changeUrl = Some(controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show(editMode = true).url),
-            hiddenContent = messages("business.check-your-answers.content.tax-year.question.hidden")
-        )
-    }
-
 }

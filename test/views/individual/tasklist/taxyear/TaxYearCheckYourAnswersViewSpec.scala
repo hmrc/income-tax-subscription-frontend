@@ -20,9 +20,9 @@ import messagelookup.individual.MessageLookup.{TaxYearCheckYourAnswers => messag
 import models.common.AccountingYearModel
 import models.{AccountingYear, Current, Next}
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Element
 import services.AccountingPeriodService
-import utilities.AccountingPeriodUtil.getCurrentTaxEndYear
-import utilities.ViewSpec
+import utilities.{AccountingPeriodUtil, ViewSpec}
 import views.html.individual.tasklist.taxyear.TaxYearCheckYourAnswers
 
 class TaxYearCheckYourAnswersViewSpec extends ViewSpec {
@@ -33,70 +33,82 @@ class TaxYearCheckYourAnswersViewSpec extends ViewSpec {
   private val postAction = controllers.individual.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.submit()
   private val sectionId = "#tax-year"
 
-  "business task list view" must {
-    "have a title" in {
-      document().title mustBe messages.title
-    }
+  "TaxYearCheckYourAnswers" must {
+    "have the correct template" in new TemplateViewTest(
+      page(Current),
+      title = messages.title,
+      isAgent = false,
+      backLink = Some(testBackUrl),
+      hasSignOutLink = true
+    )
 
     "have a heading" in {
-      document().select("h1").text mustBe messages.heading
+      document().mainContent.getH1Element.text mustBe messages.heading
     }
 
     "have a caption" in {
-      document().select(".hmrc-page-heading p").text mustBe messages.caption
+      document().mainContent.selectHead(".govuk-caption-l").text mustBe messages.caption
     }
 
-    "display the tax year section question" in {
-      document()
-        .mainContent
-        .selectHead(s"$sectionId-question")
-        .text() mustBe messages.individualQuestion
-    }
-
-    "display the current in the tax year section answer" in {
-      document()
-        .mainContent
-        .selectHead(s"$sectionId-answer")
-        .text() mustBe messages.current(getCurrentTaxEndYear - 1, getCurrentTaxEndYear)
-    }
-
-    "display the next in the tax year section answer" in {
-      document(Next)
-        .mainContent
-        .selectHead(s"$sectionId-answer")
-        .text() mustBe messages.next(getCurrentTaxEndYear, getCurrentTaxEndYear + 1)
-    }
-
-    "display the tax year section edit link" in {
-      document()
-        .mainContent
-        .selectHead(s"$sectionId-edit a")
-        .attr("href") mustBe controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show(editMode = true).url
-    }
-
-    "display the tax year section hidden content" in {
-      document()
-        .mainContent
-        .selectHead(s"$sectionId-row .govuk-visually-hidden")
-        .text() mustBe messages.hiddenQuestion
-    }
-
-    "The back url" should {
-      "have the value provided to the view" in {
-        val link = document().selectHead(".govuk-back-link")
-        link.text mustBe "Back"
-        link.attr("href") mustBe "/testUrl"
+    "have a summary of the answers" when {
+      "current tax year selected" in {
+        document().mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+          SummaryListRowValues(
+            key = messages.individualQuestion,
+            value = Some(messages.current(AccountingPeriodUtil.getCurrentTaxEndYear - 1, AccountingPeriodUtil.getCurrentTaxEndYear)),
+            actions = Seq(
+              SummaryListActionValues(
+                href = controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show(editMode = true).url,
+                text = s"Change ${messages.individualQuestion}",
+                visuallyHidden = messages.individualQuestion
+              )
+            )
+          )
+        ))
+      }
+      "next tax year selected" in {
+        document(Next).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+          SummaryListRowValues(
+            key = messages.individualQuestion,
+            value = Some(messages.next(AccountingPeriodUtil.getCurrentTaxEndYear, AccountingPeriodUtil.getCurrentTaxEndYear + 1)),
+            actions = Seq(
+              SummaryListActionValues(
+                href = controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show(editMode = true).url,
+                text = s"Change ${messages.individualQuestion}",
+                visuallyHidden = messages.individualQuestion
+              )
+            )
+          )
+        ))
       }
     }
+
+    "have a form" which {
+      def form: Element = document().mainContent.getForm
+
+      "has the correct attributes" in {
+        form.attr("method") mustBe "POST"
+        form.attr("action") mustBe controllers.individual.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.submit().url
+      }
+      "has a confirm and continue button" in {
+        form.selectNth(".govuk-button", 1).text mustBe messages.confirmAndContinue
+      }
+      "has a save and come back later button" in {
+        val saveAndComeBackLater = form.selectNth(".govuk-button", 2)
+        saveAndComeBackLater.text mustBe messages.saveAndComeBack
+        saveAndComeBackLater.attr("href") mustBe controllers.individual.tasklist.routes.ProgressSavedController.show(location = Some("tax-year-check-your-answers")).url
+      }
+    }
+
   }
 
   private def page(accountingYear: AccountingYear) =
     taxYearCheckYourAnswersView(
       postAction = postAction,
       viewModel = Some(AccountingYearModel(accountingYear)),
-      accountingPeriodService = accountingPeriodService,
-      backUrl = "/testUrl"
+      backUrl = testBackUrl
     )
 
   private def document(accountingYear: AccountingYear = Current) = Jsoup.parse(page(accountingYear).body)
+
 }

@@ -340,7 +340,7 @@ object MessageLookup {
   }
 
   object TaxYearCheckYourAnswers {
-    val title = "Check your answers - tax year - Use software to send Income Tax updates - GOV.UK"
+    val title = "Check your answers - tax year"
     val agentTitle = "Check your answers - tax year - Use software to report your client’s Income Tax - GOV.UK"
     val heading = "Check your answers"
     val caption = "This section is Tax year"
@@ -348,6 +348,8 @@ object MessageLookup {
     val question = "Tax year you are signing up for"
     val hiddenQuestion = "Change tax year you are signing up for"
     val individualQuestion = "Tax year"
+    val confirmAndContinue = "Confirm and continue"
+    val saveAndComeBack = "Save and come back later"
 
     def current(staringYear: Int, endYear: Int): String = s"Current tax year (6 April $staringYear to 5 April $endYear)"
 

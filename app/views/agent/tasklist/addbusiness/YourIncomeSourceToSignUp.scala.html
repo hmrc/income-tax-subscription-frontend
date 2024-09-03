@@ -88,15 +88,6 @@
   }
 }
 
-@selfEmploymentLabel(business: SelfEmploymentData, index: Int) = @{
-  (business.businessName, business.businessTradeName) match {
-    case (Some(BusinessNameModel(name)), Some(BusinessTradeNameModel(trade))) => messages("agent.your-income-source.self-employed.label-full", trade, name)
-    case (Some(BusinessNameModel(name)), None) => name
-    case (None, Some(BusinessTradeNameModel(trade))) => trade
-    case _ => messages("agent.your-income-source.self-employed.label-none", index)
-  }
-}
-
 @selfEmploymentName(business: SelfEmploymentData, index: Int) = @{
   (business.businessName) match {
     case (Some(BusinessNameModel(name))) => messages("agent.your-income-source.self-employed.name", name)
