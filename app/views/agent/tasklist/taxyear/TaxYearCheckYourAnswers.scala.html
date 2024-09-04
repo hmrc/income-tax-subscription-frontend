@@ -18,13 +18,16 @@
 @import services.AccountingPeriodService
 @import views.html.templates.AgentMainTemplate
 @import views.html.helpers.{CheckYourAnswers, CheckYourAnswersRow, ContinueButton}
+@import views.html.helpers.SaveAndContinueButtonHelper
 
 @this(
         mainTemplate: AgentMainTemplate,
-        checkYourAnswers: CheckYourAnswers,
-        checkYourAnswersRow: CheckYourAnswersRow,
         continueButton: ContinueButton,
         accountingPeriodService: AccountingPeriodService,
+        form: FormWithCSRF,
+        govukSummaryList: GovukSummaryList,
+        hmrcPageHeading: HmrcPageHeading,
+        saveAndContinueButtonHelper: SaveAndContinueButtonHelper
 )
 
 @(
@@ -45,14 +48,32 @@
 
 @mainTemplate(title = messages("agent.business.check-your-answers.content.tax-year.title"), backLink = Some(backUrl)) {
 
-    @checkYourAnswers(heading = messages("agent.business.check-your-answers.heading"), caption = messages("agent.business.check-your-answers.content.tax-year.caption", clientName, clientNino), sectionCaption = false, isIndividual = false, postAction = postAction) {
-        @checkYourAnswersRow(
-            field = "tax-year",
-            question = messages("agent.business.check-your-answers.content.tax-year.question"),
-            answer = taxYear(viewModel),
-            changeUrl = Some(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show(editMode = true).url),
-            hiddenContent = messages("agent.business.check-your-answers.content.tax-year.question.hidden")
+        <span class="govuk-caption-l">@messages("agent.business.check-your-answers.content.tax-year.caption", clientName, clientNino)</span>
+        <h1 class="govuk-heading-l">@messages("agent.business.check-your-answers.heading")</h1>
+
+        @govukSummaryList(SummaryList(
+            rows = Seq(
+                SummaryListRow(
+                    key = Key(content = Text(messages("agent.business.check-your-answers.content.tax-year.question"))),
+                    value = Value(content = Text(taxYear(viewModel))),
+                    actions = Some(Actions(
+                        items = Seq(
+                            ActionItem(
+                                href = controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show(editMode = true).url,
+                                content = Text(messages("base.change")),
+                                visuallyHiddenText = Some(messages("agent.business.check-your-answers.content.tax-year.question"))
+                            )
+                        )
+                    ))
+                )
+            )
+        ))
+
+        @form(action = postAction) {
+            @saveAndContinueButtonHelper(
+                isIndividual = false,
+                saveAndContinueText = Some(messages("base.confirm-and-continue")),
+                saveAndReturnReference = Some("tax-year-check-your-answers")
         )
     }
-
 }

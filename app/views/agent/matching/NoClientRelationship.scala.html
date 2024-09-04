@@ -51,14 +51,6 @@
 
     <p class="govuk-body">@messages("agent.no-client-relationship.para3")</p>
 
-
-    <p class="govuk-body">
-        @Html(messages(
-        key = "agent.no-client-relationship.para1",
-        args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("agent.no-client-relationship.link"), Some("https://www.gov.uk/guidance/client-authorisation-an-overview")))
-        ))
-    </p>
-
     @form(action = postAction) {
 
         <div class="govuk-form-group">

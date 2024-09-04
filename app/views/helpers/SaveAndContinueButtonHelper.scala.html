@@ -35,7 +35,7 @@
 <div class="govuk-button-group">
 
     @buttonHelper(
-      buttonText = saveAndContinueText.getOrElse(messages("base.save-and-continue"))
+        buttonText = saveAndContinueText.getOrElse(messages("base.save-and-continue"))
     )
 
     @saveAndReturnReference.map { location =>

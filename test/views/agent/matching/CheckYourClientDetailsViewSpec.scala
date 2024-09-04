@@ -26,6 +26,7 @@ import org.jsoup.nodes.{Document, Element}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
+import utilities.UserMatchingSessionUtil.ClientDetails
 import utilities.agent.TestConstants
 import utilities.{TestModels, ViewSpec}
 import views.agent.helpers.ConfirmClientIdConstants._
@@ -33,9 +34,9 @@ import views.html.agent.matching.CheckYourClientDetails
 
 class CheckYourClientDetailsViewSpec extends ViewSpec {
 
-  val testFirstName = "Test"
-  val testLastName = "User"
-  val testNino: String = TestConstants.testNino
+  val testFirstName = "FirstName"
+  val testLastName = "LastName"
+  val testNino: String = "ZZ111111Z"
   val testDob: DateModel = TestModels.testStartDateThisYear
   val testClientDetails: UserDetailsModel = UserDetailsModel(
     testFirstName,
@@ -54,146 +55,95 @@ class CheckYourClientDetailsViewSpec extends ViewSpec {
 
   def document(): Document = Jsoup.parse(page().body)
 
-  val questionId: String => String = (sectionId: String) => s"$sectionId-question"
-  val answerId: String => String = (sectionId: String) => s"$sectionId-answer"
-  val editLinkId: String => String = (sectionId: String) => s"$sectionId-edit"
+  "YourClientDetailsCheckYourAnswers" must {
+    "have the correct template" in new TemplateViewTest(
+      view = page(),
+      title = ConfirmClient.title,
+      isAgent = true
+    )
 
-  def questionStyleCorrectness(section: Element): Unit = {
-    section.attr("class") mustBe "govuk-summary-list__key"
-  }
-
-  def answerStyleCorrectness(section: Element): Unit = {
-    section.attr("class") mustBe "govuk-summary-list__value"
-  }
-
-  def editLinkStyleCorrectness(section: Element): Unit = {
-    section.attr("class") mustBe "govuk-summary-list__actions"
-  }
-
-  "Confirm Client page view" should {
-
-    s"have the title '${ConfirmClient.title}'" in {
-      val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
-      document().title() mustBe ConfirmClient.title + serviceNameGovUk
-    }
-
-    s"have the heading (H1) '${ConfirmClient.heading}'" in {
-      document().select("h1").text() must include(ConfirmClient.heading)
+    "have a heading" in {
+      document().getH1Element.text() mustBe ConfirmClient.heading
     }
 
     "have a caption" in {
-      document().select(".hmrc-page-heading p").text mustBe ConfirmClient.caption
+      document().mainContent.selectHead(".govuk-caption-l").text() mustBe ConfirmClient.caption
     }
 
-    "has a form" which {
-
-      "has a submit button" in {
-        val submit = Option(document().getElementById("continue-button"))
-        submit.isEmpty mustBe false
-        submit.get.text mustBe common.continue
+    "have a summary of answers" when {
+      "display the correct info for client details" in {
+        document().mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+          SummaryListRowValues(
+            key = ConfirmClient.firstName,
+            value = Some("FirstName"),
+            actions = Seq(
+              SummaryListActionValues(
+                href = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url,
+                text = s"${ConfirmClient.change} ${ConfirmClient.firstName}",
+                visuallyHidden = ConfirmClient.firstName
+              )
+            )
+          ),
+          SummaryListRowValues(
+            key = ConfirmClient.lastName,
+            value = Some("LastName"),
+            actions = Seq(
+              SummaryListActionValues(
+                href = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url,
+                text = s"${ConfirmClient.change} ${ConfirmClient.lastName}",
+                visuallyHidden = ConfirmClient.lastName
+              )
+            )
+          ),
+          SummaryListRowValues(
+            key = ConfirmClient.nino,
+            value = Some("ZZ 11 11 11 Z"),
+            actions = Seq(
+              SummaryListActionValues(
+                href = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url,
+                text = s"${ConfirmClient.change} ${ConfirmClient.nino}",
+                visuallyHidden = ConfirmClient.nino
+              )
+            )
+          ),
+          SummaryListRowValues(
+            key = ConfirmClient.dob,
+            value = Some("6 April 2024"),
+            actions = Seq(
+              SummaryListActionValues(
+                href = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url,
+                text = s"${ConfirmClient.change} ${ConfirmClient.dob}",
+                visuallyHidden = ConfirmClient.dob
+              )
+            )
+          )
+        ))
       }
 
-      s"has a post action to '${postAction.url}'" in {
-        document().select("form").attr("action") mustBe postAction.url
-        document().select("form").attr("method") mustBe "POST"
+      "have a form" which {
+        def form: Element = document().mainContent.getForm
+
+        "has the correct attributes" in {
+          form.attr("method") mustBe "POST"
+          form.attr("action") mustBe controllers.agent.matching.routes.ConfirmClientController.submit().url
+        }
+
+        "has a continue button" in {
+          form.selectNth(".govuk-button", 1).text mustBe ConfirmClient.continue
+        }
       }
-
     }
 
-    "display the correct info for firstName" in {
-      val sectionId = FirstNameId
-      val expectedQuestion = ConfirmClient.firstName
-      val expectedAnswer = testFirstName
-      val expectedEditLink = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url
-      val expectedHiddenContent = ConfirmClient.firstNameChangeLink
-
-      sectionTest(
-        sectionId = sectionId,
-        expectedQuestion = expectedQuestion,
-        expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink,
-        expectedHiddenContent = expectedHiddenContent
-      )
+    object ConfirmClient {
+      val title = "Check your answers - client’s details"
+      val heading = "Check your answers"
+      val caption = "This section is Details you are signing up your client with"
+      val firstName = "First name"
+      val lastName = "Last name"
+      val nino = "National Insurance number"
+      val dob = "Date of birth"
+      val change = "Change"
+      val continue = "Continue"
     }
-
-    "display the correct info for lastName" in {
-      val sectionId = LastNameId
-      val expectedQuestion = ConfirmClient.lastName
-      val expectedAnswer = testLastName
-      val expectedEditLink = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url
-      val expectedHiddenContent = ConfirmClient.lastNameChangeLink
-      sectionTest(
-        sectionId = sectionId,
-        expectedQuestion = expectedQuestion,
-        expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink,
-        expectedHiddenContent = expectedHiddenContent
-      )
-    }
-
-    "display the correct info for nino" in {
-      val sectionId = NinoId
-      val expectedQuestion = ConfirmClient.nino
-      val expectedAnswer = testNino.toNinoDisplayFormat
-      val expectedEditLink = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url
-      val expectedHiddenContent = ConfirmClient.ninoChangeLink
-      sectionTest(
-        sectionId = sectionId,
-        expectedQuestion = expectedQuestion,
-        expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink,
-        expectedHiddenContent = expectedHiddenContent
-      )
-    }
-
-    "display the correct info for dob" in {
-      val sectionId = DobId
-      val expectedQuestion = ConfirmClient.dob
-      val expectedAnswer = testDob.toCheckYourAnswersDateFormat
-      val expectedEditLink = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url
-      val expectedHiddenContent = ConfirmClient.dobChangeLink
-      sectionTest(
-        sectionId = sectionId,
-        expectedQuestion = expectedQuestion,
-        expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink,
-        expectedHiddenContent = expectedHiddenContent
-      )
-    }
-  }
-
-  private def sectionTest(sectionId: String,
-                          expectedQuestion: String,
-                          expectedAnswer: String,
-                          expectedEditLink: String,
-                          expectedHiddenContent: String): Unit = {
-    val question = document().getElementById(questionId(sectionId))
-    val answer = document().getElementById(answerId(sectionId))
-    val editLink = document().getElementById(editLinkId(sectionId))
-
-    questionStyleCorrectness(question)
-    answerStyleCorrectness(answer)
-    if (expectedEditLink.nonEmpty) editLinkStyleCorrectness(editLink)
-
-    question.text() mustBe expectedQuestion
-    answer.text() mustBe expectedAnswer
-    val link = editLink.select(".govuk-link")
-    link.attr("href") mustBe expectedEditLink
-    link.text() must include(MessageLookup.Base.change)
-    link.select(".govuk-visually-hidden").get(0).text() mustBe expectedHiddenContent
-  }
-
-  object ConfirmClient {
-    val title = "Check your answers - client’s details"
-    val heading = "Check your answers"
-    val caption = "This section is Details you are signing up your client with"
-    val firstName = "First name"
-    val firstNameChangeLink = "Change first name"
-    val lastName = "Last name"
-    val lastNameChangeLink = "Change last name"
-    val nino = "National Insurance number"
-    val ninoChangeLink = "Change National Insurance number"
-    val dob = "Date of birth"
-    val dobChangeLink = "Change Date of Birth"
   }
 }
