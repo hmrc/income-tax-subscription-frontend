@@ -44,12 +44,6 @@ base.accept-and-continue                                        = Accept and con
 base.tax-year.current                                           = Current tax year (6 April {0} to 5 April {1})
 base.tax-year.next                                              = Next tax year (6 April {0} to 5 April {1})
 
-## Client details CYA
-check-your-details.change.first-name                            = Change first name
-check-your-details.change.last-name                             = Change last name
-check-your-details.change.national-insurance                    = Change National Insurance number
-check-your-details.change.date-of-birth                         = Change Date of Birth
-
 ## Preferences call back page
 preferences-callback.title                                      = Do you want to continue?
 preferences-callback.heading                                    = You need to agree to go paperless
@@ -942,38 +936,24 @@ agent.error.overseas.property.year.length                       = The year must 
 agent.business.check-your-answers.heading                             = Check your answers
 agent.business.check-your-answers.content.tax-year.title              = Check your answers - tax year
 agent.business.check-your-answers.content.tax-year.caption            = {0} | {1}
-agent.business.check-your-answers.content.tax-year.question           = Tax year you are signing up for
+agent.business.check-your-answers.content.tax-year.question           = Tax year
 agent.business.check-your-answers.content.tax-year.question.hidden    = Change tax year you are signing up for
 agent.business.check-your-answers.content.tax-year.current-tax-year   = Current tax year (6 April {0} to 5 April {1})
 agent.business.check-your-answers.content.tax-year.next-tax-year      = Next tax year (6 April {0} to 5 April {1})
 
 ## Agent UK property check your answers
-agent.property.check-your-answers.title                               = Check your answers - UK property business
+agent.property.check-your-answers.title                               = Check your answers - UK property
 agent.property.check-your-answers.heading                             = Check your answers
 agent.property.check-your-answers.heading.caption                     = {0} | {1}
 agent.property.check-your-answers.start-date.question                 = Start date
-agent.property.check-your-answers.start-date.add                      = Add UK property business trading start date
-agent.property.check-your-answers.start-date.change                   = Change Start date
 agent.property.check-your-answers.accounting-method.question          = Accounting method
-agent.property.check-your-answers.accounting-method.add               = Add UK property business accounting method
-agent.property.check-your-answers.accounting-method.change            = Change Accounting method
-agent.property.check-your-answers.uk-property-number.question         = Number of properties
-agent.property.check-your-answers.uk-property-number.add              = Add Number of properties
-agent.property.check-your-answers.uk-property-number.change           = Change Number of properties
 
 ## Agent Overseas property check your answers
 agent.overseas-property.check-your-answers.title                      = Check your answers - Foreign property
 agent.overseas-property.check-your-answers.heading                    = Check your answers
 agent.overseas-property.check-your-answers.heading.caption            = {0} | {1}
 agent.overseas-property.check-your-answers.start-date.question        = Start date
-agent.overseas-property.check-your-answers.start-date.add             = Add start date
-agent.overseas-property.check-your-answers.start-date.change          = Change start date
-agent.overseas-property.check-your-answers.count.question             = Number of properties
-agent.overseas-property.check-your-answers.count.add                  = Add number of properties
-agent.overseas-property.check-your-answers.count.change               = Change number of properties
 agent.overseas-property.check-your-answers.accounting-method.question = Accounting method
-agent.overseas-property.check-your-answers.accounting-method.add      = Add accounting method
-agent.overseas-property.check-your-answers.accounting-method.change   = Change accounting method
 
 ## Agent remove business
 agent.business.remove-sole-trader-business.title                    = Are you sure you want to delete this business?

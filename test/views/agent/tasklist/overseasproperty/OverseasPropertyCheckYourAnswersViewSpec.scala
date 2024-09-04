@@ -32,26 +32,15 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
     val title = "Check your answers - Foreign property"
     val caption = "FirstName LastName | ZZ 11 11 11 Z"
     val heading = "Check your answers"
-
     val startDate = "Start date"
     val addStartDate = "Add start date"
     val changeStartDate = "Change start date"
-
-    val count = "Number of properties"
-    val addCount = "Add number of properties"
-    val changeCount = "Change number of properties"
-
     val accountingMethod = "Accounting method"
-    val addAccountingMethod = "Add accounting method"
-    val changeAccountingMethod = "Change accounting method"
-
     val confirmedAndContinue = "Confirm and continue"
     val saveAndComeBack = "Save and come back later"
     val continue = "Continue"
-
     val change = "Change"
     val add = "Add"
-
     val cash = "Cash basis accounting"
     val accruals = "Traditional accounting"
   }
@@ -66,141 +55,135 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
     accountingMethod = Some(Accruals)
   )
 
-  private val propertyWithMissingStartDate = OverseasPropertyModel(
-    accountingMethod = Some(Cash)
-  )
+  private val incompleteProperty = OverseasPropertyModel()
 
-  private val propertyWithMissingAccountingMethod = OverseasPropertyModel(
-    startDate = Some(DateModel("8", "11", "2021"))
-  )
-
-  "Foreign Property CYA page" must {
+  "OverseasPropertyCheckYourAnswers" must {
     "use the correct page template" in new TemplateViewTest(
       view = overseasPropertyCheckYourAnswersView(
         completeCashProperty,
-        testCall,
+        controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.submit(),
         testBackUrl,
         ClientDetails("FirstName LastName", "ZZ111111Z")
       ),
       title = OverseasPropertyCheckYourAnswers.title,
       isAgent = true,
-      backLink = Some(testBackUrl),
+      backLink = Some(testBackUrl)
     )
 
     "have a heading" in {
-      document(viewModel = completeCashProperty)
-        .selectHead("h1.govuk-heading-xl")
-        .text() mustBe OverseasPropertyCheckYourAnswers.heading
+      document(completeCashProperty).getH1Element.text() mustBe OverseasPropertyCheckYourAnswers.heading
     }
 
-    "have a caption on the heading" in {
-      document(viewModel = completeCashProperty)
-        .selectHead("span.govuk-caption-xl")
-        .text mustBe OverseasPropertyCheckYourAnswers.caption
+    "have a caption" in {
+      document(completeCashProperty).selectHead(".govuk-caption-l").text mustBe OverseasPropertyCheckYourAnswers.caption
     }
 
-    "display the overseas property start date row" when {
-      "the start date is complete" in {
-        val row = document(viewModel = completeCashProperty)
-          .selectNth(".govuk-summary-list__row", 1)
-        row.selectHead(".govuk-summary-list__key").text mustBe OverseasPropertyCheckYourAnswers.startDate
-        row.selectHead(".govuk-summary-list__value").text mustBe "8 November 2021"
-
-        val link = row.selectHead(".govuk-summary-list__actions").selectHead("a")
-
-        link.attr("href") mustBe controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show(true).url
-        link.selectHead("span[aria-hidden=\"true\"]").text mustBe OverseasPropertyCheckYourAnswers.change
-        link.selectHead("span.govuk-visually-hidden").text mustBe OverseasPropertyCheckYourAnswers.changeStartDate
+    "display a summary of answers" when {
+      "the start date and cash accounting method is defined" in {
+        document(completeCashProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+          SummaryListRowValues(
+            key = OverseasPropertyCheckYourAnswers.startDate,
+            value = Some("8 November 2021"),
+            actions = Seq(
+              SummaryListActionValues(
+                href = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show(editMode = true).url,
+                text = s"${OverseasPropertyCheckYourAnswers.change} ${OverseasPropertyCheckYourAnswers.startDate}",
+                visuallyHidden = OverseasPropertyCheckYourAnswers.startDate
+              )
+            )
+          ),
+          SummaryListRowValues(
+            key = OverseasPropertyCheckYourAnswers.accountingMethod,
+            value = Some("Cash basis accounting"),
+            actions = Seq(
+              SummaryListActionValues(
+                href = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyAccountingMethodController.show(editMode = true).url,
+                text = s"${OverseasPropertyCheckYourAnswers.change} ${OverseasPropertyCheckYourAnswers.accountingMethod}",
+                visuallyHidden = OverseasPropertyCheckYourAnswers.accountingMethod
+              )
+            )
+          )
+        ))
       }
-      "the start date is incomplete" in {
-        val row = document(viewModel = propertyWithMissingStartDate)
-          .selectNth(".govuk-summary-list__row", 1)
 
-        row.selectHead(".govuk-summary-list__key").text mustBe OverseasPropertyCheckYourAnswers.startDate
-        row.selectHead(".govuk-summary-list__value").text mustBe ""
-
-        val link = row.selectHead(".govuk-summary-list__actions").selectHead("a")
-
-        link.attr("href") mustBe controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show(true).url
-        link.selectHead("span[aria-hidden=\"true\"]").text mustBe OverseasPropertyCheckYourAnswers.add
-        link.selectHead("span.govuk-visually-hidden").text mustBe OverseasPropertyCheckYourAnswers.addStartDate
+      "the start date and accruals accounting method is defined" in {
+        document(completeAccrualsProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+          SummaryListRowValues(
+            key = OverseasPropertyCheckYourAnswers.startDate,
+            value = Some("8 November 2021"),
+            actions = Seq(
+              SummaryListActionValues(
+                href = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show(editMode = true).url,
+                text = s"${OverseasPropertyCheckYourAnswers.change} ${OverseasPropertyCheckYourAnswers.startDate}",
+                visuallyHidden = OverseasPropertyCheckYourAnswers.startDate
+              )
+            )
+          ),
+          SummaryListRowValues(
+            key = OverseasPropertyCheckYourAnswers.accountingMethod,
+            value = Some("Traditional accounting"),
+            actions = Seq(
+              SummaryListActionValues(
+                href = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyAccountingMethodController.show(editMode = true).url,
+                text = s"${OverseasPropertyCheckYourAnswers.change} ${OverseasPropertyCheckYourAnswers.accountingMethod}",
+                visuallyHidden = OverseasPropertyCheckYourAnswers.accountingMethod
+              )
+            )
+          )
+        ))
       }
-    }
 
-    "display the overseas property accounting method row" when {
-      "the accounting method is complete with cash" in {
-        val row = document(viewModel = completeCashProperty)
-          .selectNth(".govuk-summary-list__row", 2)
-
-        row.selectHead(".govuk-summary-list__key").text mustBe OverseasPropertyCheckYourAnswers.accountingMethod
-        row.selectHead(".govuk-summary-list__value").text mustBe OverseasPropertyCheckYourAnswers.cash
-
-        val link = row.selectHead(".govuk-summary-list__actions").selectHead("a")
-
-        link.attr("href") mustBe controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyAccountingMethodController.show(true).url
-        link.selectHead("span[aria-hidden=\"true\"]").text mustBe OverseasPropertyCheckYourAnswers.change
-        link.selectHead("span.govuk-visually-hidden").text mustBe OverseasPropertyCheckYourAnswers.changeAccountingMethod
-      }
-      "the accounting method is complete with accruals" in {
-        val row = document(viewModel = completeAccrualsProperty)
-          .selectNth(".govuk-summary-list__row", 2)
-
-        row.selectHead(".govuk-summary-list__key").text mustBe OverseasPropertyCheckYourAnswers.accountingMethod
-        row.selectHead(".govuk-summary-list__value").text mustBe OverseasPropertyCheckYourAnswers.accruals
-
-        val link = row.selectHead(".govuk-summary-list__actions").selectHead("a")
-        link.attr("href") mustBe controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyAccountingMethodController.show(true).url
-        link.selectHead("span[aria-hidden=\"true\"]").text mustBe OverseasPropertyCheckYourAnswers.change
-        link.selectHead("span.govuk-visually-hidden").text mustBe OverseasPropertyCheckYourAnswers.changeAccountingMethod
-      }
-      "the accounting method is incomplete" in {
-        val row = document(viewModel = propertyWithMissingAccountingMethod)
-          .selectNth(".govuk-summary-list__row", 2)
-
-        row.selectHead(".govuk-summary-list__key").text mustBe OverseasPropertyCheckYourAnswers.accountingMethod
-        row.selectHead(".govuk-summary-list__value").text mustBe ""
-
-        val link = row.selectHead(".govuk-summary-list__actions").selectHead("a")
-
-        link.attr("href") mustBe controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyAccountingMethodController.show(true).url
-        link.selectHead("span[aria-hidden=\"true\"]").text mustBe OverseasPropertyCheckYourAnswers.add
-        link.selectHead("span.govuk-visually-hidden").text mustBe OverseasPropertyCheckYourAnswers.addAccountingMethod
-      }
-    }
-
-    "have a confirm and continue button" when {
-      "the foreign property business has not been confirmed" in {
-        document(viewModel = completeCashProperty)
-          .mainContent
-          .selectHead("div.govuk-button-group")
-          .selectHead("button").text mustBe OverseasPropertyCheckYourAnswers.confirmedAndContinue
-      }
-    }
-
-    "have the save and come back later button" when {
-      "the foreign property business has not been confirmed" in {
-        val buttonLink: Element = document(viewModel = completeCashProperty)
-          .mainContent
-          .selectHead(".govuk-button--secondary")
-        buttonLink.text mustBe OverseasPropertyCheckYourAnswers.saveAndComeBack
-        buttonLink.attr("href") mustBe
-          controllers.agent.tasklist.routes.ProgressSavedController.show().url + "?location=overseas-property-check-your-answers"
+      "when answers for the row are missing" in {
+        document(incompleteProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+          SummaryListRowValues(
+            key = OverseasPropertyCheckYourAnswers.startDate,
+            value = None,
+            actions = Seq(
+              SummaryListActionValues(
+                href = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show(editMode = true).url,
+                text = s"${OverseasPropertyCheckYourAnswers.add} ${OverseasPropertyCheckYourAnswers.startDate}",
+                visuallyHidden = OverseasPropertyCheckYourAnswers.startDate
+              )
+            )
+          ),
+          SummaryListRowValues(
+            key = OverseasPropertyCheckYourAnswers.accountingMethod,
+            value = None,
+            actions = Seq(
+              SummaryListActionValues(
+                href = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyAccountingMethodController.show(editMode = true).url,
+                text = s"${OverseasPropertyCheckYourAnswers.add} ${OverseasPropertyCheckYourAnswers.accountingMethod}",
+                visuallyHidden = OverseasPropertyCheckYourAnswers.accountingMethod
+              )
+            )
+          )
+        ))
       }
     }
 
-    "have a continue button" when {
-      "the foreign property business has been confirmed" in {
-        document(viewModel = completeCashProperty.copy(confirmed = true))
-          .mainContent
-          .selectHead("button")
-          .text mustBe OverseasPropertyCheckYourAnswers.continue
+    "have a form" which {
+      def form: Element = document(completeCashProperty).mainContent.getForm
+
+      "has the correct attributes" in {
+        form.attr("method") mustBe "POST"
+        form.attr("action") mustBe controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.submit().url
+      }
+
+      "has a confirm and continue button" in {
+        form.selectNth(".govuk-button", 1).text mustBe OverseasPropertyCheckYourAnswers.confirmedAndContinue
+      }
+
+      "has a save and comeback later button" in {
+        val saveAndComeBackLater = form.selectNth(".govuk-button", 2)
+        saveAndComeBackLater.text mustBe OverseasPropertyCheckYourAnswers.saveAndComeBack
+        saveAndComeBackLater.attr("href") mustBe controllers.agent.tasklist.routes.ProgressSavedController.show(location = Some("overseas-property-check-your-answers")).url
       }
     }
   }
 
   private def page(viewModel: OverseasPropertyModel) = overseasPropertyCheckYourAnswersView(
     viewModel,
-    postAction = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.submit(),
+    postAction = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.submit(),
     backUrl = "test-back-url",
     ClientDetails("FirstName LastName", "ZZ111111Z")
   )

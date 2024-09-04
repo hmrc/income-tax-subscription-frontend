@@ -17,12 +17,14 @@
 @import models.usermatching.UserDetailsModel
 @import views.agent.helpers.ConfirmClientIdConstants._
 @import views.html.templates.AgentMainTemplate
-@import views.html.helpers.{CheckYourAnswersRow, CheckYourAnswers => CYA}
+@import views.html.helpers.ContinueButton
 
 @this(
         agentMainTemplate: AgentMainTemplate,
-        checkYourAnswers: CYA,
-        checkYourAnswersRow: CheckYourAnswersRow
+        form: FormWithCSRF,
+        govukSummaryList: GovukSummaryList,
+        hmrcPageHeading: HmrcPageHeading,
+        continueButton: ContinueButton
 )
 
 @(
@@ -31,42 +33,72 @@
 )(implicit request: Request[_], messages: Messages)
 
 @agentMainTemplate(title = messages("agent.client-details.summary.title")) {
-    @checkYourAnswers(
-        heading = messages("agent.client-details.summary.heading"),
-        caption = messages("agent.client-details.summary.caption"),
-        isIndividual = false,
-        postAction = postAction
-    ) {
-        @checkYourAnswersRow(
-            field = FirstNameId,
-            question = messages("agent.client-details.summary.first-name"),
-            answer = userDetailsModel.firstName,
-            changeUrl = Some(controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url),
-            hiddenContent = messages("check-your-details.change.first-name")
-        )
 
-        @checkYourAnswersRow(
-            field = LastNameId,
-            question = messages("agent.client-details.summary.last-name"),
-            answer = userDetailsModel.lastName,
-            changeUrl = Some(controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url),
-            hiddenContent = messages("check-your-details.change.last-name")
-        )
+        @hmrcPageHeading(PageHeading(
+            text = messages("agent.client-details.summary.heading"),
+            section = Some(messages("agent.client-details.summary.caption")),
+            headingClasses = Some("govuk-heading-l"),
+            captionClasses = Some("govuk-caption-l")
+        ))
 
-        @checkYourAnswersRow(
-            field = NinoId,
-            question = messages("agent.client-details.summary.nino"),
-            answer = userDetailsModel.ninoInDisplayFormat,
-            changeUrl = Some(controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url),
-            hiddenContent = messages("check-your-details.change.national-insurance")
-        )
+        @govukSummaryList(SummaryList(
+            rows = Seq(
+                SummaryListRow(
+                    key = Key(content = Text(messages("agent.client-details.field-1"))),
+                    value = Value(content = Text(userDetailsModel.firstName)),
+                    actions = Some(Actions(
+                        items = Seq(
+                            ActionItem(
+                                href = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url,
+                                content = Text(messages("base.change")),
+                                visuallyHiddenText = Some(messages("agent.client-details.field-1"))
+                            )
+                        )
+                    ))
+                ),
+                SummaryListRow(
+                    key = Key(content = Text(messages("agent.client-details.field-2"))),
+                    value = Value(content = Text(userDetailsModel.lastName)),
+                    actions = Some(Actions(
+                        items = Seq(
+                            ActionItem(
+                                href = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url,
+                                content = Text(messages("base.change")),
+                                visuallyHiddenText = Some(messages("agent.client-details.field-2"))
+                            )
+                        )
+                    ))
+                ),
+                SummaryListRow(
+                    key = Key(content = Text(messages("agent.client-details.field-3"))),
+                    value = Value(content = Text(userDetailsModel.ninoInDisplayFormat)),
+                    actions = Some(Actions(
+                        items = Seq(
+                            ActionItem(
+                                href = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url,
+                                content = Text(messages("base.change")),
+                                visuallyHiddenText = Some(messages("agent.client-details.field-3"))
+                            )
+                        )
+                    ))
+                ),
+                SummaryListRow(
+                    key = Key(content = Text(messages("agent.client-details.field-4"))),
+                    value = Value(content = Text(userDetailsModel.dateOfBirth.toCheckYourAnswersDateFormat)),
+                    actions = Some(Actions(
+                        items = Seq(
+                            ActionItem(
+                                href = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url,
+                                content = Text(messages("base.change")),
+                                visuallyHiddenText = Some(messages("agent.client-details.field-4"))
+                            )
+                        )
+                    ))
+                )
+            )
+        ))
 
-        @checkYourAnswersRow(
-            field = DobId,
-            question = messages("agent.client-details.summary.dob"),
-            answer = userDetailsModel.dateOfBirth.toCheckYourAnswersDateFormat,
-            changeUrl = Some(controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url),
-            hiddenContent = messages("check-your-details.change.date-of-birth")
-        )
-    }
+        @form(action = postAction) {
+            @continueButton()
+        }
 }

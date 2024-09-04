@@ -18,14 +18,16 @@
 @import views.html.templates.AgentMainTemplate
 @import config.featureswitch.FeatureSwitchingImpl
 @import config.featureswitch.FeatureSwitch.AgentStreamline
-@import views.html.helpers.{CheckYourAnswers, CheckYourAnswersRow}
 @import utilities.UserMatchingSessionUtil.ClientDetails
+@import views.html.helpers.SaveAndContinueButtonHelper
 
 @this(
         mainTemplate: AgentMainTemplate,
-        checkYourAnswers: CheckYourAnswers,
         featureSwitching: FeatureSwitchingImpl,
-        checkYourAnswersRow: CheckYourAnswersRow
+        form: FormWithCSRF,
+        govukSummaryList: GovukSummaryList,
+        hmrcPageHeading: HmrcPageHeading,
+        saveAndContinueButtonHelper: SaveAndContinueButtonHelper
 )
 
 @(
@@ -52,48 +54,55 @@
 
 @mainTemplate(title = messages("agent.overseas-property.check-your-answers.title"), backLink = Some(backUrl)) {
 
-    @checkYourAnswers(
-        heading = messages("agent.overseas-property.check-your-answers.heading"),
-        caption = messages("agent.overseas-property.check-your-answers.heading.caption", clientDetails.name, clientDetails.formattedNino),
-        isIndividual = false,
-        postAction = postAction,
-        saveAndContinue = !viewModel.confirmed,
-        saveAndReturnReference = Some("overseas-property-check-your-answers"),
-        sectionCaption = false
-    ) {
-        @checkYourAnswersRow(
-            field = "start-date",
-            question = messages("agent.overseas-property.check-your-answers.start-date.question"),
-            answer = startDate(viewModel.startDate),
-            changeText = if(viewModel.startDate.isDefined) None else Some(messages("base.add")),
-            changeUrl =
-              if(featureSwitching.isEnabled(AgentStreamline)) {
-                Some(controllers.agent.tasklist.overseasproperty.routes.IncomeSourcesOverseasPropertyController.show(editMode = true).url)
-              } else {
-                Some(controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show(editMode = true).url)
-              },
-            hiddenContent =
-                    if(viewModel.startDate.isDefined)
-                        messages("agent.overseas-property.check-your-answers.start-date.change")
-                    else
-                        messages("agent.overseas-property.check-your-answers.start-date.add")
+    <span class="govuk-caption-l">@messages("agent.overseas-property.check-your-answers.heading.caption", clientDetails.name, clientDetails.formattedNino)</span>
+    <h1 class="govuk-heading-l">@messages("agent.overseas-property.check-your-answers.heading")</h1>
+
+    @govukSummaryList(SummaryList(
+        rows = Seq(
+            SummaryListRow(
+                key = Key(content = Text(messages("agent.overseas-property.check-your-answers.start-date.question"))),
+                value = Value(content = Text(startDate(viewModel.startDate))),
+                actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
+                            href =
+                                if(featureSwitching.isEnabled(AgentStreamline)) {
+                                    controllers.agent.tasklist.overseasproperty.routes.IncomeSourcesOverseasPropertyController.show(editMode = true).url
+                                } else {
+                                    controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show(editMode = true).url
+                                },
+                            content = Text(messages(if(viewModel.startDate.isDefined) "base.change" else "base.add")),
+                            visuallyHiddenText = Some(messages("agent.overseas-property.check-your-answers.start-date.question"))
+                        )
+                    )
+            ))
+        ),
+            SummaryListRow(
+                key = Key(content = Text(messages("agent.overseas-property.check-your-answers.accounting-method.question"))),
+                value = Value(content = Text(accountingMethod(viewModel.accountingMethod))),
+                actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
+                            href =
+                                if(featureSwitching.isEnabled(AgentStreamline)) {
+                                    controllers.agent.tasklist.overseasproperty.routes.IncomeSourcesOverseasPropertyController.show(editMode = true).url
+                                } else {
+                                    controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyAccountingMethodController.show(editMode = true).url
+                                },
+                        content = Text(messages(if(viewModel.accountingMethod.isDefined) "base.change" else "base.add")),
+                        visuallyHiddenText = Some(messages("agent.overseas-property.check-your-answers.accounting-method.question"))
+                    )
+                )
+            ))
         )
-        @checkYourAnswersRow(
-            field = "accounting-method",
-            question = messages("agent.overseas-property.check-your-answers.accounting-method.question"),
-            answer = accountingMethod(viewModel.accountingMethod),
-            changeText = if(viewModel.accountingMethod.isDefined) None else Some(messages("base.add")),
-            changeUrl =
-              if(featureSwitching.isEnabled(AgentStreamline)) {
-                Some(controllers.agent.tasklist.overseasproperty.routes.IncomeSourcesOverseasPropertyController.show(editMode = true).url)
-              } else {
-                Some(controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyAccountingMethodController.show(editMode = true).url)
-              },
-            hiddenContent =
-                    if(viewModel.accountingMethod.isDefined)
-                        messages("agent.overseas-property.check-your-answers.accounting-method.change")
-                    else
-                        messages("agent.overseas-property.check-your-answers.accounting-method.add")
+    )
+))
+
+    @form(action = postAction) {
+        @saveAndContinueButtonHelper(
+            isIndividual = false,
+            saveAndContinueText = Some(messages("base.confirm-and-continue")),
+            saveAndReturnReference = Some("overseas-property-check-your-answers")
         )
     }
 }

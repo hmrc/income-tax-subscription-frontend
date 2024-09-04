@@ -341,7 +341,7 @@ object MessageLookup {
 
   object TaxYearCheckYourAnswers {
     val title = "Check your answers - tax year"
-    val agentTitle = "Check your answers - tax year - Use software to report your client’s Income Tax - GOV.UK"
+    val agentTitle = "Check your answers - tax year"
     val heading = "Check your answers"
     val caption = "This section is Tax year"
     val agentCaption = "FirstName LastName | ZZ 11 11 11 Z"

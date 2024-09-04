@@ -44,12 +44,6 @@ base.accept-and-continue                                        = Derbyn ac yn e
 base.tax-year.current                                           = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
 base.tax-year.next                                              = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
 
-## Client details CYA
-check-your-details.change.first-name                            = Newid enw cyntaf
-check-your-details.change.last-name                             = Newid enw olaf
-check-your-details.change.national-insurance                    = Newid rhif Yswiriant Gwladol
-check-your-details.change.date-of-birth                         = Newid Dyddiad Geni
-
 ## Preferences call back page
 preferences-callback.title                                      = Ydych chi am fynd yn eich blaen?
 preferences-callback.heading                                    = Rhaid i chi gytuno i fynd yn ‘ddi-bapur’
@@ -940,39 +934,25 @@ agent.error.overseas.property.year.length                       = Mae’n rhaid 
 ## agent Tax Year Check Your Answers
 agent.business.check-your-answers.heading                             = Gwiriwch eich atebion
 agent.business.check-your-answers.content.tax-year.title              = Gwirio’ch atebion – blwyddyn dreth
-agent.business.check-your-answers.content.tax-year.question           = Y flwyddyn dreth rydych yn cofrestru ar ei chyfer
+agent.business.check-your-answers.content.tax-year.question           = Blwyddyn dreth
 agent.business.check-your-answers.content.tax-year.question.hidden    = Newid y flwyddyn dreth rydych yn cofrestru ar ei chyfer
 agent.business.check-your-answers.content.tax-year.current-tax-year   = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
 agent.business.check-your-answers.content.tax-year.next-tax-year      = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
 agent.business.check-your-answers.content.tax-year.caption            = Y flwyddyn dreth rydych yn cofrestru’ch cleient ar ei chyfer
 
 ## Agent UK property check your answers
-agent.property.check-your-answers.title                               = Gwirio’ch atebion – busnes eiddo yn y DU
+agent.property.check-your-answers.title                               = Gwirio’ch atebion – Eiddo yn y DU
 agent.property.check-your-answers.heading                             = Gwirio’ch atebion
 agent.property.check-your-answers.heading.caption                     = {0} | {1}
 agent.property.check-your-answers.start-date.question                 = Dyddiad dechrau
-agent.property.check-your-answers.start-date.add                      = Ychwanegu dyddiad dechrau masnachu’r busnes eiddo yn y DU
-agent.property.check-your-answers.start-date.change                   = Newid dyddiad dechrau
 agent.property.check-your-answers.accounting-method.question          = Dull cyfrifyddu
-agent.property.check-your-answers.accounting-method.add               = Ychwanegu dull cyfrifyddu’r busnes eiddo yn y DU
-agent.property.check-your-answers.accounting-method.change            = Newid y dull cyfrifyddu
-agent.property.check-your-answers.uk-property-number.question         = Y nifer o eiddo
-agent.property.check-your-answers.uk-property-number.add              = Ychwanegu’r nifer o eiddo
-agent.property.check-your-answers.uk-property-number.change           = Newid y nifer o eiddo
 
 ## Agent Overseas property check your answers
 agent.overseas-property.check-your-answers.title                      = Gwirio’ch atebion – Eiddo tramor
 agent.overseas-property.check-your-answers.heading                    = Gwirio’ch atebion
 agent.overseas-property.check-your-answers.heading.caption            = {0} | {1}
 agent.overseas-property.check-your-answers.start-date.question        = Dyddiad dechrau
-agent.overseas-property.check-your-answers.start-date.add             = Ychwanegu dyddiad dechrau
-agent.overseas-property.check-your-answers.start-date.change          = Newid dyddiad dechrau
-agent.overseas-property.check-your-answers.count.question             = Y nifer o eiddo
-agent.overseas-property.check-your-answers.count.add                  = Ychwanegu’r nifer o eiddo
-agent.overseas-property.check-your-answers.count.change               = Newid y nifer o eiddo
 agent.overseas-property.check-your-answers.accounting-method.question = Dull cyfrifyddu
-agent.overseas-property.check-your-answers.accounting-method.add      = Ychwanegu dull cyfrifyddu
-agent.overseas-property.check-your-answers.accounting-method.change   = Newid y dull cyfrifyddu
 
 ## Agent remove business
 agent.business.remove-sole-trader-business.title                    = A ydych yn siŵr eich bod am ddileu’r busnes hwn?
