@@ -331,6 +331,7 @@ object MessageLookup {
     val addYourClientsIncomeSource = "Your client’s income sources"
     val addYourClientsIncomeSourceHint = "Include any of your client’s sole trade or property income sources"
     val signUpClientLinkText = "Sign up your client"
+    val signUpHint = "Complete your client’s income details and starting tax year before you sign up your client"
     val viewYourIncomeSources = "View and manage your income sources"
     val agentAddBusiness = "Add a business"
     val selfEmploymentsBusinessLink = "selfEmploymentsBusinessLink"

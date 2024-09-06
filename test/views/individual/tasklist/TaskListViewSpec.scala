@@ -38,14 +38,9 @@ class TaskListViewSpec extends ViewSpec {
   val accountingPeriodService: AccountingPeriodService = app.injector.instanceOf[AccountingPeriodService]
 
   def customTaskListModel(taxYearSelection: Option[AccountingYearModel] = None,
-                          selfEmployments: Seq[SelfEmploymentData] = Nil,
-                          ukProperty: Option[PropertyModel] = None,
-                          overseasProperty: Option[OverseasPropertyModel] = None,
                           incomeSourcesConfirmed: Option[Boolean] = None): TaskListModel = {
-    TaskListModel(taxYearSelection,
-      selfEmployments,
-      ukProperty,
-      overseasProperty,
+    TaskListModel(
+      taxYearSelection,
       incomeSourcesConfirmed
     )
   }
@@ -56,39 +51,16 @@ class TaskListViewSpec extends ViewSpec {
 
   private val partialTaskListWithoutIncome = customTaskListModel(
     taxYearSelection = Some(AccountingYearModel(Current, confirmed = true)),
-    selfEmployments = Nil,
-    ukProperty = None,
-    overseasProperty = None,
     incomeSourcesConfirmed = None
   )
 
   private val partialTaskListWithoutYear = customTaskListModel(
     taxYearSelection = None,
-    selfEmployments = Seq(SelfEmploymentData(
-      id = "id1",
-      businessStartDate = Some(BusinessStartDate(DateModel("1", "2", "1980"))),
-      businessName = Some(BusinessNameModel("Name1")),
-      businessTradeName = Some(BusinessTradeNameModel("TradeName")),
-      businessAddress = Some(BusinessAddressModel(Address(Seq("line1"), Some("Postcode")))),
-      confirmed = true
-    )),
-    ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
-    overseasProperty = Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("1", "2", "3")), confirmed = true)),
     incomeSourcesConfirmed = Some(true)
   )
 
   private val completedTaskListComplete = TaskListModel(
     taxYearSelection = Some(AccountingYearModel(Next, confirmed = true)),
-    selfEmployments = Seq(SelfEmploymentData(
-      id = "id1",
-      businessStartDate = Some(BusinessStartDate(DateModel("1", "2", "1980"))),
-      businessName = Some(BusinessNameModel("Name1")),
-      businessTradeName = Some(BusinessTradeNameModel("TradeName")),
-      businessAddress = Some(BusinessAddressModel(Address(Seq("line1"), Some("Postcode")))),
-      confirmed = true
-    )),
-    ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
-    overseasProperty = Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("1", "2", "3")), confirmed = true)),
     incomeSourcesConfirmed = Some(true)
   )
 

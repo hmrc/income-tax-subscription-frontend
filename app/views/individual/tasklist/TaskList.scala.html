@@ -155,13 +155,13 @@
                     } else {
                         controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
                     })} else None,
-                hint = Some(Hint(
-                    content = if(viewModel.permitTaxYearChange) {
-                        Text(messages("business.task-list.content.tax-year.hint"))
-                    } else {
-                        Text(messages("business.task-list.content.next-tax-year.hint"))
-                    }
-                ))
+                hint = if(viewModel.permitTaxYearChange) {
+                    Some(Hint(content = Text(messages("business.task-list.content.tax-year.hint"))))
+                } else if (viewModel.taxYearSelection.exists(_.accountingYear == Next)) {
+                    Some(Hint(content = Text(messages("business.task-list.content.next-tax-year.hint"))))
+                } else {
+                    None
+                }
             )
         ),
         idPrefix = "client-details"

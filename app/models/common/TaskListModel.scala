@@ -16,22 +16,11 @@
 
 package models.common
 
-import models.common.business.SelfEmploymentData
-
 case class TaskListModel(taxYearSelection: Option[AccountingYearModel],
-                         selfEmployments: Seq[SelfEmploymentData],
-                         ukProperty: Option[PropertyModel],
-                         overseasProperty: Option[OverseasPropertyModel],
                          incomeSourcesConfirmed: Option[Boolean]) {
 
-  val hasAnyBusiness: Boolean = selfEmployments.nonEmpty || ukProperty.nonEmpty || overseasProperty.nonEmpty
-
   val taxYearSelectedAndConfirmed: Boolean = taxYearSelection.exists(taxYear => !taxYear.editable || taxYear.confirmed)
-
-  val taxYearSelectedNotConfirmed: Boolean = taxYearSelection.exists(taxYear => taxYear.editable && !taxYear.confirmed)
-
   val permitTaxYearChange: Boolean = taxYearSelection.forall(taxYear => taxYear.editable)
-
   val incomeSourcesComplete: Boolean = incomeSourcesConfirmed.contains(true)
 
   def sectionsTotal: Int = {

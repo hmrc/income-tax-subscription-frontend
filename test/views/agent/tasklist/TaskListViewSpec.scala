@@ -16,350 +16,304 @@
 
 package views.agent.tasklist
 
-import controllers.agent.tasklist.taxyear.routes
-import messagelookup.individual.MessageLookup.Summary.SelectedTaxYear.next
-import messagelookup.individual.MessageLookup.TaskList._
-import models._
-import models.common.business._
-import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel, TaskListModel}
+import models.common.{AccountingYearModel, TaskListModel}
+import models.{Current, Next}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.mvc.Call
-import play.twirl.api.Html
+import play.twirl.api.HtmlFormat
 import services.AccountingPeriodService
-import utilities.AccountingPeriodUtil.getCurrentTaxEndYear
-import utilities.ViewSpec
+import utilities.{AccountingPeriodUtil, ViewSpec}
 import views.html.agent.tasklist.TaskList
-
-import scala.util.Random
 
 class TaskListViewSpec extends ViewSpec {
 
   val taskListView: TaskList = app.injector.instanceOf[TaskList]
-
   val accountingPeriodService: AccountingPeriodService = app.injector.instanceOf[AccountingPeriodService]
 
-  lazy val postAction: Call = controllers.agent.tasklist.routes.TaskListController.submit()
+  val clientName: String = "FirstName LastName"
+  val clientNino: String = "ZZ111111Z"
+  val clientUtr: String = "1234567890"
 
-  private def customTaskListModel(taxYearSelection: Option[AccountingYearModel] = None,
-                                  selfEmployments: Seq[SelfEmploymentData] = Nil,
-                                  ukProperty: Option[PropertyModel] = None,
-                                  overseasProperty: Option[OverseasPropertyModel] = None,
-                                  incomeSourcesConfirmed: Option[Boolean] = None): TaskListModel =
-    TaskListModel(taxYearSelection,
-      selfEmployments,
-      ukProperty,
-      overseasProperty,
-      incomeSourcesConfirmed
+  val accountingYearModel: AccountingYearModel = AccountingYearModel(Current, confirmed = true)
+
+  val completeTaskListModel: TaskListModel = TaskListModel(
+    taxYearSelection = Some(accountingYearModel),
+    incomeSourcesConfirmed = Some(true)
+  )
+
+  val emptyTaskListModel: TaskListModel = TaskListModel(
+    taxYearSelection = None,
+    incomeSourcesConfirmed = None
+  )
+
+  def page(taskListModel: TaskListModel): HtmlFormat.Appendable = taskListView(
+    postAction = testCall,
+    viewModel = taskListModel,
+    clientName = clientName,
+    clientNino = clientNino,
+    clientUtr = clientUtr
+  )
+
+  def document(taskListModel: TaskListModel = completeTaskListModel): Document = Jsoup.parse(page(taskListModel).body)
+
+  "TaskList" must {
+    "use the correct template" in new TemplateViewTest(
+      view = page(completeTaskListModel),
+      title = Messages.heading,
+      isAgent = true,
+      backLink = None,
+      hasSignOutLink = true
     )
 
-  private val emptyTaskList = customTaskListModel()
+    "have a page heading" in {
+      document().mainContent.getH1Element.text mustBe Messages.heading
+    }
 
-  private val partialTaskListIncomeOnly = customTaskListModel(
-    taxYearSelection = None,
-    selfEmployments = Seq(SelfEmploymentData(
-      id = "id1",
-      businessStartDate = Some(BusinessStartDate(DateModel("1", "2", "1980"))),
-      businessName = Some(BusinessNameModel("Name1")),
-      businessTradeName = Some(BusinessTradeNameModel("TradeName")),
-      businessAddress = Some(BusinessAddressModel(Address(Seq("line1"), Some("Postcode")))),
-      confirmed = true
-    )),
-    ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
-    overseasProperty = Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("1", "2", "3")), confirmed = true)),
-    incomeSourcesConfirmed = Some(true)
-  )
+    "have a subheading for the client's information" in {
+      document().mainContent.selectNth("h2", 1).text mustBe Messages.ClientDetails.heading
+    }
 
-  private val partialTaskListTaxYearOnly = customTaskListModel(
-    taxYearSelection = Some(AccountingYearModel(Current, confirmed = true)),
-    selfEmployments = Nil,
-    ukProperty = None,
-    overseasProperty = None
-  )
+    "have a summary list of the client's details" in {
+      document().mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+        SummaryListRowValues(
+          key = Messages.ClientDetails.name,
+          value = Some(clientName),
+          actions = Seq.empty
+        ),
+        SummaryListRowValues(
+          key = Messages.ClientDetails.nino,
+          value = Some(clientNino),
+          actions = Seq.empty
+        ),
+        SummaryListRowValues(
+          key = Messages.ClientDetails.utr,
+          value = Some(clientUtr),
+          actions = Seq.empty
+        )
+      ))
+    }
 
-  private val completeTaskList = TaskListModel(
-    taxYearSelection = Some(AccountingYearModel(Next, confirmed = true)),
-    selfEmployments = Seq(SelfEmploymentData(
-      id = "id1",
-      businessStartDate = Some(BusinessStartDate(DateModel("1", "2", "1980"))),
-      businessName = Some(BusinessNameModel("Name1")),
-      businessTradeName = Some(BusinessTradeNameModel("TradeName")),
-      businessAddress = Some(BusinessAddressModel(Address(Seq("line1"), Some("Postcode")))),
-      confirmed = true
-    )),
-    ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
-    overseasProperty = Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("1", "2", "3")), confirmed = true)),
-    incomeSourcesConfirmed = Some(true)
-  )
+    "have a subheading for what we need to sign up your client" in {
+      document().mainContent.selectNth("h2", 2).text mustBe Messages.WhatWeNeed.heading
+    }
 
-  private val forcedYearTaskList = customTaskListModel(
-    taxYearSelection = Some(AccountingYearModel(Next, editable = false))
-  )
-
-  private val nameLengthCharacters = 10
-  private val clientName = Random.alphanumeric.take(nameLengthCharacters).mkString
-  private val clientNino = Random.alphanumeric.take(nameLengthCharacters).mkString
-  private val clientUtr = Random.alphanumeric.take(nameLengthCharacters).mkString
-
-  def page(taskList: TaskListModel = customTaskListModel()): Html = {
-    taskListView(
-      postAction = postAction,
-      viewModel = taskList,
-      clientName = clientName,
-      clientNino = clientNino,
-      clientUtr = clientUtr
-    )(request, implicitly)
-  }
-
-
-  def document(taskList: TaskListModel): Document = Jsoup.parse(page(taskList).body)
-
-  "Task List view" when {
-
-    "given empty task list model" must {
-      def doc = document(emptyTaskList)
-
-      "have a title" in {
-        doc.title mustBe agentTitle
-      }
-
-      "have a contents list" in {
-        val contentList = doc.select("h2")
-        contentList.text() must include(agentItem1)
-        contentList.text() must include(agentItem2)
-        contentList.text() must include(agentItem3)
-      }
-
-      "display the clients information" in {
-        document(emptyTaskList).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-          SummaryListRowValues(
-            key = UserInformation.name,
-            value = Some(clientName),
-            actions = Seq.empty
-          ),
-          SummaryListRowValues(
-            key = UserInformation.nino,
-            value = Some(clientNino),
-            actions = Seq.empty
-          ),
-          SummaryListRowValues(
-            key = UserInformation.utr,
-            value = Some(clientUtr),
-            actions = Seq.empty
+    "have a task list of the income source and tax year sections" when {
+      "tax year and income sources are complete" in {
+        document().mainContent.mustHaveTaskList(".govuk-task-list")(
+          idPrefix = "client-details",
+          items = Seq(
+            TaskListItemValues(
+              text = Messages.ClientDetails.IncomeSources.link,
+              link = Some(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url),
+              hint = Some(Messages.ClientDetails.IncomeSources.hint),
+              tagText = Messages.Tags.completed,
+              tagColor = None
+            ),
+            TaskListItemValues(
+              text = Messages.ClientDetails.TaxYear.link,
+              link = Some(controllers.agent.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.show(editMode = true).url),
+              hint = Some(Messages.ClientDetails.TaxYear.hint),
+              tagText = Messages.Tags.completed,
+              tagColor = None
+            )
           )
-        ))
+        )
       }
+      "tax year is locked to current year and income sources are complete" in {
+        document(
+          completeTaskListModel.copy(taxYearSelection = Some(accountingYearModel.copy(editable = false)))
+        ).mainContent.mustHaveTaskList(".govuk-task-list")(
+          idPrefix = "client-details",
+          items = Seq(
+            TaskListItemValues(
+              text = Messages.ClientDetails.IncomeSources.link,
+              link = Some(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url),
+              hint = Some(Messages.ClientDetails.IncomeSources.hint),
+              tagText = Messages.Tags.completed,
+              tagColor = None
+            ),
+            TaskListItemValues(
+              text = Messages.ClientDetails.TaxYear.currentTaxYear,
+              link = None,
+              hint = None,
+              tagText = Messages.Tags.completed,
+              tagColor = None
+            )
+          )
+        )
+      }
+      "tax year is locked to next year and income sources are complete" in {
+        document(
+          completeTaskListModel.copy(taxYearSelection = Some(accountingYearModel.copy(accountingYear = Next, editable = false)))
+        ).mainContent.mustHaveTaskList(".govuk-task-list")(
+          idPrefix = "client-details",
+          items = Seq(
+            TaskListItemValues(
+              text = Messages.ClientDetails.IncomeSources.link,
+              link = Some(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url),
+              hint = Some(Messages.ClientDetails.IncomeSources.hint),
+              tagText = Messages.Tags.completed,
+              tagColor = None
+            ),
+            TaskListItemValues(
+              text = Messages.ClientDetails.TaxYear.nextTaxYear,
+              link = None,
+              hint = Some(Messages.ClientDetails.TaxYear.hintNextYearOnly),
+              tagText = Messages.Tags.completed,
+              tagColor = None
+            )
+          )
+        )
+      }
+      "tax year is not confirmed and income sources are not confirmed" in {
+        document(
+          completeTaskListModel.copy(taxYearSelection = Some(accountingYearModel.copy(confirmed = false)), incomeSourcesConfirmed = Some(false))
+        ).mainContent.mustHaveTaskList(".govuk-task-list")(
+          idPrefix = "client-details",
+          items = Seq(
+            TaskListItemValues(
+              text = Messages.ClientDetails.IncomeSources.link,
+              link = Some(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url),
+              hint = Some(Messages.ClientDetails.IncomeSources.hint),
+              tagText = Messages.Tags.incomplete,
+              tagColor = Some("blue")
+            ),
+            TaskListItemValues(
+              text = Messages.ClientDetails.TaxYear.link,
+              link = Some(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url),
+              hint = Some(Messages.ClientDetails.TaxYear.hint),
+              tagText = Messages.Tags.incomplete,
+              tagColor = Some("blue")
+            )
+          )
+        )
+      }
+      "tax year is empty and income sources are empty" in {
+        document(emptyTaskListModel).mainContent.mustHaveTaskList(".govuk-task-list")(
+          idPrefix = "client-details",
+          items = Seq(
+            TaskListItemValues(
+              text = Messages.ClientDetails.IncomeSources.link,
+              link = Some(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url),
+              hint = Some(Messages.ClientDetails.IncomeSources.hint),
+              tagText = Messages.Tags.incomplete,
+              tagColor = Some("blue")
+            ),
+            TaskListItemValues(
+              text = Messages.ClientDetails.TaxYear.link,
+              link = Some(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url),
+              hint = Some(Messages.ClientDetails.TaxYear.hint),
+              tagText = Messages.Tags.incomplete,
+              tagColor = Some("blue")
+            )
+          )
+        )
+      }
+    }
 
-      "display the dynamic content correctly" when {
-        "there is no user data" must {
-          "display income sources and select tax year items with links, hints and incomplete status" in {
-            val clientIncomeSources = doc.mainContent.selectHead("ul").selectHead("li")
-            val clientIncomeSourcesTag = doc.mainContent.selectHead("ul").selectHead("li").selectHead("#client-details-1-status")
+    "have a subheading for review and sign up" in {
+      document().mainContent.selectNth("h2", 3).text mustBe Messages.ReviewAndSignUp.heading
+    }
 
-            clientIncomeSources.selectHead("a").text mustBe addYourClientsIncomeSource
-            clientIncomeSources.selectHead("a").attr("href") mustBe controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
-            clientIncomeSourcesTag.text mustBe incomplete
-            clientIncomeSources.select("#client-details-1-hint").text mustBe addYourClientsIncomeSourceHint
-
-            val clientSelectTaxYear = doc.mainContent.selectHead("ul").selectNth("li", 2)
-            val clientSelectTaxYearTag = doc.mainContent.selectHead("ul").selectNth("li", 2).selectHead("#client-details-2-status")
-
-            clientSelectTaxYear.selectHead("a").text mustBe selectTaxYear
-            clientSelectTaxYear.selectHead("a").attr("href") mustBe controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
-            clientSelectTaxYearTag.text mustBe incomplete
-            clientSelectTaxYear.select("#client-details-2-hint").text mustBe selectTaxYearHintBoth
-
-          }
-
-          "display Review and sign up with disabled link and status" in {
-
-            val signUpYourClient = doc.mainContent.selectNth("ul", 2).selectHead("li").selectHead("div")
-            val signUpYourClientTag = doc.mainContent.selectNth("ul", 2).selectHead("li").select("#sign-up-section-1-status")
-
-            signUpYourClient.text mustBe signUpClientLinkText
-            signUpYourClientTag.text mustBe cannotStart
-
-          }
-
-          "display the save and come back later button" in {
-            doc.mainContent.getElementsByClass("govuk-button--secondary").text mustBe saveAndComeBackLater
-          }
-
-        }
-
+    "have a task list of the sign up task" when {
+      "sign up is not available as income sources is not complete" in {
+        document(
+          completeTaskListModel.copy(incomeSourcesConfirmed = None)
+        ).mainContent.mustHaveTaskList(".govuk-task-list:nth-of-type(2)")(
+          idPrefix = "sign-up-section",
+          items = Seq(
+            TaskListItemValues(
+              text = Messages.ReviewAndSignUp.link,
+              link = None,
+              hint = Some(Messages.ReviewAndSignUp.hint),
+              tagText = Messages.Tags.cannotStartYet,
+              tagColor = None
+            )
+          )
+        )
+      }
+      "sign up is not available as tax year is not complete" in {
+        document(
+          completeTaskListModel.copy(taxYearSelection = None)
+        ).mainContent.mustHaveTaskList(".govuk-task-list:nth-of-type(2)")(
+          idPrefix = "sign-up-section",
+          items = Seq(
+            TaskListItemValues(
+              text = Messages.ReviewAndSignUp.link,
+              link = None,
+              hint = Some(Messages.ReviewAndSignUp.hint),
+              tagText = Messages.Tags.cannotStartYet,
+              tagColor = None
+            )
+          )
+        )
+      }
+      "sign up is available" in {
+        document(completeTaskListModel).mainContent.mustHaveTaskList(".govuk-task-list:nth-of-type(2)")(
+          idPrefix = "sign-up-section",
+          items = Seq(
+            TaskListItemValues(
+              text = Messages.ReviewAndSignUp.link,
+              link = Some(controllers.agent.routes.GlobalCheckYourAnswersController.show.url),
+              hint = None,
+              tagText = Messages.Tags.incomplete,
+              tagColor = Some("blue")
+            )
+          )
+        )
       }
     }
 
+    "have a save and come back later button" in {
+      val saveAndComeBackLater = document().mainContent.selectHead(".govuk-button")
 
-    "given partial Task List model with only income sources completed" must {
-      def doc = document(partialTaskListIncomeOnly)
-
-      "have a title" in {
-        doc.title mustBe agentTitle
-      }
-
-      "have a contents list" in {
-        val contentList = doc.select("h2")
-        contentList.text() must include(agentItem1)
-        contentList.text() must include(agentItem2)
-        contentList.text() must include(agentItem3)
-      }
-
-      "display income sources item with complete status and select tax year item with incomplete status both with links and hints" in {
-
-        val clientIncomeSources = doc.mainContent.selectHead("ul").selectHead("li")
-        val clientIncomeSourcesTag = doc.mainContent.selectHead("ul").selectHead("li").selectHead("#client-details-1-status")
-
-        clientIncomeSources.selectHead("a").text mustBe addYourClientsIncomeSource
-        clientIncomeSources.selectHead("a").attr("href") mustBe controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
-        clientIncomeSourcesTag.text mustBe complete
-        clientIncomeSources.select("#client-details-1-hint").text mustBe addYourClientsIncomeSourceHint
-
-        val clientSelectTaxYear = doc.mainContent.selectHead("ul").selectNth("li", 2)
-        val clientSelectTaxYearTag = doc.mainContent.selectHead("ul").selectNth("li", 2).selectHead("#client-details-2-status")
-
-        clientSelectTaxYear.selectHead("a").text mustBe selectTaxYear
-        clientSelectTaxYear.selectHead("a").attr("href") mustBe controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
-        clientSelectTaxYearTag.text mustBe incomplete
-        clientSelectTaxYear.select("#client-details-2-hint").text mustBe selectTaxYearHintBoth
-
-      }
-
-      "display Review and sign up with disabled link and status" in {
-
-        val signUpYourClient = doc.mainContent.selectNth("ul", 2).selectHead("li").selectHead("div")
-        val signUpYourClientTag = doc.mainContent.selectNth("ul", 2).selectHead("li").select("#sign-up-section-1-status")
-
-        signUpYourClient.text mustBe signUpClientLinkText
-        signUpYourClientTag.text mustBe cannotStart
-
-      }
-
-      "display the save and come back later button" in {
-        doc.mainContent.getElementsByClass("govuk-button--secondary").text mustBe saveAndComeBackLater
-      }
-
+      saveAndComeBackLater.text mustBe Messages.saveAndComeBackLater
+      saveAndComeBackLater.attr("href") mustBe controllers.agent.tasklist.routes.ProgressSavedController.show(location = Some("task-list")).url
     }
 
-    "given partial Task List model with only tax year completed" must {
-      def doc = document(partialTaskListTaxYearOnly)
-
-      "have a title" in {
-        doc.title mustBe agentTitle
-      }
-
-      "have a contents list" in {
-        val contentList = doc.select("h2")
-        contentList.text() must include(agentItem1)
-        contentList.text() must include(agentItem2)
-        contentList.text() must include(agentItem3)
-      }
-
-      "display income sources item with incomplete status and select tax year item with complete status both with links and hints" in {
-
-        val clientIncomeSources = doc.mainContent.selectHead("ul").selectHead("li")
-        val clientIncomeSourcesTag = doc.mainContent.selectHead("ul").selectHead("li").selectHead("#client-details-1-status")
-
-        clientIncomeSources.selectHead("a").text mustBe addYourClientsIncomeSource
-        clientIncomeSources.selectHead("a").attr("href") mustBe controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
-        clientIncomeSourcesTag.text mustBe incomplete
-        clientIncomeSources.select("#client-details-1-hint").text mustBe addYourClientsIncomeSourceHint
-
-        val clientSelectTaxYear = doc.mainContent.selectHead("ul").selectNth("li", 2)
-        val clientSelectTaxYearTag = doc.mainContent.selectHead("ul").selectNth("li", 2).selectHead("#client-details-2-status")
-
-        clientSelectTaxYear.selectHead("a").text mustBe selectTaxYear
-        clientSelectTaxYear.selectHead("a").attr("href") mustBe routes.TaxYearCheckYourAnswersController.show(editMode = true).url
-        clientSelectTaxYearTag.text mustBe complete
-        clientSelectTaxYear.select("#client-details-2-hint").text mustBe selectTaxYearHintBoth
-
-      }
-
-      "display Review and sign up with disabled link and status" in {
-
-        val signUpYourClient = doc.mainContent.selectNth("ul", 2).selectHead("li").selectHead("div")
-        val signUpYourClientTag = doc.mainContent.selectNth("ul", 2).selectHead("li").select("#sign-up-section-1-status")
-
-        signUpYourClient.text mustBe signUpClientLinkText
-        signUpYourClientTag.text mustBe cannotStart
-
-      }
-
-      "display the save and come back later button" in {
-        doc.mainContent.getElementsByClass("govuk-button--secondary").text mustBe saveAndComeBackLater
-      }
-
-    }
-
-
-    "given complete task list model" must {
-      def doc = document(completeTaskList)
-
-      "have a title" in {
-        doc.title mustBe agentTitle
-      }
-
-      "have a contents list" in {
-        val contentList = doc.select("h2")
-        contentList.text() must include(agentItem1)
-        contentList.text() must include(agentItem2)
-        contentList.text() must include(agentItem3)
-      }
-
-      "in the client information section: have a client name, nino and utr" in {
-        doc.mainContent.getElementsByClass("govuk-summary-list__key").text contains s"Client: $clientName | $clientNino |$clientUtr"
-      }
-
-      "display income sources and select tax year as complete status with links, hint" in {
-
-        val clientIncomeSources = doc.mainContent.selectHead("ul").selectHead("li")
-        val clientIncomeSourcesTag = doc.mainContent.selectHead("ul").selectHead("li").selectHead("#client-details-1-status")
-
-        clientIncomeSources.selectHead("a").text mustBe addYourClientsIncomeSource
-        clientIncomeSources.selectHead("a").attr("href") mustBe controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
-        clientIncomeSourcesTag.text mustBe complete
-        clientIncomeSources.select("#client-details-1-hint").text mustBe addYourClientsIncomeSourceHint
-
-        val clientSelectTaxYear = doc.mainContent.selectHead("ul").selectNth("li", 2)
-        val clientSelectTaxYearTag = doc.mainContent.selectHead("ul").selectNth("li", 2).selectHead("#client-details-2-status")
-
-        clientSelectTaxYear.selectHead("a").text mustBe selectTaxYear
-        clientSelectTaxYear.selectHead("a").attr("href") mustBe routes.TaxYearCheckYourAnswersController.show(editMode = true).url
-        clientSelectTaxYearTag.text mustBe complete
-        clientSelectTaxYear.select("#client-details-2-hint").text mustBe selectTaxYearHintBoth
-
-      }
-
-      "display Review and sign up with active link and status" in {
-
-        val signUpYourClient = doc.mainContent.selectNth("ul", 2).selectHead("li").selectHead("div")
-        val signUpYourClientTag = doc.mainContent.selectNth("ul", 2).selectHead("li").select("#sign-up-section-1-status")
-
-        signUpYourClient.selectHead("a").text mustBe signUpClientLinkText
-        signUpYourClient.selectHead("a").attr("href") mustBe controllers.agent.routes.GlobalCheckYourAnswersController.show.url
-        signUpYourClientTag.text mustBe incomplete
-
-      }
-
-      "display the save and come back later button" in {
-        doc.mainContent.getElementsByClass("govuk-button--secondary").text mustBe saveAndComeBackLater
-      }
-
-    }
-
-    "given a forced year in the task list model" must {
-      val doc = document(forcedYearTaskList)
-
-      "display select tax year as complete status with links, hint" in {
-
-        val clientSelectTaxYear = doc.mainContent.selectHead("ul").selectNth("li", 2)
-        val clientSelectTaxYearTag = doc.mainContent.selectHead("ul").selectNth("li", 2).selectHead("#client-details-2-status")
-
-        clientSelectTaxYear.select("a").size() mustBe 0
-        clientSelectTaxYear.selectHead("div").text mustBe next(getCurrentTaxEndYear, getCurrentTaxEndYear + 1) + " " + selectNextTaxYearHint
-        clientSelectTaxYearTag.text mustBe complete
-
-      }
-    }
   }
+
+  object Messages {
+    val heading: String = "Sign up your client for Making Tax Digital for Income Tax"
+
+    object Tags {
+      val incomplete: String = "Incomplete"
+      val completed: String = "Completed"
+      val cannotStartYet: String = "Cannot start yet"
+    }
+
+    object ClientDetails {
+      val heading: String = "Your client"
+      val name: String = "Name"
+      val nino: String = "National Insurance number"
+      val utr: String = "Unique Taxpayer Reference (UTR)"
+
+      object IncomeSources {
+        val link: String = "Your client’s income sources"
+        val hint: String = "Include all of your client’s sole trader or property income sources"
+      }
+
+      object TaxYear {
+        val link: String = "Select tax year"
+        private val currentTaxYearEndYear: Int = AccountingPeriodUtil.getCurrentTaxEndYear
+        val currentTaxYear = s"Current tax year (6 April ${currentTaxYearEndYear - 1} to 5 April $currentTaxYearEndYear)"
+        val nextTaxYear = s"Next tax year (6 April $currentTaxYearEndYear to 5 April ${currentTaxYearEndYear + 1})"
+        val hint: String = "You can sign up your client during the current tax year or from next tax year"
+        val hintNextYearOnly: String = "You can only sign up your client from next tax year"
+      }
+    }
+
+    object WhatWeNeed {
+      val heading: String = "What we need to sign up your client"
+    }
+
+    object ReviewAndSignUp {
+      val heading: String = "Review and sign up"
+      val link: String = "Sign up your client"
+      val hint: String = "Complete your client’s income details and starting tax year before you sign up your client"
+    }
+
+    val saveAndComeBackLater: String = "Save and come back later"
+  }
+
 }

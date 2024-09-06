@@ -16,48 +16,22 @@
 
 package models.common
 
-import models.common.business._
-import models.{Cash, DateModel, Next}
+import models.Next
 import org.scalatest.OptionValues
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
 class TaskListModelSpec extends AnyWordSpecLike with Matchers with OptionValues {
 
-  val date: DateModel = DateModel("1", "2", "1980")
-
-  val completeSeModel: SelfEmploymentData = SelfEmploymentData(
-    id = "",
-    businessStartDate = Some(BusinessStartDate(date)),
-    businessName = Some(BusinessNameModel("Fake Name")),
-    businessTradeName = Some(BusinessTradeNameModel("Trade")),
-    businessAddress = Some(BusinessAddressModel(Address(Seq("line1"), Some("Postcode")))),
-    confirmed = true
-  )
-
-  val incompleteSeModel: SelfEmploymentData = SelfEmploymentData(
-    id = "",
-    businessStartDate = Some(BusinessStartDate(date)),
-    businessName = None,
-    businessTradeName = Some(BusinessTradeNameModel("Trade")),
-    businessAddress = Some(BusinessAddressModel(Address(Seq("line1"), Some("Postcode"))))
-  )
-
   private val confirmedEditableYearNext = Some(AccountingYearModel(Next, confirmed = true))
 
   val fullCompleteTaskListModel: TaskListModel = TaskListModel(
     taxYearSelection = confirmedEditableYearNext,
-    selfEmployments = Seq(completeSeModel),
-    ukProperty = Some(PropertyModel(Some(Cash), Some(DateModel("1", "2", "1980")), confirmed = true)),
-    overseasProperty = Some(OverseasPropertyModel(Some(Cash), Some(date), confirmed = true)),
     incomeSourcesConfirmed = Some(true)
   )
 
   val emptyTaskListModel: TaskListModel = TaskListModel(
     taxYearSelection = None,
-    selfEmployments = Seq.empty,
-    ukProperty = None,
-    overseasProperty = None,
     incomeSourcesConfirmed = None
   )
 
