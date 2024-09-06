@@ -21,7 +21,8 @@ import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnecto
 import helpers.IntegrationTestConstants.testNino
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
-import models.{No, Yes}
+import models.{EligibilityStatus, No, Yes}
+import play.api.http.Status.OK
 import play.api.libs.json.{JsString, Json}
 import play.api.libs.ws.WSResponse
 import play.api.test.Helpers._
@@ -47,7 +48,7 @@ class ClientCanSignUpControllerISpec extends ComponentSpecBase {
   }
 
   "POST /client/can-sign-up" when {
-    "the user selects continue signing up" should {
+    "the user clicks sign up this client button" should {
       s"return a redirect to ${controllers.agent.routes.WhatYouNeedToDoController.show().url}" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -57,9 +58,9 @@ class ClientCanSignUpControllerISpec extends ComponentSpecBase {
         )
 
         When("POST /client/can-sign-up is called")
-        val result: WSResponse = IncomeTaxSubscriptionFrontend.submitCanSignUp(Some(Yes))
+        val result: WSResponse = IncomeTaxSubscriptionFrontend.submitCanSignUp()
 
-        Then("Should return SEE_OTHER to the home controller")
+        Then("Should return SEE_OTHER to the WhatYouNeedToDoController")
 
         result must have(
           httpStatus(SEE_OTHER),
@@ -67,40 +68,27 @@ class ClientCanSignUpControllerISpec extends ComponentSpecBase {
         )
       }
     }
-    "the user selects check another client" should {
-      s"return a redirect to ${controllers.agent.routes.AddAnotherClientController.addAnother().url}" in {
+  }
+
+  "POST /client/can-sign-up" when {
+    "An error is returned when saving eligibility interrupt passed flag" should {
+      "return an internal server error" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetailsFailure(
+          id = SubscriptionDataKeys.EligibilityInterruptPassed
+        )
 
         When("POST /client/can-sign-up is called")
-        val result: WSResponse = IncomeTaxSubscriptionFrontend.submitCanSignUp(Some(No))
+        val result: WSResponse = IncomeTaxSubscriptionFrontend.submitCanSignUp()
 
-        Then("Should return SEE_OTHER to the add another client route")
+        Then("Should return SEE_OTHER to the WhatYouNeedToDoController")
 
         result must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(controllers.agent.routes.AddAnotherClientController.addAnother().url)
+          httpStatus(INTERNAL_SERVER_ERROR)
         )
       }
     }
-    "the user selects no option" should {
-      "return a status of BAD_REQUEST" in {
-        Given("I setup the wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-
-        When("POST /client/can-sign-up is called")
-        val result: WSResponse = IncomeTaxSubscriptionFrontend.submitCanSignUp(None)
-
-        Then("Should return a BAD_REQUEST")
-        result must have(
-          httpStatus(BAD_REQUEST),
-          httpContentType(HTML),
-          errorDisplayed()
-        )
-      }
-    }
-
   }
 
 }

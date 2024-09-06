@@ -57,7 +57,6 @@ class ClientCanSignUpController @Inject()(clientCanSignUp: ClientCanSignUp,
     _ =>
       clientDetailsRetrieval.getClientDetails map { clientDetails =>
         Ok(clientCanSignUp(
-          clientCanSignUpForm,
           routes.ClientCanSignUpController.submit(),
           clientName = clientDetails.name,
           clientNino = formatNino(clientDetails.nino),
@@ -66,27 +65,9 @@ class ClientCanSignUpController @Inject()(clientCanSignUp: ClientCanSignUp,
       }
   }
 
-  def submit: Action[AnyContent] = Authenticated.async { implicit request =>
+    def submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      clientCanSignUpForm.bindFromRequest().fold(
-        formWithErrors =>
-          clientDetailsRetrieval.getClientDetails map { clientDetails =>
-            BadRequest(clientCanSignUp(
-              formWithErrors,
-              routes.ClientCanSignUpController.submit(),
-              clientDetails.name,
-              formatNino(clientDetails.nino),
-              backLink
-            ))
-          },
-        {
-          case Yes =>
-            continueToSignUpClient
-          case No =>
-            Future.successful(Redirect(controllers.agent.routes.AddAnotherClientController.addAnother()))
-        }
-      )
-
+      continueToSignUpClient(request, user)
   }
 
   private def continueToSignUpClient(implicit request: Request[AnyContent], user: IncomeTaxAgentUser): Future[Result] = {

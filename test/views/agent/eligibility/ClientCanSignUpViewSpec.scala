@@ -34,13 +34,8 @@ class ClientCanSignUpViewSpec extends ViewSpec {
   val clientName: String = "FirstName LastName"
   val clientNino: String = "AA 11 11 11 A"
 
-  class ViewTest(hasError: Boolean = false) {
+  class ViewTest {
     val page: HtmlFormat.Appendable = view(
-      clientCanSignUpForm = if (hasError) {
-        ClientCanSignUpForm.clientCanSignUpForm.withError(testFormError)
-      } else {
-        ClientCanSignUpForm.clientCanSignUpForm
-      },
       postAction = testCall,
       clientName = clientName,
       clientNino = clientNino,
@@ -51,10 +46,8 @@ class ClientCanSignUpViewSpec extends ViewSpec {
     val mainContent: Element = document.mainContent
   }
 
-  "Client Can Sign Up View" should {
-
-    "be using the correct template details" when {
-      "There is no error" in new ViewTest {
+  "Client Can Sign Up View" when {
+      "Using correct template details" in new ViewTest {
         new TemplateViewTest(
           view = page,
           title = ClientCanSignUpMessages.heading,
@@ -64,20 +57,8 @@ class ClientCanSignUpViewSpec extends ViewSpec {
           hasSignOutLink = true
         )
       }
-      "There is an error" in new ViewTest(hasError = true) {
-        new TemplateViewTest(
-          view = page,
-          title = ClientCanSignUpMessages.heading,
-          isAgent = true,
-          backLink = Some(testBackUrl),
-          backLinkText = Some(ClientCanSignUpMessages.backLinkText),
-          hasSignOutLink = true,
-          error = Some(testFormError)
-        )
-      }
-    }
 
-    "have a heading caption" in new ViewTest {
+    "have a caption" in new ViewTest {
       mainContent.selectHead("span.govuk-caption-l").text mustBe s"$clientName | $clientNino"
     }
 
@@ -85,47 +66,85 @@ class ClientCanSignUpViewSpec extends ViewSpec {
       mainContent.selectFirst("h1").text() mustBe ClientCanSignUpMessages.heading
     }
 
-    "have a form with the correct attributes" which {
-      "has a legend" that {
-        "is the question for the page" in new ViewTest {
-          mainContent.getForm.getFieldset.getElementsByClass("govuk-fieldset__legend").text mustBe ClientCanSignUpMessages.question
-        }
-      }
-
-      "has a set of radio buttons" in new ViewTest {
-        mainContent.getForm.getFieldset.mustHaveRadioInput(
-          name = ClientCanSignUpForm.fieldName,
-          radioItems = Seq(
-            RadioItem(
-              id = Some(s"${ClientCanSignUpForm.fieldName}"),
-              content = Text(ClientCanSignUpMessages.optionYes("FirstName LastName")),
-              value = Some(Yes.toString)
-            ),
-            RadioItem(
-              id = Some(s"${ClientCanSignUpForm.fieldName}-2"),
-              content = Text(ClientCanSignUpMessages.optionNo),
-              value = Some(No.toString)
-            )
-          )
-        )
-      }
+    "have the first paragraph" in new ViewTest {
+      mainContent.getNthParagraph(1).text mustBe ClientCanSignUpMessages.para1
     }
 
-    "have a continue button" in new ViewTest {
-      mainContent.getForm.getGovukSubmitButton.text mustBe ClientCanSignUpMessages.continueButton
+    "have the first subheading" in new ViewTest {
+      mainContent.mainContent.selectNth("h2", 1).text() mustBe ClientCanSignUpMessages.subheading1
+    }
+
+
+    "have the second paragraph" in new ViewTest {
+      mainContent.getNthParagraph(2).text mustBe ClientCanSignUpMessages.para2
+    }
+
+    "have a first bullet list" in new ViewTest {
+      def bulletList: Element = mainContent.selectNth("ul", 1)
+
+      bulletList.selectNth("li", 1).text mustBe ClientCanSignUpMessages.bullet1
+      bulletList.selectNth("li", 2).text mustBe ClientCanSignUpMessages.bullet2
+
+    }
+
+    "have the third paragraph" in new ViewTest {
+      mainContent.getNthParagraph(3).text mustBe ClientCanSignUpMessages.para3
+    }
+
+    "have a second bullet list" in new ViewTest {
+      def bulletList: Element = mainContent.selectNth("ul", 2)
+
+      bulletList.selectNth("li", 1).text mustBe ClientCanSignUpMessages.bullet3
+      bulletList.selectNth("li", 2).text mustBe ClientCanSignUpMessages.bullet4
+
+    }
+
+    "have the second subheading" in new ViewTest {
+      mainContent.selectNth("h2", 2).text() mustBe ClientCanSignUpMessages.subheading2
+    }
+
+    "have the fourth paragraph" in new ViewTest {
+      mainContent.getNthParagraph(4).text mustBe ClientCanSignUpMessages.para4
+    }
+
+    "have a third bullet list" in new ViewTest {
+      def bulletList: Element = mainContent.selectNth("ul", 3)
+
+      bulletList.selectNth("li", 1).text mustBe ClientCanSignUpMessages.bullet5
+      bulletList.selectNth("li", 2).text mustBe ClientCanSignUpMessages.bullet6
+
+    }
+
+    "have a sign up client button" in new ViewTest {
+      mainContent.getGovukSubmitButton.text mustBe ClientCanSignUpMessages.continueButton
+    }
+
+    "have the fifth paragraph" in new ViewTest {
+      val paragraph = mainContent.select(".govuk-form-group").select(".govuk-body")
+      paragraph.text must include (ClientCanSignUpMessages.signUpAnotherClient)
+      paragraph.select("a.govuk-link").attr("href") mustBe controllers.agent.routes.AddAnotherClientController.addAnother().url
     }
 
   }
 
   object ClientCanSignUpMessages {
     val heading = "You can sign up this client"
-    val question = "What do you want to do next?"
+    val para1 = "You can sign up this client for Making Tax Digital for Income Tax now."
+    val subheading1 = "What happens next"
+    val para2 = "For each of your client’s businesses, you’ll need their:"
+    val bullet1 = "business start date (or the date they started getting property income)"
+    val bullet2 = "accounting method (cash basis or traditional accounting - this is also called accruals or standard accounting)"
+    val para3 = "If they’re a sole trader, you’ll also need your client’s:"
+    val bullet3 = "business trading name and address"
+    val bullet4 = "trade (the nature of their business)"
+    val subheading2 = "If you do not sign up your client now"
+    val para4 = "If you do not sign up your client now, you’ll need to:"
+    val bullet5 = "make sure they continue to submit their Self Assessment tax returns as normal"
+    val bullet6 = "re-enter their details if you return to sign them up later"
 
-    def optionYes(clientName: String): String = s"Sign up $clientName"
-
-    val optionNo = "Check if I can sign up another client"
-    val continueButton = "Continue"
-
+    val continueButton = "Sign up this client"
+    val signUpAnotherClient = "Or you can check if you can sign up another client. We will not save the details you entered about FirstName LastName."
     val backLinkText = "Back to enter client details"
   }
+
 }
