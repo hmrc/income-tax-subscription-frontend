@@ -17,34 +17,32 @@
 package controllers.agent.eligibility
 
 import controllers.agent.AgentControllerBaseSpec
-import forms.agent.CannotSignUpThisYearForm
-import forms.submapping.YesNoMapping
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{await, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAuditingService, MockSubscriptionDetailsService}
+import services.mocks.{MockAuditingService, MockSubscriptionDetailsService, MockClientDetailsRetrieval}
 import views.html.agent.eligibility.CannotSignUpThisYear
 
 class CannotSignUpThisYearControllerSpec extends AgentControllerBaseSpec
   with MockSubscriptionDetailsService
+  with MockClientDetailsRetrieval
   with MockAuditingService {
   override val controllerName: String = "CannotSignUpController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
   private val view = mock[CannotSignUpThisYear]
 
-  object TestCannotSignUpThisYearController extends CannotSignUpThisYearController(
+  object TestCannotSignUpThisYearController extends CannotSignUpThisYearController(mockClientDetailsRetrieval, view)(
     mockAuditingService,
-    mockAuthService,
-    view
+    mockAuthService
   )
 
   "show" should {
     "display the cannot sign up this year view and return OK (200)" in {
-      when(view(any(), any())(any(), any()))
+      when(view(any(), any(), any())(any(), any()))
         .thenReturn(HtmlFormat.empty)
 
       val result: Result = await(TestCannotSignUpThisYearController.show()(subscriptionRequest))
@@ -53,39 +51,13 @@ class CannotSignUpThisYearControllerSpec extends AgentControllerBaseSpec
     }
   }
 
-  "submit" when {
-    "the user selects yes" should {
-      "redirect to the what you need to do controller" in {
-        val result: Result = await(TestCannotSignUpThisYearController.submit()(
-          subscriptionRequest.withFormUrlEncodedBody(
-            CannotSignUpThisYearForm.yesNo -> YesNoMapping.option_yes
-          )
-        ))
+  "submit" should {
+    "redirect to the what you need to do controller" in {
 
-        status(result) must be(Status.SEE_OTHER)
-        redirectLocation(result) must be(Some(controllers.agent.routes.WhatYouNeedToDoController.show().url))
-      }
-    }
-    "the user selects no" should {
-      "redirect to the declined sign up next year controller" in {
-        val result: Result = await(TestCannotSignUpThisYearController.submit()(
-          subscriptionRequest.withFormUrlEncodedBody(
-            CannotSignUpThisYearForm.yesNo -> YesNoMapping.option_no
-          )
-        ))
+      val result: Result = await(TestCannotSignUpThisYearController.submit()(subscriptionRequest))
 
-        status(result) must be(Status.SEE_OTHER)
-        redirectLocation(result) must be(Some(controllers.agent.routes.DeclinedSignUpNextYearController.show.url))
-      }
-    }
-    "the user selects no option" should {
-      "display the cannot sign up this year view and return BAD_REQUEST (400)" in {
-        when(view(any(), any())(any(), any()))
-          .thenReturn(HtmlFormat.empty)
-        val result: Result = await(TestCannotSignUpThisYearController.submit()(subscriptionRequest))
-
-        status(result) must be(Status.BAD_REQUEST)
-      }
+      status(result) must be(Status.SEE_OTHER)
+      redirectLocation(result) must be(Some(controllers.agent.routes.WhatYouNeedToDoController.show().url))
     }
   }
 

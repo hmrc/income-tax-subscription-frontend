@@ -43,6 +43,7 @@ class CannotSignUpThisYearController @Inject()(val auditingService: AuditingServ
       Ok(cannotSignUp(form, routes.CannotSignUpThisYearController.submit))
   }
 
+
   def submit: Action[AnyContent] = Authenticated { implicit request =>
     _ =>
       form.bindFromRequest().fold(

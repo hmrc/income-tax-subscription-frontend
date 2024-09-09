@@ -576,10 +576,26 @@ agent.cannot-take-part.para3                                      = Gallwch hefy
 agent.cannot-take-part.para3.link-text                            = gofrestru i gael negeseuon e-bost pan fydd y dudalen honno’n cael ei diweddaru
 
 # Agent cannot sign up page
-agent.cannot-sign-up.heading                                    = Gall eich cleient gofrestru ar gyfer y flwyddyn dreth nesaf
-agent.cannot-sign-up.paragraph1                                 = Gall eich cleient gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o’r flwyddyn dreth nesaf ({0} to {1}).
-agent.cannot-sign-up.yes-no-radio-helper.heading                = A hoffech gofrestru ar gyfer y flwyddyn dreth nesaf?
-error.agent.cannot-sign-up.invalid                              = Mae’n rhaid i chi ddewis ‘iawn’ neu ‘na’
+agent.cannot-sign-up.title                                      = Gallwch gofrestru’r cleient hwn o’r flwyddyn dreth nesaf ymlaen
+agent.cannot-sign-up.heading                                    = Gallwch gofrestru’r cleient hwn o’r flwyddyn dreth nesaf ymlaen
+agent.cannot-sign-up.caption                                    = {0} | {1}
+agent.cannot-sign-up.para1                                      = Gallwch gofrestru’r cleient hwn ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm nawr. Byddwch yn ei gofrestru o’r flwyddyn dreth nesaf ymlaen ({0} i {1}).
+agent.cannot-sign-up.inset-text.para                            = Bydd angen i chi sicrhau bod eich cleient yn cyflwyno ei Ffurflen Dreth Hunanasesiad ar gyfer y flwyddyn dreth bresennol ({0} i {1}) yn ôl yr arfer.
+agent.cannot-sign-up.subheading1                                = Yr hyn sy’n digwydd nesaf
+agent.cannot-sign-up.para2                                      = Ar gyfer pob un o fusnesau eich cleient, bydd angen y canlynol arnoch:
+agent.cannot-sign-up.bullet1                                    = dyddiad dechrau ei fusnes (neu’r dyddiad y dechreuodd gael incwm o eiddo)
+agent.cannot-sign-up.bullet2                                    = ei ddull cyfrifyddu (ar sail arian parod neu gyfrifyddu traddodiadol - enw arall ar hyn yw cyfrifyddu ar sail croniadau neu gyfrifyddu safonol)
+agent.cannot-sign-up.para3                                      = Os yw’n unig fasnachwr, bydd hefyd angen y canlynol arnoch:
+agent.cannot-sign-up.bullet3                                    = enw masnachu a chyfeiriad busnes eich cleient
+agent.cannot-sign-up.bullet4                                    = masnach eich cleient (natur ei fusnes)
+agent.cannot-sign-up.subheading2                                = Os na fyddwch yn cofrestru’ch cleient nawr
+agent.cannot-sign-up.para4                                      = Os na fyddwch yn cofrestru’ch cleient nawr, bydd angen i chi wneud y canlynol:
+agent.cannot-sign-up.bullet5                                    = sicrhau ei fod yn parhau i gyflwyno ei Ffurflenni Treth Hunanasesiad yn ôl yr arfer
+agent.cannot-sign-up.bullet6                                    = ail-nodi ei fanylion os byddwch yn dychwelyd i’w gofrestru’n ddiweddarach
+agent.cannot-sign-up.button-text                                = Cofrestru’r cleient hwn
+agent.cannot-sign-up.check-another                              = Neu, gallwch {0}. Ni fyddwn yn cadw’r manylion y gwnaethoch eu nodi am {1}.
+agent.cannot-sign-up.check-another.link                         = wirio a allwch gofrestru cleient arall
+
 
 # Agent Client Can Sign Up Page
 agent.client-can-sign-up.heading                                = Gallwch gofrestru’r cleient hwn
@@ -589,11 +605,6 @@ agent.client-can-sign-up.question                               = Beth hoffech e
 agent.client-can-sign-up.sign-up-name                           = Cofrestru {0}
 agent.client-can-sign-up.check-another                          = Gwirio os gallaf gofrestru cleient arall
 error.agent.client-can-sign-up.invalid                          = Dewiswch a hoffech gofrestru’r cleient hwn, neu wirio os gallwch gofrestru cleient arall.
-
-# Agent declined sign up
-agent.declined-sign-up-next-year.heading                        = Beth y mae angen i chi ei wneud
-agent.declined-sign-up-next-year.para                           = Rydych wedi dewis peidio â chofrestru’ch cleient ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
-agent.declined-sign-up-next-year.inset-text.para                = Mae’n rhaid i Ffurflen Dreth Hunanasesiad eich cleient gael ei chyflwyno yn ôl yr arfer.
 
 # Individual cannot sign up page
 cannot-sign-up.heading                                          = Gallwch gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o’r flwyddyn dreth nesaf

@@ -18,42 +18,45 @@ package controllers.agent.eligibility
 
 import auth.agent.PreSignUpController
 import config.AppConfig
-import forms.agent.CannotSignUpThisYearForm
-import models.{No, Yes, YesNo}
-import play.api.data.Form
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
-import play.twirl.api.Html
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.agent.ClientDetailsRetrieval
 import services.{AuditingService, AuthService}
 import views.html.agent.eligibility.CannotSignUpThisYear
-
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
+import scala.util.matching.Regex
 
-class CannotSignUpThisYearController @Inject()(val auditingService: AuditingService,
-                                               val authService: AuthService,
+class CannotSignUpThisYearController @Inject()(clientDetailsRetrieval: ClientDetailsRetrieval,
                                                cannotSignUp: CannotSignUpThisYear)
+                                              (val auditingService: AuditingService,
+                                               val authService: AuthService)
                                               (implicit val appConfig: AppConfig,
-                                      mcc: MessagesControllerComponents,
-                                      val ec: ExecutionContext) extends PreSignUpController  {
+                                               mcc: MessagesControllerComponents,
+                                               val ec: ExecutionContext) extends PreSignUpController  {
 
-  private val form: Form[YesNo] = CannotSignUpThisYearForm.cannotSignUpThisYearForm
-  def show: Action[AnyContent] = Authenticated { implicit request =>
-    _ =>
-      Ok(cannotSignUp(form, routes.CannotSignUpThisYearController.submit))
+  private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
+  private def formatNino(clientNino: String): String = {
+    clientNino match {
+      case ninoRegex(startLetters, firstDigits, secondDigits, thirdDigits, finalLetter) =>
+        s"$startLetters $firstDigits $secondDigits $thirdDigits $finalLetter"
+      case other => other
+    }
   }
 
-  def submit: Action[AnyContent] = Authenticated { implicit request =>
+  def show: Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
-      form.bindFromRequest().fold(
-        hasErrors => BadRequest(view(form = hasErrors)), {
-          case Yes => Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
-          case No => Redirect(controllers.agent.routes.DeclinedSignUpNextYearController.show)
-        }
-      )
+      for {
+        clientDetails <- clientDetailsRetrieval.getClientDetails
+      } yield {
+        Ok(cannotSignUp(
+          postAction = routes.CannotSignUpThisYearController.submit,
+          clientName = clientDetails.name,
+          clientNino = formatNino(clientDetails.nino)
+        ))
+      }
   }
 
-  private def view(form: Form[YesNo])(implicit request: Request[_]): Html = cannotSignUp(
-    yesNoForm = form,
-    postAction = routes.CannotSignUpThisYearController.submit
-  )
+  def submit: Action[AnyContent] = Authenticated {implicit request =>
+    _ => Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
+  }
 }

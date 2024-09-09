@@ -575,10 +575,26 @@ agent.cannot-take-part.para3                                      = You can also
 agent.cannot-take-part.para3.link-text                            = sign up to get emails when that page is updated
 
 # Agent cannot sign up page
-agent.cannot-sign-up.heading                                    = Your client can sign up for the next tax year
-agent.cannot-sign-up.paragraph1                                 = Your client can sign up for Making Tax Digital for Income Tax from the next tax year ({0} to {1}).
-agent.cannot-sign-up.yes-no-radio-helper.heading                = Would you like to sign up your client for the next tax year?
-error.agent.cannot-sign-up.invalid                              = You must select ‘yes’ or ‘no’
+agent.cannot-sign-up.title                                      = You can sign up this client from next tax year
+agent.cannot-sign-up.heading                                    = You can sign up this client from next tax year
+agent.cannot-sign-up.caption                                    = {0} | {1}
+agent.cannot-sign-up.para1                                      = You can sign up this client for Making Tax Digital for Income Tax now. You’ll be signing them up from next tax year ({0} to {1}).
+agent.cannot-sign-up.inset-text.para                            = You’ll need to make sure your client submits their Self Assessment tax return for the current tax year ({0} to {1}) as normal.
+agent.cannot-sign-up.subheading1                                = What happens next
+agent.cannot-sign-up.para2                                      = For each of your client’s businesses, you’ll need their:
+agent.cannot-sign-up.bullet1                                    = business start date (or the date they started getting property income)
+agent.cannot-sign-up.bullet2                                    = accounting method (cash basis or traditional accounting - this is also called accruals or standard accounting)
+agent.cannot-sign-up.para3                                      = If they’re a sole trader, you’ll also need your client’s:
+agent.cannot-sign-up.bullet3                                    = business trading name and address
+agent.cannot-sign-up.bullet4                                    = trade (the nature of their business)
+agent.cannot-sign-up.subheading2                                = If you do not sign up your client now
+agent.cannot-sign-up.para4                                      = If you do not sign up your client now, you’ll need to:
+agent.cannot-sign-up.bullet5                                    = make sure they continue to submit their Self Assessment tax returns as normal
+agent.cannot-sign-up.bullet6                                    = re-enter their details if you return to sign them up later
+agent.cannot-sign-up.button-text                                = Sign up this client
+agent.cannot-sign-up.check-another                              = Or you can {0}. We will not save the details you entered about {1}.
+agent.cannot-sign-up.check-another.link                         = check if you can sign up another client
+
 
 # Agent Client Can Sign Up Page
 agent.client-can-sign-up.heading                                = You can sign up this client
@@ -588,11 +604,6 @@ agent.client-can-sign-up.question                               = What do you wa
 agent.client-can-sign-up.sign-up-name                           = Sign up {0}
 agent.client-can-sign-up.check-another                          = Check if I can sign up another client
 error.agent.client-can-sign-up.invalid                          = Select if you want to sign up this client or check if you can sign up another client.
-
-# Agent declined sign up
-agent.declined-sign-up-next-year.heading                        = What you need to do
-agent.declined-sign-up-next-year.para                           = You’ve chosen not to sign up your client for Making Tax Digital for Income Tax.
-agent.declined-sign-up-next-year.inset-text.para                = Your client’s Self Assessment tax return needs to be submitted as normal.
 
 # Individual cannot sign up page
 cannot-sign-up.heading                                          = You can sign up to Making Tax Digital for Income Tax from the next tax year
