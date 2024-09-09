@@ -55,16 +55,12 @@ class WhatYouNeedToDoSpec extends ViewSpec {
     val bulletFour: String = "sending any missed quarterly updates - if you’re signing up part way through the current tax year"
     val bulletFive: String = "making your final declaration by 31 January after the end of the tax year"
 
-    val paraTwo: String = "You’re also agreeing that our new penalties will apply if you miss deadlines for:"
-    val bulletSix: String = "submitting your tax return"
-    val bulletSeven: String = "paying your bill"
-
-    val paraThree: String = "We’ll write to you when you’re liable for these penalties."
+    val paraTwo: String = "You’re also agreeing that our new penalties (opens in new tab) will apply if you miss deadlines for submitting your tax return or paying your bill. We’ll write to you when you’re liable for these penalties."
 
     val subHeading: String = "Opting out"
 
-    val paraFour: String = "Making Tax Digital for Income Tax is voluntary until 6 April 2026. You can opt out of sending quarterly updates. But if we’ve told you that you’re liable for our new penalties, you’ll continue to be liable for them."
-    val paraFive: String = "From 6 April 2026, some people will need to use Making Tax Digital for Income Tax. They will not be able to opt out. We’ll write to you if this applies to you."
+    val paraThree: String = "Making Tax Digital for Income Tax is voluntary until 6 April 2026. You can opt out of sending quarterly updates. But if we’ve told you that you’re liable for our new penalties, you’ll continue to be liable for them."
+    val paraFour: String = "From 6 April 2026, some people will need to use Making Tax Digital for Income Tax. They will not be able to opt out. We’ll write to you if this applies to you."
   }
 
   object NextYearOnlyWhatYouNeedToDoMessages {
@@ -137,15 +133,11 @@ class WhatYouNeedToDoSpec extends ViewSpec {
     val bulletThree: String = "use compatible software to send us quarterly updates"
     val bulletFour: String = "make your final declaration by 31 January after the end of the tax year"
 
-    val paraThree: String = "You’re also agreeing that our new penalties will apply if you miss deadlines for:"
-    val bulletFive: String = "submitting your tax return"
-    val bulletSix: String = "paying your bill"
-
-    val paraFour: String = "We’ll write to you when you’re liable for these penalties."
+    val paraThree: String = "You’re also agreeing that our new penalties (opens in new tab) will apply if you miss deadlines for submitting your tax return or paying your bill. We’ll write to you when you’re liable for these penalties."
 
     val subHeading: String = "Opting out"
-    val paraFive: String = "Making Tax Digital for Income Tax is voluntary until 6 April 2026. You can opt out of sending quarterly updates. But if we’ve told you that you’re liable for our new penalties, you’ll continue to be liable for them."
-    val paraSix: String = "From 6 April 2026, some people will need to use Making Tax Digital for Income Tax. They will not be able to opt out. We’ll write to you if this applies to you."
+    val paraFour: String = "Making Tax Digital for Income Tax is voluntary until 6 April 2026. You can opt out of sending quarterly updates. But if we’ve told you that you’re liable for our new penalties, you’ll continue to be liable for them."
+    val paraFive: String = "From 6 April 2026, some people will need to use Making Tax Digital for Income Tax. They will not be able to opt out. We’ll write to you if this applies to you."
   }
 
   "WhatYouNeedToDo" must {
@@ -190,32 +182,16 @@ class WhatYouNeedToDoSpec extends ViewSpec {
       document(false).mainContent.selectNth("p", 2).text mustBe WhatYouNeedToDoMessages.paraTwo
     }
 
-    "has a second numbered list" which {
-      def numberedList: Element = document(onlyNextYear = false).mainContent.selectNth("ol", 2)
-
-      "has a fifth point" in {
-        numberedList.selectNth("li", 1).text mustBe WhatYouNeedToDoMessages.bulletSix
-      }
-
-      "has a sixth point" in {
-        numberedList.selectNth("li", 2).text mustBe WhatYouNeedToDoMessages.bulletSeven
-      }
+    "has a sub heading" in {
+      document(false).mainContent.selectHead("h2").text mustBe WhatYouNeedToDoMessages.subHeading
     }
 
     "have a third paragraph" in {
       document(false).mainContent.selectNth("p", 3).text mustBe WhatYouNeedToDoMessages.paraThree
     }
 
-    "has a sub heading" in {
-      document(false).mainContent.selectHead("h2").text mustBe WhatYouNeedToDoMessages.subHeading
-    }
-
     "have a fourth paragraph" in {
       document(false).mainContent.selectNth("p", 4).text mustBe WhatYouNeedToDoMessages.paraFour
-    }
-
-    "have a fifth paragraph" in {
-      document(false).mainContent.selectNth("p", 5).text mustBe WhatYouNeedToDoMessages.paraFive
     }
   }
 
@@ -264,32 +240,16 @@ class WhatYouNeedToDoSpec extends ViewSpec {
       documentVoluntaryNextYear(true).mainContent.selectNth("p", 3).text mustBe VoluntaryNextYearOnly.paraThree
     }
 
-    "has a second numbered list" which {
-      def numberedList: Element = documentVoluntaryNextYear(true).mainContent.selectNth("ol", 2)
-
-      "has a fifth point" in {
-        numberedList.selectNth("li", 1).text mustBe VoluntaryNextYearOnly.bulletFive
-      }
-
-      "has a sixth point" in {
-        numberedList.selectNth("li", 2).text mustBe VoluntaryNextYearOnly.bulletSix
-      }
+    "has a sub heading" in {
+      documentVoluntaryNextYear(true).mainContent.selectHead("h2").text mustBe VoluntaryNextYearOnly.subHeading
     }
 
     "have a fourth paragraph" in {
       documentVoluntaryNextYear(true).mainContent.selectNth("p", 4).text mustBe VoluntaryNextYearOnly.paraFour
     }
 
-    "has a sub heading" in {
-      documentVoluntaryNextYear(true).mainContent.selectHead("h2").text mustBe VoluntaryNextYearOnly.subHeading
-    }
-
     "have a fifth paragraph" in {
       documentVoluntaryNextYear(true).mainContent.selectNth("p", 5).text mustBe VoluntaryNextYearOnly.paraFive
-    }
-
-    "have a sixth paragraph" in {
-      documentVoluntaryNextYear(true).mainContent.selectNth("p", 6).text mustBe VoluntaryNextYearOnly.paraSix
     }
   }
 
