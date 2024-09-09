@@ -21,97 +21,103 @@
 @import uk.gov.hmrc.play.language.LanguageUtils
 
 @this(
-  mainTemplate: AgentMainTemplate,
-  form: FormWithCSRF,
-  continueButton: ContinueButton,
-  hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
-  languageUtils: LanguageUtils,
-  govukInsetText : GovukInsetText,
-  hmrcPageHeading: HmrcPageHeading,
-  govukWarningText: GovukWarningText
+mainTemplate: AgentMainTemplate,
+form: FormWithCSRF,
+continueButton: ContinueButton,
+hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
+languageUtils: LanguageUtils,
+govukInsetText : GovukInsetText,
+hmrcPageHeading: HmrcPageHeading,
+govukWarningText: GovukWarningText,
 )
 
 @(postAction:Call, eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, clientName: String, clientNino: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = messages("agent.what-you-need-to-do.title")) {
 
-  <span class="govuk-caption-l">
+<span class="govuk-caption-l">
     @messages("agent.what-you-need-to-do.caption", clientName, clientNino)
   </span>
 
 
-  @if(mandatedCurrentYear) {
-    <h1 class="govuk-heading-l">
-      @messages("agent.what-you-need-to-do.heading")
-    </h1>
-    @mandatedCurrentYearContent
-  } else if (mandatedNextYear && eligibleNextYearOnly) {
-    <h1 class="govuk-heading-l">
-      @messages("agent.what-you-need-to-do.heading")
-    </h1>
-    @mandatedAndEligibleNextYearOnlyContent
-  } else if (eligibleNextYearOnly) {
-    <h1 class="govuk-heading-l">
-      @messages("agent.what-you-are-agreeing-to.heading")
-    </h1>
-    @voluntaryAndEligibleNextYearOnlyContent
-  } else {
-    <h1 class="govuk-heading-l">
-      @messages("agent.what-you-are-agreeing-to.heading")
-    </h1>
-    @voluntaryAndEligibleBothYearsContent
-  }
+@if(mandatedCurrentYear) {
+<h1 class="govuk-heading-l">
+    @messages("agent.what-you-need-to-do.heading")
+</h1>
+@mandatedCurrentYearContent
+} else if (mandatedNextYear && eligibleNextYearOnly) {
+<h1 class="govuk-heading-l">
+    @messages("agent.what-you-need-to-do.heading")
+</h1>
+@mandatedAndEligibleNextYearOnlyContent
+} else if (eligibleNextYearOnly) {
+<h1 class="govuk-heading-l">
+    @messages("agent.what-you-are-agreeing-to.heading")
+</h1>
+@voluntaryAndEligibleNextYearOnlyContent
+} else {
+<h1 class="govuk-heading-l">
+    @messages("agent.what-you-are-agreeing-to.heading")
+</h1>
+@voluntaryAndEligibleBothYearsContent
+}
 
-  @form(action = postAction) {
-    @continueButton(alternateText = Some(messages("base.accept-and-continue")))
-  }
+@form(action = postAction) {
+@continueButton(alternateText = Some(messages("base.accept-and-continue")))
+}
 
 }
 
 @mandatedCurrentYearContent = {
-  <p class="govuk-body">@messages("agent.what-you-need-to-do-current.para-1")</p>
-  <p class="govuk-body">@messages("agent.what-you-need-to-do-current.para-2")</p>
+<p class="govuk-body">@messages("agent.what-you-need-to-do-current.para-1")</p>
+<p class="govuk-body">@messages("agent.what-you-need-to-do-current.para-2")</p>
 
-  <ol class="govuk-list govuk-list--number">
+<ol class="govuk-list govuk-list--number">
     <li>@messages("agent.what-you-need-to-do-current.bullet-1")</li>
     <li>@messages("agent.what-you-need-to-do-current.bullet-2")</li>
-    <li>@messages("agent.what-you-need-to-do-current.bullet-3", languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(false)))</li>
-  </ol>
+    <li>@messages("agent.what-you-need-to-do-current.bullet-3",
+        languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(false)))
+    </li>
+</ol>
 
-  @govukWarningText(WarningText(
-    content = Text(Messages("agent.what-you-need-to-do-current.warning.para"))
-  ))
+@govukWarningText(WarningText(
+content = Text(Messages("agent.what-you-need-to-do-current.warning.para"))
+))
 }
 
 @mandatedAndEligibleNextYearOnlyContent = {
-  <p class="govuk-body">@messages("agent.what-you-need-to-do.mandated-and-eligible-next-year-only.para-1",
-      AccountingPeriodUtil.getCurrentTaxEndYear.toString)</p>
-  <p class="govuk-body">@messages("agent.what-you-need-to-do.mandated-and-eligible-next-year-only.para-2")</p>
+<p class="govuk-body">@messages("agent.what-you-need-to-do.mandated-and-eligible-next-year-only.para-1",
+    AccountingPeriodUtil.getCurrentTaxEndYear.toString)</p>
+<p class="govuk-body">@messages("agent.what-you-need-to-do.mandated-and-eligible-next-year-only.para-2")</p>
 
-  <ol class="govuk-list govuk-list--number">
+<ol class="govuk-list govuk-list--number">
     <li>@messages("agent.what-you-need-to-do.mandated-and-eligible-next-year-only.bullet-1")</li>
     <li>@messages("agent.what-you-need-to-do.mandated-and-eligible-next-year-only.bullet-2")</li>
-    <li>@messages("agent.what-you-need-to-do.mandated-and-eligible-next-year-only.bullet-3", languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(true)))</li>
-  </ol>
+    <li>@messages("agent.what-you-need-to-do.mandated-and-eligible-next-year-only.bullet-3",
+        languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(true)))
+    </li>
+</ol>
 }
 
 @voluntaryAndEligibleNextYearOnlyContent = {
 <p class="govuk-body">@messages("agent.voluntary-what-you-need-to-do.para-1")</p>
-<p class="govuk-body">@messages("agent.voluntary-what-you-need-to-do.para-2", languageUtils.Dates.formatDate(AccountingPeriodUtil.getNextTaxYear.startDate.toLocalDate))</p>
+<p class="govuk-body">@messages("agent.voluntary-what-you-need-to-do.para-2",
+    languageUtils.Dates.formatDate(AccountingPeriodUtil.getNextTaxYear.startDate.toLocalDate))</p>
 
 <ol class="govuk-list govuk-list--bullet">
-  <li>@messages("agent.voluntary-what-you-need-to-do.bullet-1")</li>
-  <li>@messages("agent.voluntary-what-you-need-to-do.bullet-2")</li>
-  <li>@messages("agent.voluntary-what-you-need-to-do.bullet-3")</li>
-  <li>@messages("agent.voluntary-what-you-need-to-do.bullet-4")</li>
+    <li>@messages("agent.voluntary-what-you-need-to-do.bullet-1")</li>
+    <li>@messages("agent.voluntary-what-you-need-to-do.bullet-2")</li>
+    <li>@messages("agent.voluntary-what-you-need-to-do.bullet-3")</li>
+    <li>@messages("agent.voluntary-what-you-need-to-do.bullet-4")</li>
 </ol>
 
-<p class="govuk-body">@messages("agent.voluntary-what-you-need-to-do.para-3")</p>
+<p class="govuk-body">@Html(messages(
+    key = "agent.voluntary-what-you-need-to-do.para-3",
+    args = hmrcNewTabLinkHelper(
+    NewTabLinkHelper(messages("agent.voluntary-what-you-need-to-do.link"),
+    Some("https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers")))))
+</p>
 
-<ol class="govuk-list govuk-list--bullet">
-  <li>@messages("agent.voluntary-what-you-need-to-do.bullet-5")</li>
-  <li>@messages("agent.voluntary-what-you-need-to-do.bullet-6")</li>
-</ol>
 
 <p class="govuk-body">@messages("agent.voluntary-what-you-need-to-do.para-4")</p>
 
@@ -123,29 +129,29 @@
 }
 
 @voluntaryAndEligibleBothYearsContent = {
-  <p class="govuk-body">@messages("agent.what-you-are-agreeing-to.voluntary-both-years.para-1")</p>
+<p class="govuk-body">@messages("agent.what-you-are-agreeing-to.voluntary-both-years.para-1")</p>
 
-  <ol class="govuk-list govuk-list--bullet">
+<ol class="govuk-list govuk-list--bullet">
     <li>@messages("agent.what-you-are-agreeing-to.voluntary-both-years.bullet-1")</li>
     <li>@messages("agent.what-you-are-agreeing-to.voluntary-both-years.bullet-2")</li>
     <li>@messages("agent.what-you-are-agreeing-to.voluntary-both-years.bullet-3")</li>
     <li>@messages("agent.what-you-are-agreeing-to.voluntary-both-years.bullet-4")</li>
     <li>@messages("agent.what-you-are-agreeing-to.voluntary-both-years.bullet-5")</li>
-  </ol>
-
-  <p class="govuk-body">@messages("agent.what-you-are-agreeing-to.voluntary-both-years.para-2")</p>
-
-<ol class="govuk-list govuk-list--bullet">
-  <li>@messages("agent.what-you-are-agreeing-to.voluntary-both-years.bullet-6")</li>
-  <li>@messages("agent.what-you-are-agreeing-to.voluntary-both-years.bullet-7")</li>
 </ol>
+
+<p class="govuk-body">@Html(messages(
+    key = "agent.what-you-are-agreeing-to.voluntary-both-years.para-2",
+    args = hmrcNewTabLinkHelper(
+    NewTabLinkHelper(messages("agent.what-you-are-agreeing-to.voluntary-both-years.link"),
+    Some("https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers")))))
+</p>
 
 <p class="govuk-body">@messages("agent.what-you-are-agreeing-to.voluntary-both-years.para-3")</p>
 
-  <h2 class="govuk-heading-m">@messages("agent.what-you-are-agreeing-to.voluntary-both-years.sub-heading")</h2>
+<h2 class="govuk-heading-m">@messages("agent.what-you-are-agreeing-to.voluntary-both-years.sub-heading")</h2>
 
-  <p class="govuk-body">@messages("agent.what-you-are-agreeing-to.voluntary-both-years.para-4")</p>
+<p class="govuk-body">@messages("agent.what-you-are-agreeing-to.voluntary-both-years.para-4")</p>
 
-  <p class="govuk-body">@messages("agent.what-you-are-agreeing-to.voluntary-both-years.para-5")</p>
+<p class="govuk-body">@messages("agent.what-you-are-agreeing-to.voluntary-both-years.para-5")</p>
 
 }
