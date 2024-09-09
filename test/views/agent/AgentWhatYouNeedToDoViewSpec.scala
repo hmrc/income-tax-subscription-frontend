@@ -215,18 +215,6 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
         mainContent.selectNth("p", 3).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.paraThree
       }
 
-      "has a second numbered list" which {
-        def numberedList: Element = mainContent.selectNth("ol", 2)
-
-        "has a fifth point" in {
-          numberedList.selectNth("li", 1).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.bulletFive
-        }
-
-        "has a sixth point" in {
-          numberedList.selectNth("li", 2).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.bulletSix
-        }
-      }
-
       "have a fourth paragraph" in {
         mainContent.selectNth("p", 4).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.paraFour
       }
@@ -302,18 +290,6 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
 
       "have a second paragraph" in {
         mainContent.selectNth("p", 2).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.paraTwo
-      }
-
-      "have a second numbered list" which {
-        def numberedList: Element = mainContent.selectNth("ol", 2)
-
-        "has a sixth point " in {
-          numberedList.selectNth("li", 1).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.bulletSix
-        }
-
-        "has a seventh point " in {
-          numberedList.selectNth("li", 2).text mustBe WhatYouNeedToDoMessages.VoluntaryAndEligible.bulletSeven
-        }
       }
 
       "have a third paragraph" in {
@@ -403,9 +379,7 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
       val bulletThree: String = "use compatible software to send us quarterly updates"
       val bulletFour: String = "make their final declaration by 31 January after the end of each tax year"
 
-      val paraThree: String = "You’re also agreeing that our new penalties will apply to your client if they miss deadlines for:"
-      val bulletFive: String = "submitting their tax return"
-      val bulletSix: String = "paying their bill"
+      val paraThree: String = "You’re also agreeing that our new penalties (opens in new tab) will apply to your client if they miss deadlines for submitting their tax return or paying their bill."
 
       val paraFour: String = "We’ll write to your client when they are liable for these penalties."
 
@@ -422,9 +396,7 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
       val bulletThree: String = "using compatible software to send us quarterly updates"
       val bulletFour: String = "sending any missed quarterly updates - if you’re signing up your client part way through the current tax year"
       val bulletFive: String = "making their final declaration by 31 January after the end of the tax year"
-      val paraTwo: String = "You’re also agreeing that our new penalties will apply to your client if they miss deadlines for:"
-      val bulletSix: String = "submitting their tax return"
-      val bulletSeven: String = "paying their bill"
+      val paraTwo: String = "You’re also agreeing that our new penalties (opens in new tab) will apply to your client if they miss deadlines for submitting their tax return or paying their bill."
       val paraThree: String = "We’ll write to your client when they’re liable for these penalties."
       val subHeading: String = "Opting out"
       val paraFour: String = "Making Tax Digital for Income Tax is voluntary until 6 April 2026. Your client can opt out of sending quarterly updates. But if we’ve told your client they’re liable for our new penalties, they’ll continue to be liable for them."
