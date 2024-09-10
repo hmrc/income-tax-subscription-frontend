@@ -890,7 +890,7 @@ agent.not-enrolled-agent-services.para1                         = I ddefnyddio�
 ## Client Details ##
 agent.client-details.title                                      = Nodwch fanylion eich cleient
 agent.client-details.heading                                    = Nodwch fanylion eich cleient
-agent.client-details.line-1                                     = Byddwn yn ceisio paru’r manylion hyn â gwybodaeth sydd gennym ar hyn o bryd am eich cleient.
+agent.client-details.line-1                                     = Byddwn yn defnyddio’r manylion hyn i wirio a all eich cleient gofrestru.
 agent.client-details.field-1                                    = Enw cyntaf
 agent.client-details.field-2                                    = Enw olaf
 agent.client-details.field-3                                    = Rhif Yswiriant Gwladol

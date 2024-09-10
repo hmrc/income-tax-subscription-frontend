@@ -891,7 +891,7 @@ agent.not-enrolled-agent-services.para1                         = To use this se
 ## Client Details ##
 agent.client-details.title                                      = Enter your client’s details
 agent.client-details.heading                                    = Enter your client’s details
-agent.client-details.line-1                                     = We will try to match these details to information we have about your client.
+agent.client-details.line-1                                     = We’ll use these details to check if your client can sign up.
 agent.client-details.field-1                                    = First name
 agent.client-details.field-2                                    = Last name
 agent.client-details.field-3                                    = National Insurance number
