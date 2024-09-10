@@ -14,9 +14,6 @@
  * limitations under the License.
  *@
 
-@import forms.agent.ClientCanSignUpForm
-@import forms.submapping.YesNoMapping
-@import models.{No, Yes}
 @import views.html.templates.AgentMainTemplate
 @import views.html.helpers.RadioHelper
 @import views.html.helpers.ContinueButton
@@ -28,9 +25,9 @@
     continueButton: ContinueButton
 )
 
-@(clientCanSignUpForm: Form[YesNo], postAction: Call, clientName: String, clientNino: String, backUrl: String)(implicit request: Request[_], messages: Messages)
+@(postAction: Call, clientName: String, clientNino: String, backUrl: String)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("agent.client-can-sign-up.heading"), optForm = Some(clientCanSignUpForm), backLink = Some(backUrl), backLinkContent = Some(messages("agent.client-can-sign-up.back-to-enter-client-details"))) {
+@mainTemplate(title = messages("agent.client-can-sign-up.heading"), backLink = Some(backUrl), backLinkContent = Some(messages("agent.client-can-sign-up.back-to-enter-client-details"))) {
 
     <span class="govuk-caption-l">
       @messages("agent.client-can-sign-up.caption", clientName, clientNino)
@@ -40,27 +37,47 @@
       @messages("agent.client-can-sign-up.heading")
     </h1>
 
+    <p class="govuk-body">@messages("agent.client-can-sign-up.para1")</p>
+
+    <h2 class="govuk-heading-m">@messages("agent.client-can-sign-up.subheading1")</h2>
+
+    <p class="govuk-body">@messages("agent.client-can-sign-up.para2")</p>
+
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("agent.client-can-sign-up.bullet1")</li>
+        <li>@messages("agent.client-can-sign-up.bullet2")</li>
+    </ul>
+
+    <p class="govuk-body">@messages("agent.client-can-sign-up.para3")</p>
+
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("agent.client-can-sign-up.bullet3")</li>
+        <li>@messages("agent.client-can-sign-up.bullet4")</li>
+    </ul>
+
+    <h2 class="govuk-heading-m">@messages("agent.client-can-sign-up.subheading2")</h2>
+
+    <p class="govuk-body">@messages("agent.client-can-sign-up.para4")</p>
+
+    <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-6">
+        <li>@messages("agent.client-can-sign-up.bullet5")</li>
+        <li>@messages("agent.client-can-sign-up.bullet6")</li>
+    </ul>
+
     @form(action = postAction) {
 
-        @radioHelper(
-            field = clientCanSignUpForm(ClientCanSignUpForm.fieldName),
-            legend = messages("agent.client-can-sign-up.question"),
-            isPageHeading = false,
-            headingClasses = "",
-            radioItems = Seq(
-                RadioItem(
-                    content = Text(messages("agent.client-can-sign-up.sign-up-name", clientName)),
-                    value = Some(YesNoMapping.option_yes)
-                ),
-                RadioItem(
-                    content = Text(messages("agent.client-can-sign-up.check-another")),
-                    value = Some(YesNoMapping.option_no)
-                )
-            )
-        )
+            <div class="govuk-form-group">
+                <div>@continueButton(alternateText = Some(messages("agent.client-can-sign-up.button-text")))</div>
 
-        @continueButton()
-
+                <div>
+                    <p class="govuk-body">
+                    @Html(messages(
+                    key = "agent.client-can-sign-up.check-another",
+                    args = <a class="govuk-link" href={controllers.agent.routes.AddAnotherClientController.addAnother().url}>{messages("agent.client-can-sign-up.check-another-link")}</a>, clientName
+                    ))
+                    </p>
+                </div>
+            </div>
     }
 
 }

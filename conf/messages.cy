@@ -580,11 +580,22 @@ error.agent.cannot-sign-up.invalid                              = Mae’n rhaid 
 # Agent Client Can Sign Up Page
 agent.client-can-sign-up.heading                                = Gallwch gofrestru’r cleient hwn
 agent.client-can-sign-up.caption                                = {0} | {1}
+agent.client-can-sign-up.para1                                  = Gallwch gofrestru’r cleient hwn ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm nawr.
+agent.client-can-sign-up.subheading1                            = Yr hyn sy’n digwydd nesaf
+agent.client-can-sign-up.para2                                  = Ar gyfer pob un o fusnesau eich cleient, bydd angen y canlynol arnoch:
+agent.client-can-sign-up.bullet1                                = dyddiad dechrau ei fusnes (neu’r dyddiad y dechreuodd gael incwm o eiddo)
+agent.client-can-sign-up.bullet2                                = ei ddull cyfrifyddu (ar sail arian parod neu gyfrifyddu traddodiadol - enw arall ar hyn yw cyfrifyddu ar sail croniadau neu gyfrifyddu safonol)
+agent.client-can-sign-up.para3                                  = Os yw’n unig fasnachwr, bydd hefyd angen y canlynol arnoch:
+agent.client-can-sign-up.bullet3                                = enw masnachu a chyfeiriad busnes eich cleient
+agent.client-can-sign-up.bullet4                                = masnach eich cleient (natur ei fusnes)
+agent.client-can-sign-up.subheading2                            = Os na fyddwch yn cofrestru’ch cleient nawr
+agent.client-can-sign-up.para4                                  = Os na fyddwch yn cofrestru’ch cleient nawr, bydd angen i chi wneud y canlynol:
+agent.client-can-sign-up.bullet5                                = sicrhau ei fod yn parhau i gyflwyno ei Ffurflenni Treth Hunanasesiad yn ôl yr arfer
+agent.client-can-sign-up.bullet6                                = ail-nodi ei fanylion os byddwch yn dychwelyd i’w gofrestru’n ddiweddarach
+agent.client-can-sign-up.button-text                             = Cofrestru’r cleient hwn
+agent.client-can-sign-up.check-another                          = Neu, gallwch {0}. Ni fyddwn yn cadw’r manylion y gwnaethoch eu nodi am {1}.
+agent.client-can-sign-up.check-another-link                     = wirio a allwch gofrestru cleient arall
 agent.client-can-sign-up.back-to-enter-client-details           = Yn ôl i nodi manylion cleientiaid
-agent.client-can-sign-up.question                               = Beth hoffech ei wneud nesaf?
-agent.client-can-sign-up.sign-up-name                           = Cofrestru {0}
-agent.client-can-sign-up.check-another                          = Gwirio os gallaf gofrestru cleient arall
-error.agent.client-can-sign-up.invalid                          = Dewiswch a hoffech gofrestru’r cleient hwn, neu wirio os gallwch gofrestru cleient arall.
 
 # Agent declined sign up
 agent.declined-sign-up-next-year.heading                        = Beth y mae angen i chi ei wneud
