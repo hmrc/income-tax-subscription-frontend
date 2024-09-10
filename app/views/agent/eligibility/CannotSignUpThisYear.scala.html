@@ -15,47 +15,85 @@
  *@
 
 @import views.html.templates.AgentMainTemplate
-@import views.html.helpers.ButtonHelper
 @import models.common.AccountingPeriodModel
 @import uk.gov.hmrc.play.language.LanguageUtils
 @import views.html.helpers.ContinueButton
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 @import utilities.AccountingPeriodUtil
-@import forms.agent.CannotSignUpThisYearForm.yesNo
-@import views.html.helpers.YesNoRadioHelper
 
 @this(
     mainTemplate: AgentMainTemplate,
-    buttonHelper: ButtonHelper,
-    hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
     languageUtils: LanguageUtils,
-    yesNoRadioHelper: YesNoRadioHelper,
     continueButton: ContinueButton,
-    form: FormWithCSRF
+    form: FormWithCSRF,
+    govukInsetText: GovukInsetText
 )
 
-@(yesNoForm: Form[YesNo], postAction: Call)(implicit request: Request[_], messages: Messages)
+@(postAction: Call, clientName: String, clientNino: String)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("agent.cannot-sign-up.heading"), optForm = Some(yesNoForm)) {
+@mainTemplate(title = messages("agent.cannot-sign-up.title")) {
+
+    <span class="govuk-caption-l">
+        @messages("agent.cannot-sign-up.caption", clientName, clientNino)
+    </span>
 
     <h1 class="govuk-heading-l">@messages("agent.cannot-sign-up.heading")</h1>
 
     <p class="govuk-body">
         @messages(
-            "agent.cannot-sign-up.paragraph1",
+            "agent.cannot-sign-up.para1",
             languageUtils.Dates.formatDate(AccountingPeriodUtil.getNextTaxYear.startDate.toLocalDate),
             languageUtils.Dates.formatDate(AccountingPeriodUtil.getNextTaxYear.endDate.toLocalDate)
         )
     </p>
 
-    @form(action = postAction) {
-        @yesNoRadioHelper(
-            field = yesNoForm(yesNo),
-            legend = messages("agent.cannot-sign-up.yes-no-radio-helper.heading"),
-            headingClasses = "govuk-fieldset__legend--m",
-            isPageHeading = false
+    @govukInsetText(InsetText(
+        content = Text(messages(
+            "agent.cannot-sign-up.inset-text.para",
+            languageUtils.Dates.formatDate(AccountingPeriodUtil.getCurrentTaxYear.startDate.toLocalDate),
+            languageUtils.Dates.formatDate(AccountingPeriodUtil.getCurrentTaxYear.endDate.toLocalDate)
+            )
         )
+    ))
 
-        @continueButton()
+    <h2 class="govuk-heading-m">@messages("agent.cannot-sign-up.subheading1")</h2>
+
+    <p class="govuk-body">@messages("agent.cannot-sign-up.para2")</p>
+
+    <ol class="govuk-list govuk-list--bullet">
+        <li>@messages("agent.cannot-sign-up.bullet1")</li>
+        <li>@messages("agent.cannot-sign-up.bullet2")</li>
+    </ol>
+
+    <p class="govuk-body">@messages("agent.cannot-sign-up.para3")</p>
+
+    <ol class="govuk-list govuk-list--bullet">
+        <li>@messages("agent.cannot-sign-up.bullet3")</li>
+        <li>@messages("agent.cannot-sign-up.bullet4")</li>
+    </ol>
+
+    <h2 class="govuk-heading-m">@messages("agent.cannot-sign-up.subheading2")</h2>
+
+    <p class="govuk-body">@messages("agent.cannot-sign-up.para4")</p>
+
+    <ol class="govuk-list govuk-list--bullet">
+        <li>@messages("agent.cannot-sign-up.bullet5")</li>
+        <li>@messages("agent.cannot-sign-up.bullet6")</li>
+    </ol>
+
+    @form(action = postAction) {
+        <div class="govuk-form-group">
+            <div>@continueButton(alternateText = Some(messages("agent.cannot-sign-up.button-text")))</div>
+            <div>
+                <p class="govuk-body">
+                    @Html(messages(
+                    key = "agent.cannot-sign-up.check-another",
+                    args = <a class="govuk-link" href={controllers.agent.routes.AddAnotherClientController.addAnother().url}>{messages("agent.cannot-sign-up.check-another.link")}</a>, clientName
+                    ))
+                </p>
+            </div>
+        </div>
     }
 }
+
+

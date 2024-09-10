@@ -247,23 +247,15 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
     def submitCanSignUp(): WSResponse = post("/can-sign-up", ClientData.basicClientData)(Map.empty)
 
-    def showCannotSignUpThisYear: WSResponse = get("/error/cannot-sign-up-for-current-year")
+    def showCannotSignUpThisYear(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/error/cannot-sign-up-for-current-year", sessionData)
 
-    def submitCannotSignUpThisYear(request: Option[YesNo]): WSResponse = post("/error/cannot-sign-up-for-current-year")(
-      request.fold(Map.empty[String, Seq[String]])(
-        model => CannotSignUpThisYearForm.cannotSignUpThisYearForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
-      )
-    )
+    def submitCannotSignUpThisYear(): WSResponse = post("/error/cannot-sign-up-for-current-year")(Map.empty)
 
     def showBusinessAlreadyRemoved(): WSResponse = get("/error/business-already-removed")
 
     def whatYouNeedToDo(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/what-you-need-to-do", sessionData)
 
     def submitWhatYouNeedToDo(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = post("/what-you-need-to-do", sessionData)(Map.empty)
-
-    def declinedSignUpNextYear(): WSResponse = get("/declined-sign-up-next-year")
-
-    def submitDeclinedSignUpNextYear(): WSResponse = post("/declined-sign-up-next-year")(Map.empty)
 
     def income(): WSResponse = get("/income")
 
