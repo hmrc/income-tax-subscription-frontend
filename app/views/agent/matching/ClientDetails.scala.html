@@ -40,47 +40,44 @@
 
         <p class="govuk-body">@messages("agent.client-details.line-1")</p>
 
-    @inputHelper(
-        field = clientDetailsForm(clientFirstName),
-        label = messages("agent.client-details.field-1"),
-        isLabelHidden = false,
-        isPageHeading = false,
-        classes = Some("govuk-!-width-one-half"),
-        autoComplete = Some("given-name")
-    )
+        @inputHelper(
+            field = clientDetailsForm(clientFirstName),
+            label = messages("agent.client-details.field-1"),
+            isLabelHidden = false,
+            isPageHeading = false,
+            classes = Some("govuk-!-width-one-half"),
+            autoComplete = Some("given-name")
+        )
 
+        @inputHelper(
+            field = clientDetailsForm(clientLastName),
+            label = messages("agent.client-details.field-2"),
+            isLabelHidden = false,
+            isPageHeading = false,
+            classes = Some("govuk-!-width-one-half"),
+            autoComplete = Some("family-name")
+        )
 
-    @inputHelper(
-        field = clientDetailsForm(clientLastName),
-        label = messages("agent.client-details.field-2"),
-        isLabelHidden = false,
-        isPageHeading = false,
-        classes = Some("govuk-!-width-one-half"),
-        autoComplete = Some("family-name")
-    )
+        @inputHelper(
+            field = clientDetailsForm(clientNino),
+            label = messages("agent.client-details.field-3"),
+            isLabelHidden = false,
+            isPageHeading = false,
+            classes = Some("govuk-!-width-one-half"),
+            hint = Some(messages("agent.client-details.form-hint1.line-1"))
+        )
 
+        @dateHelper(
+            field = clientDetailsForm(clientDateOfBirth),
+            legendContent = messages("agent.client-details.field-4"),
+            hintText = Some(messages("agent.client-details.form-hint2")),
+            parentForm = clientDetailsForm,
+            isPageHeading = false,
+            isLegendVisible = true,
+            isDateOfBirth = true
+        )
 
-    @inputHelper(
-        field = clientDetailsForm(clientNino),
-        label = messages("agent.client-details.field-3"),
-        isLabelHidden = false,
-        isPageHeading = false,
-        classes = Some("govuk-!-width-one-half"),
-        hint = Some(messages("agent.client-details.form-hint1.line-1"))
-    )
-
-
-    @dateHelper(
-        field = clientDetailsForm(clientDateOfBirth),
-        legendContent = messages("agent.client-details.field-4"),
-        hintText = Some(messages("agent.client-details.form-hint2")),
-        parentForm = clientDetailsForm,
-        isPageHeading = false,
-        isLegendVisible = true,
-        isDateOfBirth = true
-    )
-
-    @continueButton(isEditMode = isEditMode)
+        @continueButton(isEditMode = isEditMode)
 
     }
 }

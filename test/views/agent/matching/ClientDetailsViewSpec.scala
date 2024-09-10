@@ -50,7 +50,7 @@ class ClientDetailsViewSpec extends ViewSpec {
   object ClientDetails {
     val title = "Enter your client’s details"
     val heading = "Enter your client’s details"
-    val line1 = "We will try to match these details to information we have about your client."
+    val line1 = "We’ll use these details to check if your client can sign up."
     val field1 = "First name"
     val field2 = "Last name"
     val field3 = "National Insurance number"
