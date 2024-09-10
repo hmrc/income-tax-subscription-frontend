@@ -63,17 +63,11 @@ class TaskListController @Inject()(taskListView: TaskList,
 
   private def getTaskListModel(reference: String)(implicit hc: HeaderCarrier): Future[TaskListModel] = {
     for {
-      (businesses, _) <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
-      property <- subscriptionDetailsService.fetchProperty(reference)
-      overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
       selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
       incomeSourcesConfirmed <- subscriptionDetailsService.fetchIncomeSourcesConfirmation(reference)
     } yield {
       TaskListModel(
         selectedTaxYear,
-        businesses,
-        property,
-        overseasProperty,
         incomeSourcesConfirmed
       )
     }

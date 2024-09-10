@@ -905,28 +905,23 @@ agent.no-sa.line-1                                              = To use this se
 
 # Agent Task List
 agent.business.task-list.title                                              = Sign up your client for Making Tax Digital for Income Tax
-agent.business.task-list.client-information.heading                         = Your client’s information
+agent.business.task-list.client-information.heading                         = Your client
 agent.business.task-list.client-information.name                            = Name
 agent.business.task-list.client-information.nino                            = National Insurance number
 agent.business.task-list.client-information.utr                             = Unique Taxpayer Reference (UTR)
-agent.business.task-list.content.tax-year.heading                           = Choose a tax year to sign up
 agent.business.task-list.content.tax-year.action                            = Select tax year
 agent.business.task-list.content.tax-year.current-tax-year                  = Current tax year (6 April {0} to 5 April {1})
 agent.business.task-list.content.tax-year.next-tax-year                     = Next tax year (6 April {0} to 5 April {1})
 agent.business.task-list.content.add-income.heading                         = Your client’s income sources
-agent.business.task-list.content.add-income.view-text                       = View and manage your client’s income sources
-agent.business.task-list.content.action-needed                              = You need to complete all sections above before you can confirm and sign up your client.
-agent.business.task-list.content.action-complete                            = You can now sign up your client.
 agent.business.task-list.status.completed                                   = Completed
 agent.business.task-list.status.incomplete                                  = Incomplete
-agent.business.task-list.status.in-progress                                 = In progress
-agent.business.task-list.status.not-started                                 = Not started
+agent.business.task-list.status.cannot-start                                = Cannot start yet
 agent.business.task-list.review-sign-up.heading                             = Review and sign up
 agent.business.task-list.review-sign-up.link-text                           = Sign up your client
-agent.business.task-list.status.cannot-start                                = Cannot start yet
+agent.business.task-list.review-sign-up.hint                                = Complete your client’s income details and starting tax year before you sign up your client
 agent.business.task-list.content.details.heading                            = What we need to sign up your client
-agent.business.task-list.content.add-income.hint                            = Include any of your client’s sole trade or property income sources
-agent.business.task-list.content.tax-year.hint                              = You can sign up your client during the current tax year or from next year
+agent.business.task-list.content.add-income.hint                            = Include all of your client’s sole trader or property income sources
+agent.business.task-list.content.tax-year.hint                              = You can sign up your client during the current tax year or from next tax year
 agent.business.task-list.content.next-tax-year.hint                         = You can only sign up your client from next tax year
 
 # Agent Overseas Property Start Date Page errors

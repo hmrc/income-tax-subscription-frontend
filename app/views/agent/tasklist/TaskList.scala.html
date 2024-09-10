@@ -125,18 +125,21 @@
                 ),
                 status = if(viewModel.taxYearSelectedAndConfirmed) { taskListCompleteTag() } else { taskListIncompleteTag() },
                 href = if(viewModel.permitTaxYearChange) {
-                Some(if(viewModel.taxYearSelectedAndConfirmed) {
-                    controllers.agent.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.show(editMode=true).url
-                } else {
-                    controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
-                })} else None,
-                hint = Some(Hint(
-                    content = if(viewModel.permitTaxYearChange) {
-                        Text(messages("agent.business.task-list.content.tax-year.hint"))
+                    Some(if(viewModel.taxYearSelectedAndConfirmed) {
+                        controllers.agent.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.show(editMode=true).url
                     } else {
-                        Text(messages("agent.business.task-list.content.next-tax-year.hint"))
-                    }
-                ))
+                        controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+                    })
+                } else {
+                    None
+                },
+                hint = if(viewModel.permitTaxYearChange) {
+                    Some(Hint(content = Text(messages("agent.business.task-list.content.tax-year.hint"))))
+                } else if (viewModel.taxYearSelection.exists(_.accountingYear == Next)) {
+                    Some(Hint(content = Text(messages("agent.business.task-list.content.next-tax-year.hint"))))
+                } else {
+                    None
+                }
             )
         ),
         idPrefix = "client-details"
@@ -155,12 +158,17 @@
                     Some(controllers.agent.routes.GlobalCheckYourAnswersController.show.url)
                 } else {
                     None
+                },
+                hint = if(viewModel.taskListComplete) {
+                    None
+                } else {
+                    Some(Hint(content = Text(messages("agent.business.task-list.review-sign-up.hint"))))
                 }
             )
         ),
         idPrefix = "sign-up-section"
     ))
 
-<div class="govuk-form-group">@saveAndComeBackButton</div>
+    <div class="govuk-form-group">@saveAndComeBackButton</div>
 
 }}
