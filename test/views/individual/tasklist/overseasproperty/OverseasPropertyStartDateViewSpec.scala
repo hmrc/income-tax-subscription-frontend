@@ -112,30 +112,51 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
 
     "have a date input" when {
       "there is no error" in new Setup {
-        document.mustHaveGovukDateField(
+        document.mustHaveDateInput(
           id = "startDate",
           legend = OverseasPropertyStartDateMessages.heading,
-          exampleDate = OverseasPropertyStartDateMessages.hint
+          exampleDate = OverseasPropertyStartDateMessages.hint,
+          isHeading = false,
+          isLegendHidden = true,
+          dateInputsValues = Seq(
+            DateInputFieldValues("Day", None),
+            DateInputFieldValues("Month", None),
+            DateInputFieldValues("Year", None)
+          )
         )
       }
       "there is max date error" in new Setup(
         form = OverseasPropertyStartDateForm.overseasPropertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString).withError(maxDateValidationError)
       ) {
-        document.mustHaveGovukDateField(
-          "startDate",
-          OverseasPropertyStartDateMessages.heading,
-          OverseasPropertyStartDateMessages.hint,
-          Some(OverseasPropertyStartDateMessages.maxDate)
+        document.mustHaveDateInput(
+          id = "startDate",
+          legend = OverseasPropertyStartDateMessages.heading,
+          exampleDate = OverseasPropertyStartDateMessages.hint,
+          errorMessage = Some(OverseasPropertyStartDateMessages.maxDate),
+          isHeading = false,
+          isLegendHidden = true,
+          dateInputsValues = Seq(
+            DateInputFieldValues("Day", None),
+            DateInputFieldValues("Month", None),
+            DateInputFieldValues("Year", None)
+          )
         )
       }
       "there is min date error" in new Setup(
         form = OverseasPropertyStartDateForm.overseasPropertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString).withError(minDateValidationError)
       ) {
-        document.mustHaveGovukDateField(
-          "startDate",
-          OverseasPropertyStartDateMessages.heading,
-          OverseasPropertyStartDateMessages.hint,
-          Some(OverseasPropertyStartDateMessages.minDate)
+        document.mustHaveDateInput(
+          id = "startDate",
+          legend = OverseasPropertyStartDateMessages.heading,
+          exampleDate = OverseasPropertyStartDateMessages.hint,
+          errorMessage = Some(OverseasPropertyStartDateMessages.minDate),
+          isHeading = false,
+          isLegendHidden = true,
+          dateInputsValues = Seq(
+            DateInputFieldValues("Day", None),
+            DateInputFieldValues("Month", None),
+            DateInputFieldValues("Year", None)
+          )
         )
       }
     }
