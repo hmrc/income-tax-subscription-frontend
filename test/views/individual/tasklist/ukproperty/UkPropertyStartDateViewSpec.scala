@@ -97,14 +97,6 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
       document().getForm.attr("action") mustBe testCall.url
     }
 
-    "have a fieldset with dateInputs" in {
-      document().mustHaveGovukDateField(
-        id = PropertyStartDateForm.startDate,
-        legend = PropertyStartDateMessages.heading,
-        exampleDate = PropertyStartDateMessages.hint
-      )
-    }
-
     "have a save & continue button when save & retrieve feature is enabled" in {
       document().mainContent.selectHead("div.govuk-button-group").selectHead("button").text mustBe PropertyStartDateMessages.saveAndContinue
     }
@@ -112,22 +104,36 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
     "must display max date error on page" in {
       val dateValidationError = FormError("startDate", "error.property.day-month-year.max-date", List("11 April 2021"))
       val formWithError = PropertyStartDateForm.propertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString).withError(dateValidationError)
-      document(propertyStartDateForm = formWithError).mustHaveGovukDateField(
-        "startDate",
-        PropertyStartDateMessages.heading,
-        PropertyStartDateMessages.hint,
-        Some(PropertyStartDateMessages.maxDate)
+      document(propertyStartDateForm = formWithError).mustHaveDateInput(
+        id = "startDate",
+        legend = PropertyStartDateMessages.heading,
+        exampleDate = PropertyStartDateMessages.hint,
+        errorMessage = Some(PropertyStartDateMessages.maxDate),
+        isHeading = false,
+        isLegendHidden = true,
+        dateInputsValues = Seq(
+          DateInputFieldValues("Day", None),
+          DateInputFieldValues("Month", None),
+          DateInputFieldValues("Year", None)
+        )
       )
     }
 
     "must display min date error on page" in {
       val dateValidationError = FormError("startDate", "error.property.day-month-year.min-date", List("11 April 2021"))
       val formWithError = PropertyStartDateForm.propertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString).withError(dateValidationError)
-      document(propertyStartDateForm = formWithError).mustHaveGovukDateField(
-        "startDate",
-        PropertyStartDateMessages.heading,
-        PropertyStartDateMessages.hint,
-        Some(PropertyStartDateMessages.minDate)
+      document(propertyStartDateForm = formWithError).mustHaveDateInput(
+        id = "startDate",
+        legend = PropertyStartDateMessages.heading,
+        exampleDate = PropertyStartDateMessages.hint,
+        errorMessage = Some(PropertyStartDateMessages.minDate),
+        isHeading = false,
+        isLegendHidden = true,
+        dateInputsValues = Seq(
+          DateInputFieldValues("Day", None),
+          DateInputFieldValues("Month", None),
+          DateInputFieldValues("Year", None)
+        )
       )
     }
   }

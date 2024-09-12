@@ -202,6 +202,8 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
 
   case class SummaryListRowValues(key: String, value: Option[String], actions: Seq[SummaryListActionValues])
 
+  case class DateInputFieldValues(label: String, value: Option[String])
+
   implicit class ElementTests(element: Element) {
 
     //scalastyle:off
@@ -481,58 +483,77 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
       textInput.attr("type") mustBe "text"
     }
 
-    def mustHaveDateInput(name: String,
-                          label: String,
-                          hint: Option[String] = None,
-                          error: Option[FormError] = None,
-                          isDateOfBirth: Boolean = false): Assertion = {
+    def mustHaveDateInput(id: String, legend: String, exampleDate: String, isHeading: Boolean, isLegendHidden: Boolean, errorMessage: Option[String] = None, dateInputsValues: Seq[DateInputFieldValues]): Assertion = {
+      val checkpoint: Checkpoint = new Checkpoint()
 
-      val fieldset: Element = element.selectHead("fieldset")
-      val legend: Element = element.selectHead("legend")
+      val dateInputField: Element = element.selectHead(s"#$id")
 
-      legend.text mustBe label
-
-      hint.foreach { value =>
-        element.selectHead(s"#$name-hint").text mustBe value
-        fieldset.attr("aria-describedby").contains(s"$name-hint") mustBe true
+      val dateLegend: Element = element.selectHead(".govuk-fieldset__legend")
+      if (isHeading) {
+        checkpoint {
+          dateLegend.getH1Element.text mustBe legend
+        }
+      } else {
+        checkpoint {
+          dateLegend.text mustBe legend
+        }
+        if (isLegendHidden) {
+          checkpoint {
+            dateLegend.attr("class") must include ("govuk-visually-hidden")
+          }
+        }
       }
 
-      error.foreach { value =>
-        element.selectHead(s"#${value.key}-error").text mustBe s"Error: ${value.message}"
-        fieldset.attr("aria-describedby").contains(s"${value.key}-error") mustBe true
+      val hintText: Element = element.selectHead(".govuk-hint")
+      checkpoint {
+        hintText.text mustBe exampleDate
       }
 
-      val dayInput: Element = fieldset.selectNth(".govuk-date-input__item", 1).selectHead("input")
-      val dayLabel: Element = fieldset.selectNth(".govuk-date-input__item", 1).selectHead("label")
-      val monthInput: Element = fieldset.selectNth(".govuk-date-input__item", 2).selectHead("input")
-      val monthLabel: Element = fieldset.selectNth(".govuk-date-input__item", 2).selectHead("label")
-      val yearInput: Element = fieldset.selectNth(".govuk-date-input__item", 3).selectHead("input")
-      val yearLabel: Element = fieldset.selectNth(".govuk-date-input__item", 3).selectHead("label")
+      dateInputsValues zip(1 to dateInputsValues.length) foreach { case (dateInputValues, index) =>
 
-      dayInput.attr("name") mustBe s"$name-dateDay"
-      dayInput.attr("type") mustBe "text"
-      dayInput.attr("pattern") mustBe "[0-9]*"
-      dayInput.attr("inputmode") mustBe "numeric"
-      if (isDateOfBirth) dayInput.attr("autocomplete") mustBe "bday-day"
-      dayLabel.text mustBe "Day"
-      dayLabel.attr("for") mustBe s"$name-dateDay"
+        val item: Element = dateInputField.selectNth(".govuk-date-input__item", index)
+        val label = item.selectHead("label")
+        val input = item.selectHead("input")
 
-      monthInput.attr("name") mustBe s"$name-dateMonth"
-      monthInput.attr("type") mustBe "text"
-      monthInput.attr("pattern") mustBe "[0-9]*"
-      monthInput.attr("inputmode") mustBe "numeric"
-      if (isDateOfBirth) monthInput.attr("autocomplete") mustBe "bday-month"
-      monthLabel.text mustBe "Month"
-      monthLabel.attr("for") mustBe s"$name-dateMonth"
+        checkpoint {
+          label.text mustBe dateInputValues.label
+        }
+        checkpoint {
+          label.attr("for") mustBe input.id
+        }
+        checkpoint {
+          input.id mustBe input.attr("name")
+        }
+        checkpoint {
+          input.attr("type") mustBe "text"
+        }
+        checkpoint {
+          input.attr("inputmode") mustBe "numeric"
+        }
 
-      yearInput.attr("name") mustBe s"$name-dateYear"
-      yearInput.attr("type") mustBe "text"
-      yearInput.attr("pattern") mustBe "[0-9]*"
-      yearInput.attr("inputmode") mustBe "numeric"
-      if (isDateOfBirth) yearInput.attr("autocomplete") mustBe "bday-year"
-      yearLabel.text mustBe "Year"
-      yearLabel.attr("for") mustBe s"$name-dateYear"
+        dateInputValues.value foreach { value =>
+          input.attr("value") mustBe value
+        }
 
+      }
+
+      errorMessage foreach { message =>
+
+        val fieldset: Element = element.getFieldset
+        val errorMessage: Element = element.selectHead(".govuk-error-message")
+        checkpoint {
+          fieldset.attr("aria-describedby") must include ("startDate-error")
+        }
+       checkpoint {
+         errorMessage.selectHead("p").attr("id") mustBe "startDate-error"
+       }
+        checkpoint {
+          errorMessage.text mustBe s"Error: $message"
+        }
+      }
+
+      checkpoint.reportAll()
+      Succeeded
     }
 
     def mustHaveTextField(name: String, label: String, hint: Option[String] = None): Assertion = {
