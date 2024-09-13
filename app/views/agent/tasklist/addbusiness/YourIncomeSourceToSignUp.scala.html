@@ -15,7 +15,7 @@
  *@
 
 @import views.html.templates.AgentMainTemplate
-@import views.html.helpers.{RadioHelper, ContinueButton, SaveAndContinueButtonHelper}
+@import views.html.helpers.{RadioHelper, ContinueButton, SaveAndContinueButtonHelper, PageHeadingHelper}
 @import config.AppConfig
 @import models.common._
 @import models.common.business._
@@ -34,6 +34,7 @@
     radioHelper: RadioHelper,
     featureSwitching: FeatureSwitchingImpl,
     continueButton: ContinueButton,
+    pageHeadingHelper: PageHeadingHelper,
     saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
     govukSummaryList : GovukSummaryList
 )
@@ -50,11 +51,12 @@
 
 @agentMainTemplate(title = heading, backLink = Some(backUrl)) {
 
-  <span class="govuk-caption-l">
-    @messages("agent.your-income-source.caption", clientDetails.name, clientDetails.formattedNino)
-  </span>
+    @pageHeadingHelper(
+        heading = heading,
+        caption = messages("agent.your-income-source.caption", clientDetails.name, clientDetails.formattedNino),
+        isSection = false
+    )
 
-  <h1 class="govuk-heading-xl">@heading</h1>
   @if(incomeSources.hasNoIncomeSources){
     <p class="govuk-body-l">@messages("agent.your-income-source.lead.no-income")</p>
   } else {

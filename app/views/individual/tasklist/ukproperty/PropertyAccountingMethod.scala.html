@@ -17,7 +17,7 @@
 @import forms.individual.business.AccountingMethodPropertyForm
 @import forms.submapping.AccountingMethodMapping
 @import play.api.data.Form
-@import views.html.helpers.{DetailsHelper, RadioHelper, SaveAndContinueButtonHelper}
+@import views.html.helpers.{DetailsHelper, RadioHelper, SaveAndContinueButtonHelper, PageHeadingHelper}
 @import views.html.templates.PrincipalMainTemplate
 
 @this(
@@ -25,7 +25,7 @@
         form: FormWithCSRF,
         detailsHelper: DetailsHelper,
         radioHelper: RadioHelper,
-        hmrcPageHeading: HmrcPageHeading,
+        pageHeadingHelper: PageHeadingHelper,
         saveAndContinueButtonHelper: SaveAndContinueButtonHelper
 )
 
@@ -46,12 +46,11 @@
 
 @mainTemplate(title = messages("property.accounting-method.title"), optForm = Some(accountingMethodForm), backLink = Some(backUrl)) {
 
-    @hmrcPageHeading(PageHeading(
-        text = messages("property.accounting-method.heading"),
-        section = Some(messages("property.accounting-method.caption")),
-        headingClasses = Some("govuk-heading-l"),
-        captionClasses = Some("govuk-caption-l")
-    ))
+    @pageHeadingHelper(
+        heading = messages("property.accounting-method.heading"),
+        caption = messages("property.accounting-method.caption"),
+        isSection = true
+    )
 
     @form(action = postAction) {
         @detailsHelper(

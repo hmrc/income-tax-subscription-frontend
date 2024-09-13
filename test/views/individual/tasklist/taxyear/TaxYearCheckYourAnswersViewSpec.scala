@@ -42,12 +42,12 @@ class TaxYearCheckYourAnswersViewSpec extends ViewSpec {
       hasSignOutLink = true
     )
 
-    "have a heading" in {
-      document().mainContent.getH1Element.text mustBe messages.heading
-    }
-
-    "have a caption" in {
-      document().mainContent.selectHead(".govuk-caption-l").text mustBe messages.caption
+    "have a heading and caption" in {
+      document().mainContent.mustHaveHeadingAndCaption(
+        heading = messages.heading,
+        caption = messages.caption,
+        isSection = true
+      )
     }
 
     "have a summary of the answers" when {

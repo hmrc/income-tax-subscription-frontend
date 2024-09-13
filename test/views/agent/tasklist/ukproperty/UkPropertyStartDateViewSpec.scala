@@ -97,15 +97,15 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
       )
     }
 
-    "have a heading" in {
-      document().mainContent.selectHead("h1.govuk-heading-l").text mustBe PropertyStartDateMessages.heading
+    "have a heading and caption" in {
+      document().mainContent.mustHaveHeadingAndCaption(
+        heading = PropertyStartDateMessages.heading,
+        caption = PropertyStartDateMessages.caption,
+        isSection = false
+      )
     }
 
-    "have a caption" in {
-      document().mainContent.selectHead("span.govuk-caption-l").text mustBe PropertyStartDateMessages.caption
-    }
-
-    "have a paragraph One" in{
+    "have a paragraph One" in {
       document().mainContent.selectNth("p", 1).text() mustBe PropertyStartDateMessages.para1
     }
 

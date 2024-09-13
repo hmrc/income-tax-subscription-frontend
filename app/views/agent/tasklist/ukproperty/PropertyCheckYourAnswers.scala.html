@@ -19,14 +19,14 @@
 @import utilities.UserMatchingSessionUtil.ClientDetails
 @import config.featureswitch.FeatureSwitchingImpl
 @import config.featureswitch.FeatureSwitch.AgentStreamline
-@import views.html.helpers.SaveAndContinueButtonHelper
+@import views.html.helpers.{SaveAndContinueButtonHelper, PageHeadingHelper}
 
 @this(
         mainTemplate: AgentMainTemplate,
         featureSwitching: FeatureSwitchingImpl,
         form: FormWithCSRF,
         govukSummaryList: GovukSummaryList,
-        hmrcPageHeading: HmrcPageHeading,
+        pageHeadingHelper: PageHeadingHelper,
         saveAndContinueButtonHelper: SaveAndContinueButtonHelper
 )
 
@@ -54,8 +54,11 @@
 
 @mainTemplate(title = messages("agent.property.check-your-answers.title"), backLink = Some(backUrl)) {
 
-    <span class="govuk-caption-l">@messages("agent.property.check-your-answers.heading.caption", clientDetails.name, clientDetails.formattedNino)</span>
-    <h1 class="govuk-heading-l">@messages("agent.property.check-your-answers.heading")</h1>
+    @pageHeadingHelper(
+        heading = messages("agent.property.check-your-answers.heading"),
+        caption = messages("agent.property.check-your-answers.heading.caption", clientDetails.name, clientDetails.formattedNino),
+        isSection = false
+    )
 
     @govukSummaryList(SummaryList(
         rows = Seq(

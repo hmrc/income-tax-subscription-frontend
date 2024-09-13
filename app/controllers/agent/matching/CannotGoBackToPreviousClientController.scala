@@ -34,8 +34,7 @@ import scala.concurrent.ExecutionContext
 class CannotGoBackToPreviousClientController @Inject()(val auditingService: AuditingService,
                                                        val authService: AuthService,
                                                        val appConfig: AppConfig,
-                                                       val cannotGoBackToPreviousClient: CannotGoBackToPreviousClient
-                                                      )
+                                                       val cannotGoBackToPreviousClient: CannotGoBackToPreviousClient)
                                                       (implicit val ec: ExecutionContext, mcc: MessagesControllerComponents) extends StatelessController {
 
 

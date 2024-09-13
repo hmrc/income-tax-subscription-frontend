@@ -95,16 +95,16 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
       )
     }
 
-    "have a title" in {
-      document().title mustBe OverseasPropertyStartDateMessages.heading + titleSuffix
-    }
-
-    "have a heading" in {
-      document().getH1Element.text mustBe OverseasPropertyStartDateMessages.heading
+    "have a heading and caption" in {
+      document().mainContent.mustHaveHeadingAndCaption(
+        heading = OverseasPropertyStartDateMessages.heading,
+        caption = s"FirstName LastName | ZZ 11 11 11 Z",
+        isSection = false
+      )
     }
 
     "have a paragraph One" in {
-      document().selectNth("p",2).text() mustBe OverseasPropertyStartDateMessages.para1
+      document().selectNth("p", 2).text() mustBe OverseasPropertyStartDateMessages.para1
     }
 
     "have a Form" in {

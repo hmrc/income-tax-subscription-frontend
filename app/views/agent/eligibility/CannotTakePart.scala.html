@@ -16,7 +16,7 @@
 
 @import play.api.i18n.Messages
 @import play.api.mvc.Request
-@import views.html.helpers.ContinueButton
+@import views.html.helpers.{ContinueButton, PageHeadingHelper}
 @import views.html.templates.AgentMainTemplate
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 
@@ -24,6 +24,7 @@
         mainTemplate: AgentMainTemplate,
         form: FormWithCSRF,
         continueButton: ContinueButton,
+        pageHeadingHelper: PageHeadingHelper,
         hmrcNewTabLinkHelper: HmrcNewTabLinkHelper
 )
 
@@ -31,11 +32,11 @@
 
 @mainTemplate(title = messages("agent.cannot-take-part.heading")) {
 
-    <span class="govuk-caption-l">
-      @messages("agent.cannot-take-part.caption", clientName, clientNino)
-    </span>
-
-    <h1 class="govuk-heading-l">@messages("agent.cannot-take-part.heading")</h1>
+    @pageHeadingHelper(
+        heading = messages("agent.cannot-take-part.heading"),
+        caption = messages("agent.cannot-take-part.caption", clientName, clientNino),
+        isSection = false
+    )
 
     <h2 class="govuk-heading-m">@messages("agent.cannot-take-part.subheading")</h2>
 

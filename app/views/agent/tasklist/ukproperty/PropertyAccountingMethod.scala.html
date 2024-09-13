@@ -17,7 +17,7 @@
 @import forms.agent.AccountingMethodPropertyForm
 @import forms.submapping.AccountingMethodMapping
 @import play.api.data.Form
-@import views.html.helpers.{RadioHelper, SaveAndContinueButtonHelper}
+@import views.html.helpers.{RadioHelper, SaveAndContinueButtonHelper, PageHeadingHelper}
 @import views.html.templates.AgentMainTemplate
 @import utilities.UserMatchingSessionUtil.ClientDetails
 
@@ -26,7 +26,7 @@
         form: FormWithCSRF,
         radioHelper: RadioHelper,
         saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
-        hmrcPageHeading: HmrcPageHeading
+        pageHeadingHelper: PageHeadingHelper
 )
 
 
@@ -38,16 +38,13 @@
       @messages("agent.property.accounting-method.heading.caption", clientDetails.name, clientDetails.formattedNino)
     </span>
 
-    <h1 class="govuk-heading-l">
-      @messages("agent.property.accounting-method.heading")
-    </h1>
-
     @form(action = postAction) {
 
         @radioHelper(
             field = accountingMethodForm(AccountingMethodPropertyForm.accountingMethodProperty),
             legend = messages("agent.property.accounting-method.heading"),
-            isPageHeading = false,
+            isPageHeading = true,
+            headingClasses = "govuk-fieldset__legend--l",
             radioItems = Seq(
                 RadioItem(
                     content = Text(messages("agent.property.accounting-method.radio.cash")),

@@ -47,23 +47,23 @@ class ClientCanSignUpViewSpec extends ViewSpec {
   }
 
   "Client Can Sign Up View" when {
-      "Using correct template details" in new ViewTest {
-        new TemplateViewTest(
-          view = page,
-          title = ClientCanSignUpMessages.heading,
-          isAgent = true,
-          backLink = Some(testBackUrl),
-          backLinkText = Some(ClientCanSignUpMessages.backLinkText),
-          hasSignOutLink = true
-        )
-      }
-
-    "have a caption" in new ViewTest {
-      mainContent.selectHead("span.govuk-caption-l").text mustBe s"$clientName | $clientNino"
+    "Using correct template details" in new ViewTest {
+      new TemplateViewTest(
+        view = page,
+        title = ClientCanSignUpMessages.heading,
+        isAgent = true,
+        backLink = Some(testBackUrl),
+        backLinkText = Some(ClientCanSignUpMessages.backLinkText),
+        hasSignOutLink = true
+      )
     }
 
-    "have a heading" in new ViewTest {
-      mainContent.selectFirst("h1").text() mustBe ClientCanSignUpMessages.heading
+    "have a heading and caption" in new ViewTest {
+      mainContent.mustHaveHeadingAndCaption(
+        heading = ClientCanSignUpMessages.heading,
+        caption = s"$clientName | $clientNino",
+        isSection = false
+      )
     }
 
     "have the first paragraph" in new ViewTest {
@@ -121,7 +121,7 @@ class ClientCanSignUpViewSpec extends ViewSpec {
 
     "have the fifth paragraph" in new ViewTest {
       val paragraph = mainContent.select(".govuk-form-group").select(".govuk-body")
-      paragraph.text must include (ClientCanSignUpMessages.signUpAnotherClient)
+      paragraph.text must include(ClientCanSignUpMessages.signUpAnotherClient)
       paragraph.select("a.govuk-link").attr("href") mustBe controllers.agent.routes.AddAnotherClientController.addAnother().url
     }
 

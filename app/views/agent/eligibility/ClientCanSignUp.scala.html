@@ -15,13 +15,13 @@
  *@
 
 @import views.html.templates.AgentMainTemplate
-@import views.html.helpers.RadioHelper
-@import views.html.helpers.ContinueButton
+@import views.html.helpers.{ContinueButton, PageHeadingHelper, RadioHelper}
 
 @this(
     mainTemplate: AgentMainTemplate,
     form : FormWithCSRF,
     radioHelper: RadioHelper,
+    pageHeadingHelper: PageHeadingHelper,
     continueButton: ContinueButton
 )
 
@@ -29,13 +29,11 @@
 
 @mainTemplate(title = messages("agent.client-can-sign-up.heading"), backLink = Some(backUrl), backLinkContent = Some(messages("agent.client-can-sign-up.back-to-enter-client-details"))) {
 
-    <span class="govuk-caption-l">
-      @messages("agent.client-can-sign-up.caption", clientName, clientNino)
-    </span>
-
-    <h1 class="govuk-heading-l">
-      @messages("agent.client-can-sign-up.heading")
-    </h1>
+    @pageHeadingHelper(
+        heading = messages("agent.client-can-sign-up.heading"),
+        caption = messages("agent.client-can-sign-up.caption", clientName, clientNino),
+        isSection = false
+    )
 
     <p class="govuk-body">@messages("agent.client-can-sign-up.para1")</p>
 

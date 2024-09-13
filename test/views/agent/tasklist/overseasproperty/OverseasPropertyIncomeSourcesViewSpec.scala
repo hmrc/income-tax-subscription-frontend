@@ -101,12 +101,12 @@ class OverseasPropertyIncomeSourcesViewSpec extends ViewSpec {
       )
     }
 
-    "have a heading" in new Setup {
-      document.mainContent.selectHead("h1.govuk-heading-l").text mustBe OverseasProppertyIncomeSourcesMessages.heading
-    }
-
-    "have a caption" in new Setup {
-      document.mainContent.selectHead("span.govuk-caption-l").text mustBe OverseasProppertyIncomeSourcesMessages.caption
+    "have a heading and caption" in new Setup {
+      document.mainContent.mustHaveHeadingAndCaption(
+        heading = OverseasProppertyIncomeSourcesMessages.heading,
+        caption = OverseasProppertyIncomeSourcesMessages.caption,
+        isSection = false
+      )
     }
 
     "have a form" which {

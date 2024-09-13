@@ -16,13 +16,13 @@
 
 @import models.common.PropertyModel
 @import views.html.templates.PrincipalMainTemplate
-@import views.html.helpers.SaveAndContinueButtonHelper
+@import views.html.helpers.{SaveAndContinueButtonHelper, PageHeadingHelper}
 
 @this(
     mainTemplate: PrincipalMainTemplate,
     form: FormWithCSRF,
     govukSummaryList: GovukSummaryList,
-    hmrcPageHeading: HmrcPageHeading,
+    pageHeadingHelper: PageHeadingHelper,
     saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
 )
 
@@ -37,12 +37,11 @@
     backLink = Some(backUrl)
 ) {
 
-    @hmrcPageHeading(PageHeading(
-        text = messages("business.check-your-answers.heading"),
-        section = Some(messages("business.check-your-answers.content.uk-property.caption")),
-        headingClasses = Some("govuk-heading-l"),
-        captionClasses = Some("govuk-caption-l")
-    ))
+    @pageHeadingHelper(
+        heading = messages("business.check-your-answers.heading"),
+        caption = messages("business.check-your-answers.content.uk-property.caption"),
+        isSection = true
+    )
 
     @govukSummaryList(SummaryList(
         rows = Seq(

@@ -30,7 +30,7 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
   object OverseasPropertyCheckYourAnswers {
     val title = "Check your answers - Foreign property"
     val heading = "Check your answers"
-    val caption = "This section is Foreign property"
+    val caption = "Foreign property"
     val startDateQuestion = "Start date"
     val accountMethodQuestion = "Accounting method"
     val confirmedAndContinue = "Confirm and continue"
@@ -70,12 +70,12 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
       hasSignOutLink = true
     )
 
-    "have a heading" in {
-      document(completeCashProperty).getH1Element.text() mustBe OverseasPropertyCheckYourAnswers.heading
-    }
-
-    "have a caption" in {
-      document(completeCashProperty).selectHead(".govuk-caption-l").text mustBe OverseasPropertyCheckYourAnswers.caption
+    "have a heading and caption" in {
+      document(completeCashProperty).mainContent.mustHaveHeadingAndCaption(
+        heading = OverseasPropertyCheckYourAnswers.heading,
+        caption = OverseasPropertyCheckYourAnswers.caption,
+        isSection = true
+      )
     }
 
     "have a summary of the answers" when {
