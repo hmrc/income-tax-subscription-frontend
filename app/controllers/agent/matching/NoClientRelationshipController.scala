@@ -16,7 +16,7 @@
 
 package controllers.agent.matching
 
-import auth.agent.UserMatchingController
+import auth.agent.PreSignUpController
 import config.AppConfig
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
@@ -25,8 +25,7 @@ import services.{AuditingService, AuthService}
 import views.html.agent.matching.NoClientRelationship
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.matching.Regex
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class NoClientRelationshipController @Inject()(val auditingService: AuditingService,
@@ -35,17 +34,7 @@ class NoClientRelationshipController @Inject()(val auditingService: AuditingServ
                                                noClientRelationship: NoClientRelationship)
                                               (implicit val ec: ExecutionContext,
                                                mcc: MessagesControllerComponents,
-                                               val appConfig: AppConfig) extends UserMatchingController {
-
-  private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
-
-  private def formatNino(clientNino: String): String = {
-    clientNino match {
-      case ninoRegex(startLetters, firstDigits, secondDigits, thirdDigits, finalLetter) =>
-        s"$startLetters $firstDigits $secondDigits $thirdDigits $finalLetter"
-      case other => other
-    }
-  }
+                                               val appConfig: AppConfig) extends PreSignUpController {
 
   def view(clientName: String, clientNino: String)(implicit request: Request[_]): Html = {
     noClientRelationship(
@@ -57,13 +46,13 @@ class NoClientRelationshipController @Inject()(val auditingService: AuditingServ
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
-      clientDetailsRetrieval.getClientDetails map {
-        clientDetails => Ok(view(clientDetails.name, clientDetails.nino))
+      clientDetailsRetrieval.getClientDetails map { clientDetails =>
+        Ok(view(clientDetails.name, clientDetails.formattedNino))
       }
   }
 
-  val submit: Action[AnyContent] = Authenticated.async { _ =>
+  val submit: Action[AnyContent] = Authenticated { _ =>
     _ =>
-      Future.successful(Redirect(controllers.agent.routes.AddAnotherClientController.addAnother()))
+      Redirect(controllers.agent.routes.AddAnotherClientController.addAnother())
   }
 }

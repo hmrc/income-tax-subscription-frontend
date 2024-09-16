@@ -151,7 +151,8 @@ class ConfirmClientController @Inject()(checkYourClientDetails: CheckYourClientD
       eligibility = "ineligible",
       failureReason = Some("client-already-signed-up")
     ))
-    Redirect(controllers.agent.matching.routes.ClientAlreadySubscribedController.show).removingFromSession(FailedClientMatching)
+    Redirect(controllers.agent.matching.routes.ClientAlreadySubscribedController.show)
+      .removingFromSession(FailedClientMatching)
   }
 
   private def handleUnexpectedFailure(arn: String, clientDetails: UserDetailsModel)
@@ -171,7 +172,9 @@ class ConfirmClientController @Inject()(checkYourClientDetails: CheckYourClientD
       failureReason = Some("no-agent-client-relationship")
     ))
     sessionDataService.saveNino(nino) map {
-      case Right(_) => Redirect(controllers.agent.matching.routes.NoClientRelationshipController.show).removingFromSession(FailedClientMatching)
+      case Right(_) => Redirect(controllers.agent.matching.routes.NoClientRelationshipController.show)
+        .addingToSession(ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true")
+        .removingFromSession(FailedClientMatching)
       case Left(_) => throw new InternalServerException("[ConfirmClientController][handleUnapprovedAgent] - failure when saving nino to session")
     }
   }

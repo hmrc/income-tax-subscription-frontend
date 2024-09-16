@@ -300,7 +300,13 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
     def notEnrolledAgentServices(): WSResponse = get("/not-enrolled-agent-services")
 
-    def getNoClientRelationship: WSResponse = get("/error/no-client-relationship", ClientData.clientName ++ Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))
+    def getNoClientRelationship(clientDetailsConfirmed: Boolean): WSResponse = {
+      get(
+        uri = "/error/no-client-relationship",
+        additionalCookies = ClientData.clientName ++ Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name),
+        withClientDetailsConfirmed = clientDetailsConfirmed
+      )
+    }
 
     def postNoClientRelationship(): WSResponse = post("/error/no-client-relationship", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))(Map.empty)
 

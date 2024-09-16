@@ -16,6 +16,7 @@
 
 package controllers.agent.matching
 
+import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.FailedClientMatching
 import connectors.httpparser.SaveSessionDataHttpParser
 import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataSuccessResponse
@@ -224,6 +225,8 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
 
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(routes.NoClientRelationshipController.show.url)
+
+            session(result).get(ITSASessionKeys.CLIENT_DETAILS_CONFIRMED) mustBe Some("true")
           }
         }
         "the client is not signed up for self assessment as they have no utr" should {
