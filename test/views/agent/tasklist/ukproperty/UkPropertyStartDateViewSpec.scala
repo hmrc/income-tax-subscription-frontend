@@ -115,8 +115,17 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
     }
 
     "have a fieldset with dateInputs" in {
-      document().mustHaveGovukDateField("startDate", PropertyStartDateMessages.heading, PropertyStartDateMessages.hint)
-      document().selectNth("p", 2).text mustBe PropertyStartDateMessages.para1
+      document().mustHaveDateInput(
+        "startDate",
+        PropertyStartDateMessages.heading,
+        PropertyStartDateMessages.hint,
+        isHeading = false,
+        isLegendHidden = true,
+        dateInputsValues = Seq(
+        DateInputFieldValues("Day", None),
+        DateInputFieldValues("Month", None),
+        DateInputFieldValues("Year", None)
+      ))
     }
 
     "have a save & continue button" in {
@@ -136,11 +145,18 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
 
       val doc = document(propertyStartDateForm = formWithError)
 
-      doc.mustHaveGovukDateField(
-        "startDate",
-        PropertyStartDateMessages.heading,
-        PropertyStartDateMessages.hint,
-        Some(PropertyStartDateMessages.maxDate)
+      doc.mustHaveDateInput(
+        id = "startDate",
+        legend = PropertyStartDateMessages.heading,
+        exampleDate = PropertyStartDateMessages.hint,
+        errorMessage = Some(PropertyStartDateMessages.maxDate),
+        isHeading = false,
+        isLegendHidden = true,
+        dateInputsValues = Seq(
+          DateInputFieldValues("Day", None),
+          DateInputFieldValues("Month", None),
+          DateInputFieldValues("Year", None)
+        )
       )
       document().selectNth("p", 2).text mustBe PropertyStartDateMessages.para1
     }
@@ -153,11 +169,18 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
 
       val doc = document(propertyStartDateForm = formWithError)
 
-      doc.mustHaveGovukDateField(
-        "startDate",
-        PropertyStartDateMessages.heading,
-        PropertyStartDateMessages.hint,
-        Some(PropertyStartDateMessages.minDate)
+      doc.mustHaveDateInput(
+        id = "startDate",
+        legend = PropertyStartDateMessages.heading,
+        exampleDate = PropertyStartDateMessages.hint,
+        errorMessage = Some(PropertyStartDateMessages.minDate),
+        isHeading = false,
+        isLegendHidden = true,
+        dateInputsValues = Seq(
+          DateInputFieldValues("Day", None),
+          DateInputFieldValues("Month", None),
+          DateInputFieldValues("Year", None)
+        )
       )
     }
   }

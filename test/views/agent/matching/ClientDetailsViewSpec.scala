@@ -121,10 +121,17 @@ class ClientDetailsViewSpec extends ViewSpec {
     }
 
     "have a DOB field" in {
-      document().mainContent.mustHaveGovukDateField(
+      document().mainContent.mustHaveDateInput(
         id = ClientDetailsForm.clientDateOfBirth,
         legend = ClientDetails.field4,
-        exampleDate = ClientDetails.formhint2
+        exampleDate = ClientDetails.formhint2,
+        isHeading = false,
+        isLegendHidden = false,
+        dateInputsValues = Seq(
+          DateInputFieldValues("Day", None),
+          DateInputFieldValues("Month", None),
+          DateInputFieldValues("Year", None)
+        )
       )
     }
 
