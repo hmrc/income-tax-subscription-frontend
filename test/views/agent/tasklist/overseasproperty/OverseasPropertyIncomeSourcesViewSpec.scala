@@ -49,6 +49,8 @@ class OverseasPropertyIncomeSourcesViewSpec extends ViewSpec {
     val detailsContentPara = "Your client created an invoice for someone in March 2017, but did not receive the money until May 2017. If your client tells HMRC they received this income in:"
     val detailsBullet1 = "May 2017, they use cash basis accounting"
     val detailsBullet2 = "March 2017, you use traditional accounting"
+    val maxDate = "The date the overseas property business started trading must be on or before 11 April 2021"
+    val minDate = "The date your client’s property business started trading must be on or after 11 April 2021"
   }
 
   val testErrorStartDate: FormError = FormError("startDate", "agent.error.property.day-month-year.empty")
@@ -118,7 +120,17 @@ class OverseasPropertyIncomeSourcesViewSpec extends ViewSpec {
       }
 
       "has a date fieldset" in new Setup {
-        document.mustHaveGovukDateField("startDate", OverseasProppertyIncomeSourcesMessages.para1, OverseasProppertyIncomeSourcesMessages.dateHint)
+        document.mustHaveDateInput(
+          "startDate",
+          OverseasProppertyIncomeSourcesMessages.para1,
+          OverseasProppertyIncomeSourcesMessages.dateHint,
+          isHeading = false,
+          isLegendHidden = false,
+          dateInputsValues = Seq(
+            DateInputFieldValues("Day", None),
+            DateInputFieldValues("Month", None),
+            DateInputFieldValues("Year", None)
+          ))
       }
 
       "has a radio button fieldset" which {
@@ -144,11 +156,18 @@ class OverseasPropertyIncomeSourcesViewSpec extends ViewSpec {
 
       val doc = new Setup(form = formWithError).document
 
-      doc.mustHaveGovukDateField(
-        "startDate",
-        OverseasProppertyIncomeSourcesMessages.para1,
-        OverseasProppertyIncomeSourcesMessages.dateHint,
-        Some(messages("agent.error.overseas.property.day-month-year.max-date", "11 April 2021"))
+      doc.mustHaveDateInput(
+        id = "startDate",
+        legend = OverseasProppertyIncomeSourcesMessages.para1,
+        exampleDate = OverseasProppertyIncomeSourcesMessages.dateHint,
+        errorMessage = Some(OverseasProppertyIncomeSourcesMessages.maxDate),
+        isHeading = false,
+        isLegendHidden = false,
+        dateInputsValues = Seq(
+          DateInputFieldValues("Day", None),
+          DateInputFieldValues("Month", None),
+          DateInputFieldValues("Year", None)
+        )
       )
     }
 
@@ -158,11 +177,18 @@ class OverseasPropertyIncomeSourcesViewSpec extends ViewSpec {
 
       val doc = new Setup(form = formWithError).document
 
-      doc.mustHaveGovukDateField(
-        "startDate",
-        OverseasProppertyIncomeSourcesMessages.para1,
-        OverseasProppertyIncomeSourcesMessages.dateHint,
-        Some(messages("agent.error.overseas.property.day-month-year.min-date", "11 April 2021"))
+      doc.mustHaveDateInput(
+        id = "startDate",
+        legend = OverseasProppertyIncomeSourcesMessages.para1,
+        exampleDate = OverseasProppertyIncomeSourcesMessages.dateHint,
+        errorMessage = Some(OverseasProppertyIncomeSourcesMessages.minDate),
+        isHeading = false,
+        isLegendHidden = false,
+        dateInputsValues = Seq(
+          DateInputFieldValues("Day", None),
+          DateInputFieldValues("Month", None),
+          DateInputFieldValues("Year", None)
+        )
       )
     }
   }

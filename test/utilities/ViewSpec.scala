@@ -529,7 +529,7 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
         }
       }
 
-      val hintText: Element = element.selectHead(".govuk-hint")
+      val hintText: Element = element.selectHead(s"#$id-hint.govuk-hint")
       checkpoint {
         hintText.text mustBe exampleDate
       }
@@ -618,24 +618,6 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
 
       error.map { message =>
         fieldset.select("fieldset").select("div.error-notification").text mustBe s"Error: $message"
-      }.getOrElse(succeed)
-    }
-
-    def mustHaveGovukDateField(id: String, legend: String, exampleDate: String, error: Option[String] = None): Assertion = {
-      val fieldset: Element = element.selectHead("fieldset")
-
-      fieldset.attr("aria-describedby") mustBe s"$id-hint" + error.map(_ => s" $id-error").getOrElse("")
-
-      fieldset.selectHead("fieldset").selectHead("legend").text() mustBe legend
-
-      fieldset.selectHead("fieldset").select(".govuk-hint").text() mustBe exampleDate
-
-      fieldset.mustHaveTextField(s"$id-dateDay", "Day")
-      fieldset.mustHaveTextField(s"$id-dateMonth", "Month")
-      fieldset.mustHaveTextField(s"$id-dateYear", "Year")
-
-      error.map { message =>
-        fieldset.select("fieldset").select(".govuk-error-message").text mustBe s"Error: $message"
       }.getOrElse(succeed)
     }
 
