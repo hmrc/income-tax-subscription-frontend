@@ -17,13 +17,13 @@
 @import models.usermatching.UserDetailsModel
 @import views.agent.helpers.ConfirmClientIdConstants._
 @import views.html.templates.AgentMainTemplate
-@import views.html.helpers.ContinueButton
+@import views.html.helpers.{ContinueButton, PageHeadingHelper}
 
 @this(
         agentMainTemplate: AgentMainTemplate,
         form: FormWithCSRF,
         govukSummaryList: GovukSummaryList,
-        hmrcPageHeading: HmrcPageHeading,
+        pageHeadingHelper: PageHeadingHelper,
         continueButton: ContinueButton
 )
 
@@ -34,12 +34,11 @@
 
 @agentMainTemplate(title = messages("agent.client-details.summary.title")) {
 
-        @hmrcPageHeading(PageHeading(
-            text = messages("agent.client-details.summary.heading"),
-            section = Some(messages("agent.client-details.summary.caption")),
-            headingClasses = Some("govuk-heading-l"),
-            captionClasses = Some("govuk-caption-l")
-        ))
+        @pageHeadingHelper(
+            heading = messages("agent.client-details.summary.heading"),
+            caption = messages("agent.client-details.summary.caption"),
+            isSection = true
+        )
 
         @govukSummaryList(SummaryList(
             rows = Seq(

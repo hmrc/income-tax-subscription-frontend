@@ -147,7 +147,6 @@ object MessageLookup {
   object PropertyAccountingMethod {
     val title = "What accounting method do you use for your UK property business?"
     val heading = "What accounting method do you use for your UK property business?"
-    val captionHidden = "This section is"
     val captionVisible = "UK property"
     val accordionSummary = "Help with accounting methods"
     val accordionSubHeading = "Example"
@@ -163,7 +162,6 @@ object MessageLookup {
   object OverseasPropertyAccountingMethod {
     val title = "What accounting method do you use for your foreign property business?"
     val heading = "What accounting method do you use for your foreign property business?"
-    val captionHidden = "This section is"
     val captionVisible = "Foreign property"
     val accordionSummary = "Help with accounting methods"
     val accordionSubHeading = "Example"
@@ -344,7 +342,7 @@ object MessageLookup {
     val title = "Check your answers - tax year"
     val agentTitle = "Check your answers - tax year"
     val heading = "Check your answers"
-    val caption = "This section is Tax year"
+    val caption = "Tax year"
     val agentCaption = "FirstName LastName | ZZ 11 11 11 Z"
     val question = "Tax year you are signing up for"
     val hiddenQuestion = "Change tax year you are signing up for"

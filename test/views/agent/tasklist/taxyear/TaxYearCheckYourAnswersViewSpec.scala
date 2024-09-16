@@ -36,24 +36,24 @@ class TaxYearCheckYourAnswersViewSpec extends ViewSpec {
   private val nino = "ZZ 11 11 11 Z"
 
   "TaxYearCheckYourAnswers" must {
-      "have the correct template" in new TemplateViewTest(
-        view = page(
-          Current,
-          fullName,
-          nino
-        ),
-        title = TaxYearCheckYourAnswers.agentTitle,
-        isAgent = true,
-        backLink = Some(testBackUrl),
-        hasSignOutLink = true
+    "have the correct template" in new TemplateViewTest(
+      view = page(
+        Current,
+        fullName,
+        nino
+      ),
+      title = TaxYearCheckYourAnswers.agentTitle,
+      isAgent = true,
+      backLink = Some(testBackUrl),
+      hasSignOutLink = true
+    )
+
+    "have a heading and caption" in {
+      document().mainContent.mustHaveHeadingAndCaption(
+        heading = TaxYearCheckYourAnswers.heading,
+        caption = TaxYearCheckYourAnswers.agentCaption,
+        isSection = false
       )
-
-    "have a heading" in {
-      document().mainContent.getH1Element.text mustBe heading
-    }
-
-    "have a caption" in {
-      document().selectHead(".govuk-caption-l").text mustBe TaxYearCheckYourAnswers.agentCaption
     }
 
     "have a summary of the answers" when {
@@ -120,5 +120,5 @@ class TaxYearCheckYourAnswersViewSpec extends ViewSpec {
       backUrl = testBackUrl
     )
 
-  private def document(accountingYear: AccountingYear = Current) = Jsoup.parse(page(accountingYear, clientName = fullName, clientNino= nino).body)
+  private def document(accountingYear: AccountingYear = Current) = Jsoup.parse(page(accountingYear, clientName = fullName, clientNino = nino).body)
 }

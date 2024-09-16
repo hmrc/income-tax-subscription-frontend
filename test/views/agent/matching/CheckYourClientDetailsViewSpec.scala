@@ -62,12 +62,12 @@ class CheckYourClientDetailsViewSpec extends ViewSpec {
       isAgent = true
     )
 
-    "have a heading" in {
-      document().getH1Element.text() mustBe ConfirmClient.heading
-    }
-
-    "have a caption" in {
-      document().mainContent.selectHead(".govuk-caption-l").text() mustBe ConfirmClient.caption
+    "have a heading and caption" in {
+      document().mainContent.mustHaveHeadingAndCaption(
+        heading = ConfirmClient.heading,
+        caption = ConfirmClient.caption,
+        isSection = true
+      )
     }
 
     "have a summary of answers" when {
@@ -137,7 +137,7 @@ class CheckYourClientDetailsViewSpec extends ViewSpec {
     object ConfirmClient {
       val title = "Check your answers - client’s details"
       val heading = "Check your answers"
-      val caption = "This section is Details you are signing up your client with"
+      val caption = "Details you are signing up your client with"
       val firstName = "First name"
       val lastName = "Last name"
       val nino = "National Insurance number"

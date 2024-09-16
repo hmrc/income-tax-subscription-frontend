@@ -31,11 +31,9 @@ import utilities.UserMatchingSessionUtil.ClientDetails
 import utilities.ViewSpec
 import views.html.agent.tasklist.ukproperty.PropertyIncomeSources
 
-import java.time.LocalDate
-
 class UkPropertyIncomeSourcesViewSpec extends ViewSpec {
 
-  object UkProppertyIncomeSourcesMessages {
+  object UkPropertyIncomeSourcesMessages {
     val title = "Your client’s UK property"
     val heading: String = title
     val caption = "FirstName LastName | ZZ 11 11 11 Z"
@@ -81,7 +79,7 @@ class UkPropertyIncomeSourcesViewSpec extends ViewSpec {
           backUrl,
           ClientDetails("FirstName LastName", "ZZ111111Z")
         ),
-        title = UkProppertyIncomeSourcesMessages.heading,
+        title = UkPropertyIncomeSourcesMessages.heading,
         isAgent = true,
         backLink = Some(backUrl)
       )
@@ -94,19 +92,19 @@ class UkPropertyIncomeSourcesViewSpec extends ViewSpec {
           backUrl,
           ClientDetails("FirstName LastName", "ZZ111111Z")
         ),
-        title = UkProppertyIncomeSourcesMessages.heading,
+        title = UkPropertyIncomeSourcesMessages.heading,
         isAgent = true,
         backLink = Some(backUrl),
         error = Some(testErrorStartDate)
       )
     }
 
-    "have a heading" in new Setup {
-      document.mainContent.selectHead("h1.govuk-heading-l").text mustBe UkProppertyIncomeSourcesMessages.heading
-    }
-
-    "have a caption" in new Setup {
-      document.mainContent.selectHead("span.govuk-caption-l").text mustBe UkProppertyIncomeSourcesMessages.caption
+    "have a heading and caption" in new Setup {
+      document.mainContent.mustHaveHeadingAndCaption(
+        heading = UkPropertyIncomeSourcesMessages.heading,
+        caption = UkPropertyIncomeSourcesMessages.caption,
+        isSection = false
+      )
     }
 
     "have a form" which {
@@ -118,17 +116,17 @@ class UkPropertyIncomeSourcesViewSpec extends ViewSpec {
       }
 
       "has a date fieldset" in new Setup {
-        document.mustHaveGovukDateField("startDate", UkProppertyIncomeSourcesMessages.para1, UkProppertyIncomeSourcesMessages.dateHint)
+        document.mustHaveGovukDateField("startDate", UkPropertyIncomeSourcesMessages.para1, UkPropertyIncomeSourcesMessages.dateHint)
       }
 
       "has a radio button fieldset" which {
 
         "has a cash radio button" in new Setup {
-          document.select("#main-content > div > div > form > div > fieldset > div > div:nth-child(1) > label").text mustBe UkProppertyIncomeSourcesMessages.radioCash
+          document.select("#main-content > div > div > form > div > fieldset > div > div:nth-child(1) > label").text mustBe UkPropertyIncomeSourcesMessages.radioCash
         }
 
         "has an accruals radio button" in new Setup {
-          document.select("#main-content > div > div > form > div > fieldset > div > div:nth-child(2) > label").text mustBe UkProppertyIncomeSourcesMessages.radioAccruals
+          document.select("#main-content > div > div > form > div > fieldset > div > div:nth-child(2) > label").text mustBe UkPropertyIncomeSourcesMessages.radioAccruals
         }
       }
 
@@ -146,8 +144,8 @@ class UkPropertyIncomeSourcesViewSpec extends ViewSpec {
 
       doc.mustHaveGovukDateField(
         "startDate",
-        UkProppertyIncomeSourcesMessages.para1,
-        UkProppertyIncomeSourcesMessages.dateHint,
+        UkPropertyIncomeSourcesMessages.para1,
+        UkPropertyIncomeSourcesMessages.dateHint,
         Some(messages("agent.error.property.day-month-year.max-date", "11 April 2021"))
       )
     }
@@ -160,8 +158,8 @@ class UkPropertyIncomeSourcesViewSpec extends ViewSpec {
 
       doc.mustHaveGovukDateField(
         "startDate",
-        UkProppertyIncomeSourcesMessages.para1,
-        UkProppertyIncomeSourcesMessages.dateHint,
+        UkPropertyIncomeSourcesMessages.para1,
+        UkPropertyIncomeSourcesMessages.dateHint,
         Some(messages("agent.error.property.day-month-year.min-date", "11 April 2021"))
       )
     }

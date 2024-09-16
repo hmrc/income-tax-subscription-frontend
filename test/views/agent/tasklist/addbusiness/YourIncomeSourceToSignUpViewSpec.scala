@@ -169,12 +169,14 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     "there are no income sources added" should {
       def noIncomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None)
 
-      "have a heading for the page" in new ViewTest(noIncomeSources) {
-        document.mainContent.getH1Element.text mustBe AgentIncomeSource.headingNoIncomeAdded
+      "have a heading and caption" in new ViewTest(noIncomeSources) {
+        document.mainContent.mustHaveHeadingAndCaption(
+          heading = AgentIncomeSource.headingNoIncomeAdded,
+          caption = s"${clientDetails.name} | ${clientDetails.formattedNino}",
+          isSection = false
+        )
       }
-      "have a caption with the client's details" in new ViewTest(noIncomeSources) {
-        document.mainContent.selectHead("span.govuk-caption-l").text mustBe s"${clientDetails.name} | ${clientDetails.formattedNino}"
-      }
+
       "have a lead paragraph" in new ViewTest(noIncomeSources) {
         document.mainContent.selectHead("p.govuk-body-l").text mustBe AgentIncomeSource.leadNoIncomeAdded
       }
@@ -235,12 +237,14 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     "there are incomplete income sources added" should {
       def incompleteIncomeSources: IncomeSources = IncomeSources(incompleteSelfEmployments, incompleteUKProperty, incompleteForeignProperty)
 
-      "have a heading for the page" in new ViewTest(incompleteIncomeSources) {
-        document.mainContent.getH1Element.text mustBe AgentIncomeSource.headingIncompleteIncomeAdded
+      "have a heading and caption" in new ViewTest(incompleteIncomeSources) {
+        document.mainContent.mustHaveHeadingAndCaption(
+          heading = AgentIncomeSource.headingIncompleteIncomeAdded,
+          caption = s"${clientDetails.name} | ${clientDetails.formattedNino}",
+          isSection = false
+        )
       }
-      "have a caption with the clien's details" in new ViewTest(incompleteIncomeSources) {
-        document.mainContent.selectHead("span.govuk-caption-l").text mustBe s"${clientDetails.name} | ${clientDetails.formattedNino}"
-      }
+
       "have a lead paragraph" in new ViewTest(incompleteIncomeSources) {
         document.mainContent.selectHead("p.govuk-body-l").text mustBe AgentIncomeSource.leadIncompleteIncomeAdded
       }
@@ -440,13 +444,14 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     "there are fully complete income sources added" should {
       def completeIncomeSources: IncomeSources = IncomeSources(completeSelfEmployments, completeUKProperty, completeForeignProperty)
 
-      "have a heading for the page" in new ViewTest(completeIncomeSources) {
-        document.mainContent.getH1Element.text mustBe AgentIncomeSource.headingIncompleteIncomeAdded
+      "have a heading and caption" in new ViewTest(completeIncomeSources) {
+        document.mainContent.mustHaveHeadingAndCaption(
+          heading = AgentIncomeSource.headingIncompleteIncomeAdded,
+          caption = s"${clientDetails.name} | ${clientDetails.formattedNino}",
+          isSection = false
+        )
       }
-      "have a caption with the client's details" in new ViewTest(completeIncomeSources) {
-        document.mainContent.selectHead("span.govuk-caption-l")
-          .text mustBe s"${clientDetails.name} | ${clientDetails.formattedNino}"
-      }
+
       "have a lead paragraph" in new ViewTest(completeIncomeSources) {
         document.mainContent.selectHead("p.govuk-body-l").text mustBe AgentIncomeSource.leadIncompleteIncomeAdded
       }

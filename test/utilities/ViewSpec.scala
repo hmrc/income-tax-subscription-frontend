@@ -34,7 +34,6 @@ import play.api.test.FakeRequest
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import org.scalatest.Checkpoints.Checkpoint
 
 import java.time.LocalDate
 import scala.jdk.CollectionConverters._
@@ -205,6 +204,31 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
   case class DateInputFieldValues(label: String, value: Option[String])
 
   implicit class ElementTests(element: Element) {
+
+    def mustHaveHeadingAndCaption(heading: String, caption: String, isSection: Boolean): Assertion = {
+
+      val checkpoint: Checkpoint = new Checkpoint()
+
+      checkpoint {
+        element.selectHead("h1.govuk-heading-l").text mustBe heading
+      }
+
+      if (isSection) {
+        checkpoint {
+          element.selectHead("p.govuk-caption-l").text mustBe s"This section is $caption"
+        }
+        checkpoint {
+          element.selectHead("p.govuk-caption-l").selectHead("span.govuk-visually-hidden").text mustBe "This section is"
+        }
+      } else {
+        checkpoint {
+          element.selectHead("span.govuk-caption-l").text mustBe caption
+        }
+      }
+
+      checkpoint.reportAll()
+      Succeeded
+    }
 
     //scalastyle:off
     def mustHaveSummaryCard(selector: String, nth: Option[Int] = None)
@@ -399,6 +423,7 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
       checkpoint.reportAll()
       Succeeded
     }
+
     //scalastyle:on
     def mustHaveRadioInput(name: String, radioItems: Seq[RadioItem]): Assertion = {
       radioItems.zip(1 to radioItems.length) map { case (radioItem, index) =>

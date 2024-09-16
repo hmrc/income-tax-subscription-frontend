@@ -19,7 +19,7 @@ package views.agent.tasklist.ukproperty
 import models.common.PropertyModel
 import models.{Accruals, Cash, DateModel}
 import org.jsoup.Jsoup
-import org.jsoup.nodes.{Document, Element}
+import org.jsoup.nodes.Element
 import utilities.UserMatchingSessionUtil.ClientDetails
 import utilities.ViewSpec
 import views.html.agent.tasklist.ukproperty.PropertyCheckYourAnswers
@@ -57,12 +57,12 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
       backLink = Some(testBackUrl)
     )
 
-    "have a heading" in {
-      document().getH1Element.text() mustBe PropertyCheckYourAnswers.heading
-    }
-
-    "have a caption" in {
-      document(completeCashProperty).selectHead(".govuk-caption-l").text mustBe PropertyCheckYourAnswers.caption
+    "have a heading and caption" in {
+      document().mainContent.mustHaveHeadingAndCaption(
+        heading = PropertyCheckYourAnswers.heading,
+        caption = PropertyCheckYourAnswers.caption,
+        isSection = false
+      )
     }
 
     "have summary of answers" when {

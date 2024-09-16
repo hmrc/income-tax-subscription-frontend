@@ -15,7 +15,7 @@
  *@
 
 @import forms.agent.PropertyStartDateForm._
-@import views.html.helpers.{DateHelper, SaveAndContinueButtonHelper}
+@import views.html.helpers.{DateHelper, SaveAndContinueButtonHelper, PageHeadingHelper}
 @import views.html.templates.AgentMainTemplate
 @import utilities.UserMatchingSessionUtil.ClientDetails
 
@@ -24,20 +24,18 @@
     form: FormWithCSRF,
     dateHelper: DateHelper,
     saveAndContinueButton: SaveAndContinueButtonHelper,
-    hmrcPageHeading: HmrcPageHeading
+    pageHeadingHelper: PageHeadingHelper
 )
 
 @(propertyStartDateForm: Form[DateModel], postAction: Call, isEditMode: Boolean, backUrl: String, clientDetails: ClientDetails)(implicit request: Request[_], messages: Messages)
 
 @agentMainTemplate(title = messages("agent.property.start-date.heading"), optForm = Some(propertyStartDateForm), backLink = Some(backUrl)) {
 
-  <span class="govuk-caption-l">
-    @messages("agent.property.start-date.heading.caption", clientDetails.name, clientDetails.formattedNino)
-  </span>
-
-  <h1 class="govuk-heading-l">
-    @messages("agent.property.start-date.heading")
-  </h1>
+    @pageHeadingHelper(
+        heading = messages("agent.property.start-date.heading"),
+        caption = messages("agent.property.start-date.heading.caption", clientDetails.name, clientDetails.formattedNino),
+        isSection = false
+    )
 
   <p class="govuk-body">@messages("agent.property.start-date.para1")</p>
 

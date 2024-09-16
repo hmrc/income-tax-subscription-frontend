@@ -15,56 +15,53 @@
  *@
 
 @import views.html.templates.AgentMainTemplate
-@import views.html.helpers.ContinueButton
+@import views.html.helpers.{ContinueButton, PageHeadingHelper}
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 @import utilities.AccountingPeriodUtil
 @import uk.gov.hmrc.play.language.LanguageUtils
 
 @this(
-mainTemplate: AgentMainTemplate,
-form: FormWithCSRF,
-continueButton: ContinueButton,
-hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
-languageUtils: LanguageUtils,
-govukInsetText : GovukInsetText,
-hmrcPageHeading: HmrcPageHeading,
-govukWarningText: GovukWarningText,
+    mainTemplate: AgentMainTemplate,
+    form: FormWithCSRF,
+    continueButton: ContinueButton,
+    hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
+    languageUtils: LanguageUtils,
+    govukInsetText : GovukInsetText,
+    pageHeadingHelper: PageHeadingHelper,
+    govukWarningText: GovukWarningText
 )
 
 @(postAction:Call, eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, clientName: String, clientNino: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = messages("agent.what-you-need-to-do.title")) {
 
-<span class="govuk-caption-l">
-    @messages("agent.what-you-need-to-do.caption", clientName, clientNino)
-  </span>
+    @pageHeadingHelper(
+        heading = if (mandatedCurrentYear) {
+            messages("agent.what-you-need-to-do.heading")
+        } else if (mandatedNextYear && eligibleNextYearOnly) {
+            messages("agent.what-you-need-to-do.heading")
+        } else if (eligibleNextYearOnly) {
+            messages("agent.what-you-are-agreeing-to.heading")
+        } else {
+            messages("agent.what-you-are-agreeing-to.heading")
+        },
+        caption = messages("agent.what-you-need-to-do.caption", clientName, clientNino),
+        isSection = false
+    )
 
+    @if(mandatedCurrentYear) {
+        @mandatedCurrentYearContent
+    } else if (mandatedNextYear && eligibleNextYearOnly) {
+        @mandatedAndEligibleNextYearOnlyContent
+    } else if (eligibleNextYearOnly) {
+        @voluntaryAndEligibleNextYearOnlyContent
+    } else {
+        @voluntaryAndEligibleBothYearsContent
+    }
 
-@if(mandatedCurrentYear) {
-<h1 class="govuk-heading-l">
-    @messages("agent.what-you-need-to-do.heading")
-</h1>
-@mandatedCurrentYearContent
-} else if (mandatedNextYear && eligibleNextYearOnly) {
-<h1 class="govuk-heading-l">
-    @messages("agent.what-you-need-to-do.heading")
-</h1>
-@mandatedAndEligibleNextYearOnlyContent
-} else if (eligibleNextYearOnly) {
-<h1 class="govuk-heading-l">
-    @messages("agent.what-you-are-agreeing-to.heading")
-</h1>
-@voluntaryAndEligibleNextYearOnlyContent
-} else {
-<h1 class="govuk-heading-l">
-    @messages("agent.what-you-are-agreeing-to.heading")
-</h1>
-@voluntaryAndEligibleBothYearsContent
-}
-
-@form(action = postAction) {
-@continueButton(alternateText = Some(messages("base.accept-and-continue")))
-}
+    @form(action = postAction) {
+        @continueButton(alternateText = Some(messages("base.accept-and-continue")))
+    }
 
 }
 

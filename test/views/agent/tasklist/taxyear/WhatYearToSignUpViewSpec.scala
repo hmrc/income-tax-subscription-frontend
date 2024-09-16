@@ -57,12 +57,12 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
       )
     }
 
-    "have client details as caption" in {
-      document().selectHead(".govuk-caption-l").text mustBe WhatYearToSignUp.agentCaption
-    }
-
-    "have a heading" in {
-      document().getH1Element.text mustBe WhatYearToSignUp.heading
+    "have a heading and caption" in {
+      document().mainContent.mustHaveHeadingAndCaption(
+        heading = WhatYearToSignUp.heading,
+        caption = WhatYearToSignUp.agentCaption,
+        isSection = false
+      )
     }
 
     "have a body" which {

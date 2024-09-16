@@ -70,12 +70,12 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
       backLink = Some(testBackUrl)
     )
 
-    "have a heading" in {
-      document(completeCashProperty).getH1Element.text() mustBe OverseasPropertyCheckYourAnswers.heading
-    }
-
-    "have a caption" in {
-      document(completeCashProperty).selectHead(".govuk-caption-l").text mustBe OverseasPropertyCheckYourAnswers.caption
+    "have a heading and caption" in {
+      document(completeCashProperty).mainContent.mustHaveHeadingAndCaption(
+        heading = OverseasPropertyCheckYourAnswers.heading,
+        caption = OverseasPropertyCheckYourAnswers.caption,
+        isSection = false
+      )
     }
 
     "display a summary of answers" when {

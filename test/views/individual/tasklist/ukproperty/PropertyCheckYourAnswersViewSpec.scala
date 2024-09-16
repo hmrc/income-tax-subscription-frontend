@@ -33,7 +33,6 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
   object PropertyCheckYourAnswers {
     val title = "Check your answers - UK property"
     val heading = "Check your answers"
-    val captionHidden = "This section is"
     val caption = "UK property"
     val startDateQuestion = "Start date"
     val accountMethodQuestion = "Accounting method"
@@ -56,12 +55,12 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
       hasSignOutLink = true
     )
 
-    "have a heading" in {
-      document().getH1Element.text() mustBe PropertyCheckYourAnswers.heading
-    }
-
-    "have a caption" in {
-      document().selectHead(".govuk-caption-l").text mustBe s"${PropertyCheckYourAnswers.captionHidden} ${PropertyCheckYourAnswers.caption}"
+    "have a heading and caption" in {
+      document().mainContent.mustHaveHeadingAndCaption(
+        heading = PropertyCheckYourAnswers.heading,
+        caption = PropertyCheckYourAnswers.caption,
+        isSection = true
+      )
     }
 
     "have a summary of the answers" when {

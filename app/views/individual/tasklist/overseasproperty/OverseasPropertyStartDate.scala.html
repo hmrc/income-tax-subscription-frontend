@@ -15,14 +15,14 @@
  *@
 
 @import forms.individual.business.OverseasPropertyStartDateForm._
-@import views.html.helpers.{DateHelper, SaveAndContinueButtonHelper}
+@import views.html.helpers.{DateHelper, SaveAndContinueButtonHelper, PageHeadingHelper}
 @import views.html.templates.PrincipalMainTemplate
 
 @this(
         mainTemplate: PrincipalMainTemplate,
         form: FormWithCSRF,
         dateHelper: DateHelper,
-        hmrcPageHeading: HmrcPageHeading,
+        pageHeadingHelper: PageHeadingHelper,
         saveAndContinueButtonHelper: SaveAndContinueButtonHelper
 )
 
@@ -30,12 +30,11 @@
 
 @mainTemplate(title = messages("overseas.property.name.title"), optForm = Some(overseasPropertyStartDateForm), backLink = Some(backUrl)) {
 
-    @hmrcPageHeading(PageHeading(
-        text = messages("overseas.property.name.heading"),
-        section = Some(messages("overseas.property.name.caption")),
-        headingClasses = Some("govuk-heading-l"),
-        captionClasses = Some("govuk-caption-l")
-    ))
+    @pageHeadingHelper(
+        heading = messages("overseas.property.name.heading"),
+        caption = messages("overseas.property.name.caption"),
+        isSection = true
+    )
 
     <p class="govuk-body">@messages("overseas.property.para1")</p>
     <p class="govuk-body">@messages("overseas.property.para2")</p>

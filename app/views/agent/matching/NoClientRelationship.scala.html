@@ -15,7 +15,7 @@
  *@
 
 @import views.html.templates.AgentMainTemplate
-@import views.html.helpers.{ContinueButton, SignOutLink}
+@import views.html.helpers.{ContinueButton, PageHeadingHelper}
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcNewTabLinkHelper
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 
@@ -24,26 +24,34 @@
     form: FormWithCSRF,
     continueButton: ContinueButton,
     hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
-    signOutLink: SignOutLink
+    pageHeadingHelper: PageHeadingHelper
 )
 
 @(postAction: Call, clientName: String, clientNino: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = messages("agent.no-client-relationship.title")) {
 
-    <span class="govuk-caption-l">@messages("agent.no-client-relationship.caption", clientName, clientNino)</span>
-    <h1 class="govuk-heading-l">@messages("agent.no-client-relationship.heading")</h1>
+    @pageHeadingHelper(
+        heading = messages("agent.no-client-relationship.heading"),
+        caption = messages("agent.no-client-relationship.caption", clientName, clientNino),
+        isSection = false
+    )
 
     <p class="govuk-body">@messages("agent.no-client-relationship.para1")</p>
 
     <p class="govuk-body">@messages("agent.no-client-relationship.para2")</p>
 
     <ol class="govuk-list govuk-list--number">
-        <li>@Html(messages(
-            key = "agent.no-client-relationship.bullet1",
-            args = hmrcNewTabLinkHelper(
-            NewTabLinkHelper(messages("agent.no-client-relationship.link"),
-            Some("https://www.tax.service.gov.uk/agent-services-account/home#tax-services-accordion-content-1")))))
+        <li>
+            @Html(messages(
+                key = "agent.no-client-relationship.bullet1",
+                args = hmrcNewTabLinkHelper(
+                    NewTabLinkHelper(
+                        messages("agent.no-client-relationship.link"),
+                        Some("https://www.tax.service.gov.uk/agent-services-account/home#tax-services-accordion-content-1")
+                    )
+                )
+            ))
         </li>
         <li>@messages("agent.no-client-relationship.bullet2")</li>
         <li>@messages("agent.no-client-relationship.bullet3")</li>

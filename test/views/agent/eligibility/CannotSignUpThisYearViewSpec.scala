@@ -15,6 +15,7 @@
  */
 
 package views.agent.eligibility
+
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.HtmlFormat
@@ -46,12 +47,12 @@ class CannotSignUpThisYearViewSpec extends ViewSpec {
       hasSignOutLink = true
     )
 
-    "have a heading caption" in {
-      mainContent.selectHead("span.govuk-caption-l").text mustBe s"$clientName | $clientNino"
-    }
-
-    "have a heading" in {
-      mainContent.selectFirst("h1").text mustBe CannotSignUpMessages.heading
+    "have a heading and caption" in {
+      mainContent.mustHaveHeadingAndCaption(
+        heading = CannotSignUpMessages.heading,
+        caption = s"$clientName | $clientNino",
+        isSection = false
+      )
     }
 
     "have a first paragraph" in {
@@ -156,8 +157,11 @@ class CannotSignUpThisYearViewSpec extends ViewSpec {
   object CannotSignUpMessages {
     val title = "You can sign up this client from next tax year"
     val heading = "You can sign up this client from next tax year"
-    def para1(year:String, nextyear:String):String = s"You can sign up this client for Making Tax Digital for Income Tax now. You’ll be signing them up from next tax year ($year to $nextyear)."
-    def insetPara(year:String, nextyear:String):String = s"You’ll need to make sure your client submits their Self Assessment tax return for the current tax year ($year to $nextyear) as normal."
+
+    def para1(year: String, nextyear: String): String = s"You can sign up this client for Making Tax Digital for Income Tax now. You’ll be signing them up from next tax year ($year to $nextyear)."
+
+    def insetPara(year: String, nextyear: String): String = s"You’ll need to make sure your client submits their Self Assessment tax return for the current tax year ($year to $nextyear) as normal."
+
     val subheading1 = "What happens next"
     val para2 = "For each of your client’s businesses, you’ll need their:"
     val bullet1 = "business start date (or the date they started getting property income)"
@@ -172,6 +176,7 @@ class CannotSignUpThisYearViewSpec extends ViewSpec {
 
     val signUpThisClientButton = "Sign up this client"
     val checkAnotherClientLinkText = "check if you can sign up another client"
-    def checkAnotherLink(clientName:String):String = s"Or you can $checkAnotherClientLinkText. We will not save the details you entered about $clientName."
+
+    def checkAnotherLink(clientName: String): String = s"Or you can $checkAnotherClientLinkText. We will not save the details you entered about $clientName."
   }
 }

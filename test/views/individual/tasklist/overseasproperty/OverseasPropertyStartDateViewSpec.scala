@@ -32,7 +32,6 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
   object OverseasPropertyStartDateMessages {
     val title = "When did you start your foreign property business?"
     val heading: String = title
-    val captionHidden = "This section is"
     val captionVisible = "Foreign property"
     val hintText = "This is when you started letting any foreign property."
     val para1 = "The date your business started trading can be today, in the past or up to 7 days in the future."
@@ -93,8 +92,11 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
     }
 
     "have a heading and a caption" in new Setup {
-      document.selectHead(".hmrc-caption").text mustBe s"${OverseasPropertyStartDateMessages.captionHidden} ${OverseasPropertyStartDateMessages.captionVisible}"
-      document.getH1Element.text mustBe OverseasPropertyStartDateMessages.heading
+      document.mainContent.mustHaveHeadingAndCaption(
+        heading = OverseasPropertyStartDateMessages.heading,
+        caption = OverseasPropertyStartDateMessages.captionVisible,
+        isSection = true
+      )
     }
 
     "have a hint text" in new Setup {

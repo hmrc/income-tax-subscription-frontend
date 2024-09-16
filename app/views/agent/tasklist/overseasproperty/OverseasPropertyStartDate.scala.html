@@ -23,18 +23,19 @@
     mainTemplate: AgentMainTemplate,
     form: FormWithCSRF,
     dateHelper: DateHelper,
-    saveAndContinueButtonHelper: SaveAndContinueButtonHelper
+    saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
+    pageHeadingHelper: PageHeadingHelper
 )
 
 @(overseasPropertyStartDateForm: Form[DateModel], postAction: Call, backUrl: String, isEditMode: Boolean, clientDetails: ClientDetails)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = messages("agent.overseas-property.start-date.heading"), optForm = Some(overseasPropertyStartDateForm), backLink = Some(backUrl)) {
 
-    <span class="govuk-caption-l">
-      @messages("agent.overseas-property.start-date.heading.caption", clientDetails.name, clientDetails.formattedNino)
-    </span>
-
-    <h1 class="govuk-heading-l">@messages("agent.overseas-property.start-date.heading")</h1>
+    @pageHeadingHelper(
+        heading = messages("agent.overseas-property.start-date.heading"),
+        caption = messages("agent.overseas-property.start-date.heading.caption", clientDetails.name, clientDetails.formattedNino),
+        isSection = false
+    )
 
     <p class="govuk-body">@messages("agent.overseas-property.start-date.para1")</p>
 

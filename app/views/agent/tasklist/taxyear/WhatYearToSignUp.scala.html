@@ -16,7 +16,7 @@
 
 @import forms.agent.AccountingYearForm
 @import services.AccountingPeriodService
-@import views.html.helpers.{ContinueButton, RadioHelper}
+@import views.html.helpers.{ContinueButton, RadioHelper, PageHeadingHelper}
 @import views.html.templates.AgentMainTemplate
 @import views.html.helpers.ReturnDeadlineTable
 
@@ -25,6 +25,7 @@
     radioHelper: RadioHelper,
     govukWarningText: GovukWarningText,
     continueButton: ContinueButton,
+    pageHeadingHelper: PageHeadingHelper,
     accountingPeriodService: AccountingPeriodService,
     table: ReturnDeadlineTable,
     form : FormWithCSRF,
@@ -44,10 +45,11 @@
 @mainTemplate(title = messages("agent.business.what-year-to-sign-up.title"), optForm = Some(accountingYearForm), backLink = backUrl) {
   @form(action = postAction) {
 
-    <span class="govuk-caption-l">
-      @messages("agent.business.what-year-to-sign-up.caption", clientName, clientNino)
-    </span>
-    <h1 class="govuk-heading-l">@messages("agent.business.what-year-to-sign-up.heading")</h1>
+    @pageHeadingHelper(
+        heading = messages("agent.business.what-year-to-sign-up.heading"),
+        caption = messages("agent.business.what-year-to-sign-up.caption", clientName, clientNino),
+        isSection = false
+    )
 
     <p class="govuk-body">
         @messages(

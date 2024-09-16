@@ -77,16 +77,15 @@ class UkPropertyAccountingMethodViewSpec extends ViewSpec {
       )
     }
 
-    "have a heading" in new Setup {
-      document.mainContent.selectHead("h1.govuk-heading-l").text mustBe messages.heading
-    }
-
     "have a caption" in new Setup {
       document.mainContent.selectHead("span.govuk-caption-l").text mustBe messages.caption
     }
 
-
     "have a form" which {
+
+      "have a heading" in new Setup {
+        document.mainContent.selectHead("h1").text mustBe messages.heading
+      }
 
       "has a cash radio button" in new Setup {
         document.select("#main-content > div > div > form > div > fieldset > div > div:nth-child(1) > label").text mustBe messages.cash

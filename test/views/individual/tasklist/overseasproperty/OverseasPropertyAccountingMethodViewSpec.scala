@@ -53,12 +53,12 @@ class OverseasPropertyAccountingMethodViewSpec extends ViewSpec {
       document.title mustBe messages.title + serviceNameGovUk
     }
 
-    "have a heading" in new Setup {
-      document.select("h1").text mustBe messages.heading
-    }
-
-    "have a caption" in new Setup {
-      document.selectHead(".hmrc-caption").text mustBe s"${messages.captionHidden} ${messages.captionVisible}"
+    "have a heading and caption" in new Setup {
+      document.mainContent.mustHaveHeadingAndCaption(
+        heading = messages.heading,
+        caption = messages.captionVisible,
+        isSection = true
+      )
     }
 
     "have a back button" in new Setup {

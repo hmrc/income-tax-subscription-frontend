@@ -17,7 +17,7 @@
 @import views.html.templates.AgentMainTemplate
 @import models.common.AccountingPeriodModel
 @import uk.gov.hmrc.play.language.LanguageUtils
-@import views.html.helpers.ContinueButton
+@import views.html.helpers.{ContinueButton, PageHeadingHelper}
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 @import utilities.AccountingPeriodUtil
 
@@ -26,6 +26,7 @@
     languageUtils: LanguageUtils,
     continueButton: ContinueButton,
     form: FormWithCSRF,
+    pageHeadingHelper: PageHeadingHelper,
     govukInsetText: GovukInsetText
 )
 
@@ -33,11 +34,11 @@
 
 @mainTemplate(title = messages("agent.cannot-sign-up.title")) {
 
-    <span class="govuk-caption-l">
-        @messages("agent.cannot-sign-up.caption", clientName, clientNino)
-    </span>
-
-    <h1 class="govuk-heading-l">@messages("agent.cannot-sign-up.heading")</h1>
+    @pageHeadingHelper(
+        heading = messages("agent.cannot-sign-up.heading"),
+        caption = messages("agent.cannot-sign-up.caption", clientName, clientNino),
+        isSection = false
+    )
 
     <p class="govuk-body">
         @messages(

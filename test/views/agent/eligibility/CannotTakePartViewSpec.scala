@@ -44,12 +44,12 @@ class CannotTakePartViewSpec extends ViewSpec {
       hasSignOutLink = true
     )
 
-    "have a heading" in {
-      document.getH1Element.text mustBe CannotTakePartMessages.heading
-    }
-
-    "have a caption" in {
-      document.mainContent.selectHead("span.govuk-caption-l").text mustBe s"$clientName | $clientNino"
+    "have a heading and caption" in {
+      document.mainContent.mustHaveHeadingAndCaption(
+        heading = CannotTakePartMessages.heading,
+        caption = s"$clientName | $clientNino",
+        isSection = false
+      )
     }
 
     "have a subheading" in {

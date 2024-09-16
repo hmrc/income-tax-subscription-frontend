@@ -21,26 +21,21 @@ import messagelookup.individual.MessageLookup.{Base => common, PropertyAccountin
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
-import play.api.mvc.{Call, Request}
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
-import views.ViewSpecTrait
+import utilities.ViewSpec
 import views.html.individual.tasklist.ukproperty.PropertyAccountingMethod
 
-class UkPropertyAccountingMethodViewSpec extends ViewSpecTrait {
+class UkPropertyAccountingMethodViewSpec extends ViewSpec {
 
-  val backUrl: String = ViewSpecTrait.testBackUrl
-  val action: Call = ViewSpecTrait.testCall
-
-  implicit val request: Request[_] = FakeRequest()
   val propertyAccountingMethod: PropertyAccountingMethod = app.injector.instanceOf[PropertyAccountingMethod]
 
   class Setup(isEditMode: Boolean = false) {
     val page: HtmlFormat.Appendable = propertyAccountingMethod(
       accountingMethodForm = AccountingMethodPropertyForm.accountingMethodPropertyForm,
-      postAction = action,
-      isEditMode,
-      backUrl = backUrl
+      postAction = testCall,
+      isEditMode = isEditMode,
+      backUrl = testBackUrl
     )(FakeRequest(), implicitly)
 
     val document: Document = Jsoup.parse(page.body)
@@ -54,13 +49,16 @@ class UkPropertyAccountingMethodViewSpec extends ViewSpecTrait {
     }
 
     "have a heading and a caption" in new Setup {
-      document.select(".hmrc-caption").text mustBe s"${messages.captionHidden} ${messages.captionVisible}"
-      document.select("h1").text mustBe messages.heading
+      document.mainContent.mustHaveHeadingAndCaption(
+        heading = messages.heading,
+        caption = messages.captionVisible,
+        isSection = true
+      )
     }
 
     "have a back button" in new Setup {
       val backButton: Elements = document.select(".govuk-back-link")
-      backButton.attr("href") mustBe backUrl
+      backButton.attr("href") mustBe testBackUrl
       backButton.text mustBe common.back
     }
 
@@ -81,8 +79,8 @@ class UkPropertyAccountingMethodViewSpec extends ViewSpecTrait {
     "have a form" which {
       "has correct attributes" in new Setup {
         val form: Elements = document.select("form")
-        form.attr("method") mustBe action.method
-        form.attr("action") mustBe action.url
+        form.attr("method") mustBe testCall.method
+        form.attr("action") mustBe testCall.url
       }
 
       "has a cash radio button and hint" in new Setup {
