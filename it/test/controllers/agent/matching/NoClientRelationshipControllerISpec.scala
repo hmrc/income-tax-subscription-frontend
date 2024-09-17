@@ -30,12 +30,12 @@ import play.api.libs.ws.WSResponse
 
 class NoClientRelationshipControllerISpec extends ComponentSpecBase  {
 
-  trait Setup {
+  class Setup(clientDetailsConfirmed: Boolean = true) {
     AuthStub.stubAuthSuccess()
 
     SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
-    val result: WSResponse = IncomeTaxSubscriptionFrontend.getNoClientRelationship
+    val result: WSResponse = IncomeTaxSubscriptionFrontend.getNoClientRelationship(clientDetailsConfirmed)
 
     val doc: Document = Jsoup.parse(result.body)
   }
@@ -52,33 +52,44 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase  {
     val button: String = "Sign up another client"
   }
 
+  "GET /error/no-client/relationship" should {
+    "return SEE_OTHER (303)" when {
+      "the client details haven't been confirmed" in new Setup(false) {
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(controllers.agent.matching.routes.CannotGoBackToPreviousClientController.show.url)
+        )
+      }
+    }
+  }
+
   "GET /error/no-client-relationship" should {
-    "return OK" in new Setup {
+    "return OK" in new Setup() {
       result must have(
         httpStatus(OK)
       )
     }
 
-    "have a view with the correct title" in new Setup {
+    "have a view with the correct title" in new Setup() {
       val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
       doc.title mustBe NoClientRelationshipMessages.title + serviceNameGovUk
     }
 
-    "have a view with the correct heading" in new Setup {
+    "have a view with the correct heading" in new Setup() {
       doc.body().getH1Element.text mustBe NoClientRelationshipMessages.heading
     }
 
-    "have the first paragraph" in new Setup {
+    "have the first paragraph" in new Setup() {
       private val content = doc.body().getElementById("main-content")
       content.getNthParagraph(1).text mustBe NoClientRelationshipMessages.para1
     }
 
-    "have the second paragraph" in new Setup {
+    "have the second paragraph" in new Setup() {
       private val content = doc.body().getElementById("main-content")
       content.getNthParagraph(2).text mustBe NoClientRelationshipMessages.para2
     }
 
-    "have a list of bullet points" in new Setup {
+    "have a list of bullet points" in new Setup() {
       private val bulletPoints = doc.body().select(".govuk-list.govuk-list--number li")
       bulletPoints.size mustBe 3
       bulletPoints.get(0).text mustBe NoClientRelationshipMessages.bullet1
@@ -86,22 +97,22 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase  {
       bulletPoints.get(2).text mustBe NoClientRelationshipMessages.bullet3
     }
 
-    "have the third paragraph" in new Setup {
+    "have the third paragraph" in new Setup() {
       private val content = doc.body().getElementById("main-content")
       content.getNthParagraph(3).text mustBe NoClientRelationshipMessages.para3
     }
 
-    "have a Sign up another client button" in new Setup {
+    "have a Sign up another client button" in new Setup() {
       private val content = doc.body().getElementById("main-content")
       val submitButton: Element = content.getForm.getGovUkSubmitButton
       submitButton.text mustBe NoClientRelationshipMessages.button
     }
 
-    "have a view with a link" in new Setup {
+    "have a view with a link" in new Setup() {
       doc.mainContent.selectHead("a").attr("href") mustBe "https://www.tax.service.gov.uk/agent-services-account/home#tax-services-accordion-content-1"
     }
 
-    "return SEE_OTHER when selecting clicking sign up another client" in new Setup {
+    "return SEE_OTHER when selecting clicking sign up another client" in new Setup() {
 
       private val res = IncomeTaxSubscriptionFrontend.postNoClientRelationship()
       val expectedRedirect: String = routes.AddAnotherClientController.addAnother().url
