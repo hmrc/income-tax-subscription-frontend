@@ -692,10 +692,8 @@ agent.client-details.summary.nino                               = Rhif Yswiriant
 agent.client-details.summary.dob                                = Dyddiad geni
 
 ## agent your income sources to sign up page
-agent.your-income-source.heading.no-income                  = Ychwanegu ffynonellau incwm eich cleient
-agent.your-income-source.lead.no-income                     = Dim ond y ffynonellau incwm sy’n berthnasol i’ch cleient y mae angen i chi eu hychwanegu.
-agent.your-income-source.heading.some-income                = Rheoli ffynonellau incwm eich cleient
-agent.your-income-source.lead.some-income                   = Gallwch reoli’r ffynonellau incwm sy’n berthnasol i’ch cleient. Mae hyn yn cynnwys gorffen ychwanegu ffynhonnell incwm rydych eisoes wedi’i dechrau, ychwanegu un newydd, neu dynnu un bresennol.
+agent.your-income-source.heading                            = Ffynonellau incwm eich cleient
+agent.your-income-source.lead                               = Ychwanegwch bob un o’r ffynonellau hyn y mae’ch cleient yn cael incwm ohonynt.
 agent.your-income-source.caption                            = {0} | {1}
 agent.your-income-source.self-employed                      = Busnesau unig fasnachwr
 agent.your-income-source.self-employed.label-full           = {0} - {1}
@@ -711,8 +709,6 @@ agent.your-income-source.property.start-date                = {0}
 agent.your-income-source.uk-property.add-link               = Ychwanegu ffynhonnell incwm busnes eiddo yn y DU
 agent.your-income-source.foreign-property                   = Busnes eiddo tramor
 agent.your-income-source.foreign-property.add-link          = Ychwanegu ffynhonnell incwm eiddo tramor
-agent.your-income-source.final-note.para-one                = Mae’n rhaid i chi ychwanegu holl ffynonellau incwm eich cleient er mwyn mynd yn eich blaen i gofrestru. Gallwch wneud hynny nawr, neu ddod yn ôl yn nes ymlaen.
-agent.your-income-source.final-note.para-two                = Gellir newid yr wybodaeth am ffynonellau incwm eich cleient ar unrhyw adeg.
 
 # Property income page
 agent.property.income.title                                     = Faint oedd eich incwm o eiddo y flwyddyn hon?

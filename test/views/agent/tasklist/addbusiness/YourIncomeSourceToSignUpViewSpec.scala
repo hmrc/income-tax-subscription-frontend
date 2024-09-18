@@ -34,10 +34,8 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
   }
 
   object AgentIncomeSource {
-    val headingNoIncomeAdded = "Add your client’s income sources"
-    val headingIncompleteIncomeAdded = "Your client’s income sources"
-    val leadNoIncomeAdded = "You only need to add the income sources that apply to your client."
-    val leadIncompleteIncomeAdded = "You can manage income sources that apply to your client. This includes finishing adding an income source you have already started, adding a new one or removing an existing one."
+    val heading = "Your client’s income sources"
+    val lead = "Add all of these sources that your client gets income from."
     val paragraph1: String = "If your client is self-employed, you must add all of their sole trader businesses if they have more than one. " +
       "If they have income from property you must add it, but this is limited to one UK property business."
     val paragraph1Overseas: String = "Your client can have up to 50 sole trader businesses. " +
@@ -72,10 +70,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     val foreignPropertyRemoveLink: String = controllers.agent.tasklist.overseasproperty.routes.RemoveOverseasPropertyController.show.url
     val progressSavedLink: String = controllers.agent.tasklist.routes.ProgressSavedController.show(Some("income-sources")).url
 
-    val finalNoteOne = "You must add all your client’s income sources to continue to sign up. You can do this now or come back later."
-    val finalNoteTwo = "Your client’s income source information can be changed at anytime."
-
-    val continue = "Continue"
+    val continue = "Save and continue"
     val saveAndComeBackLater = "Save and come back later"
 
     val change: String = "Change"
@@ -143,21 +138,21 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     "display the template correctly" when {
       "the are no income sources added" in new TemplateViewTest(
         view = view(),
-        title = AgentIncomeSource.headingNoIncomeAdded,
+        title = AgentIncomeSource.heading,
         isAgent = true,
         backLink = Some(testBackUrl),
         hasSignOutLink = true
       )
       "the are incomplete income sources added" in new TemplateViewTest(
         view = view(IncomeSources(incompleteSelfEmployments, incompleteUKProperty, incompleteForeignProperty)),
-        title = AgentIncomeSource.headingIncompleteIncomeAdded,
+        title = AgentIncomeSource.heading,
         isAgent = true,
         backLink = Some(testBackUrl),
         hasSignOutLink = true
       )
       "the are complete income sources added" in new TemplateViewTest(
         view = view(IncomeSources(completeSelfEmployments, completeUKProperty, completeForeignProperty)),
-        title = AgentIncomeSource.headingIncompleteIncomeAdded,
+        title = AgentIncomeSource.heading,
         isAgent = true,
         backLink = Some(testBackUrl),
         hasSignOutLink = true
@@ -171,14 +166,14 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
       "have a heading and caption" in new ViewTest(noIncomeSources) {
         document.mainContent.mustHaveHeadingAndCaption(
-          heading = AgentIncomeSource.headingNoIncomeAdded,
+          heading = AgentIncomeSource.heading,
           caption = s"${clientDetails.name} | ${clientDetails.formattedNino}",
           isSection = false
         )
       }
 
       "have a lead paragraph" in new ViewTest(noIncomeSources) {
-        document.mainContent.selectHead("p.govuk-body-l").text mustBe AgentIncomeSource.leadNoIncomeAdded
+        document.mainContent.selectHead("p.govuk-body-l").text mustBe AgentIncomeSource.lead
       }
       "have a sole trader section" which {
         "has a heading" in new ViewTest(noIncomeSources) {
@@ -211,14 +206,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           link.attr("href") mustBe AgentIncomeSource.foreignPropertyLink
         }
       }
-      "have a final note" which {
-        "has a first first paragraph" in new ViewTest(noIncomeSources) {
-          document.mainContent.selectNth("p.govuk-body", 4).text mustBe AgentIncomeSource.finalNoteOne
-        }
-        "has a second paragraph" in new ViewTest(noIncomeSources) {
-          document.mainContent.selectNth("p.govuk-body", 5).text mustBe AgentIncomeSource.finalNoteTwo
-        }
-      }
+
       "have a form" which {
         def form(document: Document): Element = document.mainContent.getForm
 
@@ -239,14 +227,14 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
       "have a heading and caption" in new ViewTest(incompleteIncomeSources) {
         document.mainContent.mustHaveHeadingAndCaption(
-          heading = AgentIncomeSource.headingIncompleteIncomeAdded,
+          heading = AgentIncomeSource.heading,
           caption = s"${clientDetails.name} | ${clientDetails.formattedNino}",
           isSection = false
         )
       }
 
       "have a lead paragraph" in new ViewTest(incompleteIncomeSources) {
-        document.mainContent.selectHead("p.govuk-body-l").text mustBe AgentIncomeSource.leadIncompleteIncomeAdded
+        document.mainContent.selectHead("p.govuk-body-l").text mustBe AgentIncomeSource.lead
       }
       "have a sole trader section" which {
         "has a heading" in new ViewTest(incompleteIncomeSources) {
@@ -416,14 +404,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           )
         }
       }
-      "have a final note" which {
-        "has a first first paragraph" in new ViewTest(incompleteIncomeSources) {
-          document.mainContent.selectNth("p.govuk-body", 2).text mustBe AgentIncomeSource.finalNoteOne
-        }
-        "has a second paragraph" in new ViewTest(incompleteIncomeSources) {
-          document.mainContent.selectNth("p.govuk-body", 3).text mustBe AgentIncomeSource.finalNoteTwo
-        }
-      }
+
       "have a form" which {
         def form(document: Document): Element = document.mainContent.getForm
 
@@ -446,14 +427,14 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
       "have a heading and caption" in new ViewTest(completeIncomeSources) {
         document.mainContent.mustHaveHeadingAndCaption(
-          heading = AgentIncomeSource.headingIncompleteIncomeAdded,
+          heading = AgentIncomeSource.heading,
           caption = s"${clientDetails.name} | ${clientDetails.formattedNino}",
           isSection = false
         )
       }
 
       "have a lead paragraph" in new ViewTest(completeIncomeSources) {
-        document.mainContent.selectHead("p.govuk-body-l").text mustBe AgentIncomeSource.leadIncompleteIncomeAdded
+        document.mainContent.selectHead("p.govuk-body-l").text mustBe AgentIncomeSource.lead
       }
       "have a sole trader section" which {
         "has a heading" in new ViewTest(completeIncomeSources) {
@@ -547,14 +528,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           )
         }
       }
-      "have a final note" which {
-        "has a first first paragraph" in new ViewTest(completeIncomeSources) {
-          document.mainContent.selectNth("p.govuk-body", 2).text mustBe AgentIncomeSource.finalNoteOne
-        }
-        "has a second paragraph" in new ViewTest(completeIncomeSources) {
-          document.mainContent.selectNth("p.govuk-body", 3).text mustBe AgentIncomeSource.finalNoteTwo
-        }
-      }
+
       "have a form" which {
         def form(document: Document): Element = document.mainContent.getForm
 
