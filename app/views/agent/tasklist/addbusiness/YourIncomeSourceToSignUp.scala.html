@@ -41,27 +41,17 @@
 
 @(postAction: Call, backUrl: String, clientDetails: ClientDetails, incomeSources: IncomeSources)(implicit request: Request[_], messages: Messages)
 
-@heading = @{
-  if(incomeSources.hasNoIncomeSources){
-    messages("agent.your-income-source.heading.no-income")
-  } else {
-    messages("agent.your-income-source.heading.some-income")
-  }
-}
-
-@agentMainTemplate(title = heading, backLink = Some(backUrl)) {
+@agentMainTemplate(title = messages("agent.your-income-source.heading"), backLink = Some(backUrl)) {
 
     @pageHeadingHelper(
-        heading = heading,
+        heading = messages("agent.your-income-source.heading"),
         caption = messages("agent.your-income-source.caption", clientDetails.name, clientDetails.formattedNino),
         isSection = false
     )
 
-  @if(incomeSources.hasNoIncomeSources){
-    <p class="govuk-body-l">@messages("agent.your-income-source.lead.no-income")</p>
-  } else {
-    <p class="govuk-body-l">@messages("agent.your-income-source.lead.some-income")</p>
-  }
+<p class="govuk-body-l">
+  @messages("agent.your-income-source.lead")
+</p>
 
   @selfEmploymentSection
 
@@ -69,21 +59,13 @@
 
   @foreignPropertySection
 
-  <p class="govuk-body">
-    @messages("agent.your-income-source.final-note.para-one")
-  </p>
-
-  <p class="govuk-body">
-    @messages("agent.your-income-source.final-note.para-two")
-  </p>
-
   @form(action = postAction) {
     @if(incomeSources.hasNoIncomeSources) {
-      @continueButton()
+      @continueButton(alternateText = Some(messages("base.save-and-continue")))
     } else {
       @saveAndContinueButtonHelper(
         isIndividual = false,
-        saveAndContinueText = Some(messages("base.continue")),
+        saveAndContinueText = Some(messages("base.save-and-continue")),
         saveAndReturnReference = Some("income-sources")
       )
     }

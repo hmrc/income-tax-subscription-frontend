@@ -692,10 +692,8 @@ agent.client-details.summary.nino                               = National Insur
 agent.client-details.summary.dob                                = Date of birth
 
 ## agent your income sources to sign up page
-agent.your-income-source.heading.no-income                          = Add your client’s income sources
-agent.your-income-source.lead.no-income                             = You only need to add the income sources that apply to your client.
-agent.your-income-source.heading.some-income                        = Your client’s income sources
-agent.your-income-source.lead.some-income                           = You can manage income sources that apply to your client. This includes finishing adding an income source you have already started, adding a new one or removing an existing one.
+agent.your-income-source.heading                                    = Your client’s income sources
+agent.your-income-source.lead                                       = Add all of these sources that your client gets income from.
 agent.your-income-source.caption                                    = {0} | {1}
 agent.your-income-source.self-employed                              = Sole trader businesses
 agent.your-income-source.self-employed.label-full                   = {0} - {1}
@@ -711,8 +709,6 @@ agent.your-income-source.property.start-date                        = {0}
 agent.your-income-source.uk-property.add-link                       = Add UK property income source
 agent.your-income-source.foreign-property                           = Foreign property
 agent.your-income-source.foreign-property.add-link                  = Add foreign property income source
-agent.your-income-source.final-note.para-one                        = You must add all your client’s income sources to continue to sign up. You can do this now or come back later.
-agent.your-income-source.final-note.para-two                        = Your client’s income source information can be changed at anytime.
 
 # Property income page
 agent.property.income.title                                     = How much was your income from property this year?

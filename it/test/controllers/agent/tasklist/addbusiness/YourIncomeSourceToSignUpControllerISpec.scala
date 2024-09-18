@@ -47,7 +47,7 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the income source page")
         res must have(
           httpStatus(OK),
-          pageTitle(messages("agent.your-income-source.heading.no-income") + serviceNameGovUk)
+          pageTitle(messages("agent.your-income-source.heading") + serviceNameGovUk)
         )
       }
       "there are multiple income sources added" in {
@@ -64,7 +64,7 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the income source page")
         res must have(
           httpStatus(OK),
-          pageTitle(messages("agent.your-income-source.heading.some-income") + serviceNameGovUk)
+          pageTitle(messages("agent.your-income-source.heading") + serviceNameGovUk)
         )
       }
     }
