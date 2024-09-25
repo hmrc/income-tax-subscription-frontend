@@ -33,8 +33,6 @@ class RemoveSelfEmploymentBusinessViewSpec extends ViewSpec {
     val titleWithoutNameOrTradeName = "Are you sure you want to delete this business?"
     val paragraph: String = "All your client’s current sole trader and property businesses need to be added to Making Tax Digital " +
       "for Income Tax at the same time. You will need to re-enter this information if you remove it by mistake."
-    val yes = "Yes"
-    val no = "No"
     val button = "Agree and continue"
   }
 
@@ -104,26 +102,15 @@ class RemoveSelfEmploymentBusinessViewSpec extends ViewSpec {
       }
     }
 
-    "have the legend for the page" in {
-      document().selectHead("legend").text mustBe RemoveSelfEmploymentBusiness.title
-    }
-
-    "have a hint" in {
-      document()
-        .selectHead(".govuk-hint")
-        .text() mustBe RemoveSelfEmploymentBusiness.paragraph
-    }
-
-    "have a 'yes' radio button" in {
-      document()
-        .selectNth(".govuk-radios__item", 1)
-        .text() mustBe RemoveSelfEmploymentBusiness.yes
-    }
-
-    "have a 'no' radio button" in {
-      document()
-        .selectNth(".govuk-radios__item", 2)
-        .text() mustBe RemoveSelfEmploymentBusiness.no
+    "have the correct yes-no radio inputs" in {
+      document().mustHaveYesNoRadioInputs(selector = "fieldset")(
+        name = "yes-no",
+        legend = RemoveSelfEmploymentBusiness.title,
+        isHeading = false,
+        isLegendHidden = true,
+        hint = Some(RemoveSelfEmploymentBusiness.paragraph),
+        errorMessage = None,
+      )
     }
 
     "have a submit button" in {

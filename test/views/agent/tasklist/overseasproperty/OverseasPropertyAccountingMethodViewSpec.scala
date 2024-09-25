@@ -91,18 +91,21 @@ class OverseasPropertyAccountingMethodViewSpec extends ViewSpec {
       }
 
       "has a set of radio buttons inputs" in {
-        document().mainContent.mustHaveRadioInput(
+        document().mainContent.mustHaveRadioInput(selector = "fieldset")(
           name = AccountingMethodOverseasPropertyForm.accountingMethodOverseasProperty,
-          radioItems = Seq(
+          legend =OverseasPropertyAccountingMethodMessages.heading,
+          isHeading = false,
+          isLegendHidden = false,
+          hint = None,
+          errorMessage = None,
+          radioContents = Seq(
             RadioItem(
               content = Text(OverseasPropertyAccountingMethodMessages.cash),
               value = Some(AccountingMethodMapping.option_cash),
-              id = Some(AccountingMethodOverseasPropertyForm.accountingMethodOverseasProperty)
             ),
             RadioItem(
               content = Text(OverseasPropertyAccountingMethodMessages.accruals),
               value = Some(AccountingMethodMapping.option_accruals),
-              id = Some(s"${AccountingMethodOverseasPropertyForm.accountingMethodOverseasProperty}-2")
             )
           )
         )

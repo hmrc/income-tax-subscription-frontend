@@ -16,10 +16,9 @@
 
 package views.agent.tasklist.ukproperty
 
-import config.MockConfig.mockMessages.messages
 import forms.agent.UkPropertyIncomeSourcesForm
 import messagelookup.agent.MessageLookup.Base.{saveAndComeBackLater, saveAndContinue}
-import models.{AccountingMethod, DateModel}
+import models.{AccountingMethod, Accruals, Cash, DateModel}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
@@ -27,6 +26,7 @@ import play.api.data.{Form, FormError}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.Html
+import uk.gov.hmrc.govukfrontend.views.Aliases.{RadioItem, Text}
 import utilities.UserMatchingSessionUtil.ClientDetails
 import utilities.ViewSpec
 import views.html.agent.tasklist.ukproperty.PropertyIncomeSources
@@ -131,15 +131,25 @@ class UkPropertyIncomeSourcesViewSpec extends ViewSpec {
           ))
       }
 
-      "has a radio button fieldset" which {
-
-        "has a cash radio button" in new Setup {
-          document.select("#main-content > div > div > form > div > fieldset > div > div:nth-child(1) > label").text mustBe UkPropertyIncomeSourcesMessages.radioCash
-        }
-
-        "has an accruals radio button" in new Setup {
-          document.select("#main-content > div > div > form > div > fieldset > div > div:nth-child(2) > label").text mustBe UkPropertyIncomeSourcesMessages.radioAccruals
-        }
+      "has the correct radio inputs" in new Setup {
+        document.mustHaveRadioInput(selector = ".govuk-form-group:nth-of-type(2)")(
+          name = UkPropertyIncomeSourcesForm.accountingMethodProperty,
+          legend = UkPropertyIncomeSourcesMessages.para2,
+          isHeading = false,
+          isLegendHidden = true,
+          hint = None,
+          errorMessage = None,
+          radioContents = Seq(
+            RadioItem(
+              content = Text(UkPropertyIncomeSourcesMessages.radioCash),
+              value = Some(Cash.toString)
+            ),
+            RadioItem(
+              content = Text(UkPropertyIncomeSourcesMessages.radioAccruals),
+              value = Some(Accruals.toString)
+            )
+          )
+        )
       }
 
       "has a save and continue + save and come back later buttons" in new Setup() {

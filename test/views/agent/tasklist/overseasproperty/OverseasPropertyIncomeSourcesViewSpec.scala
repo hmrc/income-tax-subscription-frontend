@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package views.agent.tasklist.ukproperty
+package views.agent.tasklist.overseasproperty
 
-import config.MockConfig.mockMessages.messages
 import forms.agent.IncomeSourcesOverseasPropertyForm
 import messagelookup.agent.MessageLookup.Base.{saveAndComeBackLater, saveAndContinue}
-import models.{AccountingMethod, DateModel}
+import models.{AccountingMethod, Accruals, Cash, DateModel}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
@@ -27,11 +26,12 @@ import play.api.data.{Form, FormError}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.Html
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import utilities.UserMatchingSessionUtil.ClientDetails
 import utilities.ViewSpec
 import views.html.agent.tasklist.overseasproperty.IncomeSourcesOverseasProperty
 
-import java.time.LocalDate
 
 class OverseasPropertyIncomeSourcesViewSpec extends ViewSpec {
 
@@ -133,15 +133,25 @@ class OverseasPropertyIncomeSourcesViewSpec extends ViewSpec {
           ))
       }
 
-      "has a radio button fieldset" which {
-
-        "has a cash radio button" in new Setup {
-          document.select("#main-content > div > div > form > div > fieldset > div > div:nth-child(1) > label").text mustBe OverseasProppertyIncomeSourcesMessages.radioCash
-        }
-
-        "has an accruals radio button" in new Setup {
-          document.select("#main-content > div > div > form > div > fieldset > div > div:nth-child(2) > label").text mustBe OverseasProppertyIncomeSourcesMessages.radioAccruals
-        }
+      "has a radio button fieldset" in new Setup {
+        document.mustHaveRadioInput(selector = ".govuk-form-group:nth-of-type(2)")(
+          name = IncomeSourcesOverseasPropertyForm.accountingMethodOverseasProperty,
+          legend = OverseasProppertyIncomeSourcesMessages.para2,
+          isHeading = false,
+          isLegendHidden = true,
+          hint = None,
+          errorMessage = None,
+          radioContents = Seq(
+            RadioItem(
+              content = Text(OverseasProppertyIncomeSourcesMessages.radioCash),
+              value = Some(Cash.toString)
+            ),
+            RadioItem(
+              content = Text(OverseasProppertyIncomeSourcesMessages.radioAccruals),
+              value = Some(Accruals.toString)
+            ),
+          )
+        )
       }
 
       "has a save and continue + save and come back later buttons" in new Setup() {

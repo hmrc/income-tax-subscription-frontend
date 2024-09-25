@@ -79,18 +79,15 @@ class RemoveUkPropertyViewSpec extends ViewSpec {
       )
     }
 
-    "have a fieldset" which {
-      "has a legend and the page heading" in new ViewTest {
-        document.selectHead("fieldset").selectHead("legend").text mustBe ClientRemoveUkPropertyMessages.heading
-      }
-
-      "has a hint" in new ViewTest {
-        document.selectHead("fieldset").selectHead(".govuk-hint").text mustBe ClientRemoveUkPropertyMessages.hint
-      }
-
-      "has radio button yes and no" in new ViewTest {
-        document.mustHaveYesNoRadioInputs("yes-no")
-      }
+    "have the correct yes-no radio inputs" in new ViewTest{
+      document.mustHaveYesNoRadioInputs(selector = "fieldset")(
+        name = "yes-no",
+        legend = ClientRemoveUkPropertyMessages.heading,
+        isHeading = false,
+        isLegendHidden = false,
+        hint = Some(ClientRemoveUkPropertyMessages.hint),
+        errorMessage = None
+      )
     }
 
     "have a agree and continue button" in new ViewTest {

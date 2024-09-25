@@ -18,12 +18,14 @@ package views.agent.tasklist.taxyear
 
 import forms.agent.AccountingYearForm
 import messagelookup.agent.MessageLookup
+import models.{Current, Next}
 import org.jsoup.Jsoup
-import org.jsoup.nodes.{Document, Element}
+import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import play.api.data.FormError
 import play.twirl.api.Html
 import services.AccountingPeriodService
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Hint, RadioItem, Text}
 import utilities.ViewSpec
 import views.html.agent.tasklist.taxyear.WhatYearToSignUp
 
@@ -181,25 +183,31 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
         form.attr("action") mustBe testCall.url
       }
 
-      "has a small size legend for radio options heading" in {
-        document().selectHead(".govuk-fieldset__legend").text() mustBe WhatYearToSignUp.radioSectionHeading
-
-      }
-
-      "has a current tax year radio button" in {
-        val radio: Element = document().select(".govuk-radios__item").get(0)
-        radio.select("input[id=accountingYear]").`val` mustBe "CurrentYear"
-        radio.select("label[for=accountingYear]").text mustBe Seq(
-          WhatYearToSignUp.currentYearOption((taxYearEnd - 1).toString, taxYearEnd.toString)
-        ).mkString(" ")
-      }
-
-      "has a next tax year radio button" in {
-        val radio: Element = document().select(".govuk-radios__item").get(1)
-        radio.select("input[id=accountingYear-2]").`val` mustBe "NextYear"
-        radio.select("label[for=accountingYear-2]").text mustBe Seq(
-          WhatYearToSignUp.nextYearOption(taxYearEnd.toString, (taxYearEnd + 1).toString)
-        ).mkString(" ")
+      "has the correct radio inputs" in {
+        document().mustHaveRadioInput(selector = "fieldset")(
+          name = WhatYearToSignUp.radioName,
+          legend = WhatYearToSignUp.radioSectionHeading,
+          isHeading = false,
+          isLegendHidden = false,
+          hint = None,
+          errorMessage = None,
+          radioContents = Seq(
+            RadioItem(
+              content = Text(Seq(
+                WhatYearToSignUp.currentYearOption((taxYearEnd - 1).toString, taxYearEnd.toString)
+              ).mkString(" ")),
+              value = Some(Current.toString),
+              hint = Some(Hint(content = Text(WhatYearToSignUp.currentYearOptionHint))),
+            ),
+            RadioItem(
+              content = Text(Seq(
+                WhatYearToSignUp.nextYearOption(taxYearEnd.toString, (taxYearEnd + 1).toString)
+              ).mkString(" ")),
+              value = Some(Next.toString),
+              hint = Some(Hint(content = Text(WhatYearToSignUp.nextYearOptionHint))),
+            )
+          )
+        )
       }
 
       "has a continue button" that {
@@ -231,7 +239,7 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
 
   private object WhatYearToSignUp {
     val heading = "Select when your client will start using Making Tax Digital for Income Tax"
-    val agentCaption = fullName + " | " + nino
+    val agentCaption: String = fullName + " | " + nino
     val returnTableCaption = "Submit quarterly updates by the deadline"
     val detailsPara1 = "You can choose to send your client’s updates by calendar quarterly period dates. This must be selected in the compatible software before the first update is made."
     val detailsPara2 = "The deadline for both quarterly period dates are the same."
@@ -239,8 +247,8 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
     val deadlineHeader = "Deadline"
     val paragraph1 = s"You or your client can start sending quarterly updates during the current tax year 6 April ${taxYearPrevious.toString} to 5 April ${taxYearEnd.toString} or the next tax year 6 April ${taxYearEnd.toString} to 5 April ${taxYearNext.toString}."
     val warningText = "! Warning Your client will not be penalised if updates are sent mid-way through the tax year. However, updates need to be made for any missed quarters."
-    val paragraph2 = "Submit quarterly updates by the deadline"
     val radioSectionHeading: String = "Select tax year"
+    val radioName: String = "accountingYear"
     val currentYearOptionHint = s"You or your client will need to submit a final declaration by the 31 January ${(taxYearEnd + 1).toString}."
     val nextYearOptionHint: String =
       s"You or your client will need to submit a final declaration by 31 January ${(taxYearEnd + 2).toString} and " +

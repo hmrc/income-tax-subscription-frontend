@@ -72,24 +72,26 @@ class CannotGoBackToPreviousClientViewSpec extends ViewSpec {
         form.attr("action") mustBe testCall.url
       }
 
-      "has a set of radio inputs" in {
-        form.mustHaveRadioInput(
+      "has the correct radio inputs" in {
+        form.mustHaveRadioInput(selector = "fieldset")(
           name = CannotGoBackToPreviousClientForm.cannotGoBackToPreviousClient,
-          radioItems = Seq(
+          legend = CannotGoBack.heading,
+          isHeading = false,
+          isLegendHidden = true,
+          hint = None,
+          errorMessage = None,
+          radioContents = Seq(
             RadioItem(
               content = Text(CannotGoBack.agentServiceAccountOptionText),
               value = Some(CannotGoBack.agentServiceAccountOptionLabel),
-              id = Some(CannotGoBackToPreviousClientForm.cannotGoBackToPreviousClient)
             ),
             RadioItem(
               content = Text(CannotGoBack.reenterClientDetailsOptionText),
               value = Some(CannotGoBack.reenterClientDetailsOptionLabel),
-              id = Some(s"${CannotGoBackToPreviousClientForm.cannotGoBackToPreviousClient}-2")
             ),
             RadioItem(
               content = Text(CannotGoBack.signUpAnotherClientOptionText),
               value = Some(CannotGoBack.signUpAnotherClientOptionLabel),
-              id = Some(s"${CannotGoBackToPreviousClientForm.cannotGoBackToPreviousClient}-3")
             )
           )
         )
