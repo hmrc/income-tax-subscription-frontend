@@ -74,14 +74,6 @@
   </div>
 }
 
-@taxYearText = @{
-    viewModel.taxYearSelection.map(_.accountingYear) match {
-        case Some(Current) => messages(s"${messagePrefix}.content.section1.current-tax-year", (accountingPeriodService.currentTaxYear - 1).toString, accountingPeriodService.currentTaxYear.toString)
-        case Some(Next) => messages(s"${messagePrefix}.content.section1.next-tax-year", accountingPeriodService.currentTaxYear.toString, (accountingPeriodService.currentTaxYear + 1).toString)
-        case None => messages(s"${messagePrefix}.content.section1.action")
-    }
-}
-
 @taskListCompleteTag() = @{
     TaskListItemStatus(content = Text(messages("business.task-list.status.completed")))
 }
@@ -146,7 +138,7 @@
             ),
             TaskListItem(
                 title = TaskListItemTitle(
-                    content = if(viewModel.permitTaxYearChange) Text(messages("business.task-list.content.tax-year.action")) else Text(taxYearText)
+                    content = Text(messages("business.task-list.content.tax-year.action"))
                 ),
                 status = if(viewModel.taxYearSelectedAndConfirmed) { taskListCompleteTag() } else { taskListIncompleteTag() },
                 href = if(viewModel.permitTaxYearChange) {
@@ -179,11 +171,7 @@
                 } else {
                     None
                 },
-                hint = if(!viewModel.taskListComplete) {
-                    Some(Hint(content = Text(messages("business.task-list.review-sign-up.hint"))))
-                } else {
-                    None
-                }
+                hint = Some(Hint(content = Text(messages("business.task-list.review-sign-up.hint"))))
             )
         ),
         idPrefix = "sign-up-section"

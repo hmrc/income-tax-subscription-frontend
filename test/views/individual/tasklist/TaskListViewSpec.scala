@@ -16,17 +16,14 @@
 
 package views.individual.tasklist
 
-import messagelookup.individual.MessageLookup.Summary.SelectedTaxYear.next
 import messagelookup.individual.MessageLookup.TaskList._
 import messagelookup.individual.MessageLookup.{TaskList => messages}
 import models._
-import models.common.business._
-import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel, TaskListModel}
+import models.common.{AccountingYearModel, TaskListModel}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.twirl.api.Html
 import services.AccountingPeriodService
-import utilities.AccountingPeriodUtil.getCurrentTaxEndYear
 import utilities.ViewSpec
 import utilities.individual.TestConstants.testUtr
 import views.html.individual.tasklist.TaskList
@@ -273,7 +270,7 @@ class TaskListViewSpec extends ViewSpec {
               TaskListItemValues(
                 text = ReviewAndSignUpText,
                 link = Some(controllers.individual.routes.GlobalCheckYourAnswersController.show.url),
-                hint = None,
+                hint = Some(ReviewAndSignUpHint),
                 tagText = incomplete,
                 tagColor = Some("blue")
               )
@@ -285,17 +282,26 @@ class TaskListViewSpec extends ViewSpec {
   }
 
   "given a forced year in the task list model" must {
-    val doc = document(forcedYearTaskList)
-
-    "display select tax year as complete status with links, hint" in {
-
-      val individualSelectTaxYear = doc.mainContent.selectHead("ul").selectNth("li", 2)
-      val individualSelectTaxYearTag = doc.mainContent.selectHead("ul").selectNth("li", 2).selectHead("#client-details-2-status")
-
-      individualSelectTaxYear.select("a").size() mustBe 0
-      individualSelectTaxYear.selectHead("div").text mustBe next(getCurrentTaxEndYear, getCurrentTaxEndYear + 1) + " " + selectYourNextTaxYearHint
-      individualSelectTaxYearTag.text mustBe complete
-
+    "display the first task list part without a tax year link" in {
+      document(forcedYearTaskList).mainContent.mustHaveTaskList(".govuk-task-list:nth-of-type(1)")(
+        idPrefix = "client-details",
+        items = Seq(
+          TaskListItemValues(
+            text = addYourIncomeSources,
+            link = Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url),
+            hint = Some(addYourIncomeSourcesHint),
+            tagText = incomplete,
+            tagColor = Some("blue")
+          ),
+          TaskListItemValues(
+            text = selectTaxYear,
+            link = None,
+            hint = Some(selectYourNextTaxYearHint),
+            tagText = complete,
+            tagColor = None
+          )
+        )
+      )
     }
   }
 }
