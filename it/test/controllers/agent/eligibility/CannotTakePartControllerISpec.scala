@@ -16,7 +16,9 @@
 
 package controllers.agent.eligibility
 
+import auth.agent.AgentUserMatching
 import common.Constants.ITSASessionKeys
+import common.Constants.ITSASessionKeys.JourneyStateKey
 import connectors.stubs.SessionDataConnectorStub
 import helpers.IntegrationTestConstants.testNino
 import helpers.agent.servicemocks.AuthStub
@@ -31,7 +33,7 @@ import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 
 class CannotTakePartControllerISpec extends ComponentSpecBase with AuthRedirects with SessionCookieCrumbler {
 
-  class Setup(sessionData: Map[String, String] = ClientData.clientDataWithNinoAndUTR) {
+  class Setup(sessionData: Map[String, String] = ClientData.clientDataWithNinoAndUTR ++ Map(JourneyStateKey -> AgentUserMatching.name)) {
     AuthStub.stubAuthSuccess()
     SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
@@ -45,6 +47,7 @@ class CannotTakePartControllerISpec extends ComponentSpecBase with AuthRedirects
   }
 
   "GET /client/cannot-sign-up" should {
+
 
     "return a status of OK" in new Setup() {
       result.status mustBe OK

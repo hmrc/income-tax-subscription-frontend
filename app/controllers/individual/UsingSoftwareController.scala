@@ -25,17 +25,17 @@ import models.YesNo
 import play.api.data.Form
 import play.api.mvc._
 import play.twirl.api.Html
-import services.{AuditingService, AuthService, GetEligibilityStatusService, SessionDataService}
+import services.{AuditingService, AuthService, SessionDataService}
 import uk.gov.hmrc.http.InternalServerException
 import views.html.individual.UsingSoftware
+
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 
 @Singleton
 class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
-                                        sessionDataService: SessionDataService,
-                                        eligibilityStatusService: GetEligibilityStatusService)
+                                        sessionDataService: SessionDataService)
                                        (val auditingService: AuditingService,
                                         val authService: AuthService,
                                         val appConfig: AppConfig)
@@ -46,8 +46,7 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
   private val form: Form[YesNo] = UsingSoftwareForm.usingSoftwareForm
 
 
-  def view(usingSoftwareForm: Form[YesNo],
-           eligibleNextYearOnly: Boolean)
+  def view(usingSoftwareForm: Form[YesNo])
           (implicit request: Request[_]): Html = {
     usingSoftware(
       usingSoftwareForm = usingSoftwareForm,
@@ -59,15 +58,12 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
     _ =>
       for {
         usingSoftwareStatus <- sessionDataService.fetchSoftwareStatus
-        eligibilityStatus <- eligibilityStatusService.getEligibilityStatus
       } yield {
         usingSoftwareStatus match {
           case Left(_) => throw new InternalServerException("[UsingSoftwareController][show] - Could not fetch software status")
-
           case Right(maybeYesNo) =>
             Ok(view(
               usingSoftwareForm = form.fill(maybeYesNo),
-              eligibleNextYearOnly = eligibilityStatus.eligibleNextYearOnly
             ))
         }
 
@@ -78,20 +74,18 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
     _ =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          eligibilityStatusService.getEligibilityStatus map { eligibility =>
-            BadRequest(
-              view(
-                usingSoftwareForm = formWithErrors,
-                eligibleNextYearOnly = eligibility.eligibleNextYearOnly
-              )
-            )
-          }, yesNo =>
+          Future.successful(BadRequest(view(
+            usingSoftwareForm = formWithErrors
+          )))
+        , yesNo =>
           sessionDataService.saveSoftwareStatus(yesNo) map {
             case Left(_) => throw new InternalServerException("[UsingSoftwareController][submit] - Could not save using software answer")
-            case Right(_) => {
-              if (isEnabled(PrePopulate)) Redirect(controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show())
-              else Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
-            }
+            case Right(_) =>
+              if (isEnabled(PrePopulate)) {
+                Redirect(controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show())
+              } else {
+                Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
+              }
           }
       )
   }

@@ -16,6 +16,7 @@
 
 package controllers.agent.tasklist.taxyear
 
+import config.featureswitch.FeatureSwitch.PrePopulate
 import connectors.httpparser.PostSubscriptionDetailsHttpParser
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.agent.AgentControllerBaseSpec
@@ -29,7 +30,6 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks._
 import views.agent.mocks.MockWhatYearToSignUp
-import config.featureswitch.FeatureSwitch.PrePopulate
 
 import scala.concurrent.Future
 
@@ -186,9 +186,9 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
       }
     }
     "not in edit mode" must {
-      s"return ${controllers.agent.routes.UsingSoftwareController.show().url} when PrePopluate is enabled" in {
+      s"return ${controllers.agent.routes.UsingSoftwareController.show.url} when PrePopluate is enabled" in {
         enable(PrePopulate)
-        TestWhatYearToSignUpController.backUrl(false) mustBe Some(controllers.agent.routes.UsingSoftwareController.show().url)
+        TestWhatYearToSignUpController.backUrl(false) mustBe Some(controllers.agent.routes.UsingSoftwareController.show.url)
       }
 
       s"return ${controllers.agent.tasklist.routes.TaskListController.show().url} when PrePopulate is disabled" in {

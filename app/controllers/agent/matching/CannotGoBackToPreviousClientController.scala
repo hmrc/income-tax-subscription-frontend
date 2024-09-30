@@ -16,53 +16,42 @@
 
 package controllers.agent.matching
 
-import auth.agent.StatelessController
 import config.AppConfig
-import forms.agent.CannotGoBackToPreviousClientForm
+import controllers.SignUpBaseController
+import controllers.agent.actions.IdentifierAction
+import forms.agent.CannotGoBackToPreviousClientForm.cannotGoBackToPreviousClientForm
 import models.CannotGoBack
-import play.api.data.Form
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
-import play.twirl.api.Html
-import services.{AuditingService, AuthService}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import views.html.agent.matching.CannotGoBackToPreviousClient
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
-
 
 @Singleton
-class CannotGoBackToPreviousClientController @Inject()(val auditingService: AuditingService,
-                                                       val authService: AuthService,
-                                                       val appConfig: AppConfig,
-                                                       val cannotGoBackToPreviousClient: CannotGoBackToPreviousClient)
-                                                      (implicit val ec: ExecutionContext, mcc: MessagesControllerComponents) extends StatelessController {
+class CannotGoBackToPreviousClientController @Inject()(view: CannotGoBackToPreviousClient,
+                                                       identify: IdentifierAction,
+                                                       appConfig: AppConfig)
+                                                      (implicit cc: MessagesControllerComponents) extends SignUpBaseController {
 
-
-  def view(cannotGoBackToPreviousClientForm: Form[CannotGoBack])(implicit request: Request[_]): Html = {
-    cannotGoBackToPreviousClient(
+  val show: Action[AnyContent] = identify { implicit request =>
+    Ok(view(
       cannotGoBackToPreviousClientForm = cannotGoBackToPreviousClientForm,
-      postAction = controllers.agent.matching.routes.CannotGoBackToPreviousClientController.submit
+      postAction = routes.CannotGoBackToPreviousClientController.submit
+    ))
+  }
+
+  val submit: Action[AnyContent] = identify { implicit request =>
+    cannotGoBackToPreviousClientForm.bindFromRequest().fold(
+      formWithErrors => BadRequest(view(
+        cannotGoBackToPreviousClientForm = formWithErrors,
+        postAction = routes.CannotGoBackToPreviousClientController.submit
+      )),
+      {
+        case CannotGoBack.AgentServiceAccount =>
+          Redirect(appConfig.agentServicesAccountHomeUrl)
+        case CannotGoBack.ReenterClientDetails | CannotGoBack.SignUpAnotherClient =>
+          Redirect(controllers.agent.routes.AddAnotherClientController.addAnother())
+      }
     )
   }
 
-  def show: Action[AnyContent] = Authenticated {
-    implicit request =>
-      _ =>
-        Ok(view(cannotGoBackToPreviousClientForm = CannotGoBackToPreviousClientForm.cannotGoBackToPreviousClientForm))
-  }
-
-
-  def submit: Action[AnyContent] = Authenticated {
-    implicit request =>
-      _ =>
-        CannotGoBackToPreviousClientForm.cannotGoBackToPreviousClientForm.bindFromRequest().fold(
-          formWithErrors =>
-            BadRequest(view(cannotGoBackToPreviousClientForm = formWithErrors)),
-          {
-            case CannotGoBack.AgentServiceAccount => Redirect(appConfig.agentServicesAccountHomeUrl)
-            case CannotGoBack.ReenterClientDetails => Redirect(controllers.agent.routes.AddAnotherClientController.addAnother())
-            case CannotGoBack.SignUpAnotherClient => Redirect(controllers.agent.routes.AddAnotherClientController.addAnother())
-          }
-        )
-  }
 }

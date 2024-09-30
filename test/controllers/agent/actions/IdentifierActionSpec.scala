@@ -1,0 +1,106 @@
+/*
+ * Copyright 2024 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package controllers.agent.actions
+
+import auth.MockAuth
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.play.PlaySpec
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.mvc.{BodyParsers, Result, Results}
+import play.api.test.FakeRequest
+import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
+import play.api.{Configuration, Environment}
+import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
+import uk.gov.hmrc.auth.core.retrieve.~
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+
+
+class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with BeforeAndAfterEach with MockAuth {
+
+  val identifierAction: IdentifierAction = new IdentifierAction(
+    authConnector = mockAuth,
+    parser = app.injector.instanceOf[BodyParsers.Default],
+    config = app.injector.instanceOf[Configuration],
+    env = app.injector.instanceOf[Environment]
+  )
+
+  "IdentifierAction" when {
+    "authorising an agent with an agent reference number" must {
+      "create an identifier request with the agent reference number and continue the request" in {
+        mockAuthorise(EmptyPredicate, Retrievals.affinityGroup and Retrievals.allEnrolments)(
+          new~(Some(AffinityGroup.Agent), Enrolments(Set(Enrolment("HMRC-AS-AGENT", Seq(EnrolmentIdentifier(key = "AgentReferenceNumber", "test-arn")), state = "Activated"))))
+        )
+
+        val result: Future[Result] = identifierAction { request =>
+          request.arn mustBe "test-arn"
+          Results.Ok
+        }(FakeRequest())
+
+        status(result) mustBe OK
+      }
+    }
+    "authorising an agent without an agent reference number" must {
+      "return a redirect to the not enrolled for agent services page" in {
+        mockAuthorise(EmptyPredicate, Retrievals.affinityGroup and Retrievals.allEnrolments)(
+          new~(Some(AffinityGroup.Agent), Enrolments(Set.empty))
+        )
+
+        val result: Future[Result] = identifierAction { _ =>
+          Results.Ok
+        }(FakeRequest())
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.agent.matching.routes.NotEnrolledAgentServicesController.show.url)
+      }
+    }
+    "authorising a non agent" must {
+      "return a redirect to the not enrolled for agent services page" in {
+        mockAuthorise(EmptyPredicate, Retrievals.affinityGroup and Retrievals.allEnrolments)(
+          new~(Some(AffinityGroup.Individual), Enrolments(Set(Enrolment("HMRC-AS-AGENT", Seq(EnrolmentIdentifier(key = "AgentReferenceNumber", "test-arn")), state = "Activated"))))
+        )
+
+        val result: Future[Result] = identifierAction { _ =>
+          Results.Ok
+        }(FakeRequest())
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.agent.matching.routes.NotEnrolledAgentServicesController.show.url)
+      }
+    }
+    "an AuthorisationException is thrown from auth" must {
+      "return a redirect to login" in {
+        mockAuthoriseFailure(EmptyPredicate, Retrievals.affinityGroup and Retrievals.allEnrolments) {
+          BearerTokenExpired()
+        }
+
+        val result: Future[Result] = identifierAction { _ =>
+          Results.Ok
+        }(FakeRequest(method = "GET", path = "/test-url"))
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some("/bas-gateway/sign-in?continue_url=%2Ftest-url&origin=income-tax-subscription-frontend")
+      }
+    }
+  }
+
+
+}

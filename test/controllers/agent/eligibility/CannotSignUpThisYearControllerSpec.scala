@@ -57,7 +57,7 @@ class CannotSignUpThisYearControllerSpec extends AgentControllerBaseSpec
       val result: Result = await(TestCannotSignUpThisYearController.submit()(subscriptionRequest))
 
       status(result) must be(Status.SEE_OTHER)
-      redirectLocation(result) must be(Some(controllers.agent.routes.UsingSoftwareController.show().url))
+      redirectLocation(result) must be(Some(controllers.agent.routes.UsingSoftwareController.show.url))
     }
   }
 

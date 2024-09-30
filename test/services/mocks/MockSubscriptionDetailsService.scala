@@ -25,14 +25,16 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
+import org.scalatestplus.play.PlaySpec
+import play.api.http.Status.OK
 import services.SubscriptionDetailsService
-import utilities.UnitTestTrait
+import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
 
 //scalastyle:off
 
-trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach with MockMandationStatusService with MockGetEligibilityStatusService {
+trait MockSubscriptionDetailsService extends PlaySpec with MockitoSugar with BeforeAndAfterEach with MockMandationStatusService with MockGetEligibilityStatusService {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -160,6 +162,11 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
   def mockFetchPrePopFlag(flag: Option[Boolean]): Unit = {
     when(mockSubscriptionDetailsService.fetchPrePopFlag(ArgumentMatchers.any())(ArgumentMatchers.any()))
       .thenReturn(Future.successful(flag))
+  }
+
+  def mockDeleteAll(): Unit = {
+    when(mockSubscriptionDetailsService.deleteAll(ArgumentMatchers.any())(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(HttpResponse(OK, "")))
   }
 
 }

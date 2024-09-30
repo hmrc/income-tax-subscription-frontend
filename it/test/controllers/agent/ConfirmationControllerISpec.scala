@@ -27,6 +27,7 @@ import models.status.MandationStatusModel
 import play.api.http.Status.{NOT_FOUND, NO_CONTENT, OK}
 import play.api.libs.json.{JsString, Json}
 import utilities.SubscriptionDataKeys._
+import utilities.agent.TestConstants.testUtr
 
 class ConfirmationControllerISpec extends ComponentSpecBase {
 
@@ -45,6 +46,7 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
           responseBody = Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         )
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
         When("I call GET /confirmation")
         val res = IncomeTaxSubscriptionFrontend.showConfirmation(hasSubmitted = true, "Test", "User", "A111111AA")

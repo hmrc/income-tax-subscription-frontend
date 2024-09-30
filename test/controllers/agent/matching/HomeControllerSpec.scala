@@ -26,7 +26,6 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSubscriptionDetailsService, MockThrottlingConnector}
-import utilities.agent.TestConstants.testUtr
 
 import scala.concurrent.Future
 
