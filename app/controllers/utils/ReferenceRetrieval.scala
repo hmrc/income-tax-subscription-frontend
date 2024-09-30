@@ -19,7 +19,7 @@ package controllers.utils
 import auth.agent.IncomeTaxAgentUser
 import connectors.httpparser.{GetSessionDataHttpParser, RetrieveReferenceHttpParser, SaveSessionDataHttpParser}
 import models.audits.SignupRetrieveAuditing.SignupRetrieveAuditModel
-import play.api.mvc.{AnyContent, Request}
+import play.api.mvc.Request
 import services._
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
@@ -34,16 +34,16 @@ class ReferenceRetrieval @Inject()(subscriptionDetailsService: SubscriptionDetai
                                    auditingService: AuditingService)
                                   (implicit ec: ExecutionContext) {
 
-  def getIndividualReference(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[String] = {
+  def getIndividualReference(implicit hc: HeaderCarrier, request: Request[_]): Future[String] = {
     getReference(arn = None)
   }
 
-  def getAgentReference(implicit hc: HeaderCarrier, request: Request[AnyContent], user: IncomeTaxAgentUser): Future[String] = {
+  def getAgentReference(implicit hc: HeaderCarrier, request: Request[_], user: IncomeTaxAgentUser): Future[String] = {
     getReference(arn = Some(user.arn))
   }
 
   def getReference(arn: Option[String])
-                  (implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[String] = {
+                  (implicit hc: HeaderCarrier, request: Request[_]): Future[String] = {
 
     sessionDataService.fetchReference.flatMap {
       case Right(Some(reference)) => Future.successful(reference)
@@ -61,7 +61,7 @@ class ReferenceRetrieval @Inject()(subscriptionDetailsService: SubscriptionDetai
   }
 
   private def handleReferenceNotFound(nino: String, utr: String, arn: Option[String])
-                                     (implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[String] = {
+                                     (implicit hc: HeaderCarrier, request: Request[_]): Future[String] = {
     subscriptionDetailsService.retrieveReference(utr) flatMap {
       case Right(RetrieveReferenceHttpParser.Existing(reference)) =>
         for {

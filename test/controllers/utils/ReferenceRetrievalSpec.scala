@@ -34,6 +34,7 @@ import uk.gov.hmrc.auth.core.{ConfidenceLevel, Enrolment, EnrolmentIdentifier, E
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class ReferenceRetrievalSpec extends PlaySpec
@@ -55,7 +56,7 @@ class ReferenceRetrievalSpec extends PlaySpec
     mockNinoService,
     mockUTRService,
     mockAuditingService
-  )(executionContext)
+  )
 
   val utr: String = "1234567890"
   val nino: String = "AA111111A"

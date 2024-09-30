@@ -25,14 +25,14 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
+import org.scalatestplus.play.PlaySpec
 import services.SubscriptionDetailsService
-import utilities.UnitTestTrait
 
 import scala.concurrent.Future
 
 //scalastyle:off
 
-trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach with MockMandationStatusService with MockGetEligibilityStatusService {
+trait MockSubscriptionDetailsService extends PlaySpec with MockitoSugar with BeforeAndAfterEach with MockMandationStatusService with MockGetEligibilityStatusService {
 
   override def beforeEach(): Unit = {
     super.beforeEach()

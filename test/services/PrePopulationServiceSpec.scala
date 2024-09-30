@@ -24,9 +24,14 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.play.PlaySpec
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import services.mocks.MockSubscriptionDetailsService
+import uk.gov.hmrc.http.HeaderCarrier
 import utilities.MockUUIDProvider
 
+import scala.concurrent.ExecutionContext.Implicits.global
+
 class PrePopulationServiceSpec extends PlaySpec with Matchers with MockSubscriptionDetailsService with MockUUIDProvider {
+
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   val testReference = "testReference"
   val prePopulationService: PrePopulationService = new PrePopulationService(mockSubscriptionDetailsService, mockUUIDProvider)

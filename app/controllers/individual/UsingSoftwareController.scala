@@ -45,8 +45,7 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
   private val form: Form[YesNo] = UsingSoftwareForm.usingSoftwareForm
 
 
-  def view(usingSoftwareForm: Form[YesNo],
-           eligibleNextYearOnly: Boolean)
+  def view(usingSoftwareForm: Form[YesNo])
           (implicit request: Request[_]): Html = {
     usingSoftware(
       usingSoftwareForm = usingSoftwareForm,
@@ -58,15 +57,12 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
     _ =>
       for {
         usingSoftwareStatus <- sessionDataService.fetchSoftwareStatus
-        eligibilityStatus <- eligibilityStatusService.getEligibilityStatus
       } yield {
         usingSoftwareStatus match {
           case Left(_) => throw new InternalServerException("[UsingSoftwareController][show] - Could not fetch software status")
-
           case Right(maybeYesNo) =>
             Ok(view(
               usingSoftwareForm = form.fill(maybeYesNo),
-              eligibleNextYearOnly = eligibilityStatus.eligibleNextYearOnly
             ))
         }
 
@@ -80,8 +76,7 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
           eligibilityStatusService.getEligibilityStatus map { eligibility =>
             BadRequest(
               view(
-                usingSoftwareForm = formWithErrors,
-                eligibleNextYearOnly = eligibility.eligibleNextYearOnly
+                usingSoftwareForm = formWithErrors
               )
             )
           }, yesNo =>
