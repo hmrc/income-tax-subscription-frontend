@@ -71,17 +71,15 @@ class CannotSignUpThisYearViewSpec extends ViewSpec {
       document.mainContent.selectFirst("p").text() mustBe CannotSignUpMessages.paragraph1(year, nextYear)
     }
 
-    "have a form with the correct attributes" which {
-
-      "has a legend" that {
-        "is the heading for the page" in new ViewTest {
-          mainContent.getForm.getFieldset.getElementsByClass("govuk-fieldset__legend").text mustBe CannotSignUpMessages.formHeading
-        }
-      }
-
-      "has a set of yes no radio buttons" in new ViewTest {
-        mainContent.getForm.getFieldset.mustHaveYesNoRadioInputs(CannotSignUpThisYearForm.yesNo)
-      }
+    "have a the correct yes-no radio inputs" in new ViewTest {
+      mainContent.mustHaveYesNoRadioInputs(selector = "fieldset")(
+        name = CannotSignUpThisYearForm.yesNo,
+        legend = CannotSignUpMessages.formHeading,
+        isHeading = false,
+        isLegendHidden = false,
+        hint = None,
+        errorMessage = None
+      )
     }
 
     "have a Accept and Continue button" in new ViewTest {

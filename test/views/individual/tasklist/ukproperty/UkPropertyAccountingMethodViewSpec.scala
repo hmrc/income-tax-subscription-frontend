@@ -18,11 +18,14 @@ package views.individual.tasklist.ukproperty
 
 import forms.individual.business.AccountingMethodPropertyForm
 import messagelookup.individual.MessageLookup.{Base => common, PropertyAccountingMethod => messages}
+import models.{Accruals, Cash}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Hint, Text}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import utilities.ViewSpec
 import views.html.individual.tasklist.ukproperty.PropertyAccountingMethod
 
@@ -83,15 +86,31 @@ class UkPropertyAccountingMethodViewSpec extends ViewSpec {
         form.attr("action") mustBe testCall.url
       }
 
-      "has a cash radio button and hint" in new Setup {
-        document.select("#main-content > div > div > form > div > fieldset > div > div:nth-child(1) > label").text mustBe messages.radioCash
-        document.select("#accountingMethodProperty-item-hint").text mustBe messages.radioCashDetail
+      "has the correct radio inputs" in new Setup {
+        document.mustHaveRadioInput(selector = "fieldset")(
+          name = AccountingMethodPropertyForm.accountingMethodProperty,
+          legend = messages.heading,
+          isHeading = false,
+          isLegendHidden = true,
+          hint = None,
+          errorMessage = None,
+          radioContents = Seq(
+            RadioItem(
+              content = Text(messages.radioCash),
+              value = Some(Cash.toString),
+              hint = Some(Hint(content = Text(messages.radioCashDetail))),
+
+            ),
+            RadioItem(
+              content = Text(messages.radioAccruals),
+              value = Some(Accruals.toString),
+              hint = Some(Hint(content = Text(messages.radioAccrualsDetail))),
+
+            )
+          )
+        )
       }
 
-      "has a accruals radio button and hint" in new Setup {
-        document.select("#main-content > div > div > form > div > fieldset > div > div:nth-child(2) > label").text mustBe messages.radioAccruals
-        document.select("#accountingMethodProperty-2-item-hint").text mustBe messages.radioAccrualsDetail
-      }
 
       "has a save and continue button" that {
         s"displays ${common.saveAndContinue} when the save and retrieve feature switch is enabled" in new Setup() {

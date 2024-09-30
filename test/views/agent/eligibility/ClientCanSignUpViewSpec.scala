@@ -17,13 +17,11 @@
 package views.agent.eligibility
 
 import forms.agent.ClientCanSignUpForm
-import models.{No, Yes}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
+import org.jsoup.select.Elements
 import play.api.data.FormError
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import utilities.ViewSpec
 import views.html.agent.eligibility.ClientCanSignUp
 
@@ -120,7 +118,7 @@ class ClientCanSignUpViewSpec extends ViewSpec {
     }
 
     "have the fifth paragraph" in new ViewTest {
-      val paragraph = mainContent.select(".govuk-form-group").select(".govuk-body")
+      val paragraph: Elements = mainContent.select(".govuk-form-group").select(".govuk-body")
       paragraph.text must include(ClientCanSignUpMessages.signUpAnotherClient)
       paragraph.select("a.govuk-link").attr("href") mustBe controllers.agent.routes.AddAnotherClientController.addAnother().url
     }

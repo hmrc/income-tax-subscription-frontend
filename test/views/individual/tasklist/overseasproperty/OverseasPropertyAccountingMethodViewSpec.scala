@@ -18,12 +18,15 @@ package views.individual.tasklist.overseasproperty
 
 import forms.individual.business.AccountingMethodOverseasPropertyForm
 import messagelookup.individual.MessageLookup.{Base => common, OverseasPropertyAccountingMethod => messages}
+import models.{Accruals, Cash}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Hint, Text}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import utilities.ViewSpec
 import views.ViewSpecTrait
 import views.html.individual.tasklist.overseasproperty.OverseasPropertyAccountingMethod
@@ -88,6 +91,31 @@ class OverseasPropertyAccountingMethodViewSpec extends ViewSpec {
         form.attr("action") mustBe action.url
       }
 
+      "has the correct radio inputs" in new Setup {
+        document.mustHaveRadioInput(selector = "fieldset")(
+          name = AccountingMethodOverseasPropertyForm.accountingMethodOverseasProperty,
+          legend = messages.heading,
+          isHeading = false,
+          isLegendHidden = true,
+          hint = None,
+          errorMessage = None,
+          radioContents = Seq(
+            RadioItem(
+              content = Text(messages.radioCash),
+              value = Some(Cash.toString),
+              hint = Some(Hint(content = Text(messages.radioCashDetail))),
+
+            ),
+            RadioItem(
+              content = Text(messages.radioAccruals),
+              value = Some(Accruals.toString),
+              hint = Some(Hint(content = Text(messages.radioAccrualsDetail))),
+
+            )
+          )
+        )
+
+      }
       "has a cash radio button and hint" in new Setup {
         document.select("#main-content > div > div > form > div > fieldset > div > div:nth-child(1) > label").text mustBe messages.radioCash
         document.select("#accountingMethodOverseasProperty-item-hint").text mustBe messages.radioCashDetail

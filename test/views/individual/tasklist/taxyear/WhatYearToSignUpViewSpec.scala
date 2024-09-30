@@ -18,12 +18,15 @@ package views.individual.tasklist.taxyear
 
 import forms.individual.business.AccountingYearForm
 import messagelookup.agent.MessageLookup
+import models.{Current, Next}
 import org.jsoup.Jsoup
-import org.jsoup.nodes.{Document, Element}
+import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import play.api.data.FormError
 import play.twirl.api.Html
 import services.AccountingPeriodService
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Hint, Text}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import utilities.ViewSpec
 import views.html.individual.tasklist.taxyear.WhatYearToSignUp
 
@@ -155,32 +158,31 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
         form.attr("action") mustBe testCall.url
       }
 
-      "has a small size legend for radio options heading" in {
-        document().select(".govuk-fieldset__legend").text() mustBe WhatYearToSignUp.heading
-      }
-
-      "has a current tax year radio button" in {
-        val radio: Element = document().select(".govuk-radios__item").get(0)
-        radio.select("input[id=accountingYear]").`val` mustBe "CurrentYear"
-        radio.select("label[for=accountingYear]").text mustBe Seq(
-          WhatYearToSignUp.currentYearOption((taxYearEnd - 1).toString, taxYearEnd.toString)
-        ).mkString(" ")
-      }
-
-      "has a next tax year radio button" in {
-        val radio: Element = document().select(".govuk-radios__item").get(1)
-        radio.select("input[id=accountingYear-2]").`val` mustBe "NextYear"
-        radio.select("label[for=accountingYear-2]").text mustBe Seq(
-          WhatYearToSignUp.nextYearOption(taxYearEnd.toString, (taxYearEnd + 1).toString)
-        ).mkString(" ")
-      }
-
-      "have the current tax year hint paragraph" in {
-        document().getElementById("accountingYear-item-hint").text mustBe WhatYearToSignUp.currentYearOptionHint
-      }
-
-      "have the next tax year hint paragraph" in {
-        document().getElementById("accountingYear-2-item-hint").text mustBe WhatYearToSignUp.nextYearOptionHint
+      "has the correct radio inputs" in {
+        document().mustHaveRadioInput(selector = "fieldset")(
+          name = AccountingYearForm.accountingYear,
+          legend = WhatYearToSignUp.heading,
+          isHeading = false,
+          isLegendHidden = true,
+          hint = None,
+          errorMessage = None,
+          radioContents = Seq(
+            RadioItem(
+              content = Text(Seq(
+                WhatYearToSignUp.currentYearOption((taxYearEnd - 1).toString, taxYearEnd.toString)
+              ).mkString(" ")),
+              value = Some(Current.toString),
+              hint = Some(Hint(content = Text(WhatYearToSignUp.currentYearOptionHint))),
+            ),
+            RadioItem(
+              content = Text(Seq(
+                WhatYearToSignUp.nextYearOption(taxYearEnd.toString, (taxYearEnd + 1).toString)
+              ).mkString(" ")),
+              value = Some(Next.toString),
+              hint = Some(Hint(content = Text(WhatYearToSignUp.nextYearOptionHint))),
+            )
+          )
+        )
       }
 
       "has a continue button" that {

@@ -84,24 +84,18 @@ class RemoveOverseasPropertyViewSpec extends ViewSpec {
         "have a legend with the page heading" in new ViewTest(true) {
           document.getElementsByClass("govuk-fieldset__legend").text mustBe RemoveClientOverseasPropertyMessages.heading
         }
-
-        "have a hint" in new ViewTest(true) {
-          document.selectHead(".govuk-hint").text mustBe RemoveClientOverseasPropertyMessages.hint
-        }
-      }
-
-
-      "have a legend and the page heading" in new ViewTest {
-        document.selectHead("fieldset").selectHead("legend").text mustBe RemoveClientOverseasPropertyMessages.heading
-      }
-
-      "have a hint" in new ViewTest {
-        document.selectHead("fieldset").selectHead(".govuk-hint").text mustBe RemoveClientOverseasPropertyMessages.hint
       }
     }
 
-    "have radio button yes and no" in new ViewTest {
-      document.mustHaveYesNoRadioInputs("yes-no")
+    "have the correct yes-no radio inputs" in new ViewTest {
+      document.mustHaveYesNoRadioInputs(selector = "fieldset")(
+        name = "yes-no",
+        legend = RemoveClientOverseasPropertyMessages.heading,
+        isHeading = false,
+        isLegendHidden = false,
+        hint = Some(RemoveClientOverseasPropertyMessages.hint),
+        errorMessage = None
+      )
     }
 
     "have a agree and continue button" in new ViewTest {

@@ -57,6 +57,7 @@ class RemoveOverseasPropertyViewSpec extends ViewSpec {
     val heading: String = "Are you sure you want to delete your foreign property business?"
     val hint: String = "All your current sole trader and property businesses need to be added to Making Tax Digital for Income Tax at the same time. You will need to re-enter this information if you remove it by mistake."
     val agreeAndContinue = "Agree and continue"
+    val errorMessage = "Select yes if you want to remove business"
   }
 
   "RemoveOverseasProperty view" must {
@@ -77,38 +78,32 @@ class RemoveOverseasPropertyViewSpec extends ViewSpec {
       )
     }
 
-    "have a form with the correct attributes" which {
-
-      "has a fieldset" which {
-
-        "is described correctly" when {
-          "there is no error" in {
-
-          }
-          "there is an error" in {
-
-          }
-        }
-
-        "has a legend" that {
-          "is the heading for the page" in new ViewTest {
-            mainContent.getForm.getFieldset.getElementsByClass("govuk-fieldset__legend").text mustBe RemoveOverseasPropertyMessages.heading
-          }
-        }
-
-        "has a hint" in new ViewTest {
-          mainContent.getHintText
-        }
-
-        "has a set of yes no radio buttons" in new ViewTest {
-          mainContent.getForm.getFieldset.mustHaveYesNoRadioInputs(RemoveOverseasPropertyForm.yesNo)
-        }
+    "have the correct yes-no radio inputs" when {
+      "there is no error" in new ViewTest(hasError = false) {
+        document.mustHaveYesNoRadioInputs(selector = "fieldset")(
+          name = "yes-no",
+          legend = RemoveOverseasPropertyMessages.heading,
+          isHeading = false,
+          isLegendHidden = false,
+          hint = Some(RemoveOverseasPropertyMessages.hint),
+          errorMessage = None
+        )
       }
-
-      "have a Accept and Continue button" in new ViewTest {
-        mainContent.getForm.getGovukSubmitButton.text mustBe RemoveOverseasPropertyMessages.agreeAndContinue
+      "there is an error" in new ViewTest(hasError = true) {
+        document.mustHaveYesNoRadioInputs(selector = "fieldset")(
+          name = "yes-no",
+          legend = RemoveOverseasPropertyMessages.heading,
+          isHeading = false,
+          isLegendHidden = false,
+          hint = Some(RemoveOverseasPropertyMessages.hint),
+          errorMessage = Some(RemoveOverseasPropertyMessages.errorMessage)
+        )
       }
-
     }
+
+    "have a Accept and Continue button" in new ViewTest {
+      mainContent.getForm.getGovukSubmitButton.text mustBe RemoveOverseasPropertyMessages.agreeAndContinue
+    }
+
   }
 }

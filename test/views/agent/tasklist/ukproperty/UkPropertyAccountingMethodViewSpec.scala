@@ -18,11 +18,13 @@ package views.agent.tasklist.ukproperty
 
 import forms.agent.AccountingMethodPropertyForm
 import messagelookup.agent.MessageLookup.{Base => common, PropertyAccountingMethod => messages}
-import models.AccountingMethod
+import models.{AccountingMethod, Accruals, Cash}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
 import play.twirl.api.Html
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import utilities.UserMatchingSessionUtil.ClientDetails
 import utilities.ViewSpec
 import views.html.agent.tasklist.ukproperty.PropertyAccountingMethod
@@ -82,26 +84,31 @@ class UkPropertyAccountingMethodViewSpec extends ViewSpec {
     }
 
     "have a form" which {
-
-      "have a heading" in new Setup {
-        document.mainContent.selectHead("h1").text mustBe messages.heading
-      }
-
-      "has a cash radio button" in new Setup {
-        document.select("#main-content > div > div > form > div > fieldset > div > div:nth-child(1) > label").text mustBe messages.cash
-      }
-
-      "has a accruals radio button" in new Setup {
-        document.select("#main-content > div > div > form > div > fieldset > div > div:nth-child(2) > label").text mustBe messages.accruals
+      "has the correct radio inputs" in new Setup {
+        document.mainContent.mustHaveRadioInput(selector = "fieldset")(
+          name = AccountingMethodPropertyForm.accountingMethodProperty,
+          legend = messages.heading,
+          isHeading = true,
+          isLegendHidden = false,
+          hint = None,
+          errorMessage = None,
+          radioContents = Seq(
+            RadioItem(
+              content = Text(messages.cash),
+              value = Some(Cash.toString)
+            ),
+            RadioItem(
+              content = Text(messages.accruals),
+              value = Some(Accruals.toString)
+            )
+          )
+        )
       }
 
       "has a save and continue + save and come back later buttons" in new Setup() {
         document.mainContent.selectHead(".govuk-button").text mustBe common.saveAndContinue
         document.mainContent.selectHead(".govuk-button--secondary").text mustBe common.saveAndComeBackLater
       }
-
     }
-
   }
-
 }
