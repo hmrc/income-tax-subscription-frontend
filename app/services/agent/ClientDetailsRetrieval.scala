@@ -27,7 +27,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class ClientDetailsRetrieval @Inject()(ninoService: NinoService)(implicit ec: ExecutionContext) {
 
-  def getClientDetails(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[ClientDetails] = {
+  def getClientDetails(implicit request: Request[_], hc: HeaderCarrier): Future[ClientDetails] = {
     ninoService.getNino map { nino =>
       request.fetchClientName match {
         case Some(name) => ClientDetails(name, nino)

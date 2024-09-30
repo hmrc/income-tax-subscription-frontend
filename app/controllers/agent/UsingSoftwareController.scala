@@ -16,122 +16,85 @@
 
 package controllers.agent
 
-import auth.agent.AuthenticatedController
 import config.AppConfig
-import forms.agent.UsingSoftwareForm
-import models.{No, Yes, YesNo}
-import play.api.data.Form
-import play.api.mvc._
-import play.twirl.api.Html
-import services.agent.ClientDetailsRetrieval
-import services.{AuditingService, AuthService, GetEligibilityStatusService, SessionDataService}
-import uk.gov.hmrc.http.InternalServerException
-import views.html.agent.UsingSoftware
 import config.featureswitch.FeatureSwitch.PrePopulate
 import config.featureswitch.FeatureSwitching
+import controllers.SignUpBaseController
+import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
+import forms.agent.UsingSoftwareForm.usingSoftwareForm
+import models.{No, Yes}
+import play.api.mvc._
+import services.{GetEligibilityStatusService, SessionDataService}
+import uk.gov.hmrc.http.InternalServerException
+import views.html.agent.UsingSoftware
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.matching.Regex
-
+import scala.concurrent.ExecutionContext
 
 @Singleton
-class UsingSoftwareController @Inject()(clientDetailsRetrieval: ClientDetailsRetrieval,
-                                        usingSoftware: UsingSoftware,
+class UsingSoftwareController @Inject()(view: UsingSoftware,
+                                        identify: IdentifierAction,
+                                        journeyRefiner: ConfirmedClientJourneyRefiner,
                                         sessionDataService: SessionDataService,
                                         eligibilityStatusService: GetEligibilityStatusService)
-                                       (val auditingService: AuditingService,
-                                        val authService: AuthService,
-                                        val appConfig: AppConfig)
-                                       (implicit val ec: ExecutionContext,
+                                       (val appConfig: AppConfig)
+                                       (implicit ec: ExecutionContext,
                                         mcc: MessagesControllerComponents)
-  extends AuthenticatedController with FeatureSwitching {
+  extends SignUpBaseController with FeatureSwitching {
 
-  private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
-  private val form: Form[YesNo] = UsingSoftwareForm.usingSoftwareForm
-
-  private def formatNino(clientNino: String): String = {
-    clientNino match {
-      case ninoRegex(startLetters, firstDigits, secondDigits, thirdDigits, finalLetter) =>
-        s"$startLetters $firstDigits $secondDigits $thirdDigits $finalLetter"
-      case other => other
+  val show: Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
+    for {
+      usingSoftwareStatus <- sessionDataService.fetchSoftwareStatus
+      eligibilityStatus <- eligibilityStatusService.getEligibilityStatus
+    } yield {
+      usingSoftwareStatus match {
+        case Left(_) => throw new InternalServerException("[UsingSoftwareController][show] - Could not fetch software status")
+        case Right(maybeYesNo) => Ok(view(
+          usingSoftwareForm = usingSoftwareForm.fill(maybeYesNo),
+          postAction = routes.UsingSoftwareController.submit,
+          clientName = request.clientDetails.name,
+          clientNino = request.clientDetails.formattedNino,
+          backUrl = backUrl(eligibilityStatus.eligibleNextYearOnly)
+        ))
+      }
     }
   }
 
-  def backUrl(eligibleNextYearOnly: Boolean): Option[String] = {
-    if (eligibleNextYearOnly)
-      Some(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
-    else
-      Some(controllers.agent.eligibility.routes.ClientCanSignUpController.show().url)
-  }
-
-
-  def view(usingSoftwareForm: Form[YesNo],
-           clientName: String,
-           clientNino: String,
-           eligibleNextYearOnly: Boolean)
-          (implicit request: Request[_]): Html = {
-    usingSoftware(
-      usingSoftwareForm = usingSoftwareForm,
-      postAction = controllers.agent.routes.UsingSoftwareController.submit(),
-      clientName,
-      clientNino,
-      backUrl = backUrl(eligibleNextYearOnly)
+  val submit: Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
+    usingSoftwareForm.bindFromRequest().fold(
+      formWithErrors =>
+        eligibilityStatusService.getEligibilityStatus map { eligibilityStatus =>
+          BadRequest(view(
+            usingSoftwareForm = formWithErrors,
+            postAction = routes.UsingSoftwareController.submit,
+            clientName = request.clientDetails.name,
+            clientNino = request.clientDetails.formattedNino,
+            backUrl = backUrl(eligibilityStatus.eligibleNextYearOnly)
+          ))
+        },
+      yesNo =>
+        sessionDataService.saveSoftwareStatus(yesNo) map {
+          case Left(_) =>
+            throw new InternalServerException("[UsingSoftwareController][submit] - Could not save using software answer")
+          case Right(_) =>
+            if (isEnabled(PrePopulate)) {
+              yesNo match {
+                case Yes => Redirect(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show())
+                case No => Redirect(controllers.agent.routes.NoSoftwareController.show())
+              }
+            } else {
+              Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
+            }
+        }
     )
   }
 
-  def show(): Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      for {
-        clientDetails <- clientDetailsRetrieval.getClientDetails
-        usingSoftwareStatus <- sessionDataService.fetchSoftwareStatus
-        eligibilityStatus <- eligibilityStatusService.getEligibilityStatus
-      } yield {
-        usingSoftwareStatus match {
-          case Left(_) => throw new InternalServerException("[UsingSoftwareController][show] - Could not fetch software status")
-
-          case Right(maybeYesNo) =>
-            Ok(view(
-              usingSoftwareForm = form.fill(maybeYesNo),
-              clientName = clientDetails.name,
-              clientNino = formatNino(clientDetails.nino),
-              eligibleNextYearOnly = eligibilityStatus.eligibleNextYearOnly
-            ))
-        }
-
-      }
+  def backUrl(eligibleNextYearOnly: Boolean): String = {
+    if (eligibleNextYearOnly) {
+      controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url
+    } else {
+      controllers.agent.eligibility.routes.ClientCanSignUpController.show().url
+    }
   }
 
-  def submit(): Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          clientDetailsRetrieval.getClientDetails.flatMap { clientDetails =>
-            eligibilityStatusService.getEligibilityStatus.map { eligibility =>
-              BadRequest(
-                view(
-                  usingSoftwareForm = formWithErrors,
-                  clientDetails.name,
-                  clientDetails.nino,
-                  eligibleNextYearOnly = eligibility.eligibleNextYearOnly
-                )
-              )
-            }
-          },
-        yesNo =>
-          sessionDataService.saveSoftwareStatus(yesNo).flatMap {
-            case Left(_) =>
-              Future.failed(new InternalServerException("[UsingSoftwareController][submit] - Could not save using software answer"))
-            case Right(_) =>
-              if (isEnabled(PrePopulate)) {
-                yesNo match {
-                  case Yes => Future.successful(Redirect(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show()))
-                  case No  => Future.successful(Redirect(controllers.agent.routes.NoSoftwareController.show()))
-                }
-              } else {
-                Future.successful(Redirect(controllers.agent.routes.WhatYouNeedToDoController.show()))
-              }
-          }
-      )
-  }
 }

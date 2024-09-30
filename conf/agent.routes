@@ -63,8 +63,8 @@ GET         /business/what-year-to-sign-up                      controllers.agen
 POST        /business/what-year-to-sign-up                      controllers.agent.tasklist.taxyear.WhatYearToSignUpController.submit(editMode: Boolean ?= false)
 
 # Using software
-GET         /using-software                                     controllers.agent.UsingSoftwareController.show()
-POST        /using-software                                     controllers.agent.UsingSoftwareController.submit()
+GET         /using-software                                     controllers.agent.UsingSoftwareController.show
+POST        /using-software                                     controllers.agent.UsingSoftwareController.submit
 
 # No to using Software
 GET         /no-compatible-software                             controllers.agent.NoSoftwareController.show()

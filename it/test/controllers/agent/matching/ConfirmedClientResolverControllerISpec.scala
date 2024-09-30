@@ -23,6 +23,7 @@ import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnecto
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import helpers.servicemocks.{EligibilityStub, PrePopStub, ThrottlingStub}
+import models.agent.JourneyStep.SignPosted
 import models.common.business._
 import models.common.{OverseasPropertyModel, PropertyModel}
 import models.{Accruals, Cash, DateModel, EligibilityStatus}
@@ -108,7 +109,7 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
       }
 
       "the eligibility of the client check returned an ineligible for both years result" should {
-        "redirect the agent to the client cannot take part page" in {
+        s"redirect the agent to the client cannot take part page and set the journey state to ${SignPosted.key}" in {
           AuthStub.stubAuthSuccess()
           SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle))(NO_CONTENT)
           ThrottlingStub.stubThrottle(AgentStartOfJourneyThrottle.throttleId)(throttled = false)
@@ -134,7 +135,10 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
             redirectURI(controllers.agent.eligibility.routes.CannotTakePartController.show.url)
           )
 
-          getSessionMap(res) - "ts" - "sessionId" - "authToken" mustBe Map(ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true")
+          getSessionMap(res) - "ts" - "sessionId" - "authToken" mustBe Map(
+            ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true",
+            ITSASessionKeys.JourneyStateKey -> SignPosted.key
+          )
         }
       }
 

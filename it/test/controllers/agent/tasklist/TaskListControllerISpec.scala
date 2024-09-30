@@ -116,6 +116,8 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
     "redirect to the global check your answers page" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
       When("I call POST /task-list")
       val res = IncomeTaxSubscriptionFrontend.submitTaskList()

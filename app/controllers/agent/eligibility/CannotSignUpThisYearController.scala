@@ -22,6 +22,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.agent.ClientDetailsRetrieval
 import services.{AuditingService, AuthService}
 import views.html.agent.eligibility.CannotSignUpThisYear
+
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 import scala.util.matching.Regex
@@ -32,9 +33,10 @@ class CannotSignUpThisYearController @Inject()(clientDetailsRetrieval: ClientDet
                                                val authService: AuthService)
                                               (implicit val appConfig: AppConfig,
                                                mcc: MessagesControllerComponents,
-                                               val ec: ExecutionContext) extends PreSignUpController  {
+                                               val ec: ExecutionContext) extends PreSignUpController {
 
   private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
+
   private def formatNino(clientNino: String): String = {
     clientNino match {
       case ninoRegex(startLetters, firstDigits, secondDigits, thirdDigits, finalLetter) =>
@@ -56,7 +58,7 @@ class CannotSignUpThisYearController @Inject()(clientDetailsRetrieval: ClientDet
       }
   }
 
-  def submit: Action[AnyContent] = Authenticated {implicit request =>
-    _ => Redirect(controllers.agent.routes.UsingSoftwareController.show())
+  def submit: Action[AnyContent] = Authenticated { implicit request =>
+    _ => Redirect(controllers.agent.routes.UsingSoftwareController.show)
   }
 }

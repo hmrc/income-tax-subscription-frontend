@@ -17,10 +17,12 @@
 package controllers.agent.matching
 
 import auth.agent.{AgentSignUp, IncomeTaxAgentUser, UserMatchingController}
+import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.{FailedClientMatching, JourneyStateKey}
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
 import models.EligibilityStatus
+import models.agent.JourneyStep
 import models.audits.EligibilityAuditing.EligibilityAuditModel
 import play.api.mvc._
 import services.PrePopDataService.PrePopResult
@@ -62,8 +64,9 @@ class ConfirmedClientResolver @Inject()(getEligibilityStatusService: GetEligibil
                 failureReason = Some("control-list-ineligible")
               ))
             } yield {
-              goToCannotTakePart
-                .removingFromSession(FailedClientMatching, JourneyStateKey)
+              Redirect(controllers.agent.eligibility.routes.CannotTakePartController.show)
+                .addingToSession(ITSASessionKeys.JourneyStateKey -> JourneyStep.SignPosted.key)
+                .removingFromSession(FailedClientMatching)
                 .clearUserDetailsExceptName
             }
           case EligibilityStatus(thisYear, _) =>
@@ -114,8 +117,5 @@ class ConfirmedClientResolver @Inject()(getEligibilityStatusService: GetEligibil
 
     }
   }
-
-  private def goToCannotTakePart: Result =
-    Redirect(controllers.agent.eligibility.routes.CannotTakePartController.show)
 
 }

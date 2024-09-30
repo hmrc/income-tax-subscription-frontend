@@ -23,8 +23,8 @@ import config.featureswitch.FeatureSwitching
 import controllers.utils.ReferenceRetrieval
 import models.{Current, No, Yes}
 import play.api.mvc._
-import services.agent.ClientDetailsRetrieval
 import services._
+import services.agent.ClientDetailsRetrieval
 import views.html.agent.WhatYouNeedToDo
 
 import javax.inject.{Inject, Singleton}
@@ -57,7 +57,7 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
   def backUrl(eligibleNextYearOnly: Boolean): Option[String] = {
     if (isEnabled(PrePopulate)) {
       if (eligibleNextYearOnly)
-        Some(controllers.agent.routes.UsingSoftwareController.show().url)
+        Some(controllers.agent.routes.UsingSoftwareController.show.url)
       else
         Some(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
     } else None
@@ -100,7 +100,7 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
 
   val submit: Action[AnyContent] = Authenticated { _ =>
     _ =>
-      if(isEnabled(PrePopulate)) Redirect(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
+      if (isEnabled(PrePopulate)) Redirect(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
       else Redirect(controllers.agent.tasklist.routes.TaskListController.show())
   }
 

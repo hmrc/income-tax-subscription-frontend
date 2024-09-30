@@ -29,6 +29,7 @@ import play.api.test.Helpers.{HTML, contentType, defaultAwaitTimeout, redirectLo
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockAuditingService, MockClientDetailsRetrieval, MockGetEligibilityStatusService, MockSessionDataService}
 import views.html.individual.UsingSoftware
+
 import scala.concurrent.Future
 
 class UsingSoftwareControllerSpec extends ControllerBaseSpec
@@ -39,8 +40,7 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
 
   object TestUsingSoftwareController extends UsingSoftwareController(
     mock[UsingSoftware],
-    mockSessionDataService,
-    mockGetEligibilityStatusService
+    mockSessionDataService
   )(
     mockAuditingService,
     mockAuthService,
@@ -56,8 +56,8 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
     val usingSoftware: UsingSoftware = mock[UsingSoftware]
     val controller: UsingSoftwareController = new UsingSoftwareController(
       usingSoftware,
-      mockSessionDataService,
-      mockGetEligibilityStatusService)(
+      mockSessionDataService
+    )(
       mockAuditingService,
       mockAuthService,
       appConfig
