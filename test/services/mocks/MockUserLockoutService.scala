@@ -21,17 +21,19 @@ import connectors.usermatching.mocks.MockUserLockoutConnector
 import models.usermatching.{LockoutStatusFailure, LockoutStatusFailureResponse, NotLockedOut}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
-import org.scalatest.BeforeAndAfterEach
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status._
 import services.{LockoutUpdate, UserLockoutService}
 import uk.gov.hmrc.http.HeaderCarrier
+import utilities.UserMatchingTestSupport
 import utilities.individual.TestConstants.{testException, testLockoutResponse}
-import utilities.{UnitTestTrait, UserMatchingTestSupport}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockUserLockoutService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach with UserMatchingTestSupport {
+trait MockUserLockoutService extends MockitoSugar with BeforeAndAfterEach with UserMatchingTestSupport {
+  suite: Suite with Matchers =>
 
   val mockUserLockoutService: UserLockoutService = mock[UserLockoutService]
 
@@ -67,13 +69,13 @@ trait MockUserLockoutService extends UnitTestTrait with MockitoSugar with Before
     ).thenReturn(result)
   }
 
-  def setupIncrementNotLockedOut(token: String, currentFailedMatches: Int): Unit = {
-    val returnedFailures: Option[Int] = if (appConfig.matchingAttempts - 1 == currentFailedMatches) None else Some(currentFailedMatches + 1)
+  def setupIncrementNotLockedOut(token: String, currentFailedMatches: Int, maxAttempts: Int): Unit = {
+    val returnedFailures: Option[Int] = if (maxAttempts - 1 == currentFailedMatches) None else Some(currentFailedMatches + 1)
     mockIncrementLockout(token, currentFailedMatches)(Future.successful(Right(LockoutUpdate(NotLockedOut, returnedFailures))))
   }
 
-  def setupIncrementLockedOut(token: String, currentFailedMatches: Int): Unit = {
-    val returnedFailures: Option[Int] = if (appConfig.matchingAttempts - 1 == currentFailedMatches) None else Some(currentFailedMatches + 1)
+  def setupIncrementLockedOut(token: String, currentFailedMatches: Int, maxAttempts: Int): Unit = {
+    val returnedFailures: Option[Int] = if (maxAttempts - 1 == currentFailedMatches) None else Some(currentFailedMatches + 1)
     mockIncrementLockout(token, currentFailedMatches)(Future.successful(Right(LockoutUpdate(testLockoutResponse, returnedFailures))))
   }
 

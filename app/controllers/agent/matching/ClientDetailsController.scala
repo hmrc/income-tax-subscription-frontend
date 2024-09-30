@@ -16,65 +16,64 @@
 
 package controllers.agent.matching
 
-import auth.agent.{IncomeTaxAgentUser, UserMatchingController}
-import config.AppConfig
+import controllers.SignUpBaseController
+import controllers.agent.actions.{ClientDetailsJourneyRefiner, IdentifierAction}
 import forms.agent.ClientDetailsForm.clientDetailsForm
 import models.audits.SignupStartedAuditing
-import models.usermatching.{NotLockedOut, UserDetailsModel}
-import play.api.data.Form
+import models.requests.agent.IdentifierRequest
+import models.usermatching.NotLockedOut
 import play.api.mvc._
-import play.twirl.api.Html
-import services.{AuditingService, AuthService, UserLockoutService}
+import services.{AuditingService, UserLockoutService}
 import uk.gov.hmrc.http.InternalServerException
+import uk.gov.hmrc.play.audit.http.connector.AuditResult
+import utilities.UserMatchingSessionUtil.{UserMatchingSessionRequestUtil, UserMatchingSessionResultUtil}
 import views.html.agent.matching.ClientDetails
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ClientDetailsController @Inject()(val auditingService: AuditingService,
-                                        val authService: AuthService,
-                                        lockOutService: UserLockoutService,
-                                        clientDetails: ClientDetails)
-                                       (implicit val ec: ExecutionContext,
-                                        mcc: MessagesControllerComponents,
-                                        val appConfig: AppConfig) extends UserMatchingController {
+class ClientDetailsController @Inject()(view: ClientDetails,
+                                        identify: IdentifierAction,
+                                        journeyRefiner: ClientDetailsJourneyRefiner,
+                                        lockoutService: UserLockoutService,
+                                        auditingService: AuditingService)
+                                       (implicit cc: MessagesControllerComponents, ec: ExecutionContext) extends SignUpBaseController {
 
-  def view(clientDetailsForm: Form[UserDetailsModel], isEditMode: Boolean)(implicit request: Request[_]): Html ={
-    clientDetails(
-      clientDetailsForm,
-      controllers.agent.matching.routes.ClientDetailsController.submit(editMode = isEditMode),
-      isEditMode
-    )
-}
+  def show(isEditMode: Boolean): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
+    startAgentSignupAudit(agentReferenceNumber = Some(request.arn))
+    handleLockOut {
+      Ok(view(
+        clientDetailsForm = clientDetailsForm.fill(request.fetchUserDetails),
+        postAction = routes.ClientDetailsController.submit(editMode = isEditMode),
+        isEditMode = isEditMode
+      ))
+    }
+  }
 
-  private def handleLockOut(f: => Future[Result])(implicit user: IncomeTaxAgentUser, request: Request[_]): Future[Result] = {
-    lockOutService.getLockoutStatus(user.arn) flatMap {
+  def submit(isEditMode: Boolean): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
+    handleLockOut {
+      clientDetailsForm.bindFromRequest().fold(
+        formWithErrors =>
+          BadRequest(view(
+            clientDetailsForm = formWithErrors,
+            postAction = routes.ClientDetailsController.submit(editMode = isEditMode),
+            isEditMode = isEditMode
+          )),
+        clientDetails => Redirect(routes.ConfirmClientController.show()).saveUserDetails(clientDetails)
+      )
+    }
+  }
+
+  private def handleLockOut(f: => Result)(implicit request: IdentifierRequest[_]): Future[Result] = {
+    lockoutService.getLockoutStatus(request.arn) map {
       case Right(NotLockedOut) => f
-      case Right(_) => Future.successful(Redirect(controllers.agent.matching.routes.ClientDetailsLockoutController.show.url))
+      case Right(_) => Redirect(controllers.agent.matching.routes.ClientDetailsLockoutController.show.url)
       case Left(_) => throw new InternalServerException("[ClientDetailsController][handleLockOut] lockout failure")
     }
   }
 
-  def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
-      startAgentSignupAudit(agentReferenceNumber = Some(user.arn))
-      handleLockOut {
-        Future.successful(Ok(view(clientDetailsForm.fill(request.fetchUserDetails), isEditMode = isEditMode)))
-      }
-  }
-
-  def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
-      handleLockOut {
-        clientDetailsForm.bindFromRequest().fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, isEditMode = isEditMode))),
-          clientDetails =>
-            Future.successful(Redirect(routes.ConfirmClientController.show()).saveUserDetails(clientDetails))
-        )
-      }
-  }
-  private def startAgentSignupAudit (agentReferenceNumber: Option[String])(implicit request: Request[_]) = {
+  private def startAgentSignupAudit(agentReferenceNumber: Option[String])(implicit request: Request[_]): Future[AuditResult] = {
     val auditModel = SignupStartedAuditing.SignupStartedAuditModel(
       agentReferenceNumber = agentReferenceNumber,
       utr = None,

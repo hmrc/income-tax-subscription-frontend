@@ -17,17 +17,24 @@
 package auth
 
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import uk.gov.hmrc.auth.core.AuthConnector
+import org.scalatestplus.play.PlaySpec
+import uk.gov.hmrc.auth.core.{AuthConnector, BearerTokenExpired}
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.Retrieval
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.UnitTestTrait
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockAuth extends UnitTestTrait with MockitoSugar {
+trait MockAuth extends PlaySpec with MockitoSugar with BeforeAndAfterEach {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockAuth)
+  }
+
   val mockAuth = mock[AuthConnector]
 
   def mockAuthorise[T](predicate: Predicate, retrieval: Retrieval[T])(result: T): Unit =
@@ -36,4 +43,13 @@ trait MockAuth extends UnitTestTrait with MockitoSugar {
       ArgumentMatchers.any[Retrieval[T]]
     )(ArgumentMatchers.any[HeaderCarrier], ArgumentMatchers.any[ExecutionContext]))
       .thenReturn(Future.successful(result))
+
+  def mockAuthoriseFailure[T](predicate: Predicate, retrieval: Retrieval[T])(throwable: Throwable): Unit =
+    when(mockAuth.authorise[T](
+      ArgumentMatchers.any(),
+      ArgumentMatchers.any()
+    )(ArgumentMatchers.any[HeaderCarrier], ArgumentMatchers.any[ExecutionContext]))
+      .thenReturn(Future.failed(throwable))
+
+
 }

@@ -16,217 +16,173 @@
 
 package controllers.agent.matching
 
-import controllers.agent.AgentControllerBaseSpec
+import controllers.ControllerSpec
+import controllers.agent.actions.mocks.{MockClientDetailsJourneyRefiner, MockIdentifierAction}
 import forms.agent.ClientDetailsForm
+import forms.agent.ClientDetailsForm.clientDetailsForm
+import forms.formatters.DateModelMapping
 import models.DateModel
 import models.usermatching.UserDetailsModel
-import play.api.http.Status
-import play.api.mvc._
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import services.mocks.{MockAuditingService, MockSubscriptionDetailsService, MockUserLockoutService}
-import uk.gov.hmrc.http.{HttpResponse, InternalServerException}
-import utilities.agent.TestConstants
-import views.html.agent.matching.ClientDetails
+import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
+import play.api.mvc.Result
+import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, session, status}
+import services.mocks.{MockAuditingService, MockUserLockoutService}
+import uk.gov.hmrc.http.InternalServerException
+import utilities.UserMatchingSessionUtil.{dobD, dobM, dobY, firstName, lastName, nino}
+import views.agent.matching.mocks.MockClientDetails
 
 import scala.concurrent.Future
 
-class ClientDetailsControllerSpec extends AgentControllerBaseSpec
-  with MockSubscriptionDetailsService
+class ClientDetailsControllerSpec extends ControllerSpec
+  with MockClientDetails
+  with MockIdentifierAction
+  with MockClientDetailsJourneyRefiner
   with MockUserLockoutService
   with MockAuditingService {
 
-  override val controllerName: String = "ClientDetailsController"
-  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
+  "show" must {
+    "return OK with the page content" when {
+      "the user is not locked out and is not in edit mode" in {
+        setupMockNotLockedOut(testARN)
+        mockView(clientDetailsForm, routes.ClientDetailsController.submit(), isEditMode = false)
+
+        val result: Future[Result] = TestClientDetailsController.show(false)(request)
+
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+      }
+      "the user is not locked out and is in edit mode" in {
+        setupMockNotLockedOut(testARN)
+        mockView(
+          form = clientDetailsForm.fill(UserDetailsModel("FirstName", "LastName", "ZZ111111Z", DateModel("1", "2", "1980"))),
+          postAction = routes.ClientDetailsController.submit(editMode = true),
+          isEditMode = true
+        )
+
+        val result: Future[Result] = TestClientDetailsController.show(true)(request.withSession(
+          firstName -> "FirstName",
+          lastName -> "LastName",
+          dobD -> "1",
+          dobM -> "2",
+          dobY -> "1980",
+          nino -> "ZZ111111Z"
+        ))
+
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+      }
+    }
+    "redirect to the client details lockout page" when {
+      "the lockout service indicates the user is locked out" in {
+        setupMockLockedOut(testARN)
+
+        val result: Future[Result] = TestClientDetailsController.show(false)(request)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(routes.ClientDetailsLockoutController.show.url)
+      }
+    }
+    "throw an InternalServerException" when {
+      "there is a failure from the lockout service" in {
+        setupMockLockStatusFailureResponse(testARN)
+
+        intercept[InternalServerException](await(TestClientDetailsController.show(false)(request)))
+          .message mustBe "[ClientDetailsController][handleLockOut] lockout failure"
+      }
+    }
+  }
+
+  "submit" must {
+    "redirect to the confirm client page adding the client details to session" when {
+      "the user is not locked out, is not in edit mode and has no validation errors" in {
+        setupMockNotLockedOut(testARN)
+
+        val result: Future[Result] = TestClientDetailsController.submit(false)(
+          request.withMethod("POST").withFormUrlEncodedBody(
+            ClientDetailsForm.clientFirstName -> "FirstName",
+            ClientDetailsForm.clientLastName -> "LastName",
+            s"${ClientDetailsForm.clientDateOfBirth}-${DateModelMapping.day}" -> "1",
+            s"${ClientDetailsForm.clientDateOfBirth}-${DateModelMapping.month}" -> "2",
+            s"${ClientDetailsForm.clientDateOfBirth}-${DateModelMapping.year}" -> "1980",
+            ClientDetailsForm.clientNino -> "AA000011D"
+          )
+        )
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(routes.ConfirmClientController.show().url)
+
+        val sessionMap: Map[String, String] = session(result).data
+
+        sessionMap.get(firstName) mustBe Some("FirstName")
+        sessionMap.get(lastName) mustBe Some("LastName")
+        sessionMap.get(dobD) mustBe Some("1")
+        sessionMap.get(dobM) mustBe Some("2")
+        sessionMap.get(dobY) mustBe Some("1980")
+        sessionMap.get(nino) mustBe Some("AA000011D")
+      }
+    }
+    "return a bad request with the page content" which {
+      "is not in edit mode" when {
+        "the input produces an error and is not in edit mode" in {
+          setupMockNotLockedOut(testARN)
+          mockView(
+            form = clientDetailsForm.bind(Map.empty[String, String]),
+            postAction = routes.ClientDetailsController.submit(),
+            isEditMode = false
+          )
+
+          val result: Future[Result] = TestClientDetailsController.submit(false)(
+            request.withMethod("POST").withFormUrlEncodedBody()
+          )
+
+          status(result) mustBe BAD_REQUEST
+          contentType(result) mustBe Some(HTML)
+        }
+      }
+      "is in edit mode" when {
+        "the input produces an error and is in edit mode" in {
+          setupMockNotLockedOut(testARN)
+          mockView(
+            form = clientDetailsForm.bind(Map.empty[String, String]),
+            postAction = routes.ClientDetailsController.submit(editMode = true),
+            isEditMode = true
+          )
+
+          val result: Future[Result] = TestClientDetailsController.submit(true)(
+            request.withMethod("POST").withFormUrlEncodedBody()
+          )
+
+          status(result) mustBe BAD_REQUEST
+          contentType(result) mustBe Some(HTML)
+        }
+      }
+    }
+    "redirect to the client details lockout page" when {
+      "the lockout service indicates the user is locked out" in {
+        setupMockLockedOut(testARN)
+
+        val result: Future[Result] = TestClientDetailsController.submit(false)(request)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(routes.ClientDetailsLockoutController.show.url)
+      }
+    }
+    "throw an InternalServerException" when {
+      "there is a failure from the lockout service" in {
+        setupMockLockStatusFailureResponse(testARN)
+
+        intercept[InternalServerException](await(TestClientDetailsController.submit(false)(request)))
+          .message mustBe "[ClientDetailsController][handleLockOut] lockout failure"
+      }
+    }
+  }
+
+  object TestClientDetailsController extends ClientDetailsController(
+    mockClientDetails,
+    fakeIdentifierAction,
+    fakeClientDetailsJourneyRefiner,
+    mockUserLockoutService,
+    mockAuditingService
   )
 
-  private def withController(testCode: ClientDetailsController => Any): Unit = {
-
-    val clientDetailsView = app.injector.instanceOf[ClientDetails]
-
-    val controller = new ClientDetailsController(
-      mockAuditingService,
-      mockAuthService,
-      mockUserLockoutService,
-      clientDetailsView
-
-    )
-    testCode(controller)
-  }
-
-  val testNino: String = TestConstants.testNino
-  val testARN: String = TestConstants.testARN
-
-  "Calling the show action of the ClientDetailsController with an authorised user" should withController { controller =>
-
-    def call(request: Request[AnyContent]): Future[Result] = controller.show(isEditMode = false)(request)
-
-    "return ok (200) when not locked out" in {
-      lazy val r = userMatchingRequest.buildRequest(None)
-      setupMockNotLockedOut(testARN)
-      lazy val result = call(r)
-
-      status(result) must be(Status.OK)
-
-      await(result).verifyStoredUserDetailsIs(None)(r)
-
-      withClue("return HTML") {
-        contentType(result) must be(Some("text/html"))
-        charset(result) must be(Some("utf-8"))
-      }
-    }
-
-    "return see_other (303) when locked out" in {
-      lazy val r = userMatchingRequest.buildRequest(None)
-      setupMockLockedOut(testARN)
-      lazy val result = call(r)
-
-      status(result) must be(Status.SEE_OTHER)
-
-      await(result).verifyStoredUserDetailsIs(None)(r)
-
-      withClue(s"redirect to ${controllers.agent.matching.routes.ClientDetailsLockoutController.show.url}") {
-        redirectLocation(result) mustBe Some(controllers.agent.matching.routes.ClientDetailsLockoutController.show.url)
-      }
-    }
-
-    "throw an internal server exception when a lockout error occurs" in {
-      lazy val r = userMatchingRequest.buildRequest(None)
-      setupMockLockStatusFailureResponse(testARN)
-      lazy val result = await(call(r))
-
-      intercept[InternalServerException](result).getMessage mustBe "[ClientDetailsController][handleLockOut] lockout failure"
-    }
-
-  }
-
-
-  for (editMode <- Seq(true, false)) {
-
-    s"when editMode=$editMode and" when {
-
-      "Calling the submit action of the ClientDetailsController with an authorised user and valid submission and" when withController { controller =>
-
-        val testClientDetails =
-          UserDetailsModel(
-            firstName = "Abc",
-            lastName = "Abc",
-            nino = testNino,
-            dateOfBirth = DateModel("1", "1", "1980")
-          )
-
-        def callSubmit(request: FakeRequest[AnyContentAsEmpty.type])(isEditMode: Boolean): Future[Result] =
-          controller.submit(isEditMode = isEditMode)(
-            request.post(ClientDetailsForm.clientDetailsForm, testClientDetails)
-          )
-
-        "there are no stored data" should {
-
-          s"redirect to '${controllers.agent.matching.routes.ConfirmClientController.show().url}" in {
-            setupMockNotLockedOut(testARN)
-
-            lazy val r = userMatchingRequest.buildRequest(None)
-
-            val goodResult = callSubmit(r)(isEditMode = editMode)
-
-            status(goodResult) must be(Status.SEE_OTHER)
-            redirectLocation(goodResult) mustBe Some(controllers.agent.matching.routes.ConfirmClientController.show().url)
-
-            await(goodResult).verifyStoredUserDetailsIs(Some(testClientDetails))(r)
-          }
-
-        }
-
-        "stored user details is different to the new user details" should {
-
-          s"redirect to '${controllers.agent.matching.routes.ConfirmClientController.show().url}" in {
-            setupMockNotLockedOut(testARN)
-
-            val newUserDetails = testClientDetails.copy(firstName = testClientDetails.firstName + "NOT")
-
-            lazy val r = userMatchingRequest.buildRequest(Some(newUserDetails))
-
-            val goodResult = callSubmit(r)(isEditMode = editMode)
-
-            status(goodResult) must be(Status.SEE_OTHER)
-            redirectLocation(goodResult) mustBe Some(controllers.agent.matching.routes.ConfirmClientController.show().url)
-
-            await(goodResult).verifyStoredUserDetailsIs(Some(testClientDetails))(r)
-          }
-
-        }
-
-        "stored user details is the same as the new user details" should {
-
-          s"redirect to '${controllers.agent.matching.routes.ConfirmClientController.show().url} but do not delete Subscription Details " in {
-            setupMockNotLockedOut(testARN)
-
-            lazy val r = userMatchingRequest.buildRequest(Some(testClientDetails))
-
-            val goodResult = callSubmit(r)(isEditMode = editMode)
-
-            status(goodResult) must be(Status.SEE_OTHER)
-            redirectLocation(goodResult) mustBe Some(controllers.agent.matching.routes.ConfirmClientController.show().url)
-
-            await(goodResult).verifyStoredUserDetailsIs(Some(testClientDetails))(r)
-          }
-
-        }
-      }
-
-      "Calling the submit action of the ClientDetailsController with an authorised user and invalid submission" should withController { controller =>
-
-        val newTestUserDetails = UserDetailsModel(
-          firstName = "Abc",
-          lastName = "Abc",
-          nino = testNino,
-          dateOfBirth = DateModel("00", "01", "1980"))
-
-        def callSubmit(isEditMode: Boolean): Future[Result] =
-          controller.submit(isEditMode = isEditMode)(
-            userMatchingRequest
-              .post(ClientDetailsForm.clientDetailsForm, newTestUserDetails)
-          )
-
-        "return a bad request status (BAD_REQUEST - 400)" in {
-          setupMockNotLockedOut(testARN)
-
-          val badResult = callSubmit(isEditMode = editMode)
-
-          status(badResult) must be(Status.BAD_REQUEST)
-
-          // bad requests do not trigger a save
-          await(badResult).verifyStoredUserDetailsIs(None)(userMatchingRequest)
-        }
-
-        "return HTML" in {
-          setupMockNotLockedOut(testARN)
-
-          val badResult = callSubmit(isEditMode = editMode)
-
-          contentType(badResult) must be(Some("text/html"))
-          charset(badResult) must be(Some("utf-8"))
-        }
-      }
-    }
-
-  }
-
-  "If the agent is locked out" should withController { controller =>
-    s"calling show should redirect them to ${controllers.agent.matching.routes.ClientDetailsLockoutController.show.url}" in {
-      setupMockLockedOut(testARN)
-      lazy val result = controller.show(isEditMode = false)(userMatchingRequest)
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result).get mustBe controllers.agent.matching.routes.ClientDetailsLockoutController.show.url
-    }
-
-    s"calling submit should redirect them to ${controllers.agent.matching.routes.ClientDetailsLockoutController.show.url}" in {
-      setupMockLockedOut(testARN)
-      lazy val result = controller.submit(isEditMode = false)(userMatchingRequest)
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result).get mustBe controllers.agent.matching.routes.ClientDetailsLockoutController.show.url
-    }
-  }
-
-  authorisationTests()
 }

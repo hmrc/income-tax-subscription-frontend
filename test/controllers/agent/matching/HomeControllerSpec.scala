@@ -26,7 +26,6 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSubscriptionDetailsService, MockThrottlingConnector}
-import utilities.agent.TestConstants.testUtr
 
 import scala.concurrent.Future
 
@@ -87,7 +86,7 @@ class HomeControllerSpec extends AgentControllerBaseSpec
           val result: Future[Result] = testHomeController().index()(agentSignUpRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.agent.routes.UsingSoftwareController.show().url)
+          redirectLocation(result) mustBe Some(controllers.agent.routes.UsingSoftwareController.show.url)
         }
       }
       "the user has not previously confirmed to sign up their client" when {

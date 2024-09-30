@@ -269,7 +269,7 @@ class AgentWhatYouNeedToDoControllerSpec
             ArgumentMatchers.any(),
             ArgumentMatchers.eq(testName),
             ArgumentMatchers.eq(testFormattedNino),
-            ArgumentMatchers.eq(Some(controllers.agent.routes.UsingSoftwareController.show().url)),
+            ArgumentMatchers.eq(Some(controllers.agent.routes.UsingSoftwareController.show.url)),
           )(any(), any())).thenReturn(HtmlFormat.empty)
 
           val result: Future[Result] = controller.show(
@@ -296,7 +296,7 @@ class AgentWhatYouNeedToDoControllerSpec
             ArgumentMatchers.any(),
             ArgumentMatchers.eq(testName),
             ArgumentMatchers.eq(testFormattedNino),
-            ArgumentMatchers.eq(Some(controllers.agent.routes.UsingSoftwareController.show().url)),
+            ArgumentMatchers.eq(Some(controllers.agent.routes.UsingSoftwareController.show.url)),
 
           )(any(), any())).thenReturn(HtmlFormat.empty)
 

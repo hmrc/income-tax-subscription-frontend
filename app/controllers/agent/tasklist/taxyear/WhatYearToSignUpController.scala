@@ -18,6 +18,8 @@ package controllers.agent.tasklist.taxyear
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.PrePopulate
+import config.featureswitch.FeatureSwitching
 import controllers.utils.{ReferenceRetrieval, TaxYearNavigationHelper}
 import forms.agent.AccountingYearForm
 import models.AccountingYear
@@ -29,8 +31,6 @@ import services._
 import services.agent.ClientDetailsRetrieval
 import uk.gov.hmrc.http.InternalServerException
 import views.html.agent.tasklist.taxyear.WhatYearToSignUp
-import config.featureswitch.FeatureSwitch.PrePopulate
-import config.featureswitch.FeatureSwitching
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -66,7 +66,7 @@ class WhatYearToSignUpController @Inject()(accountingPeriodService: AccountingPe
     if (isEditMode && isEnabled(PrePopulate)) {
       Some(controllers.agent.routes.GlobalCheckYourAnswersController.show.url)
     } else if (isEnabled(PrePopulate)) {
-      Some(controllers.agent.routes.UsingSoftwareController.show().url)
+      Some(controllers.agent.routes.UsingSoftwareController.show.url)
     } else if (isEditMode) {
       Some(controllers.agent.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.show(editMode = true).url)
     } else {
