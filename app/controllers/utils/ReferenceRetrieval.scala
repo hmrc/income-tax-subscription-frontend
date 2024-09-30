@@ -43,7 +43,7 @@ class ReferenceRetrieval @Inject()(subscriptionDetailsService: SubscriptionDetai
   }
 
   def getReference(arn: Option[String])
-                  (implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[String] = {
+                  (implicit hc: HeaderCarrier, request: Request[_]): Future[String] = {
 
     sessionDataService.fetchReference.flatMap {
       case Right(Some(reference)) => Future.successful(reference)
@@ -61,7 +61,7 @@ class ReferenceRetrieval @Inject()(subscriptionDetailsService: SubscriptionDetai
   }
 
   private def handleReferenceNotFound(nino: String, utr: String, arn: Option[String])
-                                     (implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[String] = {
+                                     (implicit hc: HeaderCarrier, request: Request[_]): Future[String] = {
     subscriptionDetailsService.retrieveReference(utr) flatMap {
       case Right(RetrieveReferenceHttpParser.Existing(reference)) =>
         for {
