@@ -66,7 +66,7 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the income source page")
         res must have(
           httpStatus(OK),
-          pageTitle(messages("your-income-source.manage.heading") + serviceNameGovUk)
+          pageTitle(messages("your-income-source.heading") + serviceNameGovUk)
         )
       }
     }
