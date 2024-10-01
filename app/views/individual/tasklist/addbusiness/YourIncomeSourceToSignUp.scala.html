@@ -28,17 +28,14 @@
     appConfig: AppConfig,
     hmrcListWithActions : HmrcListWithActions,
     form: FormWithCSRF,
-    saveAndContinueButtonHelper: SaveAndContinueButtonHelper
+    saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
+    govukSummaryList : GovukSummaryList
 )
 
 @(postAction: Call, backUrl: String, incomeSources: IncomeSources)( implicit request: Request[_], messages: Messages)
 
     @heading = @{
-        if(incomeSources.hasNoIncomeSources){
-            messages("your-income-source.heading")
-        } else {
-            messages("your-income-source.manage.heading")
-        }
+      messages("your-income-source.heading")
     }
 
 
@@ -47,25 +44,11 @@
     backLink = Some(backUrl)
 ) {
     <h1 class="govuk-heading-xl">@heading</h1>
-    @if(incomeSources.hasNoIncomeSources){
-        <p class="govuk-body-l">@messages("your-income-source.lead") </p>
-    } else {
-        <p class="govuk-body-l">@messages("your-income-source.manage.label")</p>
-    }
+    <p class="govuk-body">@messages("your-income-source.manage.label")</p>
 
     @selfEmploymentSection
 
-    @ukPropertySection
-
-    @foreignPropertySection
-
-    <p class="govuk-body">
-    @messages("your-income-source.final-note.para-one")
-    </p>
-
-    <p class="govuk-body">
-    @messages("your-income-source.final-note.para-two")
-    </p>
+    @incomeFromProperty
 
     @form(action = postAction) {
         @if(incomeSources.hasNoIncomeSources) {
@@ -80,12 +63,24 @@
     }
 }
 
-@selfEmploymentLabel(business: SelfEmploymentData, index: Int) = @{
-    (business.businessName, business.businessTradeName) match {
-        case (Some(BusinessNameModel(name)), Some(BusinessTradeNameModel(trade))) => messages("your-income-source.self-employed.label-full", trade, name)
-        case (Some(BusinessNameModel(name)), None) => name
-        case (None, Some(BusinessTradeNameModel(trade))) => trade
+@selfEmploymentName(business: SelfEmploymentData, index: Int) = @{
+    (business.businessName) match {
+        case (Some(BusinessNameModel(name))) => messages("your-income-source.self-employed.business-name", name)
         case _ => messages("your-income-source.self-employed.label-none", index)
+    }
+}
+
+@selfEmploymentTrade(business: SelfEmploymentData, index: Int) = @{
+    (business.businessTradeName) match {
+        case (Some(BusinessTradeNameModel(trade))) => messages("your-income-source.self-employed.business-trade", trade)
+        case _ => messages("agent.your-income-source.self-employed.label-none", index)
+    }
+}
+
+@startDate(maybeStartDate: Option[DateModel]) = @{
+    maybeStartDate match {
+        case Some(startDate) => startDate.toCheckYourAnswersDateFormat
+        case None => ""
     }
 }
 
@@ -94,107 +89,116 @@
     <h2 class="govuk-heading-m">@messages("your-income-source.self-employed.heading")</h2>
     <p class="govuk-body">@messages("your-income-source.self-employed.description")</p>
 
-    @hmrcListWithActions(ListWithActions(
-        items = incomeSources.selfEmployments.zip(1 to incomeSources.selfEmployments.length).map { case (business, index) =>
-            ListWithActionsItem(
-                name = Text(selfEmploymentLabel(business, index)),
-                actions = Seq(
-                    ListWithActionsAction(
-                        href = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${business.id}&isEditMode=true",
-                        content = Text(messages("base.change")),
-                        visuallyHiddenText = Some(messages("your-income-source.self-employed.change-hidden", selfEmploymentLabel(business, index))),
-                    ),
-                    ListWithActionsAction(
-                        href = controllers.individual.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show(business.id).url,
-                        content = Text(messages("base.remove")),
-                        visuallyHiddenText = Some(messages("your-income-source.self-employed.remove-hidden", selfEmploymentLabel(business, index))),
+    @incomeSources.selfEmployments.zip(1 to incomeSources.selfEmployments.length).map { case (business, index) =>
+        @govukSummaryList(SummaryList(
+            rows = Seq(SummaryListRow(
+                key = Key(
+                    content = Text(messages("your-income-source.self-employed.business-name.para"))
+                ),
+                value = Value(Text(selfEmploymentName(business, index)))
+            )),
+            card = Some(Card(
+                title = Some(CardTitle(
+                    content = Text(selfEmploymentTrade(business, index))
+                )),
+                actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
+                            href = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${business.id}&isEditMode=true",
+                            content = Text(messages("base.change")),
+                            visuallyHiddenText = business.businessName.map(_.businessName)
+                        ),
+                        ActionItem(
+                            href = controllers.individual.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show(business.id).url,
+                            content = Text(messages("base.remove")),
+                            visuallyHiddenText = business.businessName.map(_.businessName)
+                        )
                     )
-                )
-            )
-        }
-    ))
+                ))
+            ))
+        ))
+    }
 
     <div id="add-self-employment" class="govuk-!-padding-bottom-6">
         <p class="govuk-body">
           <a class="govuk-link" href="@appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl">
-            @if(incomeSources.selfEmployments.isEmpty) {
-                @messages("your-income-source.self-employed.add-link")
-            } else {
-                @messages("your-income-source.self-employed.add-another-link")
-            }
+              @messages("your-income-source.self-employed.add-link")
           </a>
         </p>
     </div>
 
 }
 
-@ukPropertySection = {
+@incomeFromProperty = {
 
-    <h2 class="govuk-heading-m">@messages("your-income-source.uk-property.heading")</h2>
+    <h2 class="govuk-heading-m">@messages("your-income-source.income-from-property.heading")</h2>
 
-    <p class="govuk-body">@messages("your-income-source.uk-property.description")</p>
+    <p class="govuk-body">@messages("your-income-source.income-from-property.para")</p>
 
-    @if(incomeSources.ukProperty.isDefined) {
-        @hmrcListWithActions(ListWithActions(
-            items = incomeSources.ukProperty.map { property =>
-                ListWithActionsItem(
-                    name = Text(messages("your-income-source.uk-property.label")),
-                    actions = Seq(
-                        ListWithActionsAction(
-                            href = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url,
-                            content = Text(messages("base.change")),
-                            visuallyHiddenText = Some(messages("your-income-source.uk-property.change-hidden")),
-                        ),
-                        ListWithActionsAction(
-                            href = controllers.individual.tasklist.ukproperty.routes.RemoveUkPropertyController.show.url,
-                            content = Text(messages("base.remove")),
-                            visuallyHiddenText = Some(messages("your-income-source.uk-property.remove-hidden")),
-                        )
+    @incomeSources.ukProperty.map { ukProperty =>
+        @govukSummaryList(SummaryList(
+            rows = Seq(SummaryListRow(
+                key = Key(
+                    content = Text(messages("your-income-source.property.start-date-para"))
+                ),
+            value = Value(Text(messages("your-income-source.property.start-date", startDate(ukProperty.startDate))))
+        )),
+        card = Some(Card(
+            title = Some(CardTitle(
+                content = Text(messages("your-income-source.uk-property"))
+            )),
+            actions = Some(Actions(
+                items = Seq(
+                    ActionItem(
+                        href = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url,
+                        content = Text(messages("base.change"))
+                    ),
+                    ActionItem(
+                        href = controllers.individual.tasklist.ukproperty.routes.RemoveUkPropertyController.show.url,
+                        content = Text(messages("base.remove"))
                     )
                 )
-            }.toSeq
+            ))
         ))
-    } else {
+    ))
+    }.getOrElse {
         <div id="add-uk-property" class="govuk-!-padding-bottom-6">
             <p class="govuk-body">
-              <a class="govuk-link" href="@controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.show()">@messages("your-income-source.uk-property.add-link")</a>
+                <a class="govuk-link" href="@controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.show()">@messages("your-income-source.uk-property.add-link")</a>
             </p>
         </div>
     }
 
-}
-
-
-@foreignPropertySection = {
-
-    <h2 class="govuk-heading-m">@messages("your-income-source.foreign-property.heading")</h2>
-
-    <p class="govuk-body">@messages("your-income-source.foreign-property.description")</p>
-
-    @if(incomeSources.foreignProperty.isDefined) {
-        @hmrcListWithActions(ListWithActions(
-            items = incomeSources.foreignProperty.map { property =>
-                ListWithActionsItem(
-                    name = Text(messages("your-income-source.foreign-property.label")),
-                    actions = Seq(
-                        ListWithActionsAction(
+    @incomeSources.foreignProperty.map { foreignProperty =>
+        @govukSummaryList(SummaryList(
+            rows = Seq(SummaryListRow(
+                key = Key(
+                    content = Text(messages("your-income-source.foreign-property.start-date-para"))
+                ),
+                value = Value(Text(messages("your-income-source.foreign-property.start-date", startDate(foreignProperty.startDate))))
+            )),
+            card = Some(Card(
+                title = Some(CardTitle(
+                    content = Text(messages("your-income-source.foreign-property"))
+                )),
+                actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
                             href = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url,
-                            content = Text(messages("base.change")),
-                            visuallyHiddenText = Some(messages("your-income-source.foreign-property.change-hidden")),
+                            content = Text(messages("base.change"))
                         ),
-                        ListWithActionsAction(
+                        ActionItem(
                             href = controllers.individual.tasklist.overseasproperty.routes.RemoveOverseasPropertyController.show.url,
-                            content = Text(messages("base.remove")),
-                            visuallyHiddenText = Some(messages("your-income-source.foreign-property.remove-hidden")),
+                            content = Text(messages("base.remove"))
                         )
                     )
-                )
-            }.toSeq
+                ))
+            ))
         ))
-    } else {
+    }.getOrElse {
         <div id="add-foreign-property" class="govuk-!-padding-bottom-6">
             <p class="govuk-body">
-              <a class="govuk-link" href="@controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show()">@messages("your-income-source.foreign-property.add-link")</a>
+                <a class="govuk-link" href="@controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show()">@messages("your-income-source.foreign-property.add-link")</a>
             </p>
         </div>
     }
