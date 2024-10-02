@@ -48,7 +48,8 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     val foreignPropertyRemove = "(Foreign property)"
 
     val selfEmploymentHeading = "Sole trader businesses"
-    val selfEmploymentPara = "You’re self-employed if you run your own business as an individual and work for yourself. This is also known as being a ‘sole trader’. If you work through a limited company, you’re not a sole trader."
+    val selfEmploymentPara = "You’re a sole trader if you run your own business as an individual and work for yourself. " +
+      "This is also known as being self-employed. You’re not a sole trader if your only business income is from a limited company."
     val addSelfEmploymentLinkText = "Add a sole trader business"
     val soleTraderBusinessNameKey = "Business name"
     val soleTraderLink: String = appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl
