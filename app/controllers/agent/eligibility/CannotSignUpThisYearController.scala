@@ -57,6 +57,6 @@ class CannotSignUpThisYearController @Inject()(clientDetailsRetrieval: ClientDet
   }
 
   def submit: Action[AnyContent] = Authenticated {implicit request =>
-    _ => Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
+    _ => Redirect(controllers.agent.routes.UsingSoftwareController.show())
   }
 }

@@ -614,6 +614,15 @@ error.cannot-sign-up.invalid                                    = Mae’n rhaid 
 declined-sign-up-next-year.heading                              = Beth y mae angen i chi ei wneud
 declined-sign-up-next-year.para                                 = Rydych wedi dewis peidio â chofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm. Parhewch i gyflwyno’ch Ffurflen Dreth Hunanasesiad flynyddol yn ôl yr arfer.
 
+
+## Agent Using Software Page ##
+agent.using-software.heading                                      = A ydych chi neu’ch cleient yn defnyddio meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm?
+agent.using-software.caption                                    = {0} | {1}
+agent.using-software.link                                       = Dod o hyd i feddalwedd sy’n cydweddu â Throi Treth yn Ddigidol ar gyfer Treth Incwm
+agent.using-software.yes-hint                                   = Rydych chi’n defnyddio meddalwedd i gadw cofnodion digidol a bod meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+agent.using-software.no-hint                                    = Nid ydych chi na’ch cleient yn defnyddio meddalwedd i gadw cofnodion digidol. Neu rydych chi’n defnyddio meddalwedd i gadw cofnodion digidol ond nid yw’r feddalwedd honno’n gweithio gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+agent.using-software.form-error                                 = Dewiswch ‘Iawn’ os ydych chi neu’ch cleient yn defnyddio meddalwedd i gadw cofnodion digidol a bod meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+
 ## Agent what you need to do page ##
 agent.what-you-need-to-do.title                                                = Beth y mae angen i chi ei wneud
 agent.what-you-need-to-do.heading                                              = Beth y mae angen i chi ei wneud

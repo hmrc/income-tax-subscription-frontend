@@ -74,7 +74,7 @@ class ClientCanSignUpController @Inject()(clientCanSignUp: ClientCanSignUp,
     referenceRetrieval.getAgentReference flatMap { reference =>
       subscriptionDetailsService.saveEligibilityInterruptPassed(reference) map {
         case Right(_) =>
-          Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
+          Redirect(controllers.agent.routes.UsingSoftwareController.show())
             .addingToSession(JourneyStateKey -> AgentSignUp.name)
         case Left(_) =>
           throw new InternalServerException("[ClientCanSignUpController][continueToSignUpClient] - Failed to save eligibility interrupt passed")

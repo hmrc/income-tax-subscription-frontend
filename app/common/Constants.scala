@@ -52,6 +52,8 @@ object Constants {
     val ELIGIBILITY_STATUS = "ELIGIBILITY_STATUS"
     val MANDATION_STATUS = "MANDATION_STATUS"
 
+    val HAS_SOFTWARE = "HAS_SOFTWARE"
+
     def throttlePassed(throttle: Throttle) = s"throttle-${throttle.throttleId}"
 
     val IdentityVerificationFlag = "ITSA-Identity-Verification-Flag"

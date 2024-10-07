@@ -46,18 +46,18 @@ class CannotSignUpThisYearControllerISpec extends ComponentSpecBase {
   "POST /client/error/cannot-sign-up-for-current-year" when {
 
     "the user clicks sign up this client button" should {
-      s"return a redirect to ${controllers.agent.routes.WhatYouNeedToDoController.show().url}" in {
+      s"return a redirect to ${controllers.agent.routes.UsingSoftwareController.show().url}" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
 
         When("POST /client/error/cannot-sign-up-for-current-year is called")
         val result: WSResponse = IncomeTaxSubscriptionFrontend.submitCannotSignUpThisYear()
 
-        Then("Should return SEE_OTHER to the What You Need To Do Controller")
+        Then("Should return SEE_OTHER to the Using Software Controller")
 
         result must have(
           httpStatus(SEE_OTHER),
-          redirectURI(controllers.agent.routes.WhatYouNeedToDoController.show().url)
+          redirectURI(controllers.agent.routes.UsingSoftwareController.show().url)
         )
       }
     }

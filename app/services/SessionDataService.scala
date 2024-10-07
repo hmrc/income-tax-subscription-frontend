@@ -21,10 +21,9 @@ import connectors.SessionDataConnector
 import connectors.httpparser.DeleteSessionDataHttpParser.DeleteSessionDataResponse
 import connectors.httpparser.GetSessionDataHttpParser.GetSessionDataResponse
 import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataResponse
-import models.EligibilityStatus
+import models.{EligibilityStatus, YesNo}
 import models.status.MandationStatusModel
 import uk.gov.hmrc.http.HeaderCarrier
-
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
@@ -55,20 +54,12 @@ class SessionDataService @Inject()(sessionDataConnector: SessionDataConnector) {
     sessionDataConnector.saveSessionData[Boolean](ITSASessionKeys.throttlePassed(throttle), true)
   }
 
-  def deleteThrottlePassed(throttle: Throttle)(implicit hc: HeaderCarrier): Future[DeleteSessionDataResponse] = {
-    sessionDataConnector.deleteSessionData(ITSASessionKeys.throttlePassed(throttle))
-  }
-
   def fetchMandationStatus(implicit hc: HeaderCarrier): Future[GetSessionDataResponse[MandationStatusModel]] = {
     sessionDataConnector.getSessionData[MandationStatusModel](ITSASessionKeys.MANDATION_STATUS)
   }
 
   def saveMandationStatus(mandationStatus: MandationStatusModel)(implicit hc: HeaderCarrier): Future[SaveSessionDataResponse] = {
     sessionDataConnector.saveSessionData(ITSASessionKeys.MANDATION_STATUS, mandationStatus)
-  }
-
-  def deleteMandationStatus(implicit hc: HeaderCarrier): Future[DeleteSessionDataResponse] = {
-    sessionDataConnector.deleteSessionData(ITSASessionKeys.MANDATION_STATUS)
   }
 
   def fetchEligibilityStatus(implicit hc: HeaderCarrier): Future[GetSessionDataResponse[EligibilityStatus]] = {
@@ -79,20 +70,12 @@ class SessionDataService @Inject()(sessionDataConnector: SessionDataConnector) {
     sessionDataConnector.saveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, eligibilityStatus)
   }
 
-  def deleteEligibilityStatus(implicit hc: HeaderCarrier): Future[DeleteSessionDataResponse] = {
-    sessionDataConnector.deleteSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)
-  }
-
   def fetchNino(implicit hc: HeaderCarrier): Future[GetSessionDataResponse[String]] = {
     sessionDataConnector.getSessionData[String](ITSASessionKeys.NINO)
   }
 
   def saveNino(nino: String)(implicit hc: HeaderCarrier): Future[SaveSessionDataResponse] = {
     sessionDataConnector.saveSessionData(ITSASessionKeys.NINO, nino)
-  }
-
-  def deleteNino(implicit hc: HeaderCarrier): Future[DeleteSessionDataResponse] = {
-    sessionDataConnector.deleteSessionData(ITSASessionKeys.NINO)
   }
 
   def fetchUTR(implicit hc: HeaderCarrier): Future[GetSessionDataResponse[String]] = {
@@ -103,8 +86,12 @@ class SessionDataService @Inject()(sessionDataConnector: SessionDataConnector) {
     sessionDataConnector.saveSessionData(ITSASessionKeys.UTR, utr)
   }
 
-  def deleteUTR(implicit hc: HeaderCarrier): Future[DeleteSessionDataResponse] = {
-    sessionDataConnector.deleteSessionData(ITSASessionKeys.UTR)
+  def fetchSoftwareStatus(implicit hc: HeaderCarrier): Future[GetSessionDataResponse[YesNo]] = {
+    sessionDataConnector.getSessionData[YesNo](ITSASessionKeys.HAS_SOFTWARE)
+  }
+
+  def saveSoftwareStatus(softwareStatus: YesNo)(implicit hc: HeaderCarrier): Future[SaveSessionDataResponse] = {
+    sessionDataConnector.saveSessionData(ITSASessionKeys.HAS_SOFTWARE, softwareStatus)
   }
 
 }
