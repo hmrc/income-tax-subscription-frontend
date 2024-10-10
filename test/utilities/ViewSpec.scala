@@ -33,6 +33,7 @@ import play.api.mvc.{Call, Request}
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
 import java.time.LocalDate
@@ -439,7 +440,7 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
 
       validateFieldSetLegend(radioFieldSet, legend, isHeading, isLegendHidden, checkpoint)
 
-      hint.foreach{ hint =>
+      hint.foreach { hint =>
         val radioFieldSetHint: Element = radioFieldSet.selectHead(".govuk-hint")
         checkpoint {
           radioFieldSet.attr("aria-describedby") must include(radioFieldSetHint.attr("id"))
@@ -449,13 +450,13 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
         }
       }
 
-      errorMessage.foreach{ errorMessage =>
+      errorMessage.foreach { errorMessage =>
         val radioFieldSetError: Element = radioFieldSet.selectHead(".govuk-error-message")
         checkpoint {
           radioFieldSet.attr("aria-describedby") must include(radioFieldSetError.attr("id"))
         }
         checkpoint {
-          radioFieldSetError.text must include (errorMessage)
+          radioFieldSetError.text must include(errorMessage)
         }
       }
 
@@ -543,33 +544,46 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
     }
 
     def mustHaveYesNoRadioInputs(selector: String)(name: String,
-                                                 legend: String,
-                                                 isHeading: Boolean,
-                                                 isLegendHidden: Boolean,
-                                                 hint: Option[String],
-                                                 errorMessage: Option[String])
-                                                 : Assertion = {
+                                                   legend: String,
+                                                   isHeading: Boolean,
+                                                   isLegendHidden: Boolean,
+                                                   hint: Option[String],
+                                                   errorMessage: Option[String],
+                                                   yesHintId: Option[String] = None,
+                                                   yesHint: Option[Text] = None,
+                                                   noHintId: Option[String] = None,
+                                                   noHint: Option[Text] = None)
+    : Assertion = {
       mustHaveRadioInput(selector
-          )(name = name,
-          legend = legend,
-          isHeading = isHeading,
-          isLegendHidden = isLegendHidden,
-          hint = hint,
-          errorMessage = errorMessage,
-          radioContents = Seq(
-            RadioItem(
-              id = Some(name),
-              content = Text(Yes.toMessageString),
-              value = Some(Yes.toString)
-            ),
-            RadioItem(
-              id = Some(s"$name-2"),
-              content = Text(No.toMessageString),
-              value = Some(No.toString)
-            )
+      )(name = name,
+        legend = legend,
+        isHeading = isHeading,
+        isLegendHidden = isLegendHidden,
+        hint = hint,
+        errorMessage = errorMessage,
+        radioContents = Seq(
+          RadioItem(
+            id = Some(name),
+            content = Text(Yes.toMessageString),
+            value = Some(Yes.toString),
+            hint = yesHint map { hint => Hint(
+              id = yesHintId,
+              content = hint
+            )}
           ),
+          RadioItem(
+            id = Some(s"$name-2"),
+            content = Text(No.toMessageString),
+            value = Some(No.toString),
+            hint = noHint map { hint =>
+              Hint(
+                id = noHintId,
+                content = hint
+              )}
+          )
+        ),
         isInline = true
-        )
+      )
     }
 
     def mustHaveTable(tableHeads: List[String], tableRows: List[List[String]], maybeCaption: Option[String] = None, hiddenTableCaption: Boolean = true): Assertion = {
@@ -692,7 +706,7 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
         }
         if (isLegendHidden) {
           checkpoint {
-            dateLegend.attr("class") must include ("govuk-visually-hidden")
+            dateLegend.attr("class") must include("govuk-visually-hidden")
           }
         }
       }
@@ -702,7 +716,7 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
         hintText.text mustBe exampleDate
       }
 
-      dateInputsValues zip(1 to dateInputsValues.length) foreach { case (dateInputValues, index) =>
+      dateInputsValues zip (1 to dateInputsValues.length) foreach { case (dateInputValues, index) =>
 
         val item: Element = dateInputField.selectNth(".govuk-date-input__item", index)
         val label = item.selectHead("label")
@@ -735,11 +749,11 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
         val fieldset: Element = element.getFieldset
         val errorMessage: Element = element.selectHead(".govuk-error-message")
         checkpoint {
-          fieldset.attr("aria-describedby") must include ("startDate-error")
+          fieldset.attr("aria-describedby") must include("startDate-error")
         }
-       checkpoint {
-         errorMessage.selectHead("p").attr("id") mustBe "startDate-error"
-       }
+        checkpoint {
+          errorMessage.selectHead("p").attr("id") mustBe "startDate-error"
+        }
         checkpoint {
           errorMessage.text mustBe s"Error: $message"
         }

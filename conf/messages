@@ -613,6 +613,16 @@ error.cannot-sign-up.invalid                                    = You must selec
 declined-sign-up-next-year.heading                              = What you need to do
 declined-sign-up-next-year.para                                 = You’ve chosen not to sign up for Making Tax Digital for Income Tax. Continue to submit your annual Self Assessment tax return as normal.
 
+
+## Agent Using Software Page ##
+agent.using-software.heading                                      = Are you or your client using software that works with Making Tax Digital for Income Tax?
+agent.using-software.caption                                    = {0} | {1}
+agent.using-software.link                                       = Find software that works with Making Tax Digital for Income Tax
+agent.using-software.yes-hint                                   = You or your client are using software to keep digital records and that software works with Making Tax Digital for Income Tax
+agent.using-software.no-hint                                    = You or your client are not using software to keep digital records. Or you use software to keep digital records but that software does not work with Making Tax Digital for Income Tax
+agent.using-software.form-error                                 = Select ‘Yes’ if you or your client are using software to keep digital records and that software works with Making Tax Digital for Income Tax
+
+
 ## Agent what you need to do page ##
 agent.what-you-need-to-do.title                                                          = What you need to do
 agent.what-you-need-to-do.heading                                                        = What you need to do

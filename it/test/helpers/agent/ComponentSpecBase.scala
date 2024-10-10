@@ -253,6 +253,16 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
     def showBusinessAlreadyRemoved(): WSResponse = get("/error/business-already-removed")
 
+    def showUsingSoftware(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/using-software", sessionData)
+
+    def submitUsingSoftware(sessionData: Map[String, String] = ClientData.basicClientData, request: Option[YesNo]): WSResponse = {
+      post("/using-software", sessionData)(
+        request.fold(Map.empty[String, Seq[String]])(
+          model => UsingSoftwareForm.usingSoftwareForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        )
+      )
+    }
+
     def whatYouNeedToDo(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/what-you-need-to-do", sessionData)
 
     def submitWhatYouNeedToDo(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = post("/what-you-need-to-do", sessionData)(Map.empty)
