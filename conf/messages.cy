@@ -602,7 +602,6 @@ agent.client-can-sign-up.bullet6                                = ail-nodi ei fa
 agent.client-can-sign-up.button-text                             = Cofrestru’r cleient hwn
 agent.client-can-sign-up.check-another                          = Neu, gallwch {0}. Ni fyddwn yn cadw’r manylion y gwnaethoch eu nodi am {1}.
 agent.client-can-sign-up.check-another-link                     = wirio a allwch gofrestru cleient arall
-agent.client-can-sign-up.back-to-enter-client-details           = Yn ôl i nodi manylion cleientiaid
 
 # Individual cannot sign up page
 cannot-sign-up.heading                                          = Gallwch gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o’r flwyddyn dreth nesaf
