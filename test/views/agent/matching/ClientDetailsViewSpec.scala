@@ -93,31 +93,39 @@ class ClientDetailsViewSpec extends ViewSpec {
       document().mainContent.selectHead("p").text() mustBe ClientDetails.line1
     }
 
-    "have a form" in {
-      document().getForm.attr("method") mustBe testCall.method
-      document().getForm.attr("action") mustBe testCall.url
-    }
+    "have a form" which {
+      "has the correct attributes" in {
+        document().getForm.attr("method") mustBe testCall.method
+        document().getForm.attr("action") mustBe testCall.url
+      }
 
-    "have a client first name text field" in {
-      document().mainContent.mustHaveTextField(
-        name = ClientDetailsForm.clientFirstName,
-        label = ClientDetails.field1
-      )
-    }
+      "has a text input to capture client first name" in {
+        document().mainContent.mustHaveTextInput(".govuk-form-group:nth-of-type(1)")(
+          name = ClientDetailsForm.clientFirstName,
+          label = ClientDetails.field1,
+          isLabelHidden = false,
+          isPageHeading = false
+        )
+      }
 
-    "have a client last name text field" in {
-      document().mainContent.mustHaveTextField(
-        name = ClientDetailsForm.clientLastName,
-        label = ClientDetails.field2
-      )
-    }
+      "has a text input to capture client last name" in {
+        document().mainContent.mustHaveTextInput(".govuk-form-group:nth-of-type(2)")(
+          name = ClientDetailsForm.clientLastName,
+          label = ClientDetails.field2,
+          isLabelHidden = false,
+          isPageHeading = false
+        )
+      }
 
-    "have a client nino text field" in {
-      document().mainContent.mustHaveTextField(
-        name = ClientDetailsForm.clientNino,
-        label = ClientDetails.field3,
-        hint = Some(ClientDetails.formhint1_line1)
-      )
+      "has a text input to capture client nino" in {
+        document().mainContent.mustHaveTextInput(".govuk-form-group:nth-of-type(3)")(
+          name = ClientDetailsForm.clientNino,
+          label = ClientDetails.field3,
+          isLabelHidden = false,
+          isPageHeading = false,
+          hint = Some(ClientDetails.formhint1_line1)
+        )
+      }
     }
 
     "have a DOB field" in {
