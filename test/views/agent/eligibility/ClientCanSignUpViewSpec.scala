@@ -36,8 +36,7 @@ class ClientCanSignUpViewSpec extends ViewSpec {
     val page: HtmlFormat.Appendable = view(
       postAction = testCall,
       clientName = clientName,
-      clientNino = clientNino,
-      backUrl = testBackUrl
+      clientNino = clientNino
     )
 
     val document: Document = Jsoup.parse(page.body)
@@ -50,8 +49,8 @@ class ClientCanSignUpViewSpec extends ViewSpec {
         view = page,
         title = ClientCanSignUpMessages.heading,
         isAgent = true,
-        backLink = Some(testBackUrl),
-        backLinkText = Some(ClientCanSignUpMessages.backLinkText),
+        backLink = None,
+        backLinkText = None,
         hasSignOutLink = true
       )
     }
@@ -142,7 +141,6 @@ class ClientCanSignUpViewSpec extends ViewSpec {
 
     val continueButton = "Sign up this client"
     val signUpAnotherClient = "Or you can check if you can sign up another client. We will not save the details you entered about FirstName LastName."
-    val backLinkText = "Back to enter client details"
   }
 
 }
