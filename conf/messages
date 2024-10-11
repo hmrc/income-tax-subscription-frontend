@@ -362,6 +362,13 @@ agent.sign-up-confirmation.agent-services-account.heading                       
 agent.sign-up-confirmation.agent-services-account.para                              = Authorise and manage your clients accounts.
 agent.sign-up-confirmation.agent-services-account.link-text                         = Go to your agent services account
 
+## Using Software Page ##
+individual.using-software.heading                                    = Are you using software that works with Making Tax Digital for Income Tax?
+individual.using-software.link                                       = Find software that works with Making Tax Digital for Income Tax
+individual.using-software.yes-hint                                   = You’re using software to keep digital records and that software works with Making Tax Digital for Income Tax
+individual.using-software.no-hint                                    = You are not using software to keep digital records. Or you use software to keep digital records but that software does not work with Making Tax Digital for Income Tax
+individual.using-software.form-error                                 = Select ’Yes’ if you’re using software to keep digital records and that software works with Making Tax Digital for Income Tax
+
 ## Sign Up Confirmation page ##
 sign-up-confirmation.heading                                         = Sign up complete
 sign-up-confirmation.heading.panel.current                           = is now signed up for Making Tax Digital for Income Tax for the current tax year ({0})

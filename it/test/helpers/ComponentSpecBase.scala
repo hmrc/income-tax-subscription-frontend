@@ -23,6 +23,7 @@ import config.AppConfig
 import config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import connectors.stubs.SessionDataConnectorStub.stubGetSessionData
 import forms.individual.business._
+import forms.individual._
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import models._
@@ -219,6 +220,16 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
         model => CannotSignUpThisYearForm.cannotSignUpThisYearForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
       )
     )
+
+    def showUsingSoftware(): WSResponse = get("/using-software")
+
+    def submitUsingSoftware(request: Option[YesNo]): WSResponse = {
+      post("/using-software")(
+        request.fold(Map.empty[String, Seq[String]])(
+          model => UsingSoftwareForm.usingSoftwareForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        )
+      )
+    }
 
     def cannotUseService(): WSResponse = get("/error/cannot-use-service")
 

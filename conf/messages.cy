@@ -360,6 +360,14 @@ agent.sign-up-confirmation.agent-services-account.heading                       
 agent.sign-up-confirmation.agent-services-account.para                              = Awdurdodi cyfrifau eich cleientiaid, a’u rheoli.
 agent.sign-up-confirmation.agent-services-account.link-text                         = Ewch i’ch cyfrif gwasanaethau asiant
 
+
+## Using Software Page ##
+individual.using-software.heading                                    = A ydych yn defnyddio meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm?
+individual.using-software.link                                       = Dod o hyd i feddalwedd sy’n cydweddu â Throi Treth yn Ddigidol ar gyfer Treth Incwm
+individual.using-software.yes-hint                                   = Rydych chi’n defnyddio meddalwedd i gadw cofnodion digidol a bod meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+individual.using-software.no-hint                                    = Nid ydych yn defnyddio meddalwedd i gadw cofnodion digidol. Neu rydych chi’n defnyddio meddalwedd i gadw cofnodion digidol ond nid yw’r feddalwedd honno’n gweithio gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+individual.using-software.form-error                                 = Dewiswch ‘Iawn’ os ydych yn defnyddio meddalwedd i gadw cofnodion digidol a bod meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+
 ## Sign Up Confirmation page ##
 ## Sign Up Confirmation page ##
 sign-up-confirmation.heading                                         = Rydych wedi cofrestru’n llwyddiannus
