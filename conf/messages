@@ -601,7 +601,6 @@ agent.client-can-sign-up.bullet6                                = re-enter their
 agent.client-can-sign-up.button-text                            = Sign up this client
 agent.client-can-sign-up.check-another                          = Or you can {0}. We will not save the details you entered about {1}.
 agent.client-can-sign-up.check-another-link                     = check if you can sign up another client
-agent.client-can-sign-up.back-to-enter-client-details           = Back to enter client details
 
 # Individual cannot sign up page
 cannot-sign-up.heading                                          = You can sign up to Making Tax Digital for Income Tax from the next tax year

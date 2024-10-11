@@ -59,8 +59,7 @@ class ClientCanSignUpController @Inject()(clientCanSignUp: ClientCanSignUp,
         Ok(clientCanSignUp(
           routes.ClientCanSignUpController.submit(),
           clientName = clientDetails.name,
-          clientNino = formatNino(clientDetails.nino),
-          backUrl = backLink
+          clientNino = formatNino(clientDetails.nino)
         ))
       }
   }
@@ -82,7 +81,5 @@ class ClientCanSignUpController @Inject()(clientCanSignUp: ClientCanSignUp,
     }
 
   }
-
-  def backLink: String = controllers.agent.routes.AddAnotherClientController.addAnother().url
 
 }
