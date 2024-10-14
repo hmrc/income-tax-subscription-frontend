@@ -48,6 +48,9 @@ GET         /declined-sign-up-next-year                          controllers.ind
 GET         /what-you-need-to-do                                 controllers.individual.WhatYouNeedToDoController.show
 POST         /what-you-need-to-do                                controllers.individual.WhatYouNeedToDoController.submit
 
+GET         /using-software                                     controllers.individual.UsingSoftwareController.show()
+POST        /using-software                                     controllers.individual.UsingSoftwareController.submit()
+
 ################## Business Routes
 
 #What Tax Year To Sign Up Routes
