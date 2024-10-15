@@ -369,55 +369,45 @@ individual.using-software.no-hint                                    = Nid ydych
 individual.using-software.form-error                                 = Dewiswch ‘Iawn’ os ydych yn defnyddio meddalwedd i gadw cofnodion digidol a bod meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 
 ## Sign Up Confirmation page ##
-## Sign Up Confirmation page ##
 sign-up-confirmation.heading                                         = Rydych wedi cofrestru’n llwyddiannus
 sign-up-confirmation.heading.panel.current                           = Mae wedi llwyddo i gofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm, o ran y flwyddyn dreth bresennol ({0})
 sign-up-confirmation.heading.panel.next                              = Mae wedi llwyddo i gofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm, o ran y flwyddyn dreth nesaf ({0})
 
-sign-up-confirmation.print-confirmation                              = Argraffwch eich cadarnhad
+sign-up-confirmation.print-confirmation                              = Print this page
 
-sign-up-confirmation.what-you-must-do.heading                        = Yr hyn y mae’n rhaid i chi ei wneud
+sign-up-confirmation.what-you-must-do.heading                        = What you must do now
 
-sign-up-confirmation.before-you-start.heading                        = Cyn i chi ddechrau
-sign-up-confirmation.before-you-start.para1                          = Fel y gallwch ddechrau defnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm, mae’n rhaid i chi gael meddalwedd sy’n cydweddu. Dylech wirio a yw’r feddalwedd yn bodloni anghenion eich busnes.
-sign-up-confirmation.before-you-start.para2                          = Er enghraifft, os ydych am ddiweddaru’ch incwm a’ch treuliau fesul cyfnod chwarterol calendr, mae’n rhaid i chi ddewis meddalwedd sy’n gallu gwneud hynny.
-sign-up-confirmation.before-you-start.para3                          = Mae’n rhaid gwneud hyn cyn y byddwch yn gwneud eich diweddariad cyntaf.
-sign-up-confirmation.before-you-start.find-software.link-text        = Dod o hyd i feddalwedd sy’n cydweddu (yn agor tab newydd)
+sign-up-confirmation.read-how-to                                     = Read how to {0}
+sign-up-confirmation.read-how-to.link-text                           = use Making Tax Digital for Income Tax
 
-sign-up-confirmation.when-you-start.heading                          = Pan fyddwch yn dechrau arni
+sign-up-confirmation.what-you-must-do.yes.this.year                  = You must use your software that works with Making Tax Digital for Income Tax.
+sign-up-confirmation.what-you-must-do.no.this.year                   = You must find and use {0}
+sign-up-confirmation.what-you-must-do.no.this.year.link.text         = software that works with Making Tax Digital for Income Tax
 
-sign-up-confirmation.quarterly-updates.heading                       = Anfon diweddariadau chwarterol
-sign-up-confirmation.quarterly-updates.para-one                      = Mae’n rhaid i chi anfon diweddariadau chwarterol. Mae dyddiadau’r cyfnodau chwarterol fel a ganlyn:
-sign-up-confirmation.quarterly-updates.quarter-types.item-1          = chwarterau calendr (er enghraifft, 1 Ebrill i 30 Mehefin)
-sign-up-confirmation.quarterly-updates.quarter-types.item-2          = chwarterau safonol (yn dechrau ar y 6ed diwrnod o bob mis)
-sign-up-confirmation.quarterly-updates.para-two                      = Mae’r dyddiad cau ar gyfer eich diweddariadau yn aros yr un peth.
-sign-up-confirmation.quarterly-updates.table.caption                 = Diweddariadau chwarterol erbyn y dyddiad cau
-sign-up-confirmation.quarterly-updates.link-text                     = Dysgwch ragor am ddiweddariadau chwarterol.
-sign-up-confirmation.quarterly-updates.warning.para                  = Mae’n rhai i chi gyflwyno diweddariadau ar gyfer unrhyw chwarterau rydych wedi’u methu.
+sign-up-confirmation.what-you-must-do.yes.next.year                  = From {0}, you must use your software that works with Making Tax Digital for Income Tax.
+sign-up-confirmation.what-you-must-do.no.next.year                   = From {0}, you must find and use {1}
+sign-up-confirmation.what-you-must-do.no.next.year.link.text         = software that works with Making Tax Digital for Income Tax
 
-sign-up-confirmation.final-declaration.heading                       = Cyflwyno datganiad terfynol
-sign-up-confirmation.final-declaration.para1                         = Dylid datgan ffynhonellau incwm eraill, megis incwm o gyflogaeth, difidendau neu gynilion. Mae angen i chi rhoi gwybod am yr incwm hwn gan ddefnyddio naill ai:
-sign-up-confirmation.final-declaration.bullet1                       = eich meddalwedd sy’n cydweddu (os oes ganddi’r swyddogaeth honno)
-sign-up-confirmation.final-declaration.bullet2                       = Heich cyfrif gwasanaethau ar-lein CThEF
-sign-up-confirmation.final-declaration.online-services.link-text     = Mae rhagor o wybodaeth yn eich cyfrif gwasanaethau ar-lein CThEF.
+sign-up-confirmation.what-you-must-do.para1                          = Your chosen software will tell you what else you need to do, including:
+sign-up-confirmation.what-you-must-do.bullet1                        = how to authorise and connect the software to the Government Gateway user ID you use for your Self Assessment
+sign-up-confirmation.what-you-must-do.bullet2                        = how to keep digital records
+sign-up-confirmation.what-you-must-do.bullet3                        = when and how to send quarterly updates
+sign-up-confirmation.what-you-must-do.no.this.year.bullet4           = if you need to send any missed or backdated updates for the current tax year - and how to send them
+sign-up-confirmation.what-you-must-do.bullet5                        = when and how to make your final declaration after the end of the tax year
+sign-up-confirmation.what-you-must-do.para2                          = And you will need to pay the tax you owe.
 
-sign-up-confirmation.report-previous-tax-year.heading                = Rhoi gwybod am flwyddyn dreth flaenorol
-sign-up-confirmation.report-previous-tax-year.para                   = Bydd yn rhaid i chi gyflwyno’ch Ffurflen Dreth Hunanasesiad am y flwyddyn a ddaw i ben ar 5 Ebrill {0}, gan ddefnyddio’ch cyfrif gwasanaethau ar-lein CThEF yn ôl yr arfer.
+sign-up-confirmation.other-income-sources.subheading                 = Other income sources
+sign-up-confirmation.other-income-sources.para1                      = Make sure you declare your other income sources, such as income from employment, dividends or savings. You need to report these using either:
+sign-up-confirmation.other-income-sources.bullet1                    = your compatible software (if it allows you to do this)
+sign-up-confirmation.other-income-sources.bullet2.link               = HMRC online services
 
-sign-up-confirmation.pay-your-tax.heading                            = Talu’ch treth
-sign-up-confirmation.pay-your-tax.para1                              = Mae sawl ffordd o dalu’ch treth, gan gynnwys:
-sign-up-confirmation.pay-your-tax.bullet1                            = bancio ar-lein
-sign-up-confirmation.pay-your-tax.bullet2                            = bancio dros y ffôn
-sign-up-confirmation.pay-your-tax.bullet3                            = cerdyn debyd
-sign-up-confirmation.pay-your-tax.bullet4                            = cerdyn credyd corfforaethol
-sign-up-confirmation.pay-your-tax.bullet5                            = debyd uniongyrchol
-sign-up-confirmation.pay-your-tax.para2                              = Mae rhagor o wybodaeth ar {0} ar GOV.UK.
-sign-up-confirmation.pay-your-tax.link-text                          = sut i dalu’ch bil treth
+sign-up-confirmation.report-previous-tax-year.heading                = Report previous tax year
+sign-up-confirmation.report-previous-tax-year.plus.one.heading       = Report current and previous tax years
+sign-up-confirmation.report-previous-tax-year.para                   = You must submit your Self Assessment tax return for the year ended 5 April {0} using your HMRC online services account as normal.
 
 sign-up-confirmation.preference-set.online.para-one                  = Rydych wedi dewis i gael eich llythyrau treth ar-lein.
 sign-up-confirmation.preference-set.online.para-two                  = Mae’n rhaid i chi ddilysu’ch cyfeiriad e-bost i gadarnhau hyn. Os nad ydych wedi gwneud hyn yn barod, dewiswch y cysylltiad a anfonwyd atoch drwy e-bost.
 sign-up-confirmation.preference-set.paper.para                       = Rydych wedi dewis cael eich llythyrau treth drwy’r post. Gallwch newid y dewis hwn ar unrhyw adeg yn eich cyfrif CThEF ar-lein.
-
 
 ## Errors ##
 
