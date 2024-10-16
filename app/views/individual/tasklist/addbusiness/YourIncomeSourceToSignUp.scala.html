@@ -84,6 +84,17 @@
     }
 }
 
+@incomeSourceChangeLabel(isComplete: Boolean, isConfirmed: Boolean) = @{
+    if(isConfirmed) {
+        Text(messages("base.change"))
+    } else if (isComplete) {
+        Text(messages("base.check"))
+    } else {
+        Text(messages("base.add-details"))
+    }
+}
+
+
 @selfEmploymentSection = {
 
     <h2 class="govuk-heading-m">@messages("your-income-source.self-employed.heading")</h2>
@@ -91,12 +102,15 @@
 
     @incomeSources.selfEmployments.zip(1 to incomeSources.selfEmployments.length).map { case (business, index) =>
         @govukSummaryList(SummaryList(
-            rows = Seq(SummaryListRow(
-                key = Key(
-                    content = Text(messages("your-income-source.self-employed.business-name.para"))
-                ),
-                value = Value(Text(selfEmploymentName(business, index)))
-            )),
+            rows = Seq(
+                SummaryListRow(
+                    key = Key(
+                        content = Text(messages("your-income-source.self-employed.business-name.para"))
+                    ),
+                    value = Value(Text(selfEmploymentName(business, index)))
+                )
+            ),
+
             card = Some(Card(
                 title = Some(CardTitle(
                     content = Text(selfEmploymentTrade(business, index))
@@ -105,7 +119,7 @@
                     items = Seq(
                         ActionItem(
                             href = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${business.id}&isEditMode=true",
-                            content = Text(messages("base.change")),
+                            content = incomeSourceChangeLabel(business.isComplete, business.confirmed),
                             visuallyHiddenText = business.businessName.map(_.businessName)
                         ),
                         ActionItem(
@@ -151,7 +165,7 @@
                 items = Seq(
                     ActionItem(
                         href = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url,
-                        content = Text(messages("base.change"))
+                        content = incomeSourceChangeLabel(ukProperty.isComplete, ukProperty.confirmed),
                     ),
                     ActionItem(
                         href = controllers.individual.tasklist.ukproperty.routes.RemoveUkPropertyController.show.url,
@@ -185,7 +199,7 @@
                     items = Seq(
                         ActionItem(
                             href = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url,
-                            content = Text(messages("base.change"))
+                            content = incomeSourceChangeLabel(foreignProperty.isComplete, foreignProperty.confirmed),
                         ),
                         ActionItem(
                             href = controllers.individual.tasklist.overseasproperty.routes.RemoveOverseasPropertyController.show.url,

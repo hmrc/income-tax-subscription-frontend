@@ -23,7 +23,11 @@ case class OverseasPropertyModel(
                                   accountingMethod: Option[AccountingMethod] = None,
                                   startDate: Option[DateModel] = None,
                                   confirmed: Boolean = false
-                                )
+                                ) {
+
+  val isComplete: Boolean = accountingMethod.isDefined && startDate.isDefined
+
+}
 
 object OverseasPropertyModel {
   implicit val format: OFormat[OverseasPropertyModel] = Json.using[Json.WithDefaultValues].format[OverseasPropertyModel]
