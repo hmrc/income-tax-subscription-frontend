@@ -17,16 +17,23 @@
 package controllers.individual
 
 import common.Constants.ITSASessionKeys
+import config.featureswitch.FeatureSwitch.PrePopulate
+import config.featureswitch.FeatureSwitching
 import connectors.stubs.SessionDataConnectorStub
 import helpers.ComponentSpecBase
 import helpers.servicemocks.AuthStub
 import models.{EligibilityStatus, No, Yes, YesNo}
 import play.api.http.Status._
-import play.api.libs.json.{JsString, Json}
+import play.api.libs.json.Json
 import play.api.libs.ws.WSResponse
 
 
-class UsingSoftwareControllerISpec extends ComponentSpecBase {
+class UsingSoftwareControllerISpec extends ComponentSpecBase with FeatureSwitching {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(PrePopulate)
+  }
 
   val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
 
@@ -96,48 +103,99 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
     }
   }
 
-  s"POST ${controllers.individual.routes.UsingSoftwareController.submit().url}" should {
+  s"POST ${controllers.individual.routes.UsingSoftwareController.submit().url}" when {
 
-    s"return a redirect to ${controllers.individual.routes.WhatYouNeedToDoController.show.url}" when {
+    "prepopulate feature switch is enabled" should {
+      s"return a redirect to ${controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url}" when {
 
-      "the user selects the Yes radio button" in {
-        val userInput = Yes
+        "the user selects the Yes radio button" in {
+          enable(PrePopulate)
+          val userInput = Yes
 
-        Given("I setup the wiremock stubs")
-        AuthStub.stubAuthSuccess()
+          Given("I setup the wiremock stubs")
+          AuthStub.stubAuthSuccess()
 
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
-        SessionDataConnectorStub.stubSaveSessionData[YesNo](ITSASessionKeys.HAS_SOFTWARE, userInput)(OK)
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
+          SessionDataConnectorStub.stubSaveSessionData[YesNo](ITSASessionKeys.HAS_SOFTWARE, userInput)(OK)
 
-        When(s"POST ${controllers.individual.routes.UsingSoftwareController.submit().url} is called")
-        val result: WSResponse = IncomeTaxSubscriptionFrontend.submitUsingSoftware(request = Some(userInput))
+          When(s"POST ${controllers.individual.routes.UsingSoftwareController.submit().url} is called")
+          val result: WSResponse = IncomeTaxSubscriptionFrontend.submitUsingSoftware(request = Some(userInput))
 
-        Then("Should return SEE_OTHER to the What You Need To Do Controller")
+          Then("Should return SEE_OTHER to the What Year to Sign Up controller")
 
-        result must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(controllers.individual.routes.WhatYouNeedToDoController.show.url)
-        )
+          result must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
+          )
+        }
+
+        "the user selects the No radio button" in {
+          enable(PrePopulate)
+          val userInput = No
+
+          Given("I setup the wiremock stubs")
+          AuthStub.stubAuthSuccess()
+
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
+          SessionDataConnectorStub.stubSaveSessionData[YesNo](ITSASessionKeys.HAS_SOFTWARE, userInput)(OK)
+
+          When(s"POST ${controllers.individual.routes.UsingSoftwareController.submit().url} is called")
+          val result: WSResponse = IncomeTaxSubscriptionFrontend.submitUsingSoftware(request = Some(userInput))
+
+          Then("Should return SEE_OTHER to the What Year to Sign Up Controller")
+
+          result must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
+          )
+        }
       }
+    }
 
-      "the user selects the No radio button" in {
-        val userInput = No
+    "prepopulate feature switch is disabled" should {
 
-        Given("I setup the wiremock stubs")
-        AuthStub.stubAuthSuccess()
+      s"return a redirect to ${controllers.individual.routes.WhatYouNeedToDoController.show.url}" when {
 
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
-        SessionDataConnectorStub.stubSaveSessionData[YesNo](ITSASessionKeys.HAS_SOFTWARE, userInput)(OK)
+        "the user selects the Yes radio button" in {
+          disable(PrePopulate)
+          val userInput = Yes
 
-        When(s"POST ${controllers.individual.routes.UsingSoftwareController.submit().url} is called")
-        val result: WSResponse = IncomeTaxSubscriptionFrontend.submitUsingSoftware(request = Some(userInput))
+          Given("I setup the wiremock stubs")
+          AuthStub.stubAuthSuccess()
 
-        Then("Should return SEE_OTHER to the What You Need To Do Controller")
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
+          SessionDataConnectorStub.stubSaveSessionData[YesNo](ITSASessionKeys.HAS_SOFTWARE, userInput)(OK)
 
-        result must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(controllers.individual.routes.WhatYouNeedToDoController.show.url)
-        )
+          When(s"POST ${controllers.individual.routes.UsingSoftwareController.submit().url} is called")
+          val result: WSResponse = IncomeTaxSubscriptionFrontend.submitUsingSoftware(request = Some(userInput))
+
+          Then("Should return SEE_OTHER to the What You Need To Do Controller")
+
+          result must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(controllers.individual.routes.WhatYouNeedToDoController.show.url)
+          )
+        }
+
+        "the user selects the No radio button" in {
+          val userInput = No
+
+          Given("I setup the wiremock stubs")
+          AuthStub.stubAuthSuccess()
+
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
+          SessionDataConnectorStub.stubSaveSessionData[YesNo](ITSASessionKeys.HAS_SOFTWARE, userInput)(OK)
+
+          When(s"POST ${controllers.individual.routes.UsingSoftwareController.submit().url} is called")
+          val result: WSResponse = IncomeTaxSubscriptionFrontend.submitUsingSoftware(request = Some(userInput))
+
+          Then("Should return SEE_OTHER to the What You Need To Do Controller")
+
+          result must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(controllers.individual.routes.WhatYouNeedToDoController.show.url)
+          )
+        }
       }
     }
 
@@ -184,4 +242,5 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
       }
     }
   }
+
 }

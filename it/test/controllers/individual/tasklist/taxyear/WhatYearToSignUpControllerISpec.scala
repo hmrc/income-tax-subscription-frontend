@@ -17,6 +17,8 @@
 package controllers.individual.tasklist.taxyear
 
 import common.Constants.ITSASessionKeys
+import config.featureswitch.FeatureSwitch.PrePopulate
+import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.ComponentSpecBase
@@ -34,7 +36,12 @@ import utilities.SubscriptionDataKeys.SelectedTaxYear
 
 import java.time.LocalDate
 
-class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
+class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwitching {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(PrePopulate)
+  }
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/what-year-to-sign-up" when {
 
@@ -120,29 +127,14 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
     }
   }
 
-  "POST /report-quarterly/income-and-expenses/sign-up/business/what-year-to-sign-up" should {
-    "redirect to the Tax Year CYA page" when {
-      "not in edit mode" when {
-        "selecting the Current radio button" in {
-          val userInput = Current
+  "POST /report-quarterly/income-and-expenses/sign-up/business/what-year-to-sign-up" when {
 
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYearModel](SelectedTaxYear, AccountingYearModel(userInput))
+    "prepopulate feature switch is enabled" should {
 
-          When("POST /business/what-year-to-sign-up is called")
-          val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, Some(userInput))
+      "redirect to the Global CYA page when in edit mode" when {
 
-          Then("Should return a SEE_OTHER with a redirect location of Tax Year CYA")
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(IndividualURI.taxYearCyaURI)
-          )
-        }
-      }
-
-      "in edit mode" should {
         "selecting the Next radio button" in {
+          enable(PrePopulate)
           val userInput = Next
 
           Given("I setup the Wiremock stubs")
@@ -152,14 +144,79 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
           When("POST /business/what-year-to-sign-up is called")
           val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = true, Some(userInput))
 
-          Then("Should return a SEE_OTHER with a redirect location of Tax Year CYA")
+          Then("Should return a SEE_OTHER with a redirect location of Global CYA")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(IndividualURI.taxYearCyaURI)
+            redirectURI(IndividualURI.globalCheckYourAnswersURI)
+          )
+        }
+      }
+
+      "redirect to the What You Need to Do ORM page when not in edit mode" when {
+
+        "selecting the Current radio button" in {
+          enable(PrePopulate)
+          val userInput = Current
+
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYearModel](SelectedTaxYear, AccountingYearModel(userInput))
+
+          When("POST /business/what-year-to-sign-up is called")
+          val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, Some(userInput))
+
+          Then("Should return a SEE_OTHER with a redirect location of What You Need to Do")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(IndividualURI.whatYouNeedToDoURI)
           )
         }
       }
     }
+
+    "prepopulate feature switch is disabled" should {
+
+      "redirect to the Tax Year CYA page" when {
+        "not in edit mode" when {
+          "selecting the Current radio button" in {
+            val userInput = Current
+
+            Given("I setup the Wiremock stubs")
+            AuthStub.stubAuthSuccess()
+            IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYearModel](SelectedTaxYear, AccountingYearModel(userInput))
+
+            When("POST /business/what-year-to-sign-up is called")
+            val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, Some(userInput))
+
+            Then("Should return a SEE_OTHER with a redirect location of Tax Year CYA")
+            res must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(IndividualURI.taxYearCyaURI)
+            )
+          }
+        }
+
+        "in edit mode" should {
+          "selecting the Next radio button" in {
+            val userInput = Next
+
+            Given("I setup the Wiremock stubs")
+            AuthStub.stubAuthSuccess()
+            IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYearModel](SelectedTaxYear, AccountingYearModel(userInput))
+
+            When("POST /business/what-year-to-sign-up is called")
+            val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = true, Some(userInput))
+
+            Then("Should return a SEE_OTHER with a redirect location of Tax Year CYA")
+            res must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(IndividualURI.taxYearCyaURI)
+            )
+          }
+        }
+      }
+    }
+
 
     "return BAD_REQUEST" when {
       "no option has been selected" in {

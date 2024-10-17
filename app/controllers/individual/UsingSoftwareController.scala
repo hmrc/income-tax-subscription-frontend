@@ -18,6 +18,8 @@ package controllers.individual
 
 import auth.individual.SignUpController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.PrePopulate
+import config.featureswitch.FeatureSwitching
 import forms.individual.UsingSoftwareForm
 import models.YesNo
 import play.api.data.Form
@@ -30,7 +32,6 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 
-
 @Singleton
 class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
                                         sessionDataService: SessionDataService,
@@ -40,7 +41,7 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
                                         val appConfig: AppConfig)
                                        (implicit val ec: ExecutionContext,
                                         mcc: MessagesControllerComponents)
-  extends SignUpController {
+  extends SignUpController with FeatureSwitching {
 
   private val form: Form[YesNo] = UsingSoftwareForm.usingSoftwareForm
 
@@ -87,7 +88,10 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
           }, yesNo =>
           sessionDataService.saveSoftwareStatus(yesNo) map {
             case Left(_) => throw new InternalServerException("[UsingSoftwareController][submit] - Could not save using software answer")
-            case Right(_) => Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
+            case Right(_) => {
+              if (isEnabled(PrePopulate)) Redirect(controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show())
+              else Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
+            }
           }
       )
   }

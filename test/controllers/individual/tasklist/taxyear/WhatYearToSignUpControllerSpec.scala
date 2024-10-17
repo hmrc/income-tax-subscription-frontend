@@ -16,6 +16,8 @@
 
 package controllers.individual.tasklist.taxyear
 
+import config.featureswitch.FeatureSwitch.PrePopulate
+import config.featureswitch.FeatureSwitching
 import connectors.httpparser.PostSubscriptionDetailsHttpParser
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.individual.ControllerBaseSpec
@@ -37,7 +39,13 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
   with MockAccountingPeriodService
   with MockGetEligibilityStatusService
   with MockReferenceRetrieval
-  with MockAuditingService {
+  with MockAuditingService
+  with FeatureSwitching {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(PrePopulate)
+  }
 
   override val controllerName: String = "WhatYearToSignUpMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -89,7 +97,7 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
   }
 
 
-  "submit" should {
+  "submit" when {
 
     def callSubmit(isEditMode: Boolean): Future[Result] = TestWhatYearToSignUpController.submit(isEditMode = isEditMode)(
       subscriptionRequest.post(AccountingYearForm.accountingYearForm, Current)
@@ -99,29 +107,62 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
       subscriptionRequest
     )
 
-    "redirect to taxYearCYA page" when {
-      "not in edit mode" in {
-        mockView()
-        mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
+    "prepopulate feature switch is enabled" should {
 
-        val goodRequest = callSubmit(isEditMode = false)
-
-        status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest) mustBe Some(controllers.individual.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.show().url)
-
-        await(goodRequest)
-      }
-
-      "in edit mode" in {
+      "redirect to global CYA when in edit mode" in {
+        enable(PrePopulate)
         mockView()
         mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
 
         val goodRequest = callSubmit(isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest) mustBe Some(controllers.individual.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.show().url)
+        redirectLocation(goodRequest) mustBe Some(controllers.individual.routes.GlobalCheckYourAnswersController.show.url)
 
         await(goodRequest)
+      }
+
+
+      "redirect to What You Need to Do page when not in edit mode" in {
+        enable(PrePopulate)
+        mockView()
+        mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
+
+        val goodRequest = callSubmit(isEditMode = false)
+
+        status(goodRequest) must be(Status.SEE_OTHER)
+        redirectLocation(goodRequest) mustBe Some(controllers.individual.routes.WhatYouNeedToDoController.show.url)
+
+        await(goodRequest)
+      }
+    }
+
+    "prepopulate feature switch is disabled" should {
+
+      "redirect to taxYearCYA page" when {
+        "not in edit mode" in {
+          mockView()
+          mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
+
+          val goodRequest = callSubmit(isEditMode = false)
+
+          status(goodRequest) must be(Status.SEE_OTHER)
+          redirectLocation(goodRequest) mustBe Some(controllers.individual.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.show().url)
+
+          await(goodRequest)
+        }
+
+        "in edit mode" in {
+          mockView()
+          mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
+
+          val goodRequest = callSubmit(isEditMode = true)
+
+          status(goodRequest) must be(Status.SEE_OTHER)
+          redirectLocation(goodRequest) mustBe Some(controllers.individual.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.show().url)
+
+          await(goodRequest)
+        }
       }
     }
 
@@ -148,16 +189,36 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
       }
     }
 
-    "The back url" should {
-      "return the user to the task list page" in {
-        mockView()
-        TestWhatYearToSignUpController.backUrl(isEditMode = false) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
+    "The back url" when {
+
+      "prepopulate feature switch is enabled" should {
+
+        "redirect the user to the Global CYA page when in edit mode" in {
+          enable(PrePopulate)
+          mockView()
+          TestWhatYearToSignUpController.backUrl(isEditMode = true) mustBe Some(controllers.individual.routes.GlobalCheckYourAnswersController.show.url)
+        }
+
+        "redirect the user to the Using Software page when in edit mode" in {
+          enable(PrePopulate)
+          mockView()
+          TestWhatYearToSignUpController.backUrl(isEditMode = false) mustBe Some(controllers.individual.routes.UsingSoftwareController.show().url)
+        }
       }
 
-      "return the user to the taxYearCYA page when is in editMode" in {
-        mockView()
-        TestWhatYearToSignUpController.backUrl(isEditMode = true) mustBe Some(controllers.individual.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.show(true).url)
+      "prepopulate feature switch is disabled" should {
+
+        "return the user to the task list page" in {
+          mockView()
+          TestWhatYearToSignUpController.backUrl(isEditMode = false) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
+        }
+
+        "return the user to the taxYearCYA page when is in editMode" in {
+          mockView()
+          TestWhatYearToSignUpController.backUrl(isEditMode = true) mustBe Some(controllers.individual.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.show(true).url)
+        }
       }
     }
+
   }
 }
