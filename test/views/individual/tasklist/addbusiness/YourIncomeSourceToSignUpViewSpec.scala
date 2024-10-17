@@ -38,6 +38,8 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     val heading: String = title
     val incomeSourcesPara: String = "Add all of these sources that you get income from."
 
+    val addDetails: String = "Add details"
+    val check: String = "Check"
     val change: String = "Change"
     val remove: String = "Remove"
 
@@ -90,7 +92,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
   val incomeSource: YourIncomeSourceToSignUp = app.injector.instanceOf[YourIncomeSourceToSignUp]
 
-  val completeSelfEmployments: Seq[SelfEmploymentData] = Seq(
+  val completeAndConfirmedSelfEmployments: Seq[SelfEmploymentData] = Seq(
     SelfEmploymentData(
       id = "idOne",
       businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
@@ -100,16 +102,33 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       confirmed = true
     )
   )
-  val completeUKProperty: Option[PropertyModel] = Some(PropertyModel(
+  val completeAndConfirmedUKProperty: Option[PropertyModel] = Some(PropertyModel(
     accountingMethod = Some(Cash),
     startDate = Some(DateModel("1", "1", "1981")),
     confirmed = true
   ))
-  val completeForeignProperty: Option[OverseasPropertyModel] = Some(OverseasPropertyModel(
+  val completeAndConfirmedForeignProperty: Option[OverseasPropertyModel] = Some(OverseasPropertyModel(
     accountingMethod = Some(Cash),
     startDate = Some(DateModel("1", "1", "1982")),
     confirmed = true
   ))
+
+  val completeSelfEmployments: Seq[SelfEmploymentData] = Seq(
+    SelfEmploymentData(
+      id = "idOne",
+      businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
+      businessName = Some(BusinessNameModel("business name")),
+      businessTradeName = Some(BusinessTradeNameModel("business trade")),
+      businessAddress = Some(BusinessAddressModel(Address(Seq("1 Long Road"), Some("ZZ1 1ZZ")))))
+  )
+  val completeUKProperty: Option[PropertyModel] = Some(PropertyModel(
+    accountingMethod = Some(Cash),
+    startDate = Some(DateModel("1", "1", "1981"))))
+
+  val completeForeignProperty: Option[OverseasPropertyModel] = Some(OverseasPropertyModel(
+    accountingMethod = Some(Cash),
+    startDate = Some(DateModel("1", "1", "1982"))))
+
   val ukProperty: Option[PropertyModel] = Some(PropertyModel())
   val foreignProperty: Option[OverseasPropertyModel] = Some(OverseasPropertyModel())
 
@@ -136,22 +155,29 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
   "YourIncomeSourceToSignUp" should {
     "display the template correctly" when {
-      "the are no income sources added" in new TemplateViewTest(
+      "there are no income sources added" in new TemplateViewTest(
         view = view(),
         title = IndividualIncomeSource.title,
         isAgent = false,
         backLink = Some(testBackUrl),
         hasSignOutLink = true
       )
-      "the are incomplete income sources added" in new TemplateViewTest(
+      "there are incomplete income sources added" in new TemplateViewTest(
         view = view(IncomeSources(incompleteSelfEmployments, incompleteUKProperty, incompleteForeignProperty)),
         title = IndividualIncomeSource.title,
         isAgent = false,
         backLink = Some(testBackUrl),
         hasSignOutLink = true
       )
-      "the are complete income sources added" in new TemplateViewTest(
+      "there are complete income sources added" in new TemplateViewTest(
         view = view(IncomeSources(completeSelfEmployments, completeUKProperty, completeForeignProperty)),
+        title = IndividualIncomeSource.title,
+        isAgent = false,
+        backLink = Some(testBackUrl),
+        hasSignOutLink = true
+      )
+      "there are complete and confirmed income sources added" in new TemplateViewTest(
+        view = view(IncomeSources(completeAndConfirmedSelfEmployments, completeAndConfirmedUKProperty, completeAndConfirmedForeignProperty)),
         title = IndividualIncomeSource.title,
         isAgent = false,
         backLink = Some(testBackUrl),
@@ -221,6 +247,137 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           }
         }
 
+        "there are complete and confirmed set of income sources added" should {
+
+          def completeAndConfirmedIncomeSources: IncomeSources = IncomeSources(completeAndConfirmedSelfEmployments, completeAndConfirmedUKProperty, completeAndConfirmedForeignProperty)
+
+          "have a heading for the page" in new ViewTest(completeAndConfirmedIncomeSources) {
+            document.mainContent.getH1Element.text mustBe IndividualIncomeSource.heading
+          }
+
+          "have a lead paragraph" in new ViewTest(completeAndConfirmedIncomeSources) {
+            document.mainContent.selectNth("p", 1).text mustBe IndividualIncomeSource.incomeSourcesPara
+          }
+
+          "have a section for sole trader income sources" which {
+
+            "has a heading" in new ViewTest(completeAndConfirmedIncomeSources) {
+              document.mainContent.selectNth("h2", 1).text mustBe IndividualIncomeSource.selfEmploymentHeading
+            }
+
+            "has a paragraph" in new ViewTest(completeAndConfirmedIncomeSources) {
+              document.mainContent.selectNth("p", 2).text mustBe IndividualIncomeSource.selfEmploymentPara
+            }
+
+            "has a sole trader business card" in new ViewTest(completeAndConfirmedIncomeSources) {
+              document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
+                title = "business trade",
+                cardActions = Seq(
+                  SummaryListActionValues(
+                    href = IndividualIncomeSource.soleTraderChangeLinkOne,
+                    text = s"${IndividualIncomeSource.change} business name (business trade)",
+                    visuallyHidden = s"business name (business trade)"
+                  ),
+                  SummaryListActionValues(
+                    href = IndividualIncomeSource.soleTraderRemoveLinkOne,
+                    text = s"${IndividualIncomeSource.remove} business name (business trade)",
+                    visuallyHidden = s"business name (business trade)"
+                  )
+                ),
+                rows = Seq(
+                  SummaryListRowValues(
+                    key = IndividualIncomeSource.soleTraderBusinessNameKey,
+                    value = Some("business name"),
+                    actions = Seq.empty
+                  )
+                )
+              )
+            }
+
+            "has an add business link" in new ViewTest(completeAndConfirmedIncomeSources) {
+              val link: Element = document.mainContent.getElementById("add-self-employment").selectHead("a")
+              link.text mustBe IndividualIncomeSource.addSelfEmploymentLinkText
+              link.attr("href") mustBe IndividualIncomeSource.soleTraderLink
+            }
+
+            "has a income from properties section" which {
+
+              "has a heading" in new ViewTest(completeAndConfirmedIncomeSources) {
+                document.mainContent.selectNth("h2", 3).text mustBe IndividualIncomeSource.incomeFromPropertiesHeading
+              }
+
+              "has a paragraph" in new ViewTest(noIncomeSources) {
+                document.mainContent.selectNth("p", 4).text mustBe IndividualIncomeSource.incomeFromPropertiesPara
+              }
+
+              "has a UK property card" in new ViewTest(completeAndConfirmedIncomeSources) {
+                document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(2))(
+                  title = IndividualIncomeSource.ukPropertyCardTitle,
+                  cardActions = Seq(
+                    SummaryListActionValues(
+                      href = IndividualIncomeSource.ukPropertyChangeLink,
+                      text = s"${IndividualIncomeSource.change} ${IndividualIncomeSource.ukPropertyChange}",
+                      visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
+                    ),
+                    SummaryListActionValues(
+                      href = IndividualIncomeSource.ukPropertyRemoveLink,
+                      text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.ukPropertyRemove}",
+                      visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
+                    )
+                  ),
+                  rows = Seq(
+                    SummaryListRowValues(
+                      key = IndividualIncomeSource.propertyStartDate,
+                      value = Some("1 January 1981"),
+                      actions = Seq.empty
+                    )
+                  )
+                )
+              }
+
+              "has a foreign property card" in new ViewTest(completeAndConfirmedIncomeSources) {
+                document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(3))(
+                  title = IndividualIncomeSource.foreignPropertyCardTitle,
+                  cardActions = Seq(
+                    SummaryListActionValues(
+                      href = IndividualIncomeSource.foreignPropertyChangeLink,
+                      text = s"${IndividualIncomeSource.change} ${IndividualIncomeSource.foreignPropertyChange}",
+                      visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
+                    ),
+                    SummaryListActionValues(
+                      href = IndividualIncomeSource.foreignPropertyRemoveLink,
+                      text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.foreignPropertyRemove}",
+                      visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
+                    )
+                  ),
+                  rows = Seq(
+                    SummaryListRowValues(
+                      key = IndividualIncomeSource.propertyStartDate,
+                      value = Some("1 January 1982"),
+                      actions = Seq.empty
+                    )
+                  )
+                )
+              }
+            }
+
+            "have a form" which {
+              def form(document: Document): Element = document.mainContent.getForm
+
+              "has the correct attributes" in new ViewTest(noIncomeSources) {
+                form(document).attr("method") mustBe testCall.method
+                form(document).attr("action") mustBe testCall.url
+              }
+              "has a continue button" in new ViewTest(noIncomeSources) {
+                form(document).getGovukSubmitButton.text mustBe IndividualIncomeSource.continue
+              }
+              "has no save and come back later button" in new ViewTest(noIncomeSources) {
+                form(document).selectOptionally(".govuk-button--secondary") mustBe None
+              }
+            }
+          }
+        }
+
 
         "there are complete set of income sources added" should {
 
@@ -250,7 +407,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 cardActions = Seq(
                   SummaryListActionValues(
                     href = IndividualIncomeSource.soleTraderChangeLinkOne,
-                    text = s"${IndividualIncomeSource.change} business name (business trade)",
+                    text = s"${IndividualIncomeSource.check} business name (business trade)",
                     visuallyHidden = s"business name (business trade)"
                   ),
                   SummaryListActionValues(
@@ -291,7 +448,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                   cardActions = Seq(
                     SummaryListActionValues(
                       href = IndividualIncomeSource.ukPropertyChangeLink,
-                      text = s"${IndividualIncomeSource.change} ${IndividualIncomeSource.ukPropertyChange}",
+                      text = s"${IndividualIncomeSource.check} ${IndividualIncomeSource.ukPropertyChange}",
                       visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
                     ),
                     SummaryListActionValues(
@@ -316,7 +473,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                   cardActions = Seq(
                     SummaryListActionValues(
                       href = IndividualIncomeSource.foreignPropertyChangeLink,
-                      text = s"${IndividualIncomeSource.change} ${IndividualIncomeSource.foreignPropertyChange}",
+                      text = s"${IndividualIncomeSource.check} ${IndividualIncomeSource.foreignPropertyChange}",
                       visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
                     ),
                     SummaryListActionValues(
@@ -381,7 +538,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 cardActions = Seq(
                   SummaryListActionValues(
                     href = IndividualIncomeSource.soleTraderChangeLinkTwo,
-                    text = s"${IndividualIncomeSource.change} business name (Business 1)",
+                    text = s"${IndividualIncomeSource.addDetails} business name (Business 1)",
                     visuallyHidden = s"business name (Business 1)"
                   ),
                   SummaryListActionValues(
@@ -406,7 +563,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 cardActions = Seq(
                   SummaryListActionValues(
                     href = IndividualIncomeSource.soleTraderChangeLinkThree,
-                    text = s"${IndividualIncomeSource.change} (business trade)",
+                    text = s"${IndividualIncomeSource.addDetails} (business trade)",
                     visuallyHidden = s"(business trade)"
                   ),
                   SummaryListActionValues(
@@ -431,7 +588,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 cardActions = Seq(
                   SummaryListActionValues(
                     href = IndividualIncomeSource.soleTraderChangeLinkFour,
-                    text = s"${IndividualIncomeSource.change} (Business 3)",
+                    text = s"${IndividualIncomeSource.addDetails} (Business 3)",
                     visuallyHidden = s"(Business 3)"
                   ),
                   SummaryListActionValues(
@@ -472,7 +629,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                   cardActions = Seq(
                     SummaryListActionValues(
                       href = IndividualIncomeSource.ukPropertyChangeLink,
-                      text = s"${IndividualIncomeSource.change} ${IndividualIncomeSource.ukPropertyChange}",
+                      text = s"${IndividualIncomeSource.addDetails} ${IndividualIncomeSource.ukPropertyChange}",
                       visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
                     ),
                     SummaryListActionValues(
@@ -497,7 +654,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                   cardActions = Seq(
                     SummaryListActionValues(
                       href = IndividualIncomeSource.foreignPropertyChangeLink,
-                      text = s"${IndividualIncomeSource.change} ${IndividualIncomeSource.foreignPropertyChange}",
+                      text = s"${IndividualIncomeSource.addDetails} ${IndividualIncomeSource.foreignPropertyChange}",
                       visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
                     ),
                     SummaryListActionValues(
