@@ -27,9 +27,11 @@ import services.agent.ClientDetailsRetrieval
 import services.{AuditingService, AuthService, GetEligibilityStatusService, SessionDataService}
 import uk.gov.hmrc.http.InternalServerException
 import views.html.agent.UsingSoftware
+import config.featureswitch.FeatureSwitch.PrePopulate
+import config.featureswitch.FeatureSwitching
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 import scala.util.matching.Regex
 
 
@@ -43,7 +45,7 @@ class UsingSoftwareController @Inject()(clientDetailsRetrieval: ClientDetailsRet
                                         val appConfig: AppConfig)
                                        (implicit val ec: ExecutionContext,
                                         mcc: MessagesControllerComponents)
-  extends AuthenticatedController {
+  extends AuthenticatedController with FeatureSwitching {
 
   private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
   private val form: Form[YesNo] = UsingSoftwareForm.usingSoftwareForm
@@ -116,11 +118,15 @@ class UsingSoftwareController @Inject()(clientDetailsRetrieval: ClientDetailsRet
               )
             }
           }, yesNo =>
-          sessionDataService.saveSoftwareStatus(yesNo) map {
-            case Left(_) => throw new InternalServerException("[UsingSoftwareController][submit] - Could not save using software answer")
-            case Right(_) => Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
+          sessionDataService.saveSoftwareStatus(yesNo) flatMap {
+            case Left(_) => Future.failed(new InternalServerException("[UsingSoftwareController][submit] - Could not save using software answer"))
+            case Right(_) =>
+              if (isEnabled(PrePopulate)) {
+                Future.successful(Redirect(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show()))
+              } else {
+                Future.successful(Redirect(controllers.agent.routes.WhatYouNeedToDoController.show()))
+              }
           }
       )
   }
-
 }
