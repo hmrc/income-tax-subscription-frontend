@@ -41,12 +41,12 @@ class YourIncomeSourceToSignUpController @Inject()(yourIncomeSourceToSignUp: You
 
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
-      referenceRetrieval.getIndividualReference flatMap { reference =>
-        subscriptionDetailsService.fetchAllIncomeSources(reference) map { incomeSources =>
-          Ok(view(
-            incomeSources
-          ))
-        }
+      for {
+        reference <- referenceRetrieval.getIndividualReference
+        incomeSources <- subscriptionDetailsService.fetchAllIncomeSources(reference)
+        maybePrePop <- subscriptionDetailsService.fetchPrePopFlag(reference)
+      } yield {
+        Ok(view(incomeSources, maybePrePop.contains(true)))
       }
   }
 
@@ -71,11 +71,14 @@ class YourIncomeSourceToSignUpController @Inject()(yourIncomeSourceToSignUp: You
 
   def backUrl: String = controllers.individual.tasklist.routes.TaskListController.show().url
 
-  private def view(incomeSources: IncomeSources)(implicit request: Request[AnyContent]): Html =
+
+  private def view(incomeSources: IncomeSources, isPrePopulated: Boolean)(implicit request: Request[AnyContent]): Html = {
     yourIncomeSourceToSignUp(
       postAction = routes.YourIncomeSourceToSignUpController.submit,
       backUrl = backUrl,
-      incomeSources
+      incomeSources,
+      isPrePopulated
     )
+  }
 
 }
