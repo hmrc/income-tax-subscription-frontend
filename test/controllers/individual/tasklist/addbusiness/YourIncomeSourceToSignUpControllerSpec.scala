@@ -27,7 +27,7 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSubscriptionDetailsService}
+import services.mocks.{MockAccountingPeriodService, MockAuditingService, MockReferenceRetrieval, MockSubscriptionDetailsService}
 import views.html.individual.tasklist.addbusiness.YourIncomeSourceToSignUp
 
 import scala.concurrent.Future
@@ -35,7 +35,8 @@ import scala.concurrent.Future
 class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockReferenceRetrieval
-  with MockAuditingService {
+  with MockAuditingService
+  with MockAccountingPeriodService {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -48,7 +49,9 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
   "show" should {
     "return OK status" when {
       "there are no income sources added" in new Setup {
+
         mockFetchAllIncomeSources(IncomeSources(Seq.empty, None, None))
+        mockFetchPrePopFlag(Some(true))
 
         mockYourIncomeSourceToSignUpView(IncomeSources(Seq.empty[SelfEmploymentData], None, None))
 
@@ -58,11 +61,13 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
         contentType(result) mustBe Some(HTML)
       }
       "there are multiple different income sources added" in new Setup {
+
         mockFetchAllIncomeSources(IncomeSources(
           Seq(testSelfEmployment("id"), testSelfEmployment("id2")),
           Some(testUkProperty),
           Some(testForeignProperty)
         ))
+        mockFetchPrePopFlag(Some(true))
 
         mockYourIncomeSourceToSignUpView(
           IncomeSources(
@@ -79,6 +84,41 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
 
         status(result) mustBe OK
         contentType(result) mustBe Some(HTML)
+      }
+      "there is a PrePop flag" in new Setup {
+        mockFetchAllIncomeSources(IncomeSources(Seq.empty, None, None))
+        mockFetchPrePopFlag(Some(true))
+
+        mockYourIncomeSourceToSignUpView(IncomeSources(Seq.empty[SelfEmploymentData], None, None))
+
+        val result: Result = await(controller.show()(subscriptionRequest))
+
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+      }
+      "there is no PrePop flag" when {
+        "fetching the flag returns false" in new Setup {
+          mockFetchAllIncomeSources(IncomeSources(Seq.empty, None, None))
+          mockFetchPrePopFlag(Some(false))
+
+          mockYourIncomeSourceToSignUpView(IncomeSources(Seq.empty[SelfEmploymentData], None, None))
+
+          val result: Result = await(controller.show()(subscriptionRequest))
+
+          status(result) mustBe OK
+          contentType(result) mustBe Some(HTML)
+        }
+        "fetching the flag returns none" in new Setup {
+          mockFetchAllIncomeSources(IncomeSources(Seq.empty, None, None))
+          mockFetchPrePopFlag(None)
+
+          mockYourIncomeSourceToSignUpView(IncomeSources(Seq.empty[SelfEmploymentData], None, None))
+
+          val result: Result = await(controller.show()(subscriptionRequest))
+
+          status(result) mustBe OK
+          contentType(result) mustBe Some(HTML)
+        }
       }
     }
   }
@@ -213,7 +253,8 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
       when(yourIncomeSourceToSignUpView(
         ArgumentMatchers.eq(routes.YourIncomeSourceToSignUpController.submit),
         ArgumentMatchers.eq(controllers.individual.tasklist.routes.TaskListController.show().url),
-        ArgumentMatchers.eq(incomeSources)
+        ArgumentMatchers.eq(incomeSources),
+        ArgumentMatchers.any()
       )(ArgumentMatchers.any(), ArgumentMatchers.any()))
         .thenReturn(HtmlFormat.empty)
     }
