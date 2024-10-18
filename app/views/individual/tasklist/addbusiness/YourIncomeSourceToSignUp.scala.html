@@ -21,18 +21,21 @@
 @import views.html.helpers.{ContinueButton, SaveAndContinueButtonHelper}
 @import views.html.templates.PrincipalMainTemplate
 @import uk.gov.hmrc.hmrcfrontend.views.html.components._
+@import utilities.AccountingPeriodUtil
+@import config.featureswitch.FeatureSwitchingImpl
+@import config.featureswitch.FeatureSwitch.PrePopulate
 
 @this(
     mainTemplate: PrincipalMainTemplate,
     continueButton: ContinueButton,
     appConfig: AppConfig,
-    hmrcListWithActions : HmrcListWithActions,
     form: FormWithCSRF,
     saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
-    govukSummaryList : GovukSummaryList
+    govukSummaryList : GovukSummaryList,
+    featureSwitching: FeatureSwitchingImpl,
 )
 
-@(postAction: Call, backUrl: String, incomeSources: IncomeSources)( implicit request: Request[_], messages: Messages)
+@(postAction: Call, backUrl: String, incomeSources: IncomeSources, isPrePopulated: Boolean)( implicit request: Request[_], messages: Messages)
 
     @heading = @{
       messages("your-income-source.heading")
@@ -44,11 +47,31 @@
     backLink = Some(backUrl)
 ) {
     <h1 class="govuk-heading-xl">@heading</h1>
-    <p class="govuk-body">@messages("your-income-source.manage.label")</p>
+
+    @if(featureSwitching.isEnabled(PrePopulate)){
+        <p class="govuk-body">
+            @messages(
+                "your-income-source.manage.para-1",
+                (AccountingPeriodUtil.getCurrentTaxEndYear - 1).toString
+            )
+        </p>
+    } else {
+        <p class="govuk-body">
+            @messages( "your-income-source.manage.lead")
+        </p>
+    }
 
     @selfEmploymentSection
 
     @incomeFromProperty
+
+
+    @if(isPrePopulated && !(incomeSources.hasNoIncomeSources || incomeSources.isComplete)) {
+        <p class="govuk-body">
+            @messages("your-income-source.manage.para-2")
+        </p>
+    }
+
 
     @form(action = postAction) {
         @if(incomeSources.hasNoIncomeSources) {
