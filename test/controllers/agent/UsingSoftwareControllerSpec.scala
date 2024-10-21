@@ -29,6 +29,7 @@ import play.twirl.api.HtmlFormat
 import services.mocks.{MockAuditingService, MockClientDetailsRetrieval, MockGetEligibilityStatusService, MockSessionDataService}
 import utilities.agent.TestConstants.{testFormattedNino, testName, testNino}
 import views.html.agent.UsingSoftware
+import config.featureswitch.FeatureSwitch.PrePopulate
 
 import scala.concurrent.Future
 
@@ -48,6 +49,10 @@ class UsingSoftwareControllerSpec extends AgentControllerBaseSpec
     mockAuthService,
     appConfig
   )
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(PrePopulate)
+  }
 
   trait Setup {
     val usingSoftware: UsingSoftware = mock[UsingSoftware]
@@ -117,7 +122,8 @@ class UsingSoftwareControllerSpec extends AgentControllerBaseSpec
 
     "redirect to the What You Need To Do page" when {
 
-      "the user selects the Yes radio option" in new Setup {
+      "PrePopulate is disabled and the user selects the Yes radio option" in new Setup {
+        disable(PrePopulate)
         mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
 
         val result: Future[Result] = controller.submit()(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, Yes))
@@ -126,13 +132,37 @@ class UsingSoftwareControllerSpec extends AgentControllerBaseSpec
         redirectLocation(result) mustBe Some(controllers.agent.routes.WhatYouNeedToDoController.show().url)
       }
 
-      "the user selects the No radio option" in new Setup {
+      "PrePopulate is disabled and the user selects the No radio option" in new Setup {
+        disable(PrePopulate)
         mockSaveSoftwareStatus(No)(Right(SaveSessionDataSuccessResponse))
 
         val result: Future[Result] = controller.submit()(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, No))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.agent.routes.WhatYouNeedToDoController.show().url)
+      }
+    }
+
+    "redirect to the What Year to Sign Up page" when {
+
+      "PrePopulate is enabled and the user selects the Yes radio option" in new Setup {
+        enable(PrePopulate)
+        mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
+
+        val result: Future[Result] = controller.submit()(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, Yes))
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
+      }
+
+      "PrePopulate is enabled and the user selects the No radio option" in new Setup {
+        enable(PrePopulate)
+        mockSaveSoftwareStatus(No)(Right(SaveSessionDataSuccessResponse))
+
+        val result: Future[Result] = controller.submit()(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, No))
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
       }
     }
 

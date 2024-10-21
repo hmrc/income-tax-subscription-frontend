@@ -29,6 +29,8 @@ import services._
 import services.agent.ClientDetailsRetrieval
 import uk.gov.hmrc.http.InternalServerException
 import views.html.agent.tasklist.taxyear.WhatYearToSignUp
+import config.featureswitch.FeatureSwitch.PrePopulate
+import config.featureswitch.FeatureSwitching
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -47,7 +49,7 @@ class WhatYearToSignUpController @Inject()(accountingPeriodService: AccountingPe
                                            val mandationStatusService: MandationStatusService)
                                           (implicit val ec: ExecutionContext,
                                            mcc: MessagesControllerComponents)
-  extends AuthenticatedController with TaxYearNavigationHelper {
+  extends AuthenticatedController with TaxYearNavigationHelper with FeatureSwitching {
 
   private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
 
@@ -59,11 +61,18 @@ class WhatYearToSignUpController @Inject()(accountingPeriodService: AccountingPe
     }
   }
 
-  def backUrl(isEditMode: Boolean): Option[String] =
-    if (isEditMode)
+
+  def backUrl(isEditMode: Boolean): Option[String] = {
+    if (isEditMode && isEnabled(PrePopulate)) {
+      Some(controllers.agent.routes.GlobalCheckYourAnswersController.show.url)
+    } else if (isEnabled(PrePopulate)) {
+      Some(controllers.agent.routes.UsingSoftwareController.show().url)
+    } else if (isEditMode) {
       Some(controllers.agent.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.show(editMode = true).url)
-    else
+    } else {
       Some(controllers.agent.tasklist.routes.TaskListController.show().url)
+    }
+  }
 
   def view(accountingYearForm: Form[AccountingYear], clientName: String, clientNino: String, isEditMode: Boolean)(implicit request: Request[_]): Html = {
     whatYearToSignUp(
@@ -105,7 +114,14 @@ class WhatYearToSignUpController @Inject()(accountingPeriodService: AccountingPe
             },
           accountingYear => {
             subscriptionDetailsService.saveSelectedTaxYear(reference, AccountingYearModel(accountingYear)) map {
-              case Right(_) => Redirect(controllers.agent.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.show())
+              case Right(_) =>
+                if (isEditMode && isEnabled(PrePopulate)) {
+                  Redirect(controllers.agent.routes.GlobalCheckYourAnswersController.show)
+                } else if (isEnabled(PrePopulate)) {
+                  Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
+                } else {
+                  Redirect(controllers.agent.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.show())
+                }
               case Left(_) => throw new InternalServerException("[WhatYearToSignUpController][submit] - Could not save accounting year")
             }
           }
