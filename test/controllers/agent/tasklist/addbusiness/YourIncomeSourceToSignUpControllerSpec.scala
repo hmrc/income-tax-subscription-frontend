@@ -41,32 +41,18 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
   override val controllerName: String = "IncomeSourceController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
+  val incomeSources: IncomeSources = IncomeSources(
+    selfEmployments = Seq(testSelfEmployment("id"), testSelfEmployment("id2")),
+    ukProperty = Some(testUkProperty),
+    foreignProperty = Some(testForeignProperty)
+  )
 
   "show" should {
-    "return OK status" when {
-      "there are no income sources added" in new Setup {
-        mockFetchAllIncomeSources(IncomeSources(Seq.empty, None, None))
-
-        mockYourIncomeSourceToSignUpView(IncomeSources(Seq.empty[SelfEmploymentData], None, None))
-
-        val result: Result = await(controller.show()(subscriptionRequestWithName))
-
-        status(result) mustBe OK
-        contentType(result) mustBe Some(HTML)
-      }
-      "there are multiple different income sources added" in new Setup {
-        mockFetchAllIncomeSources(IncomeSources(
-          selfEmployments = Seq(testSelfEmployment("id"), testSelfEmployment("id2")),
-          ukProperty = Some(testUkProperty),
-          foreignProperty = Some(testForeignProperty)
-        ))
-        mockYourIncomeSourceToSignUpView(
-          IncomeSources(
-            selfEmployments = Seq(testSelfEmployment("id"), testSelfEmployment("id2")),
-            ukProperty = Some(testUkProperty),
-            foreignProperty = Some(testForeignProperty)
-          )
-        )
+    "return OK and provide the view with the fetched income sources and a false prepopulated flag" when {
+      "fetching the pre pop flag returned no data" in new Setup {
+        mockFetchAllIncomeSources(incomeSources = incomeSources)
+        mockFetchPrePopFlag(flag = None)
+        mockYourIncomeSourceToSignUpView(incomeSources = incomeSources, prepopulated = false)
 
         val result: Result = await(controller.show()(subscriptionRequestWithName))
 
@@ -74,6 +60,31 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
         contentType(result) mustBe Some(HTML)
       }
     }
+    "return OK and provide the view with the fetched income sources and a false prepopulated flag" when {
+      "fetching the pre pop flag returned a false flag" in new Setup {
+        mockFetchAllIncomeSources(incomeSources = incomeSources)
+        mockFetchPrePopFlag(flag = Some(false))
+        mockYourIncomeSourceToSignUpView(incomeSources = incomeSources, prepopulated = false)
+
+        val result: Result = await(controller.show()(subscriptionRequestWithName))
+
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+      }
+    }
+    "return OK and provide the view with the fetched income sources and a true prepopulated flag" when {
+      "fetching the pre pop flag returned a true flag" in new Setup {
+        mockFetchAllIncomeSources(incomeSources = incomeSources)
+        mockFetchPrePopFlag(flag = Some(true))
+        mockYourIncomeSourceToSignUpView(incomeSources = incomeSources, prepopulated = true)
+
+        val result: Result = await(controller.show()(subscriptionRequestWithName))
+
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+      }
+    }
+
   }
 
   "submit" should {
@@ -223,12 +234,13 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
       mockAuthService
     )
 
-    def mockYourIncomeSourceToSignUpView(incomeSources: IncomeSources): Unit = {
+    def mockYourIncomeSourceToSignUpView(incomeSources: IncomeSources, prepopulated: Boolean): Unit = {
       when(yourIncomeSourceToSignUpView(
         ArgumentMatchers.eq(routes.YourIncomeSourceToSignUpController.submit),
         ArgumentMatchers.eq(controllers.agent.tasklist.routes.TaskListController.show().url),
         ArgumentMatchers.any(),
-        ArgumentMatchers.eq(incomeSources)
+        ArgumentMatchers.eq(incomeSources),
+        ArgumentMatchers.eq(prepopulated)
       )(ArgumentMatchers.any(), ArgumentMatchers.any()))
         .thenReturn(HtmlFormat.empty)
     }

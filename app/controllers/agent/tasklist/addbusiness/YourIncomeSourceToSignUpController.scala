@@ -48,13 +48,14 @@ class YourIncomeSourceToSignUpController @Inject()(yourIncomeSourceToSignUp: You
         reference <- referenceRetrieval.getAgentReference
         clientDetails <- clientDetailsRetrieval.getClientDetails
         incomeSources <- subscriptionDetailsService.fetchAllIncomeSources(reference)
+        prePopFlag <- subscriptionDetailsService.fetchPrePopFlag(reference)
       } yield {
         Ok(view(
-          incomeSources,
-          clientDetails = clientDetails
+          incomeSources = incomeSources,
+          clientDetails = clientDetails,
+          prepopulated = prePopFlag.contains(true)
         ))
       }
-
   }
 
   def submit: Action[AnyContent] = Authenticated.async { implicit request =>
@@ -78,11 +79,13 @@ class YourIncomeSourceToSignUpController @Inject()(yourIncomeSourceToSignUp: You
   def backUrl: String = controllers.agent.tasklist.routes.TaskListController.show().url
 
   private def view(incomeSources: IncomeSources,
-                   clientDetails: ClientDetails)(implicit request: Request[AnyContent]): Html =
+                   clientDetails: ClientDetails,
+                   prepopulated: Boolean)(implicit request: Request[AnyContent]): Html =
     yourIncomeSourceToSignUp(
       postAction = routes.YourIncomeSourceToSignUpController.submit,
       backUrl = backUrl,
       clientDetails = clientDetails,
-      incomeSources
+      incomeSources = incomeSources,
+      prepopulated = prepopulated
     )
 }

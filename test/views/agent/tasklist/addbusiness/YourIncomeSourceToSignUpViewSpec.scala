@@ -16,6 +16,7 @@
 
 package views.agent.tasklist.addbusiness
 
+import config.featureswitch.FeatureSwitch.PrePopulate
 import models.common.business._
 import models.common.{IncomeSources, OverseasPropertyModel, PropertyModel}
 import models.{Cash, DateModel}
@@ -23,7 +24,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.Html
 import utilities.UserMatchingSessionUtil.ClientDetails
-import utilities.ViewSpec
+import utilities.{AccountingPeriodUtil, ViewSpec}
 import views.html.agent.tasklist.addbusiness.YourIncomeSourceToSignUp
 
 //scalastyle:off
@@ -31,127 +32,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-  }
-
-  object AgentIncomeSource {
-    val heading = "Your client’s income sources"
-    val lead = "Add all of these sources that your client gets income from."
-    val paragraph1: String = "If your client is self-employed, you must add all of their sole trader businesses if they have more than one. " +
-      "If they have income from property you must add it, but this is limited to one UK property business."
-    val paragraph1Overseas: String = "Your client can have up to 50 sole trader businesses. " +
-      "However, they can have only one UK property business and one overseas property."
-    val paragraph2 = "Renting out a property includes using a letting agency."
-    val soleTrader = "Sole trader businesses"
-    val soleTraderLinkText = "Add sole trader income source"
-    val anotherSoleTraderLinkText = "Add another sole trader income source"
-    val soleTraderBusinessNameKey = "Business name"
-    val soleTraderLink: String = appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl
-    val soleTraderChangeLinkOne: String = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=idOne&isEditMode=true"
-    val soleTraderChangeLinkTwo: String = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=idTwo&isEditMode=true"
-    val soleTraderChangeLinkThree: String = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=idThree&isEditMode=true"
-    val soleTraderChangeLinkFour: String = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=idFour&isEditMode=true"
-    val soleTraderRemoveLinkOne: String = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idOne").url
-    val soleTraderRemoveLinkTwo: String = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idTwo").url
-    val soleTraderRemoveLinkThree: String = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idThree").url
-    val soleTraderRemoveLinkFour: String = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idFour").url
-    val ukProperty = "UK property"
-    val ukPropertyTitle = "UK property"
-    val ukPropertyStartDate = "Start date"
-    val ukPropertyLinkText = "Add UK property income source"
-    val ukPropertyLink: String = controllers.agent.tasklist.ukproperty.routes.PropertyStartDateController.show().url
-    val ukPropertyChangeLink: String = controllers.agent.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url
-    val ukPropertyRemoveLink: String = controllers.agent.tasklist.ukproperty.routes.RemoveUkPropertyController.show.url
-    val foreignPropertyHeading = "Foreign property"
-    val foreignPropertyTitle = "Foreign property"
-    val foreignPropertyStartDate = "Start date"
-    val foreignPropertyLinkText = "Add foreign property income source"
-    val foreignPropertyLink: String = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show().url
-    val foreignPropertyChangeLink: String = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
-    val foreignPropertyRemoveLink: String = controllers.agent.tasklist.overseasproperty.routes.RemoveOverseasPropertyController.show.url
-    val progressSavedLink: String = controllers.agent.tasklist.routes.ProgressSavedController.show(Some("income-sources")).url
-
-    val continue = "Save and continue"
-    val saveAndComeBackLater = "Save and come back later"
-
-    val addDetails: String = "Add details"
-    val check: String = "Check"
-    val change: String = "Change"
-    val remove: String = "Remove"
-
-    def selfEmploymentChange(name: String) = s"$name"
-
-    def selfEmploymentRemove(name: String) = s"$name"
-
-    val ukPropertyChange = "(UK property)"
-    val ukPropertyRemove = "(UK property)"
-
-    val foreignPropertyChange = "(Foreign property)"
-    val foreignPropertyRemove = "(Foreign property)"
-  }
-
-  private val incomeSourceView = app.injector.instanceOf[YourIncomeSourceToSignUp]
-
-  private val clientDetails = ClientDetails("FirstName LastName", "ZZ111111Z")
-
-  val completeAndConfirmedSelfEmployments: Seq[SelfEmploymentData] = Seq(
-    SelfEmploymentData(
-      id = "idOne",
-      businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
-      businessName = Some(BusinessNameModel("business name")),
-      businessTradeName = Some(BusinessTradeNameModel("business trade")),
-      businessAddress = Some(BusinessAddressModel(Address(Seq("1 Long Road"), Some("ZZ1 1ZZ")))),
-      confirmed = true
-    )
-  )
-  val completeAndConfirmedUKProperty: Option[PropertyModel] = Some(PropertyModel(
-    accountingMethod = Some(Cash),
-    startDate = Some(DateModel("1", "1", "1981")),
-    confirmed = true
-  ))
-  val completeAndConfirmedForeignProperty: Option[OverseasPropertyModel] = Some(OverseasPropertyModel(
-    accountingMethod = Some(Cash),
-    startDate = Some(DateModel("2", "2", "1982")),
-    confirmed = true
-  ))
-
-  val completeSelfEmployments: Seq[SelfEmploymentData] = Seq(
-    SelfEmploymentData(
-      id = "idOne",
-      businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
-      businessName = Some(BusinessNameModel("business name")),
-      businessTradeName = Some(BusinessTradeNameModel("business trade")),
-      businessAddress = Some(BusinessAddressModel(Address(Seq("1 Long Road"), Some("ZZ1 1ZZ"))))
-    )
-  )
-  val completeUKProperty: Option[PropertyModel] = Some(PropertyModel(
-    accountingMethod = Some(Cash),
-    startDate = Some(DateModel("1", "1", "1981"))
-  ))
-  val completeForeignProperty: Option[OverseasPropertyModel] = Some(OverseasPropertyModel(
-    accountingMethod = Some(Cash),
-    startDate = Some(DateModel("2", "2", "1982"))
-  ))
-
-  val incompleteSelfEmployments: Seq[SelfEmploymentData] = Seq(
-    SelfEmploymentData("idOne", None, Some(BusinessNameModel("business name")), Some(BusinessTradeNameModel("business trade"))),
-    SelfEmploymentData("idTwo", None, Some(BusinessNameModel("business name"))),
-    SelfEmploymentData("idThree", None, None, businessTradeName = Some(BusinessTradeNameModel("business trade"))),
-    SelfEmploymentData("idFour")
-  )
-  val incompleteUKProperty: Option[PropertyModel] = Some(PropertyModel(startDate = Some(DateModel("1", "1", "1981"))))
-  val incompleteForeignProperty: Option[OverseasPropertyModel] = Some(OverseasPropertyModel(startDate = Some(DateModel("2", "2", "1982"))))
-
-  def view(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None)): Html = {
-    incomeSourceView(
-      postAction = testCall,
-      backUrl = testBackUrl,
-      clientDetails = clientDetails,
-      incomeSources = incomeSources
-    )
-  }
-
-  class ViewTest(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None)) {
-    def document: Document = Jsoup.parse(view(incomeSources).body)
+    disable(PrePopulate)
   }
 
   "YourIncomeSourceToSignUp" should {
@@ -187,21 +68,67 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     }
   }
 
+  "YourIncomeSourceToSignUp" must {
+    "have a heading and caption" in new ViewTest {
+      document.mainContent.mustHaveHeadingAndCaption(
+        heading = AgentIncomeSource.heading,
+        caption = s"${clientDetails.name} | ${clientDetails.formattedNino}",
+        isSection = false
+      )
+    }
+
+    "have a lead paragraph" which {
+      "summarises the page" when {
+        "the pre-pop feature switch is disabled" in new ViewTest {
+          document.mainContent.selectNth("p", 1).text mustBe AgentIncomeSource.lead
+        }
+      }
+      "summarises the page and tells the user to check sources" when {
+        "the pre-pop feature switch is enabled" in new ViewTest {
+          enable(PrePopulate)
+          document.mainContent.selectNth("p", 1).text mustBe AgentIncomeSource.leadPrepop
+        }
+      }
+    }
+
+    "have a final paragraph" when {
+      "the income sources were prepopulated and the income sources have not been confirmed" in new ViewTest(
+        incomeSources = completeIncomeSources,
+        prepopulated = true
+      ) {
+        document.mainContent.selectNth("p", 3).text mustBe AgentIncomeSource.beforeYouContinue
+      }
+      "the income sources were prepopulated and the income sources are missing data items" in new ViewTest(
+        incomeSources = incompleteIncomeSources,
+        prepopulated = true
+      ) {
+        document.mainContent.selectNth("p", 3).text mustBe AgentIncomeSource.beforeYouContinue
+      }
+    }
+    "have no final paragraph" when {
+      "the income sources were prepopulated, and they were completed and confirmed" in new ViewTest(
+        incomeSources = completeAndConfirmedIncomeSources,
+        prepopulated = true
+      ) {
+        document.mainContent.selectOptionalNth("p", 3) mustBe None
+      }
+      "the income sources were prepopulated, but they were subsequently removed" in new ViewTest(
+        incomeSources = noIncomeSources,
+        prepopulated = true
+      ) {
+        document.mainContent.selectOptionalNth("p", 5) mustBe None
+      }
+      "the income sources weren't prepopulated" in new ViewTest(
+        incomeSources = completeIncomeSources,
+        prepopulated = false
+      ) {
+        document.mainContent.selectOptionalNth("p", 3) mustBe None
+      }
+    }
+  }
+
   "YourIncomeSourceToSignUp" when {
     "there are no income sources added" should {
-      def noIncomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None)
-
-      "have a heading and caption" in new ViewTest(noIncomeSources) {
-        document.mainContent.mustHaveHeadingAndCaption(
-          heading = AgentIncomeSource.heading,
-          caption = s"${clientDetails.name} | ${clientDetails.formattedNino}",
-          isSection = false
-        )
-      }
-
-      "have a lead paragraph" in new ViewTest(noIncomeSources) {
-        document.mainContent.selectHead("p.govuk-body-l").text mustBe AgentIncomeSource.lead
-      }
       "have a sole trader section" which {
         "has a heading" in new ViewTest(noIncomeSources) {
           document.mainContent.selectNth("h2", 1).text mustBe AgentIncomeSource.soleTrader
@@ -212,22 +139,18 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           link.attr("href") mustBe AgentIncomeSource.soleTraderLink
         }
       }
-      "have a uk property section" which {
+      "have a property section" which {
         "has a heading" in new ViewTest(noIncomeSources) {
-          document.mainContent.selectNth("h2", 2).text mustBe AgentIncomeSource.ukProperty
+          document.mainContent.selectNth("h2", 2).text mustBe AgentIncomeSource.incomeFromPropertyHeading
         }
 
-        "has an add business link" in new ViewTest(noIncomeSources) {
+        "has an add uk property link" in new ViewTest(noIncomeSources) {
           val link: Element = document.mainContent.getElementById("add-uk-property").selectHead("a")
           link.text mustBe AgentIncomeSource.ukPropertyLinkText
           link.attr("href") mustBe AgentIncomeSource.ukPropertyLink
         }
-      }
-      "have a foreign property section" which {
-        "has a heading" in new ViewTest(noIncomeSources) {
-          document.mainContent.selectNth("h2", 3).text mustBe AgentIncomeSource.foreignPropertyHeading
-        }
-        "has an add business link" in new ViewTest(noIncomeSources) {
+
+        "has an add foreign property link" in new ViewTest(noIncomeSources) {
           val link: Element = document.mainContent.getElementById("add-foreign-property").selectHead("a")
           link.text mustBe AgentIncomeSource.foreignPropertyLinkText
           link.attr("href") mustBe AgentIncomeSource.foreignPropertyLink
@@ -250,19 +173,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       }
     }
     "there are incomplete income sources added" should {
-      def incompleteIncomeSources: IncomeSources = IncomeSources(incompleteSelfEmployments, incompleteUKProperty, incompleteForeignProperty)
-
-      "have a heading and caption" in new ViewTest(incompleteIncomeSources) {
-        document.mainContent.mustHaveHeadingAndCaption(
-          heading = AgentIncomeSource.heading,
-          caption = s"${clientDetails.name} | ${clientDetails.formattedNino}",
-          isSection = false
-        )
-      }
-
-      "have a lead paragraph" in new ViewTest(incompleteIncomeSources) {
-        document.mainContent.selectHead("p.govuk-body-l").text mustBe AgentIncomeSource.lead
-      }
       "have a sole trader section" which {
         "has a heading" in new ViewTest(incompleteIncomeSources) {
           document.mainContent.selectNth("h2", 1).text mustBe AgentIncomeSource.soleTrader
@@ -373,11 +283,11 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           link.attr("href") mustBe AgentIncomeSource.soleTraderLink
         }
       }
-      "have a uk property section" which {
+      "have a income from property section" which {
         "has a heading" in new ViewTest(incompleteIncomeSources) {
-          document.mainContent.selectNth("h2", 6).text mustBe AgentIncomeSource.ukProperty
+          document.mainContent.selectNth("h2", 6).text mustBe AgentIncomeSource.incomeFromPropertyHeading
         }
-        "has a summary card" in new ViewTest(incompleteIncomeSources) {
+        "has a uk property summary card" in new ViewTest(incompleteIncomeSources) {
           document.mainContent.mustHaveSummaryCard("div.govuk-summary-card", Some(5))(
             title = AgentIncomeSource.ukPropertyTitle,
             cardActions = Seq(
@@ -401,12 +311,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
             )
           )
         }
-      }
-      "have a foreign property section" which {
-        "has a heading" in new ViewTest(incompleteIncomeSources) {
-          document.mainContent.selectNth("h2", 8).text mustBe AgentIncomeSource.foreignPropertyHeading
-        }
-        "has a summary card" in new ViewTest(incompleteIncomeSources) {
+        "has a foreign property summary card" in new ViewTest(incompleteIncomeSources) {
           document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(6))(
             title = AgentIncomeSource.foreignPropertyTitle,
             cardActions = Seq(
@@ -450,19 +355,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       }
     }
     "there are fully complete income sources added" should {
-      def completeIncomeSources: IncomeSources = IncomeSources(completeSelfEmployments, completeUKProperty, completeForeignProperty)
-
-      "have a heading and caption" in new ViewTest(completeIncomeSources) {
-        document.mainContent.mustHaveHeadingAndCaption(
-          heading = AgentIncomeSource.heading,
-          caption = s"${clientDetails.name} | ${clientDetails.formattedNino}",
-          isSection = false
-        )
-      }
-
-      "have a lead paragraph" in new ViewTest(completeIncomeSources) {
-        document.mainContent.selectHead("p.govuk-body-l").text mustBe AgentIncomeSource.lead
-      }
       "have a sole trader section" which {
         "has a heading" in new ViewTest(completeIncomeSources) {
           document.mainContent.selectNth("h2", 1).text mustBe AgentIncomeSource.soleTrader
@@ -497,11 +389,11 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           link.attr("href") mustBe AgentIncomeSource.soleTraderLink
         }
       }
-      "have a uk property section" which {
+      "have an income from property section" which {
         "has a heading" in new ViewTest(completeIncomeSources) {
-          document.mainContent.selectNth("h2", 3).text mustBe AgentIncomeSource.ukProperty
+          document.mainContent.selectNth("h2", 3).text mustBe AgentIncomeSource.incomeFromPropertyHeading
         }
-        "has a summary card" in new ViewTest(completeIncomeSources) {
+        "has a uk property summary card" in new ViewTest(completeIncomeSources) {
           document.mainContent.mustHaveSummaryCard("div.govuk-summary-card", Some(2))(
             title = AgentIncomeSource.ukPropertyTitle,
             cardActions = Seq(
@@ -525,12 +417,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
             )
           )
         }
-      }
-      "have a foreign property section" which {
-        "has a heading" in new ViewTest(completeIncomeSources) {
-          document.mainContent.selectNth("h2", 5).text mustBe AgentIncomeSource.foreignPropertyHeading
-        }
-        "has a summary card" in new ViewTest(completeIncomeSources) {
+        "has a foreign property summary card" in new ViewTest(completeIncomeSources) {
           document.mainContent.mustHaveSummaryCard("div.govuk-summary-card", Some(3))(
             title = AgentIncomeSource.foreignPropertyTitle,
             cardActions = Seq(
@@ -583,10 +470,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           isSection = false
         )
       }
-
-      "have a lead paragraph" in new ViewTest(completeAndConfirmedIncomeSources) {
-        document.mainContent.selectHead("p.govuk-body-l").text mustBe AgentIncomeSource.lead
-      }
+      
       "have a sole trader section" which {
         "has a heading" in new ViewTest(completeAndConfirmedIncomeSources) {
           document.mainContent.selectNth("h2", 1).text mustBe AgentIncomeSource.soleTrader
@@ -621,11 +505,11 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           link.attr("href") mustBe AgentIncomeSource.soleTraderLink
         }
       }
-      "have a uk property section" which {
+      "have an income source from property section" which {
         "has a heading" in new ViewTest(completeAndConfirmedIncomeSources) {
-          document.mainContent.selectNth("h2", 3).text mustBe AgentIncomeSource.ukProperty
+          document.mainContent.selectNth("h2", 3).text mustBe AgentIncomeSource.incomeFromPropertyHeading
         }
-        "has a summary card" in new ViewTest(completeAndConfirmedIncomeSources) {
+        "has a uk property summary card" in new ViewTest(completeAndConfirmedIncomeSources) {
           document.mainContent.mustHaveSummaryCard("div.govuk-summary-card", Some(2))(
             title = AgentIncomeSource.ukPropertyTitle,
             cardActions = Seq(
@@ -649,12 +533,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
             )
           )
         }
-      }
-      "have a foreign property section" which {
-        "has a heading" in new ViewTest(completeAndConfirmedIncomeSources) {
-          document.mainContent.selectNth("h2", 5).text mustBe AgentIncomeSource.foreignPropertyHeading
-        }
-        "has a summary card" in new ViewTest(completeAndConfirmedIncomeSources) {
+        "has a foreign property summary card" in new ViewTest(completeAndConfirmedIncomeSources) {
           document.mainContent.mustHaveSummaryCard("div.govuk-summary-card", Some(3))(
             title = AgentIncomeSource.foreignPropertyTitle,
             cardActions = Seq(
@@ -697,6 +576,135 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         }
       }
     }
-
   }
+
+  object AgentIncomeSource {
+    val heading = "Your client’s income sources"
+    val lead = "Add all of these sources that your client gets income from."
+    val leadPrepop = s"Add all of these sources that your client gets income from. Check, change or add details to any that were started previously. Remove any that ceased before 6 April ${AccountingPeriodUtil.getCurrentTaxEndYear - 1}."
+    val paragraph1: String = "If your client is self-employed, you must add all of their sole trader businesses if they have more than one. " +
+      "If they have income from property you must add it, but this is limited to one UK property business."
+    val paragraph1Overseas: String = "Your client can have up to 50 sole trader businesses. " +
+      "However, they can have only one UK property business and one overseas property."
+    val paragraph2 = "Renting out a property includes using a letting agency."
+    val soleTrader = "Sole trader businesses"
+    val soleTraderLinkText = "Add sole trader income source"
+    val anotherSoleTraderLinkText = "Add another sole trader income source"
+    val soleTraderBusinessNameKey = "Business name"
+    val soleTraderLink: String = appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl
+    val soleTraderChangeLinkOne: String = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=idOne&isEditMode=true"
+    val soleTraderChangeLinkTwo: String = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=idTwo&isEditMode=true"
+    val soleTraderChangeLinkThree: String = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=idThree&isEditMode=true"
+    val soleTraderChangeLinkFour: String = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=idFour&isEditMode=true"
+    val soleTraderRemoveLinkOne: String = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idOne").url
+    val soleTraderRemoveLinkTwo: String = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idTwo").url
+    val soleTraderRemoveLinkThree: String = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idThree").url
+    val soleTraderRemoveLinkFour: String = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idFour").url
+    val incomeFromPropertyHeading = "Income from property"
+    val ukPropertyTitle = "UK property"
+    val ukPropertyStartDate = "Start date"
+    val ukPropertyLinkText = "Add UK property"
+    val ukPropertyLink: String = controllers.agent.tasklist.ukproperty.routes.PropertyStartDateController.show().url
+    val ukPropertyChangeLink: String = controllers.agent.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url
+    val ukPropertyRemoveLink: String = controllers.agent.tasklist.ukproperty.routes.RemoveUkPropertyController.show.url
+    val foreignPropertyTitle = "Foreign property"
+    val foreignPropertyStartDate = "Start date"
+    val foreignPropertyLinkText = "Add foreign property"
+    val foreignPropertyLink: String = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show().url
+    val foreignPropertyChangeLink: String = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
+    val foreignPropertyRemoveLink: String = controllers.agent.tasklist.overseasproperty.routes.RemoveOverseasPropertyController.show.url
+    val progressSavedLink: String = controllers.agent.tasklist.routes.ProgressSavedController.show(Some("income-sources")).url
+
+    val continue = "Save and continue"
+    val saveAndComeBackLater = "Save and come back later"
+
+    val addDetails: String = "Add details"
+    val check: String = "Check"
+
+    val change: String = "Change"
+    val remove: String = "Remove"
+
+    def selfEmploymentChange(name: String) = s"$name"
+
+    def selfEmploymentRemove(name: String) = s"$name"
+
+    val ukPropertyChange = "(UK property)"
+    val ukPropertyRemove = "(UK property)"
+
+    val foreignPropertyChange = "(Foreign property)"
+    val foreignPropertyRemove = "(Foreign property)"
+
+    val beforeYouContinue = "Before you continue, make sure you have checked any income sources we added for you."
+  }
+
+  private lazy val incomeSourceView = app.injector.instanceOf[YourIncomeSourceToSignUp]
+
+  private lazy val clientDetails = ClientDetails("FirstName LastName", "ZZ111111Z")
+
+  lazy val completeSelfEmployments: Seq[SelfEmploymentData] = Seq(
+    SelfEmploymentData(
+      id = "idOne",
+      businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
+      businessName = Some(BusinessNameModel("business name")),
+      businessTradeName = Some(BusinessTradeNameModel("business trade")),
+      businessAddress = Some(BusinessAddressModel(Address(Seq("1 Long Road"), Some("ZZ1 1ZZ")))))
+  )
+  lazy val completeUKProperty: Option[PropertyModel] = Some(PropertyModel(
+    accountingMethod = Some(Cash),
+    startDate = Some(DateModel("1", "1", "1981"))))
+
+  lazy val completeForeignProperty: Option[OverseasPropertyModel] = Some(OverseasPropertyModel(
+    accountingMethod = Some(Cash),
+    startDate = Some(DateModel("2", "2", "1982"))))
+
+  lazy val completeAndConfirmedSelfEmployments: Seq[SelfEmploymentData] = Seq(
+    SelfEmploymentData(
+      id = "idOne",
+      businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
+      businessName = Some(BusinessNameModel("business name")),
+      businessTradeName = Some(BusinessTradeNameModel("business trade")),
+      businessAddress = Some(BusinessAddressModel(Address(Seq("1 Long Road"), Some("ZZ1 1ZZ")))),
+      confirmed = true
+    )
+  )
+  lazy val completeAndConfirmedUKProperty: Option[PropertyModel] = Some(PropertyModel(
+    accountingMethod = Some(Cash),
+    startDate = Some(DateModel("1", "1", "1981")),
+    confirmed = true
+  ))
+  lazy val completeAndConfirmedForeignProperty: Option[OverseasPropertyModel] = Some(OverseasPropertyModel(
+    accountingMethod = Some(Cash),
+    startDate = Some(DateModel("2", "2", "1982")),
+    confirmed = true
+  ))
+
+  lazy val incompleteSelfEmployments: Seq[SelfEmploymentData] = Seq(
+    SelfEmploymentData("idOne", None, Some(BusinessNameModel("business name")), Some(BusinessTradeNameModel("business trade"))),
+    SelfEmploymentData("idTwo", None, Some(BusinessNameModel("business name"))),
+    SelfEmploymentData("idThree", None, None, businessTradeName = Some(BusinessTradeNameModel("business trade"))),
+    SelfEmploymentData("idFour")
+  )
+  lazy val incompleteUKProperty: Option[PropertyModel] = Some(PropertyModel(startDate = Some(DateModel("1", "1", "1981"))))
+  lazy val incompleteForeignProperty: Option[OverseasPropertyModel] = Some(OverseasPropertyModel(startDate = Some(DateModel("2", "2", "1982"))))
+
+  def view(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None), prepopulated: Boolean = false): Html = {
+    incomeSourceView(
+      postAction = testCall,
+      backUrl = testBackUrl,
+      clientDetails = clientDetails,
+      incomeSources = incomeSources,
+      prepopulated = prepopulated
+    )
+  }
+
+  class ViewTest(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None), prepopulated: Boolean = false) {
+    def document: Document = Jsoup.parse(view(incomeSources, prepopulated).body)
+  }
+
+  lazy val noIncomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None)
+  lazy val incompleteIncomeSources: IncomeSources = IncomeSources(incompleteSelfEmployments, incompleteUKProperty, incompleteForeignProperty)
+  lazy val completeIncomeSources: IncomeSources = IncomeSources(completeSelfEmployments, completeUKProperty, completeForeignProperty)
+  lazy val completeAndConfirmedIncomeSources: IncomeSources = IncomeSources(completeAndConfirmedSelfEmployments, completeAndConfirmedUKProperty, completeAndConfirmedForeignProperty)
+
+
 }
