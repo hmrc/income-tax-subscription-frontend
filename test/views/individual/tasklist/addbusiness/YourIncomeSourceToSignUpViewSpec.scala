@@ -16,6 +16,7 @@
 
 package views.individual.tasklist.addbusiness
 
+import config.featureswitch.FeatureSwitch.PrePopulate
 import models.common.business._
 import models.common.{IncomeSources, OverseasPropertyModel, PropertyModel}
 import models.{Cash, DateModel}
@@ -23,7 +24,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.api.mvc.Call
 import play.twirl.api.Html
-import utilities.ViewSpec
+import utilities.{AccountingPeriodUtil, ViewSpec}
 import views.ViewSpecTrait
 import views.html.individual.tasklist.addbusiness.YourIncomeSourceToSignUp
 
@@ -31,12 +32,16 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
+    disable(PrePopulate)
   }
 
   object IndividualIncomeSource {
     val title = "Your income sources"
     val heading: String = title
-    val incomeSourcesPara: String = "Add all of these sources that you get income from."
+    val currentTaxYearStart: Int = AccountingPeriodUtil.getCurrentTaxEndYear - 1
+    val incomeSourcesLead: String = "Add all of these sources that you get income from."
+    val incomeSourcesPara1: String = s"Add all of these sources that you get income from. Check, change or add details to any that were started previously. Remove any that ceased before 6 April $currentTaxYearStart."
+    val incomeSourcesPara2: String = "Before you continue, make sure you have checked any income sources we added for you."
 
     val addDetails: String = "Add details"
     val check: String = "Check"
@@ -59,31 +64,30 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     val soleTraderChangeLinkTwo: String = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=idTwo&isEditMode=true"
     val soleTraderChangeLinkThree: String = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=idThree&isEditMode=true"
     val soleTraderChangeLinkFour: String = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=idFour&isEditMode=true"
-    val soleTraderRemoveLinkOne: String = controllers.individual.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show(id="idOne").url
-    val soleTraderRemoveLinkTwo: String = controllers.individual.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show(id="idTwo").url
-    val soleTraderRemoveLinkThree: String = controllers.individual.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show(id="idThree").url
-    val soleTraderRemoveLinkFour: String = controllers.individual.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show(id="idFour").url
+    val soleTraderRemoveLinkOne: String = controllers.individual.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show(id = "idOne").url
+    val soleTraderRemoveLinkTwo: String = controllers.individual.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show(id = "idTwo").url
+    val soleTraderRemoveLinkThree: String = controllers.individual.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show(id = "idThree").url
+    val soleTraderRemoveLinkFour: String = controllers.individual.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show(id = "idFour").url
 
     val incomeFromPropertiesHeading: String = "Income from property"
     val incomeFromPropertiesPara: String = "Tell us about any income you get from property. For example, letting houses, " +
       "flats or holiday homes either on a long or short term basis. " +
       "If you have more than one property, treat them as one income source."
 
-    val propertyStartDate : String = "Start date"
-    val ukPropertyCardTitle : String = "UK property"
-    val addUKPropertyLink : String = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.show().url
-    val addUkPropertyLinkText : String = "Add UK property"
-    val ukPropertyChangeLink : String = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url
-    val ukPropertyRemoveLink : String = controllers.individual.tasklist.ukproperty.routes.RemoveUkPropertyController.show.url
-    val foreignPropertyCardTitle : String = "Foreign property"
-    val addForeignPropertyLink : String = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show().url
-    val addForeignPropertyLinkText : String = "Add foreign property"
-    val foreignPropertyChangeLink : String = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
-    val foreignPropertyRemoveLink : String = controllers.individual.tasklist.overseasproperty.routes.RemoveOverseasPropertyController.show.url
+    val propertyStartDate: String = "Start date"
+    val ukPropertyCardTitle: String = "UK property"
+    val addUKPropertyLink: String = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.show().url
+    val addUkPropertyLinkText: String = "Add UK property"
+    val ukPropertyChangeLink: String = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url
+    val ukPropertyRemoveLink: String = controllers.individual.tasklist.ukproperty.routes.RemoveUkPropertyController.show.url
+    val foreignPropertyCardTitle: String = "Foreign property"
+    val addForeignPropertyLink: String = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show().url
+    val addForeignPropertyLinkText: String = "Add foreign property"
+    val foreignPropertyChangeLink: String = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
+    val foreignPropertyRemoveLink: String = controllers.individual.tasklist.overseasproperty.routes.RemoveOverseasPropertyController.show.url
 
-    val continue : String = "Continue"
-    val saveAndComeBackLater : String = "Save and come back later"
-
+    val continue: String = "Continue"
+    val saveAndComeBackLater: String = "Save and come back later"
   }
 
   val backUrl: String = ViewSpecTrait.testBackUrl
@@ -140,17 +144,17 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
   val incompleteUKProperty: Option[PropertyModel] = Some(PropertyModel())
   val incompleteForeignProperty: Option[OverseasPropertyModel] = Some(OverseasPropertyModel())
 
-  def view(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None)): Html = {
+  def view(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None), isPrePopulated: Boolean = false): Html = {
     incomeSource(
       postAction = testCall,
       backUrl = testBackUrl,
-      incomeSources = incomeSources
+      incomeSources = incomeSources,
+      isPrePopulated = isPrePopulated
     )
   }
 
-  class ViewTest(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None)) {
-    val document: Document = Jsoup.parse(view(incomeSources).body)
-
+  class ViewTest(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None), isPrePopulated: Boolean = false) {
+    def document: Document = Jsoup.parse(view(incomeSources, isPrePopulated).body)
   }
 
   "YourIncomeSourceToSignUp" should {
@@ -187,21 +191,30 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
   }
 
   "YourIncomeSourceToSignUp" when {
+
     "there are no income sources added" should {
       def noIncomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None)
 
       "have a heading for the page" in new ViewTest(noIncomeSources) {
         document.mainContent.getH1Element.text mustBe IndividualIncomeSource.heading
       }
-      "have a lead paragraph" in new ViewTest(noIncomeSources) {
-        document.mainContent.selectNth("p", 1).text mustBe IndividualIncomeSource.incomeSourcesPara
+
+      "have the correct lead paragraph" when {
+        "the PrePopulate Feature Switch is on" in new ViewTest(noIncomeSources) {
+          enable(PrePopulate)
+          document.mainContent.selectNth("p", 1).text mustBe IndividualIncomeSource.incomeSourcesPara1
+        }
+        "the PrePopulate Feature Switch is off" in new ViewTest(noIncomeSources) {
+          disable(PrePopulate)
+          document.mainContent.selectNth("p", 1).text mustBe IndividualIncomeSource.incomeSourcesLead
+        }
       }
+
       "have a sole trader section" which {
         "has a heading" in new ViewTest(noIncomeSources) {
           document.mainContent.selectNth("h2", 1).text mustBe IndividualIncomeSource.selfEmploymentHeading
         }
-
-        " has a paragraph" in new ViewTest(noIncomeSources) {
+        "has a paragraph" in new ViewTest(noIncomeSources) {
           document.mainContent.selectNth("p", 2).text mustBe IndividualIncomeSource.selfEmploymentPara
         }
 
@@ -217,7 +230,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         }
 
         "has a paragraph" in new ViewTest(noIncomeSources) {
-          document.mainContent.selectNth("p",4).text mustBe IndividualIncomeSource.incomeFromPropertiesPara
+          document.mainContent.selectNth("p", 4).text mustBe IndividualIncomeSource.incomeFromPropertiesPara
         }
 
         "has an add UK property link" in new ViewTest(noIncomeSources) {
@@ -231,467 +244,525 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           link.text mustBe IndividualIncomeSource.addForeignPropertyLinkText
           link.attr("href") mustBe IndividualIncomeSource.addForeignPropertyLink
         }
+      }
 
-        "have a form" which {
-          def form(document: Document): Element = document.mainContent.getForm
+      "have a form" which {
+        def form(document: Document): Element = document.mainContent.getForm
 
-          "has the correct attributes" in new ViewTest(noIncomeSources) {
-            form(document).attr("method") mustBe testCall.method
-            form(document).attr("action") mustBe testCall.url
-          }
-          "has a continue button" in new ViewTest(noIncomeSources) {
-            form(document).getGovukSubmitButton.text mustBe IndividualIncomeSource.continue
-          }
-          "has no save and come back later button" in new ViewTest(noIncomeSources) {
-            form(document).selectOptionally(".govuk-button--secondary") mustBe None
-          }
+        "has the correct attributes" in new ViewTest(noIncomeSources) {
+          form(document).attr("method") mustBe testCall.method
+          form(document).attr("action") mustBe testCall.url
         }
-
-        "there are complete and confirmed set of income sources added" should {
-
-          def completeAndConfirmedIncomeSources: IncomeSources = IncomeSources(completeAndConfirmedSelfEmployments, completeAndConfirmedUKProperty, completeAndConfirmedForeignProperty)
-
-          "have a heading for the page" in new ViewTest(completeAndConfirmedIncomeSources) {
-            document.mainContent.getH1Element.text mustBe IndividualIncomeSource.heading
-          }
-
-          "have a lead paragraph" in new ViewTest(completeAndConfirmedIncomeSources) {
-            document.mainContent.selectNth("p", 1).text mustBe IndividualIncomeSource.incomeSourcesPara
-          }
-
-          "have a section for sole trader income sources" which {
-
-            "has a heading" in new ViewTest(completeAndConfirmedIncomeSources) {
-              document.mainContent.selectNth("h2", 1).text mustBe IndividualIncomeSource.selfEmploymentHeading
-            }
-
-            "has a paragraph" in new ViewTest(completeAndConfirmedIncomeSources) {
-              document.mainContent.selectNth("p", 2).text mustBe IndividualIncomeSource.selfEmploymentPara
-            }
-
-            "has a sole trader business card" in new ViewTest(completeAndConfirmedIncomeSources) {
-              document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
-                title = "business trade",
-                cardActions = Seq(
-                  SummaryListActionValues(
-                    href = IndividualIncomeSource.soleTraderChangeLinkOne,
-                    text = s"${IndividualIncomeSource.change} business name (business trade)",
-                    visuallyHidden = s"business name (business trade)"
-                  ),
-                  SummaryListActionValues(
-                    href = IndividualIncomeSource.soleTraderRemoveLinkOne,
-                    text = s"${IndividualIncomeSource.remove} business name (business trade)",
-                    visuallyHidden = s"business name (business trade)"
-                  )
-                ),
-                rows = Seq(
-                  SummaryListRowValues(
-                    key = IndividualIncomeSource.soleTraderBusinessNameKey,
-                    value = Some("business name"),
-                    actions = Seq.empty
-                  )
-                )
-              )
-            }
-
-            "has an add business link" in new ViewTest(completeAndConfirmedIncomeSources) {
-              val link: Element = document.mainContent.getElementById("add-self-employment").selectHead("a")
-              link.text mustBe IndividualIncomeSource.addSelfEmploymentLinkText
-              link.attr("href") mustBe IndividualIncomeSource.soleTraderLink
-            }
-
-            "has a income from properties section" which {
-
-              "has a heading" in new ViewTest(completeAndConfirmedIncomeSources) {
-                document.mainContent.selectNth("h2", 3).text mustBe IndividualIncomeSource.incomeFromPropertiesHeading
-              }
-
-              "has a paragraph" in new ViewTest(noIncomeSources) {
-                document.mainContent.selectNth("p", 4).text mustBe IndividualIncomeSource.incomeFromPropertiesPara
-              }
-
-              "has a UK property card" in new ViewTest(completeAndConfirmedIncomeSources) {
-                document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(2))(
-                  title = IndividualIncomeSource.ukPropertyCardTitle,
-                  cardActions = Seq(
-                    SummaryListActionValues(
-                      href = IndividualIncomeSource.ukPropertyChangeLink,
-                      text = s"${IndividualIncomeSource.change} ${IndividualIncomeSource.ukPropertyChange}",
-                      visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
-                    ),
-                    SummaryListActionValues(
-                      href = IndividualIncomeSource.ukPropertyRemoveLink,
-                      text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.ukPropertyRemove}",
-                      visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
-                    )
-                  ),
-                  rows = Seq(
-                    SummaryListRowValues(
-                      key = IndividualIncomeSource.propertyStartDate,
-                      value = Some("1 January 1981"),
-                      actions = Seq.empty
-                    )
-                  )
-                )
-              }
-
-              "has a foreign property card" in new ViewTest(completeAndConfirmedIncomeSources) {
-                document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(3))(
-                  title = IndividualIncomeSource.foreignPropertyCardTitle,
-                  cardActions = Seq(
-                    SummaryListActionValues(
-                      href = IndividualIncomeSource.foreignPropertyChangeLink,
-                      text = s"${IndividualIncomeSource.change} ${IndividualIncomeSource.foreignPropertyChange}",
-                      visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
-                    ),
-                    SummaryListActionValues(
-                      href = IndividualIncomeSource.foreignPropertyRemoveLink,
-                      text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.foreignPropertyRemove}",
-                      visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
-                    )
-                  ),
-                  rows = Seq(
-                    SummaryListRowValues(
-                      key = IndividualIncomeSource.propertyStartDate,
-                      value = Some("1 January 1982"),
-                      actions = Seq.empty
-                    )
-                  )
-                )
-              }
-            }
-
-            "have a form" which {
-              def form(document: Document): Element = document.mainContent.getForm
-
-              "has the correct attributes" in new ViewTest(noIncomeSources) {
-                form(document).attr("method") mustBe testCall.method
-                form(document).attr("action") mustBe testCall.url
-              }
-              "has a continue button" in new ViewTest(noIncomeSources) {
-                form(document).getGovukSubmitButton.text mustBe IndividualIncomeSource.continue
-              }
-              "has no save and come back later button" in new ViewTest(noIncomeSources) {
-                form(document).selectOptionally(".govuk-button--secondary") mustBe None
-              }
-            }
-          }
+        "has a continue button" in new ViewTest(noIncomeSources) {
+          form(document).getGovukSubmitButton.text mustBe IndividualIncomeSource.continue
         }
-
-
-        "there are complete set of income sources added" should {
-
-          def completeIncomeSources: IncomeSources = IncomeSources(completeSelfEmployments, completeUKProperty, completeForeignProperty)
-
-          "have a heading for the page" in new ViewTest(completeIncomeSources) {
-            document.mainContent.getH1Element.text mustBe IndividualIncomeSource.heading
-          }
-
-          "have a lead paragraph" in new ViewTest(completeIncomeSources) {
-            document.mainContent.selectNth("p", 1).text mustBe IndividualIncomeSource.incomeSourcesPara
-          }
-
-          "have a section for sole trader income sources" which {
-
-            "has a heading" in new ViewTest(completeIncomeSources) {
-              document.mainContent.selectNth("h2", 1).text mustBe IndividualIncomeSource.selfEmploymentHeading
-            }
-
-            "has a paragraph" in new ViewTest(completeIncomeSources) {
-              document.mainContent.selectNth("p", 2).text mustBe IndividualIncomeSource.selfEmploymentPara
-            }
-
-            "has a sole trader business card" in new ViewTest(completeIncomeSources) {
-              document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
-                title = "business trade",
-                cardActions = Seq(
-                  SummaryListActionValues(
-                    href = IndividualIncomeSource.soleTraderChangeLinkOne,
-                    text = s"${IndividualIncomeSource.check} business name (business trade)",
-                    visuallyHidden = s"business name (business trade)"
-                  ),
-                  SummaryListActionValues(
-                    href = IndividualIncomeSource.soleTraderRemoveLinkOne,
-                    text = s"${IndividualIncomeSource.remove} business name (business trade)",
-                    visuallyHidden = s"business name (business trade)"
-                  )
-                ),
-                rows = Seq(
-                  SummaryListRowValues(
-                    key = IndividualIncomeSource.soleTraderBusinessNameKey,
-                    value = Some("business name"),
-                    actions = Seq.empty
-                  )
-                )
-              )
-            }
-
-            "has an add business link" in new ViewTest(completeIncomeSources) {
-              val link: Element = document.mainContent.getElementById("add-self-employment").selectHead("a")
-              link.text mustBe IndividualIncomeSource.addSelfEmploymentLinkText
-              link.attr("href") mustBe IndividualIncomeSource.soleTraderLink
-            }
-
-            "has a income from properties section" which {
-
-              "has a heading" in new ViewTest(completeIncomeSources) {
-                document.mainContent.selectNth("h2", 3).text mustBe IndividualIncomeSource.incomeFromPropertiesHeading
-              }
-
-              "has a paragraph" in new ViewTest(noIncomeSources) {
-                document.mainContent.selectNth("p", 4).text mustBe IndividualIncomeSource.incomeFromPropertiesPara
-              }
-
-              "has a UK property card" in new ViewTest(completeIncomeSources) {
-                document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(2))(
-                  title = IndividualIncomeSource.ukPropertyCardTitle,
-                  cardActions = Seq(
-                    SummaryListActionValues(
-                      href = IndividualIncomeSource.ukPropertyChangeLink,
-                      text = s"${IndividualIncomeSource.check} ${IndividualIncomeSource.ukPropertyChange}",
-                      visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
-                    ),
-                    SummaryListActionValues(
-                      href = IndividualIncomeSource.ukPropertyRemoveLink,
-                      text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.ukPropertyRemove}",
-                      visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
-                    )
-                  ),
-                  rows = Seq(
-                    SummaryListRowValues(
-                      key = IndividualIncomeSource.propertyStartDate,
-                      value = Some("1 January 1981"),
-                      actions = Seq.empty
-                    )
-                  )
-                )
-              }
-
-              "has a foreign property card" in new ViewTest(completeIncomeSources) {
-                document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(3))(
-                  title = IndividualIncomeSource.foreignPropertyCardTitle,
-                  cardActions = Seq(
-                    SummaryListActionValues(
-                      href = IndividualIncomeSource.foreignPropertyChangeLink,
-                      text = s"${IndividualIncomeSource.check} ${IndividualIncomeSource.foreignPropertyChange}",
-                      visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
-                    ),
-                    SummaryListActionValues(
-                      href = IndividualIncomeSource.foreignPropertyRemoveLink,
-                      text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.foreignPropertyRemove}",
-                      visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
-                    )
-                  ),
-                  rows = Seq(
-                    SummaryListRowValues(
-                      key = IndividualIncomeSource.propertyStartDate,
-                      value = Some("1 January 1982"),
-                      actions = Seq.empty
-                    )
-                  )
-                )
-              }
-            }
-
-            "have a form" which {
-              def form(document: Document): Element = document.mainContent.getForm
-
-              "has the correct attributes" in new ViewTest(noIncomeSources) {
-                form(document).attr("method") mustBe testCall.method
-                form(document).attr("action") mustBe testCall.url
-              }
-              "has a continue button" in new ViewTest(noIncomeSources) {
-                form(document).getGovukSubmitButton.text mustBe IndividualIncomeSource.continue
-              }
-              "has no save and come back later button" in new ViewTest(noIncomeSources) {
-                form(document).selectOptionally(".govuk-button--secondary") mustBe None
-              }
-            }
-          }
+        "has no save and come back later button" in new ViewTest(noIncomeSources) {
+          form(document).selectOptionalNth("p", 5) mustBe None
         }
+      }
 
-        "there are incomplete set of income sources added" should {
-
-          def incompleteIncomeSources: IncomeSources = IncomeSources(incompleteSelfEmployments, incompleteUKProperty, incompleteForeignProperty)
-
-          "have a heading for the page" in new ViewTest(incompleteIncomeSources) {
-            document.mainContent.getH1Element.text mustBe IndividualIncomeSource.heading
-          }
-
-          "have a lead paragraph" in new ViewTest(incompleteIncomeSources) {
-            document.mainContent.selectNth("p", 1).text mustBe IndividualIncomeSource.incomeSourcesPara
-          }
-
-          "have a section for sole trader income sources" which {
-
-            "has a heading" in new ViewTest(incompleteIncomeSources) {
-              document.mainContent.selectNth("h2", 1).text mustBe IndividualIncomeSource.selfEmploymentHeading
-            }
-
-            "has a paragraph" in new ViewTest(incompleteIncomeSources) {
-              document.mainContent.selectNth("p", 2).text mustBe IndividualIncomeSource.selfEmploymentPara
-            }
-
-            "has a first sole trader business card" in new ViewTest(incompleteIncomeSources) {
-              document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
-                title = "Business 1",
-                cardActions = Seq(
-                  SummaryListActionValues(
-                    href = IndividualIncomeSource.soleTraderChangeLinkTwo,
-                    text = s"${IndividualIncomeSource.addDetails} business name (Business 1)",
-                    visuallyHidden = s"business name (Business 1)"
-                  ),
-                  SummaryListActionValues(
-                    href = IndividualIncomeSource.soleTraderRemoveLinkTwo,
-                    text = s"${IndividualIncomeSource.remove} business name (Business 1)",
-                    visuallyHidden = s"business name (Business 1)"
-                  )
-                ),
-                rows = Seq(
-                  SummaryListRowValues(
-                    key = IndividualIncomeSource.soleTraderBusinessNameKey,
-                    value = Some("business name"),
-                    actions = Seq.empty
-                  )
-                )
-              )
-            }
-
-            "has a second sole trader business card" in new ViewTest(incompleteIncomeSources) {
-              document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(2))(
-                title = "business trade",
-                cardActions = Seq(
-                  SummaryListActionValues(
-                    href = IndividualIncomeSource.soleTraderChangeLinkThree,
-                    text = s"${IndividualIncomeSource.addDetails} (business trade)",
-                    visuallyHidden = s"(business trade)"
-                  ),
-                  SummaryListActionValues(
-                    href = IndividualIncomeSource.soleTraderRemoveLinkThree,
-                    text = s"${IndividualIncomeSource.remove} (business trade)",
-                    visuallyHidden = s"(business trade)"
-                  )
-                ),
-                rows = Seq(
-                  SummaryListRowValues(
-                    key = IndividualIncomeSource.soleTraderBusinessNameKey,
-                    value = Some("Business 2"),
-                    actions = Seq.empty
-                  )
-                )
-              )
-            }
-
-            "has a third sole trader business card" in new ViewTest(incompleteIncomeSources) {
-              document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(3))(
-                title = "Business 3",
-                cardActions = Seq(
-                  SummaryListActionValues(
-                    href = IndividualIncomeSource.soleTraderChangeLinkFour,
-                    text = s"${IndividualIncomeSource.addDetails} (Business 3)",
-                    visuallyHidden = s"(Business 3)"
-                  ),
-                  SummaryListActionValues(
-                    href = IndividualIncomeSource.soleTraderRemoveLinkFour,
-                    text = s"${IndividualIncomeSource.remove} (Business 3)",
-                    visuallyHidden = s"(Business 3)"
-                  )
-                ),
-                rows = Seq(
-                  SummaryListRowValues(
-                    key = IndividualIncomeSource.soleTraderBusinessNameKey,
-                    value = Some("Business 3"),
-                    actions = Seq.empty
-                  )
-                )
-              )
-            }
-
-            "has an add business link" in new ViewTest(incompleteIncomeSources) {
-              val link: Element = document.mainContent.getElementById("add-self-employment").selectHead("a")
-              link.text mustBe IndividualIncomeSource.addSelfEmploymentLinkText
-              link.attr("href") mustBe IndividualIncomeSource.soleTraderLink
-            }
-
-            "has a income from properties section" which {
-
-              "has a heading" in new ViewTest(incompleteIncomeSources) {
-                document.mainContent.selectNth("h2", 5).text mustBe IndividualIncomeSource.incomeFromPropertiesHeading
-              }
-
-              "has a paragraph" in new ViewTest(noIncomeSources) {
-                document.mainContent.selectNth("p", 4).text mustBe IndividualIncomeSource.incomeFromPropertiesPara
-              }
-
-              "has a UK property card" in new ViewTest(incompleteIncomeSources) {
-                document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(4))(
-                  title = IndividualIncomeSource.ukPropertyCardTitle,
-                  cardActions = Seq(
-                    SummaryListActionValues(
-                      href = IndividualIncomeSource.ukPropertyChangeLink,
-                      text = s"${IndividualIncomeSource.addDetails} ${IndividualIncomeSource.ukPropertyChange}",
-                      visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
-                    ),
-                    SummaryListActionValues(
-                      href = IndividualIncomeSource.ukPropertyRemoveLink,
-                      text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.ukPropertyRemove}",
-                      visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
-                    )
-                  ),
-                  rows = Seq(
-                    SummaryListRowValues(
-                      key = IndividualIncomeSource.propertyStartDate,
-                      value = Some(""),
-                      actions = Seq.empty
-                    )
-                  )
-                )
-              }
-
-              "has a foreign property card" in new ViewTest(incompleteIncomeSources) {
-                document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(5))(
-                  title = IndividualIncomeSource.foreignPropertyCardTitle,
-                  cardActions = Seq(
-                    SummaryListActionValues(
-                      href = IndividualIncomeSource.foreignPropertyChangeLink,
-                      text = s"${IndividualIncomeSource.addDetails} ${IndividualIncomeSource.foreignPropertyChange}",
-                      visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
-                    ),
-                    SummaryListActionValues(
-                      href = IndividualIncomeSource.foreignPropertyRemoveLink,
-                      text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.foreignPropertyRemove}",
-                      visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
-                    )
-                  ),
-                  rows = Seq(
-                    SummaryListRowValues(
-                      key = IndividualIncomeSource.propertyStartDate,
-                      value = Some(""),
-                      actions = Seq.empty
-                    )
-                  )
-                )
-              }
-            }
-
-            "have a form" which {
-              def form(document: Document): Element = document.mainContent.getForm
-
-              "has the correct attributes" in new ViewTest(noIncomeSources) {
-                form(document).attr("method") mustBe testCall.method
-                form(document).attr("action") mustBe testCall.url
-              }
-              "has a continue button" in new ViewTest(noIncomeSources) {
-                form(document).getGovukSubmitButton.text mustBe IndividualIncomeSource.continue
-              }
-              "has no save and come back later button" in new ViewTest(noIncomeSources) {
-                form(document).selectOptionally(".govuk-button--secondary") mustBe None
-              }
-            }
-          }
+      "not have a second paragraph" when {
+        "data has been pre-populated" in new ViewTest(noIncomeSources, isPrePopulated = true) {
+          document.mainContent.selectOptionalNth("p", 7) mustBe None
         }
       }
     }
+
+    "there are incomplete set of income sources added" should {
+
+      def incompleteIncomeSources: IncomeSources = IncomeSources(incompleteSelfEmployments, incompleteUKProperty, incompleteForeignProperty)
+
+      "have a heading for the page" in new ViewTest(incompleteIncomeSources) {
+        document.mainContent.getH1Element.text mustBe IndividualIncomeSource.heading
+      }
+
+      "have the correct lead paragraph" when {
+
+        "the PrePopulate Feature Switch is on" in new ViewTest(incompleteIncomeSources) {
+          enable(PrePopulate)
+          document.mainContent.selectNth("p", 1).text mustBe IndividualIncomeSource.incomeSourcesPara1
+        }
+        "the PrePopulate Feature Switch is off" in new ViewTest(incompleteIncomeSources) {
+          disable(PrePopulate)
+          document.mainContent.selectNth("p", 1).text mustBe IndividualIncomeSource.incomeSourcesLead
+        }
+      }
+
+      "have a section for sole trader income sources" which {
+
+        "has a heading" in new ViewTest(incompleteIncomeSources) {
+          document.mainContent.selectNth("h2", 1).text mustBe IndividualIncomeSource.selfEmploymentHeading
+        }
+
+        "has a paragraph" in new ViewTest(incompleteIncomeSources) {
+          document.mainContent.selectNth("p", 2).text mustBe IndividualIncomeSource.selfEmploymentPara
+        }
+
+        "has a first sole trader business card" in new ViewTest(incompleteIncomeSources) {
+          document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
+            title = "Business 1",
+            cardActions = Seq(
+              SummaryListActionValues(
+                href = IndividualIncomeSource.soleTraderChangeLinkTwo,
+                text = s"${IndividualIncomeSource.addDetails} business name (Business 1)",
+                visuallyHidden = s"business name (Business 1)"
+              ),
+              SummaryListActionValues(
+                href = IndividualIncomeSource.soleTraderRemoveLinkTwo,
+                text = s"${IndividualIncomeSource.remove} business name (Business 1)",
+                visuallyHidden = s"business name (Business 1)"
+              )
+            ),
+            rows = Seq(
+              SummaryListRowValues(
+                key = IndividualIncomeSource.soleTraderBusinessNameKey,
+                value = Some("business name"),
+                actions = Seq.empty
+              )
+            )
+          )
+        }
+
+        "has a second sole trader business card" in new ViewTest(incompleteIncomeSources) {
+          document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(2))(
+            title = "business trade",
+            cardActions = Seq(
+              SummaryListActionValues(
+                href = IndividualIncomeSource.soleTraderChangeLinkThree,
+                text = s"${IndividualIncomeSource.addDetails} (business trade)",
+                visuallyHidden = s"(business trade)"
+              ),
+              SummaryListActionValues(
+                href = IndividualIncomeSource.soleTraderRemoveLinkThree,
+                text = s"${IndividualIncomeSource.remove} (business trade)",
+                visuallyHidden = s"(business trade)"
+              )
+            ),
+            rows = Seq(
+              SummaryListRowValues(
+                key = IndividualIncomeSource.soleTraderBusinessNameKey,
+                value = Some("Business 2"),
+                actions = Seq.empty
+              )
+            )
+          )
+        }
+
+        "has a third sole trader business card" in new ViewTest(incompleteIncomeSources) {
+          document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(3))(
+            title = "Business 3",
+            cardActions = Seq(
+              SummaryListActionValues(
+                href = IndividualIncomeSource.soleTraderChangeLinkFour,
+                text = s"${IndividualIncomeSource.addDetails} (Business 3)",
+                visuallyHidden = s"(Business 3)"
+              ),
+              SummaryListActionValues(
+                href = IndividualIncomeSource.soleTraderRemoveLinkFour,
+                text = s"${IndividualIncomeSource.remove} (Business 3)",
+                visuallyHidden = s"(Business 3)"
+              )
+            ),
+            rows = Seq(
+              SummaryListRowValues(
+                key = IndividualIncomeSource.soleTraderBusinessNameKey,
+                value = Some("Business 3"),
+                actions = Seq.empty
+              )
+            )
+          )
+        }
+
+        "has an add business link" in new ViewTest(incompleteIncomeSources) {
+          val link: Element = document.mainContent.getElementById("add-self-employment").selectHead("a")
+          link.text mustBe IndividualIncomeSource.addSelfEmploymentLinkText
+          link.attr("href") mustBe IndividualIncomeSource.soleTraderLink
+        }
+
+        "have a income from properties section" which {
+
+          "has a heading" in new ViewTest(incompleteIncomeSources) {
+            document.mainContent.selectNth("h2", 5).text mustBe IndividualIncomeSource.incomeFromPropertiesHeading
+          }
+
+          "has a paragraph" in new ViewTest(incompleteIncomeSources) {
+            document.mainContent.selectNth("p", 4).text mustBe IndividualIncomeSource.incomeFromPropertiesPara
+          }
+
+          "has a UK property card" in new ViewTest(incompleteIncomeSources) {
+            document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(4))(
+              title = IndividualIncomeSource.ukPropertyCardTitle,
+              cardActions = Seq(
+                SummaryListActionValues(
+                  href = IndividualIncomeSource.ukPropertyChangeLink,
+                  text = s"${IndividualIncomeSource.addDetails} ${IndividualIncomeSource.ukPropertyChange}",
+                  visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
+                ),
+                SummaryListActionValues(
+                  href = IndividualIncomeSource.ukPropertyRemoveLink,
+                  text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.ukPropertyRemove}",
+                  visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
+                )
+              ),
+              rows = Seq(
+                SummaryListRowValues(
+                  key = IndividualIncomeSource.propertyStartDate,
+                  value = Some(""),
+                  actions = Seq.empty
+                )
+              )
+            )
+          }
+
+          "has a foreign property card" in new ViewTest(incompleteIncomeSources) {
+            document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(5))(
+              title = IndividualIncomeSource.foreignPropertyCardTitle,
+              cardActions = Seq(
+                SummaryListActionValues(
+                  href = IndividualIncomeSource.foreignPropertyChangeLink,
+                  text = s"${IndividualIncomeSource.addDetails} ${IndividualIncomeSource.foreignPropertyChange}",
+                  visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
+                ),
+                SummaryListActionValues(
+                  href = IndividualIncomeSource.foreignPropertyRemoveLink,
+                  text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.foreignPropertyRemove}",
+                  visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
+                )
+              ),
+              rows = Seq(
+                SummaryListRowValues(
+                  key = IndividualIncomeSource.propertyStartDate,
+                  value = Some(""),
+                  actions = Seq.empty
+                )
+              )
+            )
+          }
+        }
+      }
+
+      "have a form" which {
+        def form(document: Document): Element = document.mainContent.getForm
+
+        "has the correct attributes" in new ViewTest(incompleteIncomeSources) {
+          form(document).attr("method") mustBe testCall.method
+          form(document).attr("action") mustBe testCall.url
+        }
+        "has a continue button" in new ViewTest(incompleteIncomeSources) {
+          form(document).getGovukSubmitButton.text mustBe IndividualIncomeSource.continue
+        }
+        "has a save and come back later button" in new ViewTest(incompleteIncomeSources) {
+          document.mainContent.selectHead(".govuk-button--secondary").text mustBe IndividualIncomeSource.saveAndComeBackLater
+        }
+      }
+
+      "have a second paragraph" when {
+        "data has been pre-populated and not checked by the user" in new ViewTest(incompleteIncomeSources, isPrePopulated = true) {
+          document.mainContent.selectNth("p", 5).text mustBe IndividualIncomeSource.incomeSourcesPara2
+        }
+      }
+
+      "not have a second paragraph" when {
+        "data has not been pre-populated" in new ViewTest(incompleteIncomeSources, isPrePopulated = false) {
+          document.mainContent.selectOptionalNth("p", 5) mustBe None
+        }
+      }
+    }
+
+    "there are complete set of income sources added" should {
+
+      def completeIncomeSources: IncomeSources = IncomeSources(completeSelfEmployments, completeUKProperty, completeForeignProperty)
+
+      "have a heading for the page" in new ViewTest(completeIncomeSources) {
+        document.mainContent.getH1Element.text mustBe IndividualIncomeSource.heading
+      }
+
+      "have the correct lead paragraph" when {
+        "the PrePopulate Feature Switch is on" in new ViewTest(completeIncomeSources) {
+          enable(PrePopulate)
+          document.mainContent.selectNth("p", 1).text mustBe IndividualIncomeSource.incomeSourcesPara1
+        }
+        "the PrePopulate Feature Switch is off" in new ViewTest(completeIncomeSources) {
+          disable(PrePopulate)
+          document.mainContent.selectNth("p", 1).text mustBe IndividualIncomeSource.incomeSourcesLead
+        }
+      }
+
+      "have a section for sole trader income sources" which {
+
+        "has a heading" in new ViewTest(completeIncomeSources) {
+          document.mainContent.selectNth("h2", 1).text mustBe IndividualIncomeSource.selfEmploymentHeading
+        }
+
+        "has a paragraph" in new ViewTest(completeIncomeSources) {
+          document.mainContent.selectNth("p", 2).text mustBe IndividualIncomeSource.selfEmploymentPara
+        }
+
+        "has a sole trader business card" in new ViewTest(completeIncomeSources) {
+          document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
+            title = "business trade",
+            cardActions = Seq(
+              SummaryListActionValues(
+                href = IndividualIncomeSource.soleTraderChangeLinkOne,
+                text = s"${IndividualIncomeSource.check} business name (business trade)",
+                visuallyHidden = s"business name (business trade)"
+              ),
+              SummaryListActionValues(
+                href = IndividualIncomeSource.soleTraderRemoveLinkOne,
+                text = s"${IndividualIncomeSource.remove} business name (business trade)",
+                visuallyHidden = s"business name (business trade)"
+              )
+            ),
+            rows = Seq(
+              SummaryListRowValues(
+                key = IndividualIncomeSource.soleTraderBusinessNameKey,
+                value = Some("business name"),
+                actions = Seq.empty
+              )
+            )
+          )
+        }
+
+        "has an add business link" in new ViewTest(completeIncomeSources) {
+          val link: Element = document.mainContent.getElementById("add-self-employment").selectHead("a")
+          link.text mustBe IndividualIncomeSource.addSelfEmploymentLinkText
+          link.attr("href") mustBe IndividualIncomeSource.soleTraderLink
+        }
+
+        "has a income from properties section" which {
+
+          "has a heading" in new ViewTest(completeIncomeSources) {
+            document.mainContent.selectNth("h2", 3).text mustBe IndividualIncomeSource.incomeFromPropertiesHeading
+          }
+
+          "has a paragraph" in new ViewTest(completeIncomeSources) {
+            document.mainContent.selectNth("p", 4).text mustBe IndividualIncomeSource.incomeFromPropertiesPara
+          }
+
+          "has a UK property card" in new ViewTest(completeIncomeSources) {
+            document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(2))(
+              title = IndividualIncomeSource.ukPropertyCardTitle,
+              cardActions = Seq(
+                SummaryListActionValues(
+                  href = IndividualIncomeSource.ukPropertyChangeLink,
+                  text = s"${IndividualIncomeSource.check} ${IndividualIncomeSource.ukPropertyChange}",
+                  visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
+                ),
+                SummaryListActionValues(
+                  href = IndividualIncomeSource.ukPropertyRemoveLink,
+                  text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.ukPropertyRemove}",
+                  visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
+                )
+              ),
+              rows = Seq(
+                SummaryListRowValues(
+                  key = IndividualIncomeSource.propertyStartDate,
+                  value = Some("1 January 1981"),
+                  actions = Seq.empty
+                )
+              )
+            )
+          }
+        }
+
+        "has a foreign property card" in new ViewTest(completeIncomeSources) {
+          document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(3))(
+            title = IndividualIncomeSource.foreignPropertyCardTitle,
+            cardActions = Seq(
+              SummaryListActionValues(
+                href = IndividualIncomeSource.foreignPropertyChangeLink,
+                text = s"${IndividualIncomeSource.check} ${IndividualIncomeSource.foreignPropertyChange}",
+                visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
+              ),
+              SummaryListActionValues(
+                href = IndividualIncomeSource.foreignPropertyRemoveLink,
+                text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.foreignPropertyRemove}",
+                visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
+              )
+            ),
+            rows = Seq(
+              SummaryListRowValues(
+                key = IndividualIncomeSource.propertyStartDate,
+                value = Some("1 January 1982"),
+                actions = Seq.empty
+              )
+            )
+          )
+        }
+      }
+
+      "have a form" which {
+        def form(document: Document): Element = document.mainContent.getForm
+
+        "has the correct attributes" in new ViewTest(completeIncomeSources) {
+          form(document).attr("method") mustBe testCall.method
+          form(document).attr("action") mustBe testCall.url
+        }
+        "has a continue button" in new ViewTest(completeIncomeSources) {
+          form(document).getGovukSubmitButton.text mustBe IndividualIncomeSource.continue
+        }
+        "has a save and come back later button" in new ViewTest(completeIncomeSources) {
+          document.mainContent.selectHead(".govuk-button--secondary").text mustBe IndividualIncomeSource.saveAndComeBackLater
+        }
+      }
+
+      "have a second paragraph" when {
+        "data has been pre-populated" in new ViewTest(completeIncomeSources, isPrePopulated = true) {
+          document.mainContent.selectNth("p", 5).text mustBe IndividualIncomeSource.incomeSourcesPara2
+        }
+      }
+
+      "not have a second paragraph" when {
+        "data has not been pre-populated" in new ViewTest(completeIncomeSources, isPrePopulated = false) {
+          document.mainContent.selectOptionalNth("p", 5) mustBe None
+        }
+      }
+    }
+
+    "there are complete and confirmed set of income sources added" should {
+
+      def completeAndConfirmedIncomeSources: IncomeSources = IncomeSources(completeAndConfirmedSelfEmployments, completeAndConfirmedUKProperty, completeAndConfirmedForeignProperty)
+
+      "have a heading for the page" in new ViewTest(completeAndConfirmedIncomeSources) {
+        document.mainContent.getH1Element.text mustBe IndividualIncomeSource.heading
+      }
+
+      "have the correct lead paragraph" when {
+        "the PrePopulate Feature Switch is on" in new ViewTest(completeAndConfirmedIncomeSources) {
+          enable(PrePopulate)
+          document.mainContent.selectNth("p", 1).text mustBe IndividualIncomeSource.incomeSourcesPara1
+        }
+        "the PrePopulate Feature Switch is off" in new ViewTest(completeAndConfirmedIncomeSources) {
+          disable(PrePopulate)
+          document.mainContent.selectNth("p", 1).text mustBe IndividualIncomeSource.incomeSourcesLead
+        }
+      }
+
+      "have a section for sole trader income sources" which {
+
+        "has a heading" in new ViewTest(completeAndConfirmedIncomeSources) {
+          document.mainContent.selectNth("h2", 1).text mustBe IndividualIncomeSource.selfEmploymentHeading
+        }
+
+        "has a paragraph" in new ViewTest(completeAndConfirmedIncomeSources) {
+          document.mainContent.selectNth("p", 2).text mustBe IndividualIncomeSource.selfEmploymentPara
+        }
+
+        "has a sole trader business card" in new ViewTest(completeAndConfirmedIncomeSources) {
+          document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
+            title = "business trade",
+            cardActions = Seq(
+              SummaryListActionValues(
+                href = IndividualIncomeSource.soleTraderChangeLinkOne,
+                text = s"${IndividualIncomeSource.change} business name (business trade)",
+                visuallyHidden = s"business name (business trade)"
+              ),
+              SummaryListActionValues(
+                href = IndividualIncomeSource.soleTraderRemoveLinkOne,
+                text = s"${IndividualIncomeSource.remove} business name (business trade)",
+                visuallyHidden = s"business name (business trade)"
+              )
+            ),
+            rows = Seq(
+              SummaryListRowValues(
+                key = IndividualIncomeSource.soleTraderBusinessNameKey,
+                value = Some("business name"),
+                actions = Seq.empty
+              )
+            )
+          )
+        }
+
+        "has an add business link" in new ViewTest(completeAndConfirmedIncomeSources) {
+          val link: Element = document.mainContent.getElementById("add-self-employment").selectHead("a")
+          link.text mustBe IndividualIncomeSource.addSelfEmploymentLinkText
+          link.attr("href") mustBe IndividualIncomeSource.soleTraderLink
+        }
+
+        "has a income from properties section" which {
+
+          "has a heading" in new ViewTest(completeAndConfirmedIncomeSources) {
+            document.mainContent.selectNth("h2", 3).text mustBe IndividualIncomeSource.incomeFromPropertiesHeading
+          }
+
+          "has a paragraph" in new ViewTest(completeAndConfirmedIncomeSources) {
+            document.mainContent.selectNth("p", 4).text mustBe IndividualIncomeSource.incomeFromPropertiesPara
+          }
+
+          "has a UK property card" in new ViewTest(completeAndConfirmedIncomeSources) {
+            document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(2))(
+              title = IndividualIncomeSource.ukPropertyCardTitle,
+              cardActions = Seq(
+                SummaryListActionValues(
+                  href = IndividualIncomeSource.ukPropertyChangeLink,
+                  text = s"${IndividualIncomeSource.change} ${IndividualIncomeSource.ukPropertyChange}",
+                  visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
+                ),
+                SummaryListActionValues(
+                  href = IndividualIncomeSource.ukPropertyRemoveLink,
+                  text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.ukPropertyRemove}",
+                  visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
+                )
+              ),
+              rows = Seq(
+                SummaryListRowValues(
+                  key = IndividualIncomeSource.propertyStartDate,
+                  value = Some("1 January 1981"),
+                  actions = Seq.empty
+                )
+              )
+            )
+          }
+
+          "has a foreign property card" in new ViewTest(completeAndConfirmedIncomeSources) {
+            document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(3))(
+              title = IndividualIncomeSource.foreignPropertyCardTitle,
+              cardActions = Seq(
+                SummaryListActionValues(
+                  href = IndividualIncomeSource.foreignPropertyChangeLink,
+                  text = s"${IndividualIncomeSource.change} ${IndividualIncomeSource.foreignPropertyChange}",
+                  visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
+                ),
+                SummaryListActionValues(
+                  href = IndividualIncomeSource.foreignPropertyRemoveLink,
+                  text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.foreignPropertyRemove}",
+                  visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
+                )
+              ),
+              rows = Seq(
+                SummaryListRowValues(
+                  key = IndividualIncomeSource.propertyStartDate,
+                  value = Some("1 January 1982"),
+                  actions = Seq.empty
+                )
+              )
+            )
+          }
+        }
+      }
+
+      "have a form" which {
+        def form(document: Document): Element = document.mainContent.getForm
+
+        "has the correct attributes" in new ViewTest(completeAndConfirmedIncomeSources) {
+          form(document).attr("method") mustBe testCall.method
+          form(document).attr("action") mustBe testCall.url
+        }
+        "has a continue button" in new ViewTest(completeAndConfirmedIncomeSources) {
+          form(document).getGovukSubmitButton.text mustBe IndividualIncomeSource.continue
+        }
+        "has a save and come back later button" in new ViewTest(completeAndConfirmedIncomeSources) {
+          form(document).selectHead(".govuk-button--secondary").text mustBe IndividualIncomeSource.saveAndComeBackLater
+        }
+      }
+
+      "not have a second paragraph" when {
+        "data has been pre-populated" in new ViewTest(completeAndConfirmedIncomeSources, isPrePopulated = true) {
+          document.mainContent.selectOptionally("p:nth-of-type(5)") mustBe None
+        }
+      }
+    }
+
   }
 
 }
