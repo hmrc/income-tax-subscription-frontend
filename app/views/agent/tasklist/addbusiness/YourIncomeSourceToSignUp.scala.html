@@ -92,6 +92,16 @@
   }
 }
 
+@incomeSourceChangeLabel(isComplete: Boolean, isConfirmed: Boolean) = @{
+  if(isConfirmed) {
+    Text(messages("base.change"))
+  } else if (isComplete) {
+    Text(messages("base.check"))
+  } else {
+    Text(messages("base.add-details"))
+  }
+}
+
 @selfEmploymentSection = {
   <h2 class="govuk-heading-m">@messages("agent.your-income-source.self-employed")</h2>
 
@@ -111,7 +121,7 @@
         items = Seq(
           ActionItem(
             href = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${business.id}&isEditMode=true",
-            content = Text(messages("base.change")),
+            content = incomeSourceChangeLabel(business.isComplete, business.confirmed),
             visuallyHiddenText = business.businessName.map(_.businessName)
           ),
           ActionItem(
@@ -158,7 +168,7 @@
           items = Seq(
             ActionItem(
               href = controllers.agent.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url,
-              content = Text(messages("base.change"))
+              content = incomeSourceChangeLabel(ukProperty.isComplete, ukProperty.confirmed),
             ),
             ActionItem(
               href = controllers.agent.tasklist.ukproperty.routes.RemoveUkPropertyController.show.url,
@@ -202,7 +212,7 @@
           items = Seq(
             ActionItem(
               href = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url,
-              content = Text(messages("base.change"))
+              content = incomeSourceChangeLabel(foreignProperty.isComplete, foreignProperty.confirmed),
             ),
             ActionItem(
               href = controllers.agent.tasklist.overseasproperty.routes.RemoveOverseasPropertyController.show.url,
