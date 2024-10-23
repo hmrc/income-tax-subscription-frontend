@@ -379,45 +379,41 @@ sign-up-confirmation.heading                                         = Sign up c
 sign-up-confirmation.heading.panel.current                           = is now signed up for Making Tax Digital for Income Tax for the current tax year ({0})
 sign-up-confirmation.heading.panel.next                              = is now signed up for Making Tax Digital for Income Tax for the next tax year ({0})
 
-sign-up-confirmation.print-confirmation                              = Print your confirmation
+sign-up-confirmation.print-confirmation                              = Print this page
 
-sign-up-confirmation.what-you-must-do.heading                        = What you must do
+sign-up-confirmation.what-you-must-do.heading                        = What you must do now
 
-sign-up-confirmation.before-you-start.heading                        = Before you start
-sign-up-confirmation.before-you-start.para1                          = To start using Making Tax Digital for Income Tax you must get compatible software. You should check if the software meets your business needs.
-sign-up-confirmation.before-you-start.para2                          = For example, if you want to update your income and expenses by calendar quarterly period dates you must choose software that supports this.
-sign-up-confirmation.before-you-start.para3                          = This must be done before you make your first update.
-sign-up-confirmation.before-you-start.find-software.link-text        = Find compatible software
+sign-up-confirmation.read-how-to                                     = Read how to {0}
+sign-up-confirmation.read-how-to.link-text                           = use Making Tax Digital for Income Tax
+sign-up-confirmation.read-how-to.link-href                           = https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax
 
-sign-up-confirmation.when-you-start.heading                          = When you start
+sign-up-confirmation.what-you-must-do.yes.this.year                  = You must use your software that works with Making Tax Digital for Income Tax.
+sign-up-confirmation.what-you-must-do.no.this.year                   = You must find and use {0}
+sign-up-confirmation.what-you-must-do.no.this.year.link.text         = software that works with Making Tax Digital for Income Tax
+sign-up-confirmation-what-you-must-do.link-href                      = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax
 
-sign-up-confirmation.quarterly-updates.heading                       = Send quarterly updates
-sign-up-confirmation.quarterly-updates.para-one                      = You must send quarterly updates. The quarterly period dates are:
-sign-up-confirmation.quarterly-updates.quarter-types.item-1          = calendar quarters (for example, 1 April to 30 June)
-sign-up-confirmation.quarterly-updates.quarter-types.item-2          = standard quarters (starts on the 6th date of each month)
-sign-up-confirmation.quarterly-updates.para-two                      = The deadline for your updates stays the same.
-sign-up-confirmation.quarterly-updates.table.caption                 = Quarterly updates by the deadline
-sign-up-confirmation.quarterly-updates.link-text                     = Learn more about quarterly updates
-sign-up-confirmation.quarterly-updates.warning.para                  = You must make updates for any quarters you’ve missed.
+sign-up-confirmation.what-you-must-do.yes.next.year                  = From 6 April {0}, you must use your software that works with Making Tax Digital for Income Tax.
+sign-up-confirmation.what-you-must-do.no.next.year                   = From 6 April {0}, you must find and use {1}
+sign-up-confirmation.what-you-must-do.no.next.year.link.text         = software that works with Making Tax Digital for Income Tax
+sign-up-confirmation.what-you-must-do.no.next.year.link-href         = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax
 
-sign-up-confirmation.final-declaration.heading                       = Submit a final declaration
-sign-up-confirmation.final-declaration.para1                         = Other income sources should be declared, such as income from employment, dividends or savings. You need to report this income using either your:
-sign-up-confirmation.final-declaration.bullet1                       = compatible software (if it has the functionality)
-sign-up-confirmation.final-declaration.bullet2                       = HMRC online services account
-sign-up-confirmation.final-declaration.online-services.link-text     = You can find more information in your HMRC online services account.
+sign-up-confirmation.what-you-must-do.para1                          = Your chosen software will tell you what else you need to do, including:
+sign-up-confirmation.what-you-must-do.bullet1                        = how to authorise and connect the software to the Government Gateway user ID you use for your Self Assessment
+sign-up-confirmation.what-you-must-do.bullet2                        = how to keep digital records
+sign-up-confirmation.what-you-must-do.bullet3                        = when and how to send quarterly updates
+sign-up-confirmation.what-you-must-do.no.this.year.bullet4           = if you need to send any missed or backdated updates for the current tax year - and how to send them
+sign-up-confirmation.what-you-must-do.bullet5                        = when and how to make your final declaration after the end of the tax year
+sign-up-confirmation.what-you-must-do.para2                          = And you will need to pay the tax you owe.
+
+sign-up-confirmation.other-income-sources.subheading                 = Other income sources
+sign-up-confirmation.other-income-sources.para1                      = Make sure you declare your other income sources, such as income from employment, dividends or savings. You need to report these using either:
+sign-up-confirmation.other-income-sources.bullet1                    = your compatible software (if it allows you to do this)
+sign-up-confirmation.other-income-sources.bullet2.link               = HMRC online services
+sign-up-confirmation.other-income-sources.bullet2.link-href          = https://www.gov.uk/log-in-register-hmrc-online-services
 
 sign-up-confirmation.report-previous-tax-year.heading                = Report previous tax year
+sign-up-confirmation.report-previous-tax-year.plus.one.heading       = Report current and previous tax years
 sign-up-confirmation.report-previous-tax-year.para                   = You must submit your Self Assessment tax return for the year ended 5 April {0} using your HMRC online services account as normal.
-
-sign-up-confirmation.pay-your-tax.heading                            = Pay your tax
-sign-up-confirmation.pay-your-tax.para1                              = There are many ways to pay your tax, including:
-sign-up-confirmation.pay-your-tax.bullet1                            = online banking
-sign-up-confirmation.pay-your-tax.bullet2                            = telephone banking
-sign-up-confirmation.pay-your-tax.bullet3                            = debit card
-sign-up-confirmation.pay-your-tax.bullet4                            = corporate credit card
-sign-up-confirmation.pay-your-tax.bullet5                            = direct debit
-sign-up-confirmation.pay-your-tax.para2                              = GOV.UK has more information on {0}.
-sign-up-confirmation.pay-your-tax.link-text                          = how to pay your tax bill
 
 sign-up-confirmation.preference-set.online.para-one                  = You have chosen to get your tax letters online.
 sign-up-confirmation.preference-set.online.para-two                  = You must verify your email address to confirm this. Select the link we sent by email to do this, if you have not already done so.

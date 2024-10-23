@@ -20,7 +20,7 @@ import auth.individual.{IncomeTaxSAUser, PostSubmissionController}
 import config.AppConfig
 import connectors.individual.PreferencesFrontendConnector
 import controllers.utils.ReferenceRetrieval
-import models.Next
+import models.{Next, No, Yes}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services._
 import views.html.individual.confirmation.SignUpConfirmation
@@ -34,7 +34,8 @@ class ConfirmationController @Inject()(signUpConfirmation: SignUpConfirmation,
                                        ninoService: NinoService,
                                        referenceRetrieval: ReferenceRetrieval,
                                        preferencesFrontendConnector: PreferencesFrontendConnector,
-                                       subscriptionDetailsService: SubscriptionDetailsService)
+                                       subscriptionDetailsService: SubscriptionDetailsService,
+                                       sessionDataService: SessionDataService)
                                       (val auditingService: AuditingService,
                                        val authService: AuthService)
                                       (implicit val ec: ExecutionContext,
@@ -49,15 +50,26 @@ class ConfirmationController @Inject()(signUpConfirmation: SignUpConfirmation,
         nino <- ninoService.getNino
         selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
         mandationStatus <- mandationStatusService.getMandationStatus
+        softwareStatus <- sessionDataService.fetchSoftwareStatus
       } yield {
         val taxYearSelectionIsNext = selectedTaxYear.map(_.accountingYear).contains(Next)
+
+        val usingSoftwareStatus: Boolean = softwareStatus match {
+          case Right(Some(Yes)) => true
+          case Right(Some(No)) => false
+          case Right(None) => false
+          case Left(error) =>
+            logger.error(s"[ConfirmationController][show] - failure retrieving software status - $error")
+            false
+        }
 
         Ok(signUpConfirmation(
           mandatedCurrentYear = mandationStatus.currentYearStatus.isMandated,
           taxYearSelectionIsNext = taxYearSelectionIsNext,
           individualUserNameMaybe = IncomeTaxSAUser.fullName,
           individualUserNino = nino,
-          preference = preference
+          preference = preference,
+          usingSoftwareStatus = usingSoftwareStatus
         ))
       }
   }
