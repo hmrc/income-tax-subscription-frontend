@@ -17,7 +17,7 @@
 package controllers.individual
 
 import connectors.individual.PreferencesFrontendConnector
-import models.EligibilityStatus
+import models.{EligibilityStatus, Yes}
 import models.status.MandationStatus.{Mandated, Voluntary}
 import org.mockito.ArgumentMatchers.{any, eq => matches}
 import org.mockito.Mockito.{reset, when}
@@ -39,7 +39,8 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
   with MockUserMatchingService
   with MockNinoService
   with MockReferenceRetrieval
-  with MockAuditingService {
+  with MockAuditingService
+  with MockSessionDataService {
 
   val mockSignUpConfirmation: SignUpConfirmation = mock[SignUpConfirmation]
   val mockPreferencesFrontendConnector: PreferencesFrontendConnector = mock[PreferencesFrontendConnector]
@@ -56,7 +57,8 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
     mockNinoService,
     mockReferenceRetrieval,
     mockPreferencesFrontendConnector,
-    mockSubscriptionDetailsService
+    mockSubscriptionDetailsService,
+    mockSessionDataService
   )(
     mockAuditingService,
     mockAuthService
@@ -97,9 +99,10 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
               mockGetNino(testNino)
               mockAuthEnrolled()
               mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
+              mockFetchSoftwareStatus(Right(Some(Yes)))
 
               when(mockPreferencesFrontendConnector.getOptedInStatus(any())) thenReturn Future.successful(None)
-              when(mockSignUpConfirmation(matches(true), matches(false), any(), matches(testNino), matches(None))(any(), any(), any()))
+              when(mockSignUpConfirmation(matches(true), matches(false), any(), matches(testNino), matches(None), matches(true))(any(), any(), any()))
                 .thenReturn(HtmlFormat.empty)
 
               val result: Future[Result] = TestConfirmationController.show(subscriptionRequest)
@@ -113,8 +116,9 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
               mockGetNino(testNino)
               mockAuthEnrolled()
               mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
+              mockFetchSoftwareStatus(Right(Some(Yes)))
               when(mockPreferencesFrontendConnector.getOptedInStatus(any())) thenReturn Future.successful(Some(false))
-              when(mockSignUpConfirmation(matches(true), matches(false), any(), matches(testNino), matches(Some(false)))(any(), any(), any()))
+              when(mockSignUpConfirmation(matches(true), matches(false), any(), matches(testNino), matches(Some(false)), matches(true))(any(), any(), any()))
                 .thenReturn(HtmlFormat.empty)
 
               val result: Future[Result] = TestConfirmationController.show(subscriptionRequest)
@@ -128,8 +132,9 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
               mockGetNino(testNino)
               mockAuthEnrolled()
               mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
+              mockFetchSoftwareStatus(Right(Some(Yes)))
               when(mockPreferencesFrontendConnector.getOptedInStatus(any())) thenReturn Future.successful(Some(true))
-              when(mockSignUpConfirmation(matches(true), matches(false), any(), matches(testNino), matches(Some(true)))(any(), any(), any()))
+              when(mockSignUpConfirmation(matches(true), matches(false), any(), matches(testNino), matches(Some(true)), matches(true))(any(), any(), any()))
                 .thenReturn(HtmlFormat.empty)
 
               val result: Future[Result] = TestConfirmationController.show(subscriptionRequest)
@@ -145,8 +150,9 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
               mockGetNino(testNino)
               mockAuthEnrolled()
               mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
+              mockFetchSoftwareStatus(Right(None))
               when(mockPreferencesFrontendConnector.getOptedInStatus(any())) thenReturn Future.successful(None)
-              when(mockSignUpConfirmation(matches(false), matches(false), any(), matches(testNino), matches(None))(any(), any(), any()))
+              when(mockSignUpConfirmation(matches(false), matches(false), any(), matches(testNino), matches(None), matches(false))(any(), any(), any()))
                 .thenReturn(HtmlFormat.empty)
 
               val result: Future[Result] = TestConfirmationController.show(subscriptionRequest)
@@ -160,8 +166,9 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
               mockGetNino(testNino)
               mockAuthEnrolled()
               mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
+              mockFetchSoftwareStatus(Right(None))
               when(mockPreferencesFrontendConnector.getOptedInStatus(any())) thenReturn Future.successful(Some(false))
-              when(mockSignUpConfirmation(matches(false), matches(false), any(), matches(testNino), matches(Some(false)))(any(), any(), any()))
+              when(mockSignUpConfirmation(matches(false), matches(false), any(), matches(testNino), matches(Some(false)), matches(false))(any(), any(), any()))
                 .thenReturn(HtmlFormat.empty)
 
               val result: Future[Result] = TestConfirmationController.show(subscriptionRequest)
@@ -175,8 +182,9 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
               mockGetNino(testNino)
               mockAuthEnrolled()
               mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
+              mockFetchSoftwareStatus(Right(None))
               when(mockPreferencesFrontendConnector.getOptedInStatus(any())) thenReturn Future.successful(Some(true))
-              when(mockSignUpConfirmation(matches(false), matches(false), any(), matches(testNino), matches(Some(true)))(any(), any(), any()))
+              when(mockSignUpConfirmation(matches(false), matches(false), any(), matches(testNino), matches(Some(true)), matches(false))(any(), any(), any()))
                 .thenReturn(HtmlFormat.empty)
 
               val result: Future[Result] = TestConfirmationController.show(subscriptionRequest)
@@ -193,8 +201,9 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
             mockGetNino(testNino)
             mockAuthEnrolled()
             mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
+            mockFetchSoftwareStatus(Right(Some(Yes)))
             when(mockPreferencesFrontendConnector.getOptedInStatus(any())) thenReturn Future.successful(None)
-            when(mockSignUpConfirmation(matches(false), matches(true), any(), matches(testNino), matches(None))(any(), any(), any()))
+            when(mockSignUpConfirmation(matches(false), matches(true), any(), matches(testNino), matches(None), matches(true))(any(), any(), any()))
               .thenReturn(HtmlFormat.empty)
 
             val result: Future[Result] = TestConfirmationController.show(subscriptionRequest)
@@ -208,8 +217,9 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
             mockGetNino(testNino)
             mockAuthEnrolled()
             mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
+            mockFetchSoftwareStatus(Right(Some(Yes)))
             when(mockPreferencesFrontendConnector.getOptedInStatus(any())) thenReturn Future.successful(Some(false))
-            when(mockSignUpConfirmation(matches(false), matches(true), any(), matches(testNino), matches(Some(false)))(any(), any(), any()))
+            when(mockSignUpConfirmation(matches(false), matches(true), any(), matches(testNino), matches(Some(false)), matches(true))(any(), any(), any()))
               .thenReturn(HtmlFormat.empty)
 
             val result: Future[Result] = TestConfirmationController.show(subscriptionRequest)
@@ -223,8 +233,9 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
             mockGetNino(testNino)
             mockAuthEnrolled()
             mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
+            mockFetchSoftwareStatus(Right(Some(Yes)))
             when(mockPreferencesFrontendConnector.getOptedInStatus(any())) thenReturn Future.successful(Some(true))
-            when(mockSignUpConfirmation(matches(false), matches(true), any(), matches(testNino), matches(Some(true)))(any(), any(), any()))
+            when(mockSignUpConfirmation(matches(false), matches(true), any(), matches(testNino), matches(Some(true)), matches(true))(any(), any(), any()))
               .thenReturn(HtmlFormat.empty)
 
             val result: Future[Result] = TestConfirmationController.show(subscriptionRequest)
@@ -236,6 +247,88 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
       }
     }
   }
+
+  "show" when {
+    "the user is signed up for a tax year" must {
+      "handle software status for the current tax year" when {
+        "the user has software" in {
+          mockGetMandationService(Voluntary, Voluntary)
+          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+          mockGetNino(testNino)
+          mockAuthEnrolled()
+          mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
+          mockFetchSoftwareStatus(Right(Some(Yes)))
+
+          when(mockPreferencesFrontendConnector.getOptedInStatus(any())) thenReturn Future.successful(None)
+          when(mockSignUpConfirmation(matches(false), matches(false), any(), matches(testNino), matches(None), matches(true))(any(), any(), any()))
+            .thenReturn(HtmlFormat.empty)
+
+          val result: Future[Result] = TestConfirmationController.show(subscriptionRequest)
+
+          status(result) mustBe OK
+          contentType(result) mustBe Some(HTML)
+        }
+
+        "the user has no software" in {
+          mockGetMandationService(Voluntary, Voluntary)
+          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+          mockGetNino(testNino)
+          mockAuthEnrolled()
+          mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
+          mockFetchSoftwareStatus(Right(None))
+
+          when(mockPreferencesFrontendConnector.getOptedInStatus(any())) thenReturn Future.successful(None)
+          when(mockSignUpConfirmation(matches(false), matches(false), any(), matches(testNino), matches(None), matches(false))(any(), any(), any()))
+            .thenReturn(HtmlFormat.empty)
+
+          val result: Future[Result] = TestConfirmationController.show(subscriptionRequest)
+
+          status(result) mustBe OK
+          contentType(result) mustBe Some(HTML)
+        }
+      }
+
+      "handle software status for the next tax year" when {
+
+        "the user has software" in {
+          mockGetMandationService(Voluntary, Voluntary)
+          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+          mockGetNino(testNino)
+          mockAuthEnrolled()
+          mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
+          mockFetchSoftwareStatus(Right(Some(Yes)))
+
+          when(mockPreferencesFrontendConnector.getOptedInStatus(any())) thenReturn Future.successful(None)
+          when(mockSignUpConfirmation(matches(false), matches(true), any(), matches(testNino), matches(None), matches(true))(any(), any(), any()))
+            .thenReturn(HtmlFormat.empty)
+
+          val result: Future[Result] = TestConfirmationController.show(subscriptionRequest)
+
+          status(result) mustBe OK
+          contentType(result) mustBe Some(HTML)
+        }
+
+        "the user has no software" in {
+          mockGetMandationService(Voluntary, Voluntary)
+          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+          mockGetNino(testNino)
+          mockAuthEnrolled()
+          mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
+          mockFetchSoftwareStatus(Right(None))
+
+          when(mockPreferencesFrontendConnector.getOptedInStatus(any())) thenReturn Future.successful(None)
+          when(mockSignUpConfirmation(matches(false), matches(true), any(), matches(testNino), matches(None), matches(false))(any(), any(), any()))
+            .thenReturn(HtmlFormat.empty)
+
+          val result: Future[Result] = TestConfirmationController.show(subscriptionRequest)
+
+          status(result) mustBe OK
+          contentType(result) mustBe Some(HTML)
+        }
+      }
+    }
+  }
+
 
   "submit" should {
     "redirect the user to the sign out controller" in {
