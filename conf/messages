@@ -703,6 +703,7 @@ agent.client-details.summary.dob                                = Date of birth
 ## agent your income sources to sign up page
 agent.your-income-source.heading                                    = Your client’s income sources
 agent.your-income-source.lead                                       = Add all of these sources that your client gets income from.
+agent.your-income-source.lead-prepop                                = Add all of these sources that your client gets income from. Check, change or add details to any that were started previously. Remove any that ceased before 6 April {0}.
 agent.your-income-source.caption                                    = {0} | {1}
 agent.your-income-source.self-employed                              = Sole trader businesses
 agent.your-income-source.self-employed.label-full                   = {0} - {1}
@@ -712,12 +713,14 @@ agent.your-income-source.self-employed.business-name-para           = Business n
 agent.your-income-source.self-employed.label-none                   = Business {0}
 agent.your-income-source.self-employed.add-link                     = Add sole trader income source
 agent.your-income-source.self-employed.add-another-link             = Add another sole trader income source
+agent.your-income-source.income-from-property                       = Income from property
 agent.your-income-source.uk-property                                = UK property
 agent.your-income-source.property.start-date-para                   = Start date
 agent.your-income-source.property.start-date                        = {0}
-agent.your-income-source.uk-property.add-link                       = Add UK property income source
 agent.your-income-source.foreign-property                           = Foreign property
-agent.your-income-source.foreign-property.add-link                  = Add foreign property income source
+agent.your-income-source.uk-property.add-link                       = Add UK property
+agent.your-income-source.foreign-property.add-link                  = Add foreign property
+agent.your-income-source.before-you-continue                        = Before you continue, make sure you have checked any income sources we added for you.
 
 # Property income page
 agent.property.income.title                                     = How much was your income from property this year?

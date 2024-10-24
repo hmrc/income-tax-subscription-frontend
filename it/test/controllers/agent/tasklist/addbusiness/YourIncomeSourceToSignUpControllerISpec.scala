@@ -24,7 +24,7 @@ import helpers.IntegrationTestModels.{testBusiness, testBusinesses, testFullOver
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import play.api.http.Status._
-import play.api.libs.json.{JsString, Json}
+import play.api.libs.json.{JsBoolean, JsString, Json}
 import utilities.SubscriptionDataKeys
 
 class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
@@ -39,6 +39,7 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.PrePopFlag, OK, JsBoolean(true))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
         When(s"GET ${routes.YourIncomeSourceToSignUpController.show.url} is called")
@@ -56,6 +57,7 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.PrePopFlag, NO_CONTENT)
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
         When(s"GET ${routes.YourIncomeSourceToSignUpController.show.url} is called")
