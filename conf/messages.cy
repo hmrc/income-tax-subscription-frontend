@@ -160,18 +160,14 @@ what-you-need-to-do.next-year-mandated.bullet-2                  = Defnyddio’c
 what-you-need-to-do.next-year-mandated.bullet-3                  = Anfon datganiad diwedd cyfnod a chyflwyno’ch datganiad terfynol erbyn {0}.
 
 # What tax year to sign up
-business.what-year-to-sign-up.heading                           = Dewiswch pryd yr hoffech ddechrau defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-business.what-year-to-sign-up.para                              = Gallwch ddechrau anfon diweddariadau chwarterol yn ystod y flwyddyn dreth gyfredol (6 Ebrill {0} i 5 Ebrill {1}) neu’r flwyddyn dreth nesaf (6 Ebrill {1} i 5 Ebrill {2}).
-business.what-year-to-sign-up.warning-text                      = Ni fyddwch yn cael eich cosbi os byddwch yn dechrau anfon diweddariadau hanner ffordd drwy’r flwyddyn dreth. Fodd bynnag, bydd yn rhaid i chi wneud diweddariadau ar gyfer y chwarteri yr ydych wedi eu methu.
-business.what-year-to-sign-up.table-caption                     = Cyflwynwch ddiweddariadau chwarterol erbyn y dyddiad cau
-business.what-year-to-sign-up.option-1                          = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
-business.what-year-to-sign-up.option-2                          = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
-business.what-year-to-sign-up.conditional.1.line-1              = Mae angen i chi anfon diweddariad cyflwyno chwarterol ar gyfer:
-business.what-year-to-sign-up.conditional.1.line-2              = Anfonwch ddatganiad terfynol erbyn 31 Ionawr {0}.
-business.what-year-to-sign-up.conditional.2.line-1              = Mae angen i chi anfon diweddariad cyflwyno chwarterol ar gyfer:
-business.what-year-to-sign-up.conditional.2.line-2              = Anfonwch ddatganiad terfynol erbyn 31 Ionawr {0} a llenwch Ffurflen Dreth Hunanasesiad ar gyfer y flwyddyn dreth bresennol yn unol â’r arfer.
-business.what-year-to-sign-up.choose-calendar-quarter-1         = Gallwch ddewis anfon diweddariadau fesul chwarter calendr yn lle’r uchod. Er enghraifft, 1 Ebrill i 30 Mehefin yn lle 6 Ebrill i 5 Gorffennaf.
-business.what-year-to-sign-up.choose-calendar-quarter-2         = Mae’n rhaid i chi wneud hyn yn eich meddalwedd sy’n cydweddu cyn gwneud eich diweddariad cyntaf. Bydd y dyddiadau cau yn aros yr un peth.
+business.what-year-to-sign-up.heading                           = Pryd yr hoffech ddechrau defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm?
+business.what-year-to-sign-up.para                              = Gallwch gofrestru yn ystod y flwyddyn dreth bresennol (o 6 Ebrill {0}), neu o’r flwyddyn dreth nesaf ymlaen (o 6 Ebrill {1}).
+business.what-year-to-sign-up.para2                             = Dysgwch ragor am {0}.
+business.what-year-to-sign-up.para2.link-text                   = sut a phryd i anfon diweddariadau chwarterol
+business.what-year-to-sign-up.para2.link-href                   = https://www.gov.uk/guidance/defnyddio-r-cynllun-troi-treth-yn-ddigidol-ar-gyfer-treth-incwm/anfon-diweddariadau-chwarterol
+business.what-year-to-sign-up.option-1                          = Blwyddyn dreth bresennol
+business.what-year-to-sign-up.option-1.hint                     = Bydd angen i chi ddefnyddio’ch meddalwedd i anfon unrhyw ddiweddariadau chwarterol a gollwyd ar gyfer y flwyddyn hyd yma
+business.what-year-to-sign-up.option-2                          = Blwyddyn dreth nesaf
 
 # Property Accounting Method Page
 property.accounting-method.title                                = Pa ddull cyfrifyddu a ydych yn ei ddefnyddio ar gyfer eich busnes eiddo yn y DU?
@@ -740,6 +736,7 @@ agent.business.what-year-to-sign-up.option-next-hint          = Bydd yn rhaid i 
 agent.business.what-year-to-sign-up.table.title               = Dyddiadau cau ar gyfer diweddariadau chwarterol
 agent.business.what-year-to-sign-up.table.details.p1          = Gallwch ddewis anfon diweddariadau eich cleient yn ôl dyddiadau ar gyfer cyfnodau chwarterol calendr. Mae’n rhaid dewis yr opsiwn hwn yn y feddalwedd sy’n cydweddu cyn gwneud y diweddariad cyntaf.
 agent.business.what-year-to-sign-up.table.details.p2          = Mae’r dyddiad cau ar gyfer y ddau gyfnod chwarterol yr un peth.
+business.what-year-to-sign-up.table-caption                   = Cyflwynwch ddiweddariadau chwarterol erbyn y dyddiad cau
 
 # Agent Property Accounting Method Page
 agent.property.accounting-method.heading                        = Pa ddull cyfrifo y mae’ch cleient yn ei ddefnyddio ar gyfer ei fusnes eiddo yn y DU?

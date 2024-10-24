@@ -61,95 +61,17 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
     }
 
     "have a body" which {
-      "has paragraph" in {
-        document().mainContent.selectHead("p").text mustBe WhatYearToSignUp.paragraph
-
-      }
-      "has a warning text" in {
-        document().mainContent.selectHead(".govuk-warning-text").selectHead("strong").text mustBe WhatYearToSignUp.warningText
-      }
-    }
-
-
-    "has a caption for the table" in {
-      document()
-        .selectHead(".govuk-table")
-        .selectHead(".govuk-table__caption").text() mustBe WhatYearToSignUp.returnTableCaption
-    }
-
-    "have a return quarterly example table filing and deadline dates" which {
-      val tableRows = document().select(".govuk-table__row")
-
-      "has the filing and deadline heading" in {
-        val tableRows =
-          document()
-            .select(".govuk-table__row")
-
-        tableRows.get(0).select(".govuk-table__header").get(0).text() mustBe WhatYearToSignUp.updatesHeader
-        tableRows.get(0).select(".govuk-table__header").get(1).text() mustBe WhatYearToSignUp.deadlineHeader
+      "has a first paragraph" in {
+        document().mainContent.select("p").get(0).text mustBe WhatYearToSignUp.paragraph
       }
 
-      "has the filing and deadline dates 1" in {
-        val tableCellsHeader =
-          tableRows
-            .get(1)
-            .select(".govuk-table__header")
-
-        val tableCells =
-          tableRows
-            .get(1)
-            .select(".govuk-table__cell")
-
-        tableCellsHeader.get(0).text() mustBe WhatYearToSignUp.filingDateOne
-        tableCells.get(0).text() mustBe WhatYearToSignUp.deadlineDateOne
-      }
-
-      "has the filing and deadline dates 2" in {
-        val tableCellsHeader =
-          tableRows
-            .get(2)
-            .select(".govuk-table__header")
-
-        val tableCells =
-          tableRows
-            .get(2)
-            .select(".govuk-table__cell")
-
-        tableCellsHeader.get(0).text() mustBe WhatYearToSignUp.filingDateTwo
-        tableCells.get(0).text() mustBe WhatYearToSignUp.deadlineDateTwo
-      }
-
-      "has the filing and deadline dates 3" in {
-        val tableCellsHeader =
-          tableRows
-            .get(3)
-            .select(".govuk-table__header")
-
-        val tableCells =
-          tableRows
-            .get(3)
-            .select(".govuk-table__cell")
-
-        tableCellsHeader.get(0).text() mustBe WhatYearToSignUp.filingDateThree
-        tableCells.get(0).text() mustBe WhatYearToSignUp.deadlineDateThree
-      }
-
-      "has the filing and deadline dates 4" in {
-        val tableCellsHeader =
-          tableRows
-            .get(4)
-            .select(".govuk-table__header")
-
-        val tableCells =
-          tableRows
-            .get(4)
-            .select(".govuk-table__cell")
-
-        tableCellsHeader.get(0).text() mustBe WhatYearToSignUp.filingDateFour
-        tableCells.get(0).text() mustBe WhatYearToSignUp.deadlineDateFour
+      "has a second paragraph with a link" in {
+        document().mainContent.select("p").get(1).text mustBe WhatYearToSignUp.paragraphTwo
+        val link = document().mainContent.select(".govuk-link").get(0)
+        link.text mustBe WhatYearToSignUp.LinkText
+        link.attr("href") mustBe "https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/send-quarterly-updates"
       }
     }
-
 
     "have a form" which {
       "has correct attributes" in {
@@ -168,18 +90,13 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
           errorMessage = None,
           radioContents = Seq(
             RadioItem(
-              content = Text(Seq(
-                WhatYearToSignUp.currentYearOption((taxYearEnd - 1).toString, taxYearEnd.toString)
-              ).mkString(" ")),
+              content = Text(WhatYearToSignUp.currentYearOption),
               value = Some(Current.toString),
-              hint = Some(Hint(content = Text(WhatYearToSignUp.currentYearOptionHint))),
+              hint = Some(Hint(content = Text(WhatYearToSignUp.currentYearOptionHint)))
             ),
             RadioItem(
-              content = Text(Seq(
-                WhatYearToSignUp.nextYearOption(taxYearEnd.toString, (taxYearEnd + 1).toString)
-              ).mkString(" ")),
-              value = Some(Next.toString),
-              hint = Some(Hint(content = Text(WhatYearToSignUp.nextYearOptionHint))),
+              content = Text(WhatYearToSignUp.nextYearOption),
+              value = Some(Next.toString)
             )
           )
         )
@@ -210,22 +127,13 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
     Jsoup.parse(page(editMode = editMode, hasBackLink = hasBackLink, hasError).body)
 
   object WhatYearToSignUp {
-    val heading = "Choose when you want to start using Making Tax Digital for Income Tax"
-    val returnTableCaption = "Submit quarterly updates by the deadline"
-    val updatesHeader = "Quarterly update"
-    val deadlineHeader = "Deadline"
-    val paragraph = s"You can start sending quarterly updates during the current tax year (6 April ${taxYearPrevious} to 5 April ${taxYearEnd}) or the next tax year (6 April ${taxYearEnd} to 5 April ${taxYearNext})."
-    val warningText = "Warning You will not be penalised if you start sending updates mid-way through the tax year. However, you will need to make updates for the quarters you’ve missed."
-
-    val currentYearOptionHint = s"Send a final declaration by the 31 January ${(taxYearEnd + 1).toString}."
-
-    val nextYearOptionHint: String =
-      s"Send a final declaration by 31 January ${(taxYearEnd + 2).toString} and " +
-        "complete a Self Assessment return for the current tax year as normal."
-
-    def currentYearOption(fromYear: String, toYear: String): String = s"Current tax year (6 April $fromYear to 5 April $toYear)"
-
-    def nextYearOption(fromYear: String, toYear: String): String = s"Next tax year (6 April $fromYear to 5 April $toYear)"
+    val heading = "When do you want to start using Making Tax Digital for Income Tax?"
+    val paragraph = s"You can sign up during the current tax year (from 6 April ${taxYearPrevious}) or from next tax year (from 6 April ${taxYearEnd})."
+    val paragraphTwo = "Find out more about how and when to send quarterly updates (opens in new tab)."
+    val LinkText = "how and when to send quarterly updates (opens in new tab)"
+    val currentYearOptionHint = "You’ll need to use your software to send any missed quarterly updates for the year so far"
+    val currentYearOption = "Current tax year"
+    val nextYearOption = "Next tax year"
 
     def filingDateOne: String = s"6 April to 5 July"
 

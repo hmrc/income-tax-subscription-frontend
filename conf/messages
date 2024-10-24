@@ -161,18 +161,14 @@ what-you-need-to-do.next-year-mandated.bullet-2                 = Use your compa
 what-you-need-to-do.next-year-mandated.bullet-3                 = Send an end of period statement and submit your final declaration by {0}.
 
 # What tax year to sign up
-business.what-year-to-sign-up.heading                           = Choose when you want to start using Making Tax Digital for Income Tax
-business.what-year-to-sign-up.para                              = You can start sending quarterly updates during the current tax year (6 April {0} to 5 April {1}) or the next tax year (6 April {1} to 5 April {2}).
-business.what-year-to-sign-up.warning-text                      = You will not be penalised if you start sending updates mid-way through the tax year. However, you will need to make updates for the quarters you’ve missed.
-business.what-year-to-sign-up.table-caption                     = Submit quarterly updates by the deadline
-business.what-year-to-sign-up.option-1                          = Current tax year (6 April {0} to 5 April {1})
-business.what-year-to-sign-up.option-2                          = Next tax year (6 April {0} to 5 April {1})
-business.what-year-to-sign-up.conditional.1.line-1              = You need to send a quarterly filing update for:
-business.what-year-to-sign-up.conditional.1.line-2              = Send a final declaration by the 31 January {0}.
-business.what-year-to-sign-up.conditional.2.line-1              = You need to send a quarterly filing update for:
-business.what-year-to-sign-up.conditional.2.line-2              = Send a final declaration by 31 January {0} and complete a Self Assessment return for the current tax year as normal.
-business.what-year-to-sign-up.choose-calendar-quarter-1         = You can choose to send updates by calendar quarters instead. For example, 1 April to 30 June instead of 6 April to 5 July.
-business.what-year-to-sign-up.choose-calendar-quarter-2         = This must be done in your compatible software before you make your first update. The deadlines will remain the same.
+business.what-year-to-sign-up.heading                           = When do you want to start using Making Tax Digital for Income Tax?
+business.what-year-to-sign-up.para                              = You can sign up during the current tax year (from 6 April {0}) or from next tax year (from 6 April {1}).
+business.what-year-to-sign-up.para2                             = Find out more about {0}.
+business.what-year-to-sign-up.para2.link-text                   = how and when to send quarterly updates
+business.what-year-to-sign-up.para2.link-href                   = https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/send-quarterly-updates
+business.what-year-to-sign-up.option-1                          = Current tax year
+business.what-year-to-sign-up.option-1.hint                     = You’ll need to use your software to send any missed quarterly updates for the year so far
+business.what-year-to-sign-up.option-2                          = Next tax year
 
 # Property Accounting Method Page
 property.accounting-method.title                                = What accounting method do you use for your UK property business?
@@ -742,6 +738,7 @@ agent.business.what-year-to-sign-up.option-next-hint            = You or your cl
 agent.business.what-year-to-sign-up.table.title                 = Quarterly update deadlines
 agent.business.what-year-to-sign-up.table.details.p1            = You can choose to send your client’s updates by calendar quarterly period dates. This must be selected in the compatible software before the first update is made.
 agent.business.what-year-to-sign-up.table.details.p2            = The deadline for both quarterly period dates are the same.
+business.what-year-to-sign-up.table-caption                     = Submit quarterly updates by the deadline
 
 # Agent Property Accounting Method Page
 agent.property.accounting-method.heading                        = What accounting method does your client use for their UK property business?
