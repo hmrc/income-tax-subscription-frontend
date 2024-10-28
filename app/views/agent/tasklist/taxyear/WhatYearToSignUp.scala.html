@@ -16,34 +16,23 @@
 
 @import forms.agent.AccountingYearForm
 @import services.AccountingPeriodService
-@import views.html.helpers.{ContinueButton, RadioHelper, PageHeadingHelper}
+@import views.html.helpers.{RadioHelper, PageHeadingHelper, ContinueButton}
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 @import views.html.templates.AgentMainTemplate
 @import views.html.helpers.ReturnDeadlineTable
 
 @this(
     mainTemplate: AgentMainTemplate,
     radioHelper: RadioHelper,
-    govukWarningText: GovukWarningText,
     continueButton: ContinueButton,
     pageHeadingHelper: PageHeadingHelper,
-    accountingPeriodService: AccountingPeriodService,
-    table: ReturnDeadlineTable,
     form : FormWithCSRF,
-    govukDetails : GovukDetails
+    hmrcNewTabLinkHelper: HmrcNewTabLinkHelper
 )
 
 @(accountingYearForm: Form[AccountingYear], postAction: Call, clientName: String, clientNino: String, backUrl: Option[String], endYearOfCurrentTaxPeriod: Int, isEditMode: Boolean)(implicit request: Request[_], messages: Messages)
 
-@quarterDayTb = {
-@table(accountingPeriodService.getAllUpdateAndDeadlineDates(Current), false)
-<p class="govuk-body" id="para1">
-    @messages("agent.business.what-year-to-sign-up.table.details.p1")</p>
-<p class="govuk-body" id="para2">@messages("agent.business.what-year-to-sign-up.table.details.p2")</p>
-
-}
-
-@mainTemplate(title = messages("agent.business.what-year-to-sign-up.title"), optForm = Some(accountingYearForm), backLink = backUrl) {
-  @form(action = postAction) {
+@mainTemplate(title = messages("agent.business.what-year-to-sign-up.heading"), optForm = Some(accountingYearForm), backLink = backUrl) {
 
     @pageHeadingHelper(
         heading = messages("agent.business.what-year-to-sign-up.heading"),
@@ -56,39 +45,38 @@
             key = "agent.business.what-year-to-sign-up.para",
             args = Seq(
                 (endYearOfCurrentTaxPeriod - 1).toString,
-                endYearOfCurrentTaxPeriod.toString,
-                (endYearOfCurrentTaxPeriod + 1).toString
+                endYearOfCurrentTaxPeriod.toString
             ): _*
         )
     </p>
 
-@govukWarningText(WarningText(
-content = Text(Messages("agent.business.what-year-to-sign-up.warning-text"))
-))
+    <p class="govuk-body">
+        @Html(messages(
+            key = "agent.business.what-year-to-sign-up.para-two",
+            args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("agent.business.what-year-to-sign-up.para-two.link-text"), Some(messages("agent.business.what-year-to-sign-up.para-two.link-href"))))
+        ))
+    </p>
 
-@govukDetails(Details(
-summary = Text(messages("agent.business.what-year-to-sign-up.table.title")),
-content = HtmlContent(quarterDayTb)
-))
+    @form(action = postAction) {
 
-    @radioHelper(
-      field = accountingYearForm(AccountingYearForm.accountingYear),
-      legend = messages("agent.business.what-year-to-sign-up.radio-option-heading"),
-      isPageHeading = false,
-      headingClasses = "govuk-fieldset__legend--m",
-      radioItems = Seq(
-        RadioItem(
-          content = Text(messages("agent.business.what-year-to-sign-up.option-1", (endYearOfCurrentTaxPeriod - 1).toString, endYearOfCurrentTaxPeriod.toString)),
-          value = Some(Current.toString),
-          hint = Some(Hint(content = Text(messages("agent.business.what-year-to-sign-up.option-current-hint", (endYearOfCurrentTaxPeriod + 1).toString))))
-        ),
-        RadioItem(
-          content = Text(messages("agent.business.what-year-to-sign-up.option-2", endYearOfCurrentTaxPeriod.toString, (endYearOfCurrentTaxPeriod + 1).toString)),
-          value = Some(Next.toString),
-          hint = Some(Hint(content = Text(messages("agent.business.what-year-to-sign-up.option-next-hint", (endYearOfCurrentTaxPeriod + 2).toString))))
+        @radioHelper(
+            field = accountingYearForm(AccountingYearForm.accountingYear),
+            legend = messages("agent.business.what-year-to-sign-up.heading"),
+            isPageHeading = false,
+            radioItems = Seq(
+                RadioItem(
+                    content = Text(messages("agent.business.what-year-to-sign-up.option-1")),
+                    value = Some(Current.toString),
+                    hint = Some(Hint(content = Text(messages("agent.business.what-year-to-sign-up.option-current-hint"))))
+                ),
+                RadioItem(
+                    content = Text(messages("agent.business.what-year-to-sign-up.option-2")),
+                    value = Some(Next.toString)
+                )
+            )
         )
-      )
-    )
-    @continueButton(isEditMode = isEditMode)
-  }
+
+        @continueButton(isEditMode = isEditMode)
+    }
+
 }
