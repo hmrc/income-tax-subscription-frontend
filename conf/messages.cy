@@ -721,22 +721,18 @@ agent.property.income.title                                     = Faint oedd eic
 agent.property.income.heading                                   = Faint oedd eich incwm o eiddo y flwyddyn hon?
 agent.property.income.line-1                                    = Dyma’r swm a wnaethoch cyn didynnu unrhyw dreuliau caniataol.
 
-## Accounting Year page
-agent.business.what-year-to-sign-up.title                     = Dewiswch pryd y bydd eich cleient yn dechrau defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-agent.business.what-year-to-sign-up.heading                   = Dewiswch pryd y bydd eich cleient yn dechrau defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-agent.business.what-year-to-sign-up.caption                   = {0} | {1}
-agent.business.what-year-to-sign-up.para                      = Gallwch chi, neu’ch cleient, ddechrau anfon diweddariadau chwarterol yn ystod y flwyddyn dreth gyfredol (6 Ebrill {0} i 5 Ebrill {1}) neu’r flwyddyn dreth nesaf (6 Ebrill {1} i 5 Ebrill {2}).
-agent.business.what-year-to-sign-up.warning-text              = Ni fydd eich cleient yn cael ei gosbi os caiff diweddariadau eu hanfon hanner ffordd drwy’r flwyddyn dreth. Fodd bynnag, bydd yn rhaid gwneud diweddariadau ar gyfer unrhyw chwarteri sydd wedi eu methu.
-agent.business.what-year-to-sign-up.line-3                    = Gallwch gyflwyno cymaint o ddiweddariadau ag y dymunwch, ond mae’n rhaid i chi eu cyflwyno erbyn y dyddiadau cau canlynol:
-agent.business.what-year-to-sign-up.radio-option-heading      = Dewiswch y flwyddyn dreth
-agent.business.what-year-to-sign-up.option-1                  = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
-agent.business.what-year-to-sign-up.option-2                  = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
-agent.business.what-year-to-sign-up.option-current-hint       = Bydd yn rhaid i chi anfon datganiad terfynol erbyn 31 Ionawr {0}.
-agent.business.what-year-to-sign-up.option-next-hint          = Bydd yn rhaid i chi anfon datganiad terfynol erbyn 31 Ionawr {0}, a llenwi Ffurflen Dreth Hunanasesiad ar gyfer y flwyddyn dreth gyfredol yn ôl yr arfer.
-agent.business.what-year-to-sign-up.table.title               = Dyddiadau cau ar gyfer diweddariadau chwarterol
-agent.business.what-year-to-sign-up.table.details.p1          = Gallwch ddewis anfon diweddariadau eich cleient yn ôl dyddiadau ar gyfer cyfnodau chwarterol calendr. Mae’n rhaid dewis yr opsiwn hwn yn y feddalwedd sy’n cydweddu cyn gwneud y diweddariad cyntaf.
-agent.business.what-year-to-sign-up.table.details.p2          = Mae’r dyddiad cau ar gyfer y ddau gyfnod chwarterol yr un peth.
-business.what-year-to-sign-up.table-caption                   = Cyflwynwch ddiweddariadau chwarterol erbyn y dyddiad cau
+# Accounting Year page
+agent.business.what-year-to-sign-up.heading                     = Pryd yr hoffech ddechrau defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm?
+agent.business.what-year-to-sign-up.caption                     = {0} | {1}
+agent.business.what-year-to-sign-up.para                        = Gallwch gofrestru eich cleient yn ystod y flwyddyn dreth bresennol (o 6 Ebrill {0}) neu o’r flwyddyn dreth nesaf ymlaen (o 6 Ebrill {1}).
+agent.business.what-year-to-sign-up.para-two                    = Dysgwch ragor am {0}.
+agent.business.what-year-to-sign-up.para-two.link-text          = sut a phryd i anfon diweddariadau chwarterol
+agent.business.what-year-to-sign-up.para-two.link-href          = https://www.gov.uk/guidance/defnyddio-r-cynllun-troi-treth-yn-ddigidol-ar-gyfer-treth-incwm/anfon-diweddariadau-chwarterol
+agent.business.what-year-to-sign-up.option-1                    = Blwyddyn dreth bresennol
+agent.business.what-year-to-sign-up.option-2                    = Blwyddyn dreth nesaf
+agent.business.what-year-to-sign-up.option-current-hint         = Bydd angen i chi neu’ch cleient ddefnyddio’ch meddalwedd i anfon unrhyw ddiweddariadau chwarterol a gollwyd ar gyfer y flwyddyn hyd yma
+agent.error.business.what-year-to-sign-up.empty                 = Dewiswch y flwyddyn dreth yr ydych am gofrestru eich cleient ar ei chyfer
+agent.error.business.what-year-to-sign-up.invalid               = Dewiswch y flwyddyn dreth yr ydych am gofrestru eich cleient ar ei chyfer
 
 # Agent Property Accounting Method Page
 agent.property.accounting-method.heading                        = Pa ddull cyfrifo y mae’ch cleient yn ei ddefnyddio ar gyfer ei fusnes eiddo yn y DU?
@@ -845,9 +841,6 @@ agent.error.client-details.date-of-birth.year.length                            
 
 # Sole Trader Eligibility invalid
 agent.error.eligibility.sole-trader.invalid                     = Dewiswch ‘Iawn’ os ydych yn unig fasnachwr a ddechreuodd fasnachu ar neu ar ôl {0}
-
-agent.error.business.what-year-to-sign-up.empty                                     = Dewiswch pa flwyddyn dreth yr ydych am gofrestru eich cleient ar ei chyfer
-agent.error.business.what-year-to-sign-up.invalid                                   = Dewiswch pa flwyddyn dreth yr ydych am gofrestru eich cleient ar ei chyfer
 
 agent.error.accounting-method-property.invalid                  = Dewiswch a yw’ch cleient yn defnyddio cyfrifyddu ar sail arian parod neu gyfrifyddu traddodiadol
 

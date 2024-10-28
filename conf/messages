@@ -723,22 +723,18 @@ agent.property.income.title                                     = How much was y
 agent.property.income.heading                                   = How much was your income from property this year?
 agent.property.income.line-1                                    = This is the amount you made before deducting any allowable expenses.
 
-## Accounting Year page
-agent.business.what-year-to-sign-up.title                       = Select when your client will start using Making Tax Digital for Income Tax
-agent.business.what-year-to-sign-up.heading                     = Select when your client will start using Making Tax Digital for Income Tax
+# Accounting Year page
+agent.business.what-year-to-sign-up.heading                     = When do you want to start using Making Tax Digital for Income Tax?
 agent.business.what-year-to-sign-up.caption                     = {0} | {1}
-agent.business.what-year-to-sign-up.para                        = You or your client can start sending quarterly updates during the current tax year 6 April {0} to 5 April {1} or the next tax year 6 April {1} to 5 April {2}.
-agent.business.what-year-to-sign-up.warning-text                = Your client will not be penalised if updates are sent mid-way through the tax year. However, updates need to be made for any missed quarters.
-agent.business.what-year-to-sign-up.line-3                      = You must submit them by these deadlines:
-agent.business.what-year-to-sign-up.radio-option-heading        = Select tax year
-agent.business.what-year-to-sign-up.option-1                    = Current tax year (6 April {0} to 5 April {1})
-agent.business.what-year-to-sign-up.option-2                    = Next tax year (6 April {0} to 5 April {1})
-agent.business.what-year-to-sign-up.option-current-hint         = You or your client will need to submit a final declaration by the 31 January {0}.
-agent.business.what-year-to-sign-up.option-next-hint            = You or your client will need to submit a final declaration by 31 January {0} and will need to complete a Self Assessment return for the current tax year as normal.
-agent.business.what-year-to-sign-up.table.title                 = Quarterly update deadlines
-agent.business.what-year-to-sign-up.table.details.p1            = You can choose to send your client’s updates by calendar quarterly period dates. This must be selected in the compatible software before the first update is made.
-agent.business.what-year-to-sign-up.table.details.p2            = The deadline for both quarterly period dates are the same.
-business.what-year-to-sign-up.table-caption                     = Submit quarterly updates by the deadline
+agent.business.what-year-to-sign-up.para                        = You can sign up your client during the current tax year (from 6 April {0}) or from next tax year (from 6 April {1}).
+agent.business.what-year-to-sign-up.para-two                    = Find out more about {0}.
+agent.business.what-year-to-sign-up.para-two.link-text          = how and when to send quarterly updates
+agent.business.what-year-to-sign-up.para-two.link-href          = https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/send-quarterly-updates
+agent.business.what-year-to-sign-up.option-1                    = Current tax year
+agent.business.what-year-to-sign-up.option-2                    = Next tax year
+agent.business.what-year-to-sign-up.option-current-hint         = You or your client will need to use your software to send any missed quarterly updates for the year so far
+agent.error.business.what-year-to-sign-up.empty                 = Select the tax year you want to sign your client up for
+agent.error.business.what-year-to-sign-up.invalid               = Select the tax year you want to sign your client up for
 
 # Agent Property Accounting Method Page
 agent.property.accounting-method.heading                        = What accounting method does your client use for their UK property business?
@@ -848,9 +844,6 @@ agent.error.client-details.date-of-birth.year.length                            
 
 # Sole Trader Eligibility invalid
 agent.error.eligibility.sole-trader.invalid                     = Select yes if your client is a sole trader that began trading on or after {0}?
-
-agent.error.business.what-year-to-sign-up.empty                                     = Select the tax year you want to sign your client up for
-agent.error.business.what-year-to-sign-up.invalid                                   = Select the tax year you want to sign your client up for
 
 agent.error.accounting-method-property.invalid                  = Select if your client uses cash basis accounting or traditional accounting
 
