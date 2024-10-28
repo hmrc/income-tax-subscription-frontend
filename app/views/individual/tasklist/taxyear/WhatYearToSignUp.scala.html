@@ -16,59 +16,40 @@
 
 @import forms.individual.business.AccountingYearForm
 @import play.api.data.Form
-@import services.AccountingPeriodService
-@import views.html.helpers.{ContinueButton, RadioHelper, ReturnDeadlineTable}
+@import views.html.helpers.{ContinueButton, RadioHelper}
 @import views.html.templates.PrincipalMainTemplate
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 
 @this(
     mainTemplate: PrincipalMainTemplate,
     form: FormWithCSRF,
     radioHelper: RadioHelper,
     continueButton: ContinueButton,
-    accountingPeriodService: AccountingPeriodService,
-    table: ReturnDeadlineTable,
-    govukWarningText: GovukWarningText,
-    govukInsetText: GovukInsetText
+    hmrcNewTabLinkHelper: HmrcNewTabLinkHelper
 )
 
 @(accountingYearForm: Form[AccountingYear], postAction: Call, backUrl: Option[String], endYearOfCurrentTaxPeriod: Int, isEditMode: Boolean)(implicit request: Request[_], messages: Messages)
 
-@calendarQuarters = {
-<p>
-    @messages("business.what-year-to-sign-up.choose-calendar-quarter-1")
-    <br>
-    <br>
-    @messages("business.what-year-to-sign-up.choose-calendar-quarter-2")
-</p>
-}
-
 @mainTemplate(title = messages("business.what-year-to-sign-up.heading"), optForm = Some(accountingYearForm), backLink = backUrl) {
 
-  <h1 class="govuk-heading-l">@messages("business.what-year-to-sign-up.heading")</h1>
+<h1 class="govuk-heading-l">@messages("business.what-year-to-sign-up.heading")</h1>
 
-  <p class="govuk-body">
+<p class="govuk-body">
     @messages(
-      key = "business.what-year-to-sign-up.para",
-      args = Seq(
-        (endYearOfCurrentTaxPeriod - 1).toString,
-        endYearOfCurrentTaxPeriod.toString,
-        (endYearOfCurrentTaxPeriod + 1).toString
-      ): _*
+    "business.what-year-to-sign-up.para",
+    (endYearOfCurrentTaxPeriod - 1).toString,
+    endYearOfCurrentTaxPeriod.toString
     )
-  </p>
+</p>
 
-  @govukWarningText(WarningText(
-    content = Text(Messages("business.what-year-to-sign-up.warning-text"))
-  ))
-
-  @table(
-    updateAndDeadlineDates = accountingPeriodService.getAllUpdateAndDeadlineDates(Current),
-    captionHidden = false
-  )
-
-
-@govukInsetText(InsetText(content = HtmlContent(calendarQuarters)))
-
+<p class="govuk-body">
+    @Html(messages(
+    key = "business.what-year-to-sign-up.para2",
+    args = hmrcNewTabLinkHelper(
+    NewTabLinkHelper(messages("business.what-year-to-sign-up.para2.link-text"),
+    Some(messages("business.what-year-to-sign-up.para2.link-href"))))
+    ))
+</p>
 
   @form(action = postAction) {
     @radioHelper(
@@ -78,13 +59,12 @@
       headingClasses = "govuk-visually-hidden",
       radioItems = Seq(
         RadioItem(
-          content = Text(messages("business.what-year-to-sign-up.option-1", (endYearOfCurrentTaxPeriod - 1).toString, endYearOfCurrentTaxPeriod.toString)),
-          hint = Some(Hint(content = Text(messages("business.what-year-to-sign-up.conditional.1.line-2", (endYearOfCurrentTaxPeriod + 1).toString)))),
+          content = Text(messages("business.what-year-to-sign-up.option-1")),
+          hint = Some(Hint(content = Text(messages("business.what-year-to-sign-up.option-1.hint")))),
           value = Some(Current.toString)
         ),
         RadioItem(
-          content = Text(messages("business.what-year-to-sign-up.option-2", (endYearOfCurrentTaxPeriod).toString, (endYearOfCurrentTaxPeriod + 1).toString)),
-          hint = Some(Hint(content = Text(messages("business.what-year-to-sign-up.conditional.2.line-2", (endYearOfCurrentTaxPeriod + 2).toString)))),
+          content = Text(messages("business.what-year-to-sign-up.option-2")),
           value = Some(Next.toString)
         )
       )
