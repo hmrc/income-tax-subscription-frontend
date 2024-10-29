@@ -409,7 +409,7 @@ sign-up-confirmation.other-income-sources.bullet2.link-href          = https://w
 
 sign-up-confirmation.report-previous-tax-year.heading                = Report previous tax year
 sign-up-confirmation.report-previous-tax-year.plus.one.heading       = Report current and previous tax years
-sign-up-confirmation.report-previous-tax-year.para                   = You must submit your Self Assessment tax return for the year ended 5 April {0} using your HMRC online services account as normal.
+sign-up-confirmation.report-previous-tax-year.para                   = You must submit your Self Assessment tax returns for the tax years up to 5 April {0} as normal.
 
 sign-up-confirmation.preference-set.online.para-one                  = You have chosen to get your tax letters online.
 sign-up-confirmation.preference-set.online.para-two                  = You must verify your email address to confirm this. Select the link we sent by email to do this, if you have not already done so.
