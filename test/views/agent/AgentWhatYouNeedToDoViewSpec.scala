@@ -16,6 +16,7 @@
 
 package views.agent
 
+import config.featureswitch.FeatureSwitch.PrePopulate
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.HtmlFormat
@@ -29,6 +30,7 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
+    disable(PrePopulate)
   }
 
   private val nameLengthCharacters = 10
@@ -37,18 +39,32 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
 
   val whatYouNeedToDo: WhatYouNeedToDo = app.injector.instanceOf[WhatYouNeedToDo]
 
+  def mainContentPrePop(hasSoftware: Boolean, taxYearSelectionIsCurrent: Boolean,
+                        mandatedCurrentYear: Boolean = false, mandatedNextYear: Boolean = false): Element = document(
+    eligibleNextYearOnly = false,
+    mandatedCurrentYear = mandatedCurrentYear,
+    mandatedNextYear = mandatedNextYear,
+    taxYearSelectionIsCurrent = taxYearSelectionIsCurrent,
+    usingSoftwareStatus = hasSoftware,
+    clientName,
+    clientNino
+  ).mainContent
+
   "WhatYouNeedToDo" when {
     "the user is mandated for the current year" should {
       def mainContent: Element = document(
         eligibleNextYearOnly = false,
         mandatedCurrentYear = true,
         mandatedNextYear = false,
+        taxYearSelectionIsCurrent = true,
+        usingSoftwareStatus = true,
         clientName,
         clientNino
       ).mainContent
 
       "use the correct template details" in new TemplateViewTest(
-        view = page(eligibleNextYearOnly = false, mandatedCurrentYear = true, mandatedNextYear = false, clientName, clientNino),
+        view = page(eligibleNextYearOnly = false, mandatedCurrentYear = true, mandatedNextYear = false, taxYearSelectionIsCurrent = true,
+          usingSoftwareStatus = true, clientName, clientNino),
         title = WhatYouNeedToDoMessages.heading,
         isAgent = true,
         backLink = None,
@@ -103,10 +119,19 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
       }
     }
     "the user is mandated for next tax year and only eligible for the next tax year" should {
-      def mainContent: Element = document(eligibleNextYearOnly = true, mandatedCurrentYear = false, mandatedNextYear = true, clientNino, clientName).mainContent
+      def mainContent: Element = document(
+        eligibleNextYearOnly = true,
+        mandatedCurrentYear = false,
+        mandatedNextYear = true,
+        taxYearSelectionIsCurrent = false,
+        usingSoftwareStatus = true,
+        clientNino,
+        clientName
+      ).mainContent
 
       "use the correct template details" in new TemplateViewTest(
-        view = page(eligibleNextYearOnly = true, mandatedCurrentYear = false, mandatedNextYear = true, clientName, clientNino),
+        view = page(eligibleNextYearOnly = true, mandatedCurrentYear = false, mandatedNextYear = true, taxYearSelectionIsCurrent = true,
+          usingSoftwareStatus = true, clientName, clientNino),
         title = WhatYouNeedToDoMessages.heading,
         isAgent = true,
         backLink = None,
@@ -162,12 +187,15 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
         eligibleNextYearOnly = true,
         mandatedCurrentYear = false,
         mandatedNextYear = false,
+        taxYearSelectionIsCurrent = false,
+        usingSoftwareStatus = true,
         clientName,
         clientNino
       ).mainContent
 
       "use the correct template details" in new TemplateViewTest(
-        view = page(eligibleNextYearOnly = true, mandatedCurrentYear = false, mandatedNextYear = false, clientName, clientNino),
+        view = page(eligibleNextYearOnly = true, mandatedCurrentYear = false, mandatedNextYear = false, taxYearSelectionIsCurrent = true,
+          usingSoftwareStatus = true, clientName, clientNino),
         title = WhatYouNeedToDoMessages.title,
         isAgent = true,
         backLink = None,
@@ -231,19 +259,20 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
         mainContent.selectNth("p", 6).text mustBe WhatYouNeedToDoMessages.EligibleNextYearOnly.paraSix
       }
     }
-
-
     "the user is voluntary and eligible for both years" should {
       def mainContent: Element = document(
         eligibleNextYearOnly = false,
         mandatedCurrentYear = false,
         mandatedNextYear = false,
+        taxYearSelectionIsCurrent = true,
+        usingSoftwareStatus = true,
         clientName,
         clientNino
       ).mainContent
 
       "use the correct template details" in new TemplateViewTest(
-        view = page(eligibleNextYearOnly = false, mandatedCurrentYear = false, mandatedNextYear = false, clientName, clientNino),
+        view = page(eligibleNextYearOnly = false, mandatedCurrentYear = false, mandatedNextYear = false, taxYearSelectionIsCurrent = true,
+          usingSoftwareStatus = true, clientName, clientNino),
         title = WhatYouNeedToDoMessages.heading,
         isAgent = true,
         backLink = None,
@@ -321,32 +350,269 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
         }
       }
     }
+
+    "the pre-pop feature switch is enabled" should {
+      import WhatYouNeedToDoMessages._
+
+      def docHasSoftwareAndCTY: Element = mainContentPrePop(hasSoftware = true, taxYearSelectionIsCurrent = true)
+
+      def docHasSoftwareAndCTYMandated = mainContentPrePop(hasSoftware = true, taxYearSelectionIsCurrent = true, mandatedCurrentYear = true)
+
+      def docHasSoftwareAndNTY = mainContentPrePop(hasSoftware = true, taxYearSelectionIsCurrent = false)
+
+      def docHasSoftwareAndNTYMandated = mainContentPrePop(hasSoftware = true, taxYearSelectionIsCurrent = false, mandatedNextYear = true)
+
+      def docNoSoftwareAndNTY = mainContentPrePop(hasSoftware = false, taxYearSelectionIsCurrent = false)
+
+      def docNoSoftwareAndNTYMandated = mainContentPrePop(hasSoftware = false, taxYearSelectionIsCurrent = false, mandatedNextYear = true)
+
+      def docNoSoftwareAndCTY = mainContentPrePop(hasSoftware = false, taxYearSelectionIsCurrent = true)
+
+      def docNoSoftwareAndCTYMandated = mainContentPrePop(hasSoftware = false, taxYearSelectionIsCurrent = true, mandatedCurrentYear = true)
+
+      def allScenarios: List[Element] = {
+        List(docHasSoftwareAndCTY,
+          docHasSoftwareAndNTY,
+          docHasSoftwareAndCTYMandated,
+          docHasSoftwareAndNTYMandated,
+          docNoSoftwareAndCTY,
+          docNoSoftwareAndNTY,
+          docNoSoftwareAndCTYMandated,
+          docNoSoftwareAndNTYMandated)
+      }
+
+      def nextTaxYearScenarios: List[Element] = List(docHasSoftwareAndNTY, docHasSoftwareAndNTYMandated,
+        docNoSoftwareAndNTY, docNoSoftwareAndNTYMandated)
+
+      def currentTaxYearScenarios: List[Element] = List(docHasSoftwareAndCTY, docHasSoftwareAndCTYMandated,
+        docNoSoftwareAndCTY, docNoSoftwareAndCTYMandated)
+
+
+      "use the correct template details" when {
+        "user has software signing up for current tax year" in new TemplateViewTest(
+          view = page(eligibleNextYearOnly = false, mandatedCurrentYear = false, mandatedNextYear = false,
+            taxYearSelectionIsCurrent = true, usingSoftwareStatus = true, clientName, clientNino),
+          title = WhatYouNeedToDoMessages.heading,
+          isAgent = true,
+          backLink = Some(testBackUrl),
+          hasSignOutLink = true
+        )
+
+        "user has software signing up for next tax year" in new TemplateViewTest(
+          view = page(eligibleNextYearOnly = false, mandatedCurrentYear = false, mandatedNextYear = false,
+            taxYearSelectionIsCurrent = false, usingSoftwareStatus = true, clientName, clientNino),
+          title = WhatYouNeedToDoMessages.heading,
+          isAgent = true,
+          backLink = Some(testBackUrl),
+          hasSignOutLink = true
+        )
+
+        "user has no software signing up for current tax year" in new TemplateViewTest(
+          view = page(eligibleNextYearOnly = false, mandatedCurrentYear = false, mandatedNextYear = false,
+            taxYearSelectionIsCurrent = true, usingSoftwareStatus = false, clientName, clientNino),
+          title = WhatYouNeedToDoMessages.heading,
+          isAgent = true,
+          backLink = Some(testBackUrl),
+          hasSignOutLink = true
+        )
+
+        "user has no software signing up for next tax year" in new TemplateViewTest(
+          view = page(eligibleNextYearOnly = false, mandatedCurrentYear = false, mandatedNextYear = false,
+            taxYearSelectionIsCurrent = false, usingSoftwareStatus = false, clientName, clientNino),
+          title = WhatYouNeedToDoMessages.heading,
+          isAgent = true,
+          backLink = Some(testBackUrl),
+          hasSignOutLink = true
+        )
+      }
+
+      "have a client Name and Nino" in {
+        enable(PrePopulate)
+        allScenarios.foreach(_.selectHead(".govuk-caption-l").text contains clientName)
+        allScenarios.foreach(_.selectHead(".govuk-caption-l").text contains clientNino)
+      }
+
+      "have a first paragraph" when {
+
+        "user is signing up for current tax year" in {
+          enable(PrePopulate)
+          currentTaxYearScenarios.foreach(_.selectNth("p", 1).text mustBe PrePopEnabled.ParaOne.currentYear)
+        }
+
+        "user is signing up for next tax year" in {
+          enable(PrePopulate)
+          nextTaxYearScenarios.foreach(_.selectNth("p", 1).text mustBe PrePopEnabled.ParaOne.nextYear)
+        }
+      }
+
+      "have a second paragraph when signing up for next tax year" when {
+
+        "user is mandated" in {
+          enable(PrePopulate)
+          docNoSoftwareAndNTYMandated.selectNth("p", 2).text mustBe PrePopEnabled.ParaTwo.must(2025)
+          docHasSoftwareAndNTYMandated.selectNth("p", 2).text mustBe PrePopEnabled.ParaTwo.must(2025)
+        }
+
+        "user is not mandated" in {
+          enable(PrePopulate)
+          docNoSoftwareAndNTY.selectNth("p", 2).text mustBe PrePopEnabled.ParaTwo.should(2025)
+          docHasSoftwareAndNTY.selectNth("p", 2).text mustBe PrePopEnabled.ParaTwo.should(2025)
+        }
+      }
+
+      "have a bullet list" which {
+        enable(PrePopulate)
+
+        def hasSoftwareScenarios: List[Element] = List(docHasSoftwareAndCTY,
+          docHasSoftwareAndNTY,
+          docHasSoftwareAndCTYMandated,
+          docHasSoftwareAndNTYMandated)
+
+        def noSoftwareScenarios: List[Element] = List(docNoSoftwareAndCTY,
+          docNoSoftwareAndNTY,
+          docNoSoftwareAndCTYMandated,
+          docNoSoftwareAndNTYMandated)
+
+        "has a first point" when {
+          "user has compatible software" in {
+            enable(PrePopulate)
+            hasSoftwareScenarios.foreach(_.selectHead("ol.govuk-list--bullet")
+              .selectNth("li", 1).text mustBe PrePopEnabled.BulletOne.hasSoftware)
+          }
+
+          "user has no compatible software with link" in {
+            enable(PrePopulate)
+            noSoftwareScenarios.foreach(_.selectHead("ol.govuk-list--bullet")
+              .selectNth("li", 1).text mustBe PrePopEnabled.BulletOne.noSoftwareText)
+
+            noSoftwareScenarios.foreach(_.selectHead("ol.govuk-list--bullet").selectNth("li", 1)
+              .selectHead("a").attr("href") mustBe PrePopEnabled.BulletOne.noSoftwareLink)
+          }
+        }
+
+        "has a second point" in {
+          enable(PrePopulate)
+          allScenarios.foreach(_.selectHead("ol.govuk-list--bullet").selectNth("li", 2).text mustBe PrePopEnabled.bulletTwo)
+        }
+
+        "has a third point" in {
+          enable(PrePopulate)
+          allScenarios.foreach(_.selectHead("ol.govuk-list--bullet").selectNth("li", 3).text mustBe PrePopEnabled.bulletThree)
+        }
+
+        "has a fourth point" when {
+          "user is signing up for current tax year" in {
+            enable(PrePopulate)
+            currentTaxYearScenarios.foreach(_.selectHead("ol.govuk-list--bullet").selectNth("li", 4).text mustBe PrePopEnabled.bulletFourCTYOnly)
+
+          }
+          "user is signing up for next tax year" in {
+            enable(PrePopulate)
+            nextTaxYearScenarios.foreach(_.selectHead("ol.govuk-list--bullet").selectNth("li", 4).text mustBe PrePopEnabled.bulletFive)
+          }
+        }
+
+        "has a fifth point when user is signing up for current tax year" in {
+          enable(PrePopulate)
+          currentTaxYearScenarios.foreach(_.selectHead("ol.govuk-list--bullet").selectNth("li", 5).text mustBe PrePopEnabled.bulletFive)
+        }
+      }
+
+      "have a third paragraph" in {
+        enable(PrePopulate)
+        currentTaxYearScenarios.foreach(_.selectNth("p", 2).text mustBe PrePopEnabled.paraThree)
+        currentTaxYearScenarios.foreach(_.selectNth("p", 2).selectHead("a").attr("href") mustBe PrePopEnabled.paraThreeLinkHref)
+
+        nextTaxYearScenarios.foreach(_.selectNth("p", 3).text mustBe PrePopEnabled.paraThree)
+        nextTaxYearScenarios.foreach(_.selectNth("p", 3).selectHead("a").attr("href") mustBe PrePopEnabled.paraThreeLinkHref)
+
+      }
+
+      "have a fourth paragraph when user is signing up voluntarily" in {
+        enable(PrePopulate)
+        docHasSoftwareAndCTY.selectNth("p", 3).text mustBe PrePopEnabled.paraFour
+        docHasSoftwareAndNTY.selectNth("p", 4).text mustBe PrePopEnabled.paraFour
+
+      }
+
+      "have a sub heading" in {
+        enable(PrePopulate)
+        allScenarios.foreach(_.selectHead("h2").text mustBe PrePopEnabled.subHeading)
+      }
+
+      "have a fifth paragraph" when {
+        "user is signing up for current tax year" in {
+          enable(PrePopulate)
+          docHasSoftwareAndCTY.selectNth("p", 4).text mustBe PrePopEnabled.paraFive
+          docNoSoftwareAndCTY.selectNth("p", 4).text mustBe PrePopEnabled.paraFive
+        }
+        "user is signing up for next tax year" in {
+          enable(PrePopulate)
+          docHasSoftwareAndNTY.selectNth("p", 5).text mustBe PrePopEnabled.paraFive
+          docNoSoftwareAndNTY.selectNth("p", 5).text mustBe PrePopEnabled.paraFive
+        }
+
+      }
+
+      "have a sixth paragraph" when {
+        "user is signing up for current tax year" in {
+          enable(PrePopulate)
+          docHasSoftwareAndCTY.selectNth("p", 5).text mustBe PrePopEnabled.paraSix
+          docNoSoftwareAndCTY.selectNth("p", 5).text mustBe PrePopEnabled.paraSix
+        }
+        "user is signing up for next tax year" in {
+          enable(PrePopulate)
+          docHasSoftwareAndNTY.selectNth("p", 6).text mustBe PrePopEnabled.paraSix
+          docNoSoftwareAndNTY.selectNth("p", 6).text mustBe PrePopEnabled.paraSix
+        }
+
+      }
+
+      "have a form" which {
+
+        "has the correct attributes" in {
+          allScenarios.foreach(_.selectHead("form").attr("method") mustBe testCall.method)
+          allScenarios.foreach(_.selectHead("form").attr("action") mustBe testCall.url)
+        }
+
+        "has an accept and continue button to submit the form" in {
+          allScenarios.foreach(_.selectHead("form").selectHead("button").text mustBe WhatYouNeedToDoMessages.acceptAndContinue)
+        }
+      }
+
+    }
   }
 
-  def page(
-            eligibleNextYearOnly: Boolean,
-            mandatedCurrentYear: Boolean,
-            mandatedNextYear: Boolean,
-            clientName: String,
-            clientNino: String
+  def page(eligibleNextYearOnly: Boolean,
+           mandatedCurrentYear: Boolean,
+           mandatedNextYear: Boolean,
+           taxYearSelectionIsCurrent: Boolean,
+           usingSoftwareStatus: Boolean,
+           clientName: String,
+           clientNino: String
           ): HtmlFormat.Appendable = {
     whatYouNeedToDo(
       postAction = testCall,
       eligibleNextYearOnly = eligibleNextYearOnly,
       mandatedCurrentYear = mandatedCurrentYear,
       mandatedNextYear = mandatedNextYear,
+      taxYearSelectionIsCurrent = taxYearSelectionIsCurrent,
+      usingSoftwareStatus = usingSoftwareStatus,
       clientName = clientName,
-      clientNino = clientNino
+      clientNino = clientNino,
+      backUrl = Some(testBackUrl)
     )
   }
 
-  def document(eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, clientName: String, clientNino: String): Document = {
-    Jsoup.parse(page(eligibleNextYearOnly, mandatedCurrentYear, mandatedNextYear, clientName, clientNino).body)
+  def document(eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, taxYearSelectionIsCurrent: Boolean,
+               usingSoftwareStatus: Boolean, clientName: String, clientNino: String): Document = {
+    Jsoup.parse(page(eligibleNextYearOnly, mandatedCurrentYear, mandatedNextYear, taxYearSelectionIsCurrent, usingSoftwareStatus, clientName, clientNino).body)
   }
 
   object WhatYouNeedToDoMessages {
     val title: String = "What you need to do"
     val heading: String = "What you need to do"
+    val acceptAndContinue: String = "Accept and continue"
 
     object NotificationBanner {
       val heading: String = "Important"
@@ -419,8 +685,40 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
 
     }
 
-    val acceptAndContinue: String = "Accept and continue"
+    object PrePopEnabled {
+      val heading: String = "What you are agreeing to"
 
+      object ParaOne {
+        val currentYear: String = "If you continue to sign up this client, you and your client are agreeing to meet their tax obligations using Making Tax Digital for Income Tax. You or your client will need to:"
+        val nextYear: String = "If you continue to sign up this client, you need to submit their Self Assessment tax return as normal for the current tax year."
+      }
+
+      object ParaTwo {
+        def should(taxYear: Int): String = s"From 6 April $taxYear, you or your client should:"
+
+        def must(taxYear: Int): String = s"From 6 April $taxYear, you or your client must:"
+      }
+
+      object BulletOne {
+        val noSoftwareText: String = "find and use software that works with Making Tax Digital for Income Tax (opens in new tab)"
+        val noSoftwareLink: String = "https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax"
+        val hasSoftware: String = "use software that works with Making Tax Digital for Income Tax"
+      }
+
+      val bulletTwo: String = "keep digital records of your client’s business income and expenses"
+      val bulletThree: String = "use software to send us quarterly updates"
+      val bulletFourCTYOnly: String = "send any missed quarterly updates for the current tax year"
+      val bulletFive: String = "make their final declaration by 31 January after the end of each tax year"
+      val paraThree: String = "You’re also agreeing that our new penalties (opens in new tab) will apply to your client if they miss deadlines for submitting their tax return or paying their bill."
+      val paraThreeLinkText: String = "our new penalties (opens in new tab)"
+      val paraThreeLinkHref: String = "https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers"
+      val paraFour: String = "While you and your client are taking part voluntarily, your client will not get penalties for missed quarterly updates."
+
+      val subHeading: String = "Opting out"
+
+      val paraFive: String = "Making Tax Digital for Income Tax is voluntary until 6 April 2026. Your client can opt out of sending quarterly updates. But if we’ve told your client that our new penalties apply to them, that will continue."
+      val paraSix: String = "From 6 April 2026, some people will need to use Making Tax Digital for Income Tax. They will not be able to opt out. We’ll write to your client if this applies to them."
+    }
   }
 
 }

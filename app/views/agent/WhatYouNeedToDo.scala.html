@@ -19,6 +19,9 @@
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 @import utilities.AccountingPeriodUtil
 @import uk.gov.hmrc.play.language.LanguageUtils
+@import config.featureswitch.FeatureSwitchingImpl
+@import config.featureswitch.FeatureSwitch.PrePopulate
+@import utilities.AccountingPeriodUtil
 
 @this(
     mainTemplate: AgentMainTemplate,
@@ -28,12 +31,13 @@
     languageUtils: LanguageUtils,
     govukInsetText : GovukInsetText,
     pageHeadingHelper: PageHeadingHelper,
-    govukWarningText: GovukWarningText
+    govukWarningText: GovukWarningText,
+    featureSwitching: FeatureSwitchingImpl
 )
 
-@(postAction:Call, eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, clientName: String, clientNino: String)(implicit request: Request[_], messages: Messages)
+@(postAction:Call, eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, taxYearSelectionIsCurrent: Boolean, usingSoftwareStatus: Boolean, clientName: String, clientNino: String, backUrl: Option[String])(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("agent.what-you-need-to-do.title")) {
+@mainTemplate(title = messages("agent.what-you-need-to-do.title"), backLink = backUrl) {
 
     @pageHeadingHelper(
         heading = if (mandatedCurrentYear) {
@@ -49,7 +53,9 @@
         isSection = false
     )
 
-    @if(mandatedCurrentYear) {
+    @if(featureSwitching.isEnabled(PrePopulate)){
+        @prePopEnabledContent
+    } else if(mandatedCurrentYear) {
         @mandatedCurrentYearContent
     } else if (mandatedNextYear && eligibleNextYearOnly) {
         @mandatedAndEligibleNextYearOnlyContent
@@ -77,9 +83,9 @@
     </li>
 </ol>
 
-@govukWarningText(WarningText(
-content = Text(Messages("agent.what-you-need-to-do-current.warning.para"))
-))
+    @govukWarningText(WarningText(
+        content = Text(Messages("agent.what-you-need-to-do-current.warning.para"))
+    ))
 }
 
 @mandatedAndEligibleNextYearOnlyContent = {
@@ -151,4 +157,66 @@ content = Text(Messages("agent.what-you-need-to-do-current.warning.para"))
 
 <p class="govuk-body">@messages("agent.what-you-are-agreeing-to.voluntary-both-years.para-5")</p>
 
+}
+
+
+@prePopEnabledContent = {
+
+    @if(taxYearSelectionIsCurrent) {
+        <p class="govuk-body">@messages("agent.voluntary.what-you-need-to-do.pre-pop.para-1-current")</p>
+    } else {
+        @prePopNextYearPara
+    }
+
+    <ol class="govuk-list govuk-list--bullet">
+
+        <li>@if(usingSoftwareStatus) {
+                @messages("agent.voluntary.what-you-need-to-do.pre-pop.bullet-1-has-software")
+            } else {
+                @hmrcNewTabLinkHelper(NewTabLinkHelper(
+                    text = messages("agent.voluntary.what-you-need-to-do.pre-pop.bullet-1-no-software"),
+                    href = Some(messages("agent.voluntary.what-you-need-to-do.pre-pop.bullet-1-no-software-link"))
+                ))
+            }
+        </li>
+
+        <li>@messages("agent.voluntary.what-you-need-to-do.pre-pop.bullet-2")</li>
+        <li>@messages("agent.voluntary.what-you-need-to-do.pre-pop.bullet-3")</li>
+
+        @if(taxYearSelectionIsCurrent) {
+            <li>@messages("agent.voluntary.what-you-need-to-do.pre-pop.bullet-4-current-year")</li>
+        }
+
+        <li>@messages("agent.voluntary.what-you-need-to-do.pre-pop.bullet-5")</li>
+    </ol>
+
+    <p class="govuk-body">@Html(messages(
+        key = "agent.voluntary.what-you-need-to-do.pre-pop.para-3",
+        args = hmrcNewTabLinkHelper(
+        NewTabLinkHelper(messages("agent.voluntary.what-you-need-to-do.pre-pop.para-3-link"),
+        Some("https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers")))))
+    </p>
+
+    @if((taxYearSelectionIsCurrent && !mandatedCurrentYear) || (!taxYearSelectionIsCurrent && !mandatedNextYear)) {
+        <p class="govuk-body">@messages("agent.voluntary.what-you-need-to-do.pre-pop.para-4") </p>
+    }
+
+    <h2 class="govuk-heading-m">@messages("agent.voluntary.what-you-need-to-do.pre-pop.heading-2")</h2>
+
+    <p class="govuk-body">@messages("agent.voluntary.what-you-need-to-do.pre-pop.para-5")</p>
+    <p class="govuk-body">@messages("agent.voluntary.what-you-need-to-do.pre-pop.para-6")</p>
+
+}
+
+
+@prePopNextYearPara = {
+    <p class="govuk-body">@messages("agent.voluntary.what-you-need-to-do.pre-pop.para-1-next")</p>
+
+    <p class="govuk-body">
+        @if(mandatedCurrentYear || mandatedNextYear) {
+            @messages("agent.voluntary.what-you-need-to-do.pre-pop.para-2-must", (AccountingPeriodUtil.getNextTaxEndYear - 1).toString)
+        } else {
+            @messages("agent.voluntary.what-you-need-to-do.pre-pop.para-2-should", (AccountingPeriodUtil.getNextTaxEndYear - 1).toString)
+        }
+    </p>
 }

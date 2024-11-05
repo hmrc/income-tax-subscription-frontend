@@ -18,9 +18,13 @@ package controllers.agent
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.PrePopulate
+import config.featureswitch.FeatureSwitching
+import controllers.utils.ReferenceRetrieval
+import models.{Current, No, Yes}
 import play.api.mvc._
 import services.agent.ClientDetailsRetrieval
-import services.{AuditingService, AuthService, GetEligibilityStatusService, MandationStatusService}
+import services._
 import views.html.agent.WhatYouNeedToDo
 
 import javax.inject.{Inject, Singleton}
@@ -31,11 +35,14 @@ import scala.util.matching.Regex
 class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
                                           clientDetailsRetrieval: ClientDetailsRetrieval,
                                           eligibilityStatusService: GetEligibilityStatusService,
-                                          mandationStatusService: MandationStatusService)
+                                          mandationStatusService: MandationStatusService,
+                                          referenceRetrieval: ReferenceRetrieval,
+                                          subscriptionDetailsService: SubscriptionDetailsService,
+                                          sessionDataService: SessionDataService)
                                          (val auditingService: AuditingService,
                                           val appConfig: AppConfig,
                                           val authService: AuthService)
-                                         (implicit mcc: MessagesControllerComponents, val ec: ExecutionContext) extends AuthenticatedController {
+                                         (implicit mcc: MessagesControllerComponents, val ec: ExecutionContext) extends AuthenticatedController with FeatureSwitching {
 
   private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
 
@@ -47,27 +54,54 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
     }
   }
 
+  def backUrl(eligibleNextYearOnly: Boolean): Option[String] = {
+    if (isEnabled(PrePopulate)) {
+      if (eligibleNextYearOnly)
+        Some(controllers.agent.routes.UsingSoftwareController.show().url)
+      else
+        Some(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
+    } else None
+  }
+
+
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
+    implicit user =>
       for {
         clientDetails <- clientDetailsRetrieval.getClientDetails
         eligibilityStatus <- eligibilityStatusService.getEligibilityStatus
         mandationStatus <- mandationStatusService.getMandationStatus
+        reference <- referenceRetrieval.getAgentReference
+        taxYearSelection <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
+        softwareStatus <- sessionDataService.fetchSoftwareStatus
       } yield {
+        val isCurrentYear = taxYearSelection.map(_.accountingYear).contains(Current)
+
+        val usingSoftwareStatus: Boolean = softwareStatus match {
+          case Right(Some(Yes)) => true
+          case Right(Some(No)) => false
+          case Right(None) => false
+          case Left(error) =>
+            logger.error(s"[ConfirmationController][show] - failure retrieving software status - $error")
+            false
+        }
         Ok(whatYouNeedToDo(
           postAction = routes.WhatYouNeedToDoController.submit,
           eligibleNextYearOnly = eligibilityStatus.eligibleNextYearOnly,
           mandatedCurrentYear = mandationStatus.currentYearStatus.isMandated,
           mandatedNextYear = mandationStatus.nextYearStatus.isMandated,
+          taxYearSelectionIsCurrent = isCurrentYear,
+          usingSoftwareStatus = usingSoftwareStatus,
           clientName = clientDetails.name,
-          clientNino = formatNino(clientDetails.nino)
+          clientNino = formatNino(clientDetails.nino),
+          backUrl = backUrl(eligibilityStatus.eligibleNextYearOnly)
         ))
       }
   }
 
   val submit: Action[AnyContent] = Authenticated { _ =>
     _ =>
-      Redirect(controllers.agent.tasklist.routes.TaskListController.show())
+      if(isEnabled(PrePopulate)) Redirect(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
+      else Redirect(controllers.agent.tasklist.routes.TaskListController.show())
   }
 
 }
