@@ -357,28 +357,35 @@ sign-up-complete.what-now.no-penalty                            = Does dim cosb 
 sign-up-complete.what-now.submit-annual                         = Cyflwynwch eich diweddariadau blynyddol a gwnewch ddatganiad ar gyfer y flwyddyn dreth erbyn 31 Ionawr {0}.
 
 ## Agent Sign Up Confirmation Page ##
-agent.sign-up-confirmation.heading                                                  = Cleient wedi’i gofrestru’n llwyddiannus
-agent.sign-up-confirmation.heading.panel.current                                    = wedi llwyddo i gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, erbyn y flwyddyn dreth bresennol ({0})
-agent.sign-up-confirmation.heading.panel.next                                       = wedi llwyddo i gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, erbyn y flwyddyn dreth nesaf  ({0})
-agent.sign-up-confirmation.print-confirmation                                       = Argraffwch gadarnhad cofrestriad y cleient hwn
-agent.sign-up-confirmation.what-you-will-have-to-do.heading                         = Yr hyn y mae’n rhaid i chi ei wneud nawr
-agent.sign-up-confirmation.quarterly-updates.heading                                = Anfon diweddariadau chwarterol:
-agent.sign-up-confirmation.quarterly-updates.para                                   = Mae’n rhaid i chi anfon diweddariadau chwarterol o incwm a threuliau eich cleient gan ddefnyddio meddalwedd sy’n cydweddu.
-agent.sign-up-confirmation.quarterly-updates.table.caption                          = Dyddiadau cau ar gyfer diweddariadau chwarterol
-agent.sign-up-confirmation.quarterly-updates.table.caption.title                    = Cyflwynwch ddiweddariadau chwarterol erbyn y dyddiad cau
-agent.sign-up-confirmation.quarterly-updates.table.para1                            = Gallwch ddewis anfon diweddariadau eich cleient yn ôl dyddiadau ar gyfer cyfnodau chwarterol calendr. Mae’n rhaid dewis yr opsiwn hwn yn y feddalwedd sy’n cydweddu cyn gwneud y diweddariad cyntaf.
-agent.sign-up-confirmation.quarterly-updates.table.para2                            = Mae’r dyddiad cau ar gyfer y ddau gyfnod chwarterol yr un peth.
-agent.sign-up-confirmation.final-declaration.heading                                = Cyflwyno datganiad terfynol a thalu
-agent.sign-up-confirmation.final-declaration.para                                   = Mae’n rhaid i chi neu’ch cleient gyflwyno datganiad terfynol erbyn {0}. Mae’n rhaid iddo hefyd dalu’r dreth sydd arno.
-agent.sign-up-confirmation.warning.para                                             = Mae’n rhai i chi gyflwyno diweddariadau ar gyfer unrhyw chwarterau rydych wedi’u methu.
+agent.sign-up-confirmation.heading                                                  = Rydych wedi gorffen cofrestru
+agent.sign-up-confirmation.heading.panel.current                                    = Rydych wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o’r {0} ymlaen
+agent.sign-up-confirmation.heading.panel.next                                       = Rydych wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o’r {0} ymlaen
+agent.sign-up-confirmation.print-confirmation                                       = Argraffwch y dudalen hon
 
-agent.sign-up-confirmation.voluntary-next-year.self-assessment.heading              = Parhau â’r Hunanasesiad ar gyfer y flwyddyn hon
-agent.sign-up-confirmation.voluntary-next-year.self-assessment.para                 = Mae’n rhaid cyflwyno Ffurflen Dreth Hunanasesiad eich cleient, yn ôl yr arfer, erbyn 31 Ionawr  {0}.
+agent.sign-up-confirmation.what-must-do.heading                                     = Yr hyn y mae’n rhaid i chi ei wneud nawr
+agent.sign-up-confirmation.what-you-must-do.para1                                   = Darllenwch sut i {0}
+agent.sign-up-confirmation.what-you-must-do.para1.link.text                         = ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+agent.sign-up-confirmation.what-you-must-do.para1.link.href                         = https://www.gov.uk/guidance/defnyddio-r-cynllun-troi-treth-yn-ddigidol-ar-gyfer-treth-incwm
+agent.sign-up-confirmation.what-you-must-do.yes.this.year                           = Mae’n rhaid i chi ddefnyddio’ch meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+agent.sign-up-confirmation.what-you-must-do.no.this.year                            = Mae’n rhaid i chi ddefnyddio {0}
+agent.sign-up-confirmation.what-you-must-do.no.this.year.link.text                  = meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+agent.sign-up-confirmation.what-you-must-do.no.this.year.link.href                  = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax.cy
+agent.sign-up-confirmation.what-you-must-do.yes.next.year                           = O 6 Ebril {0}, ymlaen, mae’n rhaid i chi ddefnyddio’ch meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+agent.sign-up-confirmation.what-you-must-do.no.next.year                            = O 6 Ebril {0}, ymlaen, mae’n rhaid i chi ddefnyddio {1}
+agent.sign-up-confirmation.what-you-must-do.no.next.year.link.text                  = meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+agent.sign-up-confirmation.what-you-must-do.no.next.year.link-href                  = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax.cy
 
-agent.sign-up-confirmation.agent-services-account.heading                           = Eich cyfrif gwasanaethau asiant
-agent.sign-up-confirmation.agent-services-account.para                              = Awdurdodi cyfrifau eich cleientiaid, a’u rheoli.
-agent.sign-up-confirmation.agent-services-account.link-text                         = Ewch i’ch cyfrif gwasanaethau asiant
+agent.sign-up-confirmation.what-you-must-do.para2                                   = Bydd y feddalwedd rydych yn ei dewis yn rhoi gwybod i chi beth arall mae angen i chi ei wneud, gan gynnwys:
+agent.sign-up-confirmation.what-you-must-do.bullet1                                 = sut i awdurdodi a chysylltu’r feddalwedd â’ch cyfrif gwasanaethau asiant
+agent.sign-up-confirmation.what-you-must-do.bullet2                                 = sut i gadw cofnodion digidol
+agent.sign-up-confirmation.what-you-must-do.bullet3                                 = pryd a sut i anfon diweddariadau chwarterol
+agent.sign-up-confirmation.what-you-must-do.current.year.bullet4                    = a oes angen i chi anfon unrhyw ddiweddariadau a gollwyd neu ddiweddariadau ôl-ddyddiedig ar gyfer y flwyddyn dreth bresennol – a sut i’w hanfon
+agent.sign-up-confirmation.what-you-must-do.bullet5                                 = pryd a sut i wneud datganiad terfynol eich cleient ar ôl diwedd y flwyddyn dreth
+agent.sign-up-confirmation.what-you-must-do.para3                                   = A bydd angen i’ch cleient dalu’r dreth sydd arno.
 
+agent.sign-up-confirmation.manage-client-account.heading                            = Rheoli cyfrifon eich cleient
+agent.sign-up-confirmation.manage-client-account.para1                              = Ewch i’ch {0}
+agent.sign-up-confirmation.manage-client-account.link.text                          = cyfrif gwasanaethau asiant
 
 ## Using Software Page ##
 individual.using-software.heading                                    = A ydych yn defnyddio meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm?
@@ -429,9 +436,8 @@ sign-up-confirmation.report-previous-tax-year.heading                = Rhoi gwyb
 sign-up-confirmation.report-previous-tax-year.plus.one.heading       = Rhoi gwybod am y flwyddyn dreth bresennol a blynyddoedd treth blaenorol
 sign-up-confirmation.report-previous-tax-year.para                   = Mae’n rhaid i chi barhau i gyflwyno’ch Ffurflenni Treth Hunanasesiad ar gyfer y blynyddoedd treth hyd at 5 Ebril {0} yn ôl yr arfer.
 
-sign-up-confirmation.preference-set.online.para-one                  = Rydych wedi dewis i gael eich llythyrau treth ar-lein.
-sign-up-confirmation.preference-set.online.para-two                  = Mae’n rhaid i chi ddilysu’ch cyfeiriad e-bost i gadarnhau hyn. Os nad ydych wedi gwneud hyn yn barod, dewiswch y cysylltiad a anfonwyd atoch drwy e-bost.
-sign-up-confirmation.preference-set.paper.para                       = Rydych wedi dewis cael eich llythyrau treth drwy’r post. Gallwch newid y dewis hwn ar unrhyw adeg yn eich cyfrif CThEF ar-lein.
+sign-up-confirmation.preference-set.online.heading                   = Eich dewis o ohebiaeth
+sign-up-confirmation.preference-set.online.para-one                  = Os ydych wedi dewis cael eich llythyrau treth ar-lein, gwnewch yn siŵr eich bod wedi dilysu’ch cyfeiriad e-bost.
 
 ## Errors ##
 

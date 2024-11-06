@@ -360,28 +360,35 @@ sign-up-complete.what-now.no-penalty                            = There is no pe
 sign-up-complete.what-now.submit-annual                         = Submit your annual updates and declare for the tax year by 31 January {0}.
 
 ## Agent Sign Up Confirmation Page ##
+agent.sign-up-confirmation.heading                                                  = Sign up complete
+agent.sign-up-confirmation.heading.panel.current                                    = Your client is signed up for Making Tax Digital for Income Tax from {0} onwards
+agent.sign-up-confirmation.heading.panel.next                                       = Your client is signed up for Making Tax Digital for Income Tax from {0} onwards
+agent.sign-up-confirmation.print-confirmation                                       = Print this page
 
-agent.sign-up-confirmation.heading                                                  = Client sign up complete
-agent.sign-up-confirmation.heading.panel.current                                    = is now signed up for Making Tax Digital for Income Tax for the current tax year ({0})
-agent.sign-up-confirmation.heading.panel.next                                       = is now signed up for Making Tax Digital for Income Tax for the next tax year ({0})
-agent.sign-up-confirmation.print-confirmation                                       = Print this client’s sign up confirmation
-agent.sign-up-confirmation.what-you-will-have-to-do.heading                         = What you must do now
-agent.sign-up-confirmation.quarterly-updates.heading                                = Send quarterly updates
-agent.sign-up-confirmation.quarterly-updates.para                                   = You must send quarterly updates of your client’s income and expenses using compatible software.
-agent.sign-up-confirmation.quarterly-updates.table.caption                          = Quarterly update deadlines
-agent.sign-up-confirmation.quarterly-updates.table.caption.title                    = Submit quarterly updates by the deadline
-agent.sign-up-confirmation.quarterly-updates.table.para1                            = You can choose to send your client’s updates by calendar quarterly period dates. This must be selected in the compatible software before the first update is made.
-agent.sign-up-confirmation.quarterly-updates.table.para2                            = The deadline for both quarterly period dates are the same.
-agent.sign-up-confirmation.final-declaration.heading                                = Submit a final declaration and pay
-agent.sign-up-confirmation.final-declaration.para                                   = A final declaration must be submitted by either you or your client by {0}. They must also pay the tax they owe.
-agent.sign-up-confirmation.warning.para                                             = You must make updates for any quarters you’ve missed.
+agent.sign-up-confirmation.what-must-do.heading                                     = What you must do now
+agent.sign-up-confirmation.what-you-must-do.para1                                   = Read how to {0}
+agent.sign-up-confirmation.what-you-must-do.para1.link.text                         = use Making Tax Digital for Income Tax
+agent.sign-up-confirmation.what-you-must-do.para1.link.href                         = https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax
+agent.sign-up-confirmation.what-you-must-do.yes.this.year                           = You must use your software that works with Making Tax Digital for Income Tax.
+agent.sign-up-confirmation.what-you-must-do.no.this.year                            = You must find and use {0}
+agent.sign-up-confirmation.what-you-must-do.no.this.year.link.text                  = software that works with Making Tax Digital for Income Tax
+agent.sign-up-confirmation.what-you-must-do.no.this.year.link.href                  = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax
+agent.sign-up-confirmation.what-you-must-do.yes.next.year                           = From 6 April {0}, you must use your software that works with Making Tax Digital for Income Tax.
+agent.sign-up-confirmation.what-you-must-do.no.next.year                            = From 6 April {0}, you must find and use {1}
+agent.sign-up-confirmation.what-you-must-do.no.next.year.link.text                  = software that works with Making Tax Digital for Income Tax
+agent.sign-up-confirmation.what-you-must-do.no.next.year.link-href                  = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax
 
-agent.sign-up-confirmation.voluntary-next-year.self-assessment.heading              = Continue Self Assessment for this year
-agent.sign-up-confirmation.voluntary-next-year.self-assessment.para                 = Your client’s Self Assessment tax return must be submitted as normal on 31 January {0}.
+agent.sign-up-confirmation.what-you-must-do.para2                                   = Your chosen software will tell you what else you need to do, including:
+agent.sign-up-confirmation.what-you-must-do.bullet1                                 = how to authorise and connect the software to your agent services account
+agent.sign-up-confirmation.what-you-must-do.bullet2                                 = how to keep digital records
+agent.sign-up-confirmation.what-you-must-do.bullet3                                 = when and how to send quarterly updates
+agent.sign-up-confirmation.what-you-must-do.current.year.bullet4                    = if you need to send any missed or backdated updates for the current tax year - and how to send them
+agent.sign-up-confirmation.what-you-must-do.bullet5                                 = when and how to make your client’s final declaration after the end of the tax year
+agent.sign-up-confirmation.what-you-must-do.para3                                   = And your client will need to pay the tax they owe.
 
-agent.sign-up-confirmation.agent-services-account.heading                           = Your agent services account
-agent.sign-up-confirmation.agent-services-account.para                              = Authorise and manage your clients accounts.
-agent.sign-up-confirmation.agent-services-account.link-text                         = Go to your agent services account
+agent.sign-up-confirmation.manage-client-account.heading                            = Manage your clients’ accounts
+agent.sign-up-confirmation.manage-client-account.para1                              = Go to your {0}
+agent.sign-up-confirmation.manage-client-account.link.text                          = agent services account
 
 ## Using Software Page ##
 individual.using-software.heading                                    = Are you using software that works with Making Tax Digital for Income Tax?
@@ -430,11 +437,10 @@ sign-up-confirmation.other-income-sources.bullet2.link-href          = https://w
 
 sign-up-confirmation.report-previous-tax-year.heading                = Report previous tax year
 sign-up-confirmation.report-previous-tax-year.plus.one.heading       = Report current and previous tax years
-sign-up-confirmation.report-previous-tax-year.para                   = You must submit your Self Assessment tax return for the year ended 5 April {0} using your HMRC online services account as normal.
+sign-up-confirmation.report-previous-tax-year.para                   = You must submit your Self Assessment tax returns for the years ended 5 April {0} using your HMRC online services account as normal.
 
-sign-up-confirmation.preference-set.online.para-one                  = You have chosen to get your tax letters online.
-sign-up-confirmation.preference-set.online.para-two                  = You must verify your email address to confirm this. Select the link we sent by email to do this, if you have not already done so.
-sign-up-confirmation.preference-set.paper.para                       = You have chosen to get your tax letters by post. You can change this at anytime in your HMRC online account.
+sign-up-confirmation.preference-set.online.heading                   = Your communication preferences
+sign-up-confirmation.preference-set.online.para-one                  = If you’ve chosen to get your tax letters online, make sure you have verified your email address.
 
 ## Errors ##
 

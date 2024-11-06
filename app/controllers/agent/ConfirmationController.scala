@@ -19,11 +19,12 @@ package controllers.agent
 import auth.agent.PostSubmissionController
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
-import models.Next
+import models.{Next, Yes}
 import models.common.AccountingPeriodModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services._
 import services.agent.ClientDetailsRetrieval
+import uk.gov.hmrc.http.InternalServerException
 import utilities.AccountingPeriodUtil
 import views.html.agent.confirmation.SignUpConfirmation
 
@@ -35,7 +36,8 @@ class ConfirmationController @Inject()(signUpConfirmation: SignUpConfirmation,
                                        referenceRetrieval: ReferenceRetrieval,
                                        clientDetailsRetrieval: ClientDetailsRetrieval,
                                        subscriptionDetailsService: SubscriptionDetailsService,
-                                       mandationStatusService: MandationStatusService)
+                                       mandationStatusService: MandationStatusService,
+                                       sessionDataService: SessionDataService)
                                       (val auditingService: AuditingService,
                                        val authService: AuthService)
                                       (implicit val ec: ExecutionContext,
@@ -49,6 +51,7 @@ class ConfirmationController @Inject()(signUpConfirmation: SignUpConfirmation,
         clientDetails <- clientDetailsRetrieval.getClientDetails
         taxYearSelection <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
         mandationStatus <- mandationStatusService.getMandationStatus
+        softwareStatus <- sessionDataService.fetchSoftwareStatus
       } yield {
         val isNextYear = taxYearSelection.map(_.accountingYear).contains(Next)
         val accountingPeriodModel: AccountingPeriodModel = if (isNextYear) {
@@ -57,14 +60,22 @@ class ConfirmationController @Inject()(signUpConfirmation: SignUpConfirmation,
           AccountingPeriodUtil.getCurrentTaxYear
         }
 
-        Ok(signUpConfirmation(
-          mandatedCurrentYear = mandationStatus.currentYearStatus.isMandated,
-          mandatedNextYear = mandationStatus.nextYearStatus.isMandated,
-          isNextYear,
-          Some(clientDetails.name),
-          clientDetails.formattedNino,
-          accountingPeriodModel
-        ))
+        softwareStatus match {
+          case Left(error) =>
+            throw new InternalServerException(s"[ConfirmationController][show] - failure retrieving software status - $error")
+
+          case Right(usingSoftwareStatus) =>
+            Ok(signUpConfirmation(
+              mandatedCurrentYear = mandationStatus.currentYearStatus.isMandated,
+              mandatedNextYear = mandationStatus.nextYearStatus.isMandated,
+              isNextYear,
+              Some(clientDetails.name),
+              clientDetails.formattedNino,
+              accountingPeriodModel,
+              usingSoftwareStatus = usingSoftwareStatus.contains(Yes)
+            ))
+
+        }
       }
   }
 
@@ -75,5 +86,4 @@ class ConfirmationController @Inject()(signUpConfirmation: SignUpConfirmation,
           .map(_ => Redirect(controllers.agent.routes.AddAnotherClientController.addAnother()))
       }
   }
-
 }

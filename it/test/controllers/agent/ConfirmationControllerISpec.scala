@@ -18,10 +18,11 @@ package controllers.agent
 
 import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
+import helpers.IntegrationTestConstants.IndividualURI.usingSoftwareURI
 import helpers.IntegrationTestConstants.testNino
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
-import models.EligibilityStatus
+import models.{EligibilityStatus, Yes, YesNo}
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
 import play.api.http.Status.{NOT_FOUND, NO_CONTENT, OK}
@@ -33,6 +34,7 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
   "GET /confirmation" when {
     s"There is ${ITSASessionKeys.MTDITID} in session" should {
       "call subscription on the back end service" in {
+        val testOption: YesNo = Yes
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
@@ -45,7 +47,7 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
           responseBody = Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         )
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.HAS_SOFTWARE)(OK, Json.toJson(testOption))
         When("I call GET /confirmation")
         val res = IncomeTaxSubscriptionFrontend.showConfirmation(hasSubmitted = true, "Test", "User", "A111111AA")
 

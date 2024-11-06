@@ -39,7 +39,8 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
   with MockReferenceRetrieval
   with MockClientDetailsRetrieval
   with MockMandationStatusService
-  with MockSpsService {
+  with MockSpsService
+  with MockSessionDataService {
 
   val mockSignUpConfirmation: SignUpConfirmation = mock[SignUpConfirmation]
 
@@ -48,7 +49,8 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
     mockReferenceRetrieval,
     mockClientDetailsRetrieval,
     mockSubscriptionDetailsService,
-    mockMandationStatusService
+    mockMandationStatusService,
+    mockSessionDataService
   )(
     mockAuditingService,
     mockAuthService
@@ -75,6 +77,7 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
       ArgumentMatchers.any(),
       ArgumentMatchers.any(),
       ArgumentMatchers.any(),
+      ArgumentMatchers.any(),
       ArgumentMatchers.any())
     (ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(HtmlFormat.empty)
 
@@ -92,6 +95,7 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
         mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
         mockGetMandationService(Voluntary, Voluntary)
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+        mockFetchSoftwareStatus(Right(None))
         mockCall()
         val result = TestConfirmationController.show(
           subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "any")
@@ -106,6 +110,7 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
         mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
         mockGetMandationService(Voluntary, Voluntary)
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+        mockFetchSoftwareStatus(Right(None))
         mockCall()
 
         val result = TestConfirmationController.show(
