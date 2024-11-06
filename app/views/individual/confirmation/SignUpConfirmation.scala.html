@@ -68,19 +68,10 @@ classes = "govuk-!-margin-bottom-4"
 
 <div>
   @if(preference.contains(true)) {
-  <p class="govuk-body">
-    @messages("sign-up-confirmation.preference-set.online.para-one")
-  </p>
-  <p class="govuk-body">
-    @messages("sign-up-confirmation.preference-set.online.para-two")
-  </p>
-  } else if (preference.contains(false)) {
-  <p class="govuk-body">
-    @messages("sign-up-confirmation.preference-set.paper.para")
-  </p>
-  } else {}
+  <h2 class="govuk-heading-m">@messages("sign-up-confirmation.preference-set.online.heading")</h2>
+  <p class="govuk-body">@messages("sign-up-confirmation.preference-set.online.para-one")</p>
+  }
 </div>
-
 }
 
 @userDetails = @{

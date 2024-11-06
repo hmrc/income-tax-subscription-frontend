@@ -166,12 +166,8 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "has an online preference when their opt in preference was true" in {
-          preferenceSection(preference = Some(true)).selectNth("p", 1).text mustBe SignUpConfirmationMessages.onlinePreferenceParaOne
-          preferenceSection(preference = Some(true)).selectNth("p", 2).text mustBe SignUpConfirmationMessages.onlinePreferenceParaTwo
-        }
-
-        "has a paper preference when their opt in preference was false " in {
-          preferenceSection(preference = Some(false)).selectNth("p", 1).text mustBe SignUpConfirmationMessages.paperPreferencePara
+            preferenceSection(preference = Some(true)).selectNth("h2", 1).text mustBe SignUpConfirmationMessages.onlinePreferenceHeading
+            preferenceSection(preference = Some(true)).selectNth("p", 1).text mustBe SignUpConfirmationMessages.onlinePreferenceParaOne
         }
       }
     }
@@ -287,12 +283,8 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "has an online preference when their opt in preference was true" in {
+          preferenceSection(preference = Some(true)).selectNth("h2", 1).text mustBe SignUpConfirmationMessages.onlinePreferenceHeading
           preferenceSection(preference = Some(true)).selectNth("p", 1).text mustBe SignUpConfirmationMessages.onlinePreferenceParaOne
-          preferenceSection(preference = Some(true)).selectNth("p", 2).text mustBe SignUpConfirmationMessages.onlinePreferenceParaTwo
-        }
-
-        "has a paper preference when their opt in preference was false " in {
-          preferenceSection(preference = Some(false)).selectNth("p", 1).text mustBe SignUpConfirmationMessages.paperPreferencePara
         }
       }
     }
@@ -411,12 +403,8 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "has an online preference when their opt in preference was true" in {
+          preferenceSection(preference = Some(true)).selectNth("h2", 1).text mustBe SignUpConfirmationMessages.onlinePreferenceHeading
           preferenceSection(preference = Some(true)).selectNth("p", 1).text mustBe SignUpConfirmationMessages.onlinePreferenceParaOne
-          preferenceSection(preference = Some(true)).selectNth("p", 2).text mustBe SignUpConfirmationMessages.onlinePreferenceParaTwo
-        }
-
-        "has a paper preference when their opt in preference was false " in {
-          preferenceSection(preference = Some(false)).selectNth("p", 1).text mustBe SignUpConfirmationMessages.paperPreferencePara
         }
       }
     }
@@ -535,12 +523,8 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "has an online preference when their opt in preference was true" in {
+          preferenceSection(preference = Some(true)).selectNth("h2", 1).text mustBe SignUpConfirmationMessages.onlinePreferenceHeading
           preferenceSection(preference = Some(true)).selectNth("p", 1).text mustBe SignUpConfirmationMessages.onlinePreferenceParaOne
-          preferenceSection(preference = Some(true)).selectNth("p", 2).text mustBe SignUpConfirmationMessages.onlinePreferenceParaTwo
-        }
-
-        "has a paper preference when their opt in preference was false " in {
-          preferenceSection(preference = Some(false)).selectNth("p", 1).text mustBe SignUpConfirmationMessages.paperPreferencePara
         }
       }
     }
@@ -597,12 +581,11 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
       val previousTaxYearHeading = "Report previous tax year"
       val previousNextTaxYearHeading = "Report current and previous tax years"
-      val paragraphThisYear = s"You must submit your Self Assessment tax return for the year ended 5 April $thisYear using your HMRC online services account as normal."
-      val paragraphNextYear = s"You must submit your Self Assessment tax return for the year ended 5 April $nextYear using your HMRC online services account as normal."
+      val paragraphThisYear = s"You must submit your Self Assessment tax returns for the years ended 5 April $thisYear using your HMRC online services account as normal."
+      val paragraphNextYear = s"You must submit your Self Assessment tax returns for the years ended 5 April $nextYear using your HMRC online services account as normal."
 
-    val onlinePreferenceParaOne = "You have chosen to get your tax letters online."
-    val onlinePreferenceParaTwo = "You must verify your email address to confirm this. Select the link we sent by email to do this, if you have not already done so."
-    val paperPreferencePara = "You have chosen to get your tax letters by post. You can change this at anytime in your HMRC online account."
+      val onlinePreferenceHeading = "Your communication preferences"
+      val onlinePreferenceParaOne = "If you’ve chosen to get your tax letters online, make sure you have verified your email address."
   }
 
   private val CURRENT_TAX_YEAR: Int = Random.between(1900, 2100)
