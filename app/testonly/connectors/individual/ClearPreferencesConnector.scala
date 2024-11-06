@@ -29,7 +29,7 @@ class ClearPreferencesConnector @Inject()(appConfig: TestOnlyAppConfig,
                                           http: HttpClient)
                                          (implicit ec: ExecutionContext) extends RawResponseReads {
 
-  val clearPreferencesURL: String => String = (nino: String) => appConfig.entityResolverURL + s"/entity-resolver-admin/paye/$nino"
+  val clearPreferencesURL: String => String = (nino: String) => appConfig.entityResolverURL + s"/test-only/entity-resolver-admin/paye/$nino"
 
   def clear(nino: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = http.DELETE(clearPreferencesURL(nino))
 
