@@ -18,8 +18,13 @@ package controllers.individual
 
 import auth.individual.SignUpController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.PrePopulate
+import controllers.utils.ReferenceRetrieval
+import models.{Next, Yes}
 import play.api.mvc._
-import services.{AuditingService, AuthService, GetEligibilityStatusService, MandationStatusService}
+import services._
+import uk.gov.hmrc.http.InternalServerException
+import utilities.AccountingPeriodUtil
 import views.html.individual.WhatYouNeedToDo
 
 import javax.inject.{Inject, Singleton}
@@ -28,7 +33,10 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
                                           mandationStatusService: MandationStatusService,
-                                          getEligibilityStatusService: GetEligibilityStatusService)
+                                          getEligibilityStatusService: GetEligibilityStatusService,
+                                          referenceRetrieval: ReferenceRetrieval,
+                                          subscriptionDetailsService: SubscriptionDetailsService,
+                                          sessionDataService: SessionDataService)
                                          (val auditingService: AuditingService,
                                           val appConfig: AppConfig,
                                           val authService: AuthService)
@@ -37,21 +45,43 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
       for {
+        reference <- referenceRetrieval.getIndividualReference
         mandationStatus <- mandationStatusService.getMandationStatus
         eligibilityStatus <- getEligibilityStatusService.getEligibilityStatus
+        usingSoftwareStatus <- sessionDataService.fetchSoftwareStatus
+        selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
       } yield {
-        Ok(whatYouNeedToDo(
-          postAction = routes.WhatYouNeedToDoController.submit,
-          onlyNextYear = eligibilityStatus.eligibleNextYearOnly,
-          mandatedCurrentYear = mandationStatus.currentYearStatus.isMandated,
-          mandatedNextYear = mandationStatus.nextYearStatus.isMandated
-        ))
+        val selectedNextTaxYear: Boolean = selectedTaxYear.map(_.accountingYear).contains(Next)
+        usingSoftwareStatus match {
+          case Left(_) => throw new InternalServerException("[UsingSoftwareController][show] - Could not fetch software status")
+          case Right(selectedSoftwareStatus) =>
+            Ok(whatYouNeedToDo(
+              postAction = routes.WhatYouNeedToDoController.submit,
+              onlyNextYear = eligibilityStatus.eligibleNextYearOnly,
+              mandatedCurrentYear = mandationStatus.currentYearStatus.isMandated,
+              mandatedNextYear = mandationStatus.nextYearStatus.isMandated,
+              isUsingSoftware = selectedSoftwareStatus.contains(Yes),
+              signUpNextTaxYear = selectedNextTaxYear,
+              backUrl = backUrl
+            ))
+        }
       }
   }
 
   val submit: Action[AnyContent] = Authenticated { _ =>
     _ =>
-      Redirect(controllers.individual.tasklist.routes.TaskListController.show())
+      if (isEnabled(PrePopulate)) {
+        Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
+      } else {
+        Redirect(controllers.individual.tasklist.routes.TaskListController.show())
+      }
   }
 
+  def backUrl: String = {
+    if (isEnabled(PrePopulate)) {
+      controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+    } else {
+      controllers.individual.routes.UsingSoftwareController.show().url
+    }
+  }
 }

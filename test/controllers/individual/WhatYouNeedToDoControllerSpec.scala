@@ -16,7 +16,7 @@
 
 package controllers.individual
 
-import models.EligibilityStatus
+import models.{EligibilityStatus, Yes}
 import models.status.MandationStatus.{Mandated, Voluntary}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -25,17 +25,28 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAuditingService, MockGetEligibilityStatusService, MockMandationStatusService}
+import services.mocks._
+import utilities.agent.TestModels.{testSelectedTaxYearCurrent, testSelectedTaxYearNext}
 import views.html.individual.WhatYouNeedToDo
+import config.featureswitch.FeatureSwitch.PrePopulate
 
 import scala.concurrent.Future
 
-class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec with MockAuditingService with MockMandationStatusService with MockGetEligibilityStatusService {
+class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
+  with MockAuditingService
+  with MockMandationStatusService
+  with MockGetEligibilityStatusService
+  with MockReferenceRetrieval
+  with MockSubscriptionDetailsService
+  with MockSessionDataService {
 
   object TestWhatYouNeedToDoController extends WhatYouNeedToDoController(
     mock[WhatYouNeedToDo],
     mockMandationStatusService,
-    mockGetEligibilityStatusService
+    mockGetEligibilityStatusService,
+    mockReferenceRetrieval,
+    mockSubscriptionDetailsService,
+    mockSessionDataService
   )(
     mockAuditingService,
     appConfig,
@@ -44,7 +55,13 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec with MockAuditing
 
   trait Setup {
     val whatYouNeedToDo: WhatYouNeedToDo = mock[WhatYouNeedToDo]
-    val controller: WhatYouNeedToDoController = new WhatYouNeedToDoController(whatYouNeedToDo, mockMandationStatusService, mockGetEligibilityStatusService)(
+    val controller: WhatYouNeedToDoController = new WhatYouNeedToDoController(
+      whatYouNeedToDo,
+      mockMandationStatusService,
+      mockGetEligibilityStatusService,
+      mockReferenceRetrieval,
+      mockSubscriptionDetailsService,
+      mockSessionDataService)(
       mockAuditingService,
       appConfig,
       mockAuthService
@@ -62,12 +79,16 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec with MockAuditing
       "the session contains mandated and eligible for only next year" in new Setup {
         mockGetMandationService(Voluntary, Mandated)
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
-
+        mockFetchSoftwareStatus(Right(Some(Yes)))
+        mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(true),
           ArgumentMatchers.eq(false),
-          ArgumentMatchers.eq(true)
+          ArgumentMatchers.eq(true),
+          ArgumentMatchers.any(),
+          ArgumentMatchers.any(),
+          ArgumentMatchers.any()
         )(any(), any()))
           .thenReturn(HtmlFormat.empty)
 
@@ -79,12 +100,17 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec with MockAuditing
       "the session contains a eligible for both years" in new Setup {
         mockGetMandationService(Voluntary, Voluntary)
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+        mockFetchSoftwareStatus(Right(Some(Yes)))
+        mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
 
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(false),
           ArgumentMatchers.eq(false),
-          ArgumentMatchers.eq(false)
+          ArgumentMatchers.eq(false),
+          ArgumentMatchers.any(),
+          ArgumentMatchers.any(),
+          ArgumentMatchers.any()
         )(any(), any()))
           .thenReturn(HtmlFormat.empty)
 
@@ -96,12 +122,16 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec with MockAuditing
       "the session contains a eligible for next year only" in new Setup {
         mockGetMandationService(Voluntary, Voluntary)
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
-
+        mockFetchSoftwareStatus(Right(Some(Yes)))
+        mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(true),
           ArgumentMatchers.eq(false),
-          ArgumentMatchers.eq(false)
+          ArgumentMatchers.eq(false),
+          ArgumentMatchers.any(),
+          ArgumentMatchers.any(),
+          ArgumentMatchers.any()
         )(any(), any()))
           .thenReturn(HtmlFormat.empty)
 
@@ -113,12 +143,37 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec with MockAuditing
       "the session contains a mandated current year flag of true" in new Setup {
         mockGetMandationService(Mandated, Voluntary)
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
-
+        mockFetchSoftwareStatus(Right(Some(Yes)))
+        mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(false),
           ArgumentMatchers.eq(true),
-          ArgumentMatchers.eq(false)
+          ArgumentMatchers.eq(false),
+          ArgumentMatchers.any(),
+          ArgumentMatchers.any(),
+          ArgumentMatchers.any()
+        )(any(), any()))
+          .thenReturn(HtmlFormat.empty)
+
+        val result: Future[Result] = controller.show(subscriptionRequest)
+
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+      }
+      "the session contains a selected software status and tax year " in new Setup {
+        mockGetMandationService(Mandated, Voluntary)
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+        mockFetchSoftwareStatus(Right(Some(Yes)))
+        mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
+        when(whatYouNeedToDo(
+          ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
+          ArgumentMatchers.eq(false),
+          ArgumentMatchers.eq(true),
+          ArgumentMatchers.eq(false),
+          ArgumentMatchers.eq(true),
+          ArgumentMatchers.eq(false),
+          ArgumentMatchers.any()
         )(any(), any()))
           .thenReturn(HtmlFormat.empty)
 
@@ -128,15 +183,22 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec with MockAuditing
         contentType(result) mustBe Some(HTML)
       }
     }
-
-    "submit" must {
-      "return SEE_OTHER to the task list page" in new Setup {
-        val result: Future[Result] = controller.submit(subscriptionRequest)
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
-      }
-    }
-
   }
+
+  "submit" must {
+    "return SEE_OTHER to the task list page" in new Setup {
+      val result: Future[Result] = controller.submit(subscriptionRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
+    }
+    "return SEE_OTHER to the your income sources page" in new Setup {
+      enable(PrePopulate)
+      val result: Future[Result] = controller.submit(subscriptionRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
+    }
+  }
+
 }
