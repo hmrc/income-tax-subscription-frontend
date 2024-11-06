@@ -654,7 +654,7 @@ agent.using-software.no-hint                                    = You or your cl
 agent.using-software.form-error                                 = Select ‘Yes’ if you or your client are using software to keep digital records and that software works with Making Tax Digital for Income Tax
 
 
-## Agent what you need to do page ##
+## Agent what you need to do page (voluntary, both years) ##
 agent.what-you-need-to-do.title                                                          = What you need to do
 agent.what-you-need-to-do.heading                                                        = What you need to do
 agent.what-you-are-agreeing-to.heading                                                   = What you are agreeing to
@@ -672,7 +672,7 @@ agent.what-you-are-agreeing-to.voluntary-both-years.sub-heading                 
 agent.what-you-are-agreeing-to.voluntary-both-years.para-4                               = Making Tax Digital for Income Tax is voluntary until 6 April 2026. Your client can opt out of sending quarterly updates. But if we’ve told your client they’re liable for our new penalties, they’ll continue to be liable for them.
 agent.what-you-are-agreeing-to.voluntary-both-years.para-5                               = From 6 April 2026, some people will need to use Making Tax Digital for Income Tax. They will not be able to opt out. We’ll write to your client if this applies to them.
 
-##  What You Need To Do (Voluntary, eligible to sign up next year only) - Agent ##
+## Agent What You Need To Do (Voluntary, eligible to sign up next year only) ##
 
 agent.voluntary-what-you-need-to-do.para-1                                               = If you continue to sign up this client, you need to submit their Self Assessment tax return as normal for the current tax year.
 agent.voluntary-what-you-need-to-do.para-2                                               = From the tax year starting on {0}, you’re agreeing to:
@@ -687,7 +687,7 @@ agent.voluntary-what-you-need-to-do.heading-2                                   
 agent.voluntary-what-you-need-to-do.para-5                                               = Making Tax Digital for Income Tax is voluntary until 6 April 2026. Your client can opt out of sending quarterly updates. But if we’ve told your client they’re liable for our new penalties, they’ll continue to be liable for them.
 agent.voluntary-what-you-need-to-do.para-6                                               = From 6 April 2026, some people will need to use Making Tax Digital for Income Tax. They will not be able to opt out. We’ll write to your client if this applies to them.
 
-##  Agent What You Need To Do (Current year Mandated)  ##
+## Agent What You Need To Do (Current year Mandated)  ##
 agent.what-you-need-to-do-current.para-1                                                 = Based on your client’s previous tax returns, they must use Making Tax Digital for Income Tax.
 agent.what-you-need-to-do-current.para-2                                                 = Either you or your client must:
 agent.what-you-need-to-do-current.bullet-1                                               = Record income and expenses using compatible software.
@@ -701,6 +701,25 @@ agent.what-you-need-to-do.mandated-and-eligible-next-year-only.para-2           
 agent.what-you-need-to-do.mandated-and-eligible-next-year-only.bullet-1                  = Get compatible software to record your income and expenses.
 agent.what-you-need-to-do.mandated-and-eligible-next-year-only.bullet-2                  = Use your compatible software to send us quarterly updates.
 agent.what-you-need-to-do.mandated-and-eligible-next-year-only.bullet-3                  = Send an end of period statement and submit your final declaration by {0}.
+
+## Agent what you need to do page (Pre-pop Enabled)
+agent.voluntary.what-you-need-to-do.pre-pop.para-1-current                               = If you continue to sign up this client, you and your client are agreeing to meet their tax obligations using Making Tax Digital for Income Tax. You or your client will need to:
+agent.voluntary.what-you-need-to-do.pre-pop.para-1-next                                  = If you continue to sign up this client, you need to submit their Self Assessment tax return as normal for the current tax year.
+agent.voluntary.what-you-need-to-do.pre-pop.para-2-should                                = From 6 April {0}, you or your client should:
+agent.voluntary.what-you-need-to-do.pre-pop.para-2-must                                  = From 6 April {0}, you or your client must:
+agent.voluntary.what-you-need-to-do.pre-pop.bullet-1-has-software                        = use software that works with Making Tax Digital for Income Tax
+agent.voluntary.what-you-need-to-do.pre-pop.bullet-1-no-software                         = find and use software that works with Making Tax Digital for Income Tax
+agent.voluntary.what-you-need-to-do.pre-pop.bullet-1-no-software-link                    = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax
+agent.voluntary.what-you-need-to-do.pre-pop.bullet-2                                     = keep digital records of your client’s business income and expenses
+agent.voluntary.what-you-need-to-do.pre-pop.bullet-3                                     = use software to send us quarterly updates
+agent.voluntary.what-you-need-to-do.pre-pop.bullet-4-current-year                        = send any missed quarterly updates for the current tax year
+agent.voluntary.what-you-need-to-do.pre-pop.bullet-5                                     = make their final declaration by 31 January after the end of each tax year
+agent.voluntary.what-you-need-to-do.pre-pop.para-3                                       = You’re also agreeing that {0} will apply to your client if they miss deadlines for submitting their tax return or paying their bill.
+agent.voluntary.what-you-need-to-do.pre-pop.para-3-link                                  = our new penalties
+agent.voluntary.what-you-need-to-do.pre-pop.para-4                                       = While you and your client are taking part voluntarily, your client will not get penalties for missed quarterly updates.
+agent.voluntary.what-you-need-to-do.pre-pop.heading-2                                    = Opting out
+agent.voluntary.what-you-need-to-do.pre-pop.para-5                                       = Making Tax Digital for Income Tax is voluntary until 6 April 2026. Your client can opt out of sending quarterly updates. But if we’ve told your client that our new penalties apply to them, that will continue.
+agent.voluntary.what-you-need-to-do.pre-pop.para-6                                       = From 6 April 2026, some people will need to use Making Tax Digital for Income Tax. They will not be able to opt out. We’ll write to your client if this applies to them.
 
 
 # Client details page

@@ -16,8 +16,11 @@
 
 package controllers.agent
 
-import models.EligibilityStatus
+import config.featureswitch.FeatureSwitch.PrePopulate
+import config.featureswitch.FeatureSwitching
+import models.common.AccountingYearModel
 import models.status.MandationStatus.{Mandated, Voluntary}
+import models.{Current, EligibilityStatus, Next, Yes}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -25,23 +28,31 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAuditingService, MockClientDetailsRetrieval, MockGetEligibilityStatusService, MockMandationStatusService}
-import utilities.agent.TestConstants.{testFormattedNino, testName, testUtr}
+import services.mocks._
+import utilities.agent.TestConstants.{testFormattedNino, testName}
 import views.html.agent.WhatYouNeedToDo
 
 import scala.concurrent.Future
 
-class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec
-  with MockAuditingService
-  with MockMandationStatusService
-  with MockClientDetailsRetrieval
-  with MockGetEligibilityStatusService {
+class AgentWhatYouNeedToDoControllerSpec
+  extends AgentControllerBaseSpec
+    with MockAuditingService
+    with MockMandationStatusService
+    with MockClientDetailsRetrieval
+    with MockGetEligibilityStatusService
+    with MockReferenceRetrieval
+    with MockSubscriptionDetailsService
+    with MockSessionDataService
+    with FeatureSwitching {
 
   object TestWhatYouNeedToDoController extends WhatYouNeedToDoController(
     mock[WhatYouNeedToDo],
     mockClientDetailsRetrieval,
     mockGetEligibilityStatusService,
-    mockMandationStatusService
+    mockMandationStatusService,
+    mockReferenceRetrieval,
+    mockSubscriptionDetailsService,
+    mockSessionDataService
   )(
     mockAuditingService,
     appConfig,
@@ -54,7 +65,10 @@ class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec
       whatYouNeedToDo,
       mockClientDetailsRetrieval,
       mockGetEligibilityStatusService,
-      mockMandationStatusService
+      mockMandationStatusService,
+      mockReferenceRetrieval,
+      mockSubscriptionDetailsService,
+      mockSessionDataService
     )(
       mockAuditingService,
       appConfig,
@@ -62,6 +76,10 @@ class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec
     )
   }
 
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(PrePopulate)
+  }
 
   override val controllerName: String = "WhatYouNeedToDoController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -74,14 +92,20 @@ class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec
       "the user is completely voluntary and is eligible for both years" in new Setup {
         mockGetMandationService(Voluntary, Voluntary)
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+        mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
+        mockFetchSoftwareStatus(Right(Some(Yes)))
 
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(false),
           ArgumentMatchers.eq(false),
           ArgumentMatchers.eq(false),
+          ArgumentMatchers.eq(true),
+          ArgumentMatchers.any(),
           ArgumentMatchers.eq(testName),
-          ArgumentMatchers.eq(testFormattedNino)
+          ArgumentMatchers.eq(testFormattedNino),
+          ArgumentMatchers.any(),
+
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
@@ -92,17 +116,22 @@ class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec
         contentType(result) mustBe Some(HTML)
       }
 
-      "the user is voluntary but only eligibile for next year" in new Setup {
+      "the user is voluntary but only eligible for next year" in new Setup {
         mockGetMandationService(Voluntary, Voluntary)
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
+        mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
+        mockFetchSoftwareStatus(Right(Some(Yes)))
 
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(true),
           ArgumentMatchers.eq(false),
           ArgumentMatchers.eq(false),
+          ArgumentMatchers.any(),
+          ArgumentMatchers.any(),
           ArgumentMatchers.eq(testName),
-          ArgumentMatchers.eq(testFormattedNino)
+          ArgumentMatchers.eq(testFormattedNino),
+          ArgumentMatchers.any(),
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
@@ -115,14 +144,19 @@ class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec
       "the user is mandated for the current year and eligible for all" in new Setup {
         mockGetMandationService(Mandated, Voluntary)
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+        mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
+        mockFetchSoftwareStatus(Right(Some(Yes)))
 
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(false),
           ArgumentMatchers.eq(true),
           ArgumentMatchers.eq(false),
+          ArgumentMatchers.any(),
+          ArgumentMatchers.any(),
           ArgumentMatchers.eq(testName),
-          ArgumentMatchers.eq(testFormattedNino)
+          ArgumentMatchers.eq(testFormattedNino),
+          ArgumentMatchers.any(),
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
@@ -135,14 +169,19 @@ class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec
       "the user is mandated for the next year and eligible for all" in new Setup {
         mockGetMandationService(Voluntary, Mandated)
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+        mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
+        mockFetchSoftwareStatus(Right(Some(Yes)))
 
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(false),
           ArgumentMatchers.eq(false),
           ArgumentMatchers.eq(true),
+          ArgumentMatchers.any(),
+          ArgumentMatchers.any(),
           ArgumentMatchers.eq(testName),
-          ArgumentMatchers.eq(testFormattedNino)
+          ArgumentMatchers.eq(testFormattedNino),
+          ArgumentMatchers.any(),
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
@@ -152,6 +191,124 @@ class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec
         status(result) mustBe OK
         contentType(result) mustBe Some(HTML)
       }
+
+      "pre-pop is enabled and user is eligible for both years" when {
+        "user is voluntary" in new Setup {
+          enable(PrePopulate)
+
+          mockGetMandationService(Voluntary, Voluntary)
+          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+          mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
+          mockFetchSoftwareStatus(Right(Some(Yes)))
+
+          when(whatYouNeedToDo(
+            ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
+            ArgumentMatchers.eq(false),
+            ArgumentMatchers.eq(false),
+            ArgumentMatchers.eq(false),
+            ArgumentMatchers.any(),
+            ArgumentMatchers.any(),
+            ArgumentMatchers.eq(testName),
+            ArgumentMatchers.eq(testFormattedNino),
+            ArgumentMatchers.eq(Some(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)),
+
+          )(any(), any())).thenReturn(HtmlFormat.empty)
+
+          val result: Future[Result] = controller.show(
+            subscriptionRequestWithName
+          )
+
+          status(result) mustBe OK
+          contentType(result) mustBe Some(HTML)
+        }
+        "user is mandated" in new Setup {
+          enable(PrePopulate)
+
+          mockGetMandationService(Mandated, Mandated)
+          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+          mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
+          mockFetchSoftwareStatus(Right(Some(Yes)))
+
+          when(whatYouNeedToDo(
+            ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
+            ArgumentMatchers.eq(false),
+            ArgumentMatchers.eq(true),
+            ArgumentMatchers.eq(true),
+            ArgumentMatchers.any(),
+            ArgumentMatchers.any(),
+            ArgumentMatchers.eq(testName),
+            ArgumentMatchers.eq(testFormattedNino),
+            ArgumentMatchers.eq(Some(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)),
+
+          )(any(), any())).thenReturn(HtmlFormat.empty)
+
+          val result: Future[Result] = controller.show(
+            subscriptionRequestWithName
+          )
+
+          status(result) mustBe OK
+          contentType(result) mustBe Some(HTML)
+        }
+      }
+
+      "pre-pop is enabled and user is eligible for next year only" when {
+        "user is voluntary" in new Setup {
+          enable(PrePopulate)
+
+          mockGetMandationService(Voluntary, Voluntary)
+          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
+          mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
+          mockFetchSoftwareStatus(Right(Some(Yes)))
+
+          when(whatYouNeedToDo(
+            ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
+            ArgumentMatchers.eq(true),
+            ArgumentMatchers.eq(false),
+            ArgumentMatchers.eq(false),
+            ArgumentMatchers.eq(false),
+            ArgumentMatchers.any(),
+            ArgumentMatchers.eq(testName),
+            ArgumentMatchers.eq(testFormattedNino),
+            ArgumentMatchers.eq(Some(controllers.agent.routes.UsingSoftwareController.show().url)),
+          )(any(), any())).thenReturn(HtmlFormat.empty)
+
+          val result: Future[Result] = controller.show(
+            subscriptionRequestWithName
+          )
+
+          status(result) mustBe OK
+          contentType(result) mustBe Some(HTML)
+        }
+        "user is mandated" in new Setup {
+          enable(PrePopulate)
+
+          mockGetMandationService(Voluntary, Mandated)
+          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
+          mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
+          mockFetchSoftwareStatus(Right(Some(Yes)))
+
+          when(whatYouNeedToDo(
+            ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
+            ArgumentMatchers.eq(true),
+            ArgumentMatchers.eq(false),
+            ArgumentMatchers.eq(true),
+            ArgumentMatchers.eq(false),
+            ArgumentMatchers.any(),
+            ArgumentMatchers.eq(testName),
+            ArgumentMatchers.eq(testFormattedNino),
+            ArgumentMatchers.eq(Some(controllers.agent.routes.UsingSoftwareController.show().url)),
+
+          )(any(), any())).thenReturn(HtmlFormat.empty)
+
+          val result: Future[Result] = controller.show(
+            subscriptionRequestWithName
+          )
+
+          status(result) mustBe OK
+          contentType(result) mustBe Some(HTML)
+        }
+      }
+
     }
   }
 
@@ -161,6 +318,14 @@ class AgentWhatYouNeedToDoControllerSpec extends AgentControllerBaseSpec
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.agent.tasklist.routes.TaskListController.show().url)
+    }
+
+    "return SEE_OTHER to the Your Income Sources page when PrePop enabled" in new Setup {
+      enable(PrePopulate)
+      val result: Future[Result] = controller.submit(subscriptionRequestWithName)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
     }
   }
 
