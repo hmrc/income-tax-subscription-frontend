@@ -38,6 +38,7 @@ trait AppConfig {
   val subscriptionUrlPost: String
   val throttlingUrl: String
   val mandationStatusUrl: String
+  def prePopUrl(nino: String): String
   val userMatchingUrl: String
   val clientMatchingUrl: String
   val signUpIncomeSourcesUrl: String
@@ -203,7 +204,7 @@ class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Con
   override lazy val channelPreferencesUrl: String = config.baseUrl("channel-preferences")
   override lazy val throttlingUrl = s"$microServiceUrl/income-tax-subscription/throttled"
   override lazy val mandationStatusUrl = s"$microServiceUrl/income-tax-subscription/itsa-status"
-
+  override def prePopUrl(nino: String): String = s"$microServiceUrl/income-tax-subscription/pre-pop/$nino"
 
   override def storeNinoUrl(token: String): String = s"$microServiceUrl/income-tax-subscription/identifier-mapping/$token"
 

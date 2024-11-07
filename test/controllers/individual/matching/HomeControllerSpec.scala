@@ -38,7 +38,6 @@ class HomeControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockCitizenDetailsService
   with MockGetEligibilityStatusService
-  with MockPrePopulationService
   with MockAuditingService
   with MockThrottlingConnector
   with MockSessionDataService
@@ -70,7 +69,6 @@ class HomeControllerSpec extends ControllerBaseSpec
     mockGetEligibilityStatusService,
     mockSubscriptionService,
     new ThrottlingService(mockThrottlingConnector, mockSessionDataService, appConfig),
-    mockPrePopulationService,
     mockNinoService,
     mockSessionDataService,
     mockReferenceRetrieval
@@ -157,7 +155,6 @@ class HomeControllerSpec extends ControllerBaseSpec
                   status(result) must be(Status.SEE_OTHER)
                   redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url
 
-                  verifyPrePopulationSave(0, testReference)
                   verifyGetThrottleStatusCalls(times(1))
                 }
               }
@@ -227,7 +224,6 @@ class HomeControllerSpec extends ControllerBaseSpec
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(controllers.individual.controllist.routes.CannotSignUpThisYearController.show.url)
             verifyGetThrottleStatusCalls(times(1))
-            verifyPrePopulationSave(0, testReference)
           }
         }
 
