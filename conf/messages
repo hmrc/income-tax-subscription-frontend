@@ -131,23 +131,24 @@ what-you-are-agreeing-to.both-pre-mandated-scenarios.para-4     = From 6 April 2
 
 
 ##  What You Need To Do (Voluntary Pre-Pop Content)  ##
-individual.voluntary-what-you-need-to-do.pre-pop.para-1.current                         = If you continue to sign up, you’re agreeing to meet your tax obligations using Making Tax Digital for Income Tax. You’ll need to:
-individual.voluntary-what-you-need-to-do.pre-pop.para-1.next-before                     = If you continue to sign up, you need to submit your Self Assessment tax return as normal for the current tax year. From 6 April {0}, you should:
-individual.voluntary-what-you-need-to-do.pre-pop.para-1.next-after                      = If you continue to sign up, you need to submit your Self Assessment tax return as normal for the current tax year. From 6 April {0}, you must:
-individual.voluntary-what-you-need-to-do.pre-pop.bullet-1.has-software                  = use software that works with Making Tax Digital for Income Tax
-individual.voluntary-what-you-need-to-do.pre-pop.bullet-1.no-software                   = find and use software that works with Making Tax Digital for Income Tax
-individual.voluntary-what-you-need-to-do.pre-pop.bullet-1.no-software.href              = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax
-individual.voluntary-what-you-need-to-do.pre-pop.bullet-2                               = keep digital records of your business income and expenses
-individual.voluntary-what-you-need-to-do.pre-pop.bullet-3                               = use software to send us quarterly updates
-individual.voluntary-what-you-need-to-do.pre-pop.bullet-4.current                       = send any missed quarterly updates for the current tax year
-individual.voluntary-what-you-need-to-do.pre-pop.bullet-5                               = make your final declaration by 31 January after the end of each tax year
-individual.voluntary-what-you-need-to-do.pre-pop.para-2                                 = You’re also agreeing that {0} will apply if you miss deadlines for submitting your tax return or paying your bill.
-individual.voluntary-what-you-need-to-do.pre-pop.para-2.link                            = our new penalties
-individual.voluntary-what-you-need-to-do.pre-pop.para-2.href                            = https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers
-individual.voluntary-what-you-need-to-do.pre-pop.para-3.current                         = While you’re taking part voluntarily, you will not get penalties for missed quarterly updates.
-individual.voluntary-what-you-need-to-do.pre-pop.heading-2                              = Opting out
-individual.voluntary-what-you-need-to-do.pre-pop.para-4                                 = Making Tax Digital for Income Tax is voluntary until 6 April 2026. You can opt out of sending quarterly updates. But if we’ve told you that our new penalties apply to you, that will continue.
-individual.voluntary-what-you-need-to-do.pre-pop.para-5                                 = From 6 April 2026, some people will need to use Making Tax Digital for Income Tax. They will not be able to opt out. We’ll write to you if this applies to you.
+individual.what-you-need-to-do.pre-pop.para-1.current                   = If you continue to sign up, you’re agreeing to meet your tax obligations using Making Tax Digital for Income Tax. You’ll need to:
+individual.what-you-need-to-do.pre-pop.para-1.next                      = If you continue to sign up, you need to submit your Self Assessment tax return as normal for the current tax year.
+individual.what-you-need-to-do.pre-pop.para-2.should                    = From 6 April {0}, you should:
+individual.what-you-need-to-do.pre-pop.para-2.must                      = From 6 April {0}, you must:
+individual.what-you-need-to-do.pre-pop.bullet-1.has-software            = use software that works with Making Tax Digital for Income Tax
+individual.what-you-need-to-do.pre-pop.bullet-1.no-software             = find and use software that works with Making Tax Digital for Income Tax
+individual.what-you-need-to-do.pre-pop.bullet-1.no-software.href        = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax
+individual.what-you-need-to-do.pre-pop.bullet-2                         = keep digital records of your business income and expenses
+individual.what-you-need-to-do.pre-pop.bullet-3                         = use software to send us quarterly updates
+individual.what-you-need-to-do.pre-pop.bullet-4.current                 = send any missed quarterly updates for the current tax year
+individual.what-you-need-to-do.pre-pop.bullet-5                         = make your final declaration by 31 January after the end of each tax year
+individual.what-you-need-to-do.pre-pop.para-3                           = You’re also agreeing that {0} will apply if you miss deadlines for submitting your tax return or paying your bill.
+individual.what-you-need-to-do.pre-pop.para-3.link                      = our new penalties
+individual.what-you-need-to-do.pre-pop.para-3.href                      = https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers
+individual.what-you-need-to-do.pre-pop.para-4.current                   = While you’re taking part voluntarily, you will not get penalties for missed quarterly updates.
+individual.what-you-need-to-do.pre-pop.heading-2                        = Opting out
+individual.what-you-need-to-do.pre-pop.para-5                           = Making Tax Digital for Income Tax is voluntary until 6 April 2026. You can opt out of sending quarterly updates. But if we’ve told you that our new penalties apply to you, that will continue.
+individual.what-you-need-to-do.pre-pop.para-6                           = From 6 April 2026, some people will need to use Making Tax Digital for Income Tax. They will not be able to opt out. We’ll write to you if this applies to you.
 
 
 ##  What You Need To Do (Voluntary next year only scenario) - Individual ##
