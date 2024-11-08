@@ -21,12 +21,11 @@ import auth.individual.{SignUp, StatelessController}
 import common.Constants
 import common.Constants.ITSASessionKeys._
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.PrePopulate
 import controllers.utils.ReferenceRetrieval
+import models.EligibilityStatus
 import models.audits.EligibilityAuditing.EligibilityAuditModel
 import models.audits.SignupStartedAuditing
 import models.common.subscription.SubscriptionSuccess
-import models.{EligibilityStatus, PrePopData}
 import play.api.mvc._
 import services._
 import services.individual._
@@ -41,7 +40,6 @@ class HomeController @Inject()(citizenDetailsService: CitizenDetailsService,
                                getEligibilityStatusService: GetEligibilityStatusService,
                                subscriptionService: SubscriptionService,
                                throttlingService: ThrottlingService,
-                               prePopulationService: PrePopulationService,
                                ninoService: NinoService,
                                sessionDataService: SessionDataService,
                                referenceRetrieval: ReferenceRetrieval)
@@ -136,19 +134,14 @@ class HomeController @Inject()(citizenDetailsService: CitizenDetailsService,
         ))
         Future.successful(Redirect(controllers.individual.controllist.routes.NotEligibleForIncomeTaxController.show()))
       case EligibilityStatus(thisYear, _) =>
-        referenceRetrieval.getReference(None) flatMap { reference =>
-          handlePrepop(reference, None) map { _ =>
-            auditingService.audit(EligibilityAuditModel(
-              agentReferenceNumber = None,
-              utr = Some(utr),
-              nino = Some(nino),
-              eligibility = if (thisYear) "eligible" else "eligible - next year only",
-              failureReason = None
-            ))
-            goToSignUp(thisYear)
-              .withJourneyState(SignUp)
-          }
-        }
+        auditingService.audit(EligibilityAuditModel(
+          agentReferenceNumber = None,
+          utr = Some(utr),
+          nino = Some(nino),
+          eligibility = if (thisYear) "eligible" else "eligible - next year only",
+          failureReason = None
+        ))
+        Future.successful(goToSignUp(thisYear).withJourneyState(SignUp))
     }
 
   }
@@ -166,12 +159,6 @@ class HomeController @Inject()(citizenDetailsService: CitizenDetailsService,
       controllers.individual.controllist.routes.CannotSignUpThisYearController.show
     Redirect(location)
   }
-
-  private def handlePrepop(reference: String, prepopMaybe: Option[PrePopData])(implicit hc: HeaderCarrier) =
-    prepopMaybe match {
-      case Some(prepop) if isEnabled(PrePopulate) => prePopulationService.prePopulate(reference, prepop)
-      case _ => Future.successful(())
-    }
 
   private def startIndividualSignupAudit(utr: Option[String])(implicit request: Request[_]) = {
     ninoService.getNino flatMap { nino =>

@@ -39,6 +39,9 @@ trait MockConfig extends UnitTestTrait with AppConfig {
   override val subscriptionUrlPost: String = "/income-tax-subscription/subscription-v2"
   override val throttlingUrl: String = "/income-tax-subscription/throttled"
   override val mandationStatusUrl: String = "/income-tax-subscription/itsa-status"
+
+  override def prePopUrl(nino: String): String = s"/income-tax-subscription/pre-pop/$nino"
+
   override val clientMatchingUrl = "/income-tax-subscription/client-matching"
   override val signUpIncomeSourcesUrl = "/income-tax-subscription/mis/sign-up"
   override val createIncomeSourcesUrl = "/income-tax-subscription/mis/create"

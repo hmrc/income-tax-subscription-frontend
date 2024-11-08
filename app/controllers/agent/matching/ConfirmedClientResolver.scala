@@ -19,10 +19,9 @@ package controllers.agent.matching
 import auth.agent.{AgentSignUp, IncomeTaxAgentUser, UserMatchingController}
 import common.Constants.ITSASessionKeys.{FailedClientMatching, JourneyStateKey}
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.PrePopulate
 import controllers.utils.ReferenceRetrieval
+import models.EligibilityStatus
 import models.audits.EligibilityAuditing.EligibilityAuditModel
-import models.{EligibilityStatus, PrePopData}
 import play.api.mvc._
 import services._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -36,8 +35,7 @@ class ConfirmedClientResolver @Inject()(getEligibilityStatusService: GetEligibil
                                         referenceRetrieval: ReferenceRetrieval,
                                         subscriptionDetailsService: SubscriptionDetailsService,
                                         ninoService: NinoService,
-                                        utrService: UTRService,
-                                        prePopulationService: PrePopulationService)
+                                        utrService: UTRService)
                                        (val auditingService: AuditingService,
                                         val authService: AuthService,
                                         val appConfig: AppConfig)
@@ -67,15 +65,12 @@ class ConfirmedClientResolver @Inject()(getEligibilityStatusService: GetEligibil
                 .clearUserDetailsExceptName
             }
           case EligibilityStatus(thisYear, _) =>
-            referenceRetrieval.getReference(Some(arn)) flatMap { reference =>
-              for {
-                _ <- handlePrepop(reference, None)
-                result <- goToSignUpClient(nextYearOnly = !thisYear)
-              } yield {
-                result.addingToSession(
-                  JourneyStateKey -> AgentSignUp.name
-                )
-              }
+            for {
+              result <- goToSignUpClient(nextYearOnly = !thisYear)
+            } yield {
+              result.addingToSession(
+                JourneyStateKey -> AgentSignUp.name
+              )
             }
         }
       }
@@ -111,11 +106,5 @@ class ConfirmedClientResolver @Inject()(getEligibilityStatusService: GetEligibil
 
   private def goToCannotTakePart: Result =
     Redirect(controllers.agent.eligibility.routes.CannotTakePartController.show)
-
-  private def handlePrepop(reference: String, prepopMaybe: Option[PrePopData])(implicit hc: HeaderCarrier) =
-    prepopMaybe match {
-      case Some(prepop) if isEnabled(PrePopulate) => prePopulationService.prePopulate(reference, prepop)
-      case _ => Future.successful(())
-    }
 
 }

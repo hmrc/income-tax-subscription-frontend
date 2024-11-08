@@ -24,7 +24,6 @@ import models.{Next, Yes}
 import play.api.mvc._
 import services._
 import uk.gov.hmrc.http.InternalServerException
-import utilities.AccountingPeriodUtil
 import views.html.individual.WhatYouNeedToDo
 
 import javax.inject.{Inject, Singleton}

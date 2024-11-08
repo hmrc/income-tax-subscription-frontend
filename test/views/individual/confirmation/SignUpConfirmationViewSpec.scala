@@ -33,8 +33,6 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
   val implicitDateFormatter: ImplicitDateFormatter = app.injector.instanceOf[ImplicitDateFormatterImpl]
 
-  import implicitDateFormatter._
-
   private val signUpConfirmation = app.injector.instanceOf[SignUpConfirmation]
 
   val testName = "Lisa Khan"
@@ -138,7 +136,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "contains a bullet list for other income sources section" which {
-        def bulletList= mainContent().selectNth("ul", 2)
+        def bulletList = mainContent().selectNth("ul", 2)
 
         "has a first item" in {
           bulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.incomeSourcesBullet1
@@ -166,8 +164,8 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
 
         "has an online preference when their opt in preference was true" in {
-            preferenceSection(preference = Some(true)).selectNth("h2", 1).text mustBe SignUpConfirmationMessages.onlinePreferenceHeading
-            preferenceSection(preference = Some(true)).selectNth("p", 1).text mustBe SignUpConfirmationMessages.onlinePreferenceParaOne
+          preferenceSection(preference = Some(true)).selectNth("h2", 1).text mustBe SignUpConfirmationMessages.onlinePreferenceHeading
+          preferenceSection(preference = Some(true)).selectNth("p", 1).text mustBe SignUpConfirmationMessages.onlinePreferenceParaOne
         }
       }
     }
@@ -253,7 +251,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "contains a bullet list for other income sources section" which {
-        def bulletList= mainContent().selectNth("ul", 2)
+        def bulletList = mainContent().selectNth("ul", 2)
 
         "has a first item" in {
           bulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.incomeSourcesBullet1
@@ -373,7 +371,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "contains a bullet list for other income sources section" which {
-        def bulletList= mainContent().selectNth("ul", 2)
+        def bulletList = mainContent().selectNth("ul", 2)
 
         "has a first item" in {
           bulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.incomeSourcesBullet1
@@ -493,7 +491,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "contains a bullet list for other income sources section" which {
-        def bulletList= mainContent().selectNth("ul", 2)
+        def bulletList = mainContent().selectNth("ul", 2)
 
         "has a first item" in {
           bulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.incomeSourcesBullet1
@@ -550,42 +548,42 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     else
       SignUpConfirmationMessages.panelDescriptionThis
 
-      val printLink = "Print this page"
+    val printLink = "Print this page"
 
-      val thisYear = AccountingPeriodUtil.getCurrentTaxEndYear - 1
-      val nextYear = AccountingPeriodUtil.getNextTaxEndYear - 1
+    val thisYear = AccountingPeriodUtil.getCurrentTaxEndYear - 1
+    val nextYear = AccountingPeriodUtil.getNextTaxEndYear - 1
 
-      val paraOne = s"Read how to use Making Tax Digital for Income Tax (opens in new tab)"
-      val linkTextOne = "use Making Tax Digital for Income Tax (opens in new tab)"
+    val paraOne = s"Read how to use Making Tax Digital for Income Tax (opens in new tab)"
+    val linkTextOne = "use Making Tax Digital for Income Tax (opens in new tab)"
 
-      val whatYouMustDoYesAndCurrentYear = "You must use your software that works with Making Tax Digital for Income Tax."
-      val whatYouMustDoNoAndCurrentYear = s"You must find and use software that works with Making Tax Digital for Income Tax (opens in new tab)"
-      val linkTextNoAndCurrentYear = "software that works with Making Tax Digital for Income Tax (opens in new tab)"
+    val whatYouMustDoYesAndCurrentYear = "You must use your software that works with Making Tax Digital for Income Tax."
+    val whatYouMustDoNoAndCurrentYear = s"You must find and use software that works with Making Tax Digital for Income Tax (opens in new tab)"
+    val linkTextNoAndCurrentYear = "software that works with Making Tax Digital for Income Tax (opens in new tab)"
 
-      val whatYouMustDoYesAndNextYear = s"From 6 April $nextYear, you must use your software that works with Making Tax Digital for Income Tax."
-      val whatYouMustDoNoAndNextYear = s"From 6 April $nextYear, you must find and use software that works with Making Tax Digital for Income Tax (opens in new tab)"
-      val linkTextNoAndNextYear = "software that works with Making Tax Digital for Income Tax (opens in new tab)"
+    val whatYouMustDoYesAndNextYear = s"From 6 April $nextYear, you must use your software that works with Making Tax Digital for Income Tax."
+    val whatYouMustDoNoAndNextYear = s"From 6 April $nextYear, you must find and use software that works with Making Tax Digital for Income Tax (opens in new tab)"
+    val linkTextNoAndNextYear = "software that works with Making Tax Digital for Income Tax (opens in new tab)"
 
-      val paraTwo = "Your chosen software will tell you what else you need to do, including:"
-      val bullet1 = "how to authorise and connect the software to the Government Gateway user ID you use for your Self Assessment"
-      val bullet2 = "how to keep digital records"
-      val bullet3 = "when and how to send quarterly updates"
-      val bullet4NoThisYear = "if you need to send any missed or backdated updates for the current tax year - and how to send them"
-      val bullet5 = "when and how to make your final declaration after the end of the tax year"
-      val paraThree = "And you will need to pay the tax you owe."
+    val paraTwo = "Your chosen software will tell you what else you need to do, including:"
+    val bullet1 = "how to authorise and connect the software to the Government Gateway user ID you use for your Self Assessment"
+    val bullet2 = "how to keep digital records"
+    val bullet3 = "when and how to send quarterly updates"
+    val bullet4NoThisYear = "if you need to send any missed or backdated updates for the current tax year - and how to send them"
+    val bullet5 = "when and how to make your final declaration after the end of the tax year"
+    val paraThree = "And you will need to pay the tax you owe."
 
-      val incomeSourcesHeading = "Other income sources"
-      val incomeSourcesParaOne = "Make sure you declare your other income sources, such as income from employment, dividends or savings. You need to report these using either:"
-      val incomeSourcesBullet1 = "your compatible software (if it allows you to do this)"
-      val incomeSourcesBullet2 = "HMRC online services (opens in new tab)"
+    val incomeSourcesHeading = "Other income sources"
+    val incomeSourcesParaOne = "Make sure you declare your other income sources, such as income from employment, dividends or savings. You need to report these using either:"
+    val incomeSourcesBullet1 = "your compatible software (if it allows you to do this)"
+    val incomeSourcesBullet2 = "HMRC online services (opens in new tab)"
 
-      val previousTaxYearHeading = "Report previous tax year"
-      val previousNextTaxYearHeading = "Report current and previous tax years"
-      val paragraphThisYear = s"You must submit your Self Assessment tax returns for the years ended 5 April $thisYear using your HMRC online services account as normal."
-      val paragraphNextYear = s"You must submit your Self Assessment tax returns for the years ended 5 April $nextYear using your HMRC online services account as normal."
+    val previousTaxYearHeading = "Report previous tax year"
+    val previousNextTaxYearHeading = "Report current and previous tax years"
+    val paragraphThisYear = s"You must submit your Self Assessment tax returns for the years ended 5 April $thisYear using your HMRC online services account as normal."
+    val paragraphNextYear = s"You must submit your Self Assessment tax returns for the years ended 5 April $nextYear using your HMRC online services account as normal."
 
-      val onlinePreferenceHeading = "Your communication preferences"
-      val onlinePreferenceParaOne = "If you’ve chosen to get your tax letters online, make sure you have verified your email address."
+    val onlinePreferenceHeading = "Your communication preferences"
+    val onlinePreferenceParaOne = "If you’ve chosen to get your tax letters online, make sure you have verified your email address."
   }
 
   private val CURRENT_TAX_YEAR: Int = Random.between(1900, 2100)

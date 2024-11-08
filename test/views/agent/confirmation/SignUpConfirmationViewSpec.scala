@@ -16,18 +16,13 @@
 
 package views.agent.confirmation
 
+import models.DateModel
 import models.common.AccountingPeriodModel
-import models.{DateModel, UpdateDeadline}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.Html
 import utilities.{AccountingPeriodUtil, ImplicitDateFormatter, ImplicitDateFormatterImpl, ViewSpec}
 import views.html.agent.confirmation.SignUpConfirmation
-
-import java.time.LocalDate
-import java.time.Month._
-import java.time.format.DateTimeFormatter
-import scala.util.Random
 
 class SignUpConfirmationViewSpec extends ViewSpec {
 
