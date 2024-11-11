@@ -17,14 +17,23 @@
 package models.prepop
 
 import models.{AccountingMethod, DateModel}
-import models.common.business.Address
+import models.common.business.{Address, BusinessStartDate, BusinessNameModel, BusinessTradeNameModel, BusinessAddressModel, SelfEmploymentData}
 import play.api.libs.json.{Json, Reads}
 
 case class PrePopSelfEmployment(name: String,
                                 trade: Option[String],
                                 address: Option[Address],
                                 startDate: Option[DateModel],
-                                accountingMethod: AccountingMethod)
+                                accountingMethod: AccountingMethod) {
+
+  def toSelfEmploymentData(id: String): SelfEmploymentData = SelfEmploymentData(
+    id = id,
+    businessStartDate = startDate.map(BusinessStartDate.apply),
+    businessName = Some(BusinessNameModel(name)),
+    businessTradeName = trade.map(BusinessTradeNameModel.apply),
+    businessAddress = address.map(BusinessAddressModel.apply)
+  )
+}
 
 object PrePopSelfEmployment {
   implicit val reads: Reads[PrePopSelfEmployment] = Json.reads[PrePopSelfEmployment]

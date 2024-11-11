@@ -45,6 +45,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.OK
 import play.twirl.api.TwirlHelperImports.twirlJavaCollectionToScala
 import uk.gov.hmrc.crypto.{ApplicationCrypto, Decrypter, Encrypter}
+import utilities.UUIDProvider
 
 import java.time.LocalDate
 import java.util.UUID
@@ -109,9 +110,14 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
     "microservice.services.channel-preferences.port" -> mockPort
   )
 
+  lazy val fakeUUIDProvider: UUIDProvider = new UUIDProvider {
+    override def getUUID: String = "test-uuid"
+  }
+
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .in(Environment.simple(mode = Mode.Dev))
     .configure(configuration)
+    .overrides(inject.bind[UUIDProvider].to(fakeUUIDProvider))
     .build()
 
   implicit lazy val crypto: Encrypter with Decrypter = app.injector.instanceOf[ApplicationCrypto].JsonCrypto

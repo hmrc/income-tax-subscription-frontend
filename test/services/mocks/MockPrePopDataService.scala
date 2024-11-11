@@ -17,31 +17,27 @@
 package services.mocks
 
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
-import services.NinoService
+import services.PrePopDataService
+import services.PrePopDataService.PrePopResult
 
 import scala.concurrent.Future
 
-trait MockNinoService extends MockitoSugar with BeforeAndAfterEach {
+trait MockPrePopDataService extends MockitoSugar with BeforeAndAfterEach {
   suite: Suite =>
 
-  val mockNinoService: NinoService = mock[NinoService]
+  val mockPrePopDataService: PrePopDataService = mock[PrePopDataService]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockNinoService)
+    reset(mockPrePopDataService)
   }
 
-  def mockGetNino(nino: String): Unit = {
-    when(mockNinoService.getNino(ArgumentMatchers.any())).thenReturn(
-      Future.successful(nino)
-    )
-  }
-
-  def verifyGetNino(): Unit = {
-    verify(mockNinoService).getNino(ArgumentMatchers.any())
+  def mockPrePopIncomeSources(prePopResult: PrePopResult): Unit = {
+    when(mockPrePopDataService.prePopIncomeSources(ArgumentMatchers.any())(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(prePopResult))
   }
 
 }

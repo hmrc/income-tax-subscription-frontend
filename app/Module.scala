@@ -16,11 +16,13 @@
 
 import com.google.inject.AbstractModule
 import config.{AppConfig, FrontendAppConfig}
+import utilities.{UUIDProvider, UUIDProviderImpl}
 
 class Module extends AbstractModule {
 
   override def configure(): Unit = {
     bind(classOf[AppConfig]).to(classOf[FrontendAppConfig]).asEagerSingleton()
+    bind(classOf[UUIDProvider]).to(classOf[UUIDProviderImpl]).asEagerSingleton()
   }
 
 }

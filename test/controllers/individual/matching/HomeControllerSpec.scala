@@ -18,15 +18,15 @@ package controllers.individual.matching
 
 import _root_.common.Constants.ITSASessionKeys
 import config.MockConfig
-import config.featureswitch.FeatureSwitch.{PrePopulate, ThrottlingFeature}
+import config.featureswitch.FeatureSwitch.ThrottlingFeature
 import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataSuccessResponse
 import controllers.individual.ControllerBaseSpec
 import models.EligibilityStatus
-import models.status.MandationStatus.{Mandated, Voluntary}
 import org.mockito.Mockito.{never, reset, times}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
+import services.PrePopDataService.PrePopResult.{PrePopFailure, PrePopSuccess}
 import services.mocks._
 import services.{IndividualStartOfJourneyThrottle, ThrottlingService}
 import uk.gov.hmrc.http.InternalServerException
@@ -43,7 +43,7 @@ class HomeControllerSpec extends ControllerBaseSpec
   with MockSessionDataService
   with MockReferenceRetrieval
   with MockNinoService
-  with MockMandationStatusConnector {
+  with MockPrePopDataService {
 
   private val eligible = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)
   private val ineligible = EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = false)
@@ -58,7 +58,6 @@ class HomeControllerSpec extends ControllerBaseSpec
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockAuthService)
-    disable(PrePopulate)
     enable(ThrottlingFeature)
     notThrottled()
     mockNinoRetrieval()
@@ -71,6 +70,7 @@ class HomeControllerSpec extends ControllerBaseSpec
     new ThrottlingService(mockThrottlingConnector, mockSessionDataService, appConfig),
     mockNinoService,
     mockSessionDataService,
+    mockPrePopDataService,
     mockReferenceRetrieval
   )(
     mockAuditingService,
@@ -134,29 +134,42 @@ class HomeControllerSpec extends ControllerBaseSpec
 
       "the user does not already have an MTDIT subscription on ETMP" when {
         "the user is eligible " when {
-          "the user has a UTR" should {
-            "redirect to the sign up journey" when {
-              "PrePopulate and ITSA mandation status are on but there is no PrePop data" when {
-                "redirect to SPSHandoff controller" in {
-                  mockNinoAndUtrRetrieval()
-                  mockGetNino(testNino)
-                  mockFetchUTR(Right(None))
-                  mockSaveUTR(testUtr)(Right(SaveSessionDataSuccessResponse))
-                  mockLookupUserWithUtr(testNino)(testUtr, testFullName)
-                  setupMockGetSubscriptionNotFound(testNino)
-                  mockGetEligibilityStatus(eligible)
-                  mockGetMandationStatus(testNino, testUtr)(Voluntary, Mandated)
-                  mockFetchThrottlePassed(IndividualStartOfJourneyThrottle)(Right(None))
-                  mockSaveThrottlePassed(IndividualStartOfJourneyThrottle)(Right(SaveSessionDataSuccessResponse))
+          "the user has a UTR" when {
+            "pre pop income sources is successful" should {
+              "redirect to the sps handoff" in {
+                mockNinoAndUtrRetrieval()
+                mockGetNino(testNino)
+                mockFetchUTR(Right(None))
+                mockSaveUTR(testUtr)(Right(SaveSessionDataSuccessResponse))
+                setupMockGetSubscriptionNotFound(testNino)
+                mockGetEligibilityStatus(eligible)
+                mockFetchThrottlePassed(IndividualStartOfJourneyThrottle)(Right(None))
+                mockSaveThrottlePassed(IndividualStartOfJourneyThrottle)(Right(SaveSessionDataSuccessResponse))
+                mockPrePopIncomeSources(PrePopSuccess)
 
-                  enable(PrePopulate)
+                val result = await(testHomeController().index(fakeRequest))
+                status(result) must be(Status.SEE_OTHER)
+                redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url
 
-                  val result = await(testHomeController().index(fakeRequest))
-                  status(result) must be(Status.SEE_OTHER)
-                  redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url
+                verifyGetThrottleStatusCalls(times(1))
+              }
+            }
+            "pre-pop income sources produces a failure" should {
+              "throw an exception detailing the error" in {
+                mockNinoAndUtrRetrieval()
+                mockGetNino(testNino)
+                mockFetchUTR(Right(None))
+                mockSaveUTR(testUtr)(Right(SaveSessionDataSuccessResponse))
+                setupMockGetSubscriptionNotFound(testNino)
+                mockGetEligibilityStatus(eligible)
+                mockFetchThrottlePassed(IndividualStartOfJourneyThrottle)(Right(None))
+                mockSaveThrottlePassed(IndividualStartOfJourneyThrottle)(Right(SaveSessionDataSuccessResponse))
+                mockPrePopIncomeSources(PrePopFailure("Failure"))
 
-                  verifyGetThrottleStatusCalls(times(1))
-                }
+                intercept[InternalServerException](await(testHomeController().index(fakeRequest)))
+                  .message mustBe "[HomeController] - Failure occurred when pre-populating income source details. Error: Failure"
+
+                verifyGetThrottleStatusCalls(times(1))
               }
             }
           }
@@ -171,9 +184,9 @@ class HomeControllerSpec extends ControllerBaseSpec
                 mockLookupUserWithUtr(testNino)(testUtr, testFullName)
                 setupMockGetSubscriptionNotFound(testNino)
                 mockGetEligibilityStatus(eligible)
-                mockGetMandationStatus(testNino, testUtr)(Voluntary, Voluntary)
                 mockFetchThrottlePassed(IndividualStartOfJourneyThrottle)(Right(None))
                 mockSaveThrottlePassed(IndividualStartOfJourneyThrottle)(Right(SaveSessionDataSuccessResponse))
+                mockPrePopIncomeSources(PrePopSuccess)
 
                 val result = await(testHomeController().index(fakeRequest))
 
@@ -207,23 +220,42 @@ class HomeControllerSpec extends ControllerBaseSpec
 
         }
 
-        "the user is not eligible this year, but is eligible next year" should {
-          "redirect to the Cannot Sign Up This Year page" in {
-            mockNinoAndUtrRetrieval()
-            mockGetNino(testNino)
-            mockFetchUTR(Right(None))
-            mockSaveUTR(testUtr)(Right(SaveSessionDataSuccessResponse))
-            mockLookupUserWithUtr(testNino)(testUtr, testFullName)
-            setupMockGetSubscriptionNotFound(testNino)
-            mockGetEligibilityStatus(eligibleNextYearOnly)
-            mockGetMandationStatus(testNino, testUtr)(Voluntary, Voluntary)
-            mockFetchThrottlePassed(IndividualStartOfJourneyThrottle)(Right(None))
-            mockSaveThrottlePassed(IndividualStartOfJourneyThrottle)(Right(SaveSessionDataSuccessResponse))
+        "the user is not eligible this year, but is eligible next year" when {
+          "pre pop income sources is successful" should {
+            "redirect to the Cannot Sign Up This Year page" in {
+              mockNinoAndUtrRetrieval()
+              mockGetNino(testNino)
+              mockFetchUTR(Right(None))
+              mockSaveUTR(testUtr)(Right(SaveSessionDataSuccessResponse))
+              mockLookupUserWithUtr(testNino)(testUtr, testFullName)
+              setupMockGetSubscriptionNotFound(testNino)
+              mockGetEligibilityStatus(eligibleNextYearOnly)
+              mockFetchThrottlePassed(IndividualStartOfJourneyThrottle)(Right(None))
+              mockSaveThrottlePassed(IndividualStartOfJourneyThrottle)(Right(SaveSessionDataSuccessResponse))
+              mockPrePopIncomeSources(PrePopSuccess)
 
-            val result = await(testHomeController().index(fakeRequest))
-            status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(controllers.individual.controllist.routes.CannotSignUpThisYearController.show.url)
-            verifyGetThrottleStatusCalls(times(1))
+              val result = await(testHomeController().index(fakeRequest))
+              status(result) mustBe SEE_OTHER
+              redirectLocation(result) mustBe Some(controllers.individual.controllist.routes.CannotSignUpThisYearController.show.url)
+              verifyGetThrottleStatusCalls(times(1))
+            }
+          }
+          "pre-pop income sources produces a failure" should {
+            "throw an exception detailing the error" in {
+              mockNinoAndUtrRetrieval()
+              mockGetNino(testNino)
+              mockFetchUTR(Right(None))
+              mockSaveUTR(testUtr)(Right(SaveSessionDataSuccessResponse))
+              mockLookupUserWithUtr(testNino)(testUtr, testFullName)
+              setupMockGetSubscriptionNotFound(testNino)
+              mockGetEligibilityStatus(eligibleNextYearOnly)
+              mockFetchThrottlePassed(IndividualStartOfJourneyThrottle)(Right(None))
+              mockSaveThrottlePassed(IndividualStartOfJourneyThrottle)(Right(SaveSessionDataSuccessResponse))
+              mockPrePopIncomeSources(PrePopFailure("Failure"))
+
+              intercept[InternalServerException](await(testHomeController().index(fakeRequest)))
+                .message mustBe "[HomeController] - Failure occurred when pre-populating income source details. Error: Failure"
+            }
           }
         }
 

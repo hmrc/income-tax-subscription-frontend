@@ -25,14 +25,14 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
+import org.scalatestplus.play.PlaySpec
 import services.SubscriptionDetailsService
-import utilities.UnitTestTrait
 
 import scala.concurrent.Future
 
 //scalastyle:off
 
-trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach with MockMandationStatusService with MockGetEligibilityStatusService {
+trait MockSubscriptionDetailsService extends PlaySpec with MockitoSugar with BeforeAndAfterEach with MockMandationStatusService with MockGetEligibilityStatusService {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -82,9 +82,25 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
       .thenReturn(Future.successful(result))
   }
 
+  def verifySaveProperty(propertyModel: PropertyModel, count: Int = 1): Unit = {
+    if (count == 0){
+      verify(mockSubscriptionDetailsService, times(count)).saveProperty(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any())
+    } else {
+      verify(mockSubscriptionDetailsService, times(count)).saveProperty(ArgumentMatchers.any(), ArgumentMatchers.eq(propertyModel))(ArgumentMatchers.any())
+    }
+  }
+
   def mockSaveOverseasProperty(overseasPropertyModel: OverseasPropertyModel)(result: PostSubscriptionDetailsResponse): Unit = {
     when(mockSubscriptionDetailsService.saveOverseasProperty(ArgumentMatchers.any(), ArgumentMatchers.eq(overseasPropertyModel))(ArgumentMatchers.any()))
       .thenReturn(Future.successful(result))
+  }
+
+  def verifySaveOverseasProperty(overseasPropertyModel: OverseasPropertyModel, count: Int = 1): Unit = {
+    if (count == 0){
+      verify(mockSubscriptionDetailsService, times(count)).saveOverseasProperty(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any())
+    } else {
+      verify(mockSubscriptionDetailsService, times(count)).saveOverseasProperty(ArgumentMatchers.any(), ArgumentMatchers.eq(overseasPropertyModel))(ArgumentMatchers.any())
+    }
   }
 
   def mockFetchIncomeSourceConfirmation(result: Option[Boolean]): Unit = {
@@ -100,6 +116,14 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
   def mockSavePrePopFlag(flag: Boolean)(result: PostSubscriptionDetailsResponse): Unit = {
     when(mockSubscriptionDetailsService.savePrePopFlag(ArgumentMatchers.any(), ArgumentMatchers.eq(flag))(ArgumentMatchers.any()))
       .thenReturn(Future.successful(result))
+  }
+
+  def verifySavePrePopFlag(flag: Boolean, count: Int = 1): Unit = {
+    if(count == 0) {
+      verify(mockSubscriptionDetailsService, times(count)).savePrePopFlag(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any())
+    } else {
+      verify(mockSubscriptionDetailsService, times(count)).savePrePopFlag(ArgumentMatchers.any(), ArgumentMatchers.eq(flag))(ArgumentMatchers.any())
+    }
   }
 
   def mockFetchAllSelfEmployments(selfEmployments: Seq[SelfEmploymentData], accountingMethod: Option[AccountingMethod] = None): Unit = {
@@ -157,9 +181,25 @@ trait MockSubscriptionDetailsService extends UnitTestTrait with MockitoSugar wit
       .thenReturn(Future.successful(result))
   }
 
+  def verifySaveBusinesses(businesses: Seq[SelfEmploymentData], accountingMethod: Option[AccountingMethod], count: Int = 1): Unit = {
+    if (count == 0) {
+      verify(mockSubscriptionDetailsService, times(count)).saveBusinesses(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any())
+    } else {
+      verify(mockSubscriptionDetailsService, times(count)).saveBusinesses(ArgumentMatchers.any(), ArgumentMatchers.eq(businesses), ArgumentMatchers.eq(accountingMethod))(ArgumentMatchers.any())
+    }
+  }
+
   def mockFetchPrePopFlag(flag: Option[Boolean]): Unit = {
     when(mockSubscriptionDetailsService.fetchPrePopFlag(ArgumentMatchers.any())(ArgumentMatchers.any()))
       .thenReturn(Future.successful(flag))
+  }
+
+  def verifyFetchPrePopFlag(): Unit = {
+    verify(mockSubscriptionDetailsService).fetchPrePopFlag(ArgumentMatchers.any())(ArgumentMatchers.any())
+  }
+
+  def verifyFetchEligibilityInterruptPassed(): Unit = {
+    verify(mockSubscriptionDetailsService).fetchEligibilityInterruptPassed(ArgumentMatchers.any())(ArgumentMatchers.any())
   }
 
 }
