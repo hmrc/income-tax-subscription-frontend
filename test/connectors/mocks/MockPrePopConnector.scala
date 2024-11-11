@@ -14,34 +14,34 @@
  * limitations under the License.
  */
 
-package services.mocks
+package connectors.mocks
 
+import connectors.PrePopConnector
+import connectors.httpparser.GetPrePopDataParser.GetPrePopDataResponse
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
-import services.NinoService
 
 import scala.concurrent.Future
 
-trait MockNinoService extends MockitoSugar with BeforeAndAfterEach {
+trait MockPrePopConnector extends MockitoSugar with BeforeAndAfterEach {
   suite: Suite =>
 
-  val mockNinoService: NinoService = mock[NinoService]
+  val mockPrePopConnector: PrePopConnector = mock[PrePopConnector]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockNinoService)
+    reset(mockPrePopConnector)
   }
 
-  def mockGetNino(nino: String): Unit = {
-    when(mockNinoService.getNino(ArgumentMatchers.any())).thenReturn(
-      Future.successful(nino)
-    )
+  def mockGetPrePopData(nino: String)(result: GetPrePopDataResponse): Unit = {
+    when(mockPrePopConnector.getPrePopData(ArgumentMatchers.eq(nino))(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(result))
   }
 
-  def verifyGetNino(): Unit = {
-    verify(mockNinoService).getNino(ArgumentMatchers.any())
+  def verifyGetPrePopData(nino: String): Unit = {
+    verify(mockPrePopConnector).getPrePopData(ArgumentMatchers.eq(nino))(ArgumentMatchers.any())
   }
 
 }

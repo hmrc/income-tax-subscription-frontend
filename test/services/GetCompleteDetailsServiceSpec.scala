@@ -25,11 +25,15 @@ import org.scalatestplus.play.PlaySpec
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import services.GetCompleteDetailsService._
 import services.mocks.MockSubscriptionDetailsService
+import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDate
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubscriptionDetailsService {
+
+  val hc: HeaderCarrier = HeaderCarrier()
 
   trait Setup {
     val service: GetCompleteDetailsService = new GetCompleteDetailsService(

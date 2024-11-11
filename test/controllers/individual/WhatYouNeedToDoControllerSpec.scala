@@ -16,8 +16,9 @@
 
 package controllers.individual
 
-import models.{EligibilityStatus, Yes}
+import config.featureswitch.FeatureSwitch.PrePopulate
 import models.status.MandationStatus.{Mandated, Voluntary}
+import models.{EligibilityStatus, Yes}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -28,7 +29,6 @@ import play.twirl.api.HtmlFormat
 import services.mocks._
 import utilities.agent.TestModels.{testSelectedTaxYearCurrent, testSelectedTaxYearNext}
 import views.html.individual.WhatYouNeedToDo
-import config.featureswitch.FeatureSwitch.PrePopulate
 
 import scala.concurrent.Future
 
@@ -39,6 +39,11 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
   with MockReferenceRetrieval
   with MockSubscriptionDetailsService
   with MockSessionDataService {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(PrePopulate)
+  }
 
   object TestWhatYouNeedToDoController extends WhatYouNeedToDoController(
     mock[WhatYouNeedToDo],

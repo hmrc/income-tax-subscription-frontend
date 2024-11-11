@@ -27,6 +27,7 @@ import models.audits.EligibilityAuditing.EligibilityAuditModel
 import models.audits.SignupStartedAuditing
 import models.common.subscription.SubscriptionSuccess
 import play.api.mvc._
+import services.PrePopDataService.PrePopResult
 import services._
 import services.individual._
 import uk.gov.hmrc.auth.core.Enrolments
@@ -42,6 +43,7 @@ class HomeController @Inject()(citizenDetailsService: CitizenDetailsService,
                                throttlingService: ThrottlingService,
                                ninoService: NinoService,
                                sessionDataService: SessionDataService,
+                               prePopDataService: PrePopDataService,
                                referenceRetrieval: ReferenceRetrieval)
                               (val auditingService: AuditingService,
                                val authService: AuthService,
@@ -141,7 +143,18 @@ class HomeController @Inject()(citizenDetailsService: CitizenDetailsService,
           eligibility = if (thisYear) "eligible" else "eligible - next year only",
           failureReason = None
         ))
-        Future.successful(goToSignUp(thisYear).withJourneyState(SignUp))
+        for {
+          reference <- referenceRetrieval.getIndividualReference
+          prePopResult <- prePopDataService.prePopIncomeSources(reference)
+        } yield {
+          prePopResult match {
+            case PrePopResult.PrePopSuccess => goToSignUp(thisYear).withJourneyState(SignUp)
+            case PrePopResult.PrePopFailure(error) =>
+              throw new InternalServerException(
+                s"[HomeController] - Failure occurred when pre-populating income source details. Error: $error"
+              )
+          }
+        }
     }
 
   }

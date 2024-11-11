@@ -19,7 +19,9 @@ package utilities
 import java.util.UUID
 import javax.inject.{Inject, Singleton}
 
-@Singleton
-class UUIDProvider @Inject() {
+trait UUIDProvider {
   def getUUID: String = UUID.randomUUID().toString
 }
+
+@Singleton
+class UUIDProviderImpl @Inject() extends UUIDProvider

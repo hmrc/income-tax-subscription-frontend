@@ -17,19 +17,24 @@
 package controllers.individual.matching
 
 import common.Constants.ITSASessionKeys
-import connectors.stubs.SessionDataConnectorStub
+import config.featureswitch.FeatureSwitch.PrePopulate
+import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks._
 import helpers.{ComponentSpecBase, SessionCookieCrumbler}
-import models.EligibilityStatus
+import models.common.{OverseasPropertyModel, PropertyModel}
+import models.{Accruals, Cash, DateModel, EligibilityStatus}
+import models.common.business.{Address, BusinessAddressModel, BusinessNameModel, BusinessStartDate, BusinessTradeNameModel, SelfEmploymentData}
 import play.api.http.Status._
-import play.api.libs.json.{JsBoolean, JsString}
+import play.api.libs.json.{JsBoolean, JsString, Json}
 import services.IndividualStartOfJourneyThrottle
+import utilities.SubscriptionDataKeys
 
 class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
+    disable(PrePopulate)
     SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.throttlePassed(IndividualStartOfJourneyThrottle))(OK, JsBoolean(true))
   }
 
@@ -236,6 +241,118 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
           val cookie = getSessionMap(res)
           cookie.keys must not contain ITSASessionKeys.FULLNAME
+        }
+      }
+    }
+  }
+
+  "GET /report-quarterly/income-and-expenses/sign-up/index" when {
+    "pre-pop is enabled" when {
+      "pre-pop api returned income sources" should {
+        "pre-populate the income sources and continue" in {
+          enable(PrePopulate)
+
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          SubscriptionStub.stubGetNoSubscription()
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(
+            responseStatus = OK,
+            responseBody = Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = false))
+          )
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+          SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
+
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.PrePopFlag, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
+          PrePopStub.stubGetPrePop(testNino)(
+            status = OK,
+            body = Json.obj(
+              "selfEmployment" -> Json.arr(
+                Json.obj(
+                  "name" -> "ABC",
+                  "trade" -> "Plumbing",
+                  "address" -> Json.obj(
+                    "lines" -> Json.arr(
+                      "1 long road"
+                    ),
+                    "postcode" -> "ZZ1 1ZZ"
+                  ),
+                  "startDate" -> Json.obj(
+                    "day" -> "01",
+                    "month" -> "02",
+                    "year" -> "2000"
+                  ),
+                  "accountingMethod" -> "cash"
+                )
+              ),
+              "ukPropertyAccountingMethod" -> "accruals",
+              "foreignPropertyAccountingMethod" -> "cash"
+            )
+          )
+          IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
+          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[Boolean](SubscriptionDataKeys.PrePopFlag, true)
+          IncomeTaxSubscriptionConnectorStub.stubSaveSoleTraderBusinessDetails(
+            selfEmployments = Seq(SelfEmploymentData(
+              id = "test-uuid",
+              businessStartDate = Some(BusinessStartDate(DateModel("01", "02", "2000"))),
+              businessName = Some(BusinessNameModel("ABC")),
+              businessTradeName = Some(BusinessTradeNameModel("Plumbing")),
+              businessAddress = Some(BusinessAddressModel(Address(
+                lines = Seq(
+                  "1 long road"
+                ),
+                postcode = Some("ZZ1 1ZZ")
+              )))
+            )),
+            accountingMethod = Some(Cash)
+          )
+          IncomeTaxSubscriptionConnectorStub.stubSaveProperty(
+            PropertyModel(accountingMethod = Some(Accruals))
+          )
+          IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(
+            OverseasPropertyModel(accountingMethod = Some(Cash))
+          )
+
+          When("GET /index is called")
+          val res = IncomeTaxSubscriptionFrontend.indexPage()
+
+          Then("Should return a SEE OTHER and re-direct to the sps page")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(IndividualURI.spsHandoffRouteURI)
+          )
+        }
+      }
+      "pre-pop api returned an unexpected result" should {
+        "display technical difficulties" in {
+          enable(PrePopulate)
+
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          SubscriptionStub.stubGetNoSubscription()
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(
+            responseStatus = OK,
+            responseBody = Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = false))
+          )
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+          SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
+
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.PrePopFlag, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
+          PrePopStub.stubGetPrePop(testNino)(
+            status = INTERNAL_SERVER_ERROR,
+            body = Json.obj()
+          )
+
+          When("GET /index is called")
+          val res = IncomeTaxSubscriptionFrontend.indexPage()
+
+          Then("Should return a INTERNAL_SERVER_ERROR")
+          res must have(
+            httpStatus(INTERNAL_SERVER_ERROR)
+          )
         }
       }
     }
