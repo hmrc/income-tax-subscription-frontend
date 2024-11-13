@@ -422,7 +422,7 @@ class PrePopDataServiceSpec extends PlaySpec
   lazy val accountingMethod: AccountingMethod = Cash
 
   lazy val fullPrePopSelfEmployment: PrePopSelfEmployment = PrePopSelfEmployment(
-    name = name,
+    name = Some(name),
     trade = Some(trade),
     address = Some(address),
     startDate = Some(startDate),
@@ -430,7 +430,7 @@ class PrePopDataServiceSpec extends PlaySpec
   )
 
   lazy val minimalPrePopSelfEmployment: PrePopSelfEmployment = PrePopSelfEmployment(
-    name = name,
+    name = None,
     trade = None,
     address = None,
     startDate = None,
@@ -450,7 +450,7 @@ class PrePopDataServiceSpec extends PlaySpec
   lazy val expectedMinimalSelfEmploymentData: SelfEmploymentData = SelfEmploymentData(
     id = testUUID,
     businessStartDate = None,
-    businessName = Some(BusinessNameModel(name)),
+    businessName = None,
     businessTradeName = None,
     businessAddress = None
   )
