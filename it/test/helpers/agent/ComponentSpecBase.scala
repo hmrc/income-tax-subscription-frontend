@@ -55,8 +55,8 @@ import play.api.test.FakeRequest
 import uk.gov.hmrc.crypto.{ApplicationCrypto, Decrypter, Encrypter}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
-import utilities.UserMatchingSessionUtil
 import utilities.UserMatchingSessionUtil.{firstName, lastName}
+import utilities.{UUIDProvider, UserMatchingSessionUtil}
 
 import java.time.LocalDate
 import java.util.UUID
@@ -110,6 +110,10 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
   lazy val wmConfig: WireMockConfiguration = wireMockConfig().port(wiremockPort)
   lazy val wireMockServer = new WireMockServer(wmConfig)
 
+  lazy val fakeUUIDProvider: UUIDProvider = new UUIDProvider {
+    override def getUUID: String = "test-uuid"
+  }
+
   def startWiremock(): Unit = {
     wireMockServer.start()
     WireMock.configureFor(wiremockHost, wiremockPort)
@@ -123,6 +127,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .in(Environment.simple(mode = Mode.Dev))
+    .overrides(inject.bind[UUIDProvider].to(fakeUUIDProvider))
     .configure(configuration)
     .build()
 

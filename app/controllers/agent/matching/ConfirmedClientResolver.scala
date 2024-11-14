@@ -23,8 +23,9 @@ import controllers.utils.ReferenceRetrieval
 import models.EligibilityStatus
 import models.audits.EligibilityAuditing.EligibilityAuditModel
 import play.api.mvc._
+import services.PrePopDataService.PrePopResult
 import services._
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,6 +35,7 @@ class ConfirmedClientResolver @Inject()(getEligibilityStatusService: GetEligibil
                                         throttlingService: ThrottlingService,
                                         referenceRetrieval: ReferenceRetrieval,
                                         subscriptionDetailsService: SubscriptionDetailsService,
+                                        prePopDataService: PrePopDataService,
                                         ninoService: NinoService,
                                         utrService: UTRService)
                                        (val auditingService: AuditingService,
@@ -90,17 +92,26 @@ class ConfirmedClientResolver @Inject()(getEligibilityStatusService: GetEligibil
         failureReason = None
       ))
       eligibilityInterrupt <- subscriptionDetailsService.fetchEligibilityInterruptPassed(reference)
+      prePopResult <- prePopDataService.prePopIncomeSources(reference)
     } yield {
-      eligibilityInterrupt match {
-        case Some(_) =>
-          Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
-        case None =>
-          if (nextYearOnly) {
-            Redirect(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show)
-          } else {
-            Redirect(controllers.agent.eligibility.routes.ClientCanSignUpController.show())
+      prePopResult match {
+        case PrePopResult.PrePopSuccess =>
+          eligibilityInterrupt match {
+            case Some(_) =>
+              Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
+            case None =>
+              if (nextYearOnly) {
+                Redirect(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show)
+              } else {
+                Redirect(controllers.agent.eligibility.routes.ClientCanSignUpController.show())
+              }
           }
+        case PrePopResult.PrePopFailure(error) =>
+          throw new InternalServerException(
+            s"[ConfirmedClientResolver] - Failure occurred when pre-populating income source details. Error: $error"
+          )
       }
+
     }
   }
 
