@@ -34,9 +34,6 @@ class PrePopSelfEmploymentSpec extends PlaySpec with Matchers {
       }
     }
     "fail to read from json" when {
-      "name is missing from the json" in {
-        Json.fromJson[PrePopSelfEmployment](prePopSelfEmploymentJsonFull - "name") mustBe JsError(__ \ "name", "error.path.missing")
-      }
       "accountingMethod is missing from the json" in {
         Json.fromJson[PrePopSelfEmployment](prePopSelfEmploymentJsonFull - "accountingMethod") mustBe JsError(__ \ "accountingMethod", "error.path.missing")
       }
@@ -61,7 +58,7 @@ class PrePopSelfEmploymentSpec extends PlaySpec with Matchers {
   )
 
   lazy val prePopSelfEmploymentModelFull: PrePopSelfEmployment = PrePopSelfEmployment(
-    name = "ABC",
+    name = Some("ABC"),
     trade = Some("Plumbing"),
     address = Some(Address(
       lines = Seq(
@@ -78,12 +75,11 @@ class PrePopSelfEmploymentSpec extends PlaySpec with Matchers {
   )
 
   lazy val prePopSelfEmploymentJsonMinimal: JsObject = Json.obj(
-    "name" -> "ABC",
     "accountingMethod" -> "accruals"
   )
 
   lazy val prePopSelfEmploymentModelMinimal: PrePopSelfEmployment = PrePopSelfEmployment(
-    name = "ABC",
+    name = None,
     trade = None,
     address = None,
     startDate = None,

@@ -20,7 +20,7 @@ import models.{AccountingMethod, DateModel}
 import models.common.business.{Address, BusinessStartDate, BusinessNameModel, BusinessTradeNameModel, BusinessAddressModel, SelfEmploymentData}
 import play.api.libs.json.{Json, Reads}
 
-case class PrePopSelfEmployment(name: String,
+case class PrePopSelfEmployment(name: Option[String],
                                 trade: Option[String],
                                 address: Option[Address],
                                 startDate: Option[DateModel],
@@ -29,7 +29,7 @@ case class PrePopSelfEmployment(name: String,
   def toSelfEmploymentData(id: String): SelfEmploymentData = SelfEmploymentData(
     id = id,
     businessStartDate = startDate.map(BusinessStartDate.apply),
-    businessName = Some(BusinessNameModel(name)),
+    businessName = name.map(BusinessNameModel.apply),
     businessTradeName = trade.map(BusinessTradeNameModel.apply),
     businessAddress = address.map(BusinessAddressModel.apply)
   )

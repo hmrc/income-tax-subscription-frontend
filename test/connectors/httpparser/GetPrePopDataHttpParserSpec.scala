@@ -31,7 +31,6 @@ class GetPrePopDataHttpParserSpec extends PlaySpec {
   val validJson: JsObject = Json.obj(
     "selfEmployment" -> Json.arr(
       Json.obj(
-        "name" -> "ABC",
         "accountingMethod" -> "cash"
       )
     )
@@ -46,7 +45,7 @@ class GetPrePopDataHttpParserSpec extends PlaySpec {
 
         res mustBe Right(PrePopData(
           selfEmployment = Some(Seq(PrePopSelfEmployment(
-            name = "ABC",
+            name = None,
             trade = None,
             address = None,
             startDate = None,

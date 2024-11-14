@@ -37,7 +37,6 @@ class PrePopDataSpec extends PlaySpec with Matchers {
   lazy val prePopDataJson: JsObject = Json.obj(
     "selfEmployment" -> Json.arr(
       Json.obj(
-        "name" -> "ABC",
         "accountingMethod" -> "cash"
       )
     ),
@@ -48,7 +47,7 @@ class PrePopDataSpec extends PlaySpec with Matchers {
   lazy val prePopDataModel: PrePopData = PrePopData(
     selfEmployment = Some(Seq(
       PrePopSelfEmployment(
-        name = "ABC",
+        name = None,
         trade = None,
         address = None,
         startDate = None,

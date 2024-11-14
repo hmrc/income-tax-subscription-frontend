@@ -62,7 +62,7 @@ class PrePopConnectorISpec extends ComponentSpecBase {
 
         connector.getPrePopData(testNino).futureValue mustBe Right(PrePopData(
           selfEmployment = Some(Seq(PrePopSelfEmployment(
-            name = "ABC",
+            name = Some("ABC"),
             trade = Some("Plumbing"),
             address = Some(Address(
               lines = Seq(
