@@ -237,6 +237,8 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
       )
     }
 
+    def showNoSoftware(): WSResponse = get("/no-compatible-software")
+
     def cannotUseService(): WSResponse = get("/error/cannot-use-service")
 
     def notEligibleForIncomeTax(): WSResponse = get("/cannot-use-service-yet")

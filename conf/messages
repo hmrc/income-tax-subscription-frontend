@@ -399,6 +399,22 @@ individual.using-software.yes-hint                                   = You’re 
 individual.using-software.no-hint                                    = You are not using software to keep digital records. Or you use software to keep digital records but that software does not work with Making Tax Digital for Income Tax
 individual.using-software.form-error                                 = Select ’Yes’ if you’re using software to keep digital records and that software works with Making Tax Digital for Income Tax
 
+
+## No Software Signpost-Out Page ##
+individual.no-software.heading                      = You need compatible software
+individual.no-software.para-1                       = To use this service, you must find and use software that works with Making Tax Digital for Income Tax.
+individual.no-software.subheading-1                 = If you have an agent
+individual.no-software.para-2                       = If someone helps you with your tax (like an agent), check which software they want you to use.
+individual.no-software.subheading-2                 = Find compatible software
+individual.no-software.para-3.link                  = Find software that works with Making Tax Digital for Income Tax
+individual.no-software.para-3.href                  = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax
+individual.no-software.para-4                       = If you already use software to keep digital records, you may need to ask your software provider if it works with Making Tax Digital for Income Tax.
+individual.no-software.para-5                       = When you have compatible software, you can come back to sign up.
+individual.no-software.para-6                       = Meanwhile, you need to continue submitting your {0} as normal.
+individual.no-software.para-6.link                  = Self Assessment tax return
+individual.no-software.para-6.href                  = https://www.gov.uk/self-assessment-tax-returns/sending-return
+
+
 ## Sign Up Confirmation page ##
 sign-up-confirmation.heading                                         = Sign up complete
 sign-up-confirmation.heading.panel.current                           = is now signed up for Making Tax Digital for Income Tax for the current tax year ({0})

@@ -396,6 +396,22 @@ individual.using-software.yes-hint                                   = Rydych ch
 individual.using-software.no-hint                                    = Nid ydych yn defnyddio meddalwedd i gadw cofnodion digidol. Neu rydych chi’n defnyddio meddalwedd i gadw cofnodion digidol ond nid yw’r feddalwedd honno’n gweithio gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 individual.using-software.form-error                                 = Dewiswch ‘Iawn’ os ydych yn defnyddio meddalwedd i gadw cofnodion digidol a bod meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 
+
+## No Software Signpost Out Page ##
+individual.no-software.heading                  = Mae angen i chi gael meddalwedd sy’n cydweddu
+individual.no-software.para-1                   = I ddefnyddio’r gwasanaeth hwn, mae’n rhaid i chi ddod o hyd i feddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm a’i defnyddio.
+individual.no-software.subheading-1             = Os oes gennych asiant
+individual.no-software.para-2                   = Os oes rhywun yn eich helpu gyda’ch materion treth (megis asiant), gwiriwch pa feddalwedd yr hoffai i chi ei defnyddio.
+individual.no-software.subheading-2             = Dewch o hyd i feddalwedd sy’n cydweddu
+individual.no-software.para-3.link              = Dod o hyd i feddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+individual.no-software.para-3.href              = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax.cy
+individual.no-software.para-4                   = Os ydych eisoes yn defnyddio meddalwedd i gadw cofnodion digidol, efallai y bydd angen i chi ofyn i’ch darparwr meddalwedd os yw’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+individual.no-software.para-5                   = Pan gewch feddalwedd sy’n cydweddu, gallwch ddod yn ôl i gofrestru.
+individual.no-software.para-6                   = Yn y cyfamser, mae angen i chi barhau i gyflwyno’ch {0} yn ôl yr arfer.
+individual.no-software.para-6.link              = Ffurflen Dreth Hunanasesiad
+individual.no-software.para-6.href              = https://www.gov.uk/ffurflenni-treth-hunanasesiad/anfon-ffurflen-dreth
+
+
 ## Sign Up Confirmation page ##
 sign-up-confirmation.heading                                         = Rydych wedi cofrestru’n llwyddiannus
 sign-up-confirmation.heading.panel.current                           = Mae wedi llwyddo i gofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm, o ran y flwyddyn dreth bresennol ({0})
@@ -407,7 +423,7 @@ sign-up-confirmation.what-you-must-do.heading                        = Yr hyn y 
 
 sign-up-confirmation.read-how-to                                     = Darllenwch sut i {0}
 sign-up-confirmation.read-how-to.link-text                           = ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-sign-up-confirmation.read-how-to.link-href                                = https://www.gov.uk/guidance/defnyddio-r-cynllun-troi-treth-yn-ddigidol-ar-gyfer-treth-incwm
+sign-up-confirmation.read-how-to.link-href                           = https://www.gov.uk/guidance/defnyddio-r-cynllun-troi-treth-yn-ddigidol-ar-gyfer-treth-incwm
 
 sign-up-confirmation.what-you-must-do.yes.this.year                  = Mae’n rhaid i chi ddefnyddio’ch meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
 sign-up-confirmation.what-you-must-do.no.this.year                   = Mae’n rhaid i chi ddefnyddio {0}

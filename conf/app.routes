@@ -51,6 +51,7 @@ POST         /what-you-need-to-do                                controllers.ind
 GET         /using-software                                     controllers.individual.UsingSoftwareController.show()
 POST        /using-software                                     controllers.individual.UsingSoftwareController.submit()
 
+GET         /no-compatible-software                                        controllers.individual.NoSoftwareController.show
 ################## Business Routes
 
 #What Tax Year To Sign Up Routes
