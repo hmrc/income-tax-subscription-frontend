@@ -33,7 +33,7 @@ class UsingSoftwareViewSpec extends ViewSpec {
   private val testFormError: FormError = FormError(UsingSoftwareForm.fieldName, "individual.using-software.form-error")
 
   "using software" must {
-    import UsingSoftware._
+    import UsingSoftwareMessages._
 
     "have the correct template details" when {
 
@@ -55,9 +55,27 @@ class UsingSoftwareViewSpec extends ViewSpec {
       document().getH1Element.text mustBe heading
     }
 
-    "have a link " in {
-      val link = document().mainContent.getNthParagraph(1).selectHead("a")
-      link.text mustBe linkText
+    "have the correct first paragraph" in {
+      document().mainContent.selectNth("p", 1).text mustBe UsingSoftwareMessages.paraOne
+    }
+
+    "have the correct second paragraph" in {
+      document().mainContent.selectNth("p", 2).text mustBe UsingSoftwareMessages.paraTwo
+    }
+
+    "have the correct third paragraph" in {
+      document().mainContent.selectNth("p", 3).text mustBe UsingSoftwareMessages.paraThree
+    }
+
+    "have a link " which {
+      val link = document().mainContent.selectNth("p",4).selectHead("a")
+      "displays the correct text" in {
+        link.text mustBe linkText
+      }
+      "redirects to the correct url" in {
+        link.attr("href") mustBe linkUrl
+      }
+
     }
 
     "have a form" which {
@@ -71,15 +89,11 @@ class UsingSoftwareViewSpec extends ViewSpec {
       "has the correct radio inputs" in {
         form.mustHaveYesNoRadioInputs(selector = "fieldset")(
           name = radioName,
-          legend = heading,
+          legend = UsingSoftwareMessages.radioLegend,
           isHeading = false,
-          isLegendHidden = true,
+          isLegendHidden = false,
           hint = None,
           errorMessage = None,
-          yesHintId = Some(s"$radioName-hint"),
-          yesHint = Some(Text(yesHint)),
-          noHintId = Some(s"$radioName-hint"),
-          noHint = Some(Text(noHint)),
         )
       }
 
@@ -100,14 +114,14 @@ class UsingSoftwareViewSpec extends ViewSpec {
   private def document(hasError: Boolean = false): Document =
     Jsoup.parse(page(hasError).body)
 
-  private object UsingSoftware {
-    val heading = "Are you using software that works with Making Tax Digital for Income Tax?"
-    val linkText = "Find software that works with Making Tax Digital for Income Tax (opens in new tab)"
-    val radioName = "yes-no"
-    val yesHint = "You’re using software to keep digital records and that software works with Making Tax Digital for Income Tax"
-    val noHint: String = "You are not using software to keep digital records." +
-      " Or you use software to keep digital records but that software " +
-      "does not work with Making Tax Digital for Income Tax"
+  private object UsingSoftwareMessages {
+    val heading: String = "Check you have compatible software"
+    val paraOne: String = "To use this service, you must use software that works with Making Tax Digital for Income Tax."
+    val paraTwo: String = "If someone helps you with your tax (like an agent), check which software they want you to use."
+    val paraThree: String = "If you already use software to keep digital records, you may need to ask your software provider if it works with Making Tax Digital for Income Tax."
+    val linkText: String = "Find software that works with Making Tax Digital for Income Tax (opens in new tab)"
+    val linkUrl: String = "https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax"
+    val radioName: String = "yes-no"
+    val radioLegend: String = "Are you using software that works with Making Tax Digital for Income Tax?"
   }
-
 }

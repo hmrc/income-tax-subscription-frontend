@@ -389,12 +389,14 @@ agent.sign-up-confirmation.manage-client-account.para1                          
 agent.sign-up-confirmation.manage-client-account.link.text                          = cyfrif gwasanaethau asiant
 
 ## Using Software Page ##
-individual.using-software.heading                                    = A ydych yn defnyddio meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm?
-individual.using-software.link                                       = Dod o hyd i feddalwedd sy’n cydweddu â Throi Treth yn Ddigidol ar gyfer Treth Incwm
-individual.using-software.link-href                                  = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax.cy
-individual.using-software.yes-hint                                   = Rydych chi’n defnyddio meddalwedd i gadw cofnodion digidol a bod meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-individual.using-software.no-hint                                    = Nid ydych yn defnyddio meddalwedd i gadw cofnodion digidol. Neu rydych chi’n defnyddio meddalwedd i gadw cofnodion digidol ond nid yw’r feddalwedd honno’n gweithio gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-individual.using-software.form-error                                 = Dewiswch ‘Iawn’ os ydych yn defnyddio meddalwedd i gadw cofnodion digidol a bod meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+individual.using-software.heading                                       = Gwirio bod gennych feddalwedd sy’n cydweddu
+individual.using-software.para-1                                        = I ddefnyddio’r gwasanaeth hwn, mae’n rhaid i chi ddefnyddio meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+individual.using-software.para-2                                        = Os oes rhywun yn eich helpu gyda’ch materion treth (megis asiant), gwiriwch pa feddalwedd yr hoffai i chi ei defnyddio.
+individual.using-software.para-3                                        = Os ydych eisoes yn defnyddio meddalwedd i gadw cofnodion digidol, efallai y bydd angen i chi ofyn i’ch darparwr meddalwedd os yw’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+individual.using-software.link                                          = Dod o hyd i feddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+individual.using-software.link-href                                     = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax.cy
+individual.using-software.form-legend                                   = A ydych yn defnyddio meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm?
+individual.using-software.form-error                                    = Dewiswch ‘Iawn’ os ydych yn defnyddio meddalwedd i gadw cofnodion digidol a bod y feddalwedd honno’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 
 
 ## No Software Signpost Out Page ##

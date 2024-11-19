@@ -392,12 +392,14 @@ agent.sign-up-confirmation.manage-client-account.para1                          
 agent.sign-up-confirmation.manage-client-account.link.text                          = agent services account
 
 ## Using Software Page ##
-individual.using-software.heading                                    = Are you using software that works with Making Tax Digital for Income Tax?
-individual.using-software.link                                       = Find software that works with Making Tax Digital for Income Tax
-individual.using-software.link-href                                  = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax
-individual.using-software.yes-hint                                   = You’re using software to keep digital records and that software works with Making Tax Digital for Income Tax
-individual.using-software.no-hint                                    = You are not using software to keep digital records. Or you use software to keep digital records but that software does not work with Making Tax Digital for Income Tax
-individual.using-software.form-error                                 = Select ’Yes’ if you’re using software to keep digital records and that software works with Making Tax Digital for Income Tax
+individual.using-software.heading                                       = Check you have compatible software
+individual.using-software.para-1                                        = To use this service, you must use software that works with Making Tax Digital for Income Tax.
+individual.using-software.para-2                                        = If someone helps you with your tax (like an agent), check which software they want you to use.
+individual.using-software.para-3                                        = If you already use software to keep digital records, you may need to ask your software provider if it works with Making Tax Digital for Income Tax.
+individual.using-software.link                                          = Find software that works with Making Tax Digital for Income Tax
+individual.using-software.link-href                                     = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax
+individual.using-software.form-legend                                   = Are you using software that works with Making Tax Digital for Income Tax?
+individual.using-software.form-error                                    = Select ‘Yes’ if you’re using software to keep digital records and that software works with Making Tax Digital for Income Tax
 
 
 ## No Software Signpost-Out Page ##

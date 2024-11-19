@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package controllers.agent
+package controllers.individual
 
 import config.featureswitch.FeatureSwitch.PrePopulate
 import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataSuccessResponse
-import forms.agent.UsingSoftwareForm
+import forms.individual.UsingSoftwareForm
 import models.{EligibilityStatus, No, Yes}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -28,19 +28,16 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockAuditingService, MockClientDetailsRetrieval, MockGetEligibilityStatusService, MockSessionDataService}
-import utilities.agent.TestConstants.{testFormattedNino, testName, testNino}
-import views.html.agent.UsingSoftware
-
+import views.html.individual.UsingSoftware
 import scala.concurrent.Future
 
-class UsingSoftwareControllerSpec extends AgentControllerBaseSpec
+class UsingSoftwareControllerSpec extends ControllerBaseSpec
   with MockAuditingService
   with MockClientDetailsRetrieval
   with MockGetEligibilityStatusService
   with MockSessionDataService {
 
   object TestUsingSoftwareController extends UsingSoftwareController(
-    mockClientDetailsRetrieval,
     mock[UsingSoftware],
     mockSessionDataService,
     mockGetEligibilityStatusService
@@ -58,7 +55,6 @@ class UsingSoftwareControllerSpec extends AgentControllerBaseSpec
   trait Setup {
     val usingSoftware: UsingSoftware = mock[UsingSoftware]
     val controller: UsingSoftwareController = new UsingSoftwareController(
-      mockClientDetailsRetrieval,
       usingSoftware,
       mockSessionDataService,
       mockGetEligibilityStatusService)(
@@ -75,47 +71,19 @@ class UsingSoftwareControllerSpec extends AgentControllerBaseSpec
   )
 
   "show" must {
-    "return OK with the page content" when {
+    "return OK with the page content" in new Setup {
+      mockFetchSoftwareStatus(Right(None))
+      mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+      when(usingSoftware(
+        ArgumentMatchers.eq(UsingSoftwareForm.usingSoftwareForm),
+        ArgumentMatchers.eq(routes.UsingSoftwareController.submit())
+      )(any(), any())).thenReturn(HtmlFormat.empty)
 
-      "the user is signing up for this tax year" in new Setup {
-        mockGetClientDetails(testName, testNino)
-        mockFetchSoftwareStatus(Right(None))
-        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
-        when(usingSoftware(
-          ArgumentMatchers.eq(UsingSoftwareForm.usingSoftwareForm),
-          ArgumentMatchers.eq(routes.UsingSoftwareController.submit()),
-          ArgumentMatchers.eq(testName),
-          ArgumentMatchers.eq(testFormattedNino),
-          ArgumentMatchers.eq(Some(controllers.agent.eligibility.routes.ClientCanSignUpController.show().url))
-        )(any(), any())).thenReturn(HtmlFormat.empty)
-
-        val result: Future[Result] = controller.show()(
-          subscriptionRequest
-        )
-
-        status(result) mustBe OK
-        contentType(result) mustBe Some(HTML)
-      }
-
-      "the user is signing up for next tax year only" in new Setup {
-        mockGetClientDetails(testName, testNino)
-        mockFetchSoftwareStatus(Right(None))
-        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
-        when(usingSoftware(
-          ArgumentMatchers.eq(UsingSoftwareForm.usingSoftwareForm),
-          ArgumentMatchers.eq(routes.UsingSoftwareController.submit()),
-          ArgumentMatchers.eq(testName),
-          ArgumentMatchers.eq(testFormattedNino),
-          ArgumentMatchers.eq(Some(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url))
-        )(any(), any())).thenReturn(HtmlFormat.empty)
-
-        val result: Future[Result] = controller.show()(
-          subscriptionRequest
-        )
-
-        status(result) mustBe OK
-        contentType(result) mustBe Some(HTML)
-      }
+      val result: Future[Result] = controller.show()(
+        subscriptionRequest
+      )
+      status(result) mustBe OK
+      contentType(result) mustBe Some(HTML)
     }
   }
 
@@ -130,40 +98,52 @@ class UsingSoftwareControllerSpec extends AgentControllerBaseSpec
         val result: Future[Result] = controller.submit()(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, Yes))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.agent.routes.WhatYouNeedToDoController.show().url)
+        redirectLocation(result) mustBe Some(controllers.individual.routes.WhatYouNeedToDoController.show.url)
+      }
+    }
+
+    "redirect to the What You Need To Do page" when {
+
+      "PrePopulate is disabled and the user selects Yes" in new Setup {
+        mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
+
+        val result: Future[Result] = controller.submit()(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, Yes))
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.individual.routes.WhatYouNeedToDoController.show.url)
       }
 
-      "PrePopulate is disabled and the user selects the No radio option" in new Setup {
-        disable(PrePopulate)
+      "PrePopulate is disabled and the user selects No" in new Setup {
         mockSaveSoftwareStatus(No)(Right(SaveSessionDataSuccessResponse))
 
         val result: Future[Result] = controller.submit()(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, No))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.agent.routes.WhatYouNeedToDoController.show().url)
+        redirectLocation(result) mustBe Some(controllers.individual.routes.WhatYouNeedToDoController.show.url)
       }
     }
 
-    "redirect to the What Year to Sign Up page" when {
-
-      "PrePopulate is enabled and the user selects the Yes radio option" in new Setup {
+    "redirect to the Select Tax Year page" when {
+      "PrePopulate is enabled and the user selects Yes" in new Setup {
         enable(PrePopulate)
         mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
 
         val result: Future[Result] = controller.submit()(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, Yes))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
+        redirectLocation(result) mustBe Some(controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
       }
+    }
 
-      "PrePopulate is enabled and the user selects the No radio option" in new Setup {
+    "redirect to the No Software Signpost page" when {
+      "PrePopulate is enabled and the user selects No" in new Setup {
         enable(PrePopulate)
         mockSaveSoftwareStatus(No)(Right(SaveSessionDataSuccessResponse))
 
         val result: Future[Result] = controller.submit()(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, No))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
+        redirectLocation(result) mustBe Some(controllers.individual.routes.NoSoftwareController.show.url)
       }
     }
 
@@ -172,9 +152,6 @@ class UsingSoftwareControllerSpec extends AgentControllerBaseSpec
       "the user selects invalid option" in new Setup {
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         when(usingSoftware(
-          any(),
-          any(),
-          any(),
           any(),
           any()
         )(any(), any())).thenReturn(HtmlFormat.empty)
