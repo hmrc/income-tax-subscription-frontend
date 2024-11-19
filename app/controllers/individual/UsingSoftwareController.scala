@@ -21,13 +21,14 @@ import config.AppConfig
 import config.featureswitch.FeatureSwitch.PrePopulate
 import config.featureswitch.FeatureSwitching
 import forms.individual.UsingSoftwareForm
-import models.YesNo
+import models.{No, Yes, YesNo}
 import play.api.data.Form
 import play.api.mvc._
 import play.twirl.api.Html
 import services.{AuditingService, AuthService, GetEligibilityStatusService, SessionDataService}
 import uk.gov.hmrc.http.InternalServerException
 import views.html.individual.UsingSoftware
+
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
@@ -88,12 +89,20 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
           }, yesNo =>
           sessionDataService.saveSoftwareStatus(yesNo) map {
             case Left(_) => throw new InternalServerException("[UsingSoftwareController][submit] - Could not save using software answer")
-            case Right(_) => {
-              if (isEnabled(PrePopulate)) Redirect(controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show())
-              else Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
-            }
+            case Right(_) => Redirect(getRedirect(yesNo))
           }
       )
+  }
+
+  private def getRedirect(selectedOption: YesNo): Call = {
+    if (isEnabled(PrePopulate)) {
+      selectedOption match {
+        case Yes => controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show()
+        case No => controllers.individual.routes.NoSoftwareController.show
+      }
+    } else {
+      controllers.individual.routes.WhatYouNeedToDoController.show
+    }
   }
 
 }

@@ -35,16 +35,21 @@ hmrcNewTabLinkHelper: HmrcNewTabLinkHelper
 
     <h1 class="govuk-heading-l">@messages("individual.using-software.heading")</h1>
 
+    <p class="govuk-body">@messages("individual.using-software.para-1")</p>
+
+    <p class="govuk-body">@messages("individual.using-software.para-2")</p>
+
+    <p class="govuk-body">@messages("individual.using-software.para-3")</p>
+
     <p class="govuk-body">
       @findSoftwareNewTabLink()
     </p>
 
     @yesNoRadioHelper(
-      field = usingSoftwareForm(fieldName),
-      legend = messages("individual.using-software.heading"),
-      isPageHeading = false,
-      yesHint = Some(Text(messages("individual.using-software.yes-hint"))),
-      noHint = Some(Text(messages("individual.using-software.no-hint")))
+        field = usingSoftwareForm(fieldName),
+        legend = messages("individual.using-software.form-legend"),
+        headingClasses = "govuk-fieldset__legend--m",
+        isPageHeading = false
     )
     @continueButton()
   }

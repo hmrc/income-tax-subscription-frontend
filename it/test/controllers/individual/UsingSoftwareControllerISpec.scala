@@ -107,7 +107,6 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase with FeatureSwitchi
 
     "prepopulate feature switch is enabled" should {
       s"return a redirect to ${controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url}" when {
-
         "the user selects the Yes radio button" in {
           enable(PrePopulate)
           val userInput = Yes
@@ -128,7 +127,9 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase with FeatureSwitchi
             redirectURI(controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
           )
         }
+      }
 
+      s"return a redirect to ${controllers.individual.routes.NoSoftwareController.show.url}" when {
         "the user selects the No radio button" in {
           enable(PrePopulate)
           val userInput = No
@@ -146,7 +147,7 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase with FeatureSwitchi
 
           result must have(
             httpStatus(SEE_OTHER),
-            redirectURI(controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
+            redirectURI(controllers.individual.routes.NoSoftwareController.show.url)
           )
         }
       }
