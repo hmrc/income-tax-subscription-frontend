@@ -61,9 +61,24 @@ class UsingSoftwareViewSpec extends ViewSpec {
       )
     }
 
+    "have a first paragraph" in {
+      document().mainContent.selectNth("p", 1).text mustBe paraOne
+    }
+
+    "have a second paragraph" in {
+      document().mainContent.selectNth("p", 2).text mustBe paraTwo
+    }
+
+    "have the link text" in {
+      document().mainContent.selectNth("p", 3).text mustBe linkText
+    }
+
     "have a link " in {
-      val link = document().mainContent.getNthParagraph(1).selectHead("a")
-      link.text mustBe linkText
+      document().mainContent.selectNth("p", 3).selectHead("a").attr("href") mustBe linkHref
+    }
+
+    "have a subheading" in {
+      document().mainContent.selectNth("h2", 1).text mustBe subheading
     }
 
     "have a form" which {
@@ -81,11 +96,7 @@ class UsingSoftwareViewSpec extends ViewSpec {
           isHeading = false,
           isLegendHidden = true,
           hint = None,
-          errorMessage = None,
-          yesHintId = Some(s"$radioName-hint"),
-          yesHint = Some(Text(yesHint)),
-          noHintId = Some(s"$radioName-hint"),
-          noHint = Some(Text(noHint)),
+          errorMessage = None
         )
       }
 
@@ -110,13 +121,14 @@ class UsingSoftwareViewSpec extends ViewSpec {
     Jsoup.parse(page(hasError).body)
 
   private object UsingSoftware {
-    val heading = "Are you or your client using software that works with Making Tax Digital for Income Tax?"
+    val heading = "Check you have compatible software"
+    val paraOne = "To use this service, you or your client must use software that works with Making Tax Digital for Income Tax."
+    val paraTwo = "If you already use software to keep digital records for your clients, you may need to ask your software provider if it works with Making Tax Digital for Income Tax."
+    val subheading = "Are you or your client using software that works with Making Tax Digital for Income Tax?"
     val caption = s"$fullName | $nino"
     val linkText = "Find software that works with Making Tax Digital for Income Tax (opens in new tab)"
+    val linkHref = "https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax"
     val radioName = "yes-no"
-    val yesHint = "You or your client are using software to keep digital records and that software works with Making Tax Digital for Income Tax"
-    val noHint: String = "You or your client are not using software to keep digital records. " +
-      "Or you use software to keep digital records but that software does not work with Making Tax Digital for Income Tax"
   }
 
 }

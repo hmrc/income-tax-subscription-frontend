@@ -167,7 +167,7 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
         When(s"POST ${controllers.agent.routes.UsingSoftwareController.submit().url} is called")
         val result: WSResponse = IncomeTaxSubscriptionFrontend.submitUsingSoftware(request = Some(userInput))
 
-        Then("Should return SEE_OTHER to the What You Need To Do Controller")
+        Then("Should return SEE_OTHER to the What Year To Sign Up Controller")
 
         result must have(
           httpStatus(SEE_OTHER),
@@ -188,11 +188,11 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
         When(s"POST ${controllers.agent.routes.UsingSoftwareController.submit().url} is called")
         val result: WSResponse = IncomeTaxSubscriptionFrontend.submitUsingSoftware(request = Some(userInput))
 
-        Then("Should return SEE_OTHER to the What You Need To Do Controller")
+        Then("Should return SEE_OTHER to the No Software Controller")
 
         result must have(
           httpStatus(SEE_OTHER),
-          redirectURI(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
+          redirectURI(controllers.agent.routes.NoSoftwareController.show().url)
         )
       }
     }

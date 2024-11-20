@@ -163,7 +163,7 @@ class UsingSoftwareControllerSpec extends AgentControllerBaseSpec
         val result: Future[Result] = controller.submit()(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, No))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
+        redirectLocation(result) mustBe Some(controllers.agent.routes.NoSoftwareController.show().url)
       }
     }
 

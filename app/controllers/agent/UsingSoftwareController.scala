@@ -19,7 +19,7 @@ package controllers.agent
 import auth.agent.AuthenticatedController
 import config.AppConfig
 import forms.agent.UsingSoftwareForm
-import models.YesNo
+import models.{No, Yes, YesNo}
 import play.api.data.Form
 import play.api.mvc._
 import play.twirl.api.Html
@@ -106,8 +106,8 @@ class UsingSoftwareController @Inject()(clientDetailsRetrieval: ClientDetailsRet
     _ =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          clientDetailsRetrieval.getClientDetails flatMap { clientDetails =>
-            eligibilityStatusService.getEligibilityStatus map { eligibility =>
+          clientDetailsRetrieval.getClientDetails.flatMap { clientDetails =>
+            eligibilityStatusService.getEligibilityStatus.map { eligibility =>
               BadRequest(
                 view(
                   usingSoftwareForm = formWithErrors,
@@ -117,12 +117,17 @@ class UsingSoftwareController @Inject()(clientDetailsRetrieval: ClientDetailsRet
                 )
               )
             }
-          }, yesNo =>
-          sessionDataService.saveSoftwareStatus(yesNo) flatMap {
-            case Left(_) => Future.failed(new InternalServerException("[UsingSoftwareController][submit] - Could not save using software answer"))
+          },
+        yesNo =>
+          sessionDataService.saveSoftwareStatus(yesNo).flatMap {
+            case Left(_) =>
+              Future.failed(new InternalServerException("[UsingSoftwareController][submit] - Could not save using software answer"))
             case Right(_) =>
               if (isEnabled(PrePopulate)) {
-                Future.successful(Redirect(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show()))
+                yesNo match {
+                  case Yes => Future.successful(Redirect(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show()))
+                  case No  => Future.successful(Redirect(controllers.agent.routes.NoSoftwareController.show()))
+                }
               } else {
                 Future.successful(Redirect(controllers.agent.routes.WhatYouNeedToDoController.show()))
               }
