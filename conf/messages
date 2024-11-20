@@ -654,6 +654,18 @@ agent.using-software.yes-hint                                   = You or your cl
 agent.using-software.no-hint                                    = You or your client are not using software to keep digital records. Or you use software to keep digital records but that software does not work with Making Tax Digital for Income Tax
 agent.using-software.form-error                                 = Select ‘Yes’ if you or your client are using software to keep digital records and that software works with Making Tax Digital for Income Tax
 
+## Agent No Software Page ##
+agent.no-software.heading                                        = You need compatible software
+agent.no-software.caption                                        = {0} | {1}
+agent.no-software.para1                                          = To use this service, you must find and use software that works with Making Tax Digital for Income Tax.
+agent.no-software.subheading1                                    = If you already use software
+agent.no-software.para2                                          = If you already use software to keep digital records for your clients, you need to ask your software provider if it works with Making Tax Digital for Income Tax.
+agent.no-software.subheading2                                    = Find compatible software
+agent.no-software.para3.link                                     = Find software that works with Making Tax Digital for Income Tax
+agent.no-software.para3.href                                     = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax
+agent.no-software.para4                                          = When you have compatible software, you can come back to sign up your client.
+agent.no-software.para5                                          = Meanwhile, you’ll need to make sure your client submits their Self Assessment tax return as normal.
+
 
 ## Agent what you need to do page (voluntary, both years) ##
 agent.what-you-need-to-do.title                                                          = What you need to do
