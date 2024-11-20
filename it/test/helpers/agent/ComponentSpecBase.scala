@@ -267,6 +267,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
         )
       )
     }
+    def showNoSoftware(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/no-compatible-software", sessionData)
 
     def whatYouNeedToDo(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/what-you-need-to-do", sessionData)
 

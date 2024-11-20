@@ -66,6 +66,9 @@ POST        /business/what-year-to-sign-up                      controllers.agen
 GET         /using-software                                     controllers.agent.UsingSoftwareController.show()
 POST        /using-software                                     controllers.agent.UsingSoftwareController.submit()
 
+# No to using Software
+GET         /no-compatible-software                             controllers.agent.NoSoftwareController.show()
+
 # What you need to do
 GET         /what-you-need-to-do                                controllers.agent.WhatYouNeedToDoController.show()
 POST        /what-you-need-to-do                                controllers.agent.WhatYouNeedToDoController.submit

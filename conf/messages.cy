@@ -670,6 +670,18 @@ agent.using-software.yes-hint                                   = Rydych chi’n
 agent.using-software.no-hint                                    = Nid ydych chi na’ch cleient yn defnyddio meddalwedd i gadw cofnodion digidol. Neu rydych chi’n defnyddio meddalwedd i gadw cofnodion digidol ond nid yw’r feddalwedd honno’n gweithio gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 agent.using-software.form-error                                 = Dewiswch ‘Iawn’ os ydych chi neu’ch cleient yn defnyddio meddalwedd i gadw cofnodion digidol a bod meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 
+## Agent No Software Page ##
+agent.no-software.heading                                        = Mae angen i chi gael meddalwedd sy’n cydweddu
+agent.no-software.caption                                        = {0} | {1}
+agent.no-software.para1                                          = I ddefnyddio’r gwasanaeth hwn, mae’n rhaid i chi ddod o hyd i feddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm a’i defnyddio.
+agent.no-software.subheading1                                    = Os ydych eisoes yn defnyddio meddalwedd
+agent.no-software.para2                                          = Os ydych eisoes yn defnyddio meddalwedd i gadw cofnodion digidol i’ch cleientiaid, mae angen i chi ofyn i’ch darparwr meddalwedd os yw’n gweithio gyda Throi Treth yn Ddigidol ar gyfer Treth Incwm.
+agent.no-software.subheading2                                    = Dewch o hyd i feddalwedd sy’n cydweddu
+agent.no-software.para3.link                                     = Dod o hyd i feddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+agent.no-software.para3.href                                     = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax.cy
+agent.no-software.para4                                          = Pan gewch feddalwedd sy’n cydweddu, gallwch ddod yn ôl i gofrestru’ch cleient.
+agent.no-software.para5                                          = Yn y cyfamser, bydd angen i chi sicrhau bod eich cleient yn cyflwyno ei Ffurflen Dreth Hunanasesiad yn ôl yr arfer.
+
 ## Agent what you need to do page ##
 agent.what-you-need-to-do.title                                                = Beth y mae angen i chi ei wneud
 agent.what-you-need-to-do.heading                                              = Beth y mae angen i chi ei wneud
