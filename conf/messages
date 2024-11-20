@@ -664,12 +664,13 @@ declined-sign-up-next-year.para                                 = You’ve chose
 
 
 ## Agent Using Software Page ##
-agent.using-software.heading                                    = Are you or your client using software that works with Making Tax Digital for Income Tax?
+agent.using-software.heading                                    = Check you have compatible software
 agent.using-software.caption                                    = {0} | {1}
+agent.using-software.para1                                      = To use this service, you or your client must use software that works with Making Tax Digital for Income Tax.
+agent.using-software.para2                                      = If you already use software to keep digital records for your clients, you may need to ask your software provider if it works with Making Tax Digital for Income Tax.
+agent.using-software.subheading                                 = Are you or your client using software that works with Making Tax Digital for Income Tax?
 agent.using-software.link                                       = Find software that works with Making Tax Digital for Income Tax
 agent.using-software.link-href                                  = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax
-agent.using-software.yes-hint                                   = You or your client are using software to keep digital records and that software works with Making Tax Digital for Income Tax
-agent.using-software.no-hint                                    = You or your client are not using software to keep digital records. Or you use software to keep digital records but that software does not work with Making Tax Digital for Income Tax
 agent.using-software.form-error                                 = Select ‘Yes’ if you or your client are using software to keep digital records and that software works with Making Tax Digital for Income Tax
 
 ## Agent No Software Page ##

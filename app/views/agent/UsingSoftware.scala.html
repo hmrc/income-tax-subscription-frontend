@@ -39,16 +39,20 @@
         caption = messages("agent.using-software.caption", clientName, clientNino),
         isSection = false
     )
+
+    <p class="govuk-body">@messages("agent.using-software.para1")</p>
+    <p class="govuk-body">@messages("agent.using-software.para2")</p>
+
     <p class="govuk-body">
         @findSoftwareNewTabLink()
     </p>
 
+    <h2 class="govuk-heading-m">@messages("agent.using-software.subheading")</h2>
+
     @yesNoRadioHelper(
       field = usingSoftwareForm(fieldName),
       legend = messages("agent.using-software.heading"),
-      isPageHeading = false,
-      yesHint = Some(Text(messages("agent.using-software.yes-hint"))),
-      noHint = Some(Text(messages("agent.using-software.no-hint")))
+      isPageHeading = false
     )
     @continueButton()
   }

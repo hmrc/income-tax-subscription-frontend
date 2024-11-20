@@ -49,7 +49,7 @@ class NoSoftwareController @Inject()(val auditingService: AuditingService,
   def view(clientName: String, clientNino: String)(implicit request: Request[_]): Html = {
     noSoftware(
       backUrl = controllers.agent.routes.UsingSoftwareController.show().url,
-      postAction = controllers.agent.routes.NoSoftwareController.show(),
+      postAction = controllers.agent.routes.AddAnotherClientController.addAnother(),
       clientName,
       clientNino
     )
