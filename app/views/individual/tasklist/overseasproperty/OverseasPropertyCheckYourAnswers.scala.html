@@ -65,7 +65,7 @@
                     items = Seq(
                         ActionItem(
                             href = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyAccountingMethodController.show(editMode = true).url,
-                            content = Text(messages(if(viewModel.startDate.isDefined) "base.change" else "base.add")),
+                            content = Text(messages(if(viewModel.accountingMethod.isDefined) "base.change" else "base.add")),
                             visuallyHiddenText = Some(messages("business.check-your-answers.content.overseas-property-accounting-method.question"))
                         )
                     )
