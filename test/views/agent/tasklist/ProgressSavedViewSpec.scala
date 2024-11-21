@@ -16,12 +16,19 @@
 
 package views.agent.tasklist
 
+import config.featureswitch.FeatureSwitch.PrePopulate
+import config.featureswitch.FeatureSwitching
 import org.jsoup.Jsoup
 import utilities.UserMatchingSessionUtil.ClientDetails
 import utilities.ViewSpec
 import views.html.agent.tasklist.ProgressSaved
 
-class ProgressSavedViewSpec extends ViewSpec {
+class ProgressSavedViewSpec extends ViewSpec with FeatureSwitching {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(PrePopulate)
+  }
 
   private val progressSavedView = app.injector.instanceOf[ProgressSaved]
 
@@ -66,12 +73,22 @@ class ProgressSavedViewSpec extends ViewSpec {
       document().mainContent.selectNth("p.govuk-body", 2).text mustBe ProgressSaved.paragraph2
     }
 
-    "have a sign up link" in {
-      document().mainContent.select("a.sign-up-link").attr("href")  mustBe controllers.agent.tasklist.routes.TaskListController.show().url
+    "have a sign up link" which {
+      "redirects to Tasklist" when {
+        "Prepopulate feature switch is disabled" in {
+          document().mainContent.select("a.sign-up-link").attr("href") mustBe controllers.agent.tasklist.routes.TaskListController.show().url
+        }
+      }
+      "redirects to YourIncomeSources" when {
+        "Prepopulate feature switch is enabled" in {
+          enable(PrePopulate)
+          document().mainContent.select("a.sign-up-link").attr("href") mustBe controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
+        }
+      }
     }
 
     "have a sign out link" in {
-      document().mainContent.select("a.sign-out-link").attr("href")  mustBe controllers.agent.routes.AddAnotherClientController.addAnother().url
+      document().mainContent.select("a.sign-out-link").attr("href") mustBe controllers.agent.routes.AddAnotherClientController.addAnother().url
     }
   }
 

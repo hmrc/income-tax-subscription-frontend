@@ -14,13 +14,16 @@
  * limitations under the License.
  *@
 
+@import config.featureswitch.FeatureSwitchingImpl
+@import config.featureswitch.FeatureSwitch.PrePopulate
 @import views.html.templates.AgentMainTemplate
 @import utilities.UserMatchingSessionUtil.ClientDetails
 @import views.html.helpers.NotificationBanner
 
 @this(
-  mainTemplate: AgentMainTemplate,
-  govukNotificationBanner : GovukNotificationBanner
+    mainTemplate: AgentMainTemplate,
+    govukNotificationBanner : GovukNotificationBanner,
+    featureSwitching: FeatureSwitchingImpl
 )
 
 @(
@@ -48,7 +51,7 @@
 
   <ul class="govuk-list govuk-list--bullet">
     <li>
-      <a href="@controllers.agent.tasklist.routes.TaskListController.show().url" class="govuk-link sign-up-link">@messages("agent.business.progress-saved.content.sign-up-link")</a>
+        @continueSignUpLink()
     </li>
     <li>
       <a href="@controllers.agent.routes.AddAnotherClientController.addAnother().url" class="govuk-link sign-out-link">@messages("agent.business.progress-saved.content.sign-up-another-client-link")</a>
@@ -58,4 +61,17 @@
   <p class="govuk-body">
     @Html(messages("agent.business.progress-saved.content.paragraph2"))
   </p>
+}
+
+
+@continueSignUpLink() = {
+    @if(featureSwitching.isEnabled(PrePopulate)){
+        <a href="@controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url" class="govuk-link sign-up-link">
+            @messages("agent.business.progress-saved.content.sign-up-link")
+        </a>
+    } else {
+        <a href="@controllers.agent.tasklist.routes.TaskListController.show().url" class="govuk-link sign-up-link">
+            @messages("agent.business.progress-saved.content.sign-up-link")
+        </a>
+    }
 }

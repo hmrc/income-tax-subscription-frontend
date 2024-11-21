@@ -19,6 +19,7 @@ package controllers.agent
 import auth.agent.{AuthenticatedController, IncomeTaxAgentUser}
 import common.Constants.ITSASessionKeys
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.PrePopulate
 import controllers.utils.ReferenceRetrieval
 import models.common.subscription.{CreateIncomeSourcesModel, SubscriptionSuccess}
 import play.api.mvc._
@@ -53,7 +54,7 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
         withCompleteDetails(reference) { completeDetails =>
           Future.successful(Ok(view(
             postAction = routes.GlobalCheckYourAnswersController.submit,
-            backUrl = controllers.agent.tasklist.routes.TaskListController.show().url,
+            backUrl = backUrl,
             completeDetails = completeDetails
           )))
         }
@@ -75,6 +76,11 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
           }
         }
       }
+  }
+
+  def backUrl: String = {
+    if (isEnabled(PrePopulate)) tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
+    else tasklist.routes.TaskListController.show().url
   }
 
   private def signUp(completeDetails: CompleteDetails)
@@ -119,7 +125,7 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
                                  (implicit request: Request[AnyContent]): Future[Result] = {
     getCompleteDetailsService.getCompleteSignUpDetails(reference) flatMap {
       case Right(completeDetails) => f(completeDetails)
-      case Left(_) => Future.successful(Redirect(controllers.agent.tasklist.routes.TaskListController.show()))
+      case Left(_) => Future.successful(Redirect(backUrl))
     }
   }
 

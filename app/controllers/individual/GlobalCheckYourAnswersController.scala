@@ -20,6 +20,7 @@ import auth.individual.SignUpController
 import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.SPSEntityId
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.PrePopulate
 import controllers.utils.ReferenceRetrieval
 import models.common.subscription.CreateIncomeSourcesModel
 import play.api.mvc._
@@ -51,7 +52,7 @@ class GlobalCheckYourAnswersController @Inject()(subscriptionService: Subscripti
         withCompleteDetails(reference) { completeDetails =>
           Future.successful(Ok(view(
             postAction = routes.GlobalCheckYourAnswersController.submit,
-            backUrl = tasklist.routes.TaskListController.show().url,
+            backUrl = backUrl,
             completeDetails = completeDetails
           )))
         }
@@ -67,6 +68,11 @@ class GlobalCheckYourAnswersController @Inject()(subscriptionService: Subscripti
           )
         }
       }
+  }
+
+  def backUrl: String = {
+    if (isEnabled(PrePopulate)) tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
+    else tasklist.routes.TaskListController.show().url
   }
 
   private def signUp(completeDetails: CompleteDetails)
@@ -108,7 +114,7 @@ class GlobalCheckYourAnswersController @Inject()(subscriptionService: Subscripti
                                  (implicit request: Request[AnyContent]): Future[Result] = {
     getCompleteDetailsService.getCompleteSignUpDetails(reference) flatMap {
       case Right(completeDetails) => f(completeDetails)
-      case Left(_) => Future.successful(Redirect(tasklist.routes.TaskListController.show()))
+      case Left(_) => Future.successful(Redirect(backUrl))
     }
   }
 

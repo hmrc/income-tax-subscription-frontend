@@ -18,6 +18,8 @@ package controllers.agent.tasklist.addbusiness
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.PrePopulate
+import config.featureswitch.FeatureSwitching
 import controllers.utils.ReferenceRetrieval
 import models.common.IncomeSources
 import play.api.mvc._
@@ -40,7 +42,8 @@ class YourIncomeSourceToSignUpController @Inject()(yourIncomeSourceToSignUp: You
                                                    val appConfig: AppConfig,
                                                    val authService: AuthService)
                                                   (implicit val ec: ExecutionContext,
-                                                   mcc: MessagesControllerComponents) extends AuthenticatedController {
+                                                   mcc: MessagesControllerComponents) extends AuthenticatedController
+  with FeatureSwitching {
 
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
@@ -61,8 +64,7 @@ class YourIncomeSourceToSignUpController @Inject()(yourIncomeSourceToSignUp: You
   def submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       referenceRetrieval.getAgentReference flatMap { reference =>
-        val continue: Result = Redirect(controllers.agent.tasklist.routes.TaskListController.show())
-
+        val continue: Result = Redirect(continueLocation)
         subscriptionDetailsService.fetchAllIncomeSources(reference) flatMap { incomeSources =>
           if (incomeSources.isComplete) {
             subscriptionDetailsService.saveIncomeSourcesConfirmation(reference) map {
@@ -76,7 +78,16 @@ class YourIncomeSourceToSignUpController @Inject()(yourIncomeSourceToSignUp: You
       }
   }
 
-  def backUrl: String = controllers.agent.tasklist.routes.TaskListController.show().url
+  def continueLocation: Call = {
+    if (isEnabled(PrePopulate)) controllers.agent.routes.GlobalCheckYourAnswersController.show
+    else controllers.agent.tasklist.routes.TaskListController.show()
+  }
+
+  def backUrl: String = {
+    if (isEnabled(PrePopulate)) controllers.agent.routes.WhatYouNeedToDoController.show().url
+    else controllers.agent.tasklist.routes.TaskListController.show().url
+  }
+
 
   private def view(incomeSources: IncomeSources,
                    clientDetails: ClientDetails,

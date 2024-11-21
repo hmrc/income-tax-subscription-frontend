@@ -16,6 +16,8 @@
 
 @import models.common.{IncomeSources => _, SoleTraderBusinesses => _, _}
 @import models._
+@import config.featureswitch.FeatureSwitchingImpl
+@import config.featureswitch.FeatureSwitch.PrePopulate
 @import models.common.business.SelfEmploymentData
 @import services.AccountingPeriodService
 @import views.html.helpers.ReadyToSignUpButton
@@ -32,7 +34,8 @@
         implicitDateFormatter: ImplicitDateFormatterImpl,
         accountingPeriodService: AccountingPeriodService,
         readyToSignUpButton: ReadyToSignUpButton,
-        form: FormWithCSRF
+        form: FormWithCSRF,
+        featureSwitching: FeatureSwitchingImpl
 )
 
 @(
@@ -63,13 +66,23 @@
         <div class="govuk-button-group govuk-!-display-none-print">
             @readyToSignUpButton()
             <p class="govuk-body">
-              <a href="@controllers.individual.tasklist.routes.TaskListController.show().url" id="return_to_tasklist" class="govuk-link">
-                @messages("individual.global-check-your-answers.change-something")
-              </a>
+                @changeSomethingLink()
             </p>
         </div>
     }
 
+}
+
+@changeSomethingLink() = {
+    @if(featureSwitching.isEnabled(PrePopulate)){
+        <a href="@controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url" id="return_to_income_sources" class="govuk-link">
+            @messages("individual.global-check-your-answers.change-something")
+        </a>
+    } else {
+        <a href="@controllers.individual.tasklist.routes.TaskListController.show().url" id="return_to_tasklist" class="govuk-link">
+            @messages("individual.global-check-your-answers.change-something")
+        </a>
+    }
 }
 
 @correctInfo() = {

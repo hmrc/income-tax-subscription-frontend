@@ -16,10 +16,14 @@
 
 @import views.html.templates.PrincipalMainTemplate
 @import views.html.helpers.NotificationBanner
+@import config.featureswitch.FeatureSwitchingImpl
+@import config.featureswitch.FeatureSwitch.PrePopulate
+
 
 @this(
     mainTemplate: PrincipalMainTemplate,
-    govukNotificationBanner : GovukNotificationBanner
+    govukNotificationBanner : GovukNotificationBanner,
+    featureSwitching: FeatureSwitchingImpl
 )
 
 @(
@@ -46,8 +50,20 @@
 
   <p class="govuk-body">
     @messages("business.progress-saved.content.paragraph2")
-      <a href="@controllers.individual.tasklist.routes.TaskListController.show().url" class="govuk-link sign-up-link">@messages("business.progress-saved.content.sign-up-link")</a>
+    @continueSignUpLink()
   </p>
+}
+
+@continueSignUpLink() = {
+    @if(featureSwitching.isEnabled(PrePopulate)){
+        <a href="@controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url" class="govuk-link sign-up-link">
+            @messages("business.progress-saved.content.sign-up-link")
+        </a>
+    } else {
+        <a href="@controllers.individual.tasklist.routes.TaskListController.show().url" class="govuk-link sign-up-link">
+            @messages("business.progress-saved.content.sign-up-link")
+        </a>
+    }
 }
 
 

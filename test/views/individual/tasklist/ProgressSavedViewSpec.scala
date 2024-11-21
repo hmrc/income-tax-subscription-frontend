@@ -16,12 +16,20 @@
 
 package views.individual.tasklist
 
+import config.featureswitch.FeatureSwitch.PrePopulate
+import config.featureswitch.FeatureSwitching
 import messagelookup.individual.MessageLookup.ProgressSaved
 import org.jsoup.Jsoup
 import utilities.ViewSpec
 import views.html.individual.tasklist.ProgressSaved
 
-class ProgressSavedViewSpec extends ViewSpec {
+class ProgressSavedViewSpec extends ViewSpec with FeatureSwitching {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(PrePopulate)
+  }
+
   val progressSavedView: ProgressSaved = app.injector.instanceOf[ProgressSaved]
 
   "Progress saved view" must {
@@ -45,8 +53,18 @@ class ProgressSavedViewSpec extends ViewSpec {
       document().select("p.govuk-body").get(1).text mustBe ProgressSaved.paragraph2
     }
 
-    "have a sign up link" in {
-      document().select("a.sign-up-link").attr("href") mustBe controllers.individual.tasklist.routes.TaskListController.show().url
+    "have a sign up link" which {
+      "redirects to Tasklist" when {
+        "Prepopulate feature switch is disabled" in {
+          document().select("a.sign-up-link").attr("href") mustBe controllers.individual.tasklist.routes.TaskListController.show().url
+        }
+      }
+      "redirects to YourIncomeSources" when {
+        "Prepopulate feature switch is enabled" in {
+          enable(PrePopulate)
+          document().select("a.sign-up-link").attr("href") mustBe controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
+        }
+      }
     }
   }
 
