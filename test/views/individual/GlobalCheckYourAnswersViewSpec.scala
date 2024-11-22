@@ -16,6 +16,8 @@
 
 package views.individual
 
+import config.featureswitch.FeatureSwitch.PrePopulate
+import config.featureswitch.FeatureSwitching
 import models._
 import models.common.business.Address
 import org.jsoup.Jsoup
@@ -27,7 +29,12 @@ import views.html.individual.GlobalCheckYourAnswers
 
 import java.time.LocalDate
 
-class GlobalCheckYourAnswersViewSpec extends ViewSpec {
+class GlobalCheckYourAnswersViewSpec extends ViewSpec with FeatureSwitching {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(PrePopulate)
+  }
 
   "GlobalCheckYourAnswers" must {
 
@@ -392,9 +399,20 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
         form.selectHead("button").text mustBe GlobalCheckYourAnswersMessages.form.readyToSignUp
       }
 
-      "has a I need to change something hyper link and have redirection link to Tasklist" in {
-        form.selectHead("a").text mustBe GlobalCheckYourAnswersMessages.form.needToChange
-        form.selectHead("a").attr("href").matches(controllers.agent.tasklist.routes.TaskListController.show().url)
+      "has a I need to change something hyper link" which {
+        "has a redirection link to Tasklist" when {
+          "Prepopulate feature switch is disabled" in {
+            form.selectHead("a").text mustBe GlobalCheckYourAnswersMessages.form.needToChange
+            form.selectHead("a").attr("href").matches(controllers.agent.tasklist.routes.TaskListController.show().url)
+          }
+        }
+        "has a redirection link to YourIncomeSources" when {
+          "Prepopulate feature switch is enabled" in {
+            enable(PrePopulate)
+            form.selectHead("a").text mustBe GlobalCheckYourAnswersMessages.form.needToChange
+            form.selectHead("a").attr("href").matches(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
+          }
+        }
       }
     }
 

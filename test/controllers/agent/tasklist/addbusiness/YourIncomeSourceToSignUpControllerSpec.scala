@@ -16,6 +16,8 @@
 
 package controllers.agent.tasklist.addbusiness
 
+import config.featureswitch.FeatureSwitch.PrePopulate
+import config.featureswitch.FeatureSwitching
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.agent.AgentControllerBaseSpec
 import models.common.business._
@@ -36,7 +38,13 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockClientDetailsRetrieval
   with MockReferenceRetrieval
-  with MockAuditingService {
+  with MockAuditingService
+  with FeatureSwitching {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(PrePopulate)
+  }
 
   override val controllerName: String = "IncomeSourceController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
@@ -214,9 +222,17 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
     }
   }
 
-  "backUrl" should {
-    "go to the Task List Page" in new Setup {
-      controller.backUrl mustBe controllers.agent.tasklist.routes.TaskListController.show().url
+  "backUrl" when {
+    "Prepopulate feature switch is enabled" should {
+      "go to the ORM page" in new Setup {
+        enable(PrePopulate)
+        controller.backUrl mustBe controllers.agent.routes.WhatYouNeedToDoController.show().url
+      }
+    }
+    "Prepopulate feature switch is disabled" should {
+      "go to the Task List Page" in new Setup {
+        controller.backUrl mustBe controllers.agent.tasklist.routes.TaskListController.show().url
+      }
     }
   }
 

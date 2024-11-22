@@ -18,6 +18,8 @@ package controllers.individual.tasklist.addbusiness
 
 import auth.individual.SignUpController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.PrePopulate
+import config.featureswitch.FeatureSwitching
 import controllers.utils.ReferenceRetrieval
 import models.common.IncomeSources
 import play.api.mvc._
@@ -37,7 +39,7 @@ class YourIncomeSourceToSignUpController @Inject()(yourIncomeSourceToSignUp: You
                                                    val appConfig: AppConfig,
                                                    val authService: AuthService)
                                                   (implicit val ec: ExecutionContext,
-                                                   mcc: MessagesControllerComponents) extends SignUpController {
+                                                   mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching {
 
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
@@ -53,23 +55,28 @@ class YourIncomeSourceToSignUpController @Inject()(yourIncomeSourceToSignUp: You
   def submit: Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
       referenceRetrieval.getIndividualReference flatMap { reference =>
-        val continue: Result = Redirect(controllers.individual.tasklist.routes.TaskListController.show())
-
         subscriptionDetailsService.fetchAllIncomeSources(reference) flatMap { incomeSources =>
           if (incomeSources.isComplete) {
             subscriptionDetailsService.saveIncomeSourcesConfirmation(reference) map {
-              case Right(_) => continue
+              case Right(_) => Redirect(continueLocation)
               case Left(_) => throw new InternalServerException("[YourIncomeSourceToSignUpController][submit] - failed to save income sources confirmation")
             }
           } else {
-            Future.successful(continue)
+            Future.successful(Redirect(continueLocation))
           }
         }
       }
   }
 
+  def continueLocation: Call = {
+    if (isEnabled(PrePopulate)) controllers.individual.routes.GlobalCheckYourAnswersController.show
+    else controllers.individual.tasklist.routes.TaskListController.show()
+  }
 
-  def backUrl: String = controllers.individual.tasklist.routes.TaskListController.show().url
+  def backUrl: String = {
+    if (isEnabled(PrePopulate)) controllers.individual.routes.WhatYouNeedToDoController.show.url
+    else controllers.individual.tasklist.routes.TaskListController.show().url
+  }
 
 
   private def view(incomeSources: IncomeSources, isPrePopulated: Boolean)(implicit request: Request[AnyContent]): Html = {

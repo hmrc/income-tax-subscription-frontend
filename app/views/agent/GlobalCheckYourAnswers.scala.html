@@ -14,6 +14,8 @@
  * limitations under the License.
  *@
 
+@import config.featureswitch.FeatureSwitchingImpl
+@import config.featureswitch.FeatureSwitch.PrePopulate
 @import models.common.{IncomeSources => _, SoleTraderBusinesses => _, _}
 @import models._
 @import models.common.business.SelfEmploymentData
@@ -31,7 +33,8 @@
     govukSummaryList : GovukSummaryList,
     implicitDateFormatter: ImplicitDateFormatterImpl,
     accountingPeriodService: AccountingPeriodService,
-    form: FormWithCSRF
+    form: FormWithCSRF,
+    featureSwitching: FeatureSwitchingImpl
 )
 
 @(postAction: Call,
@@ -60,11 +63,21 @@
         <div class="govuk-button-group govuk-!-display-none-print">
             @signUpMyClientButton()
             <p class="govuk-body">
-              <a href="@controllers.agent.tasklist.routes.TaskListController.show().url" id="return_to_tasklist" class="govuk-link">
-                @messages("agent.global-check-your-answers.change-something")
-              </a>
+                @changeSomethingLink()
             </p>
        </div>
+    }
+}
+
+@changeSomethingLink() = {
+    @if(featureSwitching.isEnabled(PrePopulate)){
+        <a href="@controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url" id="return_to_income_sources" class="govuk-link">
+            @messages("agent.global-check-your-answers.change-something")
+        </a>
+    } else {
+        <a href="@controllers.agent.tasklist.routes.TaskListController.show().url" id="return_to_tasklist" class="govuk-link">
+            @messages("agent.global-check-your-answers.change-something")
+        </a>
     }
 }
 
