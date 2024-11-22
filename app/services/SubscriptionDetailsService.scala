@@ -208,12 +208,13 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
 
   def fetchAllIncomeSources(reference: String)(implicit hc: HeaderCarrier): Future[IncomeSources] = {
     for {
-      (selfEmployments, _) <- fetchAllSelfEmployments(reference)
+      (selfEmployments, accountingMethod) <- fetchAllSelfEmployments(reference)
       ukProperty <- fetchProperty(reference)
       foreignProperty <- fetchOverseasProperty(reference)
     } yield {
       IncomeSources(
         selfEmployments,
+        accountingMethod,
         ukProperty,
         foreignProperty
       )

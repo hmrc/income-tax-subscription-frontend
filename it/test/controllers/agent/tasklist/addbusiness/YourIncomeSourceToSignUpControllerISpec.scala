@@ -20,7 +20,7 @@ import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.IntegrationTestConstants.AgentURI.taskListURI
 import helpers.IntegrationTestConstants.testNino
-import helpers.IntegrationTestModels.{testBusiness, testBusinesses, testFullOverseasPropertyModel, testFullPropertyModel}
+import helpers.IntegrationTestModels.{testAccountingMethod, testBusiness, testBusinesses, testFullOverseasPropertyModel, testFullPropertyModel}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import play.api.http.Status._
@@ -28,6 +28,11 @@ import play.api.libs.json.{JsBoolean, JsString, Json}
 import utilities.SubscriptionDataKeys
 
 class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+  }
+
   private val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
 
   s"GET ${routes.YourIncomeSourceToSignUpController.show.url}" should {
@@ -77,7 +82,10 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
       "redirect to the task list page and save the income source section completion" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, Seq(testBusiness("12345", confirmed = true)))
+        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(
+          OK, Seq(testBusiness("12345", confirmed = true)),
+          Some(testAccountingMethod.accountingMethod)
+        )
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
 

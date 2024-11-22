@@ -144,7 +144,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
   val incompleteUKProperty: Option[PropertyModel] = Some(PropertyModel())
   val incompleteForeignProperty: Option[OverseasPropertyModel] = Some(OverseasPropertyModel())
 
-  def view(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None), isPrePopulated: Boolean = false): Html = {
+  def view(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None, None), isPrePopulated: Boolean = false): Html = {
     incomeSource(
       postAction = testCall,
       backUrl = testBackUrl,
@@ -153,7 +153,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     )
   }
 
-  class ViewTest(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None), isPrePopulated: Boolean = false) {
+  class ViewTest(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None, None), isPrePopulated: Boolean = false) {
     def document: Document = Jsoup.parse(view(incomeSources, isPrePopulated).body)
   }
 
@@ -167,21 +167,21 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         hasSignOutLink = true
       )
       "there are incomplete income sources added" in new TemplateViewTest(
-        view = view(IncomeSources(incompleteSelfEmployments, incompleteUKProperty, incompleteForeignProperty)),
+        view = view(IncomeSources(incompleteSelfEmployments, None, incompleteUKProperty, incompleteForeignProperty)),
         title = IndividualIncomeSource.title,
         isAgent = false,
         backLink = Some(testBackUrl),
         hasSignOutLink = true
       )
       "there are complete income sources added" in new TemplateViewTest(
-        view = view(IncomeSources(completeSelfEmployments, completeUKProperty, completeForeignProperty)),
+        view = view(IncomeSources(completeSelfEmployments, Some(Cash), completeUKProperty, completeForeignProperty)),
         title = IndividualIncomeSource.title,
         isAgent = false,
         backLink = Some(testBackUrl),
         hasSignOutLink = true
       )
       "there are complete and confirmed income sources added" in new TemplateViewTest(
-        view = view(IncomeSources(completeAndConfirmedSelfEmployments, completeAndConfirmedUKProperty, completeAndConfirmedForeignProperty)),
+        view = view(IncomeSources(completeAndConfirmedSelfEmployments, Some(Cash), completeAndConfirmedUKProperty, completeAndConfirmedForeignProperty)),
         title = IndividualIncomeSource.title,
         isAgent = false,
         backLink = Some(testBackUrl),
@@ -193,7 +193,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
   "YourIncomeSourceToSignUp" when {
 
     "there are no income sources added" should {
-      def noIncomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None)
+      def noIncomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None, None)
 
       "have a heading for the page" in new ViewTest(noIncomeSources) {
         document.mainContent.getH1Element.text mustBe IndividualIncomeSource.heading
@@ -270,7 +270,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
     "there are incomplete set of income sources added" should {
 
-      def incompleteIncomeSources: IncomeSources = IncomeSources(incompleteSelfEmployments, incompleteUKProperty, incompleteForeignProperty)
+      def incompleteIncomeSources: IncomeSources = IncomeSources(incompleteSelfEmployments, None, incompleteUKProperty, incompleteForeignProperty)
 
       "have a heading for the page" in new ViewTest(incompleteIncomeSources) {
         document.mainContent.getH1Element.text mustBe IndividualIncomeSource.heading
@@ -471,7 +471,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
     "there are complete set of income sources added" should {
 
-      def completeIncomeSources: IncomeSources = IncomeSources(completeSelfEmployments, completeUKProperty, completeForeignProperty)
+      def completeIncomeSources: IncomeSources = IncomeSources(completeSelfEmployments, Some(Cash), completeUKProperty, completeForeignProperty)
 
       "have a heading for the page" in new ViewTest(completeIncomeSources) {
         document.mainContent.getH1Element.text mustBe IndividualIncomeSource.heading
@@ -498,29 +498,57 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           document.mainContent.selectNth("p", 2).text mustBe IndividualIncomeSource.selfEmploymentPara
         }
 
-        "has a sole trader business card" in new ViewTest(completeIncomeSources) {
-          document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
-            title = "business trade",
-            cardActions = Seq(
-              SummaryListActionValues(
-                href = IndividualIncomeSource.soleTraderChangeLinkOne,
-                text = s"${IndividualIncomeSource.check} business name (business trade)",
-                visuallyHidden = s"business name (business trade)"
+        "has a summary card with change link" when {
+          "all details are present and confirmed and an accounting method is present" in new ViewTest(completeIncomeSources) {
+            document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
+              title = "business trade",
+              cardActions = Seq(
+                SummaryListActionValues(
+                  href = IndividualIncomeSource.soleTraderChangeLinkOne,
+                  text = s"${IndividualIncomeSource.check} business name (business trade)",
+                  visuallyHidden = s"business name (business trade)"
+                ),
+                SummaryListActionValues(
+                  href = controllers.individual.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idOne").url,
+                  text = s"${IndividualIncomeSource.remove} business name (business trade)",
+                  visuallyHidden = s"business name (business trade)"
+                )
               ),
-              SummaryListActionValues(
-                href = IndividualIncomeSource.soleTraderRemoveLinkOne,
-                text = s"${IndividualIncomeSource.remove} business name (business trade)",
-                visuallyHidden = s"business name (business trade)"
-              )
-            ),
-            rows = Seq(
-              SummaryListRowValues(
-                key = IndividualIncomeSource.soleTraderBusinessNameKey,
-                value = Some("business name"),
-                actions = Seq.empty
+              rows = Seq(
+                SummaryListRowValues(
+                  key = IndividualIncomeSource.soleTraderBusinessNameKey,
+                  value = Some("business name"),
+                  actions = Seq.empty
+                )
               )
             )
-          )
+          }
+        }
+        "has a summary card with add detail link" when {
+          "there is no accounting method present in the income sources" in new ViewTest(completeIncomeSources.copy(selfEmploymentAccountingMethod = None)) {
+            document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
+              title = "business trade",
+              cardActions = Seq(
+                SummaryListActionValues(
+                  href = IndividualIncomeSource.soleTraderChangeLinkOne,
+                  text = s"${IndividualIncomeSource.addDetails} business name (business trade)",
+                  visuallyHidden = s"business name (business trade)"
+                ),
+                SummaryListActionValues(
+                  href = controllers.individual.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idOne").url,
+                  text = s"${IndividualIncomeSource.remove} business name (business trade)",
+                  visuallyHidden = s"business name (business trade)"
+                )
+              ),
+              rows = Seq(
+                SummaryListRowValues(
+                  key = IndividualIncomeSource.soleTraderBusinessNameKey,
+                  value = Some("business name"),
+                  actions = Seq.empty
+                )
+              )
+            )
+          }
         }
 
         "has an add business link" in new ViewTest(completeIncomeSources) {
@@ -621,7 +649,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
     "there are complete and confirmed set of income sources added" should {
 
-      def completeAndConfirmedIncomeSources: IncomeSources = IncomeSources(completeAndConfirmedSelfEmployments, completeAndConfirmedUKProperty, completeAndConfirmedForeignProperty)
+      def completeAndConfirmedIncomeSources: IncomeSources = IncomeSources(completeAndConfirmedSelfEmployments, Some(Cash), completeAndConfirmedUKProperty, completeAndConfirmedForeignProperty)
 
       "have a heading for the page" in new ViewTest(completeAndConfirmedIncomeSources) {
         document.mainContent.getH1Element.text mustBe IndividualIncomeSource.heading

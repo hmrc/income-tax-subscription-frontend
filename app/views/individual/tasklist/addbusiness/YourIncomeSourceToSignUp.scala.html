@@ -142,7 +142,7 @@
                     items = Seq(
                         ActionItem(
                             href = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${business.id}&isEditMode=true",
-                            content = incomeSourceChangeLabel(business.isComplete, business.confirmed),
+                            content = incomeSourceChangeLabel(business.isComplete && incomeSources.selfEmploymentAccountingMethod.isDefined, business.confirmed),
                             visuallyHiddenText = business.businessName.map(_.businessName)
                         ),
                         ActionItem(

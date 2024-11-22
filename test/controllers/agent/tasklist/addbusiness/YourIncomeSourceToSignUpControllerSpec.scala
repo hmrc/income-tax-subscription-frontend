@@ -22,7 +22,7 @@ import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionD
 import controllers.agent.AgentControllerBaseSpec
 import models.common.business._
 import models.common.{IncomeSources, OverseasPropertyModel, PropertyModel}
-import models.{Cash, DateModel}
+import models.{AccountingMethod, Cash, DateModel}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import play.api.http.Status.{OK, SEE_OTHER}
@@ -30,6 +30,7 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockAuditingService, MockClientDetailsRetrieval, MockReferenceRetrieval, MockSubscriptionDetailsService}
+import utilities.agent.TestModels.testAccountingMethod
 import views.html.agent.tasklist.addbusiness.YourIncomeSourceToSignUp
 
 import scala.concurrent.Future
@@ -51,6 +52,7 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
 
   val incomeSources: IncomeSources = IncomeSources(
     selfEmployments = Seq(testSelfEmployment("id"), testSelfEmployment("id2")),
+    selfEmploymentAccountingMethod = Some(Cash),
     ukProperty = Some(testUkProperty),
     foreignProperty = Some(testForeignProperty)
   )
@@ -102,6 +104,7 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
         mockFetchAllIncomeSources(
           IncomeSources(
             selfEmployments = Seq(testSelfEmployment("id"), testSelfEmployment("id2")),
+            selfEmploymentAccountingMethod = Some(Cash),
             ukProperty = Some(testUkProperty),
             foreignProperty = Some(testForeignProperty)
           )
@@ -116,6 +119,7 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
         mockFetchAllIncomeSources(
           IncomeSources(
             selfEmployments = Seq(testSelfEmployment("id"), testSelfEmployment("id2")),
+            selfEmploymentAccountingMethod = Some(Cash),
             ukProperty = None,
             foreignProperty = None
           )
@@ -131,6 +135,7 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
         mockFetchAllIncomeSources(
           IncomeSources(
             selfEmployments = Seq.empty,
+            selfEmploymentAccountingMethod = None,
             ukProperty = Some(testUkProperty),
             foreignProperty = None
           )
@@ -146,6 +151,7 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
         mockFetchAllIncomeSources(
           IncomeSources(
             selfEmployments = Seq.empty,
+            selfEmploymentAccountingMethod = None,
             ukProperty = None,
             foreignProperty = Some(testForeignProperty)
           )
@@ -163,6 +169,7 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
         mockFetchAllIncomeSources(
           IncomeSources(
             selfEmployments = Seq(testSelfEmployment("id").copy(confirmed = false)),
+            selfEmploymentAccountingMethod = None,
             ukProperty = Some(testUkProperty),
             foreignProperty = Some(testForeignProperty)
           )
@@ -177,6 +184,7 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
         mockFetchAllIncomeSources(
           IncomeSources(
             selfEmployments = Seq(testSelfEmployment("id"), testSelfEmployment("id2")),
+            selfEmploymentAccountingMethod = Some(Cash),
             ukProperty = Some(testUkProperty.copy(confirmed = false)),
             foreignProperty = Some(testForeignProperty)
           )
@@ -191,6 +199,7 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
         mockFetchAllIncomeSources(
           IncomeSources(
             selfEmployments = Seq(testSelfEmployment("id"), testSelfEmployment("id2")),
+            selfEmploymentAccountingMethod = Some(Cash),
             ukProperty = Some(testUkProperty),
             foreignProperty = Some(testForeignProperty.copy(confirmed = false))
           )
@@ -209,6 +218,7 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
         mockFetchAllIncomeSources(
           IncomeSources(
             selfEmployments = Seq.empty,
+            selfEmploymentAccountingMethod = None,
             ukProperty = None,
             foreignProperty = None
           )
@@ -288,6 +298,4 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
     startDate = Some(DateModel("3", "3", "1982")),
     confirmed = true
   )
-
-
 }
