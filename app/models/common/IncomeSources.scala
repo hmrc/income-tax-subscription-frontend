@@ -28,7 +28,7 @@ case class IncomeSources(selfEmployments: Seq[SelfEmploymentData],
 
   val isComplete: Boolean = {
     val incomeSourceExists: Boolean = selfEmployments.nonEmpty || ukProperty.nonEmpty || foreignProperty.nonEmpty
-    val selfEmploymentsComplete: Boolean = (selfEmployments.isEmpty || selfEmployments.forall(_.confirmed)) && selfEmploymentAccountingMethod.isDefined
+    val selfEmploymentsComplete: Boolean = selfEmployments.isEmpty || (selfEmployments.forall(_.confirmed) && selfEmploymentAccountingMethod.isDefined)
     val ukPropertyComplete: Boolean = ukProperty.forall(_.confirmed)
     val foreignPropertyComplete: Boolean = foreignProperty.forall(_.confirmed)
 
