@@ -45,21 +45,21 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         hasSignOutLink = true
       )
       "there are incomplete income sources added" in new TemplateViewTest(
-        view = view(IncomeSources(incompleteSelfEmployments, incompleteUKProperty, incompleteForeignProperty)),
+        view = view(IncomeSources(incompleteSelfEmployments, None, incompleteUKProperty, incompleteForeignProperty)),
         title = AgentIncomeSource.heading,
         isAgent = true,
         backLink = Some(testBackUrl),
         hasSignOutLink = true
       )
       "there are complete income sources added" in new TemplateViewTest(
-        view = view(IncomeSources(completeSelfEmployments, completeUKProperty, completeForeignProperty)),
+        view = view(IncomeSources(completeSelfEmployments, Some(Cash), completeUKProperty, completeForeignProperty)),
         title = AgentIncomeSource.heading,
         isAgent = true,
         backLink = Some(testBackUrl),
         hasSignOutLink = true
       )
       "there are complete and confirmed income sources added" in new TemplateViewTest(
-        view = view(IncomeSources(completeAndConfirmedSelfEmployments, completeAndConfirmedUKProperty, completeAndConfirmedForeignProperty)),
+        view = view(IncomeSources(completeAndConfirmedSelfEmployments, Some(Cash), completeAndConfirmedUKProperty, completeAndConfirmedForeignProperty)),
         title = AgentIncomeSource.heading,
         isAgent = true,
         backLink = Some(testBackUrl),
@@ -359,29 +359,57 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         "has a heading" in new ViewTest(completeIncomeSources) {
           document.mainContent.selectNth("h2", 1).text mustBe AgentIncomeSource.soleTrader
         }
-        "has a summary card" in new ViewTest(completeIncomeSources) {
-          document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
-            title = "business trade",
-            cardActions = Seq(
-              SummaryListActionValues(
-                href = AgentIncomeSource.soleTraderChangeLinkOne,
-                text = s"${AgentIncomeSource.check} business name (business trade)",
-                visuallyHidden = s"business name (business trade)"
+        "has a summary card with change link" when {
+          "all details are present and confirmed and an accounting method is present" in new ViewTest(completeIncomeSources) {
+            document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
+              title = "business trade",
+              cardActions = Seq(
+                SummaryListActionValues(
+                  href = AgentIncomeSource.soleTraderChangeLinkOne,
+                  text = s"${AgentIncomeSource.check} business name (business trade)",
+                  visuallyHidden = s"business name (business trade)"
+                ),
+                SummaryListActionValues(
+                  href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idOne").url,
+                  text = s"${AgentIncomeSource.remove} business name (business trade)",
+                  visuallyHidden = s"business name (business trade)"
+                )
               ),
-              SummaryListActionValues(
-                href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idOne").url,
-                text = s"${AgentIncomeSource.remove} business name (business trade)",
-                visuallyHidden = s"business name (business trade)"
-              )
-            ),
-            rows = Seq(
-              SummaryListRowValues(
-                key = AgentIncomeSource.soleTraderBusinessNameKey,
-                value = Some("business name"),
-                actions = Seq.empty
+              rows = Seq(
+                SummaryListRowValues(
+                  key = AgentIncomeSource.soleTraderBusinessNameKey,
+                  value = Some("business name"),
+                  actions = Seq.empty
+                )
               )
             )
-          )
+          }
+        }
+        "has a summary card with add detail link" when {
+          "there is no accounting method present in the income sources" in new ViewTest(completeIncomeSources.copy(selfEmploymentAccountingMethod = None)) {
+            document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
+              title = "business trade",
+              cardActions = Seq(
+                SummaryListActionValues(
+                  href = AgentIncomeSource.soleTraderChangeLinkOne,
+                  text = s"${AgentIncomeSource.addDetails} business name (business trade)",
+                  visuallyHidden = s"business name (business trade)"
+                ),
+                SummaryListActionValues(
+                  href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idOne").url,
+                  text = s"${AgentIncomeSource.remove} business name (business trade)",
+                  visuallyHidden = s"business name (business trade)"
+                )
+              ),
+              rows = Seq(
+                SummaryListRowValues(
+                  key = AgentIncomeSource.soleTraderBusinessNameKey,
+                  value = Some("business name"),
+                  actions = Seq.empty
+                )
+              )
+            )
+          }
         }
         "has an add business link" in new ViewTest(completeIncomeSources) {
           val link: Element = document.mainContent.getElementById("add-self-employment").selectHead("a")
@@ -461,7 +489,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       }
     }
     "there are fully complete and confirmed income sources added" should {
-      def completeAndConfirmedIncomeSources: IncomeSources = IncomeSources(completeAndConfirmedSelfEmployments, completeAndConfirmedUKProperty, completeAndConfirmedForeignProperty)
+      def completeAndConfirmedIncomeSources: IncomeSources = IncomeSources(completeAndConfirmedSelfEmployments, Some(Cash), completeAndConfirmedUKProperty, completeAndConfirmedForeignProperty)
 
       "have a heading and caption" in new ViewTest(completeAndConfirmedIncomeSources) {
         document.mainContent.mustHaveHeadingAndCaption(
@@ -470,7 +498,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           isSection = false
         )
       }
-      
+
       "have a sole trader section" which {
         "has a heading" in new ViewTest(completeAndConfirmedIncomeSources) {
           document.mainContent.selectNth("h2", 1).text mustBe AgentIncomeSource.soleTrader
@@ -687,7 +715,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
   lazy val incompleteUKProperty: Option[PropertyModel] = Some(PropertyModel(startDate = Some(DateModel("1", "1", "1981"))))
   lazy val incompleteForeignProperty: Option[OverseasPropertyModel] = Some(OverseasPropertyModel(startDate = Some(DateModel("2", "2", "1982"))))
 
-  def view(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None), prepopulated: Boolean = false): Html = {
+  def view(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None, None), prepopulated: Boolean = false): Html = {
     incomeSourceView(
       postAction = testCall,
       backUrl = testBackUrl,
@@ -697,14 +725,14 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     )
   }
 
-  class ViewTest(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None), prepopulated: Boolean = false) {
+  class ViewTest(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None, None), prepopulated: Boolean = false) {
     def document: Document = Jsoup.parse(view(incomeSources, prepopulated).body)
   }
 
-  lazy val noIncomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None)
-  lazy val incompleteIncomeSources: IncomeSources = IncomeSources(incompleteSelfEmployments, incompleteUKProperty, incompleteForeignProperty)
-  lazy val completeIncomeSources: IncomeSources = IncomeSources(completeSelfEmployments, completeUKProperty, completeForeignProperty)
-  lazy val completeAndConfirmedIncomeSources: IncomeSources = IncomeSources(completeAndConfirmedSelfEmployments, completeAndConfirmedUKProperty, completeAndConfirmedForeignProperty)
+  lazy val noIncomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None, None)
+  lazy val incompleteIncomeSources: IncomeSources = IncomeSources(incompleteSelfEmployments, Some(Cash), incompleteUKProperty, incompleteForeignProperty)
+  lazy val completeIncomeSources: IncomeSources = IncomeSources(completeSelfEmployments, Some(Cash), completeUKProperty, completeForeignProperty)
+  lazy val completeAndConfirmedIncomeSources: IncomeSources = IncomeSources(completeAndConfirmedSelfEmployments, Some(Cash), completeAndConfirmedUKProperty, completeAndConfirmedForeignProperty)
 
 
 }

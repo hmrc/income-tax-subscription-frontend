@@ -54,10 +54,10 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
     "return OK status" when {
       "there are no income sources added" in new Setup {
 
-        mockFetchAllIncomeSources(IncomeSources(Seq.empty, None, None))
+        mockFetchAllIncomeSources(IncomeSources(Seq.empty, None, None, None))
         mockFetchPrePopFlag(Some(true))
 
-        mockYourIncomeSourceToSignUpView(IncomeSources(Seq.empty[SelfEmploymentData], None, None), isPrePopped = true)
+        mockYourIncomeSourceToSignUpView(IncomeSources(Seq.empty[SelfEmploymentData], None, None, None), isPrePopped = true)
 
         val result: Result = await(controller.show()(subscriptionRequest))
 
@@ -68,6 +68,7 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
 
         mockFetchAllIncomeSources(IncomeSources(
           Seq(testSelfEmployment("id"), testSelfEmployment("id2")),
+          Some(Cash),
           Some(testUkProperty),
           Some(testForeignProperty)
         ))
@@ -79,6 +80,7 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
               testSelfEmployment("id"),
               testSelfEmployment("id2")
             ),
+            selfEmploymentAccountingMethod = Some(Cash),
             ukProperty = Some(testUkProperty),
             foreignProperty = Some(testForeignProperty)
           ),
@@ -91,10 +93,10 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
         contentType(result) mustBe Some(HTML)
       }
       "there is a PrePop flag" in new Setup {
-        mockFetchAllIncomeSources(IncomeSources(Seq.empty, None, None))
+        mockFetchAllIncomeSources(IncomeSources(Seq.empty, None, None, None))
         mockFetchPrePopFlag(Some(true))
 
-        mockYourIncomeSourceToSignUpView(IncomeSources(Seq.empty[SelfEmploymentData], None, None), isPrePopped = true)
+        mockYourIncomeSourceToSignUpView(IncomeSources(Seq.empty[SelfEmploymentData], None, None, None), isPrePopped = true)
 
         val result: Result = await(controller.show()(subscriptionRequest))
 
@@ -103,10 +105,10 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
       }
       "there is no PrePop flag" when {
         "fetching the flag returns false" in new Setup {
-          mockFetchAllIncomeSources(IncomeSources(Seq.empty, None, None))
+          mockFetchAllIncomeSources(IncomeSources(Seq.empty, None, None, None))
           mockFetchPrePopFlag(Some(false))
 
-          mockYourIncomeSourceToSignUpView(IncomeSources(Seq.empty[SelfEmploymentData], None, None), isPrePopped = false)
+          mockYourIncomeSourceToSignUpView(IncomeSources(Seq.empty[SelfEmploymentData], None, None, None), isPrePopped = false)
 
           val result: Result = await(controller.show()(subscriptionRequest))
 
@@ -114,10 +116,10 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
           contentType(result) mustBe Some(HTML)
         }
         "fetching the flag returns none" in new Setup {
-          mockFetchAllIncomeSources(IncomeSources(Seq.empty, None, None))
+          mockFetchAllIncomeSources(IncomeSources(Seq.empty, None, None, None))
           mockFetchPrePopFlag(None)
 
-          mockYourIncomeSourceToSignUpView(IncomeSources(Seq.empty[SelfEmploymentData], None, None), isPrePopped = false)
+          mockYourIncomeSourceToSignUpView(IncomeSources(Seq.empty[SelfEmploymentData], None, None, None), isPrePopped = false)
 
           val result: Result = await(controller.show()(subscriptionRequest))
 
@@ -133,6 +135,7 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
       "all income sources are complete" in new Setup {
         mockFetchAllIncomeSources(IncomeSources(
           Seq(testSelfEmployment("id"), testSelfEmployment("id2")),
+          Some(Cash),
           Some(testUkProperty),
           Some(testForeignProperty)
         ))
@@ -146,6 +149,7 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
       "only self employment income sources are added and complete" in new Setup {
         mockFetchAllIncomeSources(IncomeSources(
           Seq(testSelfEmployment("id"), testSelfEmployment("id2")),
+          Some(Cash),
           None,
           None,
         ))
@@ -159,6 +163,7 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
       "only uk property income sources are added and complete" in new Setup {
         mockFetchAllIncomeSources(IncomeSources(
           Seq.empty,
+          None,
           Some(testUkProperty),
           None
         ))
@@ -172,6 +177,7 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
       "only foreign property income sources are added and complete" in new Setup {
         mockFetchAllIncomeSources(IncomeSources(
           Seq.empty,
+          None,
           None,
           Some(testForeignProperty)
         ))
@@ -187,6 +193,7 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
       "self employment income sources are not complete" in new Setup {
         mockFetchAllIncomeSources(IncomeSources(
           Seq(testSelfEmployment("id").copy(confirmed = false)),
+          None,
           Some(testUkProperty),
           Some(testForeignProperty)
         ))
@@ -199,6 +206,7 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
       "uk property income sources are not complete" in new Setup {
         mockFetchAllIncomeSources(IncomeSources(
           Seq(testSelfEmployment("id")),
+          Some(Cash),
           Some(testUkProperty.copy(confirmed = false)),
           Some(testForeignProperty)
         ))
@@ -211,6 +219,7 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
       "overseas property income sources are not complete" in new Setup {
         mockFetchAllIncomeSources(IncomeSources(
           Seq(testSelfEmployment("id")),
+          Some(Cash),
           Some(testUkProperty),
           Some(testForeignProperty.copy(confirmed = false))
         ))
@@ -223,6 +232,7 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
       "no income sources have been added" in new Setup {
         mockFetchAllIncomeSources(IncomeSources(
           Seq.empty,
+          None,
           None,
           None
         ))
