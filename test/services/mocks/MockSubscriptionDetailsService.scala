@@ -83,7 +83,7 @@ trait MockSubscriptionDetailsService extends PlaySpec with MockitoSugar with Bef
   }
 
   def verifySaveProperty(propertyModel: PropertyModel, count: Int = 1): Unit = {
-    if (count == 0){
+    if (count == 0) {
       verify(mockSubscriptionDetailsService, times(count)).saveProperty(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any())
     } else {
       verify(mockSubscriptionDetailsService, times(count)).saveProperty(ArgumentMatchers.any(), ArgumentMatchers.eq(propertyModel))(ArgumentMatchers.any())
@@ -96,7 +96,7 @@ trait MockSubscriptionDetailsService extends PlaySpec with MockitoSugar with Bef
   }
 
   def verifySaveOverseasProperty(overseasPropertyModel: OverseasPropertyModel, count: Int = 1): Unit = {
-    if (count == 0){
+    if (count == 0) {
       verify(mockSubscriptionDetailsService, times(count)).saveOverseasProperty(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any())
     } else {
       verify(mockSubscriptionDetailsService, times(count)).saveOverseasProperty(ArgumentMatchers.any(), ArgumentMatchers.eq(overseasPropertyModel))(ArgumentMatchers.any())
@@ -113,13 +113,17 @@ trait MockSubscriptionDetailsService extends PlaySpec with MockitoSugar with Bef
       .thenReturn(Future.successful(result))
   }
 
+  def verifySaveIncomeSourceConfirmation(count: Int = 1): Unit = {
+    verify(mockSubscriptionDetailsService, times(count)).saveIncomeSourcesConfirmation(ArgumentMatchers.any())(ArgumentMatchers.any())
+  }
+
   def mockSavePrePopFlag(flag: Boolean)(result: PostSubscriptionDetailsResponse): Unit = {
     when(mockSubscriptionDetailsService.savePrePopFlag(ArgumentMatchers.any(), ArgumentMatchers.eq(flag))(ArgumentMatchers.any()))
       .thenReturn(Future.successful(result))
   }
 
   def verifySavePrePopFlag(flag: Boolean, count: Int = 1): Unit = {
-    if(count == 0) {
+    if (count == 0) {
       verify(mockSubscriptionDetailsService, times(count)).savePrePopFlag(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any())
     } else {
       verify(mockSubscriptionDetailsService, times(count)).savePrePopFlag(ArgumentMatchers.any(), ArgumentMatchers.eq(flag))(ArgumentMatchers.any())

@@ -22,7 +22,7 @@ import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionD
 import controllers.agent.AgentControllerBaseSpec
 import models.common.business._
 import models.common.{IncomeSources, OverseasPropertyModel, PropertyModel}
-import models.{AccountingMethod, Cash, DateModel}
+import models.{Cash, DateModel}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import play.api.http.Status.{OK, SEE_OTHER}
@@ -30,7 +30,6 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockAuditingService, MockClientDetailsRetrieval, MockReferenceRetrieval, MockSubscriptionDetailsService}
-import utilities.agent.TestModels.testAccountingMethod
 import views.html.agent.tasklist.addbusiness.YourIncomeSourceToSignUp
 
 import scala.concurrent.Future
@@ -100,7 +99,6 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
   "submit" should {
     "redirect to the task list page and save the income sources section as complete" when {
       "all income sources are complete" in new Setup {
-        mockSaveIncomeSourceConfirmation(Right(PostSubscriptionDetailsSuccessResponse))
         mockFetchAllIncomeSources(
           IncomeSources(
             selfEmployments = Seq(testSelfEmployment("id"), testSelfEmployment("id2")),
@@ -109,11 +107,14 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
             foreignProperty = Some(testForeignProperty)
           )
         )
+        mockSaveIncomeSourceConfirmation(Right(PostSubscriptionDetailsSuccessResponse))
 
         val result: Future[Result] = controller.submit(subscriptionRequest)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.agent.tasklist.routes.TaskListController.show().url)
+
+        verifySaveIncomeSourceConfirmation()
       }
       "only self employment income sources are added and complete" in new Setup {
         mockFetchAllIncomeSources(
@@ -130,6 +131,8 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.agent.tasklist.routes.TaskListController.show().url)
+
+        verifySaveIncomeSourceConfirmation()
       }
       "only uk property income sources are added and complete" in new Setup {
         mockFetchAllIncomeSources(
@@ -146,6 +149,8 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.agent.tasklist.routes.TaskListController.show().url)
+
+        verifySaveIncomeSourceConfirmation()
       }
       "only foreign property income sources are added and complete" in new Setup {
         mockFetchAllIncomeSources(
@@ -162,6 +167,8 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.agent.tasklist.routes.TaskListController.show().url)
+
+        verifySaveIncomeSourceConfirmation()
       }
     }
     "redirect to the task list page" when {
@@ -179,6 +186,8 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.agent.tasklist.routes.TaskListController.show().url)
+
+        verifySaveIncomeSourceConfirmation(0)
       }
       "uk property income sources are not complete" in new Setup {
         mockFetchAllIncomeSources(
@@ -194,6 +203,8 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.agent.tasklist.routes.TaskListController.show().url)
+
+        verifySaveIncomeSourceConfirmation(0)
       }
       "overseas property income sources are not complete" in new Setup {
         mockFetchAllIncomeSources(
@@ -209,6 +220,8 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.agent.tasklist.routes.TaskListController.show().url)
+
+        verifySaveIncomeSourceConfirmation(0)
       }
       "no income sources have been added" in new Setup {
         mockFetchAllSelfEmployments(Seq.empty[SelfEmploymentData])
@@ -228,6 +241,8 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.agent.tasklist.routes.TaskListController.show().url)
+
+        verifySaveIncomeSourceConfirmation(0)
       }
     }
   }

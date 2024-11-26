@@ -145,6 +145,8 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
+
+        verifySaveIncomeSourceConfirmation()
       }
       "only self employment income sources are added and complete" in new Setup {
         mockFetchAllIncomeSources(IncomeSources(
@@ -159,6 +161,8 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
+
+        verifySaveIncomeSourceConfirmation()
       }
       "only uk property income sources are added and complete" in new Setup {
         mockFetchAllIncomeSources(IncomeSources(
@@ -173,6 +177,8 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
+
+        verifySaveIncomeSourceConfirmation()
       }
       "only foreign property income sources are added and complete" in new Setup {
         mockFetchAllIncomeSources(IncomeSources(
@@ -187,6 +193,8 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
+
+        verifySaveIncomeSourceConfirmation()
       }
     }
     "redirect to the task list page" when {
@@ -202,6 +210,8 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
+
+        verifySaveIncomeSourceConfirmation(0)
       }
       "uk property income sources are not complete" in new Setup {
         mockFetchAllIncomeSources(IncomeSources(
@@ -215,6 +225,8 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
+
+        verifySaveIncomeSourceConfirmation(0)
       }
       "overseas property income sources are not complete" in new Setup {
         mockFetchAllIncomeSources(IncomeSources(
@@ -228,6 +240,8 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
+
+        verifySaveIncomeSourceConfirmation(0)
       }
       "no income sources have been added" in new Setup {
         mockFetchAllIncomeSources(IncomeSources(
@@ -241,6 +255,8 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
+
+        verifySaveIncomeSourceConfirmation(0)
       }
     }
   }
