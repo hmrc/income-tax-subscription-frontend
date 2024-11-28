@@ -17,7 +17,7 @@
 package services.agent
 
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.CheckClientRelationship
+import config.featureswitch.FeatureSwitch.{CheckClientRelationship, CheckMultiAgentRelationship}
 import config.featureswitch.FeatureSwitching
 import connectors.agent.AgentSPSConnector
 import models.ConnectorError
@@ -44,15 +44,11 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
       case right@Right(Some(subscriptionSuccess)) =>
         autoEnrolmentService.autoClaimEnrolment(utr, createIncomeSourcesModel.nino, subscriptionSuccess.mtditId) flatMap {
           case Right(_) =>
-            if (isEnabled(CheckClientRelationship)) {
-              clientRelationshipService.isMTDPreExistingRelationship(arn, createIncomeSourcesModel.nino)
-            }
+            checkClientRelationships(arn = arn, nino = createIncomeSourcesModel.nino)
             confirmAgentEnrollmentToSps(arn, createIncomeSourcesModel.nino, utr, subscriptionSuccess.mtditId)
               .map(_ => right)
           case Left(_) =>
-            if (isEnabled(CheckClientRelationship)) {
-              clientRelationshipService.isMTDPreExistingRelationship(arn, createIncomeSourcesModel.nino)
-            }
+            checkClientRelationships(arn = arn, nino = createIncomeSourcesModel.nino)
             Future.successful(right)
         }
       case Right(None) => Future.successful(Right(None))
@@ -89,4 +85,17 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
     agentSPSConnector.postSpsConfirm(arn, nino, sautr, mtditId)
   }
 
+  private[services] def checkClientRelationships(arn: String, nino: String)
+                                                (implicit hc: HeaderCarrier): Future[Unit] = {
+    if (isEnabled(CheckClientRelationship)) {
+      clientRelationshipService.isMTDPreExistingRelationship(arn, nino) map { maybeRelationship =>
+        if (isEnabled(CheckMultiAgentRelationship) && !maybeRelationship) {
+          clientRelationshipService.isMTDSuppAgentRelationship(arn, nino)
+        } else {
+          Future.successful(maybeRelationship)
+        }
+      }
+    }
+    Future.successful()
+  }
 }

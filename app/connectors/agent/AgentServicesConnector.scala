@@ -18,17 +18,17 @@ package connectors.agent
 
 import config.AppConfig
 import connectors.RawResponseReads
-import javax.inject.{Inject, Singleton}
+import play.api.Logging
 import play.api.http.Status
-import uk.gov.hmrc.http._
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.{HttpClient, _}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AgentServicesConnector @Inject()(appConfig: AppConfig,
                                        http: HttpClient)
-                                      (implicit ec: ExecutionContext) extends RawResponseReads {
+                                      (implicit ec: ExecutionContext) extends RawResponseReads with Logging {
 
   def agentClientURL(arn: String, nino: String): String = {
     appConfig.agentMicroserviceUrl + AgentServicesConnector.agentClientURI(arn, nino)
@@ -48,7 +48,7 @@ class AgentServicesConnector @Inject()(appConfig: AppConfig,
     appConfig.agentMicroserviceUrl + AgentServicesConnector.agentMTDClientURI(arn, nino)
   }
 
-  def isMTDPreExistingRelationship (arn: String, nino: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
+  def isMTDPreExistingRelationship(arn: String, nino: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
     val url = agentMTDClientURL(arn, nino)
 
     http.GET[HttpResponse](url).map {
@@ -58,6 +58,20 @@ class AgentServicesConnector @Inject()(appConfig: AppConfig,
     }
   }
 
+  def suppAgentClientURL(arn: String, nino: String): String = {
+    appConfig.agentMicroserviceUrl + AgentServicesConnector.suppAgentClientURI(arn, nino)
+  }
+
+  def isMTDSuppAgentRelationship(arn: String, nino: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
+    val url = suppAgentClientURL(arn, nino)
+
+    http.GET[HttpResponse](url).map {
+      case res if res.status == Status.OK => true
+      case res =>
+        logger.warn(s"[AgentServicesConnector][isMTDSuppAgentRelationship] - Unexpected status returned - ${res.status}")
+        false
+    }
+  }
 }
 
 object AgentServicesConnector {
@@ -67,5 +81,8 @@ object AgentServicesConnector {
 
   def agentMTDClientURI(arn: String, nino: String): String =
     s"/agent-client-relationships/agent/$arn/service/HMRC-MTD-IT/client/ni/$nino"
+
+  def suppAgentClientURI(arn: String, nino: String): String =
+    s"/agent-client-relationships/agent/$arn/service/HMRC-MTD-SUPP/client/ni/$nino"
 
 }

@@ -28,7 +28,8 @@ object FeatureSwitch {
     PrePopulate,
     ThrottlingFeature,
     AgentStreamline,
-    CheckClientRelationship
+    CheckClientRelationship,
+    CheckMultiAgentRelationship
   )
 
   def apply(str: String): FeatureSwitch =
@@ -53,9 +54,15 @@ object FeatureSwitch {
     override val name: String = s"$prefix.enable-agent-streamline"
     override val displayText: String = "AgentStreamline"
   }
+
   case object CheckClientRelationship extends FeatureSwitch {
     override val name: String = s"$prefix.agent-client-relationships"
     override val displayText: String = "CheckClientRelationship"
+  }
+
+  case object CheckMultiAgentRelationship extends FeatureSwitch {
+    override val name: String = s"$prefix.multi-agent-client-relationships"
+    override val displayText: String = "CheckMultiAgentRelationship"
   }
 
 }

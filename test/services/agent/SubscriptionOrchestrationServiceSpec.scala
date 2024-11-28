@@ -24,6 +24,7 @@ import org.scalatest.concurrent.ScalaFutures.whenReady
 import play.api.test.Helpers._
 import services.agent.mocks.{MockAgentSPSConnector, MockClientRelationshipService}
 import services.mocks.{MockAutoEnrolmentService, MockSubscriptionService}
+import uk.gov.hmrc.http.InternalServerException
 import utilities.TestModels.testAccountingPeriodThisYear
 import utilities.agent.TestConstants._
 
@@ -37,6 +38,7 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService
   override def beforeEach(): Unit = {
     super.beforeEach()
     enable(FeatureSwitch.CheckClientRelationship)
+    disable(FeatureSwitch.CheckMultiAgentRelationship)
   }
 
   object TestSubscriptionOrchestrationService extends SubscriptionOrchestrationService(
@@ -54,8 +56,10 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService
     }
 
     "return a success" when {
+
       "all services succeed" in {
         mockSignUpSuccess(testNino, testTaxYear)
+        preExistingMTDRelationship(testARN, testNino)(isPreExistingMTDRelationship = true)
         mockCreateIncomeSourcesFromTaskListSuccess(testMTDID, testCreateIncomeSourcesThisYear)
         mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(Right(AutoEnrolmentService.EnrolmentAssigned))
         mockAgentSpsConnectorSuccess(testARN, testUtr, testNino, testMTDID)
@@ -64,7 +68,25 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService
 
         await(res) mustBe testSubscriptionSuccess
         verifyAgentSpsConnector(testARN, testUtr, testNino, testMTDID, 1)
+        verifyCheckPreExistingMTDRelationship(testARN, testNino)
+        verifyCheckMTDSuppAgentRelationship(testARN, testNino, 0)
       }
+
+      "there is no pre existing agent-client relationship" in {
+        mockSignUpSuccess(testNino, testTaxYear)
+        preExistingMTDRelationship(testARN, testNino)(isPreExistingMTDRelationship = false)
+        mockCreateIncomeSourcesFromTaskListSuccess(testMTDID, testCreateIncomeSourcesThisYear)
+        mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(Right(AutoEnrolmentService.EnrolmentAssigned))
+        mockAgentSpsConnectorSuccess(testARN, testUtr, testNino, testMTDID)
+
+        val res = TestSubscriptionOrchestrationService.createSubscriptionFromTaskList(testARN, testUtr, testCreateIncomeSourcesThisYear)
+
+        await(res) mustBe testSubscriptionSuccess
+        verifyAgentSpsConnector(testARN, testUtr, testNino, testMTDID, 1)
+        verifyCheckPreExistingMTDRelationship(testARN, testNino)
+        verifyCheckMTDSuppAgentRelationship(testARN, testNino, 0)
+      }
+
       "the sign up indicated the customer was already signed up" in {
         mockAlreadySignedUp(testNino, testTaxYear)
 
@@ -72,6 +94,41 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService
 
         await(res) mustBe Right(None)
         verifyAgentSpsConnector(testARN, testUtr, testNino, testMTDID, 0)
+      }
+
+      "the CheckMultiAgentRelationship feature switch is on" when {
+        "there is a multi-agent-client relationship" in {
+          enable(FeatureSwitch.CheckMultiAgentRelationship)
+          mockSignUpSuccess(testNino, testTaxYear)
+          preExistingMTDRelationship(testARN, testNino)(isPreExistingMTDRelationship = false)
+          suppAgentRelationship(testARN, testNino)(isMTDSuppAgentRelationship = true)
+          mockCreateIncomeSourcesFromTaskListSuccess(testMTDID, testCreateIncomeSourcesThisYear)
+          mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(Right(AutoEnrolmentService.EnrolmentAssigned))
+          mockAgentSpsConnectorSuccess(testARN, testUtr, testNino, testMTDID)
+
+          val res = TestSubscriptionOrchestrationService.createSubscriptionFromTaskList(testARN, testUtr, testCreateIncomeSourcesThisYear)
+
+          await(res) mustBe testSubscriptionSuccess
+          verifyAgentSpsConnector(testARN, testUtr, testNino, testMTDID, 1)
+          verifyCheckPreExistingMTDRelationship(testARN, testNino)
+          verifyCheckMTDSuppAgentRelationship(testARN, testNino)
+        }
+        "there is no supporting-agent client relationship" in {
+          enable(FeatureSwitch.CheckMultiAgentRelationship)
+          mockSignUpSuccess(testNino, testTaxYear)
+          preExistingMTDRelationship(testARN, testNino)(isPreExistingMTDRelationship = false)
+          suppAgentRelationship(testARN, testNino)(isMTDSuppAgentRelationship = false)
+          mockCreateIncomeSourcesFromTaskListSuccess(testMTDID, testCreateIncomeSourcesThisYear)
+          mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(Right(AutoEnrolmentService.EnrolmentAssigned))
+          mockAgentSpsConnectorSuccess(testARN, testUtr, testNino, testMTDID)
+
+          val res = TestSubscriptionOrchestrationService.createSubscriptionFromTaskList(testARN, testUtr, testCreateIncomeSourcesThisYear)
+
+          await(res) mustBe testSubscriptionSuccess
+          verifyAgentSpsConnector(testARN, testUtr, testNino, testMTDID, 1)
+          verifyCheckPreExistingMTDRelationship(testARN, testNino)
+          verifyCheckMTDSuppAgentRelationship(testARN, testNino)
+        }
       }
     }
 
@@ -87,6 +144,20 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService
         mockCreateIncomeSourcesFromTaskListFailure(testMTDID, testCreateIncomeSourcesThisYear)
 
         whenReady(res)(_ mustBe testCreateSubscriptionFromTaskListFailure)
+      }
+
+      "check agent-client relationship fails" in {
+        enable(FeatureSwitch.CheckMultiAgentRelationship)
+
+        mockSignUpSuccess(testNino, testTaxYear)
+        mockCreateIncomeSourcesFromTaskListSuccess(testMTDID, testCreateIncomeSourcesThisYear)
+        preExistingMTDRelationshipFailure(testARN, testNino)(failure = testException)
+
+        val res = TestSubscriptionOrchestrationService.createSubscriptionFromTaskList(testARN, testUtr, testCreateIncomeSourcesThisYear)
+        intercept[Exception](await(res))
+
+        verifyCheckPreExistingMTDRelationship(testARN, testNino, 0)
+        verifyCheckPreExistingMTDRelationship(testARN, testNino, 0)
       }
     }
   }

@@ -17,9 +17,9 @@
 package services.agent
 
 import connectors.agent.AgentServicesConnector
-import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
@@ -27,7 +27,12 @@ class ClientRelationshipService @Inject()(val agentServicesConnector: AgentServi
   def isPreExistingRelationship(arn: String, nino: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
     agentServicesConnector.isPreExistingRelationship(arn, nino)
   }
+
   def isMTDPreExistingRelationship(arn: String, nino: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
     agentServicesConnector.isMTDPreExistingRelationship(arn, nino)
+  }
+
+  def isMTDSuppAgentRelationship(arn: String, nino: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
+    agentServicesConnector.isMTDSuppAgentRelationship(arn, nino)
   }
 }
