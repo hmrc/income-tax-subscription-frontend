@@ -445,12 +445,6 @@ sign-up-confirmation.what-you-must-do.no.this.year.bullet4           = a oes ang
 sign-up-confirmation.what-you-must-do.bullet5                        = pryd a sut i wneud eich datganiad terfynol ar ôl diwedd y flwyddyn dreth
 sign-up-confirmation.what-you-must-do.para2                          = A bydd angen i chi dalu’r dreth sydd arnoch.
 
-sign-up-confirmation.other-income-sources.subheading                 = Ffynonellau eraill o incwm
-sign-up-confirmation.other-income-sources.para1                      = Gwnewch yn siŵr eich bod yn datgan unrhyw ffynonellau eraill o incwm megis incwm o gyflogaeth, difidendau neu gynilion. Mae angen i chi roi gwybod am y rhain gan ddefnyddio naill ai:
-sign-up-confirmation.other-income-sources.bullet1                    = eich meddalwedd sy’n cydweddu (os yw’n caniatáu i chi wneud hyn)
-sign-up-confirmation.other-income-sources.bullet2.link               = gwasanaethau ar-lein CThEF
-sign-up-confirmation.other-income-sources.bullet2.link-href          = https://www.gov.uk/gwasanaethau-cthem-mewngofnodi-neu-gofrestru
-
 sign-up-confirmation.report-previous-tax-year.heading                = Rhoi gwybod am flynyddoedd treth blaenorol
 sign-up-confirmation.report-previous-tax-year.plus.one.heading       = Rhoi gwybod am y flwyddyn dreth bresennol a blynyddoedd treth blaenorol
 sign-up-confirmation.report-previous-tax-year.para                   = Mae’n rhaid i chi barhau i gyflwyno’ch Ffurflenni Treth Hunanasesiad ar gyfer y blynyddoedd treth hyd at 5 Ebril {0} yn ôl yr arfer.
