@@ -448,12 +448,6 @@ sign-up-confirmation.what-you-must-do.no.this.year.bullet4           = if you ne
 sign-up-confirmation.what-you-must-do.bullet5                        = when and how to make your final declaration after the end of the tax year
 sign-up-confirmation.what-you-must-do.para2                          = And you will need to pay the tax you owe.
 
-sign-up-confirmation.other-income-sources.subheading                 = Other income sources
-sign-up-confirmation.other-income-sources.para1                      = Make sure you declare your other income sources, such as income from employment, dividends or savings. You need to report these using either:
-sign-up-confirmation.other-income-sources.bullet1                    = your compatible software (if it allows you to do this)
-sign-up-confirmation.other-income-sources.bullet2.link               = HMRC online services
-sign-up-confirmation.other-income-sources.bullet2.link-href          = https://www.gov.uk/log-in-register-hmrc-online-services
-
 sign-up-confirmation.report-previous-tax-year.heading                = Report previous tax year
 sign-up-confirmation.report-previous-tax-year.plus.one.heading       = Report current and previous tax years
 sign-up-confirmation.report-previous-tax-year.para                   = You must submit your Self Assessment tax returns for the years ended 5 April {0} using your HMRC online services account as normal.

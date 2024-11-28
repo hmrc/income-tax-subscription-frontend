@@ -15,11 +15,8 @@
  *@
 
 @import config.AppConfig
-@import services.AccountingPeriodService
-@import views.html.helpers.UpdateDeadlineTable
 @import views.html.helpers.AccountingPeriodHelper
 @import views.html.templates.PrincipalMainTemplate
-@import uk.gov.hmrc.play.language.LanguageUtils
 @import utilities.AccountingPeriodUtil
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcNewTabLinkHelper
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
@@ -27,12 +24,7 @@
 @this(
   principalMainTemplate: PrincipalMainTemplate,
   govukPanel: GovukPanel,
-  govukWarningText : GovukWarningText,
-  languageUtils: LanguageUtils,
-  table: UpdateDeadlineTable,
   accountingPeriodHelper: AccountingPeriodHelper,
-  accountingPeriodService: AccountingPeriodService,
-  govukNotificationBanner : GovukNotificationBanner,
   hmrcNewTabLinkHelper: HmrcNewTabLinkHelper
 )
 
@@ -115,14 +107,6 @@ classes = "govuk-!-margin-bottom-4"
 </ul>
 <p class="govuk-body">@messages("sign-up-confirmation.what-you-must-do.para2")</p>
 
-<h2 class="govuk-heading-m">@messages("sign-up-confirmation.other-income-sources.subheading")</h2>
-
-<p class="govuk-body">@messages("sign-up-confirmation.other-income-sources.para1")</p>
-<ul class="govuk-list govuk-list--bullet">
-  <li>@messages("sign-up-confirmation.other-income-sources.bullet1")</li>
-  <li>@findHMRCService()</li>
-</ul>
-
 @reportPreviousTaxYear
 }
 
@@ -149,14 +133,6 @@ classes = "govuk-!-margin-bottom-4"
 </ul>
 <p class="govuk-body">@messages("sign-up-confirmation.what-you-must-do.para2")</p>
 
-<h2 class="govuk-heading-m">@messages("sign-up-confirmation.other-income-sources.subheading")</h2>
-
-<p class="govuk-body">@messages("sign-up-confirmation.other-income-sources.para1")</p>
-<ul class="govuk-list govuk-list--bullet">
-  <li>@messages("sign-up-confirmation.other-income-sources.bullet1")</li>
-  <li>@findHMRCService()</li>
-</ul>
-
 @reportPreviousTaxYear
 }
 
@@ -178,14 +154,6 @@ classes = "govuk-!-margin-bottom-4"
   <li>@messages("sign-up-confirmation.what-you-must-do.bullet5")</li>
 </ul>
 <p class="govuk-body">@messages("sign-up-confirmation.what-you-must-do.para2")</p>
-
-<h2 class="govuk-heading-m">@messages("sign-up-confirmation.other-income-sources.subheading")</h2>
-
-<p class="govuk-body">@messages("sign-up-confirmation.other-income-sources.para1")</p>
-<ul class="govuk-list govuk-list--bullet">
-  <li>@messages("sign-up-confirmation.other-income-sources.bullet1")</li>
-  <li>@findHMRCService()</li>
-</ul>
 
 @reportPreviousTaxYear
 }
@@ -217,14 +185,6 @@ classes = "govuk-!-margin-bottom-4"
 </ul>
 <p class="govuk-body">@messages("sign-up-confirmation.what-you-must-do.para2")</p>
 
-<h2 class="govuk-heading-m">@messages("sign-up-confirmation.other-income-sources.subheading")</h2>
-
-<p class="govuk-body">@messages("sign-up-confirmation.other-income-sources.para1")</p>
-<ul class="govuk-list govuk-list--bullet">
-  <li>@messages("sign-up-confirmation.other-income-sources.bullet1")</li>
-  <li>@findHMRCService()</li>
-</ul>
-
 @reportPreviousTaxYear
 }
 
@@ -236,10 +196,4 @@ classes = "govuk-!-margin-bottom-4"
       <h2 class="govuk-heading-m">@messages("sign-up-confirmation.report-previous-tax-year.heading")</h2>
     <p class="govuk-body">@messages("sign-up-confirmation.report-previous-tax-year.para", (AccountingPeriodUtil.getCurrentTaxEndYear - 1).toString)</p>
   }
-}
-
-@findHMRCService() = @{
-  hmrcNewTabLinkHelper(
-  NewTabLinkHelper(messages("sign-up-confirmation.other-income-sources.bullet2.link"),
-  Some(messages("sign-up-confirmation.other-income-sources.bullet2.link-href"))))
 }

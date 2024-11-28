@@ -16,17 +16,13 @@
 
 package views.individual.confirmation
 
+import models.DateModel
 import models.common.AccountingPeriodModel
-import models.{DateModel, UpdateDeadline}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.Html
 import utilities.{AccountingPeriodUtil, ImplicitDateFormatter, ImplicitDateFormatterImpl, ViewSpec}
 import views.html.individual.confirmation.SignUpConfirmation
-
-import java.time.LocalDate
-import java.time.Month._
-import scala.util.Random
 
 //scalastyle:off
 class SignUpConfirmationViewSpec extends ViewSpec {
@@ -127,31 +123,14 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         mainContent().select(".govuk-body").select("p").get(4).text() mustBe SignUpConfirmationMessages.paraThree
       }
 
-      "contains a heading for other income sources" in {
-        mainContent().selectNth("h2", 2).text() mustBe SignUpConfirmationMessages.incomeSourcesHeading
-      }
-
-      "contains a first paragraph in other income sources" in {
-        mainContent().select(".govuk-body").select("p").get(5).text() mustBe SignUpConfirmationMessages.incomeSourcesParaOne
-      }
-
-      "contains a bullet list for other income sources section" which {
-        def bulletList = mainContent().selectNth("ul", 2)
-
-        "has a first item" in {
-          bulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.incomeSourcesBullet1
-        }
-        "has a second item" in {
-          bulletList.selectNth("li", 2).text mustBe SignUpConfirmationMessages.incomeSourcesBullet2
-        }
-      }
-
       "contains a report previous tax year section" which {
+
         "contains a heading" in {
-          mainContent().selectNth("h2", 3).text() mustBe SignUpConfirmationMessages.previousTaxYearHeading
+          mainContent().selectNth("h2", 2).text() mustBe SignUpConfirmationMessages.previousTaxYearHeading
         }
+
         "has a paragraph" in {
-          mainContent().select(".govuk-body").select("p").get(6).text() mustBe SignUpConfirmationMessages.paragraphThisYear
+          mainContent().select(".govuk-body").select("p").get(5).text() mustBe SignUpConfirmationMessages.paragraphThisYear
         }
       }
 
@@ -242,33 +221,14 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         mainContent().select(".govuk-body").select("p").get(4).text() mustBe SignUpConfirmationMessages.paraThree
       }
 
-      "contains a heading for other income sources" in {
-        mainContent().selectNth("h2", 2).text() mustBe SignUpConfirmationMessages.incomeSourcesHeading
-      }
-
-      "contains a first paragraph in other income sources" in {
-        mainContent().select(".govuk-body").select("p").get(5).text() mustBe SignUpConfirmationMessages.incomeSourcesParaOne
-      }
-
-      "contains a bullet list for other income sources section" which {
-        def bulletList = mainContent().selectNth("ul", 2)
-
-        "has a first item" in {
-          bulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.incomeSourcesBullet1
-        }
-        "has a second item" in {
-          bulletList.selectNth("li", 2).text mustBe SignUpConfirmationMessages.incomeSourcesBullet2
-        }
-      }
-
       "contains a report previous tax year section" which {
 
         "has a heading" in {
-          mainContent().selectNth("h2", 3).text() mustBe SignUpConfirmationMessages.previousNextTaxYearHeading
+          mainContent().selectNth("h2", 2).text() mustBe SignUpConfirmationMessages.previousNextTaxYearHeading
         }
 
         "has a paragraph" in {
-          mainContent().select(".govuk-body").select("p").get(6).text() mustBe SignUpConfirmationMessages.paragraphNextYear
+          mainContent().select(".govuk-body").select("p").get(5).text() mustBe SignUpConfirmationMessages.paragraphNextYear
         }
       }
 
@@ -362,33 +322,14 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         mainContent().select(".govuk-body").select("p").get(4).text() mustBe SignUpConfirmationMessages.paraThree
       }
 
-      "contains a subheading for other income sources" in {
-        mainContent().selectNth("h2", 2).text() mustBe SignUpConfirmationMessages.incomeSourcesHeading
-      }
-
-      "contains a first paragraph in other income sources" in {
-        mainContent().select(".govuk-body").select("p").get(5).text() mustBe SignUpConfirmationMessages.incomeSourcesParaOne
-      }
-
-      "contains a bullet list for other income sources section" which {
-        def bulletList = mainContent().selectNth("ul", 2)
-
-        "has a first item" in {
-          bulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.incomeSourcesBullet1
-        }
-        "has a second item" in {
-          bulletList.selectNth("li", 2).text mustBe SignUpConfirmationMessages.incomeSourcesBullet2
-        }
-      }
-
       "contains a report previous tax year section" which {
 
         "has a heading" in {
-          mainContent().selectNth("h2", 3).text() mustBe SignUpConfirmationMessages.previousTaxYearHeading
+          mainContent().selectNth("h2", 2).text() mustBe SignUpConfirmationMessages.previousTaxYearHeading
         }
 
         "has a paragraph" in {
-          mainContent().select(".govuk-body").select("p").get(6).text() mustBe SignUpConfirmationMessages.paragraphThisYear
+          mainContent().select(".govuk-body").select("p").get(5).text() mustBe SignUpConfirmationMessages.paragraphThisYear
         }
       }
 
@@ -482,33 +423,14 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         mainContent().select(".govuk-body").select("p").get(4).text() mustBe SignUpConfirmationMessages.paraThree
       }
 
-      "contains a subheading for other income sources" in {
-        mainContent().selectNth("h2", 2).text() mustBe SignUpConfirmationMessages.incomeSourcesHeading
-      }
-
-      "contains a first paragraph in other income sources" in {
-        mainContent().select(".govuk-body").select("p").get(5).text() mustBe SignUpConfirmationMessages.incomeSourcesParaOne
-      }
-
-      "contains a bullet list for other income sources section" which {
-        def bulletList = mainContent().selectNth("ul", 2)
-
-        "has a first item" in {
-          bulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.incomeSourcesBullet1
-        }
-        "has a second item" in {
-          bulletList.selectNth("li", 2).text mustBe SignUpConfirmationMessages.incomeSourcesBullet2
-        }
-      }
-
       "contains a report previous tax year section" which {
 
         "has a heading" in {
-          mainContent().selectNth("h2", 3).text() mustBe SignUpConfirmationMessages.previousNextTaxYearHeading
+          mainContent().selectNth("h2", 2).text() mustBe SignUpConfirmationMessages.previousNextTaxYearHeading
         }
 
         "has a paragraph" in {
-          mainContent().select(".govuk-body").select("p").get(6).text() mustBe SignUpConfirmationMessages.paragraphNextYear
+          mainContent().select(".govuk-body").select("p").get(5).text() mustBe SignUpConfirmationMessages.paragraphNextYear
         }
       }
 
@@ -572,11 +494,6 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val bullet5 = "when and how to make your final declaration after the end of the tax year"
     val paraThree = "And you will need to pay the tax you owe."
 
-    val incomeSourcesHeading = "Other income sources"
-    val incomeSourcesParaOne = "Make sure you declare your other income sources, such as income from employment, dividends or savings. You need to report these using either:"
-    val incomeSourcesBullet1 = "your compatible software (if it allows you to do this)"
-    val incomeSourcesBullet2 = "HMRC online services (opens in new tab)"
-
     val previousTaxYearHeading = "Report previous tax year"
     val previousNextTaxYearHeading = "Report current and previous tax years"
     val paragraphThisYear = s"You must submit your Self Assessment tax returns for the years ended 5 April $thisYear using your HMRC online services account as normal."
@@ -586,31 +503,4 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val onlinePreferenceParaOne = "If you’ve chosen to get your tax letters online, make sure you have verified your email address."
   }
 
-  private val CURRENT_TAX_YEAR: Int = Random.between(1900, 2100)
-  private val FIFTH: Int = 5
-  private val SIXTH: Int = 6
-  private lazy val q1Update: UpdateDeadline = UpdateDeadline(
-    AccountingPeriodModel(
-      LocalDate.of(CURRENT_TAX_YEAR - 1, APRIL, SIXTH),
-      LocalDate.of(CURRENT_TAX_YEAR - 1, JULY, FIFTH)
-    ),
-    LocalDate.of(CURRENT_TAX_YEAR - 1, AUGUST, FIFTH))
-  private lazy val q2Update: UpdateDeadline = UpdateDeadline(
-    AccountingPeriodModel(
-      LocalDate.of(CURRENT_TAX_YEAR - 1, JULY, SIXTH),
-      LocalDate.of(CURRENT_TAX_YEAR - 1, OCTOBER, FIFTH)
-    ),
-    LocalDate.of(CURRENT_TAX_YEAR - 1, NOVEMBER, FIFTH))
-  private lazy val q3Update: UpdateDeadline = UpdateDeadline(
-    AccountingPeriodModel(
-      LocalDate.of(CURRENT_TAX_YEAR - 1, OCTOBER, SIXTH),
-      LocalDate.of(CURRENT_TAX_YEAR - 1, JANUARY, FIFTH)
-    ),
-    LocalDate.of(CURRENT_TAX_YEAR - 1, FEBRUARY, FIFTH))
-  private lazy val q4Update: UpdateDeadline = UpdateDeadline(
-    AccountingPeriodModel(
-      LocalDate.of(CURRENT_TAX_YEAR - 1, JANUARY, SIXTH),
-      LocalDate.of(CURRENT_TAX_YEAR - 1, APRIL, FIFTH)
-    ),
-    LocalDate.of(CURRENT_TAX_YEAR - 1, MAY, FIFTH))
 }
