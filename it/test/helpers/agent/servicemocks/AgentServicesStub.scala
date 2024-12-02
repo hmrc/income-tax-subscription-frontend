@@ -32,4 +32,10 @@ object AgentServicesStub extends WireMockMethods {
     when(method = GET, uri = AgentServicesConnector.agentMTDClientURI(arn, nino))
       .thenReturn(status = if (exists) Status.OK else Status.NOT_FOUND)
   }
+
+  def stubMTDSuppAgentRelationship(arn: String, nino: String, exists: Boolean): Unit = {
+
+    when(method = GET, uri = AgentServicesConnector.suppAgentClientURI(arn, nino))
+      .thenReturn(status = if (exists) Status.OK else Status.NOT_FOUND)
+  }
 }

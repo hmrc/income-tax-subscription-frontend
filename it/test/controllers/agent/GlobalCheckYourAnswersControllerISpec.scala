@@ -42,6 +42,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
   override def beforeEach(): Unit = {
     super.beforeEach()
     enable(FeatureSwitch.CheckClientRelationship)
+    enable(FeatureSwitch.CheckMultiAgentRelationship)
   }
 
   "GET /report-quarterly/income-and-expenses/sign-up/client/final-check-your-answers" should {
@@ -107,6 +108,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
 
         AgentServicesStub.stubMTDClientRelationship(testARN, testNino, exists = true)
+        AgentServicesStub.stubMTDSuppAgentRelationship(testARN, testNino, exists = false)
 
         When("POST /final-check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.submitAgentGlobalCheckYourAnswers(None)()
@@ -149,6 +151,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
             AgentServicesStub.stubMTDClientRelationship(testARN, testNino, exists = true)
+            AgentServicesStub.stubMTDSuppAgentRelationship(testARN, testNino, exists = false)
 
             MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear)(OK)
             MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
@@ -215,7 +218,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
             SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
-            AgentServicesStub.stubMTDClientRelationship(testARN, testNino, exists = true)
+            AgentServicesStub.stubMTDClientRelationship(testARN, testNino, exists = false)
+            AgentServicesStub.stubMTDSuppAgentRelationship(testARN, testNino, exists = true)
 
             MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getNextTaxYear.toLongTaxYear)(OK)
             MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
