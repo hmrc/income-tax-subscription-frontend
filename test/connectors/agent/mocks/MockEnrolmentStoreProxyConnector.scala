@@ -24,7 +24,7 @@ import connectors.agent.httpparsers.QueryUsersHttpParser.QueryUsersResponse
 import connectors.agent.httpparsers.UpsertEnrolmentResponseHttpParser.UpsertEnrolmentResponse
 import models.common.subscription.EnrolmentKey
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.{reset, _}
+import org.mockito.Mockito._
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.http.HeaderCarrier
@@ -75,6 +75,12 @@ trait MockEnrolmentStoreProxyConnector extends MockitoSugar with BeforeAndAfterE
       ArgumentMatchers.eq(mtdId),
       ArgumentMatchers.eq(nino)
     )(ArgumentMatchers.any[HeaderCarrier])) thenReturn Future.successful(response)
+  }
+
+
+  def verifyEnrolmentStoreUpsertEnrolment(mtdId: String, nino: String, count: Int = 1): Unit = {
+    verify(mockEnrolmentStoreProxyConnector, times(count)).upsertEnrolment(
+      ArgumentMatchers.eq(mtdId), ArgumentMatchers.eq(nino))(ArgumentMatchers.any())
   }
 }
 

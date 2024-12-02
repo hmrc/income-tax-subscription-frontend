@@ -18,6 +18,7 @@ package services.agent
 
 import cats.data.EitherT
 import cats.implicits._
+import common.Constants.{utrEnrolmentIdentifierKey, utrEnrolmentName}
 import connectors.agent.httpparsers.GetUsersForGroupHttpParser.UsersFound
 import connectors.agent.httpparsers.{AllocateEnrolmentResponseHttpParser, QueryUsersHttpParser, UpsertEnrolmentResponseHttpParser}
 import connectors.agent.{EnrolmentStoreProxyConnector, UsersGroupsSearchConnector}
@@ -27,7 +28,6 @@ import play.api.Logging
 import services.agent.AutoEnrolmentService._
 import uk.gov.hmrc.auth.core.User
 import uk.gov.hmrc.http.HeaderCarrier
-import common.Constants.{utrEnrolmentIdentifierKey, utrEnrolmentName}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -45,17 +45,17 @@ class AutoEnrolmentService @Inject()(enrolmentStoreProxyConnector: EnrolmentStor
 
   def autoClaimEnrolment(utr: String, nino: String, mtditid: String)(implicit hc: HeaderCarrier): Future[AutoClaimEnrolmentResponse] = {
     for {
+      _ <- upsertEnrolmentAllocation(mtditid = mtditid, nino = nino)
       groupId <- getEnrolmentAllocation(utr = utr, nino = nino)
       enrolmentUserIDs <- getEnrolmentUserIDs(utr = utr, nino = nino)
       adminUserId <- getAdminUserId(groupId = groupId, enrolmentUserIDs = enrolmentUserIDs, nino = nino)
-      _ <- upsertEnrolmentAllocation(mtditid = mtditid, nino = nino)
       _ <- allocateEnrolmentWithoutKnownFacts(mtditid = mtditid, groupId = groupId, credentialId = adminUserId, nino = nino)
       _ <- assignEnrolmentToUser(enrolmentUserIDs filterNot (_ == adminUserId), mtditid = mtditid, nino = nino)
     } yield {
       logger.debug(s"[AutoEnrolmentService][autoClaimEnrolment] - Successful auto enrolment for nino: $nino")
       EnrolmentAssigned
     }
-    }.value
+  }.value
 
   private def getEnrolmentAllocation(utr: String, nino: String)(implicit hc: HeaderCarrier): EitherT[Future, AutoClaimEnrolmentFailure, String] = {
 
