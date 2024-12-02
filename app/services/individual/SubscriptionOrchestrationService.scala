@@ -18,8 +18,9 @@ package services.individual
 
 import cats.data.EitherT
 import cats.implicits._
+import connectors.individual.subscription.httpparsers.CreateIncomeSourcesResponseHttpParser.PostCreateIncomeSourceResponse
 import models.ConnectorError
-import models.common.subscription.{CreateIncomeSourcesModel, SignUpSuccessResponse, SubscriptionSuccess}
+import models.common.subscription._
 import services.{SPSService, SubscriptionService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
@@ -55,9 +56,13 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
     val result: EitherT[Future, ConnectorError, Option[SubscriptionSuccess]] = {
       EitherT(subscriptionService.signUpIncomeSources(createIncomeSourceModel.nino, taxYear)).flatMap {
         case SignUpSuccessResponse.SignUpSuccessful(mtdbsa) =>
+
+          val addKnownFacts: Future[Either[KnownFactsFailure, KnownFactsSuccess.type]] = knownFactsService.addKnownFacts(mtdbsa, createIncomeSourceModel.nino)
+          val createIncomeSources: Future[PostCreateIncomeSourceResponse] = subscriptionService.createIncomeSourcesFromTaskList(mtdbsa, createIncomeSourceModel)
+
           for {
-            _ <- EitherT(subscriptionService.createIncomeSourcesFromTaskList(mtdbsa, createIncomeSourceModel))
-            _ <- EitherT(knownFactsService.addKnownFacts(mtdbsa, createIncomeSourceModel.nino))
+            _ <- EitherT(createIncomeSources)
+            _ <- EitherT(addKnownFacts)
             _ <- EitherT(enrolAndRefresh(mtdbsa, createIncomeSourceModel.nino))
             _ = spsService.confirmPreferences(mtdbsa, maybeSpsEntityId)
           } yield {

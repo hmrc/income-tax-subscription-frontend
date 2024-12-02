@@ -56,6 +56,11 @@ trait MockKnownFactsService extends UnitTestTrait with MockitoSugar with BeforeA
     when(mockKnownFactsService.addKnownFacts(ArgumentMatchers.eq(mtditid), ArgumentMatchers.eq(nino))(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(response)
 
+  def verifyAddKnownFacts(mtditid: String, nino: String, count: Int = 1): Unit = {
+    verify(mockKnownFactsService, times(count))
+      .addKnownFacts(ArgumentMatchers.eq(mtditid), ArgumentMatchers.eq(nino))(ArgumentMatchers.any())
+  }
+
   def mockAddKnownFactsSuccess(mtditid: String, nino: String): Unit =
     mockAddKnownFacts(mtditid, nino)(Future.successful(testKnownFactsSuccess))
 
