@@ -279,7 +279,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
         "has an add business link" in new ViewTest(incompleteIncomeSources) {
           val link: Element = document.mainContent.getElementById("add-self-employment").selectHead("a")
-          link.text mustBe AgentIncomeSource.anotherSoleTraderLinkText
+          link.text mustBe AgentIncomeSource.soleTraderLinkText
           link.attr("href") mustBe AgentIncomeSource.soleTraderLink
         }
       }
@@ -413,7 +413,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         }
         "has an add business link" in new ViewTest(completeIncomeSources) {
           val link: Element = document.mainContent.getElementById("add-self-employment").selectHead("a")
-          link.text mustBe AgentIncomeSource.anotherSoleTraderLinkText
+          link.text mustBe AgentIncomeSource.soleTraderLinkText
           link.attr("href") mustBe AgentIncomeSource.soleTraderLink
         }
       }
@@ -529,7 +529,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         }
         "has an add business link" in new ViewTest(completeAndConfirmedIncomeSources) {
           val link: Element = document.mainContent.getElementById("add-self-employment").selectHead("a")
-          link.text mustBe AgentIncomeSource.anotherSoleTraderLinkText
+          link.text mustBe AgentIncomeSource.soleTraderLinkText
           link.attr("href") mustBe AgentIncomeSource.soleTraderLink
         }
       }
@@ -616,8 +616,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       "However, they can have only one UK property business and one overseas property."
     val paragraph2 = "Renting out a property includes using a letting agency."
     val soleTrader = "Sole trader businesses"
-    val soleTraderLinkText = "Add sole trader income source"
-    val anotherSoleTraderLinkText = "Add another sole trader income source"
+    val soleTraderLinkText = "Add a sole trader business"
     val soleTraderBusinessNameKey = "Business name"
     val soleTraderLink: String = appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl
     val soleTraderChangeLinkOne: String = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=idOne&isEditMode=true"

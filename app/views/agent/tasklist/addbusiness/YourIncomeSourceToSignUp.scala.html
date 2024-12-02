@@ -144,11 +144,7 @@
     <div id="add-self-employment" class="govuk-!-padding-bottom-6">
         <p class="govuk-body">
             <a class="govuk-link" href="@appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl">
-                @if(incomeSources.selfEmployments.isEmpty) {
-                    @messages("agent.your-income-source.self-employed.add-link")
-                } else {
-                    @messages("agent.your-income-source.self-employed.add-another-link")
-                }
+                @messages("agent.your-income-source.self-employed.add-link")
             </a>
         </p>
     </div>
