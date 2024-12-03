@@ -81,13 +81,13 @@ class HomeControllerSpec extends AgentControllerBaseSpec
     }
     "the journey is in an agent sign up state" when {
       "the user has previously confirmed to sign up their client" should {
-        "redirect the user to the what you are agreeing to page" in {
+        "redirect the user to the using software page" in {
           mockFetchEligibilityInterruptPassed(Some(true))
 
           val result: Future[Result] = testHomeController().index()(agentSignUpRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.agent.routes.WhatYouNeedToDoController.show().url)
+          redirectLocation(result) mustBe Some(controllers.agent.routes.UsingSoftwareController.show().url)
         }
       }
       "the user has not previously confirmed to sign up their client" when {

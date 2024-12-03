@@ -56,7 +56,7 @@ class HomeController @Inject()(val auditingService: AuditingService,
     referenceRetrieval.getAgentReference flatMap { reference =>
       subscriptionDetailsService.fetchEligibilityInterruptPassed(reference) flatMap {
         case Some(_) =>
-          Future.successful(Redirect(controllers.agent.routes.WhatYouNeedToDoController.show()))
+          Future.successful(Redirect(controllers.agent.routes.UsingSoftwareController.show()))
         case None =>
           getEligibilityStatusService.getEligibilityStatus map { eligibilityStatus =>
             if (eligibilityStatus.eligibleNextYearOnly) {

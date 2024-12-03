@@ -139,7 +139,7 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
       }
 
       "the eligibility of the client check returned eligible for next year only" should {
-        "redirect to the what you are agreeing to page when the user has previously started signing up this client" in {
+        "redirect to the using software page when the user has previously started signing up this client" in {
           AuthStub.stubAuthSuccess()
           SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle))(NO_CONTENT)
           ThrottlingStub.stubThrottle(AgentStartOfJourneyThrottle.throttleId)(throttled = false)
@@ -156,7 +156,7 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
 
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(controllers.agent.routes.WhatYouNeedToDoController.show().url)
+            redirectURI(controllers.agent.routes.UsingSoftwareController.show().url)
           )
 
           getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
@@ -186,7 +186,7 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
 
       "the eligibility of the client check returned eligible for both years" should {
 
-        "redirect to the what you are agreeing to page when the user has previously started signing up their client" in {
+        "redirect to the using software page when the user has previously started signing up their client" in {
           AuthStub.stubAuthSuccess()
           SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle))(NO_CONTENT)
           ThrottlingStub.stubThrottle(AgentStartOfJourneyThrottle.throttleId)(throttled = false)
@@ -201,7 +201,7 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
 
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(controllers.agent.routes.WhatYouNeedToDoController.show().url)
+            redirectURI(controllers.agent.routes.UsingSoftwareController.show().url)
           )
 
           getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)

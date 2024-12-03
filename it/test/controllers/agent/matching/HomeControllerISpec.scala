@@ -55,7 +55,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
       }
       "the agent is in a sign up state" when {
         "the user has previously started signing up this client" should {
-          "redirect to the what you are agreeing to page" in {
+          "redirect to the using software page" in {
             AuthStub.stubAuthSuccess()
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, OK, JsBoolean(true))
 
@@ -63,7 +63,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
             res must have(
               httpStatus(SEE_OTHER),
-              redirectURI(controllers.agent.routes.WhatYouNeedToDoController.show().url)
+              redirectURI(controllers.agent.routes.UsingSoftwareController.show().url)
             )
           }
         }
