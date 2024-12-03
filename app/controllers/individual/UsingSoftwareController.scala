@@ -63,7 +63,7 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
           case Left(_) => throw new InternalServerException("[UsingSoftwareController][show] - Could not fetch software status")
           case Right(maybeYesNo) =>
             Ok(view(
-              usingSoftwareForm = form.fill(maybeYesNo),
+              usingSoftwareForm = form.fill(maybeYesNo)
             ))
         }
 
