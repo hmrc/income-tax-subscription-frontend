@@ -19,12 +19,13 @@ package controllers.agent.tasklist.addbusiness
 import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.IntegrationTestConstants.AgentURI.taskListURI
-import helpers.IntegrationTestConstants.testNino
-import helpers.IntegrationTestModels.{testAccountingMethod, testBusiness, testBusinesses, testFullOverseasPropertyModel, testFullPropertyModel}
+import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino, testUtr}
+import helpers.IntegrationTestModels._
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import play.api.http.Status._
 import play.api.libs.json.{JsBoolean, JsString, Json}
+import play.api.libs.ws.WSResponse
 import utilities.SubscriptionDataKeys
 
 class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
@@ -46,6 +47,7 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.PrePopFlag, OK, JsBoolean(true))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
         When(s"GET ${routes.YourIncomeSourceToSignUpController.show.url} is called")
         val res = IncomeTaxSubscriptionFrontend.yourIncomeSourcesAgent()
@@ -64,6 +66,7 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.PrePopFlag, NO_CONTENT)
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
         When(s"GET ${routes.YourIncomeSourceToSignUpController.show.url} is called")
         val res = IncomeTaxSubscriptionFrontend.yourIncomeSourcesAgent()
@@ -72,6 +75,18 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         res must have(
           httpStatus(OK),
           pageTitle(messages("agent.your-income-source.heading") + serviceNameGovUk)
+        )
+      }
+    }
+    "return SEE_OTHER" when {
+      "the user is not authenticated" in {
+        AuthStub.stubUnauthorised()
+
+        val result: WSResponse = IncomeTaxSubscriptionFrontend.yourIncomeSourcesAgent()
+
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(basGatewaySignIn("/client/your-income-source"))
         )
       }
     }
@@ -86,6 +101,8 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
           OK, Seq(testBusiness("12345", confirmed = true)),
           Some(testAccountingMethod.accountingMethod)
         )
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
 
@@ -107,6 +124,8 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
       "redirect to the task list page and not save an income source section completion" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
         IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, Seq(testBusiness("12345", confirmed = true), testBusiness("54321")))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
@@ -128,6 +147,8 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
 
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
         IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, NO_CONTENT)
