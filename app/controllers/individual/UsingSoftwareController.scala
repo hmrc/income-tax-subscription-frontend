@@ -95,14 +95,17 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
   }
 
   private def getRedirect(selectedOption: YesNo): Call = {
-    if (isEnabled(PrePopulate)) {
-      selectedOption match {
-        case Yes => controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show()
-        case No => controllers.individual.routes.NoSoftwareController.show
-      }
-    } else {
-      controllers.individual.routes.WhatYouNeedToDoController.show
+
+    selectedOption match {
+      case Yes =>
+        if (isEnabled(PrePopulate)) {
+          controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show()
+        } else {
+          controllers.individual.routes.WhatYouNeedToDoController.show
+        }
+      case No => controllers.individual.routes.NoSoftwareController.show
     }
+
   }
 
 }
