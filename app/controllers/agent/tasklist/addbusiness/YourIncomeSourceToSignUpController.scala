@@ -16,66 +16,57 @@
 
 package controllers.agent.tasklist.addbusiness
 
-import auth.agent.AuthenticatedController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.PrePopulate
 import config.featureswitch.FeatureSwitching
-import controllers.utils.ReferenceRetrieval
-import models.common.IncomeSources
+import controllers.SignUpBaseController
+import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import play.api.mvc._
-import play.twirl.api.Html
-import services.agent.ClientDetailsRetrieval
-import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
-import utilities.UserMatchingSessionUtil.ClientDetails
 import views.html.agent.tasklist.addbusiness.YourIncomeSourceToSignUp
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+
 @Singleton
-class YourIncomeSourceToSignUpController @Inject()(yourIncomeSourceToSignUp: YourIncomeSourceToSignUp,
-                                                   subscriptionDetailsService: SubscriptionDetailsService,
-                                                   clientDetailsRetrieval: ClientDetailsRetrieval,
-                                                   referenceRetrieval: ReferenceRetrieval)
-                                                  (val auditingService: AuditingService,
-                                                   val appConfig: AppConfig,
-                                                   val authService: AuthService)
-                                                  (implicit val ec: ExecutionContext,
-                                                   mcc: MessagesControllerComponents) extends AuthenticatedController
+class YourIncomeSourceToSignUpController @Inject()(view: YourIncomeSourceToSignUp,
+                                                   identify: IdentifierAction,
+                                                   journeyRefiner: ConfirmedClientJourneyRefiner,
+                                                   subscriptionDetailsService: SubscriptionDetailsService
+                                                  )(val appConfig: AppConfig)
+                                                  (implicit mcc: MessagesControllerComponents, ec: ExecutionContext) extends SignUpBaseController
   with FeatureSwitching {
 
-  def show: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
-      for {
-        reference <- referenceRetrieval.getAgentReference
-        clientDetails <- clientDetailsRetrieval.getClientDetails
-        incomeSources <- subscriptionDetailsService.fetchAllIncomeSources(reference)
-        prePopFlag <- subscriptionDetailsService.fetchPrePopFlag(reference)
-      } yield {
-        Ok(view(
-          incomeSources = incomeSources,
-          clientDetails = clientDetails,
-          prepopulated = prePopFlag.contains(true)
-        ))
-      }
+
+  def show: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
+    for {
+      incomeSources <- subscriptionDetailsService.fetchAllIncomeSources(request.reference)
+      prePopFlag <- subscriptionDetailsService.fetchPrePopFlag(request.reference)
+    } yield {
+      Ok(view(
+        postAction = routes.YourIncomeSourceToSignUpController.submit,
+        backUrl = backUrl,
+        clientDetails = request.clientDetails,
+        incomeSources = incomeSources,
+        prepopulated = prePopFlag.contains(true)
+      ))
+    }
   }
 
-  def submit: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
-      referenceRetrieval.getAgentReference flatMap { reference =>
-        val continue: Result = Redirect(continueLocation)
-        subscriptionDetailsService.fetchAllIncomeSources(reference) flatMap { incomeSources =>
-          if (incomeSources.isComplete) {
-            subscriptionDetailsService.saveIncomeSourcesConfirmation(reference) map {
-              case Right(_) => continue
-              case Left(_) => throw new InternalServerException("[YourIncomeSourceToSignUpController][submit] - failed to save income sources confirmation")
-            }
-          } else {
-            Future.successful(continue)
-          }
+  def submit: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
+    subscriptionDetailsService.fetchAllIncomeSources(request.reference) flatMap { incomeSources =>
+      val continue: Result = Redirect(continueLocation)
+      if (incomeSources.isComplete) {
+        subscriptionDetailsService.saveIncomeSourcesConfirmation(request.reference) map {
+          case Right(_) => continue
+          case Left(_) => throw new InternalServerException("[YourIncomeSourceToSignUpController][submit] - failed to save income sources confirmation")
         }
+      } else {
+        Future.successful(continue)
       }
+    }
   }
 
   def continueLocation: Call = {
@@ -87,16 +78,4 @@ class YourIncomeSourceToSignUpController @Inject()(yourIncomeSourceToSignUp: You
     if (isEnabled(PrePopulate)) controllers.agent.routes.WhatYouNeedToDoController.show().url
     else controllers.agent.tasklist.routes.TaskListController.show().url
   }
-
-
-  private def view(incomeSources: IncomeSources,
-                   clientDetails: ClientDetails,
-                   prepopulated: Boolean)(implicit request: Request[AnyContent]): Html =
-    yourIncomeSourceToSignUp(
-      postAction = routes.YourIncomeSourceToSignUpController.submit,
-      backUrl = backUrl,
-      clientDetails = clientDetails,
-      incomeSources = incomeSources,
-      prepopulated = prepopulated
-    )
 }
