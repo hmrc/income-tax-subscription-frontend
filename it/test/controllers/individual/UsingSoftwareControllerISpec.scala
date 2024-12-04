@@ -177,6 +177,8 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase with FeatureSwitchi
             redirectURI(controllers.individual.routes.WhatYouNeedToDoController.show.url)
           )
         }
+      }
+      s"return a redirect to ${controllers.individual.routes.NoSoftwareController.show.url}" when {
 
         "the user selects the No radio button" in {
           val userInput = No
@@ -194,7 +196,7 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase with FeatureSwitchi
 
           result must have(
             httpStatus(SEE_OTHER),
-            redirectURI(controllers.individual.routes.WhatYouNeedToDoController.show.url)
+            redirectURI(controllers.individual.routes.NoSoftwareController.show.url)
           )
         }
       }

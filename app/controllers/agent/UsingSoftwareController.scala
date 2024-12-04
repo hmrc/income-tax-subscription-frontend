@@ -18,6 +18,8 @@ package controllers.agent
 
 import auth.agent.AuthenticatedController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.PrePopulate
+import config.featureswitch.FeatureSwitching
 import forms.agent.UsingSoftwareForm
 import models.{No, Yes, YesNo}
 import play.api.data.Form
@@ -27,11 +29,9 @@ import services.agent.ClientDetailsRetrieval
 import services.{AuditingService, AuthService, GetEligibilityStatusService, SessionDataService}
 import uk.gov.hmrc.http.InternalServerException
 import views.html.agent.UsingSoftware
-import config.featureswitch.FeatureSwitch.PrePopulate
-import config.featureswitch.FeatureSwitching
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 import scala.util.matching.Regex
 
 
@@ -119,19 +119,22 @@ class UsingSoftwareController @Inject()(clientDetailsRetrieval: ClientDetailsRet
             }
           },
         yesNo =>
-          sessionDataService.saveSoftwareStatus(yesNo).flatMap {
+          sessionDataService.saveSoftwareStatus(yesNo) map {
             case Left(_) =>
-              Future.failed(new InternalServerException("[UsingSoftwareController][submit] - Could not save using software answer"))
+              throw new InternalServerException("[UsingSoftwareController][submit] - Could not save using software answer")
             case Right(_) =>
-              if (isEnabled(PrePopulate)) {
-                yesNo match {
-                  case Yes => Future.successful(Redirect(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show()))
-                  case No  => Future.successful(Redirect(controllers.agent.routes.NoSoftwareController.show()))
-                }
-              } else {
-                Future.successful(Redirect(controllers.agent.routes.WhatYouNeedToDoController.show()))
+              yesNo match {
+                case Yes =>
+                  if (isEnabled(PrePopulate)) {
+                    Redirect(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show())
+                  } else {
+                    Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
+                  }
+                case No => Redirect(controllers.agent.routes.NoSoftwareController.show())
               }
+
           }
       )
   }
+
 }
