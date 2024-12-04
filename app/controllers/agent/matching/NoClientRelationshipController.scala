@@ -16,43 +16,29 @@
 
 package controllers.agent.matching
 
-import auth.agent.PreSignUpController
-import config.AppConfig
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
-import play.twirl.api.Html
-import services.agent.ClientDetailsRetrieval
-import services.{AuditingService, AuthService}
+import controllers.SignUpBaseController
+import controllers.agent.actions.{IdentifierAction, SignPostedJourneyRefiner}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import views.html.agent.matching.NoClientRelationship
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
 
 @Singleton
-class NoClientRelationshipController @Inject()(val auditingService: AuditingService,
-                                               val authService: AuthService,
-                                               clientDetailsRetrieval: ClientDetailsRetrieval,
-                                               noClientRelationship: NoClientRelationship)
-                                              (implicit val ec: ExecutionContext,
-                                               mcc: MessagesControllerComponents,
-                                               val appConfig: AppConfig) extends PreSignUpController {
+class NoClientRelationshipController @Inject()(identify: IdentifierAction,
+                                               journeyRefiner: SignPostedJourneyRefiner,
+                                               view: NoClientRelationship)
+                                              (implicit mcc: MessagesControllerComponents) extends SignUpBaseController {
 
-  def view(clientName: String, clientNino: String)(implicit request: Request[_]): Html = {
-    noClientRelationship(
+  val show: Action[AnyContent] = (identify andThen journeyRefiner) { implicit request =>
+    Ok(view(
       postAction = controllers.agent.matching.routes.NoClientRelationshipController.submit,
-      clientName,
-      clientNino
-    )
+      clientName = request.clientDetails.name,
+      clientNino = request.clientDetails.formattedNino
+    ))
   }
 
-  val show: Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      clientDetailsRetrieval.getClientDetails map { clientDetails =>
-        Ok(view(clientDetails.name, clientDetails.formattedNino))
-      }
+  val submit: Action[AnyContent] = identify { _ =>
+    Redirect(controllers.agent.routes.AddAnotherClientController.addAnother())
   }
 
-  val submit: Action[AnyContent] = Authenticated { _ =>
-    _ =>
-      Redirect(controllers.agent.routes.AddAnotherClientController.addAnother())
-  }
 }
