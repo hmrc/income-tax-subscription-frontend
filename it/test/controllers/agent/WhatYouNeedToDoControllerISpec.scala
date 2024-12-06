@@ -20,7 +20,7 @@ import common.Constants.ITSASessionKeys
 import config.featureswitch.FeatureSwitch.PrePopulate
 import config.featureswitch.FeatureSwitching
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
-import helpers.IntegrationTestConstants.{AgentURI, testNino}
+import helpers.IntegrationTestConstants.{AgentURI, Auth, basGatewaySignIn, testNino}
 import helpers.IntegrationTestModels.testAccountingYearCurrent
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
@@ -30,6 +30,7 @@ import models.{EligibilityStatus, Yes, YesNo}
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.libs.json.{JsString, Json}
 import utilities.SubscriptionDataKeys.SelectedTaxYear
+import utilities.agent.TestConstants.testUtr
 
 class WhatYouNeedToDoControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
@@ -41,12 +42,25 @@ class WhatYouNeedToDoControllerISpec extends ComponentSpecBase with FeatureSwitc
   val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
 
   s"GET ${routes.WhatYouNeedToDoController.show().url}" must {
+    "return SEE_OTHER to the login page" when {
+      "user is unauthenticated" in {
+        AuthStub.stubUnauthorised()
+
+        val res = IncomeTaxSubscriptionFrontend.whatYouNeedToDo()
+
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(basGatewaySignIn("/client/what-you-need-to-do"))
+        )
+      }
+    }
     "return OK with the page content" in {
       Given("I am authenticated")
       AuthStub.stubAuthSuccess()
       SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
       SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
       SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
       SessionDataConnectorStub.stubSaveSessionData[YesNo](ITSASessionKeys.HAS_SOFTWARE, Yes)(OK)
 
@@ -63,9 +77,23 @@ class WhatYouNeedToDoControllerISpec extends ComponentSpecBase with FeatureSwitc
   }
 
   s"POST ${routes.WhatYouNeedToDoController.submit.url}" must {
+    "return SEE_OTHER to the login page" when {
+      "user is unauthenticated" in {
+        AuthStub.stubUnauthorised()
+
+        val res = IncomeTaxSubscriptionFrontend.submitWhatYouNeedToDo()
+
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(basGatewaySignIn("/client/what-you-need-to-do"))
+        )
+      }
+    }
     "return a SEE_OTHER to the task list page" in {
       Given("I am authenticated")
       AuthStub.stubAuthSuccess()
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
       When(s"POST ${routes.WhatYouNeedToDoController.submit.url} is called")
       val result = IncomeTaxSubscriptionFrontend.submitWhatYouNeedToDo()
@@ -81,6 +109,8 @@ class WhatYouNeedToDoControllerISpec extends ComponentSpecBase with FeatureSwitc
       enable(PrePopulate)
       Given("I am authenticated")
       AuthStub.stubAuthSuccess()
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
       When(s"POST ${routes.WhatYouNeedToDoController.submit.url} is called")
       val result = IncomeTaxSubscriptionFrontend.submitWhatYouNeedToDo()
