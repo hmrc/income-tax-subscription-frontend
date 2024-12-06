@@ -16,11 +16,15 @@
 
 package views.agent.mocks
 
+import models.CannotGoBack
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
+import play.api.data.Form
+import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
 import views.html.agent.matching.CannotGoBackToPreviousClient
 
@@ -34,8 +38,12 @@ trait MockCannotGoBackToPreviousClient extends PlaySpec with MockitoSugar with B
     reset(mockCannotGoBackToPreviousClient)
   }
 
-  def mockView(): Unit = {
-    when(mockCannotGoBackToPreviousClient(any(), any())(any(), any()))
-      .thenReturn(HtmlFormat.empty)
+  def mockView(cannotGoBackToPreviousClientForm: Form[CannotGoBack], postAction: Call): Unit = {
+    when(
+      mockCannotGoBackToPreviousClient(
+        ArgumentMatchers.eq(cannotGoBackToPreviousClientForm),
+        ArgumentMatchers.eq(postAction)
+      )(any(), any())
+    ).thenReturn(HtmlFormat.empty)
   }
 }

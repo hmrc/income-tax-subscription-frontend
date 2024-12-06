@@ -20,6 +20,7 @@ import config.featureswitch.FeatureSwitch.PrePopulate
 import config.featureswitch.FeatureSwitching
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.agent.AgentControllerBaseSpec
+import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}
 import models.common.business._
 import models.common.{IncomeSources, OverseasPropertyModel, PropertyModel}
 import models.{Cash, DateModel}
@@ -29,16 +30,15 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAuditingService, MockClientDetailsRetrieval, MockReferenceRetrieval, MockSubscriptionDetailsService}
+import services.mocks.MockSubscriptionDetailsService
 import views.html.agent.tasklist.addbusiness.YourIncomeSourceToSignUp
 
 import scala.concurrent.Future
 
 class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
   with MockSubscriptionDetailsService
-  with MockClientDetailsRetrieval
-  with MockReferenceRetrieval
-  with MockAuditingService
+  with MockIdentifierAction
+  with MockConfirmedClientJourneyRefiner
   with FeatureSwitching {
 
   override def beforeEach(): Unit = {
@@ -266,14 +266,10 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
 
     val controller = new YourIncomeSourceToSignUpController(
       yourIncomeSourceToSignUpView,
-      mockSubscriptionDetailsService,
-      mockClientDetailsRetrieval,
-      mockReferenceRetrieval
-    )(
-      mockAuditingService,
-      appConfig,
-      mockAuthService
-    )
+      fakeIdentifierAction,
+      fakeConfirmedClientJourneyRefiner,
+      mockSubscriptionDetailsService
+    )(appConfig)
 
     def mockYourIncomeSourceToSignUpView(incomeSources: IncomeSources, prepopulated: Boolean): Unit = {
       when(yourIncomeSourceToSignUpView(

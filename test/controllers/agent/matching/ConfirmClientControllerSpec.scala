@@ -162,7 +162,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
             "the agent has not been locked out" in withController { controller =>
               setupMockNotLockedOut(testARN)
               mockOrchestrateAgentQualificationFailure(testARN, NoClientMatched)
-              setupIncrementNotLockedOut(testARN, 0)
+              setupIncrementNotLockedOut(testARN, 0, 3)
 
               val result: Future[Result] = controller.submit()(request)
 
@@ -174,7 +174,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
             "the agent has been locked out" in withController { controller =>
               setupMockNotLockedOut(testARN)
               mockOrchestrateAgentQualificationFailure(testARN, NoClientMatched)
-              setupIncrementLockedOut(testARN, 2)
+              setupIncrementLockedOut(testARN, 2, 3)
 
               val result: Future[Result] = controller.submit()(request.addingToSession(FailedClientMatching -> 2.toString))
 

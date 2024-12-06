@@ -16,54 +16,51 @@
 
 package controllers.agent.tasklist.taxyear
 
+import config.featureswitch.FeatureSwitch.PrePopulate
+import config.featureswitch.FeatureSwitching
+import config.{AppConfig, MockConfig}
 import connectors.httpparser.PostSubscriptionDetailsHttpParser
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
-import controllers.agent.AgentControllerBaseSpec
+import controllers.ControllerSpec
+import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}
 import forms.agent.AccountingYearForm
 import models.common.AccountingYearModel
 import models.status.MandationStatus.Voluntary
 import models.{Current, EligibilityStatus}
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.mvc.Result
 import play.api.test.Helpers._
 import services.mocks._
+import uk.gov.hmrc.http.InternalServerException
 import views.agent.mocks.MockWhatYearToSignUp
-import config.featureswitch.FeatureSwitch.PrePopulate
 
 import scala.concurrent.Future
 
-class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
+class WhatYearToSignUpControllerSpec extends ControllerSpec
   with MockWhatYearToSignUp
+  with MockIdentifierAction
+  with MockConfirmedClientJourneyRefiner
   with MockSubscriptionDetailsService
   with MockAccountingPeriodService
-  with MockClientDetailsRetrieval
-  with MockReferenceRetrieval
-  with MockAuditingService {
+  with FeatureSwitching {
+
+  implicit val appConfig: AppConfig = MockConfig
+
   override def beforeEach(): Unit = {
     super.beforeEach()
     disable(PrePopulate)
   }
 
-  override val controllerName: String = "WhatYearToSignUpMethod"
-  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestWhatYearToSignUpController.show(isEditMode = false),
-    "submit" -> TestWhatYearToSignUpController.submit(isEditMode = false)
-  )
-
   object TestWhatYearToSignUpController extends WhatYearToSignUpController(
-    mockAccountingPeriodService,
-    mockReferenceRetrieval,
-    mockClientDetailsRetrieval,
+    whatYearToSignUp,
+    fakeIdentifierAction,
+    fakeConfirmedClientJourneyRefiner,
     mockSubscriptionDetailsService,
-    whatYearToSignUp
-  )(
-    mockAuditingService,
-    mockAuthService,
-    appConfig,
+    mockAccountingPeriodService
+  )(appConfig,
     mockGetEligibilityStatusService,
-    mockMandationStatusService
-  )
+    mockMandationStatusService)
 
   "show" should {
     "display the What Year To Sign Up view with pre-saved tax year option and return OK (200)" when {
@@ -73,7 +70,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockGetMandationService(Voluntary, Voluntary)
 
-        val result = await(TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequestWithName))
+        val result = TestWhatYearToSignUpController.show(isEditMode = false)(request)
 
         status(result) must be(Status.OK)
       }
@@ -86,21 +83,20 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockGetMandationService(Voluntary, Voluntary)
 
-        val result = await(TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequestWithName))
+        val result = TestWhatYearToSignUpController.show(isEditMode = false)(request)
 
         status(result) must be(Status.OK)
       }
     }
   }
 
-
   "submit" should {
     def callSubmit(isEditMode: Boolean): Future[Result] = TestWhatYearToSignUpController.submit(isEditMode = isEditMode)(
-      subscriptionRequestWithName.post(AccountingYearForm.accountingYearForm, Current)
+      request.withMethod("POST").withFormUrlEncodedBody(AccountingYearForm.accountingYear -> "CurrentYear")
     )
 
     def callSubmitWithErrorForm(isEditMode: Boolean): Future[Result] = TestWhatYearToSignUpController.submit(isEditMode = isEditMode)(
-      subscriptionRequestWithName
+      request.withMethod("POST").withFormUrlEncodedBody()
     )
 
     "redirect to tax year check your answers page" when {
@@ -111,8 +107,8 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
 
         val goodRequest = callSubmit(isEditMode = false)
 
-        redirectLocation(goodRequest) mustBe Some(routes.TaxYearCheckYourAnswersController.show().url)
         status(goodRequest) must be(Status.SEE_OTHER)
+        redirectLocation(goodRequest) mustBe Some(routes.TaxYearCheckYourAnswersController.show().url)
       }
 
       "PrePopulate is disabled in edit mode" in {
@@ -122,8 +118,8 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
 
         val goodRequest = callSubmit(isEditMode = true)
 
-        redirectLocation(goodRequest) mustBe Some(routes.TaxYearCheckYourAnswersController.show().url)
         status(goodRequest) must be(Status.SEE_OTHER)
+        redirectLocation(goodRequest) mustBe Some(routes.TaxYearCheckYourAnswersController.show().url)
       }
     }
 
@@ -135,10 +131,11 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
 
         val goodRequest = callSubmit(isEditMode = true)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.GlobalCheckYourAnswersController.show.url)
         status(goodRequest) must be(Status.SEE_OTHER)
+        redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.GlobalCheckYourAnswersController.show.url)
       }
-
+    }
+    "redirect to What You Need To Do page" when {
       "PrePopulate is enabled and not in edit mode" in {
         enable(PrePopulate)
         mockView()
@@ -151,7 +148,7 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
       }
     }
 
-    "return bad request status (400)" when {
+    "return a bad request status (400)" when {
       "there is an invalid submission with an error form" in {
         mockView()
 
@@ -166,9 +163,11 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
         mockView()
         mockSaveSelectedTaxYear(AccountingYearModel(Current))(Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
-        val goodRequest = callSubmit(isEditMode = false)
+        val request = callSubmit(isEditMode = false)
 
-        goodRequest.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
+        request.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
+        intercept[InternalServerException](await(request))
+          .message mustBe "[WhatYearToSignUpController][submit] - Could not save accounting year"
       }
     }
   }
@@ -186,9 +185,9 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
       }
     }
     "not in edit mode" must {
-      s"return ${controllers.agent.routes.UsingSoftwareController.show().url} when PrePopluate is enabled" in {
+      s"return ${controllers.agent.routes.UsingSoftwareController.show.url} when PrePopluate is enabled" in {
         enable(PrePopulate)
-        TestWhatYearToSignUpController.backUrl(false) mustBe Some(controllers.agent.routes.UsingSoftwareController.show().url)
+        TestWhatYearToSignUpController.backUrl(false) mustBe Some(controllers.agent.routes.UsingSoftwareController.show.url)
       }
 
       s"return ${controllers.agent.tasklist.routes.TaskListController.show().url} when PrePopulate is disabled" in {

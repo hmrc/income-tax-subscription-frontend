@@ -16,7 +16,7 @@
 
 package controllers.agent
 
-import auth.agent.{AuthenticatedController, PreSignUpController}
+import auth.agent.AuthenticatedController
 import config.AppConfig
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
@@ -46,14 +46,16 @@ class NoSoftwareController @Inject()(val auditingService: AuditingService,
       case other => other
     }
   }
+
   def view(clientName: String, clientNino: String)(implicit request: Request[_]): Html = {
     noSoftware(
-      backUrl = controllers.agent.routes.UsingSoftwareController.show().url,
+      backUrl = controllers.agent.routes.UsingSoftwareController.show.url,
       postAction = controllers.agent.routes.AddAnotherClientController.addAnother(),
       clientName,
       clientNino
     )
   }
+
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
       clientDetailsRetrieval.getClientDetails map { clientDetails =>

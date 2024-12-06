@@ -22,7 +22,7 @@ import helpers.IntegrationTestConstants.testNino
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import play.api.http.Status.OK
-import play.api.libs.json.{JsString, Json}
+import play.api.libs.json.JsString
 import play.api.libs.ws.WSResponse
 import play.api.test.Helpers._
 import utilities.SubscriptionDataKeys
@@ -48,7 +48,7 @@ class ClientCanSignUpControllerISpec extends ComponentSpecBase {
 
   "POST /client/can-sign-up" when {
     "the user clicks sign up this client button" should {
-      s"return a redirect to ${controllers.agent.routes.UsingSoftwareController.show().url}" in {
+      s"return a redirect to ${controllers.agent.routes.UsingSoftwareController.show.url}" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[Boolean](
@@ -63,7 +63,7 @@ class ClientCanSignUpControllerISpec extends ComponentSpecBase {
 
         result must have(
           httpStatus(SEE_OTHER),
-          redirectURI(controllers.agent.routes.UsingSoftwareController.show().url)
+          redirectURI(controllers.agent.routes.UsingSoftwareController.show.url)
         )
       }
     }

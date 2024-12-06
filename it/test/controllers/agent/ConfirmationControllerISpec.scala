@@ -18,16 +18,16 @@ package controllers.agent
 
 import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
-import helpers.IntegrationTestConstants.IndividualURI.usingSoftwareURI
 import helpers.IntegrationTestConstants.testNino
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
-import models.{EligibilityStatus, Yes, YesNo}
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
+import models.{EligibilityStatus, Yes, YesNo}
 import play.api.http.Status.{NOT_FOUND, NO_CONTENT, OK}
 import play.api.libs.json.{JsString, Json}
 import utilities.SubscriptionDataKeys._
+import utilities.agent.TestConstants.testUtr
 
 class ConfirmationControllerISpec extends ComponentSpecBase {
 
@@ -48,6 +48,8 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
         )
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.HAS_SOFTWARE)(OK, Json.toJson(testOption))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+
         When("I call GET /confirmation")
         val res = IncomeTaxSubscriptionFrontend.showConfirmation(hasSubmitted = true, "Test", "User", "A111111AA")
 

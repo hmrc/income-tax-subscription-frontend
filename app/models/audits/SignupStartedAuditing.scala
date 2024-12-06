@@ -20,14 +20,14 @@ import services.AuditModel
 
 object SignupStartedAuditing {
 
-  val signupStartedAuditType = "mtdITSASignUpStarted"
+  private val signupStartedAuditType = "mtdITSASignUpStarted"
 
   case class SignupStartedAuditModel(agentReferenceNumber: Option[String], utr: Option[String], nino: Option[String]) extends AuditModel {
     override val transactionName: Option[String] = None
-    val userType = if (agentReferenceNumber.isDefined) "agent" else "individual"
-    val ninoKeyValue = nino.map("nino" -> _)
-    val utrKeyValue = utr.map("saUtr" -> _)
-    val arnKeyValue = agentReferenceNumber.map("agentReferenceNumber" -> _)
+    val userType: String = if (agentReferenceNumber.isDefined) "agent" else "individual"
+    val ninoKeyValue: Option[(String, String)] = nino.map("nino" -> _)
+    val utrKeyValue: Option[(String, String)] = utr.map("saUtr" -> _)
+    val arnKeyValue: Option[(String, String)] = agentReferenceNumber.map("agentReferenceNumber" -> _)
     override val detail: Map[String, String] = Map(
       "userType" -> userType
     ) ++ arnKeyValue ++ ninoKeyValue ++ utrKeyValue

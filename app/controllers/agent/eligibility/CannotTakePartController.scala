@@ -16,43 +16,24 @@
 
 package controllers.agent.eligibility
 
-import auth.agent.PreSignUpController
-import config.AppConfig
+import controllers.SignUpBaseController
+import controllers.agent.actions.{IdentifierAction, SignPostedJourneyRefiner}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.agent.ClientDetailsRetrieval
-import services.{AuditingService, AuthService}
 import views.html.agent.eligibility.CannotTakePart
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
-import scala.util.matching.Regex
 
 @Singleton
-class CannotTakePartController @Inject()(val auditingService: AuditingService,
-                                         val authService: AuthService)
-                                        (clientDetailsRetrieval: ClientDetailsRetrieval,
-                                         cannotTakePart: CannotTakePart)
-                                        (implicit val appConfig: AppConfig,
-                                         mcc: MessagesControllerComponents,
-                                         val ec: ExecutionContext) extends PreSignUpController {
+class CannotTakePartController @Inject()(view: CannotTakePart,
+                                         identify: IdentifierAction,
+                                         journeyRefiner: SignPostedJourneyRefiner)
+                                        (implicit cc: MessagesControllerComponents) extends SignUpBaseController {
 
-  private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
-
-  private def formatNino(clientNino: String): String = {
-    clientNino match {
-      case ninoRegex(startLetters, firstDigits, secondDigits, thirdDigits, finalLetter) =>
-        s"$startLetters $firstDigits $secondDigits $thirdDigits $finalLetter"
-      case other => other
-    }
+  val show: Action[AnyContent] = (identify andThen journeyRefiner) { implicit request =>
+    Ok(view(
+      clientName = request.clientDetails.name,
+      clientNino = request.clientDetails.formattedNino
+    ))
   }
 
-  def show: Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      clientDetailsRetrieval.getClientDetails map { clientDetails =>
-        Ok(cannotTakePart(
-          clientName = clientDetails.name,
-          clientNino = formatNino(clientDetails.nino)
-        ))
-      }
-  }
 }

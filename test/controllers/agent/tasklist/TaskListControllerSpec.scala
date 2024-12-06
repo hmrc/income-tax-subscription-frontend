@@ -16,109 +16,58 @@
 
 package controllers.agent.tasklist
 
-import config.featureswitch.FeatureSwitch.ThrottlingFeature
-import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
-import controllers.agent.AgentControllerBaseSpec
-import models.common.business._
-import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
-import models.status.MandationStatus.Voluntary
-import models.{Cash, DateModel, EligibilityStatus, Next}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
-import play.api.http.Status
-import play.api.http.Status.OK
-import play.api.mvc.{Action, AnyContent, Codec, Result}
-import play.api.test.Helpers.{HTML, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
-import play.twirl.api.HtmlFormat
-import services.AccountingPeriodService
-import services.agent.mocks.MockSubscriptionOrchestrationService
-import services.mocks._
-import utilities.agent.TestConstants.testUtr
-import views.html.agent.tasklist.TaskList
+import controllers.ControllerSpec
+import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}
+import models.Current
+import models.common.{AccountingYearModel, TaskListModel}
+import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.mvc.Result
+import play.api.test.Helpers.{HTML, contentType, defaultAwaitTimeout, redirectLocation, status}
+import services.mocks.MockSubscriptionDetailsService
+import views.agent.tasklist.mocks.MockTaskList
 
 import scala.concurrent.Future
 
-class TaskListControllerSpec extends AgentControllerBaseSpec
-  with MockAuditingService
-  with MockSubscriptionDetailsService
-  with MockSubscriptionOrchestrationService
-  with MockReferenceRetrieval
-  with MockUTRService
-  with MockClientDetailsRetrieval {
-
-  val accountingPeriodService: AccountingPeriodService = app.injector.instanceOf[AccountingPeriodService]
-  val taskList: TaskList = mock[TaskList]
-
-  override val controllerName: String = "TaskListController"
-  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestTaskListController.show,
-    "submit" -> TestTaskListController.submit
-  )
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    reset(taskList)
-    enable(ThrottlingFeature)
-  }
-
-  def mockTaskList(): Unit = {
-    when(taskList(any(), any(), any(), any(), any())(any(), any()))
-      .thenReturn(HtmlFormat.empty)
-  }
-
-  object TestTaskListController extends TaskListController(
-    taskList,
-    mockClientDetailsRetrieval,
-    mockReferenceRetrieval,
-    mockUTRService,
-    mockSubscriptionDetailsService
-  )(
-    mockAuditingService,
-    mockAuthService
-  )
+class TaskListControllerSpec extends ControllerSpec
+  with MockTaskList
+  with MockIdentifierAction
+  with MockConfirmedClientJourneyRefiner
+  with MockSubscriptionDetailsService {
 
   "show" should {
-    "return an OK status with the task list page" in {
-      mockTaskList()
-      mockFetchAllSelfEmployments(Seq(
-        SelfEmploymentData(
-          id = "id",
-          businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
-          businessName = Some(BusinessNameModel("business name")),
-          businessTradeName = Some(BusinessTradeNameModel("business trade")),
-          businessAddress = Some(BusinessAddressModel(Address(Seq("line 1"), Some("ZZ1 1ZZ"))))
-        )
-      ))
-      mockFetchProperty(Some(PropertyModel(
-        accountingMethod = Some(Cash),
-        startDate = Some(DateModel("1", "1", "1980")),
-        confirmed = true
-      )))
-      mockFetchOverseasProperty(Some(OverseasPropertyModel(
-        accountingMethod = Some(Cash),
-        startDate = Some(DateModel("1", "1", "1980")),
-        confirmed = true
-      )))
-      mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
+    "return OK with the task list page" in {
+      mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
       mockFetchIncomeSourceConfirmation(Some(true))
-      mockGetMandationService(Voluntary, Voluntary)
-      mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
-      mockGetUTR(testUtr)
+      mockTaskList(
+        clientDetails = clientDetails,
+        utr = utr,
+        taskListModel = TaskListModel(
+          taxYearSelection = Some(AccountingYearModel(Current)),
+          incomeSourcesConfirmed = Some(true)
+        )
+      )
 
-      val result: Future[Result] = TestTaskListController.show()(subscriptionRequestWithName)
+      val result: Future[Result] = TestTaskListController.show()(request)
 
       status(result) mustBe OK
       contentType(result) mustBe Some(HTML)
-      charset(result) mustBe Some(Codec.utf_8.charset)
     }
   }
 
   "submit" when {
     "redirect to the global check your answers page" in {
-      val result: Future[Result] = TestTaskListController.submit()(subscriptionRequestWithName)
+      val result: Future[Result] = TestTaskListController.submit()(request)
 
-      status(result) mustBe Status.SEE_OTHER
+      status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.agent.routes.GlobalCheckYourAnswersController.show.url)
     }
   }
+
+  object TestTaskListController extends TaskListController(
+    mockView,
+    fakeIdentifierAction,
+    fakeConfirmedClientJourneyRefiner,
+    mockSubscriptionDetailsService
+  )
+
 }

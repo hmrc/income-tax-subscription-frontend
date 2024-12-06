@@ -26,7 +26,9 @@ import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
+import play.api.http.Status.OK
 import services.SubscriptionDetailsService
+import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
 
@@ -204,6 +206,12 @@ trait MockSubscriptionDetailsService extends PlaySpec with MockitoSugar with Bef
 
   def verifyFetchEligibilityInterruptPassed(): Unit = {
     verify(mockSubscriptionDetailsService).fetchEligibilityInterruptPassed(ArgumentMatchers.any())(ArgumentMatchers.any())
+
+  }
+
+  def mockDeleteAll(): Unit = {
+    when(mockSubscriptionDetailsService.deleteAll(ArgumentMatchers.any())(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(HttpResponse(OK, "")))
   }
 
 }

@@ -18,8 +18,7 @@ package controllers.agent.matching
 
 import common.Constants.ITSASessionKeys
 import connectors.stubs.SessionDataConnectorStub
-import controllers.agent.routes
-import helpers.IntegrationTestConstants.testNino
+import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import org.jsoup.Jsoup
@@ -28,7 +27,7 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.libs.json.JsString
 import play.api.libs.ws.WSResponse
 
-class NoClientRelationshipControllerISpec extends ComponentSpecBase  {
+class NoClientRelationshipControllerISpec extends ComponentSpecBase {
 
   class Setup(clientDetailsConfirmed: Boolean = true) {
     AuthStub.stubAuthSuccess()
@@ -43,7 +42,7 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase  {
   object NoClientRelationshipMessages {
     val title: String = "There is a problem"
     val heading: String = "There is a problem"
-    val para1: String ="We cannot find your client’s authorisation in your agent services account."
+    val para1: String = "We cannot find your client’s authorisation in your agent services account."
     val para2: String = "You need to:"
     val bullet1: String = "Check your " + "agent services account (opens in new tab)"
     val bullet2: String = "Make sure you have copied across all existing authorisations for all your clients and all your Government Gateway user IDs."
@@ -54,6 +53,16 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase  {
 
   "GET /error/no-client/relationship" should {
     "return SEE_OTHER (303)" when {
+      "the user is not authenticated" in {
+        AuthStub.stubUnauthorised()
+
+        val result: WSResponse = IncomeTaxSubscriptionFrontend.getNoClientRelationship(true)
+
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(basGatewaySignIn("/client/error/no-client-relationship"))
+        )
+      }
       "the client details haven't been confirmed" in new Setup(false) {
         result must have(
           httpStatus(SEE_OTHER),
@@ -115,7 +124,7 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase  {
     "return SEE_OTHER when selecting clicking sign up another client" in new Setup() {
 
       private val res = IncomeTaxSubscriptionFrontend.postNoClientRelationship()
-      val expectedRedirect: String = routes.AddAnotherClientController.addAnother().url
+      val expectedRedirect: String = controllers.agent.routes.AddAnotherClientController.addAnother().url
 
       res must have(
         httpStatus(SEE_OTHER),

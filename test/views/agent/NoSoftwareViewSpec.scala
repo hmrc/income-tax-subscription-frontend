@@ -29,7 +29,7 @@ class NoSoftwareViewSpec extends ViewSpec {
   private val fullName = "FirstName LastName"
   private val nino = "ZZ 11 11 11 Z"
   private val postAction: Call = controllers.agent.routes.NoSoftwareController.show()
-  private val backUrl: String = controllers.agent.routes.UsingSoftwareController.show().url
+  private val backUrl: String = controllers.agent.routes.UsingSoftwareController.show.url
 
   "NoSoftware" must {
 
@@ -91,7 +91,6 @@ class NoSoftwareViewSpec extends ViewSpec {
     val paraTwo = "If you already use software to keep digital records for your clients, you need to ask your software provider if it works with Making Tax Digital for Income Tax."
     val subheadingTwo = "Find compatible software"
     val paraThreeText = "Find software that works with Making Tax Digital for Income Tax (opens in new tab)"
-    val paraThreeLinkText = "Find software that works with Making Tax Digital for Income Tax"
     val paraThreeLinkHref = "https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax"
     val paraFour = "When you have compatible software, you can come back to sign up your client."
     val paraFive = "Meanwhile, you’ll need to make sure your client submits their Self Assessment tax return as normal."
@@ -105,6 +104,7 @@ class NoSoftwareViewSpec extends ViewSpec {
       clientNino = clientNino
     )
   }
+
   private def document: Document = Jsoup.parse(page().body)
 }
 

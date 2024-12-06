@@ -68,7 +68,7 @@ object UserMatchingSessionUtil {
       )
   }
 
-  implicit class UserMatchingSessionRequestUtil(request: Request[AnyContent]) {
+  implicit class UserMatchingSessionRequestUtil(request: Request[_]) {
     def fetchUserDetails: Option[UserDetailsModel] =
       (request.session.get(firstName),
         request.session.get(lastName),

@@ -16,61 +16,40 @@
 
 package controllers.agent.tasklist
 
-import auth.agent.AuthenticatedController
-import config.AppConfig
-import controllers.utils.ReferenceRetrieval
+import controllers.SignUpBaseController
+import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import models.common.TaskListModel
-import play.api.Logging
 import play.api.mvc._
-import services._
-import services.agent.ClientDetailsRetrieval
+import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.agent.tasklist.TaskList
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.matching.Regex
 
 @Singleton
-class TaskListController @Inject()(taskListView: TaskList,
-                                   clientDetailsRetrieval: ClientDetailsRetrieval,
-                                   referenceRetrieval: ReferenceRetrieval,
-                                   utrService: UTRService,
+class TaskListController @Inject()(view: TaskList,
+                                   identify: IdentifierAction,
+                                   journeyRefiner: ConfirmedClientJourneyRefiner,
                                    subscriptionDetailsService: SubscriptionDetailsService)
-                                  (val auditingService: AuditingService,
-                                   val authService: AuthService)
-                                  (implicit val ec: ExecutionContext,
-                                   val appConfig: AppConfig,
-                                   mcc: MessagesControllerComponents) extends AuthenticatedController with Logging {
+                                  (implicit cc: MessagesControllerComponents, ec: ExecutionContext) extends SignUpBaseController {
 
-  private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
-
-  private def formatNino(clientNino: String): String = {
-    clientNino match {
-      case ninoRegex(startLetters, firstDigits, secondDigits, thirdDigits, finalLetter) =>
-        s"$startLetters $firstDigits $secondDigits $thirdDigits $finalLetter"
-      case other => other
+  def show: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
+    for {
+      taskListViewModel <- getTaskListModel(request.reference)
+    } yield {
+      Ok(view(
+        postAction = routes.TaskListController.submit(),
+        viewModel = taskListViewModel,
+        clientName = request.clientDetails.name,
+        clientNino = request.clientDetails.formattedNino,
+        clientUtr = request.utr
+      ))
     }
   }
 
-
-  val show: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user => {
-      for {
-        reference <- referenceRetrieval.getAgentReference
-        clientDetails <- clientDetailsRetrieval.getClientDetails
-        viewModel <- getTaskListModel(reference)
-        utr <- utrService.getUTR
-      } yield {
-        Ok(taskListView(
-          postAction = controllers.agent.tasklist.routes.TaskListController.submit(),
-          viewModel = viewModel,
-          clientName = clientDetails.name,
-          clientNino = formatNino(clientDetails.nino),
-          clientUtr = utr
-        ))
-      }
-    }
+  def submit: Action[AnyContent] = (identify andThen journeyRefiner) { _ =>
+    Redirect(controllers.agent.routes.GlobalCheckYourAnswersController.show)
   }
 
   private def getTaskListModel(reference: String)(implicit hc: HeaderCarrier): Future[TaskListModel] = {
@@ -85,10 +64,5 @@ class TaskListController @Inject()(taskListView: TaskList,
     }
   }
 
-  def submit: Action[AnyContent] = Authenticated { _ =>
-    _ =>
-      Redirect(controllers.agent.routes.GlobalCheckYourAnswersController.show)
-  }
 
 }
-

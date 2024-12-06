@@ -26,6 +26,7 @@ import models.{EligibilityStatus, No, Yes, YesNo}
 import play.api.http.Status._
 import play.api.libs.json.{JsString, Json}
 import play.api.libs.ws.WSResponse
+import utilities.agent.TestConstants.testUtr
 
 
 class UsingSoftwareControllerISpec extends ComponentSpecBase {
@@ -36,7 +37,7 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
 
   val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
 
-  s"GET ${controllers.agent.routes.UsingSoftwareController.show().url}" when {
+  s"GET ${controllers.agent.routes.UsingSoftwareController.show.url}" when {
 
     "the Session Details Connector returns some data for Has Software" should {
 
@@ -46,10 +47,11 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true)))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.HAS_SOFTWARE)(OK, Json.toJson(testOption))
 
 
-        When(s"GET ${controllers.agent.routes.UsingSoftwareController.show().url}")
+        When(s"GET ${controllers.agent.routes.UsingSoftwareController.show.url}")
         val result = IncomeTaxSubscriptionFrontend.showUsingSoftware()
 
         Then("The result should be OK with page content")
@@ -68,10 +70,11 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.HAS_SOFTWARE)(NO_CONTENT)
 
 
-        When(s"GET ${controllers.agent.routes.UsingSoftwareController.show().url}")
+        When(s"GET ${controllers.agent.routes.UsingSoftwareController.show.url}")
         val result = IncomeTaxSubscriptionFrontend.showUsingSoftware()
 
         Then("The result should be OK with page content")
@@ -91,10 +94,11 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.HAS_SOFTWARE)(INTERNAL_SERVER_ERROR)
 
 
-        When(s"GET ${controllers.agent.routes.UsingSoftwareController.show().url}")
+        When(s"GET ${controllers.agent.routes.UsingSoftwareController.show.url}")
         val result = IncomeTaxSubscriptionFrontend.showUsingSoftware()
 
         Then("Should return a INTERNAL_SERVER_ERROR")
@@ -105,19 +109,20 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
     }
   }
 
-  s"POST ${controllers.agent.routes.UsingSoftwareController.submit().url}" should {
-
+  s"POST ${controllers.agent.routes.UsingSoftwareController.submit.url}" should {
     s"return a redirect to ${controllers.agent.routes.WhatYouNeedToDoController.show().url}" when {
       "the user selects the Yes radio button and the pre-pop feature switch is disabled" in {
         val userInput = Yes
+        disable(PrePopulate)
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
 
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
         SessionDataConnectorStub.stubSaveSessionData[YesNo](ITSASessionKeys.HAS_SOFTWARE, userInput)(OK)
 
-        When(s"POST ${controllers.agent.routes.UsingSoftwareController.submit().url} is called")
+        When(s"POST ${controllers.agent.routes.UsingSoftwareController.submit.url} is called")
         val result: WSResponse = IncomeTaxSubscriptionFrontend.submitUsingSoftware(request = Some(userInput))
 
         Then("Should return SEE_OTHER to the What You Need To Do Controller")
@@ -138,9 +143,10 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
 
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
         SessionDataConnectorStub.stubSaveSessionData[YesNo](ITSASessionKeys.HAS_SOFTWARE, userInput)(OK)
 
-        When(s"POST ${controllers.agent.routes.UsingSoftwareController.submit().url} is called")
+        When(s"POST ${controllers.agent.routes.UsingSoftwareController.submit.url} is called")
         val result: WSResponse = IncomeTaxSubscriptionFrontend.submitUsingSoftware(request = Some(userInput))
 
         Then("Should return SEE_OTHER to the What Year To Sign Up Controller")
@@ -161,9 +167,10 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
 
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
         SessionDataConnectorStub.stubSaveSessionData[YesNo](ITSASessionKeys.HAS_SOFTWARE, userInput)(OK)
 
-        When(s"POST ${controllers.agent.routes.UsingSoftwareController.submit().url} is called")
+        When(s"POST ${controllers.agent.routes.UsingSoftwareController.submit.url} is called")
         val result: WSResponse = IncomeTaxSubscriptionFrontend.submitUsingSoftware(request = Some(userInput))
 
         Then("Should return SEE_OTHER to the no software page")
@@ -182,9 +189,10 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
 
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
         SessionDataConnectorStub.stubSaveSessionData[YesNo](ITSASessionKeys.HAS_SOFTWARE, userInput)(OK)
 
-        When(s"POST ${controllers.agent.routes.UsingSoftwareController.submit().url} is called")
+        When(s"POST ${controllers.agent.routes.UsingSoftwareController.submit.url} is called")
         val result: WSResponse = IncomeTaxSubscriptionFrontend.submitUsingSoftware(request = Some(userInput))
 
         Then("Should return SEE_OTHER to the no software page")
@@ -203,8 +211,9 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
 
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
-        When(s"POST ${controllers.agent.routes.UsingSoftwareController.submit().url} is called")
+        When(s"POST ${controllers.agent.routes.UsingSoftwareController.submit.url} is called")
         val result: WSResponse = IncomeTaxSubscriptionFrontend.submitUsingSoftware(request = None)
 
         Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
@@ -218,14 +227,16 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
 
     "return INTERNAL_SERVER_ERROR" when {
       "the Software Status could not be saved" in {
-        val userInput = Yes
+        val userInput: YesNo = Yes
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
 
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.HAS_SOFTWARE, userInput)(INTERNAL_SERVER_ERROR)
 
-        When(s"POST ${controllers.agent.routes.UsingSoftwareController.submit().url} is called")
+        When(s"POST ${controllers.agent.routes.UsingSoftwareController.submit.url} is called")
         val result = IncomeTaxSubscriptionFrontend.submitUsingSoftware(request = Some(userInput))
 
         Then("Should return a INTERNAL_SERVER_ERROR")
