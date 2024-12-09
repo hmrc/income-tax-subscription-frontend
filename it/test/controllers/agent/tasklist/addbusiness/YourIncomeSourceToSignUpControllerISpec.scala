@@ -93,6 +93,18 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
   }
 
   s"POST ${routes.YourIncomeSourceToSignUpController.submit.url}" when {
+    "the user is not authenticated" should {
+      "redirect to the login page" in {
+        AuthStub.stubUnauthorised()
+
+        val result: WSResponse = IncomeTaxSubscriptionFrontend.submitYourIncomeSourcesAgent()
+
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(basGatewaySignIn("/client/your-income-source"))
+        )
+      }
+    }
     "the user has complete businesses" should {
       "redirect to the task list page and save the income source section completion" in {
         Given("I setup the wiremock stubs")

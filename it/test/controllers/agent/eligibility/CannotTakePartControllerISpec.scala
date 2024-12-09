@@ -20,7 +20,7 @@ import auth.agent.AgentUserMatching
 import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.JourneyStateKey
 import connectors.stubs.SessionDataConnectorStub
-import helpers.IntegrationTestConstants.testNino
+import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino}
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import org.jsoup.Jsoup
@@ -48,6 +48,18 @@ class CannotTakePartControllerISpec extends ComponentSpecBase with AuthRedirects
 
   "GET /client/cannot-sign-up" should {
 
+    "return a redirect to the login page" when {
+      "the user is unauthenticated" in {
+        AuthStub.stubUnauthorised()
+
+        val result: WSResponse = IncomeTaxSubscriptionFrontend.showCannotTakePart()
+
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(basGatewaySignIn("/client/error/cannot-sign-up"))
+        )
+      }
+    }
 
     "return a status of OK" in new Setup() {
       result.status mustBe OK

@@ -267,6 +267,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
         )
       )
     }
+
     def showNoSoftware(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/no-compatible-software", sessionData)
 
     def whatYouNeedToDo(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/what-you-need-to-do", sessionData)
@@ -307,6 +308,17 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       else
         get("/confirmation", Map[String, String](UserMatchingSessionUtil.firstName -> firstName,
           UserMatchingSessionUtil.lastName -> lastName))
+
+    def submitConfirmation(): WSResponse = {
+      post(
+        "/confirmation",
+        Map(
+          ITSASessionKeys.MTDITID -> testMtdId,
+          UserMatchingSessionUtil.firstName -> firstName,
+          UserMatchingSessionUtil.lastName -> lastName
+        )
+      )(Map.empty)
+    }
 
     def feedback(): WSResponse = get("/feedback-submitted")
 

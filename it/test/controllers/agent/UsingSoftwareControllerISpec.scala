@@ -19,7 +19,7 @@ package controllers.agent
 import common.Constants.ITSASessionKeys
 import config.featureswitch.FeatureSwitch.PrePopulate
 import connectors.stubs.SessionDataConnectorStub
-import helpers.IntegrationTestConstants.testNino
+import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import models.{EligibilityStatus, No, Yes, YesNo}
@@ -38,6 +38,19 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
   val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
 
   s"GET ${controllers.agent.routes.UsingSoftwareController.show.url}" when {
+
+    "the user is unauthenticated" should {
+      "redirect to the login page" in {
+        AuthStub.stubUnauthorised()
+
+        val result = IncomeTaxSubscriptionFrontend.showUsingSoftware()
+
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(basGatewaySignIn("/client/using-software"))
+        )
+      }
+    }
 
     "the Session Details Connector returns some data for Has Software" should {
 
@@ -110,6 +123,19 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
   }
 
   s"POST ${controllers.agent.routes.UsingSoftwareController.submit.url}" should {
+    "return a redirect to the login page" when {
+      "the user is unauthenticated" in {
+        AuthStub.stubUnauthorised()
+
+        val result = IncomeTaxSubscriptionFrontend.submitUsingSoftware(request = Some(Yes))
+
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(basGatewaySignIn("/client/using-software"))
+        )
+      }
+    }
+
     s"return a redirect to ${controllers.agent.routes.WhatYouNeedToDoController.show().url}" when {
       "the user selects the Yes radio button and the pre-pop feature switch is disabled" in {
         val userInput = Yes

@@ -33,6 +33,18 @@ import utilities.SubscriptionDataKeys._
 class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
   "GET /report-quarterly/income-and-expenses/sign-up/client/business/task-list" should {
+    "return SEE_OTHER" when {
+      "the user is unauthenticated" in {
+        AuthStub.stubUnauthorised()
+
+        val res = IncomeTaxSubscriptionFrontend.getTaskList()
+
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(basGatewaySignIn("/client/business/task-list"))
+        )
+      }
+    }
     "return OK" when {
       "there is no user data setup" in {
         Given("I setup the Wiremock stubs")
@@ -113,6 +125,18 @@ class TaskListControllerISpec extends ComponentSpecBase with SessionCookieCrumbl
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/client/business/task-list" when {
+    "redirect to the login page" when {
+      "the user is unauthorised" in {
+        AuthStub.stubUnauthorised()
+
+        val res = IncomeTaxSubscriptionFrontend.submitTaskList()
+
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(basGatewaySignIn("/client/business/task-list"))
+        )
+      }
+    }
     "redirect to the global check your answers page" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
