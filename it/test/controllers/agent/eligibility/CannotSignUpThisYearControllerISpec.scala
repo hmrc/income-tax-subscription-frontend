@@ -46,7 +46,7 @@ class CannotSignUpThisYearControllerISpec extends ComponentSpecBase {
   "POST /client/error/cannot-sign-up-for-current-year" when {
 
     "the user clicks sign up this client button" should {
-      s"return a redirect to ${controllers.agent.routes.UsingSoftwareController.show().url}" in {
+      s"return a redirect to ${controllers.agent.routes.UsingSoftwareController.show.url}" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
 
@@ -57,7 +57,7 @@ class CannotSignUpThisYearControllerISpec extends ComponentSpecBase {
 
         result must have(
           httpStatus(SEE_OTHER),
-          redirectURI(controllers.agent.routes.UsingSoftwareController.show().url)
+          redirectURI(controllers.agent.routes.UsingSoftwareController.show.url)
         )
       }
     }

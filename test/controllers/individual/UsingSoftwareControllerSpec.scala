@@ -41,8 +41,7 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
 
   object TestUsingSoftwareController extends UsingSoftwareController(
     mock[UsingSoftware],
-    mockSessionDataService,
-    mockGetEligibilityStatusService
+    mockSessionDataService
   )(
     mockAuditingService,
     mockAuthService,
@@ -58,8 +57,8 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
     val usingSoftware: UsingSoftware = mock[UsingSoftware]
     val controller: UsingSoftwareController = new UsingSoftwareController(
       usingSoftware,
-      mockSessionDataService,
-      mockGetEligibilityStatusService)(
+      mockSessionDataService
+    )(
       mockAuditingService,
       mockAuthService,
       appConfig

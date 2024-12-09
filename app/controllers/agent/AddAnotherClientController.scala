@@ -18,18 +18,16 @@ package controllers.agent
 
 import auth.agent.{AgentUserMatching, AuthPredicates, IncomeTaxAgentUser, StatelessController}
 import auth.individual.AuthPredicate.AuthPredicate
-import cats.data.EitherT
 import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.{CLIENT_DETAILS_CONFIRMED, MTDITID}
 import config.AppConfig
-import connectors.httpparser.DeleteSessionDataHttpParser
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services._
 import uk.gov.hmrc.http.InternalServerException
 import utilities.UserMatchingSessionUtil.UserMatchingSessionResultUtil
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class AddAnotherClientController @Inject()(val auditingService: AuditingService,
@@ -44,18 +42,14 @@ class AddAnotherClientController @Inject()(val auditingService: AuditingService,
 
   def addAnother(): Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
-      val sessionClearing: EitherT[Future, DeleteSessionDataHttpParser.DeleteSessionDataFailure, Result] = for {
-        _ <- EitherT(sessionDataService.deleteSessionAll)
-      } yield {
-        Redirect(controllers.agent.matching.routes.ClientDetailsController.show())
-          .addingToSession(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name)
-          .removingFromSession(MTDITID, CLIENT_DETAILS_CONFIRMED)
-          .clearUserName
-      }
-
-      sessionClearing.value.map {
-        case Left(error) => throw new InternalServerException(s"[AddAnotherClientController][addAnother] - Unexpected failure: $error")
-        case Right(result) => result
+      sessionDataService.deleteSessionAll map {
+        case Left(error) =>
+          throw new InternalServerException(s"[AddAnotherClientController][addAnother] - Unexpected failure: $error")
+        case Right(_) =>
+          Redirect(controllers.agent.matching.routes.ClientDetailsController.show())
+            .addingToSession(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name)
+            .removingFromSession(MTDITID, CLIENT_DETAILS_CONFIRMED)
+            .clearUserName
       }
   }
 

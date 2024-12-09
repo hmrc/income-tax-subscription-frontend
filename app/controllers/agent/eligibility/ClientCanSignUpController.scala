@@ -20,8 +20,6 @@ import auth.agent.{AgentSignUp, IncomeTaxAgentUser, PreSignUpController}
 import common.Constants.ITSASessionKeys.JourneyStateKey
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
-import forms.agent.ClientCanSignUpForm.clientCanSignUpForm
-import models.{No, Yes}
 import play.api.mvc._
 import services.agent.ClientDetailsRetrieval
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
@@ -64,7 +62,7 @@ class ClientCanSignUpController @Inject()(clientCanSignUp: ClientCanSignUp,
       }
   }
 
-    def submit: Action[AnyContent] = Authenticated.async { implicit request =>
+  def submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       continueToSignUpClient(request, user)
   }
@@ -73,7 +71,7 @@ class ClientCanSignUpController @Inject()(clientCanSignUp: ClientCanSignUp,
     referenceRetrieval.getAgentReference flatMap { reference =>
       subscriptionDetailsService.saveEligibilityInterruptPassed(reference) map {
         case Right(_) =>
-          Redirect(controllers.agent.routes.UsingSoftwareController.show())
+          Redirect(controllers.agent.routes.UsingSoftwareController.show)
             .addingToSession(JourneyStateKey -> AgentSignUp.name)
         case Left(_) =>
           throw new InternalServerException("[ClientCanSignUpController][continueToSignUpClient] - Failed to save eligibility interrupt passed")

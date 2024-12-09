@@ -44,12 +44,15 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
       case right@Right(Some(subscriptionSuccess)) =>
         autoEnrolmentService.autoClaimEnrolment(utr, createIncomeSourcesModel.nino, subscriptionSuccess.mtditId) flatMap {
           case Right(_) =>
-            checkClientRelationships(arn = arn, nino = createIncomeSourcesModel.nino)
-            confirmAgentEnrollmentToSps(arn, createIncomeSourcesModel.nino, utr, subscriptionSuccess.mtditId)
-              .map(_ => right)
+            checkClientRelationships(arn = arn, nino = createIncomeSourcesModel.nino) flatMap { _ =>
+              confirmAgentEnrollmentToSps(arn, createIncomeSourcesModel.nino, utr, subscriptionSuccess.mtditId) map { _ =>
+                right
+              }
+            }
           case Left(_) =>
-            checkClientRelationships(arn = arn, nino = createIncomeSourcesModel.nino)
-            Future.successful(right)
+            checkClientRelationships(arn = arn, nino = createIncomeSourcesModel.nino) map { _ =>
+              right
+            }
         }
       case Right(None) => Future.successful(Right(None))
       case left => Future.successful(left)

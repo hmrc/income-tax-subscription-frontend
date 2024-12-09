@@ -113,7 +113,7 @@ class UsingSoftwareViewSpec extends ViewSpec {
       testCall,
       clientName,
       clientNino,
-      backUrl = Some(testBackUrl)
+      backUrl = testBackUrl
     )
   }
 

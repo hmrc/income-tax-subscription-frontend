@@ -16,9 +16,11 @@
 
 package controllers.agent.eligibility
 
+import auth.agent.AgentUserMatching
 import common.Constants.ITSASessionKeys
+import common.Constants.ITSASessionKeys.JourneyStateKey
 import connectors.stubs.SessionDataConnectorStub
-import helpers.IntegrationTestConstants.testNino
+import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino}
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import org.jsoup.Jsoup
@@ -31,7 +33,7 @@ import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 
 class CannotTakePartControllerISpec extends ComponentSpecBase with AuthRedirects with SessionCookieCrumbler {
 
-  class Setup(sessionData: Map[String, String] = ClientData.clientDataWithNinoAndUTR) {
+  class Setup(sessionData: Map[String, String] = ClientData.clientDataWithNinoAndUTR ++ Map(JourneyStateKey -> AgentUserMatching.name)) {
     AuthStub.stubAuthSuccess()
     SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
 
@@ -45,6 +47,19 @@ class CannotTakePartControllerISpec extends ComponentSpecBase with AuthRedirects
   }
 
   "GET /client/cannot-sign-up" should {
+
+    "return a redirect to the login page" when {
+      "the user is unauthenticated" in {
+        AuthStub.stubUnauthorised()
+
+        val result: WSResponse = IncomeTaxSubscriptionFrontend.showCannotTakePart()
+
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(basGatewaySignIn("/client/error/cannot-sign-up"))
+        )
+      }
+    }
 
     "return a status of OK" in new Setup() {
       result.status mustBe OK

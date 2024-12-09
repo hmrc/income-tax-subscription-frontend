@@ -16,117 +16,131 @@
 
 package controllers.agent
 
+import config.AppConfig
 import config.featureswitch.FeatureSwitch.PrePopulate
+import config.featureswitch.FeatureSwitching
+import connectors.httpparser.GetSessionDataHttpParser
 import connectors.httpparser.SaveSessionDataHttpParser.{SaveSessionDataSuccessResponse, UnexpectedStatusFailure}
+import controllers.ControllerSpec
+import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}
 import forms.agent.UsingSoftwareForm
+import forms.agent.UsingSoftwareForm.usingSoftwareForm
+import forms.submapping.YesNoMapping
 import models.{EligibilityStatus, No, Yes}
-import org.mockito.ArgumentMatchers
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.mvc.Result
 import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, status}
-import play.twirl.api.HtmlFormat
-import services.mocks.{MockAuditingService, MockClientDetailsRetrieval, MockGetEligibilityStatusService, MockSessionDataService}
+import services.mocks.{MockGetEligibilityStatusService, MockSessionDataService}
 import uk.gov.hmrc.http.InternalServerException
-import utilities.agent.TestConstants.{testFormattedNino, testName, testNino}
-import views.html.agent.UsingSoftware
+import views.agent.mocks.MockUsingSoftware
 
 import scala.concurrent.Future
 
-class UsingSoftwareControllerSpec extends AgentControllerBaseSpec
-  with MockAuditingService
-  with MockClientDetailsRetrieval
+class UsingSoftwareControllerSpec extends ControllerSpec
+  with MockUsingSoftware
+  with MockIdentifierAction
+  with MockConfirmedClientJourneyRefiner
   with MockGetEligibilityStatusService
-  with MockSessionDataService {
+  with MockSessionDataService
+  with FeatureSwitching {
 
-  object TestUsingSoftwareController extends UsingSoftwareController(
-    mockClientDetailsRetrieval,
-    mock[UsingSoftware],
-    mockSessionDataService,
-    mockGetEligibilityStatusService
-  )(
-    mockAuditingService,
-    mockAuthService,
-    appConfig
-  )
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     disable(PrePopulate)
   }
 
-  trait Setup {
-    val usingSoftware: UsingSoftware = mock[UsingSoftware]
-    val controller: UsingSoftwareController = new UsingSoftwareController(
-      mockClientDetailsRetrieval,
-      usingSoftware,
-      mockSessionDataService,
-      mockGetEligibilityStatusService)(
-      mockAuditingService,
-      mockAuthService,
-      appConfig
-    )
-  }
-
-  override val controllerName: String = "UsingSoftwareController"
-  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestUsingSoftwareController.show(),
-    "submit" -> TestUsingSoftwareController.submit()
-  )
-
   "show" must {
     "return OK with the page content" when {
-
-      "the user is signing up for this tax year" in new Setup {
-        mockGetClientDetails(testName, testNino)
+      "the user is able to sign up for both tax years" in {
         mockFetchSoftwareStatus(Right(None))
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
-        when(usingSoftware(
-          ArgumentMatchers.eq(UsingSoftwareForm.usingSoftwareForm),
-          ArgumentMatchers.eq(routes.UsingSoftwareController.submit()),
-          ArgumentMatchers.eq(testName),
-          ArgumentMatchers.eq(testFormattedNino),
-          ArgumentMatchers.eq(Some(controllers.agent.eligibility.routes.ClientCanSignUpController.show().url))
-        )(any(), any())).thenReturn(HtmlFormat.empty)
-
-        val result: Future[Result] = controller.show()(
-          subscriptionRequest
+        mockView(
+          usingSoftwareForm = usingSoftwareForm,
+          postAction = routes.UsingSoftwareController.submit,
+          clientName = clientDetails.name,
+          clientNino = clientDetails.formattedNino,
+          backUrl = controllers.agent.eligibility.routes.ClientCanSignUpController.show().url
         )
+
+        val result: Future[Result] = TestUsingSoftwareController.show(request)
 
         status(result) mustBe OK
         contentType(result) mustBe Some(HTML)
       }
-
-      "the user is signing up for next tax year only" in new Setup {
-        mockGetClientDetails(testName, testNino)
+      "the user is able to sign up for next year only" in {
         mockFetchSoftwareStatus(Right(None))
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
-        when(usingSoftware(
-          ArgumentMatchers.eq(UsingSoftwareForm.usingSoftwareForm),
-          ArgumentMatchers.eq(routes.UsingSoftwareController.submit()),
-          ArgumentMatchers.eq(testName),
-          ArgumentMatchers.eq(testFormattedNino),
-          ArgumentMatchers.eq(Some(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url))
-        )(any(), any())).thenReturn(HtmlFormat.empty)
-
-        val result: Future[Result] = controller.show()(
-          subscriptionRequest
+        mockView(
+          usingSoftwareForm = usingSoftwareForm,
+          postAction = routes.UsingSoftwareController.submit,
+          clientName = clientDetails.name,
+          clientNino = clientDetails.formattedNino,
+          backUrl = controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url
         )
+
+        val result: Future[Result] = TestUsingSoftwareController.show(request)
 
         status(result) mustBe OK
         contentType(result) mustBe Some(HTML)
+      }
+      "the user has answered 'Yes' on question previously" in {
+        mockFetchSoftwareStatus(Right(Some(Yes)))
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+        mockView(
+          usingSoftwareForm = usingSoftwareForm.fill(Yes),
+          postAction = routes.UsingSoftwareController.submit,
+          clientName = clientDetails.name,
+          clientNino = clientDetails.formattedNino,
+          backUrl = controllers.agent.eligibility.routes.ClientCanSignUpController.show().url
+        )
+
+        val result: Future[Result] = TestUsingSoftwareController.show(request)
+
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+      }
+      "the user has answered 'No' on question previously" in {
+        mockFetchSoftwareStatus(Right(Some(No)))
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+        mockView(
+          usingSoftwareForm = usingSoftwareForm.fill(No),
+          postAction = routes.UsingSoftwareController.submit,
+          clientName = clientDetails.name,
+          clientNino = clientDetails.formattedNino,
+          backUrl = controllers.agent.eligibility.routes.ClientCanSignUpController.show().url
+        )
+
+        val result: Future[Result] = TestUsingSoftwareController.show(request)
+
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+      }
+    }
+    "throw an InternalServerException" when {
+      "there was a problem fetching the users previous answer" in {
+        mockFetchSoftwareStatus(Left(GetSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+
+        intercept[InternalServerException](await(TestUsingSoftwareController.show(request)))
+          .message mustBe "[UsingSoftwareController][show] - Could not fetch software status"
       }
     }
   }
 
   "submit" when {
     "the users submission is invalid" should {
-      "return a bad request with the page content" in new Setup {
+      "return a bad request with the page content" in {
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
-        when(usingSoftware(any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+        mockView(
+          usingSoftwareForm = usingSoftwareForm.bind(Map.empty[String, String]),
+          postAction = routes.UsingSoftwareController.submit,
+          clientName = clientDetails.name,
+          clientNino = clientDetails.formattedNino,
+          backUrl = controllers.agent.eligibility.routes.ClientCanSignUpController.show().url
+        )
 
-        val result: Future[Result] = controller.submit()(subscriptionRequest)
+        val result: Future[Result] = TestUsingSoftwareController.submit()(request)
 
         status(result) mustBe BAD_REQUEST
         contentType(result) mustBe Some(HTML)
@@ -134,22 +148,30 @@ class UsingSoftwareControllerSpec extends AgentControllerBaseSpec
     }
     "the user submits 'Yes'" should {
       "redirect to the what you need to do page" when {
-        "the pre-pop feature switch is disabled" in new Setup {
+        "the pre-pop feature switch is disabled" in {
           mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
 
-          val result: Future[Result] = controller.submit()(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, Yes))
+          val result: Future[Result] = TestUsingSoftwareController.submit()(
+            request.withMethod("POST").withFormUrlEncodedBody(
+              UsingSoftwareForm.fieldName -> YesNoMapping.option_yes
+            )
+          )
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.agent.routes.WhatYouNeedToDoController.show().url)
         }
       }
       "redirect to the what year to sign up page" when {
-        "the pre-pop feature switch is enabled" in new Setup {
+        "the pre-pop feature switch is enabled" in {
           enable(PrePopulate)
 
           mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
 
-          val result: Future[Result] = controller.submit()(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, Yes))
+          val result: Future[Result] = TestUsingSoftwareController.submit()(
+            request.withMethod("POST").withFormUrlEncodedBody(
+              UsingSoftwareForm.fieldName -> YesNoMapping.option_yes
+            )
+          )
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
@@ -157,25 +179,43 @@ class UsingSoftwareControllerSpec extends AgentControllerBaseSpec
       }
     }
     "the user submits 'No'" should {
-      "redirect to the no software page" in new Setup {
+      "redirect to the no software page" in {
         mockSaveSoftwareStatus(No)(Right(SaveSessionDataSuccessResponse))
 
-        val result: Future[Result] = controller.submit()(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, No))
+        val result: Future[Result] = TestUsingSoftwareController.submit(
+          request.withMethod("POST").withFormUrlEncodedBody(
+            UsingSoftwareForm.fieldName -> YesNoMapping.option_no
+          )
+        )
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.agent.routes.NoSoftwareController.show().url)
       }
     }
     "an error occurs when saving the software status" should {
-      "throw an internal server exception" in new Setup {
+      "throw an internal server exception" in {
         mockSaveSoftwareStatus(Yes)(Left(UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
-        val result: Future[Result] = controller.submit()(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, Yes))
+        val result: Future[Result] = TestUsingSoftwareController.submit()(
+          request.withMethod("POST").withFormUrlEncodedBody(
+            UsingSoftwareForm.fieldName -> YesNoMapping.option_yes
+          )
+        )
 
         intercept[InternalServerException](await(result))
           .message mustBe "[UsingSoftwareController][submit] - Could not save using software answer"
       }
     }
   }
-  
+
+  val appConfig: AppConfig = mock[AppConfig]
+
+  object TestUsingSoftwareController extends UsingSoftwareController(
+    mockUsingSoftware,
+    fakeIdentifierAction,
+    fakeConfirmedClientJourneyRefiner,
+    mockSessionDataService,
+    mockGetEligibilityStatusService,
+  )(appConfig)
+
 }

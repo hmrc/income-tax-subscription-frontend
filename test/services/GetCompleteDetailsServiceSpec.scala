@@ -33,13 +33,13 @@ import scala.concurrent.Future
 
 class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubscriptionDetailsService {
 
-  val hc: HeaderCarrier = HeaderCarrier()
-
   trait Setup {
     val service: GetCompleteDetailsService = new GetCompleteDetailsService(
       subscriptionDetailsService = mockSubscriptionDetailsService
     )
   }
+
+  val hc: HeaderCarrier = HeaderCarrier()
 
   val selfEmployment: SelfEmploymentData = SelfEmploymentData(
     id = "test-id",

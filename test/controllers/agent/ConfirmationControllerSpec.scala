@@ -16,114 +16,115 @@
 
 package controllers.agent
 
-import common.Constants.ITSASessionKeys
-import models.EligibilityStatus
-import models.status.MandationStatus.Voluntary
-import models.usermatching.UserDetailsModel
-import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.when
-import play.api.mvc.{Action, AnyContent, Request}
-import play.api.test.FakeRequest
+import connectors.httpparser.GetSessionDataHttpParser
+import controllers.ControllerSpec
+import controllers.agent.actions.mocks.{MockConfirmationJourneyRefiner, MockIdentifierAction}
+import models.common.AccountingYearModel
+import models.status.MandationStatus.{Mandated, Voluntary}
+import models.{Current, Next, No, Yes}
+import play.api.mvc.Result
 import play.api.test.Helpers._
-import play.twirl.api.HtmlFormat
 import services.mocks._
-import utilities.TestModels
-import utilities.agent.TestModels._
-import views.html.agent.confirmation.SignUpConfirmation
+import uk.gov.hmrc.http.InternalServerException
+import views.agent.mocks.MockSignUpConfirmation
 
-class ConfirmationControllerSpec extends AgentControllerBaseSpec
+import scala.concurrent.Future
+
+class ConfirmationControllerSpec extends ControllerSpec
+  with MockSignUpConfirmation
+  with MockIdentifierAction
+  with MockConfirmationJourneyRefiner
   with MockSubscriptionDetailsService
-  with MockAccountingPeriodService
-  with MockUserMatchingService
-  with MockAuditingService
-  with MockReferenceRetrieval
-  with MockClientDetailsRetrieval
-  with MockMandationStatusService
-  with MockSpsService
   with MockSessionDataService {
 
-  val mockSignUpConfirmation: SignUpConfirmation = mock[SignUpConfirmation]
+  "show" must {
+    "return OK with the page content" when {
+      "the user is mandated for the current tax year" in {
+        mockFetchSelectedTaxYear(Some(AccountingYearModel(Current, confirmed = true, editable = false)))
+        mockGetMandationService(Mandated, Voluntary)
+        mockFetchSoftwareStatus(Right(Some(No)))
+        mockView(
+          mandatedCurrentYear = true,
+          mandatedNextYear = false,
+          taxYearSelectionIsNext = false,
+          name = clientDetails.name,
+          nino = clientDetails.formattedNino,
+          usingSoftware = false
+        )
+
+        val result: Future[Result] = TestConfirmationController.show(request)
+
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+      }
+      "the user is mandated for the next tax year" in {
+        mockFetchSelectedTaxYear(Some(AccountingYearModel(Next, confirmed = true, editable = false)))
+        mockGetMandationService(Voluntary, Mandated)
+        mockFetchSoftwareStatus(Right(Some(Yes)))
+        mockView(
+          mandatedCurrentYear = false,
+          mandatedNextYear = true,
+          taxYearSelectionIsNext = true,
+          name = clientDetails.name,
+          nino = clientDetails.formattedNino,
+          usingSoftware = true
+        )
+
+        val result: Future[Result] = TestConfirmationController.show(request)
+
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+      }
+      "the user has selected to sign up for the next tax year" in {
+        mockFetchSelectedTaxYear(Some(AccountingYearModel(Next, confirmed = true)))
+        mockGetMandationService(Voluntary, Voluntary)
+        mockFetchSoftwareStatus(Right(Some(Yes)))
+        mockView(
+          mandatedCurrentYear = false,
+          mandatedNextYear = false,
+          taxYearSelectionIsNext = true,
+          name = clientDetails.name,
+          nino = clientDetails.formattedNino,
+          usingSoftware = true
+        )
+
+        val result: Future[Result] = TestConfirmationController.show(request)
+
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+      }
+    }
+    "throw an internal server exception" when {
+      "there was a problem retrieving the software status" in {
+        mockFetchSelectedTaxYear(Some(AccountingYearModel(Current, confirmed = true)))
+        mockGetMandationService(Voluntary, Voluntary)
+        mockFetchSoftwareStatus(Left(GetSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
+
+        intercept[InternalServerException](await(TestConfirmationController.show(request)))
+          .message mustBe s"[ConfirmationController][show] - failure retrieving software status - UnexpectedStatusFailure($INTERNAL_SERVER_ERROR)"
+
+      }
+    }
+  }
+
+  "submit" must {
+    "redirect to the add another client route" in {
+      mockDeleteAll()
+
+      val result: Future[Result] = TestConfirmationController.submit(request.withMethod("POST"))
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(routes.AddAnotherClientController.addAnother().url)
+    }
+  }
 
   object TestConfirmationController extends ConfirmationController(
     mockSignUpConfirmation,
-    mockReferenceRetrieval,
-    mockClientDetailsRetrieval,
+    fakeIdentifierAction,
+    fakeConfirmationJourneyRefiner,
     mockSubscriptionDetailsService,
     mockMandationStatusService,
     mockSessionDataService
-  )(
-    mockAuditingService,
-    mockAuthService
-  )(executionContext, appConfig, mockMessagesControllerComponents)
-
-  val userDetails: UserDetailsModel = TestModels.testUserDetails
-
-  val taxQuarter1: (String, String) = ("agent.sign-up.complete.julyUpdate", "2020")
-  val taxQuarter2: (String, String) = ("agent.sign-up.complete.octoberUpdate", "2020")
-  val taxQuarter3: (String, String) = ("agent.sign-up.complete.januaryUpdate", "2021")
-  val taxQuarter4: (String, String) = ("agent.sign-up.complete.aprilUpdate", "2021")
-
-  implicit val request: Request[_] = FakeRequest()
-
-  override val controllerName: String = "ConfirmationControllerSpec"
-  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "showConfirmation" -> TestConfirmationController.show
   )
-
-  private def mockCall() =
-    when(mockSignUpConfirmation(
-      ArgumentMatchers.any(),
-      ArgumentMatchers.any(),
-      ArgumentMatchers.any(),
-      ArgumentMatchers.any(),
-      ArgumentMatchers.any(),
-      ArgumentMatchers.any(),
-      ArgumentMatchers.any())
-    (ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(HtmlFormat.empty)
-
-
-  "ConfirmationController" when {
-
-    "submitted is not in session" should {
-      "return a NotFoundException" in {
-        TestConfirmationController.show(subscriptionRequest)
-      }
-    }
-
-    "submitted is in session" should {
-      "return OK" in {
-        mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
-        mockGetMandationService(Voluntary, Voluntary)
-        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
-        mockFetchSoftwareStatus(Right(None))
-        mockCall()
-        val result = TestConfirmationController.show(
-          subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "any")
-            .buildRequest(Some(userDetails))
-        )
-        status(result) mustBe OK
-      }
-    }
-
-    "submitted is in session and new Confirmation content applies" should {
-      "return OK" in {
-        mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
-        mockGetMandationService(Voluntary, Voluntary)
-        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
-        mockFetchSoftwareStatus(Right(None))
-        mockCall()
-
-        val result = TestConfirmationController.show(
-          subscriptionRequest
-            .addingToSession(ITSASessionKeys.MTDITID -> "any")
-            .buildRequest(Some(userDetails))
-        )
-
-        status(result) mustBe OK
-      }
-    }
-
-  }
-  authorisationTests()
 
 }

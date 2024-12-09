@@ -267,6 +267,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
         )
       )
     }
+
     def showNoSoftware(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/no-compatible-software", sessionData)
 
     def whatYouNeedToDo(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/what-you-need-to-do", sessionData)
@@ -283,14 +284,14 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
     def timeout(sessionKeys: Map[String, String] = Map.empty): WSResponse = get("/timeout", sessionKeys)
 
-    def showClientDetails(): WSResponse = get("/client-details", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))
+    def showClientDetails(): WSResponse = get("/client-details", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name), withClientDetailsConfirmed = false, withJourneyStateSignUp = false)
 
     def getConfirmedClientResolver(sessionData: Map[String, String] = Map.empty): WSResponse = {
       get("/resolve-confirmed-client", sessionData)
     }
 
     def submitClientDetails(newSubmission: Option[UserDetailsModel], storedSubmission: Option[UserDetailsModel]): WSResponse =
-      post("/client-details", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name).addUserDetails(storedSubmission))(
+      post("/client-details", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name).addUserDetails(storedSubmission), withClientDetailsConfirmed = false)(
         newSubmission.fold(Map.empty: Map[String, Seq[String]])(
           cd => toFormData(ClientDetailsForm.clientDetailsForm, cd)
         )
@@ -307,6 +308,17 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       else
         get("/confirmation", Map[String, String](UserMatchingSessionUtil.firstName -> firstName,
           UserMatchingSessionUtil.lastName -> lastName))
+
+    def submitConfirmation(): WSResponse = {
+      post(
+        "/confirmation",
+        Map(
+          ITSASessionKeys.MTDITID -> testMtdId,
+          UserMatchingSessionUtil.firstName -> firstName,
+          UserMatchingSessionUtil.lastName -> lastName
+        )
+      )(Map.empty)
+    }
 
     def feedback(): WSResponse = get("/feedback-submitted")
 

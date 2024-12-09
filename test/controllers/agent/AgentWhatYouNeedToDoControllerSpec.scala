@@ -16,8 +16,11 @@
 
 package controllers.agent
 
+import config.MockConfig
 import config.featureswitch.FeatureSwitch.PrePopulate
 import config.featureswitch.FeatureSwitching
+import controllers.ControllerSpec
+import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}
 import models.common.AccountingYearModel
 import models.status.MandationStatus.{Mandated, Voluntary}
 import models.{Current, EligibilityStatus, Next, Yes}
@@ -35,57 +38,44 @@ import views.html.agent.WhatYouNeedToDo
 import scala.concurrent.Future
 
 class AgentWhatYouNeedToDoControllerSpec
-  extends AgentControllerBaseSpec
-    with MockAuditingService
-    with MockMandationStatusService
-    with MockClientDetailsRetrieval
+  extends ControllerSpec
+    with MockIdentifierAction
+    with MockConfirmedClientJourneyRefiner
     with MockGetEligibilityStatusService
-    with MockReferenceRetrieval
+    with MockMandationStatusService
     with MockSubscriptionDetailsService
     with MockSessionDataService
     with FeatureSwitching {
 
+  val appConfig = MockConfig
+
   object TestWhatYouNeedToDoController extends WhatYouNeedToDoController(
     mock[WhatYouNeedToDo],
-    mockClientDetailsRetrieval,
+    fakeIdentifierAction,
+    fakeConfirmedClientJourneyRefiner,
     mockGetEligibilityStatusService,
     mockMandationStatusService,
-    mockReferenceRetrieval,
     mockSubscriptionDetailsService,
     mockSessionDataService
-  )(
-    mockAuditingService,
-    appConfig,
-    mockAuthService
-  )
+  )(appConfig)
 
   trait Setup {
     val whatYouNeedToDo: WhatYouNeedToDo = mock[WhatYouNeedToDo]
     val controller: WhatYouNeedToDoController = new WhatYouNeedToDoController(
       whatYouNeedToDo,
-      mockClientDetailsRetrieval,
+      fakeIdentifierAction,
+      fakeConfirmedClientJourneyRefiner,
       mockGetEligibilityStatusService,
       mockMandationStatusService,
-      mockReferenceRetrieval,
       mockSubscriptionDetailsService,
       mockSessionDataService
-    )(
-      mockAuditingService,
-      appConfig,
-      mockAuthService
-    )
+    )(appConfig)
   }
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     disable(PrePopulate)
   }
-
-  override val controllerName: String = "WhatYouNeedToDoController"
-  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestWhatYouNeedToDoController.show,
-    "submit" -> TestWhatYouNeedToDoController.submit
-  )
 
   "show" must {
     "return OK with the page content" when {
@@ -102,14 +92,14 @@ class AgentWhatYouNeedToDoControllerSpec
           ArgumentMatchers.eq(false),
           ArgumentMatchers.eq(true),
           ArgumentMatchers.any(),
-          ArgumentMatchers.eq(testName),
-          ArgumentMatchers.eq(testFormattedNino),
+          ArgumentMatchers.eq(clientDetails.name),
+          ArgumentMatchers.eq(clientDetails.formattedNino),
           ArgumentMatchers.any(),
 
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
-          subscriptionRequestWithName
+          request
         )
 
         status(result) mustBe OK
@@ -129,13 +119,13 @@ class AgentWhatYouNeedToDoControllerSpec
           ArgumentMatchers.eq(false),
           ArgumentMatchers.any(),
           ArgumentMatchers.any(),
-          ArgumentMatchers.eq(testName),
-          ArgumentMatchers.eq(testFormattedNino),
+          ArgumentMatchers.eq(clientDetails.name),
+          ArgumentMatchers.eq(clientDetails.formattedNino),
           ArgumentMatchers.any(),
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
-          subscriptionRequestWithName
+          request
         )
 
         status(result) mustBe OK
@@ -154,13 +144,13 @@ class AgentWhatYouNeedToDoControllerSpec
           ArgumentMatchers.eq(false),
           ArgumentMatchers.any(),
           ArgumentMatchers.any(),
-          ArgumentMatchers.eq(testName),
-          ArgumentMatchers.eq(testFormattedNino),
+          ArgumentMatchers.eq(clientDetails.name),
+          ArgumentMatchers.eq(clientDetails.formattedNino),
           ArgumentMatchers.any(),
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
-          subscriptionRequestWithName
+          request
         )
 
         status(result) mustBe OK
@@ -179,13 +169,13 @@ class AgentWhatYouNeedToDoControllerSpec
           ArgumentMatchers.eq(true),
           ArgumentMatchers.any(),
           ArgumentMatchers.any(),
-          ArgumentMatchers.eq(testName),
-          ArgumentMatchers.eq(testFormattedNino),
+          ArgumentMatchers.eq(clientDetails.name),
+          ArgumentMatchers.eq(clientDetails.formattedNino),
           ArgumentMatchers.any(),
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
-          subscriptionRequestWithName
+          request
         )
 
         status(result) mustBe OK
@@ -208,14 +198,14 @@ class AgentWhatYouNeedToDoControllerSpec
             ArgumentMatchers.eq(false),
             ArgumentMatchers.any(),
             ArgumentMatchers.any(),
-            ArgumentMatchers.eq(testName),
-            ArgumentMatchers.eq(testFormattedNino),
+            ArgumentMatchers.eq(clientDetails.name),
+            ArgumentMatchers.eq(clientDetails.formattedNino),
             ArgumentMatchers.eq(Some(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)),
 
           )(any(), any())).thenReturn(HtmlFormat.empty)
 
           val result: Future[Result] = controller.show(
-            subscriptionRequestWithName
+            request
           )
 
           status(result) mustBe OK
@@ -236,14 +226,14 @@ class AgentWhatYouNeedToDoControllerSpec
             ArgumentMatchers.eq(true),
             ArgumentMatchers.any(),
             ArgumentMatchers.any(),
-            ArgumentMatchers.eq(testName),
-            ArgumentMatchers.eq(testFormattedNino),
+            ArgumentMatchers.eq(clientDetails.name),
+            ArgumentMatchers.eq(clientDetails.formattedNino),
             ArgumentMatchers.eq(Some(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)),
 
           )(any(), any())).thenReturn(HtmlFormat.empty)
 
           val result: Future[Result] = controller.show(
-            subscriptionRequestWithName
+            request
           )
 
           status(result) mustBe OK
@@ -267,13 +257,13 @@ class AgentWhatYouNeedToDoControllerSpec
             ArgumentMatchers.eq(false),
             ArgumentMatchers.eq(false),
             ArgumentMatchers.any(),
-            ArgumentMatchers.eq(testName),
-            ArgumentMatchers.eq(testFormattedNino),
-            ArgumentMatchers.eq(Some(controllers.agent.routes.UsingSoftwareController.show().url)),
+            ArgumentMatchers.eq(clientDetails.name),
+            ArgumentMatchers.eq(clientDetails.formattedNino),
+            ArgumentMatchers.eq(Some(controllers.agent.routes.UsingSoftwareController.show.url)),
           )(any(), any())).thenReturn(HtmlFormat.empty)
 
           val result: Future[Result] = controller.show(
-            subscriptionRequestWithName
+            request
           )
 
           status(result) mustBe OK
@@ -294,14 +284,14 @@ class AgentWhatYouNeedToDoControllerSpec
             ArgumentMatchers.eq(true),
             ArgumentMatchers.eq(false),
             ArgumentMatchers.any(),
-            ArgumentMatchers.eq(testName),
-            ArgumentMatchers.eq(testFormattedNino),
-            ArgumentMatchers.eq(Some(controllers.agent.routes.UsingSoftwareController.show().url)),
+            ArgumentMatchers.eq(clientDetails.name),
+            ArgumentMatchers.eq(clientDetails.formattedNino),
+            ArgumentMatchers.eq(Some(controllers.agent.routes.UsingSoftwareController.show.url)),
 
           )(any(), any())).thenReturn(HtmlFormat.empty)
 
           val result: Future[Result] = controller.show(
-            subscriptionRequestWithName
+            request
           )
 
           status(result) mustBe OK
@@ -314,7 +304,7 @@ class AgentWhatYouNeedToDoControllerSpec
 
   "submit" must {
     "return SEE_OTHER to the task list page" in new Setup {
-      val result: Future[Result] = controller.submit(subscriptionRequestWithName)
+      val result: Future[Result] = controller.submit(request)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.agent.tasklist.routes.TaskListController.show().url)
@@ -322,7 +312,7 @@ class AgentWhatYouNeedToDoControllerSpec
 
     "return SEE_OTHER to the Your Income Sources page when PrePop enabled" in new Setup {
       enable(PrePopulate)
-      val result: Future[Result] = controller.submit(subscriptionRequestWithName)
+      val result: Future[Result] = controller.submit(request)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)

@@ -137,6 +137,11 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
     WiremockHelper.verifyDelete(subscriptionDeleteUri, count)
   }
 
+  def stubDeleteAllSubscriptionDetails(reference: String)(status: Int): Unit = {
+    when(method = DELETE, uri = s"/income-tax-subscription/subscription-data/$reference")
+      .thenReturn(status, "")
+  }
+
   def verifySubscriptionSave[T](id: String, body: T, count: Option[Int] = None)(implicit writer: Writes[T]): Unit = {
     import helpers.ImplicitConversions._
     WiremockHelper.verifyPost(subscriptionUri(id), Some((body: JsValue).toString()), count)
