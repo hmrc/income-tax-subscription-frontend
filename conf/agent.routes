@@ -81,9 +81,9 @@ POST        /business/accounting-method-property                controllers.agen
 GET         /business/property-commencement-date                controllers.agent.tasklist.ukproperty.PropertyStartDateController.show(editMode: Boolean ?= false)
 POST        /business/property-commencement-date                controllers.agent.tasklist.ukproperty.PropertyStartDateController.submit(editMode: Boolean ?= false)
 
-# AgentStreamline UK Property Income Sources
-GET         /business/income-sources-property                   controllers.agent.tasklist.ukproperty.PropertyIncomeSourcesController.show(editMode: Boolean ?= false)
-POST        /business/income-sources-property                   controllers.agent.tasklist.ukproperty.PropertyIncomeSourcesController.submit(editMode: Boolean ?= false)
+# Agent Streamline UK Property Income Sources
+GET         /business/income-sources-property                   controllers.agent.tasklist.ukproperty.PropertyIncomeSourcesController.show(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
+POST        /business/income-sources-property                   controllers.agent.tasklist.ukproperty.PropertyIncomeSourcesController.submit(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
 
 #Overseas Property Start Date Routes
 GET         /business/overseas-commencement-date                controllers.agent.tasklist.overseasproperty.OverseasPropertyStartDateController.show(editMode: Boolean ?= false)
@@ -94,8 +94,8 @@ GET         /business/overseas-property-accounting-method        controllers.age
 POST        /business/overseas-property-accounting-method        controllers.agent.tasklist.overseasproperty.OverseasPropertyAccountingMethodController.submit(editMode: Boolean ?= false)
 
 #Agent Streamline Foreign Property Incomes Sources Routes
-GET         /business/income-sources-foreign-property            controllers.agent.tasklist.overseasproperty.IncomeSourcesOverseasPropertyController.show(editMode: Boolean ?= false)
-POST        /business/income-sources-foreign-property            controllers.agent.tasklist.overseasproperty.IncomeSourcesOverseasPropertyController.submit(editMode: Boolean ?= false)
+GET         /business/income-sources-foreign-property            controllers.agent.tasklist.overseasproperty.IncomeSourcesOverseasPropertyController.show(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
+POST        /business/income-sources-foreign-property            controllers.agent.tasklist.overseasproperty.IncomeSourcesOverseasPropertyController.submit(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
 
 
 GET         /keep-alive                                         controllers.agent.SessionTimeoutController.keepAlive
@@ -106,12 +106,12 @@ GET         /business/tax-year-check-your-answers                controllers.age
 POST        /business/tax-year-check-your-answers                controllers.agent.tasklist.taxyear.TaxYearCheckYourAnswersController.submit()
 
 
-GET         /business/uk-property-check-your-answers             controllers.agent.tasklist.ukproperty.PropertyCheckYourAnswersController.show(editMode: Boolean ?= false)
-POST        /business/uk-property-check-your-answers             controllers.agent.tasklist.ukproperty.PropertyCheckYourAnswersController.submit()
+GET         /business/uk-property-check-your-answers             controllers.agent.tasklist.ukproperty.PropertyCheckYourAnswersController.show(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
+POST        /business/uk-property-check-your-answers             controllers.agent.tasklist.ukproperty.PropertyCheckYourAnswersController.submit(isGlobalEdit: Boolean ?= false)
 
 
-GET         /business/overseas-property-check-your-answers       controllers.agent.tasklist.overseasproperty.OverseasPropertyCheckYourAnswersController.show(editMode: Boolean ?= false)
-POST        /business/overseas-property-check-your-answers       controllers.agent.tasklist.overseasproperty.OverseasPropertyCheckYourAnswersController.submit()
+GET         /business/overseas-property-check-your-answers       controllers.agent.tasklist.overseasproperty.OverseasPropertyCheckYourAnswersController.show(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
+POST        /business/overseas-property-check-your-answers       controllers.agent.tasklist.overseasproperty.OverseasPropertyCheckYourAnswersController.submit(isGlobalEdit: Boolean ?= false)
 
 GET         /business/progress-saved                            controllers.agent.tasklist.ProgressSavedController.show(location: Option[String] ?= None)
 

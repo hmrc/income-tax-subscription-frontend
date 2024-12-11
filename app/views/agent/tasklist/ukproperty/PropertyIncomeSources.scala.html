@@ -32,7 +32,7 @@ saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
 pageHeadingHelper: PageHeadingHelper
 )
 
-@(ukPropertyIncomeSourcesForm: Form[(DateModel, AccountingMethod)], postAction: Call, isEditMode: Boolean, backUrl: String, clientDetails: ClientDetails)(implicit request: Request[_], messages: Messages)
+@(ukPropertyIncomeSourcesForm: Form[(DateModel, AccountingMethod)], postAction: Call, backUrl: String, clientDetails: ClientDetails)(implicit request: Request[_], messages: Messages)
 
 @detailsContent = {
 <p class="govuk-body govuk-!-font-weight-bold">@messages("agent.property.income-source.details.subheading")</p>

@@ -41,15 +41,15 @@ class OverseasPropertyCheckYourAnswersController @Inject()(overseasPropertyCheck
                                                           (implicit val ec: ExecutionContext,
                                                            mcc: MessagesControllerComponents) extends AuthenticatedController {
 
-  def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+  def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       referenceRetrieval.getAgentReference flatMap { reference =>
         withOverseasProperty(reference) { property =>
           clientDetailsRetrieval.getClientDetails map { clientDetails =>
             Ok(overseasPropertyCheckYourAnswersView(
               viewModel = property,
-              routes.OverseasPropertyCheckYourAnswersController.submit(),
-              backUrl(isEditMode),
+              postAction = routes.OverseasPropertyCheckYourAnswersController.submit(isGlobalEdit),
+              backUrl = backUrl(isEditMode, isGlobalEdit),
               clientDetails = clientDetails
             ))
           }
@@ -57,29 +57,32 @@ class OverseasPropertyCheckYourAnswersController @Inject()(overseasPropertyCheck
       }
   }
 
-  def submit(): Action[AnyContent] = Authenticated.async { implicit request =>
+  def submit(isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       referenceRetrieval.getAgentReference flatMap { reference =>
         withOverseasProperty(reference) { property =>
           if (property.accountingMethod.isDefined && property.startDate.isDefined) {
             subscriptionDetailsService.saveOverseasProperty(reference, property.copy(confirmed = true)) map {
-              case Right(_) => Redirect(continueLocation)
+              case Right(_) =>
+                if (isGlobalEdit) {
+                  Redirect(controllers.agent.routes.GlobalCheckYourAnswersController.show)
+                } else {
+                  Redirect(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
+                }
               case Left(_) => throw new InternalServerException("[OverseasPropertyCheckYourAnswersController][submit] - Could not confirm property details")
             }
           } else {
-            Future.successful(Redirect(continueLocation))
+            Future.successful(Redirect(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show))
           }
         }
       }
   }
 
-  def continueLocation: Call = {
-    controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show
-  }
-
-  def backUrl(isEditMode: Boolean): String = {
-    if (isEditMode) {
-      continueLocation.url
+  def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean): String = {
+    if (isGlobalEdit) {
+      controllers.agent.routes.GlobalCheckYourAnswersController.show.url
+    } else if (isEditMode) {
+      controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
     } else if (isEnabled(AgentStreamline)) {
       routes.IncomeSourcesOverseasPropertyController.show().url
     } else {

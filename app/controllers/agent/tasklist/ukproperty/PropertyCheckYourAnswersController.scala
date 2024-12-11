@@ -41,15 +41,15 @@ class PropertyCheckYourAnswersController @Inject()(propertyCheckYourAnswersView:
                                                   (implicit val ec: ExecutionContext,
                                                    mcc: MessagesControllerComponents) extends AuthenticatedController {
 
-  def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+  def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       referenceRetrieval.getAgentReference flatMap { reference =>
         withProperty(reference) { property =>
           clientDetailsRetrieval.getClientDetails map { clientDetails =>
             Ok(propertyCheckYourAnswersView(
               viewModel = property,
-              routes.PropertyCheckYourAnswersController.submit(),
-              backUrl(isEditMode),
+              routes.PropertyCheckYourAnswersController.submit(isGlobalEdit),
+              backUrl(isEditMode, isGlobalEdit),
               clientDetails = clientDetails
             ))
           }
@@ -57,29 +57,32 @@ class PropertyCheckYourAnswersController @Inject()(propertyCheckYourAnswersView:
       }
   }
 
-  def submit(): Action[AnyContent] = Authenticated.async { implicit request =>
+  def submit(isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       referenceRetrieval.getAgentReference flatMap { reference =>
         withProperty(reference) { property =>
           if (property.accountingMethod.isDefined && property.startDate.isDefined) {
             subscriptionDetailsService.saveProperty(reference, property.copy(confirmed = true)) map {
-              case Right(_) => Redirect(continueLocation)
+              case Right(_) =>
+                if (isGlobalEdit) {
+                  Redirect(controllers.agent.routes.GlobalCheckYourAnswersController.show)
+                } else {
+                  Redirect(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
+                }
               case Left(_) => throw new InternalServerException("[PropertyCheckYourAnswersController][submit] - Could not confirm property")
             }
           } else {
-            Future.successful(Redirect(continueLocation))
+            Future.successful(Redirect(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show))
           }
         }
       }
   }
 
-  def continueLocation: Call = {
-    controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show
-  }
-
-  def backUrl(isEditMode: Boolean): String = {
-    if (isEditMode) {
-      continueLocation.url
+  def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean): String = {
+    if (isGlobalEdit) {
+      controllers.agent.routes.GlobalCheckYourAnswersController.show.url
+    } else if (isEditMode) {
+      controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
     } else if (isEnabled(AgentStreamline)) {
       routes.PropertyIncomeSourcesController.show().url
     } else {

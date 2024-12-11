@@ -52,7 +52,7 @@ class PropertyIncomeSourcesController @Inject()(propertyIncomeSources: PropertyI
     UkPropertyIncomeSourcesForm.ukPropertyIncomeSourcesForm(_.toLongDate)
   }
 
-  def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+  def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       for {
         reference <- referenceRetrieval.getAgentReference
@@ -66,24 +66,29 @@ class PropertyIncomeSourcesController @Inject()(propertyIncomeSources: PropertyI
         val boundForm = form.bind(formData).discardingErrors
         Ok(view(
           boundForm,
-          isEditMode = isEditMode, clientDetails
+          isEditMode = isEditMode,
+          isGlobalEdit = isGlobalEdit,
+          clientDetails
         ))
       }
   }
 
-  def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+  def submit(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       referenceRetrieval.getAgentReference flatMap { reference =>
         form.bindFromRequest().fold(
           formWithErrors => clientDetailsRetrieval.getClientDetails map { clientDetails =>
             BadRequest(view(
-              formWithErrors, isEditMode, clientDetails
+              form = formWithErrors,
+              isEditMode = isEditMode,
+              isGlobalEdit = isGlobalEdit,
+              clientDetails = clientDetails
             ))
           }, {
             case (startDate, accountingMethod) =>
               val propertyModel = PropertyModel(accountingMethod = Some(accountingMethod), startDate = Some(startDate))
               subscriptionDetailsService.saveProperty(reference, propertyModel) map {
-                case Right(_) => Redirect(routes.PropertyCheckYourAnswersController.show(isEditMode))
+                case Right(_) => Redirect(routes.PropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit))
                 case Left(_) => throw new InternalServerException("[PropertyIncomeSourcesController][submit] - Could not save property")
               }
           }
@@ -91,19 +96,18 @@ class PropertyIncomeSourcesController @Inject()(propertyIncomeSources: PropertyI
       }
   }
 
-  private def view(form: Form[(DateModel, AccountingMethod)], isEditMode: Boolean, clientDetails: ClientDetails)
+  private def view(form: Form[(DateModel, AccountingMethod)], isEditMode: Boolean, isGlobalEdit: Boolean, clientDetails: ClientDetails)
                   (implicit request: Request[AnyContent]): Html = {
     propertyIncomeSources(
       ukPropertyIncomeSourcesForm = form,
       postAction = routes.PropertyIncomeSourcesController.submit(isEditMode),
-      isEditMode = isEditMode,
-      backUrl = backUrl(isEditMode),
+      backUrl = backUrl(isEditMode, isGlobalEdit),
       clientDetails = clientDetails
     )
   }
 
-  def backUrl(isEditMode: Boolean): String = {
-    if (isEditMode) {
+  def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean): String = {
+    if (isEditMode || isGlobalEdit) {
       routes.PropertyCheckYourAnswersController.show(isEditMode).url
     } else {
       controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
