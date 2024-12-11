@@ -78,17 +78,9 @@ object IntegrationTestModels {
     businessStartDate = Some(BusinessStartDate(DateModel("05", "04", "2017"))),
     businessName = Some(testBusinessName),
     businessTradeName = Some(testBusinessTrade),
-    businessAddress = Some(testBusinessAddress)
+    businessAddress = Some(testBusinessAddress),
+    confirmed = true
   )))
-  private val tooManyBusinesses = 51
-  val testTooManyBusinesses: Seq[SelfEmploymentData] = Array.range(1, tooManyBusinesses).map(i =>
-    SelfEmploymentData(
-      id = i.toString,
-      businessStartDate = Some(BusinessStartDate(DateModel("05", "04", "2017"))),
-      businessName = Some(BusinessNameModel(s"${testBusinessName.businessName} $i")),
-      businessTradeName = Some(testBusinessTrade),
-      businessAddress = Some(testBusinessAddress)
-    )).toSeq
 
   val testFullPropertyModel: PropertyModel = PropertyModel(
     accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),

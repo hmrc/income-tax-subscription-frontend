@@ -16,14 +16,14 @@
 
 package controllers.agent.tasklist.ukproperty
 
-import auth.agent.AuthenticatedController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.AgentStreamline
-import controllers.utils.ReferenceRetrieval
+import config.featureswitch.FeatureSwitching
+import controllers.SignUpBaseController
+import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import models.common.PropertyModel
 import play.api.mvc._
-import services.agent.ClientDetailsRetrieval
-import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import views.html.agent.tasklist.ukproperty.PropertyCheckYourAnswers
 
@@ -31,55 +31,57 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PropertyCheckYourAnswersController @Inject()(propertyCheckYourAnswersView: PropertyCheckYourAnswers,
+class PropertyCheckYourAnswersController @Inject()(identify: IdentifierAction,
+                                                   journeyRefiner: ConfirmedClientJourneyRefiner,
                                                    subscriptionDetailsService: SubscriptionDetailsService,
-                                                   clientDetailsRetrieval: ClientDetailsRetrieval,
-                                                   referenceRetrieval: ReferenceRetrieval)
-                                                  (val auditingService: AuditingService,
-                                                   val appConfig: AppConfig,
-                                                   val authService: AuthService)
-                                                  (implicit val ec: ExecutionContext,
-                                                   mcc: MessagesControllerComponents) extends AuthenticatedController {
+                                                   view: PropertyCheckYourAnswers,
+                                                   val appConfig: AppConfig)
+                                                  (implicit cc: MessagesControllerComponents, ec: ExecutionContext) extends SignUpBaseController
+  with FeatureSwitching {
 
-  def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
-      referenceRetrieval.getAgentReference flatMap { reference =>
-        withProperty(reference) { property =>
-          clientDetailsRetrieval.getClientDetails map { clientDetails =>
-            Ok(propertyCheckYourAnswersView(
-              viewModel = property,
-              routes.PropertyCheckYourAnswersController.submit(),
-              backUrl(isEditMode),
-              clientDetails = clientDetails
-            ))
-          }
-        }
-      }
+  def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
+    withProperty(request.reference) { property =>
+      Future.successful(Ok(view(
+        viewModel = property,
+        postAction = routes.PropertyCheckYourAnswersController.submit(isGlobalEdit),
+        isGlobalEdit = isGlobalEdit,
+        backUrl = backUrl(isEditMode, isGlobalEdit, property.confirmed),
+        clientDetails = request.clientDetails
+      )))
+    }
   }
 
-  def submit(): Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
-      referenceRetrieval.getAgentReference flatMap { reference =>
-        withProperty(reference) { property =>
-          if (property.accountingMethod.isDefined && property.startDate.isDefined) {
-            subscriptionDetailsService.saveProperty(reference, property.copy(confirmed = true)) map {
-              case Right(_) => Redirect(continueLocation)
-              case Left(_) => throw new InternalServerException("[PropertyCheckYourAnswersController][submit] - Could not confirm property")
+  def submit(isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
+    withProperty(request.reference) { property =>
+      if (property.accountingMethod.isDefined && property.startDate.isDefined) {
+        subscriptionDetailsService.saveProperty(request.reference, property.copy(confirmed = true)) map {
+          case Right(_) =>
+            if (isGlobalEdit) {
+              Redirect(controllers.agent.routes.GlobalCheckYourAnswersController.show)
+            } else {
+              Redirect(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
             }
-          } else {
-            Future.successful(Redirect(continueLocation))
-          }
+          case Left(_) => throw new InternalServerException("[PropertyCheckYourAnswersController][submit] - Could not confirm property")
         }
+      } else {
+        Future.successful(Redirect(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show))
       }
+    }
   }
 
-  def continueLocation: Call = {
-    controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show
+  private def withProperty(reference: String)(f: PropertyModel => Future[Result])(implicit hc: HeaderCarrier): Future[Result] = {
+    subscriptionDetailsService.fetchProperty(reference) flatMap { maybeProperty =>
+      f(maybeProperty.getOrElse(
+        throw new InternalServerException("[PropertyCheckYourAnswersController] - Could not retrieve property details")
+      ))
+    }
   }
 
-  def backUrl(isEditMode: Boolean): String = {
-    if (isEditMode) {
-      continueLocation.url
+  private def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean, confirmed: Boolean): String = {
+    if (isGlobalEdit && confirmed) {
+      controllers.agent.routes.GlobalCheckYourAnswersController.show.url
+    } else if (isEditMode || isGlobalEdit) {
+      controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
     } else if (isEnabled(AgentStreamline)) {
       routes.PropertyIncomeSourcesController.show().url
     } else {
@@ -87,13 +89,4 @@ class PropertyCheckYourAnswersController @Inject()(propertyCheckYourAnswersView:
     }
   }
 
-  private def withProperty(reference: String)(f: PropertyModel => Future[Result])(implicit hc: HeaderCarrier) = {
-    subscriptionDetailsService.fetchProperty(reference).flatMap { maybeProperty =>
-      val property = maybeProperty.getOrElse(
-        throw new InternalServerException("[PropertyCheckYourAnswersController] - Could not retrieve property details")
-      )
-
-      f(property)
-    }
-  }
 }

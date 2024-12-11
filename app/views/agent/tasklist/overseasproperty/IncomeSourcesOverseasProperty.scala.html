@@ -32,7 +32,7 @@
     pageHeadingHelper: PageHeadingHelper
 )
 
-@(incomeSourcesOverseasPropertyForm: Form[(DateModel, AccountingMethod)], postAction: Call, isEditMode: Boolean, backUrl: String, clientDetails: ClientDetails)(implicit request: Request[_], messages: Messages)
+@(incomeSourcesOverseasPropertyForm: Form[(DateModel, AccountingMethod)], postAction: Call, backUrl: String, clientDetails: ClientDetails)(implicit request: Request[_], messages: Messages)
 
 
 @mainTemplate(title = messages("agent.foreign-property.income-sources.title"), optForm = Some(incomeSourcesOverseasPropertyForm), backLink = Some(backUrl)) {

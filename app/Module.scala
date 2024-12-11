@@ -15,14 +15,17 @@
  */
 
 import com.google.inject.AbstractModule
+import config.featureswitch.{FeatureSwitching, FeatureSwitchingImpl}
 import config.{AppConfig, FrontendAppConfig}
-import utilities.{UUIDProvider, UUIDProviderImpl}
+import utilities.{ImplicitDateFormatter, ImplicitDateFormatterImpl, UUIDProvider, UUIDProviderImpl}
 
 class Module extends AbstractModule {
 
   override def configure(): Unit = {
     bind(classOf[AppConfig]).to(classOf[FrontendAppConfig]).asEagerSingleton()
     bind(classOf[UUIDProvider]).to(classOf[UUIDProviderImpl]).asEagerSingleton()
+    bind(classOf[FeatureSwitching]).to(classOf[FeatureSwitchingImpl]).asEagerSingleton()
+    bind(classOf[ImplicitDateFormatter]).to(classOf[ImplicitDateFormatterImpl]).asEagerSingleton()
   }
 
 }

@@ -69,50 +69,54 @@ class GetCompleteDetailsService @Inject()(subscriptionDetailsService: Subscripti
                                     selectedTaxYear: Option[AccountingYearModel]
                                    ): Either[GetCompleteDetailsFailure.type, CompleteDetails] = {
 
-    Try {
-      val soleTraderBusinesses: Option[SoleTraderBusinesses] = {
-        selfEmploymentsAccountingMethod map { accountingMethod =>
-          SoleTraderBusinesses(
-            accountingMethod = accountingMethod,
-            businesses = selfEmployments.map { selfEmploymentData =>
-              SoleTraderBusiness(
-                id = selfEmploymentData.id,
-                name = selfEmploymentData.businessName.get.businessName,
-                trade = selfEmploymentData.businessTradeName.get.businessTradeName,
-                startDate = selfEmploymentData.businessStartDate.get.startDate.toLocalDate,
-                address = selfEmploymentData.businessAddress.get.address
-              )
-            }
+    if (selfEmployments.forall(_.confirmed) && ukPropertyBusiness.forall(_.confirmed && foreignPropertyBusiness.forall(_.confirmed))) {
+      Try {
+        val soleTraderBusinesses: Option[SoleTraderBusinesses] = {
+          selfEmploymentsAccountingMethod map { accountingMethod =>
+            SoleTraderBusinesses(
+              accountingMethod = accountingMethod,
+              businesses = selfEmployments.map { selfEmploymentData =>
+                SoleTraderBusiness(
+                  id = selfEmploymentData.id,
+                  name = selfEmploymentData.businessName.get.businessName,
+                  trade = selfEmploymentData.businessTradeName.get.businessTradeName,
+                  startDate = selfEmploymentData.businessStartDate.get.startDate.toLocalDate,
+                  address = selfEmploymentData.businessAddress.get.address
+                )
+              }
+            )
+          }
+        }
+
+        val ukProperty: Option[UKProperty] = ukPropertyBusiness.map { property =>
+          UKProperty(
+            startDate = property.startDate.get.toLocalDate,
+            accountingMethod = property.accountingMethod.get
           )
         }
-      }
 
-      val ukProperty: Option[UKProperty] = ukPropertyBusiness.map { property =>
-        UKProperty(
-          startDate = property.startDate.get.toLocalDate,
-          accountingMethod = property.accountingMethod.get
+        val foreignProperty: Option[ForeignProperty] = foreignPropertyBusiness.map { property =>
+          ForeignProperty(
+            startDate = property.startDate.get.toLocalDate,
+            accountingMethod = property.accountingMethod.get
+          )
+        }
+
+        CompleteDetails(
+          incomeSources = IncomeSources(soleTraderBusinesses, ukProperty, foreignProperty),
+          taxYear = selectedTaxYear.get.accountingYear
         )
+      } match {
+        case Failure(_) =>
+          logger.error("[GetCompleteDetailsService][getCompleteSignUpDetails] - Failure creating complete details model")
+          Left(GetCompleteDetailsFailure)
+        case Success(completeDetails) => Right(completeDetails)
       }
-
-      val foreignProperty: Option[ForeignProperty] = foreignPropertyBusiness.map { property =>
-        ForeignProperty(
-          startDate = property.startDate.get.toLocalDate,
-          accountingMethod = property.accountingMethod.get
-        )
-      }
-
-      CompleteDetails(
-        incomeSources = IncomeSources(soleTraderBusinesses, ukProperty, foreignProperty),
-        taxYear = selectedTaxYear.get.accountingYear
-      )
-    } match {
-      case Failure(_) =>
-        logger.error("[GetCompleteDetailsService][getCompleteSignUpDetails] - Failure creating complete details model")
-        Left(GetCompleteDetailsFailure)
-      case Success(completeDetails) => Right(completeDetails)
+    } else {
+      logger.error("[GetCompleteDetailsService][getCompleteSignUpDetails] - All income sources not confirmed, failure creating model")
+      Left(GetCompleteDetailsFailure)
     }
   }
-
 }
 
 object GetCompleteDetailsService {

@@ -16,14 +16,14 @@
 
 package controllers.agent.tasklist.overseasproperty
 
-import auth.agent.AuthenticatedController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.AgentStreamline
-import controllers.utils.ReferenceRetrieval
+import config.featureswitch.FeatureSwitching
+import controllers.SignUpBaseController
+import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import models.common.OverseasPropertyModel
 import play.api.mvc._
-import services.agent.ClientDetailsRetrieval
-import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import views.html.agent.tasklist.overseasproperty.OverseasPropertyCheckYourAnswers
 
@@ -31,55 +31,57 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class OverseasPropertyCheckYourAnswersController @Inject()(overseasPropertyCheckYourAnswersView: OverseasPropertyCheckYourAnswers,
+class OverseasPropertyCheckYourAnswersController @Inject()(identify: IdentifierAction,
+                                                           journeyRefiner: ConfirmedClientJourneyRefiner,
                                                            subscriptionDetailsService: SubscriptionDetailsService,
-                                                           clientDetailsRetrieval: ClientDetailsRetrieval,
-                                                           referenceRetrieval: ReferenceRetrieval)
-                                                          (val auditingService: AuditingService,
-                                                           val authService: AuthService,
+                                                           view: OverseasPropertyCheckYourAnswers,
                                                            val appConfig: AppConfig)
-                                                          (implicit val ec: ExecutionContext,
-                                                           mcc: MessagesControllerComponents) extends AuthenticatedController {
+                                                          (implicit cc: MessagesControllerComponents, ec: ExecutionContext) extends SignUpBaseController
+  with FeatureSwitching {
 
-  def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
-      referenceRetrieval.getAgentReference flatMap { reference =>
-        withOverseasProperty(reference) { property =>
-          clientDetailsRetrieval.getClientDetails map { clientDetails =>
-            Ok(overseasPropertyCheckYourAnswersView(
-              viewModel = property,
-              routes.OverseasPropertyCheckYourAnswersController.submit(),
-              backUrl(isEditMode),
-              clientDetails = clientDetails
-            ))
-          }
-        }
-      }
+  def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
+    withOverseasProperty(request.reference) { overseasProperty =>
+      Future.successful(Ok(view(
+        viewModel = overseasProperty,
+        postAction = routes.OverseasPropertyCheckYourAnswersController.submit(isGlobalEdit),
+        isGlobalEdit = isGlobalEdit,
+        backUrl = backUrl(isEditMode, isGlobalEdit, overseasProperty.confirmed),
+        clientDetails = request.clientDetails
+      )))
+    }
   }
 
-  def submit(): Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
-      referenceRetrieval.getAgentReference flatMap { reference =>
-        withOverseasProperty(reference) { property =>
-          if (property.accountingMethod.isDefined && property.startDate.isDefined) {
-            subscriptionDetailsService.saveOverseasProperty(reference, property.copy(confirmed = true)) map {
-              case Right(_) => Redirect(continueLocation)
-              case Left(_) => throw new InternalServerException("[OverseasPropertyCheckYourAnswersController][submit] - Could not confirm property details")
+  def submit(isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
+    withOverseasProperty(request.reference) { overseasProperty =>
+      if (overseasProperty.accountingMethod.isDefined && overseasProperty.startDate.isDefined) {
+        subscriptionDetailsService.saveOverseasProperty(request.reference, overseasProperty.copy(confirmed = true)) map {
+          case Right(_) =>
+            if (isGlobalEdit) {
+              Redirect(controllers.agent.routes.GlobalCheckYourAnswersController.show)
+            } else {
+              Redirect(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
             }
-          } else {
-            Future.successful(Redirect(continueLocation))
-          }
+          case Left(_) => throw new InternalServerException("[OverseasPropertyCheckYourAnswersController][submit] - Could not confirm overseas property")
         }
+      } else {
+        Future.successful(Redirect(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show))
       }
+    }
   }
 
-  def continueLocation: Call = {
-    controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show
+  private def withOverseasProperty(reference: String)(f: OverseasPropertyModel => Future[Result])(implicit hc: HeaderCarrier): Future[Result] = {
+    subscriptionDetailsService.fetchOverseasProperty(reference) flatMap { maybeProperty =>
+      f(maybeProperty.getOrElse(
+        throw new InternalServerException("[OverseasPropertyCheckYourAnswersController] - Could not retrieve overseas property details")
+      ))
+    }
   }
 
-  def backUrl(isEditMode: Boolean): String = {
-    if (isEditMode) {
-      continueLocation.url
+  private def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean, confirmed: Boolean): String = {
+    if (isGlobalEdit && confirmed) {
+      controllers.agent.routes.GlobalCheckYourAnswersController.show.url
+    } else if (isEditMode || isGlobalEdit) {
+      controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
     } else if (isEnabled(AgentStreamline)) {
       routes.IncomeSourcesOverseasPropertyController.show().url
     } else {
@@ -87,12 +89,4 @@ class OverseasPropertyCheckYourAnswersController @Inject()(overseasPropertyCheck
     }
   }
 
-  private def withOverseasProperty(reference: String)(f: OverseasPropertyModel => Future[Result])(implicit hc: HeaderCarrier) = {
-    subscriptionDetailsService.fetchOverseasProperty(reference).flatMap { maybeProperty =>
-      val property = maybeProperty.getOrElse(
-        throw new InternalServerException("[OverseasPropertyCheckYourAnswersController] - Could not retrieve property details")
-      )
-      f(property)
-    }
-  }
 }

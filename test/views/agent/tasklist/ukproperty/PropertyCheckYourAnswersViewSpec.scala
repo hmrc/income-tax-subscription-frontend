@@ -16,6 +16,7 @@
 
 package views.agent.tasklist.ukproperty
 
+import config.featureswitch.FeatureSwitch.AgentStreamline
 import models.common.PropertyModel
 import models.{Accruals, Cash, DateModel}
 import org.jsoup.Jsoup
@@ -25,6 +26,11 @@ import utilities.ViewSpec
 import views.html.agent.tasklist.ukproperty.PropertyCheckYourAnswers
 
 class PropertyCheckYourAnswersViewSpec extends ViewSpec {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(AgentStreamline)
+  }
 
   private val propertyCheckYourAnswersView = app.injector.instanceOf[PropertyCheckYourAnswers]
 
@@ -47,10 +53,11 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
   "PropertyCheckYourAnswers" must {
     "have the correct template" in new TemplateViewTest(
       view = propertyCheckYourAnswersView(
-        completeCashProperty,
-        testCall,
-        testBackUrl,
-        ClientDetails("", "")
+        viewModel = completeCashProperty,
+        postAction = testCall,
+        isGlobalEdit = false,
+        backUrl = testBackUrl,
+        clientDetails = ClientDetails("", "")
       ),
       title = PropertyCheckYourAnswers.title,
       isAgent = true,
@@ -147,6 +154,65 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
           )
         ))
       }
+
+      "when the agent streamline feature switch is enabled" when {
+        "not in edit mode" in {
+          enable(AgentStreamline)
+
+          document(completeCashProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+            SummaryListRowValues(
+              key = PropertyCheckYourAnswers.startDateQuestion,
+              value = Some("8 November 2021"),
+              actions = Seq(
+                SummaryListActionValues(
+                  href = controllers.agent.tasklist.ukproperty.routes.PropertyIncomeSourcesController.show(editMode = true).url,
+                  text = s"${PropertyCheckYourAnswers.change} ${PropertyCheckYourAnswers.startDateQuestion}",
+                  visuallyHidden = PropertyCheckYourAnswers.startDateQuestion
+                )
+              )
+            ),
+            SummaryListRowValues(
+              key = PropertyCheckYourAnswers.accountMethodQuestion,
+              value = Some("Cash basis accounting"),
+              actions = Seq(
+                SummaryListActionValues(
+                  href = controllers.agent.tasklist.ukproperty.routes.PropertyIncomeSourcesController.show(editMode = true).url,
+                  text = s"${PropertyCheckYourAnswers.change} ${PropertyCheckYourAnswers.accountMethodQuestion}",
+                  visuallyHidden = PropertyCheckYourAnswers.accountMethodQuestion
+                )
+              )
+            )
+          ))
+        }
+        "in global edit mode" in {
+          enable(AgentStreamline)
+
+          document(completeCashProperty, isGlobalEdit = true).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+            SummaryListRowValues(
+              key = PropertyCheckYourAnswers.startDateQuestion,
+              value = Some("8 November 2021"),
+              actions = Seq(
+                SummaryListActionValues(
+                  href = controllers.agent.tasklist.ukproperty.routes.PropertyIncomeSourcesController.show(editMode = true, isGlobalEdit = true).url,
+                  text = s"${PropertyCheckYourAnswers.change} ${PropertyCheckYourAnswers.startDateQuestion}",
+                  visuallyHidden = PropertyCheckYourAnswers.startDateQuestion
+                )
+              )
+            ),
+            SummaryListRowValues(
+              key = PropertyCheckYourAnswers.accountMethodQuestion,
+              value = Some("Cash basis accounting"),
+              actions = Seq(
+                SummaryListActionValues(
+                  href = controllers.agent.tasklist.ukproperty.routes.PropertyIncomeSourcesController.show(editMode = true, isGlobalEdit = true).url,
+                  text = s"${PropertyCheckYourAnswers.change} ${PropertyCheckYourAnswers.accountMethodQuestion}",
+                  visuallyHidden = PropertyCheckYourAnswers.accountMethodQuestion
+                )
+              )
+            )
+          ))
+        }
+      }
     }
 
     "have a form" which {
@@ -170,13 +236,14 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
 
   }
 
-  private def page(viewModel: PropertyModel) = propertyCheckYourAnswersView(
-    viewModel,
-    postAction = controllers.agent.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.submit(),
+  private def page(viewModel: PropertyModel, isGlobalEdit: Boolean = false) = propertyCheckYourAnswersView(
+    viewModel = viewModel,
+    postAction = controllers.agent.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.submit(isGlobalEdit = isGlobalEdit),
+    isGlobalEdit = isGlobalEdit,
     backUrl = "test-back-url",
-    ClientDetails("FirstName LastName", "ZZ111111Z")
+    clientDetails = ClientDetails("FirstName LastName", "ZZ111111Z")
   )
 
-  private def document(viewModel: PropertyModel = completeCashProperty) = Jsoup.parse(page(viewModel).body)
+  private def document(viewModel: PropertyModel = completeCashProperty, isGlobalEdit: Boolean = false) = Jsoup.parse(page(viewModel, isGlobalEdit).body)
 }
 

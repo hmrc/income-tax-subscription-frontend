@@ -16,11 +16,11 @@
 
 package utilities
 
-import java.time.LocalDate
-
-import javax.inject.{Inject, Singleton}
 import play.api.i18n.Messages
 import uk.gov.hmrc.play.language.LanguageUtils
+
+import java.time.LocalDate
+import javax.inject.{Inject, Singleton}
 
 
 @Singleton

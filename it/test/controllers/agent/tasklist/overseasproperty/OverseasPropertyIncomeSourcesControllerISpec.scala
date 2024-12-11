@@ -18,11 +18,11 @@ package controllers.agent.tasklist.overseasproperty
 
 import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
-import helpers.IntegrationTestConstants.AgentURI
+import helpers.IntegrationTestConstants.testUtr
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
-import models.{Cash, DateModel}
 import models.common.OverseasPropertyModel
+import models.{Cash, DateModel}
 import play.api.http.Status.{BAD_REQUEST, NO_CONTENT, OK, SEE_OTHER}
 import play.api.libs.json.{JsString, Json}
 import utilities.SubscriptionDataKeys.OverseasProperty
@@ -38,6 +38,7 @@ class OverseasPropertyIncomeSourcesControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
         When("GET /business/overseas-property-income-sources is called")
         val res = IncomeTaxSubscriptionFrontend.overseasPropertyIncomeSources()
@@ -57,6 +58,7 @@ class OverseasPropertyIncomeSourcesControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(OverseasPropertyModel(startDate = Some(DateModel("10", "10", "2020")))))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
         When("GET /business/overseas-property-income-sources is called")
         val res = IncomeTaxSubscriptionFrontend.overseasPropertyIncomeSources()
@@ -76,6 +78,7 @@ class OverseasPropertyIncomeSourcesControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(OverseasPropertyModel(accountingMethod = Some(Cash))))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
         When("GET /business/overseas-property-income-sources is called")
         val res = IncomeTaxSubscriptionFrontend.overseasPropertyIncomeSources()
@@ -98,6 +101,7 @@ class OverseasPropertyIncomeSourcesControllerISpec extends ComponentSpecBase {
           accountingMethod = Some(Cash)
         )))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
         When("GET /business/overseas-property-income-sources is called")
         val res = IncomeTaxSubscriptionFrontend.overseasPropertyIncomeSources()
@@ -119,6 +123,7 @@ class OverseasPropertyIncomeSourcesControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
         When("POST /business/income-sources-property is called")
         val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyIncomeSources(isEditMode = false, startDate = None, accountingMethod = None)
@@ -135,6 +140,7 @@ class OverseasPropertyIncomeSourcesControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
         When("POST /business/overseas-property-income-sources is called")
         val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyIncomeSources(
@@ -155,6 +161,7 @@ class OverseasPropertyIncomeSourcesControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
         When("POST /business/overseas-property-income-sources is called")
         val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyIncomeSources(
@@ -177,7 +184,8 @@ class OverseasPropertyIncomeSourcesControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(OverseasPropertyModel(Some(Cash), Some(DateModel("10" ,"10" ,"2020"))))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(OverseasPropertyModel(Some(Cash), Some(DateModel("10", "10", "2020"))))
         IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
         When("POST /business/overseas-property-income-sources is called")

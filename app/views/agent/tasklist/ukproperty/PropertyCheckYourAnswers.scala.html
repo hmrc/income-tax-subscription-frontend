@@ -33,6 +33,7 @@
 @(
         viewModel: PropertyModel,
         postAction: Call,
+        isGlobalEdit: Boolean,
         backUrl: String,
         clientDetails: ClientDetails
 )(implicit request: Request[_], messages: Messages)
@@ -70,7 +71,7 @@
                         ActionItem(
                             href =
                                 if(featureSwitching.isEnabled(AgentStreamline)) {
-                                    controllers.agent.tasklist.ukproperty.routes.PropertyIncomeSourcesController.show(editMode = true).url
+                                    controllers.agent.tasklist.ukproperty.routes.PropertyIncomeSourcesController.show(editMode = true, isGlobalEdit = isGlobalEdit).url
                                 } else {
                                     controllers.agent.tasklist.ukproperty.routes.PropertyStartDateController.show(editMode = true).url
                                 },
@@ -88,7 +89,7 @@
                         ActionItem(
                             href =
                                 if(featureSwitching.isEnabled(AgentStreamline)) {
-                                    controllers.agent.tasklist.ukproperty.routes.PropertyIncomeSourcesController.show(editMode = true).url
+                                    controllers.agent.tasklist.ukproperty.routes.PropertyIncomeSourcesController.show(editMode = true, isGlobalEdit = isGlobalEdit).url
                                 } else {
                                     controllers.agent.tasklist.ukproperty.routes.PropertyAccountingMethodController.show(editMode = true).url
                                 },

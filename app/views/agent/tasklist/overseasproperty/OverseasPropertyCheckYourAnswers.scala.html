@@ -33,6 +33,7 @@
 @(
         viewModel: OverseasPropertyModel,
         postAction: Call,
+        isGlobalEdit: Boolean,
         backUrl: String,
         clientDetails: ClientDetails
 )(implicit request: Request[_], messages: Messages)
@@ -70,7 +71,7 @@
                         ActionItem(
                             href =
                                 if(featureSwitching.isEnabled(AgentStreamline)) {
-                                    controllers.agent.tasklist.overseasproperty.routes.IncomeSourcesOverseasPropertyController.show(editMode = true).url
+                                    controllers.agent.tasklist.overseasproperty.routes.IncomeSourcesOverseasPropertyController.show(editMode = true, isGlobalEdit = isGlobalEdit).url
                                 } else {
                                     controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show(editMode = true).url
                                 },
@@ -88,7 +89,7 @@
                         ActionItem(
                             href =
                                 if(featureSwitching.isEnabled(AgentStreamline)) {
-                                    controllers.agent.tasklist.overseasproperty.routes.IncomeSourcesOverseasPropertyController.show(editMode = true).url
+                                    controllers.agent.tasklist.overseasproperty.routes.IncomeSourcesOverseasPropertyController.show(editMode = true, isGlobalEdit = isGlobalEdit).url
                                 } else {
                                     controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyAccountingMethodController.show(editMode = true).url
                                 },

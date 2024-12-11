@@ -16,163 +16,230 @@
 
 package controllers.agent.tasklist.ukproperty
 
-import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
-import controllers.agent.AgentControllerBaseSpec
+import connectors.httpparser.PostSubscriptionDetailsHttpParser.{PostSubscriptionDetailsSuccessResponse, UnexpectedStatusFailure}
+import controllers.ControllerSpec
+import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}
 import forms.agent.UkPropertyIncomeSourcesForm
 import models.common.PropertyModel
-import models.{AccountingMethod, Cash, DateModel}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import play.api.http.Status
-import play.api.mvc.{Action, AnyContent, Result}
-import play.api.test.Helpers.{POST, await, defaultAwaitTimeout, redirectLocation, status}
-import play.twirl.api.HtmlFormat
-import services.mocks.{MockAuditingService, MockClientDetailsRetrieval, MockReferenceRetrieval, MockSubscriptionDetailsService}
-import views.html.agent.tasklist.ukproperty.PropertyIncomeSources
+import models.{Cash, DateModel}
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
+import play.api.mvc.Result
+import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, status}
+import services.mocks.MockSubscriptionDetailsService
+import uk.gov.hmrc.http.InternalServerException
+import utilities.ImplicitDateFormatter
+import views.agent.tasklist.ukproperty.mocks.MockPropertyIncomeSources
 
 import scala.concurrent.Future
 
-class PropertyIncomeSourcesControllerSpec extends AgentControllerBaseSpec
+class PropertyIncomeSourcesControllerSpec extends ControllerSpec
+  with MockIdentifierAction
+  with MockConfirmedClientJourneyRefiner
   with MockSubscriptionDetailsService
-  with MockAuditingService
-  with MockReferenceRetrieval
-  with MockClientDetailsRetrieval {
+  with MockPropertyIncomeSources
+  with GuiceOneAppPerSuite {
 
-  override val controllerName: String = "PropertyIncomeSources"
-  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
+  //TODO: Figure out a way to remove the guice app
 
-  private def withController(testCode: PropertyIncomeSourcesController => Any): Unit = {
-    val propertyIncomeSourcesView = mock[PropertyIncomeSources]
-
-    when(propertyIncomeSourcesView.apply(any(), any(), any(), any(), any())(any(), any()))
-      .thenReturn(HtmlFormat.empty)
-
-    val controller = new PropertyIncomeSourcesController(
-      propertyIncomeSourcesView,
-      mockReferenceRetrieval,
-      mockClientDetailsRetrieval,
-      mockSubscriptionDetailsService,
-    )(
-      mockAuditingService,
-      mockAuthService,
-      appConfig,
-      mockLanguageUtils
-    )
-
-    testCode(controller)
-  }
-
-  "show" when {
-    "there is no stored data" should {
-      "display the property income sources view with empty form and return OK (200)" in withController { controller =>
+  "show" should {
+    "return OK and display the page" when {
+      "there is no stored property data" in {
         mockFetchProperty(None)
-
-        val result = await(controller.show(isEditMode = false)(subscriptionRequestWithName))
-
-        status(result) must be(Status.OK)
-      }
-    }
-
-    "there is stored start date only" should {
-      "display the property income sources view with start date pre-filled and return OK (200)" in withController { controller =>
-        mockFetchProperty(Some(PropertyModel(startDate = Some(DateModel("10", "10", "2020")))))
-
-        val result = await(controller.show(isEditMode = false)(subscriptionRequestWithName))
-
-        status(result) must be(Status.OK)
-      }
-    }
-
-    "there is stored accounting method only" should {
-      "display the property income sources view with accounting method pre-filled and return OK (200)" in withController { controller =>
-        mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash))))
-
-        val result = await(controller.show(isEditMode = false)(subscriptionRequestWithName))
-
-        status(result) must be(Status.OK)
-      }
-    }
-
-    "there is full data stored" should {
-      "display the property income sources view with full data pre-filled and return OK (200)" in withController { controller =>
-        mockFetchProperty(Some(PropertyModel(
-          startDate = Some(DateModel("10", "10", "2020")),
-          accountingMethod = Some(Cash)
-        )))
-
-        val result = await(controller.show(isEditMode = false)(subscriptionRequestWithName))
-
-        status(result) must be(Status.OK)
-      }
-    }
-  }
-
-  "submit" should withController { controller =>
-
-    def callSubmit(isEditMode: Boolean, maybeStartDate: Option[DateModel], maybeAccountingMethod: Option[AccountingMethod]): Future[Result] =
-      controller.submit(isEditMode = isEditMode)(
-        subscriptionRequestWithName.withFormUrlEncodedBody(UkPropertyIncomeSourcesForm.createPropertyMapData(maybeStartDate, maybeAccountingMethod).toSeq: _*)
-          .withHeaders("Content-Type" -> "application/x-www-form-urlencoded")
-          .withMethod(POST)
-      )
-
-    "return bad request (400)" when {
-      "nothing is submitted" in {
-        val badRequest = callSubmit(maybeStartDate = None, maybeAccountingMethod = None, isEditMode = false)
-
-        status(badRequest) must be(Status.BAD_REQUEST)
-
-        await(badRequest)
-      }
-
-      "only start date is submitted" in {
-        val badRequest = callSubmit(maybeStartDate = Some(DateModel("10", "10", "2020")), maybeAccountingMethod = None, isEditMode = false)
-
-        status(badRequest) must be(Status.BAD_REQUEST)
-
-        await(badRequest)
-      }
-
-      "only accounting method is submitted" in {
-        val badRequest = callSubmit(maybeStartDate = None, maybeAccountingMethod = Some(Cash), isEditMode = false)
-
-        status(badRequest) must be(Status.BAD_REQUEST)
-
-        await(badRequest)
-      }
-    }
-
-    "redirect to check your answers page" when {
-      "full data is submitted" in {
-        mockSaveProperty(PropertyModel(Some(Cash), Some(DateModel("10", "10", "2020"))))(Right(PostSubscriptionDetailsSuccessResponse))
-
-        val goodRequest = callSubmit(isEditMode = false,
-          maybeStartDate = Some(DateModel("10", "10", "2020")), maybeAccountingMethod = Some(Cash),
+        mockPropertyIncomeSources(
+          postAction = routes.PropertyIncomeSourcesController.submit(),
+          backUrl = controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url,
+          clientDetails = clientDetails
         )
 
-        status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest) mustBe Some(routes.PropertyCheckYourAnswersController.show().url)
+        val result: Future[Result] = TestPropertyIncomeSourcesController.show(isEditMode = false, isGlobalEdit = false)(request)
 
-        await(goodRequest)
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+      }
+      "there is only a saved start date" in {
+        mockFetchProperty(Some(startDateOnlyProperty))
+        mockPropertyIncomeSources(
+          routes.PropertyIncomeSourcesController.submit(),
+          backUrl = controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url,
+          clientDetails = clientDetails
+        )
+
+        val result: Future[Result] = TestPropertyIncomeSourcesController.show(isEditMode = false, isGlobalEdit = false)(request)
+
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+      }
+      "there is only a saved accounting method" in {
+        mockFetchProperty(Some(accountingMethodOnlyProperty))
+        mockPropertyIncomeSources(
+          routes.PropertyIncomeSourcesController.submit(),
+          backUrl = controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url,
+          clientDetails = clientDetails
+        )
+
+        val result: Future[Result] = TestPropertyIncomeSourcesController.show(isEditMode = false, isGlobalEdit = false)(request)
+
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+      }
+      "there is a complete property saved" in {
+        mockFetchProperty(Some(fullProperty))
+        mockPropertyIncomeSources(
+          routes.PropertyIncomeSourcesController.submit(),
+          backUrl = controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url,
+          clientDetails = clientDetails
+        )
+
+        val result: Future[Result] = TestPropertyIncomeSourcesController.show(isEditMode = false, isGlobalEdit = false)(request)
+
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+      }
+      "the page is in edit mode" in {
+        mockFetchProperty(Some(fullProperty))
+        mockPropertyIncomeSources(
+          routes.PropertyIncomeSourcesController.submit(editMode = true),
+          backUrl = controllers.agent.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url,
+          clientDetails = clientDetails
+        )
+
+        val result: Future[Result] = TestPropertyIncomeSourcesController.show(isEditMode = true, isGlobalEdit = false)(request)
+
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+      }
+      "the page is in global edit mode" in {
+        mockFetchProperty(Some(fullProperty))
+        mockPropertyIncomeSources(
+          routes.PropertyIncomeSourcesController.submit(isGlobalEdit = true),
+          backUrl = controllers.agent.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(isGlobalEdit = true).url,
+          clientDetails = clientDetails
+        )
+
+        val result: Future[Result] = TestPropertyIncomeSourcesController.show(isEditMode = false, isGlobalEdit = true)(request)
+
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
       }
     }
   }
 
-  "The back url" when {
-    "in edit mode" should {
-      "redirect to the agent uk property check your answers" in withController { controller =>
-        controller.backUrl(
-          isEditMode = true
-        ) mustBe routes.PropertyCheckYourAnswersController.show(editMode = true).url
+  "submit" when {
+    "an invalid input was submitted" should {
+      "return a bad request with the page content" when {
+        "not in edit mode" in {
+          mockPropertyIncomeSources(
+            routes.PropertyIncomeSourcesController.submit(),
+            backUrl = controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url,
+            clientDetails = clientDetails
+          )
+
+          val result: Future[Result] = TestPropertyIncomeSourcesController.submit(isEditMode = false, isGlobalEdit = false)(
+            request.withMethod("POST").withHeaders("Content-Type" -> "application/x-www-form-urlencoded")
+          )
+
+          status(result) mustBe BAD_REQUEST
+          contentType(result) mustBe Some(HTML)
+        }
+        "in edit mode" in {
+          mockPropertyIncomeSources(
+            routes.PropertyIncomeSourcesController.submit(editMode = true),
+            backUrl = controllers.agent.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url,
+            clientDetails = clientDetails
+          )
+
+          val result: Future[Result] = TestPropertyIncomeSourcesController.submit(isEditMode = true, isGlobalEdit = false)(
+            request.withMethod("POST").withHeaders("Content-Type" -> "application/x-www-form-urlencoded")
+          )
+
+          status(result) mustBe BAD_REQUEST
+          contentType(result) mustBe Some(HTML)
+        }
+        "in global edit mode" in {
+          mockPropertyIncomeSources(
+            routes.PropertyIncomeSourcesController.submit(isGlobalEdit = true),
+            backUrl = controllers.agent.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(isGlobalEdit = true).url,
+            clientDetails = clientDetails
+          )
+
+          val result: Future[Result] = TestPropertyIncomeSourcesController.submit(isEditMode = false, isGlobalEdit = true)(
+            request.withMethod("POST").withHeaders("Content-Type" -> "application/x-www-form-urlencoded")
+          )
+
+          status(result) mustBe BAD_REQUEST
+          contentType(result) mustBe Some(HTML)
+        }
       }
-
     }
+    "complete and valid input is submitted" should {
+      "redirect to the property check your answers and save the property" when {
+        "not in edit mode" in {
+          mockSaveProperty(fullProperty)(Right(PostSubscriptionDetailsSuccessResponse))
 
-    "not in edit mode" should {
-      "redirect back to client income sources page" in withController { controller =>
-        controller.backUrl(isEditMode = false) mustBe
-          controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
+          val result: Future[Result] = TestPropertyIncomeSourcesController.submit(isEditMode = false, isGlobalEdit = false)(
+            request.withMethod("POST").withHeaders("Content-Type" -> "application/x-www-form-urlencoded").withFormUrlEncodedBody(
+              UkPropertyIncomeSourcesForm.createPropertyMapData(fullProperty.startDate, fullProperty.accountingMethod).toSeq: _*
+            )
+          )
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(routes.PropertyCheckYourAnswersController.show().url)
+        }
+        "in edit mode" in {
+          mockSaveProperty(fullProperty)(Right(PostSubscriptionDetailsSuccessResponse))
+
+          val result: Future[Result] = TestPropertyIncomeSourcesController.submit(isEditMode = true, isGlobalEdit = false)(
+            request.withMethod("POST").withHeaders("Content-Type" -> "application/x-www-form-urlencoded").withFormUrlEncodedBody(
+              UkPropertyIncomeSourcesForm.createPropertyMapData(fullProperty.startDate, fullProperty.accountingMethod).toSeq: _*
+            )
+          )
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(routes.PropertyCheckYourAnswersController.show(editMode = true).url)
+        }
+        "in global edit mode" in {
+          mockSaveProperty(fullProperty)(Right(PostSubscriptionDetailsSuccessResponse))
+
+          val result: Future[Result] = TestPropertyIncomeSourcesController.submit(isEditMode = false, isGlobalEdit = true)(
+            request.withMethod("POST").withHeaders("Content-Type" -> "application/x-www-form-urlencoded").withFormUrlEncodedBody(
+              UkPropertyIncomeSourcesForm.createPropertyMapData(fullProperty.startDate, fullProperty.accountingMethod).toSeq: _*
+            )
+          )
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(routes.PropertyCheckYourAnswersController.show(isGlobalEdit = true).url)
+        }
+      }
+      "throw an internal server exception" when {
+        "there was a problem saving the property business" in {
+          mockSaveProperty(fullProperty)(Left(UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
+
+          val result: Future[Result] = TestPropertyIncomeSourcesController.submit(isEditMode = false, isGlobalEdit = false)(
+            request.withMethod("POST").withHeaders("Content-Type" -> "application/x-www-form-urlencoded").withFormUrlEncodedBody(
+              UkPropertyIncomeSourcesForm.createPropertyMapData(fullProperty.startDate, fullProperty.accountingMethod).toSeq: _*
+            )
+          )
+
+          intercept[InternalServerException](await(result))
+            .message mustBe "[PropertyIncomeSourcesController][submit] - Could not save property"
+        }
       }
     }
   }
+
+  lazy val startDateOnlyProperty: PropertyModel = PropertyModel(startDate = Some(DateModel("1", "1", "1980")))
+  lazy val accountingMethodOnlyProperty: PropertyModel = PropertyModel(accountingMethod = Some(Cash))
+  lazy val fullProperty: PropertyModel = PropertyModel(startDate = Some(DateModel("1", "1", "1980")), accountingMethod = Some(Cash))
+
+  val implicitDateFormatter: ImplicitDateFormatter = app.injector.instanceOf[ImplicitDateFormatter]
+
+  object TestPropertyIncomeSourcesController extends PropertyIncomeSourcesController(
+    fakeIdentifierAction,
+    implicitDateFormatter,
+    fakeConfirmedClientJourneyRefiner,
+    mockSubscriptionDetailsService,
+    mockView
+  )
+
 }
