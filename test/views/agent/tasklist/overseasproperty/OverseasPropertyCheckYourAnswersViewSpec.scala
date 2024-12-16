@@ -16,6 +16,7 @@
 
 package views.agent.tasklist.overseasproperty
 
+import config.featureswitch.FeatureSwitch.AgentStreamline
 import models.common.OverseasPropertyModel
 import models.{Accruals, Cash, DateModel}
 import org.jsoup.Jsoup
@@ -25,6 +26,11 @@ import utilities.ViewSpec
 import views.html.agent.tasklist.overseasproperty.OverseasPropertyCheckYourAnswers
 
 class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(AgentStreamline)
+  }
 
   private val overseasPropertyCheckYourAnswersView = app.injector.instanceOf[OverseasPropertyCheckYourAnswers]
 
@@ -60,10 +66,11 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
   "OverseasPropertyCheckYourAnswers" must {
     "use the correct page template" in new TemplateViewTest(
       view = overseasPropertyCheckYourAnswersView(
-        completeCashProperty,
-        controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.submit(),
-        testBackUrl,
-        ClientDetails("FirstName LastName", "ZZ111111Z")
+        viewModel = completeCashProperty,
+        postAction = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.submit(),
+        isGlobalEdit = false,
+        backUrl = testBackUrl,
+        clientDetails = ClientDetails("FirstName LastName", "ZZ111111Z")
       ),
       title = OverseasPropertyCheckYourAnswers.title,
       isAgent = true,
@@ -159,6 +166,65 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
           )
         ))
       }
+
+      "when the agent streamline feature switch is enabled" when {
+        "not in edit mode" in {
+          enable(AgentStreamline)
+
+          document(completeCashProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+            SummaryListRowValues(
+              key = OverseasPropertyCheckYourAnswers.startDate,
+              value = Some("8 November 2021"),
+              actions = Seq(
+                SummaryListActionValues(
+                  href = controllers.agent.tasklist.overseasproperty.routes.IncomeSourcesOverseasPropertyController.show(editMode = true).url,
+                  text = s"${OverseasPropertyCheckYourAnswers.change} ${OverseasPropertyCheckYourAnswers.startDate}",
+                  visuallyHidden = OverseasPropertyCheckYourAnswers.startDate
+                )
+              )
+            ),
+            SummaryListRowValues(
+              key = OverseasPropertyCheckYourAnswers.accountingMethod,
+              value = Some("Cash basis accounting"),
+              actions = Seq(
+                SummaryListActionValues(
+                  href = controllers.agent.tasklist.overseasproperty.routes.IncomeSourcesOverseasPropertyController.show(editMode = true).url,
+                  text = s"${OverseasPropertyCheckYourAnswers.change} ${OverseasPropertyCheckYourAnswers.accountingMethod}",
+                  visuallyHidden = OverseasPropertyCheckYourAnswers.accountingMethod
+                )
+              )
+            )
+          ))
+        }
+        "in global edit mode" in {
+          enable(AgentStreamline)
+
+          document(completeCashProperty, isGlobalEdit = true).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+            SummaryListRowValues(
+              key = OverseasPropertyCheckYourAnswers.startDate,
+              value = Some("8 November 2021"),
+              actions = Seq(
+                SummaryListActionValues(
+                  href = controllers.agent.tasklist.overseasproperty.routes.IncomeSourcesOverseasPropertyController.show(editMode = true, isGlobalEdit = true).url,
+                  text = s"${OverseasPropertyCheckYourAnswers.change} ${OverseasPropertyCheckYourAnswers.startDate}",
+                  visuallyHidden = OverseasPropertyCheckYourAnswers.startDate
+                )
+              )
+            ),
+            SummaryListRowValues(
+              key = OverseasPropertyCheckYourAnswers.accountingMethod,
+              value = Some("Cash basis accounting"),
+              actions = Seq(
+                SummaryListActionValues(
+                  href = controllers.agent.tasklist.overseasproperty.routes.IncomeSourcesOverseasPropertyController.show(editMode = true, isGlobalEdit = true).url,
+                  text = s"${OverseasPropertyCheckYourAnswers.change} ${OverseasPropertyCheckYourAnswers.accountingMethod}",
+                  visuallyHidden = OverseasPropertyCheckYourAnswers.accountingMethod
+                )
+              )
+            )
+          ))
+        }
+      }
     }
 
     "have a form" which {
@@ -181,12 +247,13 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
     }
   }
 
-  private def page(viewModel: OverseasPropertyModel) = overseasPropertyCheckYourAnswersView(
-    viewModel,
-    postAction = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.submit(),
+  private def page(viewModel: OverseasPropertyModel, isGlobalEdit: Boolean = false) = overseasPropertyCheckYourAnswersView(
+    viewModel = viewModel,
+    postAction = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.submit(isGlobalEdit = isGlobalEdit),
+    isGlobalEdit = isGlobalEdit,
     backUrl = "test-back-url",
-    ClientDetails("FirstName LastName", "ZZ111111Z")
+    clientDetails = ClientDetails("FirstName LastName", "ZZ111111Z")
   )
 
-  private def document(viewModel: OverseasPropertyModel) = Jsoup.parse(page(viewModel).body)
+  private def document(viewModel: OverseasPropertyModel, isGlobalEdit: Boolean = false) = Jsoup.parse(page(viewModel, isGlobalEdit).body)
 }

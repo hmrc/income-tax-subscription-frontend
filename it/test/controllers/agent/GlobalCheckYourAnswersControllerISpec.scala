@@ -18,6 +18,7 @@ package controllers.agent
 
 import common.Constants.ITSASessionKeys
 import config.featureswitch.FeatureSwitch
+import config.featureswitch.FeatureSwitch.PrePopulate
 import connectors.agent.httpparsers.QueryUsersHttpParser.principalUserIdKey
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, MultipleIncomeSourcesSubscriptionAPIStub, SessionDataConnectorStub, UsersGroupsSearchStub}
 import helpers.IntegrationTestConstants._
@@ -43,29 +44,100 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
     super.beforeEach()
     enable(FeatureSwitch.CheckClientRelationship)
     enable(FeatureSwitch.CheckMultiAgentRelationship)
+    disable(PrePopulate)
   }
 
-  "GET /report-quarterly/income-and-expenses/sign-up/client/final-check-your-answers" should {
-    "return SEE_OTHER to the task list page" when {
-      "there is missing data from the users subscription" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
+  "GET /report-quarterly/income-and-expenses/sign-up/client/final-check-your-answers" when {
+    "the pre-pop feature switch is enabled" should {
+      "return SEE OTHER to the your income sources page" when {
+        "there is missing data from the users subscription" in {
+          enable(PrePopulate)
 
-        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty), Some(testAccountingMethod.accountingMethod))
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
 
-        When("GET /client/final-check-your-answers is called")
-        val res = IncomeTaxSubscriptionFrontend.getAgentGlobalCheckYourAnswers()
+          IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty), Some(testAccountingMethod.accountingMethod))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
 
-        Then("Should redirect to the task list page")
-        res must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(AgentURI.taskListURI)
-        )
+          When("GET /client/final-check-your-answers is called")
+          val res = IncomeTaxSubscriptionFrontend.getAgentGlobalCheckYourAnswers()
+
+          Then("Should redirect to the task list page")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(AgentURI.yourIncomeSourcesURI)
+          )
+        }
+        "there are unconfirmed income sources in the users subscription" in {
+          enable(PrePopulate)
+
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+
+          IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty), Some(testAccountingMethod.accountingMethod))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel.copy(confirmed = false)))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
+
+          When("GET /client/final-check-your-answers is called")
+          val res = IncomeTaxSubscriptionFrontend.getAgentGlobalCheckYourAnswers()
+
+          Then("Should redirect to the task list page")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(AgentURI.yourIncomeSourcesURI)
+          )
+        }
+      }
+    }
+    "the pre-pop feature switch is disabled" should {
+      "return SEE_OTHER to the task list page" when {
+        "there is missing data from the users subscription" in {
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+
+          IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty), Some(testAccountingMethod.accountingMethod))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
+
+          When("GET /client/final-check-your-answers is called")
+          val res = IncomeTaxSubscriptionFrontend.getAgentGlobalCheckYourAnswers()
+
+          Then("Should redirect to the task list page")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(AgentURI.taskListURI)
+          )
+        }
+        "there are unconfirmed income sources in the users subscription" in {
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+
+          IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty), Some(testAccountingMethod.accountingMethod))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel.copy(confirmed = false)))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
+
+          When("GET /client/final-check-your-answers is called")
+          val res = IncomeTaxSubscriptionFrontend.getAgentGlobalCheckYourAnswers()
+
+          Then("Should redirect to the task list page")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(AgentURI.taskListURI)
+          )
+        }
       }
     }
     "return OK" when {

@@ -57,12 +57,14 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
 
   val ukProperty: PropertyModel = PropertyModel(
     accountingMethod = Some(Cash),
-    startDate = Some(DateModel("2", "1", "1980"))
+    startDate = Some(DateModel("2", "1", "1980")),
+    confirmed = true
   )
 
   val foreignProperty: OverseasPropertyModel = OverseasPropertyModel(
     accountingMethod = Some(Cash),
-    startDate = Some(DateModel("3", "1", "1980"))
+    startDate = Some(DateModel("3", "1", "1980")),
+    confirmed = true
   )
 
   val accountingYear: AccountingYearModel = AccountingYearModel(Current)
@@ -96,7 +98,7 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
 
   "getCompleteSignUpDetails" must {
     "return a complete details model" when {
-      "all fetches were successful and are full data sets" in new Setup {
+      "all fetches were successful and are full + confirmed data sets" in new Setup {
         mockFetchAllSelfEmployments(Seq(selfEmployment), Some(selfEmploymentsAccountingMethod.accountingMethod))
         mockFetchProperty(Some(ukProperty))
         mockFetchOverseasProperty(Some(foreignProperty))
@@ -113,6 +115,52 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
     }
 
     "return a GetCompleteDetailsFailure" when {
+
+      "all income sources are complete" when {
+        "self employment hasn't been confirmed" in new Setup {
+          mockFetchAllSelfEmployments(Seq(selfEmployment.copy(confirmed = false)), Some(selfEmploymentsAccountingMethod.accountingMethod))
+          mockFetchProperty(Some(ukProperty))
+          mockFetchOverseasProperty(Some(foreignProperty))
+          mockGetMandationService(Voluntary, Voluntary)
+          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+          mockFetchSelectedTaxYear(Some(accountingYear))
+
+          val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
+            service.getCompleteSignUpDetails("reference")(hc)
+          }
+
+          await(result) mustBe Left(GetCompleteDetailsFailure)
+        }
+        "uk property hasn't been confirmed" in new Setup {
+          mockFetchAllSelfEmployments(Seq(selfEmployment), Some(selfEmploymentsAccountingMethod.accountingMethod))
+          mockFetchProperty(Some(ukProperty.copy(confirmed = false)))
+          mockFetchOverseasProperty(Some(foreignProperty))
+          mockGetMandationService(Voluntary, Voluntary)
+          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+          mockFetchSelectedTaxYear(Some(accountingYear))
+
+          val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
+            service.getCompleteSignUpDetails("reference")(hc)
+          }
+
+          await(result) mustBe Left(GetCompleteDetailsFailure)
+        }
+        "foreign property hasn't been confirmed" in new Setup {
+          mockFetchAllSelfEmployments(Seq(selfEmployment), Some(selfEmploymentsAccountingMethod.accountingMethod))
+          mockFetchProperty(Some(ukProperty))
+          mockFetchOverseasProperty(Some(foreignProperty.copy(confirmed = false)))
+          mockGetMandationService(Voluntary, Voluntary)
+          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+          mockFetchSelectedTaxYear(Some(accountingYear))
+
+          val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
+            service.getCompleteSignUpDetails("reference")(hc)
+          }
+
+          await(result) mustBe Left(GetCompleteDetailsFailure)
+        }
+      }
+
       "there is no selected tax year" in new Setup {
         mockFetchAllSelfEmployments(Seq(selfEmployment), Some(selfEmploymentsAccountingMethod.accountingMethod))
         mockFetchProperty(Some(ukProperty))

@@ -16,102 +16,77 @@
 
 package controllers.agent.tasklist.overseasproperty
 
-import auth.agent.AuthenticatedController
-import config.AppConfig
-import config.featureswitch.FeatureSwitching
-import controllers.utils.ReferenceRetrieval
-import forms.agent.IncomeSourcesOverseasPropertyForm.incomeSourcesOverseasPropertyForm
-
-import javax.inject.{Inject, Singleton}
+import controllers.SignUpBaseController
+import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
+import forms.agent.IncomeSourcesOverseasPropertyForm
+import models.common.OverseasPropertyModel
 import models.{AccountingMethod, DateModel}
-import forms.agent.{AccountingMethodOverseasPropertyForm, IncomeSourcesOverseasPropertyForm, OverseasPropertyStartDateForm}
-import models.common.{OverseasPropertyModel, PropertyModel}
-import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
-
-import scala.concurrent.{ExecutionContext, Future}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
-import play.twirl.api.Html
-import services.agent.ClientDetailsRetrieval
+import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
-import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.ImplicitDateFormatter
-import utilities.SubscriptionDataKeys.Property
-import utilities.UserMatchingSessionUtil.{ClientDetails, UserMatchingSessionRequestUtil}
 import views.html.agent.tasklist.overseasproperty.IncomeSourcesOverseasProperty
 
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
+
 @Singleton
-class IncomeSourcesOverseasPropertyController @Inject()(incomeSourcesOverseasProperty: IncomeSourcesOverseasProperty,
-                                                        referenceRetrieval: ReferenceRetrieval,
-                                                        clientDetailsRetrieval: ClientDetailsRetrieval,
-                                                        subscriptionDetailsService: SubscriptionDetailsService)
-                                                       (val auditingService: AuditingService,
-                                                        val authService: AuthService,
-                                                        val appConfig: AppConfig,
-                                                        val languageUtils: LanguageUtils)
-                                                       (implicit val ec: ExecutionContext,
-                                                        mcc: MessagesControllerComponents) extends AuthenticatedController
-  with ImplicitDateFormatter with FeatureSwitching {
+class IncomeSourcesOverseasPropertyController @Inject()(identify: IdentifierAction,
+                                                        implicitDateFormatter: ImplicitDateFormatter,
+                                                        journeyRefiner: ConfirmedClientJourneyRefiner,
+                                                        subscriptionDetailsService: SubscriptionDetailsService,
+                                                        view: IncomeSourcesOverseasProperty)
+                                                       (implicit cc: MessagesControllerComponents, ec: ExecutionContext)
+  extends SignUpBaseController {
 
-  private def form(implicit request: Request[_]): Form[(DateModel, AccountingMethod)] = {
-    IncomeSourcesOverseasPropertyForm.incomeSourcesOverseasPropertyForm(_.toLongDate)
+  def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
+    subscriptionDetailsService.fetchOverseasProperty(request.reference) map { maybeOverseasProperty =>
+      val formData: Map[String, String] = IncomeSourcesOverseasPropertyForm.createOverseasPropertyMapData(
+        maybeOverseasProperty.flatMap(_.startDate),
+        maybeOverseasProperty.flatMap(_.accountingMethod)
+      )
+      val boundForm = form.bind(formData).discardingErrors
+      Ok(view(
+        incomeSourcesOverseasPropertyForm = boundForm,
+        postAction = routes.IncomeSourcesOverseasPropertyController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
+        backUrl = backUrl(isEditMode, isGlobalEdit),
+        clientDetails = request.clientDetails
+      ))
+    }
   }
 
-  def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
-      for {
-        reference <- referenceRetrieval.getAgentReference
-        maybeOverseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
-        clientDetails <- clientDetailsRetrieval.getClientDetails
-      } yield {
-        val formData: Map[String, String] = IncomeSourcesOverseasPropertyForm.createOverseasPropertyMapData(
-          maybeOverseasProperty.flatMap(_.startDate),
-          maybeOverseasProperty.flatMap(_.accountingMethod)
-        )
-        val boundForm = form.bind(formData).discardingErrors
-        Ok(view(
-          boundForm,
-          isEditMode = isEditMode, clientDetails
-        ))
-      }
-  }
-
-  def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
-      referenceRetrieval.getAgentReference flatMap { reference =>
-        form.bindFromRequest().fold(
-          formWithErrors => clientDetailsRetrieval.getClientDetails map { clientDetails =>
-            BadRequest(view(
-              formWithErrors, isEditMode, clientDetails
-            ))
-          }, {
-            case (startDate, accountingMethod) =>
-              val overseasPropertyModel = OverseasPropertyModel(accountingMethod = Some(accountingMethod), startDate = Some(startDate))
-              subscriptionDetailsService.saveOverseasProperty(reference, overseasPropertyModel) map {
-                case Right(_) => Redirect(routes.OverseasPropertyCheckYourAnswersController.show(isEditMode))
-                case Left(_) => throw new InternalServerException("[IncomeSourcesOverseasPropertyController][submit] - Could not save overseas property")
-              }
+  def submit(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
+    form.bindFromRequest().fold(
+      formWithErrors =>
+        Future.successful(BadRequest(view(
+          incomeSourcesOverseasPropertyForm = formWithErrors,
+          postAction = routes.IncomeSourcesOverseasPropertyController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
+          backUrl = backUrl(isEditMode, isGlobalEdit),
+          clientDetails = request.clientDetails
+        ))),
+      {
+        case (startDate, accountingMethod) =>
+          val overseasPropertyModel = OverseasPropertyModel(accountingMethod = Some(accountingMethod), startDate = Some(startDate))
+          subscriptionDetailsService.saveOverseasProperty(request.reference, overseasPropertyModel) map {
+            case Right(_) => Redirect(routes.OverseasPropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit))
+            case Left(_) => throw new InternalServerException("[IncomeSourcesOverseasPropertyController][submit] - Could not save overseas property")
           }
-        )
       }
-  }
-
-  private def view(overseasPropertyForm: Form[(DateModel, AccountingMethod)], isEditMode: Boolean, clientDetails: ClientDetails)
-                  (implicit request: Request[AnyContent]): Html = {
-    incomeSourcesOverseasProperty(
-      incomeSourcesOverseasPropertyForm = overseasPropertyForm,
-      postAction = routes.IncomeSourcesOverseasPropertyController.submit(isEditMode),
-      isEditMode = isEditMode,
-      backUrl = backUrl(isEditMode),
-      clientDetails = clientDetails
     )
   }
 
-  def backUrl(isEditMode: Boolean): String = {
-    if (isEditMode) {
-      routes.OverseasPropertyCheckYourAnswersController.show(isEditMode).url
+  private def form(implicit request: Request[_]): Form[(DateModel, AccountingMethod)] = {
+    import implicitDateFormatter.LongDate
+    IncomeSourcesOverseasPropertyForm.incomeSourcesOverseasPropertyForm(_.toLongDate)
+  }
+
+  private def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean): String = {
+    if (isEditMode || isGlobalEdit) {
+      routes.OverseasPropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit).url
     } else {
       controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
     }
   }
+
 }

@@ -18,7 +18,7 @@ package controllers.agent.tasklist.ukproperty
 
 import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
-import helpers.IntegrationTestConstants.AgentURI
+import helpers.IntegrationTestConstants.{AgentURI, testUtr}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import models.{Cash, DateModel}
@@ -38,6 +38,7 @@ class PropertyIncomeSourcesControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
         When("GET /business/income-sources-property is called")
         val res = IncomeTaxSubscriptionFrontend.ukPropertyIncomeSources()
@@ -57,6 +58,7 @@ class PropertyIncomeSourcesControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(PropertyModel(startDate = Some(DateModel("10", "10", "2020")))))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
         When("GET /business/income-sources-property is called")
         val res = IncomeTaxSubscriptionFrontend.ukPropertyIncomeSources()
@@ -76,6 +78,7 @@ class PropertyIncomeSourcesControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(PropertyModel(accountingMethod = Some(Cash))))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
         When("GET /business/income-sources-property is called")
         val res = IncomeTaxSubscriptionFrontend.ukPropertyIncomeSources()
@@ -98,6 +101,7 @@ class PropertyIncomeSourcesControllerISpec extends ComponentSpecBase {
           accountingMethod = Some(Cash)
         )))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
         When("GET /business/income-sources-property is called")
         val res = IncomeTaxSubscriptionFrontend.ukPropertyIncomeSources()
@@ -119,6 +123,7 @@ class PropertyIncomeSourcesControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
         When("POST /business/income-sources-property is called")
         val res = IncomeTaxSubscriptionFrontend.submitUkPropertyIncomeSources(isEditMode = false, startDate = None, accountingMethod = None)
@@ -135,6 +140,7 @@ class PropertyIncomeSourcesControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
         When("POST /business/income-sources-property is called")
         val res = IncomeTaxSubscriptionFrontend.submitUkPropertyIncomeSources(
@@ -155,6 +161,7 @@ class PropertyIncomeSourcesControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
         When("POST /business/income-sources-property is called")
         val res = IncomeTaxSubscriptionFrontend.submitUkPropertyIncomeSources(
@@ -177,6 +184,7 @@ class PropertyIncomeSourcesControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
         IncomeTaxSubscriptionConnectorStub.stubSaveProperty(PropertyModel(Some(Cash), Some(DateModel("10" ,"10" ,"2020"))))
         IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 

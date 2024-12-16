@@ -19,7 +19,7 @@ package controllers.agent.tasklist.ukproperty
 import common.Constants.ITSASessionKeys
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub.subscriptionUri
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
-import helpers.IntegrationTestConstants.{AgentURI, testNino}
+import helpers.IntegrationTestConstants.{AgentURI, testNino, testUtr}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.WiremockHelper.verifyPost
 import helpers.agent.servicemocks.AuthStub
@@ -37,6 +37,7 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
       AuthStub.stubAuthSuccess()
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(PropertyModel(accountingMethod = Some(Cash))))
       SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
       When("GET business/uk-property-check-your-answers is called")
       val res = IncomeTaxSubscriptionFrontend.getPropertyCheckYourAnswers()
@@ -56,15 +57,11 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
       "the client has answered all the questions for uk property" in {
         AuthStub.stubAuthSuccess()
         val testProperty = PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-          Property,
-          OK,
-          Json.toJson(testProperty)
-        )
-        IncomeTaxSubscriptionConnectorStub.stubSaveProperty(
-          testProperty.copy(confirmed = true)
-        )
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testProperty))
+        IncomeTaxSubscriptionConnectorStub.stubSaveProperty(testProperty.copy(confirmed = true))
         IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
         When("POST business/uk-property-check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.submitPropertyCheckYourAnswers()
@@ -80,11 +77,9 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
 
       "the client has answered partial questions for uk property" in {
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-          Property,
-          OK,
-          Json.toJson(PropertyModel(accountingMethod = Some(Cash)))
-        )
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(PropertyModel(accountingMethod = Some(Cash))))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
         When("POST business/uk-property-check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.submitPropertyCheckYourAnswers()
@@ -103,6 +98,8 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
         When("POST business/uk-property-check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.submitPropertyCheckYourAnswers()
@@ -122,6 +119,8 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
           Json.toJson(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021"))))
         )
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetailsFailure(Property)
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
         When("POST business/uk-property-check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.submitPropertyCheckYourAnswers()

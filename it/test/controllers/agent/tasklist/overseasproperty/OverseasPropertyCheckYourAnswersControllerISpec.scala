@@ -38,6 +38,7 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
       AuthStub.stubAuthSuccess()
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(OverseasPropertyModel(accountingMethod = Some(Cash))))
       SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
       When("GET business/overseas-property-check-your-answers is called")
       val res = IncomeTaxSubscriptionFrontend.getOverseasPropertyCheckYourAnswers(
@@ -71,9 +72,16 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testProperty))
           IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(expectedProperty)
           IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
           When("POST business/overseas-property-check-your-answers is called")
-          val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers()
+          val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers(
+            Map(
+              UserMatchingSessionUtil.firstName -> testFirstName,
+              UserMatchingSessionUtil.lastName -> testLastName
+            )
+          )
 
           Then("Should return a SEE_OTHER with a redirect location of the your income sources page")
           res must have(
@@ -89,8 +97,16 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
         "not save the property answers" in {
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(OverseasPropertyModel(accountingMethod = Some(Cash))))
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+
           When("POST business/overseas-property-check-your-answers is called")
-          val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers()
+          val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers(
+            Map(
+              UserMatchingSessionUtil.firstName -> testFirstName,
+              UserMatchingSessionUtil.lastName -> testLastName
+            )
+          )
 
           Then("Should return a SEE_OTHER with a redirect location of the your income sources page")
           res must have(
@@ -108,9 +124,16 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
         When("POST business/overseas-property-check-your-answers is called")
-        val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers()
+        val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers(
+            Map(
+              UserMatchingSessionUtil.firstName -> testFirstName,
+              UserMatchingSessionUtil.lastName -> testLastName
+            )
+          )
 
         Then("Should return a INTERNAL_SERVER_ERROR")
         res must have(
@@ -124,9 +147,16 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK,
           Json.toJson(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetailsFailure(OverseasProperty)
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
         When("POST business/overseas-property-check-your-answers is called")
-        val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers()
+        val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers(
+            Map(
+              UserMatchingSessionUtil.firstName -> testFirstName,
+              UserMatchingSessionUtil.lastName -> testLastName
+            )
+          )
 
         Then("Should return a INTERNAL_SERVER_ERROR")
         res must have(

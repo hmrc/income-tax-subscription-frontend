@@ -58,11 +58,10 @@ class UkPropertyIncomeSourcesViewSpec extends ViewSpec {
   val backUrl: String = testBackUrl
   val postAction: Call = testCall
 
-  class Setup(isEditMode: Boolean = false, form: Form[(DateModel, AccountingMethod)] = propertyIncomeSourcesForm) {
+  class Setup(form: Form[(DateModel, AccountingMethod)] = propertyIncomeSourcesForm) {
     val page: Html = app.injector.instanceOf[PropertyIncomeSources].apply(
       form,
       postAction,
-      isEditMode,
       backUrl,
       ClientDetails("FirstName LastName", "ZZ111111Z")
     )(FakeRequest(), implicitly)
@@ -77,7 +76,6 @@ class UkPropertyIncomeSourcesViewSpec extends ViewSpec {
         view = app.injector.instanceOf[PropertyIncomeSources].apply(
           propertyIncomeSourcesForm,
           postAction,
-          isEditMode = false,
           backUrl,
           ClientDetails("FirstName LastName", "ZZ111111Z")
         ),
@@ -90,7 +88,6 @@ class UkPropertyIncomeSourcesViewSpec extends ViewSpec {
         view = app.injector.instanceOf[PropertyIncomeSources].apply(
           propertyIncomeSourcesForm.withError(testErrorStartDate).withError(testErrorAccountingMethod),
           postAction,
-          isEditMode = false,
           backUrl,
           ClientDetails("FirstName LastName", "ZZ111111Z")
         ),
