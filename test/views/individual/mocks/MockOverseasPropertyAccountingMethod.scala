@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,24 +23,22 @@ import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
-import views.html.individual.tasklist.overseasproperty.OverseasPropertyStartDate
+import views.html.individual.tasklist.overseasproperty.OverseasPropertyAccountingMethod
 
-trait MockOverseasPropertyStartDate extends PlaySpec with MockitoSugar with BeforeAndAfterEach {
-
-  val overseasPropertyStartDate: OverseasPropertyStartDate = mock[OverseasPropertyStartDate]
+trait MockOverseasPropertyAccountingMethod extends PlaySpec with MockitoSugar with BeforeAndAfterEach {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(overseasPropertyStartDate)
+    reset(mockView)
   }
 
-  def mockOverseasPropertyStartDateView(postAction: Call, backUrl: String): Unit = {
-    when(overseasPropertyStartDate(
-      overseasPropertyStartDateForm = ArgumentMatchers.any(),
+  val mockView: OverseasPropertyAccountingMethod = mock[OverseasPropertyAccountingMethod]
+
+  def mockOverseasPropertyAccountingMethod(postAction: Call, backUrl: String): Unit = {
+    when(mockView(
+      overseasPropertyAccountingMethodForm = ArgumentMatchers.any(),
       postAction = ArgumentMatchers.eq(postAction),
       backUrl = ArgumentMatchers.eq(backUrl)
-    )(ArgumentMatchers.any(), ArgumentMatchers.any()))
-      .thenReturn(HtmlFormat.empty)
+    )(ArgumentMatchers.any(), ArgumentMatchers.any())) thenReturn HtmlFormat.empty
   }
-
 }

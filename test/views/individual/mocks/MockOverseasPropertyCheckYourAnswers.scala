@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package views.individual.mocks
 
+import models.common.OverseasPropertyModel
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
@@ -23,24 +24,23 @@ import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
-import views.html.individual.tasklist.overseasproperty.OverseasPropertyStartDate
+import views.html.individual.tasklist.overseasproperty.OverseasPropertyCheckYourAnswers
 
-trait MockOverseasPropertyStartDate extends PlaySpec with MockitoSugar with BeforeAndAfterEach {
-
-  val overseasPropertyStartDate: OverseasPropertyStartDate = mock[OverseasPropertyStartDate]
+trait MockOverseasPropertyCheckYourAnswers extends PlaySpec with MockitoSugar with BeforeAndAfterEach {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(overseasPropertyStartDate)
+    reset(mockView)
   }
 
-  def mockOverseasPropertyStartDateView(postAction: Call, backUrl: String): Unit = {
-    when(overseasPropertyStartDate(
-      overseasPropertyStartDateForm = ArgumentMatchers.any(),
+  val mockView: OverseasPropertyCheckYourAnswers = mock[OverseasPropertyCheckYourAnswers]
+
+  def mockOverseasPropertyCheckYourAnswersView(viewModel: OverseasPropertyModel, postAction: Call, backUrl: String, isGlobalEdit: Boolean): Unit = {
+    when(mockView(
+      viewModel = ArgumentMatchers.eq(viewModel),
       postAction = ArgumentMatchers.eq(postAction),
-      backUrl = ArgumentMatchers.eq(backUrl)
-    )(ArgumentMatchers.any(), ArgumentMatchers.any()))
-      .thenReturn(HtmlFormat.empty)
+      backUrl = ArgumentMatchers.eq(backUrl),
+      isGlobalEdit = ArgumentMatchers.eq(isGlobalEdit)
+    )(ArgumentMatchers.any(), ArgumentMatchers.any())) thenReturn HtmlFormat.empty
   }
-
 }
