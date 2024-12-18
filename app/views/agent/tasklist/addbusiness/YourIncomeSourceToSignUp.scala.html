@@ -64,18 +64,25 @@
         </p>
     }
 
-    @form(action = postAction) {
-        @if(incomeSources.hasNoIncomeSources) {
-            @continueButton(alternateText = Some(messages("base.save-and-continue")))
-        } else {
-            @saveAndContinueButtonHelper(
-                isIndividual = false,
-                saveAndContinueText = Some(messages("base.save-and-continue")),
-                saveAndReturnReference = Some("income-sources")
-            )
-        }
-    }
+@form(action = postAction) {
+@if(
+incomeSources.selfEmployments.exists(_.confirmed) ||
+incomeSources.ukProperty.exists(_.confirmed) ||
+incomeSources.foreignProperty.exists(_.confirmed)
+) {
+@saveAndContinueButtonHelper(
+isIndividual = true,
+saveAndContinueText = Some(messages("base.save-and-continue")),
+saveAndReturnReference = Some("income-sources")
+)
+} else {
+<div></div>
 }
+}
+}
+
+
+
 
 @selfEmploymentName(business: SelfEmploymentData, index: Int) = @{
     (business.businessName) match {
