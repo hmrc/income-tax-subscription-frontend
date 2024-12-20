@@ -39,42 +39,43 @@ class PropertyCheckYourAnswersController @Inject()(propertyCheckYourAnswersView:
                                                   (implicit val ec: ExecutionContext,
                                                    mcc: MessagesControllerComponents) extends SignUpController {
 
-  def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+  def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
       referenceRetrieval.getIndividualReference flatMap { reference =>
         withProperty(reference) { property =>
           Future.successful(Ok(
             propertyCheckYourAnswersView(
               viewModel = property,
-              controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.submit(),
-              backUrl(isEditMode)
+              postAction = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.submit(isGlobalEdit),
+              backUrl = backUrl(isEditMode, isGlobalEdit, property.confirmed),
+              isGlobalEdit = isGlobalEdit
             )
           ))
         }
       }
   }
 
-  def submit(): Action[AnyContent] = Authenticated.async { implicit request =>
+  def submit(isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
       referenceRetrieval.getIndividualReference flatMap { reference =>
         withProperty(reference) {
           case property@PropertyModel(Some(_), Some(_), _) =>
             subscriptionDetailsService.saveProperty(reference, property.copy(confirmed = true)).map {
-              case Right(_) => Redirect(continueLocation)
+              case Right(_) =>
+                if (isGlobalEdit) Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
+                else Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
               case Left(_) => throw new InternalServerException("[PropertyCheckYourAnswersController][submit] - Could not confirm property")
             }
-          case _ => Future.successful(Redirect(continueLocation))
+          case _ => Future.successful(Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show))
         }
       }
   }
 
-  def continueLocation: Call = {
-    controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show
-  }
-
-  def backUrl(isEditMode: Boolean): String = {
-    if (isEditMode) {
-      continueLocation.url
+  private def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean, isConfirmed: Boolean): String = {
+    if (isGlobalEdit && isConfirmed) {
+      controllers.individual.routes.GlobalCheckYourAnswersController.show.url
+    } else if (isEditMode || isGlobalEdit) {
+      controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
     } else {
       controllers.individual.tasklist.ukproperty.routes.PropertyAccountingMethodController.show().url
     }

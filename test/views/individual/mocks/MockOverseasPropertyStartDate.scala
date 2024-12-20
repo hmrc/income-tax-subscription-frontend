@@ -16,11 +16,12 @@
 
 package views.individual.mocks
 
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
+import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
 import views.html.individual.tasklist.overseasproperty.OverseasPropertyStartDate
 
@@ -33,8 +34,12 @@ trait MockOverseasPropertyStartDate extends PlaySpec with MockitoSugar with Befo
     reset(overseasPropertyStartDate)
   }
 
-  def mockOverseasPropertyStartDateView(): Unit = {
-    when(overseasPropertyStartDate(any(), any(), any(), any())(any(), any()))
+  def mockOverseasPropertyStartDateView(postAction: Call, backUrl: String): Unit = {
+    when(overseasPropertyStartDate(
+      overseasPropertyStartDateForm = ArgumentMatchers.any(),
+      postAction = ArgumentMatchers.eq(postAction),
+      backUrl = ArgumentMatchers.eq(backUrl)
+    )(ArgumentMatchers.any(), ArgumentMatchers.any()))
       .thenReturn(HtmlFormat.empty)
   }
 

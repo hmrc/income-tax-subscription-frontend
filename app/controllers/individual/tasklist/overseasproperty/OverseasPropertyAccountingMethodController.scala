@@ -20,10 +20,7 @@ import auth.individual.SignUpController
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
 import forms.individual.business._
-import models.AccountingMethod
-import play.api.data.Form
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
-import play.twirl.api.Html
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import views.html.individual.tasklist.overseasproperty.OverseasPropertyAccountingMethod
@@ -31,7 +28,7 @@ import views.html.individual.tasklist.overseasproperty.OverseasPropertyAccountin
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class OverseasPropertyAccountingMethodController @Inject()(overseasPropertyAccountingMethod: OverseasPropertyAccountingMethod,
+class OverseasPropertyAccountingMethodController @Inject()(view: OverseasPropertyAccountingMethod,
                                                            subscriptionDetailsService: SubscriptionDetailsService,
                                                            referenceRetrieval: ReferenceRetrieval)
                                                           (val auditingService: AuditingService,
@@ -40,45 +37,42 @@ class OverseasPropertyAccountingMethodController @Inject()(overseasPropertyAccou
                                                           (implicit val ec: ExecutionContext,
                                                            mcc: MessagesControllerComponents) extends SignUpController {
 
-  def view(overseasPropertyAccountingMethodForm: Form[AccountingMethod], isEditMode: Boolean)
-          (implicit request: Request[_]): Html = {
-    overseasPropertyAccountingMethod(
-      overseasPropertyAccountingMethodForm = overseasPropertyAccountingMethodForm,
-      postAction = routes.OverseasPropertyAccountingMethodController.submit(editMode = isEditMode),
-      isEditMode,
-      backUrl = backUrl(isEditMode)
-    )
-  }
-
-  def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+  def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
       referenceRetrieval.getIndividualReference flatMap { reference =>
         subscriptionDetailsService.fetchOverseasPropertyAccountingMethod(reference) map { accountingMethodOverseasProperty =>
-          Ok(view(overseasPropertyAccountingMethodForm =
-            AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm.fill(accountingMethodOverseasProperty),
-            isEditMode = isEditMode))
+          Ok(view(
+            overseasPropertyAccountingMethodForm = AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm
+              .fill(accountingMethodOverseasProperty),
+            postAction = routes.OverseasPropertyAccountingMethodController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
+            backUrl = backUrl(isEditMode, isGlobalEdit)
+          ))
         }
       }
   }
 
-  def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+  def submit(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
       referenceRetrieval.getIndividualReference flatMap { reference =>
         AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm.bindFromRequest().fold(
           formWithErrors =>
-            Future.successful(BadRequest(view(overseasPropertyAccountingMethodForm = formWithErrors, isEditMode = isEditMode))),
+            Future.successful(BadRequest(view(
+              overseasPropertyAccountingMethodForm = formWithErrors,
+              postAction = routes.OverseasPropertyAccountingMethodController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
+              backUrl = backUrl(isEditMode, isGlobalEdit)
+            ))),
           overseasPropertyAccountingMethod =>
             subscriptionDetailsService.saveOverseasAccountingMethodProperty(reference, overseasPropertyAccountingMethod) map {
-              case Right(_) => Redirect(routes.OverseasPropertyCheckYourAnswersController.show(isEditMode))
+              case Right(_) => Redirect(routes.OverseasPropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit))
               case Left(_) => throw new InternalServerException("[OverseasPropertyAccountingMethodController][submit] - Could not save accounting method")
             }
         )
       }
   }
 
-  def backUrl(isEditMode: Boolean): String = {
-    if (isEditMode) {
-      controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
+  private def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean): String = {
+    if (isEditMode || isGlobalEdit) {
+      controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true, isGlobalEdit).url
     } else {
       routes.OverseasPropertyStartDateController.show().url
     }

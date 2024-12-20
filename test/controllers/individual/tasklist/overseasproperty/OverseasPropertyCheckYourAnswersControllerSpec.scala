@@ -21,75 +21,157 @@ import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionD
 import controllers.individual.ControllerBaseSpec
 import models.common.OverseasPropertyModel
 import models.{Cash, DateModel}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
-import play.twirl.api.HtmlFormat
 import services.mocks.{MockAccountingPeriodService, MockAuditingService, MockReferenceRetrieval, MockSubscriptionDetailsService}
-import views.agent.mocks.MockWhatYearToSignUp
-import views.html.individual.tasklist.overseasproperty.OverseasPropertyCheckYourAnswers
+import uk.gov.hmrc.http.InternalServerException
+import views.individual.mocks.MockOverseasPropertyCheckYourAnswers
 
 import scala.concurrent.Future
 
 class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
-  with MockWhatYearToSignUp
   with MockAuditingService
   with MockAccountingPeriodService
   with MockReferenceRetrieval
-  with MockSubscriptionDetailsService {
+  with MockSubscriptionDetailsService
+  with MockOverseasPropertyCheckYourAnswers {
+
   override val controllerName: String = "OverseasPropertyCheckYourAnswersController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
   "show" should {
-    "return an OK status with the property CYA page" in withController { controller =>
-      mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
+    "return an OK status with the property CYA page" when {
+      "not in edit mode" in withController { controller =>
+        mockOverseasPropertyCheckYourAnswersView(
+          viewModel = testFullOverseasProperty,
+          postAction = routes.OverseasPropertyCheckYourAnswersController.submit(),
+          backUrl = routes.OverseasPropertyAccountingMethodController.show().url,
+          isGlobalEdit = false
+        )
+        mockFetchOverseasProperty(Some(testFullOverseasProperty))
 
-      val result: Future[Result] = await(controller.show(false)(subscriptionRequest))
+        val result: Future[Result] = await(controller.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest))
 
-      status(result) mustBe OK
-      contentType(result) mustBe Some(HTML)
-      charset(result) mustBe Some(Codec.utf_8.charset)
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+        charset(result) mustBe Some(Codec.utf_8.charset)
+      }
+
+      "in edit mode" in withController { controller =>
+        mockOverseasPropertyCheckYourAnswersView(
+          viewModel = testFullOverseasProperty,
+          postAction = routes.OverseasPropertyCheckYourAnswersController.submit(),
+          backUrl = controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url,
+          isGlobalEdit = false
+        )
+        mockFetchOverseasProperty(Some(testFullOverseasProperty))
+
+        val result: Future[Result] = await(controller.show(true, isGlobalEdit = false)(subscriptionRequest))
+
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+        charset(result) mustBe Some(Codec.utf_8.charset)
+      }
+
+      "in global edit mode and property not confirmed" in withController { controller =>
+        mockOverseasPropertyCheckYourAnswersView(
+          viewModel = testFullOverseasProperty,
+          postAction = routes.OverseasPropertyCheckYourAnswersController.submit(isGlobalEdit = true),
+          backUrl = controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url,
+          isGlobalEdit = true
+        )
+        mockFetchOverseasProperty(Some(testFullOverseasProperty))
+
+        val result: Future[Result] = await(controller.show(false, isGlobalEdit = true)(subscriptionRequest))
+
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+        charset(result) mustBe Some(Codec.utf_8.charset)
+      }
+
+      "in global edit mode and property is confirmed" in withController { controller =>
+        mockOverseasPropertyCheckYourAnswersView(
+          viewModel = testFullOverseasProperty.copy(confirmed = true),
+          postAction = routes.OverseasPropertyCheckYourAnswersController.submit(isGlobalEdit = true),
+          backUrl = controllers.individual.routes.GlobalCheckYourAnswersController.show.url,
+          isGlobalEdit = true
+        )
+        mockFetchOverseasProperty(Some(testFullOverseasProperty.copy(confirmed = true)))
+
+        val result: Future[Result] = await(controller.show(false, isGlobalEdit = true)(subscriptionRequest))
+
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+        charset(result) mustBe Some(Codec.utf_8.charset)
+      }
     }
 
     "throw an exception if cannot retrieve overseas property details" in withController { controller =>
       mockFetchOverseasProperty(None)
 
-      val result: Future[Result] = await(controller.show(false)(subscriptionRequest))
+      val result: Future[Result] = await(controller.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest))
 
-      result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
+      intercept[InternalServerException](await(result)).message mustBe "[OverseasPropertyCheckYourAnswersController] - Could not retrieve property details"
+
     }
   }
 
   "submit" when {
-    "redirect to the your income sources page and confirm the overseas property details" when {
-      "the user submits a start date and accounting method" in withController { controller =>
-        val testProperty = OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))
+    "not in global edit mode" should {
+      "redirect to the your income sources page" when {
+        "the user submits valid full data and overseas property is confirmed and saved" in withController { controller =>
 
-        mockFetchOverseasProperty(Some(testProperty))
-        mockSaveOverseasProperty(testProperty.copy(confirmed = true))(
-          Right(PostSubscriptionDetailsSuccessResponse)
-        )
+          mockFetchOverseasProperty(Some(testFullOverseasProperty))
+          mockSaveOverseasProperty(testFullOverseasProperty.copy(confirmed = true))(
+            Right(PostSubscriptionDetailsSuccessResponse)
+          )
 
-        val result: Future[Result] = await(controller.submit()(subscriptionRequest))
+          val result: Future[Result] = await(controller.submit(isGlobalEdit = false)(subscriptionRequest))
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
-      }
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
+        }
 
-      "the user submits valid partial data" should {
-        "not save the overseas property answers" in withController { controller =>
+        "the user submits valid partial data and overseas property answers is not saved" in withController { controller =>
           mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
 
-          val result: Future[Result] = await(controller.submit()(subscriptionRequest))
+          val result: Future[Result] = await(controller.submit(isGlobalEdit = false)(subscriptionRequest))
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
         }
       }
     }
+
+    "in global edit mode" should {
+      "redirect to the global CYA page and confirm the overseas property details" when {
+        "the user submits a start date and accounting method" in withController { controller =>
+
+          mockFetchOverseasProperty(Some(testFullOverseasProperty))
+          mockSaveOverseasProperty(testFullOverseasProperty.copy(confirmed = true))(
+            Right(PostSubscriptionDetailsSuccessResponse)
+          )
+
+          val result: Future[Result] = await(controller.submit(isGlobalEdit = true)(subscriptionRequest))
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.individual.routes.GlobalCheckYourAnswersController.show.url)
+        }
+
+        "redirect to the your income sources page and not save overseas property" when {
+          "the user submits valid partial data" in withController { controller =>
+            mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
+
+            val result: Future[Result] = await(controller.submit(isGlobalEdit = true)(subscriptionRequest))
+
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
+          }
+        }
+      }
+    }
+
   }
 
   "submit" should {
@@ -97,45 +179,32 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
       "cannot retrieve property details" in withController { controller =>
         mockFetchOverseasProperty(None)
 
-        val result: Future[Result] = await(controller.submit()(subscriptionRequest))
+        val result: Future[Result] = controller.submit(isGlobalEdit = false)(subscriptionRequest)
 
-        result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
+        intercept[InternalServerException](await(result)).message mustBe "[OverseasPropertyCheckYourAnswersController] - Could not retrieve property details"
       }
 
       "cannot confirm overseas property details" in withController { controller =>
-        mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
-        mockSaveOverseasProperty(OverseasPropertyModel(Some(Cash), Some(DateModel("10", "11", "2021")), confirmed = true))(
+        mockFetchOverseasProperty(Some(testFullOverseasProperty))
+        mockSaveOverseasProperty(testFullOverseasProperty.copy(confirmed = true))(
           Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
         )
 
-        val result: Future[Result] = await(controller.submit()(subscriptionRequest))
+        val result: Future[Result] = controller.submit(isGlobalEdit = false)(subscriptionRequest)
 
-        result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
+        intercept[InternalServerException](await(result))
+          .message mustBe "[OverseasPropertyCheckYourAnswersController][submit] - Could not confirm property details"
       }
     }
   }
 
-  "backUrl" should {
-    "in edit mode " when {
-      "return the your income source page" in withController { controller =>
-        controller.backUrl(true) mustBe controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
-      }
-    }
-    "go to the property accounting method page" when {
-      "not in edit mode" in withController { controller =>
-        controller.backUrl(false) mustBe routes.OverseasPropertyAccountingMethodController.show().url
-      }
-    }
-  }
+
+  private val testFullOverseasProperty: OverseasPropertyModel = OverseasPropertyModel(
+    accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))
 
   private def withController(testCode: OverseasPropertyCheckYourAnswersController => Any): Unit = {
-    val view = mock[OverseasPropertyCheckYourAnswers]
-
-    when(view(any(), any(), any())(any(), any()))
-      .thenReturn(HtmlFormat.empty)
-
     val controller = new OverseasPropertyCheckYourAnswersController(
-      view,
+      mockView,
       mockSubscriptionDetailsService,
       mockReferenceRetrieval
     )(

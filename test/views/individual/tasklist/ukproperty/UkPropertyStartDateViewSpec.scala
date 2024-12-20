@@ -56,7 +56,6 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
         view = propertyStartDate(
           PropertyStartDateForm.propertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString),
           testCall,
-          isEditMode = false,
           testBackUrl
         ),
         title = PropertyStartDateMessages.heading,
@@ -68,7 +67,6 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
         view = propertyStartDate(
           PropertyStartDateForm.propertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString).withError(testError),
           testCall,
-          isEditMode = false,
           testBackUrl
         ),
         title = PropertyStartDateMessages.heading,
@@ -140,19 +138,16 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
     }
   }
 
-  private def page(isEditMode: Boolean, propertyStartDateForm: Form[DateModel]): Html = {
+  private def page(propertyStartDateForm: Form[DateModel]): Html = {
     propertyStartDate(
       propertyStartDateForm,
       testCall,
-      isEditMode,
       testBackUrl
     )(FakeRequest(), implicitly)
   }
 
-  private def document(
-                        isEditMode: Boolean = false,
-                        propertyStartDateForm: Form[DateModel] = PropertyStartDateForm.propertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString)
+  private def document(propertyStartDateForm: Form[DateModel] = PropertyStartDateForm.propertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString)
                       ): Document = {
-    Jsoup.parse(page(isEditMode, propertyStartDateForm).body)
+    Jsoup.parse(page(propertyStartDateForm).body)
   }
 }

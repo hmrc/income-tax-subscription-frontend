@@ -24,20 +24,20 @@ import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
-import views.html.individual.tasklist.ukproperty.PropertyStartDate
+import views.html.individual.tasklist.ukproperty.PropertyAccountingMethod
 
-trait MockPropertyStartDate extends PlaySpec with MockitoSugar with BeforeAndAfterEach {
+trait MockPropertyAccountingMethod extends PlaySpec with MockitoSugar with BeforeAndAfterEach {
 
-  val propertyStartDate: PropertyStartDate = mock[PropertyStartDate]
+  val mockView: PropertyAccountingMethod = mock[PropertyAccountingMethod]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(propertyStartDate)
+    reset(mockView)
   }
 
-  def mockPropertyStartDate(postAction: Call, backUrl: String): Unit = {
-    when(propertyStartDate(
-      propertyStartDateForm = ArgumentMatchers.any(),
+  def mockPropertyAccountingMethodView(postAction: Call, backUrl: String): Unit = {
+    when(mockView(
+      accountingMethodForm = ArgumentMatchers.any(),
       postAction = ArgumentMatchers.eq(postAction),
       backUrl = ArgumentMatchers.eq(backUrl)
     )(any(), any()))

@@ -29,7 +29,7 @@
         saveAndContinueButtonHelper: SaveAndContinueButtonHelper
 )
 
-@(accountingMethodForm: Form[AccountingMethod], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages)
+@(accountingMethodForm: Form[AccountingMethod], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
 
 @question = @{
     messages("property.accounting-method.heading")
