@@ -38,11 +38,10 @@ class OverseasPropertyAccountingMethodViewSpec extends ViewSpec {
 
   val overseasPropertyAccountingMethod: OverseasPropertyAccountingMethod = app.injector.instanceOf[OverseasPropertyAccountingMethod]
 
-  class Setup(isEditMode: Boolean = false) {
+  class Setup {
     val page: HtmlFormat.Appendable = overseasPropertyAccountingMethod(
       overseasPropertyAccountingMethodForm = AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm,
       postAction = action,
-      isEditMode,
       backUrl = backUrl
     )(FakeRequest(), implicitly)
 

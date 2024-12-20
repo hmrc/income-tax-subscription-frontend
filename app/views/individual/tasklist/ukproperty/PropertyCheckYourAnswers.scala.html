@@ -29,7 +29,8 @@
 @(
     viewModel: PropertyModel,
     postAction: Call,
-    backUrl: String
+    backUrl: String,
+    isGlobalEdit: Boolean
 )(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
@@ -51,7 +52,7 @@
                 actions = Some(Actions(
                     items = Seq(
                         ActionItem(
-                            href = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.show(editMode = true).url,
+                            href = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.show(editMode = true, isGlobalEdit = isGlobalEdit).url,
                             content = Text(messages(if(viewModel.startDate.isDefined) "base.change" else "base.add")),
                             visuallyHiddenText = Some(messages("business.check-your-answers.content.uk-property-start-date.question"))
                         )
@@ -64,7 +65,7 @@
                 actions = Some(Actions(
                     items = Seq(
                         ActionItem(
-                            href = controllers.individual.tasklist.ukproperty.routes.PropertyAccountingMethodController.show(editMode = true).url,
+                            href = controllers.individual.tasklist.ukproperty.routes.PropertyAccountingMethodController.show(editMode = true, isGlobalEdit = isGlobalEdit).url,
                             content = Text(messages(if(viewModel.accountingMethod.isDefined) "base.change" else "base.add")),
                             visuallyHiddenText = Some(messages("business.check-your-answers.content.uk-property-accounting-method.question"))
                         )

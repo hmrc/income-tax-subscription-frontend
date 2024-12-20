@@ -21,12 +21,12 @@ import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionD
 import controllers.individual.ControllerBaseSpec
 import forms.individual.business.OverseasPropertyStartDateForm
 import models.DateModel
-import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.individual.mocks.MockAuthService
 import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSubscriptionDetailsService}
+import uk.gov.hmrc.http.InternalServerException
 import views.individual.mocks.MockOverseasPropertyStartDate
 
 import java.time.LocalDate
@@ -41,8 +41,8 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
 
   override val controllerName: String = "OverseasPropertyStartDateController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestOverseasPropertyStartDateController.show(isEditMode = false),
-    "submit" -> TestOverseasPropertyStartDateController.submit(isEditMode = false)
+    "show" -> TestOverseasPropertyStartDateController.show(isEditMode = false, isGlobalEdit = false),
+    "submit" -> TestOverseasPropertyStartDateController.submit(isEditMode = false, isGlobalEdit = false)
   )
 
   object TestOverseasPropertyStartDateController extends OverseasPropertyStartDateController(
@@ -56,43 +56,93 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
     appConfig
   )
 
-  "show" should {
-    "display the foreign property start date view and return OK (200)" in withController { controller =>
-      mockOverseasPropertyStartDateView()
-      mockFetchOverseasPropertyStartDate(Some(DateModel("22", "11", "2021")))
+  "show" must {
+    "display the foreign property start date view and return OK (200)" when {
+      "a start date is returned" in withController { controller =>
+        mockOverseasPropertyStartDateView(
+          routes.OverseasPropertyStartDateController.submit(),
+          controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
+        mockFetchOverseasPropertyStartDate(Some(DateModel("22", "11", "2021")))
 
-      lazy val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
+        lazy val result: Result = await(controller.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest))
 
-      status(result) must be(Status.OK)
+        status(result) must be(Status.OK)
+      }
+
+      "no start date is returned" in withController { controller =>
+        mockOverseasPropertyStartDateView(
+          routes.OverseasPropertyStartDateController.submit(),
+          controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
+        mockFetchOverseasPropertyStartDate(None)
+
+        lazy val result: Result = await(controller.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest))
+
+        status(result) must be(Status.OK)
+      }
+
+      "in edit mode" in withController { controller =>
+        mockOverseasPropertyStartDateView(
+          postAction = routes.OverseasPropertyStartDateController.submit(editMode = true),
+          backUrl = routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
+        )
+        mockFetchOverseasPropertyStartDate(Some(DateModel("22", "11", "2021")))
+
+        lazy val result: Result = await(controller.show(isEditMode = true, isGlobalEdit = false)(subscriptionRequest))
+
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+      }
+
+      "in global edit mode" in withController { controller =>
+        mockOverseasPropertyStartDateView(
+          postAction = routes.OverseasPropertyStartDateController.submit(editMode = true, isGlobalEdit = true),
+          backUrl = routes.OverseasPropertyCheckYourAnswersController.show(editMode = true, isGlobalEdit = true).url
+        )
+        mockFetchOverseasPropertyStartDate(Some(DateModel("22", "11", "2021")))
+
+        lazy val result: Result = await(controller.show(isEditMode = true, isGlobalEdit = true)(subscriptionRequest))
+
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+      }
     }
   }
 
   "submit" when {
     val testValidMaxStartDate: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(1))
-    val maxDate = LocalDate.now.minusYears(1)
-    val testValidMaxDate: DateModel = DateModel.dateConvert(maxDate)
 
-    def callPost(controller: OverseasPropertyStartDateController, isEditMode: Boolean): Future[Result] =
-      controller.submit(isEditMode = isEditMode)(
+    def callPost(controller: OverseasPropertyStartDateController, isEditMode: Boolean, isGlobalEdit: Boolean): Future[Result] =
+      controller.submit(isEditMode, isGlobalEdit)(
         subscriptionRequest.post(OverseasPropertyStartDateForm.overseasPropertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString),
           testValidMaxStartDate)
       )
 
-    def callPostWithErrorForm(controller: OverseasPropertyStartDateController, isEditMode: Boolean): Future[Result] =
-      controller.submit(isEditMode = isEditMode)(
-        subscriptionRequest
+    def callPostWithErrorForm(controller: OverseasPropertyStartDateController, isEditMode: Boolean, isGlobalEdit: Boolean): Future[Result] =
+      controller.submit(isEditMode, isGlobalEdit)(
+        subscriptionRequest.withFormUrlEncodedBody()
       )
 
     "in edit mode" should {
       "redirect to overseas property check your answers page" in withController { controller =>
         mockSaveOverseasPropertyStartDate(testValidMaxStartDate)(Right(PostSubscriptionDetailsSuccessResponse))
 
-        val goodRequest = callPost(controller, isEditMode = true)
-
-        redirectLocation(goodRequest) mustBe Some(controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(true).url)
+        val goodRequest = callPost(controller, isEditMode = true, isGlobalEdit = false)
 
         status(goodRequest) mustBe SEE_OTHER
-        redirectLocation(goodRequest) mustBe Some(routes.OverseasPropertyCheckYourAnswersController.show(true).url)
+        redirectLocation(goodRequest) mustBe Some(routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url)
+      }
+    }
+
+    "in global edit mode" should {
+      "redirect to overseas property CYA page" in withController { controller =>
+        mockSaveOverseasPropertyStartDate(testValidMaxStartDate)(Right(PostSubscriptionDetailsSuccessResponse))
+
+        val goodRequest = callPost(controller, isEditMode = true, isGlobalEdit = true)
+
+        redirectLocation(goodRequest) mustBe Some(routes.OverseasPropertyCheckYourAnswersController.show(editMode = true, isGlobalEdit = true).url)
+
+        status(goodRequest) mustBe SEE_OTHER
+        redirectLocation(goodRequest) mustBe Some(routes.OverseasPropertyCheckYourAnswersController.show(editMode = true, isGlobalEdit = true).url)
       }
     }
 
@@ -100,23 +150,46 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
       "redirect to the overseas property accounting method page" in withController { controller =>
         mockSaveOverseasPropertyStartDate(testValidMaxStartDate)(Right(PostSubscriptionDetailsSuccessResponse))
 
-        val goodRequest = await(callPost(controller, isEditMode = false))
+        val goodRequest = await(callPost(controller, isEditMode = false, isGlobalEdit = false))
 
         status(goodRequest) mustBe SEE_OTHER
         redirectLocation(goodRequest) mustBe Some(routes.OverseasPropertyAccountingMethodController.show().url)
       }
     }
 
-    "return bad request status (400)" when {
-      "there is an invalid submission with an error form" in withController { controller =>
-        mockOverseasPropertyStartDateView()
+    "there is an invalid submission with an error form" should {
+      "return bad request status (400)" when {
+        "in edit mode" in withController { controller =>
+          mockOverseasPropertyStartDateView(
+            postAction = routes.OverseasPropertyStartDateController.submit(editMode = true),
+            backUrl = routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url)
 
-        val badRequest = callPostWithErrorForm(controller, isEditMode = false)
+          val badRequest = callPostWithErrorForm(controller, isEditMode = true, isGlobalEdit = false)
 
-        status(badRequest) must be(Status.BAD_REQUEST)
+          status(badRequest) must be(Status.BAD_REQUEST)
+        }
 
-        await(badRequest)
+        "in global mode" in withController { controller =>
+          mockOverseasPropertyStartDateView(
+            routes.OverseasPropertyStartDateController.submit(editMode = true, isGlobalEdit = true),
+            routes.OverseasPropertyCheckYourAnswersController.show(editMode = true, isGlobalEdit = true).url)
+
+          val badRequest = callPostWithErrorForm(controller, isEditMode = true, isGlobalEdit = true)
+
+          status(badRequest) must be(Status.BAD_REQUEST)
+        }
+
+        "not in edit mode" in withController { controller =>
+          mockOverseasPropertyStartDateView(
+            routes.OverseasPropertyStartDateController.submit(),
+            controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
+
+          val badRequest = callPostWithErrorForm(controller, isEditMode = false, isGlobalEdit = false)
+
+          status(badRequest) must be(Status.BAD_REQUEST)
+        }
       }
+
     }
 
     "throw an exception" when {
@@ -125,26 +198,13 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
           Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
         )
 
-        val goodRequest = callPost(controller, isEditMode = false)
-        goodRequest.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
+        val exceptionRequest = callPost(controller, isEditMode = false, isGlobalEdit = true)
+
+        intercept[InternalServerException](await(exceptionRequest))
+          .message mustBe "[OverseasPropertyStartDateController][submit] - Could not save start date"
       }
     }
 
-    "backUrl" when {
-      "in edit mode" should {
-        "redirect to overseas property check your answers page" in withController { controller =>
-          controller.backUrl(isEditMode = true) mustBe
-            controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(true).url
-        }
-      }
-
-      "not in edit mode" should {
-        "redirect to what income source to sign up page" in withController { controller =>
-          controller.backUrl(isEditMode = false) mustBe
-            controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
-        }
-      }
-    }
   }
 
   private def withController(testCode: OverseasPropertyStartDateController => Any) = {

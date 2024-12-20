@@ -20,10 +20,7 @@ import auth.individual.SignUpController
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
 import forms.individual.business.AccountingMethodPropertyForm
-import models.AccountingMethod
-import play.api.data.Form
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
-import play.twirl.api.Html
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import views.html.individual.tasklist.ukproperty.PropertyAccountingMethod
@@ -32,7 +29,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PropertyAccountingMethodController @Inject()(propertyAccountingMethod: PropertyAccountingMethod,
+class PropertyAccountingMethodController @Inject()(view: PropertyAccountingMethod,
                                                    subscriptionDetailsService: SubscriptionDetailsService,
                                                    referenceRetrieval: ReferenceRetrieval)
                                                   (val auditingService: AuditingService,
@@ -41,37 +38,31 @@ class PropertyAccountingMethodController @Inject()(propertyAccountingMethod: Pro
                                                   (implicit val ec: ExecutionContext,
                                                    mcc: MessagesControllerComponents) extends SignUpController {
 
-  def view(accountingMethodPropertyForm: Form[AccountingMethod], isEditMode: Boolean)
-          (implicit request: Request[_]): Html = {
-    propertyAccountingMethod(
-      accountingMethodForm = accountingMethodPropertyForm,
-      postAction = routes.PropertyAccountingMethodController.submit(editMode = isEditMode),
-      isEditMode,
-      backUrl = backUrl(isEditMode)
-    )
-  }
-
-  def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+  def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
       referenceRetrieval.getIndividualReference flatMap { reference =>
         subscriptionDetailsService.fetchAccountingMethodProperty(reference).map { accountingMethodProperty =>
           Ok(view(
-            accountingMethodPropertyForm = AccountingMethodPropertyForm.accountingMethodPropertyForm.fill(accountingMethodProperty),
-            isEditMode = isEditMode
+            accountingMethodForm = AccountingMethodPropertyForm.accountingMethodPropertyForm.fill(accountingMethodProperty),
+            postAction = routes.PropertyAccountingMethodController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
+            backUrl = backUrl(isEditMode, isGlobalEdit)
           ))
         }
       }
   }
 
-  def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+  def submit(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
       referenceRetrieval.getIndividualReference flatMap { reference =>
         AccountingMethodPropertyForm.accountingMethodPropertyForm.bindFromRequest().fold(
           formWithErrors =>
-            Future.successful(BadRequest(view(accountingMethodPropertyForm = formWithErrors, isEditMode = isEditMode))),
+            Future.successful(BadRequest(view(
+              accountingMethodForm = formWithErrors,
+              postAction = routes.PropertyAccountingMethodController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
+              backUrl = backUrl(isEditMode, isGlobalEdit)))),
           accountingMethodProperty => {
             subscriptionDetailsService.saveAccountingMethodProperty(reference, accountingMethodProperty) map {
-              case Right(_) => Redirect(routes.PropertyCheckYourAnswersController.show(isEditMode))
+              case Right(_) => Redirect(routes.PropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit))
               case Left(_) => throw new InternalServerException("[PropertyAccountingMethodController][submit] - Could not save accounting method")
             }
           }
@@ -79,11 +70,12 @@ class PropertyAccountingMethodController @Inject()(propertyAccountingMethod: Pro
       }
   }
 
-  def backUrl(isEditMode: Boolean): String = {
-    if (isEditMode) {
-      routes.PropertyCheckYourAnswersController.show(editMode = true).url
+  private def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean): String = {
+    if (isEditMode || isGlobalEdit) {
+      routes.PropertyCheckYourAnswersController.show(editMode = true, isGlobalEdit).url
     } else {
       routes.PropertyStartDateController.show().url
     }
   }
+
 }

@@ -48,10 +48,10 @@ GET         /declined-sign-up-next-year                          controllers.ind
 GET         /what-you-need-to-do                                 controllers.individual.WhatYouNeedToDoController.show
 POST         /what-you-need-to-do                                controllers.individual.WhatYouNeedToDoController.submit
 
-GET         /using-software                                     controllers.individual.UsingSoftwareController.show()
-POST        /using-software                                     controllers.individual.UsingSoftwareController.submit()
+GET         /using-software                                      controllers.individual.UsingSoftwareController.show()
+POST        /using-software                                      controllers.individual.UsingSoftwareController.submit()
 
-GET         /no-compatible-software                                        controllers.individual.NoSoftwareController.show
+GET         /no-compatible-software                              controllers.individual.NoSoftwareController.show
 ################## Business Routes
 
 #What Tax Year To Sign Up Routes
@@ -59,20 +59,20 @@ GET         /business/what-year-to-sign-up                       controllers.ind
 POST        /business/what-year-to-sign-up                       controllers.individual.tasklist.taxyear.WhatYearToSignUpController.submit(editMode: Boolean ?= false)
 
 #Property Accounting Method Routes
-GET         /business/accounting-method-property                 controllers.individual.tasklist.ukproperty.PropertyAccountingMethodController.show(editMode: Boolean ?= false)
-POST        /business/accounting-method-property                 controllers.individual.tasklist.ukproperty.PropertyAccountingMethodController.submit(editMode: Boolean ?= false)
+GET         /business/accounting-method-property                 controllers.individual.tasklist.ukproperty.PropertyAccountingMethodController.show(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
+POST        /business/accounting-method-property                 controllers.individual.tasklist.ukproperty.PropertyAccountingMethodController.submit(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
 
 #Foreign Property Accounting Method Routes
-GET         /business/overseas-property-accounting-method        controllers.individual.tasklist.overseasproperty.OverseasPropertyAccountingMethodController.show(editMode: Boolean ?= false)
-POST        /business/overseas-property-accounting-method        controllers.individual.tasklist.overseasproperty.OverseasPropertyAccountingMethodController.submit(editMode: Boolean ?= false)
+GET         /business/overseas-property-accounting-method        controllers.individual.tasklist.overseasproperty.OverseasPropertyAccountingMethodController.show(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
+POST        /business/overseas-property-accounting-method        controllers.individual.tasklist.overseasproperty.OverseasPropertyAccountingMethodController.submit(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
 
 #Property Start Date Routes
-GET         /business/property-commencement-date                 controllers.individual.tasklist.ukproperty.PropertyStartDateController.show(editMode: Boolean ?= false)
-POST        /business/property-commencement-date                 controllers.individual.tasklist.ukproperty.PropertyStartDateController.submit(editMode: Boolean ?= false)
+GET         /business/property-commencement-date                 controllers.individual.tasklist.ukproperty.PropertyStartDateController.show(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
+POST        /business/property-commencement-date                 controllers.individual.tasklist.ukproperty.PropertyStartDateController.submit(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
 
 #Foreign Property Start Date Routes
-GET         /business/overseas-property-start-date               controllers.individual.tasklist.overseasproperty.OverseasPropertyStartDateController.show(editMode: Boolean ?= false)
-POST        /business/overseas-property-start-date               controllers.individual.tasklist.overseasproperty.OverseasPropertyStartDateController.submit(editMode: Boolean ?= false)
+GET         /business/overseas-property-start-date               controllers.individual.tasklist.overseasproperty.OverseasPropertyStartDateController.show(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
+POST        /business/overseas-property-start-date               controllers.individual.tasklist.overseasproperty.OverseasPropertyStartDateController.submit(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
 
 # Identity Verification return routes
 GET         /iv-success                                          controllers.individual.iv.IVSuccessController.success
@@ -107,11 +107,11 @@ GET         /business/tax-year-check-your-answers                controllers.ind
 POST        /business/tax-year-check-your-answers                controllers.individual.tasklist.taxyear.TaxYearCheckYourAnswersController.submit()
 
 
-GET         /business/uk-property-check-your-answers             controllers.individual.tasklist.ukproperty.PropertyCheckYourAnswersController.show(editMode: Boolean ?= false)
-POST        /business/uk-property-check-your-answers             controllers.individual.tasklist.ukproperty.PropertyCheckYourAnswersController.submit()
+GET         /business/uk-property-check-your-answers             controllers.individual.tasklist.ukproperty.PropertyCheckYourAnswersController.show(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
+POST        /business/uk-property-check-your-answers             controllers.individual.tasklist.ukproperty.PropertyCheckYourAnswersController.submit(isGlobalEdit: Boolean ?= false)
 
-GET         /business/overseas-property-check-your-answers       controllers.individual.tasklist.overseasproperty.OverseasPropertyCheckYourAnswersController.show(editMode: Boolean ?= false)
-POST        /business/overseas-property-check-your-answers       controllers.individual.tasklist.overseasproperty.OverseasPropertyCheckYourAnswersController.submit()
+GET         /business/overseas-property-check-your-answers       controllers.individual.tasklist.overseasproperty.OverseasPropertyCheckYourAnswersController.show(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
+POST        /business/overseas-property-check-your-answers       controllers.individual.tasklist.overseasproperty.OverseasPropertyCheckYourAnswersController.submit(isGlobalEdit: Boolean ?= false)
 
 GET         /business/remove-sole-trader-business                controllers.individual.tasklist.selfemployment.RemoveSelfEmploymentBusinessController.show(id: String)
 POST        /business/remove-sole-trader-business                controllers.individual.tasklist.selfemployment.RemoveSelfEmploymentBusinessController.submit(id: String)

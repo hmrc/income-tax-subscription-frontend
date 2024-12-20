@@ -62,7 +62,8 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
       view = view(
         completeCashProperty,
         controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.submit(),
-        testBackUrl
+        testBackUrl,
+        isGlobalEdit = false
       ),
       title = OverseasPropertyCheckYourAnswers.title,
       isAgent = false,
@@ -78,58 +79,115 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
       )
     }
 
-    "have a summary of the answers" when {
-      "start date and accounting method cash are defined" in {
-        document(completeCashProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-          SummaryListRowValues(
-            key = OverseasPropertyCheckYourAnswers.startDateQuestion,
-            value = Some("8 November 2021"),
-            actions = Seq(
-              SummaryListActionValues(
-                href = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show(editMode = true).url,
-                text = s"${OverseasPropertyCheckYourAnswers.change} ${OverseasPropertyCheckYourAnswers.startDateQuestion}",
-                visuallyHidden = OverseasPropertyCheckYourAnswers.startDateQuestion
+    "have a summary of the answers" which {
+      "has start date and accounting method cash are defined" when {
+        "not in global edit mode" in {
+          document(completeCashProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+            SummaryListRowValues(
+              key = OverseasPropertyCheckYourAnswers.startDateQuestion,
+              value = Some("8 November 2021"),
+              actions = Seq(
+                SummaryListActionValues(
+                  href = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show(editMode = true).url,
+                  text = s"${OverseasPropertyCheckYourAnswers.change} ${OverseasPropertyCheckYourAnswers.startDateQuestion}",
+                  visuallyHidden = OverseasPropertyCheckYourAnswers.startDateQuestion
+                )
+              )
+            ),
+            SummaryListRowValues(
+              key = OverseasPropertyCheckYourAnswers.accountMethodQuestion,
+              value = Some("Cash basis accounting"),
+              actions = Seq(
+                SummaryListActionValues(
+                  href = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyAccountingMethodController.show(editMode = true).url,
+                  text = s"${OverseasPropertyCheckYourAnswers.change} ${OverseasPropertyCheckYourAnswers.accountMethodQuestion}",
+                  visuallyHidden = OverseasPropertyCheckYourAnswers.accountMethodQuestion
+                )
               )
             )
-          ),
-          SummaryListRowValues(
-            key = OverseasPropertyCheckYourAnswers.accountMethodQuestion,
-            value = Some("Cash basis accounting"),
-            actions = Seq(
-              SummaryListActionValues(
-                href = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyAccountingMethodController.show(editMode = true).url,
-                text = s"${OverseasPropertyCheckYourAnswers.change} ${OverseasPropertyCheckYourAnswers.accountMethodQuestion}",
-                visuallyHidden = OverseasPropertyCheckYourAnswers.accountMethodQuestion
+          ))
+        }
+        "in global edit mode" in {
+          document(completeCashProperty, isGlobalEdit = true).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+            SummaryListRowValues(
+              key = OverseasPropertyCheckYourAnswers.startDateQuestion,
+              value = Some("8 November 2021"),
+              actions = Seq(
+                SummaryListActionValues(
+                  href = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show(editMode = true, isGlobalEdit = true).url,
+                  text = s"${OverseasPropertyCheckYourAnswers.change} ${OverseasPropertyCheckYourAnswers.startDateQuestion}",
+                  visuallyHidden = OverseasPropertyCheckYourAnswers.startDateQuestion
+                )
+              )
+            ),
+            SummaryListRowValues(
+              key = OverseasPropertyCheckYourAnswers.accountMethodQuestion,
+              value = Some("Cash basis accounting"),
+              actions = Seq(
+                SummaryListActionValues(
+                  href = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyAccountingMethodController.show(editMode = true, isGlobalEdit = true).url,
+                  text = s"${OverseasPropertyCheckYourAnswers.change} ${OverseasPropertyCheckYourAnswers.accountMethodQuestion}",
+                  visuallyHidden = OverseasPropertyCheckYourAnswers.accountMethodQuestion
+                )
               )
             )
-          )
-        ))
+          ))
+        }
+
       }
-      "start date and accounting method accruals are defined" in {
-        document(completeAccrualsProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-          SummaryListRowValues(
-            key = OverseasPropertyCheckYourAnswers.startDateQuestion,
-            value = Some("8 November 2021"),
-            actions = Seq(
-              SummaryListActionValues(
-                href = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show(editMode = true).url,
-                text = s"${OverseasPropertyCheckYourAnswers.change} ${OverseasPropertyCheckYourAnswers.startDateQuestion}",
-                visuallyHidden = OverseasPropertyCheckYourAnswers.startDateQuestion
+      "has start date and accounting method accruals are defined" when {
+        "not in edit mode" in {
+          document(completeAccrualsProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+            SummaryListRowValues(
+              key = OverseasPropertyCheckYourAnswers.startDateQuestion,
+              value = Some("8 November 2021"),
+              actions = Seq(
+                SummaryListActionValues(
+                  href = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show(editMode = true).url,
+                  text = s"${OverseasPropertyCheckYourAnswers.change} ${OverseasPropertyCheckYourAnswers.startDateQuestion}",
+                  visuallyHidden = OverseasPropertyCheckYourAnswers.startDateQuestion
+                )
+              )
+            ),
+            SummaryListRowValues(
+              key = OverseasPropertyCheckYourAnswers.accountMethodQuestion,
+              value = Some("Traditional accounting"),
+              actions = Seq(
+                SummaryListActionValues(
+                  href = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyAccountingMethodController.show(editMode = true).url,
+                  text = s"${OverseasPropertyCheckYourAnswers.change} ${OverseasPropertyCheckYourAnswers.accountMethodQuestion}",
+                  visuallyHidden = OverseasPropertyCheckYourAnswers.accountMethodQuestion
+                )
               )
             )
-          ),
-          SummaryListRowValues(
-            key = OverseasPropertyCheckYourAnswers.accountMethodQuestion,
-            value = Some("Traditional accounting"),
-            actions = Seq(
-              SummaryListActionValues(
-                href = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyAccountingMethodController.show(editMode = true).url,
-                text = s"${OverseasPropertyCheckYourAnswers.change} ${OverseasPropertyCheckYourAnswers.accountMethodQuestion}",
-                visuallyHidden = OverseasPropertyCheckYourAnswers.accountMethodQuestion
+          ))
+        }
+        "in global edit mode" in {
+          document(completeAccrualsProperty, isGlobalEdit = true).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+            SummaryListRowValues(
+              key = OverseasPropertyCheckYourAnswers.startDateQuestion,
+              value = Some("8 November 2021"),
+              actions = Seq(
+                SummaryListActionValues(
+                  href = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show(editMode = true, isGlobalEdit = true).url,
+                  text = s"${OverseasPropertyCheckYourAnswers.change} ${OverseasPropertyCheckYourAnswers.startDateQuestion}",
+                  visuallyHidden = OverseasPropertyCheckYourAnswers.startDateQuestion
+                )
+              )
+            ),
+            SummaryListRowValues(
+              key = OverseasPropertyCheckYourAnswers.accountMethodQuestion,
+              value = Some("Traditional accounting"),
+              actions = Seq(
+                SummaryListActionValues(
+                  href = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyAccountingMethodController.show(editMode = true, isGlobalEdit = true).url,
+                  text = s"${OverseasPropertyCheckYourAnswers.change} ${OverseasPropertyCheckYourAnswers.accountMethodQuestion}",
+                  visuallyHidden = OverseasPropertyCheckYourAnswers.accountMethodQuestion
+                )
               )
             )
-          )
-        ))
+          ))
+        }
       }
       "all answers are missing" in {
         document(incompleteProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
@@ -162,9 +220,17 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
     "have a form" which {
       def form: Element = document(completeCashProperty).mainContent.getForm
 
-      "has the correct attributes" in {
-        form.attr("method") mustBe "POST"
-        form.attr("action") mustBe controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.submit().url
+      "has the correct attributes" when {
+        "not in global edit mode" in {
+          form.attr("method") mustBe "POST"
+          form.attr("action") mustBe controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.submit().url
+        }
+        "in global edit mode" in {
+          document(viewModel = completeCashProperty.copy(confirmed = true), isGlobalEdit = true).mainContent.getForm.attr("method") mustBe "POST"
+          document(viewModel = completeCashProperty.copy(confirmed = true), isGlobalEdit = true).mainContent.getForm.attr("action") mustBe controllers.individual.tasklist.overseasproperty
+            .routes.OverseasPropertyCheckYourAnswersController.submit(isGlobalEdit = true).url
+
+        }
       }
       "has a confirm and continue button" in {
         form.selectNth(".govuk-button", 1).text mustBe OverseasPropertyCheckYourAnswers.confirmedAndContinue
@@ -177,11 +243,12 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
     }
   }
 
-  private def page(viewModel: OverseasPropertyModel) = view(
+  private def page(viewModel: OverseasPropertyModel, isGlobalEdit: Boolean) = view(
     viewModel,
-    postAction = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.submit(),
-    backUrl = "test-back-url"
+    postAction = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.submit(isGlobalEdit),
+    backUrl = "test-back-url",
+    isGlobalEdit = isGlobalEdit
   )
 
-  private def document(viewModel: OverseasPropertyModel) = Jsoup.parse(page(viewModel).body)
+  private def document(viewModel: OverseasPropertyModel, isGlobalEdit: Boolean = false) = Jsoup.parse(page(viewModel, isGlobalEdit).body)
 }

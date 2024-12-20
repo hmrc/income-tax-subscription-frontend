@@ -33,11 +33,10 @@ class UkPropertyAccountingMethodViewSpec extends ViewSpec {
 
   val propertyAccountingMethod: PropertyAccountingMethod = app.injector.instanceOf[PropertyAccountingMethod]
 
-  class Setup(isEditMode: Boolean = false) {
+  class Setup {
     val page: HtmlFormat.Appendable = propertyAccountingMethod(
       accountingMethodForm = AccountingMethodPropertyForm.accountingMethodPropertyForm,
       postAction = testCall,
-      isEditMode = isEditMode,
       backUrl = testBackUrl
     )(FakeRequest(), implicitly)
 

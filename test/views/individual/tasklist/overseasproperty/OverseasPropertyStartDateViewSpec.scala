@@ -53,13 +53,11 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
 
   val overseasPropertyStartDate: OverseasPropertyStartDate = app.injector.instanceOf[OverseasPropertyStartDate]
 
-  class Setup(isEditMode: Boolean = false,
-              form: Form[DateModel] = OverseasPropertyStartDateForm.overseasPropertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString)) {
+  class Setup(form: Form[DateModel] = OverseasPropertyStartDateForm.overseasPropertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString)) {
 
     val page: Html = overseasPropertyStartDate(
       form,
       testCall,
-      isEditMode,
       testBackUrl
     )
 
@@ -72,7 +70,6 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
         view = overseasPropertyStartDate(
           overseasPropertyStartDateForm = OverseasPropertyStartDateForm.overseasPropertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString),
           postAction = testCall,
-          isEditMode = false,
           backUrl = testBackUrl
         ),
         title = OverseasPropertyStartDateMessages.title,
@@ -82,7 +79,6 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
         view = overseasPropertyStartDate(
           overseasPropertyStartDateForm = OverseasPropertyStartDateForm.overseasPropertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString).withError(testError),
           postAction = testCall,
-          isEditMode = false,
           backUrl = testBackUrl
         ),
         title = OverseasPropertyStartDateMessages.title,
