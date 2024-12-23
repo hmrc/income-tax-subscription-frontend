@@ -24,7 +24,6 @@ import forms.individual.business.OverseasPropertyStartDateForm._
 import models.DateModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
-import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.language.LanguageUtils
@@ -35,7 +34,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class OverseasPropertyStartDateController @Inject()(overseasPropertyStartDateView: OverseasPropertyStartDate,
+class OverseasPropertyStartDateController @Inject()(view: OverseasPropertyStartDate,
                                                     subscriptionDetailsService: SubscriptionDetailsService,
                                                     referenceRetrieval: ReferenceRetrieval)
                                                    (val auditingService: AuditingService,
@@ -46,30 +45,35 @@ class OverseasPropertyStartDateController @Inject()(overseasPropertyStartDateVie
                                                     mcc: MessagesControllerComponents)
   extends SignUpController with ImplicitDateFormatter {
 
-  def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+  def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     _ => {
       referenceRetrieval.getIndividualReference flatMap { reference =>
         subscriptionDetailsService.fetchOverseasPropertyStartDate(reference) map { overseasPropertyStartDate =>
           Ok(view(
             overseasPropertyStartDateForm = form.fill(overseasPropertyStartDate),
-            isEditMode = isEditMode)
-          )
+            postAction = routes.OverseasPropertyStartDateController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
+            backUrl = backUrl(isEditMode, isGlobalEdit)
+          ))
         }
       }
     }
   }
 
-  def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+  def submit(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
       referenceRetrieval.getIndividualReference flatMap { reference =>
         form.bindFromRequest().fold(
           formWithErrors =>
-            Future.successful(BadRequest(view(overseasPropertyStartDateForm = formWithErrors, isEditMode = isEditMode))),
+            Future.successful(BadRequest(view(
+              overseasPropertyStartDateForm = formWithErrors,
+              postAction = routes.OverseasPropertyStartDateController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
+              backUrl = backUrl(isEditMode, isGlobalEdit)
+            ))),
           startDate =>
             subscriptionDetailsService.saveOverseasPropertyStartDate(reference, startDate) map {
               case Right(_) =>
-                if (isEditMode) {
-                  Redirect(routes.OverseasPropertyCheckYourAnswersController.show(isEditMode))
+                if (isEditMode || isGlobalEdit) {
+                  Redirect(routes.OverseasPropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit))
                 } else {
                   Redirect(routes.OverseasPropertyAccountingMethodController.show())
                 }
@@ -79,23 +83,14 @@ class OverseasPropertyStartDateController @Inject()(overseasPropertyStartDateVie
       }
   }
 
-  def backUrl(isEditMode: Boolean): String = {
-    if (isEditMode) {
-      routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
+  private def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean): String = {
+    if (isEditMode || isGlobalEdit) {
+      routes.OverseasPropertyCheckYourAnswersController.show(editMode = true, isGlobalEdit).url
     } else {
       controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
     }
   }
 
-  private def view(overseasPropertyStartDateForm: Form[DateModel], isEditMode: Boolean)
-                  (implicit request: Request[_]): Html = {
-    overseasPropertyStartDateView(
-      overseasPropertyStartDateForm = overseasPropertyStartDateForm,
-      postAction = routes.OverseasPropertyStartDateController.submit(editMode = isEditMode),
-      isEditMode = isEditMode,
-      backUrl = backUrl(isEditMode)
-    )
-  }
 
   private def form(implicit request: Request[_]): Form[DateModel] = {
     overseasPropertyStartDateForm(OverseasPropertyStartDateForm.minStartDate, OverseasPropertyStartDateForm.maxStartDate, d => d.toLongDate)

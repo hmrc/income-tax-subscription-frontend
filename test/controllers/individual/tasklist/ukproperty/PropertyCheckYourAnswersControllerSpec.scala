@@ -21,119 +21,209 @@ import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionD
 import controllers.individual.ControllerBaseSpec
 import models.common.PropertyModel
 import models.{Cash, DateModel}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
-import play.twirl.api.HtmlFormat
-import services.mocks.{MockAccountingPeriodService, MockAuditingService, MockReferenceRetrieval, MockSubscriptionDetailsService}
-import views.agent.mocks.MockWhatYearToSignUp
-import views.html.individual.tasklist.ukproperty.PropertyCheckYourAnswers
+import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSubscriptionDetailsService}
+import uk.gov.hmrc.http.InternalServerException
+import views.individual.mocks.MockPropertyCheckYourAnswers
 
 import scala.concurrent.Future
 
 class PropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
-  with MockWhatYearToSignUp
   with MockAuditingService
-  with MockAccountingPeriodService
   with MockReferenceRetrieval
-  with MockSubscriptionDetailsService {
+  with MockSubscriptionDetailsService
+  with MockPropertyCheckYourAnswers {
 
   override val controllerName: String = "PropertyCheckYourAnswersController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
   "show" should {
-    "return an OK status with the property CYA page" in withController { controller =>
-      mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash))))
+    "return an OK status with the property CYA page" when {
+      "with partial property data" in withController { controller =>
+        mockPropertyCheckYourAnswersView(
+          viewModel = testFullProperty.copy(startDate = None),
+          postAction = routes.PropertyCheckYourAnswersController.submit(),
+          backUrl = routes.PropertyAccountingMethodController.show().url,
+          isGlobalEdit = false
+        )
+        mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash))))
 
-      val result: Future[Result] = await(controller.show(false)(subscriptionRequest))
+        val result: Future[Result] = await(controller.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest))
 
-      status(result) mustBe OK
-      contentType(result) mustBe Some(HTML)
-      charset(result) mustBe Some(Codec.utf_8.charset)
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+        charset(result) mustBe Some(Codec.utf_8.charset)
+      }
+
+      "with complete property data" in withController { controller =>
+        mockPropertyCheckYourAnswersView(
+          viewModel = testFullProperty,
+          postAction = routes.PropertyCheckYourAnswersController.submit(),
+          backUrl = routes.PropertyAccountingMethodController.show().url,
+          isGlobalEdit = false
+        )
+        mockFetchProperty(Some(testFullProperty))
+
+        val result: Future[Result] = await(controller.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest))
+
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+        charset(result) mustBe Some(Codec.utf_8.charset)
+      }
+
+      "in edit mode" in withController { controller =>
+        mockPropertyCheckYourAnswersView(
+          viewModel = testFullProperty,
+          postAction = routes.PropertyCheckYourAnswersController.submit(),
+          backUrl = controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url,
+          isGlobalEdit = false
+        )
+        mockFetchProperty(Some(testFullProperty))
+
+        val result: Future[Result] = await(controller.show(isEditMode = true, isGlobalEdit = false)(subscriptionRequest))
+
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+        charset(result) mustBe Some(Codec.utf_8.charset)
+      }
+
+      "in global edit mode with confirmed property" in withController { controller =>
+        mockPropertyCheckYourAnswersView(
+          viewModel = testFullProperty.copy(confirmed = true),
+          postAction = routes.PropertyCheckYourAnswersController.submit(isGlobalEdit = true),
+          backUrl = controllers.individual.routes.GlobalCheckYourAnswersController.show.url,
+          isGlobalEdit = true
+        )
+        mockFetchProperty(Some(testFullProperty.copy(confirmed = true)))
+
+        val result: Future[Result] = await(controller.show(isEditMode = false, isGlobalEdit = true)(subscriptionRequest))
+
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+        charset(result) mustBe Some(Codec.utf_8.charset)
+      }
+
+      "in global edit mode with property not confirmed" in withController { controller =>
+        mockPropertyCheckYourAnswersView(
+          viewModel = testFullProperty,
+          postAction = routes.PropertyCheckYourAnswersController.submit(isGlobalEdit = true),
+          backUrl = controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url,
+          isGlobalEdit = true
+        )
+        mockFetchProperty(Some(testFullProperty))
+
+        val result: Future[Result] = await(controller.show(isEditMode = false, isGlobalEdit = true)(subscriptionRequest))
+
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+        charset(result) mustBe Some(Codec.utf_8.charset)
+      }
     }
 
     "throw an exception if cannot retrieve property details" in withController { controller =>
       mockFetchProperty(None)
 
-      val result: Future[Result] = await(controller.show(false)(subscriptionRequest))
+      val result: Future[Result] = await(controller.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest))
 
-      result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
+      intercept[InternalServerException](await(result)).message mustBe "[PropertyCheckYourAnswersController] - Could not retrieve property details"
     }
   }
 
-  "submit" should {
-    "redirect to the your income sources page and confirm the uk property details" when {
-      "the user submits a start date and accounting method" in withController { controller =>
-        mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))))
-        mockSaveProperty(PropertyModel(Some(Cash), Some(DateModel("10", "11", "2021")), confirmed = true))(
-          Right(PostSubscriptionDetailsSuccessResponse)
-        )
+  "submit" when {
+    "not in global edit mode" should {
+      "redirect to the your income sources page and confirm the uk property details" when {
+        "the user submits a start date and accounting method" in withController { controller =>
+          mockFetchProperty(Some(testFullProperty))
+          mockSaveProperty(testFullProperty.copy(confirmed = true))(
+            Right(PostSubscriptionDetailsSuccessResponse)
+          )
 
-        val result: Future[Result] = await(controller.submit()(subscriptionRequest))
+          val result: Future[Result] = await(controller.submit(isGlobalEdit = false)(subscriptionRequest))
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
+        }
+      }
+
+      "redirect to the your income sources page but don't confirm the uk property details" when {
+        "the user submits partial data" in withController { controller =>
+          mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash))))
+
+          val result: Future[Result] = await(controller.submit(isGlobalEdit = false)(subscriptionRequest))
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
+        }
+      }
+
+      "throw an exception" when {
+        "cannot confirm property details" in withController { controller =>
+          mockFetchProperty(Some(PropertyModel(Some(Cash), Some(DateModel("1", "1", "1980")))))
+          mockSaveProperty(PropertyModel(Some(Cash), Some(DateModel("1", "1", "1980")), confirmed = true))(
+            Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
+          )
+
+          val result: Future[Result] = await(controller.submit(isGlobalEdit = false)(subscriptionRequest))
+
+          intercept[InternalServerException](await(result)).message mustBe "[PropertyCheckYourAnswersController][submit] - Could not confirm property"
+        }
+
+        "cannot retrieve property details" in withController { controller =>
+          mockFetchProperty(None)
+
+          val result: Future[Result] = await(controller.submit(isGlobalEdit = false)(subscriptionRequest))
+
+          intercept[InternalServerException](await(result)).message mustBe "[PropertyCheckYourAnswersController] - Could not retrieve property details"
+        }
       }
     }
-    "redirect to the your income sources page but don't confirm the uk property details" when {
-      "the user submits partial data" in withController { controller =>
-        mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash))))
 
-        val result: Future[Result] = await(controller.submit()(subscriptionRequest))
+    "in global edit mode" should {
+      "redirect to the global CYA page and confirm the uk property details" when {
+        "the user submits complete valid data" in withController { controller =>
+          mockFetchProperty(Some(testFullProperty))
+          mockSaveProperty(testFullProperty.copy(confirmed = true))(
+            Right(PostSubscriptionDetailsSuccessResponse)
+          )
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
+          val result: Future[Result] = await(controller.submit(isGlobalEdit = true)(subscriptionRequest))
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.individual.routes.GlobalCheckYourAnswersController.show.url)
+        }
+      }
+
+      "throw an exception" when {
+        "cannot confirm property details" in withController { controller =>
+          mockFetchProperty(Some(PropertyModel(Some(Cash), Some(DateModel("1", "1", "1980")))))
+          mockSaveProperty(PropertyModel(Some(Cash), Some(DateModel("1", "1", "1980")), confirmed = true))(
+            Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
+          )
+
+          val result: Future[Result] = await(controller.submit(isGlobalEdit = true)(subscriptionRequest))
+
+          intercept[InternalServerException](await(result)).message mustBe "[PropertyCheckYourAnswersController][submit] - Could not confirm property"
+        }
+
+        "cannot retrieve property details" in withController { controller =>
+          mockFetchProperty(None)
+
+          val result: Future[Result] = await(controller.submit(isGlobalEdit = true)(subscriptionRequest))
+
+          intercept[InternalServerException](await(result)).message mustBe "[PropertyCheckYourAnswersController] - Could not retrieve property details"
+        }
       }
     }
   }
 
-  "submit" should {
-    "throw an exception" when {
-      "cannot retrieve property details" in withController { controller =>
-        mockFetchProperty(None)
-
-        val result: Future[Result] = await(controller.submit()(subscriptionRequest))
-
-        result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
-      }
-
-      "cannot confirm property details" in withController { controller =>
-        mockFetchProperty(Some(PropertyModel(Some(Cash), Some(DateModel("1", "1", "1980")))))
-        mockSaveProperty(PropertyModel(Some(Cash), Some(DateModel("1", "1", "1980")), confirmed = true))(
-          Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
-        )
-
-        val result: Future[Result] = await(controller.submit()(subscriptionRequest))
-
-        result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
-      }
-    }
-  }
-
-  "backUrl" should {
-    "in edit mode " when {
-      "return the task list page" in withController { controller =>
-        controller.backUrl(true) mustBe controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
-      }
-    }
-    "go to the property accounting method page" when {
-      "not in edit mode" in withController { controller =>
-        controller.backUrl(false) mustBe routes.PropertyAccountingMethodController.show().url
-      }
-    }
-  }
+  private val testFullProperty: PropertyModel = PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))
 
   private def withController(testCode: PropertyCheckYourAnswersController => Any): Unit = {
-    val view = mock[PropertyCheckYourAnswers]
-
-    when(view(any(), any(), any())(any(), any()))
-      .thenReturn(HtmlFormat.empty)
 
     val controller = new PropertyCheckYourAnswersController(
-      view,
+      mockView,
       mockSubscriptionDetailsService,
       mockReferenceRetrieval
     )(

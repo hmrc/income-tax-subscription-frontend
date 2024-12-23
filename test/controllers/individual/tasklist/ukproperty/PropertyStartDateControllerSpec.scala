@@ -21,11 +21,11 @@ import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionD
 import controllers.individual.ControllerBaseSpec
 import forms.individual.business.PropertyStartDateForm
 import models.DateModel
-import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSubscriptionDetailsService}
+import uk.gov.hmrc.http.InternalServerException
 import views.individual.mocks.MockPropertyStartDate
 
 import java.time.LocalDate
@@ -39,8 +39,8 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
 
   override val controllerName: String = "PropertyStartDateController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestPropertyStartDateController.show(isEditMode = false),
-    "submit" -> TestPropertyStartDateController.submit(isEditMode = false)
+    "show" -> TestPropertyStartDateController.show(isEditMode = false, isGlobalEdit = false),
+    "submit" -> TestPropertyStartDateController.submit(isEditMode = false, isGlobalEdit = false)
   )
 
   object TestPropertyStartDateController extends PropertyStartDateController(
@@ -68,13 +68,50 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
   }
 
   "show" should {
-    "display the property accounting method view and return OK (200)" in new Test {
-      mockPropertyStartDate()
-      mockFetchPropertyStartDate(None)
+    "display the property accounting method view and return OK (200)" when {
+      "no start date is returned" in new Test {
+        mockPropertyStartDate(
+          postAction = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.submit(),
+          backUrl = controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
+        mockFetchPropertyStartDate(None)
 
-      val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
+        val result: Result = await(controller.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest))
 
-      status(result) must be(Status.OK)
+        status(result) must be(Status.OK)
+      }
+
+      "a start date is returned" in new Test {
+        mockPropertyStartDate(
+          postAction = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.submit(),
+          backUrl = controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
+        mockFetchPropertyStartDate(Some(testPropertyStartDate))
+
+        val result: Result = await(controller.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest))
+
+        status(result) must be(Status.OK)
+      }
+
+      "in edit mode" in new Test {
+        mockPropertyStartDate(
+          postAction = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.submit(editMode = true),
+          backUrl = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url)
+        mockFetchPropertyStartDate(Some(testPropertyStartDate))
+
+        val result: Result = await(controller.show(isEditMode = true, isGlobalEdit = false)(subscriptionRequest))
+
+        status(result) must be(Status.OK)
+      }
+
+      "in global edit mode" in new Test {
+        mockPropertyStartDate(
+          postAction = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.submit(editMode = true, isGlobalEdit = true),
+          backUrl = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true, isGlobalEdit = true).url)
+        mockFetchPropertyStartDate(Some(testPropertyStartDate))
+
+        val result: Result = await(controller.show(isEditMode = true, isGlobalEdit = true)(subscriptionRequest))
+
+        status(result) must be(Status.OK)
+      }
     }
   }
 
@@ -86,11 +123,12 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
 
     val testPropertyStartDateModel: DateModel = testValidMaxDate
 
-    def callSubmit(isEditMode: Boolean): Future[Result] = TestPropertyStartDateController.submit(isEditMode = isEditMode)(
-      subscriptionRequest.post(PropertyStartDateForm.propertyStartDateForm(minDate, maxDate, d => d.toString), testPropertyStartDateModel)
-    )
+    def callSubmit(isEditMode: Boolean, isGlobalEdit: Boolean): Future[Result] =
+      TestPropertyStartDateController.submit(isEditMode = isEditMode, isGlobalEdit = isGlobalEdit)(
+        subscriptionRequest.post(PropertyStartDateForm.propertyStartDateForm(minDate, maxDate, d => d.toString), testPropertyStartDateModel)
+      )
 
-    def callSubmitWithErrorForm(isEditMode: Boolean): Future[Result] = TestPropertyStartDateController.submit(isEditMode = isEditMode)(
+    def callSubmitWithErrorForm(isEditMode: Boolean): Future[Result] = TestPropertyStartDateController.submit(isEditMode = isEditMode, isGlobalEdit = false)(
       subscriptionRequest
     )
 
@@ -98,10 +136,21 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
       "redirect to the uk property check your answers page" in {
         mockSavePropertyStartDate(testPropertyStartDateModel)(Right(PostSubscriptionDetailsSuccessResponse))
 
-        val goodRequest = await(callSubmit(isEditMode = true))
+        val goodRequest = await(callSubmit(isEditMode = true, isGlobalEdit = false))
 
         status(goodRequest) mustBe SEE_OTHER
-        redirectLocation(goodRequest) mustBe Some(routes.PropertyCheckYourAnswersController.show(true).url)
+        redirectLocation(goodRequest) mustBe Some(routes.PropertyCheckYourAnswersController.show(editMode = true).url)
+      }
+    }
+
+    "in global edit mode" should {
+      "redirect to the uk property check your answers page" in {
+        mockSavePropertyStartDate(testPropertyStartDateModel)(Right(PostSubscriptionDetailsSuccessResponse))
+
+        val goodRequest = await(callSubmit(isEditMode = true, isGlobalEdit = true))
+
+        status(goodRequest) mustBe SEE_OTHER
+        redirectLocation(goodRequest) mustBe Some(routes.PropertyCheckYourAnswersController.show(editMode = true, isGlobalEdit = true).url)
       }
     }
 
@@ -109,7 +158,7 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
       "redirect to the uk property accounting method page" in {
         mockSavePropertyStartDate(testPropertyStartDateModel)(Right(PostSubscriptionDetailsSuccessResponse))
 
-        val goodRequest = await(callSubmit(isEditMode = false))
+        val goodRequest = await(callSubmit(isEditMode = false, isGlobalEdit = false))
 
         status(goodRequest) mustBe SEE_OTHER
         redirectLocation(goodRequest) mustBe Some(routes.PropertyAccountingMethodController.show().url)
@@ -118,39 +167,28 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
 
     "return BAD_REQUEST" when {
       "there is an invalid submission with an error form" in {
-        mockPropertyStartDate()
+        mockPropertyStartDate(
+          postAction = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.submit(),
+          backUrl = controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
 
         val badRequest = callSubmitWithErrorForm(isEditMode = false)
 
         status(badRequest) must be(Status.BAD_REQUEST)
-
-        await(badRequest)
       }
+
     }
 
     "throw an exception" when {
       "cannot save the start date" in {
         mockSavePropertyStartDate(testPropertyStartDateModel)(Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
-        val goodRequest: Future[Result] = callSubmit(isEditMode = false)
+        val result: Future[Result] = callSubmit(isEditMode = false, isGlobalEdit = false)
 
-        goodRequest.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
-      }
-    }
-
-    "The back url is in edit mode" should {
-      "redirect back to uk property check your answers page" in new Test {
-        controller.backUrl(isEditMode = true) mustBe
-          routes.PropertyCheckYourAnswersController.show(true).url
-      }
-    }
-
-    "The back url is not in edit mode" should {
-      "redirect back to what income source page" in new Test {
-        controller.backUrl(isEditMode = false) mustBe
-          controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
+        intercept[InternalServerException](await(result)).message mustBe "[PropertyStartDateController][submit] - Could not save start date"
       }
     }
   }
+
+  private val testPropertyStartDate: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(1))
 }
 

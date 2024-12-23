@@ -47,7 +47,8 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
       view = propertyCheckYourAnswersView(
         completeCashProperty,
         testCall,
-        testBackUrl
+        testBackUrl,
+        isGlobalEdit = false
       ),
       title = PropertyCheckYourAnswers.title,
       backLink = Some(testBackUrl),
@@ -63,94 +64,161 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
       )
     }
 
-    "have a summary of the answers" when {
-      "start date and accounting method cash are defined" in {
-        document().mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-          SummaryListRowValues(
-            key = PropertyCheckYourAnswers.startDateQuestion,
-            value = Some("8 November 2021"),
-            actions = Seq(
-              SummaryListActionValues(
-                href = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.show(editMode = true).url,
-                text = s"${PropertyCheckYourAnswers.change} ${PropertyCheckYourAnswers.startDateQuestion}",
-                visuallyHidden = PropertyCheckYourAnswers.startDateQuestion
+    "not in global edit mode" should {
+      "have a summary of the answers" when {
+        "start date and accounting method cash are defined" in {
+          document().mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+            SummaryListRowValues(
+              key = PropertyCheckYourAnswers.startDateQuestion,
+              value = Some("8 November 2021"),
+              actions = Seq(
+                SummaryListActionValues(
+                  href = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.show(editMode = true).url,
+                  text = s"${PropertyCheckYourAnswers.change} ${PropertyCheckYourAnswers.startDateQuestion}",
+                  visuallyHidden = PropertyCheckYourAnswers.startDateQuestion
+                )
+              )
+            ),
+            SummaryListRowValues(
+              key = PropertyCheckYourAnswers.accountMethodQuestion,
+              value = Some("Cash basis accounting"),
+              actions = Seq(
+                SummaryListActionValues(
+                  href = controllers.individual.tasklist.ukproperty.routes.PropertyAccountingMethodController.show(editMode = true).url,
+                  text = s"${PropertyCheckYourAnswers.change} ${PropertyCheckYourAnswers.accountMethodQuestion}",
+                  visuallyHidden = PropertyCheckYourAnswers.accountMethodQuestion
+                )
               )
             )
-          ),
-          SummaryListRowValues(
-            key = PropertyCheckYourAnswers.accountMethodQuestion,
-            value = Some("Cash basis accounting"),
-            actions = Seq(
-              SummaryListActionValues(
-                href = controllers.individual.tasklist.ukproperty.routes.PropertyAccountingMethodController.show(editMode = true).url,
-                text = s"${PropertyCheckYourAnswers.change} ${PropertyCheckYourAnswers.accountMethodQuestion}",
-                visuallyHidden = PropertyCheckYourAnswers.accountMethodQuestion
+          ))
+        }
+        "start date and accounting method accruals are defined" in {
+          document(completeAccrualsProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+            SummaryListRowValues(
+              key = PropertyCheckYourAnswers.startDateQuestion,
+              value = Some("8 November 2021"),
+              actions = Seq(
+                SummaryListActionValues(
+                  href = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.show(editMode = true).url,
+                  text = s"${PropertyCheckYourAnswers.change} ${PropertyCheckYourAnswers.startDateQuestion}",
+                  visuallyHidden = PropertyCheckYourAnswers.startDateQuestion
+                )
+              )
+            ),
+            SummaryListRowValues(
+              key = PropertyCheckYourAnswers.accountMethodQuestion,
+              value = Some("Traditional accounting"),
+              actions = Seq(
+                SummaryListActionValues(
+                  href = controllers.individual.tasklist.ukproperty.routes.PropertyAccountingMethodController.show(editMode = true).url,
+                  text = s"${PropertyCheckYourAnswers.change} ${PropertyCheckYourAnswers.accountMethodQuestion}",
+                  visuallyHidden = PropertyCheckYourAnswers.accountMethodQuestion
+                )
               )
             )
-          )
-        ))
+          ))
+        }
+        "all answers are missing" in {
+          document(incompleteProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+            SummaryListRowValues(
+              key = PropertyCheckYourAnswers.startDateQuestion,
+              value = None,
+              actions = Seq(
+                SummaryListActionValues(
+                  href = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.show(editMode = true).url,
+                  text = s"${PropertyCheckYourAnswers.add} ${PropertyCheckYourAnswers.startDateQuestion}",
+                  visuallyHidden = PropertyCheckYourAnswers.startDateQuestion
+                )
+              )
+            ),
+            SummaryListRowValues(
+              key = PropertyCheckYourAnswers.accountMethodQuestion,
+              value = None,
+              actions = Seq(
+                SummaryListActionValues(
+                  href = controllers.individual.tasklist.ukproperty.routes.PropertyAccountingMethodController.show(editMode = true).url,
+                  text = s"${PropertyCheckYourAnswers.add} ${PropertyCheckYourAnswers.accountMethodQuestion}",
+                  visuallyHidden = PropertyCheckYourAnswers.accountMethodQuestion
+                )
+              )
+            )
+          ))
+        }
       }
-      "start date and accounting method accruals are defined" in {
-        document(completeAccrualsProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-          SummaryListRowValues(
-            key = PropertyCheckYourAnswers.startDateQuestion,
-            value = Some("8 November 2021"),
-            actions = Seq(
-              SummaryListActionValues(
-                href = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.show(editMode = true).url,
-                text = s"${PropertyCheckYourAnswers.change} ${PropertyCheckYourAnswers.startDateQuestion}",
-                visuallyHidden = PropertyCheckYourAnswers.startDateQuestion
+    }
+
+    "in global edit mode" should {
+      "have a summary of the answers" when {
+        "start date and accounting method cash are defined" in {
+          document(isGlobalEdit = true).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+            SummaryListRowValues(
+              key = PropertyCheckYourAnswers.startDateQuestion,
+              value = Some("8 November 2021"),
+              actions = Seq(
+                SummaryListActionValues(
+                  href = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.show(editMode = true, isGlobalEdit = true).url,
+                  text = s"${PropertyCheckYourAnswers.change} ${PropertyCheckYourAnswers.startDateQuestion}",
+                  visuallyHidden = PropertyCheckYourAnswers.startDateQuestion
+                )
+              )
+            ),
+            SummaryListRowValues(
+              key = PropertyCheckYourAnswers.accountMethodQuestion,
+              value = Some("Cash basis accounting"),
+              actions = Seq(
+                SummaryListActionValues(
+                  href = controllers.individual.tasklist.ukproperty.routes.PropertyAccountingMethodController.show(editMode = true, isGlobalEdit = true).url,
+                  text = s"${PropertyCheckYourAnswers.change} ${PropertyCheckYourAnswers.accountMethodQuestion}",
+                  visuallyHidden = PropertyCheckYourAnswers.accountMethodQuestion
+                )
               )
             )
-          ),
-          SummaryListRowValues(
-            key = PropertyCheckYourAnswers.accountMethodQuestion,
-            value = Some("Traditional accounting"),
-            actions = Seq(
-              SummaryListActionValues(
-                href = controllers.individual.tasklist.ukproperty.routes.PropertyAccountingMethodController.show(editMode = true).url,
-                text = s"${PropertyCheckYourAnswers.change} ${PropertyCheckYourAnswers.accountMethodQuestion}",
-                visuallyHidden = PropertyCheckYourAnswers.accountMethodQuestion
+          ))
+        }
+        "start date and accounting method accruals are defined" in {
+          document(completeAccrualsProperty, isGlobalEdit = true).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+            SummaryListRowValues(
+              key = PropertyCheckYourAnswers.startDateQuestion,
+              value = Some("8 November 2021"),
+              actions = Seq(
+                SummaryListActionValues(
+                  href = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.show(editMode = true, isGlobalEdit = true).url,
+                  text = s"${PropertyCheckYourAnswers.change} ${PropertyCheckYourAnswers.startDateQuestion}",
+                  visuallyHidden = PropertyCheckYourAnswers.startDateQuestion
+                )
+              )
+            ),
+            SummaryListRowValues(
+              key = PropertyCheckYourAnswers.accountMethodQuestion,
+              value = Some("Traditional accounting"),
+              actions = Seq(
+                SummaryListActionValues(
+                  href = controllers.individual.tasklist.ukproperty.routes.PropertyAccountingMethodController.show(editMode = true, isGlobalEdit = true).url,
+                  text = s"${PropertyCheckYourAnswers.change} ${PropertyCheckYourAnswers.accountMethodQuestion}",
+                  visuallyHidden = PropertyCheckYourAnswers.accountMethodQuestion
+                )
               )
             )
-          )
-        ))
-      }
-      "all answers are missing" in {
-        document(incompleteProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-          SummaryListRowValues(
-            key = PropertyCheckYourAnswers.startDateQuestion,
-            value = None,
-            actions = Seq(
-              SummaryListActionValues(
-                href = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.show(editMode = true).url,
-                text = s"${PropertyCheckYourAnswers.add} ${PropertyCheckYourAnswers.startDateQuestion}",
-                visuallyHidden = PropertyCheckYourAnswers.startDateQuestion
-              )
-            )
-          ),
-          SummaryListRowValues(
-            key = PropertyCheckYourAnswers.accountMethodQuestion,
-            value = None,
-            actions = Seq(
-              SummaryListActionValues(
-                href = controllers.individual.tasklist.ukproperty.routes.PropertyAccountingMethodController.show(editMode = true).url,
-                text = s"${PropertyCheckYourAnswers.add} ${PropertyCheckYourAnswers.accountMethodQuestion}",
-                visuallyHidden = PropertyCheckYourAnswers.accountMethodQuestion
-              )
-            )
-          )
-        ))
+          ))
+        }
       }
     }
 
     "have a form" which {
       def form: Element = document().mainContent.getForm
 
-      "has the correct attributes" in {
-        form.attr("method") mustBe "POST"
-        form.attr("action") mustBe controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.submit().url
+      "has the correct attributes" when {
+        "not in global edit mode" in {
+          form.attr("method") mustBe "POST"
+          form.attr("action") mustBe controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.submit().url
+        }
+        "in global edit mode" in {
+          document(isGlobalEdit = true).mainContent.getForm.attr("method") mustBe "POST"
+          document(isGlobalEdit = true).mainContent.getForm.attr("action") mustBe controllers.individual.tasklist.ukproperty
+            .routes.PropertyCheckYourAnswersController.submit(isGlobalEdit = true).url
+        }
       }
+
       "has a confirm and continue button" in {
         form.selectNth(".govuk-button", 1).text mustBe PropertyCheckYourAnswers.confirmedAndContinue
       }
@@ -162,11 +230,12 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
     }
   }
 
-  private def page(viewModel: PropertyModel) = propertyCheckYourAnswersView(
+  private def page(viewModel: PropertyModel, isGlobalEdit: Boolean) = propertyCheckYourAnswersView(
     viewModel,
-    postAction = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.submit(),
-    backUrl = "test-back-url"
+    postAction = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.submit(isGlobalEdit),
+    backUrl = "test-back-url",
+    isGlobalEdit = isGlobalEdit
   )
 
-  private def document(viewModel: PropertyModel = completeCashProperty) = Jsoup.parse(page(viewModel).body)
+  private def document(viewModel: PropertyModel = completeCashProperty, isGlobalEdit: Boolean = false) = Jsoup.parse(page(viewModel, isGlobalEdit).body)
 }

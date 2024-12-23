@@ -26,7 +26,7 @@
         saveAndContinueButtonHelper: SaveAndContinueButtonHelper
 )
 
-@(overseasPropertyStartDateForm: Form[DateModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages)
+@(overseasPropertyStartDateForm: Form[DateModel], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = messages("overseas.property.name.title"), optForm = Some(overseasPropertyStartDateForm), backLink = Some(backUrl)) {
 

@@ -24,7 +24,6 @@ import forms.individual.business.PropertyStartDateForm._
 import models.DateModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
-import play.twirl.api.Html
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.language.LanguageUtils
@@ -35,7 +34,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PropertyStartDateController @Inject()(propertyStartDate: PropertyStartDate,
+class PropertyStartDateController @Inject()(view: PropertyStartDate,
                                             subscriptionDetailsService: SubscriptionDetailsService,
                                             referenceRetrieval: ReferenceRetrieval)
                                            (val auditingService: AuditingService,
@@ -45,17 +44,7 @@ class PropertyStartDateController @Inject()(propertyStartDate: PropertyStartDate
                                            (implicit val ec: ExecutionContext,
                                             mcc: MessagesControllerComponents) extends SignUpController with ImplicitDateFormatter {
 
-  def view(propertyStartDateForm: Form[DateModel], isEditMode: Boolean)
-          (implicit request: Request[_]): Html = {
-    propertyStartDate(
-      propertyStartDateForm = propertyStartDateForm,
-      postAction = routes.PropertyStartDateController.submit(editMode = isEditMode),
-      isEditMode = isEditMode,
-      backUrl = backUrl(isEditMode)
-    )
-  }
-
-  def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+  def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
       for {
         reference <- referenceRetrieval.getIndividualReference
@@ -63,25 +52,29 @@ class PropertyStartDateController @Inject()(propertyStartDate: PropertyStartDate
       } yield {
         Ok(view(
           propertyStartDateForm = form.fill(startDate),
-          isEditMode = isEditMode
+          postAction = routes.PropertyStartDateController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
+          backUrl = backUrl(isEditMode, isGlobalEdit)
         ))
       }
   }
 
-  def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+  def submit(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
       referenceRetrieval.getIndividualReference flatMap { reference =>
         form.bindFromRequest().fold(
           formWithErrors => {
-            Future.successful(BadRequest(view(propertyStartDateForm = formWithErrors, isEditMode = isEditMode)))
+            Future.successful(BadRequest(view(
+              propertyStartDateForm = formWithErrors,
+              postAction = routes.PropertyStartDateController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
+              backUrl = backUrl(isEditMode, isGlobalEdit))))
           },
           startDate =>
             subscriptionDetailsService.savePropertyStartDate(reference, startDate) map {
               case Right(_) =>
-                if (isEditMode) {
-                  Redirect(routes.PropertyCheckYourAnswersController.show(isEditMode))
+                if (isEditMode || isGlobalEdit) {
+                  Redirect(routes.PropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit))
                 } else {
-                  Redirect(routes.PropertyAccountingMethodController.show(isEditMode))
+                  Redirect(routes.PropertyAccountingMethodController.show())
                 }
               case Left(_) => throw new InternalServerException("[PropertyStartDateController][submit] - Could not save start date")
             }
@@ -89,14 +82,13 @@ class PropertyStartDateController @Inject()(propertyStartDate: PropertyStartDate
       }
   }
 
-  def backUrl(isEditMode: Boolean): String = {
-    if (isEditMode) {
-      routes.PropertyCheckYourAnswersController.show(editMode = true).url
+  private def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean): String = {
+    if (isEditMode || isGlobalEdit) {
+      routes.PropertyCheckYourAnswersController.show(editMode = true, isGlobalEdit = isGlobalEdit).url
     } else {
       controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
     }
   }
-
 
   def form(implicit request: Request[_]): Form[DateModel] = {
     propertyStartDateForm(PropertyStartDateForm.minStartDate, PropertyStartDateForm.maxStartDate, d => d.toLongDate)
