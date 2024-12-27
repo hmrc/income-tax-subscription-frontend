@@ -1185,23 +1185,31 @@ individual.global-check-your-answers.correct-info.para                          
 individual.global-check-your-answers.change-something                                           = Na, mae angen i fi newid rhywbeth
 
 # Agent Global Check Your Answers
-agent.global-check-your-answers.heading                                                         = Gwirio’ch atebion cyn i chi gofrestru’ch cleient
-agent.global-check-your-answers.income-sources.heading                                          = Ffynhonnell incwm unig fasnachwr: : {0}
-agent.global-check-your-answers.income-sources.self-employment.name                             = Enw’r
-agent.global-check-your-answers.income-sources.self-employment.start-date                       = Dyddiad dechrau masnachu
+agent.global-check-your-answers.heading                                                         = Datganiad
+agent.global-check-your-answers.caption                                                         = {0} | {1}
+agent.global-check-your-answers.para1                                                           = Dyma’r wybodaeth rydych wedi’i rhoi i ni.
+agent.global-check-your-answers.subheading                                                      = Gwirio’ch atebion cyn cofrestru
+agent.global-check-your-answers.income-sources.subheading                                       = Busnesau unig fasnachwr
+agent.global-check-your-answers.income-sources.self-employment.trade                            = Masnach
+agent.global-check-your-answers.income-sources.self-employment.name                             = Enw’r busnes
+agent.global-check-your-answers.income-sources.self-employment.start-date                       = Dyddiad dechrau
 agent.global-check-your-answers.income-sources.self-employment.address                          = Cyfeiriad
 agent.global-check-your-answers.income-sources.self-employment-accounting-method.heading        = Dull cyfrifyddu busnesau unig fasnachwr
 agent.global-check-your-answers.income-sources.self-employment.accounting-method                = Dull cyfrifyddu
-agent.global-check-your-answers.income-sources.uk-property.heading                              = Busnes eiddo yn y DU
+agent.global-check-your-answers.income-sources.property.label                                   = Eiddo
+agent.global-check-your-answers.income-sources.uk-property.label                                = Eiddo yn y DU
+agent.global-check-your-answers.income-sources.foreign-property.label                           = Eiddo tramor
 agent.global-check-your-answers.income-sources.uk-property.start-date                           = Dyddiad dechrau
 agent.global-check-your-answers.income-sources.uk-property.accounting-method                    = Dull cyfrifyddu
-agent.global-check-your-answers.income-sources.foreign-property.heading                         = Busnes eiddo tramor
+agent.global-check-your-answers.income-sources.property.heading                                 = Incwm o eiddo
 agent.global-check-your-answers.income-sources.foreign-property.start-date                      = Dyddiad dechrau
 agent.global-check-your-answers.income-sources.foreign-property.accounting-method               = Dull cyfrifyddu
 agent.global-check-your-answers.tax-year.heading                                                = Y flwyddyn dreth a ddewiswyd
-agent.global-check-your-answers.tax-year.label                                                  = Blwyddyn Dreth
-agent.global-check-your-answers.print-information                                               = Argraffwch wybodaeth y cleient hwn
-agent.global-check-your-answers.form.heading                                                    = A yw gwybodaeth eich cleient yn gywir?
-agent.global-check-your-answers.form.para                                                       = Drwy gyflwyno, rydych yn cadarnhau, hyd eithaf eich gwybodaeth, fod y manylion a rowch yn gywir.
-agent.global-check-your-answers.change-something                                                = Na, mae angen i fi newid rhywbeth
-
+agent.global-check-your-answers.tax-year.label                                                  = Blwydden treth
+agent.global-check-your-answers.using-software                                                  = Mae meddalwedd yn gweithio gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+agent.global-check-your-answers.tax-year.visually.hidden                                        = Blwydden treth
+agent.global-check-your-answers.tax-year.current                                                = Blwyddyn dreth bresennol
+agent.global-check-your-answers.tax-year.next                                                   = Blwyddyn dreth nesaf
+agent.global-check-your-answers.print-information                                               = Argraffwch eich gwybodaeth
+agent.global-check-your-answers.para2                                                           = Drwy fynd yn eich blaen, rydych yn cadarnhau bod yr wybodaeth rydych wedi’i rhoi’n gywir ac yn gyflawn hyd eithaf eich gwybodaeth.
+agent.global-check-your-answers.para3                                                           = Pan fyddwch chi’n parhau, byddwn ni’n cofrestru’ch cleient. Gall hyn gymryd ychydig o eiliadau.
