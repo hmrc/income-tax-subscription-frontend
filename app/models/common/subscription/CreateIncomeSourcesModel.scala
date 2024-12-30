@@ -69,8 +69,8 @@ object CreateIncomeSourcesModel {
   def createIncomeSources(nino: String, completeDetails: CompleteDetails): CreateIncomeSourcesModel = {
     val accountingPeriod: AccountingPeriodModel = {
       completeDetails.taxYear match {
-        case Next => getNextTaxYear
-        case Current => getCurrentTaxYear
+        case AccountingYearModel(Next, _, _) => getNextTaxYear
+        case AccountingYearModel(Current, _, _) => getCurrentTaxYear
       }
     }
 

@@ -16,375 +16,272 @@
 
 package views.individual
 
-import config.featureswitch.FeatureSwitch.PrePopulate
-import config.featureswitch.FeatureSwitching
 import models._
+import models.common.AccountingYearModel
 import models.common.business.Address
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.Html
 import services.GetCompleteDetailsService._
-import utilities.{AccountingPeriodUtil, ViewSpec}
+import utilities.ViewSpec
 import views.html.individual.GlobalCheckYourAnswers
 
 import java.time.LocalDate
 
-class GlobalCheckYourAnswersViewSpec extends ViewSpec with FeatureSwitching {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(PrePopulate)
-  }
+class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
   "GlobalCheckYourAnswers" must {
 
-    "use the correct template" when {
-      "there is no error on the page" in new TemplateViewTest(
-        view = page(
-          completeDetails = completeDetails()
-        ),
-        title = GlobalCheckYourAnswersMessages.heading,
-        isAgent = false,
-        backLink = Some(testBackUrl),
-        hasSignOutLink = true,
-        error = None
-      )
-    }
+    "use the correct template" in new TemplateViewTest(
+      view = page(
+        completeDetails = completeDetails()
+      ),
+      title = GlobalCheckYourAnswersMessages.heading,
+      isAgent = false,
+      backLink = Some(testBackUrl),
+      hasSignOutLink = true,
+      error = None
+    )
 
     "have a heading" in {
       document().mainContent.getH1Element.text mustBe GlobalCheckYourAnswersMessages.heading
     }
 
-    "have an income sources heading" in {
-      document().mainContent.selectNth("h2", 1).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.heading
-    }
-
-    "have the correct income sources displayed" when {
-      "there is only a single self employment business" must {
-        def mainContent(accountingMethod: AccountingMethod = Cash): Element = {
-          document(details = minDetails(soleTraderBusinesses = Some(selfEmploymentIncomeSource(accountingMethod = accountingMethod))))
-            .mainContent
-        }
-
-        "have a list of their sole trader income source details" which {
-          def summaryList(accountingMethod: AccountingMethod = Cash): Element = {
-            mainContent(accountingMethod).selectNth(".govuk-summary-list", 1)
-          }
-
-          "has a sole trader business heading detailing their trade" in {
-            mainContent().selectNth("h3", 1).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.heading("Plumbing-1")
-          }
-          "has a row with the business name" in {
-            val row: Element = summaryList().selectNth(".govuk-summary-list__row", 1)
-            row.selectHead("dt").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.name
-            row.selectHead("dd").text mustBe "ABC-1"
-          }
-          "has a row with the trading start date" in {
-            val row: Element = summaryList().selectNth(".govuk-summary-list__row", 2)
-            row.selectHead("dt").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.startDate
-            row.selectHead("dd").text mustBe "1 January 1980"
-          }
-          "has a row with the address" in {
-            val row: Element = summaryList().selectNth(".govuk-summary-list__row", 3)
-            row.selectHead("dt").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.address
-            row.selectHead("dd").text mustBe Address(
-              lines = Seq(
-                "1 Long Road",
-                "Lonely City"
-              ),
-              postcode = Some("ZZ11ZZ")
-            ).toString
-          }
-          "has a row with the accounting method" when {
-            "the accounting method is Cash" in {
-              val row: Element = summaryList().selectNth(".govuk-summary-list__row", 4)
-              row.selectHead("dt").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.accountingMethod
-              row.selectHead("dd").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.cash
-            }
-            "the accounting method is Accruals" in {
-              val row: Element = summaryList(accountingMethod = Accruals).selectNth(".govuk-summary-list__row", 4)
-              row.selectHead("dt").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.accountingMethod
-              row.selectHead("dd").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.accruals
-            }
-          }
-        }
-        "have no other income sources displayed" in {
-          mainContent()
-            .selectNth(".govuk-summary-list", 2)
-            .selectHead(".govuk-summary-list__row")
-            .selectHead(".govuk-summary-list__key")
-            .text mustBe GlobalCheckYourAnswersMessages.SelectedTaxYear.key
-        }
-      }
-      "there are only multiple self employment businesses" must {
-        def mainContent: Element = {
-          document(details = minDetails(soleTraderBusinesses = Some(selfEmploymentIncomeSource(accountingMethod = Cash, count = 2))))
-            .mainContent
-        }
-
-        "have a first sole trader business displayed" which {
-          def summaryList: Element = {
-            mainContent.selectNth(".govuk-summary-list", 1)
-          }
-
-          "has a sole trader business heading detailing their trade" in {
-            mainContent.selectNth("h3", 1).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.heading("Plumbing-1")
-          }
-          "has a row with the business name" in {
-            val row: Element = summaryList.selectNth(".govuk-summary-list__row", 1)
-            row.selectHead("dt").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.name
-            row.selectHead("dd").text mustBe "ABC-1"
-          }
-          "has a row with the trading start date" in {
-            val row: Element = summaryList.selectNth(".govuk-summary-list__row", 2)
-            row.selectHead("dt").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.startDate
-            row.selectHead("dd").text mustBe "1 January 1980"
-          }
-          "has a row with the address" in {
-            val row: Element = summaryList.selectNth(".govuk-summary-list__row", 3)
-            row.selectHead("dt").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.address
-            row.selectHead("dd").text mustBe Address(
-              lines = Seq(
-                "1 Long Road",
-                "Lonely City"
-              ),
-              postcode = Some("ZZ11ZZ")
-            ).toString
-          }
-          "have no row for accounting method" in {
-            summaryList.selectOptionalNth(".govuk-summary-list__row", 4) mustBe None
-          }
-        }
-
-        "have a second sole trader business displayed" which {
-          def summaryList: Element = {
-            mainContent.selectNth(".govuk-summary-list", 2)
-          }
-
-          "has a sole trader business heading detailing their trade" in {
-            mainContent.selectNth("h3", 2).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.heading("Plumbing-2")
-          }
-          "has a row with the business name" in {
-            val row: Element = summaryList.selectNth(".govuk-summary-list__row", 1)
-            row.selectHead("dt").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.name
-            row.selectHead("dd").text mustBe "ABC-2"
-          }
-          "has a row with the trading start date" in {
-            val row: Element = summaryList.selectNth(".govuk-summary-list__row", 2)
-            row.selectHead("dt").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.startDate
-            row.selectHead("dd").text mustBe "2 February 1980"
-          }
-          "has a row with the address" in {
-            val row: Element = summaryList.selectNth(".govuk-summary-list__row", 3)
-            row.selectHead("dt").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.address
-            row.selectHead("dd").text mustBe Address(
-              lines = Seq(
-                "2 Long Road",
-                "Lonely City"
-              ),
-              postcode = Some("ZZ22ZZ")
-            ).toString
-          }
-          "have no row for accounting method" in {
-            summaryList.selectOptionalNth(".govuk-summary-list__row", 4) mustBe None
-          }
-        }
-
-        "have a separate accounting method section displayed" which {
-          "has an accounting method heading" in {
-            mainContent.selectNth("h3", 3).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.accountingMethodHeading
-          }
-          "has the accounting method chosen displayed" in {
-            val summaryListRow = mainContent.selectNth(".govuk-summary-list", 3).selectHead(".govuk-summary-list__row")
-            summaryListRow.selectHead("dt").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.accountingMethod
-            summaryListRow.selectHead("dd").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.cash
-          }
-        }
-      }
-      "there is only a single uk property business" must {
-        def mainContent(accountingMethod: AccountingMethod = Cash): Element = {
-          document(details = minDetails(ukProperty = Some(ukPropertyIncomeSource(accountingMethod)))).mainContent
-        }
-
-        "have a heading for the uk property business" in {
-          mainContent().selectNth("h3", 1).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.heading
-        }
-
-        "have the uk property business details listed" which {
-          def summaryList(accountingMethod: AccountingMethod = Cash): Element = {
-            mainContent(accountingMethod).selectNth(".govuk-summary-list", 1)
-          }
-
-          "has a start date" in {
-            val row: Element = summaryList().selectNth(".govuk-summary-list__row", 1)
-            row.selectHead("dt").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.startDate
-            row.selectHead("dd").text mustBe "2 January 1980"
-          }
-          "has an accounting method" when {
-            "the accounting method is Cash" in {
-              val row: Element = summaryList().selectNth(".govuk-summary-list__row", 2)
-              row.selectHead("dt").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.accountingMethod
-              row.selectHead("dd").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.cash
-            }
-            "the accounting method is Accruals" in {
-              val row: Element = summaryList(accountingMethod = Accruals).selectNth(".govuk-summary-list__row", 2)
-              row.selectHead("dt").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.accountingMethod
-              row.selectHead("dd").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.accruals
-            }
-          }
-        }
-      }
-      "there is only a single foreign property business" must {
-        def mainContent(accountingMethod: AccountingMethod): Element = {
-          document(details = minDetails(foreignProperty = Some(foreignPropertyIncomeSource(accountingMethod))))
-            .mainContent
-        }
-
-        "have a heading for the foreign property business" in {
-          mainContent(Cash).selectNth("h3", 1).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.heading
-        }
-
-        "have the foreign property business details listed" which {
-          def summaryList(accountingMethod: AccountingMethod = Cash): Element = {
-            mainContent(accountingMethod).selectNth(".govuk-summary-list", 1)
-          }
-
-          "has a start date" in {
-            val row: Element = summaryList().selectNth(".govuk-summary-list__row", 1)
-            row.selectHead("dt").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.startDate
-            row.selectHead("dd").text mustBe "3 January 1980"
-          }
-          "has an accounting method" when {
-            "the accounting method is Cash" in {
-              val row: Element = summaryList().selectNth(".govuk-summary-list__row", 2)
-              row.selectHead("dt").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.accountingMethod
-              row.selectHead("dd").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.cash
-            }
-            "the accounting method is Accruals" in {
-              val row: Element = summaryList(accountingMethod = Accruals).selectNth(".govuk-summary-list__row", 2)
-              row.selectHead("dt").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.accountingMethod
-              row.selectHead("dd").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.accruals
-            }
-          }
-        }
-      }
-      "there is all income sources" must {
-        def mainContent: Element = {
-          document().mainContent
-        }
-
-        "have a sole trader business" which {
-          "has a heading" in {
-            mainContent.selectNth("h3", 1).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.heading("Plumbing-1")
-          }
-          "has the business details" which {
-            def summaryList: Element = mainContent.selectNth(".govuk-summary-list", 1)
-
-            "has a business name row" in {
-              val row: Element = summaryList.selectNth(".govuk-summary-list__row", 1)
-              row.selectHead("dt").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.name
-              row.selectHead("dd").text mustBe "ABC-1"
-            }
-            "has a start date row" in {
-              val row: Element = summaryList.selectNth(".govuk-summary-list__row", 2)
-              row.selectHead("dt").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.startDate
-              row.selectHead("dd").text mustBe "1 January 1980"
-            }
-            "has an address row" in {
-              val row: Element = summaryList.selectNth(".govuk-summary-list__row", 3)
-              row.selectHead("dt").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.address
-              row.selectHead("dd").text mustBe Address(
-                lines = Seq(
-                  "1 Long Road",
-                  "Lonely City"
-                ),
-                postcode = Some("ZZ11ZZ")
-              ).toString
-            }
-            "has an accounting method row" in {
-              val row: Element = summaryList.selectNth(".govuk-summary-list__row", 4)
-              row.selectHead("dt").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.accountingMethod
-              row.selectHead("dd").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.cash
-            }
-          }
-        }
-        "have a uk property business" which {
-          "has a heading" in {
-            mainContent.selectNth("h3", 2).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.heading
-          }
-          "has the uk property details" which {
-            def summaryList: Element = mainContent.selectNth(".govuk-summary-list", 2)
-
-            "has a start date row" in {
-              val row: Element = summaryList.selectNth(".govuk-summary-list__row", 1)
-              row.selectHead("dt").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.startDate
-              row.selectHead("dd").text mustBe "2 January 1980"
-            }
-            "has an accounting method row" in {
-              val row: Element = summaryList.selectNth(".govuk-summary-list__row", 2)
-              row.selectHead("dt").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.accountingMethod
-              row.selectHead("dd").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.cash
-            }
-          }
-        }
-        "have a foreign property business" which {
-          "has a heading" in {
-            mainContent.selectNth("h3", 3).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.heading
-          }
-          "has the foreign property details" which {
-            def summaryList: Element = mainContent.selectNth(".govuk-summary-list", 3)
-
-            "has a start date row" in {
-              val row: Element = summaryList.selectNth(".govuk-summary-list__row", 1)
-              row.selectHead("dt").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.startDate
-              row.selectHead("dd").text mustBe "3 January 1980"
-            }
-            "has an accounting method row" in {
-              val row: Element = summaryList.selectNth(".govuk-summary-list__row", 2)
-              row.selectHead("dt").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.accountingMethod
-              row.selectHead("dd").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.cash
-            }
-          }
-        }
-      }
-    }
-
-    "have a selected tax year heading" in {
-      document().mainContent.selectNth("h2", 2).text mustBe GlobalCheckYourAnswersMessages.SelectedTaxYear.heading
-    }
-
-    "have a summary list with the tax year selected" when {
-      "the selected tax year is Current" in {
-        val summaryList = document(details = completeDetails(taxYear = Current)).mainContent
-          .selectNth(".govuk-summary-list", 4)
-        val selectedTaxYearRow = summaryList.selectHead(".govuk-summary-list__row")
-        selectedTaxYearRow.selectHead("dt").text mustBe GlobalCheckYourAnswersMessages.SelectedTaxYear.key
-        selectedTaxYearRow.selectHead("dd").text mustBe GlobalCheckYourAnswersMessages.SelectedTaxYear.current(AccountingPeriodUtil.getCurrentTaxEndYear)
-      }
-      "the selected tax year is Next" in {
-        val summaryList = document(details = completeDetails(taxYear = Next)).mainContent
-          .selectNth(".govuk-summary-list", 4)
-        val selectedTaxYearRow = summaryList.selectHead(".govuk-summary-list__row")
-        selectedTaxYearRow.selectHead("dt").text mustBe GlobalCheckYourAnswersMessages.SelectedTaxYear.key
-        selectedTaxYearRow.selectHead("dd").text mustBe GlobalCheckYourAnswersMessages.SelectedTaxYear.next(AccountingPeriodUtil.getNextTaxEndYear)
-      }
+    "have a first paragraph" in {
+      document().mainContent.selectNth("p", 1).text mustBe GlobalCheckYourAnswersMessages.paraOne
     }
 
     "have a print information link" in {
-      val link = document().mainContent.selectHead("div > p > a.govuk-link")
+      val link = document().mainContent.selectHead("p > a.govuk-link")
       link.text mustBe GlobalCheckYourAnswersMessages.printLink
       link.attr("data-module") mustBe "hmrc-print-link"
       link.attr("href") mustBe "#"
     }
 
-    "have a correct information section" which {
-      "has a heading" in {
-        document().mainContent.selectNth(".govuk-heading-m", 3).text mustBe GlobalCheckYourAnswersMessages.correctInformation.heading
+    "have a before signing up subheading" in {
+      document().mainContent.selectNth("h2", 1).text mustBe GlobalCheckYourAnswersMessages.beforeSigningUpHeading
+    }
+
+    "have a summary of answers" when {
+      "display the yes for using software" in {
+        def summaryList: Element = document().mainContent.selectNth(".govuk-summary-list", 1)
+
+        summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
+          SummaryListRowValues(
+            key = GlobalCheckYourAnswersMessages.CompatibleSoftware.key,
+            value = Some(GlobalCheckYourAnswersMessages.CompatibleSoftware.yes),
+            actions = Seq.empty
+          )
+        ))
       }
 
-      "has a paragraph" in {
-        document().mainContent.selectNth("p", 2).text mustBe GlobalCheckYourAnswersMessages.correctInformation.para
+      "display the tax year when the client has selected current tax year" in {
+        def summaryList: Element = document(details = completeDetails(taxYear = Current)).mainContent.selectNth(".govuk-summary-list", 2)
+
+        summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
+          SummaryListRowValues(
+            key = GlobalCheckYourAnswersMessages.SelectedTaxYear.key,
+            value = Some(GlobalCheckYourAnswersMessages.SelectedTaxYear.current),
+            actions = Seq(
+              SummaryListActionValues(
+                href = controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show(editMode = true).url,
+                text = s"${GlobalCheckYourAnswersMessages.Common.change} ${GlobalCheckYourAnswersMessages.SelectedTaxYear.key}",
+                visuallyHidden = GlobalCheckYourAnswersMessages.SelectedTaxYear.key
+              )
+            )
+          )
+        ))
       }
+
+      "display the tax year when the client has selected next tax year" in {
+        def summaryList: Element = document(details = completeDetails(taxYear = Next)).mainContent.selectNth(".govuk-summary-list", 2)
+
+        summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
+          SummaryListRowValues(
+            key = GlobalCheckYourAnswersMessages.SelectedTaxYear.key,
+            value = Some(GlobalCheckYourAnswersMessages.SelectedTaxYear.next),
+            actions = Seq(
+              SummaryListActionValues(
+                href = controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show(editMode = true).url,
+                text = s"${GlobalCheckYourAnswersMessages.Common.change} ${GlobalCheckYourAnswersMessages.SelectedTaxYear.key}",
+                visuallyHidden = GlobalCheckYourAnswersMessages.SelectedTaxYear.key
+              )
+            )
+          )
+        ))
+      }
+
+      "display the tax year with no change link when the user did not have a tax year choice" in {
+        def summaryList: Element = document(details = minDetails(taxYear = Next)).mainContent.selectNth(".govuk-summary-list", 2)
+
+        summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
+          SummaryListRowValues(
+            key = GlobalCheckYourAnswersMessages.SelectedTaxYear.key,
+            value = Some(GlobalCheckYourAnswersMessages.SelectedTaxYear.next),
+            actions = Seq.empty
+          )
+        ))
+      }
+    }
+
+    "have the correct income sources displayed" when {
+
+      "no income sources are present" in {
+        val mainContent: Element = document(details = minDetails()).mainContent
+        mainContent.selectOptionalNth("h2", 2) mustBe None
+        mainContent.selectOptionalNth(".govuk-summary-list", 3) mustBe None
+      }
+
+      "all income sources are present" should {
+        "display the sole trader income sources heading" in {
+          document().mainContent.selectNth("h2", 2).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.heading
+        }
+
+        "display the first sole trader business" in {
+          def summaryList: Element = document().mainContent.selectNth(".govuk-summary-list", 3)
+
+          summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
+            SummaryListRowValues(
+              key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.trade,
+              value = Some("Plumbing-1"),
+              actions = Seq(
+                SummaryListActionValues(
+                  href = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=id-1&isEditMode=true&isGlobalEdit=true",
+                  text = s"${GlobalCheckYourAnswersMessages.Common.change} Plumbing-1 - ABC-1",
+                  visuallyHidden = "Plumbing-1 - ABC-1"
+                )
+              )
+            ),
+            SummaryListRowValues(
+              key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.name,
+              value = Some("ABC-1"),
+              actions = Seq.empty
+            ),
+            SummaryListRowValues(
+              key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.startDate,
+              value = Some("1 January 1980"),
+              actions = Seq.empty
+            ),
+            SummaryListRowValues(
+              key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.address,
+              value = Some("1 Long Road, Lonely City, ZZ11ZZ"),
+              actions = Seq.empty
+            ),
+            SummaryListRowValues(
+              key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.accountingMethod,
+              value = Some(GlobalCheckYourAnswersMessages.Common.cash),
+              actions = Seq.empty
+            )
+          ))
+        }
+
+        "display the next sole trader business" in {
+
+          def summaryList: Element = document().mainContent.selectNth(".govuk-summary-list", 4)
+
+          summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
+            SummaryListRowValues(
+              key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.trade,
+              value = Some("Plumbing-2"),
+              actions = Seq(
+                SummaryListActionValues(
+                  href = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=id-2&isEditMode=true&isGlobalEdit=true",
+                  text = s"${GlobalCheckYourAnswersMessages.Common.change} Plumbing-2 - ABC-2",
+                  visuallyHidden = "Plumbing-2 - ABC-2"
+                )
+              )
+            ),
+            SummaryListRowValues(
+              key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.name,
+              value = Some("ABC-2"),
+              actions = Seq.empty
+            ),
+            SummaryListRowValues(
+              key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.startDate,
+              value = Some("2 February 1980"),
+              actions = Seq.empty
+            ),
+            SummaryListRowValues(
+              key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.address,
+              value = Some("2 Long Road, Lonely City, ZZ22ZZ"),
+              actions = Seq.empty
+            ),
+            SummaryListRowValues(
+              key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.accountingMethod,
+              value = Some(GlobalCheckYourAnswersMessages.Common.cash),
+              actions = Seq.empty
+            )
+          ))
+        }
+
+        "display the property income sources heading" in {
+          document().mainContent.selectNth("h2", 3).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.Property.heading
+        }
+
+        "display the uk property income" in {
+          def summaryList: Element = document().mainContent.selectNth(".govuk-summary-list", 5)
+
+          summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
+            SummaryListRowValues(
+              key = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.key,
+              value = Some(GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.value),
+              actions = Seq(
+                SummaryListActionValues(
+                  href = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(isGlobalEdit = true).url,
+                  text = s"${GlobalCheckYourAnswersMessages.Common.change} ${GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.value}",
+                  visuallyHidden = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.value
+                )
+              )
+            ),
+            SummaryListRowValues(
+              key = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.startDate,
+              value = Some("2 January 1980"),
+              actions = Seq.empty
+            ),
+            SummaryListRowValues(
+              key = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.accountingMethod,
+              value = Some(GlobalCheckYourAnswersMessages.Common.cash),
+              actions = Seq.empty
+            )
+          ))
+        }
+
+        "display the foreign property income" in {
+          def summaryList: Element = document().mainContent.selectNth(".govuk-summary-list", 6)
+
+          summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
+            SummaryListRowValues(
+              key = GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.key,
+              value = Some(GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.value),
+              actions = Seq(
+                SummaryListActionValues(
+                  href = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(isGlobalEdit = true).url,
+                  text = s"${GlobalCheckYourAnswersMessages.Common.change} ${GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.value}",
+                  visuallyHidden = GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.value
+                )
+              )
+            ),
+            SummaryListRowValues(
+              key = GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.startDate,
+              value = Some("3 January 1980"),
+              actions = Seq.empty
+            ),
+            SummaryListRowValues(
+              key = GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.accountingMethod,
+              value = Some(GlobalCheckYourAnswersMessages.Common.cash),
+              actions = Seq.empty
+            )
+          ))
+        }
+      }
+    }
+
+    "have a second paragraph" in {
+      document().mainContent.selectNth("p", 3).text mustBe GlobalCheckYourAnswersMessages.paraTwo
+    }
+
+    "have a third paragraph" in {
+      document().mainContent.selectNth("p", 4).text mustBe GlobalCheckYourAnswersMessages.paraThree
     }
 
     "have a form" which {
@@ -395,24 +292,14 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec with FeatureSwitching {
         form.attr("action") mustBe testCall.url
       }
 
-      "has a Ready to Sign Up button to submit" in {
-        form.selectHead("button").text mustBe GlobalCheckYourAnswersMessages.form.readyToSignUp
+      "has a confirm and continue button" in {
+        form.selectNth(".govuk-button", 1).text mustBe GlobalCheckYourAnswersMessages.Form.confirmAndContinue
       }
 
-      "has a I need to change something hyper link" which {
-        "has a redirection link to Tasklist" when {
-          "Prepopulate feature switch is disabled" in {
-            form.selectHead("a").text mustBe GlobalCheckYourAnswersMessages.form.needToChange
-            form.selectHead("a").attr("href").matches(controllers.agent.tasklist.routes.TaskListController.show().url)
-          }
-        }
-        "has a redirection link to YourIncomeSources" when {
-          "Prepopulate feature switch is enabled" in {
-            enable(PrePopulate)
-            form.selectHead("a").text mustBe GlobalCheckYourAnswersMessages.form.needToChange
-            form.selectHead("a").attr("href").matches(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
-          }
-        }
+      "has a save and comeback later button" in {
+        val saveAndComeBackLater = form.selectNth(".govuk-button", 2)
+        saveAndComeBackLater.text mustBe GlobalCheckYourAnswersMessages.Form.saveAndComeBack
+        saveAndComeBackLater.attr("href") mustBe controllers.individual.tasklist.routes.ProgressSavedController.show(location = Some("global-check-your-answers")).url
       }
     }
 
@@ -431,61 +318,71 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec with FeatureSwitching {
   ).body)
 
   object GlobalCheckYourAnswersMessages {
-    val heading: String = "Check your answers before signing up"
 
-    object IncomeSources {
-      val heading: String = "Income sources"
+    val heading: String = "Declaration"
 
-      object SoleTrader {
-        def heading(trade: String): String = s"Trade: $trade"
+    val paraOne: String = "This is the information you have given to us."
 
-        val name: String = "Business name"
-        val startDate: String = "Trading start date"
-        val address: String = "Address"
-        val accountingMethod: String = "Accounting method"
-        val accountingMethodHeading: String = "Sole trader businesses accounting method"
-        val cash: String = "Cash basis accounting"
-        val accruals: String = "Traditional accounting"
-      }
+    val printLink = "Print this information"
 
-      object UKProperty {
-        val heading: String = "UK property business"
-        val startDate: String = "Start date"
-        val accountingMethod: String = "Accounting method"
-        val cash: String = "Cash basis accounting"
-        val accruals: String = "Traditional accounting"
-      }
+    val beforeSigningUpHeading: String = "Check your answers before signing up"
 
-      object ForeignProperty {
-        val heading: String = "Foreign property business"
-        val startDate: String = "Start date"
-        val accountingMethod: String = "Accounting method"
-        val cash: String = "Cash basis accounting"
-        val accruals: String = "Traditional accounting"
-      }
-
+    object CompatibleSoftware {
+      val key: String = "Software works with Making Tax Digital for Income Tax"
+      val yes: String = "Yes"
     }
 
     object SelectedTaxYear {
-      val heading: String = "Selected tax year"
-      val key: String = "Tax year"
-
-      def current(year: Int): String = s"Current tax year (6 April ${year - 1} to 5 April $year)"
-
-      def next(year: Int): String = s"Next tax year (6 April ${year - 1} to 5 April $year)"
+      val key: String = "When you’re signing up from"
+      val current: String = "Current tax year"
+      val next: String = "Next tax year"
     }
 
-    val printLink = "Print your information"
+    object IncomeSources {
 
-    object correctInformation {
-      val heading: String = "Is this information correct?"
-      val para: String = "By submitting, you are confirming that, to the best of your knowledge, the details you are providing are correct."
+      object SoleTrader {
+        val heading: String = "Sole trader businesses"
+        val trade: String = "Trade"
+        val name: String = "Business name"
+        val startDate: String = "Start date"
+        val address: String = "Address"
+        val accountingMethod: String = "Accounting method"
+      }
+
+      object Property {
+        val heading: String = "Income from property"
+      }
+
+      object UKProperty {
+        val key: String = "Property"
+        val value: String = "UK property"
+        val startDate: String = "Start date"
+        val accountingMethod: String = "Accounting method"
+      }
+
+      object ForeignProperty {
+        val key: String = "Property"
+        val value: String = "Foreign property"
+        val startDate: String = "Start date"
+        val accountingMethod: String = "Accounting method"
+      }
+
     }
 
-    object form {
-      val readyToSignUp: String = "Yes, I’m ready to sign up"
-      val needToChange: String = "No, I need to change something"
+    val paraTwo: String = "By continuing, you’re confirming that the information you have given is correct to the best of your knowledge."
+    val paraThree: String = "When you continue, we’ll sign you up. This may take a few seconds."
+
+    object Form {
+      val confirmAndContinue: String = "Confirm and continue"
+      val saveAndComeBack: String = "Save and come back later"
     }
+
+    object Common {
+      val change: String = "Change"
+      val cash: String = "Cash basis accounting"
+      val accruals: String = "Traditional accounting"
+    }
+
 
   }
 
@@ -493,7 +390,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec with FeatureSwitching {
     accountingMethod = accountingMethod,
     businesses = (1 to count) map { index =>
       SoleTraderBusiness(
-        id = "id",
+        id = s"id-$index",
         name = s"ABC-$index",
         trade = s"Plumbing-$index",
         startDate = LocalDate.of(1980, index, index),
@@ -519,7 +416,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec with FeatureSwitching {
   )
 
   def completeDetails(
-                       soleTraderBusinesses: Option[SoleTraderBusinesses] = Some(selfEmploymentIncomeSource(Cash)),
+                       soleTraderBusinesses: Option[SoleTraderBusinesses] = Some(selfEmploymentIncomeSource(Cash, 2)),
                        ukProperty: Option[UKProperty] = Some(ukPropertyIncomeSource(Cash)),
                        foreignProperty: Option[ForeignProperty] = Some(foreignPropertyIncomeSource(Cash)),
                        taxYear: AccountingYear = Current
@@ -529,21 +426,21 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec with FeatureSwitching {
       ukProperty = ukProperty,
       foreignProperty = foreignProperty
     ),
-    taxYear = taxYear
+    taxYear = AccountingYearModel(taxYear)
   )
 
   def minDetails(
                   soleTraderBusinesses: Option[SoleTraderBusinesses] = None,
                   ukProperty: Option[UKProperty] = None,
                   foreignProperty: Option[ForeignProperty] = None,
-                  taxYear: AccountingYear = Current
+                  taxYear: AccountingYear = Current,
                 ): CompleteDetails = CompleteDetails(
     incomeSources = IncomeSources(
       soleTraderBusinesses = soleTraderBusinesses,
       ukProperty = ukProperty,
       foreignProperty = foreignProperty
     ),
-    taxYear = taxYear
+    taxYear = AccountingYearModel(taxYear, editable = false)
   )
 
 }

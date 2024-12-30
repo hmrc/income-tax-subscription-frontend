@@ -16,9 +16,9 @@
 
 package services
 
+import models.AccountingMethod
 import models.common.business.{Address, SelfEmploymentData}
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
-import models.{AccountingMethod, AccountingYear}
 import play.api.Logging
 import services.GetCompleteDetailsService._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -104,7 +104,7 @@ class GetCompleteDetailsService @Inject()(subscriptionDetailsService: Subscripti
 
         CompleteDetails(
           incomeSources = IncomeSources(soleTraderBusinesses, ukProperty, foreignProperty),
-          taxYear = selectedTaxYear.get.accountingYear
+          taxYear = selectedTaxYear.get
         )
       } match {
         case Failure(_) =>
@@ -123,7 +123,7 @@ object GetCompleteDetailsService {
 
   case class CompleteDetails(
                               incomeSources: IncomeSources,
-                              taxYear: AccountingYear
+                              taxYear: AccountingYearModel
                             )
 
   case class IncomeSources(

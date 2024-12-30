@@ -58,24 +58,22 @@
         heading = messages("agent.global-check-your-answers.heading"),
         caption = messages("agent.global-check-your-answers.caption", clientDetails.name, clientDetails.formattedNino),
         isSection = false
-        )
+    )
 
     @declarationParagraph
 
-    <div class="govuk-!-display-none-print govuk-!-margin-bottom-4">
-        <div class="govuk-!-margin-bottom-4">
-            <p class="govuk-body">
-                <a href="#" data-module="hmrc-print-link" class="govuk-link hmrc-!-js-visible govuk-!-display-none-print">@messages("agent.global-check-your-answers.print-information")</a>
-            </p>
-         </div>
-    </div>
+    <p class="govuk-body govuk-!-display-none-print hmrc-!-js-visible">
+        <a href="#" data-module="hmrc-print-link" class="govuk-link">
+            @messages("agent.global-check-your-answers.print-information")
+        </a>
+    </p>
 
     <h2 class="govuk-heading-m">@messages("agent.global-check-your-answers.subheading")</h2>
 
-    @usingSoftwareSection
+    @usingSoftwareSection()
+
     @taxYearSection(completeDetails.taxYear)
 
-    @accountingMethodDisplay(completeDetails.incomeSources)
     @incomeSourcesSection(completeDetails.incomeSources)
 
     <p class="govuk-body">@messages("agent.global-check-your-answers.para2")</p>
@@ -85,7 +83,7 @@
             @saveAndContinueButtonHelper(
                 isIndividual = false,
                 saveAndContinueText = Some(messages("base.confirm-and-continue")),
-                saveAndReturnReference = Some("agent.global-check-your-answers")
+                saveAndReturnReference = Some("global-check-your-answers")
             )
     }
 }
@@ -118,69 +116,44 @@
 
 }
 
-@accountingMethodDisplay(incomeSources: IncomeSources) = {
-    @if(incomeSources.soleTraderBusinesses.nonEmpty) {
-        <h2 class="govuk-heading-m">@messages("agent.global-check-your-answers.income-sources.subheading")</h2>
-    }
-    @incomeSources.soleTraderBusinesses.map(accountingMethodSection)
-}
-
-@accountingMethodSection(soleTraderBusinesses: SoleTraderBusinesses) = {
-
-    @if(soleTraderBusinesses.businesses.nonEmpty) {
-
-        @govukSummaryList(SummaryList(
-                rows = Seq(
-                    SummaryListRow(
-                        key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.self-employment.accounting-method"))),
-                        value = Value(content = Text(accountingMethod(soleTraderBusinesses.accountingMethod))),
-                        actions = Some(Actions(
-                            items = Seq(
-                                ActionItem(
-                                    href = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${soleTraderBusinesses.businesses.head.id}&isEditMode=true&isGlobalEdit=true",
-                                    content = Text(messages("base.change")),
-                                    visuallyHiddenText = Some(messages("agent.global-check-your-answers.income-sources.self-employment.accounting-method"))
-                                )
-                            )
-                        ))
-                    )
-                )
-        ))
-    }
-}
-
 @toSoleTraderBusinessesDisplay(soleTraderBusinesses: SoleTraderBusinesses) = {
+
+    <h2 class="govuk-heading-m">@messages("agent.global-check-your-answers.income-sources.subheading")</h2>
 
     @soleTraderBusinesses.businesses.map { business =>
 
         @govukSummaryList(SummaryList(
             rows = Seq(
-                Some(SummaryListRow(
+                SummaryListRow(
                     key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.self-employment.trade"))),
-                    value = Value(content = HtmlContent(s"<strong>${business.trade}</strong>")),
+                    value = Value(content = Text(business.trade), classes = "govuk-!-font-weight-bold"),
                     actions = Some(Actions(
                         items = Seq(
                             ActionItem(
                                 href = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${business.id}&isEditMode=true&isGlobalEdit=true",
                                 content = Text(messages("base.change")),
-                                visuallyHiddenText = Some(messages("agent.global-check-your-answers.income-sources.self-employment.trade"))
+                                visuallyHiddenText = Some(s"${business.trade} - ${business.name}")
                             )
                         )
                     ))
-                )),
-                Some(SummaryListRow(
+                ),
+                SummaryListRow(
                     key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.self-employment.name"))),
                     value = Value(content = Text(business.name))
-                )),
-                Some(SummaryListRow(
+                ),
+                SummaryListRow(
                     key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.self-employment.start-date"))),
                     value = Value(content = Text(business.startDate.toLongDate))
-                )),
-                Some(SummaryListRow(
+                ),
+                SummaryListRow(
                     key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.self-employment.address"))),
                     value = Value(content = Text(business.address.toString))
-                ))
-            ).flatten
+                ),
+                SummaryListRow(
+                    key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.self-employment.accounting-method"))),
+                    value = Value(content = Text(accountingMethod(soleTraderBusinesses.accountingMethod)))
+                )
+            )
         ))
     }
 }
@@ -191,7 +164,7 @@
         rows = Seq(
             SummaryListRow(
                 key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.property.label"))),
-                value = Value(content = HtmlContent(s"<strong>${messages("agent.global-check-your-answers.income-sources.uk-property.label")}</strong>")),
+                value = Value(content = Text(messages("agent.global-check-your-answers.income-sources.uk-property.label")), classes = "govuk-!-font-weight-bold"),
                 actions = Some(Actions(
                     items = Seq(
                         ActionItem(
@@ -220,7 +193,7 @@
         rows = Seq(
             SummaryListRow(
                 key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.property.label"))),
-                value = Value(content = HtmlContent(s"<strong>${messages("agent.global-check-your-answers.income-sources.foreign-property.label")}</strong>")),
+                value = Value(content = Text(messages("agent.global-check-your-answers.income-sources.foreign-property.label")), classes = "govuk-!-font-weight-bold"),
                 actions = Some(Actions(
                     items = Seq(
                         ActionItem(
@@ -243,21 +216,23 @@
     ))
 }
 
-@taxYearSection(selectedTaxYear: AccountingYear) = {
+@taxYearSection(selectedTaxYear: AccountingYearModel) = {
     @govukSummaryList(SummaryList(
         rows = Seq(
             SummaryListRow(
                 key = Key(content = Text(messages("agent.global-check-your-answers.tax-year.label"))),
-                value = Value(content = Text(taxYear(selectedTaxYear))),
-                actions = Some(Actions(
-                    items = Seq(
-                        ActionItem(
-                            href = controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show(editMode = true).url,
-                            content = Text(messages("base.change")),
-                            visuallyHiddenText = Some(messages("agent.global-check-your-answers.tax-year.visually.hidden"))
+                value = Value(content = Text(taxYear(selectedTaxYear.accountingYear))),
+                actions = if(selectedTaxYear.editable) {
+                    Some(Actions(
+                        items = Seq(
+                            ActionItem(
+                                href = controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show(editMode = true).url,
+                                content = Text(messages("base.change")),
+                                visuallyHiddenText = Some(messages("agent.global-check-your-answers.tax-year.label"))
+                            )
                         )
-                    )
-                ))
+                    ))
+                } else None
             )
         )
     ))
