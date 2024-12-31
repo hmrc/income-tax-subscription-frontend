@@ -18,6 +18,7 @@ package controllers.individual
 
 import config.featureswitch.FeatureSwitch.PrePopulate
 import config.featureswitch.FeatureSwitching
+import models.common.AccountingYearModel
 import models.common.business.Address
 import models.common.subscription.{CreateIncomeSourcesModel, SubscriptionFailureResponse}
 import models.{Cash, Current}
@@ -116,7 +117,7 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
         accountingMethod = Cash
       ))
     ),
-    taxYear = Current
+    taxYear = AccountingYearModel(Current)
   )
 
   "show" must {
