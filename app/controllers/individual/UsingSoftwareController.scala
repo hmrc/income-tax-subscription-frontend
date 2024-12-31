@@ -25,7 +25,7 @@ import models.{No, Yes, YesNo}
 import play.api.data.Form
 import play.api.mvc._
 import play.twirl.api.Html
-import services.{AuditingService, AuthService, SessionDataService}
+import services.{AuditingService, AuthService, GetEligibilityStatusService, MandationStatusService, SessionDataService}
 import uk.gov.hmrc.http.InternalServerException
 import views.html.individual.UsingSoftware
 
@@ -35,7 +35,9 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
-                                        sessionDataService: SessionDataService)
+                                        sessionDataService: SessionDataService,
+                                        eligibilityStatusService: GetEligibilityStatusService,
+                                        mandationStatusService: MandationStatusService)
                                        (val auditingService: AuditingService,
                                         val authService: AuthService,
                                         val appConfig: AppConfig)
@@ -78,25 +80,34 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
             usingSoftwareForm = formWithErrors
           ))),
         yesNo =>
-          sessionDataService.saveSoftwareStatus(yesNo) map {
-            case Left(_) => throw new InternalServerException("[UsingSoftwareController][submit] - Could not save using software answer")
-            case Right(_) => Redirect(getRedirect(yesNo))
+          for {
+            usingSoftwareStatus <- sessionDataService.saveSoftwareStatus(yesNo)
+            eligibilityStatus <- eligibilityStatusService.getEligibilityStatus
+            mandationStatus <- mandationStatusService.getMandationStatus
+          } yield {
+            val isMandatedCurrentYear: Boolean = mandationStatus.currentYearStatus.isMandated
+            val isEligibleNextYearOnly: Boolean = eligibilityStatus.eligibleNextYearOnly
+
+            usingSoftwareStatus match {
+              case Left(_) =>
+                throw new InternalServerException("[UsingSoftwareController][submit] - Could not save using software answer")
+              case Right(_) =>
+                yesNo match {
+                  case Yes =>
+                    if (isEnabled(PrePopulate)) {
+                      if (isMandatedCurrentYear || isEligibleNextYearOnly) {
+                        Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
+                      } else {
+                        Redirect(controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show())
+                      }
+                    } else {
+                      Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
+                    }
+                  case No =>
+                    Redirect(controllers.individual.routes.NoSoftwareController.show)
+                }
+            }
           }
       )
   }
-
-  private def getRedirect(selectedOption: YesNo): Call = {
-
-    selectedOption match {
-      case Yes =>
-        if (isEnabled(PrePopulate)) {
-          controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show()
-        } else {
-          controllers.individual.routes.WhatYouNeedToDoController.show
-        }
-      case No => controllers.individual.routes.NoSoftwareController.show
-    }
-
-  }
-
 }

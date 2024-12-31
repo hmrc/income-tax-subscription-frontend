@@ -20,6 +20,7 @@ import auth.individual.SignUpController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.PrePopulate
 import controllers.utils.ReferenceRetrieval
+import models.status.MandationStatus.Mandated
 import models.{Next, Yes}
 import play.api.mvc._
 import services._
@@ -61,7 +62,10 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
               mandatedNextYear = mandationStatus.nextYearStatus.isMandated,
               isUsingSoftware = selectedSoftwareStatus.contains(Yes),
               signUpNextTaxYear = selectedNextTaxYear,
-              backUrl = backUrl
+              backUrl = backUrl(
+                eligibleNextYearOnly = eligibilityStatus.eligibleNextYearOnly,
+                mandatedCurrentYear = mandationStatus.currentYearStatus == Mandated
+              )
             ))
         }
       }
@@ -76,8 +80,8 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
       }
   }
 
-  def backUrl: String = {
-    if (isEnabled(PrePopulate)) {
+  def backUrl(eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean): String = {
+    if (isEnabled(PrePopulate) && !(eligibleNextYearOnly || mandatedCurrentYear)) {
       controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
     } else {
       controllers.individual.routes.UsingSoftwareController.show().url

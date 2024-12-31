@@ -21,6 +21,7 @@ import config.featureswitch.FeatureSwitch.PrePopulate
 import config.featureswitch.FeatureSwitching
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
+import models.status.MandationStatus.Mandated
 import models.{Current, No, Yes}
 import play.api.mvc._
 import services._
@@ -67,7 +68,10 @@ class WhatYouNeedToDoController @Inject()(view: WhatYouNeedToDo,
         usingSoftwareStatus = usingSoftwareStatus,
         clientName = request.clientDetails.name,
         clientNino = request.clientDetails.formattedNino,
-        backUrl = backUrl(eligibilityStatus.eligibleNextYearOnly)
+        backUrl = Some(backUrl(
+          eligibleNextYearOnly = eligibilityStatus.eligibleNextYearOnly,
+          mandatedCurrentYear = mandationStatus.currentYearStatus == Mandated
+        ))
       ))
     }
   }
@@ -79,14 +83,11 @@ class WhatYouNeedToDoController @Inject()(view: WhatYouNeedToDo,
       Redirect(controllers.agent.tasklist.routes.TaskListController.show())
   }
 
-  def backUrl(eligibleNextYearOnly: Boolean): Option[String] = {
-    if (isEnabled(PrePopulate)) {
-      if (eligibleNextYearOnly)
-        Some(controllers.agent.routes.UsingSoftwareController.show.url)
-      else
-        Some(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
+  def backUrl(eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean): String = {
+    if (isEnabled(PrePopulate) && !(eligibleNextYearOnly || mandatedCurrentYear)) {
+      controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
     } else {
-      None
+      controllers.agent.routes.UsingSoftwareController.show.url
     }
   }
 }
