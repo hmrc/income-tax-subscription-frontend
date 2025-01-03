@@ -23,20 +23,22 @@ import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import forms.agent.UsingSoftwareForm.usingSoftwareForm
 import models.{No, Yes}
+import play.api.mvc.Results.Redirect
 import play.api.mvc._
-import services.{GetEligibilityStatusService, SessionDataService}
+import services.{GetEligibilityStatusService, MandationStatusService, SessionDataService}
 import uk.gov.hmrc.http.InternalServerException
 import views.html.agent.UsingSoftware
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class UsingSoftwareController @Inject()(view: UsingSoftware,
                                         identify: IdentifierAction,
                                         journeyRefiner: ConfirmedClientJourneyRefiner,
                                         sessionDataService: SessionDataService,
-                                        eligibilityStatusService: GetEligibilityStatusService)
+                                        eligibilityStatusService: GetEligibilityStatusService,
+                                        mandationStatusService: MandationStatusService)
                                        (val appConfig: AppConfig)
                                        (implicit ec: ExecutionContext,
                                         mcc: MessagesControllerComponents)
@@ -73,19 +75,34 @@ class UsingSoftwareController @Inject()(view: UsingSoftware,
           ))
         },
       yesNo =>
-        sessionDataService.saveSoftwareStatus(yesNo) map {
-          case Left(_) =>
-            throw new InternalServerException("[UsingSoftwareController][submit] - Could not save using software answer")
-          case Right(_) =>
-            yesNo match {
-              case Yes =>
-                if (isEnabled(PrePopulate)) {
-                  Redirect(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show())
-                } else {
-                  Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
-                }
-              case No => Redirect(controllers.agent.routes.NoSoftwareController.show())
-            }
+        for {
+          usingSoftwareStatus <- sessionDataService.saveSoftwareStatus(yesNo)
+          eligibilityStatus <- eligibilityStatusService.getEligibilityStatus
+          mandationStatus <- mandationStatusService.getMandationStatus
+        } yield {
+
+          val isMandatedCurrentYear: Boolean = mandationStatus.currentYearStatus.isMandated
+          val isEligibleNextYearOnly: Boolean = eligibilityStatus.eligibleNextYearOnly
+
+          usingSoftwareStatus match {
+            case Left(_) =>
+              throw new InternalServerException("[UsingSoftwareController][submit] - Could not save using software answer")
+            case Right(_) =>
+              yesNo match {
+                case Yes =>
+                  if (isEnabled(PrePopulate)) {
+                    if (isMandatedCurrentYear || isEligibleNextYearOnly) {
+                      Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
+                    } else {
+                      Redirect(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show())
+                    }
+                  } else {
+                    Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
+                  }
+                case No =>
+                  Redirect(controllers.agent.routes.NoSoftwareController.show())
+              }
+          }
         }
     )
   }

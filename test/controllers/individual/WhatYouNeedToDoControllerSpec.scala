@@ -206,4 +206,37 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
     }
   }
 
+  "backUrl" when {
+    "return the what year to sign up page url" when {
+      "pre-pop is enabled and the user is eligible for both years and not mandated for the current year" in new Setup {
+        enable(PrePopulate)
+
+        val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, mandatedCurrentYear = false)
+
+        backUrl mustBe controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+      }
+    }
+    "return the using software page url" when {
+      "pre-pop is not enabled" in new Setup {
+        val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, mandatedCurrentYear = false)
+
+        backUrl mustBe controllers.individual.routes.UsingSoftwareController.show().url
+      }
+      "the user is eligible for next year only" in new Setup {
+        enable(PrePopulate)
+
+        val backUrl: String = controller.backUrl(eligibleNextYearOnly = true, mandatedCurrentYear = false)
+
+        backUrl mustBe controllers.individual.routes.UsingSoftwareController.show().url
+      }
+      "the user is mandated for the current year" in new Setup {
+        enable(PrePopulate)
+
+        val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, mandatedCurrentYear = true)
+
+        backUrl mustBe controllers.individual.routes.UsingSoftwareController.show().url
+      }
+    }
+  }
+
 }

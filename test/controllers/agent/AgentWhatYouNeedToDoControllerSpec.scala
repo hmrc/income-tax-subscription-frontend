@@ -94,8 +94,7 @@ class AgentWhatYouNeedToDoControllerSpec
           ArgumentMatchers.any(),
           ArgumentMatchers.eq(clientDetails.name),
           ArgumentMatchers.eq(clientDetails.formattedNino),
-          ArgumentMatchers.any(),
-
+          ArgumentMatchers.eq(Some(routes.UsingSoftwareController.show.url))
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
@@ -121,7 +120,7 @@ class AgentWhatYouNeedToDoControllerSpec
           ArgumentMatchers.any(),
           ArgumentMatchers.eq(clientDetails.name),
           ArgumentMatchers.eq(clientDetails.formattedNino),
-          ArgumentMatchers.any(),
+          ArgumentMatchers.eq(Some(routes.UsingSoftwareController.show.url)),
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
@@ -146,7 +145,7 @@ class AgentWhatYouNeedToDoControllerSpec
           ArgumentMatchers.any(),
           ArgumentMatchers.eq(clientDetails.name),
           ArgumentMatchers.eq(clientDetails.formattedNino),
-          ArgumentMatchers.any(),
+          ArgumentMatchers.eq(Some(routes.UsingSoftwareController.show.url)),
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
@@ -171,7 +170,7 @@ class AgentWhatYouNeedToDoControllerSpec
           ArgumentMatchers.any(),
           ArgumentMatchers.eq(clientDetails.name),
           ArgumentMatchers.eq(clientDetails.formattedNino),
-          ArgumentMatchers.any(),
+          ArgumentMatchers.eq(Some(routes.UsingSoftwareController.show.url)),
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
@@ -228,7 +227,7 @@ class AgentWhatYouNeedToDoControllerSpec
             ArgumentMatchers.any(),
             ArgumentMatchers.eq(clientDetails.name),
             ArgumentMatchers.eq(clientDetails.formattedNino),
-            ArgumentMatchers.eq(Some(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)),
+            ArgumentMatchers.eq(Some(routes.UsingSoftwareController.show.url)),
 
           )(any(), any())).thenReturn(HtmlFormat.empty)
 

@@ -26,11 +26,12 @@ import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockI
 import forms.agent.UsingSoftwareForm
 import forms.agent.UsingSoftwareForm.usingSoftwareForm
 import forms.submapping.YesNoMapping
+import models.status.MandationStatus.{Mandated, Voluntary}
 import models.{EligibilityStatus, No, Yes}
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
 import play.api.mvc.Result
 import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, status}
-import services.mocks.{MockGetEligibilityStatusService, MockSessionDataService}
+import services.mocks.{MockGetEligibilityStatusService, MockMandationStatusService, MockSessionDataService}
 import uk.gov.hmrc.http.InternalServerException
 import views.agent.mocks.MockUsingSoftware
 
@@ -41,6 +42,7 @@ class UsingSoftwareControllerSpec extends ControllerSpec
   with MockIdentifierAction
   with MockConfirmedClientJourneyRefiner
   with MockGetEligibilityStatusService
+  with MockMandationStatusService
   with MockSessionDataService
   with FeatureSwitching {
 
@@ -149,6 +151,39 @@ class UsingSoftwareControllerSpec extends ControllerSpec
     "the user submits 'Yes'" should {
       "redirect to the what you need to do page" when {
         "the pre-pop feature switch is disabled" in {
+          mockGetMandationService(Voluntary, Voluntary)
+          mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
+          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+          val result: Future[Result] = TestUsingSoftwareController.submit()(
+            request.withMethod("POST").withFormUrlEncodedBody(
+              UsingSoftwareForm.fieldName -> YesNoMapping.option_yes
+            )
+          )
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.agent.routes.WhatYouNeedToDoController.show().url)
+        }
+        "the pre-pop feature switch is enabled and the user is eligible for next year only" in {
+          enable(PrePopulate)
+
+          mockGetMandationService(Voluntary, Voluntary)
+          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
+          mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
+
+          val result: Future[Result] = TestUsingSoftwareController.submit()(
+            request.withMethod("POST").withFormUrlEncodedBody(
+              UsingSoftwareForm.fieldName -> YesNoMapping.option_yes
+            )
+          )
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.agent.routes.WhatYouNeedToDoController.show.url)
+        }
+        "the pre-pop feature switch is enabled and the user is mandated for the current tax year" in {
+          enable(PrePopulate)
+
+          mockGetMandationService(Mandated, Voluntary)
+          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
           mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
 
           val result: Future[Result] = TestUsingSoftwareController.submit()(
@@ -162,9 +197,10 @@ class UsingSoftwareControllerSpec extends ControllerSpec
         }
       }
       "redirect to the what year to sign up page" when {
-        "the pre-pop feature switch is enabled" in {
+        "the pre-pop feature switch is enabled and the user is able to sign up for both tax years" in {
           enable(PrePopulate)
-
+          mockGetMandationService(Voluntary, Voluntary)
+          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
           mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
 
           val result: Future[Result] = TestUsingSoftwareController.submit()(
@@ -181,7 +217,8 @@ class UsingSoftwareControllerSpec extends ControllerSpec
     "the user submits 'No'" should {
       "redirect to the no software page" in {
         mockSaveSoftwareStatus(No)(Right(SaveSessionDataSuccessResponse))
-
+        mockGetMandationService(Voluntary, Mandated)
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = false))
         val result: Future[Result] = TestUsingSoftwareController.submit(
           request.withMethod("POST").withFormUrlEncodedBody(
             UsingSoftwareForm.fieldName -> YesNoMapping.option_no
@@ -194,6 +231,8 @@ class UsingSoftwareControllerSpec extends ControllerSpec
     }
     "an error occurs when saving the software status" should {
       "throw an internal server exception" in {
+        mockGetMandationService(Voluntary, Mandated)
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockSaveSoftwareStatus(Yes)(Left(UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
         val result: Future[Result] = TestUsingSoftwareController.submit()(
@@ -216,6 +255,7 @@ class UsingSoftwareControllerSpec extends ControllerSpec
     fakeConfirmedClientJourneyRefiner,
     mockSessionDataService,
     mockGetEligibilityStatusService,
+    mockMandationStatusService
   )(appConfig)
 
 }

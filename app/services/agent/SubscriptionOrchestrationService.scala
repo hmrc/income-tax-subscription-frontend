@@ -93,12 +93,13 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
     if (isEnabled(CheckClientRelationship)) {
       clientRelationshipService.isMTDPreExistingRelationship(arn, nino) map { maybeRelationship =>
         if (isEnabled(CheckMultiAgentRelationship) && !maybeRelationship) {
-          clientRelationshipService.isMTDSuppAgentRelationship(arn, nino)
+          clientRelationshipService.isMTDSuppAgentRelationship(arn, nino) map (_ => ())
         } else {
           Future.successful(maybeRelationship)
         }
       }
+    } else {
+      Future.successful()
     }
-    Future.successful()
   }
 }
