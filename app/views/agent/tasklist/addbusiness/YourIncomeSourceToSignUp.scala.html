@@ -24,6 +24,7 @@
 @import utilities.UserMatchingSessionUtil.ClientDetails
 @import views.html.templates.AgentMainTemplate
 @import views.html.helpers.{ContinueButton, SaveAndContinueButtonHelper, PageHeadingHelper}
+@import views.html.helpers.ButtonHelper
 
 @this(
     agentMainTemplate: AgentMainTemplate,
@@ -33,7 +34,8 @@
     continueButton: ContinueButton,
     pageHeadingHelper: PageHeadingHelper,
     saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
-    govukSummaryList : GovukSummaryList
+    govukSummaryList : GovukSummaryList,
+    buttonHelper: ButtonHelper
 )
 
 @(postAction: Call, backUrl: String, clientDetails: ClientDetails, incomeSources: IncomeSources, prepopulated: Boolean)(implicit request: Request[_], messages: Messages)
@@ -65,13 +67,17 @@
     }
 
     @form(action = postAction) {
-        @if(incomeSources.hasNoIncomeSources) {
-            @continueButton(alternateText = Some(messages("base.save-and-continue")))
-        } else {
+        @if(!incomeSources.hasNoIncomeSources && incomeSources.isComplete) {
             @saveAndContinueButtonHelper(
                 isIndividual = false,
                 saveAndContinueText = Some(messages("base.save-and-continue")),
                 saveAndReturnReference = Some("income-sources")
+            )
+        } else {
+            @buttonHelper(
+                buttonText = messages("base.save-and-come-back-later"),
+                classes = Some("govuk-button--secondary"),
+                href = Some(controllers.agent.tasklist.routes.ProgressSavedController.show(Some("income-sources")).url)
             )
         }
     }

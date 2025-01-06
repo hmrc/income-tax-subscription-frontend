@@ -86,7 +86,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     val foreignPropertyChangeLink: String = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
     val foreignPropertyRemoveLink: String = controllers.individual.tasklist.overseasproperty.routes.RemoveOverseasPropertyController.show.url
 
-    val continue: String = "Continue"
+    val continue: String = "Save and continue"
     val saveAndComeBackLater: String = "Save and come back later"
   }
 
@@ -253,11 +253,10 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           form(document).attr("method") mustBe testCall.method
           form(document).attr("action") mustBe testCall.url
         }
-        "has a continue button" in new ViewTest(noIncomeSources) {
-          form(document).getGovukSubmitButton.text mustBe IndividualIncomeSource.continue
-        }
-        "has no save and come back later button" in new ViewTest(noIncomeSources) {
-          form(document).selectOptionalNth("p", 5) mustBe None
+        "has a save and come back later button" in new ViewTest(noIncomeSources) {
+          val button = form(document).getGovukSubmitButton
+          button.text mustBe IndividualIncomeSource.saveAndComeBackLater
+          button.attr("href") mustBe controllers.individual.tasklist.routes.ProgressSavedController.show(Some("income-sources")).url
         }
       }
 
@@ -448,11 +447,11 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           form(document).attr("method") mustBe testCall.method
           form(document).attr("action") mustBe testCall.url
         }
-        "has a continue button" in new ViewTest(incompleteIncomeSources) {
-          form(document).getGovukSubmitButton.text mustBe IndividualIncomeSource.continue
-        }
+
         "has a save and come back later button" in new ViewTest(incompleteIncomeSources) {
-          document.mainContent.selectHead(".govuk-button--secondary").text mustBe IndividualIncomeSource.saveAndComeBackLater
+          val button = form(document).getGovukSubmitButton
+          button.text mustBe IndividualIncomeSource.saveAndComeBackLater
+          button.attr("href") mustBe controllers.individual.tasklist.routes.ProgressSavedController.show(Some("income-sources")).url
         }
       }
 
@@ -626,11 +625,11 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           form(document).attr("method") mustBe testCall.method
           form(document).attr("action") mustBe testCall.url
         }
-        "has a continue button" in new ViewTest(completeIncomeSources) {
-          form(document).getGovukSubmitButton.text mustBe IndividualIncomeSource.continue
-        }
+
         "has a save and come back later button" in new ViewTest(completeIncomeSources) {
-          document.mainContent.selectHead(".govuk-button--secondary").text mustBe IndividualIncomeSource.saveAndComeBackLater
+          val button = form(document).getGovukSubmitButton
+          button.text mustBe IndividualIncomeSource.saveAndComeBackLater
+          button.attr("href") mustBe controllers.individual.tasklist.routes.ProgressSavedController.show(Some("income-sources")).url
         }
       }
 

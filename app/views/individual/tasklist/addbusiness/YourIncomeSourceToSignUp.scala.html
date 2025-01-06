@@ -24,6 +24,8 @@
 @import utilities.AccountingPeriodUtil
 @import config.featureswitch.FeatureSwitchingImpl
 @import config.featureswitch.FeatureSwitch.PrePopulate
+@import views.html.helpers.ButtonHelper
+
 
 @this(
     mainTemplate: PrincipalMainTemplate,
@@ -31,16 +33,16 @@
     appConfig: AppConfig,
     form: FormWithCSRF,
     saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
-    govukSummaryList : GovukSummaryList,
+    govukSummaryList: GovukSummaryList,
     featureSwitching: FeatureSwitchingImpl,
+    buttonHelper: ButtonHelper
 )
 
-@(postAction: Call, backUrl: String, incomeSources: IncomeSources, isPrePopulated: Boolean)( implicit request: Request[_], messages: Messages)
+@(postAction: Call, backUrl: String, incomeSources: IncomeSources, isPrePopulated: Boolean)(implicit request: Request[_], messages: Messages)
 
-    @heading = @{
-      messages("your-income-source.heading")
-    }
-
+@heading = @{
+    messages("your-income-source.heading")
+}
 
 @mainTemplate(
     title = heading,
@@ -48,7 +50,7 @@
 ) {
     <h1 class="govuk-heading-xl">@heading</h1>
 
-    @if(featureSwitching.isEnabled(PrePopulate)){
+    @if(featureSwitching.isEnabled(PrePopulate)) {
         <p class="govuk-body">
             @messages(
                 "your-income-source.manage.para-1",
@@ -57,7 +59,7 @@
         </p>
     } else {
         <p class="govuk-body">
-            @messages( "your-income-source.manage.lead")
+            @messages("your-income-source.manage.lead")
         </p>
     }
 
@@ -65,22 +67,24 @@
 
     @incomeFromProperty
 
-
     @if(isPrePopulated && !(incomeSources.hasNoIncomeSources || incomeSources.isComplete)) {
         <p class="govuk-body">
             @messages("your-income-source.manage.para-2")
         </p>
     }
 
-
     @form(action = postAction) {
-        @if(incomeSources.hasNoIncomeSources) {
-            @continueButton()
-        } else {
+        @if(!incomeSources.hasNoIncomeSources && incomeSources.isComplete) {
             @saveAndContinueButtonHelper(
                 isIndividual = true,
-                saveAndContinueText = Some(messages("base.continue")),
+                saveAndContinueText = Some(messages("base.save-and-continue")),
                 saveAndReturnReference = Some("income-sources")
+            )
+        } else {
+            @buttonHelper(
+                buttonText = messages("base.save-and-come-back-later"),
+                classes = Some("govuk-button--secondary"),
+                href = Some(controllers.individual.tasklist.routes.ProgressSavedController.show(Some("income-sources")).url)
             )
         }
     }
@@ -88,14 +92,14 @@
 
 @selfEmploymentName(business: SelfEmploymentData, index: Int) = @{
     (business.businessName) match {
-        case (Some(BusinessNameModel(name))) => messages("your-income-source.self-employed.business-name", name)
+        case Some(BusinessNameModel(name)) => messages("your-income-source.self-employed.business-name", name)
         case _ => messages("your-income-source.self-employed.label-none", index)
     }
 }
 
 @selfEmploymentTrade(business: SelfEmploymentData, index: Int) = @{
     (business.businessTradeName) match {
-        case (Some(BusinessTradeNameModel(trade))) => messages("your-income-source.self-employed.business-trade", trade)
+        case Some(BusinessTradeNameModel(trade)) => messages("your-income-source.self-employed.business-trade", trade)
         case _ => messages("agent.your-income-source.self-employed.label-none", index)
     }
 }
@@ -108,7 +112,7 @@
 }
 
 @incomeSourceChangeLabel(isComplete: Boolean, isConfirmed: Boolean) = @{
-    if(isConfirmed) {
+    if (isConfirmed) {
         Text(messages("base.change"))
     } else if (isComplete) {
         Text(messages("base.check"))
@@ -117,9 +121,7 @@
     }
 }
 
-
 @selfEmploymentSection = {
-
     <h2 class="govuk-heading-m">@messages("your-income-source.self-employed.heading")</h2>
     <p class="govuk-body">@messages("your-income-source.self-employed.description")</p>
 
@@ -127,26 +129,25 @@
         @govukSummaryList(SummaryList(
             rows = Seq(
                 SummaryListRow(
-                    key = Key(
-                        content = Text(messages("your-income-source.self-employed.business-name.para"))
-                    ),
+                    key = Key(content = Text(messages("your-income-source.self-employed.business-name.para"))),
                     value = Value(Text(selfEmploymentName(business, index)))
                 )
             ),
-
             card = Some(Card(
-                title = Some(CardTitle(
-                    content = Text(selfEmploymentTrade(business, index))
-                )),
+                title = Some(CardTitle(content = Text(selfEmploymentTrade(business, index)))),
                 actions = Some(Actions(
                     items = Seq(
                         ActionItem(
                             href = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${business.id}&isEditMode=true",
-                            content = incomeSourceChangeLabel(business.isComplete && incomeSources.selfEmploymentAccountingMethod.isDefined, business.confirmed),
+                            content = incomeSourceChangeLabel(
+                                business.isComplete && incomeSources.selfEmploymentAccountingMethod.isDefined,
+                                business.confirmed
+                            ),
                             visuallyHiddenText = business.businessName.map(_.businessName)
                         ),
                         ActionItem(
-                            href = controllers.individual.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show(business.id).url,
+                            href = controllers.individual.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController
+                            .show(business.id).url,
                             content = Text(messages("base.remove")),
                             visuallyHiddenText = business.businessName.map(_.businessName)
                         )
@@ -155,15 +156,13 @@
             ))
         ))
     }
-
     <div id="add-self-employment" class="govuk-!-padding-bottom-6">
         <p class="govuk-body">
-          <a class="govuk-link" href="@appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl">
-              @messages("your-income-source.self-employed.add-link")
-          </a>
+            <a class="govuk-link" href="@appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl">
+                @messages("your-income-source.self-employed.add-link")
+            </a>
         </p>
     </div>
-
 }
 
 @incomeFromProperty = {
@@ -241,4 +240,6 @@
     }
 
 }
+
+
 
