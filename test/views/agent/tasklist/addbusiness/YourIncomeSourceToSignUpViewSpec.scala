@@ -164,11 +164,10 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           form(document).attr("method") mustBe testCall.method
           form(document).attr("action") mustBe testCall.url
         }
-        "has a continue button" in new ViewTest(noIncomeSources) {
-          form(document).getGovukSubmitButton.text mustBe AgentIncomeSource.continue
-        }
         "has no save and come back later button" in new ViewTest(noIncomeSources) {
-          form(document).selectOptionally(".govuk-button--secondary") mustBe None
+          val button = form(document).getGovukSubmitButton
+          button.text mustBe AgentIncomeSource.saveAndComeBackLater
+          button.attr("href") mustBe controllers.agent.tasklist.routes.ProgressSavedController.show(Some("income-sources")).url
         }
       }
     }
@@ -344,11 +343,9 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           form(document).attr("method") mustBe testCall.method
           form(document).attr("action") mustBe testCall.url
         }
-        "has a continue button" in new ViewTest(incompleteIncomeSources) {
-          form(document).getGovukSubmitButton.text mustBe AgentIncomeSource.continue
-        }
+
         "has a save and come back later button" in new ViewTest(incompleteIncomeSources) {
-          val button: Element = form(document).selectHead(".govuk-button--secondary")
+          val button = form(document).getGovukSubmitButton
           button.text mustBe AgentIncomeSource.saveAndComeBackLater
           button.attr("href") mustBe AgentIncomeSource.progressSavedLink
         }
@@ -478,11 +475,9 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           form(document).attr("method") mustBe testCall.method
           form(document).attr("action") mustBe testCall.url
         }
-        "has a continue button" in new ViewTest(completeIncomeSources) {
-          form(document).getGovukSubmitButton.text mustBe AgentIncomeSource.continue
-        }
+
         "has a save and come back later button" in new ViewTest(completeIncomeSources) {
-          val button: Element = form(document).selectHead(".govuk-button--secondary")
+          val button = form(document).getGovukSubmitButton
           button.text mustBe AgentIncomeSource.saveAndComeBackLater
           button.attr("href") mustBe controllers.agent.tasklist.routes.ProgressSavedController.show(Some("income-sources")).url
         }
