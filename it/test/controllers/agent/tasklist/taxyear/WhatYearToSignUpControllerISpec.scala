@@ -85,10 +85,10 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
             UserMatchingSessionUtil.lastName -> testLastName
           ))
 
-          Then("Should return SEE_OTHER to task list page")
+          Then("Should return SEE_OTHER to the what you need to do page")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(AgentURI.taskListURI)
+            redirectURI(AgentURI.whatYouNeedToDoURI)
           )
         }
         "The user is eligible for the next tax year only" in {
@@ -106,10 +106,10 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
             UserMatchingSessionUtil.lastName -> testLastName
           ))
 
-          Then("Should return SEE_OTHER to task list page")
+          Then("Should return SEE_OTHER to the what you need to do page")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(AgentURI.taskListURI)
+            redirectURI(AgentURI.whatYouNeedToDoURI)
           )
         }
       }

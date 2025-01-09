@@ -21,7 +21,6 @@ import config.featureswitch.FeatureSwitch.PrePopulate
 import config.featureswitch.FeatureSwitching
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
-import controllers.utils.TaxYearNavigationHelper
 import forms.agent.AccountingYearForm
 import models.AccountingYear
 import models.common.AccountingYearModel
@@ -41,11 +40,9 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
                                            journeyRefiner: ConfirmedClientJourneyRefiner,
                                            subscriptionDetailsService: SubscriptionDetailsService,
                                            accountingPeriodService: AccountingPeriodService)
-                                          (val appConfig: AppConfig,
-                                           val getEligibilityStatusService: GetEligibilityStatusService,
-                                           val mandationStatusService: MandationStatusService)
+                                          (val appConfig: AppConfig)
                                           (implicit mcc: MessagesControllerComponents,
-                                           ec: ExecutionContext) extends SignUpBaseController with TaxYearNavigationHelper with FeatureSwitching {
+                                           ec: ExecutionContext) extends SignUpBaseController with FeatureSwitching {
 
   def view(accountingYearForm: Form[AccountingYear], clientName: String, clientNino: String, isEditMode: Boolean)(implicit request: Request[_]): Html =
     whatYearToSignUp(
@@ -59,17 +56,16 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
     )
 
   def show(isEditMode: Boolean): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
-    handleUnableToSelectTaxYearAgent {
-      for {
-        accountingYearModel <- subscriptionDetailsService.fetchSelectedTaxYear(request.reference)
-      } yield {
+    subscriptionDetailsService.fetchSelectedTaxYear(request.reference) map {
+      case Some(taxYearModel) if !taxYearModel.editable =>
+        Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
+      case accountingYearModel =>
         Ok(view(
           accountingYearForm = AccountingYearForm.accountingYearForm.fill(accountingYearModel.map(aym => aym.accountingYear)),
           clientName = request.clientDetails.name,
           clientNino = request.clientDetails.formattedNino,
           isEditMode = isEditMode
         ))
-      }
     }
   }
 
