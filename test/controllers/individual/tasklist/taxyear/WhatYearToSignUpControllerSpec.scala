@@ -61,9 +61,7 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
   )(
     mockAuditingService,
     mockAuthService,
-    appConfig,
-    mockGetEligibilityStatusService,
-    mockMandationStatusService,
+    appConfig
   )
 
   "show" should {

@@ -20,7 +20,7 @@ import auth.individual.SignUpController
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.PrePopulate
 import config.featureswitch.FeatureSwitching
-import controllers.utils.{ReferenceRetrieval, TaxYearNavigationHelper}
+import controllers.utils.ReferenceRetrieval
 import forms.individual.business.AccountingYearForm
 import models.AccountingYear
 import models.common.AccountingYearModel
@@ -41,12 +41,10 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
                                            subscriptionDetailsService: SubscriptionDetailsService)
                                           (val auditingService: AuditingService,
                                            val authService: AuthService,
-                                           val appConfig: AppConfig,
-                                           val getEligibilityStatusService: GetEligibilityStatusService,
-                                           val mandationStatusService: MandationStatusService)
+                                           val appConfig: AppConfig)
                                           (implicit val ec: ExecutionContext,
                                            mcc: MessagesControllerComponents)
-  extends SignUpController with TaxYearNavigationHelper with FeatureSwitching {
+  extends SignUpController with FeatureSwitching {
 
   def view(accountingYearForm: Form[AccountingYear], isEditMode: Boolean)(implicit request: Request[_]): Html = {
     whatYearToSignUp(
@@ -60,11 +58,15 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
-      handleUnableToSelectTaxYearIndividual {
-        referenceRetrieval.getIndividualReference flatMap { reference =>
-          subscriptionDetailsService.fetchSelectedTaxYear(reference) map { accountingYearModel =>
-            Ok(view(accountingYearForm = AccountingYearForm.accountingYearForm.fill(accountingYearModel.map(aym => aym.accountingYear)), isEditMode = isEditMode))
-          }
+      referenceRetrieval.getIndividualReference flatMap { reference =>
+        subscriptionDetailsService.fetchSelectedTaxYear(reference) map {
+          case Some(taxYearModel) if !taxYearModel.editable =>
+            Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
+          case accountingYearModel =>
+            Ok(view(
+              accountingYearForm = AccountingYearForm.accountingYearForm.fill(accountingYearModel.map(aym => aym.accountingYear)),
+              isEditMode = isEditMode
+            ))
         }
       }
   }
@@ -77,11 +79,14 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
             Future.successful(BadRequest(view(accountingYearForm = formWithErrors, isEditMode = isEditMode))),
           accountingYear => {
             subscriptionDetailsService.saveSelectedTaxYear(reference, AccountingYearModel(accountingYear)) map {
-              case Right(_) => {
-                if (isEditMode && isEnabled(PrePopulate)) Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
-                else if (isEnabled(PrePopulate)) Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
-                else Redirect(controllers.individual.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.show())
-              }
+              case Right(_) =>
+                if (isEditMode && isEnabled(PrePopulate)) {
+                  Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
+                } else if (isEnabled(PrePopulate)) {
+                  Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
+                } else {
+                  Redirect(controllers.individual.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.show())
+                }
               case Left(_) => throw new InternalServerException("[WhatYearToSignUpController][submit] - Could not save accounting year")
             }
           }

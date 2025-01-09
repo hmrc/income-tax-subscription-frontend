@@ -58,9 +58,7 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
     fakeConfirmedClientJourneyRefiner,
     mockSubscriptionDetailsService,
     mockAccountingPeriodService
-  )(appConfig,
-    mockGetEligibilityStatusService,
-    mockMandationStatusService)
+  )(appConfig)
 
   "show" should {
     "display the What Year To Sign Up view with pre-saved tax year option and return OK (200)" when {
