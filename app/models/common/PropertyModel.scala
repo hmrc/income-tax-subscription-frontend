@@ -20,15 +20,21 @@ import models.{AccountingMethod, DateModel}
 import play.api.libs.json.{Json, OFormat}
 
 case class PropertyModel(
+                          startDateBeforeLimit: Option[Boolean] = None,
                           accountingMethod: Option[AccountingMethod] = None,
                           startDate: Option[DateModel] = None,
                           confirmed: Boolean = false
                         ) {
 
-  val isComplete: Boolean = accountingMethod.isDefined && startDate.isDefined
+  val isComplete: Boolean = {
+    startDateBeforeLimit match {
+      case Some(true) => accountingMethod.isDefined
+      case _ => accountingMethod.isDefined && startDate.isDefined
+    }
+  }
 
 }
 
 object PropertyModel {
-  implicit val format: OFormat[PropertyModel] = Json.using[Json.WithDefaultValues].format[PropertyModel]
+  implicit val format: OFormat[PropertyModel] = Json.format[PropertyModel]
 }

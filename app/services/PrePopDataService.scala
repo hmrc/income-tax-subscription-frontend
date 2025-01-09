@@ -16,12 +16,12 @@
 
 package services
 
-import config.featureswitch.FeatureSwitch.PrePopulate
-import config.featureswitch.FeatureSwitchingImpl
+import config.featureswitch.FeatureSwitch.{PrePopulate, StartDateBeforeLimit}
+import config.featureswitch.FeatureSwitching
 import connectors.PrePopConnector
 import models.AccountingMethod
-import models.common.{OverseasPropertyModel, PropertyModel}
 import models.common.business.SelfEmploymentData
+import models.common.{OverseasPropertyModel, PropertyModel}
 import models.prepop.{PrePopData, PrePopSelfEmployment}
 import play.api.Logging
 import services.PrePopDataService.PrePopResult
@@ -33,11 +33,11 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PrePopDataService @Inject()(featureSwitching: FeatureSwitchingImpl,
-                                  ninoService: NinoService,
+class PrePopDataService @Inject()(ninoService: NinoService,
                                   prePopConnector: PrePopConnector,
                                   subscriptionDetailsService: SubscriptionDetailsService,
-                                  uuidProvider: UUIDProvider)
+                                  uuidProvider: UUIDProvider,
+                                  featureSwitching: FeatureSwitching)
                                  (implicit ec: ExecutionContext) extends Logging {
 
   def prePopIncomeSources(reference: String)(implicit hc: HeaderCarrier): Future[PrePopResult] = {
@@ -102,7 +102,10 @@ class PrePopDataService @Inject()(featureSwitching: FeatureSwitchingImpl,
                                        (implicit hc: HeaderCarrier): Future[PrePopResult] = {
     maybePrePopSelfEmployments match {
       case Some(prePopSelfEmployments) =>
-        val selfEmployments: Seq[SelfEmploymentData] = prePopSelfEmployments.map(_.toSelfEmploymentData(uuidProvider.getUUID))
+        val selfEmployments: Seq[SelfEmploymentData] = prePopSelfEmployments.map(_.toSelfEmploymentData(
+          id = uuidProvider.getUUID,
+          startDateRemovalFlag = featureSwitching.isEnabled(StartDateBeforeLimit)
+        ))
         val accountingMethod: Option[AccountingMethod] = prePopSelfEmployments.headOption.map(_.accountingMethod)
         subscriptionDetailsService.saveBusinesses(reference, selfEmployments, accountingMethod) map {
           case Left(error) =>
@@ -121,7 +124,7 @@ class PrePopDataService @Inject()(featureSwitching: FeatureSwitchingImpl,
                                   (implicit hc: HeaderCarrier): Future[PrePopResult] = {
     prePopUkPropertyAccountingMethod match {
       case Some(_) =>
-        val ukProperty: PropertyModel = PropertyModel(prePopUkPropertyAccountingMethod)
+        val ukProperty: PropertyModel = PropertyModel(accountingMethod = prePopUkPropertyAccountingMethod)
         subscriptionDetailsService.saveProperty(reference, ukProperty) map {
           case Left(error) =>
             logger.error(s"[PrePopDataService][savePrePopUkProperty] - Error saving Uk property. Error: $error")
@@ -138,7 +141,7 @@ class PrePopDataService @Inject()(featureSwitching: FeatureSwitchingImpl,
                                         (implicit hc: HeaderCarrier): Future[PrePopResult] = {
     prePopForeignPropertyAccountingMethod match {
       case Some(_) =>
-        val overseasProperty: OverseasPropertyModel = OverseasPropertyModel(prePopForeignPropertyAccountingMethod)
+        val overseasProperty: OverseasPropertyModel = OverseasPropertyModel(accountingMethod = prePopForeignPropertyAccountingMethod)
         subscriptionDetailsService.saveOverseasProperty(reference, overseasProperty) map {
           case Left(error) =>
             logger.error(s"[PrePopDataService][savePrePopOverseasProperty] - Error saving Overseas property. Error: $error")

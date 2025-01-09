@@ -16,9 +16,10 @@
 
 package models.prepop
 
+import models.common.business._
 import models.{AccountingMethod, DateModel}
-import models.common.business.{Address, BusinessStartDate, BusinessNameModel, BusinessTradeNameModel, BusinessAddressModel, SelfEmploymentData}
 import play.api.libs.json.{Json, Reads}
+import utilities.AccountingPeriodUtil
 
 case class PrePopSelfEmployment(name: Option[String],
                                 trade: Option[String],
@@ -26,13 +27,24 @@ case class PrePopSelfEmployment(name: Option[String],
                                 startDate: Option[DateModel],
                                 accountingMethod: AccountingMethod) {
 
-  def toSelfEmploymentData(id: String): SelfEmploymentData = SelfEmploymentData(
-    id = id,
-    businessStartDate = startDate.map(BusinessStartDate.apply),
-    businessName = name.map(BusinessNameModel.apply),
-    businessTradeName = trade.map(BusinessTradeNameModel.apply),
-    businessAddress = address.map(BusinessAddressModel.apply)
-  )
+  def toSelfEmploymentData(id: String, startDateRemovalFlag: Boolean): SelfEmploymentData = {
+
+    val startDateBeforeLimit: Option[Boolean] = if (startDateRemovalFlag) {
+      startDate.map(_.toLocalDate.isBefore(AccountingPeriodUtil.getCurrentTaxYearStartLocalDate.minusYears(2)))
+    } else {
+      None
+    }
+
+    SelfEmploymentData(
+      id = id,
+      startDateBeforeLimit = startDateBeforeLimit,
+      businessStartDate = if (startDateBeforeLimit.contains(true)) None else startDate.map(BusinessStartDate.apply),
+      businessName = name.map(BusinessNameModel.apply),
+      businessTradeName = trade.map(BusinessTradeNameModel.apply),
+      businessAddress = address.map(BusinessAddressModel.apply)
+    )
+  }
+
 }
 
 object PrePopSelfEmployment {

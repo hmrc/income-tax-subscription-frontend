@@ -60,7 +60,7 @@
         isSection = false
     )
 
-    @declarationParagraph
+    @declarationParagraph()
 
     <p class="govuk-body govuk-!-display-none-print hmrc-!-js-visible">
         <a href="#" data-module="hmrc-print-link" class="govuk-link">
@@ -143,7 +143,9 @@
                 ),
                 SummaryListRow(
                     key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.self-employment.start-date"))),
-                    value = Value(content = Text(business.startDate.toLongDate))
+                    value = Value(content = Text(
+                        business.startDate.map(_.toLongDate).getOrElse("TODO: Implement before message here")
+                    ))
                 ),
                 SummaryListRow(
                     key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.self-employment.address"))),
@@ -177,7 +179,9 @@
             ),
             SummaryListRow(
                 key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.uk-property.start-date"))),
-                value = Value(content = Text(ukProperty.startDate.toLongDate))
+                value = Value(content = Text(
+                    ukProperty.startDate.map(_.toLongDate).getOrElse("TODO: Implement before message here")
+                ))
             ),
             SummaryListRow(
                 key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.uk-property.accounting-method"))),
@@ -206,7 +210,9 @@
             ),
             SummaryListRow(
                 key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.foreign-property.start-date"))),
-                value = Value(content = Text(foreignProperty.startDate.toLongDate))
+                value = Value(content = Text(
+                    foreignProperty.startDate.map(_.toLongDate).getOrElse("TODO: Implement before message here")
+                ))
             ),
             SummaryListRow(
                 key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.foreign-property.accounting-method"))),

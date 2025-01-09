@@ -86,7 +86,7 @@ class RemoveSelfEmploymentBusinessController @Inject()(removeBusinessView: Remov
                                 implicit hc: HeaderCarrier
                               ): Future[Result] = {
     fetchBusinessData(reference, businessId).flatMap {
-      case Some(SelfEmploymentData(_, _, maybeBusinessNameModel, maybeBusinessTradeNameModel, _, _)) =>
+      case Some(SelfEmploymentData(_, _, _, maybeBusinessNameModel, maybeBusinessTradeNameModel, _, _)) =>
         f(maybeBusinessNameModel, maybeBusinessTradeNameModel)
       case _ => Future.successful(Redirect(controllers.individual.tasklist.addbusiness.routes.BusinessAlreadyRemovedController.show()))
     }

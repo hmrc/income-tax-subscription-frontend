@@ -701,10 +701,10 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
   ))
 
   lazy val incompleteSelfEmployments: Seq[SelfEmploymentData] = Seq(
-    SelfEmploymentData("idOne", None, Some(BusinessNameModel("business name")), Some(BusinessTradeNameModel("business trade"))),
-    SelfEmploymentData("idTwo", None, Some(BusinessNameModel("business name"))),
-    SelfEmploymentData("idThree", None, None, businessTradeName = Some(BusinessTradeNameModel("business trade"))),
-    SelfEmploymentData("idFour")
+    SelfEmploymentData(id = "idOne", businessName = Some(BusinessNameModel("business name")), businessTradeName = Some(BusinessTradeNameModel("business trade"))),
+    SelfEmploymentData(id = "idTwo", businessName = Some(BusinessNameModel("business name"))),
+    SelfEmploymentData(id = "idThree", businessTradeName = Some(BusinessTradeNameModel("business trade"))),
+    SelfEmploymentData(id = "idFour")
   )
   lazy val incompleteUKProperty: Option[PropertyModel] = Some(PropertyModel(startDate = Some(DateModel("1", "1", "1981"))))
   lazy val incompleteForeignProperty: Option[OverseasPropertyModel] = Some(OverseasPropertyModel(startDate = Some(DateModel("2", "2", "1982"))))

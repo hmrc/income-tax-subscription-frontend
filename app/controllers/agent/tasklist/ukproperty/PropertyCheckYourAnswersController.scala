@@ -52,8 +52,8 @@ class PropertyCheckYourAnswersController @Inject()(identify: IdentifierAction,
   }
 
   def submit(isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
-    withProperty(request.reference) { property =>
-      if (property.accountingMethod.isDefined && property.startDate.isDefined) {
+    withProperty(request.reference) {
+      case property if property.isComplete =>
         subscriptionDetailsService.saveProperty(request.reference, property.copy(confirmed = true)) map {
           case Right(_) =>
             if (isGlobalEdit) {
@@ -63,9 +63,8 @@ class PropertyCheckYourAnswersController @Inject()(identify: IdentifierAction,
             }
           case Left(_) => throw new InternalServerException("[PropertyCheckYourAnswersController][submit] - Could not confirm property")
         }
-      } else {
+      case _ =>
         Future.successful(Redirect(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show))
-      }
     }
   }
 

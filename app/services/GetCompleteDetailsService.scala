@@ -80,7 +80,10 @@ class GetCompleteDetailsService @Inject()(subscriptionDetailsService: Subscripti
                   id = selfEmploymentData.id,
                   name = selfEmploymentData.businessName.get.businessName,
                   trade = selfEmploymentData.businessTradeName.get.businessTradeName,
-                  startDate = selfEmploymentData.businessStartDate.get.startDate.toLocalDate,
+                  startDate = selfEmploymentData.startDateBeforeLimit match {
+                    case Some(true) => None
+                    case None => Some(selfEmploymentData.businessStartDate.get.startDate.toLocalDate)
+                  },
                   address = selfEmploymentData.businessAddress.get.address
                 )
               }
@@ -90,14 +93,20 @@ class GetCompleteDetailsService @Inject()(subscriptionDetailsService: Subscripti
 
         val ukProperty: Option[UKProperty] = ukPropertyBusiness.map { property =>
           UKProperty(
-            startDate = property.startDate.get.toLocalDate,
+            startDate = property.startDateBeforeLimit match {
+              case Some(true) => None
+              case _ => Some(property.startDate.get.toLocalDate)
+            },
             accountingMethod = property.accountingMethod.get
           )
         }
 
         val foreignProperty: Option[ForeignProperty] = foreignPropertyBusiness.map { property =>
           ForeignProperty(
-            startDate = property.startDate.get.toLocalDate,
+            startDate = property.startDateBeforeLimit match {
+              case Some(true) => None
+              case _ => Some(property.startDate.get.toLocalDate)
+            },
             accountingMethod = property.accountingMethod.get
           )
         }
@@ -141,17 +150,17 @@ object GetCompleteDetailsService {
                                  id: String,
                                  name: String,
                                  trade: String,
-                                 startDate: LocalDate,
+                                 startDate: Option[LocalDate],
                                  address: Address
                                )
 
   case class UKProperty(
-                         startDate: LocalDate,
+                         startDate: Option[LocalDate],
                          accountingMethod: AccountingMethod
                        )
 
   case class ForeignProperty(
-                              startDate: LocalDate,
+                              startDate: Option[LocalDate],
                               accountingMethod: AccountingMethod
                             )
 

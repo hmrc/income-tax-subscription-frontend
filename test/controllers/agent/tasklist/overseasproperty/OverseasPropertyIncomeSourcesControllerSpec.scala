@@ -179,7 +179,7 @@ class OverseasPropertyIncomeSourcesControllerSpec extends ControllerSpec
 
           val result: Future[Result] = TestIncomeSourcesOverseasPropertyController.submit(isEditMode = false, isGlobalEdit = false)(
             request.withMethod("POST").withHeaders("Content-Type" -> "application/x-www-form-urlencoded").withFormUrlEncodedBody(
-              IncomeSourcesOverseasPropertyForm.createOverseasPropertyMapData(fullOverseasProperty.startDate, fullOverseasProperty.accountingMethod).toSeq: _*
+              IncomeSourcesOverseasPropertyForm.createOverseasPropertyMapData(Some(fullOverseasProperty)).toSeq: _*
             )
           )
 
@@ -191,7 +191,7 @@ class OverseasPropertyIncomeSourcesControllerSpec extends ControllerSpec
 
           val result: Future[Result] = TestIncomeSourcesOverseasPropertyController.submit(isEditMode = true, isGlobalEdit = false)(
             request.withMethod("POST").withHeaders("Content-Type" -> "application/x-www-form-urlencoded").withFormUrlEncodedBody(
-              IncomeSourcesOverseasPropertyForm.createOverseasPropertyMapData(fullOverseasProperty.startDate, fullOverseasProperty.accountingMethod).toSeq: _*
+              IncomeSourcesOverseasPropertyForm.createOverseasPropertyMapData(Some(fullOverseasProperty)).toSeq: _*
             )
           )
 
@@ -203,7 +203,7 @@ class OverseasPropertyIncomeSourcesControllerSpec extends ControllerSpec
 
           val result: Future[Result] = TestIncomeSourcesOverseasPropertyController.submit(isEditMode = false, isGlobalEdit = true)(
             request.withMethod("POST").withHeaders("Content-Type" -> "application/x-www-form-urlencoded").withFormUrlEncodedBody(
-              IncomeSourcesOverseasPropertyForm.createOverseasPropertyMapData(fullOverseasProperty.startDate, fullOverseasProperty.accountingMethod).toSeq: _*
+              IncomeSourcesOverseasPropertyForm.createOverseasPropertyMapData(Some(fullOverseasProperty)).toSeq: _*
             )
           )
 
@@ -217,7 +217,7 @@ class OverseasPropertyIncomeSourcesControllerSpec extends ControllerSpec
 
           val result: Future[Result] = TestIncomeSourcesOverseasPropertyController.submit(isEditMode = false, isGlobalEdit = false)(
             request.withMethod("POST").withHeaders("Content-Type" -> "application/x-www-form-urlencoded").withFormUrlEncodedBody(
-              IncomeSourcesOverseasPropertyForm.createOverseasPropertyMapData(fullOverseasProperty.startDate, fullOverseasProperty.accountingMethod).toSeq: _*
+              IncomeSourcesOverseasPropertyForm.createOverseasPropertyMapData(Some(fullOverseasProperty)).toSeq: _*
             )
           )
 

@@ -18,34 +18,13 @@ package utilities.agent
 
 
 import models.common._
-import models.common.business._
 import models.usermatching.UserDetailsModel
 import models.{AccountingMethod => _, _}
-import uk.gov.hmrc.domain.Generator
 
 object TestModels {
 
-  /*
-   * this function returns a random nino each time it is called, if you need a constant nino use TestConstants.testNino
-   */
-  def newNino: String = new Generator().nextNino.nino
-
-  val testStartDate: DateModel = utilities.TestModels.testStartDateThisYear
-  val testEndDate: DateModel = utilities.TestModels.testEndDateThisYear
-  val testAccountingPeriod: AccountingPeriodModel =
-    testAccountingPeriod(testStartDate, testEndDate)
-
-  def testAccountingPeriod(startDate: DateModel = testStartDate,
-                           endDate: DateModel = testEndDate): AccountingPeriodModel =
-    AccountingPeriodModel(startDate, endDate)
-
-  val testBusinessName = BusinessNameModel("test business")
-  val testAccountingMethod = AccountingMethodModel(Cash)
-  val testAccountingMethodProperty = AccountingMethodPropertyModel(Cash)
   val testSelectedTaxYearCurrent = AccountingYearModel(Current)
   val testSelectedTaxYearNext = AccountingYearModel(Next)
-  val testSelfEmployments = Seq(SelfEmploymentData("1", Some(BusinessStartDate(testStartDate)), Some(testBusinessName),
-    Some(BusinessTradeNameModel("plumbing")), confirmed = true))
 
   // we don't verify date of birth since an incorrect one would not result in a match so it can be any date
   // TODO change when consolidating models

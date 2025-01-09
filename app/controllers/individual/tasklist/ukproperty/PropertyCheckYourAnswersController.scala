@@ -59,7 +59,7 @@ class PropertyCheckYourAnswersController @Inject()(propertyCheckYourAnswersView:
     _ =>
       referenceRetrieval.getIndividualReference flatMap { reference =>
         withProperty(reference) {
-          case property@PropertyModel(Some(_), Some(_), _) =>
+          case property if property.isComplete =>
             subscriptionDetailsService.saveProperty(reference, property.copy(confirmed = true)).map {
               case Right(_) =>
                 if (isGlobalEdit) Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)

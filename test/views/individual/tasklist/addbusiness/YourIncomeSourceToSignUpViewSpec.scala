@@ -55,7 +55,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     val foreignPropertyRemove = "(Foreign property)"
 
     val selfEmploymentHeading = "Sole trader businesses"
-    val selfEmploymentPara = "You’re a sole trader if you run your own business as an individual and work for yourself. " +
+    val selfEmploymentPara: String = "You’re a sole trader if you run your own business as an individual and work for yourself. " +
       "This is also known as being self-employed. You’re not a sole trader if your only business income is from a limited company."
     val addSelfEmploymentLinkText = "Add a sole trader business"
     val soleTraderBusinessNameKey = "Business name"
@@ -136,9 +136,9 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
   val ukProperty: Option[PropertyModel] = Some(PropertyModel())
   val foreignProperty: Option[OverseasPropertyModel] = Some(OverseasPropertyModel())
 
-  val incompleteSelfEmployments: Seq[SelfEmploymentData] = Seq(SelfEmploymentData("idTwo", None, Some(BusinessNameModel("business name"))),
-    SelfEmploymentData("idThree", None, None, businessTradeName = Some(BusinessTradeNameModel("business trade"))),
-    SelfEmploymentData("idFour")
+  val incompleteSelfEmployments: Seq[SelfEmploymentData] = Seq(SelfEmploymentData(id = "idTwo", businessName = Some(BusinessNameModel("business name"))),
+    SelfEmploymentData(id = "idThree", businessTradeName = Some(BusinessTradeNameModel("business trade"))),
+    SelfEmploymentData(id = "idFour")
   )
 
   val incompleteUKProperty: Option[PropertyModel] = Some(PropertyModel())

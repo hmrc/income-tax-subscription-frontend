@@ -54,11 +54,11 @@ class PrePopDataServiceSpec extends PlaySpec
   val fakeFeatureSwitching: FeatureSwitchingImpl = new FeatureSwitchingImpl(appConfig = MockConfig)
 
   val service: PrePopDataService = new PrePopDataService(
-    fakeFeatureSwitching,
     mockNinoService,
     mockPrePopConnector,
     mockSubscriptionDetailsService,
-    mockUUIDProvider
+    mockUUIDProvider,
+    fakeFeatureSwitching
   )
 
   implicit val headerCarrier: HeaderCarrier = HeaderCarrier()

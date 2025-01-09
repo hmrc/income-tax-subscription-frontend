@@ -126,7 +126,10 @@ class OverseasPropertyIncomeSourcesControllerISpec extends ComponentSpecBase {
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
         When("POST /business/income-sources-property is called")
-        val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyIncomeSources(isEditMode = false, startDate = None, accountingMethod = None)
+        val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyIncomeSources(
+          isEditMode = false,
+          property = None
+        )
 
         Then("Should return a BAD_REQUEST and show the overseas property income sources page with errors")
         res must have(
@@ -145,8 +148,9 @@ class OverseasPropertyIncomeSourcesControllerISpec extends ComponentSpecBase {
         When("POST /business/overseas-property-income-sources is called")
         val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyIncomeSources(
           isEditMode = false,
-          startDate = Some(DateModel("10", "10", "2020")),
-          accountingMethod = None
+          property = Some(OverseasPropertyModel(
+            startDate = Some(DateModel("10", "10", "2020"))
+          ))
         )
 
         Then("Should return a BAD_REQUEST and show the overseas property income sources page with errors")
@@ -166,8 +170,9 @@ class OverseasPropertyIncomeSourcesControllerISpec extends ComponentSpecBase {
         When("POST /business/overseas-property-income-sources is called")
         val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyIncomeSources(
           isEditMode = false,
-          startDate = None,
-          accountingMethod = Some(Cash)
+          property = Some(OverseasPropertyModel(
+            accountingMethod = Some(Cash)
+          ))
         )
 
         Then("Should return a BAD_REQUEST and show the overseas property income sources page with errors")
@@ -185,14 +190,19 @@ class OverseasPropertyIncomeSourcesControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
-        IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(OverseasPropertyModel(Some(Cash), Some(DateModel("10", "10", "2020"))))
+        IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(OverseasPropertyModel(
+          accountingMethod = Some(Cash),
+          startDate = Some(DateModel("10", "10", "2020"))
+        ))
         IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
         When("POST /business/overseas-property-income-sources is called")
         val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyIncomeSources(
           isEditMode = false,
-          startDate = Some(DateModel("10", "10", "2020")),
-          accountingMethod = Some(Cash)
+          property = Some(OverseasPropertyModel(
+            startDate = Some(DateModel("10", "10", "2020")),
+            accountingMethod = Some(Cash)
+          ))
         )
 
         Then("Should return a SEE_OTHER and redirect to check your answers page")

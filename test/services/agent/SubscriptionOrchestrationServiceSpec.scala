@@ -24,7 +24,6 @@ import org.scalatest.concurrent.ScalaFutures.whenReady
 import play.api.test.Helpers._
 import services.agent.mocks.{MockAgentSPSConnector, MockClientRelationshipService}
 import services.mocks.{MockAutoEnrolmentService, MockSubscriptionService}
-import uk.gov.hmrc.http.InternalServerException
 import utilities.TestModels.testAccountingPeriodThisYear
 import utilities.agent.TestConstants._
 
