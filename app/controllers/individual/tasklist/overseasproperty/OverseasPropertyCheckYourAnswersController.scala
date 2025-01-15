@@ -56,11 +56,14 @@ class OverseasPropertyCheckYourAnswersController @Inject()(view: OverseasPropert
     _ =>
       referenceRetrieval.getIndividualReference flatMap { reference =>
         withProperty(reference) {
-          case property@OverseasPropertyModel(Some(_), Some(_), _) =>
+          case property if property.isComplete =>
             subscriptionDetailsService.saveOverseasProperty(reference, property.copy(confirmed = true)) map {
               case Right(_) =>
-                if (isGlobalEdit) Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
-                else Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
+                if (isGlobalEdit) {
+                  Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
+                } else {
+                  Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
+                }
               case Left(_) => throw new InternalServerException("[OverseasPropertyCheckYourAnswersController][submit] - Could not confirm property details")
             }
           case _ => Future.successful(Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show))

@@ -19,6 +19,7 @@ package forms.agent
 import forms.formatters.DateModelMapping.dateModelMapping
 import forms.submapping.AccountingMethodMapping
 import forms.submapping.AccountingMethodMapping.{option_accruals, option_cash}
+import models.common.OverseasPropertyModel
 import models.{AccountingMethod, Accruals, Cash, DateModel}
 import play.api.data.{Form, Mapping}
 import play.api.data.Forms.tuple
@@ -55,9 +56,9 @@ object IncomeSourcesOverseasPropertyForm {
     )
   )
 
-  def createOverseasPropertyMapData(maybeStartDate: Option[DateModel], maybeAccountingMethod: Option[AccountingMethod]): Map[String, String] = {
+  def createOverseasPropertyMapData(overseasProperty: Option[OverseasPropertyModel]): Map[String, String] = {
 
-    val dateMap: Map[String, String] = maybeStartDate.fold(Map.empty[String, String]) { date =>
+    val dateMap: Map[String, String] = overseasProperty.flatMap(_.startDate).fold(Map.empty[String, String]) { date =>
       Map(
         s"$startDate-dateDay" -> date.day,
         s"$startDate-dateMonth" -> date.month,
@@ -65,7 +66,7 @@ object IncomeSourcesOverseasPropertyForm {
       )
     }
 
-    val accountingMethodMap: Map[String, String] = maybeAccountingMethod.fold(Map.empty[String, String]) {
+    val accountingMethodMap: Map[String, String] = overseasProperty.flatMap(_.accountingMethod).fold(Map.empty[String, String]) {
       case Cash => Map(accountingMethodOverseasProperty -> option_cash)
       case Accruals => Map(accountingMethodOverseasProperty -> option_accruals)
     }

@@ -42,13 +42,14 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
   "show" should {
     "return an OK status with the property CYA page" when {
       "with partial property data" in withController { controller =>
+        val partialPropertyModel: PropertyModel = PropertyModel(accountingMethod = Some(Cash))
         mockPropertyCheckYourAnswersView(
-          viewModel = testFullProperty.copy(startDate = None),
+          viewModel = partialPropertyModel,
           postAction = routes.PropertyCheckYourAnswersController.submit(),
           backUrl = routes.PropertyAccountingMethodController.show().url,
           isGlobalEdit = false
         )
-        mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash))))
+        mockFetchProperty(Some(partialPropertyModel))
 
         val result: Future[Result] = await(controller.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest))
 
@@ -160,8 +161,8 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
 
       "throw an exception" when {
         "cannot confirm property details" in withController { controller =>
-          mockFetchProperty(Some(PropertyModel(Some(Cash), Some(DateModel("1", "1", "1980")))))
-          mockSaveProperty(PropertyModel(Some(Cash), Some(DateModel("1", "1", "1980")), confirmed = true))(
+          mockFetchProperty(Some(testFullProperty))
+          mockSaveProperty(testFullProperty.copy(confirmed = true))(
             Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
           )
 
@@ -197,8 +198,8 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
 
       "throw an exception" when {
         "cannot confirm property details" in withController { controller =>
-          mockFetchProperty(Some(PropertyModel(Some(Cash), Some(DateModel("1", "1", "1980")))))
-          mockSaveProperty(PropertyModel(Some(Cash), Some(DateModel("1", "1", "1980")), confirmed = true))(
+          mockFetchProperty(Some(testFullProperty))
+          mockSaveProperty(testFullProperty.copy(confirmed = true))(
             Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
           )
 
@@ -218,7 +219,11 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
     }
   }
 
-  private val testFullProperty: PropertyModel = PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))
+  private val testFullProperty: PropertyModel = PropertyModel(
+    startDateBeforeLimit = Some(false),
+    accountingMethod = Some(Cash),
+    startDate = Some(DateModel("10", "11", "2021"))
+  )
 
   private def withController(testCode: PropertyCheckYourAnswersController => Any): Unit = {
 

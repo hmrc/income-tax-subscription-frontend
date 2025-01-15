@@ -31,6 +31,8 @@ object AccountingPeriodUtil {
     if (date.isBefore(LocalDate.of(date.getYear, APRIL.getValue, sixth))) date.getYear
     else date.getYear + 1
 
+  def getCurrentTaxYearStartLocalDate: LocalDate = getCurrentTaxYearStartDate.toLocalDate
+
   def getTaxEndYear(accountingPeriodModel: AccountingPeriodModel): Int = getTaxEndYear(accountingPeriodModel.endDate.toLocalDate)
 
   def getCurrentTaxEndYear: Int = getTaxEndYear(LocalDate.now())

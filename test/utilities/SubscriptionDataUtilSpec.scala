@@ -16,19 +16,126 @@
 
 package utilities
 
-import models.Current
 import models.common.AccountingYearModel
-import models.common.subscription.CreateIncomeSourcesModel
+import models.common.business._
 import models.common.subscription.CreateIncomeSourcesModel.createIncomeSources
-import org.scalatest.BeforeAndAfterEach
+import models.common.subscription.{CreateIncomeSourcesModel, OverseasProperty, SoleTraderBusinesses, UkProperty}
+import models.{Cash, Current, DateModel}
 import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.play.PlaySpec
+import services.GetCompleteDetailsService
 import uk.gov.hmrc.http.InternalServerException
+import utilities.AccountingPeriodUtil.getCurrentTaxYear
 import utilities.TestModels._
 import utilities.individual.TestConstants._
 
-class SubscriptionDataUtilSpec extends UnitTestTrait
+import java.time.LocalDate
 
-  with BeforeAndAfterEach {
+class SubscriptionDataUtilSpec extends PlaySpec {
+
+  "createIncomeSources(nino, completeDetails)" must {
+    "produce a create income sources model" which {
+      "have a start date limit" in {
+        createIncomeSources(testNino, completeDetails(false)) mustBe CreateIncomeSourcesModel(
+          nino = testNino,
+          soleTraderBusinesses = Some(SoleTraderBusinesses(
+            accountingPeriod = getCurrentTaxYear,
+            accountingMethod = Cash,
+            businesses = Seq(
+              SelfEmploymentData(
+                id = "test-id",
+                businessStartDate = Some(BusinessStartDate(DateModel.dateConvert(AccountingPeriodUtil.getCurrentTaxYearStartLocalDate.minusYears(2)))),
+                businessName = Some(BusinessNameModel("test name")),
+                businessTradeName = Some(BusinessTradeNameModel("test trade")),
+                businessAddress = Some(BusinessAddressModel(address)),
+                confirmed = true
+              )
+            )
+          )),
+          ukProperty = Some(UkProperty(
+            accountingPeriod = getCurrentTaxYear,
+            tradingStartDate = DateModel.dateConvert(AccountingPeriodUtil.getCurrentTaxYearStartLocalDate.minusYears(2)),
+            accountingMethod = Cash
+          )),
+          overseasProperty = Some(OverseasProperty(
+            accountingPeriod = getCurrentTaxYear,
+            tradingStartDate = DateModel.dateConvert(AccountingPeriodUtil.getCurrentTaxYearStartLocalDate.minusYears(2)),
+            accountingMethod = Cash
+          ))
+        )
+      }
+      "do not have a start date limit" in {
+        createIncomeSources(testNino, completeDetails(true)) mustBe CreateIncomeSourcesModel(
+          nino = testNino,
+          soleTraderBusinesses = Some(SoleTraderBusinesses(
+            accountingPeriod = getCurrentTaxYear,
+            accountingMethod = Cash,
+            businesses = Seq(
+              SelfEmploymentData(
+                id = "test-id",
+                businessStartDate = Some(BusinessStartDate(DateModel.dateConvert(LocalDate.now))),
+                businessName = Some(BusinessNameModel("test name")),
+                businessTradeName = Some(BusinessTradeNameModel("test trade")),
+                businessAddress = Some(BusinessAddressModel(address)),
+                confirmed = true
+              )
+            )
+          )),
+          ukProperty = Some(UkProperty(
+            accountingPeriod = getCurrentTaxYear,
+            tradingStartDate = DateModel.dateConvert(LocalDate.now),
+            accountingMethod = Cash
+          )),
+          overseasProperty = Some(OverseasProperty(
+            accountingPeriod = getCurrentTaxYear,
+            tradingStartDate = DateModel.dateConvert(LocalDate.now),
+            accountingMethod = Cash
+          ))
+        )
+      }
+    }
+
+    "throw an exception" when {
+      "no income source was provided" in {
+        intercept[IllegalArgumentException](createIncomeSources(testNino, GetCompleteDetailsService.CompleteDetails(GetCompleteDetailsService.IncomeSources(None, None, None), AccountingYearModel(Current))))
+          .getMessage mustBe "requirement failed: at least one income source is required"
+      }
+    }
+  }
+
+  lazy val address: Address = Address(
+    lines = Seq("1 long road"),
+    postcode = Some("ZZ1 1ZZ")
+  )
+
+  def completeDetails(hasStartDate: Boolean): GetCompleteDetailsService.CompleteDetails = GetCompleteDetailsService.CompleteDetails(
+    incomeSources = GetCompleteDetailsService.IncomeSources(
+      soleTraderBusinesses = Some(GetCompleteDetailsService.SoleTraderBusinesses(
+        accountingMethod = Cash,
+        businesses = Seq(GetCompleteDetailsService.SoleTraderBusiness(
+          id = "test-id",
+          name = "test name",
+          trade = "test trade",
+          startDate = if (hasStartDate) Some(LocalDate.now) else None,
+          address = address
+        ))
+      )),
+      ukProperty = Some(
+        GetCompleteDetailsService.UKProperty(
+          startDate = if (hasStartDate) Some(LocalDate.now) else None,
+          accountingMethod = Cash
+        )
+      ),
+      foreignProperty = Some(
+        GetCompleteDetailsService.ForeignProperty(
+          startDate = if (hasStartDate) Some(LocalDate.now) else None,
+          accountingMethod = Cash
+        )
+      )
+    ),
+    taxYear = AccountingYearModel(Current)
+  )
+
 
   "SubscriptionDataUtil" should {
 
@@ -36,7 +143,6 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
       "income source is just sole trader business" when {
         "the data returns both completed self employments data and self employments accounting Method" should {
           "successfully populate the CreateIncomeSourcesModel with self employment income" in {
-
             def result: CreateIncomeSourcesModel = createIncomeSources(testNino, testSelfEmploymentData, Some(testAccountingMethod), accountingYear = Some(testSelectedTaxYearCurrent))
 
             result shouldBe
@@ -55,6 +161,14 @@ class SubscriptionDataUtilSpec extends UnitTestTrait
             intercept[InternalServerException](result).message mustBe
               "[SubscriptionDataUtil][createIncomeSource] - not all self employment businesses are complete"
 
+          }
+        }
+
+        "missing tax year" should {
+          "throw InternalServerException" in {
+            def result: CreateIncomeSourcesModel = createIncomeSources(testNino, testUncompletedSelfEmploymentData, Some(testAccountingMethod), accountingYear = None)
+
+            intercept[InternalServerException](result).message mustBe "[SubscriptionDataUtil][createIncomeSource] - Could not create the create income sources model due to missing selected tax year"
           }
         }
 

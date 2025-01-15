@@ -17,26 +17,92 @@
 package models.common
 
 import models.{Cash, DateModel}
-import org.scalatest.OptionValues
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
-import play.api.libs.json.{JsSuccess, Json}
+import org.scalatestplus.play.PlaySpec
+import play.api.libs.json._
 
-class OverseasPropertyModelSpec extends AnyWordSpecLike with Matchers with OptionValues {
-    "OverseasPropertyModel" should {
-      "deserialize without confirmed field" in {
-        val actual = Json.fromJson[OverseasPropertyModel](Json.parse("""{"startDate":{"day":"5","month":"11","year":"2021"}}"""))
-        val expected = OverseasPropertyModel(startDate = Some(DateModel("5","11","2021")))
-        actual mustBe JsSuccess(expected)
+class OverseasPropertyModelSpec extends PlaySpec {
+
+  val dateModel: DateModel = DateModel("1", "2", "1980")
+
+  val fullModel: OverseasPropertyModel = OverseasPropertyModel(
+    startDateBeforeLimit = Some(false),
+    accountingMethod = Some(Cash),
+    startDate = Some(dateModel),
+    confirmed = true
+  )
+
+  val minimalModel: OverseasPropertyModel = OverseasPropertyModel()
+
+  val fullJson: JsObject = Json.obj(
+    "startDateBeforeLimit" -> false,
+    "accountingMethod" -> Cash.toString,
+    "startDate" -> Json.obj(
+      "day" -> "1",
+      "month" -> "2",
+      "year" -> "1980"
+    ),
+    "confirmed" -> true
+  )
+
+  val minimalJson: JsObject = Json.obj(
+    "confirmed" -> false
+  )
+
+  "OverseasPropertyModel" should {
+    "read from json successfully" when {
+      "the json has all possible information" in {
+        Json.fromJson[OverseasPropertyModel](fullJson) mustBe JsSuccess(fullModel)
       }
-
-      "deserialize with confirmed field" in {
-        val actual = Json.fromJson[OverseasPropertyModel](
-          Json.parse("""{"accountingMethod":"Cash","startDate":{"day":"5","month":"11","year":"2021"},"confirmed":true}""")
-        )
-        val expected = OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("5","11","2021")), confirmed = true)
-        actual mustBe JsSuccess(expected)
+      "the json has minimal possible information" in {
+        Json.fromJson[OverseasPropertyModel](minimalJson) mustBe JsSuccess(minimalModel)
       }
     }
+
+    "fail to read from json" when {
+      "confirmed is not present in the json" in {
+        Json.fromJson[OverseasPropertyModel](Json.obj()) mustBe JsError(__ \ "confirmed", "error.path.missing")
+      }
+    }
+
+    "write to json" when {
+      "the model has all values present" in {
+        Json.toJson(fullModel) mustBe fullJson
+      }
+      "the model has no values present" in {
+        Json.toJson(minimalModel) mustBe minimalJson
+      }
+    }
+  }
+
+  "OverseasPropertyModel.isComplete" must {
+    "return true" when {
+      "startDateBeforeLimit is defined and true and accounting method is defined" in {
+        OverseasPropertyModel(startDateBeforeLimit = Some(true), accountingMethod = Some(Cash)).isComplete mustBe true
+      }
+      "startDateBeforeLimit is defined and false, start date and accounting method are defined" in {
+        OverseasPropertyModel(startDateBeforeLimit = Some(false), accountingMethod = Some(Cash), startDate = Some(dateModel)).isComplete mustBe true
+      }
+      "startDateBeforeLimit is not defined, start date and accounting method are defined" in {
+        OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(dateModel)).isComplete mustBe true
+      }
+    }
+    "return false" when {
+      "startDateBeforeLimit is defined and true and accounting method is not defined" in {
+        OverseasPropertyModel(startDateBeforeLimit = Some(true)).isComplete mustBe false
+      }
+      "startDateBeforeLimit is defined and false, start date is not defined" in {
+        OverseasPropertyModel(startDateBeforeLimit = Some(false), accountingMethod = Some(Cash)).isComplete mustBe false
+      }
+      "startDateBeforeLimit is defined and false, accounting method is not defined" in {
+        OverseasPropertyModel(startDateBeforeLimit = Some(false), startDate = Some(dateModel)).isComplete mustBe false
+      }
+      "startDateBeforeLimit is not defined, start date is not defined" in {
+        OverseasPropertyModel(accountingMethod = Some(Cash)).isComplete mustBe false
+      }
+      "startDateBeforeLimit is not defined, accounting method is not defined" in {
+        OverseasPropertyModel(startDate = Some(dateModel)).isComplete mustBe false
+      }
+    }
+  }
+
 }

@@ -97,7 +97,7 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
             id = "id",
             name = s"ABC",
             trade = s"Plumbing",
-            startDate = LocalDate.of(1980, 1, 1),
+            startDate = Some(LocalDate.of(1980, 1, 1)),
             address = Address(
               lines = Seq(
                 s"1 Long Road",
@@ -109,11 +109,11 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
         )
       )),
       ukProperty = Some(UKProperty(
-        startDate = LocalDate.of(1980, 1, 2),
+        startDate = Some(LocalDate.of(1980, 1, 2)),
         accountingMethod = Cash
       )),
       foreignProperty = Some(ForeignProperty(
-        startDate = LocalDate.of(1980, 1, 3),
+        startDate = Some(LocalDate.of(1980, 1, 3)),
         accountingMethod = Cash
       ))
     ),

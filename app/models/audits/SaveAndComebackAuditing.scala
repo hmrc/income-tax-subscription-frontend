@@ -47,21 +47,19 @@ object SaveAndComebackAuditing {
                                       ) extends JsonAuditModel {
     override val auditType: String = signUpSaveAndComeBackAudit
 
-    private val overseasPropertyAsJson: Option[JsValue] = maybeOverseasPropertyModel.map { overseasProperty => {
+    private val overseasPropertyAsJson: Option[JsValue] = maybeOverseasPropertyModel.map { overseasProperty =>
       Json.toJson(AuditDetailPropertyIncome(
         incomeSource = overseasPropertyIncomeSource,
         commencementDate = overseasProperty.startDate.map(_.toDesDateFormat),
         accountingType = overseasProperty.accountingMethod.map(_.toString)
       ))
     }
-    }
-    private val ukPropertyAsJson: Option[JsValue] = maybePropertyModel.map { property => {
+    private val ukPropertyAsJson: Option[JsValue] = maybePropertyModel.map { property =>
       Json.toJson(AuditDetailPropertyIncome(
         incomeSource = ukPropertyIncomeSource,
         commencementDate = property.startDate.map(_.toDesDateFormat),
         accountingType = property.accountingMethod.map(_.toString)
       ))
-    }
     }
     val income: Seq[JsValue] = Seq() ++ ukPropertyAsJson ++ overseasPropertyAsJson ++
       selfEmploymentAsJson(selfEmployments, maybeSelfEmploymentAccountingMethod)

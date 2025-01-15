@@ -22,6 +22,7 @@ import models.{AccountingMethod, Current, DateModel, Next}
 import play.api.libs.json.{Json, OFormat}
 import services.GetCompleteDetailsService.CompleteDetails
 import uk.gov.hmrc.http.InternalServerException
+import utilities.AccountingPeriodUtil
 import utilities.AccountingPeriodUtil.{getCurrentTaxYear, getNextTaxYear}
 
 case class CreateIncomeSourcesModel(
@@ -77,9 +78,10 @@ object CreateIncomeSourcesModel {
     val soleTraderBusinesses: Option[SoleTraderBusinesses] = {
       completeDetails.incomeSources.soleTraderBusinesses map { businesses =>
         val selfEmployments: Seq[SelfEmploymentData] = businesses.businesses.map { business =>
+          val startDate: DateModel = DateModel.dateConvert(business.startDate.getOrElse(AccountingPeriodUtil.getCurrentTaxYearStartLocalDate.minusYears(2)))
           SelfEmploymentData(
             id = business.id,
-            businessStartDate = Some(BusinessStartDate(DateModel.dateConvert(business.startDate))),
+            businessStartDate = Some(BusinessStartDate(startDate)),
             businessName = Some(BusinessNameModel(business.name)),
             businessTradeName = Some(BusinessTradeNameModel(business.trade)),
             businessAddress = Some(BusinessAddressModel(business.address)),
@@ -91,17 +93,23 @@ object CreateIncomeSourcesModel {
     }
 
     val ukProperty: Option[UkProperty] = {
-      completeDetails.incomeSources.ukProperty map { ukProperty =>
+      completeDetails.incomeSources.ukProperty map { property =>
+        val startDate: DateModel = DateModel.dateConvert(property.startDate.getOrElse(AccountingPeriodUtil.getCurrentTaxYearStartLocalDate.minusYears(2)))
         UkProperty(
-          accountingPeriod, DateModel.dateConvert(ukProperty.startDate), ukProperty.accountingMethod
+          accountingPeriod = accountingPeriod,
+          tradingStartDate = startDate,
+          accountingMethod = property.accountingMethod
         )
       }
     }
 
     val foreignProperty: Option[OverseasProperty] = {
-      completeDetails.incomeSources.foreignProperty map { foreignProperty =>
+      completeDetails.incomeSources.foreignProperty map { property =>
+        val startDate: DateModel = DateModel.dateConvert(property.startDate.getOrElse(AccountingPeriodUtil.getCurrentTaxYearStartLocalDate.minusYears(2)))
         OverseasProperty(
-          accountingPeriod, DateModel.dateConvert(foreignProperty.startDate), foreignProperty.accountingMethod
+          accountingPeriod = accountingPeriod,
+          tradingStartDate = startDate,
+          accountingMethod = property.accountingMethod
         )
       }
     }

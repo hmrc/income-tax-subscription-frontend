@@ -29,7 +29,8 @@ object FeatureSwitch {
     ThrottlingFeature,
     AgentStreamline,
     CheckClientRelationship,
-    CheckMultiAgentRelationship
+    CheckMultiAgentRelationship,
+    StartDateBeforeLimit
   )
 
   def apply(str: String): FeatureSwitch =
@@ -39,6 +40,11 @@ object FeatureSwitch {
     }
 
   def get(str: String): Option[FeatureSwitch] = switches find (_.name == str)
+
+  case object StartDateBeforeLimit extends FeatureSwitch {
+    override val name = s"$prefix.start-date-before-limit"
+    override val displayText: String = "Start date before limit"
+  }
 
   case object PrePopulate extends FeatureSwitch {
     override val name = s"$prefix.prepopulate"

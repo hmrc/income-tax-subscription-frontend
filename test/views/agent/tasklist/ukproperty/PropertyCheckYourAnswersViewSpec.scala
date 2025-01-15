@@ -236,7 +236,7 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
 
   }
 
-  private def page(viewModel: PropertyModel, isGlobalEdit: Boolean = false) = propertyCheckYourAnswersView(
+  private def page(viewModel: PropertyModel, isGlobalEdit: Boolean) = propertyCheckYourAnswersView(
     viewModel = viewModel,
     postAction = controllers.agent.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.submit(isGlobalEdit = isGlobalEdit),
     isGlobalEdit = isGlobalEdit,

@@ -20,13 +20,19 @@ import models.common.{EncryptingAddress, SoleTraderBusiness}
 import play.api.libs.json._
 
 case class SelfEmploymentData(id: String,
+                              startDateBeforeLimit: Option[Boolean] = None,
                               businessStartDate: Option[BusinessStartDate] = None,
                               businessName: Option[BusinessNameModel] = None,
                               businessTradeName: Option[BusinessTradeNameModel] = None,
                               businessAddress: Option[BusinessAddressModel] = None,
                               confirmed: Boolean = false) {
 
-  val isComplete: Boolean = businessStartDate.isDefined && businessName.isDefined && businessTradeName.isDefined && businessAddress.isDefined
+  val isComplete: Boolean = {
+    startDateBeforeLimit match {
+      case Some(true) => businessName.isDefined && businessTradeName.isDefined && businessAddress.isDefined
+      case _ => businessStartDate.isDefined && businessName.isDefined && businessTradeName.isDefined && businessAddress.isDefined
+    }
+  }
 
   def toSoleTraderBusiness: SoleTraderBusiness = SoleTraderBusiness(
     id = id,

@@ -42,10 +42,7 @@ class IncomeSourcesOverseasPropertyController @Inject()(identify: IdentifierActi
 
   def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
     subscriptionDetailsService.fetchOverseasProperty(request.reference) map { maybeOverseasProperty =>
-      val formData: Map[String, String] = IncomeSourcesOverseasPropertyForm.createOverseasPropertyMapData(
-        maybeOverseasProperty.flatMap(_.startDate),
-        maybeOverseasProperty.flatMap(_.accountingMethod)
-      )
+      val formData: Map[String, String] = IncomeSourcesOverseasPropertyForm.createOverseasPropertyMapData(maybeOverseasProperty)
       val boundForm = form.bind(formData).discardingErrors
       Ok(view(
         incomeSourcesOverseasPropertyForm = boundForm,

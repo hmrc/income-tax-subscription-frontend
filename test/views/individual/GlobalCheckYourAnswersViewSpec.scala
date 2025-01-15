@@ -393,7 +393,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
         id = s"id-$index",
         name = s"ABC-$index",
         trade = s"Plumbing-$index",
-        startDate = LocalDate.of(1980, index, index),
+        startDate = Some(LocalDate.of(1980, index, index)),
         address = Address(
           lines = Seq(
             s"$index Long Road",
@@ -406,12 +406,12 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
   )
 
   def ukPropertyIncomeSource(accountingMethod: AccountingMethod): UKProperty = UKProperty(
-    startDate = LocalDate.of(1980, 1, 2),
+    startDate = Some(LocalDate.of(1980, 1, 2)),
     accountingMethod = accountingMethod
   )
 
   def foreignPropertyIncomeSource(accountingMethod: AccountingMethod): ForeignProperty = ForeignProperty(
-    startDate = LocalDate.of(1980, 1, 3),
+    startDate = Some(LocalDate.of(1980, 1, 3)),
     accountingMethod = accountingMethod
   )
 

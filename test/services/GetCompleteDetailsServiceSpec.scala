@@ -77,7 +77,7 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
           id = "test-id",
           name = "ABC Limited",
           trade = "Plumbing",
-          startDate = LocalDate.of(1980, 1, 1),
+          startDate = Some(LocalDate.of(1980, 1, 1)),
           address = Address(
             lines = Seq("1 Long Road", "Lonely city"),
             postcode = Some("ZZ11ZZ")
@@ -85,11 +85,11 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
         ))
       )),
       ukProperty = Some(UKProperty(
-        startDate = LocalDate.of(1980, 1, 2),
+        startDate = Some(LocalDate.of(1980, 1, 2)),
         accountingMethod = Cash
       )),
       foreignProperty = Some(ForeignProperty(
-        startDate = LocalDate.of(1980, 1, 3),
+        startDate = Some(LocalDate.of(1980, 1, 3)),
         accountingMethod = Cash
       ))
     ),

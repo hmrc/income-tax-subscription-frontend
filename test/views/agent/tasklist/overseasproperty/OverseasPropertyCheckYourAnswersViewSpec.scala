@@ -247,7 +247,7 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
     }
   }
 
-  private def page(viewModel: OverseasPropertyModel, isGlobalEdit: Boolean = false) = overseasPropertyCheckYourAnswersView(
+  private def page(viewModel: OverseasPropertyModel, isGlobalEdit: Boolean) = overseasPropertyCheckYourAnswersView(
     viewModel = viewModel,
     postAction = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.submit(isGlobalEdit = isGlobalEdit),
     isGlobalEdit = isGlobalEdit,
