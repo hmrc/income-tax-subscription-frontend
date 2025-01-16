@@ -17,13 +17,11 @@
 @import models.common.OverseasPropertyModel
 @import views.html.templates.AgentMainTemplate
 @import config.featureswitch.FeatureSwitchingImpl
-@import config.featureswitch.FeatureSwitch.AgentStreamline
 @import utilities.UserMatchingSessionUtil.ClientDetails
 @import views.html.helpers.{SaveAndContinueButtonHelper, PageHeadingHelper}
 
 @this(
         mainTemplate: AgentMainTemplate,
-        featureSwitching: FeatureSwitchingImpl,
         form: FormWithCSRF,
         govukSummaryList: GovukSummaryList,
         pageHeadingHelper: PageHeadingHelper,
@@ -69,12 +67,7 @@
                 actions = Some(Actions(
                     items = Seq(
                         ActionItem(
-                            href =
-                                if(featureSwitching.isEnabled(AgentStreamline)) {
-                                    controllers.agent.tasklist.overseasproperty.routes.IncomeSourcesOverseasPropertyController.show(editMode = true, isGlobalEdit = isGlobalEdit).url
-                                } else {
-                                    controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show(editMode = true).url
-                                },
+                            href = controllers.agent.tasklist.overseasproperty.routes.IncomeSourcesOverseasPropertyController.show(editMode = true, isGlobalEdit = isGlobalEdit).url,
                             content = Text(messages(if(viewModel.startDate.isDefined) "base.change" else "base.add")),
                             visuallyHiddenText = Some(messages("agent.overseas-property.check-your-answers.start-date.question"))
                         )
@@ -87,12 +80,7 @@
                 actions = Some(Actions(
                     items = Seq(
                         ActionItem(
-                            href =
-                                if(featureSwitching.isEnabled(AgentStreamline)) {
-                                    controllers.agent.tasklist.overseasproperty.routes.IncomeSourcesOverseasPropertyController.show(editMode = true, isGlobalEdit = isGlobalEdit).url
-                                } else {
-                                    controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyAccountingMethodController.show(editMode = true).url
-                                },
+                            href = controllers.agent.tasklist.overseasproperty.routes.IncomeSourcesOverseasPropertyController.show(editMode = true, isGlobalEdit = isGlobalEdit).url,
                         content = Text(messages(if(viewModel.accountingMethod.isDefined) "base.change" else "base.add")),
                         visuallyHiddenText = Some(messages("agent.overseas-property.check-your-answers.accounting-method.question"))
                     )

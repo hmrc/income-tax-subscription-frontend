@@ -16,7 +16,6 @@
 
 package views.agent.tasklist.overseasproperty
 
-import config.featureswitch.FeatureSwitch.AgentStreamline
 import models.common.OverseasPropertyModel
 import models.{Accruals, Cash, DateModel}
 import org.jsoup.Jsoup
@@ -27,10 +26,6 @@ import views.html.agent.tasklist.overseasproperty.OverseasPropertyCheckYourAnswe
 
 class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(AgentStreamline)
-  }
 
   private val overseasPropertyCheckYourAnswersView = app.injector.instanceOf[OverseasPropertyCheckYourAnswers]
 
@@ -85,92 +80,8 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
       )
     }
 
-    "display a summary of answers" when {
-      "the start date and cash accounting method is defined" in {
-        document(completeCashProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-          SummaryListRowValues(
-            key = OverseasPropertyCheckYourAnswers.startDate,
-            value = Some("8 November 2021"),
-            actions = Seq(
-              SummaryListActionValues(
-                href = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show(editMode = true).url,
-                text = s"${OverseasPropertyCheckYourAnswers.change} ${OverseasPropertyCheckYourAnswers.startDate}",
-                visuallyHidden = OverseasPropertyCheckYourAnswers.startDate
-              )
-            )
-          ),
-          SummaryListRowValues(
-            key = OverseasPropertyCheckYourAnswers.accountingMethod,
-            value = Some("Cash basis accounting"),
-            actions = Seq(
-              SummaryListActionValues(
-                href = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyAccountingMethodController.show(editMode = true).url,
-                text = s"${OverseasPropertyCheckYourAnswers.change} ${OverseasPropertyCheckYourAnswers.accountingMethod}",
-                visuallyHidden = OverseasPropertyCheckYourAnswers.accountingMethod
-              )
-            )
-          )
-        ))
-      }
-
-      "the start date and accruals accounting method is defined" in {
-        document(completeAccrualsProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-          SummaryListRowValues(
-            key = OverseasPropertyCheckYourAnswers.startDate,
-            value = Some("8 November 2021"),
-            actions = Seq(
-              SummaryListActionValues(
-                href = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show(editMode = true).url,
-                text = s"${OverseasPropertyCheckYourAnswers.change} ${OverseasPropertyCheckYourAnswers.startDate}",
-                visuallyHidden = OverseasPropertyCheckYourAnswers.startDate
-              )
-            )
-          ),
-          SummaryListRowValues(
-            key = OverseasPropertyCheckYourAnswers.accountingMethod,
-            value = Some("Traditional accounting"),
-            actions = Seq(
-              SummaryListActionValues(
-                href = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyAccountingMethodController.show(editMode = true).url,
-                text = s"${OverseasPropertyCheckYourAnswers.change} ${OverseasPropertyCheckYourAnswers.accountingMethod}",
-                visuallyHidden = OverseasPropertyCheckYourAnswers.accountingMethod
-              )
-            )
-          )
-        ))
-      }
-
-      "when answers for the row are missing" in {
-        document(incompleteProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-          SummaryListRowValues(
-            key = OverseasPropertyCheckYourAnswers.startDate,
-            value = None,
-            actions = Seq(
-              SummaryListActionValues(
-                href = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show(editMode = true).url,
-                text = s"${OverseasPropertyCheckYourAnswers.add} ${OverseasPropertyCheckYourAnswers.startDate}",
-                visuallyHidden = OverseasPropertyCheckYourAnswers.startDate
-              )
-            )
-          ),
-          SummaryListRowValues(
-            key = OverseasPropertyCheckYourAnswers.accountingMethod,
-            value = None,
-            actions = Seq(
-              SummaryListActionValues(
-                href = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyAccountingMethodController.show(editMode = true).url,
-                text = s"${OverseasPropertyCheckYourAnswers.add} ${OverseasPropertyCheckYourAnswers.accountingMethod}",
-                visuallyHidden = OverseasPropertyCheckYourAnswers.accountingMethod
-              )
-            )
-          )
-        ))
-      }
-
-      "when the agent streamline feature switch is enabled" when {
+      "display a summary of answers" when {
         "not in edit mode" in {
-          enable(AgentStreamline)
-
           document(completeCashProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
             SummaryListRowValues(
               key = OverseasPropertyCheckYourAnswers.startDate,
@@ -197,8 +108,6 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
           ))
         }
         "in global edit mode" in {
-          enable(AgentStreamline)
-
           document(completeCashProperty, isGlobalEdit = true).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
             SummaryListRowValues(
               key = OverseasPropertyCheckYourAnswers.startDate,
@@ -225,7 +134,6 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
           ))
         }
       }
-    }
 
     "have a form" which {
       def form: Element = document(completeCashProperty).mainContent.getForm

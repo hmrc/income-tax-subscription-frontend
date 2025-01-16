@@ -78,7 +78,7 @@ class PropertyStartDateController @Inject()(propertyStartDate: PropertyStartDate
                 if (isEditMode) {
                   Redirect(routes.PropertyCheckYourAnswersController.show(isEditMode))
                 } else {
-                  Redirect(routes.PropertyAccountingMethodController.show())
+                  Redirect(routes.PropertyStartDateController.show())
                 }
               case Left(_) => throw new InternalServerException("[PropertyStartDateController][submit] - Could not save start date")
             }

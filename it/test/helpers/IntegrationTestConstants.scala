@@ -171,8 +171,6 @@ object IntegrationTestConstants {
     val incomeSourceURI = s"$baseURI/income"
     val incomeSourcesEligibilityURI = s"$baseURI/eligibility/income-sources"
     val businessNameSEURI = s"$baseSEURI/details"
-    val propertyAccountingMethodURI = s"$baseURI/business/accounting-method-property"
-    val overseasPropertyAccountingMethod = s"$baseURI/business/overseas-property-accounting-method"
     val propertyStartDateURI = s"$baseURI/business/property-commencement-date"
     val overseasPropertyStartDateURI = s"$baseURI/business/overseas-commencement-date"
     val errorMainIncomeURI = s"$baseURI/error/main-income"

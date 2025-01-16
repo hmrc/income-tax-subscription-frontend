@@ -89,7 +89,7 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
           Then("Should return a SEE_OTHER with a redirect location of property accounting method page")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(AgentURI.propertyAccountingMethodURI)
+            redirectURI(AgentURI.propertyStartDateURI)
           )
         }
       }

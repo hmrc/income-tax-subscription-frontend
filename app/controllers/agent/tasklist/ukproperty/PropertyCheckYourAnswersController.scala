@@ -17,8 +17,6 @@
 package controllers.agent.tasklist.ukproperty
 
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.AgentStreamline
-import config.featureswitch.FeatureSwitching
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import models.common.PropertyModel
@@ -36,8 +34,7 @@ class PropertyCheckYourAnswersController @Inject()(identify: IdentifierAction,
                                                    subscriptionDetailsService: SubscriptionDetailsService,
                                                    view: PropertyCheckYourAnswers,
                                                    val appConfig: AppConfig)
-                                                  (implicit cc: MessagesControllerComponents, ec: ExecutionContext) extends SignUpBaseController
-  with FeatureSwitching {
+                                                  (implicit cc: MessagesControllerComponents, ec: ExecutionContext) extends SignUpBaseController {
 
   def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
     withProperty(request.reference) { property =>
@@ -81,11 +78,8 @@ class PropertyCheckYourAnswersController @Inject()(identify: IdentifierAction,
       controllers.agent.routes.GlobalCheckYourAnswersController.show.url
     } else if (isEditMode || isGlobalEdit) {
       controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
-    } else if (isEnabled(AgentStreamline)) {
-      routes.PropertyIncomeSourcesController.show().url
     } else {
-      routes.PropertyAccountingMethodController.show().url
+      routes.PropertyIncomeSourcesController.show().url
     }
   }
-
 }

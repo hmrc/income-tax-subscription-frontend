@@ -17,8 +17,6 @@
 package controllers.agent.tasklist.overseasproperty
 
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.AgentStreamline
-import config.featureswitch.FeatureSwitching
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import models.common.OverseasPropertyModel
@@ -36,8 +34,7 @@ class OverseasPropertyCheckYourAnswersController @Inject()(identify: IdentifierA
                                                            subscriptionDetailsService: SubscriptionDetailsService,
                                                            view: OverseasPropertyCheckYourAnswers,
                                                            val appConfig: AppConfig)
-                                                          (implicit cc: MessagesControllerComponents, ec: ExecutionContext) extends SignUpBaseController
-  with FeatureSwitching {
+                                                          (implicit cc: MessagesControllerComponents, ec: ExecutionContext) extends SignUpBaseController {
 
   def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
     withOverseasProperty(request.reference) { overseasProperty =>
@@ -80,11 +77,8 @@ class OverseasPropertyCheckYourAnswersController @Inject()(identify: IdentifierA
       controllers.agent.routes.GlobalCheckYourAnswersController.show.url
     } else if (isEditMode || isGlobalEdit) {
       controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
-    } else if (isEnabled(AgentStreamline)) {
-      routes.IncomeSourcesOverseasPropertyController.show().url
     } else {
-      routes.OverseasPropertyAccountingMethodController.show().url
+      controllers.agent.tasklist.overseasproperty.routes.IncomeSourcesOverseasPropertyController.show().url
     }
   }
-
 }

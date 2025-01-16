@@ -626,13 +626,13 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     val ukPropertyTitle = "UK property"
     val ukPropertyStartDate = "Start date"
     val ukPropertyLinkText = "Add UK property"
-    val ukPropertyLink: String = controllers.agent.tasklist.ukproperty.routes.PropertyStartDateController.show().url
+    val ukPropertyLink: String = controllers.agent.tasklist.ukproperty.routes.PropertyIncomeSourcesController.show().url
     val ukPropertyChangeLink: String = controllers.agent.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url
     val ukPropertyRemoveLink: String = controllers.agent.tasklist.ukproperty.routes.RemoveUkPropertyController.show.url
     val foreignPropertyTitle = "Foreign property"
     val foreignPropertyStartDate = "Start date"
     val foreignPropertyLinkText = "Add foreign property"
-    val foreignPropertyLink: String = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show().url
+    val foreignPropertyLink: String = controllers.agent.tasklist.overseasproperty.routes.IncomeSourcesOverseasPropertyController.show().url
     val foreignPropertyChangeLink: String = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
     val foreignPropertyRemoveLink: String = controllers.agent.tasklist.overseasproperty.routes.RemoveOverseasPropertyController.show.url
     val progressSavedLink: String = controllers.agent.tasklist.routes.ProgressSavedController.show(Some("income-sources")).url
