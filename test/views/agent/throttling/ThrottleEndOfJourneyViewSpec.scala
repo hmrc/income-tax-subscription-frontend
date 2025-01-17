@@ -27,7 +27,7 @@ import views.html.agent.throttling.ThrottleEndOfJourney
 class ThrottleEndOfJourneyViewSpec extends ViewSpec {
 
   val throttleEndOfJourneyView: ThrottleEndOfJourney = app.injector.instanceOf[ThrottleEndOfJourney]
-  lazy val postAction: Call = controllers.agent.tasklist.routes.TaskListController.show()
+  lazy val postAction: Call = controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show
 
   def page(): Html = {
     throttleEndOfJourneyView(
@@ -65,7 +65,7 @@ class ThrottleEndOfJourneyViewSpec extends ViewSpec {
       signOut.get.text() mustBe messages.signOutText
     }
     "have a form that continues" in {
-      document1.select("main").select("form").attr("action") mustBe controllers.agent.tasklist.routes.TaskListController.show().url
+      document1.select("main").select("form").attr("action") mustBe controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
     }
   }
 }

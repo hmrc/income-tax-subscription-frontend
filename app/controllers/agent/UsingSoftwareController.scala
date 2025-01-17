@@ -17,8 +17,6 @@
 package controllers.agent
 
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.PrePopulate
-import config.featureswitch.FeatureSwitching
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import forms.agent.UsingSoftwareForm.usingSoftwareForm
@@ -42,7 +40,7 @@ class UsingSoftwareController @Inject()(view: UsingSoftware,
                                        (val appConfig: AppConfig)
                                        (implicit ec: ExecutionContext,
                                         mcc: MessagesControllerComponents)
-  extends SignUpBaseController with FeatureSwitching {
+  extends SignUpBaseController {
 
   val show: Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
     for {
@@ -90,15 +88,11 @@ class UsingSoftwareController @Inject()(view: UsingSoftware,
             case Right(_) =>
               yesNo match {
                 case Yes =>
-                  if (isEnabled(PrePopulate)) {
                     if (isMandatedCurrentYear || isEligibleNextYearOnly) {
                       Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
                     } else {
                       Redirect(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show())
                     }
-                  } else {
-                    Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
-                  }
                 case No =>
                   Redirect(controllers.agent.routes.NoSoftwareController.show())
               }

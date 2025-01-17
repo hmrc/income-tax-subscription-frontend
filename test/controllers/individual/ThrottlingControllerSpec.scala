@@ -63,7 +63,7 @@ class ThrottlingControllerSpec extends ControllerBaseSpec with MockAuditingServi
 
     when(endOfJourneyView(
       ArgumentMatchers.eq(controllers.individual.matching.routes.HomeController.index.url),
-      ArgumentMatchers.eq(controllers.individual.tasklist.routes.TaskListController.show())
+      ArgumentMatchers.eq(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
     )(any(), any())).thenReturn(HtmlFormat.empty)
 
     val controller = new ThrottlingController(

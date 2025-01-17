@@ -17,7 +17,6 @@
 package controllers.individual.tasklist.taxyear
 
 import common.Constants.ITSASessionKeys
-import config.featureswitch.FeatureSwitch.PrePopulate
 import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
@@ -28,7 +27,7 @@ import helpers.servicemocks.AuthStub
 import models.common.AccountingYearModel
 import models.status.MandationStatus.{Mandated, Voluntary}
 import models.status.MandationStatusModel
-import models.{Current, EligibilityStatus, Next}
+import models.{Current, EligibilityStatus, Next, Yes, YesNo}
 import play.api.http.Status._
 import play.api.libs.json.Json
 import utilities.AccountingPeriodUtil
@@ -37,11 +36,6 @@ import utilities.SubscriptionDataKeys.SelectedTaxYear
 import java.time.LocalDate
 
 class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwitching {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(PrePopulate)
-  }
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/what-year-to-sign-up" when {
 
@@ -98,14 +92,15 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Mandated, Voluntary)))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.HAS_SOFTWARE)(OK)
 
         When("GET /business/what-year-to-sign-up is called")
-        val res = IncomeTaxSubscriptionFrontend.getTaxYearCheckYourAnswers()
+        val res = IncomeTaxSubscriptionFrontend.accountingYear()
 
-        Then("Should return SEE_OTHER to task list page")
+        Then("Should return SEE_OTHER to what you need to do page")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(IndividualURI.taskListURI)
+          redirectURI(IndividualURI.whatYouNeedToDoURI)
         )
       }
       "The user is eligible for the next tax year only" in {
@@ -114,14 +109,15 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true)))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.HAS_SOFTWARE)(OK)
 
         When("GET /business/what-year-to-sign-up is called")
-        val res = IncomeTaxSubscriptionFrontend.getTaxYearCheckYourAnswers()
+        val res = IncomeTaxSubscriptionFrontend.accountingYear()
 
-        Then("Should return SEE_OTHER to task list page")
+        Then("Should return SEE_OTHER to what you need to do page")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(IndividualURI.taskListURI)
+          redirectURI(IndividualURI.whatYouNeedToDoURI)
         )
       }
     }
@@ -129,12 +125,9 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
 
   "POST /report-quarterly/income-and-expenses/sign-up/business/what-year-to-sign-up" when {
 
-    "prepopulate feature switch is enabled" should {
-
       "redirect to the Global CYA page when in edit mode" when {
 
         "selecting the Next radio button" in {
-          enable(PrePopulate)
           val userInput = Next
 
           Given("I setup the Wiremock stubs")
@@ -155,7 +148,6 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
       "redirect to the What You Need to Do ORM page when not in edit mode" when {
 
         "selecting the Current radio button" in {
-          enable(PrePopulate)
           val userInput = Current
 
           Given("I setup the Wiremock stubs")
@@ -172,51 +164,6 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
           )
         }
       }
-    }
-
-    "prepopulate feature switch is disabled" should {
-
-      "redirect to the Tax Year CYA page" when {
-        "not in edit mode" when {
-          "selecting the Current radio button" in {
-            val userInput = Current
-
-            Given("I setup the Wiremock stubs")
-            AuthStub.stubAuthSuccess()
-            IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYearModel](SelectedTaxYear, AccountingYearModel(userInput))
-
-            When("POST /business/what-year-to-sign-up is called")
-            val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, Some(userInput))
-
-            Then("Should return a SEE_OTHER with a redirect location of Tax Year CYA")
-            res must have(
-              httpStatus(SEE_OTHER),
-              redirectURI(IndividualURI.taxYearCyaURI)
-            )
-          }
-        }
-
-        "in edit mode" should {
-          "selecting the Next radio button" in {
-            val userInput = Next
-
-            Given("I setup the Wiremock stubs")
-            AuthStub.stubAuthSuccess()
-            IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYearModel](SelectedTaxYear, AccountingYearModel(userInput))
-
-            When("POST /business/what-year-to-sign-up is called")
-            val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = true, Some(userInput))
-
-            Then("Should return a SEE_OTHER with a redirect location of Tax Year CYA")
-            res must have(
-              httpStatus(SEE_OTHER),
-              redirectURI(IndividualURI.taxYearCyaURI)
-            )
-          }
-        }
-      }
-    }
-
 
     "return BAD_REQUEST" when {
       "no option has been selected" in {

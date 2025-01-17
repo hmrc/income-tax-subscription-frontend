@@ -20,10 +20,6 @@
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 @import uk.gov.hmrc.play.language.LanguageUtils
 @import utilities.AccountingPeriodUtil
-@import config.featureswitch.FeatureSwitchingImpl
-@import config.featureswitch.FeatureSwitch.PrePopulate
-
-
 
 @this(
     mainTemplate: PrincipalMainTemplate,
@@ -33,7 +29,6 @@
     form: FormWithCSRF,
     languageUtils: LanguageUtils,
     govukWarningText: GovukWarningText,
-    featureSwitching: FeatureSwitchingImpl,
     hmrcNewTabLinkHelper: HmrcNewTabLinkHelper
 )
 
@@ -41,22 +36,7 @@
 
 @mainTemplate(title = messages("what-you-need-to-do.heading"), backLink = Some(backUrl)) {
 
-  @if(featureSwitching.isEnabled(PrePopulate)) {
-    <h1 class="govuk-heading-xl">@messages("what-you-need-to-do.heading")</h1>
-    @prePopContent
-  } else if (mandatedNextYear && onlyNextYear) {
-    <h1 class="govuk-heading-xl">@messages("what-you-need-to-do.heading")</h1>
-    @nextYearMandated
-  } else if (mandatedCurrentYear){
-    <h1 class="govuk-heading-xl">@messages("what-you-need-to-do.heading")</h1>
-    @currentYearMandated
-  } else if (onlyNextYear) {
-    <h1 class="govuk-heading-xl">@messages("individual.voluntary-what-you-need-to-do.heading")</h1>
-    @voluntaryNextYear
-  } else {
-    <h1 class="govuk-heading-xl">@messages("what-you-are-agreeing-to.both-pre-mandated-scenarios.heading-1")</h1>
-    @nonMandatedEitherYear
-  }
+    @bodyContent
 
   @form(action = postAction) {
     @continueButton(alternateText = Some(messages("base.accept-and-continue")))
@@ -64,85 +44,12 @@
 
 }
 
-@nonMandatedEitherYear = {
-  <p class="govuk-body">@messages("what-you-are-agreeing-to.both-pre-mandated-scenarios.para-1")</p>
+@bodyContent = {
 
-  <ol class="govuk-list govuk-list--bullet">
-    <li>@messages("what-you-are-agreeing-to.both-pre-mandated-scenarios.bullet-1")</li>
-    <li>@messages("what-you-are-agreeing-to.both-pre-mandated-scenarios.bullet-2")</li>
-    <li>@messages("what-you-are-agreeing-to.both-pre-mandated-scenarios.bullet-3")</li>
-    <li>@messages("what-you-are-agreeing-to.both-pre-mandated-scenarios.bullet-4")</li>
-    <li>@messages("what-you-are-agreeing-to.both-pre-mandated-scenarios.bullet-5")</li>
-  </ol>
-
-  <p class="govuk-body">@Html(messages(
-      key = "what-you-are-agreeing-to.both-pre-mandated-scenarios.para-2",
-      args = hmrcNewTabLinkHelper(
-      NewTabLinkHelper(messages("what-you-are-agreeing-to.both-pre-mandated-scenarios.link"),
-      Some("https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers")))))
-  </p>
-
-<h2 class="govuk-heading-m">@messages("what-you-are-agreeing-to.both-pre-mandated-scenarios.heading-2")</h2>
-
-  <p class="govuk-body">@messages("what-you-are-agreeing-to.both-pre-mandated-scenarios.para-3")</p>
-  <p class="govuk-body">@messages("what-you-are-agreeing-to.both-pre-mandated-scenarios.para-4")</p>
-}
-
-
-@currentYearMandated = {
-  <p class="govuk-body">@messages("what-you-need-to-do-current.para-1")</p>
-  <p class="govuk-body">@messages("what-you-need-to-do-current.para-2")</p>
-
-  <ol class="govuk-list govuk-list--number">
-    <li>@messages("what-you-need-to-do-current.bullet-1")</li>
-    <li>@messages("what-you-need-to-do-current.bullet-2")</li>
-    <li>@messages("what-you-need-to-do-current.bullet-3", languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(false)))</li>
-  </ol>
-
-  @govukWarningText(WarningText(
-    content = Text(Messages("what-you-need-to-do-current.inset.para"))
-  ))
-}
-
-@nextYearMandated = {
-  <p class="govuk-body">@messages("what-you-need-to-do.next-year-mandated.para-1", AccountingPeriodUtil.getCurrentTaxEndYear.toString)</p>
-  <p class="govuk-body">@messages("what-you-need-to-do.next-year-mandated.para-2")</p>
-
-  <ol class="govuk-list govuk-list--number">
-    <li>@messages("what-you-need-to-do.next-year-mandated.bullet-1", AccountingPeriodUtil.getCurrentTaxEndYear.toString)</li>
-    <li>@messages("what-you-need-to-do.next-year-mandated.bullet-2")</li>
-    <li>@messages("what-you-need-to-do.next-year-mandated.bullet-3", languageUtils.Dates.formatDate(AccountingPeriodUtil.getFinalDeclarationDate(true)))</li>
-  </ol>
-}
-
-@voluntaryNextYear = {
-    <p class="govuk-body">@messages("individual.voluntary-what-you-need-to-do.para-1")</p>
-    <p class="govuk-body">@messages("individual.voluntary-what-you-need-to-do.para-2", languageUtils.Dates.formatDate(AccountingPeriodUtil.getNextTaxYear.startDate.toLocalDate))</p>
-
-    <ol class="govuk-list govuk-list--bullet">
-        <li>@messages("individual.voluntary-what-you-need-to-do.bullet-1")</li>
-        <li>@messages("individual.voluntary-what-you-need-to-do.bullet-2")</li>
-        <li>@messages("individual.voluntary-what-you-need-to-do.bullet-3")</li>
-        <li>@messages("individual.voluntary-what-you-need-to-do.bullet-4")</li>
-    </ol>
-
-    <p class="govuk-body">@Html(messages(
-        key = "individual.voluntary-what-you-need-to-do.para-3",
-        args = hmrcNewTabLinkHelper(
-        NewTabLinkHelper(messages("individual.voluntary-what-you-need-to-do.link"),
-        Some("https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers")))))
-    </p>
-
-    <h2 class="govuk-heading-m">@messages("individual.voluntary-what-you-need-to-do.heading-2")</h2>
-
-    <p class="govuk-body">@messages("individual.voluntary-what-you-need-to-do.para-4")</p>
-    <p class="govuk-body">@messages("individual.voluntary-what-you-need-to-do.para-5")</p>
-}
-
-@prePopContent = {
+    <h1 class="govuk-heading-xl">@messages("what-you-need-to-do.heading")</h1>
 
     @if(signUpNextTaxYear) {
-        <p class="govuk-body">@messages("individual.what-you-need-to-do.pre-pop.para-1.next")</p>
+        <p class="govuk-body">@messages("individual.what-you-need-to-do.para-1.next")</p>
         <p class="govuk-body">@nextTaxYearPara2</p>
     } else {
         <p class="govuk-body">@currentTaxYearPara</p>
@@ -150,53 +57,53 @@
 
     <ol class="govuk-list govuk-list--bullet">
         @if(isUsingSoftware) {
-            <li>@messages("individual.what-you-need-to-do.pre-pop.bullet-1.has-software")</li>
+            <li>@messages("individual.what-you-need-to-do.bullet-1.has-software")</li>
         } else {
             <li>
                 @hmrcNewTabLinkHelper(
                 NewTabLinkHelper(
-                messages("individual.what-you-need-to-do.pre-pop.bullet-1.no-software"),
-                Some(messages("individual.what-you-need-to-do.pre-pop.bullet-1.no-software.href"))
+                messages("individual.what-you-need-to-do.bullet-1.no-software"),
+                Some(messages("individual.what-you-need-to-do.bullet-1.no-software.href"))
                 ))
 
             </li>
         }
 
-        <li>@messages("individual.what-you-need-to-do.pre-pop.bullet-2")</li>
-        <li>@messages("individual.what-you-need-to-do.pre-pop.bullet-3")</li>
+        <li>@messages("individual.what-you-need-to-do.bullet-2")</li>
+        <li>@messages("individual.what-you-need-to-do.bullet-3")</li>
 
         @if(! signUpNextTaxYear) {
-        <li>@messages("individual.what-you-need-to-do.pre-pop.bullet-4.current")</li>
+        <li>@messages("individual.what-you-need-to-do.bullet-4.current")</li>
         }
-        <li>@messages("individual.what-you-need-to-do.pre-pop.bullet-5")</li>
+        <li>@messages("individual.what-you-need-to-do.bullet-5")</li>
     </ol>
 
     <p class="govuk-body">@Html(messages(
-        key = "individual.what-you-need-to-do.pre-pop.para-3",
+        key = "individual.what-you-need-to-do.para-3",
         args = hmrcNewTabLinkHelper(
-        NewTabLinkHelper(messages("individual.what-you-need-to-do.pre-pop.para-3.link"),
+        NewTabLinkHelper(messages("individual.what-you-need-to-do.para-3.link"),
         Some("https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers")))))
     </p>
 
     @if((!mandatedCurrentYear && !signUpNextTaxYear) || (!mandatedNextYear && signUpNextTaxYear)) {
-        <p class="govuk-body">@messages("individual.what-you-need-to-do.pre-pop.para-4.current")</p>
+        <p class="govuk-body">@messages("individual.what-you-need-to-do.para-4.current")</p>
     }
 
-    <h2 class="govuk-heading-m">@messages("what-you-are-agreeing-to.both-pre-mandated-scenarios.heading-2")</h2>
+    <h2 class="govuk-heading-m">@messages("individual.what-you-need-to-do.heading-2")</h2>
 
-    <p class="govuk-body">@messages("individual.what-you-need-to-do.pre-pop.para-5")</p>
-    <p class="govuk-body">@messages("individual.what-you-need-to-do.pre-pop.para-6")</p>
+    <p class="govuk-body">@messages("individual.what-you-need-to-do.para-5")</p>
+    <p class="govuk-body">@messages("individual.what-you-need-to-do.para-6")</p>
 }
 
 @currentTaxYearPara = @{
-    messages("individual.what-you-need-to-do.pre-pop.para-1.current")
+    messages("individual.what-you-need-to-do.para-1.current")
 }
 
 @nextTaxYearPara2 = @{
     if(mandatedCurrentYear || mandatedNextYear) {
-        messages("individual.what-you-need-to-do.pre-pop.para-2.must", (AccountingPeriodUtil.getNextTaxEndYear - 1).toString)
+        messages("individual.what-you-need-to-do.para-2.must", (AccountingPeriodUtil.getNextTaxEndYear - 1).toString)
     } else {
-        messages("individual.what-you-need-to-do.pre-pop.para-2.should", (AccountingPeriodUtil.getNextTaxEndYear - 1).toString)
+        messages("individual.what-you-need-to-do.para-2.should", (AccountingPeriodUtil.getNextTaxEndYear - 1).toString)
     }
 }
 

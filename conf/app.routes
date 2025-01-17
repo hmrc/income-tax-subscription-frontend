@@ -99,14 +99,6 @@ GET         /claim-enrolment/already-signed-up                   controllers.ind
 GET         /claim-enrolment/sps-handoff                         controllers.individual.claimenrolment.sps.SPSHandoffForClaimEnrolController.redirectToSPS
 GET         /claim-enrolment/sps-callback                        controllers.individual.claimenrolment.sps.SPSCallbackForClaimEnrolController.callback
 
-#Task List Routes
-GET         /business/task-list                                  controllers.individual.tasklist.TaskListController.show()
-
-# Teax Year Check Your Answers Routes
-GET         /business/tax-year-check-your-answers                controllers.individual.tasklist.taxyear.TaxYearCheckYourAnswersController.show(editMode: Boolean ?= false)
-POST        /business/tax-year-check-your-answers                controllers.individual.tasklist.taxyear.TaxYearCheckYourAnswersController.submit()
-
-
 GET         /business/uk-property-check-your-answers             controllers.individual.tasklist.ukproperty.PropertyCheckYourAnswersController.show(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
 POST        /business/uk-property-check-your-answers             controllers.individual.tasklist.ukproperty.PropertyCheckYourAnswersController.submit(isGlobalEdit: Boolean ?= false)
 

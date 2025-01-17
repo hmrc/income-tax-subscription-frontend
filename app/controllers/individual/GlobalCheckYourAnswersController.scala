@@ -20,7 +20,6 @@ import auth.individual.SignUpController
 import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.SPSEntityId
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.PrePopulate
 import controllers.utils.ReferenceRetrieval
 import models.common.subscription.CreateIncomeSourcesModel
 import play.api.mvc._
@@ -71,8 +70,7 @@ class GlobalCheckYourAnswersController @Inject()(subscriptionService: Subscripti
   }
 
   def backUrl: String = {
-    if (isEnabled(PrePopulate)) tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
-    else tasklist.routes.TaskListController.show().url
+    tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
   }
 
   private def signUp(completeDetails: CompleteDetails)

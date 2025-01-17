@@ -38,7 +38,7 @@ trait TaxYearNavigationHelper {
         val isEligibleNextYearOnly: Boolean = eligibilityStatus.eligibleNextYearOnly
 
         if (isMandatedCurrentYear || isEligibleNextYearOnly) {
-          Future.successful(Redirect(controllers.individual.tasklist.routes.TaskListController.show()))
+          Future.successful(Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show))
         } else {
           ableToSelect
         }
@@ -56,7 +56,7 @@ trait TaxYearNavigationHelper {
         val isEligibleNextYearOnly: Boolean = eligibilityStatus.eligibleNextYearOnly
 
         if (isMandatedCurrentYear || isEligibleNextYearOnly) {
-          Future.successful(Redirect(controllers.agent.tasklist.routes.TaskListController.show()))
+          Future.successful(Redirect(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show))
         } else {
           ableToSelect
         }

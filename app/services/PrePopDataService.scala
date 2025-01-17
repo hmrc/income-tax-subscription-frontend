@@ -16,7 +16,7 @@
 
 package services
 
-import config.featureswitch.FeatureSwitch.{PrePopulate, StartDateBeforeLimit}
+import config.featureswitch.FeatureSwitch.StartDateBeforeLimit
 import config.featureswitch.FeatureSwitching
 import connectors.PrePopConnector
 import models.AccountingMethod
@@ -41,26 +41,19 @@ class PrePopDataService @Inject()(ninoService: NinoService,
                                  (implicit ec: ExecutionContext) extends Logging {
 
   def prePopIncomeSources(reference: String)(implicit hc: HeaderCarrier): Future[PrePopResult] = {
-    if (featureSwitching.isEnabled(PrePopulate)) {
-      handlePrePopFlag(reference) {
-        handleEligibilityInterruptPassed(reference) {
-          retrievePrePopData(reference) { prePopData =>
-            val saveSelfEmployments: Future[PrePopResult] = savePrePopSelfEmployments(reference)(prePopData.selfEmployment)
-            val saveUKProperty: Future[PrePopResult] = savePrePopUkProperty(reference)(prePopData.ukPropertyAccountingMethod)
-            val saveForeignProperty: Future[PrePopResult] = savePrePopOverseasProperty(reference)(prePopData.foreignPropertyAccountingMethod)
-
-            for {
-              _ <- saveSelfEmployments
-              _ <- saveUKProperty
-              _ <- saveForeignProperty
-            } yield {
-              PrePopSuccess
-            }
+    handlePrePopFlag(reference) {
+        retrievePrePopData(reference) { prePopData =>
+          val saveSelfEmployments: Future[PrePopResult] = savePrePopSelfEmployments(reference)(prePopData.selfEmployment)
+          val saveUKProperty: Future[PrePopResult] = savePrePopUkProperty(reference)(prePopData.ukPropertyAccountingMethod)
+          val saveForeignProperty: Future[PrePopResult] = savePrePopOverseasProperty(reference)(prePopData.foreignPropertyAccountingMethod)
+          for {
+            _ <- saveSelfEmployments
+            _ <- saveUKProperty
+            _ <- saveForeignProperty
+          } yield {
+            PrePopSuccess
           }
         }
-      }
-    } else {
-      Future.successful(PrePopSuccess)
     }
   }
 
@@ -68,15 +61,6 @@ class PrePopDataService @Inject()(ninoService: NinoService,
                               (f: => Future[PrePopResult])
                               (implicit hc: HeaderCarrier): Future[PrePopResult] = {
     subscriptionDetailsService.fetchPrePopFlag(reference) flatMap {
-      case Some(_) => Future.successful(PrePopSuccess)
-      case None => f
-    }
-  }
-
-  private def handleEligibilityInterruptPassed(reference: String)
-                                              (f: => Future[PrePopResult])
-                                              (implicit hc: HeaderCarrier): Future[PrePopResult] = {
-    subscriptionDetailsService.fetchEligibilityInterruptPassed(reference) flatMap {
       case Some(_) => Future.successful(PrePopSuccess)
       case None => f
     }

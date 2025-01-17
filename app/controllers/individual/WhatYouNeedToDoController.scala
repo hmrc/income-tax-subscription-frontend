@@ -18,7 +18,6 @@ package controllers.individual
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.PrePopulate
 import controllers.utils.ReferenceRetrieval
 import models.status.MandationStatus.Mandated
 import models.{Next, Yes}
@@ -72,16 +71,11 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
   }
 
   val submit: Action[AnyContent] = Authenticated { _ =>
-    _ =>
-      if (isEnabled(PrePopulate)) {
-        Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
-      } else {
-        Redirect(controllers.individual.tasklist.routes.TaskListController.show())
-      }
+    _ => Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
   }
 
   def backUrl(eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean): String = {
-    if (isEnabled(PrePopulate) && !(eligibleNextYearOnly || mandatedCurrentYear)) {
+    if (!(eligibleNextYearOnly || mandatedCurrentYear)) {
       controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
     } else {
       controllers.individual.routes.UsingSoftwareController.show().url

@@ -46,33 +46,6 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
     }
   }
 
-  "PrePopulate" should {
-    "return true if PrePopulate feature switch is enabled in sys.props" in {
-      enable(PrePopulate)
-      isEnabled(PrePopulate) mustBe true
-    }
-    "return false if PrePopulate feature switch is disabled in sys.props" in {
-      disable(PrePopulate)
-      isEnabled(PrePopulate) mustBe false
-    }
-
-    "return false if PrePopulate feature switch does not exist" in {
-      when(mockConfig.getOptional[String]("feature-switch.prepopulate")).thenReturn(None)
-      isEnabled(PrePopulate) mustBe false
-    }
-
-    "return false if PrePopulate feature switch is not in sys.props but is set to off in config" in {
-
-      when(mockConfig.getOptional[String]("feature-switch.prepopulate")).thenReturn(Some(FEATURE_SWITCH_OFF))
-      isEnabled(PrePopulate) mustBe false
-    }
-
-    "return true if PrePopulate feature switch is not in sys.props but is set to on in config" in {
-      when(mockConfig.getOptional[String]("feature-switch.prepopulate")).thenReturn(Some(FEATURE_SWITCH_ON))
-      isEnabled(PrePopulate) mustBe true
-    }
-  }
-
   "Throttle" should {
     "return true if Throttle feature switch is enabled in sys.props" in {
       enable(ThrottlingFeature)

@@ -16,7 +16,6 @@
 
 package views.agent.tasklist.addbusiness
 
-import config.featureswitch.FeatureSwitch.PrePopulate
 import models.common.business._
 import models.common.{IncomeSources, OverseasPropertyModel, PropertyModel}
 import models.{Cash, DateModel}
@@ -29,11 +28,6 @@ import views.html.agent.tasklist.addbusiness.YourIncomeSourceToSignUp
 
 //scalastyle:off
 class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(PrePopulate)
-  }
 
   "YourIncomeSourceToSignUp" should {
     "display the template correctly" when {
@@ -78,15 +72,9 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     }
 
     "have a lead paragraph" which {
-      "summarises the page" when {
-        "the pre-pop feature switch is disabled" in new ViewTest {
-          document.mainContent.selectNth("p", 1).text mustBe AgentIncomeSource.lead
-        }
-      }
       "summarises the page and tells the user to check sources" when {
         "the pre-pop feature switch is enabled" in new ViewTest {
-          enable(PrePopulate)
-          document.mainContent.selectNth("p", 1).text mustBe AgentIncomeSource.leadPrepop
+          document.mainContent.selectNth("p", 1).text mustBe AgentIncomeSource.lead
         }
       }
     }
@@ -603,8 +591,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
   object AgentIncomeSource {
     val heading = "Your client’s income sources"
-    val lead = "Add all of these sources that your client gets income from."
-    val leadPrepop = s"Add all of these sources that your client gets income from. Check, change or add details to any that were started previously. Remove any that ceased before 6 April ${AccountingPeriodUtil.getCurrentTaxEndYear - 1}."
+    val lead = s"Add all of these sources that your client gets income from. Check, change or add details to any that were started previously. Remove any that ceased before 6 April ${AccountingPeriodUtil.getCurrentTaxEndYear - 1}."
     val paragraph1: String = "If your client is self-employed, you must add all of their sole trader businesses if they have more than one. " +
       "If they have income from property you must add it, but this is limited to one UK property business."
     val paragraph1Overseas: String = "Your client can have up to 50 sole trader businesses. " +

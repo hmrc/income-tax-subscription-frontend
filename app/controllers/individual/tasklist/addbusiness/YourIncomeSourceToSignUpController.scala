@@ -18,8 +18,6 @@ package controllers.individual.tasklist.addbusiness
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.PrePopulate
-import config.featureswitch.FeatureSwitching
 import controllers.utils.ReferenceRetrieval
 import models.common.IncomeSources
 import play.api.mvc._
@@ -39,7 +37,7 @@ class YourIncomeSourceToSignUpController @Inject()(yourIncomeSourceToSignUp: You
                                                    val appConfig: AppConfig,
                                                    val authService: AuthService)
                                                   (implicit val ec: ExecutionContext,
-                                                   mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching {
+                                                   mcc: MessagesControllerComponents) extends SignUpController {
 
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
@@ -69,13 +67,11 @@ class YourIncomeSourceToSignUpController @Inject()(yourIncomeSourceToSignUp: You
   }
 
   def continueLocation: Call = {
-    if (isEnabled(PrePopulate)) controllers.individual.routes.GlobalCheckYourAnswersController.show
-    else controllers.individual.tasklist.routes.TaskListController.show()
+    controllers.individual.routes.GlobalCheckYourAnswersController.show
   }
 
   def backUrl: String = {
-    if (isEnabled(PrePopulate)) controllers.individual.routes.WhatYouNeedToDoController.show.url
-    else controllers.individual.tasklist.routes.TaskListController.show().url
+    controllers.individual.routes.WhatYouNeedToDoController.show.url
   }
 
 

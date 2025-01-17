@@ -15,8 +15,6 @@
  *@
 
 @import config.AppConfig
-@import config.featureswitch.FeatureSwitchingImpl
-@import config.featureswitch.FeatureSwitch.PrePopulate
 @import models.common._
 @import models.common.business._
 @import utilities.UserMatchingSessionUtil.ClientDetails
@@ -30,7 +28,6 @@
     agentMainTemplate: AgentMainTemplate,
     appConfig: AppConfig,
     form: FormWithCSRF,
-    featureSwitching: FeatureSwitchingImpl,
     continueButton: ContinueButton,
     pageHeadingHelper: PageHeadingHelper,
     saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
@@ -49,11 +46,7 @@
     )
 
     <p class="govuk-body">
-        @if(featureSwitching.isEnabled(PrePopulate)) {
-            @messages("agent.your-income-source.lead-prepop", (AccountingPeriodUtil.getCurrentTaxEndYear - 1).toString)
-        } else {
-            @messages("agent.your-income-source.lead")
-        }
+            @messages("agent.your-income-source.lead", (AccountingPeriodUtil.getCurrentTaxEndYear - 1).toString)
     </p>
 
     @selfEmploymentSection

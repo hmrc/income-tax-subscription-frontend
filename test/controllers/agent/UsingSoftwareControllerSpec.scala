@@ -17,7 +17,6 @@
 package controllers.agent
 
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.PrePopulate
 import config.featureswitch.FeatureSwitching
 import connectors.httpparser.GetSessionDataHttpParser
 import connectors.httpparser.SaveSessionDataHttpParser.{SaveSessionDataSuccessResponse, UnexpectedStatusFailure}
@@ -45,12 +44,6 @@ class UsingSoftwareControllerSpec extends ControllerSpec
   with MockMandationStatusService
   with MockSessionDataService
   with FeatureSwitching {
-
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(PrePopulate)
-  }
 
   "show" must {
     "return OK with the page content" when {
@@ -150,21 +143,7 @@ class UsingSoftwareControllerSpec extends ControllerSpec
     }
     "the user submits 'Yes'" should {
       "redirect to the what you need to do page" when {
-        "the pre-pop feature switch is disabled" in {
-          mockGetMandationService(Voluntary, Voluntary)
-          mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
-          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
-          val result: Future[Result] = TestUsingSoftwareController.submit()(
-            request.withMethod("POST").withFormUrlEncodedBody(
-              UsingSoftwareForm.fieldName -> YesNoMapping.option_yes
-            )
-          )
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.agent.routes.WhatYouNeedToDoController.show().url)
-        }
-        "the pre-pop feature switch is enabled and the user is eligible for next year only" in {
-          enable(PrePopulate)
+        "the user is eligible for next year only" in {
 
           mockGetMandationService(Voluntary, Voluntary)
           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
@@ -179,8 +158,7 @@ class UsingSoftwareControllerSpec extends ControllerSpec
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.agent.routes.WhatYouNeedToDoController.show.url)
         }
-        "the pre-pop feature switch is enabled and the user is mandated for the current tax year" in {
-          enable(PrePopulate)
+        "the user is mandated for the current tax year" in {
 
           mockGetMandationService(Mandated, Voluntary)
           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
@@ -197,8 +175,7 @@ class UsingSoftwareControllerSpec extends ControllerSpec
         }
       }
       "redirect to the what year to sign up page" when {
-        "the pre-pop feature switch is enabled and the user is able to sign up for both tax years" in {
-          enable(PrePopulate)
+        "the user is able to sign up for both tax years" in {
           mockGetMandationService(Voluntary, Voluntary)
           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
           mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))

@@ -28,7 +28,6 @@ import models.status.MandationStatusModel
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys.{PrePopFlag, SelectedTaxYear}
-import config.featureswitch.FeatureSwitch.PrePopulate
 
 class WhatYouNeedToDoControllerISpec extends ComponentSpecBase {
 
@@ -56,24 +55,7 @@ class WhatYouNeedToDoControllerISpec extends ComponentSpecBase {
   }
 
   s"POST ${routes.WhatYouNeedToDoController.submit.url}" when {
-    "PrePopulate is not enabled" must {
-      "return a SEE_OTHER to the task list page" in {
-        Given("I am authenticated")
-        AuthStub.stubAuthSuccess()
-
-        When(s"POST ${routes.WhatYouNeedToDoController.submit.url} is called")
-        val result = IncomeTaxSubscriptionFrontend.submitWhatYouNeedToDo()
-
-        Then("The result should be SEE_OTHER redirecting to the task list page")
-        result must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(IndividualURI.taskListURI)
-        )
-      }
-    }
-    "PrePopulate is enabled" must {
       "return a SEE_OTHER to the your income sources page" in {
-        enable(PrePopulate)
         Given("I am authenticated")
         AuthStub.stubAuthSuccess()
 
@@ -86,7 +68,6 @@ class WhatYouNeedToDoControllerISpec extends ComponentSpecBase {
           redirectURI(IndividualURI.yourIncomeSourcesURI)
         )
       }
-    }
   }
 
 }

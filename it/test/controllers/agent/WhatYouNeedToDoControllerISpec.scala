@@ -17,7 +17,6 @@
 package controllers.agent
 
 import common.Constants.ITSASessionKeys
-import config.featureswitch.FeatureSwitch.PrePopulate
 import config.featureswitch.FeatureSwitching
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.IntegrationTestConstants.{AgentURI, Auth, basGatewaySignIn, testNino}
@@ -33,11 +32,6 @@ import utilities.SubscriptionDataKeys.SelectedTaxYear
 import utilities.agent.TestConstants.testUtr
 
 class WhatYouNeedToDoControllerISpec extends ComponentSpecBase with FeatureSwitching {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(PrePopulate)
-  }
 
   val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
 
@@ -89,7 +83,8 @@ class WhatYouNeedToDoControllerISpec extends ComponentSpecBase with FeatureSwitc
         )
       }
     }
-    "return a SEE_OTHER to the task list page" in {
+
+    "return a SEE_OTHER to the Your Income Sources page" in {
       Given("I am authenticated")
       AuthStub.stubAuthSuccess()
       SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
@@ -98,24 +93,7 @@ class WhatYouNeedToDoControllerISpec extends ComponentSpecBase with FeatureSwitc
       When(s"POST ${routes.WhatYouNeedToDoController.submit.url} is called")
       val result = IncomeTaxSubscriptionFrontend.submitWhatYouNeedToDo()
 
-      Then("The result should be SEE_OTHER redirecting to the task list page")
-      result must have(
-        httpStatus(SEE_OTHER),
-        redirectURI(AgentURI.taskListURI)
-      )
-    }
-
-    "return a SEE_OTHER to the Your Income Sources page when PrePop enabled" in {
-      enable(PrePopulate)
-      Given("I am authenticated")
-      AuthStub.stubAuthSuccess()
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
-
-      When(s"POST ${routes.WhatYouNeedToDoController.submit.url} is called")
-      val result = IncomeTaxSubscriptionFrontend.submitWhatYouNeedToDo()
-
-      Then("The result should be SEE_OTHER redirecting to the task list page")
+      Then("The result should be SEE_OTHER redirecting to Your Income Sources page")
       result must have(
         httpStatus(SEE_OTHER),
         redirectURI(AgentURI.yourIncomeSourcesURI)

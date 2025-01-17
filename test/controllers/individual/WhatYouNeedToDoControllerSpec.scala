@@ -16,7 +16,6 @@
 
 package controllers.individual
 
-import config.featureswitch.FeatureSwitch.PrePopulate
 import models.status.MandationStatus.{Mandated, Voluntary}
 import models.{EligibilityStatus, Yes}
 import org.mockito.ArgumentMatchers
@@ -39,11 +38,6 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
   with MockReferenceRetrieval
   with MockSubscriptionDetailsService
   with MockSessionDataService {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(PrePopulate)
-  }
 
   object TestWhatYouNeedToDoController extends WhatYouNeedToDoController(
     mock[WhatYouNeedToDo],
@@ -191,14 +185,7 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
   }
 
   "submit" must {
-    "return SEE_OTHER to the task list page" in new Setup {
-      val result: Future[Result] = controller.submit(subscriptionRequest)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
-    }
     "return SEE_OTHER to the your income sources page" in new Setup {
-      enable(PrePopulate)
       val result: Future[Result] = controller.submit(subscriptionRequest)
 
       status(result) mustBe SEE_OTHER
@@ -208,29 +195,19 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
 
   "backUrl" when {
     "return the what year to sign up page url" when {
-      "pre-pop is enabled and the user is eligible for both years and not mandated for the current year" in new Setup {
-        enable(PrePopulate)
-
+      "the user is eligible for both years and not mandated for the current year" in new Setup {
         val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, mandatedCurrentYear = false)
 
         backUrl mustBe controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
       }
     }
     "return the using software page url" when {
-      "pre-pop is not enabled" in new Setup {
-        val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, mandatedCurrentYear = false)
-
-        backUrl mustBe controllers.individual.routes.UsingSoftwareController.show().url
-      }
       "the user is eligible for next year only" in new Setup {
-        enable(PrePopulate)
-
         val backUrl: String = controller.backUrl(eligibleNextYearOnly = true, mandatedCurrentYear = false)
 
         backUrl mustBe controllers.individual.routes.UsingSoftwareController.show().url
       }
       "the user is mandated for the current year" in new Setup {
-        enable(PrePopulate)
 
         val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, mandatedCurrentYear = true)
 

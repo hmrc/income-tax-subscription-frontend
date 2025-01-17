@@ -16,7 +16,6 @@
 
 package controllers.individual
 
-import config.featureswitch.FeatureSwitch.PrePopulate
 import config.featureswitch.FeatureSwitching
 import models.common.AccountingYearModel
 import models.common.business.Address
@@ -59,11 +58,6 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
     authService = mockAuthService,
     appConfig = appConfig
   )
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(PrePopulate)
-  }
 
   override val controllerName: String = "GlobalCheckYourAnswersController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -121,20 +115,8 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
   )
 
   "show" must {
-    "redirect to the task list page" when {
-      "a failure is returned from the get complete details service" in new Setup {
-        when(mockGetCompleteDetailsService.getCompleteSignUpDetails(any())(any()))
-          .thenReturn(Future.successful(Left(GetCompleteDetailsService.GetCompleteDetailsFailure)))
-
-        val result: Future[Result] = controller.show(subscriptionRequest)
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(tasklist.routes.TaskListController.show().url)
-      }
-    }
     "redirect to the Your IncomeSourcePage" when {
-      "Prepopulate Feature switch is enabled and a failure is returned from the get complete details service" in new Setup {
-        enable(PrePopulate)
+      "a failure is returned from the get complete details service" in new Setup {
         when(mockGetCompleteDetailsService.getCompleteSignUpDetails(any())(any()))
           .thenReturn(Future.successful(Left(GetCompleteDetailsService.GetCompleteDetailsFailure)))
 
@@ -151,7 +133,7 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
 
         when(mockGlobalCheckYourAnswers(
           ArgumentMatchers.eq(routes.GlobalCheckYourAnswersController.submit),
-          ArgumentMatchers.eq(tasklist.routes.TaskListController.show().url),
+          ArgumentMatchers.eq(tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url),
           ArgumentMatchers.eq(completeDetails)
         )(ArgumentMatchers.any(), ArgumentMatchers.any()))
           .thenReturn(HtmlFormat.empty)
@@ -165,18 +147,6 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
   }
 
   "submit" must {
-    "redirect to the task list page" when {
-      "a failure is returned from the get complete details service" in new Setup {
-        when(mockGetCompleteDetailsService.getCompleteSignUpDetails(any())(any()))
-          .thenReturn(Future.successful(Left(GetCompleteDetailsService.GetCompleteDetailsFailure)))
-
-        val result: Future[Result] = controller.submit(subscriptionRequest)
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(tasklist.routes.TaskListController.show().url)
-      }
-    }
-
     "redirect to the confirmation page" when {
       "the submission of the users details was successful" in new Setup {
         when(mockGetCompleteDetailsService.getCompleteSignUpDetails(any())(any()))
@@ -205,17 +175,9 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
   }
 
   "backUrl" when {
-    "Prepopulate feature switch is enabled" should {
       "go to the YourIncomeSources page" in new Setup {
-        enable(PrePopulate)
         controller.backUrl mustBe controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
       }
-    }
-    "Prepopulate feature switch is disabled" should {
-      "go to the Task List Page" in new Setup {
-        controller.backUrl mustBe controllers.individual.tasklist.routes.TaskListController.show().url
-      }
-    }
   }
 
   authorisationTests()

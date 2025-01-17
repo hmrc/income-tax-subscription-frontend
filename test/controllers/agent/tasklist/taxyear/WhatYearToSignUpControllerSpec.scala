@@ -16,7 +16,6 @@
 
 package controllers.agent.tasklist.taxyear
 
-import config.featureswitch.FeatureSwitch.PrePopulate
 import config.featureswitch.FeatureSwitching
 import config.{AppConfig, MockConfig}
 import connectors.httpparser.PostSubscriptionDetailsHttpParser
@@ -46,11 +45,6 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
   with FeatureSwitching {
 
   implicit val appConfig: AppConfig = MockConfig
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(PrePopulate)
-  }
 
   object TestWhatYearToSignUpController extends WhatYearToSignUpController(
     whatYearToSignUp,
@@ -97,33 +91,8 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
       request.withMethod("POST").withFormUrlEncodedBody()
     )
 
-    "redirect to tax year check your answers page" when {
-      "PrePopulate is disabled not in edit mode" in {
-        disable(PrePopulate)
-        mockView()
-        mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
-
-        val goodRequest = callSubmit(isEditMode = false)
-
-        status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest) mustBe Some(routes.TaxYearCheckYourAnswersController.show().url)
-      }
-
-      "PrePopulate is disabled in edit mode" in {
-        disable(PrePopulate)
-        mockView()
-        mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
-
-        val goodRequest = callSubmit(isEditMode = true)
-
-        status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest) mustBe Some(routes.TaxYearCheckYourAnswersController.show().url)
-      }
-    }
-
     "redirect to global check your answers page" when {
-      "PrePopulate is enabled and in edit mode" in {
-        enable(PrePopulate)
+      "in edit mode" in {
         mockView()
         mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
 
@@ -134,8 +103,7 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
       }
     }
     "redirect to What You Need To Do page" when {
-      "PrePopulate is enabled and not in edit mode" in {
-        enable(PrePopulate)
+      "not in edit mode" in {
         mockView()
         mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
 
@@ -172,25 +140,13 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
 
   "backUrl" when {
     "in edit mode" must {
-      s"return ${controllers.agent.routes.GlobalCheckYourAnswersController.show.url} when PrePopulate is enabled" in {
-        enable(PrePopulate)
+      s"return ${controllers.agent.routes.GlobalCheckYourAnswersController.show.url}" in {
         TestWhatYearToSignUpController.backUrl(true) mustBe Some(controllers.agent.routes.GlobalCheckYourAnswersController.show.url)
-      }
-
-      s"return ${controllers.agent.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.show().url} when PrePopulate is disabled" in {
-        disable(PrePopulate)
-        TestWhatYearToSignUpController.backUrl(true) mustBe Some(controllers.agent.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.show(true).url)
       }
     }
     "not in edit mode" must {
-      s"return ${controllers.agent.routes.UsingSoftwareController.show.url} when PrePopluate is enabled" in {
-        enable(PrePopulate)
+      s"return ${controllers.agent.routes.UsingSoftwareController.show.url}" in {
         TestWhatYearToSignUpController.backUrl(false) mustBe Some(controllers.agent.routes.UsingSoftwareController.show.url)
-      }
-
-      s"return ${controllers.agent.tasklist.routes.TaskListController.show().url} when PrePopulate is disabled" in {
-        disable(PrePopulate)
-        TestWhatYearToSignUpController.backUrl(false) mustBe Some(controllers.agent.tasklist.routes.TaskListController.show().url)
       }
     }
   }

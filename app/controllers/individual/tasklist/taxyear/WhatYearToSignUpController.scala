@@ -18,8 +18,6 @@ package controllers.individual.tasklist.taxyear
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.PrePopulate
-import config.featureswitch.FeatureSwitching
 import controllers.utils.ReferenceRetrieval
 import forms.individual.business.AccountingYearForm
 import models.AccountingYear
@@ -44,7 +42,7 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
                                            val appConfig: AppConfig)
                                           (implicit val ec: ExecutionContext,
                                            mcc: MessagesControllerComponents)
-  extends SignUpController with FeatureSwitching {
+  extends SignUpController {
 
   def view(accountingYearForm: Form[AccountingYear], isEditMode: Boolean)(implicit request: Request[_]): Html = {
     whatYearToSignUp(
@@ -80,12 +78,10 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
           accountingYear => {
             subscriptionDetailsService.saveSelectedTaxYear(reference, AccountingYearModel(accountingYear)) map {
               case Right(_) =>
-                if (isEditMode && isEnabled(PrePopulate)) {
+                if (isEditMode) {
                   Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
-                } else if (isEnabled(PrePopulate)) {
+                } else  {
                   Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
-                } else {
-                  Redirect(controllers.individual.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.show())
                 }
               case Left(_) => throw new InternalServerException("[WhatYearToSignUpController][submit] - Could not save accounting year")
             }
@@ -95,14 +91,10 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
   }
 
   def backUrl(isEditMode: Boolean): Option[String] = {
-    if (isEditMode && isEnabled(PrePopulate)) {
+    if (isEditMode) {
       Some(controllers.individual.routes.GlobalCheckYourAnswersController.show.url)
-    } else if (isEnabled(PrePopulate)) {
-      Some(controllers.individual.routes.UsingSoftwareController.show().url)
-    } else if (isEditMode) {
-      Some(controllers.individual.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.show(isEditMode).url)
     } else {
-      Some(controllers.individual.tasklist.routes.TaskListController.show().url)
+      Some(controllers.individual.routes.UsingSoftwareController.show().url)
     }
   }
 }

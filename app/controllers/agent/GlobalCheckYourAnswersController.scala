@@ -19,7 +19,6 @@ package controllers.agent
 import auth.agent.{AuthenticatedController, IncomeTaxAgentUser}
 import common.Constants.ITSASessionKeys
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.PrePopulate
 import config.featureswitch.FeatureSwitching
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
@@ -81,10 +80,8 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
     }
   }
 
-
   def backUrl: String = {
-    if (isEnabled(PrePopulate)) tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
-    else tasklist.routes.TaskListController.show().url
+    tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
   }
 
   private def signUp(completeDetails: CompleteDetails)

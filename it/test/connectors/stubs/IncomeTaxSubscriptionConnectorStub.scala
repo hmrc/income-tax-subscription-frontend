@@ -24,7 +24,7 @@ import models.AccountingMethod
 import models.common.business.SelfEmploymentData
 import models.common.{OverseasPropertyModel, PropertyModel, SoleTraderBusinesses}
 import play.api.http.Status
-import play.api.libs.json.{JsValue, Json, OFormat, Writes}
+import play.api.libs.json.{JsBoolean, JsValue, Json, OFormat, Writes}
 import uk.gov.hmrc.crypto.{Decrypter, Encrypter}
 import utilities.SubscriptionDataKeys._
 
@@ -97,6 +97,12 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
     when(method = POST, uri = subscriptionUri(Property), body = Json.toJson(property))
       .thenReturn(Status.OK)
   }
+
+  def stubSavePrePopFlag(): Unit = {
+    when(method = POST, uri = subscriptionUri(PrePopFlag), body = JsBoolean(true))
+      .thenReturn(Status.OK)
+  }
+
 
   def stubSaveIncomeSourceConfirmation(flag: Boolean): Unit = {
     when(method = POST, uri = subscriptionUri(IncomeSourceConfirmation), body = Json.toJson(flag))

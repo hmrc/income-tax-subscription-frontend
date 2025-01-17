@@ -41,27 +41,6 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
   }
 
   "GET /report-quarterly/income-and-expenses/sign-up/final-check-your-answers" should {
-    "return SEE_OTHER to the task list page" when {
-      "there is missing data from the users subscription" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty), Some(testAccountMethod))
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
-
-        When("GET /final-check-your-answers is called")
-        val res = IncomeTaxSubscriptionFrontend.getGlobalCheckYourAnswers()
-
-        Then("Should redirect to the task list page")
-        res must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(IndividualURI.taskListURI)
-        )
-      }
-    }
     "return OK" when {
       "all data was received and is complete" in {
         Given("I setup the Wiremock stubs")
@@ -88,27 +67,6 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/final-check-your-answers" when {
-    "there is missing data from the users subscription" should {
-      "return SEE_OTHER to the task list page" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty), Some(testAccountMethod))
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
-
-        When("POST /final-check-your-answers is called")
-        val res = IncomeTaxSubscriptionFrontend.submitGlobalCheckYourAnswers()
-
-        Then("Should redirect to the task list page")
-        res must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(IndividualURI.taskListURI)
-        )
-      }
-    }
     "there is complete data" should {
       "sign up and redirect to the confirmation page" when {
         "signing up for the current tax year" when {
