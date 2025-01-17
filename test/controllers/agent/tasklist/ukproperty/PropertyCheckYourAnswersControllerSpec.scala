@@ -16,7 +16,6 @@
 
 package controllers.agent.tasklist.ukproperty
 
-import config.featureswitch.FeatureSwitch.AgentStreamline
 import config.featureswitch.FeatureSwitching
 import config.{AppConfig, MockConfig}
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.{PostSubscriptionDetailsSuccessResponse, UnexpectedStatusFailure}
@@ -42,11 +41,6 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerSpec
 
   override val appConfig: AppConfig = MockConfig
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(AgentStreamline)
-  }
-
   "show" when {
     "no property data was returned" should {
       "throw an exception" in {
@@ -60,38 +54,20 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerSpec
     }
     "property data was returned" should {
       "return OK with the page contents" when {
-        "not in edit mode" when {
-          "agent streamline is enabled" in {
-            enable(AgentStreamline)
-            mockFetchProperty(Some(fullProperty))
-            mockPropertyCheckYourAnswers(
-              viewModel = fullProperty,
-              postAction = routes.PropertyCheckYourAnswersController.submit(),
-              isGlobalEdit = false,
-              backUrl = routes.PropertyIncomeSourcesController.show().url,
-              clientDetails = clientDetails
-            )
+        "not in edit mode" in {
+          mockFetchProperty(Some(fullProperty))
+          mockPropertyCheckYourAnswers(
+            viewModel = fullProperty,
+            postAction = routes.PropertyCheckYourAnswersController.submit(),
+            isGlobalEdit = false,
+            backUrl = routes.PropertyIncomeSourcesController.show().url,
+            clientDetails = clientDetails
+          )
 
-            val result: Future[Result] = TestPropertyCheckYourAnswersController.show(isEditMode = false, isGlobalEdit = false)(request)
+          val result: Future[Result] = TestPropertyCheckYourAnswersController.show(isEditMode = false, isGlobalEdit = false)(request)
 
-            status(result) mustBe OK
-            contentType(result) mustBe Some(HTML)
-          }
-          "agent streamline is disabled" in {
-            mockFetchProperty(Some(fullProperty))
-            mockPropertyCheckYourAnswers(
-              viewModel = fullProperty,
-              postAction = routes.PropertyCheckYourAnswersController.submit(),
-              isGlobalEdit = false,
-              backUrl = routes.PropertyAccountingMethodController.show().url,
-              clientDetails = clientDetails
-            )
-
-            val result: Future[Result] = TestPropertyCheckYourAnswersController.show(isEditMode = false, isGlobalEdit = false)(request)
-
-            status(result) mustBe OK
-            contentType(result) mustBe Some(HTML)
-          }
+          status(result) mustBe OK
+          contentType(result) mustBe Some(HTML)
         }
         "in edit mode" in {
           mockFetchProperty(Some(fullProperty))
@@ -142,86 +118,85 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerSpec
         }
       }
     }
-  }
 
-  "submit" when {
-    "no property data was returned" should {
-      "throw an exception" in {
-        mockFetchProperty(None)
-
-        val result: Future[Result] = TestPropertyCheckYourAnswersController.submit(isGlobalEdit = false)(request)
-
-        intercept[InternalServerException](await(result))
-          .message mustBe "[PropertyCheckYourAnswersController] - Could not retrieve property details"
-      }
-    }
-    "property data was returned" which {
-      "is missing the accounting method" should {
-        "redirect to the your income sources page" in {
-          mockFetchProperty(Some(fullProperty.copy(accountingMethod = None)))
-
-          val result: Future[Result] = TestPropertyCheckYourAnswersController.submit(isGlobalEdit = false)(request)
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
-        }
-      }
-      "is missing the start date" should {
-        "redirect to the your income sources page" in {
-          mockFetchProperty(Some(fullProperty.copy(startDate = None)))
-
-          val result: Future[Result] = TestPropertyCheckYourAnswersController.submit(isGlobalEdit = false)(request)
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
-        }
-      }
-    }
-    "property data was returned and is complete" should {
-      "save the property as confirmed and redirect to the global check your answers" when {
-        "in global edit mode" in {
-          mockFetchProperty(Some(fullProperty))
-          mockSaveProperty(fullProperty.copy(confirmed = true))(Right(PostSubscriptionDetailsSuccessResponse))
-
-          val result: Future[Result] = TestPropertyCheckYourAnswersController.submit(isGlobalEdit = true)(request)
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.agent.routes.GlobalCheckYourAnswersController.show.url)
-        }
-      }
-      "save the property as confirmed and redirect to the your income sources" when {
-        "not in edit mode" in {
-          mockFetchProperty(Some(fullProperty))
-          mockSaveProperty(fullProperty.copy(confirmed = true))(Right(PostSubscriptionDetailsSuccessResponse))
-
-          val result: Future[Result] = TestPropertyCheckYourAnswersController.submit(isGlobalEdit = false)(request)
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
-        }
-      }
-      "throw an exception" when {
-        "a failure occured when saving the confirmed property" in {
-          mockFetchProperty(Some(fullProperty))
-          mockSaveProperty(fullProperty.copy(confirmed = true))(Left(UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
+    "submit" when {
+      "no property data was returned" should {
+        "throw an exception" in {
+          mockFetchProperty(None)
 
           val result: Future[Result] = TestPropertyCheckYourAnswersController.submit(isGlobalEdit = false)(request)
 
           intercept[InternalServerException](await(result))
-            .message mustBe "[PropertyCheckYourAnswersController][submit] - Could not confirm property"
+            .message mustBe "[PropertyCheckYourAnswersController] - Could not retrieve property details"
+        }
+      }
+      "property data was returned" which {
+        "is missing the accounting method" should {
+          "redirect to the your income sources page" in {
+            mockFetchProperty(Some(fullProperty.copy(accountingMethod = None)))
+
+            val result: Future[Result] = TestPropertyCheckYourAnswersController.submit(isGlobalEdit = false)(request)
+
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
+          }
+        }
+        "is missing the start date" should {
+          "redirect to the your income sources page" in {
+            mockFetchProperty(Some(fullProperty.copy(startDate = None)))
+
+            val result: Future[Result] = TestPropertyCheckYourAnswersController.submit(isGlobalEdit = false)(request)
+
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
+          }
+        }
+      }
+      "property data was returned and is complete" should {
+        "save the property as confirmed and redirect to the global check your answers" when {
+          "in global edit mode" in {
+            mockFetchProperty(Some(fullProperty))
+            mockSaveProperty(fullProperty.copy(confirmed = true))(Right(PostSubscriptionDetailsSuccessResponse))
+
+            val result: Future[Result] = TestPropertyCheckYourAnswersController.submit(isGlobalEdit = true)(request)
+
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(controllers.agent.routes.GlobalCheckYourAnswersController.show.url)
+          }
+        }
+        "save the property as confirmed and redirect to the your income sources" when {
+          "not in edit mode" in {
+            mockFetchProperty(Some(fullProperty))
+            mockSaveProperty(fullProperty.copy(confirmed = true))(Right(PostSubscriptionDetailsSuccessResponse))
+
+            val result: Future[Result] = TestPropertyCheckYourAnswersController.submit(isGlobalEdit = false)(request)
+
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
+          }
+        }
+        "throw an exception" when {
+          "a failure occured when saving the confirmed property" in {
+            mockFetchProperty(Some(fullProperty))
+            mockSaveProperty(fullProperty.copy(confirmed = true))(Left(UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
+
+            val result: Future[Result] = TestPropertyCheckYourAnswersController.submit(isGlobalEdit = false)(request)
+
+            intercept[InternalServerException](await(result))
+              .message mustBe "[PropertyCheckYourAnswersController][submit] - Could not confirm property"
+          }
         }
       }
     }
+
+    lazy val fullProperty: PropertyModel = PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("1", "1", "1980")))
+
+    object TestPropertyCheckYourAnswersController extends PropertyCheckYourAnswersController(
+      fakeIdentifierAction,
+      fakeConfirmedClientJourneyRefiner,
+      mockSubscriptionDetailsService,
+      mockView,
+      MockConfig
+    )
   }
-
-  lazy val fullProperty: PropertyModel = PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("1", "1", "1980")))
-
-  object TestPropertyCheckYourAnswersController extends PropertyCheckYourAnswersController(
-    fakeIdentifierAction,
-    fakeConfirmedClientJourneyRefiner,
-    mockSubscriptionDetailsService,
-    mockView,
-    MockConfig
-  )
-
 }

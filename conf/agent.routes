@@ -73,10 +73,6 @@ GET         /no-compatible-software                             controllers.agen
 GET         /what-you-need-to-do                                controllers.agent.WhatYouNeedToDoController.show()
 POST        /what-you-need-to-do                                controllers.agent.WhatYouNeedToDoController.submit
 
-#Property Income Type Routes
-GET         /business/accounting-method-property                controllers.agent.tasklist.ukproperty.PropertyAccountingMethodController.show(editMode: Boolean ?= false)
-POST        /business/accounting-method-property                controllers.agent.tasklist.ukproperty.PropertyAccountingMethodController.submit(editMode: Boolean ?= false)
-
 #Property Start Date Routes
 GET         /business/property-commencement-date                controllers.agent.tasklist.ukproperty.PropertyStartDateController.show(editMode: Boolean ?= false)
 POST        /business/property-commencement-date                controllers.agent.tasklist.ukproperty.PropertyStartDateController.submit(editMode: Boolean ?= false)
@@ -88,10 +84,6 @@ POST        /business/income-sources-property                   controllers.agen
 #Overseas Property Start Date Routes
 GET         /business/overseas-commencement-date                controllers.agent.tasklist.overseasproperty.OverseasPropertyStartDateController.show(editMode: Boolean ?= false)
 POST        /business/overseas-commencement-date                controllers.agent.tasklist.overseasproperty.OverseasPropertyStartDateController.submit(editMode: Boolean ?= false)
-
-#Foreign Property Accounting Method Routes
-GET         /business/overseas-property-accounting-method        controllers.agent.tasklist.overseasproperty.OverseasPropertyAccountingMethodController.show(editMode: Boolean ?= false)
-POST        /business/overseas-property-accounting-method        controllers.agent.tasklist.overseasproperty.OverseasPropertyAccountingMethodController.submit(editMode: Boolean ?= false)
 
 #Agent Streamline Foreign Property Incomes Sources Routes
 GET         /business/income-sources-foreign-property            controllers.agent.tasklist.overseasproperty.IncomeSourcesOverseasPropertyController.show(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)

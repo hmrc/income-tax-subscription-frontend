@@ -91,7 +91,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
         Then("Should return a SEE_OTHER with a redirect location of Overseas property accounting method page")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(AgentURI.overseasPropertyAccountingMethod)
+          redirectURI(AgentURI.overseasPropertyStartDateURI)
         )
 
         IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(expected, Some(1))

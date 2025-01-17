@@ -76,7 +76,7 @@ class OverseasPropertyStartDateController @Inject()(overseasPropertyStartDate: O
                 if (isEditMode) {
                   Redirect(routes.OverseasPropertyCheckYourAnswersController.show(isEditMode))
                 } else {
-                  Redirect(routes.OverseasPropertyAccountingMethodController.show())
+                  Redirect(routes.OverseasPropertyStartDateController.show())
                 }
               case Left(_) =>
                 throw new InternalServerException("[OverseasPropertyStartDateController][submit] - Could not save start date")

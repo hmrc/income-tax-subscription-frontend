@@ -16,8 +16,6 @@
 
 package controllers.agent.tasklist.overseasproperty
 
-import config.featureswitch.FeatureSwitch.AgentStreamline
-import config.featureswitch.FeatureSwitching
 import config.{AppConfig, MockConfig}
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.{PostSubscriptionDetailsSuccessResponse, UnexpectedStatusFailure}
 import controllers.ControllerSpec
@@ -37,15 +35,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerSpec
   with MockIdentifierAction
   with MockConfirmedClientJourneyRefiner
   with MockSubscriptionDetailsService
-  with MockOverseasPropertyCheckYourAnswers
-  with FeatureSwitching {
-
-  override val appConfig: AppConfig = MockConfig
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(AgentStreamline)
-  }
+  with MockOverseasPropertyCheckYourAnswers {
 
   "show" when {
     "no property data was returned" should {
@@ -60,9 +50,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerSpec
     }
     "property data was returned" should {
       "return OK with the page contents" when {
-        "not in edit mode" when {
-          "agent streamline is enabled" in {
-            enable(AgentStreamline)
+        "not in edit mode" in {
             mockFetchOverseasProperty(Some(fullOverseasProperty))
             mockOverseasPropertyCheckYourAnswers(
               viewModel = fullOverseasProperty,
@@ -77,22 +65,6 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerSpec
             status(result) mustBe OK
             contentType(result) mustBe Some(HTML)
           }
-          "agent streamline is disabled" in {
-            mockFetchOverseasProperty(Some(fullOverseasProperty))
-            mockOverseasPropertyCheckYourAnswers(
-              viewModel = fullOverseasProperty,
-              postAction = routes.OverseasPropertyCheckYourAnswersController.submit(),
-              isGlobalEdit = false,
-              backUrl = routes.OverseasPropertyAccountingMethodController.show().url,
-              clientDetails = clientDetails
-            )
-
-            val result: Future[Result] = TestOverseasPropertyCheckYourAnswersController.show(isEditMode = false, isGlobalEdit = false)(request)
-
-            status(result) mustBe OK
-            contentType(result) mustBe Some(HTML)
-          }
-        }
         "in edit mode" in {
           mockFetchOverseasProperty(Some(fullOverseasProperty))
           mockOverseasPropertyCheckYourAnswers(

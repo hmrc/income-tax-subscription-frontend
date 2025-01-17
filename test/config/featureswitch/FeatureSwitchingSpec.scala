@@ -99,33 +99,6 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
     }
   }
 
-  "AgentStreamline" should {
-    "return true if AgentStreamline feature switch is enabled in sys.props" in {
-      enable(AgentStreamline)
-      isEnabled(AgentStreamline) mustBe true
-    }
-    "return false if AgentStreamline feature switch is disabled in sys.props" in {
-      disable(AgentStreamline)
-      isEnabled(AgentStreamline) mustBe false
-    }
-
-    "return false if AgentStreamline feature switch does not exist" in {
-      when(mockConfig.getOptional[String]("feature-switch.enable-agent-streamline")).thenReturn(None)
-      isEnabled(AgentStreamline) mustBe false
-    }
-
-    "return false if AgentStreamline feature switch is not in sys.props but is set to off in config" in {
-
-      when(mockConfig.getOptional[String]("feature-switch.enable-agent-streamline")).thenReturn(Some(FEATURE_SWITCH_OFF))
-      isEnabled(AgentStreamline) mustBe false
-    }
-
-    "return true if AgentStreamline feature switch is not in sys.props but is set to on in config" in {
-      when(mockConfig.getOptional[String]("feature-switch.enable-agent-streamline")).thenReturn(Some(FEATURE_SWITCH_ON))
-      isEnabled(AgentStreamline) mustBe true
-    }
-  }
-
 }
 
 trait FeatureSwitchingUtil extends FeatureSwitching {

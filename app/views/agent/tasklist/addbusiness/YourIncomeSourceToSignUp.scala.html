@@ -16,7 +16,7 @@
 
 @import config.AppConfig
 @import config.featureswitch.FeatureSwitchingImpl
-@import config.featureswitch.FeatureSwitch.{AgentStreamline, PrePopulate}
+@import config.featureswitch.FeatureSwitch.PrePopulate
 @import models.common._
 @import models.common.business._
 @import utilities.UserMatchingSessionUtil.ClientDetails
@@ -190,11 +190,7 @@
     }.getOrElse {
         <div id="add-uk-property" class="govuk-!-padding-bottom-6">
             <p class="govuk-body">
-                @if(featureSwitching.isEnabled(AgentStreamline)) {
-                    <a class="govuk-link" href="@controllers.agent.tasklist.ukproperty.routes.PropertyIncomeSourcesController.show()">@messages("agent.your-income-source.uk-property.add-link")</a>
-                } else {
-                    <a class="govuk-link" href="@controllers.agent.tasklist.ukproperty.routes.PropertyStartDateController.show()">@messages("agent.your-income-source.uk-property.add-link")</a>
-                }
+                <a class="govuk-link" href="@controllers.agent.tasklist.ukproperty.routes.PropertyIncomeSourcesController.show()">@messages("agent.your-income-source.uk-property.add-link")</a>
             </p>
         </div>
     }
@@ -230,11 +226,7 @@
     }.getOrElse {
         <div id="add-foreign-property" class="govuk-!-padding-bottom-6">
             <p class="govuk-body">
-                @if(featureSwitching.isEnabled(AgentStreamline)) {
                 <a class="govuk-link" href="@controllers.agent.tasklist.overseasproperty.routes.IncomeSourcesOverseasPropertyController.show()">@messages("agent.your-income-source.foreign-property.add-link")</a>
-                } else {
-                <a class="govuk-link" href="@controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show()">@messages("agent.your-income-source.foreign-property.add-link")</a>
-                }
             </p>
         </div>
     }

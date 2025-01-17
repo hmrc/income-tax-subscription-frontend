@@ -108,7 +108,7 @@ class OverseasPropertyStartDateControllerSpec extends AgentControllerBaseSpec
         val goodRequest = callSubmit(isEditMode = false)
 
         status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest) mustBe Some(routes.OverseasPropertyAccountingMethodController.show().url)
+        redirectLocation(goodRequest) mustBe Some(routes.OverseasPropertyStartDateController.show().url)
 
         await(goodRequest)
       }
