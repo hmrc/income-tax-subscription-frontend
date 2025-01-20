@@ -27,7 +27,7 @@ import views.html.individual.throttling.ThrottleEndOfJourney
 class ThrottleEndOfJourneyIndividualViewSpec extends ViewSpec {
 
   val throttleEndOfJourneyView: ThrottleEndOfJourney = app.injector.instanceOf[ThrottleEndOfJourney]
-  lazy val postAction: Call = controllers.individual.tasklist.routes.TaskListController.show()
+  lazy val postAction: Call = controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show
   private val backLinkTarget = Math.random().toString
 
   def page(): Html = {
@@ -70,7 +70,7 @@ class ThrottleEndOfJourneyIndividualViewSpec extends ViewSpec {
       signOut.get.text() mustBe signOutText
     }
     "have a form that continues" in {
-      document1.select("main").select("form").attr("action") mustBe controllers.individual.tasklist.routes.TaskListController.show().url
+      document1.select("main").select("form").attr("action") mustBe controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
     }
     "have a backlink that goes back" in {
       document1.select(".govuk-back-link").attr("href") mustBe backLinkTarget

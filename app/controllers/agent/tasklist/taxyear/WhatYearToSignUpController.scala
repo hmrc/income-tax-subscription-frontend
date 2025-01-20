@@ -17,8 +17,6 @@
 package controllers.agent.tasklist.taxyear
 
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.PrePopulate
-import config.featureswitch.FeatureSwitching
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import forms.agent.AccountingYearForm
@@ -42,7 +40,7 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
                                            accountingPeriodService: AccountingPeriodService)
                                           (val appConfig: AppConfig)
                                           (implicit mcc: MessagesControllerComponents,
-                                           ec: ExecutionContext) extends SignUpBaseController with FeatureSwitching {
+                                           ec: ExecutionContext) extends SignUpBaseController {
 
   def view(accountingYearForm: Form[AccountingYear], clientName: String, clientNino: String, isEditMode: Boolean)(implicit request: Request[_]): Html =
     whatYearToSignUp(
@@ -81,12 +79,10 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
       accountingYear => {
         subscriptionDetailsService.saveSelectedTaxYear(request.reference, AccountingYearModel(accountingYear)) map {
           case Right(_) =>
-            if (isEditMode && isEnabled(PrePopulate)) {
+            if (isEditMode) {
               Redirect(controllers.agent.routes.GlobalCheckYourAnswersController.show)
-            } else if (isEnabled(PrePopulate)) {
-              Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
             } else {
-              Redirect(controllers.agent.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.show())
+              Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
             }
           case Left(_) => throw new InternalServerException("[WhatYearToSignUpController][submit] - Could not save accounting year")
         }
@@ -95,14 +91,10 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
   }
 
   def backUrl(isEditMode: Boolean): Option[String] = {
-    if (isEditMode && isEnabled(PrePopulate)) {
+    if (isEditMode) {
       Some(controllers.agent.routes.GlobalCheckYourAnswersController.show.url)
-    } else if (isEnabled(PrePopulate)) {
-      Some(controllers.agent.routes.UsingSoftwareController.show.url)
-    } else if (isEditMode) {
-      Some(controllers.agent.tasklist.taxyear.routes.TaxYearCheckYourAnswersController.show(editMode = true).url)
     } else {
-      Some(controllers.agent.tasklist.routes.TaskListController.show().url)
+      Some(controllers.agent.routes.UsingSoftwareController.show.url)
     }
   }
 

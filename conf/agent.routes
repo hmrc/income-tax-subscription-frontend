@@ -93,10 +93,6 @@ POST        /business/income-sources-foreign-property            controllers.age
 GET         /keep-alive                                         controllers.agent.SessionTimeoutController.keepAlive
 GET         /timeout                                            controllers.agent.SessionTimeoutController.timeout
 
-# Agent Tax Year Check Your Answers Routes
-GET         /business/tax-year-check-your-answers                controllers.agent.tasklist.taxyear.TaxYearCheckYourAnswersController.show(editMode: Boolean ?= false)
-POST        /business/tax-year-check-your-answers                controllers.agent.tasklist.taxyear.TaxYearCheckYourAnswersController.submit()
-
 
 GET         /business/uk-property-check-your-answers             controllers.agent.tasklist.ukproperty.PropertyCheckYourAnswersController.show(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
 POST        /business/uk-property-check-your-answers             controllers.agent.tasklist.ukproperty.PropertyCheckYourAnswersController.submit(isGlobalEdit: Boolean ?= false)
@@ -106,10 +102,6 @@ GET         /business/overseas-property-check-your-answers       controllers.age
 POST        /business/overseas-property-check-your-answers       controllers.agent.tasklist.overseasproperty.OverseasPropertyCheckYourAnswersController.submit(isGlobalEdit: Boolean ?= false)
 
 GET         /business/progress-saved                            controllers.agent.tasklist.ProgressSavedController.show(location: Option[String] ?= None)
-
-#Task List Routes
-GET         /business/task-list                                  controllers.agent.tasklist.TaskListController.show()
-POST        /business/task-list                                  controllers.agent.tasklist.TaskListController.submit()
 
 #Remove sole trader business routes
 GET         /business/remove-sole-trader-business                controllers.agent.tasklist.selfemployment.RemoveSelfEmploymentBusinessController.show(id: String)

@@ -289,10 +289,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
       )
     }
 
-    def getTaskList(sessionData: Map[String, String] = Map.empty): WSResponse = {
-      get("/business/task-list", sessionData)
-    }
-
     def getGlobalCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse = {
       get("/final-check-your-answers", sessionData)
     }
@@ -301,14 +297,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
       post("/final-check-your-answers", sessionData)(
         Map.empty
       )
-    }
-
-    def getTaxYearCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse = {
-      get("/business/tax-year-check-your-answers", sessionData)
-    }
-
-    def submitTaxYearCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse = {
-      post("/business/tax-year-check-your-answers", sessionData)(Map.empty)
     }
 
     def getPropertyCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse = {

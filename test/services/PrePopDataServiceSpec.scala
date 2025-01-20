@@ -16,7 +16,6 @@
 
 package services
 
-import config.featureswitch.FeatureSwitch.PrePopulate
 import config.featureswitch.{FeatureSwitching, FeatureSwitchingImpl}
 import config.{AppConfig, MockConfig}
 import connectors.httpparser.PostSubscriptionDetailsHttpParser
@@ -43,13 +42,7 @@ class PrePopDataServiceSpec extends PlaySpec
   with MockNinoService
   with MockPrePopConnector
   with MockSubscriptionDetailsService
-  with FeatureSwitching
   with MockUUIDProvider {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(PrePopulate)
-  }
 
   val fakeFeatureSwitching: FeatureSwitchingImpl = new FeatureSwitchingImpl(appConfig = MockConfig)
 
@@ -66,15 +59,9 @@ class PrePopDataServiceSpec extends PlaySpec
   val reference: String = "test-reference"
 
   "prePopIncomeSources" when {
-    "the pre-pop feature switch is disabled" must {
-      "return a pre-pop success response" in {
-        await(service.prePopIncomeSources(reference)) mustBe PrePopSuccess
-      }
-    }
     "the pre-pop feature switch is enabled" when {
       "the user has previously had their information pre-populated" must {
         "return a pre-pop success response" in {
-          enable(PrePopulate)
 
           mockFetchPrePopFlag(Some(true))
 
@@ -85,7 +72,6 @@ class PrePopDataServiceSpec extends PlaySpec
       }
       "the user has previously had pre-pop occur but no income sources pre-populated" must {
         "return a pre-pop success response" in {
-          enable(PrePopulate)
 
           mockFetchPrePopFlag(Some(false))
 
@@ -95,26 +81,10 @@ class PrePopDataServiceSpec extends PlaySpec
         }
       }
       "the user has not had their information prepopulated before" when {
-        "the user has pass the eligibility interrupt page before" must {
-          "return a pre-pop success response" in {
-            enable(PrePopulate)
-
-            mockFetchPrePopFlag(None)
-            mockFetchEligibilityInterruptPassed(Some(true))
-
-            await(service.prePopIncomeSources(reference)) mustBe PrePopSuccess
-
-            verifyFetchPrePopFlag()
-            verifyFetchEligibilityInterruptPassed()
-          }
-        }
-        "the user has not passed the eligibility interrupt page before" must {
           "return a pre-pop success response" when {
             "the fetched pre-pop data is full and complete income sources and saving of the data was successful" in {
-              enable(PrePopulate)
 
               mockFetchPrePopFlag(None)
-              mockFetchEligibilityInterruptPassed(None)
               mockGetNino(testNino)
               mockGetPrePopData(testNino)(Right(fullPrePopData))
               mockUUID(testUUID)
@@ -129,7 +99,6 @@ class PrePopDataServiceSpec extends PlaySpec
               await(service.prePopIncomeSources(reference)) mustBe PrePopSuccess
 
               verifyFetchPrePopFlag()
-              verifyFetchEligibilityInterruptPassed()
               verifyGetNino()
               verifyGetPrePopData(testNino)
               verifySavePrePopFlag(flag = true)
@@ -141,10 +110,8 @@ class PrePopDataServiceSpec extends PlaySpec
               verifySaveOverseasProperty(expectedForeignProperty)
             }
             "the fetched pre-pop data has minimal income source data and saving of the data was successful" in {
-              enable(PrePopulate)
 
               mockFetchPrePopFlag(None)
-              mockFetchEligibilityInterruptPassed(None)
               mockGetNino(testNino)
               mockGetPrePopData(testNino)(Right(minimalPrePopData))
               mockUUID(testUUID)
@@ -159,7 +126,6 @@ class PrePopDataServiceSpec extends PlaySpec
               await(service.prePopIncomeSources(reference)) mustBe PrePopSuccess
 
               verifyFetchPrePopFlag()
-              verifyFetchEligibilityInterruptPassed()
               verifyGetNino()
               verifyGetPrePopData(testNino)
               verifySavePrePopFlag(flag = true)
@@ -172,10 +138,8 @@ class PrePopDataServiceSpec extends PlaySpec
             }
             "the fetched pre-pop data has only self employment data" which {
               "was saved successfully" in {
-                enable(PrePopulate)
 
                 mockFetchPrePopFlag(None)
-                mockFetchEligibilityInterruptPassed(None)
                 mockGetNino(testNino)
                 mockGetPrePopData(testNino)(Right(selfEmploymentOnlyPrePopData))
                 mockUUID(testUUID)
@@ -188,7 +152,6 @@ class PrePopDataServiceSpec extends PlaySpec
                 await(service.prePopIncomeSources(reference)) mustBe PrePopSuccess
 
                 verifyFetchPrePopFlag()
-                verifyFetchEligibilityInterruptPassed()
                 verifyGetNino()
                 verifyGetPrePopData(testNino)
                 verifySavePrePopFlag(flag = true)
@@ -198,10 +161,8 @@ class PrePopDataServiceSpec extends PlaySpec
                 )
               }
               "returned a save failure when saving" in {
-                enable(PrePopulate)
 
                 mockFetchPrePopFlag(None)
-                mockFetchEligibilityInterruptPassed(None)
                 mockGetNino(testNino)
                 mockGetPrePopData(testNino)(Right(selfEmploymentOnlyPrePopData))
                 mockUUID(testUUID)
@@ -214,7 +175,6 @@ class PrePopDataServiceSpec extends PlaySpec
                 await(service.prePopIncomeSources(reference)) mustBe PrePopSuccess
 
                 verifyFetchPrePopFlag()
-                verifyFetchEligibilityInterruptPassed()
                 verifyGetNino()
                 verifyGetPrePopData(testNino)
                 verifySavePrePopFlag(flag = true)
@@ -226,10 +186,8 @@ class PrePopDataServiceSpec extends PlaySpec
             }
             "the fetched pre-pop data has only a uk property accounting method" which {
               "was saved successfully" in {
-                enable(PrePopulate)
 
                 mockFetchPrePopFlag(None)
-                mockFetchEligibilityInterruptPassed(None)
                 mockGetNino(testNino)
                 mockGetPrePopData(testNino)(Right(ukPropertyOnlyPrePopData))
                 mockUUID(testUUID)
@@ -239,7 +197,6 @@ class PrePopDataServiceSpec extends PlaySpec
                 await(service.prePopIncomeSources(reference)) mustBe PrePopSuccess
 
                 verifyFetchPrePopFlag()
-                verifyFetchEligibilityInterruptPassed()
                 verifyGetNino()
                 verifyGetPrePopData(testNino)
                 verifySavePrePopFlag(flag = true)
@@ -247,10 +204,8 @@ class PrePopDataServiceSpec extends PlaySpec
 
               }
               "returned a save failure when saving" in {
-                enable(PrePopulate)
 
                 mockFetchPrePopFlag(None)
-                mockFetchEligibilityInterruptPassed(None)
                 mockGetNino(testNino)
                 mockGetPrePopData(testNino)(Right(ukPropertyOnlyPrePopData))
                 mockUUID(testUUID)
@@ -260,7 +215,6 @@ class PrePopDataServiceSpec extends PlaySpec
                 await(service.prePopIncomeSources(reference)) mustBe PrePopSuccess
 
                 verifyFetchPrePopFlag()
-                verifyFetchEligibilityInterruptPassed()
                 verifyGetNino()
                 verifyGetPrePopData(testNino)
                 verifySavePrePopFlag(flag = true)
@@ -269,10 +223,8 @@ class PrePopDataServiceSpec extends PlaySpec
             }
             "the fetched pre-pop data has only a foreign property accounting method" which {
               "was saved successfully" in {
-                enable(PrePopulate)
 
                 mockFetchPrePopFlag(None)
-                mockFetchEligibilityInterruptPassed(None)
                 mockGetNino(testNino)
                 mockGetPrePopData(testNino)(Right(foreignPropertyOnlyPrePopData))
                 mockUUID(testUUID)
@@ -282,17 +234,14 @@ class PrePopDataServiceSpec extends PlaySpec
                 await(service.prePopIncomeSources(reference)) mustBe PrePopSuccess
 
                 verifyFetchPrePopFlag()
-                verifyFetchEligibilityInterruptPassed()
                 verifyGetNino()
                 verifyGetPrePopData(testNino)
                 verifySavePrePopFlag(flag = true)
                 verifySaveOverseasProperty(expectedForeignProperty)
               }
               "returned a save failure when saving" in {
-                enable(PrePopulate)
 
                 mockFetchPrePopFlag(None)
-                mockFetchEligibilityInterruptPassed(None)
                 mockGetNino(testNino)
                 mockGetPrePopData(testNino)(Right(foreignPropertyOnlyPrePopData))
                 mockUUID(testUUID)
@@ -302,7 +251,6 @@ class PrePopDataServiceSpec extends PlaySpec
                 await(service.prePopIncomeSources(reference)) mustBe PrePopSuccess
 
                 verifyFetchPrePopFlag()
-                verifyFetchEligibilityInterruptPassed()
                 verifyGetNino()
                 verifyGetPrePopData(testNino)
                 verifySavePrePopFlag(flag = true)
@@ -312,19 +260,16 @@ class PrePopDataServiceSpec extends PlaySpec
           }
           "return a pre-pop failure response" when {
             "there was a problem fetching the pre-pop data from the connector" in {
-              enable(PrePopulate)
 
               val error = ErrorModel(INTERNAL_SERVER_ERROR, "Failure")
 
               mockFetchPrePopFlag(None)
-              mockFetchEligibilityInterruptPassed(None)
               mockGetNino(testNino)
               mockGetPrePopData(testNino)(Left(ErrorModel(INTERNAL_SERVER_ERROR, "Failure")))
 
               await(service.prePopIncomeSources(reference)) mustBe PrePopFailure(error.toString)
 
               verifyFetchPrePopFlag()
-              verifyFetchEligibilityInterruptPassed()
               verifyGetNino()
               verifyGetPrePopData(testNino)
               verifySavePrePopFlag(flag = true, count = 0)
@@ -337,12 +282,10 @@ class PrePopDataServiceSpec extends PlaySpec
               verifySaveOverseasProperty(expectedForeignProperty, count = 0)
             }
             "there was a problem when saving the pre-pop flag" in {
-              enable(PrePopulate)
 
               val error = PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)
 
               mockFetchPrePopFlag(None)
-              mockFetchEligibilityInterruptPassed(None)
               mockGetNino(testNino)
               mockGetPrePopData(testNino)(Right(minimalPrePopData))
               mockSavePrePopFlag(flag = true)(Left(error))
@@ -350,7 +293,6 @@ class PrePopDataServiceSpec extends PlaySpec
               await(service.prePopIncomeSources(reference)) mustBe PrePopFailure(error.toString)
 
               verifyFetchPrePopFlag()
-              verifyFetchEligibilityInterruptPassed()
               verifyGetNino()
               verifyGetPrePopData(testNino)
               verifySavePrePopFlag(flag = true)
@@ -363,7 +305,6 @@ class PrePopDataServiceSpec extends PlaySpec
               verifySaveOverseasProperty(expectedForeignProperty, count = 0)
             }
           }
-        }
       }
     }
   }
@@ -462,7 +403,4 @@ class PrePopDataServiceSpec extends PlaySpec
   lazy val expectedForeignProperty: OverseasPropertyModel = OverseasPropertyModel(
     accountingMethod = Some(Cash)
   )
-
-  override val appConfig: AppConfig = MockConfig
-
 }

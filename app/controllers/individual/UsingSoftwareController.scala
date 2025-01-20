@@ -18,8 +18,6 @@ package controllers.individual
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.PrePopulate
-import config.featureswitch.FeatureSwitching
 import forms.individual.UsingSoftwareForm
 import models.{No, Yes, YesNo}
 import play.api.data.Form
@@ -43,7 +41,7 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
                                         val appConfig: AppConfig)
                                        (implicit val ec: ExecutionContext,
                                         mcc: MessagesControllerComponents)
-  extends SignUpController with FeatureSwitching {
+  extends SignUpController {
 
   private val form: Form[YesNo] = UsingSoftwareForm.usingSoftwareForm
 
@@ -94,15 +92,11 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
               case Right(_) =>
                 yesNo match {
                   case Yes =>
-                    if (isEnabled(PrePopulate)) {
                       if (isMandatedCurrentYear || isEligibleNextYearOnly) {
                         Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
                       } else {
                         Redirect(controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show())
                       }
-                    } else {
-                      Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
-                    }
                   case No =>
                     Redirect(controllers.individual.routes.NoSoftwareController.show)
                 }

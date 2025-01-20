@@ -16,7 +16,6 @@
 
 package views.individual.tasklist.addbusiness
 
-import config.featureswitch.FeatureSwitch.PrePopulate
 import models.common.business._
 import models.common.{IncomeSources, OverseasPropertyModel, PropertyModel}
 import models.{Cash, DateModel}
@@ -30,16 +29,10 @@ import views.html.individual.tasklist.addbusiness.YourIncomeSourceToSignUp
 
 class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(PrePopulate)
-  }
-
   object IndividualIncomeSource {
     val title = "Your income sources"
     val heading: String = title
     val currentTaxYearStart: Int = AccountingPeriodUtil.getCurrentTaxEndYear - 1
-    val incomeSourcesLead: String = "Add all of these sources that you get income from."
     val incomeSourcesPara1: String = s"Add all of these sources that you get income from. Check, change or add details to any that were started previously. Remove any that ceased before 6 April $currentTaxYearStart."
     val incomeSourcesPara2: String = "Before you continue, make sure you have checked any income sources we added for you."
 
@@ -199,15 +192,8 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         document.mainContent.getH1Element.text mustBe IndividualIncomeSource.heading
       }
 
-      "have the correct lead paragraph" when {
-        "the PrePopulate Feature Switch is on" in new ViewTest(noIncomeSources) {
-          enable(PrePopulate)
-          document.mainContent.selectNth("p", 1).text mustBe IndividualIncomeSource.incomeSourcesPara1
-        }
-        "the PrePopulate Feature Switch is off" in new ViewTest(noIncomeSources) {
-          disable(PrePopulate)
-          document.mainContent.selectNth("p", 1).text mustBe IndividualIncomeSource.incomeSourcesLead
-        }
+      "have the correct lead paragraph" in new ViewTest(noIncomeSources) {
+        document.mainContent.selectNth("p", 1).text mustBe IndividualIncomeSource.incomeSourcesPara1
       }
 
       "have a sole trader section" which {
@@ -275,16 +261,8 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         document.mainContent.getH1Element.text mustBe IndividualIncomeSource.heading
       }
 
-      "have the correct lead paragraph" when {
-
-        "the PrePopulate Feature Switch is on" in new ViewTest(incompleteIncomeSources) {
-          enable(PrePopulate)
-          document.mainContent.selectNth("p", 1).text mustBe IndividualIncomeSource.incomeSourcesPara1
-        }
-        "the PrePopulate Feature Switch is off" in new ViewTest(incompleteIncomeSources) {
-          disable(PrePopulate)
-          document.mainContent.selectNth("p", 1).text mustBe IndividualIncomeSource.incomeSourcesLead
-        }
+      "have the correct lead paragraph" in new ViewTest(incompleteIncomeSources) {
+        document.mainContent.selectNth("p", 1).text mustBe IndividualIncomeSource.incomeSourcesPara1
       }
 
       "have a section for sole trader income sources" which {
@@ -476,16 +454,10 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         document.mainContent.getH1Element.text mustBe IndividualIncomeSource.heading
       }
 
-      "have the correct lead paragraph" when {
-        "the PrePopulate Feature Switch is on" in new ViewTest(completeIncomeSources) {
-          enable(PrePopulate)
+
+        "have the correct lead paragraph" in new ViewTest(completeIncomeSources) {
           document.mainContent.selectNth("p", 1).text mustBe IndividualIncomeSource.incomeSourcesPara1
         }
-        "the PrePopulate Feature Switch is off" in new ViewTest(completeIncomeSources) {
-          disable(PrePopulate)
-          document.mainContent.selectNth("p", 1).text mustBe IndividualIncomeSource.incomeSourcesLead
-        }
-      }
 
       "have a section for sole trader income sources" which {
 
@@ -655,13 +627,8 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       }
 
       "have the correct lead paragraph" when {
-        "the PrePopulate Feature Switch is on" in new ViewTest(completeAndConfirmedIncomeSources) {
-          enable(PrePopulate)
+        "have the correct lead paragraph" in new ViewTest(completeAndConfirmedIncomeSources) {
           document.mainContent.selectNth("p", 1).text mustBe IndividualIncomeSource.incomeSourcesPara1
-        }
-        "the PrePopulate Feature Switch is off" in new ViewTest(completeAndConfirmedIncomeSources) {
-          disable(PrePopulate)
-          document.mainContent.selectNth("p", 1).text mustBe IndividualIncomeSource.incomeSourcesLead
         }
       }
 

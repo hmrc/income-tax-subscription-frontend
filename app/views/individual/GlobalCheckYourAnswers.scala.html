@@ -16,8 +16,6 @@
 
 @import models.common.{IncomeSources => _, SoleTraderBusinesses => _, _}
 @import models._
-@import config.featureswitch.FeatureSwitchingImpl
-@import config.featureswitch.FeatureSwitch.PrePopulate
 @import models.common.business.SelfEmploymentData
 @import services.AccountingPeriodService
 @import views.html.helpers.ReadyToSignUpButton
@@ -37,7 +35,6 @@
         readyToSignUpButton: ReadyToSignUpButton,
         saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
         form: FormWithCSRF,
-        featureSwitching: FeatureSwitchingImpl,
         appConfig: AppConfig
 )
 

@@ -17,8 +17,6 @@
 package controllers.agent.tasklist.addbusiness
 
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.PrePopulate
-import config.featureswitch.FeatureSwitching
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import play.api.mvc._
@@ -36,8 +34,7 @@ class YourIncomeSourceToSignUpController @Inject()(view: YourIncomeSourceToSignU
                                                    journeyRefiner: ConfirmedClientJourneyRefiner,
                                                    subscriptionDetailsService: SubscriptionDetailsService
                                                   )(val appConfig: AppConfig)
-                                                  (implicit mcc: MessagesControllerComponents, ec: ExecutionContext) extends SignUpBaseController
-  with FeatureSwitching {
+                                                  (implicit mcc: MessagesControllerComponents, ec: ExecutionContext) extends SignUpBaseController {
 
 
   def show: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
@@ -70,12 +67,10 @@ class YourIncomeSourceToSignUpController @Inject()(view: YourIncomeSourceToSignU
   }
 
   def continueLocation: Call = {
-    if (isEnabled(PrePopulate)) controllers.agent.routes.GlobalCheckYourAnswersController.show
-    else controllers.agent.tasklist.routes.TaskListController.show()
+    controllers.agent.routes.GlobalCheckYourAnswersController.show
   }
 
   def backUrl: String = {
-    if (isEnabled(PrePopulate)) controllers.agent.routes.WhatYouNeedToDoController.show().url
-    else controllers.agent.tasklist.routes.TaskListController.show().url
+    controllers.agent.routes.WhatYouNeedToDoController.show().url
   }
 }

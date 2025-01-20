@@ -15,8 +15,6 @@
  *@
 
 @import config.AppConfig
-@import config.featureswitch.FeatureSwitchingImpl
-@import config.featureswitch.FeatureSwitch.PrePopulate
 @import models.common.{IncomeSources => _, SoleTraderBusinesses => _, _}
 @import models._
 @import models.common.business.SelfEmploymentData
@@ -40,8 +38,7 @@
     govukSummaryList : GovukSummaryList,
     implicitDateFormatter: ImplicitDateFormatterImpl,
     accountingPeriodService: AccountingPeriodService,
-    form: FormWithCSRF,
-    featureSwitching: FeatureSwitchingImpl
+    form: FormWithCSRF
 )
 
 @(postAction: Call,

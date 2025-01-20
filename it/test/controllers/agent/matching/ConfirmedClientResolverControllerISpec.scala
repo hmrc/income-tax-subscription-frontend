@@ -18,7 +18,7 @@ package controllers.agent.matching
 
 import auth.agent.{AgentSignUp, AgentUserMatching}
 import common.Constants.ITSASessionKeys
-import config.featureswitch.FeatureSwitch.{PrePopulate, ThrottlingFeature}
+import config.featureswitch.FeatureSwitch.ThrottlingFeature
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
@@ -32,6 +32,7 @@ import play.api.libs.json.{JsBoolean, JsString, Json}
 import play.api.{Configuration, Environment}
 import services.AgentStartOfJourneyThrottle
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
+import utilities.SubscriptionDataKeys.PrePopFlag
 import utilities.agent.TestConstants.{testNino, testUtr}
 import utilities.{SubscriptionDataKeys, UserMatchingSessionUtil}
 
@@ -43,7 +44,6 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    disable(PrePopulate)
     enable(ThrottlingFeature)
   }
 
@@ -151,6 +151,9 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
           SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(NO_CONTENT)
           EligibilityStub.stubEligibilityResponseBoth(testUtr)(currentYearResponse = false, nextYearResponse = true)
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))(OK)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(PrePopFlag, NO_CONTENT)
+          PrePopStub.stubGetPrePop(testNino)(OK, Json.obj())
+          IncomeTaxSubscriptionConnectorStub.stubSavePrePopFlag()
           SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
           SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
@@ -173,6 +176,9 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
           SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(NO_CONTENT)
           EligibilityStub.stubEligibilityResponseBoth(testUtr)(currentYearResponse = false, nextYearResponse = true)
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))(OK)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(PrePopFlag, NO_CONTENT)
+          PrePopStub.stubGetPrePop(testNino)(OK, Json.obj())
+          IncomeTaxSubscriptionConnectorStub.stubSavePrePopFlag()
           SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
           SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
@@ -198,6 +204,9 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
           SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(NO_CONTENT)
           EligibilityStub.stubEligibilityResponseBoth(testUtr)(currentYearResponse = true, nextYearResponse = true)
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))(OK)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(PrePopFlag, NO_CONTENT)
+          PrePopStub.stubGetPrePop(testNino)(OK, Json.obj())
+          IncomeTaxSubscriptionConnectorStub.stubSavePrePopFlag()
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, OK, JsBoolean(true))
           SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
           SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
@@ -218,7 +227,9 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
           SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(NO_CONTENT)
           EligibilityStub.stubEligibilityResponseBoth(testUtr)(currentYearResponse = true, nextYearResponse = true)
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))(OK)
-
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(PrePopFlag, NO_CONTENT)
+          PrePopStub.stubGetPrePop(testNino)(OK, Json.obj())
+          IncomeTaxSubscriptionConnectorStub.stubSavePrePopFlag()
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
           SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
           SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
@@ -237,9 +248,7 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
   }
 
   s"GET ${routes.ConfirmedClientResolver.resolve.url}" when {
-    "the pre-pop feature switch is enabled" should {
       "pre-pop income sources and continue as normal" in {
-        enable(PrePopulate)
 
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle))(OK, JsBoolean(true))
@@ -311,7 +320,6 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
       }
       "result in technical difficulties" when {
         "there was an error returned from the pre-pop connection" in {
-          enable(PrePopulate)
 
           AuthStub.stubAuthSuccess()
           SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle))(OK, JsBoolean(true))
@@ -335,7 +343,6 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
           )
         }
       }
-    }
   }
 
   override val env: Environment = app.injector.instanceOf[Environment]

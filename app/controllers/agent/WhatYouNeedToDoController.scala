@@ -17,8 +17,6 @@
 package controllers.agent
 
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.PrePopulate
-import config.featureswitch.FeatureSwitching
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import models.status.MandationStatus.Mandated
@@ -40,7 +38,7 @@ class WhatYouNeedToDoController @Inject()(view: WhatYouNeedToDo,
                                           sessionDataService: SessionDataService
                                          )(val appConfig: AppConfig)
                                          (implicit mcc: MessagesControllerComponents, val ec: ExecutionContext)
-  extends SignUpBaseController with FeatureSwitching {
+  extends SignUpBaseController {
 
   def show: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     for {
@@ -77,17 +75,14 @@ class WhatYouNeedToDoController @Inject()(view: WhatYouNeedToDo,
   }
 
   val submit: Action[AnyContent] = (identify andThen journeyRefiner) { _ =>
-    if (isEnabled(PrePopulate))
-      Redirect(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
-    else
-      Redirect(controllers.agent.tasklist.routes.TaskListController.show())
+    Redirect(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
   }
 
   def backUrl(eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean): String = {
-    if (isEnabled(PrePopulate) && !(eligibleNextYearOnly || mandatedCurrentYear)) {
-      controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
-    } else {
+    if (eligibleNextYearOnly || mandatedCurrentYear) {
       controllers.agent.routes.UsingSoftwareController.show.url
+    } else {
+      controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
     }
   }
 }

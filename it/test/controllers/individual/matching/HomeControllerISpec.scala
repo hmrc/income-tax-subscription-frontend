@@ -17,7 +17,6 @@
 package controllers.individual.matching
 
 import common.Constants.ITSASessionKeys
-import config.featureswitch.FeatureSwitch.PrePopulate
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks._
@@ -29,14 +28,9 @@ import play.api.http.Status._
 import play.api.libs.json.{JsBoolean, JsString, Json}
 import services.IndividualStartOfJourneyThrottle
 import utilities.SubscriptionDataKeys
+import utilities.SubscriptionDataKeys.PrePopFlag
 
 class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(PrePopulate)
-    SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.throttlePassed(IndividualStartOfJourneyThrottle))(OK, JsBoolean(true))
-  }
 
   "GET /report-quarterly/income-and-expenses/sign-up" should {
     "return the guidance page" in {
@@ -83,6 +77,9 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
             SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(NO_CONTENT)
             EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
             SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = false))(OK)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(PrePopFlag, NO_CONTENT)
+            PrePopStub.stubGetPrePop(testNino)(OK, Json.obj())
+            IncomeTaxSubscriptionConnectorStub.stubSavePrePopFlag()
             SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
             SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
             SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
@@ -154,6 +151,9 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
               SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(NO_CONTENT)
               EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
               SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = false))(OK)
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(PrePopFlag, NO_CONTENT)
+              PrePopStub.stubGetPrePop(testNino)(OK, Json.obj())
+              IncomeTaxSubscriptionConnectorStub.stubSavePrePopFlag()
               SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
               SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
               SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
@@ -176,6 +176,9 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
                 SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(NO_CONTENT)
                 EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
                 SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = false))(OK)
+                IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(PrePopFlag, NO_CONTENT)
+                PrePopStub.stubGetPrePop(testNino)(OK, Json.obj())
+                IncomeTaxSubscriptionConnectorStub.stubSavePrePopFlag()
                 SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
                 SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
                 SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
@@ -247,11 +250,8 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
   }
 
   "GET /report-quarterly/income-and-expenses/sign-up/index" when {
-    "pre-pop is enabled" when {
       "pre-pop api returned income sources" should {
         "pre-populate the income sources and continue" in {
-          enable(PrePopulate)
-
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
           SubscriptionStub.stubGetNoSubscription()
@@ -326,8 +326,6 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
       }
       "pre-pop api returned an unexpected result" should {
         "display technical difficulties" in {
-          enable(PrePopulate)
-
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
           SubscriptionStub.stubGetNoSubscription()
@@ -355,7 +353,6 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
           )
         }
       }
-    }
   }
 }
 

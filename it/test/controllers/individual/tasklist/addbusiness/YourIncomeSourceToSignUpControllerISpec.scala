@@ -18,7 +18,7 @@ package controllers.individual.tasklist.addbusiness
 
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.IndividualURI.taskListURI
+import helpers.IntegrationTestConstants.IndividualURI.globalCheckYourAnswersURI
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.AuthStub
 import play.api.http.Status._
@@ -76,7 +76,7 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
 
   s"POST ${routes.YourIncomeSourceToSignUpController.submit.url}" when {
     "the user has complete businesses" should {
-      "redirect to the task list page and save the income source section completion" in {
+      "redirect to the declaration page" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
 
@@ -93,57 +93,13 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         When(s"POST ${routes.YourIncomeSourceToSignUpController.submit.url} is called")
         val res = IncomeTaxSubscriptionFrontend.submitYourIncomeSources()
 
-        Then("Should return a SEE_OTHER to the task list page")
+        Then("Should return a SEE_OTHER to the declaration page")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(taskListURI)
+          redirectURI(globalCheckYourAnswersURI)
         )
 
         IncomeTaxSubscriptionConnectorStub.verifySaveSubscriptionDetails[Boolean](SubscriptionDataKeys.IncomeSourceConfirmation, true, Some(1))
-      }
-    }
-    "the user has a mixture of complete and incomplete businesses" should {
-      "redirect to the task list page and not save an income source section completion" in {
-        Given("I setup the wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(
-          OK,
-          Seq(testBusiness("12345", confirmed = true), testBusiness("54321")),
-          Some(testAccountingMethod.accountingMethod)
-        )
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
-
-        When(s"POST ${routes.YourIncomeSourceToSignUpController.submit.url} is called")
-        val res = IncomeTaxSubscriptionFrontend.submitYourIncomeSources()
-
-        Then("Should return a SEE_OTHER to the task list page")
-        res must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(taskListURI)
-        )
-
-        IncomeTaxSubscriptionConnectorStub.verifySaveSubscriptionDetails[Boolean](SubscriptionDataKeys.IncomeSourceConfirmation, true, Some(0))
-      }
-    }
-    "the user has no businesses" should {
-      "redirect to the task list page and not save an income source section completion" in {
-        Given("I setup the wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(NO_CONTENT)
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT)
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, NO_CONTENT)
-
-        When(s"POST ${routes.YourIncomeSourceToSignUpController.submit.url} is called")
-        val res = IncomeTaxSubscriptionFrontend.submitYourIncomeSources()
-
-        Then("Should return a SEE_OTHER to the task list page")
-        res must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(taskListURI)
-        )
-
-        IncomeTaxSubscriptionConnectorStub.verifySaveSubscriptionDetails[Boolean](SubscriptionDataKeys.IncomeSourceConfirmation, true, Some(0))
       }
     }
   }

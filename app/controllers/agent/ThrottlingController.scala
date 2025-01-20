@@ -38,7 +38,7 @@ class ThrottlingController @Inject()(val auditingService: AuditingService,
   }
 
   def end(): Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(throttleEnd(controllers.agent.tasklist.routes.TaskListController.show())))
+    Future.successful(Ok(throttleEnd(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)))
   }
 
 }

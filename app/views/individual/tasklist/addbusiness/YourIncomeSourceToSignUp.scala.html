@@ -22,8 +22,6 @@
 @import views.html.templates.PrincipalMainTemplate
 @import uk.gov.hmrc.hmrcfrontend.views.html.components._
 @import utilities.AccountingPeriodUtil
-@import config.featureswitch.FeatureSwitchingImpl
-@import config.featureswitch.FeatureSwitch.PrePopulate
 @import views.html.helpers.ButtonHelper
 
 
@@ -34,7 +32,6 @@
     form: FormWithCSRF,
     saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
     govukSummaryList: GovukSummaryList,
-    featureSwitching: FeatureSwitchingImpl,
     buttonHelper: ButtonHelper
 )
 
@@ -50,18 +47,12 @@
 ) {
     <h1 class="govuk-heading-xl">@heading</h1>
 
-    @if(featureSwitching.isEnabled(PrePopulate)) {
         <p class="govuk-body">
             @messages(
                 "your-income-source.manage.para-1",
                 (AccountingPeriodUtil.getCurrentTaxEndYear - 1).toString
             )
         </p>
-    } else {
-        <p class="govuk-body">
-            @messages("your-income-source.manage.lead")
-        </p>
-    }
 
     @selfEmploymentSection
 

@@ -18,7 +18,7 @@ package controllers.agent.tasklist.addbusiness
 
 import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
-import helpers.IntegrationTestConstants.AgentURI.taskListURI
+import helpers.IntegrationTestConstants.AgentURI.globalCheckYourAnswersURI
 import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino, testUtr}
 import helpers.IntegrationTestModels._
 import helpers.agent.ComponentSpecBase
@@ -106,7 +106,7 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
       }
     }
     "the user has complete businesses" should {
-      "redirect to the task list page and save the income source section completion" in {
+      "redirect to the declaration page" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(
@@ -123,58 +123,13 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         When(s"POST ${routes.YourIncomeSourceToSignUpController.submit.url} is called")
         val res = IncomeTaxSubscriptionFrontend.submitYourIncomeSourcesAgent()
 
-        Then("Should return a SEE_OTHER to the task list page")
+        Then("Should return a SEE_OTHER to the declaration page")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(taskListURI)
+          redirectURI(globalCheckYourAnswersURI)
         )
 
         IncomeTaxSubscriptionConnectorStub.verifySaveSubscriptionDetails[Boolean](SubscriptionDataKeys.IncomeSourceConfirmation, true, Some(1))
-      }
-    }
-    "the user has a mixture of complete and incomplete businesses" should {
-      "redirect to the task list page and not save an income source section completion" in {
-        Given("I setup the wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
-        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, Seq(testBusiness("12345", confirmed = true), testBusiness("54321")))
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
-
-        When(s"POST ${routes.YourIncomeSourceToSignUpController.submit.url} is called")
-        val res = IncomeTaxSubscriptionFrontend.submitYourIncomeSourcesAgent()
-
-        Then("Should return a SEE_OTHER to the task list page")
-        res must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(taskListURI)
-        )
-
-        IncomeTaxSubscriptionConnectorStub.verifySaveSubscriptionDetails[Boolean](SubscriptionDataKeys.IncomeSourceConfirmation, true, Some(0))
-      }
-    }
-    "the user has no businesses" should {
-      "redirect to the task list page and not save an income source section completion" in {
-        Given("I setup the wiremock stubs")
-        AuthStub.stubAuthSuccess()
-
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
-        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(NO_CONTENT)
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT)
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, NO_CONTENT)
-
-        When(s"POST ${routes.YourIncomeSourceToSignUpController.submit.url} is called")
-        val res = IncomeTaxSubscriptionFrontend.submitYourIncomeSourcesAgent()
-
-        Then("Should return a SEE_OTHER to the task list page")
-        res must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(taskListURI)
-        )
-
-        IncomeTaxSubscriptionConnectorStub.verifySaveSubscriptionDetails[Boolean](SubscriptionDataKeys.IncomeSourceConfirmation, true, Some(0))
       }
     }
   }

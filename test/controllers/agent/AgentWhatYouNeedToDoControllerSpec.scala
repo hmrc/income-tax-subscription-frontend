@@ -17,8 +17,6 @@
 package controllers.agent
 
 import config.MockConfig
-import config.featureswitch.FeatureSwitch.PrePopulate
-import config.featureswitch.FeatureSwitching
 import controllers.ControllerSpec
 import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}
 import models.common.AccountingYearModel
@@ -44,8 +42,7 @@ class AgentWhatYouNeedToDoControllerSpec
     with MockGetEligibilityStatusService
     with MockMandationStatusService
     with MockSubscriptionDetailsService
-    with MockSessionDataService
-    with FeatureSwitching {
+    with MockSessionDataService {
 
   val appConfig = MockConfig
 
@@ -72,11 +69,6 @@ class AgentWhatYouNeedToDoControllerSpec
     )(appConfig)
   }
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(PrePopulate)
-  }
-
   "show" must {
     "return OK with the page content" when {
       "the user is completely voluntary and is eligible for both years" in new Setup {
@@ -94,7 +86,7 @@ class AgentWhatYouNeedToDoControllerSpec
           ArgumentMatchers.any(),
           ArgumentMatchers.eq(clientDetails.name),
           ArgumentMatchers.eq(clientDetails.formattedNino),
-          ArgumentMatchers.eq(Some(routes.UsingSoftwareController.show.url))
+          ArgumentMatchers.eq(Some(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url))
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
@@ -170,7 +162,7 @@ class AgentWhatYouNeedToDoControllerSpec
           ArgumentMatchers.any(),
           ArgumentMatchers.eq(clientDetails.name),
           ArgumentMatchers.eq(clientDetails.formattedNino),
-          ArgumentMatchers.eq(Some(routes.UsingSoftwareController.show.url)),
+          ArgumentMatchers.eq(Some(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)),
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
@@ -181,10 +173,8 @@ class AgentWhatYouNeedToDoControllerSpec
         contentType(result) mustBe Some(HTML)
       }
 
-      "pre-pop is enabled and user is eligible for both years" when {
+      "user is eligible for both years" when {
         "user is voluntary" in new Setup {
-          enable(PrePopulate)
-
           mockGetMandationService(Voluntary, Voluntary)
           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
           mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
@@ -211,7 +201,6 @@ class AgentWhatYouNeedToDoControllerSpec
           contentType(result) mustBe Some(HTML)
         }
         "user is mandated" in new Setup {
-          enable(PrePopulate)
 
           mockGetMandationService(Mandated, Mandated)
           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
@@ -240,10 +229,8 @@ class AgentWhatYouNeedToDoControllerSpec
         }
       }
 
-      "pre-pop is enabled and user is eligible for next year only" when {
+      "user is eligible for next year only" when {
         "user is voluntary" in new Setup {
-          enable(PrePopulate)
-
           mockGetMandationService(Voluntary, Voluntary)
           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
           mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
@@ -269,7 +256,6 @@ class AgentWhatYouNeedToDoControllerSpec
           contentType(result) mustBe Some(HTML)
         }
         "user is mandated" in new Setup {
-          enable(PrePopulate)
 
           mockGetMandationService(Voluntary, Mandated)
           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
@@ -302,15 +288,7 @@ class AgentWhatYouNeedToDoControllerSpec
   }
 
   "submit" must {
-    "return SEE_OTHER to the task list page" in new Setup {
-      val result: Future[Result] = controller.submit(request)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.agent.tasklist.routes.TaskListController.show().url)
-    }
-
-    "return SEE_OTHER to the Your Income Sources page when PrePop enabled" in new Setup {
-      enable(PrePopulate)
+    "return SEE_OTHER to the Your Income Sources page" in new Setup {
       val result: Future[Result] = controller.submit(request)
 
       status(result) mustBe SEE_OTHER

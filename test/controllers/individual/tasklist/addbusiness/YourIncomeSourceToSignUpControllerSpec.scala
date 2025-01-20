@@ -16,8 +16,6 @@
 
 package controllers.individual.tasklist.addbusiness
 
-import config.featureswitch.FeatureSwitch.PrePopulate
-import config.featureswitch.FeatureSwitching
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.individual.ControllerBaseSpec
 import models.common.business._
@@ -38,13 +36,7 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockReferenceRetrieval
   with MockAuditingService
-  with MockAccountingPeriodService
-  with FeatureSwitching {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(PrePopulate)
-  }
+  with MockAccountingPeriodService {
 
   override val controllerName: String = "YourIncomeSourceToSignUpController"
 
@@ -131,7 +123,7 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
   }
 
   "submit" should {
-    "redirect to the task list page and save the income sources section as complete" when {
+    "redirect to the declaration page and save the income sources as complete" when {
       "all income sources are complete" in new Setup {
         mockFetchAllIncomeSources(IncomeSources(
           Seq(testSelfEmployment("id"), testSelfEmployment("id2")),
@@ -144,7 +136,7 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
         val result: Future[Result] = controller.submit(subscriptionRequest)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
+        redirectLocation(result) mustBe Some(controllers.individual.routes.GlobalCheckYourAnswersController.show.url)
 
         verifySaveIncomeSourceConfirmation()
       }
@@ -160,7 +152,7 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
         val result: Future[Result] = controller.submit(subscriptionRequest)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
+        redirectLocation(result) mustBe Some(controllers.individual.routes.GlobalCheckYourAnswersController.show.url)
 
         verifySaveIncomeSourceConfirmation()
       }
@@ -176,7 +168,7 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
         val result: Future[Result] = controller.submit(subscriptionRequest)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
+        redirectLocation(result) mustBe Some(controllers.individual.routes.GlobalCheckYourAnswersController.show.url)
 
         verifySaveIncomeSourceConfirmation()
       }
@@ -192,87 +184,17 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
         val result: Future[Result] = controller.submit(subscriptionRequest)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
+        redirectLocation(result) mustBe Some(controllers.individual.routes.GlobalCheckYourAnswersController.show.url)
 
         verifySaveIncomeSourceConfirmation()
-      }
-    }
-    "redirect to the task list page" when {
-      "self employment income sources are not complete" in new Setup {
-        mockFetchAllIncomeSources(IncomeSources(
-          Seq(testSelfEmployment("id").copy(confirmed = false)),
-          None,
-          Some(testUkProperty),
-          Some(testForeignProperty)
-        ))
-
-        val result: Future[Result] = controller.submit(subscriptionRequest)
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
-
-        verifySaveIncomeSourceConfirmation(0)
-      }
-      "uk property income sources are not complete" in new Setup {
-        mockFetchAllIncomeSources(IncomeSources(
-          Seq(testSelfEmployment("id")),
-          Some(Cash),
-          Some(testUkProperty.copy(confirmed = false)),
-          Some(testForeignProperty)
-        ))
-
-        val result: Future[Result] = controller.submit(subscriptionRequest)
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
-
-        verifySaveIncomeSourceConfirmation(0)
-      }
-      "overseas property income sources are not complete" in new Setup {
-        mockFetchAllIncomeSources(IncomeSources(
-          Seq(testSelfEmployment("id")),
-          Some(Cash),
-          Some(testUkProperty),
-          Some(testForeignProperty.copy(confirmed = false))
-        ))
-
-        val result: Future[Result] = controller.submit(subscriptionRequest)
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
-
-        verifySaveIncomeSourceConfirmation(0)
-      }
-      "no income sources have been added" in new Setup {
-        mockFetchAllIncomeSources(IncomeSources(
-          Seq.empty,
-          None,
-          None,
-          None
-        ))
-
-        val result: Future[Result] = controller.submit(subscriptionRequest)
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.individual.tasklist.routes.TaskListController.show().url)
-
-        verifySaveIncomeSourceConfirmation(0)
       }
     }
   }
 
   "backUrl" when {
-    "Prepopulate feature switch is enabled" should {
       "go to the ORM page" in new Setup {
-        enable(PrePopulate)
         controller.backUrl mustBe controllers.individual.routes.WhatYouNeedToDoController.show.url
       }
-    }
-    "Prepopulate feature switch is disabled" should {
-      "go to the Task List Page" in new Setup {
-        controller.backUrl mustBe controllers.individual.tasklist.routes.TaskListController.show().url
-      }
-    }
   }
 
   trait Setup {
@@ -291,7 +213,7 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
     def mockYourIncomeSourceToSignUpView(incomeSources: IncomeSources, isPrePopped: Boolean): Unit = {
       when(yourIncomeSourceToSignUpView(
         ArgumentMatchers.eq(routes.YourIncomeSourceToSignUpController.submit),
-        ArgumentMatchers.eq(controllers.individual.tasklist.routes.TaskListController.show().url),
+        ArgumentMatchers.eq(controllers.individual.routes.WhatYouNeedToDoController.show.url),
         ArgumentMatchers.eq(incomeSources),
         ArgumentMatchers.eq(isPrePopped),
       )(ArgumentMatchers.any(), ArgumentMatchers.any()))

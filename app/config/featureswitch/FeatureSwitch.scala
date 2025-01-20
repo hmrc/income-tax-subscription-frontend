@@ -25,7 +25,6 @@ object FeatureSwitch {
   val prefix = "feature-switch"
 
   val switches: Set[FeatureSwitch] = Set(
-    PrePopulate,
     ThrottlingFeature,
     CheckClientRelationship,
     CheckMultiAgentRelationship,
@@ -45,11 +44,6 @@ object FeatureSwitch {
     override val displayText: String = "Start date before limit"
   }
 
-  case object PrePopulate extends FeatureSwitch {
-    override val name = s"$prefix.prepopulate"
-    override val displayText = "Prepopulate"
-  }
-
   case object ThrottlingFeature extends FeatureSwitch {
     override val name = s"$prefix.throttle"
     override val displayText = "Throttle"
@@ -64,4 +58,5 @@ object FeatureSwitch {
     override val name: String = s"$prefix.multi-agent-client-relationships"
     override val displayText: String = "CheckMultiAgentRelationship"
   }
+
 }

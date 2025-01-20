@@ -139,9 +139,7 @@ object IntegrationTestConstants {
     val checkYourAnswersURI = s"$baseURI/check-your-answers"
     val ukPropertyCYAURI = s"$baseURI/business/uk-property-check-your-answers"
     val overseasPropertyCYAURI = s"$baseURI/business/overseas-property-check-your-answers"
-    val taskListURI = s"$baseURI/business/task-list"
     val saveAndRetrieveURI = s"$baseURI/business/progress-saved"
-    val taxYearCyaURI = s"$baseURI/business/tax-year-check-your-answers"
     val feedbackSubmittedURI = s"$baseURI/feedback-submitted"
     val signOutURI = s"$baseURI/logout"
     val ggSignOutURI = s"/bas-gateway/sign-out-without-state"
@@ -180,8 +178,6 @@ object IntegrationTestConstants {
     val feedbackSubmittedURI = s"$baseURI/feedback-submitted"
     val signOutURI = s"/report-quarterly/income-and-expenses/sign-up/logout"
     val whatYearToSignUpURI = s"$baseURI/business/what-year-to-sign-up"
-    val taxYearCheckYourAnswersURI = s"$baseURI/business/tax-year-check-your-answers"
-    val taskListURI = s"$baseURI/business/task-list"
     val yourIncomeSourcesURI = s"$baseURI/your-income-source"
     val addAnotherClient = s"$baseURI/add-another"
   }
