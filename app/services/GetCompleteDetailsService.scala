@@ -82,7 +82,7 @@ class GetCompleteDetailsService @Inject()(subscriptionDetailsService: Subscripti
                   trade = selfEmploymentData.businessTradeName.get.businessTradeName,
                   startDate = selfEmploymentData.startDateBeforeLimit match {
                     case Some(true) => None
-                    case None => Some(selfEmploymentData.businessStartDate.get.startDate.toLocalDate)
+                    case _ => Some(selfEmploymentData.businessStartDate.get.startDate.toLocalDate)
                   },
                   address = selfEmploymentData.businessAddress.get.address
                 )

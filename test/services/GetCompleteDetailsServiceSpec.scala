@@ -26,6 +26,7 @@ import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import services.GetCompleteDetailsService._
 import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.HeaderCarrier
+import utilities.AccountingPeriodUtil
 
 import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -41,9 +42,12 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
 
   val hc: HeaderCarrier = HeaderCarrier()
 
+  val startDateLimit: LocalDate = AccountingPeriodUtil.getCurrentTaxYearStartLocalDate.minusYears(2)
+
   val selfEmployment: SelfEmploymentData = SelfEmploymentData(
     id = "test-id",
-    businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
+    startDateBeforeLimit = Some(false),
+    businessStartDate = Some(BusinessStartDate(DateModel.dateConvert(startDateLimit))),
     businessName = Some(BusinessNameModel("ABC Limited")),
     businessTradeName = Some(BusinessTradeNameModel("Plumbing")),
     businessAddress = Some(BusinessAddressModel(address = Address(
@@ -57,13 +61,13 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
 
   val ukProperty: PropertyModel = PropertyModel(
     accountingMethod = Some(Cash),
-    startDate = Some(DateModel("2", "1", "1980")),
+    startDate = Some(DateModel.dateConvert(startDateLimit.plusDays(1))),
     confirmed = true
   )
 
   val foreignProperty: OverseasPropertyModel = OverseasPropertyModel(
     accountingMethod = Some(Cash),
-    startDate = Some(DateModel("3", "1", "1980")),
+    startDate = Some(DateModel.dateConvert(startDateLimit.plusDays(2))),
     confirmed = true
   )
 
@@ -77,7 +81,7 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
           id = "test-id",
           name = "ABC Limited",
           trade = "Plumbing",
-          startDate = Some(LocalDate.of(1980, 1, 1)),
+          startDate = Some(startDateLimit),
           address = Address(
             lines = Seq("1 Long Road", "Lonely city"),
             postcode = Some("ZZ11ZZ")
@@ -85,11 +89,11 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
         ))
       )),
       ukProperty = Some(UKProperty(
-        startDate = Some(LocalDate.of(1980, 1, 2)),
+        startDate = Some(startDateLimit.plusDays(1)),
         accountingMethod = Cash
       )),
       foreignProperty = Some(ForeignProperty(
-        startDate = Some(LocalDate.of(1980, 1, 3)),
+        startDate = Some(startDateLimit.plusDays(2)),
         accountingMethod = Cash
       ))
     ),
