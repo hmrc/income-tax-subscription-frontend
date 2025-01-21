@@ -106,6 +106,7 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
         SoleTraderBusiness(
           id = se.id,
           confirmed = se.confirmed,
+          startDateBeforeLimit = se.startDateBeforeLimit,
           startDate = se.businessStartDate.map(_.startDate),
           name = se.businessName.map(_.businessName),
           trade = se.businessTradeName.map(_.businessTradeName),
