@@ -42,7 +42,7 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
 
   val hc: HeaderCarrier = HeaderCarrier()
 
-  val startDateLimit: LocalDate = AccountingPeriodUtil.getCurrentTaxYearStartLocalDate.minusYears(2)
+  val startDateLimit: LocalDate = AccountingPeriodUtil.getStartDateLimit
 
   val selfEmployment: SelfEmploymentData = SelfEmploymentData(
     id = "test-id",

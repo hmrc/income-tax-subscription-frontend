@@ -44,7 +44,7 @@ class SubscriptionDataUtilSpec extends PlaySpec {
             businesses = Seq(
               SelfEmploymentData(
                 id = "test-id",
-                businessStartDate = Some(BusinessStartDate(DateModel.dateConvert(AccountingPeriodUtil.getCurrentTaxYearStartLocalDate.minusYears(2)))),
+                businessStartDate = Some(BusinessStartDate(DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit))),
                 businessName = Some(BusinessNameModel("test name")),
                 businessTradeName = Some(BusinessTradeNameModel("test trade")),
                 businessAddress = Some(BusinessAddressModel(address)),
@@ -54,12 +54,12 @@ class SubscriptionDataUtilSpec extends PlaySpec {
           )),
           ukProperty = Some(UkProperty(
             accountingPeriod = getCurrentTaxYear,
-            tradingStartDate = DateModel.dateConvert(AccountingPeriodUtil.getCurrentTaxYearStartLocalDate.minusYears(2)),
+            tradingStartDate = DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit),
             accountingMethod = Cash
           )),
           overseasProperty = Some(OverseasProperty(
             accountingPeriod = getCurrentTaxYear,
-            tradingStartDate = DateModel.dateConvert(AccountingPeriodUtil.getCurrentTaxYearStartLocalDate.minusYears(2)),
+            tradingStartDate = DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit),
             accountingMethod = Cash
           ))
         )

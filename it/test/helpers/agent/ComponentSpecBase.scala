@@ -33,7 +33,7 @@ import helpers.agent.servicemocks.WireMockMethods
 import helpers.servicemocks.AuditStub
 import helpers.{IntegrationTestModels, UserMatchingIntegrationRequestSupport}
 import models._
-import models.common.OverseasPropertyModel
+import models.common.{OverseasPropertyModel, PropertyModel}
 import models.usermatching.UserDetailsModel
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
@@ -497,10 +497,10 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       get("/business/income-sources-property", sessionData)
     }
 
-    def submitUkPropertyIncomeSources(isEditMode: Boolean, startDate: Option[DateModel], accountingMethod: Option[AccountingMethod], sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
+    def submitUkPropertyIncomeSources(isEditMode: Boolean, maybeProperty: Option[PropertyModel], sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
       val uri = s"/business/income-sources-property?editMode=$isEditMode"
       post(uri, sessionData)(
-        UkPropertyIncomeSourcesForm.createPropertyMapData(startDate, accountingMethod).map { case (k, v) => (k, Seq(v)) }
+        UkPropertyIncomeSourcesForm.createPropertyMapData(maybeProperty).map { case (k, v) => (k, Seq(v)) }
       )
     }
 

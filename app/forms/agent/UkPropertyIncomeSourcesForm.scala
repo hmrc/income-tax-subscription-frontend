@@ -17,25 +17,29 @@
 package forms.agent
 
 import forms.formatters.DateModelMapping.dateModelMapping
-import forms.submapping.AccountingMethodMapping
 import forms.submapping.AccountingMethodMapping.{option_accruals, option_cash}
-import models.{AccountingMethod, Accruals, Cash, DateModel}
-import play.api.data.{Form, Mapping}
+import forms.submapping.{AccountingMethodMapping, YesNoMapping}
+import models._
+import models.common.PropertyModel
 import play.api.data.Forms.tuple
 import play.api.data.validation.Invalid
+import play.api.data.{Form, Mapping}
+import utilities.AccountingPeriodUtil
 
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 object UkPropertyIncomeSourcesForm {
 
   val startDate: String = "startDate"
+  val startDateBeforeLimit = "start-date-before-limit"
   val accountingMethodProperty: String = "accountingMethodProperty"
   val errorContext: String = "property"
+
   def maxStartDate: LocalDate = LocalDate.now().plusDays(6)
+
   def minStartDate: LocalDate = LocalDate.of(1900, 1, 1)
 
-  def ukStartDate(f: LocalDate => String): Mapping[DateModel] = dateModelMapping(
+  private def ukStartDate(f: LocalDate => String): Mapping[DateModel] = dateModelMapping(
     isAgent = true,
     errorContext = errorContext,
     minDate = Some(minStartDate),
@@ -43,7 +47,7 @@ object UkPropertyIncomeSourcesForm {
     Some(f)
   )
 
-  val ukAccountingMethod: Mapping[AccountingMethod] = AccountingMethodMapping(
+  private val ukAccountingMethod: Mapping[AccountingMethod] = AccountingMethodMapping(
     errInvalid = Invalid("agent.error.accounting-method-property.invalid"),
     errEmpty = Some(Invalid("agent.error.accounting-method-property.invalid"))
   )
@@ -55,7 +59,20 @@ object UkPropertyIncomeSourcesForm {
     )
   )
 
-  def createPropertyMapData(maybeStartDate: Option[DateModel], maybeAccountingMethod: Option[AccountingMethod]): Map[String, String] = {
+  def ukPropertyIncomeSourcesFormNoDate: Form[(YesNo, AccountingMethod)] = Form(
+    tuple(
+      startDateBeforeLimit -> YesNoMapping.yesNoMapping(
+        yesNoInvalid = Invalid(s"agent.error.$errorContext.income-source.$startDateBeforeLimit.invalid", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
+      ),
+      accountingMethodProperty -> ukAccountingMethod
+    )
+  )
+
+  def createPropertyMapData(property: Option[PropertyModel]): Map[String, String] = {
+
+    val maybeStartDate: Option[DateModel] = property.flatMap(_.startDate)
+    val maybeStartDateBeforeLimit: Option[Boolean] = property.flatMap(_.startDateBeforeLimit)
+    val maybeAccountingMethod: Option[AccountingMethod] = property.flatMap(_.accountingMethod)
 
     val dateMap: Map[String, String] = maybeStartDate.fold(Map.empty[String, String]) { date =>
       Map(
@@ -65,12 +82,29 @@ object UkPropertyIncomeSourcesForm {
       )
     }
 
+    val startDateBeforeLimitMap: Map[String, String] = {
+      if (maybeStartDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))) {
+        Map(startDateBeforeLimit -> YesNoMapping.option_yes)
+      } else {
+        maybeStartDateBeforeLimit.fold(
+          if (maybeStartDate.exists(_.toLocalDate.isAfter(AccountingPeriodUtil.getStartDateLimit.minusDays(1)))) {
+            Map(startDateBeforeLimit -> YesNoMapping.option_no)
+          } else {
+            Map.empty[String, String]
+          }
+        ) {
+          case true => Map(startDateBeforeLimit -> YesNoMapping.option_yes)
+          case false => Map(startDateBeforeLimit -> YesNoMapping.option_no)
+        }
+      }
+    }
+
     val accountingMethodMap: Map[String, String] = maybeAccountingMethod.fold(Map.empty[String, String]) {
       case Cash => Map(accountingMethodProperty -> option_cash)
       case Accruals => Map(accountingMethodProperty -> option_accruals)
     }
 
-    dateMap ++ accountingMethodMap
+    dateMap ++ startDateBeforeLimitMap ++ accountingMethodMap
 
   }
 }

@@ -16,31 +16,37 @@
 
 @import forms.agent.UkPropertyIncomeSourcesForm
 @import forms.submapping.AccountingMethodMapping
+@import forms.submapping.YesNoMapping
 @import play.api.data.Form
-@import views.html.helpers.{DateHelper, DetailsHelper, RadioHelper, SaveAndContinueButtonHelper, PageHeadingHelper}
+@import config.featureswitch.FeatureSwitch.StartDateBeforeLimit
+@import config.featureswitch.FeatureSwitching
+@import views.html.helpers.{DateHelper, DetailsHelper, RadioHelper, SaveAndContinueButtonHelper, PageHeadingHelper, YesNoRadioHelper}
 @import views.html.templates.AgentMainTemplate
 @import utilities.UserMatchingSessionUtil.ClientDetails
+@import utilities.AccountingPeriodUtil
 @import forms.agent.PropertyStartDateForm._
 
 @this(
-mainTemplate: AgentMainTemplate,
-form: FormWithCSRF,
-dateHelper: DateHelper,
-detailsHelper: DetailsHelper,
-radioHelper: RadioHelper,
-saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
-pageHeadingHelper: PageHeadingHelper
+    mainTemplate: AgentMainTemplate,
+    form: FormWithCSRF,
+    dateHelper: DateHelper,
+    detailsHelper: DetailsHelper,
+    radioHelper: RadioHelper,
+    yesNoRadioHelper: YesNoRadioHelper,
+    saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
+    pageHeadingHelper: PageHeadingHelper,
+    featureSwitching: FeatureSwitching
 )
 
-@(ukPropertyIncomeSourcesForm: Form[(DateModel, AccountingMethod)], postAction: Call, backUrl: String, clientDetails: ClientDetails)(implicit request: Request[_], messages: Messages)
+@(ukPropertyIncomeSourcesForm: Form[_], postAction: Call, backUrl: String, clientDetails: ClientDetails)(implicit request: Request[_], messages: Messages)
 
 @detailsContent = {
-<p class="govuk-body govuk-!-font-weight-bold">@messages("agent.property.income-source.details.subheading")</p>
-<p>@messages("agent.property.income-source.details.content.para")</p>
-<ul class="govuk-list govuk-list--bullet">
-    <li>@messages("agent.property.income-source.details.content.bullet1")</li>
-    <li>@messages("agent.property.income-source.details.content.bullet2")</li>
-</ul>
+    <p class="govuk-body govuk-!-font-weight-bold">@messages("agent.property.income-source.details.subheading")</p>
+    <p>@messages("agent.property.income-source.details.content.para")</p>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("agent.property.income-source.details.content.bullet1")</li>
+        <li>@messages("agent.property.income-source.details.content.bullet2")</li>
+    </ul>
 }
 
 @mainTemplate(title = messages("agent.property.income-source.heading"), optForm = Some(ukPropertyIncomeSourcesForm), backLink = Some(backUrl)) {
@@ -51,45 +57,56 @@ pageHeadingHelper: PageHeadingHelper
         isSection = false
     )
 
-@form(action = postAction) {
+    @form(action = postAction) {
 
-@dateHelper(
-    field = ukPropertyIncomeSourcesForm(UkPropertyIncomeSourcesForm.startDate),
-    legendContent = messages("agent.property.income-source.para1"),
-    isPageHeading = false,
-    isLegendVisible = true,
-    parentForm = ukPropertyIncomeSourcesForm,
-    hintText = Some(messages("agent.property.income-source.hint"))
-)
+        @if(featureSwitching.isEnabled(StartDateBeforeLimit)) {
+            @yesNoRadioHelper(
+                field = ukPropertyIncomeSourcesForm(UkPropertyIncomeSourcesForm.startDateBeforeLimit),
+                legend = messages("agent.property.income-source.start-date-before-limit.legend", AccountingPeriodUtil.getStartDateLimit.getYear.toString),
+                isPageHeading = false,
+                headingClasses = "govuk-!-font-weight-bold",
+                inline = true
+            )
+        } else {
+            @dateHelper(
+                field = ukPropertyIncomeSourcesForm(UkPropertyIncomeSourcesForm.startDate),
+                legendContent = messages("agent.property.income-source.para1"),
+                isPageHeading = false,
+                isLegendVisible = true,
+                parentForm = ukPropertyIncomeSourcesForm,
+                hintText = Some(messages("agent.property.income-source.hint"))
+            )
+        }
 
-    <p class="govuk-body govuk-!-font-weight-bold">
-        @messages("agent.property.income-source.para2")
-    </p>
+        <p class="govuk-body govuk-!-font-weight-bold">
+            @messages("agent.property.income-source.para2")
+        </p>
 
-@detailsHelper(
-    summary = messages("agent.property.income-source.details.summary"),
-    content = detailsContent
-)
-@radioHelper(
-
-    field = ukPropertyIncomeSourcesForm(UkPropertyIncomeSourcesForm.accountingMethodProperty),
-    legend = messages("agent.property.income-source.para2"),
-    isPageHeading = false,
-    hint = None,
-    radioItems = Seq(
-        RadioItem(
-            content = Text(messages("agent.property.income-source.radio.cash")),
-            hint = None,
-            value = Some(AccountingMethodMapping.option_cash)
-),
-        RadioItem(
-            content = Text(messages("agent.property.income-source.radio.accruals")),
-            hint = None,
-            value = Some(AccountingMethodMapping.option_accruals)
+        @detailsHelper(
+            summary = messages("agent.property.income-source.details.summary"),
+            content = detailsContent
         )
-    )
-)
 
-@saveAndContinueButtonHelper(isIndividual = false, saveAndReturnReference = Some("uk-property-accounting-type"))
+        @radioHelper(
+            field = ukPropertyIncomeSourcesForm(UkPropertyIncomeSourcesForm.accountingMethodProperty),
+            legend = messages("agent.property.income-source.para2"),
+            isPageHeading = false,
+            hint = None,
+            radioItems = Seq(
+                RadioItem(
+                    content = Text(messages("agent.property.income-source.radio.cash")),
+                    hint = None,
+                    value = Some(AccountingMethodMapping.option_cash)
+                ),
+                RadioItem(
+                    content = Text(messages("agent.property.income-source.radio.accruals")),
+                    hint = None,
+                    value = Some(AccountingMethodMapping.option_accruals)
+                )
+            )
+        )
+
+        @saveAndContinueButtonHelper(isIndividual = false, saveAndReturnReference = Some("uk-property-accounting-type"))
+
     }
 }

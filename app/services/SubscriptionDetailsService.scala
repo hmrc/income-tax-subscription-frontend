@@ -126,6 +126,23 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
         taskListStatusUpdate(reference, incomeTaxSubscriptionConnector, result)
     }
 
+  def saveStreamlineProperty(reference: String,
+                             maybeStartDate: Option[DateModel],
+                             maybeStartDateBeforeLimit: Option[Boolean],
+                             accountingMethod: AccountingMethod)
+                            (implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
+    fetchProperty(reference) map {
+      case Some(property) => property
+      case None => PropertyModel()
+    } flatMap { propertyModel =>
+      val updatedPropertyModel = maybeStartDate match {
+        case Some(startDate) => propertyModel.copy(startDate = Some(startDate), accountingMethod = Some(accountingMethod), confirmed = false)
+        case None => propertyModel.copy(startDateBeforeLimit = maybeStartDateBeforeLimit, accountingMethod = Some(accountingMethod), confirmed = false)
+      }
+      saveProperty(reference, updatedPropertyModel)
+    }
+  }
+
   def fetchOverseasProperty(reference: String)(implicit hc: HeaderCarrier): Future[Option[OverseasPropertyModel]] =
     incomeTaxSubscriptionConnector.getSubscriptionDetails[OverseasPropertyModel](reference, SubscriptionDataKeys.OverseasProperty)
 

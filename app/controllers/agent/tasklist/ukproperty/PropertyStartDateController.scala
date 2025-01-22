@@ -16,96 +16,71 @@
 
 package controllers.agent.tasklist.ukproperty
 
-import auth.agent.AuthenticatedController
-import config.AppConfig
-import controllers.utils.ReferenceRetrieval
+import controllers.SignUpBaseController
+import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import forms.agent.PropertyStartDateForm
 import forms.agent.PropertyStartDateForm.propertyStartDateForm
 import models.DateModel
 import play.api.data.Form
 import play.api.mvc._
-import play.twirl.api.Html
-import services.agent.ClientDetailsRetrieval
-import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
-import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.ImplicitDateFormatter
-import utilities.UserMatchingSessionUtil.ClientDetails
 import views.html.agent.tasklist.ukproperty.PropertyStartDate
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
-class PropertyStartDateController @Inject()(propertyStartDate: PropertyStartDate,
+class PropertyStartDateController @Inject()(identify: IdentifierAction,
+                                            journeyRefiner: ConfirmedClientJourneyRefiner,
                                             subscriptionDetailsService: SubscriptionDetailsService,
-                                            clientDetailsRetrieval: ClientDetailsRetrieval,
-                                            referenceRetrieval: ReferenceRetrieval)
-                                           (val auditingService: AuditingService,
-                                            val authService: AuthService,
-                                            val appConfig: AppConfig,
-                                            val languageUtils: LanguageUtils)
-                                           (implicit val ec: ExecutionContext,
-                                            mcc: MessagesControllerComponents) extends AuthenticatedController with ImplicitDateFormatter {
+                                            view: PropertyStartDate,
+                                            implicitDateFormatter: ImplicitDateFormatter)
+                                           (implicit mcc: MessagesControllerComponents,
+                                            ec: ExecutionContext) extends SignUpBaseController {
 
-  def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
-      for {
-        reference <- referenceRetrieval.getAgentReference
-        startDate <- subscriptionDetailsService.fetchPropertyStartDate(reference)
-        clientDetails <- clientDetailsRetrieval.getClientDetails
-      } yield {
-        Ok(view(
-          propertyStartDateForm = form.fill(startDate),
-          isEditMode = isEditMode,
-          clientDetails = clientDetails
-        ))
-      }
-  }
-
-  def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
-      referenceRetrieval.getAgentReference flatMap { reference =>
-        form.bindFromRequest().fold(
-          formWithErrors =>
-            clientDetailsRetrieval.getClientDetails map { clientDetails =>
-              BadRequest(view(
-                propertyStartDateForm = formWithErrors, isEditMode = isEditMode, clientDetails = clientDetails
-              ))
-            },
-          startDate =>
-            subscriptionDetailsService.savePropertyStartDate(reference, startDate) map {
-              case Right(_) =>
-                if (isEditMode) {
-                  Redirect(routes.PropertyCheckYourAnswersController.show(isEditMode))
-                } else {
-                  Redirect(routes.PropertyStartDateController.show())
-                }
-              case Left(_) => throw new InternalServerException("[PropertyStartDateController][submit] - Could not save start date")
-            }
-        )
-      }
-  }
-
-  def backUrl(isEditMode: Boolean): String = {
-    if (isEditMode) {
-      routes.PropertyCheckYourAnswersController.show(isEditMode).url
-    } else {
-      controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
+  def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
+    for {
+      startDate <- subscriptionDetailsService.fetchPropertyStartDate(request.reference)
+    } yield {
+      Ok(view(
+        propertyStartDateForm = form.fill(startDate),
+        postAction = controllers.agent.tasklist.ukproperty.routes.PropertyStartDateController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
+        backUrl = backUrl(isEditMode, isGlobalEdit),
+        clientDetails = request.clientDetails
+      ))
     }
   }
 
-  private def form(implicit request: Request[_]): Form[DateModel] = {
-    propertyStartDateForm(PropertyStartDateForm.minStartDate, PropertyStartDateForm.maxStartDate, d => d.toLongDate)
-  }
-
-  private def view(propertyStartDateForm: Form[DateModel], isEditMode: Boolean, clientDetails: ClientDetails)
-                  (implicit request: Request[AnyContent]): Html = {
-    propertyStartDate(
-      propertyStartDateForm = propertyStartDateForm,
-      postAction = controllers.agent.tasklist.ukproperty.routes.PropertyStartDateController.submit(editMode = isEditMode),
-      isEditMode = isEditMode,
-      backUrl = backUrl(isEditMode),
-      clientDetails = clientDetails
+  def submit(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
+    form.bindFromRequest().fold(
+      formWithErrors =>
+        Future.successful(BadRequest(view(
+          propertyStartDateForm = formWithErrors,
+          postAction = controllers.agent.tasklist.ukproperty.routes.PropertyStartDateController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
+          backUrl = backUrl(isEditMode, isGlobalEdit),
+          clientDetails = request.clientDetails
+        ))),
+      startDate =>
+        subscriptionDetailsService.savePropertyStartDate(request.reference, startDate) map {
+          case Right(_) => Redirect(routes.PropertyCheckYourAnswersController.show(editMode = isEditMode, isGlobalEdit = isGlobalEdit))
+          case Left(_) => throw new InternalServerException("[PropertyStartDateController][submit] - Could not save start date")
+        }
     )
   }
+
+  private def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean): String = {
+    routes.PropertyIncomeSourcesController.show(editMode = isEditMode, isGlobalEdit = isGlobalEdit).url
+  }
+
+  private def form(implicit request: Request[_]): Form[DateModel] = {
+    import implicitDateFormatter.LongDate
+
+    propertyStartDateForm(
+      PropertyStartDateForm.minStartDate,
+      PropertyStartDateForm.maxStartDate,
+      _.toLongDate
+    )
+  }
+
 }
