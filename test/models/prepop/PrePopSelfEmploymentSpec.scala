@@ -16,11 +16,12 @@
 
 package models.prepop
 
-import models.common.business.Address
+import models.common.business._
 import models.{Accruals, Cash, DateModel}
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.play.PlaySpec
-import play.api.libs.json.{JsError, JsObject, JsSuccess, Json, __}
+import play.api.libs.json._
+import utilities.AccountingPeriodUtil
 
 class PrePopSelfEmploymentSpec extends PlaySpec with Matchers {
 
@@ -40,6 +41,77 @@ class PrePopSelfEmploymentSpec extends PlaySpec with Matchers {
     }
   }
 
+  "toSelfEmploymentData" should {
+    "successfully translate into a self employment data model" when {
+      "the start date before limit feature switch is disabled" when {
+        "start date is older than the limit" in {
+          prePopSelfEmploymentModelFull.copy(startDate = Some(DateModel.dateConvert(date.toLocalDate.minusDays(1))))
+            .toSelfEmploymentData("test-id", startDateRemovalFlag = false) mustBe SelfEmploymentData(
+            id = "test-id",
+            startDateBeforeLimit = None,
+            businessStartDate = Some(BusinessStartDate(DateModel.dateConvert(date.toLocalDate.minusDays(1)))),
+            businessName = Some(BusinessNameModel("ABC")),
+            businessTradeName = Some(BusinessTradeNameModel("Plumbing")),
+            businessAddress = Some(BusinessAddressModel(Address(
+              lines = Seq(
+                "1 long road"
+              ),
+              postcode = Some("ZZ1 1ZZ")
+            ))))
+        }
+        "start date is not older than the limit" in {
+          prePopSelfEmploymentModelFull
+            .toSelfEmploymentData("test-id", startDateRemovalFlag = false) mustBe SelfEmploymentData(
+            id = "test-id",
+            startDateBeforeLimit = None,
+            businessStartDate = Some(BusinessStartDate(date)),
+            businessName = Some(BusinessNameModel("ABC")),
+            businessTradeName = Some(BusinessTradeNameModel("Plumbing")),
+            businessAddress = Some(BusinessAddressModel(Address(
+              lines = Seq(
+                "1 long road"
+              ),
+              postcode = Some("ZZ1 1ZZ")
+            ))))
+        }
+      }
+      "the start date before limit feature switch is enabled" when {
+        "start date is older than the limit" in {
+          prePopSelfEmploymentModelFull.copy(startDate = Some(DateModel.dateConvert(date.toLocalDate.minusDays(1))))
+            .toSelfEmploymentData("test-id", startDateRemovalFlag = true) mustBe SelfEmploymentData(
+            id = "test-id",
+            startDateBeforeLimit = Some(true),
+            businessStartDate = None,
+            businessName = Some(BusinessNameModel("ABC")),
+            businessTradeName = Some(BusinessTradeNameModel("Plumbing")),
+            businessAddress = Some(BusinessAddressModel(Address(
+              lines = Seq(
+                "1 long road"
+              ),
+              postcode = Some("ZZ1 1ZZ")
+            ))))
+        }
+        "start date is not older than the limit" in {
+          prePopSelfEmploymentModelFull
+            .toSelfEmploymentData("test-id", startDateRemovalFlag = true) mustBe SelfEmploymentData(
+            id = "test-id",
+            startDateBeforeLimit = Some(false),
+            businessStartDate = Some(BusinessStartDate(date)),
+            businessName = Some(BusinessNameModel("ABC")),
+            businessTradeName = Some(BusinessTradeNameModel("Plumbing")),
+            businessAddress = Some(BusinessAddressModel(Address(
+              lines = Seq(
+                "1 long road"
+              ),
+              postcode = Some("ZZ1 1ZZ")
+            ))))
+        }
+      }
+    }
+  }
+
+  lazy val date: DateModel = DateModel.dateConvert(AccountingPeriodUtil.getCurrentTaxYearStartLocalDate.minusYears(2))
+
   lazy val prePopSelfEmploymentJsonFull: JsObject = Json.obj(
     "name" -> "ABC",
     "trade" -> "Plumbing",
@@ -50,9 +122,9 @@ class PrePopSelfEmploymentSpec extends PlaySpec with Matchers {
       "postcode" -> "ZZ1 1ZZ"
     ),
     "startDate" -> Json.obj(
-      "day" -> "01",
-      "month" -> "02",
-      "year" -> "2000"
+      "day" -> date.day,
+      "month" -> date.month,
+      "year" -> date.year
     ),
     "accountingMethod" -> "cash"
   )
@@ -66,11 +138,7 @@ class PrePopSelfEmploymentSpec extends PlaySpec with Matchers {
       ),
       postcode = Some("ZZ1 1ZZ")
     )),
-    startDate = Some(DateModel(
-      day = "01",
-      month = "02",
-      year = "2000"
-    )),
+    startDate = Some(date),
     accountingMethod = Cash
   )
 
