@@ -18,6 +18,7 @@
 @import views.html.helpers.{DateHelper, SaveAndContinueButtonHelper, PageHeadingHelper}
 @import views.html.templates.AgentMainTemplate
 @import utilities.UserMatchingSessionUtil.ClientDetails
+@import utilities.AccountingPeriodUtil
 
 @this(
     agentMainTemplate: AgentMainTemplate,
@@ -27,7 +28,7 @@
     pageHeadingHelper: PageHeadingHelper
 )
 
-@(propertyStartDateForm: Form[DateModel], postAction: Call, isEditMode: Boolean, backUrl: String, clientDetails: ClientDetails)(implicit request: Request[_], messages: Messages)
+@(propertyStartDateForm: Form[DateModel], postAction: Call, backUrl: String, clientDetails: ClientDetails)(implicit request: Request[_], messages: Messages)
 
 @agentMainTemplate(title = messages("agent.property.start-date.heading"), optForm = Some(propertyStartDateForm), backLink = Some(backUrl)) {
 
@@ -37,7 +38,7 @@
         isSection = false
     )
 
-  <p class="govuk-body">@messages("agent.property.start-date.para1")</p>
+  <p class="govuk-body">@messages("agent.property.start-date.para-one")</p>
 
   @form(action = postAction) {
     @dateHelper(
@@ -46,10 +47,10 @@
       isPageHeading = false,
       isLegendVisible = false,
       parentForm = propertyStartDateForm,
-      hintText = Some(messages("agent.property.start-date.hint"))
+      hintText = Some(messages("agent.property.start-date.hint", AccountingPeriodUtil.getCurrentTaxYearStartLocalDate.getYear.toString))
     )
 
-    @saveAndContinueButton(isIndividual = false, saveAndReturnReference = None)
+    @saveAndContinueButton(isIndividual = false, saveAndReturnReference = Some("uk-property-start-date"))
 
   }
 }

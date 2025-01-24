@@ -78,7 +78,7 @@ object CreateIncomeSourcesModel {
     val soleTraderBusinesses: Option[SoleTraderBusinesses] = {
       completeDetails.incomeSources.soleTraderBusinesses map { businesses =>
         val selfEmployments: Seq[SelfEmploymentData] = businesses.businesses.map { business =>
-          val startDate: DateModel = DateModel.dateConvert(business.startDate.getOrElse(AccountingPeriodUtil.getCurrentTaxYearStartLocalDate.minusYears(2)))
+          val startDate: DateModel = DateModel.dateConvert(business.startDate.getOrElse(AccountingPeriodUtil.getStartDateLimit))
           SelfEmploymentData(
             id = business.id,
             businessStartDate = Some(BusinessStartDate(startDate)),
@@ -94,7 +94,7 @@ object CreateIncomeSourcesModel {
 
     val ukProperty: Option[UkProperty] = {
       completeDetails.incomeSources.ukProperty map { property =>
-        val startDate: DateModel = DateModel.dateConvert(property.startDate.getOrElse(AccountingPeriodUtil.getCurrentTaxYearStartLocalDate.minusYears(2)))
+        val startDate: DateModel = DateModel.dateConvert(property.startDate.getOrElse(AccountingPeriodUtil.getStartDateLimit))
         UkProperty(
           accountingPeriod = accountingPeriod,
           tradingStartDate = startDate,
@@ -105,7 +105,7 @@ object CreateIncomeSourcesModel {
 
     val foreignProperty: Option[OverseasProperty] = {
       completeDetails.incomeSources.foreignProperty map { property =>
-        val startDate: DateModel = DateModel.dateConvert(property.startDate.getOrElse(AccountingPeriodUtil.getCurrentTaxYearStartLocalDate.minusYears(2)))
+        val startDate: DateModel = DateModel.dateConvert(property.startDate.getOrElse(AccountingPeriodUtil.getStartDateLimit))
         OverseasProperty(
           accountingPeriod = accountingPeriod,
           tradingStartDate = startDate,

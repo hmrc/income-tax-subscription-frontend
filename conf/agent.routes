@@ -74,8 +74,8 @@ GET         /what-you-need-to-do                                controllers.agen
 POST        /what-you-need-to-do                                controllers.agent.WhatYouNeedToDoController.submit
 
 #Property Start Date Routes
-GET         /business/property-commencement-date                controllers.agent.tasklist.ukproperty.PropertyStartDateController.show(editMode: Boolean ?= false)
-POST        /business/property-commencement-date                controllers.agent.tasklist.ukproperty.PropertyStartDateController.submit(editMode: Boolean ?= false)
+GET         /business/property-commencement-date                controllers.agent.tasklist.ukproperty.PropertyStartDateController.show(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
+POST        /business/property-commencement-date                controllers.agent.tasklist.ukproperty.PropertyStartDateController.submit(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
 
 # Agent Streamline UK Property Income Sources
 GET         /business/income-sources-property                   controllers.agent.tasklist.ukproperty.PropertyIncomeSourcesController.show(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)

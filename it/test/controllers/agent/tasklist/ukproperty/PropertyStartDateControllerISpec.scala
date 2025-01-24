@@ -18,7 +18,7 @@ package controllers.agent.tasklist.ukproperty
 
 import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
-import helpers.IntegrationTestConstants.{AgentURI, testNino}
+import helpers.IntegrationTestConstants.{AgentURI, testNino, testUtr}
 import helpers.IntegrationTestModels
 import helpers.IntegrationTestModels.{testFullPropertyModel, testPropertyStartDate}
 import helpers.agent.ComponentSpecBase
@@ -27,6 +27,7 @@ import models.DateModel
 import models.common.PropertyModel
 import play.api.http.Status._
 import play.api.libs.json.{JsString, Json}
+import utilities.AccountingPeriodUtil
 import utilities.SubscriptionDataKeys.Property
 
 class PropertyStartDateControllerISpec extends ComponentSpecBase {
@@ -38,6 +39,7 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
         When("GET /property-commencement-date is called")
         val res = IncomeTaxSubscriptionFrontend.ukPropertyStartDate()
@@ -57,6 +59,7 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
         When("GET /property-commencement-date is called")
         val res = IncomeTaxSubscriptionFrontend.ukPropertyStartDate()
@@ -73,7 +76,7 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/client/property-commencement-date" should {
-    "redirect to the agent uk property accounting method page" when {
+    "redirect to uk property check your answers page" when {
       "not in edit mode" when {
         "enter commencement date" in {
           val userInput: DateModel = IntegrationTestModels.testPropertyStartDate.startDate
@@ -82,6 +85,8 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
           IncomeTaxSubscriptionConnectorStub.stubSaveProperty(PropertyModel(startDate = Some(userInput)))
           IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
           When("POST /property-commencement-date is called")
           val res = IncomeTaxSubscriptionFrontend.submitUkPropertyStartDate(isEditMode = false, Some(userInput))
@@ -89,13 +94,10 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
           Then("Should return a SEE_OTHER with a redirect location of property accounting method page")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(AgentURI.propertyStartDateURI)
+            redirectURI(AgentURI.ukPropertyCheckYourAnswersURI)
           )
         }
       }
-    }
-
-    "redirect to uk property check your answers page" when {
       "in edit mode" when {
         "not changing commencement date when calling page from agent Uk Property Check Your Answers" in {
           val userInput: DateModel = IntegrationTestModels.testValidStartDate
@@ -107,37 +109,13 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testProperty))
           IncomeTaxSubscriptionConnectorStub.stubSaveProperty(testProperty)
           IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
           When("POST /property-commencement-date is called")
           val res = IncomeTaxSubscriptionFrontend.submitUkPropertyStartDate(isEditMode = true, Some(userInput))
 
           Then("Should return a SEE_OTHER with a redirect location of agent uk property check your answers")
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(AgentURI.ukPropertyCheckYourAnswersURI)
-          )
-        }
-
-        "changing commencement date when calling page from Check Your Answers" in {
-          val userInput: DateModel = IntegrationTestModels.testValidStartDate2
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          val testProperty = PropertyModel(
-            startDate = Some(IntegrationTestModels.testValidStartDate)
-          )
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-            Property,
-            OK,
-            Json.toJson(testProperty)
-          )
-          IncomeTaxSubscriptionConnectorStub.stubSaveProperty(testProperty.copy(startDate = Some(IntegrationTestModels.testValidStartDate2)))
-          IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
-
-          When("POST /property-commencement-date is called")
-          val res = IncomeTaxSubscriptionFrontend.submitUkPropertyStartDate(isEditMode = true, Some(userInput))
-
-          Then("Should return a SEE_OTHER with a redirect location of check your answers")
-
           res must have(
             httpStatus(SEE_OTHER),
             redirectURI(AgentURI.ukPropertyCheckYourAnswersURI)
@@ -152,11 +130,31 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
         When("POST /property-commencement-date is called")
         val res = IncomeTaxSubscriptionFrontend.submitUkPropertyStartDate(isEditMode = false, None)
 
         Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
+        res must have(
+          httpStatus(BAD_REQUEST),
+          errorDisplayed()
+        )
+      }
+
+      "selecting commencement date earlier than the start date limit" in {
+        val userInput: DateModel = DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit.minusDays(1))
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+
+        When("POST /property-commencement-date is called")
+        val res = IncomeTaxSubscriptionFrontend.submitUkPropertyStartDate(isEditMode = false, Some(userInput))
+
+        Then("Should return a SEE_OTHER with a redirect location of cannot sign up")
         res must have(
           httpStatus(BAD_REQUEST),
           errorDisplayed()
@@ -170,6 +168,7 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
         When("POST /property-commencement-date is called")
         val res = IncomeTaxSubscriptionFrontend.submitUkPropertyStartDate(isEditMode = false, Some(userInput))
@@ -189,6 +188,8 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetailsFailure(Property)
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
         When("POST /property-commencement-date is called")
         val res = IncomeTaxSubscriptionFrontend.submitUkPropertyStartDate(isEditMode = false, Some(userInput))

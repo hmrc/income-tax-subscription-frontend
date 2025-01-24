@@ -84,6 +84,16 @@ trait MockSubscriptionDetailsService extends PlaySpec with MockitoSugar with Bef
       .thenReturn(Future.successful(result))
   }
 
+  def mockSaveStreamlineProperty(maybeStartDate: Option[DateModel], maybeStartDateBeforeLimit: Option[Boolean], accountingMethod: AccountingMethod)
+                                (result: PostSubscriptionDetailsResponse): Unit = {
+    when(mockSubscriptionDetailsService.saveStreamlineProperty(
+      ArgumentMatchers.any(),
+      ArgumentMatchers.eq(maybeStartDate),
+      ArgumentMatchers.eq(maybeStartDateBeforeLimit),
+      ArgumentMatchers.eq(accountingMethod)
+    )(ArgumentMatchers.any())).thenReturn(Future.successful(result))
+  }
+
   def verifySaveProperty(propertyModel: PropertyModel, count: Int = 1): Unit = {
     if (count == 0) {
       verify(mockSubscriptionDetailsService, times(count)).saveProperty(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any())

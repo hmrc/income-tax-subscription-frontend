@@ -30,7 +30,7 @@ case class PrePopSelfEmployment(name: Option[String],
   def toSelfEmploymentData(id: String, startDateRemovalFlag: Boolean): SelfEmploymentData = {
 
     val startDateBeforeLimit: Option[Boolean] = if (startDateRemovalFlag) {
-      startDate.map(_.toLocalDate.isBefore(AccountingPeriodUtil.getCurrentTaxYearStartLocalDate.minusYears(2)))
+      startDate.map(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))
     } else {
       None
     }

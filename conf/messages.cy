@@ -196,24 +196,26 @@ error.property.month-year.invalid                               = Rhaid i’r dy
 error.property.year.length                                      = Mae’n rhaid i flwyddyn fod yn bedwar digid. Er enghraifft, 2020.
 
 # Agent Property Start Date Date
-agent.property.start-date.heading                               = Pryd y gwnaeth eich cleient ddechrau ei fusnes eiddo yn y DU?
+agent.property.start-date.heading                               = Dyddiad dechrau ar gyfer incwm o eiddo yn y DU
 agent.property.start-date.heading.caption                       = {0} | {1}
-agent.property.start-date.para1                                 = Gall y dyddiad y dechreuodd busnes eich cleient fasnachu fod heddiw, yn y gorffennol neu hyd at 7 diwrnod yn y dyfodol.
-agent.property.start-date.hint                                  = Er enghraifft, 17 8 2014.
+agent.property.start-date.para-one                              = Mae angen i ni wybod yr union ddyddiad dechrau.
+agent.property.start-date.hint                                  = Er enghraifft, 27 9 {0}
 
 # Agent Property Income Source
-agent.property.income-source.heading                            = Eiddo eich cleient yn y DU
-agent.property.income-source.heading.caption                    = {0} | {1}
-agent.property.income-source.para1                              = Pa ddull cyfrifo y mae’ch cleient yn ei ddefnyddio ar gyfer ei fusnes eiddo yn y DU?
-agent.property.income-source.hint                               = Er enghraifft, 17 8 2014
-agent.property.income-source.para2                              = Pa ddull cyfrifo y mae’ch cleient yn ei ddefnyddio ar gyfer ei fusnes eiddo yn y DU?
-agent.property.income-source.radio.cash                         = Cyfrifyddu ar sail arian parod
-agent.property.income-source.radio.accruals                     = Cyfrifyddu traddodiadol
-agent.property.income-source.details.summary                    = Help gyda dull cyfrifyddu
-agent.property.income-source.details.subheading                 = Enghraifft
-agent.property.income-source.details.content.para               = Creodd eich cleient anfoneb i rywun ym mis Mawrth 2024, ond ni dderbyniodd yr arian tan fis Mai 2024. Os ydych yn rhoi gwybod i CThEF eich cleient wedi cael yr incwm hwn ym:
-agent.property.income-source.details.content.bullet1            = mis Mai 2024, mae eich cleient yn defnyddio cyfrifyddu ar sail arian parod
-agent.property.income-source.details.content.bullet2            = mis Mawrth 2024, mae eich cleient yn defnyddio cyfrifyddu traddodiadol
+agent.property.income-source.heading                                = Eiddo eich cleient yn y DU
+agent.property.income-source.heading.caption                        = {0} | {1}
+agent.property.income-source.start-date-before-limit.legend         = A oedd yr incwm hwn wedi dechrau cyn 6 Ebrill {0}?
+agent.property.income-source.para1                                  = Pa ddull cyfrifo y mae’ch cleient yn ei ddefnyddio ar gyfer ei fusnes eiddo yn y DU?
+agent.property.income-source.hint                                   = Er enghraifft, 17 8 2014
+agent.property.income-source.para2                                  = Pa ddull cyfrifo y mae’ch cleient yn ei ddefnyddio ar gyfer ei fusnes eiddo yn y DU?
+agent.property.income-source.radio.cash                             = Cyfrifyddu ar sail arian parod
+agent.property.income-source.radio.accruals                         = Cyfrifyddu traddodiadol
+agent.property.income-source.details.summary                        = Help gyda dull cyfrifyddu
+agent.property.income-source.details.subheading                     = Enghraifft
+agent.property.income-source.details.content.para                   = Creodd eich cleient anfoneb i rywun ym mis Mawrth 2024, ond ni dderbyniodd yr arian tan fis Mai 2024. Os ydych yn rhoi gwybod i CThEF eich cleient wedi cael yr incwm hwn ym:
+agent.property.income-source.details.content.bullet1                = mis Mai 2024, mae eich cleient yn defnyddio cyfrifyddu ar sail arian parod
+agent.property.income-source.details.content.bullet2                = mis Mawrth 2024, mae eich cleient yn defnyddio cyfrifyddu traddodiadol
+agent.error.property.income-source.start-date-before-limit.invalid  = Dewiswch ‘Iawn’ os oedd eich cleient wedi dechrau cael incwm o eiddo yn y DU cyn 6 Ebrill {0}
 
 # Agent Property Start Date errors
 agent.error.property.day-month-year.empty                       = Nodwch y dyddiad y dechreuodd eich busnes eiddo yn y DU fasnachu

@@ -197,24 +197,26 @@ error.property.month-year.invalid                               = The date must 
 error.property.year.length                                      = The year must be in four digits. For example, 2020.
 
 # Agent Property Start Date Date
-agent.property.start-date.heading                               = When did your client start their UK property business?
 agent.property.start-date.heading.caption                       = {0} | {1}
-agent.property.start-date.para1                                 = The date your client’s business started trading can be today, in the past or up to 7 days in the future.
-agent.property.start-date.hint                                  = For example, 17 8 2014.
+agent.property.start-date.heading                               = Start date for income from UK property
+agent.property.start-date.para-one                              = We need to know the exact date.
+agent.property.start-date.hint                                  = For example, 27 9 {0}
 
 # Agent Property Income Source
-agent.property.income-source.heading                            = Your client’s UK property
-agent.property.income-source.heading.caption                    = {0} | {1}
-agent.property.income-source.para1                              = When did your client’s UK property business start?
-agent.property.income-source.hint                               = For example, 17 8 2014.
-agent.property.income-source.para2                              = What accounting method does your client use for their UK property business?
-agent.property.income-source.radio.cash                         = Cash basis accounting
-agent.property.income-source.radio.accruals                     = Traditional accounting
-agent.property.income-source.details.summary                    = Help with accounting method
-agent.property.income-source.details.subheading                 = Example
-agent.property.income-source.details.content.para               = Your client created an invoice for someone in March 2017, but did not receive the money until May 2017. If your client tells HMRC they received this income in:
-agent.property.income-source.details.content.bullet1            = May 2017, they use cash basis accounting
-agent.property.income-source.details.content.bullet2            = March 2017, you use traditional accounting
+agent.property.income-source.heading                                = Your client’s UK property
+agent.property.income-source.heading.caption                        = {0} | {1}
+agent.property.income-source.start-date-before-limit.legend         = Did this income start before 6 April {0}?
+agent.property.income-source.para1                                  = When did your client’s UK property business start?
+agent.property.income-source.hint                                   = For example, 17 8 2014.
+agent.property.income-source.para2                                  = What accounting method does your client use for their UK property business?
+agent.property.income-source.radio.cash                             = Cash basis accounting
+agent.property.income-source.radio.accruals                         = Traditional accounting
+agent.property.income-source.details.summary                        = Help with accounting method
+agent.property.income-source.details.subheading                     = Example
+agent.property.income-source.details.content.para                   = Your client created an invoice for someone in March 2017, but did not receive the money until May 2017. If your client tells HMRC they received this income in:
+agent.property.income-source.details.content.bullet1                = May 2017, they use cash basis accounting
+agent.property.income-source.details.content.bullet2                = March 2017, you use traditional accounting
+agent.error.property.income-source.start-date-before-limit.invalid  = Select ‘Yes’ if your client started getting income from UK property before 6 April {0}
 
 # Agent Property Start Date errors
 agent.error.property.day-month-year.empty                       = Enter the date your client’s UK property business started trading
@@ -224,7 +226,7 @@ agent.error.property.year.empty                                 = The date must 
 agent.error.property.day-month.empty                            = The date must include a day and a month
 agent.error.property.day-year.empty                             = The date must include a day and a year
 agent.error.property.month-year.empty                           = The date must include a month and a year
-agent.error.property.day-month-year.max-date                    = The date the UK property business started trading must be on or before {0}
+agent.error.property.day-month-year.max-date                    = The date cannot be more than 7 days in the future
 agent.error.property.day-month-year.min-date                    = The date your client’s property business started trading must be on or after {0}
 agent.error.property.day-month-year.invalid                     = The date must be a real date
 agent.error.property.day.invalid                                = The date must be a real date

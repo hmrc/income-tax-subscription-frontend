@@ -16,15 +16,22 @@
 
 package services
 
-import models.common.AccountingYearModel
+import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscriptionDetailsSuccessResponse
+import connectors.httpparser.{DeleteSubscriptionDetailsHttpParser, PostSubscriptionDetailsHttpParser}
+import connectors.httpparser.PostSubscriptionDetailsHttpParser.{PostSubscriptionDetailsResponse, PostSubscriptionDetailsSuccessResponse}
+import models._
+import models.common.{AccountingYearModel, PropertyModel}
 import models.status.MandationStatus.Voluntary
-import models.{Current, EligibilityStatus, Next}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.matchers.should.Matchers._
 import org.scalatestplus.play.PlaySpec
+import play.api.http.Status.INTERNAL_SERVER_ERROR
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import services.mocks.{MockGetEligibilityStatusService, MockIncomeTaxSubscriptionConnector, MockMandationStatusService}
 import uk.gov.hmrc.crypto.ApplicationCrypto
-import utilities.SubscriptionDataKeys
+import utilities.{AccountingPeriodUtil, SubscriptionDataKeys}
+
+import scala.concurrent.Future
 
 class SubscriptionDetailsServiceSpec extends PlaySpec
   with Matchers
@@ -50,7 +57,7 @@ class SubscriptionDetailsServiceSpec extends PlaySpec
   "mock Subscription Details  service" should {
 
     "return next year when the ELIGIBLE_NEXT_YEAR_ONLY session variable is set" in {
-      mockGetSelfEmployments(SubscriptionDataKeys.SelectedTaxYear)(None)
+      mockGetSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear)(None)
       mockGetMandationService(Voluntary, Voluntary)
       mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
 
@@ -64,7 +71,7 @@ class SubscriptionDetailsServiceSpec extends PlaySpec
     }
 
     "return empty db value when the ELIGIBLE_NEXT_YEAR_ONLY session variable is not set and no value found" in {
-      mockGetSelfEmployments(SubscriptionDataKeys.SelectedTaxYear)(None)
+      mockGetSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear)(None)
       mockGetMandationService(Voluntary, Voluntary)
 
 
@@ -75,7 +82,7 @@ class SubscriptionDetailsServiceSpec extends PlaySpec
     }
 
     "return editable db value when the ELIGIBLE_NEXT_YEAR_ONLY session variable is not set" in {
-      mockGetSelfEmployments(SubscriptionDataKeys.SelectedTaxYear)(Some(AccountingYearModel(Current)))
+      mockGetSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear)(Some(AccountingYearModel(Current)))
       mockGetMandationService(Voluntary, Voluntary)
 
       val testResultEventually = subscriptionDetailsService.fetchSelectedTaxYear(testReference)(hc)
@@ -87,4 +94,108 @@ class SubscriptionDetailsServiceSpec extends PlaySpec
       })
     }
   }
+
+  "saveStreamlinedProperty" should {
+    "return a save success" when {
+      "no property data was fetched" when {
+        "start date is provided, start date before limit flag is not" in {
+          mockGetSubscriptionDetails(SubscriptionDataKeys.Property)(None)
+          mockSaveSubscriptionDetails(SubscriptionDataKeys.Property, PropertyModel(
+            accountingMethod = Some(Cash),
+            startDate = Some(date)
+          ))(Right(PostSubscriptionDetailsSuccessResponse))
+          mockDeleteSubscriptionDetails(SubscriptionDataKeys.IncomeSourceConfirmation)(Right(DeleteSubscriptionDetailsSuccessResponse))
+
+          val result: Future[PostSubscriptionDetailsResponse] = subscriptionDetailsService.saveStreamlineProperty(
+            reference = testReference,
+            maybeStartDate = Some(date),
+            maybeStartDateBeforeLimit = None,
+            accountingMethod = Cash
+          )
+
+          await(result) mustBe Right(PostSubscriptionDetailsSuccessResponse)
+        }
+        "start date is not provided, start date before limit flag is" in {
+          mockGetSubscriptionDetails(SubscriptionDataKeys.Property)(None)
+          mockSaveSubscriptionDetails(SubscriptionDataKeys.Property, PropertyModel(
+            startDateBeforeLimit = Some(false),
+            accountingMethod = Some(Cash)
+          ))(Right(PostSubscriptionDetailsSuccessResponse))
+          mockDeleteSubscriptionDetails(SubscriptionDataKeys.IncomeSourceConfirmation)(Right(DeleteSubscriptionDetailsSuccessResponse))
+
+          val result: Future[PostSubscriptionDetailsResponse] = subscriptionDetailsService.saveStreamlineProperty(
+            reference = testReference,
+            maybeStartDate = None,
+            maybeStartDateBeforeLimit = Some(false),
+            accountingMethod = Cash
+          )
+
+          await(result) mustBe Right(PostSubscriptionDetailsSuccessResponse)
+        }
+      }
+      "property data was fetched" in {
+        mockGetSubscriptionDetails(SubscriptionDataKeys.Property)(Some(PropertyModel(
+          startDateBeforeLimit = None,
+          accountingMethod = Some(Accruals),
+          startDate = Some(date),
+          confirmed = true
+        )))
+        mockSaveSubscriptionDetails(SubscriptionDataKeys.Property, PropertyModel(
+          accountingMethod = Some(Cash),
+          startDate = Some(date)
+        ))(Right(PostSubscriptionDetailsSuccessResponse))
+        mockDeleteSubscriptionDetails(SubscriptionDataKeys.IncomeSourceConfirmation)(Right(DeleteSubscriptionDetailsSuccessResponse))
+
+        val result: Future[PostSubscriptionDetailsResponse] = subscriptionDetailsService.saveStreamlineProperty(
+          reference = testReference,
+          maybeStartDate = Some(date),
+          maybeStartDateBeforeLimit = Some(false),
+          accountingMethod = Cash
+        )
+
+        await(result) mustBe Right(PostSubscriptionDetailsSuccessResponse)
+      }
+    }
+    "return a save failure" when {
+      "there was a problem saving the property details" in {
+        mockGetSubscriptionDetails(SubscriptionDataKeys.Property)(None)
+        mockSaveSubscriptionDetails(SubscriptionDataKeys.Property, PropertyModel(
+          accountingMethod = Some(Cash),
+          startDate = Some(date)
+        ))(Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
+        mockDeleteSubscriptionDetails(SubscriptionDataKeys.IncomeSourceConfirmation)(Right(DeleteSubscriptionDetailsSuccessResponse))
+
+        val result: Future[PostSubscriptionDetailsResponse] = subscriptionDetailsService.saveStreamlineProperty(
+          reference = testReference,
+          maybeStartDate = Some(date),
+          maybeStartDateBeforeLimit = None,
+          accountingMethod = Cash
+        )
+
+        await(result) mustBe Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
+      }
+      "there was a problem deleting the income source confirmation" in {
+        mockGetSubscriptionDetails(SubscriptionDataKeys.Property)(None)
+        mockSaveSubscriptionDetails(SubscriptionDataKeys.Property, PropertyModel(
+          accountingMethod = Some(Cash),
+          startDate = Some(date)
+        ))(Right(PostSubscriptionDetailsSuccessResponse))
+        mockDeleteSubscriptionDetails(SubscriptionDataKeys.IncomeSourceConfirmation)(
+          Left(DeleteSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
+        )
+
+        val result: Future[PostSubscriptionDetailsResponse] = subscriptionDetailsService.saveStreamlineProperty(
+          reference = testReference,
+          maybeStartDate = Some(date),
+          maybeStartDateBeforeLimit = None,
+          accountingMethod = Cash
+        )
+
+        await(result) mustBe Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
+      }
+    }
+  }
+
+  lazy val date: DateModel = DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit)
+
 }

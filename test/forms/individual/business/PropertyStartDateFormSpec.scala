@@ -16,7 +16,6 @@
 
 package forms.individual.business
 
-import forms.agent.PropertyStartDateForm
 import forms.formatters.DateModelMapping.{day, month, year}
 import forms.individual.business.PropertyStartDateForm.{propertyStartDateForm, startDate}
 import forms.validation.testutils.DataMap.DataMap
