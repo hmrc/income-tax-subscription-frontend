@@ -20,9 +20,9 @@ import connectors.IncomeTaxSubscriptionConnector
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsResponse
 import connectors.httpparser.RetrieveReferenceHttpParser.RetrieveReferenceResponse
 import connectors.httpparser.{DeleteSubscriptionDetailsHttpParser, PostSubscriptionDetailsHttpParser}
+import models._
 import models.common._
 import models.common.business._
-import models.{AccountingMethod, Current, DateModel, Next}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, Decrypter, Encrypter}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import utilities.SubscriptionDataKeys
@@ -141,6 +141,30 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
         case None => propertyModel.copy(startDateBeforeLimit = maybeStartDateBeforeLimit, accountingMethod = Some(accountingMethod), confirmed = false)
       }
       saveProperty(reference, updatedPropertyModel)
+    }
+  }
+
+  def fetchPropertyStartDateBeforeLimit(reference: String)(implicit hc: HeaderCarrier): Future[Option[YesNo]] = {
+    fetchProperty(reference) map { maybeProperty =>
+      maybeProperty.flatMap(_.startDateBeforeLimit) map {
+        case true => Yes
+        case false => No
+      }
+    }
+  }
+
+  def savePropertyStartDateBeforeLimit(reference: String, startDateBeforeLimit: YesNo)
+                                      (implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
+    val savedValue = startDateBeforeLimit match {
+      case Yes => true
+      case No => false
+    }
+
+    fetchProperty(reference) map {
+      case Some(property) => property.copy(startDateBeforeLimit = Some(savedValue), confirmed = false)
+      case None => PropertyModel(startDateBeforeLimit = Some(savedValue))
+    } flatMap { model =>
+      saveProperty(reference, model)
     }
   }
 

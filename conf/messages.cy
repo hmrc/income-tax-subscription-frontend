@@ -144,6 +144,11 @@ business.what-year-to-sign-up.option-1                          = Blwyddyn dreth
 business.what-year-to-sign-up.option-1.hint                     = Bydd angen i chi ddefnyddio’ch meddalwedd i anfon unrhyw ddiweddariadau chwarterol a gollwyd ar gyfer y flwyddyn hyd yma
 business.what-year-to-sign-up.option-2                          = Blwyddyn dreth nesaf
 
+# Property Start Date Before Limit Page
+property.start-date-before-limit.heading                        = A oeddech wedi dechrau cael yr incwm hwn cyn 6 Ebrill {0}?
+property.start-date-before-limit.caption                        = Eich eiddo yn y DU
+error.property.start-date-before-limit.invalid                  = Dewiswch ‘Iawn’ os oeddech wedi dechrau cael incwm o eiddo yn y DU cyn 6 Ebrill {0}
+
 # Property Accounting Method Page
 property.accounting-method.title                                = Pa ddull cyfrifyddu a ydych yn ei ddefnyddio ar gyfer eich busnes eiddo yn y DU?
 property.accounting-method.heading                              = Pa ddull cyfrifyddu a ydych yn ei ddefnyddio ar gyfer eich busnes eiddo yn y DU?

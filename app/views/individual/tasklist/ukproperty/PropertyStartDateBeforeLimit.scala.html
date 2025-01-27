@@ -1,0 +1,53 @@
+@*
+ * Copyright 2025 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import forms.individual.business.PropertyStartDateBeforeLimitForm
+@import forms.submapping.YesNoMapping
+@import play.api.data.Form
+@import utilities.AccountingPeriodUtil
+@import views.html.helpers.{DetailsHelper, SaveAndContinueButtonHelper, PageHeadingHelper, YesNoRadioHelper}
+@import views.html.templates.PrincipalMainTemplate
+
+@this(
+    mainTemplate: PrincipalMainTemplate,
+    form: FormWithCSRF,
+    yesNoRadioHelper: YesNoRadioHelper,
+    pageHeadingHelper: PageHeadingHelper,
+    saveAndContinueButtonHelper: SaveAndContinueButtonHelper
+)
+
+@(startDateBeforeLimitForm: Form[_], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
+
+@mainTemplate(title = messages("property.start-date-before-limit.heading", AccountingPeriodUtil.getStartDateLimit.getYear.toString), optForm = Some(startDateBeforeLimitForm), backLink = Some(backUrl)) {
+
+    <span class="govuk-caption-l">@messages("property.start-date-before-limit.caption")</span>
+
+    @form(action = postAction) {
+
+        @yesNoRadioHelper(
+            field = startDateBeforeLimitForm(PropertyStartDateBeforeLimitForm.startDateBeforeLimit),
+            legend = messages("property.start-date-before-limit.heading", AccountingPeriodUtil.getStartDateLimit.getYear.toString),
+            isPageHeading = true,
+            headingClasses = "govuk-fieldset__legend--l",
+        )
+
+        @saveAndContinueButtonHelper(
+            isIndividual = true,
+            saveAndReturnReference = Some("uk-property-start-date-before-limit")
+        )
+    }
+
+}

@@ -145,6 +145,11 @@ business.what-year-to-sign-up.option-1                          = Current tax ye
 business.what-year-to-sign-up.option-1.hint                     = You’ll need to use your software to send any missed quarterly updates for the year so far
 business.what-year-to-sign-up.option-2                          = Next tax year
 
+# Property Start Date Before Limit Page
+property.start-date-before-limit.heading                        = Did you start getting this income before 6 April {0}?
+property.start-date-before-limit.caption                        = Your UK property
+error.property.start-date-before-limit.invalid                  = Select ‘Yes’ if you started getting income from UK property before 6 April {0}
+
 # Property Accounting Method Page
 property.accounting-method.title                                = What accounting method do you use for your UK property business?
 property.accounting-method.heading                              = What accounting method do you use for your UK property business?
