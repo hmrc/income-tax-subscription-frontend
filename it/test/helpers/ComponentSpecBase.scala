@@ -22,8 +22,8 @@ import auth.individual.{JourneyState, SignUp, ClaimEnrolment => ClaimEnrolmentJo
 import config.AppConfig
 import config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import connectors.stubs.SessionDataConnectorStub.stubGetSessionData
-import forms.individual.business._
 import forms.individual._
+import forms.individual.business._
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import models._
@@ -410,6 +410,20 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
           model =>
             AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )
+      )
+    }
+
+    def ukPropertyStartDateBeforeLimit(isEditMode: Boolean = false, isGlobalEdit: Boolean = false): WSResponse = {
+      get(s"/business/property-start-date-before-limit?editMode=$isEditMode&isGlobalEdit=$isGlobalEdit")
+    }
+
+    def submitUKPropertyStartDateBeforeLimit(isEditMode: Boolean = false, isGlobalEdit: Boolean = false)(request: Option[YesNo]): WSResponse = {
+      post(s"/business/property-start-date-before-limit?editMode=$isEditMode&isGlobalEdit=$isGlobalEdit")(
+        request.fold(Map.empty[String, Seq[String]]) { model =>
+          PropertyStartDateBeforeLimitForm.startDateBeforeLimitForm.fill(model).data.map {
+            case (k, v) => (k, Seq(v))
+          }
+        }
       )
     }
 

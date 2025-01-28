@@ -89,7 +89,7 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
       val errorSummary: Element = document.selectHead(".govuk-error-summary")
       errorSummary.selectHead("h2").text mustBe "There is a problem"
       val errorLink: Element = errorSummary.selectHead("div > ul > li > a")
-      errorLink.text mustBe wrappedMessages(formError.message)
+      errorLink.text mustBe wrappedMessages(formError.message, formError.args: _*)
       errorLink.attr("href") mustBe s"#${formError.key}"
     }
 
@@ -487,14 +487,14 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
         checkpoint {
           radioFieldSetLegend.text mustBe legend
         }
-        if (isLegendHidden) {
-          checkpoint {
-            radioFieldSetLegend.attr("class") must include("govuk-visually-hidden")
-          }
-        } else {
-          checkpoint {
-            radioFieldSetLegend.attr("class") mustNot include("govuk-visually-hidden")
-          }
+      }
+      if (isLegendHidden) {
+        checkpoint {
+          radioFieldSetLegend.attr("class") must include("govuk-visually-hidden")
+        }
+      } else {
+        checkpoint {
+          radioFieldSetLegend.attr("class") mustNot include("govuk-visually-hidden")
         }
       }
     }
@@ -566,10 +566,12 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
             id = Some(name),
             content = Text(Yes.toMessageString),
             value = Some(Yes.toString),
-            hint = yesHint map { hint => Hint(
-              id = yesHintId,
-              content = hint
-            )}
+            hint = yesHint map { hint =>
+              Hint(
+                id = yesHintId,
+                content = hint
+              )
+            }
           ),
           RadioItem(
             id = Some(s"$name-2"),
@@ -579,7 +581,8 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
               Hint(
                 id = noHintId,
                 content = hint
-              )}
+              )
+            }
           )
         ),
         isInline = true
