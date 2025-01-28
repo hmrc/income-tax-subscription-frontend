@@ -17,20 +17,22 @@
 package views.agent.tasklist.ukproperty
 
 import models.common.PropertyModel
-import models.{Accruals, Cash, DateModel}
+import models.{Cash, DateModel}
 import org.jsoup.Jsoup
-import org.jsoup.nodes.Element
+import org.jsoup.nodes.{Document, Element}
+import play.twirl.api.HtmlFormat
 import utilities.UserMatchingSessionUtil.ClientDetails
-import utilities.ViewSpec
+import utilities.{AccountingPeriodUtil, ViewSpec}
 import views.html.agent.tasklist.ukproperty.PropertyCheckYourAnswers
 
 class PropertyCheckYourAnswersViewSpec extends ViewSpec {
 
   private val propertyCheckYourAnswersView = app.injector.instanceOf[PropertyCheckYourAnswers]
 
-  private val completeCashProperty = PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("8", "11", "2021")))
-  private val completeAccrualsProperty = completeCashProperty.copy(accountingMethod = Some(Accruals))
-  private val incompleteProperty = PropertyModel()
+  private val completeCashProperty = PropertyModel(
+    accountingMethod = Some(Cash),
+    startDate = Some(DateModel("8", "11", "2021"))
+  )
 
   object PropertyCheckYourAnswers {
     val title = "Check your answers - UK property"
@@ -42,6 +44,7 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
     val saveAndComeBack = "Save and come back later"
     val change = "Change"
     val add = "Add"
+    val beforeStartDateLimit = s"Before 6 April ${AccountingPeriodUtil.getStartDateLimit.getYear}"
   }
 
   "PropertyCheckYourAnswers" must {
@@ -65,8 +68,10 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
         isSection = false
       )
     }
-      "display a summary of answers" when {
-        "not in edit mode" in {
+
+    "display a summary of answers" when {
+      "not in edit mode" when {
+        "all data is complete" in {
           document(completeCashProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
             SummaryListRowValues(
               key = PropertyCheckYourAnswers.startDateQuestion,
@@ -92,53 +97,135 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
             )
           ))
         }
-        "in global edit mode" in {
-          document(completeCashProperty, isGlobalEdit = true).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+        "all data is missing" in {
+          document(PropertyModel()).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
             SummaryListRowValues(
               key = PropertyCheckYourAnswers.startDateQuestion,
-              value = Some("8 November 2021"),
+              value = None,
               actions = Seq(
                 SummaryListActionValues(
-                  href = controllers.agent.tasklist.ukproperty.routes.PropertyIncomeSourcesController.show(editMode = true, isGlobalEdit = true).url,
-                  text = s"${PropertyCheckYourAnswers.change} ${PropertyCheckYourAnswers.startDateQuestion}",
+                  href = controllers.agent.tasklist.ukproperty.routes.PropertyIncomeSourcesController.show(editMode = true).url,
+                  text = s"${PropertyCheckYourAnswers.add} ${PropertyCheckYourAnswers.startDateQuestion}",
                   visuallyHidden = PropertyCheckYourAnswers.startDateQuestion
                 )
               )
             ),
             SummaryListRowValues(
               key = PropertyCheckYourAnswers.accountMethodQuestion,
-              value = Some("Cash basis accounting"),
+              value = None,
               actions = Seq(
                 SummaryListActionValues(
-                  href = controllers.agent.tasklist.ukproperty.routes.PropertyIncomeSourcesController.show(editMode = true, isGlobalEdit = true).url,
-                  text = s"${PropertyCheckYourAnswers.change} ${PropertyCheckYourAnswers.accountMethodQuestion}",
+                  href = controllers.agent.tasklist.ukproperty.routes.PropertyIncomeSourcesController.show(editMode = true).url,
+                  text = s"${PropertyCheckYourAnswers.add} ${PropertyCheckYourAnswers.accountMethodQuestion}",
                   visuallyHidden = PropertyCheckYourAnswers.accountMethodQuestion
                 )
               )
             )
           ))
         }
+        "start date before limit field is present" which {
+          "is true" in {
+            document(completeCashProperty.copy(startDateBeforeLimit = Some(true))).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+              SummaryListRowValues(
+                key = PropertyCheckYourAnswers.startDateQuestion,
+                value = Some(PropertyCheckYourAnswers.beforeStartDateLimit),
+                actions = Seq(
+                  SummaryListActionValues(
+                    href = controllers.agent.tasklist.ukproperty.routes.PropertyIncomeSourcesController.show(editMode = true).url,
+                    text = s"${PropertyCheckYourAnswers.change} ${PropertyCheckYourAnswers.startDateQuestion}",
+                    visuallyHidden = PropertyCheckYourAnswers.startDateQuestion
+                  )
+                )
+              ),
+              SummaryListRowValues(
+                key = PropertyCheckYourAnswers.accountMethodQuestion,
+                value = Some("Cash basis accounting"),
+                actions = Seq(
+                  SummaryListActionValues(
+                    href = controllers.agent.tasklist.ukproperty.routes.PropertyIncomeSourcesController.show(editMode = true).url,
+                    text = s"${PropertyCheckYourAnswers.change} ${PropertyCheckYourAnswers.accountMethodQuestion}",
+                    visuallyHidden = PropertyCheckYourAnswers.accountMethodQuestion
+                  )
+                )
+              )
+            ))
+          }
+          "is false" in {
+            document(completeCashProperty.copy(startDateBeforeLimit = Some(false))).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+              SummaryListRowValues(
+                key = PropertyCheckYourAnswers.startDateQuestion,
+                value = Some("8 November 2021"),
+                actions = Seq(
+                  SummaryListActionValues(
+                    href = controllers.agent.tasklist.ukproperty.routes.PropertyIncomeSourcesController.show(editMode = true).url,
+                    text = s"${PropertyCheckYourAnswers.change} ${PropertyCheckYourAnswers.startDateQuestion}",
+                    visuallyHidden = PropertyCheckYourAnswers.startDateQuestion
+                  )
+                )
+              ),
+              SummaryListRowValues(
+                key = PropertyCheckYourAnswers.accountMethodQuestion,
+                value = Some("Cash basis accounting"),
+                actions = Seq(
+                  SummaryListActionValues(
+                    href = controllers.agent.tasklist.ukproperty.routes.PropertyIncomeSourcesController.show(editMode = true).url,
+                    text = s"${PropertyCheckYourAnswers.change} ${PropertyCheckYourAnswers.accountMethodQuestion}",
+                    visuallyHidden = PropertyCheckYourAnswers.accountMethodQuestion
+                  )
+                )
+              )
+            ))
+          }
+        }
+      }
+      "in global edit mode" in {
+        document(completeCashProperty, isGlobalEdit = true).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+          SummaryListRowValues(
+            key = PropertyCheckYourAnswers.startDateQuestion,
+            value = Some("8 November 2021"),
+            actions = Seq(
+              SummaryListActionValues(
+                href = controllers.agent.tasklist.ukproperty.routes.PropertyIncomeSourcesController.show(editMode = true, isGlobalEdit = true).url,
+                text = s"${PropertyCheckYourAnswers.change} ${PropertyCheckYourAnswers.startDateQuestion}",
+                visuallyHidden = PropertyCheckYourAnswers.startDateQuestion
+              )
+            )
+          ),
+          SummaryListRowValues(
+            key = PropertyCheckYourAnswers.accountMethodQuestion,
+            value = Some("Cash basis accounting"),
+            actions = Seq(
+              SummaryListActionValues(
+                href = controllers.agent.tasklist.ukproperty.routes.PropertyIncomeSourcesController.show(editMode = true, isGlobalEdit = true).url,
+                text = s"${PropertyCheckYourAnswers.change} ${PropertyCheckYourAnswers.accountMethodQuestion}",
+                visuallyHidden = PropertyCheckYourAnswers.accountMethodQuestion
+              )
+            )
+          )
+        ))
+      }
+    }
+
+    "have a form" which {
+      def form: Element = document().mainContent.getForm
+
+      "has the correct attributes" in {
+        form.attr("method") mustBe "POST"
+        form.attr("action") mustBe controllers.agent.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.submit().url
       }
 
-      "have a form" which {
-        def form: Element = document().mainContent.getForm
-
-        "has the correct attributes" in {
-          form.attr("method") mustBe "POST"
-          form.attr("action") mustBe controllers.agent.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.submit().url
-        }
-
-        "has a confirm and continue button" in {
-          form.selectNth(".govuk-button", 1).text mustBe PropertyCheckYourAnswers.confirmedAndContinue
-        }
-
-        "has a save and come back later button" in {
-          val saveAndComeBackLater = form.selectNth(".govuk-button", 2)
-          saveAndComeBackLater.text mustBe PropertyCheckYourAnswers.saveAndComeBack
-          saveAndComeBackLater.attr("href") mustBe controllers.agent.tasklist.routes.ProgressSavedController.show(location = Some("uk-property-check-your-answers")).url
-        }
+      "has a confirm and continue button" in {
+        form.selectNth(".govuk-button", 1).text mustBe PropertyCheckYourAnswers.confirmedAndContinue
       }
-    def page(viewModel: PropertyModel, isGlobalEdit: Boolean = false) = propertyCheckYourAnswersView(
+
+      "has a save and come back later button" in {
+        val saveAndComeBackLater = form.selectNth(".govuk-button", 2)
+        saveAndComeBackLater.text mustBe PropertyCheckYourAnswers.saveAndComeBack
+        saveAndComeBackLater.attr("href") mustBe controllers.agent.tasklist.routes.ProgressSavedController.show(location = Some("uk-property-check-your-answers")).url
+      }
+    }
+
+    def page(viewModel: PropertyModel, isGlobalEdit: Boolean = false): HtmlFormat.Appendable = propertyCheckYourAnswersView(
       viewModel = viewModel,
       postAction = controllers.agent.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.submit(isGlobalEdit = isGlobalEdit),
       isGlobalEdit = isGlobalEdit,
@@ -146,7 +233,9 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
       clientDetails = ClientDetails("FirstName LastName", "ZZ111111Z")
     )
 
-    def document(viewModel: PropertyModel = completeCashProperty, isGlobalEdit: Boolean = false) = Jsoup.parse(page(viewModel, isGlobalEdit).body)
+    def document(viewModel: PropertyModel = completeCashProperty, isGlobalEdit: Boolean = false): Document = {
+      Jsoup.parse(page(viewModel, isGlobalEdit).body)
+    }
   }
 }
 
