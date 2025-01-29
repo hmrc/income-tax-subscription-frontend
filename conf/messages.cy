@@ -963,14 +963,11 @@ business.check-your-answers.content.accounting-method.cash      = Cyfrifyddu ar 
 business.check-your-answers.content.accounting-method.accruals  = Cyfrifyddu traddodiadol
 
 ## UK property check your answers
-business.check-your-answers.content.uk-property.title                           = Gwirio’ch atebion – Eiddo yn y DU
-business.check-your-answers.content.uk-property.caption                         = Eiddo yn y DU
-business.check-your-answers.content.uk-property-start-date.question             = Dyddiad dechrau
-business.check-your-answers.content.uk-property-start-date.add                  = Ychwanegu dyddiad dechrau
-business.check-your-answers.content.uk-property-start-date.change               = Newid dyddiad dechrau
-business.check-your-answers.content.uk-property-accounting-method.question      = Dull cyfrifyddu
-business.check-your-answers.content.uk-property-accounting-method.add           = Ychwanegu dull cyfrifyddu
-business.check-your-answers.content.uk-property-accounting-method.change        = Newid y dull cyfrifyddu
+business.check-your-answers.content.uk-property.title                                   = Gwirio’ch atebion – Eiddo yn y DU
+business.check-your-answers.content.uk-property.caption                                 = Eiddo yn y DU
+business.check-your-answers.content.uk-property-start-date.question                     = Dyddiad dechrau
+business.check-your-answers.content.uk-property-accounting-method.question              = Dull cyfrifyddu
+business.check-your-answers.content.uk-property-start-date-before-limit.before-limit    = Before 6 April {0}
 
 ## Overseas property check your answers
 business.check-your-answers.content.overseas-property.title                      = Gwirio’ch atebion – Eiddo tramor

@@ -966,14 +966,11 @@ business.check-your-answers.content.accounting-method.cash      = Cash basis acc
 business.check-your-answers.content.accounting-method.accruals  = Traditional accounting
 
 ## UK property check your answers
-business.check-your-answers.content.uk-property.title                         = Check your answers - UK property
-business.check-your-answers.content.uk-property.caption                       = UK property
-business.check-your-answers.content.uk-property-start-date.question           = Start date
-business.check-your-answers.content.uk-property-start-date.add                = Add Start date
-business.check-your-answers.content.uk-property-start-date.change             = Change Start date
-business.check-your-answers.content.uk-property-accounting-method.question    = Accounting method
-business.check-your-answers.content.uk-property-accounting-method.add         = Add Accounting method
-business.check-your-answers.content.uk-property-accounting-method.change      = Change Accounting method
+business.check-your-answers.content.uk-property.title                                   = Check your answers - UK property
+business.check-your-answers.content.uk-property.caption                                 = UK property
+business.check-your-answers.content.uk-property-start-date.question                     = Start date
+business.check-your-answers.content.uk-property-accounting-method.question              = Accounting method
+business.check-your-answers.content.uk-property-start-date-before-limit.before-limit    = Before 6 April {0}
 
 ## Overseas property check your answers
 business.check-your-answers.content.overseas-property.title                      = Check your answers - Foreign property
