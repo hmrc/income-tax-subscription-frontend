@@ -918,7 +918,7 @@ agent.property.check-your-answers.heading                             = Gwirio�
 agent.property.check-your-answers.heading.caption                     = {0} | {1}
 agent.property.check-your-answers.start-date.question                 = Dyddiad dechrau
 agent.property.check-your-answers.accounting-method.question          = Dull cyfrifyddu
-agent.property.check-your-answers.start-date-before-limit.answer      = Before 6 April {0}
+agent.property.check-your-answers.start-date-before-limit.answer      = Cyn 6 Ebrill {0}
 
 ## Agent Overseas property check your answers
 agent.overseas-property.check-your-answers.title                      = Gwirio’ch atebion – Eiddo tramor
