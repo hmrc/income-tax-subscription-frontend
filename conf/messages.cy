@@ -967,7 +967,7 @@ business.check-your-answers.content.uk-property.title                           
 business.check-your-answers.content.uk-property.caption                                 = Eiddo yn y DU
 business.check-your-answers.content.uk-property-start-date.question                     = Dyddiad dechrau
 business.check-your-answers.content.uk-property-accounting-method.question              = Dull cyfrifyddu
-business.check-your-answers.content.uk-property-start-date-before-limit.before-limit    = Before 6 April {0}
+business.check-your-answers.content.uk-property-start-date-before-limit.before-limit    = Cyn 6 Ebrill {0}
 
 ## Overseas property check your answers
 business.check-your-answers.content.overseas-property.title                      = Gwirio’ch atebion – Eiddo tramor
