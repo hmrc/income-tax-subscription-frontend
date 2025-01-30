@@ -15,6 +15,8 @@
  *@
 
 @import config.AppConfig
+@import config.featureswitch.FeatureSwitching
+@import config.featureswitch.FeatureSwitch.StartDateBeforeLimit
 @import play.api.data.Form
 @import models.common._
 @import models.common.business._
@@ -32,7 +34,8 @@
     form: FormWithCSRF,
     saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
     govukSummaryList: GovukSummaryList,
-    buttonHelper: ButtonHelper
+    buttonHelper: ButtonHelper,
+    featureSwitching: FeatureSwitching
 )
 
 @(postAction: Call, backUrl: String, incomeSources: IncomeSources, isPrePopulated: Boolean)(implicit request: Request[_], messages: Messages)
@@ -191,7 +194,11 @@
     }.getOrElse {
         <div id="add-uk-property" class="govuk-!-padding-bottom-6">
             <p class="govuk-body">
-                <a class="govuk-link" href="@controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.show()">@messages("your-income-source.uk-property.add-link")</a>
+                @if(featureSwitching.isEnabled(StartDateBeforeLimit)) {
+                    <a class="govuk-link" href="@controllers.individual.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show()">@messages("your-income-source.uk-property.add-link")</a>
+                } else {
+                    <a class="govuk-link" href="@controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.show()">@messages("your-income-source.uk-property.add-link")</a>
+                }
             </p>
         </div>
     }
