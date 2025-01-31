@@ -54,7 +54,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
     val heading: String = title
     val caption: String = "FirstName LastName | ZZ 11 11 11 Z"
     val para1 = "We need to know the exact date."
-    val hint = s"For example, 27 9 ${AccountingPeriodUtil.getCurrentTaxYearStartLocalDate.getYear}"
+    val hint = s"For example, 27 9 ${AccountingPeriodUtil.getStartDateLimit.getYear}"
     val continue = "Continue"
     val saveAndContinue = "Save and continue"
     val saveAndComeBackLater = "Save and come back later"

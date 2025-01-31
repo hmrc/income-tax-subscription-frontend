@@ -30,7 +30,7 @@ import java.time.LocalDate
 class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
 
   def form: Form[DateModel] = {
-    propertyStartDateForm(PropertyStartDateForm.minStartDate, PropertyStartDateForm.maxStartDate, d => d.toString)
+    propertyStartDateForm(PropertyStartDateForm.minStartDate(false), PropertyStartDateForm.maxStartDate, d => d.toString)
   }
 
   "The PropertyStartDateForm" should {
@@ -67,7 +67,7 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
         }
         "it is before year 1900" in {
           val minTest = form.bind(DataMap.govukDate(startDate)("31", "12", "1899"))
-          minTest.errors must contain(FormError(dayKeyError, s"$errorContext.day-month-year.min-date", List(PropertyStartDateForm.minStartDate.toString)))
+          minTest.errors must contain(FormError(dayKeyError, s"$errorContext.day-month-year.min-date", List(PropertyStartDateForm.minStartDate(false).toString)))
         }
         "it is missing the day" in {
           val test = form.bind(DataMap.govukDate(startDate)("", "4", "2017"))
