@@ -16,10 +16,12 @@
 
 package controllers.individual.tasklist.ukproperty
 
+import config.featureswitch.FeatureSwitch.StartDateBeforeLimit
 import connectors.httpparser.PostSubscriptionDetailsHttpParser
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.individual.ControllerBaseSpec
 import forms.individual.business.AccountingMethodPropertyForm
+import models.common.PropertyModel
 import models.{Accruals, Cash}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
@@ -36,80 +38,92 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
   with MockAuditingService
   with MockPropertyAccountingMethod {
 
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(StartDateBeforeLimit)
+  }
+
   override val controllerName: String = "PropertyAccountingMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
-  private def withController(testCode: PropertyAccountingMethodController => Any): Unit = {
-
-    val controller = new PropertyAccountingMethodController(
-      mockView,
-      mockSubscriptionDetailsService,
-      mockReferenceRetrieval
-    )(
-      mockAuditingService,
-      mockAuthService,
-      appConfig
-    )
-
-    testCode(controller)
-  }
+  object TestPropertyAccountingMethodController extends PropertyAccountingMethodController(mockView,
+    mockSubscriptionDetailsService,
+    mockReferenceRetrieval
+  )(
+    mockAuditingService,
+    mockAuthService,
+    appConfig
+  )
 
   "show" should {
     "display the property accounting method view and return OK (200)" when {
-      "accounting method is returned" in withController { controller =>
-        mockFetchPropertyAccountingMethod(Some(Cash))
+      "accounting method is returned" in {
+        mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash))))
         mockPropertyAccountingMethodView(
-          routes.PropertyAccountingMethodController.submit(),
+          postAction = routes.PropertyAccountingMethodController.submit(),
           backUrl = routes.PropertyStartDateController.show().url
         )
-        lazy val result = await(controller.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest))
+        lazy val result = await(TestPropertyAccountingMethodController.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest))
 
         status(result) must be(Status.OK)
       }
 
-      "no accounting method is returned" in withController { controller =>
-        mockFetchPropertyAccountingMethod(None)
+      "no property business is returned" in {
+        mockFetchProperty(None)
         mockPropertyAccountingMethodView(
-          routes.PropertyAccountingMethodController.submit(),
+          postAction = routes.PropertyAccountingMethodController.submit(),
           backUrl = routes.PropertyStartDateController.show().url
         )
-        lazy val result = await(controller.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest))
+
+        val result = TestPropertyAccountingMethodController.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest)
+
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+      }
+
+      "no accounting method is returned" in {
+        mockFetchProperty(Some(PropertyModel(accountingMethod = None)))
+        mockPropertyAccountingMethodView(
+          postAction = routes.PropertyAccountingMethodController.submit(),
+          backUrl = routes.PropertyStartDateController.show().url
+        )
+        lazy val result = await(TestPropertyAccountingMethodController.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest))
 
         status(result) must be(Status.OK)
       }
 
-      "in edit mode" in withController { controller =>
-        mockFetchPropertyAccountingMethod(None)
+      "in edit mode" in {
+        mockFetchProperty(None)
         mockPropertyAccountingMethodView(
-          routes.PropertyAccountingMethodController.submit(editMode = true),
+          postAction = routes.PropertyAccountingMethodController.submit(editMode = true),
           backUrl = routes.PropertyCheckYourAnswersController.show(editMode = true).url
         )
-        lazy val result = await(controller.show(isEditMode = true, isGlobalEdit = false)(subscriptionRequest))
+        lazy val result = await(TestPropertyAccountingMethodController.show(isEditMode = true, isGlobalEdit = false)(subscriptionRequest))
 
         status(result) must be(Status.OK)
       }
 
-      "in global edit mode" in withController { controller =>
-        mockFetchPropertyAccountingMethod(None)
+      "in global edit mode" in {
+        mockFetchProperty(None)
         mockPropertyAccountingMethodView(
-          routes.PropertyAccountingMethodController.submit(editMode = true, isGlobalEdit = true),
+          postAction = routes.PropertyAccountingMethodController.submit(editMode = true, isGlobalEdit = true),
           backUrl = routes.PropertyCheckYourAnswersController.show(editMode = true, isGlobalEdit = true).url
         )
-        lazy val result = await(controller.show(isEditMode = true, isGlobalEdit = true)(subscriptionRequest))
+        lazy val result = await(TestPropertyAccountingMethodController.show(isEditMode = true, isGlobalEdit = true)(subscriptionRequest))
 
         status(result) must be(Status.OK)
       }
     }
   }
 
-  "submit" should withController { controller =>
+  "submit" should {
 
-    def callSubmit(isEditMode: Boolean): Future[Result] = controller.submit(isEditMode = isEditMode, isGlobalEdit = false)(
+    def callSubmit(isEditMode: Boolean): Future[Result] = TestPropertyAccountingMethodController.submit(isEditMode = isEditMode, isGlobalEdit = false)(
       subscriptionRequest.post(AccountingMethodPropertyForm.accountingMethodPropertyForm, Cash)
     )
 
     def callSubmitWithErrorForm(isEditMode: Boolean, isGlobalEdit: Boolean = false): Future[Result] =
-      controller.submit(isEditMode, isGlobalEdit)(subscriptionRequest)
+      TestPropertyAccountingMethodController.submit(isEditMode, isGlobalEdit)(subscriptionRequest)
 
     "redirect to uk property check your answers page" when {
       "not in edit mode" in {
@@ -126,17 +140,17 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
       "in edit mode" in {
         mockSavePropertyAccountingMethod(Accruals)(Right(PostSubscriptionDetailsSuccessResponse))
 
-        val goodRequest = controller.submit(isEditMode = true, isGlobalEdit = false)(
+        val goodRequest = TestPropertyAccountingMethodController.submit(isEditMode = true, isGlobalEdit = false)(
           subscriptionRequest.post(AccountingMethodPropertyForm.accountingMethodPropertyForm, Accruals)
         )
         status(goodRequest) mustBe SEE_OTHER
-        redirectLocation(goodRequest) mustBe Some(routes.PropertyCheckYourAnswersController.show(true).url)
+        redirectLocation(goodRequest) mustBe Some(routes.PropertyCheckYourAnswersController.show(editMode = true).url)
       }
 
       "in global edit mode" in {
         mockSavePropertyAccountingMethod(Accruals)(Right(PostSubscriptionDetailsSuccessResponse))
 
-        val goodRequest = controller.submit(isEditMode = true, isGlobalEdit = true)(
+        val goodRequest = TestPropertyAccountingMethodController.submit(isEditMode = true, isGlobalEdit = true)(
           subscriptionRequest.post(AccountingMethodPropertyForm.accountingMethodPropertyForm, Accruals)
         )
         status(goodRequest) mustBe SEE_OTHER
@@ -147,8 +161,9 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
     "return bad request status (400)" when {
       "there is an invalid submission with an error form" when {
         "not in edit mode" in {
+          mockFetchProperty(None)
           mockPropertyAccountingMethodView(
-            routes.PropertyAccountingMethodController.submit(),
+            postAction = routes.PropertyAccountingMethodController.submit(),
             backUrl = routes.PropertyStartDateController.show().url
           )
           val badRequest = callSubmitWithErrorForm(isEditMode = false)
@@ -157,8 +172,9 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
         }
 
         "in global edit mode" in {
+          mockFetchProperty(None)
           mockPropertyAccountingMethodView(
-            routes.PropertyAccountingMethodController.submit(editMode = true, isGlobalEdit = true),
+            postAction = routes.PropertyAccountingMethodController.submit(editMode = true, isGlobalEdit = true),
             backUrl = routes.PropertyCheckYourAnswersController.show(editMode = true, isGlobalEdit = true).url
           )
           val badRequest = callSubmitWithErrorForm(isEditMode = true, isGlobalEdit = true)
@@ -178,4 +194,66 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
       }
     }
   }
+
+  "backUrl" should {
+    "return a link to the check your answers page" when {
+      "in edit mode" in {
+        TestPropertyAccountingMethodController.backUrl(
+          isEditMode = true,
+          isGlobalEdit = false,
+          maybeStartDateBeforeLimit = None
+        ) mustBe routes.PropertyCheckYourAnswersController.show(editMode = true).url
+      }
+      "in global edit mode" in {
+        TestPropertyAccountingMethodController.backUrl(
+          isEditMode = false,
+          isGlobalEdit = true,
+          maybeStartDateBeforeLimit = None
+        ) mustBe routes.PropertyCheckYourAnswersController.show(editMode = true, isGlobalEdit = true).url
+      }
+    }
+    "return a link to the start date page" when {
+      "the start date before limit feature switch is enabled" when {
+        "start date before limit is false" in {
+          enable(StartDateBeforeLimit)
+
+          TestPropertyAccountingMethodController.backUrl(
+            isEditMode = false,
+            isGlobalEdit = false,
+            maybeStartDateBeforeLimit = Some(false)
+          ) mustBe routes.PropertyStartDateController.show(editMode = false).url
+        }
+      }
+      "the start date before limit feature switch is disabled" in {
+        TestPropertyAccountingMethodController.backUrl(
+          isEditMode = false,
+          isGlobalEdit = false,
+          maybeStartDateBeforeLimit = Some(false)
+        ) mustBe routes.PropertyStartDateController.show(editMode = false).url
+      }
+    }
+    "return a link to the start date before limit page" when {
+      "the start date before limit feature switch is enabled" when {
+        "the start date before limit value is true" in {
+          enable(StartDateBeforeLimit)
+
+          TestPropertyAccountingMethodController.backUrl(
+            isEditMode = false,
+            isGlobalEdit = false,
+            maybeStartDateBeforeLimit = Some(true)
+          ) mustBe routes.PropertyStartDateBeforeLimitController.show().url
+        }
+        "the start date before limit has no value" in {
+          enable(StartDateBeforeLimit)
+
+          TestPropertyAccountingMethodController.backUrl(
+            isEditMode = false,
+            isGlobalEdit = false,
+            maybeStartDateBeforeLimit = None
+          ) mustBe routes.PropertyStartDateBeforeLimitController.show().url
+        }
+      }
+    }
+  }
+
 }

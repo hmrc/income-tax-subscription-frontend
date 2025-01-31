@@ -16,6 +16,7 @@
 
 package views.individual.tasklist.addbusiness
 
+import config.featureswitch.FeatureSwitch.StartDateBeforeLimit
 import models.common.business._
 import models.common.{IncomeSources, OverseasPropertyModel, PropertyModel}
 import models.{Cash, DateModel}
@@ -28,6 +29,11 @@ import views.ViewSpecTrait
 import views.html.individual.tasklist.addbusiness.YourIncomeSourceToSignUp
 
 class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(StartDateBeforeLimit)
+  }
 
   object IndividualIncomeSource {
     val title = "Your income sources"
@@ -70,6 +76,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     val propertyStartDate: String = "Start date"
     val ukPropertyCardTitle: String = "UK property"
     val addUKPropertyLink: String = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.show().url
+    val addUKPropertyLinkFSEnabled: String = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show().url
     val addUkPropertyLinkText: String = "Add UK property"
     val ukPropertyChangeLink: String = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url
     val ukPropertyRemoveLink: String = controllers.individual.tasklist.ukproperty.routes.RemoveUkPropertyController.show.url
@@ -219,10 +226,23 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           document.mainContent.selectNth("p", 4).text mustBe IndividualIncomeSource.incomeFromPropertiesPara
         }
 
-        "has an add UK property link" in new ViewTest(noIncomeSources) {
-          val link: Element = document.mainContent.getElementById("add-uk-property").selectHead("a")
-          link.text mustBe IndividualIncomeSource.addUkPropertyLinkText
-          link.attr("href") mustBe IndividualIncomeSource.addUKPropertyLink
+        "has an add UK property link" which {
+          "goes to the property start date before limit page" when {
+            "the start date before limit feature switch is enabled" in new ViewTest(noIncomeSources) {
+              enable(StartDateBeforeLimit)
+
+              val link: Element = document.mainContent.getElementById("add-uk-property").selectHead("a")
+              link.text mustBe IndividualIncomeSource.addUkPropertyLinkText
+              link.attr("href") mustBe IndividualIncomeSource.addUKPropertyLinkFSEnabled
+            }
+          }
+          "goes to the property start date page" when {
+            "the start date before feature switch is disabled" in new ViewTest(noIncomeSources) {
+              val link: Element = document.mainContent.getElementById("add-uk-property").selectHead("a")
+              link.text mustBe IndividualIncomeSource.addUkPropertyLinkText
+              link.attr("href") mustBe IndividualIncomeSource.addUKPropertyLink
+            }
+          }
         }
 
         "has an add Foreign property link" in new ViewTest(noIncomeSources) {
@@ -455,9 +475,9 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       }
 
 
-        "have the correct lead paragraph" in new ViewTest(completeIncomeSources) {
-          document.mainContent.selectNth("p", 1).text mustBe IndividualIncomeSource.incomeSourcesPara1
-        }
+      "have the correct lead paragraph" in new ViewTest(completeIncomeSources) {
+        document.mainContent.selectNth("p", 1).text mustBe IndividualIncomeSource.incomeSourcesPara1
+      }
 
       "have a section for sole trader income sources" which {
 
