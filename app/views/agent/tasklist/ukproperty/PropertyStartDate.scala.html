@@ -38,19 +38,18 @@
         isSection = false
     )
 
-  <p class="govuk-body">@messages("agent.property.start-date.para-one")</p>
+    <p class="govuk-body">@messages("agent.property.start-date.para-one")</p>
 
-  @form(action = postAction) {
-    @dateHelper(
-      field = propertyStartDateForm(startDate),
-      legendContent = messages("agent.property.start-date.heading"),
-      isPageHeading = false,
-      isLegendVisible = false,
-      parentForm = propertyStartDateForm,
-      hintText = Some(messages("agent.property.start-date.hint", AccountingPeriodUtil.getCurrentTaxYearStartLocalDate.getYear.toString))
-    )
+    @form(action = postAction) {
+        @dateHelper(
+            field = propertyStartDateForm(startDate),
+            legendContent = messages("agent.property.start-date.heading"),
+            isPageHeading = false,
+            isLegendVisible = false,
+            parentForm = propertyStartDateForm,
+            hintText = Some(messages("agent.property.start-date.hint", AccountingPeriodUtil.getStartDateLimit.getYear.toString))
+        )
+        @saveAndContinueButton(isIndividual = false, saveAndReturnReference = Some("uk-property-start-date"))
 
-    @saveAndContinueButton(isIndividual = false, saveAndReturnReference = Some("uk-property-start-date"))
-
-  }
+    }
 }

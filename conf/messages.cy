@@ -174,12 +174,11 @@ overseas.property.accounting-method.cash                         = <span class="
 overseas.property.accounting-method.accruals                     = <span class="heading-small">Cyfrifyddu traddodiadol</span><br>Rydych yn cofnodi ar y dyddiad yr ydych yn anfon anfoneb at eich tenantiaid, neu’n gofyn am daliad ganddynt, hyd yn oed os nad ydych yn cael nac yn talu unrhyw arian. Rydych yn cofnodi ar y dyddiad yr ydych yn cael anfoneb ar gyfer atgyweirio neu gynnal a chadw. Mae hyn hefyd yn cael ei alw’n gyfrifyddu ‘ar sail croniadau’ neu’n gyfrifyddu ‘safonol’.
 
 ## Property Start Date Date
-business.property.name.title                                    = Pryd y dechreuodd eich busnes eiddo yn y DU fasnachu?
-business.property.name.heading                                  = Pryd y dechreuodd eich busnes eiddo yn y DU fasnachu?
-business.property.name.caption                                  = Eiddo yn y DU
-business.property.para1                                         = Dyma pryd y gwnaethoch ddechrau rhoi unrhyw eiddo yn y DU ar osod.
-business.property.para2                                         = Gall y dyddiad y dechreuodd eich busnes fasnachu fod heddiw, yn y gorffennol neu hyd at 8 diwrnod yn y dyfodol.
-business.property.start-date.hint                               = Er enghraifft, 17 8 2014.
+business.property.name.title                                    = Dyddiad dechrau ar gyfer incwm o eiddo yn y DU
+business.property.name.heading                                  = Dyddiad dechrau
+business.property.name.caption                                  = Eich eiddo yn y DU
+business.property.para1                                         = Mae angen i ni wybod yr union ddyddiad dechrau.
+business.property.start-date.hint                               = Er enghraifft, 27 9 {0}
 
 # Property Start Date errors
 error.property.day-month-year.empty                             = Nodwch y dyddiad y dechreuodd eich busnes eiddo yn y DU fasnachu
@@ -189,8 +188,8 @@ error.property.year.empty                                       = Mae’n rhaid 
 error.property.day-month.empty                                  = Mae’n rhaid i’r dyddiad gynnwys diwrnod a mis
 error.property.day-year.empty                                   = Mae’n rhaid i’r dyddiad gynnwys diwrnod a blwyddyn
 error.property.month-year.empty                                 = Mae’n rhaid i’r dyddiad gynnwys mis a blwyddyn
-error.property.day-month-year.max-date                          = Mae’n rhaid i’r dyddiad y dechreuodd eich busnes eiddo yn y DU fasnachu fod ar yr un diwrnod â {0}, neu cyn hynny
-error.property.day-month-year.min-date                          = Rhaid i’r dyddiad y dechreuodd eich busnes eiddo yn y DU fasnachu fod ar neu ar ôl {0}
+error.property.day-month-year.max-date                          = Ni all y dyddiad fod yn fwy na 7 diwrnod yn y dyfodol
+error.property.day-month-year.min-date                          = Mae’n rhaid i’r dyddiad fod ar neu ar ôl {0}
 error.property.day-month-year.invalid                           = Rhaid i’r dyddiad fod yn ddyddiad go iawn
 error.property.day.invalid                                      = Rhaid i’r dyddiad fod yn ddyddiad go iawn
 error.property.month.invalid                                    = Rhaid i’r dyddiad fod yn ddyddiad go iawn
