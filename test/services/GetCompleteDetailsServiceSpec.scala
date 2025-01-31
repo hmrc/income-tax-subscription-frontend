@@ -16,6 +16,9 @@
 
 package services
 
+import config.featureswitch.FeatureSwitch.StartDateBeforeLimit
+import config.featureswitch.FeatureSwitching
+import config.{AppConfig, MockConfig}
 import models.common.business._
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
 import models.status.MandationStatus.Voluntary
@@ -32,11 +35,19 @@ import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubscriptionDetailsService {
+class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubscriptionDetailsService with FeatureSwitching {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(StartDateBeforeLimit)
+  }
+
+  val appConfig: AppConfig = MockConfig
 
   trait Setup {
     val service: GetCompleteDetailsService = new GetCompleteDetailsService(
-      subscriptionDetailsService = mockSubscriptionDetailsService
+      subscriptionDetailsService = mockSubscriptionDetailsService,
+      appConfig = MockConfig
     )
   }
 
@@ -100,6 +111,33 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
     taxYear = AccountingYearModel(Current)
   )
 
+  val completeDetailsNoDates: CompleteDetails = CompleteDetails(
+    incomeSources = IncomeSources(
+      soleTraderBusinesses = Some(SoleTraderBusinesses(
+        accountingMethod = Cash,
+        businesses = Seq(SoleTraderBusiness(
+          id = "test-id",
+          name = "ABC Limited",
+          trade = "Plumbing",
+          startDate = None,
+          address = Address(
+            lines = Seq("1 Long Road", "Lonely city"),
+            postcode = Some("ZZ11ZZ")
+          )
+        ))
+      )),
+      ukProperty = Some(UKProperty(
+        startDate = None,
+        accountingMethod = Cash
+      )),
+      foreignProperty = Some(ForeignProperty(
+        startDate = None,
+        accountingMethod = Cash
+      ))
+    ),
+    taxYear = AccountingYearModel(Current)
+  )
+
   "getCompleteSignUpDetails" must {
     "return a complete details model" when {
       "all fetches were successful and are full + confirmed data sets" in new Setup {
@@ -115,6 +153,48 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
         }
 
         await(result) mustBe Right(completeDetails)
+      }
+      "all fetches were successful and all have selected their start dates are before the limit" in new Setup {
+        mockFetchAllSelfEmployments(Seq(selfEmployment.copy(startDateBeforeLimit = Some(true))), Some(selfEmploymentsAccountingMethod.accountingMethod))
+        mockFetchProperty(Some(ukProperty.copy(startDateBeforeLimit = Some(true))))
+        mockFetchOverseasProperty(Some(foreignProperty.copy(startDateBeforeLimit = Some(true))))
+        mockGetMandationService(Voluntary, Voluntary)
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+        mockFetchSelectedTaxYear(Some(accountingYear))
+
+        val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
+          service.getCompleteSignUpDetails("reference")(hc)
+        }
+
+        await(result) mustBe Right(completeDetailsNoDates)
+      }
+      "all fetches were successful, all have selected their start dates are after the limit, but their stored date is older than the limit" in new Setup {
+        enable(StartDateBeforeLimit)
+
+        mockFetchAllSelfEmployments(Seq(
+          selfEmployment.copy(
+            startDateBeforeLimit = Some(false),
+            businessStartDate = Some(BusinessStartDate(DateModel.dateConvert(startDateLimit.minusDays(1))))
+          )),
+          Some(selfEmploymentsAccountingMethod.accountingMethod)
+        )
+        mockFetchProperty(Some(ukProperty.copy(
+          startDateBeforeLimit = Some(false),
+          startDate = Some(DateModel.dateConvert(startDateLimit.minusDays(1)))
+        )))
+        mockFetchOverseasProperty(Some(foreignProperty.copy(
+          startDateBeforeLimit = Some(false),
+          startDate = Some(DateModel.dateConvert(startDateLimit.minusDays(1)))
+        )))
+        mockGetMandationService(Voluntary, Voluntary)
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+        mockFetchSelectedTaxYear(Some(accountingYear))
+
+        val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
+          service.getCompleteSignUpDetails("reference")(hc)
+        }
+
+        await(result) mustBe Right(completeDetailsNoDates)
       }
     }
 

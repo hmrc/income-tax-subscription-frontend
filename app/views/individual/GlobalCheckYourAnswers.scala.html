@@ -21,6 +21,7 @@
 @import views.html.helpers.ReadyToSignUpButton
 @import services.GetCompleteDetailsService._
 @import services.GetCompleteDetailsService.IncomeSources
+@import utilities.AccountingPeriodUtil
 @import utilities.ImplicitDateFormatterImpl
 @import views.html.helpers.{ContinueButton, CheckYourAnswers, CheckYourAnswersRow, SaveAndContinueButtonHelper}
 @import views.html.templates.PrincipalMainTemplate
@@ -158,7 +159,9 @@
                 SummaryListRow(
                     key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.self-employment.start-date"))),
                     value = Value(content = Text(
-                        business.startDate.map(_.toLongDate).getOrElse("TODO: Implement before message here")
+                        business.startDate.map(_.toLongDate).getOrElse(
+                            messages("individual.global-check-your-answers.income-sources.self-employment.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
+                        )
                     ))
                 ),
                 SummaryListRow(
@@ -193,7 +196,9 @@
             SummaryListRow(
                 key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.uk-property.start-date"))),
                 value = Value(content = Text(
-                    ukProperty.startDate.map(_.toLongDate).getOrElse("TODO: Implement before message here")
+                    ukProperty.startDate.map(_.toLongDate).getOrElse(
+                        messages("individual.global-check-your-answers.income-sources.uk-property.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
+                    )
                 ))
             ),
             SummaryListRow(
@@ -223,7 +228,9 @@
             SummaryListRow(
                 key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.foreign-property.start-date"))),
                 value = Value(content = Text(
-                    foreignProperty.startDate.map(_.toLongDate).getOrElse("TODO: Implement before message here")
+                    foreignProperty.startDate.map(_.toLongDate).getOrElse(
+                        messages("individual.global-check-your-answers.income-sources.foreign-property.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
+                    )
                 ))
             ),
             SummaryListRow(
