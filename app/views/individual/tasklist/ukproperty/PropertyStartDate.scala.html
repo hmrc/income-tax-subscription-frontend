@@ -17,6 +17,7 @@
 @import forms.individual.business.PropertyStartDateForm._
 @import views.html.helpers.{DateHelper, SaveAndContinueButtonHelper, PageHeadingHelper}
 @import views.html.templates.PrincipalMainTemplate
+@import utilities.AccountingPeriodUtil
 
 @this(
         mainTemplate: PrincipalMainTemplate,
@@ -37,7 +38,6 @@
     )
 
     <p class="govuk-body">@messages("business.property.para1")</p>
-    <p class="govuk-body">@messages("business.property.para2")</p>
 
     @form(action = postAction) {
         @dateHelper(
@@ -46,12 +46,12 @@
             isPageHeading = false,
             isLegendVisible = false,
             parentForm = propertyStartDateForm,
-            hintText = Some(messages("business.property.start-date.hint"))
+            hintText = Some(messages("business.property.start-date.hint", AccountingPeriodUtil.getStartDateLimit.getYear.toString))
         )
 
       @saveAndContinueButtonHelper(
         isIndividual = true,
-        saveAndReturnReference = None
+        saveAndReturnReference = Some("uk-property-start-date")
       )
     }
 }

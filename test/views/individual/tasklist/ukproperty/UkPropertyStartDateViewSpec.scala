@@ -23,7 +23,7 @@ import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
 import play.api.test.FakeRequest
 import play.twirl.api.Html
-import utilities.ViewSpec
+import utilities.{AccountingPeriodUtil, ViewSpec}
 import views.html.individual.tasklist.ukproperty.PropertyStartDate
 
 import java.time.LocalDate
@@ -31,17 +31,18 @@ import java.time.LocalDate
 class UkPropertyStartDateViewSpec extends ViewSpec {
 
   object PropertyStartDateMessages {
-    val captionVisible = "UK property"
-    val heading: String = "When did you start your UK property business?"
-    val para1 = "This is when you started letting any UK property."
-    val para2 = "The date your business started trading can be today, in the past or up to 7 days in the future."
-    val hint = "For example, 17 8 2014."
+    val captionVisible = "Your UK property"
+    val title: String = "Start date for income from UK property"
+    val heading: String = "Start date"
+    val para1 = "We need to know the exact start date."
+    val hint = s"For example, 27 9 ${AccountingPeriodUtil.getStartDateLimit.getYear}"
     val continue = "Continue"
     val saveAndContinue = "Save and continue"
+    val saveAndComeBackLater = "Save and come back later"
     val backLink = "Back"
     val update = "Update"
-    val maxDate = "The date your UK property business started trading must be the same as or before 11 April 2021"
-    val minDate = "The date your property business started must be on or after 11 April 2021"
+    val maxDate = "The date cannot be more than 7 days in the future"
+    val minDate = "The date must be on or after 11 April 2021"
   }
 
   val taxYearEnd: Int = 2020
@@ -58,7 +59,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
           testCall,
           testBackUrl
         ),
-        title = PropertyStartDateMessages.heading,
+        title = PropertyStartDateMessages.title,
         isAgent = false,
         backLink = Some(testBackUrl),
       )
@@ -69,7 +70,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
           testCall,
           testBackUrl
         ),
-        title = PropertyStartDateMessages.heading,
+        title = PropertyStartDateMessages.title,
         isAgent = false,
         backLink = Some(testBackUrl),
         error = Some(testError)
@@ -84,12 +85,8 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
       )
     }
 
-    "have a paragraph One" in {
+    "have a paragraph" in {
       document().selectNth("p", 3).text mustBe PropertyStartDateMessages.para1
-    }
-
-    "have a paragraph Two" in {
-      document().selectNth("p", 4).text mustBe PropertyStartDateMessages.para2
     }
 
     "have a form" in {
@@ -97,8 +94,14 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
       document().getForm.attr("action") mustBe testCall.url
     }
 
-    "have a save & continue button when save & retrieve feature is enabled" in {
+    "have a save & continue button" in {
       document().mainContent.selectHead("div.govuk-button-group").selectHead("button").text mustBe PropertyStartDateMessages.saveAndContinue
+    }
+
+    "have a save & come back later button" in {
+      val button = document().mainContent.selectHead(".govuk-button--secondary")
+      button.text mustBe PropertyStartDateMessages.saveAndComeBackLater
+      button.attr("href") mustBe controllers.individual.tasklist.routes.ProgressSavedController.show(location = Some("uk-property-start-date")).url
     }
 
     "must display max date error on page" in {
