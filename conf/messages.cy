@@ -86,11 +86,11 @@ your-income-source.income-from-property.heading                 = Incwm o eiddo
 your-income-source.income-from-property.para                    = Rhowch wybod i ni am unrhyw incwm rydych yn ei gael o eiddo. Er enghraifft, incwm o roi tai, fflatiau, neu gartrefi gwyliau ar osod a hynny naill ai ar sail tymor hir neu dymor byr. Os oes gennych fwy nag un eiddo, dylech eu trin un fel un ffynhonnell incwm.
 your-income-source.uk-property                                  = Eiddo yn y DU
 your-income-source.property.start-date-para                     = Dyddiad dechrau
-your-income-source.property.start-date                          = {0}
+your-income-source.property.before-start-date-limit             = Cyn 6 Ebrill {0}
 your-income-source.uk-property.add-link                         = Ychwanegu eiddo yn y DU
 your-income-source.foreign-property                             = Eiddo tramor
 your-income-source.foreign-property.start-date-para             = Dyddiad dechrau
-your-income-source.foreign-property.start-date                  = {0}
+your-income-source.foreign-property.before-start-date-limit     = Cyn 6 Ebrill {0}
 your-income-source.foreign-property.add-link                    = Ychwanegu eiddo tramor
 
 error.business-income-source.all-sources                        = Dewiswch ‘Busnes unig fasnachwr’, ‘Eiddo rhent yn y DU’ neu ‘Eiddo rhent tramor’
@@ -683,24 +683,25 @@ agent.client-details.summary.nino                               = Rhif Yswiriant
 agent.client-details.summary.dob                                = Dyddiad geni
 
 ## agent your income sources to sign up page
-agent.your-income-source.heading                            = Ffynonellau incwm eich cleient
-agent.your-income-source.lead                               = Ychwanegwch bob un o’r ffynonellau hyn y mae’ch cleient yn cael incwm ohonynt. Gwiriwch, newidiwch neu ychwanegwch fanylion at unrhyw un a ddechreuwyd yn flaenorol. Dilëwch unrhyw un sydd wedi dod i ben cyn 6 Ebrill {0}.
-agent.your-income-source.caption                            = {0} | {1}
-agent.your-income-source.self-employed                      = Busnesau unig fasnachwr
-agent.your-income-source.self-employed.label-full           = {0} - {1}
-agent.your-income-source.self-employed.name                 = {0}
-agent.your-income-source.self-employed.trade                = {0}
-agent.your-income-source.self-employed.business-name-para   = Enw’r busnes
-agent.your-income-source.self-employed.label-none           = Busnes {0}
-agent.your-income-source.self-employed.add-link             = Ychwanegu busnes unig fasnachwr
-agent.your-income-source.income-from-property               = Incwm o eiddo
-agent.your-income-source.uk-property                        = Eiddo yn y DU
-agent.your-income-source.property.start-date-para           = Dyddiad dechrau
-agent.your-income-source.property.start-date                = {0}
-agent.your-income-source.foreign-property                   = Busnes eiddo tramor
-agent.your-income-source.uk-property.add-link               = Ychwanegu eiddo yn y DU
-agent.your-income-source.foreign-property.add-link          = Ychwanegu eiddo tramor
-agent.your-income-source.before-you-continue                = Cyn i chi fynd yn eich blaen, gwnewch yn siŵr eich bod wedi gwirio unrhyw ffynonellau incwm rydym wedi’u hychwanegu ar eich rhan.
+agent.your-income-source.heading                                    = Ffynonellau incwm eich cleient
+agent.your-income-source.lead                                       = Ychwanegwch bob un o’r ffynonellau hyn y mae’ch cleient yn cael incwm ohonynt. Gwiriwch, newidiwch neu ychwanegwch fanylion at unrhyw un a ddechreuwyd yn flaenorol. Dilëwch unrhyw un sydd wedi dod i ben cyn 6 Ebrill {0}.
+agent.your-income-source.caption                                    = {0} | {1}
+agent.your-income-source.self-employed                              = Busnesau unig fasnachwr
+agent.your-income-source.self-employed.label-full                   = {0} - {1}
+agent.your-income-source.self-employed.name                         = {0}
+agent.your-income-source.self-employed.trade                        = {0}
+agent.your-income-source.self-employed.business-name-para           = Enw’r busnes
+agent.your-income-source.self-employed.label-none                   = Busnes {0}
+agent.your-income-source.self-employed.add-link                     = Ychwanegu busnes unig fasnachwr
+agent.your-income-source.income-from-property                       = Incwm o eiddo
+agent.your-income-source.uk-property                                = Eiddo yn y DU
+agent.your-income-source.property.start-date-para                   = Dyddiad dechrau
+agent.your-income-source.property.before-start-date-limit           = Cyn 6 Ebrill {0}
+agent.your-income-source.foreign-property                           = Busnes eiddo tramor
+agent.your-income-source.uk-property.add-link                       = Ychwanegu eiddo yn y DU
+agent.your-income-source.foreign-property.add-link                  = Ychwanegu eiddo tramor
+agent.your-income-source.foreign-property.before-start-date-limit   = Cyn 6 Ebrill {0}
+agent.your-income-source.before-you-continue                        = Cyn i chi fynd yn eich blaen, gwnewch yn siŵr eich bod wedi gwirio unrhyw ffynonellau incwm rydym wedi’u hychwanegu ar eich rhan.
 
 # Property income page
 agent.property.income.title                                     = Faint oedd eich incwm o eiddo y flwyddyn hon?
