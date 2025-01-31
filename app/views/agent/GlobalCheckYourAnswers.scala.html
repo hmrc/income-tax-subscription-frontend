@@ -27,6 +27,7 @@
 @import views.html.helpers.SaveAndContinueButtonHelper
 @import views.html.helpers.{CheckYourAnswers, CheckYourAnswersRow}
 @import views.html.templates.AgentMainTemplate
+@import utilities.AccountingPeriodUtil
 @import utilities.UserMatchingSessionUtil.ClientDetails
 
 @this(
@@ -141,7 +142,9 @@
                 SummaryListRow(
                     key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.self-employment.start-date"))),
                     value = Value(content = Text(
-                        business.startDate.map(_.toLongDate).getOrElse("TODO: Implement before message here")
+                        business.startDate.map(_.toLongDate).getOrElse(
+                            messages("agent.global-check-your-answers.income-sources.self-employment.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
+                        )
                     ))
                 ),
                 SummaryListRow(
@@ -177,7 +180,9 @@
             SummaryListRow(
                 key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.uk-property.start-date"))),
                 value = Value(content = Text(
-                    ukProperty.startDate.map(_.toLongDate).getOrElse("TODO: Implement before message here")
+                    ukProperty.startDate.map(_.toLongDate).getOrElse(
+                        messages("agent.global-check-your-answers.income-sources.uk-property.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
+                    )
                 ))
             ),
             SummaryListRow(
@@ -208,7 +213,9 @@
             SummaryListRow(
                 key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.foreign-property.start-date"))),
                 value = Value(content = Text(
-                    foreignProperty.startDate.map(_.toLongDate).getOrElse("TODO: Implement before message here")
+                    foreignProperty.startDate.map(_.toLongDate).getOrElse(
+                        messages("agent.global-check-your-answers.income-sources.foreign-property.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
+                    )
                 ))
             ),
             SummaryListRow(

@@ -16,12 +16,16 @@
 
 package services
 
+import config.AppConfig
+import config.featureswitch.FeatureSwitch.StartDateBeforeLimit
+import config.featureswitch.FeatureSwitching
 import models.AccountingMethod
 import models.common.business.{Address, SelfEmploymentData}
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
 import play.api.Logging
 import services.GetCompleteDetailsService._
 import uk.gov.hmrc.http.HeaderCarrier
+import utilities.AccountingPeriodUtil
 
 import java.time.LocalDate
 import javax.inject._
@@ -29,8 +33,8 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
 
 @Singleton
-class GetCompleteDetailsService @Inject()(subscriptionDetailsService: SubscriptionDetailsService)
-                                         (implicit ec: ExecutionContext) extends Logging {
+class GetCompleteDetailsService @Inject()(subscriptionDetailsService: SubscriptionDetailsService, val appConfig: AppConfig)
+                                         (implicit ec: ExecutionContext) extends Logging with FeatureSwitching {
 
   /*
   * Fetches all information about sign up which we display or submit
@@ -76,13 +80,17 @@ class GetCompleteDetailsService @Inject()(subscriptionDetailsService: Subscripti
             SoleTraderBusinesses(
               accountingMethod = accountingMethod,
               businesses = selfEmployments.map { selfEmploymentData =>
+                val selectedStartDateBeforeLimit: Boolean = selfEmploymentData.startDateBeforeLimit.contains(true)
+                val startDateIsBeforeLimit: Boolean = selfEmploymentData.businessStartDate.exists(_.startDate.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))
+
                 SoleTraderBusiness(
                   id = selfEmploymentData.id,
                   name = selfEmploymentData.businessName.get.businessName,
                   trade = selfEmploymentData.businessTradeName.get.businessTradeName,
-                  startDate = selfEmploymentData.startDateBeforeLimit match {
-                    case Some(true) => None
-                    case _ => Some(selfEmploymentData.businessStartDate.get.startDate.toLocalDate)
+                  startDate =  if (selectedStartDateBeforeLimit || isEnabled(StartDateBeforeLimit) && startDateIsBeforeLimit) {
+                    None
+                  } else {
+                    Some(selfEmploymentData.businessStartDate.get.startDate.toLocalDate)
                   },
                   address = selfEmploymentData.businessAddress.get.address
                 )
@@ -92,20 +100,28 @@ class GetCompleteDetailsService @Inject()(subscriptionDetailsService: Subscripti
         }
 
         val ukProperty: Option[UKProperty] = ukPropertyBusiness.map { property =>
+          val selectedStartDateBeforeLimit: Boolean = property.startDateBeforeLimit.contains(true)
+          val startDateIsBeforeLimit: Boolean = property.startDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))
+
           UKProperty(
-            startDate = property.startDateBeforeLimit match {
-              case Some(true) => None
-              case _ => Some(property.startDate.get.toLocalDate)
+            startDate = if (selectedStartDateBeforeLimit || isEnabled(StartDateBeforeLimit) && startDateIsBeforeLimit) {
+              None
+            } else {
+              Some(property.startDate.get.toLocalDate)
             },
             accountingMethod = property.accountingMethod.get
           )
         }
 
         val foreignProperty: Option[ForeignProperty] = foreignPropertyBusiness.map { property =>
+          val selectedStartDateBeforeLimit: Boolean = property.startDateBeforeLimit.contains(true)
+          val startDateIsBeforeLimit: Boolean = property.startDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))
+
           ForeignProperty(
-            startDate = property.startDateBeforeLimit match {
-              case Some(true) => None
-              case _ => Some(property.startDate.get.toLocalDate)
+            startDate = if (selectedStartDateBeforeLimit || isEnabled(StartDateBeforeLimit) && startDateIsBeforeLimit) {
+              None
+            } else {
+              Some(property.startDate.get.toLocalDate)
             },
             accountingMethod = property.accountingMethod.get
           )
