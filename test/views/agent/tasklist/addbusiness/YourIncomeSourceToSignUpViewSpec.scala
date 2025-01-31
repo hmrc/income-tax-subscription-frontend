@@ -16,6 +16,7 @@
 
 package views.agent.tasklist.addbusiness
 
+import config.featureswitch.FeatureSwitch.StartDateBeforeLimit
 import models.common.business._
 import models.common.{IncomeSources, OverseasPropertyModel, PropertyModel}
 import models.{Cash, DateModel}
@@ -26,8 +27,15 @@ import utilities.UserMatchingSessionUtil.ClientDetails
 import utilities.{AccountingPeriodUtil, ViewSpec}
 import views.html.agent.tasklist.addbusiness.YourIncomeSourceToSignUp
 
+import java.time.format.DateTimeFormatter
+
 //scalastyle:off
 class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(StartDateBeforeLimit)
+  }
 
   "YourIncomeSourceToSignUp" should {
     "display the template correctly" when {
@@ -406,56 +414,247 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         "has a heading" in new ViewTest(completeIncomeSources) {
           document.mainContent.selectNth("h2", 3).text mustBe AgentIncomeSource.incomeFromPropertyHeading
         }
-        "has a uk property summary card" in new ViewTest(completeIncomeSources) {
-          document.mainContent.mustHaveSummaryCard("div.govuk-summary-card", Some(2))(
-            title = AgentIncomeSource.ukPropertyTitle,
-            cardActions = Seq(
-              SummaryListActionValues(
-                href = AgentIncomeSource.ukPropertyChangeLink,
-                text = s"${AgentIncomeSource.check} ${AgentIncomeSource.ukPropertyChange}",
-                visuallyHidden = AgentIncomeSource.ukPropertyChange
-              ),
-              SummaryListActionValues(
-                href = AgentIncomeSource.ukPropertyRemoveLink,
-                text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.ukPropertyRemove}",
-                visuallyHidden = AgentIncomeSource.ukPropertyRemove
+        "has a UK property card" which {
+          "displays a start date" when {
+            "the start date is before the start date limit and the start date before limit feature is disabled" in new ViewTest(completeIncomeSources) {
+              document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(2))(
+                title = AgentIncomeSource.ukPropertyTitle,
+                cardActions = Seq(
+                  SummaryListActionValues(
+                    href = AgentIncomeSource.ukPropertyChangeLink,
+                    text = s"${AgentIncomeSource.check} ${AgentIncomeSource.ukPropertyChange}",
+                    visuallyHidden = s"(${AgentIncomeSource.ukPropertyTitle})"
+                  ),
+                  SummaryListActionValues(
+                    href = AgentIncomeSource.ukPropertyRemoveLink,
+                    text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.ukPropertyRemove}",
+                    visuallyHidden = s"(${AgentIncomeSource.ukPropertyTitle})"
+                  )
+                ),
+                rows = Seq(
+                  SummaryListRowValues(
+                    key = AgentIncomeSource.ukPropertyStartDate,
+                    value = Some("1 January 1981"),
+                    actions = Seq.empty
+                  )
+                )
               )
-            ),
-            rows = Seq(
-              SummaryListRowValues(
-                key = AgentIncomeSource.ukPropertyStartDate,
-                value = Some("1 January 1981"),
-                actions = Seq.empty
+            }
+            "the start date is not before the start date limit and the start date before limit feature is enabled" in new ViewTest(
+              incomeSources = completeIncomeSources.copy(
+                ukProperty = completeUKProperty.map(_.copy(startDate = Some(limitDate)))
               )
-            )
-          )
+            ) {
+              enable(StartDateBeforeLimit)
+
+              document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(2))(
+                title = AgentIncomeSource.ukPropertyTitle,
+                cardActions = Seq(
+                  SummaryListActionValues(
+                    href = AgentIncomeSource.ukPropertyChangeLink,
+                    text = s"${AgentIncomeSource.check} ${AgentIncomeSource.ukPropertyChange}",
+                    visuallyHidden = s"(${AgentIncomeSource.ukPropertyTitle})"
+                  ),
+                  SummaryListActionValues(
+                    href = AgentIncomeSource.ukPropertyRemoveLink,
+                    text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.ukPropertyRemove}",
+                    visuallyHidden = s"(${AgentIncomeSource.ukPropertyTitle})"
+                  )
+                ),
+                rows = Seq(
+                  SummaryListRowValues(
+                    key = AgentIncomeSource.ukPropertyStartDate,
+                    value = Some(limitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))),
+                    actions = Seq.empty
+                  )
+                )
+              )
+            }
+          }
+          "display before the limit" when {
+            "the start date is before the start date limit and the start date before limit feature is enabled" in new ViewTest(
+              incomeSources = completeIncomeSources.copy(
+                ukProperty = completeUKProperty.map(_.copy(startDate = Some(olderThanLimitDate)))
+              )
+            ) {
+              enable(StartDateBeforeLimit)
+
+              document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(2))(
+                title = AgentIncomeSource.ukPropertyTitle,
+                cardActions = Seq(
+                  SummaryListActionValues(
+                    href = AgentIncomeSource.ukPropertyChangeLink,
+                    text = s"${AgentIncomeSource.check} ${AgentIncomeSource.ukPropertyChange}",
+                    visuallyHidden = s"(${AgentIncomeSource.ukPropertyTitle})"
+                  ),
+                  SummaryListActionValues(
+                    href = AgentIncomeSource.ukPropertyRemoveLink,
+                    text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.ukPropertyRemove}",
+                    visuallyHidden = s"(${AgentIncomeSource.ukPropertyTitle})"
+                  )
+                ),
+                rows = Seq(
+                  SummaryListRowValues(
+                    key = AgentIncomeSource.ukPropertyStartDate,
+                    value = Some(AgentIncomeSource.propertyDateBeforeLimit),
+                    actions = Seq.empty
+                  )
+                )
+              )
+            }
+            "the start date before limit was answered 'Yes'" in new ViewTest(
+              incomeSources = completeIncomeSources.copy(
+                ukProperty = completeUKProperty.map(_.copy(startDateBeforeLimit = Some(true), startDate = Some(limitDate)))
+              )
+            ) {
+              enable(StartDateBeforeLimit)
+
+              document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(2))(
+                title = AgentIncomeSource.ukPropertyTitle,
+                cardActions = Seq(
+                  SummaryListActionValues(
+                    href = AgentIncomeSource.ukPropertyChangeLink,
+                    text = s"${AgentIncomeSource.check} ${AgentIncomeSource.ukPropertyChange}",
+                    visuallyHidden = s"(${AgentIncomeSource.ukPropertyTitle})"
+                  ),
+                  SummaryListActionValues(
+                    href = AgentIncomeSource.ukPropertyRemoveLink,
+                    text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.ukPropertyRemove}",
+                    visuallyHidden = s"(${AgentIncomeSource.ukPropertyTitle})"
+                  )
+                ),
+                rows = Seq(
+                  SummaryListRowValues(
+                    key = AgentIncomeSource.ukPropertyStartDate,
+                    value = Some(AgentIncomeSource.propertyDateBeforeLimit),
+                    actions = Seq.empty
+                  )
+                )
+              )
+            }
+          }
         }
-        "has a foreign property summary card" in new ViewTest(completeIncomeSources) {
-          document.mainContent.mustHaveSummaryCard("div.govuk-summary-card", Some(3))(
-            title = AgentIncomeSource.foreignPropertyTitle,
-            cardActions = Seq(
-              SummaryListActionValues(
-                href = AgentIncomeSource.foreignPropertyChangeLink,
-                text = s"${AgentIncomeSource.check} ${AgentIncomeSource.foreignPropertyChange}",
-                visuallyHidden = AgentIncomeSource.foreignPropertyChange
-              ),
-              SummaryListActionValues(
-                href = AgentIncomeSource.foreignPropertyRemoveLink,
-                text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.foreignPropertyRemove}",
-                visuallyHidden = AgentIncomeSource.foreignPropertyRemove
+        "has a foreign property card" which {
+          "displays a start date" when {
+            "the start date is before the start date limit and the start date before limit feature is disabled" in new ViewTest(completeIncomeSources) {
+              document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(3))(
+                title = AgentIncomeSource.foreignPropertyTitle,
+                cardActions = Seq(
+                  SummaryListActionValues(
+                    href = AgentIncomeSource.foreignPropertyChangeLink,
+                    text = s"${AgentIncomeSource.check} ${AgentIncomeSource.foreignPropertyChange}",
+                    visuallyHidden = s"(${AgentIncomeSource.foreignPropertyTitle})"
+                  ),
+                  SummaryListActionValues(
+                    href = AgentIncomeSource.foreignPropertyRemoveLink,
+                    text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.foreignPropertyRemove}",
+                    visuallyHidden = s"(${AgentIncomeSource.foreignPropertyTitle})"
+                  )
+                ),
+                rows = Seq(
+                  SummaryListRowValues(
+                    key = AgentIncomeSource.foreignPropertyStartDate,
+                    value = Some("2 February 1982"),
+                    actions = Seq.empty
+                  )
+                )
               )
-            ),
-            rows = Seq(
-              SummaryListRowValues(
-                key = AgentIncomeSource.foreignPropertyStartDate,
-                value = Some("2 February 1982"),
-                actions = Seq.empty
+            }
+            "the start date is not before the start date limit and the start date before limit feature is enabled" in new ViewTest(
+              incomeSources = completeIncomeSources.copy(
+                foreignProperty = completeForeignProperty.map(_.copy(startDate = Some(limitDate)))
               )
-            )
-          )
+            ) {
+              enable(StartDateBeforeLimit)
+
+              document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(3))(
+                title = AgentIncomeSource.foreignPropertyTitle,
+                cardActions = Seq(
+                  SummaryListActionValues(
+                    href = AgentIncomeSource.foreignPropertyChangeLink,
+                    text = s"${AgentIncomeSource.check} ${AgentIncomeSource.foreignPropertyChange}",
+                    visuallyHidden = s"(${AgentIncomeSource.foreignPropertyTitle})"
+                  ),
+                  SummaryListActionValues(
+                    href = AgentIncomeSource.foreignPropertyRemoveLink,
+                    text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.foreignPropertyRemove}",
+                    visuallyHidden = s"(${AgentIncomeSource.foreignPropertyTitle})"
+                  )
+                ),
+                rows = Seq(
+                  SummaryListRowValues(
+                    key = AgentIncomeSource.foreignPropertyStartDate,
+                    value = Some(limitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))),
+                    actions = Seq.empty
+                  )
+                )
+              )
+            }
+          }
+          "display before the limit" when {
+            "the start date is before the start date limit and the start date before limit feature is enabled" in new ViewTest(
+              incomeSources = completeIncomeSources.copy(
+                foreignProperty = completeForeignProperty.map(_.copy(startDate = Some(olderThanLimitDate)))
+              )
+            ) {
+              enable(StartDateBeforeLimit)
+
+              document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(3))(
+                title = AgentIncomeSource.foreignPropertyTitle,
+                cardActions = Seq(
+                  SummaryListActionValues(
+                    href = AgentIncomeSource.foreignPropertyChangeLink,
+                    text = s"${AgentIncomeSource.check} ${AgentIncomeSource.foreignPropertyChange}",
+                    visuallyHidden = s"(${AgentIncomeSource.foreignPropertyTitle})"
+                  ),
+                  SummaryListActionValues(
+                    href = AgentIncomeSource.foreignPropertyRemoveLink,
+                    text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.foreignPropertyRemove}",
+                    visuallyHidden = s"(${AgentIncomeSource.foreignPropertyTitle})"
+                  )
+                ),
+                rows = Seq(
+                  SummaryListRowValues(
+                    key = AgentIncomeSource.foreignPropertyStartDate,
+                    value = Some(AgentIncomeSource.propertyDateBeforeLimit),
+                    actions = Seq.empty
+                  )
+                )
+              )
+            }
+            "the start date before limit was answered 'Yes'" in new ViewTest(
+              incomeSources = completeIncomeSources.copy(
+                foreignProperty = completeForeignProperty.map(_.copy(startDateBeforeLimit = Some(true), startDate = Some(limitDate)))
+              )
+            ) {
+              enable(StartDateBeforeLimit)
+
+              document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(3))(
+                title = AgentIncomeSource.foreignPropertyTitle,
+                cardActions = Seq(
+                  SummaryListActionValues(
+                    href = AgentIncomeSource.foreignPropertyChangeLink,
+                    text = s"${AgentIncomeSource.check} ${AgentIncomeSource.foreignPropertyChange}",
+                    visuallyHidden = s"(${AgentIncomeSource.foreignPropertyTitle})"
+                  ),
+                  SummaryListActionValues(
+                    href = AgentIncomeSource.foreignPropertyRemoveLink,
+                    text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.foreignPropertyRemove}",
+                    visuallyHidden = s"(${AgentIncomeSource.foreignPropertyTitle})"
+                  )
+                ),
+                rows = Seq(
+                  SummaryListRowValues(
+                    key = AgentIncomeSource.foreignPropertyStartDate,
+                    value = Some(AgentIncomeSource.propertyDateBeforeLimit),
+                    actions = Seq.empty
+                  )
+                )
+              )
+            }
+          }
         }
       }
-
       "have a form" which {
         def form(document: Document): Element = document.mainContent.getForm
 
@@ -624,6 +823,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     val foreignPropertyRemoveLink: String = controllers.agent.tasklist.overseasproperty.routes.RemoveOverseasPropertyController.show.url
     val progressSavedLink: String = controllers.agent.tasklist.routes.ProgressSavedController.show(Some("income-sources")).url
 
+    val propertyDateBeforeLimit = s"Before 6 April ${AccountingPeriodUtil.getStartDateLimit.getYear}"
     val continue = "Save and continue"
     val saveAndComeBackLater = "Save and come back later"
 
@@ -714,6 +914,10 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
   lazy val incompleteIncomeSources: IncomeSources = IncomeSources(incompleteSelfEmployments, Some(Cash), incompleteUKProperty, incompleteForeignProperty)
   lazy val completeIncomeSources: IncomeSources = IncomeSources(completeSelfEmployments, Some(Cash), completeUKProperty, completeForeignProperty)
   lazy val completeAndConfirmedIncomeSources: IncomeSources = IncomeSources(completeAndConfirmedSelfEmployments, Some(Cash), completeAndConfirmedUKProperty, completeAndConfirmedForeignProperty)
+
+
+  lazy val olderThanLimitDate: DateModel = DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit.minusDays(1))
+  lazy val limitDate: DateModel = DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit)
 
 
 }
