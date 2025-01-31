@@ -86,11 +86,11 @@ your-income-source.income-from-property.heading                 = Income from pr
 your-income-source.income-from-property.para                    = Tell us about any income you get from property. For example, letting houses, flats or holiday homes either on a long or short term basis. If you have more than one property, treat them as one income source.
 your-income-source.uk-property                                  = UK property
 your-income-source.property.start-date-para                     = Start date
-your-income-source.property.start-date                          = {0}
+your-income-source.property.before-start-date-limit             = Before 6 April {0}
 your-income-source.uk-property.add-link                         = Add UK property
 your-income-source.foreign-property                             = Foreign property
 your-income-source.foreign-property.start-date-para             = Start date
-your-income-source.foreign-property.start-date                  = {0}
+your-income-source.foreign-property.before-start-date-limit     = Before 6 April {0}
 your-income-source.foreign-property.add-link                    = Add foreign property
 
 
@@ -698,10 +698,11 @@ agent.your-income-source.self-employed.add-link                     = Add a sole
 agent.your-income-source.income-from-property                       = Income from property
 agent.your-income-source.uk-property                                = UK property
 agent.your-income-source.property.start-date-para                   = Start date
-agent.your-income-source.property.start-date                        = {0}
+agent.your-income-source.property.before-start-date-limit           = Before 6 April {0}
 agent.your-income-source.foreign-property                           = Foreign property
 agent.your-income-source.uk-property.add-link                       = Add UK property
 agent.your-income-source.foreign-property.add-link                  = Add foreign property
+agent.your-income-source.foreign-property.before-start-date-limit   = Before 6 April {0}
 agent.your-income-source.before-you-continue                        = Before you continue, make sure you have checked any income sources we added for you.
 
 # Property income page

@@ -15,6 +15,8 @@
  *@
 
 @import config.AppConfig
+@import config.featureswitch.FeatureSwitching
+@import config.featureswitch.FeatureSwitch.StartDateBeforeLimit
 @import models.common._
 @import models.common.business._
 @import utilities.UserMatchingSessionUtil.ClientDetails
@@ -32,7 +34,8 @@
     pageHeadingHelper: PageHeadingHelper,
     saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
     govukSummaryList : GovukSummaryList,
-    buttonHelper: ButtonHelper
+    buttonHelper: ButtonHelper,
+    featureSwitching: FeatureSwitching
 )
 
 @(postAction: Call, backUrl: String, clientDetails: ClientDetails, incomeSources: IncomeSources, prepopulated: Boolean)(implicit request: Request[_], messages: Messages)
@@ -158,9 +161,13 @@
                 key = Key(
                     content = Text(messages("agent.your-income-source.property.start-date-para"))
                 ),
-                value = Value(
-                    content = Text(messages("agent.your-income-source.property.start-date", startDate(ukProperty.startDate)))
-                )
+                value = Value(Text(
+                    if(ukProperty.startDateBeforeLimit.contains(true) || featureSwitching.isEnabled(StartDateBeforeLimit) && ukProperty.startDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))) {
+                        messages("agent.your-income-source.property.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
+                    } else {
+                        startDate(ukProperty.startDate)
+                    }
+                ))
             )),
             card = Some(Card(
                 title = Some(CardTitle(
@@ -194,9 +201,13 @@
                 key = Key(
                     content = Text(messages("agent.your-income-source.property.start-date-para"))
                 ),
-                value = Value(
-                    content = Text(messages("agent.your-income-source.property.start-date", startDate(foreignProperty.startDate)))
-                )
+                value = Value(Text(
+                    if(foreignProperty.startDateBeforeLimit.contains(true) || featureSwitching.isEnabled(StartDateBeforeLimit) && foreignProperty.startDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))) {
+                        messages("agent.your-income-source.foreign-property.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
+                    } else {
+                        startDate(foreignProperty.startDate)
+                    }
+                ))
             )),
             card = Some(Card(
                 title = Some(CardTitle(
