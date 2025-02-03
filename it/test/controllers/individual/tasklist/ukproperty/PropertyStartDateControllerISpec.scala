@@ -16,6 +16,7 @@
 
 package controllers.individual.tasklist.ukproperty
 
+import config.featureswitch.FeatureSwitch.StartDateBeforeLimit
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.IntegrationTestConstants.IndividualURI
 import helpers.IntegrationTestModels.{testFullPropertyModel, testPropertyStartDate}
@@ -25,6 +26,7 @@ import models.DateModel
 import models.common.PropertyModel
 import play.api.http.Status._
 import play.api.libs.json.Json
+import utilities.AccountingPeriodUtil
 import utilities.SubscriptionDataKeys.Property
 
 class PropertyStartDateControllerISpec extends ComponentSpecBase {
@@ -154,6 +156,42 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
 
       "selecting start date within 7 days including the current date" in {
         val userInput: DateModel = IntegrationTestModels.testInvalidPropertyStartDate.startDate
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+
+        When("POST /property-start-date is called")
+        val res = IncomeTaxSubscriptionFrontend.submitPropertyStartDate(inEditMode = false, Some(userInput))
+
+        Then("Should return a SEE_OTHER with a redirect location of cannot sign up")
+        res must have(
+          httpStatus(BAD_REQUEST),
+          errorDisplayed()
+        )
+      }
+
+      "selecting a start date before the 1st January 1900 when the start date before limit feature switch is disabled" in {
+        val userInput: DateModel = DateModel("31", "12", "1899")
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+
+        When("POST /property-start-date is called")
+        val res = IncomeTaxSubscriptionFrontend.submitPropertyStartDate(inEditMode = false, Some(userInput))
+
+        Then("Should return a SEE_OTHER with a redirect location of cannot sign up")
+        res must have(
+          httpStatus(BAD_REQUEST),
+          errorDisplayed()
+        )
+      }
+
+      "selecting a start date before the the start date limit when the start date before limit feature switch is disabled" in {
+        enable(StartDateBeforeLimit)
+        
+        val userInput: DateModel = DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit.minusDays(1))
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()

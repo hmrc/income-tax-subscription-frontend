@@ -175,12 +175,11 @@ overseas.property.accounting-method.cash                         = You record on
 overseas.property.accounting-method.accruals                     = You record on the date you send an invoice to, or request a payment from your tenants, even if you do not receive or pay any money. You record on the date you receive an invoice for repairs or maintenance. This is also called ‘accruals’ or ‘standard accounting’.
 
 ## Property Start Date Date
-business.property.name.title                                    = When did you start your UK property business?
-business.property.name.heading                                  = When did you start your UK property business?
-business.property.name.caption                                  = UK property
-business.property.para1                                         = This is when you started letting any UK property.
-business.property.para2                                         = The date your business started trading can be today, in the past or up to 7 days in the future.
-business.property.start-date.hint                               = For example, 17 8 2014.
+business.property.name.title                                    = Start date for income from UK property
+business.property.name.heading                                  = Start date
+business.property.name.caption                                  = Your UK property
+business.property.para1                                         = We need to know the exact start date.
+business.property.start-date.hint                               = For example, 27 9 {0}
 
 # Property Start Date errors
 error.property.day-month-year.empty                             = Enter the date your UK property business started trading
@@ -190,8 +189,8 @@ error.property.year.empty                                       = The date must 
 error.property.day-month.empty                                  = The date must include a day and a month
 error.property.day-year.empty                                   = The date must include a day and a year
 error.property.month-year.empty                                 = The date must include a month and a year
-error.property.day-month-year.max-date                          = The date your UK property business started trading must be the same as or before {0}
-error.property.day-month-year.min-date                          = The date your property business started must be on or after {0}
+error.property.day-month-year.max-date                          = The date cannot be more than 7 days in the future
+error.property.day-month-year.min-date                          = The date must be on or after {0}
 error.property.day-month-year.invalid                           = The date must be a real date
 error.property.day.invalid                                      = The date must be a real date
 error.property.month.invalid                                    = The date must be a real date
