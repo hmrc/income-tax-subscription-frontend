@@ -181,7 +181,7 @@ business.property.para1                                         = Mae angen i ni
 business.property.start-date.hint                               = Er enghraifft, 27 9 {0}
 
 # Property Start Date errors
-error.property.day-month-year.empty                             = Nodwch y dyddiad y dechreuodd eich busnes eiddo yn y DU fasnachu
+error.property.day-month-year.empty                             = Nodwch y dyddiad y gwnaethoch ddechrau cael incwm o eiddo yn y DU
 error.property.day.empty                                        = Mae’n rhaid i’r dyddiad gynnwys diwrnod
 error.property.month.empty                                      = Mae’n rhaid i’r dyddiad gynnwys mis
 error.property.year.empty                                       = Mae’n rhaid i’r dyddiad gynnwys blwyddyn
@@ -197,7 +197,7 @@ error.property.year.invalid                                     = Rhaid i’r dy
 error.property.day-month.invalid                                = Rhaid i’r dyddiad fod yn ddyddiad go iawn
 error.property.day-year.invalid                                 = Rhaid i’r dyddiad fod yn ddyddiad go iawn
 error.property.month-year.invalid                               = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.property.year.length                                      = Mae’n rhaid i flwyddyn fod yn bedwar digid. Er enghraifft, 2020.
+error.property.year.length                                      = Mae’n rhaid i’r flwyddyn gynnwys 4 rhif
 
 # Agent Property Start Date Date
 agent.property.start-date.heading                               = Dyddiad dechrau ar gyfer incwm o eiddo yn y DU
@@ -222,7 +222,7 @@ agent.property.income-source.details.content.bullet2                = mis Mawrth
 agent.error.property.income-source.start-date-before-limit.invalid  = Dewiswch ‘Iawn’ os oedd eich cleient wedi dechrau cael incwm o eiddo yn y DU cyn 6 Ebrill {0}
 
 # Agent Property Start Date errors
-agent.error.property.day-month-year.empty                       = Nodwch y dyddiad y dechreuodd eich busnes eiddo yn y DU fasnachu
+agent.error.property.day-month-year.empty                       = Nodwch y dyddiad y gwnaeth eich cleient ddechrau cael incwm o eiddo yn y DU
 agent.error.property.day.empty                                  = Mae’n rhaid i’r dyddiad gynnwys diwrnod
 agent.error.property.month.empty                                = Mae’n rhaid i’r dyddiad gynnwys mis
 agent.error.property.year.empty                                 = Mae’n rhaid i’r dyddiad gynnwys blwyddyn
@@ -230,7 +230,7 @@ agent.error.property.day-month.empty                            = Mae’n rhaid 
 agent.error.property.day-year.empty                             = Mae’n rhaid i’r dyddiad gynnwys diwrnod a blwyddyn
 agent.error.property.month-year.empty                           = Mae’n rhaid i’r dyddiad gynnwys mis a blwyddyn
 agent.error.property.day-month-year.max-date                    = Mae’n rhaid i’r dyddiad gwnaeth y busnes eiddo yn y DU ddechrau masnachu fod ar neu cyn {0}
-agent.error.property.day-month-year.min-date                    = Rhaid i’r dyddiad y dechreuodd busnes eiddo eich cleient fasnachu fod ar neu ar ôl {0}
+agent.error.property.day-month-year.min-date                    = Mae’n rhaid i’r dyddiad fod ar neu ar ôl {0}
 agent.error.property.day-month-year.invalid                     = Rhaid i’r dyddiad fod yn ddyddiad go iawn
 agent.error.property.day.invalid                                = Rhaid i’r dyddiad fod yn ddyddiad go iawn
 agent.error.property.month.invalid                              = Rhaid i’r dyddiad fod yn ddyddiad go iawn
@@ -238,7 +238,7 @@ agent.error.property.year.invalid                               = Rhaid i’r dy
 agent.error.property.day-month.invalid                          = Rhaid i’r dyddiad fod yn ddyddiad go iawn
 agent.error.property.day-year.invalid                           = Rhaid i’r dyddiad fod yn ddyddiad go iawn
 agent.error.property.month-year.invalid                         = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.property.year.length                                = Mae’n rhaid i flwyddyn fod yn bedwar digid. Er enghraifft, 2020.
+agent.error.property.year.length                                = Mae’n rhaid i’r flwyddyn gynnwys 4 rhif
 
 ## Overseas Property Start Date
 overseas.property.name.title                                     = Pryd y gwnaethoch ddechrau eich busnes eiddo tramor?

@@ -53,7 +53,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
     val title = "Start date for income from UK property"
     val heading: String = title
     val caption: String = "FirstName LastName | ZZ 11 11 11 Z"
-    val para1 = "We need to know the exact date."
+    val para1 = "We need to know the exact start date."
     val hint = s"For example, 27 9 ${AccountingPeriodUtil.getStartDateLimit.getYear}"
     val continue = "Continue"
     val saveAndContinue = "Save and continue"
@@ -61,7 +61,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
     val backLink = "Back"
     val update = "Update"
     val maxDate = "The date cannot be more than 7 days in the future"
-    val minDate = "The date your client’s property business started trading must be on or after 11 April 2021"
+    val minDate = "The date must be on or after 11 April 2021"
   }
 
   "agent UK property business start" must {
