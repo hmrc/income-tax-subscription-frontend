@@ -235,7 +235,7 @@ class UkPropertyIncomeSourcesViewSpec extends ViewSpec {
     val detailsBullet1 = "May 2017, they use cash basis accounting"
     val detailsBullet2 = "March 2017, you use traditional accounting"
     val maxDate = "The date cannot be more than 7 days in the future"
-    val minDate = "The date your client’s property business started trading must be on or after 11 April 2021"
+    val minDate = "The date must be on or after 11 April 2021"
     val yes = "Yes"
     val no = "No"
   }
