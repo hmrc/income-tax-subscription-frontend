@@ -61,7 +61,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
     val backLink = "Back"
     val update = "Update"
     val maxDate = "The date cannot be more than 7 days in the future"
-    val minDate = "The date your client’s property business started trading must be on or after 11 April 2021"
+    val minDate = "The date must be on or after 11 April 2021"
   }
 
   "agent UK property business start" must {
