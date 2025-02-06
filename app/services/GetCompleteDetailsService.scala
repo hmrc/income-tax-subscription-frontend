@@ -17,7 +17,6 @@
 package services
 
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.StartDateBeforeLimit
 import config.featureswitch.FeatureSwitching
 import models.AccountingMethod
 import models.common.business.{Address, SelfEmploymentData}
@@ -87,7 +86,7 @@ class GetCompleteDetailsService @Inject()(subscriptionDetailsService: Subscripti
                   id = selfEmploymentData.id,
                   name = selfEmploymentData.businessName.get.businessName,
                   trade = selfEmploymentData.businessTradeName.get.businessTradeName,
-                  startDate =  if (selectedStartDateBeforeLimit || isEnabled(StartDateBeforeLimit) && startDateIsBeforeLimit) {
+                  startDate =  if (selectedStartDateBeforeLimit || startDateIsBeforeLimit) {
                     None
                   } else {
                     Some(selfEmploymentData.businessStartDate.get.startDate.toLocalDate)
@@ -104,7 +103,7 @@ class GetCompleteDetailsService @Inject()(subscriptionDetailsService: Subscripti
           val startDateIsBeforeLimit: Boolean = property.startDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))
 
           UKProperty(
-            startDate = if (selectedStartDateBeforeLimit || isEnabled(StartDateBeforeLimit) && startDateIsBeforeLimit) {
+            startDate = if (selectedStartDateBeforeLimit || startDateIsBeforeLimit) {
               None
             } else {
               Some(property.startDate.get.toLocalDate)
@@ -118,7 +117,7 @@ class GetCompleteDetailsService @Inject()(subscriptionDetailsService: Subscripti
           val startDateIsBeforeLimit: Boolean = property.startDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))
 
           ForeignProperty(
-            startDate = if (selectedStartDateBeforeLimit || isEnabled(StartDateBeforeLimit) && startDateIsBeforeLimit) {
+            startDate = if (selectedStartDateBeforeLimit || startDateIsBeforeLimit) {
               None
             } else {
               Some(property.startDate.get.toLocalDate)

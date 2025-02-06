@@ -16,7 +16,6 @@
 
 package views.individual.tasklist.ukproperty
 
-import config.featureswitch.FeatureSwitch.StartDateBeforeLimit
 import models.common.PropertyModel
 import models.{Cash, DateModel}
 import org.jsoup.Jsoup
@@ -28,11 +27,6 @@ import views.html.individual.tasklist.ukproperty.PropertyCheckYourAnswers
 import java.time.format.DateTimeFormatter
 
 class PropertyCheckYourAnswersViewSpec extends ViewSpec {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(StartDateBeforeLimit)
-  }
 
   "PropertyCheckYourAnswers" must {
     "have the correct template" in new TemplateViewTest(
@@ -56,94 +50,50 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
     }
 
     "display a summary of answers" when {
-      "the start date before limit feature switch is enabled" when {
-        "all data is missing" when {
-          "not in edit mode" in {
-            enable(StartDateBeforeLimit)
-
-            document(viewModel = emptyProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-              startDateBeforeLimitRow(None),
-              accountingMethodRow(None)
-            ))
-          }
-          "in global edit mode" in {
-            enable(StartDateBeforeLimit)
-
-            document(viewModel = emptyProperty, isGlobalEdit = true).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-              startDateBeforeLimitRow(None, globalEditMode = true),
-              accountingMethodRow(None, globalEditMode = true)
-            ))
-          }
+      "all data is missing" when {
+        "not in edit mode" in {
+          document(viewModel = emptyProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+            startDateBeforeLimitRow(None),
+            accountingMethodRow(None)
+          ))
         }
-        "data is complete" when {
-          "the start date before limit was answered with 'Yes'" in {
-            enable(StartDateBeforeLimit)
-
-            document(viewModel = completeProperty.copy(startDateBeforeLimit = Some(true))).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-              startDateBeforeLimitRow(Some(PropertyCheckYourAnswers.beforeStartDateLimit)),
-              accountingMethodRow(Some(PropertyCheckYourAnswers.cash))
-            ))
-          }
-          "the start date before limit was answered with 'No' and no start date was provided" in {
-            enable(StartDateBeforeLimit)
-
-            document(
-              viewModel = completeProperty.copy(startDateBeforeLimit = Some(false), startDate = None)
-            ).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-              startDateBeforeLimitRow(None),
-              accountingMethodRow(Some(PropertyCheckYourAnswers.cash))
-            ))
-          }
-          "the start date before limit was answered with 'No' and the stored start date is after the limit" in {
-            enable(StartDateBeforeLimit)
-
-            document(
-              viewModel = completeProperty.copy(startDateBeforeLimit = Some(false), startDate = Some(limitDate))
-            ).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-              startDateBeforeLimitRow(Some(limitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy")))),
-              accountingMethodRow(Some(PropertyCheckYourAnswers.cash))
-            ))
-          }
-          "the start date before limit was answered with 'No' but there is a stored start date before the limit" in {
-            enable(StartDateBeforeLimit)
-
-            document(
-              viewModel = completeProperty.copy(startDateBeforeLimit = Some(false), startDate = Some(olderThanLimitDate))
-            ).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-              startDateBeforeLimitRow(Some(PropertyCheckYourAnswers.beforeStartDateLimit)),
-              accountingMethodRow(Some(PropertyCheckYourAnswers.cash))
-            ))
-          }
+        "in global edit mode" in {
+          document(viewModel = emptyProperty, isGlobalEdit = true).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+            startDateBeforeLimitRow(None, globalEditMode = true),
+            accountingMethodRow(None, globalEditMode = true)
+          ))
         }
       }
-      "the start date before limit feature switch is disabled" when {
-        "all data is missing" when {
-          "not in edit mode" in {
-            document(viewModel = emptyProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-              startDateRow(value = None),
-              accountingMethodRow(value = None)
-            ))
-          }
-          "in global edit mode" in {
-            document(viewModel = emptyProperty, isGlobalEdit = true).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-              startDateRow(value = None, globalEditMode = true),
-              accountingMethodRow(value = None, globalEditMode = true)
-            ))
-          }
+      "data is complete" when {
+        "the start date before limit was answered with 'Yes'" in {
+          document(viewModel = completeProperty.copy(startDateBeforeLimit = Some(true))).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+            startDateBeforeLimitRow(Some(PropertyCheckYourAnswers.beforeStartDateLimit)),
+            accountingMethodRow(Some(PropertyCheckYourAnswers.cash))
+          ))
         }
-        "all data is complete" when {
-          "the start date is before the future start date limit" in {
-            document(viewModel = completeProperty.copy(startDate = Some(olderThanLimitDate))).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-              startDateRow(value = Some(olderThanLimitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy")))),
-              accountingMethodRow(value = Some(PropertyCheckYourAnswers.cash))
-            ))
-          }
-          "the start date is after the future start date limit" in {
-            document().mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-              startDateRow(value = Some(limitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy")))),
-              accountingMethodRow(value = Some(PropertyCheckYourAnswers.cash))
-            ))
-          }
+        "the start date before limit was answered with 'No' and no start date was provided" in {
+          document(
+            viewModel = completeProperty.copy(startDateBeforeLimit = Some(false), startDate = None)
+          ).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+            startDateBeforeLimitRow(None),
+            accountingMethodRow(Some(PropertyCheckYourAnswers.cash))
+          ))
+        }
+        "the start date before limit was answered with 'No' and the stored start date is after the limit" in {
+          document(
+            viewModel = completeProperty.copy(startDateBeforeLimit = Some(false), startDate = Some(limitDate))
+          ).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+            startDateBeforeLimitRow(Some(limitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy")))),
+            accountingMethodRow(Some(PropertyCheckYourAnswers.cash))
+          ))
+        }
+        "the start date before limit was answered with 'No' but there is a stored start date before the limit" in {
+          document(
+            viewModel = completeProperty.copy(startDateBeforeLimit = Some(false), startDate = Some(olderThanLimitDate))
+          ).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+            startDateBeforeLimitRow(Some(PropertyCheckYourAnswers.beforeStartDateLimit)),
+            accountingMethodRow(Some(PropertyCheckYourAnswers.cash))
+          ))
         }
       }
     }
@@ -217,13 +167,6 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
           )
         )
       )
-  }
-
-  private def startDateRow(value: Option[String], globalEditMode: Boolean = false) = {
-    simpleSummaryRow(PropertyCheckYourAnswers.startDateQuestion)(
-      value,
-      controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.show(editMode = true, isGlobalEdit = globalEditMode).url
-    )
   }
 
   private def startDateBeforeLimitRow(value: Option[String], globalEditMode: Boolean = false) = {

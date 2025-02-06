@@ -35,31 +35,13 @@ object UkPropertyIncomeSourcesForm {
   val accountingMethodProperty: String = "accountingMethodProperty"
   val errorContext: String = "property"
 
-  def maxStartDate: LocalDate = LocalDate.now().plusDays(6)
-
-  def minStartDate: LocalDate = LocalDate.of(1900, 1, 1)
-
-  private def ukStartDate(f: LocalDate => String): Mapping[DateModel] = dateModelMapping(
-    isAgent = true,
-    errorContext = errorContext,
-    minDate = Some(minStartDate),
-    maxDate = Some(maxStartDate),
-    Some(f)
-  )
 
   private val ukAccountingMethod: Mapping[AccountingMethod] = AccountingMethodMapping(
     errInvalid = Invalid("agent.error.accounting-method-property.invalid"),
     errEmpty = Some(Invalid("agent.error.accounting-method-property.invalid"))
   )
 
-  def ukPropertyIncomeSourcesForm(f: LocalDate => String): Form[(DateModel, AccountingMethod)] = Form(
-    tuple(
-      startDate -> ukStartDate(f),
-      accountingMethodProperty -> ukAccountingMethod
-    )
-  )
-
-  def ukPropertyIncomeSourcesFormNoDate: Form[(YesNo, AccountingMethod)] = Form(
+  def ukPropertyIncomeSourcesForm: Form[(YesNo, AccountingMethod)] = Form(
     tuple(
       startDateBeforeLimit -> YesNoMapping.yesNoMapping(
         yesNoInvalid = Invalid(s"agent.error.$errorContext.income-source.$startDateBeforeLimit.invalid", AccountingPeriodUtil.getStartDateLimit.getYear.toString)

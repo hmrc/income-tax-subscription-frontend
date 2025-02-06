@@ -17,17 +17,16 @@
 package controllers.agent.tasklist.ukproperty
 
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.StartDateBeforeLimit
 import config.featureswitch.FeatureSwitching
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import forms.agent.UkPropertyIncomeSourcesForm
-import models.{AccountingMethod, DateModel, No, Yes}
+import forms.agent.UkPropertyIncomeSourcesForm.ukPropertyIncomeSourcesForm
+import models.{No, Yes}
 import play.api.data.Form
 import play.api.mvc._
 import services.SubscriptionDetailsService
-import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
-import utilities.ImplicitDateFormatter
+import uk.gov.hmrc.http.InternalServerException
 import views.html.agent.tasklist.ukproperty.PropertyIncomeSources
 
 import javax.inject.{Inject, Singleton}
@@ -35,7 +34,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class PropertyIncomeSourcesController @Inject()(identify: IdentifierAction,
-                                                implicitDateFormatter: ImplicitDateFormatter,
                                                 journeyRefiner: ConfirmedClientJourneyRefiner,
                                                 subscriptionDetailsService: SubscriptionDetailsService,
                                                 view: PropertyIncomeSources)
@@ -46,9 +44,8 @@ class PropertyIncomeSourcesController @Inject()(identify: IdentifierAction,
   def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
     subscriptionDetailsService.fetchProperty(request.reference) map { maybeProperty =>
       val formData: Map[String, String] = UkPropertyIncomeSourcesForm.createPropertyMapData(maybeProperty)
-      val form: Form[_] = ukPropertyIncomeSourceForm.fold(identity, identity)
       Ok(view(
-        ukPropertyIncomeSourcesForm = form.bind(formData).discardingErrors,
+        ukPropertyIncomeSourcesForm = ukPropertyIncomeSourcesForm.bind(formData).discardingErrors,
         postAction = routes.PropertyIncomeSourcesController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
         backUrl = backUrl(isEditMode, isGlobalEdit),
         clientDetails = request.clientDetails
@@ -57,85 +54,34 @@ class PropertyIncomeSourcesController @Inject()(identify: IdentifierAction,
   }
 
   def submit(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
-    ukPropertyIncomeSourceForm match {
-      case Left(form) =>
-        form.bindFromRequest().fold(
-          formWithErrors => Future.successful(BadRequest(view(
-            ukPropertyIncomeSourcesForm = formWithErrors,
-            postAction = routes.PropertyIncomeSourcesController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
-            backUrl = backUrl(isEditMode, isGlobalEdit),
-            clientDetails = request.clientDetails
-          ))),
-          {
-            case (startDate, accountingMethod) =>
-              saveDataAndContinue(
-                reference = request.reference,
-                maybeStartDate = Some(startDate),
-                maybeStartDateBeforeLimit = None,
-                accountingMethod = accountingMethod,
-                isEditMode = isEditMode,
-                isGlobalEdit = isGlobalEdit
-              )
-          }
-        )
-      case Right(form) =>
-        form.bindFromRequest().fold(
-          formWithErrors => Future.successful(BadRequest(view(
-            ukPropertyIncomeSourcesForm = formWithErrors,
-            postAction = routes.PropertyIncomeSourcesController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
-            backUrl = backUrl(isEditMode, isGlobalEdit),
-            clientDetails = request.clientDetails
-          ))),
-          {
-            case (startDateBeforeLimit, accountingMethod) =>
-              saveDataAndContinue(
-                reference = request.reference,
-                maybeStartDate = None,
-                maybeStartDateBeforeLimit = startDateBeforeLimit match {
-                  case Yes => Some(true)
-                  case No => Some(false)
-                },
-                accountingMethod = accountingMethod,
-                isEditMode = isEditMode,
-                isGlobalEdit = isGlobalEdit
-              )
-          }
-        )
-    }
-  }
-
-  private def saveDataAndContinue(reference: String,
-                                  maybeStartDate: Option[DateModel],
-                                  maybeStartDateBeforeLimit: Option[Boolean],
-                                  accountingMethod: AccountingMethod,
-                                  isEditMode: Boolean,
-                                  isGlobalEdit: Boolean)(implicit hc: HeaderCarrier): Future[Result] = {
-
-    subscriptionDetailsService.saveStreamlineProperty(
-      reference = reference,
-      maybeStartDate = maybeStartDate,
-      maybeStartDateBeforeLimit = maybeStartDateBeforeLimit,
-      accountingMethod = accountingMethod
-    ) map {
-      case Right(_) =>
-        if (maybeStartDateBeforeLimit.contains(false)) {
-          Redirect(routes.PropertyStartDateController.show(editMode = isEditMode, isGlobalEdit = isGlobalEdit))
-        } else {
-          Redirect(routes.PropertyCheckYourAnswersController.show(editMode = isEditMode, isGlobalEdit = isGlobalEdit))
+    ukPropertyIncomeSourcesForm.bindFromRequest().fold(
+      formWithErrors =>
+        Future.successful(BadRequest(view(
+          ukPropertyIncomeSourcesForm = formWithErrors,
+          postAction = routes.PropertyIncomeSourcesController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
+          backUrl = backUrl(isEditMode, isGlobalEdit),
+          clientDetails = request.clientDetails
+        ))),
+      { case (startDateBeforeLimit, accountingMethod) =>
+        subscriptionDetailsService.saveStreamlineProperty(
+          reference = request.reference,
+          maybeStartDate = None,
+          maybeStartDateBeforeLimit = startDateBeforeLimit match {
+            case Yes => Some(true)
+            case No => Some(false)
+          },
+          accountingMethod = accountingMethod
+        ) map {
+          case Right(_) =>
+            if (startDateBeforeLimit == No) {
+              Redirect(routes.PropertyStartDateController.show(editMode = isEditMode, isGlobalEdit = isGlobalEdit))
+            } else {
+              Redirect(routes.PropertyCheckYourAnswersController.show(editMode = isEditMode, isGlobalEdit = isGlobalEdit))
+            }
+          case Left(_) => throw new InternalServerException("[PropertyIncomeSourcesController][saveDataAndContinue] - Could not save property income source")
         }
-      case Left(_) => throw new InternalServerException("[PropertyIncomeSourcesController][saveDataAndContinue] - Could not save property income source")
-    }
-
-  }
-
-  private def ukPropertyIncomeSourceForm(implicit request: Request[_]) = {
-    import implicitDateFormatter.LongDate
-
-    if (isEnabled(StartDateBeforeLimit)) {
-      Right(UkPropertyIncomeSourcesForm.ukPropertyIncomeSourcesFormNoDate)
-    } else {
-      Left(UkPropertyIncomeSourcesForm.ukPropertyIncomeSourcesForm(_.toLongDate))
-    }
+      }
+    )
   }
 
   private def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean): String = {

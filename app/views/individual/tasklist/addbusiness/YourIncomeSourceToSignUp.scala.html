@@ -14,11 +14,7 @@
  * limitations under the License.
  *@
 
-@import config.featureswitch.FeatureSwitching
-@import config.featureswitch.FeatureSwitch.StartDateBeforeLimit
 @import config.AppConfig
-@import config.featureswitch.FeatureSwitching
-@import config.featureswitch.FeatureSwitch.StartDateBeforeLimit
 @import play.api.data.Form
 @import models.common._
 @import models.common.business._
@@ -36,8 +32,7 @@
     form: FormWithCSRF,
     saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
     govukSummaryList: GovukSummaryList,
-    buttonHelper: ButtonHelper,
-    featureSwitching: FeatureSwitching
+    buttonHelper: ButtonHelper
 )
 
 @(postAction: Call, backUrl: String, incomeSources: IncomeSources, isPrePopulated: Boolean)(implicit request: Request[_], messages: Messages)
@@ -174,7 +169,7 @@
                     content = Text(messages("your-income-source.property.start-date-para"))
                 ),
             value = Value(Text(
-                if(ukProperty.startDateBeforeLimit.contains(true) || featureSwitching.isEnabled(StartDateBeforeLimit) && ukProperty.startDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))) {
+                if(ukProperty.startDateBeforeLimit.contains(true) || ukProperty.startDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))) {
                     messages("your-income-source.property.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
                 } else {
                     startDate(ukProperty.startDate)
@@ -202,11 +197,7 @@
     }.getOrElse {
         <div id="add-uk-property" class="govuk-!-padding-bottom-6">
             <p class="govuk-body">
-                @if(featureSwitching.isEnabled(StartDateBeforeLimit)) {
-                    <a class="govuk-link" href="@controllers.individual.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show()">@messages("your-income-source.uk-property.add-link")</a>
-                } else {
-                    <a class="govuk-link" href="@controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.show()">@messages("your-income-source.uk-property.add-link")</a>
-                }
+                <a class="govuk-link" href="@controllers.individual.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show()">@messages("your-income-source.uk-property.add-link")</a>
             </p>
         </div>
     }
@@ -218,7 +209,7 @@
                     content = Text(messages("your-income-source.foreign-property.start-date-para"))
                 ),
                 value = Value(Text(
-                    if(foreignProperty.startDateBeforeLimit.contains(true) || featureSwitching.isEnabled(StartDateBeforeLimit) && foreignProperty.startDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))) {
+                    if(foreignProperty.startDateBeforeLimit.contains(true) || foreignProperty.startDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))) {
                         messages("your-income-source.foreign-property.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
                     } else {
                         startDate(foreignProperty.startDate)

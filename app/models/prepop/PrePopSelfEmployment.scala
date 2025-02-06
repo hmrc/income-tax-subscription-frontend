@@ -27,13 +27,9 @@ case class PrePopSelfEmployment(name: Option[String],
                                 startDate: Option[DateModel],
                                 accountingMethod: AccountingMethod) {
 
-  def toSelfEmploymentData(id: String, startDateRemovalFlag: Boolean): SelfEmploymentData = {
+  def toSelfEmploymentData(id: String): SelfEmploymentData = {
 
-    val startDateBeforeLimit: Option[Boolean] = if (startDateRemovalFlag) {
-      startDate.map(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))
-    } else {
-      None
-    }
+    val startDateBeforeLimit: Option[Boolean] = startDate.map(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))
 
     SelfEmploymentData(
       id = id,

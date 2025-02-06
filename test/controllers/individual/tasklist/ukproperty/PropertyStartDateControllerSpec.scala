@@ -16,7 +16,6 @@
 
 package controllers.individual.tasklist.ukproperty
 
-import config.featureswitch.FeatureSwitch.StartDateBeforeLimit
 import connectors.httpparser.PostSubscriptionDetailsHttpParser
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.individual.ControllerBaseSpec
@@ -37,11 +36,6 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
   with MockAuditingService
   with MockReferenceRetrieval
   with MockPropertyStartDate {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(StartDateBeforeLimit)
-  }
 
   override val controllerName: String = "PropertyStartDateController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -74,102 +68,50 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
   }
 
   "show" should {
-    "display the property accounting method view and return OK (200)" when {
-      "the start date before limit feature switch is enabled" when {
-        "no start date is returned" in new Test {
-          enable(StartDateBeforeLimit)
+    "display the property start date view and return OK (200)" when {
+      "no start date is returned" in new Test {
+        mockPropertyStartDate(
+          postAction = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.submit(),
+          backUrl = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show().url
+        )
+        mockFetchPropertyStartDate(None)
 
-          mockPropertyStartDate(
-            postAction = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.submit(),
-            backUrl = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show().url
-          )
-          mockFetchPropertyStartDate(None)
+        val result: Result = await(controller.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest))
 
-          val result: Result = await(controller.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest))
-
-          status(result) must be(Status.OK)
-        }
-        "a start date is returned" in new Test {
-          enable(StartDateBeforeLimit)
-
-          mockPropertyStartDate(
-            postAction = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.submit(),
-            backUrl = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show().url
-          )
-          mockFetchPropertyStartDate(Some(testPropertyStartDate))
-
-          val result: Result = await(controller.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest))
-
-          status(result) must be(Status.OK)
-        }
-        "in edit mode" in new Test {
-          enable(StartDateBeforeLimit)
-
-          mockPropertyStartDate(
-            postAction = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.submit(editMode = true),
-            backUrl = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show(editMode = true).url
-          )
-          mockFetchPropertyStartDate(Some(testPropertyStartDate))
-
-          val result: Result = await(controller.show(isEditMode = true, isGlobalEdit = false)(subscriptionRequest))
-
-          status(result) must be(Status.OK)
-        }
-        "in global edit mode" in new Test {
-          enable(StartDateBeforeLimit)
-
-          mockPropertyStartDate(
-            postAction = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.submit(isGlobalEdit = true),
-            backUrl = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show(isGlobalEdit = true).url
-          )
-          mockFetchPropertyStartDate(Some(testPropertyStartDate))
-
-          val result: Result = await(controller.show(isEditMode = false, isGlobalEdit = true)(subscriptionRequest))
-
-          status(result) must be(Status.OK)
-        }
+        status(result) must be(Status.OK)
       }
-      "the start date before limit feature switch is disabled" when {
-        "no start date is returned" in new Test {
-          mockPropertyStartDate(
-            postAction = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.submit(),
-            backUrl = controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
-          mockFetchPropertyStartDate(None)
+      "a start date is returned" in new Test {
+        mockPropertyStartDate(
+          postAction = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.submit(),
+          backUrl = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show().url
+        )
+        mockFetchPropertyStartDate(Some(testPropertyStartDate))
 
-          val result: Result = await(controller.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest))
+        val result: Result = await(controller.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest))
 
-          status(result) must be(Status.OK)
-        }
-        "a start date is returned" in new Test {
-          mockPropertyStartDate(
-            postAction = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.submit(),
-            backUrl = controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
-          mockFetchPropertyStartDate(Some(testPropertyStartDate))
+        status(result) must be(Status.OK)
+      }
+      "in edit mode" in new Test {
+        mockPropertyStartDate(
+          postAction = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.submit(editMode = true),
+          backUrl = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show(editMode = true).url
+        )
+        mockFetchPropertyStartDate(Some(testPropertyStartDate))
 
-          val result: Result = await(controller.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest))
+        val result: Result = await(controller.show(isEditMode = true, isGlobalEdit = false)(subscriptionRequest))
 
-          status(result) must be(Status.OK)
-        }
-        "in edit mode" in new Test {
-          mockPropertyStartDate(
-            postAction = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.submit(editMode = true),
-            backUrl = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url)
-          mockFetchPropertyStartDate(Some(testPropertyStartDate))
+        status(result) must be(Status.OK)
+      }
+      "in global edit mode" in new Test {
+        mockPropertyStartDate(
+          postAction = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.submit(isGlobalEdit = true),
+          backUrl = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show(isGlobalEdit = true).url
+        )
+        mockFetchPropertyStartDate(Some(testPropertyStartDate))
 
-          val result: Result = await(controller.show(isEditMode = true, isGlobalEdit = false)(subscriptionRequest))
+        val result: Result = await(controller.show(isEditMode = false, isGlobalEdit = true)(subscriptionRequest))
 
-          status(result) must be(Status.OK)
-        }
-        "in global edit mode" in new Test {
-          mockPropertyStartDate(
-            postAction = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.submit(editMode = true, isGlobalEdit = true),
-            backUrl = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true, isGlobalEdit = true).url)
-          mockFetchPropertyStartDate(Some(testPropertyStartDate))
-
-          val result: Result = await(controller.show(isEditMode = true, isGlobalEdit = true)(subscriptionRequest))
-
-          status(result) must be(Status.OK)
-        }
+        status(result) must be(Status.OK)
       }
     }
   }
@@ -227,13 +169,12 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
       "there is an invalid submission with an error form" in {
         mockPropertyStartDate(
           postAction = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.submit(),
-          backUrl = controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
+          backUrl = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show().url)
 
         val badRequest = callSubmitWithErrorForm(isEditMode = false)
 
         status(badRequest) must be(Status.BAD_REQUEST)
       }
-
     }
 
     "throw an exception" when {

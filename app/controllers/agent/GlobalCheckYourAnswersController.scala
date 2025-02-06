@@ -16,16 +16,13 @@
 
 package controllers.agent
 
-import auth.agent.{AuthenticatedController, IncomeTaxAgentUser}
 import common.Constants.ITSASessionKeys
 import config.AppConfig
 import config.featureswitch.FeatureSwitching
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
-import controllers.utils.ReferenceRetrieval
 import models.common.subscription.{CreateIncomeSourcesModel, SubscriptionSuccess}
 import models.requests.agent.ConfirmedClientRequest
-import play.api.mvc.Results.Redirect
 import play.api.mvc._
 import play.twirl.api.Html
 import services.GetCompleteDetailsService.CompleteDetails

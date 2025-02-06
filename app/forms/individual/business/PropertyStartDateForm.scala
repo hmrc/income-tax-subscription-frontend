@@ -30,13 +30,7 @@ object PropertyStartDateForm {
 
   def maxStartDate: LocalDate = LocalDate.now().plusDays(6)
 
-  def minStartDate(startDateBeforeLimitEnabled: Boolean): LocalDate = {
-    if (startDateBeforeLimitEnabled) {
-      AccountingPeriodUtil.getStartDateLimit
-    } else {
-      LocalDate.of(1900, 1, 1)
-    }
-  }
+  def minStartDate: LocalDate = AccountingPeriodUtil.getStartDateLimit
 
   val errorContext: String = "property"
 

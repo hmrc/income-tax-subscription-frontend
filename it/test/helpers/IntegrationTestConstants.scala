@@ -25,6 +25,7 @@ import uk.gov.hmrc.domain.Generator
 import utilities.AccountingPeriodUtil
 
 import java.net.URLEncoder
+import java.time.LocalDate
 import java.util.UUID
 import scala.util.matching.Regex
 
@@ -64,8 +65,8 @@ object IntegrationTestConstants {
   val testCredentialId: String = UUID.randomUUID().toString
   val testCredentialId2: String = UUID.randomUUID().toString
   val testCredentialId3: String = UUID.randomUUID().toString
-  private val businessStartDate = BusinessStartDate(DateModel("05", "04", "2017"))
-  private val tradingStartDate = DateModel("05", "04", "2017")
+  private val businessStartDate = BusinessStartDate(DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit))
+  private val tradingStartDate = DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit)
   val testBusinessName: BusinessNameModel = BusinessNameModel("test business")
   private val testBusinessTradeName = BusinessTradeNameModel("test trade")
   private val testStartDate = AccountingPeriodUtil.getCurrentTaxYear.startDate

@@ -16,9 +16,8 @@
 
 package views.agent.tasklist.ukproperty
 
-import config.featureswitch.FeatureSwitch.StartDateBeforeLimit
 import models.common.PropertyModel
-import models.{Accruals, Cash, DateModel}
+import models.{Cash, DateModel}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.HtmlFormat
@@ -29,11 +28,6 @@ import views.html.agent.tasklist.ukproperty.PropertyCheckYourAnswers
 import java.time.format.DateTimeFormatter
 
 class PropertyCheckYourAnswersViewSpec extends ViewSpec {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(StartDateBeforeLimit)
-  }
 
   "PropertyCheckYourAnswers" must {
     "have the correct template" in new TemplateViewTest(
@@ -59,85 +53,48 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
 
     "display a summary of answers" when {
       "not in edit mode" when {
-        "the start date before limit feature switch is enabled" when {
-          "all data is complete" in {
-            enable(StartDateBeforeLimit)
-
-            document(completeProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-              startDateRow(value = Some(limitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy")))),
+        "all data is complete" in {
+          document(completeProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+            startDateRow(value = Some(limitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy")))),
+            accountingMethodRow(value = Some(PropertyCheckYourAnswers.cash))
+          ))
+        }
+        "all data is missing" in {
+          document(emptyProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+            startDateRow(value = None),
+            accountingMethodRow(value = None)
+          ))
+        }
+        "start date before limit field is present" which {
+          "is true" in {
+            document(completeProperty.copy(startDateBeforeLimit = Some(true))).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+              startDateRow(value = Some(PropertyCheckYourAnswers.beforeStartDateLimit)),
               accountingMethodRow(value = Some(PropertyCheckYourAnswers.cash))
             ))
           }
-          "all data is missing" in {
-            enable(StartDateBeforeLimit)
-
-            document(emptyProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-              startDateRow(value = None),
-              accountingMethodRow(value = None)
-            ))
-          }
-          "start date before limit field is present" which {
-            "is true" in {
-              enable(StartDateBeforeLimit)
-
-              document(completeProperty.copy(startDateBeforeLimit = Some(true))).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+          "is false" when {
+            "the stored start date is not older than the limit" in {
+              document(completeProperty.copy(startDateBeforeLimit = Some(false))).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+                startDateRow(value = Some(limitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy")))),
+                accountingMethodRow(value = Some(PropertyCheckYourAnswers.cash))
+              ))
+            }
+            "the stored start date is older than the limit" in {
+              document(completeProperty.copy(
+                startDateBeforeLimit = Some(false),
+                startDate = Some(olderThanLimitDate)
+              )).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
                 startDateRow(value = Some(PropertyCheckYourAnswers.beforeStartDateLimit)),
                 accountingMethodRow(value = Some(PropertyCheckYourAnswers.cash))
               ))
             }
-            "is false" when {
-              "the stored start date is not older than the limit" in {
-                enable(StartDateBeforeLimit)
-
-                document(completeProperty.copy(startDateBeforeLimit = Some(false))).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-                  startDateRow(value = Some(limitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy")))),
-                  accountingMethodRow(value = Some(PropertyCheckYourAnswers.cash))
-                ))
-              }
-              "the stored start date is older than the limit" in {
-                enable(StartDateBeforeLimit)
-
-                document(completeProperty.copy(
-                  startDateBeforeLimit = Some(false),
-                  startDate = Some(olderThanLimitDate)
-                )).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-                  startDateRow(value = Some(PropertyCheckYourAnswers.beforeStartDateLimit)),
-                  accountingMethodRow(value = Some(PropertyCheckYourAnswers.cash))
-                ))
-              }
-            }
-          }
-          "in global edit mode" in {
-            enable(StartDateBeforeLimit)
-
-            document(completeProperty, isGlobalEdit = true).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-              startDateRow(value = Some(limitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))), globalEditMode = true),
-              accountingMethodRow(value = Some(PropertyCheckYourAnswers.cash), globalEditMode = true)
-            ))
           }
         }
-        "the start date before limit feature switch is disabled" when {
-          "all data is complete" in {
-            document(completeProperty.copy(
-              startDate = Some(olderThanLimitDate),
-              accountingMethod = Some(Accruals)
-            )).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-              startDateRow(value = Some(olderThanLimitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy")))),
-              accountingMethodRow(value = Some(PropertyCheckYourAnswers.accruals))
-            ))
-          }
-          "all data is missing" in {
-            document(emptyProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-              startDateRow(value = None),
-              accountingMethodRow(value = None)
-            ))
-          }
-          "in global edit mode" in {
-            document(completeProperty, isGlobalEdit = true).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-              startDateRow(value = Some(limitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))), globalEditMode = true),
-              accountingMethodRow(value = Some(PropertyCheckYourAnswers.cash), globalEditMode = true)
-            ))
-          }
+        "in global edit mode" in {
+          document(completeProperty, isGlobalEdit = true).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+            startDateRow(value = Some(limitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))), globalEditMode = true),
+            accountingMethodRow(value = Some(PropertyCheckYourAnswers.cash), globalEditMode = true)
+          ))
         }
       }
     }
