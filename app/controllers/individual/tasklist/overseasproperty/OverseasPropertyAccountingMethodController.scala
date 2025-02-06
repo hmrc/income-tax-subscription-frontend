@@ -26,7 +26,7 @@ import uk.gov.hmrc.http.InternalServerException
 import views.html.individual.tasklist.overseasproperty.OverseasPropertyAccountingMethod
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class OverseasPropertyAccountingMethodController @Inject()(view: OverseasPropertyAccountingMethod,
                                                            subscriptionDetailsService: SubscriptionDetailsService,
@@ -40,12 +40,12 @@ class OverseasPropertyAccountingMethodController @Inject()(view: OverseasPropert
   def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
       referenceRetrieval.getIndividualReference flatMap { reference =>
-        subscriptionDetailsService.fetchOverseasPropertyAccountingMethod(reference) map { accountingMethodOverseasProperty =>
+        subscriptionDetailsService.fetchOverseasProperty(reference) map { foreignProperty =>
           Ok(view(
             overseasPropertyAccountingMethodForm = AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm
-              .fill(accountingMethodOverseasProperty),
+              .fill(foreignProperty.flatMap(_.accountingMethod)),
             postAction = routes.OverseasPropertyAccountingMethodController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
-            backUrl = backUrl(isEditMode, isGlobalEdit)
+            backUrl = backUrl(isEditMode, isGlobalEdit, foreignProperty.flatMap(_.startDateBeforeLimit))
           ))
         }
       }
@@ -56,11 +56,13 @@ class OverseasPropertyAccountingMethodController @Inject()(view: OverseasPropert
       referenceRetrieval.getIndividualReference flatMap { reference =>
         AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm.bindFromRequest().fold(
           formWithErrors =>
-            Future.successful(BadRequest(view(
-              overseasPropertyAccountingMethodForm = formWithErrors,
-              postAction = routes.OverseasPropertyAccountingMethodController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
-              backUrl = backUrl(isEditMode, isGlobalEdit)
-            ))),
+            subscriptionDetailsService.fetchOverseasProperty(reference).map { foreignProperty =>
+              BadRequest(view(
+                overseasPropertyAccountingMethodForm = formWithErrors,
+                postAction = routes.OverseasPropertyAccountingMethodController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
+                backUrl = backUrl(isEditMode, isGlobalEdit, foreignProperty.flatMap(_.startDateBeforeLimit))
+              ))
+            },
           overseasPropertyAccountingMethod =>
             subscriptionDetailsService.saveOverseasAccountingMethodProperty(reference, overseasPropertyAccountingMethod) map {
               case Right(_) => Redirect(routes.OverseasPropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit))
@@ -70,11 +72,15 @@ class OverseasPropertyAccountingMethodController @Inject()(view: OverseasPropert
       }
   }
 
-  private def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean): String = {
+  def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean, maybeStartDateBeforeLimit: Option[Boolean]): String = {
     if (isEditMode || isGlobalEdit) {
       controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true, isGlobalEdit).url
     } else {
-      routes.OverseasPropertyStartDateController.show().url
+      if (maybeStartDateBeforeLimit.contains(false)) {
+        routes.ForeignPropertyStartDateController.show(editMode = isEditMode, isGlobalEdit = isGlobalEdit).url
+      } else {
+        routes.ForeignPropertyStartDateBeforeLimitController.show(editMode = isEditMode, isGlobalEdit = isGlobalEdit).url
+      }
     }
   }
 }

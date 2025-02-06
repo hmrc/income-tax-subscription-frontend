@@ -19,7 +19,7 @@ package controllers.individual.tasklist.overseasproperty
 import connectors.httpparser.PostSubscriptionDetailsHttpParser
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.individual.ControllerBaseSpec
-import forms.individual.business.OverseasPropertyStartDateForm
+import forms.individual.business.ForeignPropertyStartDateForm
 import models.DateModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
@@ -32,47 +32,49 @@ import views.individual.mocks.MockOverseasPropertyStartDate
 import java.time.LocalDate
 import scala.concurrent.Future
 
-class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
+class ForeignPropertyStartDateControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockAuthService
   with MockAuditingService
   with MockReferenceRetrieval
   with MockOverseasPropertyStartDate {
 
-  override val controllerName: String = "OverseasPropertyStartDateController"
+  override val controllerName: String = "ForeignPropertyStartDateController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestOverseasPropertyStartDateController.show(isEditMode = false, isGlobalEdit = false),
-    "submit" -> TestOverseasPropertyStartDateController.submit(isEditMode = false, isGlobalEdit = false)
+    "show" -> TestForeignPropertyStartDateController.show(isEditMode = false, isGlobalEdit = false),
+    "submit" -> TestForeignPropertyStartDateController.submit(isEditMode = false, isGlobalEdit = false)
   )
 
-  object TestOverseasPropertyStartDateController extends OverseasPropertyStartDateController(
-    overseasPropertyStartDate,
+  object TestForeignPropertyStartDateController extends ForeignPropertyStartDateController(
+    foreignPropertyStartDate,
     mockSubscriptionDetailsService,
     mockReferenceRetrieval
   )(
     mockAuditingService,
     mockAuthService,
-    mockLanguageUtils,
-    appConfig
+    appConfig,
+    mockLanguageUtils
   )
 
   "show" must {
     "display the foreign property start date view and return OK (200)" when {
-      "a start date is returned" in withController { controller =>
-        mockOverseasPropertyStartDateView(
-          routes.OverseasPropertyStartDateController.submit(),
-          controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
+      "a start date is returned" in {
+        mockForeignPropertyStartDateView(
+          postAction = routes.ForeignPropertyStartDateController.submit(),
+          backUrl = routes.ForeignPropertyStartDateBeforeLimitController.show().url
+        )
         mockFetchOverseasPropertyStartDate(Some(DateModel("22", "11", "2021")))
 
-        lazy val result: Result = await(controller.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest))
+        lazy val result: Result = await(TestForeignPropertyStartDateController.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest))
 
         status(result) must be(Status.OK)
       }
 
       "no start date is returned" in withController { controller =>
-        mockOverseasPropertyStartDateView(
-          routes.OverseasPropertyStartDateController.submit(),
-          controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
+        mockForeignPropertyStartDateView(
+          postAction = routes.ForeignPropertyStartDateController.submit(),
+          backUrl = routes.ForeignPropertyStartDateBeforeLimitController.show().url
+        )
         mockFetchOverseasPropertyStartDate(None)
 
         lazy val result: Result = await(controller.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest))
@@ -81,9 +83,9 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
       }
 
       "in edit mode" in withController { controller =>
-        mockOverseasPropertyStartDateView(
-          postAction = routes.OverseasPropertyStartDateController.submit(editMode = true),
-          backUrl = routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
+        mockForeignPropertyStartDateView(
+          postAction = routes.ForeignPropertyStartDateController.submit(editMode = true),
+          backUrl = routes.ForeignPropertyStartDateBeforeLimitController.show(editMode = true).url
         )
         mockFetchOverseasPropertyStartDate(Some(DateModel("22", "11", "2021")))
 
@@ -94,9 +96,9 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
       }
 
       "in global edit mode" in withController { controller =>
-        mockOverseasPropertyStartDateView(
-          postAction = routes.OverseasPropertyStartDateController.submit(editMode = true, isGlobalEdit = true),
-          backUrl = routes.OverseasPropertyCheckYourAnswersController.show(editMode = true, isGlobalEdit = true).url
+        mockForeignPropertyStartDateView(
+          postAction = routes.ForeignPropertyStartDateController.submit(editMode = true, isGlobalEdit = true),
+          backUrl = routes.ForeignPropertyStartDateBeforeLimitController.show(editMode = true, isGlobalEdit = true).url
         )
         mockFetchOverseasPropertyStartDate(Some(DateModel("22", "11", "2021")))
 
@@ -111,13 +113,13 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
   "submit" when {
     val testValidMaxStartDate: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(1))
 
-    def callPost(controller: OverseasPropertyStartDateController, isEditMode: Boolean, isGlobalEdit: Boolean): Future[Result] =
+    def callPost(controller: ForeignPropertyStartDateController, isEditMode: Boolean, isGlobalEdit: Boolean): Future[Result] =
       controller.submit(isEditMode, isGlobalEdit)(
-        subscriptionRequest.post(OverseasPropertyStartDateForm.overseasPropertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString),
+        subscriptionRequest.post(ForeignPropertyStartDateForm.startDateForm(_.toString),
           testValidMaxStartDate)
       )
 
-    def callPostWithErrorForm(controller: OverseasPropertyStartDateController, isEditMode: Boolean, isGlobalEdit: Boolean): Future[Result] =
+    def callPostWithErrorForm(controller: ForeignPropertyStartDateController, isEditMode: Boolean, isGlobalEdit: Boolean): Future[Result] =
       controller.submit(isEditMode, isGlobalEdit)(
         subscriptionRequest.withFormUrlEncodedBody()
       )
@@ -160,9 +162,10 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
     "there is an invalid submission with an error form" should {
       "return bad request status (400)" when {
         "in edit mode" in withController { controller =>
-          mockOverseasPropertyStartDateView(
-            postAction = routes.OverseasPropertyStartDateController.submit(editMode = true),
-            backUrl = routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url)
+          mockForeignPropertyStartDateView(
+            postAction = routes.ForeignPropertyStartDateController.submit(editMode = true),
+            backUrl = routes.ForeignPropertyStartDateBeforeLimitController.show(editMode = true).url
+          )
 
           val badRequest = callPostWithErrorForm(controller, isEditMode = true, isGlobalEdit = false)
 
@@ -170,9 +173,10 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
         }
 
         "in global mode" in withController { controller =>
-          mockOverseasPropertyStartDateView(
-            routes.OverseasPropertyStartDateController.submit(editMode = true, isGlobalEdit = true),
-            routes.OverseasPropertyCheckYourAnswersController.show(editMode = true, isGlobalEdit = true).url)
+          mockForeignPropertyStartDateView(
+            routes.ForeignPropertyStartDateController.submit(editMode = true, isGlobalEdit = true),
+            routes.ForeignPropertyStartDateBeforeLimitController.show(editMode = true, isGlobalEdit = true).url
+          )
 
           val badRequest = callPostWithErrorForm(controller, isEditMode = true, isGlobalEdit = true)
 
@@ -180,9 +184,10 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
         }
 
         "not in edit mode" in withController { controller =>
-          mockOverseasPropertyStartDateView(
-            routes.OverseasPropertyStartDateController.submit(),
-            controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
+          mockForeignPropertyStartDateView(
+            routes.ForeignPropertyStartDateController.submit(),
+            routes.ForeignPropertyStartDateBeforeLimitController.show().url
+          )
 
           val badRequest = callPostWithErrorForm(controller, isEditMode = false, isGlobalEdit = false)
 
@@ -201,22 +206,22 @@ class OverseasPropertyStartDateControllerSpec extends ControllerBaseSpec
         val exceptionRequest = callPost(controller, isEditMode = false, isGlobalEdit = true)
 
         intercept[InternalServerException](await(exceptionRequest))
-          .message mustBe "[OverseasPropertyStartDateController][submit] - Could not save start date"
+          .message mustBe "[ForeignPropertyStartDateController][submit] - Could not save start date"
       }
     }
 
   }
 
-  private def withController(testCode: OverseasPropertyStartDateController => Any) = {
-    val controller = new OverseasPropertyStartDateController(
-      overseasPropertyStartDate,
+  private def withController(testCode: ForeignPropertyStartDateController => Any) = {
+    val controller = new ForeignPropertyStartDateController(
+      foreignPropertyStartDate,
       mockSubscriptionDetailsService,
       mockReferenceRetrieval
     )(
       mockAuditingService,
       mockAuthService,
-      mockLanguageUtils,
-      appConfig
+      appConfig,
+      mockLanguageUtils
     )
 
     testCode(controller)

@@ -20,7 +20,8 @@ import connectors.httpparser.PostSubscriptionDetailsHttpParser
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.individual.ControllerBaseSpec
 import forms.individual.business.AccountingMethodOverseasPropertyForm
-import models.Cash
+import models.common.OverseasPropertyModel
+import models.{Accruals, Cash}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
@@ -36,151 +37,141 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
   with MockAuditingService
   with MockOverseasPropertyAccountingMethod {
 
-  override val controllerName: String = "ForeignPropertyAccountingMethod"
+  override val controllerName: String = "OverseasPropertyAccountingMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
-  private def withController(testCode: OverseasPropertyAccountingMethodController => Any): Unit = {
-
-    val controller = new OverseasPropertyAccountingMethodController(
-      mockView,
-      mockSubscriptionDetailsService,
-      mockReferenceRetrieval
-    )(
-      mockAuditingService,
-      mockAuthService,
-      appConfig
-    )
-
-    testCode(controller)
-  }
+  object TestOverseasPropertyAccountingMethodController extends OverseasPropertyAccountingMethodController(
+    mockView,
+    mockSubscriptionDetailsService,
+    mockReferenceRetrieval
+  )(
+    mockAuditingService,
+    mockAuthService,
+    appConfig
+  )
 
   "show" should {
-    "display the foreign property accounting method view and return OK (200)" in withController { controller =>
-      mockOverseasPropertyAccountingMethod(
-        postAction = routes.OverseasPropertyAccountingMethodController.submit(),
-        backUrl = routes.OverseasPropertyStartDateController.show().url
-      )
-      mockFetchOverseasPropertyAccountingMethod(Some(Cash))
+    "display the property accounting method view and return OK (200)" when {
+      "accounting method is returned" in {
+        mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
+        mockOverseasPropertyAccountingMethod(
+          postAction = routes.OverseasPropertyAccountingMethodController.submit(),
+          backUrl = routes.ForeignPropertyStartDateBeforeLimitController.show().url
+        )
+        lazy val result = await(TestOverseasPropertyAccountingMethodController.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest))
 
-      val result = await(controller.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest))
+        status(result) must be(Status.OK)
+      }
 
-      status(result) must be(Status.OK)
-    }
+      "no property business is returned" in {
+        mockFetchOverseasProperty(None)
+        mockOverseasPropertyAccountingMethod(
+          postAction = routes.OverseasPropertyAccountingMethodController.submit(),
+          backUrl = routes.ForeignPropertyStartDateBeforeLimitController.show().url
+        )
 
-    "display the correct backUrl" should {
-      "in edit mode" in withController { controller =>
+        val result = TestOverseasPropertyAccountingMethodController.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest)
+
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+      }
+
+      "no accounting method is returned" in {
+        mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = None)))
+        mockOverseasPropertyAccountingMethod(
+          postAction = routes.OverseasPropertyAccountingMethodController.submit(),
+          backUrl = routes.ForeignPropertyStartDateBeforeLimitController.show().url
+        )
+        lazy val result = await(TestOverseasPropertyAccountingMethodController.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest))
+
+        status(result) must be(Status.OK)
+      }
+
+      "in edit mode" in {
+        mockFetchOverseasProperty(None)
         mockOverseasPropertyAccountingMethod(
           postAction = routes.OverseasPropertyAccountingMethodController.submit(editMode = true),
           backUrl = routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
         )
-        mockFetchOverseasPropertyAccountingMethod(Some(Cash))
+        lazy val result = await(TestOverseasPropertyAccountingMethodController.show(isEditMode = true, isGlobalEdit = false)(subscriptionRequest))
 
-        lazy val result: Result = await(controller.show(isEditMode = true, isGlobalEdit = false)(subscriptionRequest))
-
-        status(result) mustBe OK
-        contentType(result) mustBe Some(HTML)
+        status(result) must be(Status.OK)
       }
 
-      "in global edit mode" in withController { controller =>
+      "in global edit mode" in {
+        mockFetchOverseasProperty(None)
         mockOverseasPropertyAccountingMethod(
           postAction = routes.OverseasPropertyAccountingMethodController.submit(editMode = true, isGlobalEdit = true),
           backUrl = routes.OverseasPropertyCheckYourAnswersController.show(editMode = true, isGlobalEdit = true).url
         )
-        mockFetchOverseasPropertyAccountingMethod(Some(Cash))
+        lazy val result = await(TestOverseasPropertyAccountingMethodController.show(isEditMode = true, isGlobalEdit = true)(subscriptionRequest))
 
-        lazy val result: Result = await(controller.show(isEditMode = true, isGlobalEdit = true)(subscriptionRequest))
-
-        status(result) mustBe OK
-        contentType(result) mustBe Some(HTML)
-      }
-
-      "not in edit mode" in withController { controller =>
-        mockOverseasPropertyAccountingMethod(
-          postAction = routes.OverseasPropertyAccountingMethodController.submit(),
-          backUrl = routes.OverseasPropertyStartDateController.submit().url
-        )
-        mockFetchOverseasPropertyAccountingMethod(Some(Cash))
-
-        lazy val result: Result = await(controller.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest))
-
-        status(result) mustBe OK
-        contentType(result) mustBe Some(HTML)
+        status(result) must be(Status.OK)
       }
     }
   }
 
-  "submit" should withController { controller =>
+  "submit" should {
 
-    def callSubmit(isEditMode: Boolean, isGlobalEdit: Boolean): Future[Result] = controller.submit(isEditMode, isGlobalEdit)(
+    def callSubmit(isEditMode: Boolean): Future[Result] = TestOverseasPropertyAccountingMethodController.submit(isEditMode = isEditMode, isGlobalEdit = false)(
       subscriptionRequest.post(AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm, Cash)
     )
 
-    def callSubmitWithErrorForm(isEditMode: Boolean, isGlobalEdit: Boolean): Future[Result] = controller.submit(isEditMode, isGlobalEdit)(
-      subscriptionRequest.withFormUrlEncodedBody()
-    )
+    def callSubmitWithErrorForm(isEditMode: Boolean, isGlobalEdit: Boolean = false): Future[Result] =
+      TestOverseasPropertyAccountingMethodController.submit(isEditMode, isGlobalEdit)(subscriptionRequest)
 
-    "redirect to overseas property check your answer page" when {
+    "redirect to foreign property check your answers page" when {
       "not in edit mode" in {
         mockSaveOverseasAccountingMethodProperty(Cash)(Right(PostSubscriptionDetailsSuccessResponse))
 
-        val goodRequest = callSubmit(isEditMode = false, isGlobalEdit = false)
+        val goodRequest = callSubmit(isEditMode = false)
+
+        await(goodRequest)
 
         status(goodRequest) mustBe SEE_OTHER
         redirectLocation(goodRequest) mustBe Some(routes.OverseasPropertyCheckYourAnswersController.show().url)
-
-        await(goodRequest)
       }
 
       "in edit mode" in {
-        mockSaveOverseasAccountingMethodProperty(Cash)(Right(PostSubscriptionDetailsSuccessResponse))
+        mockSaveOverseasAccountingMethodProperty(Accruals)(Right(PostSubscriptionDetailsSuccessResponse))
 
-        val goodRequest = callSubmit(isEditMode = true, isGlobalEdit = false)
-
+        val goodRequest = TestOverseasPropertyAccountingMethodController.submit(isEditMode = true, isGlobalEdit = false)(
+          subscriptionRequest.post(AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm, Accruals)
+        )
         status(goodRequest) mustBe SEE_OTHER
         redirectLocation(goodRequest) mustBe Some(routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url)
-
-        await(goodRequest)
       }
 
       "in global edit mode" in {
-        mockSaveOverseasAccountingMethodProperty(Cash)(Right(PostSubscriptionDetailsSuccessResponse))
+        mockSaveOverseasAccountingMethodProperty(Accruals)(Right(PostSubscriptionDetailsSuccessResponse))
 
-        val goodRequest = callSubmit(isEditMode = true, isGlobalEdit = true)
-
+        val goodRequest = TestOverseasPropertyAccountingMethodController.submit(isEditMode = true, isGlobalEdit = true)(
+          subscriptionRequest.post(AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm, Accruals)
+        )
         status(goodRequest) mustBe SEE_OTHER
         redirectLocation(goodRequest) mustBe Some(routes.OverseasPropertyCheckYourAnswersController.show(editMode = true, isGlobalEdit = true).url)
-
-        await(goodRequest)
       }
     }
 
     "return bad request status (400)" when {
       "there is an invalid submission with an error form" when {
         "not in edit mode" in {
+          mockFetchOverseasProperty(None)
           mockOverseasPropertyAccountingMethod(
             postAction = routes.OverseasPropertyAccountingMethodController.submit(),
-            backUrl = routes.OverseasPropertyStartDateController.show().url)
-
-          val badRequest = callSubmitWithErrorForm(isEditMode = false, isGlobalEdit = false)
-
-          status(badRequest) must be(Status.BAD_REQUEST)
-        }
-
-        "in edit mode" in {
-          mockOverseasPropertyAccountingMethod(
-            postAction = routes.OverseasPropertyAccountingMethodController.submit(editMode = true),
-            backUrl = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url)
-
-          val badRequest = callSubmitWithErrorForm(isEditMode = true, isGlobalEdit = false)
+            backUrl = routes.ForeignPropertyStartDateBeforeLimitController.show().url
+          )
+          val badRequest = callSubmitWithErrorForm(isEditMode = false)
 
           status(badRequest) must be(Status.BAD_REQUEST)
         }
 
-        "in globaledit mode" in {
+        "in global edit mode" in {
+          mockFetchOverseasProperty(None)
           mockOverseasPropertyAccountingMethod(
             postAction = routes.OverseasPropertyAccountingMethodController.submit(editMode = true, isGlobalEdit = true),
-            backUrl = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true, isGlobalEdit = true).url)
-
+            backUrl = routes.OverseasPropertyCheckYourAnswersController.show(editMode = true, isGlobalEdit = true).url
+          )
           val badRequest = callSubmitWithErrorForm(isEditMode = true, isGlobalEdit = true)
 
           status(badRequest) must be(Status.BAD_REQUEST)
@@ -190,14 +181,58 @@ class OverseasPropertyAccountingMethodControllerSpec extends ControllerBaseSpec
 
     "throw an exception" when {
       "cannot save the accounting method" in {
+        mockFetchOverseasProperty(None)
         mockSaveOverseasAccountingMethodProperty(Cash)(Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
-        val exceptionRequest = callSubmit(isEditMode = false, isGlobalEdit = false)
+        val result: Future[Result] = callSubmit(isEditMode = false)
 
-        intercept[InternalServerException](await(exceptionRequest))
-          .message mustBe "[OverseasPropertyAccountingMethodController][submit] - Could not save accounting method"
+        intercept[InternalServerException](await(result)).message mustBe "[OverseasPropertyAccountingMethodController][submit] - Could not save accounting method"
       }
     }
-
   }
+
+  "backUrl" should {
+    "return a link to the check your answers page" when {
+      "in edit mode" in {
+        TestOverseasPropertyAccountingMethodController.backUrl(
+          isEditMode = true,
+          isGlobalEdit = false,
+          maybeStartDateBeforeLimit = None
+        ) mustBe routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
+      }
+      "in global edit mode" in {
+        TestOverseasPropertyAccountingMethodController.backUrl(
+          isEditMode = false,
+          isGlobalEdit = true,
+          maybeStartDateBeforeLimit = None
+        ) mustBe routes.OverseasPropertyCheckYourAnswersController.show(editMode = true, isGlobalEdit = true).url
+      }
+    }
+    "return a link to the start date page" when {
+      "start date before limit is false" in {
+        TestOverseasPropertyAccountingMethodController.backUrl(
+          isEditMode = false,
+          isGlobalEdit = false,
+          maybeStartDateBeforeLimit = Some(false)
+        ) mustBe routes.ForeignPropertyStartDateController.show().url
+      }
+    }
+    "return a link to the start date before limit page" when {
+      "the start date before limit value is true" in {
+        TestOverseasPropertyAccountingMethodController.backUrl(
+          isEditMode = false,
+          isGlobalEdit = false,
+          maybeStartDateBeforeLimit = Some(true)
+        ) mustBe routes.ForeignPropertyStartDateBeforeLimitController.show().url
+      }
+      "the start date before limit has no value" in {
+        TestOverseasPropertyAccountingMethodController.backUrl(
+          isEditMode = false,
+          isGlobalEdit = false,
+          maybeStartDateBeforeLimit = None
+        ) mustBe routes.ForeignPropertyStartDateBeforeLimitController.show().url
+      }
+    }
+  }
+
 }

@@ -241,13 +241,36 @@ agent.error.property.day-year.invalid                           = The date must 
 agent.error.property.month-year.invalid                         = The date must be a real date
 agent.error.property.year.length                                = Year must include 4 numbers
 
-## Overseas Property Start Date
-overseas.property.name.title                                    = When did you start your foreign property business?
-overseas.property.name.heading                                  = When did you start your foreign property business?
-overseas.property.name.caption                                  = Foreign property
-overseas.property.para1                                         = This is when you started letting any foreign property.
-overseas.property.para2                                         = The date your business started trading can be today, in the past or up to 7 days in the future.
-overseas.property.start-date.hint                               = For example, 17 8 2014.
+## Foreign Property Start Date
+individual.foreign-property.start-date.title                    = Start date for income from foreign property
+individual.foreign-property.start-date.heading                  = Start date
+individual.foreign-property.start-date.caption                  = Your foreign property
+individual.foreign-property.start-date.para-one                 = We need to know the exact start date.
+individual.foreign-property.start-date.hint                     = For example, 27 9 {0}.
+
+# Foreign Property Start Date Errors
+error.individual.foreign-property.day-month-year.empty                    = Enter the date you started getting income from foreign property
+error.individual.foreign-property.day.empty                               = The date must include a day
+error.individual.foreign-property.month.empty                             = The date must include a month
+error.individual.foreign-property.year.empty                              = The date must include a year
+error.individual.foreign-property.day-month.empty                         = The date must include a day and a month
+error.individual.foreign-property.day-year.empty                          = The date must include a day and a year
+error.individual.foreign-property.month-year.empty                        = The date must include a month and a year
+error.individual.foreign-property.day-month-year.max-date                 = The date cannot be more than 7 days in the future
+error.individual.foreign-property.day-month-year.min-date                 = The date must be on or after {0}
+error.individual.foreign-property.day-month-year.invalid                  = The date must be a real date
+error.individual.foreign-property.day.invalid                             = The date must be a real date
+error.individual.foreign-property.month.invalid                           = The date must be a real date
+error.individual.foreign-property.year.invalid                            = The date must be a real date
+error.individual.foreign-property.day-month.invalid                       = The date must be a real date
+error.individual.foreign-property.day-year.invalid                        = The date must be a real date
+error.individual.foreign-property.month-year.invalid                      = The date must be a real date
+error.individual.foreign-property.year.length                             = Year must include 4 numbers
+
+## Foreign property start date before limit
+individual.foreign-property.start-date-before-limit.heading             = Did you start getting this income before 6 April {0}?
+individual.foreign-property.start-date-before-limit.caption             = Your foreign property
+error.individual.foreign-property.start-date-before-limit.invalid       = Select ‘Yes’ if you started getting income from foreign property before 6 April {0}
 
 # Agent Overseas Property Start Date
 agent.overseas-property.start-date.title                        = When did your client start their foreign property business?
@@ -255,25 +278,6 @@ agent.overseas-property.start-date.heading                      = When did your 
 agent.overseas-property.start-date.heading.caption              = {0} | {1}
 agent.overseas-property.start-date.para1                        = The date your client’s business started trading can be today, in the past or up to 7 days in the future.
 agent.overseas-property.start-date.hint                         = For example, 17 8 2014.
-
-# Overseas Property Start Date errors
-error.overseas.property.day-month-year.empty                    = Enter the date your foreign property business started trading
-error.overseas.property.day.empty                               = The date must include a day
-error.overseas.property.month.empty                             = The date must include a month
-error.overseas.property.year.empty                              = The date must include a year
-error.overseas.property.day-month.empty                         = The date must include a day and a month
-error.overseas.property.day-year.empty                          = The date must include a day and a year
-error.overseas.property.month-year.empty                        = The date must include a month and a year
-error.overseas.property.day-month-year.max-date                 = The date your foreign property business started trading must be the same as or before {0}
-error.overseas.property.day-month-year.min-date                 = The date your property business started must be on or after {0}
-error.overseas.property.day-month-year.invalid                  = The date must be a real date
-error.overseas.property.day.invalid                             = The date must be a real date
-error.overseas.property.month.invalid                           = The date must be a real date
-error.overseas.property.year.invalid                            = The date must be a real date
-error.overseas.property.day-month.invalid                       = The date must be a real date
-error.overseas.property.day-year.invalid                        = The date must be a real date
-error.overseas.property.month-year.invalid                      = The date must be a real date
-error.overseas.property.year.length                             = The year must be in four digits. For example, 2020.
 
 ## Timeout page ##
 timeout.title                                                   = Your session has timed out
@@ -973,14 +977,11 @@ business.check-your-answers.content.uk-property-accounting-method.question      
 business.check-your-answers.content.uk-property-start-date-before-limit.before-limit    = Before 6 April {0}
 
 ## Overseas property check your answers
-business.check-your-answers.content.overseas-property.title                      = Check your answers - Foreign property
-business.check-your-answers.content.overseas-property.caption                    = Foreign property
-business.check-your-answers.content.overseas-property-start-date.question        = Start date
-business.check-your-answers.content.overseas-property-start-date.add             = Add start date
-business.check-your-answers.content.overseas-property-start-date.change          = Change start date
-business.check-your-answers.content.overseas-property-accounting-method.question = Accounting method
-business.check-your-answers.content.overseas-property-accounting-method.add      = Add accounting method
-business.check-your-answers.content.overseas-property-accounting-method.change   = Change accounting method
+business.check-your-answers.content.overseas-property.title                                     = Check your answers - Foreign property
+business.check-your-answers.content.overseas-property.caption                                   = Foreign property
+business.check-your-answers.content.overseas-property-start-date.question                       = Start date
+business.check-your-answers.content.overseas-property-start-date-before-limit.before-limit      = Before 6 April {0}
+business.check-your-answers.content.overseas-property-accounting-method.question                = Accounting method
 
 ## Remove business
 business.remove-sole-trader-business.title        = Are you sure you want to delete this business?

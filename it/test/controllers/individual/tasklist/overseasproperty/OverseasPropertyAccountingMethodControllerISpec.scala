@@ -122,6 +122,7 @@ class OverseasPropertyAccountingMethodControllerISpec extends ComponentSpecBase 
       "not selecting an option on the foreign property accounting method page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
 
         When("POST /business/overseas-property-accounting-method is called")
 

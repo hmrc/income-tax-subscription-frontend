@@ -30,7 +30,7 @@ import utilities.SubscriptionDataKeys.{IncomeSourceConfirmation, OverseasPropert
 
 import java.time.LocalDate
 
-class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
+class ForeignPropertyStartDateControllerISpec extends ComponentSpecBase {
   "GET /report-quarterly/income-and-expenses/sign-up/business/overseas-property-start-date" when {
     "Subscription Details returns all data" should {
       "show the overseas property start date page" in {
@@ -49,7 +49,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
         val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
         res must have(
           httpStatus(OK),
-          pageTitle(messages("overseas.property.name.title") + serviceNameGovUk),
+          pageTitle(messages("individual.foreign-property.start-date.title") + serviceNameGovUk),
           govukDateField("startDate", testPropertyStartDate.startDate)
         )
       }
@@ -67,7 +67,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the overseas property start date page with no commencement date")
         res must have(
           httpStatus(OK),
-          pageTitle(messages("overseas.property.name.title") + serviceNameGovUk)
+          pageTitle(messages("individual.foreign-property.start-date.title") + serviceNameGovUk)
         )
       }
     }

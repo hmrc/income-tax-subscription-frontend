@@ -16,26 +16,22 @@
 
 package forms.individual.business
 
-import forms.formatters.DateModelMapping.dateModelMapping
-import models.DateModel
+import forms.submapping.YesNoMapping
+import models.YesNo
 import play.api.data.Form
 import play.api.data.Forms.single
+import play.api.data.validation.Invalid
+import utilities.AccountingPeriodUtil
 
-import java.time.LocalDate
+object ForeignPropertyStartDateBeforeLimitForm {
 
-object OverseasPropertyStartDateForm {
+  val startDateBeforeLimit = "start-date-before-limit"
 
-  val startDate: String = "startDate"
-
-  def maxStartDate: LocalDate = LocalDate.now().plusDays(6)
-
-  def minStartDate: LocalDate = LocalDate.of(1900, 1, 1)
-
-  val errorContext: String = "overseas.property"
-
-  def overseasPropertyStartDateForm(minStartDate: LocalDate, maxStartDate: LocalDate, f: LocalDate => String): Form[DateModel] = Form(
+  val startDateBeforeLimitForm: Form[YesNo] = Form(
     single(
-      startDate -> dateModelMapping(isAgent = false, errorContext, Some(minStartDate), Some(maxStartDate), Some(f))
+      startDateBeforeLimit -> YesNoMapping.yesNoMapping(
+        yesNoInvalid = Invalid("error.individual.foreign-property.start-date-before-limit.invalid", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
+      )
     )
   )
 

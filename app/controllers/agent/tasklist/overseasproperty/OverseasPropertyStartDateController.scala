@@ -54,7 +54,7 @@ class OverseasPropertyStartDateController @Inject()(overseasPropertyStartDate: O
       for {
         reference <- referenceRetrieval.getAgentReference
         clientDetails <- clientDetailsRetrieval.getClientDetails
-        startDate <- subscriptionDetailsService.fetchOverseasPropertyStartDate(reference)
+        startDate <- subscriptionDetailsService.fetchForeignPropertyStartDate(reference)
       } yield {
         Ok(view(
           overseasPropertyStartDateForm = form.fill(startDate), isEditMode, clientDetails
@@ -71,7 +71,7 @@ class OverseasPropertyStartDateController @Inject()(overseasPropertyStartDate: O
               BadRequest(view(overseasPropertyStartDateForm = formWithErrors, isEditMode = isEditMode, clientDetails))
             },
           startDate =>
-            subscriptionDetailsService.saveOverseasPropertyStartDate(reference, startDate) map {
+            subscriptionDetailsService.saveForeignPropertyStartDate(reference, startDate) map {
               case Right(_) =>
                 if (isEditMode) {
                   Redirect(routes.OverseasPropertyCheckYourAnswersController.show(isEditMode))
