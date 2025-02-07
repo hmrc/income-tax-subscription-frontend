@@ -168,12 +168,12 @@ trait MockSubscriptionDetailsService extends PlaySpec with MockitoSugar with Bef
   }
 
   def mockFetchOverseasPropertyStartDate(date: Option[DateModel]): Unit = {
-    when(mockSubscriptionDetailsService.fetchOverseasPropertyStartDate(ArgumentMatchers.any())(ArgumentMatchers.any()))
+    when(mockSubscriptionDetailsService.fetchForeignPropertyStartDate(ArgumentMatchers.any())(ArgumentMatchers.any()))
       .thenReturn(Future.successful(date))
   }
 
   def mockSaveOverseasPropertyStartDate(date: DateModel)(result: PostSubscriptionDetailsResponse): Unit = {
-    when(mockSubscriptionDetailsService.saveOverseasPropertyStartDate(ArgumentMatchers.any(), ArgumentMatchers.eq(date))(ArgumentMatchers.any()))
+    when(mockSubscriptionDetailsService.saveForeignPropertyStartDate(ArgumentMatchers.any(), ArgumentMatchers.eq(date))(ArgumentMatchers.any()))
       .thenReturn(Future.successful(result))
   }
 

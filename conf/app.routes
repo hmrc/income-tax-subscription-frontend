@@ -70,13 +70,17 @@ POST        /business/overseas-property-accounting-method        controllers.ind
 GET         /business/property-start-date-before-limit           controllers.individual.tasklist.ukproperty.PropertyStartDateBeforeLimitController.show(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
 POST        /business/property-start-date-before-limit           controllers.individual.tasklist.ukproperty.PropertyStartDateBeforeLimitController.submit(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
 
+# Foreign Property start date before limit
+GET         /business/foreign-property-start-date-before-limit   controllers.individual.tasklist.overseasproperty.ForeignPropertyStartDateBeforeLimitController.show(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
+POST        /business/foreign-property-start-date-before-limit   controllers.individual.tasklist.overseasproperty.ForeignPropertyStartDateBeforeLimitController.submit(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
+
 #Property Start Date Routes
 GET         /business/property-commencement-date                 controllers.individual.tasklist.ukproperty.PropertyStartDateController.show(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
 POST        /business/property-commencement-date                 controllers.individual.tasklist.ukproperty.PropertyStartDateController.submit(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
 
 #Foreign Property Start Date Routes
-GET         /business/overseas-property-start-date               controllers.individual.tasklist.overseasproperty.OverseasPropertyStartDateController.show(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
-POST        /business/overseas-property-start-date               controllers.individual.tasklist.overseasproperty.OverseasPropertyStartDateController.submit(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
+GET         /business/overseas-property-start-date               controllers.individual.tasklist.overseasproperty.ForeignPropertyStartDateController.show(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
+POST        /business/overseas-property-start-date               controllers.individual.tasklist.overseasproperty.ForeignPropertyStartDateController.submit(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
 
 # Identity Verification return routes
 GET         /iv-success                                          controllers.individual.iv.IVSuccessController.success

@@ -16,7 +16,7 @@
 
 package views.agent.tasklist.overseasproperty
 
-import forms.individual.business.OverseasPropertyStartDateForm
+import forms.agent.OverseasPropertyStartDateForm
 import models.DateModel
 import org.jsoup.Jsoup
 import play.api.data.{Form, FormError}
@@ -45,10 +45,10 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
   val backUrl: String = testBackUrl
   val action: Call = testCall
   val taxYearEnd: Int = 2020
-  val testError: FormError = FormError("startDate", "error.overseas.property.day-month-year.empty")
+  val testError: FormError = FormError("startDate", "agent.error.overseas.property.day-month-year.empty")
   val titleSuffix = " - Use software to report your client’s Income Tax - GOV.UK"
 
-  private val defaultForm: Form[DateModel] = OverseasPropertyStartDateForm.overseasPropertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString)
+  private val defaultForm: Form[DateModel] = OverseasPropertyStartDateForm.overseasPropertyStartDateForm(LocalDate.now, LocalDate.now, _.toString)
 
   private def document(
                         isEditMode: Boolean = false,

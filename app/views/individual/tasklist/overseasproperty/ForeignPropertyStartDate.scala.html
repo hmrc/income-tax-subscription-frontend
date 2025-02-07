@@ -14,9 +14,10 @@
  * limitations under the License.
  *@
 
-@import forms.individual.business.OverseasPropertyStartDateForm._
+@import forms.individual.business.ForeignPropertyStartDateForm._
 @import views.html.helpers.{DateHelper, SaveAndContinueButtonHelper, PageHeadingHelper}
 @import views.html.templates.PrincipalMainTemplate
+@import utilities.AccountingPeriodUtil
 
 @this(
         mainTemplate: PrincipalMainTemplate,
@@ -26,34 +27,31 @@
         saveAndContinueButtonHelper: SaveAndContinueButtonHelper
 )
 
-@(overseasPropertyStartDateForm: Form[DateModel], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
+@(startDateForm: Form[DateModel], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("overseas.property.name.title"), optForm = Some(overseasPropertyStartDateForm), backLink = Some(backUrl)) {
+@mainTemplate(title = messages("individual.foreign-property.start-date.title"), optForm = Some(startDateForm), backLink = Some(backUrl)) {
 
     @pageHeadingHelper(
-        heading = messages("overseas.property.name.heading"),
-        caption = messages("overseas.property.name.caption"),
+        heading = messages("individual.foreign-property.start-date.heading"),
+        caption = messages("individual.foreign-property.start-date.caption"),
         isSection = true
     )
 
-    <p class="govuk-body">@messages("overseas.property.para1")</p>
-    <p class="govuk-body">@messages("overseas.property.para2")</p>
+    <p class="govuk-body">@messages("individual.foreign-property.start-date.para-one")</p>
 
     @form(action = postAction) {
-
         @dateHelper(
-            field = overseasPropertyStartDateForm(startDate),
-            legendContent = messages("overseas.property.name.heading"),
-            hintText = Some(messages("overseas.property.start-date.hint")),
-            parentForm = overseasPropertyStartDateForm,
+            field = startDateForm(startDate),
+            legendContent = messages("individual.foreign-property.start-date.heading"),
             isPageHeading = false,
-            isLegendVisible = false
+            isLegendVisible = false,
+            parentForm = startDateForm,
+            hintText = Some(messages("individual.foreign-property.start-date.hint", AccountingPeriodUtil.getStartDateLimit.getYear.toString))
         )
 
       @saveAndContinueButtonHelper(
         isIndividual = true,
-        saveAndReturnReference = None
+        saveAndReturnReference = Some("foreign-property-start-date")
       )
     }
-
 }

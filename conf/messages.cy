@@ -190,13 +190,13 @@ error.property.day-year.empty                                   = Mae’n rhaid 
 error.property.month-year.empty                                 = Mae’n rhaid i’r dyddiad gynnwys mis a blwyddyn
 error.property.day-month-year.max-date                          = Ni all y dyddiad fod yn fwy na 7 diwrnod yn y dyfodol
 error.property.day-month-year.min-date                          = Mae’n rhaid i’r dyddiad fod ar neu ar ôl {0}
-error.property.day-month-year.invalid                           = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.property.day.invalid                                      = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.property.month.invalid                                    = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.property.year.invalid                                     = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.property.day-month.invalid                                = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.property.day-year.invalid                                 = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.property.month-year.invalid                               = Rhaid i’r dyddiad fod yn ddyddiad go iawn
+error.property.day-month-year.invalid                           = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+error.property.day.invalid                                      = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+error.property.month.invalid                                    = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+error.property.year.invalid                                     = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+error.property.day-month.invalid                                = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+error.property.day-year.invalid                                 = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+error.property.month-year.invalid                               = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
 error.property.year.length                                      = Mae’n rhaid i’r flwyddyn gynnwys 4 rhif
 
 # Agent Property Start Date Date
@@ -231,22 +231,45 @@ agent.error.property.day-year.empty                             = Mae’n rhaid 
 agent.error.property.month-year.empty                           = Mae’n rhaid i’r dyddiad gynnwys mis a blwyddyn
 agent.error.property.day-month-year.max-date                    = Mae’n rhaid i’r dyddiad gwnaeth y busnes eiddo yn y DU ddechrau masnachu fod ar neu cyn {0}
 agent.error.property.day-month-year.min-date                    = Mae’n rhaid i’r dyddiad fod ar neu ar ôl {0}
-agent.error.property.day-month-year.invalid                     = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.property.day.invalid                                = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.property.month.invalid                              = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.property.year.invalid                               = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.property.day-month.invalid                          = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.property.day-year.invalid                           = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.property.month-year.invalid                         = Rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.property.day-month-year.invalid                     = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.property.day.invalid                                = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.property.month.invalid                              = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.property.year.invalid                               = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.property.day-month.invalid                          = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.property.day-year.invalid                           = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.property.month-year.invalid                         = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
 agent.error.property.year.length                                = Mae’n rhaid i’r flwyddyn gynnwys 4 rhif
 
-## Overseas Property Start Date
-overseas.property.name.title                                     = Pryd y gwnaethoch ddechrau eich busnes eiddo tramor?
-overseas.property.name.heading                                   = Pryd y gwnaethoch ddechrau eich busnes eiddo tramor?
-overseas.property.name.caption                                   = Eiddo tramor
-overseas.property.para1                                          = Dyma pryd y gwnaethoch ddechrau rhoi unrhyw eiddo tramor ar osod.
-overseas.property.para2                                          = Gall y dyddiad y dechreuodd eich busnes fasnachu fod heddiw, yn y gorffennol neu hyd at 7 diwrnod yn y dyfodol
-overseas.property.start-date.hint                                = Er enghraifft, 17 8 2014.
+## Foreign Property Start Date
+individual.foreign-property.start-date.title                     = Dyddiad dechrau ar gyfer incwm o eiddo tramor
+individual.foreign-property.start-date.heading                   = Dyddiad dechrau
+individual.foreign-property.start-date.caption                   = Eich eiddo tramor
+individual.foreign-property.start-date.para-one                  = Mae angen i ni wybod yr union ddyddiad dechrau.
+individual.foreign-property.start-date.hint                      = Er enghraifft, 27 9 {0}
+
+# Foreign Property Start Date Errors
+error.individual.foreign-property.day-month-year.empty           = Nodwch y dyddiad y gwnaethoch ddechrau cael incwm o eiddo tramor
+error.individual.foreign-property.day.empty                      = Mae’n rhaid i’r dyddiad gynnwys diwrnod
+error.individual.foreign-property.month.empty                    = Mae’n rhaid i’r dyddiad gynnwys mis
+error.individual.foreign-property.year.empty                     = Mae’n rhaid i’r dyddiad gynnwys blwyddyn
+error.individual.foreign-property.day-month.empty                = Mae’n rhaid i’r dyddiad gynnwys diwrnod a mis
+error.individual.foreign-property.day-year.empty                 = Mae’n rhaid i’r dyddiad gynnwys diwrnod a blwyddyn
+error.individual.foreign-property.month-year.empty               = Mae’n rhaid i’r dyddiad gynnwys mis a blwyddyn
+error.individual.foreign-property.day-month-year.max-date        = Ni all y dyddiad fod yn fwy na 7 diwrnod yn y dyfodol
+error.individual.foreign-property.day-month-year.min-date        = Mae’n rhaid i’r dyddiad fod ar neu ar ôl {0}
+error.individual.foreign-property.day-month-year.invalid         = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+error.individual.foreign-property.day.invalid                    = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+error.individual.foreign-property.month.invalid                  = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+error.individual.foreign-property.year.invalid                   = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+error.individual.foreign-property.day-month.invalid              = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+error.individual.foreign-property.day-year.invalid               = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+error.individual.foreign-property.month-year.invalid             = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+error.individual.foreign-property.year.length                    = Mae’n rhaid i’r flwyddyn gynnwys 4 rhif
+
+## Foreign property start date before limit
+individual.foreign-property.start-date-before-limit.heading             = A oeddech wedi dechrau cael yr incwm hwn cyn 6 Ebrill {0}?
+individual.foreign-property.start-date-before-limit.caption             = Eich eiddo tramor
+error.individual.foreign-property.start-date-before-limit.invalid       = Dewiswch ‘Iawn’ os oeddech wedi dechrau cael incwm o eiddo tramor cyn 6 Ebrill {0}
 
 # Agent Overseas Property Start Date
 agent.overseas-property.start-date.title                         = Pryd y gwnaeth eich cleient ddechrau ei fusnes eiddo tramor?
@@ -254,25 +277,6 @@ agent.overseas-property.start-date.heading                       = Pryd y gwnaet
 agent.overseas-property.start-date.heading.caption               = {0} | {1}
 agent.overseas-property.start-date.para1                         = Gall y dyddiad y dechreuodd busnes eich cleient fasnachu fod heddiw, yn y gorffennol neu hyd at 8 diwrnod yn y dyfodol.
 agent.overseas-property.start-date.hint                          = Er enghraifft, 17 8 2014.
-
-# Overseas Property Start Date errors
-error.overseas.property.day-month-year.empty                     = Nodwch y dyddiad y dechreuodd eich busnes eiddo tramor fasnachu
-error.overseas.property.day.empty                                = Mae’n rhaid i’r dyddiad gynnwys diwrnod
-error.overseas.property.month.empty                              = Mae’n rhaid i’r dyddiad gynnwys mis
-error.overseas.property.year.empty                               = Mae’n rhaid i’r dyddiad gynnwys blwyddyn
-error.overseas.property.day-month.empty                          = Mae’n rhaid i’r dyddiad gynnwys diwrnod a mis
-error.overseas.property.day-year.empty                           = Mae’n rhaid i’r dyddiad gynnwys diwrnod a blwyddyn
-error.overseas.property.month-year.empty                         = Mae’n rhaid i’r dyddiad gynnwys mis a blwyddyn
-error.overseas.property.day-month-year.max-date                  = Rhaid i’r dyddiad y dechreuodd eich busnes eiddo tramor fasnachu fod ar neu cyn {0}
-error.overseas.property.day-month-year.min-date                  = Rhaid i’r dyddiad y dechreuodd eich busnes eiddo yn y DU fasnachu fod ar neu ar ôl {0}
-error.overseas.property.day-month-year.invalid                   = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.overseas.property.day.invalid                              = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.overseas.property.month.invalid                            = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.overseas.property.year.invalid                             = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.overseas.property.day-month.invalid                        = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.overseas.property.day-year.invalid                         = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.overseas.property.month-year.invalid                       = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.overseas.property.year.length                              = Mae’n rhaid i flwyddyn fod yn bedwar digid. Er enghraifft, 2020.
 
 ## Timeout page ##
 timeout.title                                                   = Mae’ch sesiwn wedi cyrraedd y terfyn amser
@@ -454,13 +458,13 @@ error.user-details.date-of-birth.day-month.empty                = Mae’n rhaid 
 error.user-details.date-of-birth.day-year.empty                 = Mae’n rhaid i’ch dyddiad geni gynnwys diwrnod a blwyddyn
 error.user-details.date-of-birth.month-year.empty               = Mae’n rhaid i’ch dyddiad geni gynnwys mis a blwyddyn
 error.user-details.date-of-birth.day-month-year.not-in-past     = Mae’n rhaid i’ch dyddiad geni fod yn y gorffennol
-error.user-details.date-of-birth.day-month-year.invalid         = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.user-details.date-of-birth.day.invalid                    = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.user-details.date-of-birth.month.invalid                  = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.user-details.date-of-birth.year.invalid                   = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.user-details.date-of-birth.day-month.invalid              = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.user-details.date-of-birth.day-year.invalid               = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.user-details.date-of-birth.month-year.invalid             = Rhaid i’r dyddiad fod yn ddyddiad go iawn
+error.user-details.date-of-birth.day-month-year.invalid         = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+error.user-details.date-of-birth.day.invalid                    = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+error.user-details.date-of-birth.month.invalid                  = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+error.user-details.date-of-birth.year.invalid                   = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+error.user-details.date-of-birth.day-month.invalid              = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+error.user-details.date-of-birth.day-year.invalid               = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+error.user-details.date-of-birth.month-year.invalid             = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
 error.user-details.date-of-birth.year.length                    = Mae’n rhaid i flwyddyn fod yn bedwar digid. Er enghraifft, 2020.
 
 ## Stub User Details ##
@@ -815,14 +819,14 @@ agent.error.client-details.date-of-birth.day-month.empty                        
 agent.error.client-details.date-of-birth.day-year.empty                             = Rhaid i’w dyddiad geni gynnwys diwrnod a blwyddyn
 agent.error.client-details.date-of-birth.month-year.empty                           = Rhaid i’w dyddiad geni gynnwys mis a blwyddyn
 agent.error.client-details.date-of-birth.day-month-year.not-in-past                 = Rhaid i’w dyddiad geni fod yn y gorffennol
-agent.error.client-details.date-of-birth.day-month-year.invalid                     = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.client-details.date-of-birth.date.invalid                               = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.client-details.date-of-birth.day.invalid                                = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.client-details.date-of-birth.month.invalid                              = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.client-details.date-of-birth.year.invalid                               = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.client-details.date-of-birth.day-month.invalid                          = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.client-details.date-of-birth.day-year.invalid                           = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.client-details.date-of-birth.month-year.invalid                         = Rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.client-details.date-of-birth.day-month-year.invalid                     = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.client-details.date-of-birth.date.invalid                               = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.client-details.date-of-birth.day.invalid                                = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.client-details.date-of-birth.month.invalid                              = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.client-details.date-of-birth.year.invalid                               = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.client-details.date-of-birth.day-month.invalid                          = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.client-details.date-of-birth.day-year.invalid                           = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.client-details.date-of-birth.month-year.invalid                         = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
 agent.error.client-details.date-of-birth.year.length                                = Mae’n rhaid i flwyddyn fod yn bedwar digid. Er enghraifft, 2020.
 
 # Sole Trader Eligibility invalid
@@ -894,13 +898,13 @@ agent.error.overseas.property.day.empty                         = Mae’n rhaid 
 agent.error.overseas.property.month.empty                       = Mae’n rhaid i’r dyddiad gynnwys mis
 agent.error.overseas.property.day-month-year.max-date           = Mae’n rhaid i’r dyddiad gwnaeth y busnes eiddo tramor ddechrau masnachu fod ar neu cyn {0}
 agent.error.overseas.property.day-month-year.min-date           = Rhaid i’r dyddiad y dechreuodd busnes eiddo eich cleient fasnachu fod ar neu ar ôl {0}
-agent.error.overseas.property.day-month-year.invalid            = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.overseas.property.month-year.invalid                = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.overseas.property.day-month.invalid                 = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.overseas.property.day-year.invalid                  = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.overseas.property.year.invalid                      = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.overseas.property.day.invalid                       = Rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.overseas.property.month.invalid                     = Rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.overseas.property.day-month-year.invalid            = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.overseas.property.month-year.invalid                = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.overseas.property.day-month.invalid                 = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.overseas.property.day-year.invalid                  = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.overseas.property.year.invalid                      = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.overseas.property.day.invalid                       = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.overseas.property.month.invalid                     = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
 agent.error.overseas.property.year.length                       = Mae’n rhaid i flwyddyn fod yn bedwar digid. Er enghraifft, 2020.
 
 ## agent Tax Year Check Your Answers
@@ -970,14 +974,11 @@ business.check-your-answers.content.uk-property-accounting-method.question      
 business.check-your-answers.content.uk-property-start-date-before-limit.before-limit    = Cyn 6 Ebrill {0}
 
 ## Overseas property check your answers
-business.check-your-answers.content.overseas-property.title                      = Gwirio’ch atebion – Eiddo tramor
-business.check-your-answers.content.overseas-property.caption                    = Eiddo tramor
-business.check-your-answers.content.overseas-property-start-date.question        = Dyddiad dechrau
-business.check-your-answers.content.overseas-property-start-date.add             = Ychwanegu dyddiad dechrau
-business.check-your-answers.content.overseas-property-start-date.change          = Newid dyddiad dechrau
-business.check-your-answers.content.overseas-property-accounting-method.question = Dull cyfrifyddu
-business.check-your-answers.content.overseas-property-accounting-method.add      = Ychwanegu dull cyfrifyddu
-business.check-your-answers.content.overseas-property-accounting-method.change   = Newid y dull cyfrifyddu
+business.check-your-answers.content.overseas-property.title                                     = Gwirio’ch atebion – Eiddo tramor
+business.check-your-answers.content.overseas-property.caption                                   = Eiddo tramor
+business.check-your-answers.content.overseas-property-start-date.question                       = Dyddiad dechrau
+business.check-your-answers.content.overseas-property-start-date-before-limit.before-limit      = Cyn 6 Ebrill {0}
+business.check-your-answers.content.overseas-property-accounting-method.question                = Dull cyfrifyddu
 
 ## Remove business
 business.remove-sole-trader-business.title        = A ydych yn siŵr eich bod am ddileu’r busnes hwn?

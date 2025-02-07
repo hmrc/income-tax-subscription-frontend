@@ -168,6 +168,30 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
     }
   }
 
+  def fetchForeignPropertyStartDateBeforeLimit(reference: String)(implicit hc: HeaderCarrier): Future[Option[YesNo]] = {
+    fetchOverseasProperty(reference) map { maybeOverseasProperty =>
+      maybeOverseasProperty.flatMap(_.startDateBeforeLimit) map {
+        case true => Yes
+        case false => No
+      }
+    }
+  }
+
+  def saveForeignPropertyStartDateBeforeLimit(reference: String, startDateBeforeLimit: YesNo)
+                                             (implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
+    val savedValue = startDateBeforeLimit match {
+      case Yes => true
+      case No => false
+    }
+
+    fetchOverseasProperty(reference) map {
+      case Some(overseasProperty) => overseasProperty.copy(startDateBeforeLimit = Some(savedValue), confirmed = false)
+      case None => OverseasPropertyModel(startDateBeforeLimit = Some(savedValue))
+    } flatMap { model =>
+      saveOverseasProperty(reference, model)
+    }
+  }
+
   def fetchOverseasProperty(reference: String)(implicit hc: HeaderCarrier): Future[Option[OverseasPropertyModel]] =
     incomeTaxSubscriptionConnector.getSubscriptionDetails[OverseasPropertyModel](reference, SubscriptionDataKeys.OverseasProperty)
 
@@ -214,10 +238,10 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
     incomeTaxSubscriptionConnector.retrieveReference(utr)
   }
 
-  def fetchOverseasPropertyStartDate(reference: String)(implicit hc: HeaderCarrier): Future[Option[DateModel]] =
+  def fetchForeignPropertyStartDate(reference: String)(implicit hc: HeaderCarrier): Future[Option[DateModel]] =
     fetchOverseasProperty(reference).map(_.flatMap(_.startDate))
 
-  def saveOverseasPropertyStartDate(reference: String, propertyStartDate: DateModel)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
+  def saveForeignPropertyStartDate(reference: String, propertyStartDate: DateModel)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
     fetchOverseasProperty(reference) map {
       case Some(property) => property.copy(startDate = Some(propertyStartDate), confirmed = false)
       case None => OverseasPropertyModel(startDate = Some(propertyStartDate))

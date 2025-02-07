@@ -23,20 +23,20 @@ import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
-import views.html.individual.tasklist.overseasproperty.OverseasPropertyStartDate
+import views.html.individual.tasklist.overseasproperty.ForeignPropertyStartDate
 
 trait MockOverseasPropertyStartDate extends PlaySpec with MockitoSugar with BeforeAndAfterEach {
 
-  val overseasPropertyStartDate: OverseasPropertyStartDate = mock[OverseasPropertyStartDate]
+  val foreignPropertyStartDate: ForeignPropertyStartDate = mock[ForeignPropertyStartDate]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(overseasPropertyStartDate)
+    reset(foreignPropertyStartDate)
   }
 
-  def mockOverseasPropertyStartDateView(postAction: Call, backUrl: String): Unit = {
-    when(overseasPropertyStartDate(
-      overseasPropertyStartDateForm = ArgumentMatchers.any(),
+  def mockForeignPropertyStartDateView(postAction: Call, backUrl: String): Unit = {
+    when(foreignPropertyStartDate(
+      startDateForm = ArgumentMatchers.any(),
       postAction = ArgumentMatchers.eq(postAction),
       backUrl = ArgumentMatchers.eq(backUrl)
     )(ArgumentMatchers.any(), ArgumentMatchers.any()))
