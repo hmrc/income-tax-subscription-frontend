@@ -16,16 +16,16 @@
 
 package controllers.agent.tasklist.overseasproperty
 
+import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import forms.agent.IncomeSourcesOverseasPropertyForm
-import models.common.OverseasPropertyModel
-import models.{AccountingMethod, DateModel}
+import forms.agent.IncomeSourcesOverseasPropertyForm.overseasPropertyIncomeSourcesFormNoDate
+import models.{No, Yes}
 import play.api.data.Form
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
-import utilities.ImplicitDateFormatter
 import views.html.agent.tasklist.overseasproperty.IncomeSourcesOverseasProperty
 
 import javax.inject.{Inject, Singleton}
@@ -33,19 +33,19 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class IncomeSourcesOverseasPropertyController @Inject()(identify: IdentifierAction,
-                                                        implicitDateFormatter: ImplicitDateFormatter,
                                                         journeyRefiner: ConfirmedClientJourneyRefiner,
                                                         subscriptionDetailsService: SubscriptionDetailsService,
                                                         view: IncomeSourcesOverseasProperty)
+                                                       (val appConfig: AppConfig)
                                                        (implicit cc: MessagesControllerComponents, ec: ExecutionContext)
   extends SignUpBaseController {
 
   def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
     subscriptionDetailsService.fetchOverseasProperty(request.reference) map { maybeOverseasProperty =>
       val formData: Map[String, String] = IncomeSourcesOverseasPropertyForm.createOverseasPropertyMapData(maybeOverseasProperty)
-      val boundForm = form.bind(formData).discardingErrors
+      val form: Form[_] = overseasPropertyIncomeSourcesFormNoDate
       Ok(view(
-        incomeSourcesOverseasPropertyForm = boundForm,
+        incomeSourcesOverseasPropertyForm = form.bind(formData).discardingErrors,
         postAction = routes.IncomeSourcesOverseasPropertyController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
         backUrl = backUrl(isEditMode, isGlobalEdit),
         clientDetails = request.clientDetails
@@ -53,30 +53,37 @@ class IncomeSourcesOverseasPropertyController @Inject()(identify: IdentifierActi
     }
   }
 
-  def submit(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
-    form.bindFromRequest().fold(
-      formWithErrors =>
-        Future.successful(BadRequest(view(
-          incomeSourcesOverseasPropertyForm = formWithErrors,
-          postAction = routes.IncomeSourcesOverseasPropertyController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
-          backUrl = backUrl(isEditMode, isGlobalEdit),
-          clientDetails = request.clientDetails
-        ))),
-      {
-        case (startDate, accountingMethod) =>
-          val overseasPropertyModel = OverseasPropertyModel(accountingMethod = Some(accountingMethod), startDate = Some(startDate))
-          subscriptionDetailsService.saveOverseasProperty(request.reference, overseasPropertyModel) map {
-            case Right(_) => Redirect(routes.OverseasPropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit))
-            case Left(_) => throw new InternalServerException("[IncomeSourcesOverseasPropertyController][submit] - Could not save overseas property")
+  def submit(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
+      overseasPropertyIncomeSourcesFormNoDate.bindFromRequest().fold(
+          formWithErrors =>
+            Future.successful(BadRequest(view(
+                  incomeSourcesOverseasPropertyForm = formWithErrors,
+                  postAction = routes.IncomeSourcesOverseasPropertyController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
+                  backUrl = backUrl(isEditMode, isGlobalEdit),
+                  clientDetails = request.clientDetails
+                ))),
+          { case (startDateBeforeLimit, accountingMethod) =>
+            subscriptionDetailsService.saveStreamlineForeignProperty(
+                reference = request.reference,
+                maybeStartDate = None,
+                maybeStartDateBeforeLimit = startDateBeforeLimit match {
+                  case Yes => Some(true)
+                  case No  => Some(false)
+                },
+                accountingMethod = accountingMethod
+              )
+              .map {
+                case Right(_) =>
+                  if (startDateBeforeLimit == No) {
+                    Redirect(controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.show(editMode = isEditMode, isGlobalEdit = isGlobalEdit))
+                  } else {
+                    Redirect(controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = isEditMode, isGlobalEdit = isGlobalEdit))
+                  }
+                case Left(_) => throw new InternalServerException("[IncomeSourcesOverseasPropertyController][saveDataAndContinue] - Could not save foreign property income source")
+              }
           }
-      }
-    )
-  }
-
-  private def form(implicit request: Request[_]): Form[(DateModel, AccountingMethod)] = {
-    import implicitDateFormatter.LongDate
-    IncomeSourcesOverseasPropertyForm.incomeSourcesOverseasPropertyForm(_.toLongDate)
-  }
+        )
+    }
 
   private def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean): String = {
     if (isEditMode || isGlobalEdit) {

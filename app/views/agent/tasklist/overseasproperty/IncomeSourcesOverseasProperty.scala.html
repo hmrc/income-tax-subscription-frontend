@@ -16,10 +16,12 @@
 
 @import forms.agent.IncomeSourcesOverseasPropertyForm
 @import forms.submapping.AccountingMethodMapping
+@import forms.submapping.YesNoMapping
 @import play.api.data.Form
-@import views.html.helpers.{DateHelper, DetailsHelper, RadioHelper, SaveAndContinueButtonHelper, PageHeadingHelper}
+@import views.html.helpers.{DateHelper, DetailsHelper, RadioHelper, SaveAndContinueButtonHelper, PageHeadingHelper, YesNoRadioHelper}
 @import views.html.templates.AgentMainTemplate
 @import utilities.UserMatchingSessionUtil.ClientDetails
+@import utilities.AccountingPeriodUtil
 @import forms.agent.OverseasPropertyStartDateForm._
 
 @this(
@@ -28,12 +30,12 @@
     dateHelper: DateHelper,
     detailsHelper: DetailsHelper,
     radioHelper: RadioHelper,
+    yesNoRadioHelper: YesNoRadioHelper,
     saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
     pageHeadingHelper: PageHeadingHelper
 )
 
-@(incomeSourcesOverseasPropertyForm: Form[(DateModel, AccountingMethod)], postAction: Call, backUrl: String, clientDetails: ClientDetails)(implicit request: Request[_], messages: Messages)
-
+@(incomeSourcesOverseasPropertyForm: Form[_], postAction: Call, backUrl: String, clientDetails: ClientDetails)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = messages("agent.foreign-property.income-sources.title"), optForm = Some(incomeSourcesOverseasPropertyForm), backLink = Some(backUrl)) {
 
@@ -45,13 +47,12 @@
 
   @form(action = postAction) {
 
-    @dateHelper(
-      field = incomeSourcesOverseasPropertyForm(IncomeSourcesOverseasPropertyForm.startDate),
-      legendContent = messages("agent.foreign-property.income-sources.start-date.heading"),
-      isPageHeading = false,
-      isLegendVisible = true,
-      parentForm = incomeSourcesOverseasPropertyForm,
-      hintText = Some(messages("agent.foreign-property.income-sources.start-date.hint"))
+    @yesNoRadioHelper(
+        field = incomeSourcesOverseasPropertyForm(IncomeSourcesOverseasPropertyForm.startDateBeforeLimit),
+        legend = messages("agent.foreign-property.income-source.start-date-before-limit.legend", AccountingPeriodUtil.getStartDateLimit.getYear.toString),
+        isPageHeading = false,
+        headingClasses = "govuk-!-font-weight-bold",
+        inline = true
     )
 
     <p class="govuk-body govuk-!-font-weight-bold">

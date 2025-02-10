@@ -19,61 +19,62 @@ package views.agent.tasklist.overseasproperty
 import forms.agent.OverseasPropertyStartDateForm
 import models.DateModel
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Element
 import play.api.data.{Form, FormError}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import utilities.UserMatchingSessionUtil.ClientDetails
-import utilities.ViewSpec
+import utilities.{AccountingPeriodUtil, ViewSpec}
 import views.html.agent.tasklist.overseasproperty.OverseasPropertyStartDate
 
 import java.time.LocalDate
 
 class OverseasPropertyStartDateViewSpec extends ViewSpec {
   object OverseasPropertyStartDateMessages {
-    val heading = "When did your client start their foreign property business?"
-    val para1 = "The date your client’s business started trading can be today, in the past or up to 7 days in the future."
-    val hint = "For example, 17 8 2014."
+    val heading = "Start date for income from foreign property"
+    val caption: String = "FirstName LastName | ZZ 11 11 11 Z"
+    val para1 = "We need to know the exact start date."
+    val hint = s"For example, 27 9 ${AccountingPeriodUtil.getStartDateLimit.getYear}"
     val saveAndContinue = "Save and continue"
+    val saveAndComeBackLater = "Save and come back later"
     val backLink = "Back"
-    val maxDate = "The date the overseas property business started trading must be on or before 11 April 2021"
-    val minDate = "The date your client’s property business started trading must be on or after 11 April 2021"
+    val maxDate = "The date cannot be more than 7 days in the future"
+    val minDate = "The date must be on or after 11 April 2021"
   }
 
+  val testError: FormError = FormError("startDate", "agent.error.overseas.property.day-month-year.empty")
+
   val overseasPropertyStartDate: OverseasPropertyStartDate = app.injector.instanceOf[OverseasPropertyStartDate]
+  val defaultForm: Form[DateModel] = OverseasPropertyStartDateForm.overseasPropertyStartDateForm(LocalDate.now, LocalDate.now, _.toString)
 
   val backUrl: String = testBackUrl
   val action: Call = testCall
   val taxYearEnd: Int = 2020
-  val testError: FormError = FormError("startDate", "agent.error.overseas.property.day-month-year.empty")
+
   val titleSuffix = " - Use software to report your client’s Income Tax - GOV.UK"
+  private def document(overseasPropertyStartDateForm: Form[DateModel] = OverseasPropertyStartDateForm.overseasPropertyStartDateForm(
+    minStartDate = LocalDate.now(),
+    maxStartDate = LocalDate.now(),
+    f = d => d.toString
+  )) = Jsoup.parse(page(overseasPropertyStartDateForm).body)
 
-  private val defaultForm: Form[DateModel] = OverseasPropertyStartDateForm.overseasPropertyStartDateForm(LocalDate.now, LocalDate.now, _.toString)
-
-  private def document(
-                        isEditMode: Boolean = false,
-                        overseasPropertyStartDateForm: Form[DateModel] = defaultForm) = {
-
-    val page: HtmlFormat.Appendable = overseasPropertyStartDate(
+  private def page(overseasPropertyStartDateForm: Form[DateModel]) =
+    overseasPropertyStartDate(
       overseasPropertyStartDateForm,
-      action,
-      backUrl,
-      isEditMode,
+      testCall,
+      testBackUrl,
       ClientDetails("FirstName LastName", "ZZ111111Z")
     )(FakeRequest(), implicitly)
 
-    Jsoup.parse(page.body)
-  }
-
-  "Overseas Start Date page" must {
+  "Overseas Start Date Page" must {
     "have the correct page template" when {
       "there is no error" in new TemplateViewTest(
         view = overseasPropertyStartDate(
-          defaultForm,
-          testCall,
-          testBackUrl,
-          isEditMode = false,
-          ClientDetails("FirstName LastName", "ZZ111111Z")
+          overseasPropertyStartDateForm = defaultForm,
+          postAction = testCall,
+          backUrl = testBackUrl,
+          clientDetails = ClientDetails("FirstName LastName", "ZZ111111Z")
         ),
         title = OverseasPropertyStartDateMessages.heading,
         isAgent = true,
@@ -82,11 +83,10 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
 
       "there is an error" in new TemplateViewTest(
         view = overseasPropertyStartDate(
-          defaultForm.withError(testError),
-          testCall,
-          testBackUrl,
-          isEditMode = false,
-          ClientDetails("FirstName LastName", "ZZ111111Z")
+          overseasPropertyStartDateForm = defaultForm.withError(testError),
+          postAction = testCall,
+          backUrl = testBackUrl,
+          clientDetails = ClientDetails("FirstName LastName", "ZZ111111Z")
         ),
         title = OverseasPropertyStartDateMessages.heading,
         isAgent = true,
@@ -98,32 +98,60 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
     "have a heading and caption" in {
       document().mainContent.mustHaveHeadingAndCaption(
         heading = OverseasPropertyStartDateMessages.heading,
-        caption = s"FirstName LastName | ZZ 11 11 11 Z",
+        caption = OverseasPropertyStartDateMessages.caption,
         isSection = false
       )
     }
 
-    "have a paragraph One" in {
-      document().selectNth("p", 2).text() mustBe OverseasPropertyStartDateMessages.para1
+    "have a paragraph one" in {
+      document().mainContent.selectNth("p", 1).text() mustBe OverseasPropertyStartDateMessages.para1
     }
 
-    "have a Form" in {
-      document().getForm.attr("method") mustBe testCall.method
-      document().getForm.attr("action") mustBe testCall.url
+    "have a form" which {
+      def form: Element = document().mainContent.getForm
+
+      "has the correct attributes" in {
+        form.attr("method") mustBe testCall.method
+        form.attr("action") mustBe testCall.url
+      }
+
+      "has a date input" in {
+        form.mustHaveDateInput(
+          id = OverseasPropertyStartDateForm.startDate,
+          legend = OverseasPropertyStartDateMessages.heading,
+          exampleDate = OverseasPropertyStartDateMessages.hint,
+          isHeading = false,
+          isLegendHidden = true,
+          dateInputsValues = Seq(
+            DateInputFieldValues("Day", None),
+            DateInputFieldValues("Month", None),
+            DateInputFieldValues("Year", None)
+          )
+        )
+      }
+
+      "has a save & continue button" in {
+        form.getGovukSubmitButton.text mustBe OverseasPropertyStartDateMessages.saveAndContinue
+      }
+
+      "has a save & come back later button" in {
+        val saveAndComeBackLater: Element = form.selectHead(".govuk-button--secondary")
+
+        saveAndComeBackLater.text mustBe OverseasPropertyStartDateMessages.saveAndComeBackLater
+        saveAndComeBackLater.attr("href") mustBe controllers.agent.tasklist.routes.ProgressSavedController.show(location = Some("overseas-property-start-date")).url
+      }
     }
 
-    "have a save and continue button when not in edit mode" in {
-      document().mainContent.getGovukSubmitButton.text mustBe OverseasPropertyStartDateMessages.saveAndContinue
-    }
 
-    "have a backlink " in {
-      document().getGovukBackLink.text mustBe OverseasPropertyStartDateMessages.backLink
-      document().getGovukBackLink.attr("href") mustBe testBackUrl
-    }
 
-    "display max date error on page" in {
-      val dateValidationError = FormError("startDate", "agent.error.overseas.property.day-month-year.max-date", List("11 April 2021"))
-      val doc = document(overseasPropertyStartDateForm = defaultForm.withError(dateValidationError))
+    "must display max date error form error on page" in {
+      val dateValidationError = FormError("startDate", "agent.error.overseas.property.day-month-year.max-date")
+      val formWithError = OverseasPropertyStartDateForm
+        .overseasPropertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString)
+        .withError(dateValidationError)
+
+      val doc = document(overseasPropertyStartDateForm = formWithError)
+
       doc.mustHaveDateInput(
         id = "startDate",
         legend = OverseasPropertyStartDateMessages.heading,
@@ -139,9 +167,14 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
       )
     }
 
-    "display min date error on page" in {
+    "must display min date error form error on page" in {
       val dateValidationError = FormError("startDate", "agent.error.overseas.property.day-month-year.min-date", List("11 April 2021"))
-      val doc = document(overseasPropertyStartDateForm = defaultForm.withError(dateValidationError))
+      val formWithError = OverseasPropertyStartDateForm
+        .overseasPropertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString)
+        .withError(dateValidationError)
+
+      val doc = document(overseasPropertyStartDateForm = formWithError)
+
       doc.mustHaveDateInput(
         id = "startDate",
         legend = OverseasPropertyStartDateMessages.heading,

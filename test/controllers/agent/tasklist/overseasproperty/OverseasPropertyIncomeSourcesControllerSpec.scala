@@ -16,19 +16,20 @@
 
 package controllers.agent.tasklist.overseasproperty
 
+import config.{AppConfig, MockConfig}
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.{PostSubscriptionDetailsSuccessResponse, UnexpectedStatusFailure}
 import controllers.ControllerSpec
 import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}
 import forms.agent.IncomeSourcesOverseasPropertyForm
 import models.common.OverseasPropertyModel
-import models.{Cash, DateModel}
+import models.{AccountingMethod, Cash, DateModel}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
 import play.api.mvc.Result
 import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, status}
 import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
-import utilities.ImplicitDateFormatter
+import utilities.{AccountingPeriodUtil, ImplicitDateFormatter}
 import views.agent.tasklist.overseasproperty.mocks.MockIncomeSourcesOverseasProperty
 
 import scala.concurrent.Future
@@ -57,8 +58,34 @@ class OverseasPropertyIncomeSourcesControllerSpec extends ControllerSpec
         status(result) mustBe OK
         contentType(result) mustBe Some(HTML)
       }
-      "there is only a saved start date" in {
-        mockFetchOverseasProperty(Some(startDateOnlyOverseasProperty))
+      "there is only a saved start date which is older than the start date limit" in {
+        mockFetchOverseasProperty(Some(OverseasPropertyModel(startDate = Some(DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit.minusDays(1))))))
+        mockIncomeSourcesOverseasProperty(
+          postAction = routes.IncomeSourcesOverseasPropertyController.submit(),
+          backUrl = controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url,
+          clientDetails = clientDetails
+        )
+
+        val result: Future[Result] = TestIncomeSourcesOverseasPropertyController.show(isEditMode = false, isGlobalEdit = false)(request)
+
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+      }
+      "there is only a saved start date which is within the limit" in {
+        mockFetchOverseasProperty(Some(OverseasPropertyModel(startDate = Some(DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit)))))
+        mockIncomeSourcesOverseasProperty(
+          postAction = routes.IncomeSourcesOverseasPropertyController.submit(),
+          backUrl = controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url,
+          clientDetails = clientDetails
+        )
+
+        val result: Future[Result] = TestIncomeSourcesOverseasPropertyController.show(isEditMode = false, isGlobalEdit = false)(request)
+
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+      }
+      "there is only a start date before limit answer" in {
+        mockFetchOverseasProperty(Some(OverseasPropertyModel(startDateBeforeLimit = Some(false))))
         mockIncomeSourcesOverseasProperty(
           postAction = routes.IncomeSourcesOverseasPropertyController.submit(),
           backUrl = controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url,
@@ -172,14 +199,14 @@ class OverseasPropertyIncomeSourcesControllerSpec extends ControllerSpec
         }
       }
     }
-    "complete and valid input is submitted" should {
-      "redirect to the overseas property check your answers and save the property" when {
+    "they have submitted their start date is before the limit" should {
+      "redirect to the property check your answers and save the property" when {
         "not in edit mode" in {
-          mockSaveOverseasProperty(fullOverseasProperty)(Right(PostSubscriptionDetailsSuccessResponse))
+          mockSaveStreamlineForeignProperty(None, Some(true), accountingMethod)(Right(PostSubscriptionDetailsSuccessResponse))
 
           val result: Future[Result] = TestIncomeSourcesOverseasPropertyController.submit(isEditMode = false, isGlobalEdit = false)(
             request.withMethod("POST").withHeaders("Content-Type" -> "application/x-www-form-urlencoded").withFormUrlEncodedBody(
-              IncomeSourcesOverseasPropertyForm.createOverseasPropertyMapData(Some(fullOverseasProperty)).toSeq: _*
+              IncomeSourcesOverseasPropertyForm.createOverseasPropertyMapData(Some(fullOverseasProperty.copy(startDateBeforeLimit = Some(true)))).toSeq: _*
             )
           )
 
@@ -187,11 +214,11 @@ class OverseasPropertyIncomeSourcesControllerSpec extends ControllerSpec
           redirectLocation(result) mustBe Some(routes.OverseasPropertyCheckYourAnswersController.show().url)
         }
         "in edit mode" in {
-          mockSaveOverseasProperty(fullOverseasProperty)(Right(PostSubscriptionDetailsSuccessResponse))
+          mockSaveStreamlineForeignProperty(None, Some(true), accountingMethod)(Right(PostSubscriptionDetailsSuccessResponse))
 
           val result: Future[Result] = TestIncomeSourcesOverseasPropertyController.submit(isEditMode = true, isGlobalEdit = false)(
             request.withMethod("POST").withHeaders("Content-Type" -> "application/x-www-form-urlencoded").withFormUrlEncodedBody(
-              IncomeSourcesOverseasPropertyForm.createOverseasPropertyMapData(Some(fullOverseasProperty)).toSeq: _*
+              IncomeSourcesOverseasPropertyForm.createOverseasPropertyMapData(Some(fullOverseasProperty.copy(startDateBeforeLimit = Some(true)))).toSeq: _*
             )
           )
 
@@ -199,11 +226,11 @@ class OverseasPropertyIncomeSourcesControllerSpec extends ControllerSpec
           redirectLocation(result) mustBe Some(routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url)
         }
         "in global edit mode" in {
-          mockSaveOverseasProperty(fullOverseasProperty)(Right(PostSubscriptionDetailsSuccessResponse))
+          mockSaveStreamlineForeignProperty(None, Some(true), accountingMethod)(Right(PostSubscriptionDetailsSuccessResponse))
 
           val result: Future[Result] = TestIncomeSourcesOverseasPropertyController.submit(isEditMode = false, isGlobalEdit = true)(
             request.withMethod("POST").withHeaders("Content-Type" -> "application/x-www-form-urlencoded").withFormUrlEncodedBody(
-              IncomeSourcesOverseasPropertyForm.createOverseasPropertyMapData(Some(fullOverseasProperty)).toSeq: _*
+              IncomeSourcesOverseasPropertyForm.createOverseasPropertyMapData(Some(fullOverseasProperty.copy(startDateBeforeLimit = Some(true)))).toSeq: _*
             )
           )
 
@@ -213,7 +240,61 @@ class OverseasPropertyIncomeSourcesControllerSpec extends ControllerSpec
       }
       "throw an internal server exception" when {
         "there was a problem saving the property business" in {
-          mockSaveOverseasProperty(fullOverseasProperty)(Left(UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
+          mockSaveStreamlineForeignProperty(None, Some(true), accountingMethod)(Left(UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
+
+          val result: Future[Result] = TestIncomeSourcesOverseasPropertyController.submit(isEditMode = false, isGlobalEdit = false)(
+            request.withMethod("POST").withHeaders("Content-Type" -> "application/x-www-form-urlencoded").withFormUrlEncodedBody(
+              IncomeSourcesOverseasPropertyForm.createOverseasPropertyMapData(Some(fullOverseasProperty.copy(startDateBeforeLimit = Some(true)))).toSeq: _*
+            )
+          )
+
+          intercept[InternalServerException](await(result))
+            .message mustBe "[IncomeSourcesOverseasPropertyController][saveDataAndContinue] - Could not save foreign property income source"
+        }
+      }
+    }
+    "they have submitted their start date is not before the limit" should {
+      "redirect to the foreign property start date page" when {
+        "not in edit mode" in {
+          mockSaveStreamlineForeignProperty(None, Some(false), accountingMethod)(Right(PostSubscriptionDetailsSuccessResponse))
+
+          val result: Future[Result] = TestIncomeSourcesOverseasPropertyController.submit(isEditMode = false, isGlobalEdit = false)(
+            request.withMethod("POST").withHeaders("Content-Type" -> "application/x-www-form-urlencoded").withFormUrlEncodedBody(
+              IncomeSourcesOverseasPropertyForm.createOverseasPropertyMapData(Some(fullOverseasProperty)).toSeq: _*
+            )
+          )
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(routes.OverseasPropertyStartDateController.show().url)
+        }
+        "in edit mode" in {
+          mockSaveStreamlineForeignProperty(None, Some(false), accountingMethod)(Right(PostSubscriptionDetailsSuccessResponse))
+
+          val result: Future[Result] = TestIncomeSourcesOverseasPropertyController.submit(isEditMode = true, isGlobalEdit = false)(
+            request.withMethod("POST").withHeaders("Content-Type" -> "application/x-www-form-urlencoded").withFormUrlEncodedBody(
+              IncomeSourcesOverseasPropertyForm.createOverseasPropertyMapData(Some(fullOverseasProperty)).toSeq: _*
+            )
+          )
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(routes.OverseasPropertyStartDateController.show(editMode = true).url)
+        }
+        "in global edit mode" in {
+          mockSaveStreamlineForeignProperty(None, Some(false), accountingMethod)(Right(PostSubscriptionDetailsSuccessResponse))
+
+          val result: Future[Result] = TestIncomeSourcesOverseasPropertyController.submit(isEditMode = false, isGlobalEdit = true)(
+            request.withMethod("POST").withHeaders("Content-Type" -> "application/x-www-form-urlencoded").withFormUrlEncodedBody(
+              IncomeSourcesOverseasPropertyForm.createOverseasPropertyMapData(Some(fullOverseasProperty)).toSeq: _*
+            )
+          )
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(routes.OverseasPropertyStartDateController.show(isGlobalEdit = true).url)
+        }
+      }
+      "throw an internal server exception" when {
+        "there was a problem saving the property business" in {
+          mockSaveStreamlineForeignProperty(None, Some(false), accountingMethod)(Left(UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
           val result: Future[Result] = TestIncomeSourcesOverseasPropertyController.submit(isEditMode = false, isGlobalEdit = false)(
             request.withMethod("POST").withHeaders("Content-Type" -> "application/x-www-form-urlencoded").withFormUrlEncodedBody(
@@ -222,24 +303,31 @@ class OverseasPropertyIncomeSourcesControllerSpec extends ControllerSpec
           )
 
           intercept[InternalServerException](await(result))
-            .message mustBe "[IncomeSourcesOverseasPropertyController][submit] - Could not save overseas property"
+            .message mustBe "[IncomeSourcesOverseasPropertyController][saveDataAndContinue] - Could not save foreign property income source"
         }
       }
     }
   }
 
-  lazy val startDateOnlyOverseasProperty: OverseasPropertyModel = OverseasPropertyModel(startDate = Some(DateModel("1", "1", "1980")))
+  lazy val startDate: DateModel = DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit)
+  lazy val accountingMethod: AccountingMethod = Cash
+
   lazy val accountingMethodOnlyOverseasProperty: OverseasPropertyModel = OverseasPropertyModel(accountingMethod = Some(Cash))
-  lazy val fullOverseasProperty: OverseasPropertyModel = OverseasPropertyModel(startDate = Some(DateModel("1", "1", "1980")), accountingMethod = Some(Cash))
+
+  lazy val fullOverseasProperty: OverseasPropertyModel = OverseasPropertyModel(
+    startDate = Some(startDate),
+    startDateBeforeLimit = Some(false),
+    accountingMethod = Some(accountingMethod)
+  )
 
   val implicitDateFormatter: ImplicitDateFormatter = app.injector.instanceOf[ImplicitDateFormatter]
+  val appConfig: AppConfig = MockConfig
 
   object TestIncomeSourcesOverseasPropertyController extends IncomeSourcesOverseasPropertyController(
     fakeIdentifierAction,
-    implicitDateFormatter,
     fakeConfirmedClientJourneyRefiner,
     mockSubscriptionDetailsService,
     mockView
-  )
-
+  )(appConfig)
 }
+

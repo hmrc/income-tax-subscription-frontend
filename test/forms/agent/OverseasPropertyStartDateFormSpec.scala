@@ -17,128 +17,161 @@
 package forms.agent
 
 import forms.agent.OverseasPropertyStartDateForm.{overseasPropertyStartDateForm, startDate}
+import forms.formatters.DateModelMapping
 import forms.formatters.DateModelMapping.{day, month, year}
 import forms.validation.testutils.DataMap.DataMap
 import models.DateModel
 import org.scalatestplus.play.PlaySpec
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.data.{Form, FormError}
 
 import java.time.LocalDate
 
-class OverseasPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
+class OverseasPropertyStartDateFormSpec extends PlaySpec {
+
+  val minStartDate: LocalDate = PropertyStartDateForm.minStartDate
+  val maxStartDate: LocalDate = PropertyStartDateForm.maxStartDate
+  val errorContext: String = "agent.error.overseas.property"
 
   def form: Form[DateModel] = {
-    overseasPropertyStartDateForm(OverseasPropertyStartDateForm.minStartDate, OverseasPropertyStartDateForm.maxStartDate, d => d.toString)
+    overseasPropertyStartDateForm(minStartDate, maxStartDate, _.toString)
   }
 
-  "The OverseasPropertyStartDateForm" should {
+  def boundForm(day: String, month: String, year: String): Form[DateModel] = {
+    form.bind(Map(
+      s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.day}" -> day,
+      s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.month}" -> month,
+      s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.year}" -> year
+    ))
+  }
 
-    "transform a valid request to the date form case class" in {
+  "OverseasPropertyStartDateForm" should {
+    "return a date model" when {
+      "a minimum possible date is provided" in {
+        val date: DateModel = DateModel.dateConvert(minStartDate)
 
-      val testDateDay = "31"
-      val testDateMonth = "5"
-      val testDateYear = "2017"
-      val testInput = Map(
-        s"$startDate-$day" -> testDateDay, s"$startDate-$month" -> testDateMonth, s"$startDate-$year" -> testDateYear
-      )
-      val expected = DateModel(testDateDay, testDateMonth, testDateYear)
-      val actual = form.bind(testInput).value
-      actual mustBe Some(expected)
-    }
-    "when testing the validation" should {
-      "output the appropriate error messages for the start date" when {
-        val dayKeyError: String = s"$startDate-$day"
-        val monthKeyError: String = s"$startDate-$month"
-        val yearKeyError: String = s"$startDate-$year"
+        boundForm(day = date.day, month = date.month, year = date.year)
+          .value mustBe Some(date)
+      }
+      "a maximum possible date is provided" in {
+        val date: DateModel = DateModel.dateConvert(maxStartDate)
 
-        val errorContext: String = "agent.error.overseas.property"
-
-        "the date is not supplied to the map" in {
-          form.bind(DataMap.EmptyMap).errors must contain(FormError(dayKeyError, s"$errorContext.day-month-year.empty"))
-        }
-        "it is not within 7 days including current date" in {
-          val sevenDaysInFuture: LocalDate = LocalDate.now.plusDays(7)
-          val maxTest = form.bind(DataMap.govukDate(startDate)(
-            sevenDaysInFuture.getDayOfMonth.toString,
-            sevenDaysInFuture.getMonthValue.toString,
-            sevenDaysInFuture.getYear.toString
-          ))
-          maxTest.errors must contain(FormError(dayKeyError, s"$errorContext.day-month-year.max-date", List(OverseasPropertyStartDateForm.maxStartDate.toString)))
-        }
-
-        "it is before year 1900" in {
-          val minTest = form.bind(DataMap.govukDate(startDate)("31", "12", "1899"))
-          minTest.errors must contain(FormError(dayKeyError, s"$errorContext.day-month-year.min-date", Seq(OverseasPropertyStartDateForm.minStartDate.toString)))
-        }
-        "it is missing the day" in {
-          val test = form.bind(DataMap.govukDate(startDate)("", "4", "2017"))
-          test.errors must contain(FormError(dayKeyError, s"$errorContext.day.empty"))
-        }
-        "it is missing the month" in {
-          val test = form.bind(DataMap.govukDate(startDate)("1", "", "2017"))
-          test.errors must contain(FormError(monthKeyError, s"$errorContext.month.empty"))
-        }
-        "it is missing the year" in {
-          val test = form.bind(DataMap.govukDate(startDate)("1", "1", ""))
-          test.errors must contain(FormError(yearKeyError, s"$errorContext.year.empty"))
-        }
-        "it is missing multiple fields" in {
-          val test = form.bind(DataMap.govukDate(startDate)("", "", "2017"))
-          test.errors must contain(FormError(dayKeyError, s"$errorContext.day-month.empty"))
-        }
-        "it has an invalid day" in {
-          val test = form.bind(DataMap.govukDate(startDate)("0", "1", "2017"))
-          test.errors must contain(FormError(dayKeyError, s"$errorContext.day.invalid"))
-        }
-        "it has an invalid month" in {
-          val test = form.bind(DataMap.govukDate(startDate)("1", "13", "2017"))
-          test.errors must contain(FormError(monthKeyError, s"$errorContext.month.invalid"))
-        }
-        "it has an invalid year" in {
-          val test = form.bind(DataMap.govukDate(startDate)("1", "1", "invalid"))
-          test.errors must contain(FormError(yearKeyError, s"$errorContext.year.invalid"))
-        }
-        "it has multiple invalid fields" in {
-          val test = form.bind(DataMap.govukDate(startDate)("0", "0", "2017"))
-          test.errors must contain(FormError(dayKeyError, s"$errorContext.day-month.invalid"))
-        }
-        "the year provided is not the correct length" when {
-          "the year is 3 digits" in {
-            val test = form.bind(DataMap.govukDate(startDate)("1", "1", "123"))
-            test.errors must contain(FormError(yearKeyError, s"$errorContext.year.length"))
-          }
-          "the year is 5 digits" in {
-            val test = form.bind(DataMap.govukDate(startDate)("1", "1", "12345"))
-            test.errors must contain(FormError(yearKeyError, s"$errorContext.year.length"))
-          }
-        }
+        boundForm(day = date.day, month = date.month, year = date.year)
+          .value mustBe Some(date)
       }
     }
-    "accept a valid date" when {
-      "the date is within 7 days from current date" in {
-        val sevenDaysInPast: LocalDate = LocalDate.now.plusDays(6)
-        val testData = DataMap.govukDate(startDate)(
-          day = sevenDaysInPast.getDayOfMonth.toString,
-          month = sevenDaysInPast.getMonthValue.toString,
-          year = sevenDaysInPast.getYear.toString
+    "return a form error" when {
+      "a date must be a real date for day" in {
+        val expectedError: FormError = FormError(
+          key = s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.day}",
+          message = s"$errorContext.day.invalid"
         )
-        val validated = form.bind(testData)
-        validated.hasErrors mustBe false
-        validated.hasGlobalErrors mustBe false
+
+        boundForm(day = "0", month = "12", year = "2023")
+          .errors mustBe Seq(expectedError)
       }
-      "the date is the first of january 1900" in {
-        val earliestAllowedDate: LocalDate = LocalDate.of(1900, 1, 1)
-        val testData = DataMap.govukDate(startDate)(
-          day = earliestAllowedDate.getDayOfMonth.toString,
-          month = earliestAllowedDate.getMonthValue.toString,
-          year = earliestAllowedDate.getYear.toString
+      "a date must be a real date for month" in {
+        val expectedError: FormError = FormError(
+          key = s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.month}",
+          message = s"$errorContext.month.invalid"
         )
-        val validated = form.bind(testData)
-        validated.hasErrors mustBe false
-        validated.hasGlobalErrors mustBe false
+
+        boundForm(day = "1", month = "13", year = "2023")
+          .errors mustBe Seq(expectedError)
+      }
+      "a date must be a real date for year" in {
+        val expectedError: FormError = FormError(
+          key = s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.year}",
+          message = s"$errorContext.year.invalid"
+        )
+
+        boundForm(day = "1", month = "12", year = "A")
+          .errors mustBe Seq(expectedError)
+      }
+      "a year must include 4 numbers" in {
+        val expectedError: FormError = FormError(
+          key = s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.year}",
+          message = s"$errorContext.year.length"
+        )
+
+        boundForm(day = "1", month = "12", year = "200")
+          .errors mustBe Seq(expectedError)
+      }
+      "a date before the minimum possible date is provided" in {
+        val date: DateModel = DateModel.dateConvert(minStartDate.minusDays(1))
+        val expectedError: FormError = FormError(
+          key = s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.day}",
+          message = s"$errorContext.day-month-year.min-date",
+          args = Seq(minStartDate.toString)
+        )
+
+        boundForm(day = date.day, month = date.month, year = date.year)
+          .errors mustBe Seq(expectedError)
+      }
+      "a date after the maximum possible date is provided" in {
+        val date: DateModel = DateModel.dateConvert(maxStartDate.plusDays(1))
+        val expectedError: FormError = FormError(
+          key = s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.day}",
+          message = s"$errorContext.day-month-year.max-date",
+          args = Seq(maxStartDate.toString)
+        )
+
+        boundForm(day = date.day, month = date.month, year = date.year)
+          .errors mustBe Seq(expectedError)
+      }
+      "a date missing it's day field is provided" in {
+        val expectedError: FormError = FormError(
+          key = s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.day}",
+          message = s"$errorContext.day.empty"
+        )
+
+        boundForm(day = "", month = "1", year = "2020")
+          .errors mustBe Seq(expectedError)
+      }
+      "a date missing it's month field is provided" in {
+        val expectedError: FormError = FormError(
+          key = s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.month}",
+          message = s"$errorContext.month.empty"
+        )
+
+        boundForm(day = "1", month = "", year = "2020")
+          .errors mustBe Seq(expectedError)
+      }
+      "a date missing it's year field is provided" in {
+        val expectedError: FormError = FormError(
+          key = s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.year}",
+          message = s"$errorContext.year.empty"
+        )
+
+        boundForm(day = "1", month = "1", year = "")
+          .errors mustBe Seq(expectedError)
+      }
+      "a date missing it's day and month fields is provided" in {
+        val expectedError: FormError = FormError(
+          key = s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.day}",
+          message = s"$errorContext.day-month.empty"
+        )
+
+        boundForm(day = "", month = "", year = "2020")
+          .errors mustBe Seq(expectedError)
+      }
+      "a date missing it's month and year fields is provided" in {
+        val expectedError: FormError = FormError(
+          key = s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.month}",
+          message = s"$errorContext.month-year.empty"
+        )
+
+        boundForm(day = "1", month = "", year = "")
+          .errors mustBe Seq(expectedError)
+      }
+      "a date missing it's day, month and year fields is provided" in {
+        val expectedError: FormError = FormError(
+          key = s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.day}",
+          message = s"$errorContext.day-month-year.empty"
+        )
+
+        boundForm(day = "", month = "", year = "")
+          .errors mustBe Seq(expectedError)
       }
     }
   }
-
 }
