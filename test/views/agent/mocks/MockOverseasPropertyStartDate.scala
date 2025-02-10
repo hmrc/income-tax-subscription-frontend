@@ -16,27 +16,31 @@
 
 package views.agent.mocks
 
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, when}
-import org.scalatest.BeforeAndAfterEach
+import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
-import utilities.UnitTestTrait
+import utilities.UserMatchingSessionUtil.ClientDetails
 import views.html.agent.tasklist.overseasproperty.OverseasPropertyStartDate
 
-trait MockOverseasPropertyStartDate extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
-
-  val mockOverseasPropertyStartDate: OverseasPropertyStartDate = mock[OverseasPropertyStartDate]
+trait MockOverseasPropertyStartDate extends MockitoSugar with BeforeAndAfterEach {
+  suite: Suite =>
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockOverseasPropertyStartDate)
-    doMock()
+    reset(mockView)
   }
 
+  val mockView: OverseasPropertyStartDate = mock[OverseasPropertyStartDate]
 
-  def doMock(): Unit = {
-    when(mockOverseasPropertyStartDate(any(), any(), any(), any(), any())(any(), any())) thenReturn HtmlFormat.empty
+  def mockOverseasPropertyStartDate(postAction: Call, backUrl: String, clientDetails: ClientDetails): Unit = {
+    when(mockView(
+      overseasPropertyStartDateForm = ArgumentMatchers.any(),
+      postAction = ArgumentMatchers.eq(postAction),
+      backUrl = ArgumentMatchers.eq(backUrl),
+      clientDetails = ArgumentMatchers.eq(clientDetails)
+    )(ArgumentMatchers.any(), ArgumentMatchers.any())) thenReturn HtmlFormat.empty
   }
-
 }

@@ -16,95 +16,70 @@
 
 package controllers.agent.tasklist.overseasproperty
 
-import auth.agent.AuthenticatedController
-import config.AppConfig
-import controllers.utils.ReferenceRetrieval
+import controllers.SignUpBaseController
+import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import forms.agent.OverseasPropertyStartDateForm
 import forms.agent.OverseasPropertyStartDateForm._
 import models.DateModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
-import play.twirl.api.Html
-import services.agent.ClientDetailsRetrieval
-import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
-import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.ImplicitDateFormatter
-import utilities.UserMatchingSessionUtil.ClientDetails
 import views.html.agent.tasklist.overseasproperty.OverseasPropertyStartDate
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class OverseasPropertyStartDateController @Inject()(overseasPropertyStartDate: OverseasPropertyStartDate,
+class OverseasPropertyStartDateController @Inject()(identify: IdentifierAction,
+                                                    journeyRefiner: ConfirmedClientJourneyRefiner,
                                                     subscriptionDetailsService: SubscriptionDetailsService,
-                                                    clientDetailsRetrieval: ClientDetailsRetrieval,
-                                                    referenceRetrieval: ReferenceRetrieval)
-                                                   (val auditingService: AuditingService,
-                                                    val authService: AuthService,
-                                                    val appConfig: AppConfig,
-                                                    val languageUtils: LanguageUtils)
+                                                    view: OverseasPropertyStartDate,
+                                                    implicitDateFormatter: ImplicitDateFormatter)
                                                    (implicit val ec: ExecutionContext,
-                                                    mcc: MessagesControllerComponents)
-  extends AuthenticatedController with ImplicitDateFormatter {
-
-  def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
-      for {
-        reference <- referenceRetrieval.getAgentReference
-        clientDetails <- clientDetailsRetrieval.getClientDetails
-        startDate <- subscriptionDetailsService.fetchForeignPropertyStartDate(reference)
-      } yield {
-        Ok(view(
-          overseasPropertyStartDateForm = form.fill(startDate), isEditMode, clientDetails
-        ))
-      }
-  }
-
-  def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
-      referenceRetrieval.getAgentReference flatMap { reference =>
-        form.bindFromRequest().fold(
-          formWithErrors =>
-            clientDetailsRetrieval.getClientDetails map { clientDetails =>
-              BadRequest(view(overseasPropertyStartDateForm = formWithErrors, isEditMode = isEditMode, clientDetails))
-            },
-          startDate =>
-            subscriptionDetailsService.saveForeignPropertyStartDate(reference, startDate) map {
-              case Right(_) =>
-                if (isEditMode) {
-                  Redirect(routes.OverseasPropertyCheckYourAnswersController.show(isEditMode))
-                } else {
-                  Redirect(routes.OverseasPropertyStartDateController.show())
-                }
-              case Left(_) =>
-                throw new InternalServerException("[OverseasPropertyStartDateController][submit] - Could not save start date")
-            }
-        )
-      }
-  }
-
-  def backUrl(isEditMode: Boolean): String = {
-    if (isEditMode) {
-      routes.OverseasPropertyCheckYourAnswersController.show(isEditMode).url
-    } else {
-      controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
+                                                    mcc: MessagesControllerComponents) extends SignUpBaseController {
+  def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
+    for {
+      startDate <- subscriptionDetailsService.fetchForeignPropertyStartDate(request.reference)
+    } yield {
+      Ok(view(
+        overseasPropertyStartDateForm = form.fill(startDate),
+        postAction = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
+        backUrl = backUrl(isEditMode, isGlobalEdit),
+        clientDetails = request.clientDetails
+      ))
     }
   }
 
-  private def view(overseasPropertyStartDateForm: Form[DateModel], isEditMode: Boolean, clientDetails: ClientDetails)
-                  (implicit request: Request[AnyContent]): Html = {
-    overseasPropertyStartDate(
-      overseasPropertyStartDateForm = overseasPropertyStartDateForm,
-      routes.OverseasPropertyStartDateController.submit(editMode = isEditMode),
-      backUrl(isEditMode),
-      isEditMode,
-      clientDetails = clientDetails
+  def submit(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
+    form.bindFromRequest().fold(
+      formWithErrors =>
+        Future.successful(BadRequest(view(
+          overseasPropertyStartDateForm = formWithErrors,
+          postAction = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
+          backUrl = backUrl(isEditMode, isGlobalEdit),
+          clientDetails = request.clientDetails
+        ))),
+      startDate =>
+        subscriptionDetailsService.saveForeignPropertyStartDate(request.reference, startDate) map {
+          case Right(_) => Redirect(routes.OverseasPropertyCheckYourAnswersController.show(editMode = isEditMode, isGlobalEdit = isGlobalEdit))
+          case Left(_) => throw new InternalServerException("[OverseasPropertyStartDateController][submit] - Could not save start date")
+        }
     )
   }
 
+  private def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean): String = {
+    routes.IncomeSourcesOverseasPropertyController.show(editMode = isEditMode, isGlobalEdit = isGlobalEdit).url
+  }
+
   private def form(implicit request: Request[_]): Form[DateModel] = {
-    overseasPropertyStartDateForm(OverseasPropertyStartDateForm.minStartDate, OverseasPropertyStartDateForm.maxStartDate, d => d.toLongDate)
+    import implicitDateFormatter.LongDate
+
+    overseasPropertyStartDateForm(
+      OverseasPropertyStartDateForm.minStartDate,
+      OverseasPropertyStartDateForm.maxStartDate,
+      _.toLongDate
+    )
   }
 }

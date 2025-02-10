@@ -16,8 +16,8 @@
 
 @import models.common.OverseasPropertyModel
 @import views.html.templates.AgentMainTemplate
-@import config.featureswitch.FeatureSwitchingImpl
 @import utilities.UserMatchingSessionUtil.ClientDetails
+@import utilities.AccountingPeriodUtil
 @import views.html.helpers.{SaveAndContinueButtonHelper, PageHeadingHelper}
 
 @this(
@@ -63,12 +63,24 @@
         rows = Seq(
             SummaryListRow(
                 key = Key(content = Text(messages("agent.overseas-property.check-your-answers.start-date.question"))),
-                value = Value(content = Text(startDate(viewModel.startDate))),
+                value = Value(content = Text(
+                    if(viewModel.startDateBeforeLimit.contains(true) || viewModel.startDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))) {
+                        messages("agent.overseas-property.check-your-answers.start-date-before-limit.answer", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
+                    } else {
+                        startDate(viewModel.startDate)
+                    }
+                )),
                 actions = Some(Actions(
                     items = Seq(
                         ActionItem(
                             href = controllers.agent.tasklist.overseasproperty.routes.IncomeSourcesOverseasPropertyController.show(editMode = true, isGlobalEdit = isGlobalEdit).url,
-                            content = Text(messages(if(viewModel.startDate.isDefined) "base.change" else "base.add")),
+                            content = Text(
+                                if(viewModel.startDateBeforeLimit.contains(true) || viewModel.startDate.isDefined) {
+                                    messages("base.change")
+                                } else {
+                                    messages("base.add")
+                                }
+                            ),
                             visuallyHiddenText = Some(messages("agent.overseas-property.check-your-answers.start-date.question"))
                         )
                     )

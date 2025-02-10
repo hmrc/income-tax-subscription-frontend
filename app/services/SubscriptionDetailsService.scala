@@ -144,6 +144,23 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
     }
   }
 
+  def saveStreamlineForeignProperty(reference: String,
+                             maybeStartDate: Option[DateModel],
+                             maybeStartDateBeforeLimit: Option[Boolean],
+                             accountingMethod: AccountingMethod)
+                            (implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
+    fetchOverseasProperty(reference) map {
+      case Some(overseasProperty) => overseasProperty
+      case None => OverseasPropertyModel()
+    } flatMap { overseasPropertyModel =>
+      val updatedOverseasPropertyModel = maybeStartDate match {
+        case Some(startDate) => overseasPropertyModel.copy(startDate = Some(startDate), accountingMethod = Some(accountingMethod), confirmed = false)
+        case None => overseasPropertyModel.copy(startDateBeforeLimit = maybeStartDateBeforeLimit, accountingMethod = Some(accountingMethod), confirmed = false)
+      }
+      saveOverseasProperty(reference, updatedOverseasPropertyModel)
+    }
+  }
+
   def fetchPropertyStartDateBeforeLimit(reference: String)(implicit hc: HeaderCarrier): Future[Option[YesNo]] = {
     fetchProperty(reference) map { maybeProperty =>
       maybeProperty.flatMap(_.startDateBeforeLimit) map {
@@ -193,7 +210,7 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
   }
 
   def fetchOverseasProperty(reference: String)(implicit hc: HeaderCarrier): Future[Option[OverseasPropertyModel]] =
-    incomeTaxSubscriptionConnector.getSubscriptionDetails[OverseasPropertyModel](reference, SubscriptionDataKeys.OverseasProperty)
+    incomeTaxSubscriptionConnector.getSubscriptionDetails[OverseasPropertyModel](reference, OverseasProperty)
 
   def fetchIncomeSourcesConfirmation(reference: String)(implicit hc: HeaderCarrier): Future[Option[Boolean]] = {
     incomeTaxSubscriptionConnector.getSubscriptionDetails[Boolean](reference, SubscriptionDataKeys.IncomeSourceConfirmation)

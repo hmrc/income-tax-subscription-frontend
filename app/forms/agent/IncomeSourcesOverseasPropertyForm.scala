@@ -17,20 +17,21 @@
 package forms.agent
 
 import forms.formatters.DateModelMapping.dateModelMapping
-import forms.submapping.AccountingMethodMapping
+import forms.submapping.{AccountingMethodMapping, YesNoMapping}
 import forms.submapping.AccountingMethodMapping.{option_accruals, option_cash}
 import models.common.OverseasPropertyModel
-import models.{AccountingMethod, Accruals, Cash, DateModel}
+import models.{AccountingMethod, Accruals, Cash, DateModel, YesNo}
 import play.api.data.{Form, Mapping}
 import play.api.data.Forms.tuple
 import play.api.data.validation.Invalid
+import utilities.AccountingPeriodUtil
 
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 object IncomeSourcesOverseasPropertyForm {
 
   val startDate: String = "startDate"
+  val startDateBeforeLimit = "start-date-before-limit"
   val accountingMethodOverseasProperty: String = "accountingMethodOverseasProperty"
   val errorContext: String = "overseas.property"
   def maxStartDate: LocalDate = LocalDate.now().plusDays(6)
@@ -56,9 +57,21 @@ object IncomeSourcesOverseasPropertyForm {
     )
   )
 
+  def overseasPropertyIncomeSourcesFormNoDate: Form[(YesNo, AccountingMethod)] = Form(
+    tuple(
+      startDateBeforeLimit -> YesNoMapping.yesNoMapping(
+        yesNoInvalid = Invalid(s"agent.error.$errorContext.income-source.$startDateBeforeLimit.invalid", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
+      ),
+      accountingMethodOverseasProperty -> overseasPropertyAccountingMethod
+    )
+  )
   def createOverseasPropertyMapData(overseasProperty: Option[OverseasPropertyModel]): Map[String, String] = {
 
-    val dateMap: Map[String, String] = overseasProperty.flatMap(_.startDate).fold(Map.empty[String, String]) { date =>
+    val maybeStartDate: Option[DateModel] = overseasProperty.flatMap(_.startDate)
+    val maybeStartDateBeforeLimit: Option[Boolean] = overseasProperty.flatMap(_.startDateBeforeLimit)
+    val maybeAccountingMethod: Option[AccountingMethod] = overseasProperty.flatMap(_.accountingMethod)
+
+    val dateMap: Map[String, String] = maybeStartDate.fold(Map.empty[String, String]) { date =>
       Map(
         s"$startDate-dateDay" -> date.day,
         s"$startDate-dateMonth" -> date.month,
@@ -66,12 +79,29 @@ object IncomeSourcesOverseasPropertyForm {
       )
     }
 
-    val accountingMethodMap: Map[String, String] = overseasProperty.flatMap(_.accountingMethod).fold(Map.empty[String, String]) {
+    val startDateBeforeLimitMap: Map[String, String] = {
+      if (maybeStartDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))) {
+        Map(startDateBeforeLimit -> YesNoMapping.option_yes)
+      } else {
+        maybeStartDateBeforeLimit.fold(
+          if (maybeStartDate.exists(_.toLocalDate.isAfter(AccountingPeriodUtil.getStartDateLimit.minusDays(1)))) {
+            Map(startDateBeforeLimit -> YesNoMapping.option_no)
+          } else {
+            Map.empty[String, String]
+          }
+        ) {
+          case true => Map(startDateBeforeLimit -> YesNoMapping.option_yes)
+          case false => Map(startDateBeforeLimit -> YesNoMapping.option_no)
+        }
+      }
+    }
+
+    val accountingMethodMap: Map[String, String] = maybeAccountingMethod.fold(Map.empty[String, String]) {
       case Cash => Map(accountingMethodOverseasProperty -> option_cash)
       case Accruals => Map(accountingMethodOverseasProperty -> option_accruals)
     }
 
-    dateMap ++ accountingMethodMap
+    dateMap ++ startDateBeforeLimitMap ++ accountingMethodMap
 
   }
 }

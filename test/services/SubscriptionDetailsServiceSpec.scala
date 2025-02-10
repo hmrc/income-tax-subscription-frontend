@@ -20,7 +20,7 @@ import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscript
 import connectors.httpparser.{DeleteSubscriptionDetailsHttpParser, PostSubscriptionDetailsHttpParser}
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.{PostSubscriptionDetailsResponse, PostSubscriptionDetailsSuccessResponse}
 import models._
-import models.common.{AccountingYearModel, PropertyModel}
+import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
 import models.status.MandationStatus.Voluntary
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.matchers.should.Matchers._
@@ -185,6 +185,107 @@ class SubscriptionDetailsServiceSpec extends PlaySpec
         )
 
         val result: Future[PostSubscriptionDetailsResponse] = subscriptionDetailsService.saveStreamlineProperty(
+          reference = testReference,
+          maybeStartDate = Some(date),
+          maybeStartDateBeforeLimit = None,
+          accountingMethod = Cash
+        )
+
+        await(result) mustBe Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
+      }
+    }
+  }
+
+  "saveStreamlineForeignProperty" should {
+    "return a save success" when {
+      "no property data was fetched" when {
+        "start date is provided, start date before limit flag is not" in {
+          mockGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty)(None)
+          mockSaveSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OverseasPropertyModel(
+            accountingMethod = Some(Cash),
+            startDate = Some(date)
+          ))(Right(PostSubscriptionDetailsSuccessResponse))
+          mockDeleteSubscriptionDetails(SubscriptionDataKeys.IncomeSourceConfirmation)(Right(DeleteSubscriptionDetailsSuccessResponse))
+
+          val result: Future[PostSubscriptionDetailsResponse] = subscriptionDetailsService.saveStreamlineForeignProperty(
+            reference = testReference,
+            maybeStartDate = Some(date),
+            maybeStartDateBeforeLimit = None,
+            accountingMethod = Cash
+          )
+
+          await(result) mustBe Right(PostSubscriptionDetailsSuccessResponse)
+        }
+        "start date is not provided, start date before limit flag is" in {
+          mockGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty)(None)
+          mockSaveSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OverseasPropertyModel(
+            startDateBeforeLimit = Some(false),
+            accountingMethod = Some(Cash)
+          ))(Right(PostSubscriptionDetailsSuccessResponse))
+          mockDeleteSubscriptionDetails(SubscriptionDataKeys.IncomeSourceConfirmation)(Right(DeleteSubscriptionDetailsSuccessResponse))
+
+          val result: Future[PostSubscriptionDetailsResponse] = subscriptionDetailsService.saveStreamlineForeignProperty(
+            reference = testReference,
+            maybeStartDate = None,
+            maybeStartDateBeforeLimit = Some(false),
+            accountingMethod = Cash
+          )
+
+          await(result) mustBe Right(PostSubscriptionDetailsSuccessResponse)
+        }
+      }
+      "overseas property data was fetched" in {
+        mockGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty)(Some(OverseasPropertyModel(
+          startDateBeforeLimit = None,
+          accountingMethod = Some(Accruals),
+          startDate = Some(date),
+          confirmed = true
+        )))
+        mockSaveSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OverseasPropertyModel(
+          accountingMethod = Some(Cash),
+          startDate = Some(date)
+        ))(Right(PostSubscriptionDetailsSuccessResponse))
+        mockDeleteSubscriptionDetails(SubscriptionDataKeys.IncomeSourceConfirmation)(Right(DeleteSubscriptionDetailsSuccessResponse))
+
+        val result: Future[PostSubscriptionDetailsResponse] = subscriptionDetailsService.saveStreamlineForeignProperty(
+          reference = testReference,
+          maybeStartDate = Some(date),
+          maybeStartDateBeforeLimit = Some(false),
+          accountingMethod = Cash
+        )
+
+        await(result) mustBe Right(PostSubscriptionDetailsSuccessResponse)
+      }
+    }
+    "return a save failure" when {
+      "there was a problem saving the property details" in {
+        mockGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty)(None)
+        mockSaveSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OverseasPropertyModel(
+          accountingMethod = Some(Cash),
+          startDate = Some(date)
+        ))(Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
+        mockDeleteSubscriptionDetails(SubscriptionDataKeys.IncomeSourceConfirmation)(Right(DeleteSubscriptionDetailsSuccessResponse))
+
+        val result: Future[PostSubscriptionDetailsResponse] = subscriptionDetailsService.saveStreamlineForeignProperty(
+          reference = testReference,
+          maybeStartDate = Some(date),
+          maybeStartDateBeforeLimit = None,
+          accountingMethod = Cash
+        )
+
+        await(result) mustBe Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
+      }
+      "there was a problem deleting the income source confirmation" in {
+        mockGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty)(None)
+        mockSaveSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OverseasPropertyModel(
+          accountingMethod = Some(Cash),
+          startDate = Some(date)
+        ))(Right(PostSubscriptionDetailsSuccessResponse))
+        mockDeleteSubscriptionDetails(SubscriptionDataKeys.IncomeSourceConfirmation)(
+          Left(DeleteSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
+        )
+
+        val result: Future[PostSubscriptionDetailsResponse] = subscriptionDetailsService.saveStreamlineForeignProperty(
           reference = testReference,
           maybeStartDate = Some(date),
           maybeStartDateBeforeLimit = None,

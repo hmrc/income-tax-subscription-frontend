@@ -18,6 +18,7 @@ package controllers.agent.tasklist.overseasproperty
 
 import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
+import forms.agent.IncomeSourcesOverseasPropertyForm
 import helpers.IntegrationTestConstants.testUtr
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
@@ -25,69 +26,76 @@ import models.common.OverseasPropertyModel
 import models.{Cash, DateModel}
 import play.api.http.Status.{BAD_REQUEST, NO_CONTENT, OK, SEE_OTHER}
 import play.api.libs.json.{JsString, Json}
+import utilities.AccountingPeriodUtil
 import utilities.SubscriptionDataKeys.OverseasProperty
 import utilities.agent.TestConstants.testNino
 
 
 class OverseasPropertyIncomeSourcesControllerISpec extends ComponentSpecBase {
 
-  "GET /report-quarterly/income-and-expenses/sign-up/client/business/your-income-source" when {
+  s"GET ${routes.IncomeSourcesOverseasPropertyController.show().url}" when {
     "the Subscription Details Connector returns no data" should {
-      "show the property income sources page with empty form" in {
+      "show the overseas property income sources page with empty form" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
-        When("GET /business/overseas-property-income-sources is called")
+        When("GET /business/income-sources-overseas-property is called")
         val res = IncomeTaxSubscriptionFrontend.overseasPropertyIncomeSources()
 
         val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
         Then("Should return a OK with the overseas property income sources page")
         res must have(
           httpStatus(OK),
-          pageTitle(messages("agent.foreign-property.income-sources.title") + serviceNameGovUk)
+          pageTitle(messages("agent.foreign-property.income-sources.title") + serviceNameGovUk),
+          radioButtonSet(IncomeSourcesOverseasPropertyForm.startDateBeforeLimit, None),
+          radioButtonSet(IncomeSourcesOverseasPropertyForm.accountingMethodOverseasProperty, None)
         )
       }
     }
 
-    "the Subscription Details Connector returns start date only" should {
-      "show the overseas property income sources page with start date pre-filled" in {
+    "the Subscription Details Connector returns start date before limit only" should {
+      "show the overseas property income sources page with start date before limit pre-filled" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(OverseasPropertyModel(startDate = Some(DateModel("10", "10", "2020")))))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(OverseasPropertyModel(startDateBeforeLimit = Some(true))))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
-        When("GET /business/overseas-property-income-sources is called")
+        When("GET /business/income-sources-overseas-property is called")
         val res = IncomeTaxSubscriptionFrontend.overseasPropertyIncomeSources()
 
         val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
         Then("Should return a OK with the overseas property income sources page")
         res must have(
           httpStatus(OK),
-          pageTitle(messages("agent.foreign-property.income-sources.title") + serviceNameGovUk)
+          pageTitle(messages("agent.foreign-property.income-sources.title") + serviceNameGovUk),
+          radioButtonSet(IncomeSourcesOverseasPropertyForm.startDateBeforeLimit, Some("Yes")),
+          radioButtonSet(IncomeSourcesOverseasPropertyForm.accountingMethodOverseasProperty, None)
         )
       }
     }
 
     "the Subscription Details Connector returns accounting method only" should {
-      "show the overseas property income sources page with accounting method pre-filled" in {
+      "show the property income sources page with accounting method pre-filled" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(OverseasPropertyModel(accountingMethod = Some(Cash))))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
-        When("GET /business/overseas-property-income-sources is called")
+        When("GET /business/income-sources-overseas-property is called")
         val res = IncomeTaxSubscriptionFrontend.overseasPropertyIncomeSources()
 
         val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
         Then("Should return a OK with the overseas property income sources page")
         res must have(
           httpStatus(OK),
-          pageTitle(messages("agent.foreign-property.income-sources.title") + serviceNameGovUk)
+          pageTitle(messages("agent.foreign-property.income-sources.title") + serviceNameGovUk),
+          radioButtonSet(IncomeSourcesOverseasPropertyForm.startDateBeforeLimit, None),
+          radioButtonSet(IncomeSourcesOverseasPropertyForm.accountingMethodOverseasProperty, Some("Cash basis accounting"))
         )
       }
     }
@@ -97,26 +105,29 @@ class OverseasPropertyIncomeSourcesControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(OverseasPropertyModel(
-          startDate = Some(DateModel("10", "10", "2020")),
+          startDateBeforeLimit = Some(true),
           accountingMethod = Some(Cash)
         )))
+
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
-        When("GET /business/overseas-property-income-sources is called")
+        When("GET /business/income-sources-overseas-property is called")
         val res = IncomeTaxSubscriptionFrontend.overseasPropertyIncomeSources()
 
         val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
         Then("Should return a OK with the overseas property income sources page")
         res must have(
           httpStatus(OK),
-          pageTitle(messages("agent.foreign-property.income-sources.title") + serviceNameGovUk)
+          pageTitle(messages("agent.foreign-property.income-sources.title") + serviceNameGovUk),
+          radioButtonSet(IncomeSourcesOverseasPropertyForm.startDateBeforeLimit, Some("Yes")),
+          radioButtonSet(IncomeSourcesOverseasPropertyForm.accountingMethodOverseasProperty, Some("Cash basis accounting"))
         )
       }
     }
   }
 
-  "POST /report-quarterly/income-and-expenses/sign-up/client/business/income-sources-property" should {
+  s"POST ${routes.IncomeSourcesOverseasPropertyController.submit().url}" when {
     "return BAD_REQUEST" when {
       "nothing is submitted" in {
         Given("I setup the Wiremock stubs")
@@ -128,7 +139,7 @@ class OverseasPropertyIncomeSourcesControllerISpec extends ComponentSpecBase {
         When("POST /business/income-sources-property is called")
         val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyIncomeSources(
           isEditMode = false,
-          property = None
+          maybeOverseasProperty = None
         )
 
         Then("Should return a BAD_REQUEST and show the overseas property income sources page with errors")
@@ -138,22 +149,23 @@ class OverseasPropertyIncomeSourcesControllerISpec extends ComponentSpecBase {
         )
       }
 
-      "only start date is submitted" in {
+      "only start date before limit is submitted" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
-        When("POST /business/overseas-property-income-sources is called")
+        When("POST /business/income-sources-overseas-property is called")
         val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyIncomeSources(
           isEditMode = false,
-          property = Some(OverseasPropertyModel(
-            startDate = Some(DateModel("10", "10", "2020"))
+
+          maybeOverseasProperty = Some(OverseasPropertyModel(
+            startDateBeforeLimit = Some(true)
           ))
         )
 
-        Then("Should return a BAD_REQUEST and show the overseas property income sources page with errors")
+        Then("Should return a BAD_REQUEST and show the property income sources page with errors")
         res must have(
           httpStatus(BAD_REQUEST),
           pageTitle("Error: " + messages("agent.foreign-property.income-sources.title") + " - Use software to report your client’s Income Tax - GOV.UK")
@@ -167,10 +179,11 @@ class OverseasPropertyIncomeSourcesControllerISpec extends ComponentSpecBase {
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
-        When("POST /business/overseas-property-income-sources is called")
+        When("POST /business/income-sources-overseas-property is called")
         val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyIncomeSources(
           isEditMode = false,
-          property = Some(OverseasPropertyModel(
+
+          maybeOverseasProperty = Some(OverseasPropertyModel(
             accountingMethod = Some(Cash)
           ))
         )
@@ -184,25 +197,28 @@ class OverseasPropertyIncomeSourcesControllerISpec extends ComponentSpecBase {
     }
 
     "redirect to check your answers page" when {
-      "full data is submitted" in {
+      "full data is submitted with the users start date is before the limit" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+
         IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(OverseasPropertyModel(
           accountingMethod = Some(Cash),
-          startDate = Some(DateModel("10", "10", "2020"))
+          startDateBeforeLimit = Some(true)
         ))
         IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
-        When("POST /business/overseas-property-income-sources is called")
+        When("POST /business/income-sources-overseas-property is called")
         val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyIncomeSources(
           isEditMode = false,
-          property = Some(OverseasPropertyModel(
-            startDate = Some(DateModel("10", "10", "2020")),
+
+          maybeOverseasProperty = Some(OverseasPropertyModel(
+            startDateBeforeLimit = Some(true),
             accountingMethod = Some(Cash)
           ))
+
         )
 
         Then("Should return a SEE_OTHER and redirect to check your answers page")
@@ -212,5 +228,38 @@ class OverseasPropertyIncomeSourcesControllerISpec extends ComponentSpecBase {
         )
       }
     }
+
+    "redirect to the overseas property start date page" when {
+      "full data is submitted with the users start date is not before the limit" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(fullOverseasPropertyModel.copy(startDate = None))
+        IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
+
+        When("POST /business/income-sources-overseas-property is called")
+        val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyIncomeSources(
+          isEditMode = false,
+          maybeOverseasProperty = Some(fullOverseasPropertyModel.copy(startDate = None))
+        )
+
+        Then("Should return a SEE_OTHER and redirect to check your answers page")
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(routes.OverseasPropertyStartDateController.show().url)
+        )
+      }
+    }
   }
+
+  lazy val startDate: DateModel = DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit)
+
+  lazy val fullOverseasPropertyModel: OverseasPropertyModel = OverseasPropertyModel(
+    startDateBeforeLimit = Some(false),
+    accountingMethod = Some(Cash),
+    startDate = Some(startDate)
+  )
+
 }

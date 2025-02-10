@@ -20,6 +20,7 @@ import forms.formatters.DateModelMapping.dateModelMapping
 import models.DateModel
 import play.api.data.Form
 import play.api.data.Forms.single
+import utilities.AccountingPeriodUtil
 
 import java.time.LocalDate
 
@@ -28,7 +29,7 @@ object OverseasPropertyStartDateForm {
 
   def maxStartDate: LocalDate = LocalDate.now().plusDays(6)
 
-  def minStartDate: LocalDate = LocalDate.of(1900, 1, 1)
+  def minStartDate: LocalDate = AccountingPeriodUtil.getStartDateLimit
 
   val errorContext: String = "overseas.property"
 

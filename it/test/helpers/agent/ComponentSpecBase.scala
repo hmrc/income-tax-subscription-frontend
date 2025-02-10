@@ -383,10 +383,10 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
     def overseasPropertyIncomeSources(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/business/income-sources-foreign-property", sessionData)
 
-    def submitOverseasPropertyIncomeSources(isEditMode: Boolean, property: Option[OverseasPropertyModel], sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
+    def submitOverseasPropertyIncomeSources(isEditMode: Boolean, maybeOverseasProperty: Option[OverseasPropertyModel], sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
       val uri = s"/business/income-sources-foreign-property?editMode=$isEditMode"
       post(uri, sessionData)(
-        IncomeSourcesOverseasPropertyForm.createOverseasPropertyMapData(property).map { case (k, v) => (k, Seq(v)) }
+        IncomeSourcesOverseasPropertyForm.createOverseasPropertyMapData(maybeOverseasProperty).map { case (k, v) => (k, Seq(v)) }
       )
     }
 

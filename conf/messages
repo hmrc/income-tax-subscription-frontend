@@ -273,11 +273,30 @@ individual.foreign-property.start-date-before-limit.caption             = Your f
 error.individual.foreign-property.start-date-before-limit.invalid       = Select ‘Yes’ if you started getting income from foreign property before 6 April {0}
 
 # Agent Overseas Property Start Date
-agent.overseas-property.start-date.title                        = When did your client start their foreign property business?
-agent.overseas-property.start-date.heading                      = When did your client start their foreign property business?
+agent.overseas-property.start-date.title                        = Start date for income from foreign property
+agent.overseas-property.start-date.heading                      = Start date for income from foreign property
 agent.overseas-property.start-date.heading.caption              = {0} | {1}
-agent.overseas-property.start-date.para1                        = The date your client’s business started trading can be today, in the past or up to 7 days in the future.
-agent.overseas-property.start-date.hint                         = For example, 17 8 2014.
+agent.overseas-property.start-date.para1                        = We need to know the exact start date.
+agent.overseas-property.start-date.hint                         = For example, 27 9 {0}
+
+# Agent Overseas Property Start Date Page errors
+agent.error.overseas.property.day-month-year.empty              = Enter the date your client started getting income from foreign property
+agent.error.overseas.property.month-year.empty                  = The date must include a month and year
+agent.error.overseas.property.day-month.empty                   = The date must include a day and month
+agent.error.overseas.property.day-year.empty                    = The date must include a day and year
+agent.error.overseas.property.year.empty                        = The date must include a year
+agent.error.overseas.property.day.empty                         = The date must include a day
+agent.error.overseas.property.month.empty                       = The date must include a month
+agent.error.overseas.property.day-month-year.max-date           = The date cannot be more than 7 days in the future
+agent.error.overseas.property.day-month-year.min-date           = The date must be on or after {0}
+agent.error.overseas.property.day-month-year.invalid            = The date must be a real date
+agent.error.overseas.property.month-year.invalid                = The date must be a real date
+agent.error.overseas.property.day-month.invalid                 = The date must be a real date
+agent.error.overseas.property.day-year.invalid                  = The date must be a real date
+agent.error.overseas.property.year.invalid                      = The date must be a real date
+agent.error.overseas.property.day.invalid                       = The date must be a real date
+agent.error.overseas.property.month.invalid                     = The date must be a real date
+agent.error.overseas.property.year.length                       = Year must include 4 numbers
 
 ## Timeout page ##
 timeout.title                                                   = Your session has timed out
@@ -740,6 +759,7 @@ agent.overseas-property.accounting-method.heading.caption       = {0} | {1}
 agent.foreign-property.income-sources.title                                         = Your client’s foreign property
 agent.foreign-property.income-sources.caption                                       = {0} | {1}
 agent.foreign-property.income-sources.heading                                       = Your client’s foreign property
+agent.foreign-property.income-source.start-date-before-limit.legend                 = Did this income start before 6 April {0}?
 agent.foreign-property.income-sources.start-date.heading                            = When did your client’s foreign property business start?
 agent.foreign-property.income-sources.start-date.hint                               = For example, 17 8 2014
 agent.foreign-property.income-sources.accounting-method.heading                     = What accounting method does your client use for their foreign property business?
@@ -750,6 +770,7 @@ agent.foreign-property.income-sources.accounting-method.accordion.content.bullet
 agent.foreign-property.income-sources.accounting-method.accordion.content.bullet2   = March 2017, you use traditional accounting
 agent.foreign-property.income-sources.accounting-method.radio.cash                  = Cash basis accounting
 agent.foreign-property.income-sources.accounting-method.radio.accruals              = Traditional accounting
+agent.error.overseas.property.income-source.start-date-before-limit.invalid         = Select ‘Yes’ if your client started getting income from foreign property before 6 April {0}
 
 
 ## Business Name
@@ -891,25 +912,6 @@ agent.no-sa.title                                               = Your client is
 agent.no-sa.heading                                             = Your client is not registered for Self Assessment
 agent.no-sa.line-1                                              = To use this service, your client needs to <a class="govuk-link" id="sa-signup" href="{0}">register for Self Assessment</a>.
 
-# Agent Overseas Property Start Date Page errors
-agent.error.overseas.property.day-month-year.empty              = Enter the date your client’s overseas property business started trading
-agent.error.overseas.property.month-year.empty                  = The date must include a month and a year
-agent.error.overseas.property.day-month.empty                   = The date must include a day and a month
-agent.error.overseas.property.day-year.empty                    = The date must include a day and a year
-agent.error.overseas.property.year.empty                        = The date must include a year
-agent.error.overseas.property.day.empty                         = The date must include a day
-agent.error.overseas.property.month.empty                       = The date must include a month
-agent.error.overseas.property.day-month-year.max-date           = The date the overseas property business started trading must be on or before {0}
-agent.error.overseas.property.day-month-year.min-date           = The date your client’s property business started trading must be on or after {0}
-agent.error.overseas.property.day-month-year.invalid            = The date must be a real date
-agent.error.overseas.property.month-year.invalid                = The date must be a real date
-agent.error.overseas.property.day-month.invalid                 = The date must be a real date
-agent.error.overseas.property.day-year.invalid                  = The date must be a real date
-agent.error.overseas.property.year.invalid                      = The date must be a real date
-agent.error.overseas.property.day.invalid                       = The date must be a real date
-agent.error.overseas.property.month.invalid                     = The date must be a real date
-agent.error.overseas.property.year.length                       = The year must be in four digits. For example, 2020.
-
 ## agent Tax Year Check Your Answers
 agent.business.check-your-answers.heading                             = Check your answers
 agent.business.check-your-answers.content.tax-year.title              = Check your answers - tax year
@@ -928,11 +930,12 @@ agent.property.check-your-answers.accounting-method.question          = Accounti
 agent.property.check-your-answers.start-date-before-limit.answer      = Before 6 April {0}
 
 ## Agent Overseas property check your answers
-agent.overseas-property.check-your-answers.title                      = Check your answers - Foreign property
-agent.overseas-property.check-your-answers.heading                    = Check your answers
-agent.overseas-property.check-your-answers.heading.caption            = {0} | {1}
-agent.overseas-property.check-your-answers.start-date.question        = Start date
-agent.overseas-property.check-your-answers.accounting-method.question = Accounting method
+agent.overseas-property.check-your-answers.title                                = Check your answers - Foreign property
+agent.overseas-property.check-your-answers.heading                              = Check your answers
+agent.overseas-property.check-your-answers.heading.caption                      = {0} | {1}
+agent.overseas-property.check-your-answers.start-date.question                  = Start date
+agent.overseas-property.check-your-answers.accounting-method.question           = Accounting method
+agent.overseas-property.check-your-answers.start-date-before-limit.answer       = Before 6 April {0}
 
 ## Agent remove business
 agent.business.remove-sole-trader-business.title                    = Are you sure you want to delete this business?
