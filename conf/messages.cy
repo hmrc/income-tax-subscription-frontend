@@ -93,13 +93,15 @@ your-income-source.foreign-property.start-date-para             = Dyddiad dechra
 your-income-source.foreign-property.before-start-date-limit     = Cyn 6 Ebrill {0}
 your-income-source.foreign-property.add-link                    = Ychwanegu eiddo tramor
 
-error.business-income-source.all-sources                        = Dewiswch ‘Busnes unig fasnachwr’, ‘Eiddo rhent yn y DU’ neu ‘Eiddo rhent tramor’
-error.business-income-source.self-employed-uk-property          = Mae angen i chi ddewis Busnes unig fasnachwr neu Eiddo rhent yn y DU
-error.business-income-source.self-employed-overseas-property    = Mae angen i chi ddewis Busnes unig fasnachwr neu Eiddo rhent tramor
-error.business-income-source.uk-property-overseas-property      = Mae angen i chi ddewis Eiddo rhent yn y DU neu Eiddo rhent tramor
-error.business-income-source.self-employed                      = Mae angen i chi ddewis Busnes unig fasnachwr
-error.business-income-source.uk-property                        = Mae angen i chi ddewis Eiddo rhent yn y DU
-error.business-income-source.overseas-property                  = Mae angen i chi ddewis Eiddo rhent tramor
+# Problem with Income Sources page
+individual.problem-with-income-sources.title                    = Mae problem wedi codi
+individual.problem-with-income-sources.heading                  = Mae problem gyda’ch ffynonellau incwm
+individual.problem-with-income-sources.para1                    = Mae angen i chi wirio’ch bod wedi nodi’r holl wybodaeth ar gyfer eich ffynonellau incwm.
+individual.problem-with-income-sources.para2                    = Mae hyn yn cynnwys y canlynol:
+individual.problem-with-income-sources.bullet1                  = ffynonellau incwm rydych wedi’u hychwanegu
+individual.problem-with-income-sources.bullet2                  = ffynonellau incwm yr ydym wedi’u hychwanegu ar eich rhan
+individual.problem-with-income-sources.para3                    = Pan fyddwch wedi nodi’r holl wybodaeth ar gyfer ffynhonnell incwm, bydd yn dangos fel ‘wedi’i gwblhau’.
+individual.problem-with-income-sources.button-text              = Gwirio’ch ffynonellau incwm
 
 # Cannot Use Service page
 cannot-use-service.title                                        = Ni allwch ddefnyddio’r gwasanaeth hwn
