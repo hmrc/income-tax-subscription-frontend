@@ -14,8 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.featureswitch.FeatureSwitching
-@import config.featureswitch.FeatureSwitch.StartDateBeforeLimit
 @import models.common.PropertyModel
 @import utilities.AccountingPeriodUtil
 @import views.html.templates.PrincipalMainTemplate
@@ -26,8 +24,7 @@
     form: FormWithCSRF,
     govukSummaryList: GovukSummaryList,
     pageHeadingHelper: PageHeadingHelper,
-    saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
-    featureSwitching: FeatureSwitching
+    saveAndContinueButtonHelper: SaveAndContinueButtonHelper
 )
 
 @(
@@ -52,7 +49,7 @@
         rows = Seq(
             SummaryListRow(
                 key = Key(content = Text(messages("business.check-your-answers.content.uk-property-start-date.question"))),
-                value = if(viewModel.startDateBeforeLimit.contains(true) || viewModel.startDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit)) && featureSwitching.isEnabled(StartDateBeforeLimit)) {
+                value = if(viewModel.startDateBeforeLimit.contains(true) || viewModel.startDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))) {
                     Value(content = Text(messages("business.check-your-answers.content.uk-property-start-date-before-limit.before-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)))
                 } else {
                     Value(content = Text(startDate(viewModel.startDate)))
@@ -60,11 +57,7 @@
                 actions = Some(Actions(
                     items = Seq(
                         ActionItem(
-                            href = if(featureSwitching.isEnabled(StartDateBeforeLimit)) {
-                                controllers.individual.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show(editMode = true, isGlobalEdit = isGlobalEdit).url
-                            } else {
-                                controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.show(editMode = true, isGlobalEdit = isGlobalEdit).url
-                            },
+                            href = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show(editMode = true, isGlobalEdit = isGlobalEdit).url,
                             content = if(viewModel.startDateBeforeLimit.contains(true) || viewModel.startDate.isDefined) {
                                 Text(messages("base.change"))
                             } else {

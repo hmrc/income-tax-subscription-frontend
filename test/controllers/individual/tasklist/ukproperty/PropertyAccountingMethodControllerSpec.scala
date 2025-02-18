@@ -16,7 +16,6 @@
 
 package controllers.individual.tasklist.ukproperty
 
-import config.featureswitch.FeatureSwitch.StartDateBeforeLimit
 import connectors.httpparser.PostSubscriptionDetailsHttpParser
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.individual.ControllerBaseSpec
@@ -38,11 +37,6 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
   with MockAuditingService
   with MockPropertyAccountingMethod {
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(StartDateBeforeLimit)
-  }
-
   override val controllerName: String = "PropertyAccountingMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
@@ -61,7 +55,7 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
         mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash))))
         mockPropertyAccountingMethodView(
           postAction = routes.PropertyAccountingMethodController.submit(),
-          backUrl = routes.PropertyStartDateController.show().url
+          backUrl = routes.PropertyStartDateBeforeLimitController.show().url
         )
         lazy val result = await(TestPropertyAccountingMethodController.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest))
 
@@ -72,7 +66,7 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
         mockFetchProperty(None)
         mockPropertyAccountingMethodView(
           postAction = routes.PropertyAccountingMethodController.submit(),
-          backUrl = routes.PropertyStartDateController.show().url
+          backUrl = routes.PropertyStartDateBeforeLimitController.show().url
         )
 
         val result = TestPropertyAccountingMethodController.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest)
@@ -85,7 +79,7 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
         mockFetchProperty(Some(PropertyModel(accountingMethod = None)))
         mockPropertyAccountingMethodView(
           postAction = routes.PropertyAccountingMethodController.submit(),
-          backUrl = routes.PropertyStartDateController.show().url
+          backUrl = routes.PropertyStartDateBeforeLimitController.show().url
         )
         lazy val result = await(TestPropertyAccountingMethodController.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest))
 
@@ -164,7 +158,7 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
           mockFetchProperty(None)
           mockPropertyAccountingMethodView(
             postAction = routes.PropertyAccountingMethodController.submit(),
-            backUrl = routes.PropertyStartDateController.show().url
+            backUrl = routes.PropertyStartDateBeforeLimitController.show().url
           )
           val badRequest = callSubmitWithErrorForm(isEditMode = false)
 
@@ -213,18 +207,7 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
       }
     }
     "return a link to the start date page" when {
-      "the start date before limit feature switch is enabled" when {
-        "start date before limit is false" in {
-          enable(StartDateBeforeLimit)
-
-          TestPropertyAccountingMethodController.backUrl(
-            isEditMode = false,
-            isGlobalEdit = false,
-            maybeStartDateBeforeLimit = Some(false)
-          ) mustBe routes.PropertyStartDateController.show(editMode = false).url
-        }
-      }
-      "the start date before limit feature switch is disabled" in {
+      "start date before limit is false" in {
         TestPropertyAccountingMethodController.backUrl(
           isEditMode = false,
           isGlobalEdit = false,
@@ -233,25 +216,19 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
       }
     }
     "return a link to the start date before limit page" when {
-      "the start date before limit feature switch is enabled" when {
-        "the start date before limit value is true" in {
-          enable(StartDateBeforeLimit)
-
-          TestPropertyAccountingMethodController.backUrl(
-            isEditMode = false,
-            isGlobalEdit = false,
-            maybeStartDateBeforeLimit = Some(true)
-          ) mustBe routes.PropertyStartDateBeforeLimitController.show().url
-        }
-        "the start date before limit has no value" in {
-          enable(StartDateBeforeLimit)
-
-          TestPropertyAccountingMethodController.backUrl(
-            isEditMode = false,
-            isGlobalEdit = false,
-            maybeStartDateBeforeLimit = None
-          ) mustBe routes.PropertyStartDateBeforeLimitController.show().url
-        }
+      "the start date before limit value is true" in {
+        TestPropertyAccountingMethodController.backUrl(
+          isEditMode = false,
+          isGlobalEdit = false,
+          maybeStartDateBeforeLimit = Some(true)
+        ) mustBe routes.PropertyStartDateBeforeLimitController.show().url
+      }
+      "the start date before limit has no value" in {
+        TestPropertyAccountingMethodController.backUrl(
+          isEditMode = false,
+          isGlobalEdit = false,
+          maybeStartDateBeforeLimit = None
+        ) mustBe routes.PropertyStartDateBeforeLimitController.show().url
       }
     }
   }

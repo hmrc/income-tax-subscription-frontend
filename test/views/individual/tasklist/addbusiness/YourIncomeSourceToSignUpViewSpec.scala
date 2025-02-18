@@ -16,7 +16,6 @@
 
 package views.individual.tasklist.addbusiness
 
-import config.featureswitch.FeatureSwitch.StartDateBeforeLimit
 import models.common.business._
 import models.common.{IncomeSources, OverseasPropertyModel, PropertyModel}
 import models.{Cash, DateModel}
@@ -31,11 +30,6 @@ import views.html.individual.tasklist.addbusiness.YourIncomeSourceToSignUp
 import java.time.format.DateTimeFormatter
 
 class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(StartDateBeforeLimit)
-  }
 
   object IndividualIncomeSource {
     val title = "Your income sources"
@@ -234,30 +228,20 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         }
 
         "has an add UK property link" which {
-          "goes to the property start date before limit page" when {
-            "the start date before limit feature switch is enabled" in new ViewTest(noIncomeSources) {
-              enable(StartDateBeforeLimit)
-
-              val link: Element = document.mainContent.getElementById("add-uk-property").selectHead("a")
-              link.text mustBe IndividualIncomeSource.addUkPropertyLinkText
-              link.attr("href") mustBe IndividualIncomeSource.addUKPropertyLinkFSEnabled
-            }
+          "goes to the property start date before limit page" in new ViewTest(noIncomeSources) {
+            val link: Element = document.mainContent.getElementById("add-uk-property").selectHead("a")
+            link.text mustBe IndividualIncomeSource.addUkPropertyLinkText
+            link.attr("href") mustBe IndividualIncomeSource.addUKPropertyLinkFSEnabled
           }
-          "goes to the property start date page" when {
-            "the start date before feature switch is disabled" in new ViewTest(noIncomeSources) {
-              val link: Element = document.mainContent.getElementById("add-uk-property").selectHead("a")
-              link.text mustBe IndividualIncomeSource.addUkPropertyLinkText
-              link.attr("href") mustBe IndividualIncomeSource.addUKPropertyLink
-            }
-          }
-        }
-
-        "has an add Foreign property link" in new ViewTest(noIncomeSources) {
-          val link: Element = document.mainContent.getElementById("add-foreign-property").selectHead("a")
-          link.text mustBe IndividualIncomeSource.addForeignPropertyLinkText
-          link.attr("href") mustBe IndividualIncomeSource.addForeignPropertyLink
         }
       }
+
+      "has an add Foreign property link" in new ViewTest(noIncomeSources) {
+        val link: Element = document.mainContent.getElementById("add-foreign-property").selectHead("a")
+        link.text mustBe IndividualIncomeSource.addForeignPropertyLinkText
+        link.attr("href") mustBe IndividualIncomeSource.addForeignPropertyLink
+      }
+
 
       "have a form" which {
         def form(document: Document): Element = document.mainContent.getForm
@@ -566,37 +550,11 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
         "has a UK property card" which {
           "displays a start date" when {
-            "the start date is before the start date limit and the start date before limit feature is disabled" in new ViewTest(completeIncomeSources) {
-              document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(2))(
-                title = IndividualIncomeSource.ukPropertyCardTitle,
-                cardActions = Seq(
-                  SummaryListActionValues(
-                    href = IndividualIncomeSource.ukPropertyChangeLink,
-                    text = s"${IndividualIncomeSource.check} ${IndividualIncomeSource.ukPropertyChange}",
-                    visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
-                  ),
-                  SummaryListActionValues(
-                    href = IndividualIncomeSource.ukPropertyRemoveLink,
-                    text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.ukPropertyRemove}",
-                    visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
-                  )
-                ),
-                rows = Seq(
-                  SummaryListRowValues(
-                    key = IndividualIncomeSource.propertyStartDate,
-                    value = Some("1 January 1981"),
-                    actions = Seq.empty
-                  )
-                )
-              )
-            }
-            "the start date is not before the start date limit and the start date before limit feature is enabled" in new ViewTest(
+            "the start date is not before the start date limit" in new ViewTest(
               incomeSources = completeIncomeSources.copy(
                 ukProperty = completeUKProperty.map(_.copy(startDate = Some(limitDate)))
               )
             ) {
-              enable(StartDateBeforeLimit)
-
               document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(2))(
                 title = IndividualIncomeSource.ukPropertyCardTitle,
                 cardActions = Seq(
@@ -622,13 +580,11 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
             }
           }
           "display before the limit" when {
-            "the start date is before the start date limit and the start date before limit feature is enabled" in new ViewTest(
+            "the start date is before the start date limit" in new ViewTest(
               incomeSources = completeIncomeSources.copy(
                 ukProperty = completeUKProperty.map(_.copy(startDate = Some(olderThanLimitDate)))
               )
             ) {
-              enable(StartDateBeforeLimit)
-
               document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(2))(
                 title = IndividualIncomeSource.ukPropertyCardTitle,
                 cardActions = Seq(
@@ -657,8 +613,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 ukProperty = completeUKProperty.map(_.copy(startDateBeforeLimit = Some(true), startDate = Some(limitDate)))
               )
             ) {
-              enable(StartDateBeforeLimit)
-
               document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(2))(
                 title = IndividualIncomeSource.ukPropertyCardTitle,
                 cardActions = Seq(
@@ -686,37 +640,11 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         }
         "has a foreign property card" which {
           "displays a start date" when {
-            "the start date is before the start date limit and the start date before limit feature is disabled" in new ViewTest(completeIncomeSources) {
-              document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(3))(
-                title = IndividualIncomeSource.foreignPropertyCardTitle,
-                cardActions = Seq(
-                  SummaryListActionValues(
-                    href = IndividualIncomeSource.foreignPropertyChangeLink,
-                    text = s"${IndividualIncomeSource.check} ${IndividualIncomeSource.foreignPropertyChange}",
-                    visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
-                  ),
-                  SummaryListActionValues(
-                    href = IndividualIncomeSource.foreignPropertyRemoveLink,
-                    text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.foreignPropertyRemove}",
-                    visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
-                  )
-                ),
-                rows = Seq(
-                  SummaryListRowValues(
-                    key = IndividualIncomeSource.propertyStartDate,
-                    value = Some("1 January 1982"),
-                    actions = Seq.empty
-                  )
-                )
-              )
-            }
-            "the start date is not before the start date limit and the start date before limit feature is enabled" in new ViewTest(
+            "the start date is not before the start date limit" in new ViewTest(
               incomeSources = completeIncomeSources.copy(
                 foreignProperty = completeForeignProperty.map(_.copy(startDate = Some(limitDate)))
               )
             ) {
-              enable(StartDateBeforeLimit)
-
               document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(3))(
                 title = IndividualIncomeSource.foreignPropertyCardTitle,
                 cardActions = Seq(
@@ -742,13 +670,11 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
             }
           }
           "display before the limit" when {
-            "the start date is before the start date limit and the start date before limit feature is enabled" in new ViewTest(
+            "the start date is before the start date limit" in new ViewTest(
               incomeSources = completeIncomeSources.copy(
                 foreignProperty = completeForeignProperty.map(_.copy(startDate = Some(olderThanLimitDate)))
               )
             ) {
-              enable(StartDateBeforeLimit)
-
               document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(3))(
                 title = IndividualIncomeSource.foreignPropertyCardTitle,
                 cardActions = Seq(
@@ -777,8 +703,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 foreignProperty = completeForeignProperty.map(_.copy(startDateBeforeLimit = Some(true), startDate = Some(limitDate)))
               )
             ) {
-              enable(StartDateBeforeLimit)
-
               document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(3))(
                 title = IndividualIncomeSource.foreignPropertyCardTitle,
                 cardActions = Seq(
@@ -886,66 +810,66 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           link.text mustBe IndividualIncomeSource.addSelfEmploymentLinkText
           link.attr("href") mustBe IndividualIncomeSource.soleTraderLink
         }
+      }
 
-        "has a income from properties section" which {
+      "has a income from properties section" which {
 
-          "has a heading" in new ViewTest(completeAndConfirmedIncomeSources) {
-            document.mainContent.selectNth("h2", 3).text mustBe IndividualIncomeSource.incomeFromPropertiesHeading
-          }
+        "has a heading" in new ViewTest(completeAndConfirmedIncomeSources) {
+          document.mainContent.selectNth("h2", 3).text mustBe IndividualIncomeSource.incomeFromPropertiesHeading
+        }
 
-          "has a paragraph" in new ViewTest(completeAndConfirmedIncomeSources) {
-            document.mainContent.selectNth("p", 4).text mustBe IndividualIncomeSource.incomeFromPropertiesPara
-          }
+        "has a paragraph" in new ViewTest(completeAndConfirmedIncomeSources) {
+          document.mainContent.selectNth("p", 4).text mustBe IndividualIncomeSource.incomeFromPropertiesPara
+        }
 
-          "has a UK property card" in new ViewTest(completeAndConfirmedIncomeSources) {
-            document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(2))(
-              title = IndividualIncomeSource.ukPropertyCardTitle,
-              cardActions = Seq(
-                SummaryListActionValues(
-                  href = IndividualIncomeSource.ukPropertyChangeLink,
-                  text = s"${IndividualIncomeSource.change} ${IndividualIncomeSource.ukPropertyChange}",
-                  visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
-                ),
-                SummaryListActionValues(
-                  href = IndividualIncomeSource.ukPropertyRemoveLink,
-                  text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.ukPropertyRemove}",
-                  visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
-                )
+        "has a UK property card" in new ViewTest(completeAndConfirmedIncomeSources) {
+          document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(2))(
+            title = IndividualIncomeSource.ukPropertyCardTitle,
+            cardActions = Seq(
+              SummaryListActionValues(
+                href = IndividualIncomeSource.ukPropertyChangeLink,
+                text = s"${IndividualIncomeSource.change} ${IndividualIncomeSource.ukPropertyChange}",
+                visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
               ),
-              rows = Seq(
-                SummaryListRowValues(
-                  key = IndividualIncomeSource.propertyStartDate,
-                  value = Some("1 January 1981"),
-                  actions = Seq.empty
-                )
+              SummaryListActionValues(
+                href = IndividualIncomeSource.ukPropertyRemoveLink,
+                text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.ukPropertyRemove}",
+                visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
+              )
+            ),
+            rows = Seq(
+              SummaryListRowValues(
+                key = IndividualIncomeSource.propertyStartDate,
+                value = Some(IndividualIncomeSource.propertyDateBeforeLimit),
+                actions = Seq.empty
               )
             )
-          }
+          )
+        }
 
-          "has a foreign property card" in new ViewTest(completeAndConfirmedIncomeSources) {
-            document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(3))(
-              title = IndividualIncomeSource.foreignPropertyCardTitle,
-              cardActions = Seq(
-                SummaryListActionValues(
-                  href = IndividualIncomeSource.foreignPropertyChangeLink,
-                  text = s"${IndividualIncomeSource.change} ${IndividualIncomeSource.foreignPropertyChange}",
-                  visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
-                ),
-                SummaryListActionValues(
-                  href = IndividualIncomeSource.foreignPropertyRemoveLink,
-                  text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.foreignPropertyRemove}",
-                  visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
-                )
+        "has a foreign property card" in new ViewTest(completeAndConfirmedIncomeSources) {
+          document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(3))(
+            title = IndividualIncomeSource.foreignPropertyCardTitle,
+            cardActions = Seq(
+              SummaryListActionValues(
+                href = IndividualIncomeSource.foreignPropertyChangeLink,
+                text = s"${IndividualIncomeSource.change} ${IndividualIncomeSource.foreignPropertyChange}",
+                visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
               ),
-              rows = Seq(
-                SummaryListRowValues(
-                  key = IndividualIncomeSource.propertyStartDate,
-                  value = Some("1 January 1982"),
-                  actions = Seq.empty
-                )
+              SummaryListActionValues(
+                href = IndividualIncomeSource.foreignPropertyRemoveLink,
+                text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.foreignPropertyRemove}",
+                visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
+              )
+            ),
+            rows = Seq(
+              SummaryListRowValues(
+                key = IndividualIncomeSource.propertyStartDate,
+                value = Some(IndividualIncomeSource.propertyDateBeforeLimit),
+                actions = Seq.empty
               )
             )
-          }
+          )
         }
       }
 
@@ -970,8 +894,10 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         }
       }
     }
-
   }
-
 }
+
+
+
+
 

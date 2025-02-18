@@ -23,6 +23,7 @@ import models.DateModel
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.data.{Form, FormError}
+import utilities.AccountingPeriodUtil
 
 import java.time.LocalDate
 
@@ -30,14 +31,14 @@ import java.time.LocalDate
 class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
 
   def form: Form[DateModel] = {
-    propertyStartDateForm(PropertyStartDateForm.minStartDate(false), PropertyStartDateForm.maxStartDate, d => d.toString)
+    propertyStartDateForm(PropertyStartDateForm.minStartDate, PropertyStartDateForm.maxStartDate, d => d.toString)
   }
 
   "The PropertyStartDateForm" should {
     "transform a valid request to the date form case class" in {
-      val testDateDay = "31"
-      val testDateMonth = "5"
-      val testDateYear = "2017"
+      val testDateDay = "6"
+      val testDateMonth = "4"
+      val testDateYear = AccountingPeriodUtil.getStartDateLimit.getYear.toString
       val testInput = Map(
         s"$startDate-$day" -> testDateDay, s"$startDate-$month" -> testDateMonth, s"$startDate-$year" -> testDateYear
       )
@@ -67,7 +68,7 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
         }
         "it is before year 1900" in {
           val minTest = form.bind(DataMap.govukDate(startDate)("31", "12", "1899"))
-          minTest.errors must contain(FormError(dayKeyError, s"$errorContext.day-month-year.min-date", List(PropertyStartDateForm.minStartDate(false).toString)))
+          minTest.errors must contain(FormError(dayKeyError, s"$errorContext.day-month-year.min-date", List(PropertyStartDateForm.minStartDate.toString)))
         }
         "it is missing the day" in {
           val test = form.bind(DataMap.govukDate(startDate)("", "4", "2017"))
@@ -125,8 +126,8 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
         validated.hasErrors mustBe false
         validated.hasGlobalErrors mustBe false
       }
-      "the date is the first of january 1900" in {
-        val earliestAllowedDate: LocalDate = LocalDate.of(1900, 1, 1)
+      "the date is the limit date" in {
+        val earliestAllowedDate: LocalDate = AccountingPeriodUtil.getStartDateLimit
         val testData = DataMap.govukDate(startDate)(
           day = earliestAllowedDate.getDayOfMonth.toString,
           month = earliestAllowedDate.getMonthValue.toString,

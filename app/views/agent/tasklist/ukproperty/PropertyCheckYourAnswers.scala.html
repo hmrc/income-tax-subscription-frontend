@@ -14,8 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.featureswitch.FeatureSwitching
-@import config.featureswitch.FeatureSwitch.StartDateBeforeLimit
 @import models.common.PropertyModel
 @import views.html.templates.AgentMainTemplate
 @import utilities.UserMatchingSessionUtil.ClientDetails
@@ -28,8 +26,7 @@
         form: FormWithCSRF,
         govukSummaryList: GovukSummaryList,
         pageHeadingHelper: PageHeadingHelper,
-        saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
-        featureSwitching: FeatureSwitching
+        saveAndContinueButtonHelper: SaveAndContinueButtonHelper
 )
 
 @(
@@ -68,7 +65,7 @@
             SummaryListRow(
                 key = Key(content = Text(messages("agent.property.check-your-answers.start-date.question"))),
                 value = Value(content = Text(
-                    if(viewModel.startDateBeforeLimit.contains(true) || featureSwitching.isEnabled(StartDateBeforeLimit) && viewModel.startDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))) {
+                    if(viewModel.startDateBeforeLimit.contains(true) || viewModel.startDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))) {
                         messages("agent.property.check-your-answers.start-date-before-limit.answer", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
                     } else {
                         startDate(viewModel.startDate)

@@ -43,70 +43,37 @@ class PrePopSelfEmploymentSpec extends PlaySpec with Matchers {
 
   "toSelfEmploymentData" should {
     "successfully translate into a self employment data model" when {
-      "the start date before limit feature switch is disabled" when {
-        "start date is older than the limit" in {
-          prePopSelfEmploymentModelFull.copy(startDate = Some(DateModel.dateConvert(date.toLocalDate.minusDays(1))))
-            .toSelfEmploymentData("test-id", startDateRemovalFlag = false) mustBe SelfEmploymentData(
-            id = "test-id",
-            startDateBeforeLimit = None,
-            businessStartDate = Some(BusinessStartDate(DateModel.dateConvert(date.toLocalDate.minusDays(1)))),
-            businessName = Some(BusinessNameModel("ABC")),
-            businessTradeName = Some(BusinessTradeNameModel("Plumbing")),
-            businessAddress = Some(BusinessAddressModel(Address(
-              lines = Seq(
-                "1 long road"
-              ),
-              postcode = Some("ZZ1 1ZZ")
-            ))))
-        }
-        "start date is not older than the limit" in {
-          prePopSelfEmploymentModelFull
-            .toSelfEmploymentData("test-id", startDateRemovalFlag = false) mustBe SelfEmploymentData(
-            id = "test-id",
-            startDateBeforeLimit = None,
-            businessStartDate = Some(BusinessStartDate(date)),
-            businessName = Some(BusinessNameModel("ABC")),
-            businessTradeName = Some(BusinessTradeNameModel("Plumbing")),
-            businessAddress = Some(BusinessAddressModel(Address(
-              lines = Seq(
-                "1 long road"
-              ),
-              postcode = Some("ZZ1 1ZZ")
-            ))))
-        }
+      "start date is older than the limit" in {
+        prePopSelfEmploymentModelFull.copy(startDate = Some(DateModel.dateConvert(date.toLocalDate.minusDays(1))))
+          .toSelfEmploymentData("test-id") mustBe SelfEmploymentData(
+          id = "test-id",
+          startDateBeforeLimit = Some(true),
+          businessStartDate = None,
+          businessName = Some(BusinessNameModel("ABC")),
+          businessTradeName = Some(BusinessTradeNameModel("Plumbing")),
+          businessAddress = Some(BusinessAddressModel(Address(
+            lines = Seq(
+              "1 long road"
+            ),
+            postcode = Some("ZZ1 1ZZ")
+          ))))
       }
-      "the start date before limit feature switch is enabled" when {
-        "start date is older than the limit" in {
-          prePopSelfEmploymentModelFull.copy(startDate = Some(DateModel.dateConvert(date.toLocalDate.minusDays(1))))
-            .toSelfEmploymentData("test-id", startDateRemovalFlag = true) mustBe SelfEmploymentData(
-            id = "test-id",
-            startDateBeforeLimit = Some(true),
-            businessStartDate = None,
-            businessName = Some(BusinessNameModel("ABC")),
-            businessTradeName = Some(BusinessTradeNameModel("Plumbing")),
-            businessAddress = Some(BusinessAddressModel(Address(
-              lines = Seq(
-                "1 long road"
-              ),
-              postcode = Some("ZZ1 1ZZ")
-            ))))
-        }
-        "start date is not older than the limit" in {
-          prePopSelfEmploymentModelFull
-            .toSelfEmploymentData("test-id", startDateRemovalFlag = true) mustBe SelfEmploymentData(
-            id = "test-id",
-            startDateBeforeLimit = Some(false),
-            businessStartDate = Some(BusinessStartDate(date)),
-            businessName = Some(BusinessNameModel("ABC")),
-            businessTradeName = Some(BusinessTradeNameModel("Plumbing")),
-            businessAddress = Some(BusinessAddressModel(Address(
-              lines = Seq(
-                "1 long road"
-              ),
-              postcode = Some("ZZ1 1ZZ")
-            ))))
-        }
+      "start date is not older than the limit" in {
+        prePopSelfEmploymentModelFull
+          .toSelfEmploymentData("test-id") mustBe SelfEmploymentData(
+          id = "test-id",
+          startDateBeforeLimit = Some(false),
+          businessStartDate = Some(BusinessStartDate(date)),
+          businessName = Some(BusinessNameModel("ABC")),
+          businessTradeName = Some(BusinessTradeNameModel("Plumbing")),
+          businessAddress = Some(BusinessAddressModel(Address(
+            lines = Seq(
+              "1 long road"
+            ),
+            postcode = Some("ZZ1 1ZZ")
+          ))))
       }
+
     }
   }
 

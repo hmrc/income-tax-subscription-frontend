@@ -16,7 +16,6 @@
 
 package services
 
-import config.featureswitch.FeatureSwitch.StartDateBeforeLimit
 import config.featureswitch.{FeatureSwitching, FeatureSwitchingImpl}
 import config.{AppConfig, MockConfig}
 import connectors.httpparser.PostSubscriptionDetailsHttpParser
@@ -33,7 +32,7 @@ import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import services.PrePopDataService.PrePopResult.{PrePopFailure, PrePopSuccess}
 import services.mocks.{MockNinoService, MockSubscriptionDetailsService}
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.individual.TestConstants.testNino
+import utilities.individual.TestConstants.{testNino, testReference}
 import utilities.{AccountingPeriodUtil, MockUUIDProvider}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -43,19 +42,16 @@ class PrePopDataServiceSpec extends PlaySpec
   with MockNinoService
   with MockPrePopConnector
   with MockSubscriptionDetailsService
-  with MockUUIDProvider
-  with FeatureSwitching {
+  with MockUUIDProvider {
 
   val appConfig: AppConfig = MockConfig
 
-  val fakeFeatureSwitching: FeatureSwitchingImpl = new FeatureSwitchingImpl(appConfig = MockConfig)
 
   val service: PrePopDataService = new PrePopDataService(
     mockNinoService,
     mockPrePopConnector,
     mockSubscriptionDetailsService,
-    mockUUIDProvider,
-    fakeFeatureSwitching
+    mockUUIDProvider
   )
 
   implicit val headerCarrier: HeaderCarrier = HeaderCarrier()
@@ -87,40 +83,6 @@ class PrePopDataServiceSpec extends PlaySpec
       "the user has not had their information prepopulated before" when {
         "return a pre-pop success response" when {
           "the fetched pre-pop data is full and complete income sources and saving of the data was successful" in {
-            mockFetchPrePopFlag(None)
-            mockGetNino(testNino)
-            mockGetPrePopData(testNino)(Right(fullPrePopData))
-            mockUUID(testUUID)
-            mockSavePrePopFlag(flag = true)(Right(PostSubscriptionDetailsSuccessResponse))
-            mockSaveBusinesses(
-              businesses = Seq(
-                expectedFullSelfEmploymentData.copy(startDateBeforeLimit = None),
-                expectedFullSelfEmploymentData.copy(startDateBeforeLimit = None)
-              ),
-              accountingMethod = Some(accountingMethod)
-            )(Right(PostSubscriptionDetailsSuccessResponse))
-            mockSaveProperty(expectedUkProperty)(Right(PostSubscriptionDetailsSuccessResponse))
-            mockSaveOverseasProperty(expectedForeignProperty)(Right(PostSubscriptionDetailsSuccessResponse))
-
-            await(service.prePopIncomeSources(reference)) mustBe PrePopSuccess
-
-            verifyFetchPrePopFlag()
-            verifyGetNino()
-            verifyGetPrePopData(testNino)
-            verifySavePrePopFlag(flag = true)
-            verifySaveBusinesses(
-              businesses = Seq(
-                expectedFullSelfEmploymentData.copy(startDateBeforeLimit = None),
-                expectedFullSelfEmploymentData.copy(startDateBeforeLimit = None)
-              ),
-              accountingMethod = Some(accountingMethod)
-            )
-            verifySaveProperty(expectedUkProperty)
-            verifySaveOverseasProperty(expectedForeignProperty)
-          }
-          "the fetched pre-pop data is full and complete income sources and the start date before limit f/s is enabled" in {
-            enable(StartDateBeforeLimit)
-
             mockFetchPrePopFlag(None)
             mockGetNino(testNino)
             mockGetPrePopData(testNino)(Right(fullPrePopData))
@@ -392,7 +354,7 @@ class PrePopDataServiceSpec extends PlaySpec
     postcode = Some("ZZ1 1ZZ")
   )
 
-  val startDate: DateModel = DateModel.dateConvert(AccountingPeriodUtil.getCurrentTaxYearStartLocalDate.minusYears(2))
+  val startDate: DateModel = DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit)
 
   lazy val accountingMethod: AccountingMethod = Cash
 

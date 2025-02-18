@@ -16,8 +16,6 @@
 
 package services
 
-import config.featureswitch.FeatureSwitch.StartDateBeforeLimit
-import config.featureswitch.FeatureSwitching
 import connectors.PrePopConnector
 import models.AccountingMethod
 import models.common.business.SelfEmploymentData
@@ -36,8 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class PrePopDataService @Inject()(ninoService: NinoService,
                                   prePopConnector: PrePopConnector,
                                   subscriptionDetailsService: SubscriptionDetailsService,
-                                  uuidProvider: UUIDProvider,
-                                  featureSwitching: FeatureSwitching)
+                                  uuidProvider: UUIDProvider)
                                  (implicit ec: ExecutionContext) extends Logging {
 
   def prePopIncomeSources(reference: String)(implicit hc: HeaderCarrier): Future[PrePopResult] = {
@@ -87,8 +84,7 @@ class PrePopDataService @Inject()(ninoService: NinoService,
     maybePrePopSelfEmployments match {
       case Some(prePopSelfEmployments) =>
         val selfEmployments: Seq[SelfEmploymentData] = prePopSelfEmployments.map(_.toSelfEmploymentData(
-          id = uuidProvider.getUUID,
-          startDateRemovalFlag = featureSwitching.isEnabled(StartDateBeforeLimit)
+          id = uuidProvider.getUUID
         ))
         val accountingMethod: Option[AccountingMethod] = prePopSelfEmployments.headOption.map(_.accountingMethod)
         subscriptionDetailsService.saveBusinesses(reference, selfEmployments, accountingMethod) map {

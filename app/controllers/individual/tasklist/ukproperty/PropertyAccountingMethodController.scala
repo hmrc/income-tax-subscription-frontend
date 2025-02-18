@@ -18,7 +18,6 @@ package controllers.individual.tasklist.ukproperty
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.StartDateBeforeLimit
 import controllers.utils.ReferenceRetrieval
 import forms.individual.business.AccountingMethodPropertyForm
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -86,14 +85,10 @@ class PropertyAccountingMethodController @Inject()(view: PropertyAccountingMetho
     if (isEditMode || isGlobalEdit) {
       routes.PropertyCheckYourAnswersController.show(editMode = true, isGlobalEdit = isGlobalEdit).url
     } else {
-      if (isEnabled(StartDateBeforeLimit)) {
-        if (maybeStartDateBeforeLimit.contains(false)) {
-          routes.PropertyStartDateController.show(editMode = isEditMode, isGlobalEdit = isGlobalEdit).url
-        } else {
-          routes.PropertyStartDateBeforeLimitController.show(editMode = isEditMode, isGlobalEdit = isGlobalEdit).url
-        }
-      } else {
+      if (maybeStartDateBeforeLimit.contains(false)) {
         routes.PropertyStartDateController.show(editMode = isEditMode, isGlobalEdit = isGlobalEdit).url
+      } else {
+        routes.PropertyStartDateBeforeLimitController.show(editMode = isEditMode, isGlobalEdit = isGlobalEdit).url
       }
     }
   }

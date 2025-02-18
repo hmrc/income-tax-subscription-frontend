@@ -16,8 +16,6 @@
 
 package services
 
-import config.featureswitch.FeatureSwitch.StartDateBeforeLimit
-import config.featureswitch.FeatureSwitching
 import config.{AppConfig, MockConfig}
 import models.common.business._
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
@@ -35,12 +33,7 @@ import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubscriptionDetailsService with FeatureSwitching {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(StartDateBeforeLimit)
-  }
+class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubscriptionDetailsService {
 
   val appConfig: AppConfig = MockConfig
 
@@ -169,8 +162,6 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
         await(result) mustBe Right(completeDetailsNoDates)
       }
       "all fetches were successful, all have selected their start dates are after the limit, but their stored date is older than the limit" in new Setup {
-        enable(StartDateBeforeLimit)
-
         mockFetchAllSelfEmployments(Seq(
           selfEmployment.copy(
             startDateBeforeLimit = Some(false),

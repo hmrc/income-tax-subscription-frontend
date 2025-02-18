@@ -18,7 +18,6 @@ package controllers.individual.tasklist.ukproperty
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.StartDateBeforeLimit
 import controllers.utils.ReferenceRetrieval
 import forms.individual.business.PropertyStartDateForm
 import forms.individual.business.PropertyStartDateForm._
@@ -84,16 +83,10 @@ class PropertyStartDateController @Inject()(view: PropertyStartDate,
   }
 
   private def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean): String = {
-    if (isEnabled(StartDateBeforeLimit)) {
-      routes.PropertyStartDateBeforeLimitController.show(editMode = isEditMode, isGlobalEdit = isGlobalEdit).url
-    } else if (isEditMode || isGlobalEdit) {
-      routes.PropertyCheckYourAnswersController.show(editMode = true, isGlobalEdit = isGlobalEdit).url
-    } else {
-      controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
-    }
+    routes.PropertyStartDateBeforeLimitController.show(editMode = isEditMode, isGlobalEdit = isGlobalEdit).url
   }
 
   def form(implicit request: Request[_]): Form[DateModel] = {
-    propertyStartDateForm(PropertyStartDateForm.minStartDate(isEnabled(StartDateBeforeLimit)), PropertyStartDateForm.maxStartDate, _.toLongDate)
+    propertyStartDateForm(PropertyStartDateForm.minStartDate, PropertyStartDateForm.maxStartDate, _.toLongDate)
   }
 }

@@ -15,8 +15,6 @@
  *@
 
 @import config.AppConfig
-@import config.featureswitch.FeatureSwitching
-@import config.featureswitch.FeatureSwitch.StartDateBeforeLimit
 @import models.common._
 @import models.common.business._
 @import utilities.UserMatchingSessionUtil.ClientDetails
@@ -34,8 +32,7 @@
     pageHeadingHelper: PageHeadingHelper,
     saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
     govukSummaryList : GovukSummaryList,
-    buttonHelper: ButtonHelper,
-    featureSwitching: FeatureSwitching
+    buttonHelper: ButtonHelper
 )
 
 @(postAction: Call, backUrl: String, clientDetails: ClientDetails, incomeSources: IncomeSources, prepopulated: Boolean)(implicit request: Request[_], messages: Messages)
@@ -162,7 +159,7 @@
                     content = Text(messages("agent.your-income-source.property.start-date-para"))
                 ),
                 value = Value(Text(
-                    if(ukProperty.startDateBeforeLimit.contains(true) || featureSwitching.isEnabled(StartDateBeforeLimit) && ukProperty.startDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))) {
+                    if(ukProperty.startDateBeforeLimit.contains(true) || ukProperty.startDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))) {
                         messages("agent.your-income-source.property.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
                     } else {
                         startDate(ukProperty.startDate)
@@ -202,7 +199,7 @@
                     content = Text(messages("agent.your-income-source.property.start-date-para"))
                 ),
                 value = Value(Text(
-                    if(foreignProperty.startDateBeforeLimit.contains(true) || featureSwitching.isEnabled(StartDateBeforeLimit) && foreignProperty.startDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))) {
+                    if(foreignProperty.startDateBeforeLimit.contains(true) || foreignProperty.startDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))) {
                         messages("agent.your-income-source.foreign-property.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
                     } else {
                         startDate(foreignProperty.startDate)
