@@ -28,7 +28,7 @@ class NoSoftwareViewSpec extends ViewSpec {
   private val noSoftware: NoSoftware = app.injector.instanceOf[NoSoftware]
   private val fullName = "FirstName LastName"
   private val nino = "ZZ 11 11 11 Z"
-  private val postAction: Call = controllers.agent.routes.NoSoftwareController.show()
+  private val postAction: Call = controllers.agent.routes.AddAnotherClientController.addAnother()
   private val backUrl: String = controllers.agent.routes.UsingSoftwareController.show.url
 
   "NoSoftware" must {
@@ -81,6 +81,19 @@ class NoSoftwareViewSpec extends ViewSpec {
     "have the fifth paragraph" in {
       document.mainContent.selectNth("p", 5).text mustBe NoSoftwareMessages.paraFive
     }
+
+    "have a form" which {
+
+      "has the correct attributes" in {
+        document.mainContent.getForm.attr("method") mustBe postAction.method
+        document.mainContent.getForm.attr("action") mustBe postAction.url
+      }
+
+      "has an accept and continue button to submit the form" in {
+        document.mainContent.getForm.selectNth(".govuk-button", 1).text mustBe NoSoftwareMessages.buttonText
+      }
+    }
+
   }
 
   private object NoSoftwareMessages {
@@ -94,6 +107,7 @@ class NoSoftwareViewSpec extends ViewSpec {
     val paraThreeLinkHref = "https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax"
     val paraFour = "When you have compatible software, you can come back to sign up your client."
     val paraFive = "Meanwhile, you’ll need to make sure your client submits their Self Assessment tax return as normal."
+    val buttonText = "Sign up another client"
   }
 
   private def page(clientName: String = fullName, clientNino: String = nino): Html = {
