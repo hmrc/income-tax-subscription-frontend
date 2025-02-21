@@ -28,5 +28,4 @@ case class ConfirmedClientRequest[A](
 
   val arn: String = request.arn
 
-  object Future
 }
