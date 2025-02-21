@@ -18,21 +18,35 @@ package controllers.agent
 
 import common.Constants.ITSASessionKeys
 import connectors.stubs.SessionDataConnectorStub
-import helpers.IntegrationTestConstants.testNino
+import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
-import play.api.http.Status.OK
+import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.libs.json.JsString
+import utilities.agent.TestConstants.testUtr
 
 class NoSoftwareControllerISpec extends ComponentSpecBase {
 
   val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
 
   s"GET ${controllers.agent.routes.NoSoftwareController.show()}" should {
+    "return SEE_OTHER to the login page when the user is unauthenticated" in {
+      AuthStub.stubUnauthorised()
+
+      val res = IncomeTaxSubscriptionFrontend.showNoSoftware()
+
+      res must have(
+        httpStatus(SEE_OTHER),
+        redirectURI(basGatewaySignIn("/client/no-compatible-software"))
+      )
+    }
+
     "return OK and show the No Software page" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+
       When(s"GET ${controllers.agent.routes.NoSoftwareController.show()}")
       val result = IncomeTaxSubscriptionFrontend.showNoSoftware()
       Then("The result should be OK with page content")
