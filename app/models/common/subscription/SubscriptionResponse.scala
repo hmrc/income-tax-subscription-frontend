@@ -27,6 +27,4 @@ object SubscriptionSuccess {
 
 sealed trait SubscriptionFailure extends ConnectorError
 
-object BadlyFormattedSubscriptionResponse extends SubscriptionFailure
-
 case class SubscriptionFailureResponse(status: Int) extends SubscriptionFailure

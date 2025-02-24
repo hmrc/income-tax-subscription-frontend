@@ -16,7 +16,6 @@
 
 package forms.agent
 
-import forms.formatters.DateModelMapping.dateModelMapping
 import forms.submapping.AccountingMethodMapping.{option_accruals, option_cash}
 import forms.submapping.{AccountingMethodMapping, YesNoMapping}
 import models._
@@ -25,8 +24,6 @@ import play.api.data.Forms.tuple
 import play.api.data.validation.Invalid
 import play.api.data.{Form, Mapping}
 import utilities.AccountingPeriodUtil
-
-import java.time.LocalDate
 
 object UkPropertyIncomeSourcesForm {
 

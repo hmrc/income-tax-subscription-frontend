@@ -19,26 +19,32 @@ package connectors.individual.subscription
 import config.AppConfig
 import connectors.individual.subscription.httpparsers.CreateIncomeSourcesResponseHttpParser._
 import connectors.individual.subscription.httpparsers.SignUpIncomeSourcesResponseHttpParser._
-import models.common.subscription.CreateIncomeSourcesModel
+import models.common.subscription.{CreateIncomeSourcesModel, SignUpModel}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class MultipleIncomeSourcesSubscriptionConnector @Inject()(val appConfig: AppConfig,
-                                                           val http: HttpClient)
+class MultipleIncomeSourcesSubscriptionConnector @Inject()(appConfig: AppConfig, http: HttpClient)
                                                           (implicit ec: ExecutionContext) {
 
-  private def signUpUrl(nino: String, taxYear: String): String = {
-    appConfig.signUpIncomeSourcesUrl + MultipleIncomeSourcesSubscriptionConnector.signUpUri(nino, taxYear)
+  private def signUpUrl: String = {
+    appConfig.signUpIncomeSourcesUrl
   }
 
   private def createIncomeSourcesUrl(mtdbsa: String): String = appConfig.createIncomeSourcesUrl +
     MultipleIncomeSourcesSubscriptionConnector.createIncomeSourcesUri(mtdbsa)
 
-  def signUp(nino: String, taxYear: String)(implicit hc: HeaderCarrier): Future[PostSignUpIncomeSourcesResponse] =
-    http.POSTEmpty[PostSignUpIncomeSourcesResponse](signUpUrl(nino, taxYear))
+  def signUp(nino: String, utr: String, taxYear: String)(implicit hc: HeaderCarrier): Future[PostSignUpIncomeSourcesResponse] =
+    http.POST[SignUpModel, PostSignUpIncomeSourcesResponse](
+      url = signUpUrl,
+      body = SignUpModel(
+        nino = nino,
+        utr = utr,
+        taxYear = taxYear
+      )
+    )
 
   def createIncomeSourcesFromTaskList(mtdbsa: String, request: CreateIncomeSourcesModel)
                                      (implicit hc: HeaderCarrier): Future[PostCreateIncomeSourceResponse] =
@@ -47,8 +53,6 @@ class MultipleIncomeSourcesSubscriptionConnector @Inject()(val appConfig: AppCon
 }
 
 object MultipleIncomeSourcesSubscriptionConnector {
-
-  def signUpUri(nino: String, taxYear: String): String = s"/$nino/$taxYear"
 
   def createIncomeSourcesUri(mtdbsa: String): String = s"/$mtdbsa"
 

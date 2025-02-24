@@ -37,6 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class GlobalCheckYourAnswersController @Inject()(subscriptionService: SubscriptionOrchestrationService,
                                                  getCompleteDetailsService: GetCompleteDetailsService,
                                                  ninoService: NinoService,
+                                                 utrService: UTRService,
                                                  referenceRetrieval: ReferenceRetrieval,
                                                  globalCheckYourAnswers: GlobalCheckYourAnswers)
                                                 (val auditingService: AuditingService,
@@ -80,16 +81,19 @@ class GlobalCheckYourAnswersController @Inject()(subscriptionService: Subscripti
     val session = request.session
 
     ninoService.getNino flatMap { nino =>
-      subscriptionService.signUpAndCreateIncomeSourcesFromTaskList(
-        createIncomeSourceModel = CreateIncomeSourcesModel.createIncomeSources(nino, completeDetails),
-        maybeSpsEntityId = session.get(SPSEntityId)
-      )(headerCarrier) map {
-        case Right(_) =>
-          onSuccessfulSignUp
-        case Left(failure) =>
-          throw new InternalServerException(
-            s"[GlobalCheckYourAnswersController][submit] - failure response received from submission: ${failure.toString}"
-          )
+      utrService.getUTR flatMap { utr =>
+        subscriptionService.signUpAndCreateIncomeSourcesFromTaskList(
+          createIncomeSourceModel = CreateIncomeSourcesModel.createIncomeSources(nino, completeDetails),
+          utr = utr,
+          maybeSpsEntityId = session.get(SPSEntityId)
+        )(headerCarrier) map {
+          case Right(_) =>
+            onSuccessfulSignUp
+          case Left(failure) =>
+            throw new InternalServerException(
+              s"[GlobalCheckYourAnswersController][submit] - failure response received from submission: ${failure.toString}"
+            )
+        }
       }
     }
   }

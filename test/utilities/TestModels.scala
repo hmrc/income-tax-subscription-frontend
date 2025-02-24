@@ -55,27 +55,22 @@ object TestModels {
   val testSelectedTaxYearNext = AccountingYearModel(Next)
   val testAccountingMethod = AccountingMethodModel(Cash)
   val testAccountMethod: AccountingMethod = Cash
-  val testAccountingMethodAccrual = AccountingMethodModel(Accruals)
-  val testAccountingMethodProperty = AccountingMethodPropertyModel(Cash)
-  val testOverseasAccountingMethodProperty = OverseasAccountingMethodPropertyModel(Cash)
   val testBusinessTradeName = BusinessTradeNameModel("test trade name")
   val testBusinessStartDate = BusinessStartDate(DateModel("05", "04", "2018"))
   val testBusinessAddressModel = BusinessAddressModel(Address(Seq("line 1", "line 2"), Some("TF2 1PF")))
   val testId = "testId"
 
   val testValidStartDate = DateModel.dateConvert(LocalDate.now.minusYears(3))
-  val testPropertyStartDateModel: PropertyStartDateModel = PropertyStartDateModel(testValidStartDate)
-  val testOverseasPropertyStartDateModel: OverseasPropertyStartDateModel = OverseasPropertyStartDateModel(testValidStartDate)
 
   val testFullPropertyModel: PropertyModel = PropertyModel(
-    accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
-    startDate = Some(testPropertyStartDateModel.startDate),
+    accountingMethod = Some(testAccountMethod),
+    startDate = Some(testValidStartDate),
     confirmed = true
   )
 
   val testFullOverseasPropertyModel: OverseasPropertyModel = OverseasPropertyModel(
-    accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
-    startDate = Some(testPropertyStartDateModel.startDate),
+    accountingMethod = Some(testAccountMethod),
+    startDate = Some(testValidStartDate),
     confirmed = true
   )
 

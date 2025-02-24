@@ -20,13 +20,12 @@ import auth.MockHttp
 import config.AppConfig
 import connectors.individual.subscription.SubscriptionConnector
 import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
-import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
-import models.common.subscription.{BadlyFormattedSubscriptionResponse, SubscriptionFailureResponse, SubscriptionRequest, SubscriptionSuccess}
+import models.common.subscription.{SubscriptionFailureResponse, SubscriptionSuccess}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.http.Status.{BAD_REQUEST, OK}
-import play.api.libs.json.{JsValue, Json}
+import play.api.http.Status.BAD_REQUEST
+import play.api.libs.json.JsValue
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.UnitTestTrait
 import utilities.individual.TestConstants._
@@ -35,27 +34,6 @@ import scala.concurrent.Future
 
 trait MockSubscriptionConnector extends UnitTestTrait with MockitoSugar {
   val mockSubscriptionConnector: SubscriptionConnector = mock[SubscriptionConnector]
-
-  private def setupMockSubscribe(request: SubscriptionRequest)(result: Future[SubscriptionResponse]): Unit =
-    when(mockSubscriptionConnector.subscribe(ArgumentMatchers.eq(request))(ArgumentMatchers.any[HeaderCarrier]))
-      .thenReturn(result)
-
-  def setupMockSubscribeSuccess(request: SubscriptionRequest): Unit =
-    setupMockSubscribe(request)(Future.successful(Right(SubscriptionSuccess(testMTDID))))
-
-  def setupMockSubscribeFailure(request: SubscriptionRequest): Unit =
-    setupMockSubscribe(request)(Future.successful(Left(SubscriptionFailureResponse(BAD_REQUEST))))
-
-  def setupMockSubscribeBadFormatting(request: SubscriptionRequest): Unit =
-    setupMockSubscribe(request)(Future.successful(Left(BadlyFormattedSubscriptionResponse)))
-
-  def setupMockSubscribeException(request: SubscriptionRequest): Unit =
-    setupMockSubscribe(request)(Future.failed(testException))
-
-  def setupMockSubscriptionPost(request: SubscriptionRequest)(result: Future[SubscriptionResponse]): Unit =
-    when(mockSubscriptionConnector.subscribe(ArgumentMatchers.eq(request))(ArgumentMatchers.any[HeaderCarrier]))
-      .thenReturn(result)
-
 
   private def setupMockGetSubscription(nino: String)(result: Future[GetSubscriptionResponse]): Unit =
     when(mockSubscriptionConnector.getSubscription(ArgumentMatchers.eq(nino))(ArgumentMatchers.any[HeaderCarrier]))
@@ -81,26 +59,4 @@ trait TestSubscriptionConnector extends MockHttp {
     mockHttp
   )
 
-  def setupMockSubscribe(request: SubscriptionRequest)(status: Int, response: JsValue): Unit =
-    setupMockHttpPost[SubscriptionRequest](
-      url = Some(TestSubscriptionConnector.subscriptionUrl("")),
-      body = Some(request)
-    )(status, response)
-
-  def setupMockSubscribeSuccess(request: SubscriptionRequest): Unit = setupMockSubscribe(request)(OK, Json.toJson(SubscriptionSuccess(testMTDID)))
-
-  def setupMockSubscribeEmptyBody(request: SubscriptionRequest): Unit = setupMockSubscribe(request)(OK, Json.obj())
-
-  def setupMockSubscribeBadRequest(request: SubscriptionRequest): Unit = setupMockSubscribe(request)(BAD_REQUEST, Json.obj())
-
-  def setupMockGetSubscription(nino: String)(status: Int, response: JsValue): Unit =
-    setupMockHttpGet(
-      url = Some(TestSubscriptionConnector.subscriptionUrl(nino))
-    )(status, response)
-
-  def setupMockGetSubscriptionSuccess(nino: String): Unit = setupMockGetSubscription(nino)(OK, Json.toJson(SubscriptionSuccess(testMTDID)))
-
-  def setupMockGetSubscriptionEmptyBody(nino: String): Unit = setupMockGetSubscription(nino)(OK, Json.obj())
-
-  def setupMockGetSubscriptionBadRequest(nino: String): Unit = setupMockGetSubscription(nino)(BAD_REQUEST, Json.obj())
 }

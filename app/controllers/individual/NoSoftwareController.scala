@@ -16,22 +16,21 @@
 
 package controllers.individual
 
-import auth.individual.{SignUpController, StatelessController}
+import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitching
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
 import views.html.individual.NoSoftware
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 
 @Singleton
 class NoSoftwareController @Inject()(noSoftware: NoSoftware)
                                     (val auditingService: AuditingService,
-                                             val appConfig: AppConfig,
-                                             val authService: AuthService)
+                                     val appConfig: AppConfig,
+                                     val authService: AuthService)
                                     (implicit mcc: MessagesControllerComponents, val ec: ExecutionContext)
   extends SignUpController {
 

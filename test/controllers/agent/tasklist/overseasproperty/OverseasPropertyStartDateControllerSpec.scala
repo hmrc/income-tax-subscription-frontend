@@ -16,31 +16,22 @@
 
 package controllers.agent.tasklist.overseasproperty
 
-import com.github.tomakehurst.wiremock.client.WireMock.request
 import config.{AppConfig, MockConfig}
-import config.featureswitch.FeatureSwitching
-import connectors.httpparser.PostSubscriptionDetailsHttpParser
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.{PostSubscriptionDetailsSuccessResponse, UnexpectedStatusFailure}
 import controllers.ControllerSpec
-import controllers.agent.AgentControllerBaseSpec
 import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}
 import forms.agent.OverseasPropertyStartDateForm
 import forms.formatters.DateModelMapping
 import models.DateModel
-import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.http.Status
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.mvc.Result
 import play.api.test.Helpers._
-import services.agent.mocks.MockAgentAuthService
-import services.mocks.{MockAuditingService, MockClientDetailsRetrieval, MockReferenceRetrieval, MockSubscriptionDetailsService}
+import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
 import utilities.{AccountingPeriodUtil, ImplicitDateFormatter}
-import utilities.TestModels.testPropertyStartDateModel
 import views.agent.mocks.MockOverseasPropertyStartDate
 
-import java.time.LocalDate
 import scala.concurrent.Future
 
 class OverseasPropertyStartDateControllerSpec extends ControllerSpec

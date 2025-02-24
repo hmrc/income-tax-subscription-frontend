@@ -40,7 +40,7 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
                                      utr: String,
                                      createIncomeSourcesModel: CreateIncomeSourcesModel)
                                     (implicit hc: HeaderCarrier): Future[Either[ConnectorError, Option[SubscriptionSuccess]]] = {
-    signUpAndCreateIncomeSourcesFromTaskList(createIncomeSourcesModel.nino, createIncomeSourcesModel) flatMap {
+    signUpAndCreateIncomeSourcesFromTaskList(createIncomeSourcesModel.nino, utr, createIncomeSourcesModel) flatMap {
       case right@Right(Some(subscriptionSuccess)) =>
         autoEnrolmentService.autoClaimEnrolment(utr, createIncomeSourcesModel.nino, subscriptionSuccess.mtditId) flatMap {
           case Right(_) =>
@@ -60,7 +60,7 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
 
   }
 
-  private[services] def signUpAndCreateIncomeSourcesFromTaskList(nino: String, createIncomeSourcesModel: CreateIncomeSourcesModel)
+  private[services] def signUpAndCreateIncomeSourcesFromTaskList(nino: String, utr: String, createIncomeSourcesModel: CreateIncomeSourcesModel)
                                                                 (implicit hc: HeaderCarrier): Future[Either[ConnectorError, Option[SubscriptionSuccess]]] = {
 
     val taxYear: String = {
@@ -71,7 +71,7 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
       "[SubscriptionOrchestrationService][signUpAndCreateIncomeSourcesFromTaskList] - Unable to retrieve any tax year from income sources"
     ))
 
-    subscriptionService.signUpIncomeSources(nino, taxYear) flatMap {
+    subscriptionService.signUpIncomeSources(nino, utr, taxYear) flatMap {
       case Right(SignUpSuccessResponse.SignUpSuccessful(mtdbsa)) =>
         subscriptionService.createIncomeSourcesFromTaskList(mtdbsa, createIncomeSourcesModel) map {
           case Right(_) => Right(Some(SubscriptionSuccess(mtdbsa)))
@@ -99,7 +99,7 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
         }
       }
     } else {
-      Future.successful()
+      Future.successful(())
     }
   }
 }

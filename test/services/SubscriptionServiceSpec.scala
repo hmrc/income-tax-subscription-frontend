@@ -64,20 +64,24 @@ class SubscriptionServiceSpec extends TestSubscriptionService
 
   "SubscriptionService.signUpIncomeSources" should {
 
-    def call: PostSignUpIncomeSourcesResponse = await(TestSubscriptionService.signUpIncomeSources(nino = testNino, taxYear = testTaxYear))
+    def call: PostSignUpIncomeSourcesResponse = await(TestSubscriptionService.signUpIncomeSources(
+      nino = testNino,
+      utr = testUtr,
+      taxYear = testTaxYear
+    ))
 
     "return the mtdbsa id when the signUp is successful" in {
-      setupMockSignUpIncomeSourcesSuccess(testNino, testTaxYear)
+      setupMockSignUpIncomeSourcesSuccess(testNino, testUtr, testTaxYear)
       call.value shouldBe SignUpSuccessful(testMTDID)
     }
 
     "return the error if sign up fails on bad request" in {
-      setupMockSignUpIncomeSourcesFailure(testNino, testTaxYear)
+      setupMockSignUpIncomeSourcesFailure(testNino, testUtr, testTaxYear)
       call.left.value shouldBe SignUpIncomeSourcesFailureResponse(BAD_REQUEST)
     }
 
     "return the error if subscription throws an exception" in {
-      setupMockSignUpIncomeSourcesException(testNino, testTaxYear)
+      setupMockSignUpIncomeSourcesException(testNino, testUtr, testTaxYear)
       intercept[Exception](call) shouldBe testException
     }
   }

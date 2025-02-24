@@ -14,13 +14,31 @@
  * limitations under the License.
  */
 
-package models.common
+package models.individual.subscription
 
-import models.DateModel
-import play.api.libs.json.{Json, OFormat}
+import models.common.subscription.SignUpModel
+import org.scalatestplus.play.PlaySpec
+import play.api.libs.json.{JsObject, Json}
 
-case class OverseasPropertyStartDateModel(startDate: DateModel)
+class SignUpModelSpec extends PlaySpec {
 
-object OverseasPropertyStartDateModel {
-  implicit val format: OFormat[OverseasPropertyStartDateModel] = Json.format[OverseasPropertyStartDateModel]
+  val model: SignUpModel = SignUpModel(
+    nino = "test-nino",
+    utr = "test-utr",
+    taxYear = "2024-25"
+  )
+
+  val json: JsObject = Json.obj(
+    "nino" -> "test-nino",
+    "utr" -> "test-utr",
+    "taxYear" -> "2024-25"
+  )
+
+  "SignUpModel" must {
+    "write to json as expected" in {
+      Json.toJson(model) mustBe json
+    }
+  }
+
 }
+

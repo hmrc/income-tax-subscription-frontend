@@ -23,7 +23,6 @@ import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierActio
 import forms.agent.UkPropertyIncomeSourcesForm
 import forms.agent.UkPropertyIncomeSourcesForm.ukPropertyIncomeSourcesForm
 import models.{No, Yes}
-import play.api.data.Form
 import play.api.mvc._
 import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException

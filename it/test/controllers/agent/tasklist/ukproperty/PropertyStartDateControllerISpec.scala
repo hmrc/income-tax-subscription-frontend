@@ -20,7 +20,7 @@ import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.IntegrationTestConstants.{AgentURI, testNino, testUtr}
 import helpers.IntegrationTestModels
-import helpers.IntegrationTestModels.{testFullPropertyModel, testPropertyStartDate}
+import helpers.IntegrationTestModels.testFullPropertyModel
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import models.DateModel
@@ -48,7 +48,7 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
         res must have(
           httpStatus(OK),
           pageTitle(messages("agent.property.start-date.heading") + serviceNameGovUk),
-          govukDateField("startDate", testPropertyStartDate.startDate)
+          govukDateField("startDate", IntegrationTestModels.testValidStartDate)
         )
       }
     }
@@ -79,7 +79,7 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
     "redirect to uk property check your answers page" when {
       "not in edit mode" when {
         "enter commencement date" in {
-          val userInput: DateModel = IntegrationTestModels.testPropertyStartDate.startDate
+          val userInput: DateModel = IntegrationTestModels.testValidStartDate
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
@@ -162,7 +162,7 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
       }
 
       "selecting commencement date within 7 days from current date" in {
-        val userInput: DateModel = IntegrationTestModels.testInvalidPropertyStartDate.startDate
+        val userInput: DateModel = IntegrationTestModels.testInvalidStartDate
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -183,7 +183,7 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
 
     "return INTERNAL_SERVER_ERROR" when {
       "the start date cannot be saved" in {
-        val userInput: DateModel = IntegrationTestModels.testPropertyStartDate.startDate
+        val userInput: DateModel = IntegrationTestModels.testValidStartDate
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)

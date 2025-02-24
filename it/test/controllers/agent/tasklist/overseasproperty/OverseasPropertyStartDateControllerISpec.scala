@@ -48,7 +48,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
         res must have(
           httpStatus(OK),
           pageTitle(messages("agent.overseas-property.start-date.heading") + serviceNameGovUk),
-          govukDateField("startDate", testPropertyStartDate.startDate)
+          govukDateField("startDate", testValidStartDate)
         )
       }
     }
@@ -79,7 +79,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
     "redirect to overseas property check your answers page" when {
       "not in edit mode" when {
         "enter commencement date" in {
-          val userInput: DateModel = IntegrationTestModels.testPropertyStartDate.startDate
+          val userInput: DateModel = IntegrationTestModels.testValidStartDate
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
@@ -163,7 +163,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
       }
 
       "selecting commencement date within 7 days from current date" in {
-        val userInput: DateModel = IntegrationTestModels.testInvalidPropertyStartDate.startDate
+        val userInput: DateModel = IntegrationTestModels.testInvalidStartDate
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -184,7 +184,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
 
     "return INTERNAL_SERVER_ERROR" when {
       "the start date cannot be saved" in {
-        val userInput: DateModel = IntegrationTestModels.testPropertyStartDate.startDate
+        val userInput: DateModel = IntegrationTestModels.testValidStartDate
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)

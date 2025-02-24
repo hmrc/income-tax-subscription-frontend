@@ -53,39 +53,19 @@ trait MockSubscriptionOrchestrationService extends UnitTestTrait with MockitoSug
     super.beforeEach()
   }
 
-  private def mockSignUpAndCreateIncomeSourcesFromTaskList(nino: String,
-                                                           createIncomeSourcesModel: CreateIncomeSourcesModel
-                                                          )(result: Future[Either[ConnectorError, Option[SubscriptionSuccess]]]): Unit = {
+  private def mockSignUpAndCreateIncomeSourcesFromTaskList(createIncomeSourcesModel: CreateIncomeSourcesModel)
+                                                          (result: Future[Either[ConnectorError, Option[SubscriptionSuccess]]]): Unit = {
     when(mockSubscriptionOrchestrationService.signUpAndCreateIncomeSourcesFromTaskList(
       eql(createIncomeSourcesModel),
+      eql(testUtr),
       any()
     )(any[HeaderCarrier])).thenReturn(result)
   }
 
-  def mockSignUpAndCreateIncomeSourcesFromTaskListSuccess(nino: String, createIncomeSourcesModel: CreateIncomeSourcesModel): Unit =
-    mockSignUpAndCreateIncomeSourcesFromTaskList(nino, createIncomeSourcesModel)(Future.successful(testSubscriptionSuccess))
+  def mockSignUpAndCreateIncomeSourcesFromTaskListSuccess(createIncomeSourcesModel: CreateIncomeSourcesModel): Unit =
+    mockSignUpAndCreateIncomeSourcesFromTaskList(createIncomeSourcesModel)(Future.successful(testSubscriptionSuccess))
 
-  def mockSignUpAndCreateIncomeSourcesFromTaskListFailure(nino: String, createIncomeSourcesModel: CreateIncomeSourcesModel): Unit =
-    mockSignUpAndCreateIncomeSourcesFromTaskList(nino, createIncomeSourcesModel)(Future.successful(testSubscriptionFailure))
+  def mockSignUpAndCreateIncomeSourcesFromTaskListFailure(createIncomeSourcesModel: CreateIncomeSourcesModel): Unit =
+    mockSignUpAndCreateIncomeSourcesFromTaskList(createIncomeSourcesModel)(Future.successful(testSubscriptionFailure))
 
-
-  private def mockEnrolAndRefresh(mtditId: String, nino: String)(result: Future[Either[ConnectorError, String]]): Unit =
-    when(
-      mockSubscriptionOrchestrationService.enrolAndRefresh
-      (eql(mtditId), eql(nino))
-      (any[HeaderCarrier])
-    )
-      .thenReturn(result)
-
-  def mockEnrolAndRefreshSuccess(mtditId: String, nino: String): Unit =
-    mockEnrolAndRefresh(mtditId, nino)(Future.successful(Right(mtditId)))
-
-  def mockEnrolFailure(mtditId: String, nino: String): Unit =
-    mockEnrolAndRefresh(mtditId, nino)(Future.successful(testEnrolFailure))
-
-  def mockRefreshFailure(mtditId: String, nino: String): Unit =
-    mockEnrolAndRefresh(mtditId, nino)(Future.successful(testRefreshProfileFailure))
-
-  def mockEnrolAndRefreshException(mtditId: String, nino: String): Unit =
-    mockEnrolAndRefresh(mtditId, nino)(Future.failed(testException))
 }

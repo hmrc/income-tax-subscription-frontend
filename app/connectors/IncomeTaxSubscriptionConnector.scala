@@ -17,9 +17,9 @@
 package connectors
 
 import config.AppConfig
+import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscriptionDetailsResponse
 import connectors.httpparser.GetSubscriptionDetailsHttpParser._
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsResponse
-import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscriptionDetailsResponse
 import connectors.httpparser.RetrieveReferenceHttpParser._
 import play.api.libs.json._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
@@ -32,14 +32,14 @@ class IncomeTaxSubscriptionConnector @Inject()(appConfig: AppConfig,
                                                http: HttpClient)
                                               (implicit ec: ExecutionContext) {
 
-  def subscriptionURL(reference: String, id: String): String =
+  private def subscriptionURL(reference: String, id: String): String =
     s"${appConfig.microServiceUrl}/income-tax-subscription/subscription-data/$reference/id/$id"
 
-  def retrieveReferenceUrl: String = {
+  private def retrieveReferenceUrl: String = {
     appConfig.microServiceUrl + "/income-tax-subscription/subscription-data"
   }
 
-  def deleteURL(reference: String): String = {
+  private def deleteURL(reference: String): String = {
     appConfig.microServiceUrl + s"/income-tax-subscription/subscription-data/$reference"
   }
 
