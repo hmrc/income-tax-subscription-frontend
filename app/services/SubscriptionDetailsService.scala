@@ -145,10 +145,10 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
   }
 
   def saveStreamlineForeignProperty(reference: String,
-                             maybeStartDate: Option[DateModel],
-                             maybeStartDateBeforeLimit: Option[Boolean],
-                             accountingMethod: AccountingMethod)
-                            (implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
+                                    maybeStartDate: Option[DateModel],
+                                    maybeStartDateBeforeLimit: Option[Boolean],
+                                    accountingMethod: AccountingMethod)
+                                   (implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
     fetchOverseasProperty(reference) map {
       case Some(overseasProperty) => overseasProperty
       case None => OverseasPropertyModel()

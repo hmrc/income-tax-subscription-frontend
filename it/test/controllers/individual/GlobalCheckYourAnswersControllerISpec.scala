@@ -24,7 +24,7 @@ import helpers.IntegrationTestModels._
 import helpers.WiremockHelper.verifyPost
 import helpers._
 import helpers.servicemocks.{AuthStub, ChannelPreferencesStub, TaxEnrolmentsStub}
-import models.common.subscription.CreateIncomeSourcesModel
+import models.common.subscription.{CreateIncomeSourcesModel, SignUpModel}
 import models.sps.SPSPayload
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
@@ -36,9 +36,11 @@ import utilities.SubscriptionDataKeys._
 
 class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-  }
+  def testSignUpModel(taxYear: String): SignUpModel = SignUpModel(
+    nino = testNino,
+    utr = testUtr,
+    taxYear = taxYear
+  )
 
   "GET /report-quarterly/income-and-expenses/sign-up/final-check-your-answers" should {
     "return OK" when {
@@ -94,8 +96,9 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
             SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
             SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
-            MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear)(OK)
+            MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testSignUpModel(AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear))(OK)
             MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
               mtdbsa = testMtdId,
               request = CreateIncomeSourcesModel(
@@ -152,8 +155,9 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
             SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
             SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
-            MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear)(UNPROCESSABLE_ENTITY)
+            MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testSignUpModel(AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear))(UNPROCESSABLE_ENTITY)
 
             When("POST /final-check-your-answers is called")
             val testEntityId: String = "testEntityId"
@@ -193,8 +197,9 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
             SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
             SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
-            MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getNextTaxYear.toLongTaxYear)(OK)
+            MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testSignUpModel(AccountingPeriodUtil.getNextTaxYear.toLongTaxYear))(OK)
             MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
               mtdbsa = testMtdId,
               request = CreateIncomeSourcesModel(
@@ -251,8 +256,9 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
             SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
             SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
-            MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getNextTaxYear.toLongTaxYear)(UNPROCESSABLE_ENTITY)
+            MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testSignUpModel(AccountingPeriodUtil.getNextTaxYear.toLongTaxYear))(UNPROCESSABLE_ENTITY)
 
             When("POST /final-check-your-answers is called")
             val testEntityId: String = "testEntityId"
@@ -291,7 +297,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
           )
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
 
-          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear)(INTERNAL_SERVER_ERROR)
+          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testSignUpModel(AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear))(INTERNAL_SERVER_ERROR)
 
           When("POST /final-check-your-answers is called")
           val res = IncomeTaxSubscriptionFrontend.submitGlobalCheckYourAnswers()
@@ -323,7 +329,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
           )
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
 
-          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear)(OK)
+          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testSignUpModel(AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear))(OK)
           MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
             mtdbsa = testMtdId,
             request = CreateIncomeSourcesModel(
@@ -368,7 +374,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
           )
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
 
-          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear)(OK)
+          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testSignUpModel(AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear))(OK)
           MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
             mtdbsa = testMtdId,
             request = CreateIncomeSourcesModel(
@@ -415,7 +421,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
           )
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
 
-          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear)(OK)
+          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testSignUpModel(AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear))(OK)
           MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
             mtdbsa = testMtdId,
             request = CreateIncomeSourcesModel(

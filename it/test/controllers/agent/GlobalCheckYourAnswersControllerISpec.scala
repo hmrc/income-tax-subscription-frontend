@@ -27,7 +27,7 @@ import helpers.agent._
 import helpers.agent.servicemocks.{AgentServicesStub, AuthStub}
 import helpers.servicemocks.EnrolmentStoreProxyStub
 import helpers.servicemocks.EnrolmentStoreProxyStub.jsonResponseBody
-import models.common.subscription.CreateIncomeSourcesModel
+import models.common.subscription.{CreateIncomeSourcesModel, SignUpModel}
 import models.sps.AgentSPSPayload
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
@@ -44,6 +44,12 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
     enable(FeatureSwitch.CheckClientRelationship)
     enable(FeatureSwitch.CheckMultiAgentRelationship)
   }
+
+  def testSignUpModel(taxYear: String): SignUpModel = SignUpModel(
+    nino = testNino,
+    utr = testUtr,
+    taxYear = taxYear
+  )
 
   "GET /report-quarterly/income-and-expenses/sign-up/client/final-check-your-answers" when {
     "return SEE_OTHER to the login page" when {
@@ -182,7 +188,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             AgentServicesStub.stubMTDClientRelationship(testARN, testNino, exists = true)
             AgentServicesStub.stubMTDSuppAgentRelationship(testARN, testNino, exists = false)
 
-            MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear)(OK)
+            MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testSignUpModel(AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear))(OK)
             MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
               mtdbsa = testMtdId,
               request = CreateIncomeSourcesModel(
@@ -250,7 +256,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             AgentServicesStub.stubMTDClientRelationship(testARN, testNino, exists = false)
             AgentServicesStub.stubMTDSuppAgentRelationship(testARN, testNino, exists = true)
 
-            MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getNextTaxYear.toLongTaxYear)(OK)
+            MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testSignUpModel(AccountingPeriodUtil.getNextTaxYear.toLongTaxYear))(OK)
             MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
               mtdbsa = testMtdId,
               request = CreateIncomeSourcesModel(
@@ -302,7 +308,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
           SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
           SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
-          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getNextTaxYear.toLongTaxYear)(UNPROCESSABLE_ENTITY)
+          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testSignUpModel(AccountingPeriodUtil.getNextTaxYear.toLongTaxYear))(UNPROCESSABLE_ENTITY)
 
           When("POST /client/final-check-your-answers is called")
           val res = IncomeTaxSubscriptionFrontend.submitAgentGlobalCheckYourAnswers(Some(Yes))()
@@ -342,7 +348,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
           SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
           SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
-          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear)(INTERNAL_SERVER_ERROR)
+          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testSignUpModel(AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear))(INTERNAL_SERVER_ERROR)
 
           When("POST /client/final-check-your-answers is called")
           val res = IncomeTaxSubscriptionFrontend.submitAgentGlobalCheckYourAnswers(Some(Yes))()
@@ -379,7 +385,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
           SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
           SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
-          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testNino, AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear)(OK)
+          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testSignUpModel(AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear))(OK)
           MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
             mtdbsa = testMtdId,
             request = CreateIncomeSourcesModel(

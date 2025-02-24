@@ -16,7 +16,6 @@
 
 package services
 
-import config.featureswitch.{FeatureSwitching, FeatureSwitchingImpl}
 import config.{AppConfig, MockConfig}
 import connectors.httpparser.PostSubscriptionDetailsHttpParser
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
@@ -32,7 +31,7 @@ import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import services.PrePopDataService.PrePopResult.{PrePopFailure, PrePopSuccess}
 import services.mocks.{MockNinoService, MockSubscriptionDetailsService}
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.individual.TestConstants.{testNino, testReference}
+import utilities.individual.TestConstants.testNino
 import utilities.{AccountingPeriodUtil, MockUUIDProvider}
 
 import scala.concurrent.ExecutionContext.Implicits.global

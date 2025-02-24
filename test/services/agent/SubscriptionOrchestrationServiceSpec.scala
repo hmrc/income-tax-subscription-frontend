@@ -57,7 +57,7 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService
     "return a success" when {
 
       "all services succeed" in {
-        mockSignUpSuccess(testNino, testTaxYear)
+        mockSignUpSuccess(testNino, testUtr, testTaxYear)
         preExistingMTDRelationship(testARN, testNino)(isPreExistingMTDRelationship = true)
         mockCreateIncomeSourcesFromTaskListSuccess(testMTDID, testCreateIncomeSourcesThisYear)
         mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(Right(AutoEnrolmentService.EnrolmentAssigned))
@@ -72,7 +72,7 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService
       }
 
       "there is no pre existing agent-client relationship" in {
-        mockSignUpSuccess(testNino, testTaxYear)
+        mockSignUpSuccess(testNino, testUtr, testTaxYear)
         preExistingMTDRelationship(testARN, testNino)(isPreExistingMTDRelationship = false)
         mockCreateIncomeSourcesFromTaskListSuccess(testMTDID, testCreateIncomeSourcesThisYear)
         mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(Right(AutoEnrolmentService.EnrolmentAssigned))
@@ -87,7 +87,7 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService
       }
 
       "the sign up indicated the customer was already signed up" in {
-        mockAlreadySignedUp(testNino, testTaxYear)
+        mockAlreadySignedUp(testNino, testUtr, testTaxYear)
 
         val res = TestSubscriptionOrchestrationService.createSubscriptionFromTaskList(testARN, testUtr, testCreateIncomeSourcesThisYear)
 
@@ -98,7 +98,7 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService
       "the CheckMultiAgentRelationship feature switch is on" when {
         "there is a multi-agent-client relationship" in {
           enable(FeatureSwitch.CheckMultiAgentRelationship)
-          mockSignUpSuccess(testNino, testTaxYear)
+          mockSignUpSuccess(testNino, testUtr, testTaxYear)
           preExistingMTDRelationship(testARN, testNino)(isPreExistingMTDRelationship = false)
           suppAgentRelationship(testARN, testNino)(isMTDSuppAgentRelationship = true)
           mockCreateIncomeSourcesFromTaskListSuccess(testMTDID, testCreateIncomeSourcesThisYear)
@@ -114,7 +114,7 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService
         }
         "there is no supporting-agent client relationship" in {
           enable(FeatureSwitch.CheckMultiAgentRelationship)
-          mockSignUpSuccess(testNino, testTaxYear)
+          mockSignUpSuccess(testNino, testUtr, testTaxYear)
           preExistingMTDRelationship(testARN, testNino)(isPreExistingMTDRelationship = false)
           suppAgentRelationship(testARN, testNino)(isMTDSuppAgentRelationship = false)
           mockCreateIncomeSourcesFromTaskListSuccess(testMTDID, testCreateIncomeSourcesThisYear)
@@ -133,13 +133,13 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService
 
     "return a failure" when {
       "sign up income sources request fail and returns an error" in {
-        mockSignUpIncomeSourcesFailure(testNino, testTaxYear)
+        mockSignUpIncomeSourcesFailure(testNino, testUtr, testTaxYear)
 
         whenReady(res)(_ mustBe testSignUpIncomeSourcesFailure)
       }
 
       "create income sources from task list request fail and returns an error" in {
-        mockSignUpSuccess(testNino, testTaxYear)
+        mockSignUpSuccess(testNino, testUtr, testTaxYear)
         mockCreateIncomeSourcesFromTaskListFailure(testMTDID, testCreateIncomeSourcesThisYear)
 
         whenReady(res)(_ mustBe testCreateSubscriptionFromTaskListFailure)
@@ -148,7 +148,7 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService
       "check agent-client relationship fails" in {
         enable(FeatureSwitch.CheckMultiAgentRelationship)
 
-        mockSignUpSuccess(testNino, testTaxYear)
+        mockSignUpSuccess(testNino, testUtr, testTaxYear)
         mockCreateIncomeSourcesFromTaskListSuccess(testMTDID, testCreateIncomeSourcesThisYear)
         preExistingMTDRelationshipFailure(testARN, testNino)(failure = testException)
 

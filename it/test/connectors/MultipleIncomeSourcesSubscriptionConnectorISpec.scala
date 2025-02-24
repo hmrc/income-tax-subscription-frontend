@@ -19,7 +19,8 @@ package connectors
 import connectors.individual.subscription.MultipleIncomeSourcesSubscriptionConnector
 import connectors.stubs.MultipleIncomeSourcesSubscriptionAPIStub._
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.{testMtdId, testNino}
+import helpers.IntegrationTestConstants.{testMtdId, testNino, testUtr}
+import models.common.subscription.SignUpModel
 import models.common.subscription.SignUpSourcesFailure.{BadlyFormattedSignUpIncomeSourcesResponse, SignUpIncomeSourcesFailureResponse}
 import models.common.subscription.SignUpSuccessResponse.SignUpSuccessful
 import play.api.libs.json.Json
@@ -34,25 +35,31 @@ class MultipleIncomeSourcesSubscriptionConnectorISpec extends ComponentSpecBase 
 
   val testTaxYear: String = "2023-24"
 
+  val testSignUpModel: SignUpModel = SignUpModel(
+    nino = testNino,
+    utr = testUtr,
+    taxYear = testTaxYear
+  )
+
   "MultipleIncomeSourcesSubscription signup" should {
     "return SignUpIncomeSourcesSuccess when valid response is returned" in {
-      stubPostSignUp(testNino, testTaxYear)(OK)
+      stubPostSignUp(testSignUpModel)(OK)
 
-      val res = TestMisSubscriptionConnector.signUp(testNino, testTaxYear)
+      val res = TestMisSubscriptionConnector.signUp(testNino, testUtr, testTaxYear)
 
       await(res) mustBe Right(SignUpSuccessful(testMtdId))
     }
     "return BadlyFormattedSignUpIncomeSourcesResponse when the response is malformed" in {
-      stubPostSignUp(testNino, testTaxYear)(OK, Json.obj("not" -> "correct"))
+      stubPostSignUp(testSignUpModel)(OK, Json.obj("not" -> "correct"))
 
-      val res = TestMisSubscriptionConnector.signUp(testNino, testTaxYear)
+      val res = TestMisSubscriptionConnector.signUp(testNino, testUtr, testTaxYear)
 
       await(res) mustBe Left(BadlyFormattedSignUpIncomeSourcesResponse)
     }
     "return SignUpIncomeSourcesFailureResponse if the request fails" in {
-      stubPostSignUp(testNino, testTaxYear)(INTERNAL_SERVER_ERROR)
+      stubPostSignUp(testSignUpModel)(INTERNAL_SERVER_ERROR)
 
-      val res = TestMisSubscriptionConnector.signUp(testNino, testTaxYear)
+      val res = TestMisSubscriptionConnector.signUp(testNino, testUtr, testTaxYear)
 
       await(res) mustBe Left(SignUpIncomeSourcesFailureResponse(INTERNAL_SERVER_ERROR))
     }

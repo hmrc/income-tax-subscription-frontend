@@ -18,12 +18,9 @@ package connectors.individual.subscription
 
 import config.AppConfig
 import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser._
-import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser._
-import javax.inject.{Inject, Singleton}
-import models.common.subscription.SubscriptionRequest
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -36,11 +33,6 @@ class SubscriptionConnector @Inject()(val appConfig: AppConfig,
   def getSubscription(nino: String)(implicit hc: HeaderCarrier): Future[GetSubscriptionResponse] = {
     http.GET[GetSubscriptionResponse](subscriptionUrl(nino))
   }
-
-  def subscriptionUrlPost(nino: String): String = s"${appConfig.subscriptionUrlPost}/$nino"
-
-  def subscribe(request: SubscriptionRequest)(implicit hc: HeaderCarrier): Future[SubscriptionResponse] =
-    http.POST[SubscriptionRequest, SubscriptionResponse](subscriptionUrlPost(request.nino), request)
 
 }
 

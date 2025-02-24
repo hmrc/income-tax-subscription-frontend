@@ -37,9 +37,9 @@ class SubscriptionService @Inject()(multipleIncomeSourcesSubscriptionConnector: 
     subscriptionConnector.getSubscription(nino)
   }
 
-  def signUpIncomeSources(nino: String, taxYear: String)(implicit hc: HeaderCarrier): Future[PostSignUpIncomeSourcesResponse] = {
+  def signUpIncomeSources(nino: String, utr: String, taxYear: String)(implicit hc: HeaderCarrier): Future[PostSignUpIncomeSourcesResponse] = {
     logger.debug(s"SignUp IncomeSources request for nino:$nino")
-    multipleIncomeSourcesSubscriptionConnector.signUp(nino, taxYear)
+    multipleIncomeSourcesSubscriptionConnector.signUp(nino, utr, taxYear)
   }
 
   def createIncomeSourcesFromTaskList(mtdbsa: String,

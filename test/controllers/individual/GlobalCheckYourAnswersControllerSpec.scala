@@ -31,9 +31,9 @@ import play.twirl.api.HtmlFormat
 import services.GetCompleteDetailsService
 import services.GetCompleteDetailsService._
 import services.individual.mocks.MockSubscriptionOrchestrationService
-import services.mocks.{MockAuditingService, MockNinoService, MockReferenceRetrieval, MockSubscriptionDetailsService}
+import services.mocks._
 import uk.gov.hmrc.http.InternalServerException
-import utilities.individual.TestConstants.testNino
+import utilities.individual.TestConstants.{testNino, testUtr}
 import views.html.individual.GlobalCheckYourAnswers
 
 import java.time.LocalDate
@@ -44,6 +44,7 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockSubscriptionOrchestrationService
   with MockNinoService
+  with MockUTRService
   with MockReferenceRetrieval
   with FeatureSwitching {
 
@@ -51,6 +52,7 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
     subscriptionService = mockSubscriptionOrchestrationService,
     getCompleteDetailsService = mock[GetCompleteDetailsService],
     ninoService = mockNinoService,
+    utrService = mockUTRService,
     referenceRetrieval = mockReferenceRetrieval,
     globalCheckYourAnswers = mock[GlobalCheckYourAnswers]
   )(
@@ -73,6 +75,7 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
       subscriptionService = mockSubscriptionOrchestrationService,
       getCompleteDetailsService = mockGetCompleteDetailsService,
       ninoService = mockNinoService,
+      utrService = mockUTRService,
       referenceRetrieval = mockReferenceRetrieval,
       globalCheckYourAnswers = mockGlobalCheckYourAnswers
     )(
@@ -152,7 +155,8 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
         when(mockGetCompleteDetailsService.getCompleteSignUpDetails(any())(any()))
           .thenReturn(Future.successful(Right(completeDetails)))
         mockGetNino(testNino)
-        mockSignUpAndCreateIncomeSourcesFromTaskListSuccess(nino = testNino, CreateIncomeSourcesModel.createIncomeSources(testNino, completeDetails))
+        mockGetUTR(testUtr)
+        mockSignUpAndCreateIncomeSourcesFromTaskListSuccess(CreateIncomeSourcesModel.createIncomeSources(testNino, completeDetails))
 
         val result: Future[Result] = controller.submit(subscriptionRequest)
 
@@ -166,7 +170,8 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
         when(mockGetCompleteDetailsService.getCompleteSignUpDetails(any())(any()))
           .thenReturn(Future.successful(Right(completeDetails)))
         mockGetNino(testNino)
-        mockSignUpAndCreateIncomeSourcesFromTaskListFailure(nino = testNino, CreateIncomeSourcesModel.createIncomeSources(testNino, completeDetails))
+        mockGetUTR(testUtr)
+        mockSignUpAndCreateIncomeSourcesFromTaskListFailure(CreateIncomeSourcesModel.createIncomeSources(testNino, completeDetails))
 
         intercept[InternalServerException](await(controller.submit(subscriptionRequest)))
           .message mustBe s"[GlobalCheckYourAnswersController][submit] - failure response received from submission: ${SubscriptionFailureResponse(INTERNAL_SERVER_ERROR)}"
@@ -175,9 +180,9 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
   }
 
   "backUrl" when {
-      "go to the YourIncomeSources page" in new Setup {
-        controller.backUrl mustBe controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
-      }
+    "go to the YourIncomeSources page" in new Setup {
+      controller.backUrl mustBe controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
+    }
   }
 
   authorisationTests()

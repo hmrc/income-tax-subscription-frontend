@@ -43,9 +43,12 @@ trait MockSubscriptionService extends UnitTestTrait with MockitoSugar with Befor
   }
 
 
-  private def mockSignUpIncomeSources(nino: String, taxYear: String)(result: Future[PostSignUpIncomeSourcesResponse]): Unit =
-    when(mockSubscriptionService.signUpIncomeSources(ArgumentMatchers.eq(nino), ArgumentMatchers.eq(taxYear))(ArgumentMatchers.any[HeaderCarrier]))
-      .thenReturn(result)
+  private def mockSignUpIncomeSources(nino: String, utr: String, taxYear: String)(result: Future[PostSignUpIncomeSourcesResponse]): Unit =
+    when(mockSubscriptionService.signUpIncomeSources(
+      ArgumentMatchers.eq(nino),
+      ArgumentMatchers.eq(utr),
+      ArgumentMatchers.eq(taxYear)
+    )(ArgumentMatchers.any[HeaderCarrier])).thenReturn(result)
 
   private def mockCreateIncomeSourcesFromTaskList(mtdbsa: String, createIncomeSourcesModel: CreateIncomeSourcesModel)
                                                  (result: Future[PostCreateIncomeSourceResponse]): Unit = {
@@ -57,17 +60,17 @@ trait MockSubscriptionService extends UnitTestTrait with MockitoSugar with Befor
       .thenReturn(result)
   }
 
-  def mockSignUpSuccess(nino: String, taxYear: String): Unit =
-    mockSignUpIncomeSources(nino, taxYear)(Future.successful(testSignUpIncomeSourcesSuccess))
+  def mockSignUpSuccess(nino: String, utr: String, taxYear: String): Unit =
+    mockSignUpIncomeSources(nino, utr, taxYear)(Future.successful(testSignUpIncomeSourcesSuccess))
 
-  def mockAlreadySignedUp(nino: String, taxYear: String): Unit =
-    mockSignUpIncomeSources(nino, taxYear)(Future.successful(testAlreadySignUpIncomeSources))
+  def mockAlreadySignedUp(nino: String, utr: String, taxYear: String): Unit =
+    mockSignUpIncomeSources(nino, utr, taxYear)(Future.successful(testAlreadySignUpIncomeSources))
 
-  def mockSignUpIncomeSourcesFailure(nino: String, taxYear: String): Unit =
-    mockSignUpIncomeSources(nino, taxYear)(Future.successful(testSignUpIncomeSourcesFailure))
+  def mockSignUpIncomeSourcesFailure(nino: String, utr: String, taxYear: String): Unit =
+    mockSignUpIncomeSources(nino, utr, taxYear)(Future.successful(testSignUpIncomeSourcesFailure))
 
-  def mockSignUpIncomeSourcesException(nino: String, taxYear: String): Unit =
-    mockSignUpIncomeSources(nino, taxYear)(Future.failed(testException))
+  def mockSignUpIncomeSourcesException(nino: String, utr: String, taxYear: String): Unit =
+    mockSignUpIncomeSources(nino, utr, taxYear)(Future.failed(testException))
 
   def mockCreateIncomeSourcesFromTaskListSuccess(mtdbsa: String, createIncomeSourcesModel: CreateIncomeSourcesModel): Unit =
     mockCreateIncomeSourcesFromTaskList(mtdbsa, createIncomeSourcesModel)(Future.successful(testCreateIncomeSourcesFromTaskListSuccess))
