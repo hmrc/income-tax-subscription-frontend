@@ -103,6 +103,7 @@ object AuthStub extends WireMockMethods {
         "providerType" -> "CustomProvider"
       ),
       "groupIdentifier" -> testGroupId,
-      "credentialRole" -> "User"
+      "credentialRole" -> "User",
+      "nino" -> testNino
     )
 }

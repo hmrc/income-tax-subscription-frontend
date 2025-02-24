@@ -27,7 +27,7 @@ import scala.concurrent.Future
 
 @Singleton
 class SessionTimeoutController @Inject()(val timeoutView: Timeout, mcc: MessagesControllerComponents, val config: Configuration, val env: Environment)
-                                        extends FrontendController(mcc) with AuthRedirects {
+  extends FrontendController(mcc) with AuthRedirects {
 
   val show: Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok(timeoutView()))
@@ -38,7 +38,7 @@ class SessionTimeoutController @Inject()(val timeoutView: Timeout, mcc: Messages
   }
 
   val timeout: Action[AnyContent] = Action.async {
-    Future.successful(toGGLogin(controllers.individual.matching.routes.HomeController.home.url).withNewSession)
+    Future.successful(toGGLogin(controllers.individual.matching.routes.HomeController.index.url).withNewSession)
   }
 
 }

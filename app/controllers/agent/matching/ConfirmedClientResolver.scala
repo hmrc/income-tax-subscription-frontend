@@ -95,7 +95,7 @@ class ConfirmedClientResolver @Inject()(getEligibilityStatusService: GetEligibil
         failureReason = None
       ))
       eligibilityInterrupt <- subscriptionDetailsService.fetchEligibilityInterruptPassed(reference)
-      prePopResult <- prePopDataService.prePopIncomeSources(reference)
+      prePopResult <- prePopDataService.prePopIncomeSources(reference, nino)
     } yield {
       prePopResult match {
         case PrePopResult.PrePopSuccess =>

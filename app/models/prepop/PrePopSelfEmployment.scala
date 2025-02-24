@@ -18,7 +18,7 @@ package models.prepop
 
 import models.common.business._
 import models.{AccountingMethod, DateModel}
-import play.api.libs.json.{Json, Reads}
+import play.api.libs.json.{Json, OFormat}
 import utilities.AccountingPeriodUtil
 
 case class PrePopSelfEmployment(name: Option[String],
@@ -44,5 +44,5 @@ case class PrePopSelfEmployment(name: Option[String],
 }
 
 object PrePopSelfEmployment {
-  implicit val reads: Reads[PrePopSelfEmployment] = Json.reads[PrePopSelfEmployment]
+  implicit val format: OFormat[PrePopSelfEmployment] = Json.format[PrePopSelfEmployment]
 }

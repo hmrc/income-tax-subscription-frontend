@@ -17,344 +17,267 @@
 package controllers.individual.matching
 
 import common.Constants.ITSASessionKeys
+import config.featureswitch.FeatureSwitch.ThrottlingFeature
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks._
 import helpers.{ComponentSpecBase, SessionCookieCrumbler}
+import models.common.business.{Address, SelfEmploymentData}
 import models.common.{OverseasPropertyModel, PropertyModel}
+import models.individual.JourneyStep.PreSignUp
+import models.prepop.{PrePopData, PrePopSelfEmployment}
 import models.{Accruals, Cash, DateModel, EligibilityStatus}
-import models.common.business.{Address, BusinessAddressModel, BusinessNameModel, BusinessStartDate, BusinessTradeNameModel, SelfEmploymentData}
 import play.api.http.Status._
 import play.api.libs.json.{JsBoolean, JsString, Json}
-import services.IndividualStartOfJourneyThrottle
-import utilities.SubscriptionDataKeys
+import services.{IndividualStartOfJourneyThrottle, StartOfJourneyThrottleId}
+import utilities.AccountingPeriodUtil
 import utilities.SubscriptionDataKeys.PrePopFlag
 
 class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
-  "GET /report-quarterly/income-and-expenses/sign-up" should {
-    "return the guidance page" in {
-      When("We hit to the guidance page route")
-      val res = IncomeTaxSubscriptionFrontend.startPage()
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(ThrottlingFeature)
+  }
 
-      Then("Return the guidance page")
-      res must have(
-        httpStatus(SEE_OTHER),
-        redirectURI(IndividualURI.indexURI)
-      )
+  s"GET ${routes.HomeController.index.url}" must {
+    "redirect to the login page" when {
+      "the user is unauthenticated" in {
+        AuthStub.stubUnauthorised()
+
+        val res = IncomeTaxSubscriptionFrontend.indexPage()
+
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(basGatewaySignIn("/"))
+        )
+      }
+    }
+    "redirect to home and add the pre sign up journey step into session" when {
+      "the user has no journey state" in {
+        AuthStub.stubAuthSuccess()
+
+        val res = IncomeTaxSubscriptionFrontend.indexPage(includeState = false)
+
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(IndividualURI.baseURI)
+        )
+
+        val session: Map[String, String] = getSessionMap(res)
+        session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(PreSignUp.key)
+      }
+    }
+    "redirect to the no self assessment page" when {
+      "a utr was not found on the users cred, in session or from citizen details" in {
+        AuthStub.stubAuthNoUtr()
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(NO_CONTENT)
+        CitizenDetailsStub.stubCIDUserWithNoUtr(testNino)
+
+        val res = IncomeTaxSubscriptionFrontend.indexPage()
+
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(IndividualURI.noSaURI)
+        )
+      }
+    }
+    "redirect to the start of journey throttle page" when {
+      "the throttle is enabled and the user hit the limit" in {
+        enable(ThrottlingFeature)
+
+        AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.throttlePassed(IndividualStartOfJourneyThrottle))(NO_CONTENT)
+        ThrottlingStub.stubThrottle(StartOfJourneyThrottleId)(throttled = true)
+
+        val res = IncomeTaxSubscriptionFrontend.indexPage()
+
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(IndividualURI.startOfJourneyThrottleURI)
+        )
+
+        ThrottlingStub.verifyThrottle(StartOfJourneyThrottleId)()
+      }
+    }
+    "redirect to the start of the claim enrolment journey" when {
+      "the user is already signed up for MTD ITSA and has no enrolment" in {
+        AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
+        SubscriptionStub.stubGetSubscriptionFound()
+
+        val res = IncomeTaxSubscriptionFrontend.indexPage()
+
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(IndividualURI.addMTDITOverviewURI)
+        )
+      }
+    }
+    "redirect to the ineligible to sign up page" when {
+      "the user is ineligible to sign up for the current and next tax years" in {
+        AuthStub.stubAuthSuccess()
+
+        SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
+
+        SubscriptionStub.stubGetNoSubscription()
+
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(ineligibleStatus))
+        EligibilityStub.stubEligibilityResponseBoth(testUtr)(currentYearResponse = false, nextYearResponse = false)
+        SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, ineligibleStatus)(OK)
+
+        val res = IncomeTaxSubscriptionFrontend.indexPage()
+
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(IndividualURI.notEligibleURI)
+        )
+      }
+    }
+    "redirect to the SPS handoff" when {
+      "the user is eligible to sign up for both tax years" in {
+        AuthStub.stubAuthSuccess()
+
+        SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
+
+        SubscriptionStub.stubGetNoSubscription()
+
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(eligibleBothYears))
+
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(PrePopFlag, NO_CONTENT)
+        PrePopStub.stubGetPrePop(testNino)(OK, Json.toJson(fullPrePopData))
+        IncomeTaxSubscriptionConnectorStub.stubSavePrePopFlag()
+
+        IncomeTaxSubscriptionConnectorStub.stubSaveSoleTraderBusinessDetails(selfEmploymentDetails, Some(Accruals))
+        IncomeTaxSubscriptionConnectorStub.stubSaveProperty(PropertyModel(accountingMethod = Some(Cash)))
+        IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(OverseasPropertyModel(accountingMethod = Some(Cash)))
+        IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
+
+        val res = IncomeTaxSubscriptionFrontend.indexPage()
+
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(IndividualURI.spsHandoffRouteURI)
+        )
+      }
+    }
+    "redirect to the cannot sign up for current tax year page" when {
+      "the user is eligible to sign up for next tax year only" in {
+        AuthStub.stubAuthSuccess()
+
+        SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
+
+        SubscriptionStub.stubGetNoSubscription()
+
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(eligibleNextYearOnly))
+
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(PrePopFlag, OK, JsBoolean(true))
+
+        val res = IncomeTaxSubscriptionFrontend.indexPage()
+
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(IndividualURI.cannotSignUpForCurrentYearURI)
+        )
+      }
+    }
+    "return an internal server error" when {
+      "there was a problem when checking if utr was present in session" in {
+        AuthStub.stubAuthNoUtr()
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(INTERNAL_SERVER_ERROR)
+
+        val res = IncomeTaxSubscriptionFrontend.indexPage()
+
+        res must have(
+          httpStatus(INTERNAL_SERVER_ERROR)
+        )
+      }
+      "there was a problem when checking if the user is already signed up" in {
+        AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
+
+        SubscriptionStub.stubGetSubscriptionFail()
+
+        val res = IncomeTaxSubscriptionFrontend.indexPage()
+
+        res must have(
+          httpStatus(INTERNAL_SERVER_ERROR)
+        )
+      }
+      "there was a problem when pre-populating the users income sources" in {
+        AuthStub.stubAuthSuccess()
+
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
+
+        SubscriptionStub.stubGetNoSubscription()
+
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(eligibleBothYears))
+
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(PrePopFlag, NO_CONTENT)
+        PrePopStub.stubGetPrePop(testNino)(INTERNAL_SERVER_ERROR, Json.obj())
+
+        val res = IncomeTaxSubscriptionFrontend.indexPage()
+
+        res must have(
+          httpStatus(INTERNAL_SERVER_ERROR)
+        )
+      }
+    }
+    "add the users utr and name to session" when {
+      "fetched from citizen details during the utr lookup" in {
+        AuthStub.stubAuthNoUtr()
+
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(NO_CONTENT)
+        CitizenDetailsStub.stubCIDUserWithNinoAndUtrAndName(testNino, testUtr, testFirstName, testLastName)
+
+        SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
+
+        SubscriptionStub.stubGetNoSubscription()
+
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(eligibleBothYears))
+
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(PrePopFlag, OK, JsBoolean(true))
+
+        val res = IncomeTaxSubscriptionFrontend.indexPage()
+
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(IndividualURI.spsHandoffRouteURI)
+        )
+
+        val session: Map[String, String] = getSessionMap(res)
+
+        session.get(ITSASessionKeys.FULLNAME) mustBe Some(s"$testFirstName $testLastName")
+      }
     }
   }
 
-  "GET /report-quarterly/income-and-expenses/sign-up/index" when {
-    "the user both nino and utr enrolments" when {
-      "the user has a subscription" should {
-        "redirect to the claim enrolment journey page" in {
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          CitizenDetailsStub.stubCIDUserWithNinoAndUtrAndName(testNino, testUtr, testFirstName, testLastName)
-          SubscriptionStub.stubGetSubscriptionFound()
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(NO_CONTENT)
+  lazy val ineligibleStatus: EligibilityStatus = EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = false)
+  lazy val eligibleNextYearOnly: EligibilityStatus = EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true)
+  lazy val eligibleBothYears: EligibilityStatus = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)
 
-          When("GET /index is called")
-          val res = IncomeTaxSubscriptionFrontend.indexPage()
+  lazy val fullPrePopData: PrePopData = PrePopData(
+    selfEmployment = Some(Seq(prePopSelfEmployment)),
+    ukPropertyAccountingMethod = Some(Cash),
+    foreignPropertyAccountingMethod = Some(Cash)
+  )
 
-          Then("Should return a SEE OTHER with the claim enrolment journey page")
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(IndividualURI.addMTDITOverviewURI)
-          )
-        }
-      }
+  lazy val prePopSelfEmployment: PrePopSelfEmployment = PrePopSelfEmployment(
+    name = Some("test-name"),
+    trade = Some("test-trade"),
+    address = Some(Address(
+      lines = Seq("1 long road"),
+      postcode = Some("ZZ1 1ZZ")
+    )),
+    startDate = Some(DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit)),
+    accountingMethod = Accruals
+  )
 
-      "the user does not have a subscription" when {
-        "the user is eligible" when {
-          "redirect to the SPSHandoff controller" in {
-            Given("I setup the Wiremock stubs")
-            AuthStub.stubAuthSuccess()
-            CitizenDetailsStub.stubCIDUserWithNinoAndUtrAndName(testNino, testUtr, testFirstName, testLastName)
-            SubscriptionStub.stubGetNoSubscription()
-            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(NO_CONTENT)
-            EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
-            SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = false))(OK)
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(PrePopFlag, NO_CONTENT)
-            PrePopStub.stubGetPrePop(testNino)(OK, Json.obj())
-            IncomeTaxSubscriptionConnectorStub.stubSavePrePopFlag()
-            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
-            SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
+  lazy val selfEmploymentDetails: Seq[SelfEmploymentData] = Seq(
+    prePopSelfEmployment.toSelfEmploymentData("test-uuid")
+  )
 
-            When("GET /index is called")
-            val res = IncomeTaxSubscriptionFrontend.indexPage()
-
-            Then("Should return a SEE OTHER and re-direct to the SPSHandoff controller")
-            res must have(
-              httpStatus(SEE_OTHER),
-              redirectURI(IndividualURI.spsHandoffRouteURI)
-            )
-          }
-        }
-
-        "the user is ineligible" should {
-          "redirect to the Not eligible page" in {
-            Given("I setup the Wiremock stubs")
-            AuthStub.stubAuthSuccess()
-            CitizenDetailsStub.stubCIDUserWithNinoAndUtrAndName(testNino, testUtr, testFirstName, testLastName)
-            SubscriptionStub.stubGetNoSubscription()
-            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(NO_CONTENT)
-            EligibilityStub.stubEligibilityResponse(testUtr)(response = false)
-            SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = false))(OK)
-            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
-            SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
-
-            When("GET /index is called")
-            val res = IncomeTaxSubscriptionFrontend.indexPage()
-
-            Then("Should return a SEE OTHER and re-direct to the not eligible page")
-            res must have(
-              httpStatus(SEE_OTHER),
-              redirectURI(IndividualURI.notEligibleURI)
-            )
-          }
-        }
-      }
-
-      "the subscription call fails" should {
-        "return an internal server error" in {
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          CitizenDetailsStub.stubCIDUserWithNinoAndUtrAndName(testNino, testUtr, testFirstName, testLastName)
-          SubscriptionStub.stubGetSubscriptionFail()
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-
-          When("GET /index is called")
-          val res = IncomeTaxSubscriptionFrontend.indexPage()
-
-          Then("Should return an INTERNAL_SERVER_ERROR")
-          res must have(
-            httpStatus(INTERNAL_SERVER_ERROR)
-          )
-        }
-      }
-    }
-
-    "the user only has a nino in enrolment" when {
-      "CID returned a record with UTR" when {
-        "the user is eligible" when {
-          "the user has a name" should {
-            "continue normally" in {
-              Given("I setup the Wiremock stubs")
-              AuthStub.stubAuthNoUtr()
-              SubscriptionStub.stubGetNoSubscription()
-              CitizenDetailsStub.stubCIDUserWithNinoAndUtrAndName(testNino, testUtr, testFirstName, testLastName)
-              SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(NO_CONTENT)
-              EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
-              SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = false))(OK)
-              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(PrePopFlag, NO_CONTENT)
-              PrePopStub.stubGetPrePop(testNino)(OK, Json.obj())
-              IncomeTaxSubscriptionConnectorStub.stubSavePrePopFlag()
-              SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-              SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
-              SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
-
-              When("GET /index is called")
-              val res = IncomeTaxSubscriptionFrontend.indexPage()
-
-              Then("Should return a SEE OTHER and re-direct to the sps page")
-              res must have(
-                httpStatus(SEE_OTHER),
-                redirectURI(IndividualURI.spsHandoffRouteURI)
-              )
-            }
-            "the user has no name" should {
-              "continue normally" in {
-                Given("I setup the Wiremock stubs")
-                AuthStub.stubAuthNoUtr()
-                SubscriptionStub.stubGetNoSubscription()
-                CitizenDetailsStub.stubCIDUserWithNinoAndUtrAndNoName(testNino, testUtr)
-                SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(NO_CONTENT)
-                EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
-                SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = false))(OK)
-                IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(PrePopFlag, NO_CONTENT)
-                PrePopStub.stubGetPrePop(testNino)(OK, Json.obj())
-                IncomeTaxSubscriptionConnectorStub.stubSavePrePopFlag()
-                SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-                SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
-                SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
-
-                When("GET /index is called")
-                val res = IncomeTaxSubscriptionFrontend.indexPage()
-
-                Then("Should return a SEE OTHER and re-direct to the sps page")
-                res must have(
-                  httpStatus(SEE_OTHER),
-                  redirectURI(IndividualURI.spsHandoffRouteURI)
-                )
-
-                val cookie = getSessionMap(res)
-
-                cookie.keys must not contain ITSASessionKeys.FULLNAME
-              }
-            }
-          }
-        }
-      }
-
-      "CID returned a record with out a UTR" should {
-        "continue normally" in {
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthNoUtr()
-          CitizenDetailsStub.stubCIDUserWithNinoAndUtrAndName(testNino, testUtr, testFirstName, testLastName)
-          SubscriptionStub.stubGetNoSubscription()
-          CitizenDetailsStub.stubCIDUserWithNoUtr(testNino)
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(NO_CONTENT)
-
-          When("GET /index is called")
-          val res = IncomeTaxSubscriptionFrontend.indexPage()
-
-          Then("Should return a SEE OTHER and re-direct to the no nino page")
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(IndividualURI.noSaURI)
-          )
-
-          val cookie = getSessionMap(res)
-          cookie.keys must not contain ITSASessionKeys.FULLNAME
-        }
-      }
-
-      "CID could not find the user" should {
-        "display error page" in {
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthNoUtr()
-          SubscriptionStub.stubGetNoSubscription()
-          CitizenDetailsStub.stubCIDNotFound(testNino)
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-
-          When("GET /index is called")
-          val res = IncomeTaxSubscriptionFrontend.indexPage()
-
-          Then("Should return an INTERNAL_SERVER_ERROR")
-          res must have(
-            httpStatus(INTERNAL_SERVER_ERROR),
-            pageTitle("Sorry, we are experiencing technical difficulties - 500")
-          )
-
-          val cookie = getSessionMap(res)
-          cookie.keys must not contain ITSASessionKeys.FULLNAME
-        }
-      }
-    }
-  }
-
-  "GET /report-quarterly/income-and-expenses/sign-up/index" when {
-      "pre-pop api returned income sources" should {
-        "pre-populate the income sources and continue" in {
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          SubscriptionStub.stubGetNoSubscription()
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(
-            responseStatus = OK,
-            responseBody = Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = false))
-          )
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
-          SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
-
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.PrePopFlag, NO_CONTENT)
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
-          PrePopStub.stubGetPrePop(testNino)(
-            status = OK,
-            body = Json.obj(
-              "selfEmployment" -> Json.arr(
-                Json.obj(
-                  "name" -> "ABC",
-                  "trade" -> "Plumbing",
-                  "address" -> Json.obj(
-                    "lines" -> Json.arr(
-                      "1 long road"
-                    ),
-                    "postcode" -> "ZZ1 1ZZ"
-                  ),
-                  "startDate" -> Json.obj(
-                    "day" -> "01",
-                    "month" -> "02",
-                    "year" -> "2000"
-                  ),
-                  "accountingMethod" -> "cash"
-                )
-              ),
-              "ukPropertyAccountingMethod" -> "accruals",
-              "foreignPropertyAccountingMethod" -> "cash"
-            )
-          )
-          IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
-          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[Boolean](SubscriptionDataKeys.PrePopFlag, true)
-          IncomeTaxSubscriptionConnectorStub.stubSaveSoleTraderBusinessDetails(
-            selfEmployments = Seq(SelfEmploymentData(
-              id = "test-uuid",
-              businessStartDate = Some(BusinessStartDate(DateModel("01", "02", "2000"))),
-              businessName = Some(BusinessNameModel("ABC")),
-              businessTradeName = Some(BusinessTradeNameModel("Plumbing")),
-              businessAddress = Some(BusinessAddressModel(Address(
-                lines = Seq(
-                  "1 long road"
-                ),
-                postcode = Some("ZZ1 1ZZ")
-              )))
-            )),
-            accountingMethod = Some(Cash)
-          )
-          IncomeTaxSubscriptionConnectorStub.stubSaveProperty(
-            PropertyModel(accountingMethod = Some(Accruals))
-          )
-          IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(
-            OverseasPropertyModel(accountingMethod = Some(Cash))
-          )
-
-          When("GET /index is called")
-          val res = IncomeTaxSubscriptionFrontend.indexPage()
-
-          Then("Should return a SEE OTHER and re-direct to the sps page")
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(IndividualURI.spsHandoffRouteURI)
-          )
-        }
-      }
-      "pre-pop api returned an unexpected result" should {
-        "display technical difficulties" in {
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          SubscriptionStub.stubGetNoSubscription()
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(
-            responseStatus = OK,
-            responseBody = Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = false))
-          )
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
-          SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
-
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.PrePopFlag, NO_CONTENT)
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
-          PrePopStub.stubGetPrePop(testNino)(
-            status = INTERNAL_SERVER_ERROR,
-            body = Json.obj()
-          )
-
-          When("GET /index is called")
-          val res = IncomeTaxSubscriptionFrontend.indexPage()
-
-          Then("Should return a INTERNAL_SERVER_ERROR")
-          res must have(
-            httpStatus(INTERNAL_SERVER_ERROR)
-          )
-        }
-      }
-  }
 }
-
-
-

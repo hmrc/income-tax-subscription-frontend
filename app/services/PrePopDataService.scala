@@ -37,20 +37,20 @@ class PrePopDataService @Inject()(ninoService: NinoService,
                                   uuidProvider: UUIDProvider)
                                  (implicit ec: ExecutionContext) extends Logging {
 
-  def prePopIncomeSources(reference: String)(implicit hc: HeaderCarrier): Future[PrePopResult] = {
+  def prePopIncomeSources(reference: String, nino: String)(implicit hc: HeaderCarrier): Future[PrePopResult] = {
     handlePrePopFlag(reference) {
-        retrievePrePopData(reference) { prePopData =>
-          val saveSelfEmployments: Future[PrePopResult] = savePrePopSelfEmployments(reference)(prePopData.selfEmployment)
-          val saveUKProperty: Future[PrePopResult] = savePrePopUkProperty(reference)(prePopData.ukPropertyAccountingMethod)
-          val saveForeignProperty: Future[PrePopResult] = savePrePopOverseasProperty(reference)(prePopData.foreignPropertyAccountingMethod)
-          for {
-            _ <- saveSelfEmployments
-            _ <- saveUKProperty
-            _ <- saveForeignProperty
-          } yield {
-            PrePopSuccess
-          }
+      retrievePrePopData(reference, nino) { prePopData =>
+        val saveSelfEmployments: Future[PrePopResult] = savePrePopSelfEmployments(reference)(prePopData.selfEmployment)
+        val saveUKProperty: Future[PrePopResult] = savePrePopUkProperty(reference)(prePopData.ukPropertyAccountingMethod)
+        val saveForeignProperty: Future[PrePopResult] = savePrePopOverseasProperty(reference)(prePopData.foreignPropertyAccountingMethod)
+        for {
+          _ <- saveSelfEmployments
+          _ <- saveUKProperty
+          _ <- saveForeignProperty
+        } yield {
+          PrePopSuccess
         }
+      }
     }
   }
 
@@ -63,18 +63,16 @@ class PrePopDataService @Inject()(ninoService: NinoService,
     }
   }
 
-  private def retrievePrePopData(reference: String)
+  private def retrievePrePopData(reference: String, nino: String)
                                 (f: PrePopData => Future[PrePopResult])
                                 (implicit hc: HeaderCarrier): Future[PrePopResult] = {
-    ninoService.getNino.flatMap { nino =>
-      prePopConnector.getPrePopData(nino).flatMap {
-        case Left(error) => Future.successful(PrePopFailure(error.toString))
-        case Right(prePopData) =>
-          subscriptionDetailsService.savePrePopFlag(reference, prepop = true) flatMap {
-            case Left(error) => Future.successful(PrePopFailure(error.toString))
-            case Right(_) => f(prePopData)
-          }
-      }
+    prePopConnector.getPrePopData(nino).flatMap {
+      case Left(error) => Future.successful(PrePopFailure(error.toString))
+      case Right(prePopData) =>
+        subscriptionDetailsService.savePrePopFlag(reference, prepop = true) flatMap {
+          case Left(error) => Future.successful(PrePopFailure(error.toString))
+          case Right(_) => f(prePopData)
+        }
     }
   }
 

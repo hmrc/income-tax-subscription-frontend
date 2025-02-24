@@ -59,7 +59,7 @@ class SignUpJourneyRefiner @Inject()(referenceRetrieval: ReferenceRetrieval)
               ))
             }
         }
-      case state@(None | Some(PreSignUp | Confirmation | ClaimEnrolment | ClaimEnrolmentConfirmation)) =>
+      case state@(None | Some(PreSignUp | Confirmation)) =>
         logger.info(s"[Individual][SignUpJourneyRefiner] - Incorrect user state, current: ${state.map(_.key)}, sending to home")
         Future.successful(Left(Redirect(controllers.individual.matching.routes.HomeController.index)))
     }

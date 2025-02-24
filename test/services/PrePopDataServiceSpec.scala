@@ -61,20 +61,18 @@ class PrePopDataServiceSpec extends PlaySpec
     "the pre-pop feature switch is enabled" when {
       "the user has previously had their information pre-populated" must {
         "return a pre-pop success response" in {
-
           mockFetchPrePopFlag(Some(true))
 
-          await(service.prePopIncomeSources(reference)) mustBe PrePopSuccess
+          await(service.prePopIncomeSources(reference, testNino)) mustBe PrePopSuccess
 
           verifyFetchPrePopFlag()
         }
       }
       "the user has previously had pre-pop occur but no income sources pre-populated" must {
         "return a pre-pop success response" in {
-
           mockFetchPrePopFlag(Some(false))
 
-          await(service.prePopIncomeSources(reference)) mustBe PrePopSuccess
+          await(service.prePopIncomeSources(reference, testNino)) mustBe PrePopSuccess
 
           verifyFetchPrePopFlag()
         }
@@ -83,7 +81,6 @@ class PrePopDataServiceSpec extends PlaySpec
         "return a pre-pop success response" when {
           "the fetched pre-pop data is full and complete income sources and saving of the data was successful" in {
             mockFetchPrePopFlag(None)
-            mockGetNino(testNino)
             mockGetPrePopData(testNino)(Right(fullPrePopData))
             mockUUID(testUUID)
             mockSavePrePopFlag(flag = true)(Right(PostSubscriptionDetailsSuccessResponse))
@@ -94,10 +91,9 @@ class PrePopDataServiceSpec extends PlaySpec
             mockSaveProperty(expectedUkProperty)(Right(PostSubscriptionDetailsSuccessResponse))
             mockSaveOverseasProperty(expectedForeignProperty)(Right(PostSubscriptionDetailsSuccessResponse))
 
-            await(service.prePopIncomeSources(reference)) mustBe PrePopSuccess
+            await(service.prePopIncomeSources(reference, testNino)) mustBe PrePopSuccess
 
             verifyFetchPrePopFlag()
-            verifyGetNino()
             verifyGetPrePopData(testNino)
             verifySavePrePopFlag(flag = true)
             verifySaveBusinesses(
@@ -108,9 +104,7 @@ class PrePopDataServiceSpec extends PlaySpec
             verifySaveOverseasProperty(expectedForeignProperty)
           }
           "the fetched pre-pop data has minimal income source data and saving of the data was successful" in {
-
             mockFetchPrePopFlag(None)
-            mockGetNino(testNino)
             mockGetPrePopData(testNino)(Right(minimalPrePopData))
             mockUUID(testUUID)
             mockSavePrePopFlag(flag = true)(Right(PostSubscriptionDetailsSuccessResponse))
@@ -121,10 +115,9 @@ class PrePopDataServiceSpec extends PlaySpec
             mockSaveProperty(expectedUkProperty)(Right(PostSubscriptionDetailsSuccessResponse))
             mockSaveOverseasProperty(expectedForeignProperty)(Right(PostSubscriptionDetailsSuccessResponse))
 
-            await(service.prePopIncomeSources(reference)) mustBe PrePopSuccess
+            await(service.prePopIncomeSources(reference, testNino)) mustBe PrePopSuccess
 
             verifyFetchPrePopFlag()
-            verifyGetNino()
             verifyGetPrePopData(testNino)
             verifySavePrePopFlag(flag = true)
             verifySaveBusinesses(
@@ -136,9 +129,7 @@ class PrePopDataServiceSpec extends PlaySpec
           }
           "the fetched pre-pop data has only self employment data" which {
             "was saved successfully" in {
-
               mockFetchPrePopFlag(None)
-              mockGetNino(testNino)
               mockGetPrePopData(testNino)(Right(selfEmploymentOnlyPrePopData))
               mockUUID(testUUID)
               mockSavePrePopFlag(flag = true)(Right(PostSubscriptionDetailsSuccessResponse))
@@ -147,10 +138,9 @@ class PrePopDataServiceSpec extends PlaySpec
                 accountingMethod = Some(accountingMethod)
               )(Right(PostSubscriptionDetailsSuccessResponse))
 
-              await(service.prePopIncomeSources(reference)) mustBe PrePopSuccess
+              await(service.prePopIncomeSources(reference, testNino)) mustBe PrePopSuccess
 
               verifyFetchPrePopFlag()
-              verifyGetNino()
               verifyGetPrePopData(testNino)
               verifySavePrePopFlag(flag = true)
               verifySaveBusinesses(
@@ -159,9 +149,7 @@ class PrePopDataServiceSpec extends PlaySpec
               )
             }
             "returned a save failure when saving" in {
-
               mockFetchPrePopFlag(None)
-              mockGetNino(testNino)
               mockGetPrePopData(testNino)(Right(selfEmploymentOnlyPrePopData))
               mockUUID(testUUID)
               mockSavePrePopFlag(flag = true)(Right(PostSubscriptionDetailsSuccessResponse))
@@ -170,10 +158,9 @@ class PrePopDataServiceSpec extends PlaySpec
                 accountingMethod = Some(accountingMethod)
               )(Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
-              await(service.prePopIncomeSources(reference)) mustBe PrePopSuccess
+              await(service.prePopIncomeSources(reference, testNino)) mustBe PrePopSuccess
 
               verifyFetchPrePopFlag()
-              verifyGetNino()
               verifyGetPrePopData(testNino)
               verifySavePrePopFlag(flag = true)
               verifySaveBusinesses(
@@ -184,36 +171,30 @@ class PrePopDataServiceSpec extends PlaySpec
           }
           "the fetched pre-pop data has only a uk property accounting method" which {
             "was saved successfully" in {
-
               mockFetchPrePopFlag(None)
-              mockGetNino(testNino)
               mockGetPrePopData(testNino)(Right(ukPropertyOnlyPrePopData))
               mockUUID(testUUID)
               mockSavePrePopFlag(flag = true)(Right(PostSubscriptionDetailsSuccessResponse))
               mockSaveProperty(expectedUkProperty)(Right(PostSubscriptionDetailsSuccessResponse))
 
-              await(service.prePopIncomeSources(reference)) mustBe PrePopSuccess
+              await(service.prePopIncomeSources(reference, testNino)) mustBe PrePopSuccess
 
               verifyFetchPrePopFlag()
-              verifyGetNino()
               verifyGetPrePopData(testNino)
               verifySavePrePopFlag(flag = true)
               verifySaveProperty(expectedUkProperty)
 
             }
             "returned a save failure when saving" in {
-
               mockFetchPrePopFlag(None)
-              mockGetNino(testNino)
               mockGetPrePopData(testNino)(Right(ukPropertyOnlyPrePopData))
               mockUUID(testUUID)
               mockSavePrePopFlag(flag = true)(Right(PostSubscriptionDetailsSuccessResponse))
               mockSaveProperty(expectedUkProperty)(Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
-              await(service.prePopIncomeSources(reference)) mustBe PrePopSuccess
+              await(service.prePopIncomeSources(reference, testNino)) mustBe PrePopSuccess
 
               verifyFetchPrePopFlag()
-              verifyGetNino()
               verifyGetPrePopData(testNino)
               verifySavePrePopFlag(flag = true)
               verifySaveProperty(expectedUkProperty)
@@ -221,35 +202,29 @@ class PrePopDataServiceSpec extends PlaySpec
           }
           "the fetched pre-pop data has only a foreign property accounting method" which {
             "was saved successfully" in {
-
               mockFetchPrePopFlag(None)
-              mockGetNino(testNino)
               mockGetPrePopData(testNino)(Right(foreignPropertyOnlyPrePopData))
               mockUUID(testUUID)
               mockSavePrePopFlag(flag = true)(Right(PostSubscriptionDetailsSuccessResponse))
               mockSaveOverseasProperty(expectedForeignProperty)(Right(PostSubscriptionDetailsSuccessResponse))
 
-              await(service.prePopIncomeSources(reference)) mustBe PrePopSuccess
+              await(service.prePopIncomeSources(reference, testNino)) mustBe PrePopSuccess
 
               verifyFetchPrePopFlag()
-              verifyGetNino()
               verifyGetPrePopData(testNino)
               verifySavePrePopFlag(flag = true)
               verifySaveOverseasProperty(expectedForeignProperty)
             }
             "returned a save failure when saving" in {
-
               mockFetchPrePopFlag(None)
-              mockGetNino(testNino)
               mockGetPrePopData(testNino)(Right(foreignPropertyOnlyPrePopData))
               mockUUID(testUUID)
               mockSavePrePopFlag(flag = true)(Right(PostSubscriptionDetailsSuccessResponse))
               mockSaveOverseasProperty(expectedForeignProperty)(Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
-              await(service.prePopIncomeSources(reference)) mustBe PrePopSuccess
+              await(service.prePopIncomeSources(reference, testNino)) mustBe PrePopSuccess
 
               verifyFetchPrePopFlag()
-              verifyGetNino()
               verifyGetPrePopData(testNino)
               verifySavePrePopFlag(flag = true)
               verifySaveOverseasProperty(expectedForeignProperty)
@@ -258,17 +233,13 @@ class PrePopDataServiceSpec extends PlaySpec
         }
         "return a pre-pop failure response" when {
           "there was a problem fetching the pre-pop data from the connector" in {
-
             val error = ErrorModel(INTERNAL_SERVER_ERROR, "Failure")
-
             mockFetchPrePopFlag(None)
-            mockGetNino(testNino)
             mockGetPrePopData(testNino)(Left(ErrorModel(INTERNAL_SERVER_ERROR, "Failure")))
 
-            await(service.prePopIncomeSources(reference)) mustBe PrePopFailure(error.toString)
+            await(service.prePopIncomeSources(reference, testNino)) mustBe PrePopFailure(error.toString)
 
             verifyFetchPrePopFlag()
-            verifyGetNino()
             verifyGetPrePopData(testNino)
             verifySavePrePopFlag(flag = true, count = 0)
             verifySaveBusinesses(
@@ -280,18 +251,15 @@ class PrePopDataServiceSpec extends PlaySpec
             verifySaveOverseasProperty(expectedForeignProperty, count = 0)
           }
           "there was a problem when saving the pre-pop flag" in {
-
             val error = PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)
 
             mockFetchPrePopFlag(None)
-            mockGetNino(testNino)
             mockGetPrePopData(testNino)(Right(minimalPrePopData))
             mockSavePrePopFlag(flag = true)(Left(error))
 
-            await(service.prePopIncomeSources(reference)) mustBe PrePopFailure(error.toString)
+            await(service.prePopIncomeSources(reference, testNino)) mustBe PrePopFailure(error.toString)
 
             verifyFetchPrePopFlag()
-            verifyGetNino()
             verifyGetPrePopData(testNino)
             verifySavePrePopFlag(flag = true)
             verifySaveBusinesses(
