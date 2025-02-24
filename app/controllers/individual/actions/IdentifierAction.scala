@@ -27,7 +27,7 @@ import uk.gov.hmrc.auth.core.AffinityGroup.{Individual, Organisation}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.~
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
@@ -50,13 +50,20 @@ class IdentifierAction @Inject()(val authConnector: AuthConnector,
   override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    authorised().retrieve(affinityGroup and allEnrolments and credentialRole and confidenceLevel) {
-      case Some(Individual | Organisation) ~ allEnrolments ~ Some(User) ~ confidenceLevel if confidenceLevel.level >= ConfidenceLevel.L250.level =>
+    authorised().retrieve(affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino) {
+      case Some(Individual | Organisation) ~ allEnrolments ~ Some(User) ~ confidenceLevel ~ maybeNino if confidenceLevel.level >= ConfidenceLevel.L250.level =>
         val maybeMTDITID: Option[String] = allEnrolments.getEnrolment(Constants.mtdItsaEnrolmentName).flatMap(_.identifiers.headOption.map(_.value))
-        block(IdentifierRequest(request, maybeMTDITID))
-      case Some(Individual | Organisation) ~ _ ~ Some(User) ~ _ =>
+        val maybeUTR: Option[String] = allEnrolments.getEnrolment(Constants.utrEnrolmentName).flatMap(_.identifiers.headOption.map(_.value))
+        val nino: String = maybeNino.getOrElse(throw new InternalServerException("[Individual][IdentifierAction] - CL250 User, no nino in retrieval"))
+        block(IdentifierRequest(
+          request = request,
+          mtditid = maybeMTDITID,
+          nino = nino,
+          utr = maybeUTR
+        ))
+      case Some(Individual | Organisation) ~ _ ~ Some(User) ~ _ ~ _ =>
         Future.successful(Redirect(appConfig.identityVerificationURL).addingToSession(ITSASessionKeys.IdentityVerificationFlag -> "true")(request))
-      case Some(Individual | Organisation) ~ _ ~ _ ~ _ =>
+      case Some(Individual | Organisation) ~ _ ~ _ ~ _ ~ _ =>
         logger.info(s"[Individual][IdentifierAction] - Non 'User' credential role. Redirecting to cannot use service page.")
         Future.successful(Redirect(controllers.individual.matching.routes.CannotUseServiceController.show()))
       case _ =>
