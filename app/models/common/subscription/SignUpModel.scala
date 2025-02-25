@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,10 @@
 
 package models.common.subscription
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{Json, OWrites}
 
+case class SignUpModel(nino: String, utr: String, taxYear: String)
 
-case class EnrolRequest(portalId: String,
-                        serviceName: String,
-                        friendlyName: String,
-                        knownFacts: List[String])
-
-object EnrolRequest {
-  implicit val format: OFormat[EnrolRequest] = Json.format[EnrolRequest]
+object SignUpModel {
+  implicit val writes: OWrites[SignUpModel] = Json.writes[SignUpModel]
 }

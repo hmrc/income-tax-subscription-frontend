@@ -16,18 +16,16 @@
 
 package utilities.individual
 
-import common.Constants.GovernmentGateway.{MTDITID, NINO, ggFriendlyName, ggPortalId}
+import common.Constants.GovernmentGateway.MTDITID
 import common.Constants.mtdItsaEnrolmentName
+import models.DateModel
 import models.common.business._
 import models.common.subscription.SignUpSourcesFailure.SignUpIncomeSourcesFailureResponse
 import models.common.subscription.SignUpSuccessResponse.{AlreadySignedUp, SignUpSuccessful}
 import models.common.subscription._
-import models.common.{OverseasPropertyStartDateModel, PropertyStartDateModel}
 import models.usermatching.{LockedOut, UserMatchFailureResponseModel, UserMatchSuccessResponseModel}
-import models.{Cash, DateModel}
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import uk.gov.hmrc.domain.Generator
-import utilities.AccountingPeriodUtil
 import utilities.TestModels._
 
 import java.net.URLEncoder
@@ -42,65 +40,26 @@ object TestConstants {
   lazy val testId: String = "testId"
   lazy val testUtr: String = UUID.randomUUID().toString
   lazy val testFullName: String = UUID.randomUUID().toString + " " + UUID.randomUUID().toString
-  lazy val testReference: String = "test-reference"
-  //Not an actual UTRTestAuthenticatorConnector
-  lazy val testArn: String = UUID.randomUUID().toString
-  lazy val testToken: String = s"${UUID.randomUUID()}"
   lazy val testMTDID = "XE0001234567890"
-  lazy val testMTDID2 = "XE0001234567892"
-  lazy val testSubscriptionId = "sessionId"
-  lazy val startDate = DateModel("05", "04", "2017")
-  lazy val propertyStartDate = PropertyStartDateModel(DateModel("05", "04", "2017"))
-  lazy val overseasPropertyStartDate = OverseasPropertyStartDateModel(DateModel("05", "04", "2017"))
-  lazy val businessStartDate = BusinessStartDate(DateModel("05", "04", "2017"))
-  lazy val endDate = DateModel("04", "04", "2018")
-  lazy val ggServiceName = "HMRC-MTD-IT"
-  lazy val testLockoutResponse = LockedOut(testNino, OffsetDateTime.now())
-  lazy val testAgencyName = UUID.randomUUID().toString
-  lazy val testSpsEntityId = UUID.randomUUID().toString
+  lazy val businessStartDate: BusinessStartDate = BusinessStartDate(DateModel("05", "04", "2017"))
+  lazy val testLockoutResponse: LockedOut = LockedOut(testNino, OffsetDateTime.now())
+  lazy val testSpsEntityId: String = UUID.randomUUID().toString
 
   val testUserId = "/auth/oid/1234567"
-  val escapedUserId = URLEncoder.encode(testUserId, "UTF-8")
+  val escapedUserId: String = URLEncoder.encode(testUserId, "UTF-8")
 
   val testFirstName = "Test"
   val testLastName = "Name"
 
-  val testPhoneNumber = "000 000 0000"
-  val testSoleTraderBusinesses = SoleTraderBusinesses(testAccountingPeriodThisYear, testAccountMethod, testSelfEmploymentData)
-  val testUkProperty = UkProperty(testAccountingPeriodThisYear, testValidStartDate, testAccountMethod)
-  val testOverseasProperty = OverseasProperty(testAccountingPeriodThisYear, testValidStartDate, testAccountMethod)
-  val testUrl = "/test/url/"
-
-  lazy val knownFactsRequest = KnownFactsRequest(
-    List(
-      TypeValuePair(MTDITID, testMTDID),
-      TypeValuePair(NINO, testNino)
-    )
-  )
-
-  val testEnrolRequest = EnrolRequest(
-    portalId = ggPortalId,
-    serviceName = ggServiceName,
-    friendlyName = ggFriendlyName,
-    knownFacts = List(testMTDID, testNino)
-  )
-
-  val testSubmissionRequest = SubscriptionRequest(
-    nino = TestConstants.testNino,
-    arn = None,
-    businessIncome = Some(BusinessIncomeModel(Some(testBusinessName.businessName), AccountingPeriodUtil.getCurrentTaxYear, Cash)),
-    propertyIncome = Some(PropertyIncomeModel(Some(Cash)))
-  )
+  val testSoleTraderBusinesses: SoleTraderBusinesses = SoleTraderBusinesses(testAccountingPeriodThisYear, testAccountMethod, testSelfEmploymentData)
+  val testUkProperty: UkProperty = UkProperty(testAccountingPeriodThisYear, testValidStartDate, testAccountMethod)
+  val testOverseasProperty: OverseasProperty = OverseasProperty(testAccountingPeriodThisYear, testValidStartDate, testAccountMethod)
 
   val testCredentialId: String = UUID.randomUUID().toString
   val testCredentialId2: String = UUID.randomUUID().toString
 
   val testErrorMessage = "This is an error"
   val testException = new Exception
-
-  val testRefreshProfileSuccess = Right(RefreshProfileSuccess)
-
-  val testRefreshProfileFailure = Left(RefreshProfileFailure)
 
   val testEnrolSuccess = Right(EnrolSuccess)
 

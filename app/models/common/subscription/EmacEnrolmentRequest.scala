@@ -23,19 +23,17 @@ import Constants.GovernmentGateway._
 case class EmacEnrolmentRequest(userId: String, nino: String)
 
 object EmacEnrolmentRequest {
-  implicit val writes: Writes[EmacEnrolmentRequest] = new Writes[EmacEnrolmentRequest] {
-    override def writes(request: EmacEnrolmentRequest): JsValue = {
-      Json.obj(
-        "userId" -> request.userId,
-        "friendlyName" -> Constants.GovernmentGateway.ggFriendlyName,
-        "type" -> "principal",
-        "verifiers" -> Json.arr(
-          Json.obj(
-            "key" -> NINO,
-            "value" -> request.nino
-          )
+  implicit val writes: Writes[EmacEnrolmentRequest] = (request: EmacEnrolmentRequest) => {
+    Json.obj(
+      "userId" -> request.userId,
+      "friendlyName" -> Constants.GovernmentGateway.ggFriendlyName,
+      "type" -> "principal",
+      "verifiers" -> Json.arr(
+        Json.obj(
+          "key" -> NINO,
+          "value" -> request.nino
         )
       )
-    }
+    )
   }
 }

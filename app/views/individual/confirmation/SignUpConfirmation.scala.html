@@ -28,7 +28,7 @@
   hmrcNewTabLinkHelper: HmrcNewTabLinkHelper
 )
 
-@(mandatedCurrentYear: Boolean, taxYearSelectionIsNext: Boolean, individualUserNameMaybe: Option[String], individualUserNino: String, preference: Option[Boolean], usingSoftwareStatus: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(mandatedCurrentYear: Boolean, taxYearSelectionIsNext: Boolean, individualUserNameMaybe: Option[String], individualUserNino: String, preference: Option[Boolean], usingSoftwareStatus: Boolean)(implicit request: Request[_], messages: Messages)
 
 @principalMainTemplate(title = messages("sign-up-confirmation.heading")) {
 

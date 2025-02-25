@@ -16,7 +16,7 @@
 
 package services.agent
 
-import play.api.mvc.{AnyContent, Request}
+import play.api.mvc.Request
 import services.NinoService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.UserMatchingSessionUtil.{ClientDetails, UserMatchingSessionRequestUtil}

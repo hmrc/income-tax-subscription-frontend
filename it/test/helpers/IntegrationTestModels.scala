@@ -55,14 +55,10 @@ object IntegrationTestModels {
     )
   )
   val testAccountingMethod: AccountingMethodModel = AccountingMethodModel(Cash)
-  private val testAccountingMethodProperty: AccountingMethodPropertyModel = AccountingMethodPropertyModel(Cash)
   val testValidStartDate: DateModel = DateModel.dateConvert(LocalDate.now.plusDays(6))
   val testValidStartDate2: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(2))
   //noinspection ScalaStyle
   val testInvalidStartDate: DateModel = DateModel.dateConvert(LocalDate.now.plusDays(7))
-  val testPropertyStartDate: PropertyStartDateModel = PropertyStartDateModel(testValidStartDate)
-  private val testPropertyStartDateModel: PropertyStartDateModel = PropertyStartDateModel(DateModel("05", "04", "2017"))
-  val testInvalidPropertyStartDate: PropertyStartDateModel = PropertyStartDateModel(testInvalidStartDate)
 
   def testBusiness(id: String, confirmed: Boolean = false): SelfEmploymentData = SelfEmploymentData(
     id = id,
@@ -83,14 +79,14 @@ object IntegrationTestModels {
   )))
 
   val testFullPropertyModel: PropertyModel = PropertyModel(
-    accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
-    startDate = Some(testPropertyStartDate.startDate),
+    accountingMethod = Some(Cash),
+    startDate = Some(testValidStartDate),
     confirmed = true
   )
 
   val testFullOverseasPropertyModel: OverseasPropertyModel = OverseasPropertyModel(
-    accountingMethod = Some(testAccountingMethodProperty.propertyAccountingMethod),
-    startDate = Some(testPropertyStartDateModel.startDate),
+    accountingMethod = Some(Cash),
+    startDate = Some(testValidStartDate),
     confirmed = true
   )
 

@@ -25,8 +25,7 @@ import models.DateModel
 import models.common.OverseasPropertyModel
 import play.api.http.Status._
 import play.api.libs.json.Json
-import utilities.SubscriptionDataKeys
-import utilities.SubscriptionDataKeys.{IncomeSourceConfirmation, OverseasProperty}
+import utilities.SubscriptionDataKeys.OverseasProperty
 
 import java.time.LocalDate
 
@@ -39,7 +38,7 @@ class ForeignPropertyStartDateControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
           OverseasProperty,
           OK,
-          Json.toJson(OverseasPropertyModel(startDate = Some(testPropertyStartDate.startDate)))
+          Json.toJson(OverseasPropertyModel(startDate = Some(testValidStartDate)))
         )
 
         When("GET /overseas-property-start-date is called")
@@ -50,7 +49,7 @@ class ForeignPropertyStartDateControllerISpec extends ComponentSpecBase {
         res must have(
           httpStatus(OK),
           pageTitle(messages("individual.foreign-property.start-date.title") + serviceNameGovUk),
-          govukDateField("startDate", testPropertyStartDate.startDate)
+          govukDateField("startDate", testValidStartDate)
         )
       }
     }

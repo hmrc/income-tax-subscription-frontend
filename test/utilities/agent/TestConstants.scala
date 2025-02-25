@@ -49,8 +49,6 @@ object TestConstants {
   lazy val testUtr: String = individual.TestConstants.testUtr
   lazy val testMTDID: String = individual.TestConstants.testMTDID
   //Not a valid MTDID, for test purposes only
-  lazy val startDate: DateModel = individual.TestConstants.startDate
-  lazy val endDate: DateModel = individual.TestConstants.endDate
   lazy val ggServiceName: String = mtdItsaEnrolmentName
   lazy val agentServiceName: String = hmrcAsAgent
   lazy val testARN: String = new Generator().nextAtedUtr.utr //Not a valid ARN, for test purposes only

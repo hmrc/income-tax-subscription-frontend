@@ -35,18 +35,21 @@ import scala.concurrent.Future
 trait MockMisSubscriptionConnector extends UnitTestTrait with MockitoSugar {
   val mockMisSubscriptionConnector: MultipleIncomeSourcesSubscriptionConnector = mock[MultipleIncomeSourcesSubscriptionConnector]
 
-  private def setupMockMisSignUp(nino: String, taxYear: String)(result: Future[PostSignUpIncomeSourcesResponse]): Unit =
-    when(mockMisSubscriptionConnector.signUp(ArgumentMatchers.eq(nino), ArgumentMatchers.eq(taxYear))(ArgumentMatchers.any[HeaderCarrier]))
-      .thenReturn(result)
+  private def setupMockMisSignUp(nino: String, utr: String, taxYear: String)(result: Future[PostSignUpIncomeSourcesResponse]): Unit =
+    when(mockMisSubscriptionConnector.signUp(
+      ArgumentMatchers.eq(nino),
+      ArgumentMatchers.eq(utr),
+      ArgumentMatchers.eq(taxYear)
+    )(ArgumentMatchers.any[HeaderCarrier])).thenReturn(result)
 
-  def setupMockSignUpIncomeSourcesSuccess(nino: String, taxYear: String): Unit =
-    setupMockMisSignUp(nino, taxYear)(Future.successful(Right(SignUpSuccessful(testMTDID))))
+  def setupMockSignUpIncomeSourcesSuccess(nino: String, utr: String, taxYear: String): Unit =
+    setupMockMisSignUp(nino, utr, taxYear)(Future.successful(Right(SignUpSuccessful(testMTDID))))
 
-  def setupMockSignUpIncomeSourcesFailure(nino: String, taxYear: String): Unit =
-    setupMockMisSignUp(nino, taxYear)(Future.successful(Left(SignUpIncomeSourcesFailureResponse(BAD_REQUEST))))
+  def setupMockSignUpIncomeSourcesFailure(nino: String, utr: String, taxYear: String): Unit =
+    setupMockMisSignUp(nino, utr, taxYear)(Future.successful(Left(SignUpIncomeSourcesFailureResponse(BAD_REQUEST))))
 
-  def setupMockSignUpIncomeSourcesException(nino: String, taxYear: String): Unit =
-    setupMockMisSignUp(nino, taxYear)(Future.failed(testException))
+  def setupMockSignUpIncomeSourcesException(nino: String, utr: String, taxYear: String): Unit =
+    setupMockMisSignUp(nino, utr, taxYear)(Future.failed(testException))
 
   private def setupMockCreateIncomeSourcesFromTaskList(mtdbsa: String, createIncomeSourcesModel: CreateIncomeSourcesModel)
                                                       (result: Future[PostCreateIncomeSourceResponse]): Unit =

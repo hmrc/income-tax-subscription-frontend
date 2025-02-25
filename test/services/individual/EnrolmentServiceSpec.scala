@@ -30,7 +30,7 @@ import scala.concurrent.Future
 class EnrolmentServiceSpec extends UnitTestTrait with TestEnrolmentService with ScalaFutures {
 
   "addKnownFacts" should {
-    def result: Future[Either[EnrolFailure, EnrolSuccess.type]] = TestEnrolmentServiceFeatureSwitched.enrol(testMTDID, testNino)
+    def result: Future[Either[EnrolFailure, EnrolSuccess.type]] = TestEnrolmentService.enrol(testMTDID, testNino)
 
     "return a success from the EnrolmentStoreConnector" in {
       mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new~(Some(Credentials(testCredId, "")), Some(testGroupId)))
