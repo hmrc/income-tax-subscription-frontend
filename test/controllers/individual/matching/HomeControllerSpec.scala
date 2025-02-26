@@ -136,7 +136,7 @@ class HomeControllerSpec extends ControllerBaseSpec
         "the user is eligible " when {
           "the user has a UTR" when {
             "pre pop income sources is successful" should {
-              "redirect to the sps handoff" in {
+              "redirect to the you can sign up now page" in {
                 mockNinoAndUtrRetrieval()
                 mockGetNino(testNino)
                 mockFetchUTR(Right(None))
@@ -149,7 +149,7 @@ class HomeControllerSpec extends ControllerBaseSpec
 
                 val result = await(testHomeController().index(fakeRequest))
                 status(result) must be(Status.SEE_OTHER)
-                redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url
+                redirectLocation(result) mustBe Some(controllers.individual.routes.YouCanSignUpController.show.url)
 
                 verifyGetThrottleStatusCalls(times(1))
               }
@@ -176,7 +176,7 @@ class HomeControllerSpec extends ControllerBaseSpec
 
           "the user does not have a utr" when {
             "the user has a matching utr in CID against their NINO" when {
-              "redirect to SPSHandoff controller" in {
+              "redirect to YouCanSignUp controller" in {
                 mockNinoRetrieval()
                 mockGetNino(testNino)
                 mockFetchUTR(Right(None))
@@ -191,7 +191,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                 val result = await(testHomeController().index(fakeRequest))
 
                 status(result) mustBe SEE_OTHER
-                redirectLocation(result).get mustBe controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url
+                redirectLocation(result).get mustBe controllers.individual.routes.YouCanSignUpController.show.url
 
                 session(result).get(ITSASessionKeys.FULLNAME) mustBe Some(testFullName)
 

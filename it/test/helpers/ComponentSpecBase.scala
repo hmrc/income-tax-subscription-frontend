@@ -478,6 +478,9 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
     def claimEnrolmentResolver(): WSResponse = get("/claim-enrolment/resolve", Map(JourneyStateKey -> ClaimEnrolmentJourney.name))
 
+    def youCanSignUp(): WSResponse = get("/you-can-sign-up")
+
+
   }
 
   def toFormData[T](form: Form[T], data: T): Map[String, Seq[String]] =
