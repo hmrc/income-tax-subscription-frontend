@@ -16,21 +16,36 @@
 
 package controllers.agent.tasklist.selfemployment
 
-import connectors.stubs.IncomeTaxSubscriptionConnectorStub
-import helpers.IntegrationTestConstants.AgentURI
+import common.Constants.ITSASessionKeys
+import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
+import helpers.IntegrationTestConstants.{AgentURI, basGatewaySignIn, testNino, testUtr}
 import helpers.IntegrationTestModels.testBusinesses
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import models.{No, Yes}
 import play.api.http.Status._
+import play.api.libs.json.JsString
 import utilities.SubscriptionDataKeys.SoleTraderBusinessesKey
 
 class RemoveSelfEmploymentBusinessControllerISpec extends ComponentSpecBase {
   "GET /report-quarterly/income-and-expenses/sign-up/client/business/remove-business" should {
+    "return SEE_OTHER to login page" when {
+      "user is unauthenticated" in {
+        AuthStub.stubUnauthorised()
+
+        val res = IncomeTaxSubscriptionFrontend.getRemoveBusiness()
+
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(basGatewaySignIn("/client/business/remove-sole-trader-business"))
+        )
+      }
+    }
     "return OK" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
-
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
       IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
 
       When("GET business/remove-business is called")
@@ -44,11 +59,12 @@ class RemoveSelfEmploymentBusinessControllerISpec extends ComponentSpecBase {
         )
       )
     }
-
-    "redirect to Business Already Removed" when {
+    "redirect to Business Already Removed page" when {
       "the Sole trader business cannot be retrieved" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
         IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
 
         When("GET business/remove-business is called")
@@ -69,6 +85,8 @@ class RemoveSelfEmploymentBusinessControllerISpec extends ComponentSpecBase {
       "the user submits the 'yes' answer" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
         IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
         IncomeTaxSubscriptionConnectorStub.stubSaveSoleTraderBusinessDetails(Seq.empty, None)
         IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetails(SoleTraderBusinessesKey)
@@ -87,6 +105,8 @@ class RemoveSelfEmploymentBusinessControllerISpec extends ComponentSpecBase {
       "the user submits the 'no' answer" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
         IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
         IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
@@ -99,13 +119,14 @@ class RemoveSelfEmploymentBusinessControllerISpec extends ComponentSpecBase {
           redirectURI(AgentURI.yourIncomeSourcesURI)
         )
       }
-
     }
 
     "return BAD_REQUEST" when {
       "invalid data is submitted" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
         IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
 
         When("POST business/remove-business is called")
@@ -114,6 +135,27 @@ class RemoveSelfEmploymentBusinessControllerISpec extends ComponentSpecBase {
         Then("Should return BAD_REQUEST")
         res must have(
           httpStatus(BAD_REQUEST)
+        )
+      }
+    }
+
+    "throw an exception" when {
+      "failed to delete business" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
+        IncomeTaxSubscriptionConnectorStub.stubSaveSoleTraderBusinessDetails(Seq.empty, None)
+        IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetailsFailure(SoleTraderBusinessesKey)
+        IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
+
+        When("POST business/remove-business is called")
+        val res = IncomeTaxSubscriptionFrontend.submitRemoveBusiness(request = Some(Yes))
+
+        Then("Should return INTERNAL_SERVER_ERROR")
+        res must have(
+          httpStatus(INTERNAL_SERVER_ERROR)
         )
       }
     }

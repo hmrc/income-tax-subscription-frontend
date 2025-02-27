@@ -16,14 +16,14 @@
 
 package controllers.agent.tasklist.selfemployment
 
-import auth.agent.AuthenticatedController
-import config.AppConfig
-import controllers.utils.ReferenceRetrieval
+import controllers.SignUpBaseController
+import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import forms.agent.RemoveBusinessForm
 import models.common.business.{BusinessNameModel, BusinessTradeNameModel, SelfEmploymentData}
 import models.{No, Yes, YesNo}
 import play.api.data.Form
 import play.api.mvc._
+import play.twirl.api.HtmlFormat
 import services._
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.agent.tasklist.selfemployment.RemoveSelfEmploymentBusiness
@@ -33,41 +33,31 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class RemoveSelfEmploymentBusinessController @Inject()(removeBusinessView: RemoveSelfEmploymentBusiness,
-                                                       referenceRetrieval: ReferenceRetrieval,
+                                                       identify: IdentifierAction,
+                                                       journeyRefiner: ConfirmedClientJourneyRefiner,
                                                        subscriptionDetailsService: SubscriptionDetailsService,
                                                        removeBusinessService: RemoveBusinessService)
-                                                      (val auditingService: AuditingService,
-                                                       val authService: AuthService,
-                                                       val appConfig: AppConfig)
                                                       (implicit val ec: ExecutionContext,
-                                                       mcc: MessagesControllerComponents) extends AuthenticatedController {
+                                                       mcc: MessagesControllerComponents) extends SignUpBaseController {
 
-  def show(businessId: String): Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user => {
-      referenceRetrieval.getAgentReference flatMap { reference =>
-        withBusinessData(reference, businessId) { (maybeBusinessNameModel, maybeBusinessTradeNameModel) =>
-          Future.successful(Ok(view(businessId, form, maybeBusinessNameModel, maybeBusinessTradeNameModel)))
-        }
-      }
+  def show(businessId: String): Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
+    withBusinessData(request.reference, businessId) { (maybeBusinessNameModel, maybeBusinessTradeNameModel) =>
+      Future.successful(Ok(view(businessId, form, maybeBusinessNameModel, maybeBusinessTradeNameModel)))
     }
   }
 
-  def submit(businessId: String): Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user => {
-      referenceRetrieval.getAgentReference flatMap { reference =>
-        form.bindFromRequest().fold(
-          formWithErrors => {
-            withBusinessData(reference, businessId) { (maybeBusinessNameModel, maybeBusinessTradeNameModel) =>
-              Future.successful(BadRequest(view(businessId, formWithErrors, maybeBusinessNameModel, maybeBusinessTradeNameModel)))
-            }
-          },
-          {
-            case Yes => fetchBusinessesAndRemoveThisBusiness(businessId, reference)
-            case No => Future.successful(Redirect(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show))
-          }
-        )
+  def submit(businessId: String): Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
+    form.bindFromRequest().fold(
+      formWithErrors => {
+        withBusinessData(request.reference, businessId) { (maybeBusinessNameModel, maybeBusinessTradeNameModel) =>
+          Future.successful(BadRequest(view(businessId, formWithErrors, maybeBusinessNameModel, maybeBusinessTradeNameModel)))
+        }
+      },
+      {
+        case Yes => fetchBusinessesAndRemoveThisBusiness(businessId, request.reference)
+        case No => Future.successful(Redirect(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show))
       }
-    }
+    )
   }
 
   private def fetchBusinessesAndRemoveThisBusiness(businessId: String, reference: String)(implicit headerCarrier: HeaderCarrier) = {
@@ -79,12 +69,10 @@ class RemoveSelfEmploymentBusinessController @Inject()(removeBusinessView: Remov
       }
   }
 
-  private def withBusinessData(
-                                reference: String,
-                                businessId: String
-                              )(f: (Option[BusinessNameModel], Option[BusinessTradeNameModel]) => Future[Result])(
-                                implicit hc: HeaderCarrier
-                              ): Future[Result] = {
+  private def withBusinessData(reference: String,
+                               businessId: String)
+                              (f: (Option[BusinessNameModel], Option[BusinessTradeNameModel]) => Future[Result])
+                              (implicit hc: HeaderCarrier): Future[Result] = {
     fetchBusinessData(reference, businessId).flatMap {
       case Some(SelfEmploymentData(_, _, _, maybeBusinessNameModel, maybeBusinessTradeNameModel, _, _)) =>
         f(maybeBusinessNameModel, maybeBusinessTradeNameModel)
@@ -98,12 +86,11 @@ class RemoveSelfEmploymentBusinessController @Inject()(removeBusinessView: Remov
     }
   }
 
-  private def view(
-                    businessId: String,
-                    removeBusinessForm: Form[YesNo],
-                    maybeBusinessNameModel: Option[BusinessNameModel],
-                    maybeBusinessTradeNameModel: Option[BusinessTradeNameModel]
-                  )(implicit request: Request[_]) =
+  private def view(businessId: String,
+                   removeBusinessForm: Form[YesNo],
+                   maybeBusinessNameModel: Option[BusinessNameModel],
+                   maybeBusinessTradeNameModel: Option[BusinessTradeNameModel])
+                  (implicit request: Request[_]): HtmlFormat.Appendable =
     removeBusinessView(
       removeBusinessForm = removeBusinessForm,
       businessName = maybeBusinessNameModel.map(_.businessName),
