@@ -435,10 +435,12 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     def submitClientRemoveUkProperty(body: Map[String, Seq[String]]): WSResponse = post("/business/remove-uk-property-business")(body)
 
 
-    def getRemoveClientOverseasProperty: WSResponse = get("/business/remove-overseas-property-business")
+    def getRemoveClientOverseasProperty(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/business/remove-overseas-property-business", sessionData)
 
 
-    def submitRemoveClientOverseasProperty(body: Map[String, Seq[String]]): WSResponse = post("/business/remove-overseas-property-business")(body)
+    def submitRemoveClientOverseasProperty(body: Map[String, Seq[String]],
+                                           sessionData: Map[String, String] = ClientData.basicClientData): WSResponse =
+      post("/business/remove-overseas-property-business", sessionData)(body)
 
     def getOverseasPropertyCheckYourAnswers(sessionData: Map[String, String] = Map()): WSResponse = {
       get("/business/overseas-property-check-your-answers", sessionData)

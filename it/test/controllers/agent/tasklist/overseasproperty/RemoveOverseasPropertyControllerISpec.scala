@@ -16,27 +16,44 @@
 
 package controllers.agent.tasklist.overseasproperty
 
-import connectors.stubs.IncomeTaxSubscriptionConnectorStub
-import helpers.IntegrationTestConstants.AgentURI
+import common.Constants.ITSASessionKeys
+import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
+import helpers.IntegrationTestConstants.{AgentURI, basGatewaySignIn}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import models.Cash
 import models.common.OverseasPropertyModel
 import play.api.http.Status._
-import play.api.libs.json.Json
+import play.api.libs.json.{JsString, Json}
 import utilities.SubscriptionDataKeys
-import utilities.SubscriptionDataKeys.OverseasProperty
+import utilities.SubscriptionDataKeys.{IncomeSourceConfirmation, OverseasProperty}
+import utilities.agent.TestConstants.{testNino, testUtr}
 
 class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
-  "GET /report-quarterly/income-and-expenses/sign-up/client/business/remove-overseas-property-business" when {
-    "return OK" in {
+  "GET /report-quarterly/income-and-expenses/sign-up/client/business/remove-overseas-property-business" should {
+    "redirect to the login page" when {
+      "the user is unauthenticated" in {
+        AuthStub.stubUnauthorised()
+
+        val res = IncomeTaxSubscriptionFrontend.getRemoveClientOverseasProperty()
+
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(basGatewaySignIn("/client/business/remove-overseas-property-business"))
+        )
+      }
+    }
+
+    "return OK when foreign property exists" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
-      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty,OK,
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK,
         Json.toJson(OverseasPropertyModel(accountingMethod = Some(Cash))))
 
       When("GET client/business/remove-overseas-property-business is called")
-      val res = IncomeTaxSubscriptionFrontend.getRemoveClientOverseasProperty
+      val res = IncomeTaxSubscriptionFrontend.getRemoveClientOverseasProperty()
       val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
       Then("Should return a OK with the client remove Overseas property confirmation page displaying")
       res must have(
@@ -45,14 +62,16 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
       )
     }
 
-    "redirect to Business Already removed page" in {
+    "redirect to Business Already Removed page when foreign property no longer exists" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
-      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty,NO_CONTENT,
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, NO_CONTENT,
         Json.toJson(OverseasPropertyModel(None)))
 
       When("GET client/business/remove-uk-property-business is called")
-      val res = IncomeTaxSubscriptionFrontend.getRemoveClientOverseasProperty
+      val res = IncomeTaxSubscriptionFrontend.getRemoveClientOverseasProperty()
 
       res must have(
         httpStatus(SEE_OTHER),
@@ -62,10 +81,12 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/client/business/remove-overseas-property-business" should {
-    "redirect to the manage income sources page" when {
+    "redirect to the your income sources page" when {
       "the user submits the 'yes' answer" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
         IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetails(OverseasProperty)
         IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetails(SubscriptionDataKeys.IncomeSourceConfirmation)
 
@@ -85,6 +106,8 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
       "the user submits the 'no' answer" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
         When("POST client/business/remove-overseas-property-business is called")
         val res = IncomeTaxSubscriptionFrontend.submitRemoveClientOverseasProperty(Map("yes-no" -> Seq("No")))
@@ -103,6 +126,8 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
       "no option was selected on the client remove Overseas property page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
         When("POST /business/remove-overseas-property-business is called")
         val res = IncomeTaxSubscriptionFrontend.submitRemoveClientOverseasProperty(Map("yes-no" -> Seq("")))
@@ -117,10 +142,29 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
     }
 
     "return INTERNAL_SERVER_ERROR" when {
-      "cannot remove overseas property" in {
+      "failed to delete foreign property" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
         IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetailsFailure(OverseasProperty)
+
+        When("POST /business/remove-uk-property-business is called")
+        val res = IncomeTaxSubscriptionFrontend.submitRemoveClientOverseasProperty(Map("yes-no" -> Seq("Yes")))
+
+        Then("Should return INTERNAL_SERVER_ERROR")
+        res must have(
+          httpStatus(INTERNAL_SERVER_ERROR)
+        )
+      }
+      "failed to delete income source confirmation " in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetails(OverseasProperty)
+        IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetailsFailure(IncomeSourceConfirmation)
+
 
         When("POST /business/remove-uk-property-business is called")
         val res = IncomeTaxSubscriptionFrontend.submitRemoveClientOverseasProperty(Map("yes-no" -> Seq("Yes")))
