@@ -19,6 +19,7 @@ package controllers.agent.tasklist.overseasproperty
 import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscriptionDetailsSuccessResponse
 import connectors.subscriptiondata.mocks.MockIncomeTaxSubscriptionConnector
 import controllers.agent.AgentControllerBaseSpec
+import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}
 import forms.agent.RemoveClientOverseasPropertyForm
 import forms.submapping.YesNoMapping
 import models.Cash
@@ -28,19 +29,20 @@ import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Result}
-import play.api.test.Helpers.{HTML, contentType, defaultAwaitTimeout, redirectLocation, status}
+import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSubscriptionDetailsService}
+import uk.gov.hmrc.http.InternalServerException
 import utilities.SubscriptionDataKeys
 import views.html.agent.tasklist.overseasproperty.RemoveOverseasPropertyBusiness
 
 import scala.concurrent.Future
 
 class RemoveOverseasPropertyControllerSpec extends AgentControllerBaseSpec
-  with MockAuditingService
   with MockSubscriptionDetailsService
-  with MockReferenceRetrieval
-  with MockIncomeTaxSubscriptionConnector {
+  with MockIncomeTaxSubscriptionConnector
+  with MockIdentifierAction
+  with MockConfirmedClientJourneyRefiner {
 
   override val controllerName: String = "RemoveOverseasPropertyController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
@@ -66,7 +68,7 @@ class RemoveOverseasPropertyControllerSpec extends AgentControllerBaseSpec
   }
 
   "submit" when {
-    "redirect to the task list page" when {
+    "redirect to your income sources page" when {
       "the user selects to remove the business" in withController { controller =>
         mockDeleteSubscriptionDetails(SubscriptionDataKeys.OverseasProperty)(Right(DeleteSubscriptionDetailsSuccessResponse))
         mockDeleteSubscriptionDetails(SubscriptionDataKeys.IncomeSourceConfirmation)(Right(DeleteSubscriptionDetailsSuccessResponse))
@@ -104,7 +106,6 @@ class RemoveOverseasPropertyControllerSpec extends AgentControllerBaseSpec
 
         status(result) mustBe BAD_REQUEST
         contentType(result) mustBe Some(HTML)
-
         verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.OverseasProperty, count = 0)
         verifyDeleteSubscriptionDetails(id = SubscriptionDataKeys.IncomeSourceConfirmation, count = 0)
       }
@@ -119,11 +120,20 @@ class RemoveOverseasPropertyControllerSpec extends AgentControllerBaseSpec
           subscriptionRequest.withFormUrlEncodedBody(RemoveClientOverseasPropertyForm.yesNo -> YesNoMapping.option_yes)
         )
 
-        result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
+        intercept[InternalServerException](await(result)).message mustBe "[RemoveOverseasPropertyController][submit] - Could not remove overseas property"
+      }
+      "cannot remove the income source confirmation" in withController { controller =>
+        mockDeleteSubscriptionDetails(SubscriptionDataKeys.OverseasProperty)(Right(DeleteSubscriptionDetailsSuccessResponse))
+        mockDeleteSubscriptionDetailsFailure(SubscriptionDataKeys.IncomeSourceConfirmation)
+
+        val result = controller.submit(
+          subscriptionRequest.withFormUrlEncodedBody(RemoveClientOverseasPropertyForm.yesNo -> YesNoMapping.option_yes)
+        )
+
+        intercept[InternalServerException](await(result)).message mustBe "[RemoveOverseasPropertyController][submit] - Failure to delete income source confirmation"
       }
     }
   }
-
   private def withController(testCode: RemoveOverseasPropertyController => Any): Unit = {
     val view = mock[RemoveOverseasPropertyBusiness]
 
@@ -131,13 +141,10 @@ class RemoveOverseasPropertyControllerSpec extends AgentControllerBaseSpec
 
     val controller = new RemoveOverseasPropertyController(
       mockIncomeTaxSubscriptionConnector,
-      mockReferenceRetrieval,
       mockSubscriptionDetailsService,
-      view
-    )(
-      mockAuditingService,
-      mockAuthService,
-      appConfig
+      view,
+      fakeIdentifierAction,
+      fakeConfirmedClientJourneyRefiner
     )
 
     testCode(controller)
