@@ -69,7 +69,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
       "the user does not have a subscription" when {
         "the user is eligible" when {
-          "redirect to the SPSHandoff controller" in {
+          "redirect to the YouCanSignUp controller" in {
             Given("I setup the Wiremock stubs")
             AuthStub.stubAuthSuccess()
             CitizenDetailsStub.stubCIDUserWithNinoAndUtrAndName(testNino, testUtr, testFirstName, testLastName)
@@ -87,10 +87,10 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
             When("GET /index is called")
             val res = IncomeTaxSubscriptionFrontend.indexPage()
 
-            Then("Should return a SEE OTHER and re-direct to the SPSHandoff controller")
+            Then("Should return a SEE OTHER and re-direct to the YouCanSignUp controller")
             res must have(
               httpStatus(SEE_OTHER),
-              redirectURI(IndividualURI.spsHandoffRouteURI)
+              redirectURI(controllers.individual.routes.YouCanSignUpController.show.url)
             )
           }
         }
@@ -161,10 +161,10 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
               When("GET /index is called")
               val res = IncomeTaxSubscriptionFrontend.indexPage()
 
-              Then("Should return a SEE OTHER and re-direct to the sps page")
+              Then("Should return a SEE OTHER and re-direct to the YouCanSignUp page")
               res must have(
                 httpStatus(SEE_OTHER),
-                redirectURI(IndividualURI.spsHandoffRouteURI)
+                redirectURI(controllers.individual.routes.YouCanSignUpController.show.url)
               )
             }
             "the user has no name" should {
@@ -186,10 +186,10 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
                 When("GET /index is called")
                 val res = IncomeTaxSubscriptionFrontend.indexPage()
 
-                Then("Should return a SEE OTHER and re-direct to the sps page")
+                Then("Should return a SEE OTHER and re-direct to the YouCanSignUp page")
                 res must have(
                   httpStatus(SEE_OTHER),
-                  redirectURI(IndividualURI.spsHandoffRouteURI)
+                  redirectURI(controllers.individual.routes.YouCanSignUpController.show.url)
                 )
 
                 val cookie = getSessionMap(res)
@@ -317,10 +317,10 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
           When("GET /index is called")
           val res = IncomeTaxSubscriptionFrontend.indexPage()
 
-          Then("Should return a SEE OTHER and re-direct to the sps page")
+          Then("Should return a SEE OTHER and re-direct to the YouCanSignUp page")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(IndividualURI.spsHandoffRouteURI)
+            redirectURI(controllers.individual.routes.YouCanSignUpController.show.url)
           )
         }
       }

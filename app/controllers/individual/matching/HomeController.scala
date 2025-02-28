@@ -167,7 +167,7 @@ class HomeController @Inject()(citizenDetailsService: CitizenDetailsService,
 
   private def goToSignUp(thisYear: Boolean): Result = {
     val location: Call = if (thisYear)
-      controllers.individual.sps.routes.SPSHandoffController.redirectToSPS
+      controllers.individual.routes.YouCanSignUpController.show
     else
       controllers.individual.controllist.routes.CannotSignUpThisYearController.show
     Redirect(location)
