@@ -16,49 +16,27 @@
 
 package controllers.agent.eligibility
 
-import auth.agent.PreSignUpController
-import config.AppConfig
+import controllers.SignUpBaseController
+import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.agent.ClientDetailsRetrieval
-import services.{AuditingService, AuthService}
 import views.html.agent.eligibility.CannotSignUpThisYear
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
-import scala.util.matching.Regex
 
-class CannotSignUpThisYearController @Inject()(clientDetailsRetrieval: ClientDetailsRetrieval,
-                                               cannotSignUp: CannotSignUpThisYear)
-                                              (val auditingService: AuditingService,
-                                               val authService: AuthService)
-                                              (implicit val appConfig: AppConfig,
-                                               mcc: MessagesControllerComponents,
-                                               val ec: ExecutionContext) extends PreSignUpController {
+class CannotSignUpThisYearController @Inject()(identify: IdentifierAction,
+                                               journeyRefiner: ConfirmedClientJourneyRefiner,
+                                               view: CannotSignUpThisYear)
+                                              (implicit mcc: MessagesControllerComponents) extends SignUpBaseController {
 
-  private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
-
-  private def formatNino(clientNino: String): String = {
-    clientNino match {
-      case ninoRegex(startLetters, firstDigits, secondDigits, thirdDigits, finalLetter) =>
-        s"$startLetters $firstDigits $secondDigits $thirdDigits $finalLetter"
-      case other => other
-    }
+  def show: Action[AnyContent] = (identify andThen journeyRefiner) { implicit request =>
+    Ok(view(
+      postAction = routes.CannotSignUpThisYearController.submit,
+      clientDetails = request.clientDetails
+    ))
   }
 
-  def show: Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      for {
-        clientDetails <- clientDetailsRetrieval.getClientDetails
-      } yield {
-        Ok(cannotSignUp(
-          postAction = routes.CannotSignUpThisYearController.submit,
-          clientName = clientDetails.name,
-          clientNino = formatNino(clientDetails.nino)
-        ))
-      }
+  def submit: Action[AnyContent] = (identify andThen journeyRefiner) { _ =>
+    Redirect(controllers.agent.routes.UsingSoftwareController.show)
   }
 
-  def submit: Action[AnyContent] = Authenticated { _ =>
-    _ => Redirect(controllers.agent.routes.UsingSoftwareController.show)
-  }
 }

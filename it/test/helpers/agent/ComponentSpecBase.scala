@@ -220,9 +220,9 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
         .get()
         .futureValue
 
-    def post(uri: String, additionalCookies: Map[String, String] = Map.empty, withClientDetailsConfirmed: Boolean = true)(body: Map[String, Seq[String]]): WSResponse =
+    def post(uri: String, additionalCookies: Map[String, String] = Map.empty, withClientDetailsConfirmed: Boolean = true, withJourneyStateSignUp: Boolean = true)(body: Map[String, Seq[String]]): WSResponse =
       buildClient(uri)
-        .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(defaultCookies(withClientDetailsConfirmed) ++ additionalCookies), "Csrf-Token" -> "nocheck")
+        .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(defaultCookies(withClientDetailsConfirmed, withJourneyStateSignUp) ++ additionalCookies), "Csrf-Token" -> "nocheck")
         .post(body)
         .futureValue
 
@@ -253,9 +253,9 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
     def submitCanSignUp(): WSResponse = post("/can-sign-up", ClientData.basicClientData)(Map.empty)
 
-    def showCannotSignUpThisYear(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/error/cannot-sign-up-for-current-year", sessionData)
+    def showCannotSignUpThisYear(sessionData: Map[String, String] = ClientData.basicClientData, hasJourneyState: Boolean = true): WSResponse = get("/error/cannot-sign-up-for-current-year", sessionData, withJourneyStateSignUp = hasJourneyState)
 
-    def submitCannotSignUpThisYear(): WSResponse = post("/error/cannot-sign-up-for-current-year")(Map.empty)
+    def submitCannotSignUpThisYear(sessionData: Map[String, String] = ClientData.basicClientData, hasJourneyState: Boolean = true): WSResponse = post("/error/cannot-sign-up-for-current-year", sessionData, withJourneyStateSignUp = hasJourneyState)(Map.empty)
 
     def showBusinessAlreadyRemoved(): WSResponse = get("/error/business-already-removed")
 
