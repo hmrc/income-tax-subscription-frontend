@@ -16,7 +16,7 @@
 
 package controllers.individual
 
-import auth.individual.SignUpController
+import auth.individual.{SignUpController, StatelessController}
 import config.AppConfig
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
@@ -32,7 +32,7 @@ class YouCanSignUpController @Inject()(view: YouCanSignUp)
                                              val appConfig: AppConfig,
                                              val authService: AuthService)
                                       (implicit mcc: MessagesControllerComponents, val ec: ExecutionContext)
-  extends SignUpController {
+  extends StatelessController {
 
   def show: Action[AnyContent] = Authenticated { implicit request =>
     _ =>

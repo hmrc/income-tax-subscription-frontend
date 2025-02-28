@@ -393,6 +393,8 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
     def alreadySignedUp(): WSResponse = get("/claim-enrolment/already-signed-up", Map(JourneyStateKey -> ClaimEnrolmentJourney.name))
 
+    def youCanSignUp(): WSResponse = get("/you-can-sign-up-now")
+
     def submitPropertyAccountingMethod(inEditMode: Boolean, request: Option[AccountingMethod]): WSResponse = {
       val uri = s"/business/accounting-method-property?editMode=$inEditMode"
       post(uri, Map(ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true"))(
@@ -477,9 +479,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
     def addMTDITOverview(): WSResponse = get("/claim-enrolment/overview")
 
     def claimEnrolmentResolver(): WSResponse = get("/claim-enrolment/resolve", Map(JourneyStateKey -> ClaimEnrolmentJourney.name))
-
-    def youCanSignUp(): WSResponse = get("/you-can-sign-up")
-
 
   }
 

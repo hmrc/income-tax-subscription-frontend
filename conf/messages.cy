@@ -675,9 +675,6 @@ individual.you-can-sign-up-now.bullet-3 = dyddiad dechrau’ch busnes
 individual.you-can-sign-up-now.bullet-4 = cyfeiriad eich busnes
 individual.you-can-sign-up-now.paragraph-3 = Os ydych yn cael incwm o eiddo, byddwn yn gofyn i chi p’un a yw’r eiddo yn y DU neu mewn gwlad arall. Byddwn hefyd yn gofyn i chi pryd y gwnaethoch ddechrau cael incwm o eiddo.
 individual.you-can-sign-up-now.paragraph-4 = Bydd hefyd angen i chi ddewis os ydych am gofrestru yn ystod y flwyddyn dreth presennol neu o’r flwyddyn dreth nesaf ymlaen.
-individual.you-can-sign-up-now.button = Yn eich blaen
-individual.you-can-sign-up-now.back = Yn ôl
-individual.you-can-sign-up-now.report-link = A yw’r dudalen hon yn gweithio’n iawn? (yn agor tab newydd)
 
 # Client details page
 agent.client-details-error.heading                              = Mae problem wedi codi
