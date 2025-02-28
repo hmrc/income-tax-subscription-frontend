@@ -37,6 +37,7 @@ case class SelfEmploymentData(id: String,
   def toSoleTraderBusiness: SoleTraderBusiness = SoleTraderBusiness(
     id = id,
     confirmed = confirmed,
+    startDateBeforeLimit = startDateBeforeLimit,
     startDate = businessStartDate.map(_.startDate),
     name = businessName.map(_.businessName),
     trade = businessTradeName.map(_.businessTradeName),

@@ -37,12 +37,12 @@ class AddMTDITOverviewController @Inject()(addmtdit: AddMTDITOverview,
 
   def show: Action[AnyContent] = Authenticated.unrestricted { implicit request =>
     _ =>
-        Ok(addmtdit(postAction = routes.AddMTDITOverviewController.submit)).withJourneyState(ClaimEnrolmentJourney)
+      Ok(addmtdit(postAction = routes.AddMTDITOverviewController.submit)).withJourneyState(ClaimEnrolmentJourney)
   }
 
   def submit: Action[AnyContent] = Authenticated { _ =>
     _ =>
-        Redirect(routes.ClaimEnrolmentResolverController.resolve)
+      Redirect(routes.ClaimEnrolmentResolverController.resolve)
   }
 
 }

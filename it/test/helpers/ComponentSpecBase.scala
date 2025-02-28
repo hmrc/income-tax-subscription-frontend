@@ -27,6 +27,7 @@ import forms.individual.business._
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import models._
+import models.individual.JourneyStep.PreSignUp
 import org.jsoup.nodes.Element
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
@@ -153,10 +154,11 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
   object IncomeTaxSubscriptionFrontend extends UserMatchingIntegrationRequestSupport {
     val csrfToken: String = UUID.randomUUID().toString
 
-    def get(uri: String, additionalCookies: Map[String, String] = Map.empty, includeSPSEntityId: Boolean = true): WSResponse = {
+    def get(uri: String, additionalCookies: Map[String, String] = Map.empty, includeSPSEntityId: Boolean = true, includeState: Boolean = true): WSResponse = {
       val additionalSPSCookie: Map[String, String] = if (includeSPSEntityId) Map(SPSEntityId -> "test-id") else Map.empty
+      val stateCookie: Map[String, String] = if (includeState) Map(JourneyStateKey -> SignUp.name) else Map.empty
       buildClient(uri)
-        .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(Map(JourneyStateKey -> SignUp.name, REFERENCE -> "test-reference") ++ additionalSPSCookie ++ additionalCookies))
+        .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(Map(REFERENCE -> "test-reference") ++ stateCookie ++ additionalSPSCookie ++ additionalCookies))
         .get()
         .futureValue
     }
@@ -169,11 +171,14 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
         .futureValue
     }
 
-    def startPage(): WSResponse = get("/", includeSPSEntityId = false)
-
     def callback(): WSResponse = get("/callback")
 
-    def indexPage(): WSResponse = get("/index", includeSPSEntityId = false)
+    def indexPage(includeState: Boolean = true): WSResponse = get(
+      uri = "/",
+      includeSPSEntityId = false,
+      additionalCookies = if (includeState) Map(JourneyStateKey -> PreSignUp.key) else Map.empty[String, String],
+      includeState = false
+    )
 
     def spsHandoff(): WSResponse = get("/sps-handoff")
 

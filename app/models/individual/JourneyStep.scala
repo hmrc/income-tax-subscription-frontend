@@ -38,27 +38,14 @@ object JourneyStep extends Logging {
     val key: String = "Confirmation"
   }
 
-  case object ClaimEnrolment extends JourneyStep {
-    val key: String = "ClaimEnrolment"
-  }
-
-  case object ClaimEnrolmentConfirmation extends JourneyStep {
-    val key: String = "ClaimEnrolmentConfirmation"
-  }
-
   def fromString(key: String): JourneyStep = {
     key match {
       // if the user is in the old state, pretend it's the new sign up state
       case OldSignUp.name => SignUp
-
-      // if the user is in the old claim enrolment state, pretend it's the new claim enrolment state
-      case OldClaimEnrolment.name => ClaimEnrolment
-
+      case OldClaimEnrolment.name => PreSignUp
       case PreSignUp.key => PreSignUp
       case SignUp.key => SignUp
       case Confirmation.key => Confirmation
-      case ClaimEnrolment.key => ClaimEnrolment
-      case ClaimEnrolmentConfirmation.key => ClaimEnrolmentConfirmation
       case _ => throw new InternalServerException(s"[Individual][JourneyStep] - Unsupported journey key - $key")
     }
   }

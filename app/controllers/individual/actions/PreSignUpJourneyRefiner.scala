@@ -20,37 +20,44 @@ import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.JourneyStateKey
 import models.individual.JourneyStep
 import models.individual.JourneyStep._
-import models.requests.individual.IdentifierRequest
+import models.requests.individual.{IdentifierRequest, PreSignUpRequest}
 import play.api.Logging
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class PreSignUpJourneyRefiner @Inject()(implicit val executionContext: ExecutionContext)
-  extends ActionRefiner[IdentifierRequest, IdentifierRequest] with Logging {
+  extends ActionRefiner[IdentifierRequest, PreSignUpRequest] with Logging {
 
-  override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, IdentifierRequest[A]]] = {
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
-
+  override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, PreSignUpRequest[A]]] = {
     request.session.get(ITSASessionKeys.JourneyStateKey)
       .map { journeyStep =>
         JourneyStep.fromString(
           key = journeyStep
         )
       } match {
-      case Some(PreSignUp | SignUp | Confirmation | ClaimEnrolment | ClaimEnrolmentConfirmation) =>
+      case Some(PreSignUp) =>
         request.mtditid match {
           case Some(_) =>
             logger.info("[Individual][PreSignUpJourneyRefiner] - MTDITID present on users cred. Sending to already enrolled page")
             Future.successful(Left(Redirect(controllers.individual.matching.routes.AlreadyEnrolledController.show)))
           case None =>
-            Future.successful(Right(request))
+            Future.successful(Right(PreSignUpRequest(request, request.nino, request.utr)))
         }
+      case Some(SignUp) =>
+        if (request.session.get(ITSASessionKeys.SPSEntityId).isDefined) {
+          logger.info(s"[Individual][PreSignUpJourneyRefiner] - SPS entity id found in session. Sending to using software page")
+          Future.successful(Left(Redirect(controllers.individual.routes.UsingSoftwareController.show())))
+        } else {
+          logger.info(s"[Individual][PreSignUpJourneyRefiner] - Sign up state without an sps entity id. Sending to SPS")
+          Future.successful(Left(Redirect(controllers.individual.sps.routes.SPSHandoffController.redirectToSPS)))
+        }
+      case Some(Confirmation) =>
+        logger.info(s"[Individual][PreSignUpJourneyRefiner] - User is in a confirmation state. Sending the user to the confirmation page")
+        Future.successful(Left(Redirect(controllers.individual.routes.ConfirmationController.show)))
       case None =>
         logger.info(s"[Individual][PreSignUpJourneyRefiner] - User has no state. Adding PreSignUp state and sending home.")
         Future.successful(Left(

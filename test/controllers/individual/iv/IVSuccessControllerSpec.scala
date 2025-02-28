@@ -60,24 +60,24 @@ class IVSuccessControllerSpec extends ControllerBaseSpec with MockAuditingServic
   }
 
   "the user has an iv flag in session" must {
-    "redirect the user to the home route and remove the iv flag from session" in new Setup {
+    "redirect the user to the index route and remove the iv flag from session" in new Setup {
       mockGetNino(testNino)
 
       val requestWithIVSession: Request[AnyContent] = FakeRequest().withSession(ITSASessionKeys.IdentityVerificationFlag -> "true")
       val result: Future[Result] = controller.success(requestWithIVSession)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.individual.matching.routes.HomeController.home.url)
+      redirectLocation(result) mustBe Some(controllers.individual.matching.routes.HomeController.index.url)
       session(result).get(ITSASessionKeys.IdentityVerificationFlag) mustBe None
     }
   }
   "the user doesn't not have an iv flag in session" must {
-    "redirect the user to the home route" in new Setup {
+    "redirect the user to the index route" in new Setup {
       val requestWithoutIVSession: Request[AnyContent] = FakeRequest()
       val result: Future[Result] = controller.success(requestWithoutIVSession)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.individual.matching.routes.HomeController.home.url)
+      redirectLocation(result) mustBe Some(controllers.individual.matching.routes.HomeController.index.url)
       session(result).get(ITSASessionKeys.IdentityVerificationFlag) mustBe None
     }
   }

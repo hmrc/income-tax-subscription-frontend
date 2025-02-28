@@ -36,7 +36,7 @@ trait MockPrePopDataService extends MockitoSugar with BeforeAndAfterEach {
   }
 
   def mockPrePopIncomeSources(prePopResult: PrePopResult): Unit = {
-    when(mockPrePopDataService.prePopIncomeSources(ArgumentMatchers.any())(ArgumentMatchers.any()))
+    when(mockPrePopDataService.prePopIncomeSources(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any()))
       .thenReturn(Future.successful(prePopResult))
   }
 
