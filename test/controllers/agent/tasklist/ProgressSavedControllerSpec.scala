@@ -16,178 +16,170 @@
 
 package controllers.agent.tasklist
 
-import auth.agent.AgentSignUp
-import common.Constants.ITSASessionKeys
-import controllers.agent.AgentControllerBaseSpec
-import models.audits.SaveAndComebackAuditing
+import controllers.ControllerSpec
+import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}
 import models.audits.SaveAndComebackAuditing.SaveAndComeBackAuditModel
 import models.common.business._
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel, TimestampModel}
-import models.status.MandationStatus.Voluntary
-import models.{Cash, DateModel, EligibilityStatus, Next}
-import org.mockito.ArgumentMatchers.{any, eq => meq}
-import org.mockito.Mockito.{verify, when}
-import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
-import play.api.Configuration
+import models.{Cash, Current, DateModel}
+import org.mockito.ArgumentMatchers
+import org.mockito.Mockito.when
 import play.api.http.Status.OK
-import play.api.mvc.{Action, AnyContent, Codec, Result}
-import play.api.test.FakeRequest
-import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, status}
-import play.twirl.api.HtmlFormat
+import play.api.mvc.Result
+import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, status}
+import play.api.{Configuration, Environment}
 import services.mocks._
-import utilities.UserMatchingSessionUtil.{firstName, lastName}
-import utilities.agent.TestConstants.{testARN, testNino, testUtr}
-import utilities.{CacheExpiryDateProvider, CurrentDateProvider}
-import views.html.agent.tasklist.ProgressSaved
+import uk.gov.hmrc.http.InternalServerException
+import utilities.{AccountingPeriodUtil, CacheExpiryDateProvider, MockCurrentDateProvider}
+import views.agent.tasklist.mocks.MockProgressSaved
 
-import java.time.{LocalDate, LocalDateTime}
+import java.time.{LocalDate, LocalDateTime, LocalTime}
 import scala.concurrent.Future
 
-class ProgressSavedControllerSpec extends AgentControllerBaseSpec
+class ProgressSavedControllerSpec extends ControllerSpec
+  with MockIdentifierAction
+  with MockConfirmedClientJourneyRefiner
   with MockAuditingService
-  with MockReferenceRetrieval
-  with MockClientDetailsRetrieval
-  with MockUTRService
-  with MockSubscriptionDetailsService {
+  with MockCurrentDateProvider
+  with MockSubscriptionDetailsService
+  with MockProgressSaved {
 
-  override val controllerName: String = "ProgressSavedController"
-  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
-  implicit lazy val config: Configuration = app.injector.instanceOf[Configuration]
+  "show" when {
+    "no last updated timestamp could be found" should {
+      "throw an exception" in new Setup {
+        mockFetchLastUpdatedTimestamp(None)
 
-  private val testTimestamp = TimestampModel(
-    LocalDateTime.of(1970, 1, 1, 1, 0, 0, 0)
-  )
-
-  private val currentYear = 2023
-  private val selectedTaxYear = Some(AccountingYearModel(Next))
-  private val selfEmployments = Seq(
-    SelfEmploymentData(
-      id = "id",
-      businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
-      businessName = Some(BusinessNameModel("business name")),
-      businessTradeName = Some(BusinessTradeNameModel("business trade")),
-      businessAddress = Some(BusinessAddressModel(Address(Seq("line 1"), Some("ZZ1 1ZZ"))))
-    )
-  )
-
-  private val decryptedSelfEmployments = Seq(
-    SelfEmploymentData(
-      id = "id",
-      businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
-      businessName = Some(BusinessNameModel("business name")),
-      businessTradeName = Some(BusinessTradeNameModel("business trade")),
-      businessAddress = Some(BusinessAddressModel(Address(Seq("line 1"), Some("ZZ1 1ZZ"))))
-    )
-  )
-
-  private val selfEmploymentAccountingMethod = Some(AccountingMethodModel(Cash))
-  private val property = Some(PropertyModel(
-    accountingMethod = Some(Cash),
-    startDate = Some(DateModel("1", "1", "1980")),
-    confirmed = true
-  ))
-  private val overseasProperty = Some(OverseasPropertyModel(
-    accountingMethod = Some(Cash),
-    startDate = Some(DateModel("1", "1", "1980")),
-    confirmed = true
-  ))
-
-  "show" should {
-    "return OK with progress saved page" when {
-      "the location parameter is not provided" in withController { (controller, mockedView) =>
-        mockFetchLastUpdatedTimestamp(Some(testTimestamp))
-
-        val result: Future[Result] = await(controller.show()(subscriptionRequestWithName))
-
-        status(result) mustBe OK
-        contentType(result) mustBe Some(HTML)
-        charset(result) mustBe Some(Codec.utf_8.charset)
-
-        verify(mockedView).apply(meq("Monday, 20 October 2021"), meq("/bas-gateway/sign-in"), any())(any(), any())
-      }
-
-      "the saveAndRetrieveLocation parameter is provided" in withController { (controller, mockedView) =>
-        mockFetchLastUpdatedTimestamp(Some(testTimestamp))
-        mockFetchLastUpdatedTimestamp(Some(testTimestamp))
-        mockFetchAllSelfEmployments(selfEmployments, selfEmploymentAccountingMethod.map(_.accountingMethod))
-        mockFetchProperty(property)
-        mockFetchOverseasProperty(overseasProperty)
-        mockFetchSelectedTaxYear(selectedTaxYear)
-        mockGetMandationService(Voluntary, Voluntary)
-        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
-        mockGetUTR(testUtr)
-
-        val testRequest = FakeRequest().withSession(
-          ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
-          ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true",
-          firstName -> "FirstName",
-          lastName -> "LastName"
-        ).withMethod("POST")
-
-        val result: Future[Result] = await(controller.show(location = Some("test-location"))(testRequest))
-
-        status(result) mustBe OK
-        contentType(result) mustBe Some(HTML)
-        charset(result) mustBe Some(Codec.utf_8.charset)
-
-        verify(mockedView).apply(meq("Monday, 20 October 2021"), meq("/bas-gateway/sign-in"), any())(any(), any())
-
-        verifyAudit(SaveAndComeBackAuditModel(
-          userType = SaveAndComebackAuditing.agentUserType,
-          utr = testUtr,
-          nino = testNino,
-          maybeAgentReferenceNumber = Some(testARN),
-          saveAndRetrieveLocation = "test-location",
-          currentTaxYear = currentYear,
-          selectedTaxYear = selectedTaxYear,
-          selfEmployments = decryptedSelfEmployments,
-          maybeSelfEmploymentAccountingMethod = selfEmploymentAccountingMethod,
-          maybePropertyModel = property,
-          maybeOverseasPropertyModel = overseasProperty
-        ))
+        intercept[InternalServerException](await(controller.show()(request)))
+          .message mustBe "[ProgressSavedController][show] - The last updated timestamp cannot be retrieved"
       }
     }
+    "a last updated timestamp was returned" when {
+      "no location was provided" should {
+        "display the page" in new Setup {
+          mockFetchLastUpdatedTimestamp(Some(TimestampModel(dateTime)))
+          mockProgressSaved(fakeExpiryDate, clientDetails)
 
-    "throw an exception if the last updated timestamp cannot be retrieve" in withController { (controller, _) =>
-      mockFetchLastUpdatedTimestamp(None)
+          val result: Future[Result] = controller.show()(request)
 
-      val result: Future[Result] = await(controller.show()(subscriptionRequest))
+          status(result) mustBe OK
+          contentType(result) mustBe Some(HTML)
+        }
+      }
+      "location was provided" should {
+        "audit the details of the users journey and display the page" when {
+          "the user has full journey details" in new Setup {
+            mockFetchLastUpdatedTimestamp(Some(TimestampModel(dateTime)))
+            mockProgressSaved(fakeExpiryDate, clientDetails)
+            mockCurrentDate(LocalDate.now())
+            mockFetchAllSelfEmployments(selfEmployments, Some(Cash))
+            mockFetchProperty(Some(ukProperty))
+            mockFetchOverseasProperty(Some(foreignProperty))
+            mockFetchSelectedTaxYear(Some(accountingYear))
 
-      result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
+            val result: Future[Result] = controller.show(location = Some("test-location"))(request)
+
+            status(result) mustBe OK
+            contentType(result) mustBe Some(HTML)
+
+            verifyAudit(SaveAndComeBackAuditModel(
+              userType = "agent",
+              utr = utr,
+              nino = nino,
+              maybeAgentReferenceNumber = Some(testARN),
+              saveAndRetrieveLocation = "test-location",
+              currentTaxYear = AccountingPeriodUtil.getTaxEndYear(LocalDate.now),
+              selectedTaxYear = Some(accountingYear),
+              selfEmployments = selfEmployments,
+              maybeSelfEmploymentAccountingMethod = Some(AccountingMethodModel(Cash)),
+              maybePropertyModel = Some(ukProperty),
+              maybeOverseasPropertyModel = Some(foreignProperty)
+            ))
+          }
+          "the user has minimal data stored" in new Setup {
+            mockFetchLastUpdatedTimestamp(Some(TimestampModel(dateTime)))
+            mockProgressSaved(fakeExpiryDate, clientDetails)
+            mockCurrentDate(LocalDate.now())
+            mockFetchAllSelfEmployments(Seq.empty, None)
+            mockFetchProperty(None)
+            mockFetchOverseasProperty(None)
+            mockFetchSelectedTaxYear(None)
+
+            val result: Future[Result] = controller.show(location = Some("test-location"))(request)
+
+            status(result) mustBe OK
+            contentType(result) mustBe Some(HTML)
+
+            verifyAudit(SaveAndComeBackAuditModel(
+              userType = "agent",
+              utr = utr,
+              nino = nino,
+              maybeAgentReferenceNumber = Some(testARN),
+              saveAndRetrieveLocation = "test-location",
+              currentTaxYear = AccountingPeriodUtil.getTaxEndYear(LocalDate.now),
+              selectedTaxYear = None,
+              selfEmployments = Seq.empty,
+              maybeSelfEmploymentAccountingMethod = None,
+              maybePropertyModel = None,
+              maybeOverseasPropertyModel = None
+            ))
+          }
+        }
+      }
     }
   }
 
-  private def withController(testCode: (ProgressSavedController, ProgressSaved) => Any): Unit = {
-    val progressSavedView = mock[ProgressSaved]
+  trait Setup {
+    val mockCacheExpiryDateProvider: CacheExpiryDateProvider = mock[CacheExpiryDateProvider]
+    val mockConfiguration: Configuration = mock[Configuration]
+    val mockEnvironment: Environment = mock[Environment]
 
-    when(progressSavedView(meq("Monday, 20 October 2021"), any(), any())(any(), any()))
-      .thenReturn(HtmlFormat.empty)
+    val fakeExpiryDate: String = "1st January 2020"
 
-    val cacheExpiryDateProvider = mock[CacheExpiryDateProvider]
-    val currentDateProvider = mock[CurrentDateProvider]
+    when(mockCacheExpiryDateProvider.expiryDateOf(ArgumentMatchers.any())(ArgumentMatchers.any())).thenReturn(fakeExpiryDate)
 
-    when(cacheExpiryDateProvider.expiryDateOf(any())(any()))
-      .thenReturn("Monday, 20 October 2021")
-
-    when(currentDateProvider.getCurrentDate)
-      .thenReturn(LocalDate.of(2022, 5, 6))
-
-    val controller = new ProgressSavedController(
-      progressSavedView,
-      currentDateProvider,
-      mockSubscriptionDetailsService,
-      mockReferenceRetrieval,
-      mockUTRService,
-      mockClientDetailsRetrieval,
-      cacheExpiryDateProvider
-    )(
-      mockAuditingService,
-      mockAuthService,
-      appConfig,
-      config,
-      env
-    )
-
-    testCode(controller, progressSavedView)
+    val controller: ProgressSavedController = new ProgressSavedController(
+      identify = fakeIdentifierAction,
+      journeyRefiner = fakeConfirmedClientJourneyRefiner,
+      auditingService = mockAuditingService,
+      cacheExpiryDateProvider = mockCacheExpiryDateProvider,
+      currentDateProvider = mockCurrentDateProvider,
+      subscriptionDetailsService = mockSubscriptionDetailsService,
+      view = mockView
+    )(mockConfiguration, mockEnvironment) {
+      override def ggLoginUrl: String = "/"
+    }
   }
+
+  lazy val dateTime: LocalDateTime = LocalDateTime.of(LocalDate.now, LocalTime.of(0, 0))
+
+  lazy val selfEmployments: Seq[SelfEmploymentData] = Seq(
+    selfEmployment
+  )
+
+  lazy val selfEmployment: SelfEmploymentData = SelfEmploymentData(
+    id = "test-id",
+    startDateBeforeLimit = Some(false),
+    businessStartDate = Some(BusinessStartDate(DateModel.dateConvert(LocalDate.now))),
+    businessName = Some(BusinessNameModel("test-name")),
+    businessTradeName = Some(BusinessTradeNameModel("test-trade")),
+    businessAddress = Some(BusinessAddressModel(Address(
+      lines = Seq("1 long road"),
+      postcode = Some("ZZ1 1ZZ")
+    )))
+  )
+
+  lazy val ukProperty: PropertyModel = PropertyModel(
+    startDateBeforeLimit = Some(false),
+    accountingMethod = Some(Cash),
+    startDate = Some(DateModel.dateConvert(LocalDate.now))
+  )
+
+  lazy val foreignProperty: OverseasPropertyModel = OverseasPropertyModel(
+    startDateBeforeLimit = Some(false),
+    accountingMethod = Some(Cash),
+    startDate = Some(DateModel.dateConvert(LocalDate.now))
+  )
+
+  lazy val accountingYear: AccountingYearModel = AccountingYearModel(Current)
+
 }

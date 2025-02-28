@@ -16,16 +16,15 @@
 
 package controllers.agent.tasklist
 
-import auth.agent.AuthenticatedController
-import config.AppConfig
-import controllers.utils.ReferenceRetrieval
+import controllers.SignUpBaseController
+import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import models.audits.SaveAndComebackAuditing
 import models.audits.SaveAndComebackAuditing.SaveAndComeBackAuditModel
 import models.common.business.AccountingMethodModel
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
+import models.requests.agent.ConfirmedClientRequest
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.api.{Configuration, Environment}
-import services.agent.ClientDetailsRetrieval
-import services.{AuditingService, AuthService, SubscriptionDetailsService, UTRService}
+import services.{AuditingService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import utilities.{AccountingPeriodUtil, CacheExpiryDateProvider, CurrentDateProvider}
@@ -35,64 +34,57 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ProgressSavedController @Inject()(progressSavedView: ProgressSaved,
+class ProgressSavedController @Inject()(identify: IdentifierAction,
+                                        journeyRefiner: ConfirmedClientJourneyRefiner,
+                                        auditingService: AuditingService,
+                                        cacheExpiryDateProvider: CacheExpiryDateProvider,
                                         currentDateProvider: CurrentDateProvider,
                                         subscriptionDetailsService: SubscriptionDetailsService,
-                                        referenceRetrieval: ReferenceRetrieval,
-                                        utrService: UTRService,
-                                        clientDetailsRetrieval: ClientDetailsRetrieval,
-                                        cacheExpiryDateProvider: CacheExpiryDateProvider)
-                                       (val auditingService: AuditingService,
-                                        val authService: AuthService,
-                                        val appConfig: AppConfig,
-                                        val config: Configuration,
-                                        val env: Environment)
-                                       (implicit val ec: ExecutionContext,
-                                        mcc: MessagesControllerComponents) extends AuthenticatedController with AuthRedirects {
+                                        view: ProgressSaved)
+                                       (val config: Configuration, val env: Environment)
+                                       (implicit mcc: MessagesControllerComponents, ec: ExecutionContext) extends SignUpBaseController with AuthRedirects {
 
-  def show(location: Option[String] = None): Action[AnyContent] = Authenticated.async {
-    implicit request =>
-      implicit user =>
-        referenceRetrieval.getAgentReference flatMap { reference =>
-          clientDetailsRetrieval.getClientDetails flatMap { clientDetails =>
-            subscriptionDetailsService.fetchLastUpdatedTimestamp(reference) flatMap {
-              case Some(timestamp) =>
-                location.fold(
-                  Future.successful(Ok(progressSavedView(cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime), signInUrl, clientDetails = clientDetails)))
-                )(location => {
-                  for {
-                    saveAndComebackAuditData <- retrieveAuditData(reference, user.arn, location)
-                    _ <- auditingService.audit(saveAndComebackAuditData)
-                  } yield {
-                    Ok(progressSavedView(cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime), signInUrl, clientDetails = clientDetails))
-                  }
-                })
-              case None => throw new InternalServerException("[ProgressSavedController][show] - The last updated timestamp cannot be retrieved")
-            }
+  def show(location: Option[String] = None): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
+    subscriptionDetailsService.fetchLastUpdatedTimestamp(request.reference) flatMap {
+      case Some(timestamp) =>
+        location match {
+          case Some(id) => for {
+            saveAndComebackAuditData <- retrieveAuditData(id)
+            _ <- auditingService.audit(saveAndComebackAuditData)
+          } yield {
+            Ok(view(
+              expirationDate = cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime),
+              signInUrl = ggLoginUrl,
+              clientDetails = request.clientDetails
+            ))
           }
+          case None =>
+            Future.successful(Ok(view(
+              expirationDate = cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime),
+              signInUrl = ggLoginUrl,
+              clientDetails = request.clientDetails
+            )))
         }
+      case None =>
+        throw new InternalServerException("[ProgressSavedController][show] - The last updated timestamp cannot be retrieved")
+    }
   }
 
-  private def retrieveAuditData(
-                                 reference: String,
-                                 arn: String,
-                                 location: String
-                               )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[SaveAndComeBackAuditModel] = {
-
+  private def retrieveAuditData(location: String)
+                               (implicit request: ConfirmedClientRequest[AnyContent],
+                                hc: HeaderCarrier): Future[SaveAndComeBackAuditModel] = {
     for {
-      clientDetails <- clientDetailsRetrieval.getClientDetails
-      utr <- utrService.getUTR
-      (businesses, accountingMethod) <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
-      property <- subscriptionDetailsService.fetchProperty(reference)
-      overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
-      selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
+      (businesses, accountingMethod) <- subscriptionDetailsService.fetchAllSelfEmployments(request.reference)
+      property <- subscriptionDetailsService.fetchProperty(request.reference)
+      overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(request.reference)
+      selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(request.reference)
     } yield {
       SaveAndComeBackAuditModel(
         userType = SaveAndComebackAuditing.agentUserType,
-        maybeAgentReferenceNumber = Some(arn),
-        utr = utr,
+        maybeAgentReferenceNumber = Some(request.arn),
+        utr = request.utr,
         saveAndRetrieveLocation = location,
-        nino = clientDetails.nino,
+        nino = request.clientDetails.nino,
         currentTaxYear = AccountingPeriodUtil.getTaxEndYear(currentDateProvider.getCurrentDate),
         selectedTaxYear = selectedTaxYear,
         selfEmployments = businesses,
@@ -102,6 +94,4 @@ class ProgressSavedController @Inject()(progressSavedView: ProgressSaved,
       )
     }
   }
-
-  private val signInUrl: String = ggLoginUrl
 }
