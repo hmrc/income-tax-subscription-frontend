@@ -19,7 +19,7 @@ package connectors.mocks
 import connectors.PrePopConnector
 import connectors.httpparser.GetPrePopDataParser.GetPrePopDataResponse
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 
