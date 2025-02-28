@@ -20,6 +20,7 @@
 @import views.html.helpers.{ContinueButton, PageHeadingHelper}
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 @import utilities.AccountingPeriodUtil
+@import utilities.UserMatchingSessionUtil.ClientDetails
 
 @this(
     mainTemplate: AgentMainTemplate,
@@ -30,13 +31,13 @@
     govukInsetText: GovukInsetText
 )
 
-@(postAction: Call, clientName: String, clientNino: String)(implicit request: Request[_], messages: Messages)
+@(postAction: Call, clientDetails: ClientDetails)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = messages("agent.cannot-sign-up.title")) {
 
     @pageHeadingHelper(
         heading = messages("agent.cannot-sign-up.heading"),
-        caption = messages("agent.cannot-sign-up.caption", clientName, clientNino),
+        caption = messages("agent.cannot-sign-up.caption", clientDetails.name, clientDetails.formattedNino),
         isSection = false
     )
 
@@ -89,7 +90,7 @@
                 <p class="govuk-body">
                     @Html(messages(
                     key = "agent.cannot-sign-up.check-another",
-                    args = <a class="govuk-link" href={controllers.agent.routes.AddAnotherClientController.addAnother().url}>{messages("agent.cannot-sign-up.check-another.link")}</a>, clientName
+                    args = <a class="govuk-link" href={controllers.agent.routes.AddAnotherClientController.addAnother().url}>{messages("agent.cannot-sign-up.check-another.link")}</a>, clientDetails.name
                     ))
                 </p>
             </div>
