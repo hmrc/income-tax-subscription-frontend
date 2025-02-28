@@ -450,15 +450,16 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       post("/business/overseas-property-check-your-answers", sessionData)(Map.empty)
     }
 
-    def getRemoveBusiness(sessionData: Map[String, String] = Map.empty, id: String = testId): WSResponse = {
+    def getRemoveBusiness(sessionData: Map[String, String] = ClientData.basicClientData, id: String = testId): WSResponse = {
       get(s"/business/remove-sole-trader-business?id=$id", sessionData)
     }
 
-    def submitRemoveBusiness(request: Option[YesNo]): WSResponse = post(s"/business/remove-sole-trader-business?id=$testId")(
-      request.fold(Map.empty[String, Seq[String]])(
-        model => RemoveBusinessForm.removeBusinessForm().fill(model).data.map { case (k, v) => (k, Seq(v)) }
+    def submitRemoveBusiness(request: Option[YesNo], sessionData: Map[String, String] = ClientData.basicClientData): WSResponse =
+      post(s"/business/remove-sole-trader-business?id=$testId", sessionData)(
+        request.fold(Map.empty[String, Seq[String]])(
+          model => RemoveBusinessForm.removeBusinessForm().fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        )
       )
-    )
 
     def getTaskList(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
       get("/business/task-list", sessionData)

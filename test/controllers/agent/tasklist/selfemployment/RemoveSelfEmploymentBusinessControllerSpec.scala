@@ -18,6 +18,7 @@ package controllers.agent.tasklist.selfemployment
 
 import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscriptionDetailsSuccessResponse
 import controllers.agent.AgentControllerBaseSpec
+import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}
 import forms.agent.RemoveBusinessForm
 import models.common.business._
 import models.{DateModel, No, Yes}
@@ -34,10 +35,10 @@ import views.html.agent.tasklist.selfemployment.RemoveSelfEmploymentBusiness
 import scala.concurrent.Future
 
 class RemoveSelfEmploymentBusinessControllerSpec extends AgentControllerBaseSpec
-  with MockAuditingService
   with MockSubscriptionDetailsService
-  with MockReferenceRetrieval
-  with MockRemoveBusinessService {
+  with MockRemoveBusinessService
+  with MockIdentifierAction
+  with MockConfirmedClientJourneyRefiner {
 
   override val controllerName: String = "RemoveSelfEmploymentBusinessController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
@@ -75,7 +76,7 @@ class RemoveSelfEmploymentBusinessControllerSpec extends AgentControllerBaseSpec
   }
 
   "submit" should {
-    "redirect to the task list page" when {
+    "redirect to the your income sources page" when {
       "the user selects 'yes'" in withController { controller =>
         mockFetchAllSelfEmployments(testBusinesses)
         mockDeleteBusiness(Right(DeleteSubscriptionDetailsSuccessResponse))
@@ -101,7 +102,7 @@ class RemoveSelfEmploymentBusinessControllerSpec extends AgentControllerBaseSpec
       }
     }
 
-    "throw an exception" when {
+    "return BAD_REQUEST" when {
       "the user submits invalid data" in withController { controller =>
         mockFetchAllSelfEmployments(testBusinesses)
 
@@ -122,13 +123,10 @@ class RemoveSelfEmploymentBusinessControllerSpec extends AgentControllerBaseSpec
 
     val controller = new RemoveSelfEmploymentBusinessController(
       view,
-      mockReferenceRetrieval,
+      fakeIdentifierAction,
+      fakeConfirmedClientJourneyRefiner,
       mockSubscriptionDetailsService,
       mockRemoveBusinessService
-    )(
-      mockAuditingService,
-      mockAuthService,
-      appConfig
     )
 
     testCode(controller)
