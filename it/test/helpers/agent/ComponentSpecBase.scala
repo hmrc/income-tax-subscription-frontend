@@ -429,10 +429,10 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       )
     }
 
-    def getClientRemoveUkProperty: WSResponse = get("/business/remove-uk-property-business")
+    def getClientRemoveUkProperty: WSResponse = get("/business/remove-uk-property-business", ClientData.basicClientData)
 
 
-    def submitClientRemoveUkProperty(body: Map[String, Seq[String]]): WSResponse = post("/business/remove-uk-property-business")(body)
+    def submitClientRemoveUkProperty(body: Map[String, Seq[String]]): WSResponse = post("/business/remove-uk-property-business", ClientData.basicClientData)(body)
 
 
     def getRemoveClientOverseasProperty(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/business/remove-overseas-property-business", sessionData)
