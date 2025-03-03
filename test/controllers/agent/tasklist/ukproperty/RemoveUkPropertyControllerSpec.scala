@@ -19,6 +19,7 @@ package controllers.agent.tasklist.ukproperty
 import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscriptionDetailsSuccessResponse
 import connectors.subscriptiondata.mocks.MockIncomeTaxSubscriptionConnector
 import controllers.agent.AgentControllerBaseSpec
+import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}
 import forms.agent.ClientRemoveUkPropertyForm
 import forms.submapping.YesNoMapping
 import models.Cash
@@ -28,19 +29,20 @@ import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Result}
-import play.api.test.Helpers.{HTML, contentType, defaultAwaitTimeout, redirectLocation, status}
+import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSubscriptionDetailsService}
+import services.mocks.MockSubscriptionDetailsService
+import uk.gov.hmrc.http.InternalServerException
 import utilities.SubscriptionDataKeys
 import views.html.agent.tasklist.ukproperty.RemoveUkPropertyBusiness
 
 import scala.concurrent.Future
 
 class RemoveUkPropertyControllerSpec extends AgentControllerBaseSpec
-  with MockAuditingService
   with MockSubscriptionDetailsService
-  with MockReferenceRetrieval
-  with MockIncomeTaxSubscriptionConnector {
+  with MockIncomeTaxSubscriptionConnector
+  with MockIdentifierAction
+  with MockConfirmedClientJourneyRefiner {
 
   override val controllerName: String = "RemoveUkPropertyController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
@@ -80,7 +82,7 @@ class RemoveUkPropertyControllerSpec extends AgentControllerBaseSpec
       }
     }
 
-    "redirect to the task list page" when {
+    "redirect to the your income sources page" when {
       "the user selects to remove the business" in withController { controller =>
         mockDeleteSubscriptionDetails(SubscriptionDataKeys.Property)(Right(DeleteSubscriptionDetailsSuccessResponse))
         mockDeleteSubscriptionDetails(SubscriptionDataKeys.IncomeSourceConfirmation)(Right(DeleteSubscriptionDetailsSuccessResponse))
@@ -110,15 +112,28 @@ class RemoveUkPropertyControllerSpec extends AgentControllerBaseSpec
     }
 
     "throw an exception" when {
-      "cannot remove the UK property" in withController { controller =>
+      "failed to remove the UK property" in withController { controller =>
         mockDeleteSubscriptionDetailsFailure(SubscriptionDataKeys.Property)
+        mockDeleteSubscriptionDetails(SubscriptionDataKeys.IncomeSourceConfirmation)(Right(DeleteSubscriptionDetailsSuccessResponse))
+
+        val result = controller.submit(
+          subscriptionRequest.withFormUrlEncodedBody(ClientRemoveUkPropertyForm.yesNo -> YesNoMapping.option_yes)
+        )
+
+        intercept[InternalServerException](await(result))
+          .message mustBe "[RemoveUkPropertyController][submit] - Could not remove UK property"
+      }
+
+      "failed to remove income source confirmation" in withController { controller =>
+        mockDeleteSubscriptionDetails(SubscriptionDataKeys.Property)(Right(DeleteSubscriptionDetailsSuccessResponse))
         mockDeleteSubscriptionDetailsFailure(SubscriptionDataKeys.IncomeSourceConfirmation)
 
         val result = controller.submit(
           subscriptionRequest.withFormUrlEncodedBody(ClientRemoveUkPropertyForm.yesNo -> YesNoMapping.option_yes)
         )
 
-        result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
+        intercept[InternalServerException](await(result))
+          .message mustBe "[RemoveUkPropertyController][submit] - Failure to delete income source confirmation"
       }
     }
   }
@@ -129,14 +144,11 @@ class RemoveUkPropertyControllerSpec extends AgentControllerBaseSpec
     when(view(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
 
     val controller = new RemoveUkPropertyController(
-      mockIncomeTaxSubscriptionConnector,
       view,
+      fakeIdentifierAction,
+      fakeConfirmedClientJourneyRefiner,
+      mockIncomeTaxSubscriptionConnector,
       mockSubscriptionDetailsService,
-      mockReferenceRetrieval
-    )(
-      mockAuditingService,
-      mockAuthService,
-      appConfig
     )
 
     testCode(controller)

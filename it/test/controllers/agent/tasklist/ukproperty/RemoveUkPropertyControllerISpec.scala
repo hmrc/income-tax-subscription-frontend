@@ -16,39 +16,57 @@
 
 package controllers.agent.tasklist.ukproperty
 
-import connectors.stubs.IncomeTaxSubscriptionConnectorStub
-import helpers.IntegrationTestConstants.AgentURI
+import common.Constants.ITSASessionKeys
+import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
+import helpers.IntegrationTestConstants.{AgentURI, basGatewaySignIn, testNino, testUtr}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import models.Cash
 import models.common.PropertyModel
 import play.api.http.Status._
-import play.api.libs.json.Json
+import play.api.libs.json.{JsString, Json}
 import utilities.SubscriptionDataKeys
 import utilities.SubscriptionDataKeys.Property
 
-class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
+class RemoveUkPropertyControllerISpec extends ComponentSpecBase {
   "GET /report-quarterly/income-and-expenses/sign-up/client/business/remove-uk-property-business" should {
-    "return OK" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property,OK,
-          Json.toJson(PropertyModel(accountingMethod = Some(Cash))))
+    "redirect to the login page" when {
+      "user is unauthenticated" in {
+        AuthStub.stubUnauthorised()
 
-        When("GET client/business/remove-uk-property-business is called")
         val res = IncomeTaxSubscriptionFrontend.getClientRemoveUkProperty
-        val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
-        Then("Should return a OK with the client remove Uk property confirmation page displaying")
+
         res must have(
-          httpStatus(OK),
-          pageTitle(messages("agent.remove-uk-property-business.heading") + serviceNameGovUk)
+          httpStatus(SEE_OTHER),
+          redirectURI(basGatewaySignIn("/client/business/remove-uk-property-business"))
         )
+      }
     }
 
-    "redirect to Business Already removed page" in {
+    "return OK when a uk property is retrieved" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
-      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property,NO_CONTENT,
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK,
+        Json.toJson(PropertyModel(accountingMethod = Some(Cash))))
+
+      When("GET client/business/remove-uk-property-business is called")
+      val res = IncomeTaxSubscriptionFrontend.getClientRemoveUkProperty
+      val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
+      Then("Should return a OK with the client remove Uk property confirmation page displaying")
+      res must have(
+        httpStatus(OK),
+        pageTitle(messages("agent.remove-uk-property-business.heading") + serviceNameGovUk)
+      )
+    }
+
+    "redirect to Business Already Removed page when no uk property is retrieved" in {
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubAuthSuccess()
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT,
         Json.toJson(PropertyModel(accountingMethod = Some(Cash))))
 
       When("GET client/business/remove-uk-property-business is called")
@@ -62,10 +80,25 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/client/business/remove-uk-property-business" should {
-    "redirect to the manage income sources page" when {
+    "redirect to the login page" when {
+      "user is unauthenticated" in {
+        AuthStub.stubUnauthorised()
+
+        val res = IncomeTaxSubscriptionFrontend.submitClientRemoveUkProperty(Map("yes-no" -> Seq("Yes")))
+
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(basGatewaySignIn("/client/business/remove-uk-property-business"))
+        )
+      }
+    }
+
+    "redirect to the your income sources page" when {
       "the user submits the 'yes' answer" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
         IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetails(Property)
         IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetails(SubscriptionDataKeys.IncomeSourceConfirmation)
 
@@ -85,6 +118,8 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
       "the user submits the 'no' answer" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
         When("POST client/business/remove-uk-property-business is called")
         val res = IncomeTaxSubscriptionFrontend.submitClientRemoveUkProperty(Map("yes-no" -> Seq("No")))
@@ -103,6 +138,8 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
       "no option was selected on the client remove Uk property page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
         When("POST /business/remove-uk-property-business is called")
         val res = IncomeTaxSubscriptionFrontend.submitClientRemoveUkProperty(Map("yes-no" -> Seq("")))
@@ -120,6 +157,8 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
       "the UK property cannot be removed" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
         IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetailsFailure(Property)
 
         When("POST /business/remove-uk-property-business is called")
