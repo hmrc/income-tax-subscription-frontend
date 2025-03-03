@@ -43,6 +43,9 @@ POST        /error/cannot-sign-up-for-current-year               controllers.ind
 # Declined sign up next year
 GET         /declined-sign-up-next-year                          controllers.individual.controllist.DeclinedSignUpNextYearController.show
 
+# You can sign up now
+GET         /you-can-sign-up-now                                 controllers.individual.YouCanSignUpController.show
+
 # What you need to do
 GET         /what-you-need-to-do                                 controllers.individual.WhatYouNeedToDoController.show
 POST         /what-you-need-to-do                                controllers.individual.WhatYouNeedToDoController.submit
