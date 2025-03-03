@@ -18,42 +18,87 @@ package controllers.agent.eligibility
 
 import common.Constants.ITSASessionKeys
 import connectors.stubs.SessionDataConnectorStub
-import helpers.IntegrationTestConstants.testNino
+import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino, testUtr}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import play.api.libs.json.JsString
-import play.api.libs.ws.WSResponse
 import play.api.test.Helpers._
 
 class CannotSignUpThisYearControllerISpec extends ComponentSpecBase {
 
-  "GET /client/error/cannot-sign-up-for-current-year" should {
+  s"GET ${routes.CannotSignUpThisYearController.show.url}" when {
+    "the user is unauthenticated" must {
+      "redirect the user to login" in {
+        AuthStub.stubUnauthorised()
 
-    "return a status of OK" in {
-      Given("I setup the wiremock stubs")
-      AuthStub.stubAuthSuccess()
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        val result = IncomeTaxSubscriptionFrontend.showCannotSignUpThisYear()
 
-      When("GET /client/error/cannot-sign-up-for-current-year is called")
-      val result: WSResponse = IncomeTaxSubscriptionFrontend.showCannotSignUpThisYear()
-
-      Then("Should return a OK")
-      result.status mustBe OK
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(basGatewaySignIn("/client/error/cannot-sign-up-for-current-year"))
+        )
+      }
     }
-
-  }
-
-  "POST /client/error/cannot-sign-up-for-current-year" when {
-
-    "the user clicks sign up this client button" should {
-      s"return a redirect to ${controllers.agent.routes.UsingSoftwareController.show.url}" in {
-        Given("I setup the wiremock stubs")
+    "the user is in an incorrect state" must {
+      "redirect the user to the correct location" in {
         AuthStub.stubAuthSuccess()
 
-        When("POST /client/error/cannot-sign-up-for-current-year is called")
-        val result: WSResponse = IncomeTaxSubscriptionFrontend.submitCannotSignUpThisYear()
+        val result = IncomeTaxSubscriptionFrontend.showCannotSignUpThisYear(hasJourneyState = false)
 
-        Then("Should return SEE_OTHER to the Using Software Controller")
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(controllers.agent.matching.routes.CannotGoBackToPreviousClientController.show.url)
+        )
+      }
+    }
+    "the user is authenticated and in a confirmed client state" must {
+      "return OK with the page content" in {
+        AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+
+        val result = IncomeTaxSubscriptionFrontend.showCannotSignUpThisYear()
+
+        result must have(
+          httpStatus(OK),
+          pageTitle(s"${messages("agent.cannot-sign-up.title")} - Use software to report your client’s Income Tax - GOV.UK")
+        )
+      }
+    }
+  }
+
+  s"POST ${routes.CannotSignUpThisYearController.submit.url}" when {
+    "the user is unauthenticated" must {
+      "redirect the user to login" in {
+        AuthStub.stubUnauthorised()
+
+        val result = IncomeTaxSubscriptionFrontend.submitCannotSignUpThisYear()
+
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(basGatewaySignIn("/client/error/cannot-sign-up-for-current-year"))
+        )
+      }
+    }
+    "the user is in an incorrect state" must {
+      "redirect the user to the correct location" in {
+        AuthStub.stubAuthSuccess()
+
+        val result = IncomeTaxSubscriptionFrontend.submitCannotSignUpThisYear(hasJourneyState = false)
+
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(controllers.agent.matching.routes.CannotGoBackToPreviousClientController.show.url)
+        )
+      }
+    }
+    "the user is authenticated and in a confirmed client state" must {
+      "redirect the user to the using software page" in {
+        AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+
+        val result = IncomeTaxSubscriptionFrontend.submitCannotSignUpThisYear()
 
         result must have(
           httpStatus(SEE_OTHER),
@@ -62,4 +107,5 @@ class CannotSignUpThisYearControllerISpec extends ComponentSpecBase {
       }
     }
   }
+
 }

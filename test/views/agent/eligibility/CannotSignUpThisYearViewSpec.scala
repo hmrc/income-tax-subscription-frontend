@@ -19,28 +19,27 @@ package views.agent.eligibility
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.HtmlFormat
+import utilities.UserMatchingSessionUtil.ClientDetails
 import utilities.{AccountingPeriodUtil, ViewSpec}
 import views.html.agent.eligibility.CannotSignUpThisYear
 
 class CannotSignUpThisYearViewSpec extends ViewSpec {
 
   private val cannotSignUpThisYear = app.injector.instanceOf[CannotSignUpThisYear]
+
   val clientName: String = "FirstName LastName"
-  val clientNino: String = "AA 11 11 11 A"
+  val clientNino: String = "AA111111A"
+  val clientDetails: ClientDetails = ClientDetails(clientName, clientNino)
   val currentTaxYearStart: String = AccountingPeriodUtil.getCurrentTaxYear.startDate.toCheckYourAnswersDateFormat
   val currentTaxYearEnd: String = AccountingPeriodUtil.getCurrentTaxYear.endDate.toCheckYourAnswersDateFormat
   val nextTaxYearStart: String = AccountingPeriodUtil.getNextTaxYear.startDate.toCheckYourAnswersDateFormat
   val nextTaxYearEnd: String = AccountingPeriodUtil.getNextTaxYear.endDate.toCheckYourAnswersDateFormat
 
   "Cannot Sign Up View" should {
-
-    def mainContent: Element = document(
-      clientName,
-      clientNino
-    ).mainContent
+    def mainContent: Element = document(clientDetails).mainContent
 
     "have the correct template" in new TemplateViewTest(
-      view = page(clientName, clientNino),
+      view = page(clientDetails),
       title = CannotSignUpMessages.title,
       isAgent = true,
       backLink = None,
@@ -50,7 +49,7 @@ class CannotSignUpThisYearViewSpec extends ViewSpec {
     "have a heading and caption" in {
       mainContent.mustHaveHeadingAndCaption(
         heading = CannotSignUpMessages.heading,
-        caption = s"$clientName | $clientNino",
+        caption = s"${clientDetails.name} | ${clientDetails.formattedNino}",
         isSection = false
       )
     }
@@ -130,7 +129,7 @@ class CannotSignUpThisYearViewSpec extends ViewSpec {
       "has a check another client option" that {
 
         "has paragraph" in {
-          mainContent.getForm.selectNth("p", 1).text mustBe CannotSignUpMessages.checkAnotherLink(clientName)
+          mainContent.getForm.selectNth("p", 1).text mustBe CannotSignUpMessages.checkAnotherLink(clientDetails.name)
         }
 
         "contains a link" in {
@@ -140,18 +139,15 @@ class CannotSignUpThisYearViewSpec extends ViewSpec {
     }
   }
 
-  def page(clientName: String,
-           clientNino: String
-          ): HtmlFormat.Appendable = {
+  def page(clientDetails: ClientDetails): HtmlFormat.Appendable = {
     cannotSignUpThisYear(
       postAction = testCall,
-      clientName = clientName,
-      clientNino = clientNino
+      clientDetails = clientDetails
     )
   }
 
-  def document(clientName: String, clientNino: String): Document = {
-    Jsoup.parse(page(clientName, clientNino).body)
+  def document(clientDetails: ClientDetails): Document = {
+    Jsoup.parse(page(clientDetails).body)
   }
 
   object CannotSignUpMessages {
