@@ -107,5 +107,4 @@ class CannotSignUpThisYearControllerISpec extends ComponentSpecBase {
       }
     }
   }
-
 }

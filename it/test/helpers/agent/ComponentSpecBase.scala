@@ -249,9 +249,9 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     def showCannotTakePart(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse =
       get("/error/cannot-sign-up", sessionData, withClientDetailsConfirmed = false, withJourneyStateSignUp = false)
 
-    def showCanSignUp: WSResponse = get("/can-sign-up", ClientData.basicClientData)
+    def showCanSignUp(sessionData: Map[String, String] = ClientData.basicClientData, hasJourneyState: Boolean = true): WSResponse = get("/can-sign-up", sessionData, withJourneyStateSignUp = hasJourneyState)
 
-    def submitCanSignUp(): WSResponse = post("/can-sign-up", ClientData.basicClientData)(Map.empty)
+    def submitCanSignUp(sessionData: Map[String, String] = ClientData.basicClientData, hasJourneyState: Boolean = true): WSResponse = post("/can-sign-up", sessionData, withJourneyStateSignUp = hasJourneyState)(Map.empty)
 
     def showCannotSignUpThisYear(sessionData: Map[String, String] = ClientData.basicClientData, hasJourneyState: Boolean = true): WSResponse = get("/error/cannot-sign-up-for-current-year", sessionData, withJourneyStateSignUp = hasJourneyState)
 
