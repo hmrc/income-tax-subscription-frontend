@@ -16,68 +16,41 @@
 
 package controllers.agent.eligibility
 
-import auth.agent.{AgentSignUp, IncomeTaxAgentUser, PreSignUpController}
+import auth.agent.AgentSignUp
 import common.Constants.ITSASessionKeys.JourneyStateKey
-import config.AppConfig
-import controllers.utils.ReferenceRetrieval
+import controllers.SignUpBaseController
+import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import play.api.mvc._
-import services.agent.ClientDetailsRetrieval
-import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
 import views.html.agent.eligibility.ClientCanSignUp
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.matching.Regex
 
 @Singleton
-class ClientCanSignUpController @Inject()(clientCanSignUp: ClientCanSignUp,
+class ClientCanSignUpController @Inject()(identify: IdentifierAction,
+                                          journeyRefiner: ConfirmedClientJourneyRefiner,
                                           subscriptionDetailsService: SubscriptionDetailsService,
-                                          clientDetailsRetrieval: ClientDetailsRetrieval,
-                                          referenceRetrieval: ReferenceRetrieval)
-                                         (val auditingService: AuditingService,
-                                          val authService: AuthService)
-                                         (implicit val appConfig: AppConfig,
-                                          mcc: MessagesControllerComponents,
-                                          val ec: ExecutionContext) extends PreSignUpController {
+                                          view: ClientCanSignUp)
+                                         (implicit mcc: MessagesControllerComponents,
+                                          val ec: ExecutionContext) extends SignUpBaseController {
 
-  private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
-
-  private def formatNino(clientNino: String): String = {
-    clientNino match {
-      case ninoRegex(startLetters, firstDigits, secondDigits, thirdDigits, finalLetter) =>
-        s"$startLetters $firstDigits $secondDigits $thirdDigits $finalLetter"
-      case other => other
-    }
-  }
-
-  def show: Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      clientDetailsRetrieval.getClientDetails map { clientDetails =>
-        Ok(clientCanSignUp(
+  def show: Action[AnyContent] = (identify andThen journeyRefiner) { implicit request =>
+        Ok(view(
           routes.ClientCanSignUpController.submit(),
-          clientName = clientDetails.name,
-          clientNino = formatNino(clientDetails.nino)
+          clientName = request.clientDetails.name,
+          clientNino = request.clientDetails.formattedNino
         ))
-      }
   }
 
-  def submit: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
-      continueToSignUpClient(request, user)
-  }
-
-  private def continueToSignUpClient(implicit request: Request[AnyContent], user: IncomeTaxAgentUser): Future[Result] = {
-    referenceRetrieval.getAgentReference flatMap { reference =>
-      subscriptionDetailsService.saveEligibilityInterruptPassed(reference) map {
-        case Right(_) =>
-          Redirect(controllers.agent.routes.UsingSoftwareController.show)
-            .addingToSession(JourneyStateKey -> AgentSignUp.name)
-        case Left(_) =>
-          throw new InternalServerException("[ClientCanSignUpController][continueToSignUpClient] - Failed to save eligibility interrupt passed")
-      }
+  def submit: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
+    subscriptionDetailsService.saveEligibilityInterruptPassed(request.reference) map {
+      case Right(_) =>
+        Redirect(controllers.agent.routes.UsingSoftwareController.show)
+          .addingToSession(JourneyStateKey -> AgentSignUp.name)
+      case Left(_) =>
+        throw new InternalServerException("[ClientCanSignUpController][continueToSignUpClient] - Failed to save eligibility interrupt passed")
     }
-
   }
-
 }

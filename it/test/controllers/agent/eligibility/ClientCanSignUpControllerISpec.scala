@@ -18,10 +18,9 @@ package controllers.agent.eligibility
 
 import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
-import helpers.IntegrationTestConstants.testNino
+import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino, testUtr}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
-import play.api.http.Status.OK
 import play.api.libs.json.JsString
 import play.api.libs.ws.WSResponse
 import play.api.test.Helpers._
@@ -34,15 +33,42 @@ class ClientCanSignUpControllerISpec extends ComponentSpecBase {
       Given("I setup the wiremock stubs")
       AuthStub.stubAuthSuccess()
       SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
       When("GET /client/can-sign-up is called")
-      val result: WSResponse = IncomeTaxSubscriptionFrontend.showCanSignUp
+      val result: WSResponse = IncomeTaxSubscriptionFrontend.showCanSignUp()
 
       Then("Should return a OK")
       result must have(
         httpStatus(OK),
         httpContentType(HTML)
       )
+    }
+
+    "the user is unauthenticated" must {
+      "redirect the user to login" in {
+        AuthStub.stubUnauthorised()
+
+        val result = IncomeTaxSubscriptionFrontend.showCanSignUp()
+
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(basGatewaySignIn("/client/can-sign-up"))
+        )
+      }
+    }
+
+    "the user is in an incorrect state" must {
+      "redirect the user to the correct location" in {
+        AuthStub.stubAuthSuccess()
+
+        val result = IncomeTaxSubscriptionFrontend.showCanSignUp(hasJourneyState = false)
+
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(controllers.agent.matching.routes.CannotGoBackToPreviousClientController.show.url)
+        )
+      }
     }
   }
 
@@ -51,6 +77,8 @@ class ClientCanSignUpControllerISpec extends ComponentSpecBase {
       s"return a redirect to ${controllers.agent.routes.UsingSoftwareController.show.url}" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[Boolean](
           id = SubscriptionDataKeys.EligibilityInterruptPassed,
           body = true
@@ -67,9 +95,7 @@ class ClientCanSignUpControllerISpec extends ComponentSpecBase {
         )
       }
     }
-  }
 
-  "POST /client/can-sign-up" when {
     "An error is returned when saving eligibility interrupt passed flag" should {
       "return an internal server error" in {
         Given("I setup the wiremock stubs")
@@ -85,6 +111,31 @@ class ClientCanSignUpControllerISpec extends ComponentSpecBase {
 
         result must have(
           httpStatus(INTERNAL_SERVER_ERROR)
+        )
+      }
+    }
+
+    "the user is unauthenticated" must {
+      "redirect the user to login" in {
+        AuthStub.stubUnauthorised()
+
+        val result = IncomeTaxSubscriptionFrontend.submitCanSignUp()
+
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(basGatewaySignIn("/client/can-sign-up"))
+        )
+      }
+    }
+    "the user is in an incorrect state" must {
+      "redirect the user to the correct location" in {
+        AuthStub.stubAuthSuccess()
+
+        val result = IncomeTaxSubscriptionFrontend.submitCanSignUp(hasJourneyState = false)
+
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(controllers.agent.matching.routes.CannotGoBackToPreviousClientController.show.url)
         )
       }
     }
