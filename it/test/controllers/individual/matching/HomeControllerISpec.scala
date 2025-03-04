@@ -136,7 +136,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
         )
       }
     }
-    "redirect to the SPS handoff" when {
+    "redirect to the you can sign up now page" when {
       "the user is eligible to sign up for both tax years" in {
         AuthStub.stubAuthSuccess()
 
@@ -159,7 +159,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(IndividualURI.spsHandoffRouteURI)
+          redirectURI(controllers.individual.routes.YouCanSignUpController.show.url)
         )
       }
     }
@@ -245,7 +245,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(IndividualURI.spsHandoffRouteURI)
+          redirectURI(controllers.individual.routes.YouCanSignUpController.show.url)
         )
 
         val session: Map[String, String] = getSessionMap(res)

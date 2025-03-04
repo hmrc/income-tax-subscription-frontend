@@ -108,7 +108,7 @@ class HomeController @Inject()(identity: IdentifierAction,
 
   private def goToSignUp(eligibleCurrentYear: Boolean): Result = {
     if (eligibleCurrentYear) {
-      Redirect(controllers.individual.sps.routes.SPSHandoffController.redirectToSPS)
+      Redirect(controllers.individual.routes.YouCanSignUpController.show)
     } else {
       Redirect(controllers.individual.controllist.routes.CannotSignUpThisYearController.show)
     }

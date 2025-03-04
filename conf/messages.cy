@@ -663,6 +663,17 @@ agent.voluntary.what-you-need-to-do.heading-2                          = Optio a
 agent.voluntary.what-you-need-to-do.para-5                             = Mae’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm yn wirfoddol tan 6 Ebrill 2026. Gall eich cleient optio allan o anfon diweddariadau chwarterol. Ond, os ydym wedi rhoi gwybod i’ch cleient bod ein cosbau newydd yn berthnasol iddynt, bydd hynny’n parhau.
 agent.voluntary.what-you-need-to-do.para-6                             = O 6 Ebrill 2026 ymlaen, bydd yn rhaid i rai pobl ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm. Ni fyddant yn gallu optio allan. Byddwn yn ysgrifennu at eich cleient os yw hyn yn berthnasol iddynt.
 
+## You can sign up now ##
+individual.you-can-sign-up-now.heading = Gallwch gofrestru nawr
+individual.you-can-sign-up-now.paragraph-1 = Os byddwch yn parhau, byddwn yn gofyn i chi am eich busnes unig fasnachwr a’ch incwm o eiddo.
+individual.you-can-sign-up-now.paragraph-2 = Os ydych yn unig fasnachwr, bydd angen y canlynol arnoch:
+individual.you-can-sign-up-now.bullet-1 = eich masnach (natur eich busnes)
+individual.you-can-sign-up-now.bullet-2 = enw masnachu’ch busnes (os yw’n wahanol i’ch enw chi eich hun)
+individual.you-can-sign-up-now.bullet-3 = dyddiad dechrau’ch busnes
+individual.you-can-sign-up-now.bullet-4 = cyfeiriad eich busnes
+individual.you-can-sign-up-now.paragraph-3 = Os ydych yn cael incwm o eiddo, byddwn yn gofyn i chi p’un a yw’r eiddo yn y DU neu mewn gwlad arall. Byddwn hefyd yn gofyn i chi pryd y gwnaethoch ddechrau cael incwm o eiddo.
+individual.you-can-sign-up-now.paragraph-4 = Bydd hefyd angen i chi ddewis os ydych am gofrestru yn ystod y flwyddyn dreth presennol neu o’r flwyddyn dreth nesaf ymlaen.
+
 # Client details page
 agent.client-details-error.heading                              = Mae problem wedi codi
 agent.client-details-error.line-1                               = Nid yw’r manylion a nodwyd gennych yn cyd-fynd â’n cofnodion.
