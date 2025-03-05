@@ -16,11 +16,11 @@
 
 package controllers.individual
 
-import auth.individual.{IncomeTaxSAUser, PostSubmissionController}
-import config.AppConfig
+import auth.individual.IncomeTaxSAUser
 import connectors.individual.PreferencesFrontendConnector
-import controllers.utils.ReferenceRetrieval
-import models.{Next, No, Yes}
+import controllers.SignUpBaseController
+import controllers.individual.actions.{ConfirmationJourneyRefiner, IdentifierAction}
+import models.Next
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services._
 import views.html.individual.confirmation.SignUpConfirmation
@@ -29,53 +29,34 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class ConfirmationController @Inject()(signUpConfirmation: SignUpConfirmation,
-                                       mandationStatusService: MandationStatusService,
-                                       ninoService: NinoService,
-                                       referenceRetrieval: ReferenceRetrieval,
+class ConfirmationController @Inject()(identify: IdentifierAction,
+                                       journeyRefiner: ConfirmationJourneyRefiner,
                                        preferencesFrontendConnector: PreferencesFrontendConnector,
                                        subscriptionDetailsService: SubscriptionDetailsService,
-                                       sessionDataService: SessionDataService)
-                                      (val auditingService: AuditingService,
-                                       val authService: AuthService)
-                                      (implicit val ec: ExecutionContext,
-                                       val appConfig: AppConfig,
-                                       mcc: MessagesControllerComponents) extends PostSubmissionController {
+                                       view: SignUpConfirmation)
+                                      (implicit mcc: MessagesControllerComponents,
+                                       ec: ExecutionContext) extends SignUpBaseController {
 
-  def show: Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      for {
-        reference <- referenceRetrieval.getIndividualReference
-        preference <- preferencesFrontendConnector.getOptedInStatus
-        nino <- ninoService.getNino
-        selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
-        mandationStatus <- mandationStatusService.getMandationStatus
-        softwareStatus <- sessionDataService.fetchSoftwareStatus
-      } yield {
-        val taxYearSelectionIsNext = selectedTaxYear.map(_.accountingYear).contains(Next)
+  def show: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
+    for {
+      preference <- preferencesFrontendConnector.getOptedInStatus
+      selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(request.reference)
+    } yield {
+      val taxYearSelectionIsNext = selectedTaxYear.map(_.accountingYear).contains(Next)
 
-        val usingSoftwareStatus: Boolean = softwareStatus match {
-          case Right(Some(Yes)) => true
-          case Right(Some(No)) => false
-          case Right(None) => false
-          case Left(error) =>
-            logger.error(s"[ConfirmationController][show] - failure retrieving software status - $error")
-            false
-        }
-
-        Ok(signUpConfirmation(
-          mandatedCurrentYear = mandationStatus.currentYearStatus.isMandated,
-          taxYearSelectionIsNext = taxYearSelectionIsNext,
-          individualUserNameMaybe = IncomeTaxSAUser.fullName,
-          individualUserNino = nino,
-          preference = preference,
-          usingSoftwareStatus = usingSoftwareStatus
-        ))
-      }
+      Ok(view(
+        mandatedCurrentYear = request.mandationStatus.currentYearStatus.isMandated,
+        taxYearSelectionIsNext = taxYearSelectionIsNext,
+        individualUserNameMaybe = IncomeTaxSAUser.fullName,
+        individualUserNino = request.nino,
+        preference = preference,
+        usingSoftwareStatus = request.usingSoftware
+      ))
+    }
   }
 
-  def submit: Action[AnyContent] = Authenticated {
-    _ => _ => Redirect(controllers.routes.SignOutController.signOut)
+  def submit: Action[AnyContent] = identify { _ =>
+    Redirect(controllers.routes.SignOutController.signOut)
   }
 
 }

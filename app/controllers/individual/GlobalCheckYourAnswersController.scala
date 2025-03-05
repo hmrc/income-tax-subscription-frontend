@@ -18,10 +18,11 @@ package controllers.individual
 
 import auth.individual.SignUpController
 import common.Constants.ITSASessionKeys
-import common.Constants.ITSASessionKeys.SPSEntityId
+import common.Constants.ITSASessionKeys.{JourneyStateKey, SPSEntityId}
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
 import models.common.subscription.CreateIncomeSourcesModel
+import models.individual.JourneyStep.Confirmation
 import play.api.mvc._
 import play.twirl.api.Html
 import services.GetCompleteDetailsService.CompleteDetails
@@ -88,7 +89,7 @@ class GlobalCheckYourAnswersController @Inject()(subscriptionService: Subscripti
           maybeSpsEntityId = session.get(SPSEntityId)
         )(headerCarrier) map {
           case Right(_) =>
-            onSuccessfulSignUp
+            onSuccessfulSignUp.addingToSession(JourneyStateKey -> Confirmation.key)
           case Left(failure) =>
             throw new InternalServerException(
               s"[GlobalCheckYourAnswersController][submit] - failure response received from submission: ${failure.toString}"

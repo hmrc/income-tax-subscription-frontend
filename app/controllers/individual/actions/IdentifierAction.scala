@@ -23,6 +23,7 @@ import models.requests.individual.IdentifierRequest
 import play.api.mvc.Results._
 import play.api.mvc._
 import play.api.{Configuration, Environment, Logging}
+import services.SessionDataService
 import uk.gov.hmrc.auth.core.AffinityGroup.{Individual, Organisation}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
@@ -39,7 +40,8 @@ class IdentifierAction @Inject()(val authConnector: AuthConnector,
                                  val parser: BodyParsers.Default,
                                  val config: Configuration,
                                  val env: Environment)
-                                (appConfig: AppConfig)
+                                (appConfig: AppConfig,
+                                 sessionDataService: SessionDataService)
                                 (implicit val executionContext: ExecutionContext)
   extends ActionBuilder[IdentifierRequest, AnyContent]
     with ActionFunction[Request, IdentifierRequest]
@@ -53,14 +55,16 @@ class IdentifierAction @Inject()(val authConnector: AuthConnector,
     authorised().retrieve(affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino) {
       case Some(Individual | Organisation) ~ allEnrolments ~ Some(User) ~ confidenceLevel ~ maybeNino if confidenceLevel.level >= ConfidenceLevel.L250.level =>
         val maybeMTDITID: Option[String] = allEnrolments.getEnrolment(Constants.mtdItsaEnrolmentName).flatMap(_.identifiers.headOption.map(_.value))
-        val maybeUTR: Option[String] = allEnrolments.getEnrolment(Constants.utrEnrolmentName).flatMap(_.identifiers.headOption.map(_.value))
         val nino: String = maybeNino.getOrElse(throw new InternalServerException("[Individual][IdentifierAction] - CL250 User, no nino in retrieval"))
-        block(IdentifierRequest(
-          request = request,
-          mtditid = maybeMTDITID,
-          nino = nino,
-          utr = maybeUTR
-        ))
+
+        fetchUTRFromEnrolmentsOrSession(allEnrolments) flatMap { maybeUTR =>
+          block(IdentifierRequest(
+            request = request,
+            mtditid = maybeMTDITID,
+            nino = nino,
+            utr = maybeUTR
+          ))
+        }
       case Some(Individual | Organisation) ~ _ ~ Some(User) ~ _ ~ _ =>
         Future.successful(Redirect(appConfig.identityVerificationURL).addingToSession(ITSASessionKeys.IdentityVerificationFlag -> "true")(request))
       case Some(Individual | Organisation) ~ _ ~ _ ~ _ ~ _ =>
@@ -75,4 +79,15 @@ class IdentifierAction @Inject()(val authConnector: AuthConnector,
         toGGLogin(request.path)
     }
   }
+
+  private def fetchUTRFromEnrolmentsOrSession(allEnrolments: Enrolments)(implicit hc: HeaderCarrier): Future[Option[String]] = {
+    allEnrolments.getEnrolment(Constants.utrEnrolmentName).flatMap(_.identifiers.headOption.map(_.value)) match {
+      case Some(value) => Future.successful(Some(value))
+      case None => sessionDataService.fetchUTR map {
+        case Left(_) => throw new InternalServerException("[Individual][IdentifierAction] - Failure checking for utr in session")
+        case Right(maybeUTR) => maybeUTR
+      }
+    }
+  }
+
 }

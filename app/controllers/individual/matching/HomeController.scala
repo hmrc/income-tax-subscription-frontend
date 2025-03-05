@@ -119,15 +119,8 @@ class HomeController @Inject()(identity: IdentifierAction,
       case Some(utr) =>
         f(Some(utr), None)
       case None =>
-        sessionDataService.fetchUTR flatMap {
-          case Left(error) =>
-            throw new InternalServerException(s"[HomeController][retrieveUTRAndName] - Failure when attempting to fetch utr from session: $error")
-          case Right(None) =>
-            citizenDetailsService.lookupCitizenDetails(request.nino) flatMap { details =>
-              f(details.utr, details.name)
-            }
-          case Right(Some(utr)) =>
-            f(Some(utr), None)
+        citizenDetailsService.lookupCitizenDetails(request.nino) flatMap { details =>
+          f(details.utr, details.name)
         }
     }
   }

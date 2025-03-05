@@ -27,7 +27,7 @@ import forms.individual.business._
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import models._
-import models.individual.JourneyStep.PreSignUp
+import models.individual.JourneyStep.{Confirmation, PreSignUp}
 import org.jsoup.nodes.Element
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
@@ -384,11 +384,15 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
     def submitAddMTDITOverview(): WSResponse = post("/claim-enrolment/overview", Map(JourneyStateKey -> ClaimEnrolmentJourney.name))(Map.empty)
 
-    def confirmation(): WSResponse = confirmation(Map.empty)
+    def confirmation(additionalCookies: Map[String, String] = Map.empty[String, String], includeConfirmationState: Boolean = true): WSResponse = {
+      val confirmationStateSession: Map[String, String] = if (includeConfirmationState) Map(JourneyStateKey -> Confirmation.key) else Map.empty
+      get("/confirmation", additionalCookies ++ confirmationStateSession, includeState = false)
+    }
 
-    def confirmation(additionalCookies: Map[String, String]): WSResponse = get("/confirmation", additionalCookies)
-
-    def submitConfirmation(): WSResponse = post("/confirmation")(Map.empty)
+    def submitConfirmation(includeConfirmationState: Boolean = true): WSResponse = {
+      val confirmationStateSession: Map[String, String] = if (includeConfirmationState) Map(JourneyStateKey -> Confirmation.key) else Map.empty
+      post("/confirmation", additionalCookies = confirmationStateSession)(Map.empty)
+    }
 
     def claimEnrolmentConfirmation(): WSResponse = get("/claim-enrolment/confirmation", Map(JourneyStateKey -> ClaimEnrolmentJourney.name))
 

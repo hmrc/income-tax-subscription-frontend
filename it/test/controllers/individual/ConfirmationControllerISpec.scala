@@ -19,252 +19,117 @@ package controllers.individual
 import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, PreferencesFrontendConnectorStub, SessionDataConnectorStub}
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.{IndividualURI, testNino}
+import helpers.IntegrationTestConstants.{IndividualURI, basGatewaySignIn, testNino, testUtr}
 import helpers.IntegrationTestModels.{testAccountingYearCurrent, testAccountingYearNext}
 import helpers.servicemocks.AuthStub
-import models.EligibilityStatus
-import models.status.MandationStatus.{Mandated, Voluntary}
+import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
+import models.{EligibilityStatus, Yes}
 import play.api.http.Status._
 import play.api.libs.json.{JsString, Json}
+import utilities.AccountingPeriodUtil
 import utilities.SubscriptionDataKeys._
 
 class ConfirmationControllerISpec extends ComponentSpecBase {
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-  }
-
   val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+  val currentTaxYearRange = s"6 April ${AccountingPeriodUtil.getCurrentTaxEndYear - 1} to 5 April ${AccountingPeriodUtil.getCurrentTaxEndYear}"
+  val nextTaxYearRange = s"6 April ${AccountingPeriodUtil.getNextTaxEndYear - 1} to 5 April ${AccountingPeriodUtil.getNextTaxEndYear}"
 
-  "GET /confirmation" when {
-    "the user is enrolled" when {
-      "the confirmation page feature switch is enabled" should {
-        "return the sign up confirmation page" when {
-          "the user signed up for the current tax year" when {
-            "the user is mandated for current year" when {
-              "the user has no digital preference available" in {
-                Given("I setup the Wiremock stubs")
-                AuthStub.stubEnrolled()
-                IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
-                PreferencesFrontendConnectorStub.stubGetOptedInStatus(None)
-                SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Mandated, Voluntary)))
-                SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
-                SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+  s"GET ${routes.ConfirmationController.show.url}" when {
+    "the user is not authenticated" must {
+      "redirect to the login page" in {
+        AuthStub.stubUnauthorised()
 
-                When("GET /confirmation is called")
-                val res = IncomeTaxSubscriptionFrontend.confirmation()
+        val result = IncomeTaxSubscriptionFrontend.confirmation()
 
-                Then("Should return a OK with the confirmation page")
-                res must have(
-                  httpStatus(OK),
-                  pageTitle(messages("sign-up-confirmation.heading") + serviceNameGovUk)
-                )
-              }
-              "the user has a paper preference" in {
-
-                Given("I setup the Wiremock stubs")
-                AuthStub.stubEnrolled()
-                IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
-                PreferencesFrontendConnectorStub.stubGetOptedInStatus(Some(false))
-                SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Mandated, Voluntary)))
-                SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
-                SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-
-                When("GET /confirmation is called")
-                val res = IncomeTaxSubscriptionFrontend.confirmation()
-
-                Then("Should return a OK with the confirmation page")
-                res must have(
-                  httpStatus(OK),
-                  pageTitle(messages("sign-up-confirmation.heading") + serviceNameGovUk)
-                )
-              }
-              "the user has a digital preference" in {
-
-                Given("I setup the Wiremock stubs")
-                AuthStub.stubEnrolled()
-                IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
-                PreferencesFrontendConnectorStub.stubGetOptedInStatus(Some(true))
-                SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Mandated, Voluntary)))
-                SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
-                SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-
-                When("GET /confirmation is called")
-                val res = IncomeTaxSubscriptionFrontend.confirmation()
-
-                Then("Should return a OK with the confirmation page")
-                res must have(
-                  httpStatus(OK),
-                  pageTitle(messages("sign-up-confirmation.heading") + serviceNameGovUk)
-                )
-              }
-            }
-            "the user is not mandated for current year" when {
-              "the user has no digital preference available" in {
-                Given("I setup the Wiremock stubs")
-                AuthStub.stubEnrolled()
-                IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
-                PreferencesFrontendConnectorStub.stubGetOptedInStatus(None)
-                SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
-                SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
-                SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-
-                When("GET /confirmation is called")
-                val res = IncomeTaxSubscriptionFrontend.confirmation()
-
-                Then("Should return a OK with the confirmation page")
-                res must have(
-                  httpStatus(OK),
-                  pageTitle(messages("sign-up-confirmation.heading") + serviceNameGovUk)
-                )
-              }
-              "the user has a paper preference" in {
-
-                Given("I setup the Wiremock stubs")
-                AuthStub.stubEnrolled()
-                IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
-                PreferencesFrontendConnectorStub.stubGetOptedInStatus(Some(false))
-                SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
-                SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
-                SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-
-                When("GET /confirmation is called")
-                val res = IncomeTaxSubscriptionFrontend.confirmation()
-
-                Then("Should return a OK with the confirmation page")
-                res must have(
-                  httpStatus(OK),
-                  pageTitle(messages("sign-up-confirmation.heading") + serviceNameGovUk)
-                )
-              }
-              "the user has a digital preference" in {
-
-                Given("I setup the Wiremock stubs")
-                AuthStub.stubEnrolled()
-                IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
-                PreferencesFrontendConnectorStub.stubGetOptedInStatus(Some(true))
-                SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
-                SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
-                SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-
-                When("GET /confirmation is called")
-                val res = IncomeTaxSubscriptionFrontend.confirmation()
-
-                Then("Should return a OK with the confirmation page")
-                res must have(
-                  httpStatus(OK),
-                  pageTitle(messages("sign-up-confirmation.heading") + serviceNameGovUk)
-                )
-              }
-            }
-          }
-          "the user signed up for the next tax year" when {
-            "the user has no digital preference available" in {
-
-              Given("I setup the Wiremock stubs")
-              AuthStub.stubEnrolled()
-              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearNext))
-              PreferencesFrontendConnectorStub.stubGetOptedInStatus(None)
-              SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
-              SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
-              SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-
-              When("GET /confirmation is called")
-              val res = IncomeTaxSubscriptionFrontend.confirmation()
-
-              Then("Should return a OK with the confirmation page")
-              res must have(
-                httpStatus(OK),
-                pageTitle(messages("sign-up-confirmation.heading") + serviceNameGovUk)
-              )
-            }
-            "the user has a paper preference" in {
-
-              Given("I setup the Wiremock stubs")
-              AuthStub.stubEnrolled()
-              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearNext))
-              PreferencesFrontendConnectorStub.stubGetOptedInStatus(Some(false))
-              SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
-              SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
-              SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-
-              When("GET /confirmation is called")
-              val res = IncomeTaxSubscriptionFrontend.confirmation()
-
-              Then("Should return a OK with the confirmation page")
-              res must have(
-                httpStatus(OK),
-                pageTitle(messages("sign-up-confirmation.heading") + serviceNameGovUk)
-              )
-            }
-            "the user has a digital preference" in {
-
-              Given("I setup the Wiremock stubs")
-              AuthStub.stubEnrolled()
-              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearNext))
-              PreferencesFrontendConnectorStub.stubGetOptedInStatus(Some(true))
-              SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
-              SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
-              SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-
-              When("GET /confirmation is called")
-              val res = IncomeTaxSubscriptionFrontend.confirmation()
-
-              Then("Should return a OK with the confirmation page")
-              res must have(
-                httpStatus(OK),
-                pageTitle(messages("sign-up-confirmation.heading") + serviceNameGovUk)
-              )
-            }
-          }
-        }
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(basGatewaySignIn("/confirmation"))
+        )
       }
     }
-    "the user is not enrolled" should {
-      "return a NOT_FOUND" in {
-        Given("I setup the Wiremock stubs")
+
+    "the user does not have the confirmation journey state" must {
+      "display a not found page" in {
         AuthStub.stubAuthSuccess()
 
-        When("GET /confirmation is called")
-        val res = IncomeTaxSubscriptionFrontend.confirmation()
+        val result = IncomeTaxSubscriptionFrontend.confirmation(includeConfirmationState = false)
 
-        Then("Should return a NOT_FOUND status")
-        res must have(
-          httpStatus(NOT_FOUND))
-      }
-    }
-  }
-
-  "POST /confirmation" should {
-    "redirect the user to sign out" in {
-      Given("I setup the Wiremock stubs")
-      AuthStub.stubEnrolled()
-
-      When("POST /confirmation is called")
-      val res = IncomeTaxSubscriptionFrontend.submitConfirmation()
-
-      Then("Should redirect to sign out")
-      res must have(
-        httpStatus(SEE_OTHER),
-        redirectURI(IndividualURI.signOutURI)
-      )
-    }
-
-    "return a NOT_FOUND" when {
-      "the user is not enrolled" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-
-        When("GET /confirmation is called")
-        val res = IncomeTaxSubscriptionFrontend.submitConfirmation()
-
-        Then("Should return a NOT_FOUND status")
-        res must have(
+        result must have(
           httpStatus(NOT_FOUND)
         )
       }
     }
+
+    "the user is authenticated and is in a confirmation journey state" must {
+      "display the sign up confirmation page" when {
+        "the user is signed up for the current tax year" in {
+          AuthStub.stubAuthSuccess()
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
+          PreferencesFrontendConnectorStub.stubGetOptedInStatus(Some(true))
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.HAS_SOFTWARE)(OK, JsString(Yes.toString))
+
+          val result = IncomeTaxSubscriptionFrontend.confirmation()
+
+          result must have(
+            httpStatus(OK),
+            pageTitle(messages("sign-up-confirmation.heading") + serviceNameGovUk),
+            elementTextBySelector(".govuk-panel__body--secondary")(messages("sign-up-confirmation.heading.panel.current", currentTaxYearRange))
+          )
+        }
+        "the user is signed up for the next tax year" in {
+          AuthStub.stubAuthSuccess()
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearNext))
+          PreferencesFrontendConnectorStub.stubGetOptedInStatus(Some(true))
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.HAS_SOFTWARE)(OK, JsString(Yes.toString))
+
+          val result = IncomeTaxSubscriptionFrontend.confirmation()
+
+          result must have(
+            httpStatus(OK),
+            pageTitle(messages("sign-up-confirmation.heading") + serviceNameGovUk),
+            elementTextBySelector(".govuk-panel__body--secondary")(messages("sign-up-confirmation.heading.panel.next", nextTaxYearRange))
+          )
+        }
+      }
+    }
+  }
+
+  s"POST ${routes.ConfirmationController.submit.url}" when {
+    "the user is unauthenticated" must {
+      "redirect the user to the login page" in {
+        AuthStub.stubUnauthorised()
+
+        val result = IncomeTaxSubscriptionFrontend.submitConfirmation()
+
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(basGatewaySignIn("/confirmation"))
+        )
+      }
+    }
+    "the user is authenticated" must {
+      "redirect the user to sign out" in {
+        AuthStub.stubAuthSuccess()
+
+        val result = IncomeTaxSubscriptionFrontend.submitConfirmation()
+
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(controllers.SignOutController.signOut.url)
+        )
+      }
+    }
+
   }
 
 }

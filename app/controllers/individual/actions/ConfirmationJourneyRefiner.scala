@@ -20,22 +20,26 @@ import common.Constants.ITSASessionKeys
 import controllers.utils.ReferenceRetrieval
 import models.individual.JourneyStep
 import models.individual.JourneyStep._
-import models.requests.individual.{IdentifierRequest, SignUpRequest}
+import models.requests.individual.{ConfirmationRequest, IdentifierRequest, SignUpRequest}
+import models.{No, Yes}
 import play.api.Logging
 import play.api.mvc.Results.NotFound
 import play.api.mvc.{ActionRefiner, Result}
-import uk.gov.hmrc.http.HeaderCarrier
+import services.{MandationStatusService, SessionDataService}
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ConfirmationJourneyRefiner @Inject()(referenceRetrieval: ReferenceRetrieval)
+class ConfirmationJourneyRefiner @Inject()(referenceRetrieval: ReferenceRetrieval,
+                                           sessionDataService: SessionDataService,
+                                           mandationStatusService: MandationStatusService)
                                           (implicit val executionContext: ExecutionContext)
-  extends ActionRefiner[IdentifierRequest, SignUpRequest] with Logging {
+  extends ActionRefiner[IdentifierRequest, ConfirmationRequest] with Logging {
 
-  override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, SignUpRequest[A]]] = {
+  override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, ConfirmationRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     request.session.get(ITSASessionKeys.JourneyStateKey)
@@ -47,8 +51,26 @@ class ConfirmationJourneyRefiner @Inject()(referenceRetrieval: ReferenceRetrieva
       case Some(Confirmation) =>
         for {
           reference <- referenceRetrieval.getIndividualReference(hc, request)
+          softwareStatus <- sessionDataService.fetchSoftwareStatus
+          mandationStatus <- mandationStatusService.getMandationStatus
         } yield {
-          Right(SignUpRequest(request, reference))
+          val usingSoftware = softwareStatus match {
+            case Left(_) => throw new InternalServerException("[Individual][ConfirmationJourneyRefiner] - Failure fetching the software status from session")
+            case Right(None) => false
+            case Right(Some(No)) => false
+            case Right(Some(Yes)) => true
+          }
+
+          Right(ConfirmationRequest(
+            request = request,
+            reference = reference,
+            nino = request.nino,
+            utr = request.utr.getOrElse(
+              throw new InternalServerException("[Individual][ConfirmationJourneyRefiner] - User without utr available in confirmation state")
+            ),
+            usingSoftware = usingSoftware,
+            mandationStatus = mandationStatus
+          ))
         }
       case state@(None | Some(PreSignUp | SignUp)) =>
         logger.info(s"[Individual][ConfirmationJourneyRefiner] - Incorrect user state, current: ${state.map(_.key)}, showing a not found page")
