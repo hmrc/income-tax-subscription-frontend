@@ -60,6 +60,10 @@ GET         /no-compatible-software                              controllers.ind
 GET         /business/what-year-to-sign-up                       controllers.individual.tasklist.taxyear.WhatYearToSignUpController.show(editMode: Boolean ?= false)
 POST        /business/what-year-to-sign-up                       controllers.individual.tasklist.taxyear.WhatYearToSignUpController.submit(editMode: Boolean ?= false)
 
+# Email capture routes
+GET         /email-capture                                       controllers.individual.email.EmailCaptureController.show()
+POST        /email-capture                                       controllers.individual.email.EmailCaptureController.submit()
+
 #Property Accounting Method Routes
 GET         /business/accounting-method-property                 controllers.individual.tasklist.ukproperty.PropertyAccountingMethodController.show(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
 POST        /business/accounting-method-property                 controllers.individual.tasklist.ukproperty.PropertyAccountingMethodController.submit(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)

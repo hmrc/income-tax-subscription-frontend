@@ -39,7 +39,6 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
   with MockReferenceRetrieval
   with MockAuditingService
   with MockAccountingPeriodService
-  with MockIdentifierAction
   with MockSignUpJourneyRefiner {
 
   override val controllerName: String = "YourIncomeSourceToSignUpController"

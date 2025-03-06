@@ -392,7 +392,6 @@ individual.using-software.link-href                                     = https:
 individual.using-software.form-legend                                   = Are you using software that works with Making Tax Digital for Income Tax?
 individual.using-software.form-error                                    = Select ‘Yes’ if you’re using software to keep digital records and that software works with Making Tax Digital for Income Tax
 
-
 ## No Software Signpost-Out Page ##
 individual.no-software.heading                      = You need compatible software
 individual.no-software.para-1                       = To use this service, you must find and use software that works with Making Tax Digital for Income Tax.
@@ -407,6 +406,12 @@ individual.no-software.para-6                       = Meanwhile, you need to con
 individual.no-software.para-6.link                  = Self Assessment tax return
 individual.no-software.para-6.href                  = https://www.gov.uk/self-assessment-tax-returns/sending-return
 
+# Email capture page
+individual.email-capture.heading                    = Email capture
+individual.email-capture.hint                       = Enter a valid email address
+error.individual.email-capture.empty                = User entered no input
+error.individual.email-capture.invalid              = User entered an email which did not pass validation
+error.individual.email-capture.max-length           = User entered an email address which is too long
 
 ## Sign Up Confirmation page ##
 sign-up-confirmation.heading                                         = Sign up complete

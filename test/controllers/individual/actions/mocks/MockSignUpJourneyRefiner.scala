@@ -19,19 +19,21 @@ package controllers.individual.actions.mocks
 import controllers.individual.actions.SignUpJourneyRefiner
 import controllers.utils.ReferenceRetrieval
 import models.requests.individual.{IdentifierRequest, SignUpRequest}
+import org.scalatest.Suite
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.Result
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-trait MockSignUpJourneyRefiner extends MockitoSugar {
+trait MockSignUpJourneyRefiner extends MockitoSugar with MockIdentifierAction {
+  suite: Suite =>
 
   val reference: String = "test-reference"
 
   val fakeSignUpJourneyRefiner: SignUpJourneyRefiner = new SignUpJourneyRefiner(mock[ReferenceRetrieval]) {
     override def refine[A](request: IdentifierRequest[A]): Future[Either[Result, SignUpRequest[A]]] = {
-      Future.successful(Right(SignUpRequest(request, reference)))
+      Future.successful(Right(SignUpRequest(request, reference, nino)))
     }
   }
 
