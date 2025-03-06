@@ -16,18 +16,20 @@
 
 package controllers.individual.tasklist.addbusiness
 
-import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
+import connectors.httpparser.PostSubscriptionDetailsHttpParser.{PostSubscriptionDetailsSuccessResponse, UnexpectedStatusFailure}
 import controllers.individual.ControllerBaseSpec
+import controllers.individual.actions.mocks.{MockIdentifierAction, MockSignUpJourneyRefiner}
 import models.common.business._
 import models.common.{IncomeSources, OverseasPropertyModel, PropertyModel}
 import models.{Cash, DateModel}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
-import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockAccountingPeriodService, MockAuditingService, MockReferenceRetrieval, MockSubscriptionDetailsService}
+import uk.gov.hmrc.http.InternalServerException
 import views.html.individual.tasklist.addbusiness.YourIncomeSourceToSignUp
 
 import scala.concurrent.Future
@@ -36,7 +38,9 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockReferenceRetrieval
   with MockAuditingService
-  with MockAccountingPeriodService {
+  with MockAccountingPeriodService
+  with MockIdentifierAction
+  with MockSignUpJourneyRefiner {
 
   override val controllerName: String = "YourIncomeSourceToSignUpController"
 
@@ -189,6 +193,22 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
         verifySaveIncomeSourceConfirmation()
       }
     }
+    "throw an exception" when {
+      "failed to save income sources" in new Setup{
+        mockFetchAllIncomeSources(IncomeSources(
+          Seq(testSelfEmployment("id"), testSelfEmployment("id2")),
+          Some(Cash),
+          Some(testUkProperty),
+          Some(testForeignProperty)
+        ))
+        mockSaveIncomeSourceConfirmation(Left(UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
+
+        val result: Future[Result] = controller.submit(subscriptionRequest)
+
+        intercept[InternalServerException](await(result))
+          .message mustBe "[YourIncomeSourceToSignUpController][submit] - failed to save income sources confirmation"
+      }
+    }
   }
 
   "backUrl" when {
@@ -201,14 +221,10 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
     val yourIncomeSourceToSignUpView: YourIncomeSourceToSignUp = mock[YourIncomeSourceToSignUp]
 
     val controller = new YourIncomeSourceToSignUpController(
+      fakeIdentifierAction,
+      fakeSignUpJourneyRefiner,
       yourIncomeSourceToSignUpView,
-      mockSubscriptionDetailsService,
-      mockReferenceRetrieval
-    )(
-      mockAuditingService,
-      appConfig,
-      mockAuthService
-    )
+      mockSubscriptionDetailsService)
 
     def mockYourIncomeSourceToSignUpView(incomeSources: IncomeSources, isPrePopped: Boolean): Unit = {
       when(yourIncomeSourceToSignUpView(

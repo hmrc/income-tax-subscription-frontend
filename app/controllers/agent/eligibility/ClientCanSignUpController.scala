@@ -26,7 +26,7 @@ import uk.gov.hmrc.http.InternalServerException
 import views.html.agent.eligibility.ClientCanSignUp
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class ClientCanSignUpController @Inject()(identify: IdentifierAction,

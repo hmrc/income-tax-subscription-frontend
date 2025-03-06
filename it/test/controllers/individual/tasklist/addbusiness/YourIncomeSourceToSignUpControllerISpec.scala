@@ -19,6 +19,7 @@ package controllers.individual.tasklist.addbusiness
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.IndividualURI.globalCheckYourAnswersURI
+import helpers.IntegrationTestConstants.basGatewaySignIn
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.AuthStub
 import play.api.http.Status._
@@ -34,6 +35,17 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
   val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
 
   s"GET ${routes.YourIncomeSourceToSignUpController.show.url}" should {
+    "return SEE_OTHER to login page" when {
+      "user is unauthorised" in {
+        AuthStub.stubUnauthorised()
+        val res = IncomeTaxSubscriptionFrontend.yourIncomeSources()
+
+        res must have (
+          httpStatus(SEE_OTHER),
+          redirectURI(basGatewaySignIn("/details/your-income-source"))
+        )
+      }
+    }
     "return OK" when {
       "there are no income sources added" in {
         Given("I setup the Wiremock stubs")
