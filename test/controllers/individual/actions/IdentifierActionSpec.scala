@@ -27,6 +27,7 @@ import play.api.mvc.{BodyParsers, Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout, redirectLocation, status}
 import play.api.{Configuration, Environment}
+import services.mocks.MockSessionDataService
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
@@ -37,14 +38,14 @@ import uk.gov.hmrc.http.InternalServerException
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with BeforeAndAfterEach with MockAuth {
+class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with BeforeAndAfterEach with MockAuth with MockSessionDataService {
 
   val identifierAction: IdentifierAction = new IdentifierAction(
     authConnector = mockAuth,
     parser = app.injector.instanceOf[BodyParsers.Default],
     config = app.injector.instanceOf[Configuration],
     env = app.injector.instanceOf[Environment]
-  )(MockConfig)
+  )(MockConfig, mockSessionDataService)
 
   val testUtr: String = "1234567890"
   val testNino: String = "AA000000A"
@@ -90,11 +91,29 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
         status(result) mustBe OK
       }
     }
-    "authorising an individual user who has CL250, has a nino, without a utr or mtditid" must {
+    "authorising an individual user who has CL250, has a nino, without a utr enrolment, but has a utr in session" must {
       "create an identifier request with the fetched details" in {
         mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino)(
           new~(new~(new~(new~(Some(Individual), emptyEnrolments), Some(User)), ConfidenceLevel.L250), Some(testNino))
         )
+        mockFetchUTR(Right(Some(testUtr)))
+
+        val result: Future[Result] = identifierAction { request =>
+          request.nino mustBe testNino
+          request.utr mustBe Some(testUtr)
+          request.mtditid mustBe None
+          Results.Ok
+        }(FakeRequest())
+
+        status(result) mustBe OK
+      }
+    }
+    "authorising an individual user who has CL250, has a nino, without a utr enrolment or session and without mtditid" must {
+      "create an identifier request with the fetched details" in {
+        mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino)(
+          new~(new~(new~(new~(Some(Individual), emptyEnrolments), Some(User)), ConfidenceLevel.L250), Some(testNino))
+        )
+        mockFetchUTR(Right(None))
 
         val result: Future[Result] = identifierAction { request =>
           request.nino mustBe testNino
@@ -111,6 +130,7 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
         mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino)(
           new~(new~(new~(new~(Some(Individual), emptyEnrolments), Some(User)), ConfidenceLevel.L500), Some(testNino))
         )
+        mockFetchUTR(Right(None))
 
         val result: Future[Result] = identifierAction { request =>
           request.nino mustBe testNino

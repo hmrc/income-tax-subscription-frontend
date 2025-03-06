@@ -22,6 +22,8 @@ import org.scalatest.matchers._
 import play.api.libs.json.Reads
 import play.api.libs.ws.WSResponse
 
+import scala.jdk.CollectionConverters.CollectionHasAsScala
+
 trait CustomMatchers {
   def httpStatus(expectedValue: Int): HavePropertyMatcher[WSResponse, Int] =
     new HavePropertyMatcher[WSResponse, Int] {
@@ -169,6 +171,17 @@ trait CustomMatchers {
         )
       }
     }
+
+  def elementTextBySelector(selector: String)(expectedValue: String): HavePropertyMatcher[WSResponse, String] = (response: WSResponse) => {
+    val body = Jsoup.parse(response.body)
+
+    HavePropertyMatchResult(
+      body.select(selector).asScala.headOption.exists(_.text == expectedValue),
+      s"select($selector)",
+      expectedValue,
+      body.select(selector).asScala.headOption.map(_.text).getOrElse("")
+    )
+  }
 
   def redirectURI(expectedValue: String): HavePropertyMatcher[WSResponse, String] = new HavePropertyMatcher[WSResponse, String] {
     def apply(response: WSResponse): HavePropertyMatchResult[String] = {
