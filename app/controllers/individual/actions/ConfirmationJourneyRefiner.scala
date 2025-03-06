@@ -20,7 +20,7 @@ import common.Constants.ITSASessionKeys
 import controllers.utils.ReferenceRetrieval
 import models.individual.JourneyStep
 import models.individual.JourneyStep._
-import models.requests.individual.{ConfirmationRequest, IdentifierRequest, SignUpRequest}
+import models.requests.individual.{ConfirmationRequest, IdentifierRequest}
 import models.{No, Yes}
 import play.api.Logging
 import play.api.mvc.Results.NotFound

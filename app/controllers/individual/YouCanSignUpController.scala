@@ -16,7 +16,7 @@
 
 package controllers.individual
 
-import auth.individual.{SignUpController, StatelessController}
+import auth.individual.StatelessController
 import config.AppConfig
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
