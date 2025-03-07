@@ -413,6 +413,11 @@ error.individual.email-capture.empty                = User entered no input
 error.individual.email-capture.invalid              = User entered an email which did not pass validation
 error.individual.email-capture.max-length           = User entered an email address which is too long
 
+## Capture Consent Page ##
+individual.capture-consent.heading                  = Capture consent
+individual.capture-consent.form-legend              = Do you consent?
+individual.capture-consent.form-error               = Select yes or no
+
 ## Sign Up Confirmation page ##
 sign-up-confirmation.heading                                         = Sign up complete
 sign-up-confirmation.heading.panel.current                           = is now signed up for Making Tax Digital for Income Tax for the current tax year ({0})

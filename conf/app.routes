@@ -50,6 +50,10 @@ GET         /you-can-sign-up-now                                 controllers.ind
 GET         /what-you-need-to-do                                 controllers.individual.WhatYouNeedToDoController.show
 POST         /what-you-need-to-do                                controllers.individual.WhatYouNeedToDoController.submit
 
+# Capture consent routes
+GET         /capture-consent                                    controllers.individual.CaptureConsentController.show()
+POST        /capture-consent                                    controllers.individual.CaptureConsentController.submit()
+
 GET         /using-software                                      controllers.individual.UsingSoftwareController.show()
 POST        /using-software                                      controllers.individual.UsingSoftwareController.submit()
 

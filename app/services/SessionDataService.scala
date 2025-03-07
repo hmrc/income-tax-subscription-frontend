@@ -94,4 +94,12 @@ class SessionDataService @Inject()(sessionDataConnector: SessionDataConnector) {
     sessionDataConnector.saveSessionData(ITSASessionKeys.HAS_SOFTWARE, softwareStatus)
   }
 
+  def fetchConsentStatus(implicit hc: HeaderCarrier): Future[GetSessionDataResponse[YesNo]] = {
+    sessionDataConnector.getSessionData[YesNo](ITSASessionKeys.CAPTURE_CONSENT)
+  }
+
+  def saveConsentStatus(consentStatus: YesNo)(implicit hc: HeaderCarrier): Future[SaveSessionDataResponse] = {
+    sessionDataConnector.saveSessionData(ITSASessionKeys.CAPTURE_CONSENT, consentStatus)
+  }
+
 }

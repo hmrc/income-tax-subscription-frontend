@@ -53,6 +53,7 @@ object Constants {
     val MANDATION_STATUS = "MANDATION_STATUS"
 
     val HAS_SOFTWARE = "HAS_SOFTWARE"
+    val CAPTURE_CONSENT = "CAPTURE_CONSENT"
 
     def throttlePassed(throttle: Throttle) = s"throttle-${throttle.throttleId}"
 

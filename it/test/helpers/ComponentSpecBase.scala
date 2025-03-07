@@ -244,6 +244,16 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
       )
     }
 
+    def showCaptureConsent(): WSResponse = get("/capture-consent")
+
+    def submitCaptureConsent(request: Option[YesNo]): WSResponse = {
+      post("/capture-consent")(
+        request.fold(Map.empty[String, Seq[String]])(
+          model => CaptureConsentForm.captureConsentForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        )
+      )
+    }
+
     def showNoSoftware(): WSResponse = get("/no-compatible-software")
 
     def showEmailCapture(includeState: Boolean = true): WSResponse = get("/email-capture", includeState = includeState)
