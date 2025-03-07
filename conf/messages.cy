@@ -376,6 +376,12 @@ individual.no-software.para-6                   = Yn y cyfamser, mae angen i chi
 individual.no-software.para-6.link              = Ffurflen Dreth Hunanasesiad
 individual.no-software.para-6.href              = https://www.gov.uk/ffurflenni-treth-hunanasesiad/anfon-ffurflen-dreth
 
+# Email capture page
+individual.email-capture.heading                    = Email capture
+individual.email-capture.hint                       = Enter a valid email address
+error.individual.email-capture.empty                = User entered no input
+error.individual.email-capture.invalid              = User entered an email which did not pass validation
+error.individual.email-capture.max-length           = User entered an email address which is too long
 
 ## Sign Up Confirmation page ##
 sign-up-confirmation.heading                                         = Rydych wedi cofrestru’n llwyddiannus

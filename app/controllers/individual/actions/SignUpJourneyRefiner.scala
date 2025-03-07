@@ -55,7 +55,8 @@ class SignUpJourneyRefiner @Inject()(referenceRetrieval: ReferenceRetrieval)
             } yield {
               Right(SignUpRequest(
                 request = request,
-                reference = reference
+                reference = reference,
+                nino = request.nino
               ))
             }
         }

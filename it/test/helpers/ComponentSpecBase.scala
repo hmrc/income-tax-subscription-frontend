@@ -24,6 +24,7 @@ import config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import connectors.stubs.SessionDataConnectorStub.stubGetSessionData
 import forms.individual._
 import forms.individual.business._
+import forms.individual.email.EmailCaptureForm
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import models._
@@ -163,10 +164,11 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
         .futureValue
     }
 
-    def post(uri: String, additionalCookies: Map[String, String] = Map.empty, includeSPSEntityId: Boolean = true)(body: Map[String, Seq[String]]): WSResponse = {
+    def post(uri: String, additionalCookies: Map[String, String] = Map.empty, includeSPSEntityId: Boolean = true, includeJourneyState: Boolean = true)(body: Map[String, Seq[String]]): WSResponse = {
       val additionalSPSCookie: Map[String, String] = if (includeSPSEntityId) Map(SPSEntityId -> "test-id") else Map.empty
+      val journeyState: Map[String, String] = if (includeJourneyState) Map(JourneyStateKey -> SignUp.name) else Map.empty
       buildClient(uri)
-        .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(Map(JourneyStateKey -> SignUp.name, REFERENCE -> "test-reference") ++ additionalSPSCookie ++ additionalCookies), "Csrf-Token" -> "nocheck")
+        .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(Map(REFERENCE -> "test-reference") ++ journeyState ++ additionalSPSCookie ++ additionalCookies), "Csrf-Token" -> "nocheck")
         .post(body)
         .futureValue
     }
@@ -243,6 +245,16 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
     }
 
     def showNoSoftware(): WSResponse = get("/no-compatible-software")
+
+    def showEmailCapture(includeState: Boolean = true): WSResponse = get("/email-capture", includeState = includeState)
+
+    def submitEmailCapture(request: Option[String])(includeState: Boolean = true): WSResponse = {
+      post("/email-capture", includeJourneyState = includeState)(
+        request.fold(Map.empty[String, Seq[String]])(
+          model => EmailCaptureForm.form.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        )
+      )
+    }
 
     def cannotUseService(): WSResponse = get("/error/cannot-use-service")
 
