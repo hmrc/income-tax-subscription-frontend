@@ -86,13 +86,13 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         incomeSources = completeIncomeSources,
         prepopulated = true
       ) {
-        document.mainContent.selectNth("p", 3).text mustBe AgentIncomeSource.beforeYouContinue
+        document.mainContent.selectNth("p", 4).text mustBe AgentIncomeSource.beforeYouContinue
       }
       "the income sources were prepopulated and the income sources are missing data items" in new ViewTest(
         incomeSources = incompleteIncomeSources,
         prepopulated = true
       ) {
-        document.mainContent.selectNth("p", 3).text mustBe AgentIncomeSource.beforeYouContinue
+        document.mainContent.selectNth("p", 4).text mustBe AgentIncomeSource.beforeYouContinue
       }
     }
     "have no final paragraph" when {
@@ -100,19 +100,19 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         incomeSources = completeAndConfirmedIncomeSources,
         prepopulated = true
       ) {
-        document.mainContent.selectOptionalNth("p", 3) mustBe None
+        document.mainContent.selectOptionalNth("p", 4) mustBe None
       }
       "the income sources were prepopulated, but they were subsequently removed" in new ViewTest(
         incomeSources = noIncomeSources,
         prepopulated = true
       ) {
-        document.mainContent.selectOptionalNth("p", 5) mustBe None
+        document.mainContent.selectOptionalNth("p", 6) mustBe None
       }
       "the income sources weren't prepopulated" in new ViewTest(
         incomeSources = completeIncomeSources,
         prepopulated = false
       ) {
-        document.mainContent.selectOptionalNth("p", 3) mustBe None
+        document.mainContent.selectOptionalNth("p", 4) mustBe None
       }
     }
   }
@@ -132,6 +132,9 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       "have a property section" which {
         "has a heading" in new ViewTest(noIncomeSources) {
           document.mainContent.selectNth("h2", 2).text mustBe AgentIncomeSource.incomeFromPropertyHeading
+        }
+        "has a paragraph" in new ViewTest(noIncomeSources) {
+          document.mainContent.selectNth("p", 3).text mustBe AgentIncomeSource.incomeFromPropertyParagraph
         }
 
         "has an add uk property link" in new ViewTest(noIncomeSources) {
@@ -155,7 +158,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           form(document).attr("action") mustBe testCall.url
         }
         "has no save and come back later button" in new ViewTest(noIncomeSources) {
-          val button = form(document).getGovukSubmitButton
+          val button: Element = form(document).getGovukSubmitButton
           button.text mustBe AgentIncomeSource.saveAndComeBackLater
           button.attr("href") mustBe controllers.agent.tasklist.routes.ProgressSavedController.show(Some("income-sources")).url
         }
@@ -171,11 +174,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
             title = "business trade",
             cardActions = Seq(
               SummaryListActionValues(
-                href = AgentIncomeSource.soleTraderChangeLinkOne,
-                text = s"${AgentIncomeSource.addDetails} business name (business trade)",
-                visuallyHidden = s"business name (business trade)"
-              ),
-              SummaryListActionValues(
                 href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idOne").url,
                 text = s"${AgentIncomeSource.remove} business name (business trade)",
                 visuallyHidden = s"business name (business trade)"
@@ -186,6 +184,15 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 key = AgentIncomeSource.soleTraderBusinessNameKey,
                 value = Some("business name"),
                 actions = Seq.empty
+              ),
+              SummaryListRowValues(
+                key = AgentIncomeSource.statusTagKey,
+                value = Some(AgentIncomeSource.incompleteTag),
+                actions = Seq(SummaryListActionValues(
+                  href = AgentIncomeSource.soleTraderChangeLinkOne,
+                  text = s"${AgentIncomeSource.addDetails} business name (business trade)",
+                  visuallyHidden = s"business name (business trade)"
+                ))
               )
             )
           )
@@ -195,11 +202,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(2))(
             title = "Business 2",
             cardActions = Seq(
-              SummaryListActionValues(
-                href = AgentIncomeSource.soleTraderChangeLinkTwo,
-                text = s"${AgentIncomeSource.addDetails} business name (Business 2)",
-                visuallyHidden = s"business name (Business 2)"
-              ),
               SummaryListActionValues(
                 href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idTwo").url,
                 text = s"${AgentIncomeSource.remove} business name (Business 2)",
@@ -211,6 +213,15 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 key = AgentIncomeSource.soleTraderBusinessNameKey,
                 value = Some("business name"),
                 actions = Seq.empty
+              ),
+              SummaryListRowValues(
+                key = AgentIncomeSource.statusTagKey,
+                value = Some(AgentIncomeSource.incompleteTag),
+                actions = Seq(SummaryListActionValues(
+                  href = AgentIncomeSource.soleTraderChangeLinkTwo,
+                  text = s"${AgentIncomeSource.addDetails} business name (Business 2)",
+                  visuallyHidden = s"business name (Business 2)"
+                ))
               )
             )
           )
@@ -220,11 +231,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(3))(
             title = "business trade",
             cardActions = Seq(
-              SummaryListActionValues(
-                href = AgentIncomeSource.soleTraderChangeLinkThree,
-                text = s"${AgentIncomeSource.addDetails} (business trade)",
-                visuallyHidden = s"(business trade)"
-              ),
               SummaryListActionValues(
                 href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idThree").url,
                 text = s"${AgentIncomeSource.remove} (business trade)",
@@ -236,6 +242,15 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 key = AgentIncomeSource.soleTraderBusinessNameKey,
                 value = Some("Business 3"),
                 actions = Seq.empty
+              ),
+              SummaryListRowValues(
+                key = AgentIncomeSource.statusTagKey,
+                value = Some(AgentIncomeSource.incompleteTag),
+                actions = Seq(SummaryListActionValues(
+                  href = AgentIncomeSource.soleTraderChangeLinkThree,
+                  text = s"${AgentIncomeSource.addDetails} (business trade)",
+                  visuallyHidden = "(business trade)"
+                ))
               )
             )
           )
@@ -245,11 +260,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(4))(
             title = "Business 4",
             cardActions = Seq(
-              SummaryListActionValues(
-                href = AgentIncomeSource.soleTraderChangeLinkFour,
-                text = s"${AgentIncomeSource.addDetails} (Business 4)",
-                visuallyHidden = s"(Business 4)"
-              ),
               SummaryListActionValues(
                 href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idFour").url,
                 text = s"${AgentIncomeSource.remove} (Business 4)",
@@ -261,6 +271,15 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 key = AgentIncomeSource.soleTraderBusinessNameKey,
                 value = Some("Business 4"),
                 actions = Seq.empty
+              ),
+              SummaryListRowValues(
+                key = AgentIncomeSource.statusTagKey,
+                value = Some(AgentIncomeSource.incompleteTag),
+                actions = Seq(SummaryListActionValues(
+                  href = AgentIncomeSource.soleTraderChangeLinkFour,
+                  text = s"${AgentIncomeSource.addDetails} (Business 4)",
+                  visuallyHidden = "(Business 4)"
+                ))
               )
             )
           )
@@ -270,6 +289,35 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           val link: Element = document.mainContent.getElementById("add-self-employment").selectHead("a")
           link.text mustBe AgentIncomeSource.soleTraderLinkText
           link.attr("href") mustBe AgentIncomeSource.soleTraderLink
+        }
+
+        "has a sole trader card with no accounting method" in new ViewTest(completeIncomeSources.copy(selfEmploymentAccountingMethod = None)) {
+            document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
+              title = "business trade",
+              cardActions = Seq(
+                SummaryListActionValues(
+                  href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idOne").url,
+                  text = s"${AgentIncomeSource.remove} business name (business trade)",
+                  visuallyHidden = s"business name (business trade)"
+                )
+              ),
+              rows = Seq(
+                SummaryListRowValues(
+                  key = AgentIncomeSource.soleTraderBusinessNameKey,
+                  value = Some("business name"),
+                  actions = Seq.empty
+                ),
+                SummaryListRowValues(
+                  key = AgentIncomeSource.statusTagKey,
+                  value = Some(AgentIncomeSource.incompleteTag),
+                  actions = Seq(SummaryListActionValues(
+                    href = AgentIncomeSource.soleTraderChangeLinkOne,
+                    text = s"${AgentIncomeSource.addDetails} business name (business trade)",
+                    visuallyHidden = "business name (business trade)"
+                  ))
+                )
+              )
+            )
         }
       }
       "have a income from property section" which {
@@ -281,14 +329,9 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
             title = AgentIncomeSource.ukPropertyTitle,
             cardActions = Seq(
               SummaryListActionValues(
-                href = AgentIncomeSource.ukPropertyChangeLink,
-                text = s"${AgentIncomeSource.addDetails} ${AgentIncomeSource.ukPropertyChange}",
-                visuallyHidden = AgentIncomeSource.ukPropertyChange
-              ),
-              SummaryListActionValues(
                 href = AgentIncomeSource.ukPropertyRemoveLink,
-                text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.ukPropertyRemove}",
-                visuallyHidden = AgentIncomeSource.ukPropertyRemove
+                text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.ukPropertyHiddenText}",
+                visuallyHidden = AgentIncomeSource.ukPropertyHiddenText
               )
             ),
             rows = Seq(
@@ -296,6 +339,15 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 key = AgentIncomeSource.ukPropertyStartDate,
                 value = Some(AgentIncomeSource.propertyDateBeforeLimit),
                 actions = Seq.empty
+              ),
+              SummaryListRowValues(
+                key = AgentIncomeSource.statusTagKey,
+                value = Some(AgentIncomeSource.incompleteTag),
+                actions = Seq(SummaryListActionValues(
+                  href = AgentIncomeSource.ukPropertyChangeLink,
+                  text = s"${AgentIncomeSource.addDetails} ${AgentIncomeSource.ukPropertyHiddenText}",
+                  visuallyHidden = AgentIncomeSource.ukPropertyHiddenText
+                ))
               )
             )
           )
@@ -305,14 +357,9 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
             title = AgentIncomeSource.foreignPropertyTitle,
             cardActions = Seq(
               SummaryListActionValues(
-                href = AgentIncomeSource.foreignPropertyChangeLink,
-                text = s"${AgentIncomeSource.addDetails} ${AgentIncomeSource.foreignPropertyChange}",
-                visuallyHidden = AgentIncomeSource.foreignPropertyChange
-              ),
-              SummaryListActionValues(
-                href = AgentIncomeSource.foreignPropertyRemoveLink,
-                text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.foreignPropertyRemove}",
-                visuallyHidden = AgentIncomeSource.foreignPropertyRemove
+                href = AgentIncomeSource.foreignPropertyHiddenTextLink,
+                text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.foreignPropertyHiddenText}",
+                visuallyHidden = AgentIncomeSource.foreignPropertyHiddenText
               )
             ),
             rows = Seq(
@@ -320,6 +367,15 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 key = AgentIncomeSource.foreignPropertyStartDate,
                 value = Some(AgentIncomeSource.propertyDateBeforeLimit),
                 actions = Seq.empty
+              ),
+              SummaryListRowValues(
+                key = AgentIncomeSource.statusTagKey,
+                value = Some(AgentIncomeSource.incompleteTag),
+                actions = Seq(SummaryListActionValues(
+                  href = AgentIncomeSource.foreignPropertyChangeLink,
+                  text = s"${AgentIncomeSource.addDetails} ${AgentIncomeSource.foreignPropertyHiddenText}",
+                  visuallyHidden = AgentIncomeSource.foreignPropertyHiddenText
+                ))
               )
             )
           )
@@ -335,31 +391,26 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         }
 
         "has a save and come back later button" in new ViewTest(incompleteIncomeSources) {
-          val button = form(document).getGovukSubmitButton
+          val button: Element = form(document).getGovukSubmitButton
           button.text mustBe AgentIncomeSource.saveAndComeBackLater
           button.attr("href") mustBe AgentIncomeSource.progressSavedLink
         }
       }
     }
-    "there are fully complete income sources added" should {
+    "there are fully complete but not confirmed income sources added" should {
       "have a sole trader section" which {
         "has a heading" in new ViewTest(completeIncomeSources) {
           document.mainContent.selectNth("h2", 1).text mustBe AgentIncomeSource.soleTrader
         }
-        "has a summary card with change link" when {
+        "has a summary card with incomplete status tags and check details action link" when {
           "all details are present and confirmed and an accounting method is present" in new ViewTest(completeIncomeSources) {
             document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
               title = "business trade",
               cardActions = Seq(
                 SummaryListActionValues(
-                  href = AgentIncomeSource.soleTraderChangeLinkOne,
-                  text = s"${AgentIncomeSource.check} business name (business trade)",
-                  visuallyHidden = s"business name (business trade)"
-                ),
-                SummaryListActionValues(
                   href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idOne").url,
                   text = s"${AgentIncomeSource.remove} business name (business trade)",
-                  visuallyHidden = s"business name (business trade)"
+                  visuallyHidden = "business name (business trade)"
                 )
               ),
               rows = Seq(
@@ -367,32 +418,15 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                   key = AgentIncomeSource.soleTraderBusinessNameKey,
                   value = Some("business name"),
                   actions = Seq.empty
-                )
-              )
-            )
-          }
-        }
-        "has a summary card with add detail link" when {
-          "there is no accounting method present in the income sources" in new ViewTest(completeIncomeSources.copy(selfEmploymentAccountingMethod = None)) {
-            document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
-              title = "business trade",
-              cardActions = Seq(
-                SummaryListActionValues(
-                  href = AgentIncomeSource.soleTraderChangeLinkOne,
-                  text = s"${AgentIncomeSource.addDetails} business name (business trade)",
-                  visuallyHidden = s"business name (business trade)"
                 ),
-                SummaryListActionValues(
-                  href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idOne").url,
-                  text = s"${AgentIncomeSource.remove} business name (business trade)",
-                  visuallyHidden = s"business name (business trade)"
-                )
-              ),
-              rows = Seq(
                 SummaryListRowValues(
-                  key = AgentIncomeSource.soleTraderBusinessNameKey,
-                  value = Some("business name"),
-                  actions = Seq.empty
+                  key = AgentIncomeSource.statusTagKey,
+                  value = Some(AgentIncomeSource.incompleteTag),
+                  actions = Seq(SummaryListActionValues(
+                    href = AgentIncomeSource.soleTraderChangeLinkOne,
+                    text = s"${AgentIncomeSource.checkDetails} business name (business trade)",
+                    visuallyHidden = "business name (business trade)"
+                  ))
                 )
               )
             )
@@ -419,13 +453,8 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 title = AgentIncomeSource.ukPropertyTitle,
                 cardActions = Seq(
                   SummaryListActionValues(
-                    href = AgentIncomeSource.ukPropertyChangeLink,
-                    text = s"${AgentIncomeSource.check} ${AgentIncomeSource.ukPropertyChange}",
-                    visuallyHidden = s"(${AgentIncomeSource.ukPropertyTitle})"
-                  ),
-                  SummaryListActionValues(
                     href = AgentIncomeSource.ukPropertyRemoveLink,
-                    text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.ukPropertyRemove}",
+                    text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.ukPropertyHiddenText}",
                     visuallyHidden = s"(${AgentIncomeSource.ukPropertyTitle})"
                   )
                 ),
@@ -434,6 +463,15 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                     key = AgentIncomeSource.ukPropertyStartDate,
                     value = Some(limitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))),
                     actions = Seq.empty
+                  ),
+                  SummaryListRowValues(
+                    key = AgentIncomeSource.statusTagKey,
+                    value = Some(AgentIncomeSource.incompleteTag),
+                    actions = Seq(SummaryListActionValues(
+                      href = AgentIncomeSource.ukPropertyChangeLink,
+                      text = s"${AgentIncomeSource.checkDetails} ${AgentIncomeSource.ukPropertyHiddenText}",
+                      visuallyHidden = AgentIncomeSource.ukPropertyHiddenText
+                    ))
                   )
                 )
               )
@@ -445,18 +483,12 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 ukProperty = completeUKProperty.map(_.copy(startDate = Some(olderThanLimitDate)))
               )
             ) {
-
               document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(2))(
                 title = AgentIncomeSource.ukPropertyTitle,
                 cardActions = Seq(
                   SummaryListActionValues(
-                    href = AgentIncomeSource.ukPropertyChangeLink,
-                    text = s"${AgentIncomeSource.check} ${AgentIncomeSource.ukPropertyChange}",
-                    visuallyHidden = s"(${AgentIncomeSource.ukPropertyTitle})"
-                  ),
-                  SummaryListActionValues(
                     href = AgentIncomeSource.ukPropertyRemoveLink,
-                    text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.ukPropertyRemove}",
+                    text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.ukPropertyHiddenText}",
                     visuallyHidden = s"(${AgentIncomeSource.ukPropertyTitle})"
                   )
                 ),
@@ -465,6 +497,15 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                     key = AgentIncomeSource.ukPropertyStartDate,
                     value = Some(AgentIncomeSource.propertyDateBeforeLimit),
                     actions = Seq.empty
+                  ),
+                  SummaryListRowValues(
+                    key = AgentIncomeSource.statusTagKey,
+                    value = Some(AgentIncomeSource.incompleteTag),
+                    actions = Seq(SummaryListActionValues(
+                      href = AgentIncomeSource.ukPropertyChangeLink,
+                      text = s"${AgentIncomeSource.checkDetails} ${AgentIncomeSource.ukPropertyHiddenText}",
+                      visuallyHidden = AgentIncomeSource.ukPropertyHiddenText
+                    ))
                   )
                 )
               )
@@ -478,13 +519,8 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 title = AgentIncomeSource.ukPropertyTitle,
                 cardActions = Seq(
                   SummaryListActionValues(
-                    href = AgentIncomeSource.ukPropertyChangeLink,
-                    text = s"${AgentIncomeSource.check} ${AgentIncomeSource.ukPropertyChange}",
-                    visuallyHidden = s"(${AgentIncomeSource.ukPropertyTitle})"
-                  ),
-                  SummaryListActionValues(
                     href = AgentIncomeSource.ukPropertyRemoveLink,
-                    text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.ukPropertyRemove}",
+                    text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.ukPropertyHiddenText}",
                     visuallyHidden = s"(${AgentIncomeSource.ukPropertyTitle})"
                   )
                 ),
@@ -492,7 +528,16 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                   SummaryListRowValues(
                     key = AgentIncomeSource.ukPropertyStartDate,
                     value = Some(AgentIncomeSource.propertyDateBeforeLimit),
-                    actions = Seq.empty
+                    actions = Seq.empty,
+                  ),
+                  SummaryListRowValues(
+                    key = AgentIncomeSource.statusTagKey,
+                    value = Some(AgentIncomeSource.incompleteTag),
+                    actions = Seq(SummaryListActionValues(
+                      href = AgentIncomeSource.ukPropertyChangeLink,
+                      text = s"${AgentIncomeSource.checkDetails} ${AgentIncomeSource.ukPropertyHiddenText}",
+                      visuallyHidden = AgentIncomeSource.ukPropertyHiddenText
+                    ))
                   )
                 )
               )
@@ -510,13 +555,8 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 title = AgentIncomeSource.foreignPropertyTitle,
                 cardActions = Seq(
                   SummaryListActionValues(
-                    href = AgentIncomeSource.foreignPropertyChangeLink,
-                    text = s"${AgentIncomeSource.check} ${AgentIncomeSource.foreignPropertyChange}",
-                    visuallyHidden = s"(${AgentIncomeSource.foreignPropertyTitle})"
-                  ),
-                  SummaryListActionValues(
-                    href = AgentIncomeSource.foreignPropertyRemoveLink,
-                    text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.foreignPropertyRemove}",
+                    href = AgentIncomeSource.foreignPropertyHiddenTextLink,
+                    text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.foreignPropertyHiddenText}",
                     visuallyHidden = s"(${AgentIncomeSource.foreignPropertyTitle})"
                   )
                 ),
@@ -525,6 +565,15 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                     key = AgentIncomeSource.foreignPropertyStartDate,
                     value = Some(limitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))),
                     actions = Seq.empty
+                  ),
+                  SummaryListRowValues(
+                    key = AgentIncomeSource.statusTagKey,
+                    value = Some(AgentIncomeSource.incompleteTag),
+                    actions = Seq(SummaryListActionValues(
+                      href = AgentIncomeSource.foreignPropertyChangeLink,
+                      text = s"${AgentIncomeSource.checkDetails} ${AgentIncomeSource.foreignPropertyHiddenText}",
+                      visuallyHidden = AgentIncomeSource.foreignPropertyHiddenText
+                    ))
                   )
                 )
               )
@@ -540,13 +589,8 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 title = AgentIncomeSource.foreignPropertyTitle,
                 cardActions = Seq(
                   SummaryListActionValues(
-                    href = AgentIncomeSource.foreignPropertyChangeLink,
-                    text = s"${AgentIncomeSource.check} ${AgentIncomeSource.foreignPropertyChange}",
-                    visuallyHidden = s"(${AgentIncomeSource.foreignPropertyTitle})"
-                  ),
-                  SummaryListActionValues(
-                    href = AgentIncomeSource.foreignPropertyRemoveLink,
-                    text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.foreignPropertyRemove}",
+                    href = AgentIncomeSource.foreignPropertyHiddenTextLink,
+                    text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.foreignPropertyHiddenText}",
                     visuallyHidden = s"(${AgentIncomeSource.foreignPropertyTitle})"
                   )
                 ),
@@ -555,7 +599,17 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                     key = AgentIncomeSource.foreignPropertyStartDate,
                     value = Some(AgentIncomeSource.propertyDateBeforeLimit),
                     actions = Seq.empty
+                  ),
+                  SummaryListRowValues(
+                    key = AgentIncomeSource.statusTagKey,
+                    value = Some(AgentIncomeSource.incompleteTag),
+                    actions = Seq(SummaryListActionValues(
+                      href = AgentIncomeSource.foreignPropertyChangeLink,
+                      text = s"${AgentIncomeSource.checkDetails} ${AgentIncomeSource.foreignPropertyHiddenText}",
+                      visuallyHidden = AgentIncomeSource.foreignPropertyHiddenText
+                    ))
                   )
+
                 )
               )
             }
@@ -568,13 +622,8 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 title = AgentIncomeSource.foreignPropertyTitle,
                 cardActions = Seq(
                   SummaryListActionValues(
-                    href = AgentIncomeSource.foreignPropertyChangeLink,
-                    text = s"${AgentIncomeSource.check} ${AgentIncomeSource.foreignPropertyChange}",
-                    visuallyHidden = s"(${AgentIncomeSource.foreignPropertyTitle})"
-                  ),
-                  SummaryListActionValues(
-                    href = AgentIncomeSource.foreignPropertyRemoveLink,
-                    text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.foreignPropertyRemove}",
+                    href = AgentIncomeSource.foreignPropertyHiddenTextLink,
+                    text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.foreignPropertyHiddenText}",
                     visuallyHidden = s"(${AgentIncomeSource.foreignPropertyTitle})"
                   )
                 ),
@@ -583,6 +632,15 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                     key = AgentIncomeSource.foreignPropertyStartDate,
                     value = Some(AgentIncomeSource.propertyDateBeforeLimit),
                     actions = Seq.empty
+                  ),
+                  SummaryListRowValues(
+                    key = AgentIncomeSource.statusTagKey,
+                    value = Some(AgentIncomeSource.incompleteTag),
+                    actions = Seq(SummaryListActionValues(
+                      href = AgentIncomeSource.foreignPropertyChangeLink,
+                      text = s"${AgentIncomeSource.checkDetails} ${AgentIncomeSource.foreignPropertyHiddenText}",
+                      visuallyHidden = AgentIncomeSource.foreignPropertyHiddenText
+                    ))
                   )
                 )
               )
@@ -599,7 +657,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         }
 
         "has a save and come back later button" in new ViewTest(completeIncomeSources) {
-          val button = form(document).getGovukSubmitButton
+          val button: Element = form(document).getGovukSubmitButton
           button.text mustBe AgentIncomeSource.saveAndComeBackLater
           button.attr("href") mustBe controllers.agent.tasklist.routes.ProgressSavedController.show(Some("income-sources")).url
         }
@@ -640,6 +698,11 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 key = AgentIncomeSource.soleTraderBusinessNameKey,
                 value = Some("business name"),
                 actions = Seq.empty
+              ),
+              SummaryListRowValues(
+                key = AgentIncomeSource.statusTagKey,
+                value = Some(AgentIncomeSource.completedTag),
+                actions = Seq.empty
               )
             )
           )
@@ -660,19 +723,24 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
             cardActions = Seq(
               SummaryListActionValues(
                 href = AgentIncomeSource.ukPropertyChangeLink,
-                text = s"${AgentIncomeSource.change} ${AgentIncomeSource.ukPropertyChange}",
-                visuallyHidden = AgentIncomeSource.ukPropertyChange
+                text = s"${AgentIncomeSource.change} ${AgentIncomeSource.ukPropertyHiddenText}",
+                visuallyHidden = AgentIncomeSource.ukPropertyHiddenText
               ),
               SummaryListActionValues(
                 href = AgentIncomeSource.ukPropertyRemoveLink,
-                text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.ukPropertyRemove}",
-                visuallyHidden = AgentIncomeSource.ukPropertyRemove
+                text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.ukPropertyHiddenText}",
+                visuallyHidden = AgentIncomeSource.ukPropertyHiddenText
               )
             ),
             rows = Seq(
               SummaryListRowValues(
                 key = AgentIncomeSource.ukPropertyStartDate,
                 value = Some(AgentIncomeSource.propertyDateBeforeLimit),
+                actions = Seq.empty
+              ),
+              SummaryListRowValues(
+                key = AgentIncomeSource.statusTagKey,
+                value = Some(AgentIncomeSource.completedTag),
                 actions = Seq.empty
               )
             )
@@ -684,19 +752,24 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
             cardActions = Seq(
               SummaryListActionValues(
                 href = AgentIncomeSource.foreignPropertyChangeLink,
-                text = s"${AgentIncomeSource.change} ${AgentIncomeSource.foreignPropertyChange}",
-                visuallyHidden = AgentIncomeSource.foreignPropertyChange
+                text = s"${AgentIncomeSource.change} ${AgentIncomeSource.foreignPropertyHiddenText}",
+                visuallyHidden = AgentIncomeSource.foreignPropertyHiddenText
               ),
               SummaryListActionValues(
-                href = AgentIncomeSource.foreignPropertyRemoveLink,
-                text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.foreignPropertyRemove}",
-                visuallyHidden = AgentIncomeSource.foreignPropertyRemove
+                href = AgentIncomeSource.foreignPropertyHiddenTextLink,
+                text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.foreignPropertyHiddenText}",
+                visuallyHidden = AgentIncomeSource.foreignPropertyHiddenText
               )
             ),
             rows = Seq(
               SummaryListRowValues(
                 key = AgentIncomeSource.foreignPropertyStartDate,
                 value = Some(AgentIncomeSource.propertyDateBeforeLimit),
+                actions = Seq.empty
+              ),
+              SummaryListRowValues(
+                key = AgentIncomeSource.statusTagKey,
+                value = Some(AgentIncomeSource.completedTag),
                 actions = Seq.empty
               )
             )
@@ -744,6 +817,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     val soleTraderRemoveLinkThree: String = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idThree").url
     val soleTraderRemoveLinkFour: String = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idFour").url
     val incomeFromPropertyHeading = "Income from property"
+    val incomeFromPropertyParagraph = "If your client has more than one property, treat them as one income source."
     val ukPropertyTitle = "UK property"
     val ukPropertyStartDate = "Start date"
     val ukPropertyLinkText = "Add UK property"
@@ -755,28 +829,24 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     val foreignPropertyLinkText = "Add foreign property"
     val foreignPropertyLink: String = controllers.agent.tasklist.overseasproperty.routes.IncomeSourcesOverseasPropertyController.show().url
     val foreignPropertyChangeLink: String = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
-    val foreignPropertyRemoveLink: String = controllers.agent.tasklist.overseasproperty.routes.RemoveOverseasPropertyController.show.url
+    val foreignPropertyHiddenTextLink: String = controllers.agent.tasklist.overseasproperty.routes.RemoveOverseasPropertyController.show.url
     val progressSavedLink: String = controllers.agent.tasklist.routes.ProgressSavedController.show(Some("income-sources")).url
 
     val propertyDateBeforeLimit = s"Before 6 April ${AccountingPeriodUtil.getStartDateLimit.getYear}"
     val continue = "Save and continue"
     val saveAndComeBackLater = "Save and come back later"
 
+    val statusTagKey = "Status"
+    val incompleteTag: String = "Incomplete"
+    val completedTag: String = "Completed"
     val addDetails: String = "Add details"
-    val check: String = "Check"
+    val checkDetails: String = "Check details"
 
     val change: String = "Change"
     val remove: String = "Remove"
 
-    def selfEmploymentChange(name: String) = s"$name"
-
-    def selfEmploymentRemove(name: String) = s"$name"
-
-    val ukPropertyChange = "(UK property)"
-    val ukPropertyRemove = "(UK property)"
-
-    val foreignPropertyChange = "(Foreign property)"
-    val foreignPropertyRemove = "(Foreign property)"
+    val ukPropertyHiddenText = "(UK property)"
+    val foreignPropertyHiddenText = "(Foreign property)"
 
     val beforeYouContinue = "Before you continue, make sure you have checked any income sources we added for you."
   }
@@ -785,14 +855,15 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
   private lazy val clientDetails = ClientDetails("FirstName LastName", "ZZ111111Z")
 
-  lazy val completeSelfEmployments: Seq[SelfEmploymentData] = Seq(
-    SelfEmploymentData(
-      id = "idOne",
-      businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
-      businessName = Some(BusinessNameModel("business name")),
-      businessTradeName = Some(BusinessTradeNameModel("business trade")),
-      businessAddress = Some(BusinessAddressModel(Address(Seq("1 Long Road"), Some("ZZ1 1ZZ")))))
+  private lazy val completeSelfEmploymentData = SelfEmploymentData(
+    id = "idOne",
+    businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
+    businessName = Some(BusinessNameModel("business name")),
+    businessTradeName = Some(BusinessTradeNameModel("business trade")),
+    businessAddress = Some(BusinessAddressModel(Address(Seq("1 Long Road"), Some("ZZ1 1ZZ"))))
   )
+
+  lazy val completeSelfEmployments: Seq[SelfEmploymentData] = Seq(completeSelfEmploymentData)
   lazy val completeUKProperty: Option[PropertyModel] = Some(PropertyModel(
     accountingMethod = Some(Cash),
     startDate = Some(DateModel("1", "1", "1981"))))
@@ -802,14 +873,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     startDate = Some(DateModel("2", "2", "1982"))))
 
   lazy val completeAndConfirmedSelfEmployments: Seq[SelfEmploymentData] = Seq(
-    SelfEmploymentData(
-      id = "idOne",
-      businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
-      businessName = Some(BusinessNameModel("business name")),
-      businessTradeName = Some(BusinessTradeNameModel("business trade")),
-      businessAddress = Some(BusinessAddressModel(Address(Seq("1 Long Road"), Some("ZZ1 1ZZ")))),
-      confirmed = true
-    )
+    completeSelfEmploymentData.copy(confirmed = true)
   )
   lazy val completeAndConfirmedUKProperty: Option[PropertyModel] = Some(PropertyModel(
     accountingMethod = Some(Cash),
@@ -853,6 +917,5 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
   lazy val olderThanLimitDate: DateModel = DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit.minusDays(1))
   lazy val limitDate: DateModel = DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit)
-
 
 }
