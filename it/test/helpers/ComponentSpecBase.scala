@@ -24,7 +24,7 @@ import config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import connectors.stubs.SessionDataConnectorStub.stubGetSessionData
 import forms.individual._
 import forms.individual.business._
-import forms.individual.email.EmailCaptureForm
+import forms.individual.email.{CaptureConsentForm, EmailCaptureForm}
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import models._
@@ -240,6 +240,16 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
       post("/using-software")(
         request.fold(Map.empty[String, Seq[String]])(
           model => UsingSoftwareForm.usingSoftwareForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        )
+      )
+    }
+
+    def showCaptureConsent(includeState: Boolean = true): WSResponse = get("/capture-consent", includeState = includeState)
+
+    def submitCaptureConsent(request: Option[YesNo])(includeState: Boolean = true): WSResponse = {
+      post("/capture-consent", includeJourneyState = includeState)(
+        request.fold(Map.empty[String, Seq[String]])(
+          model => CaptureConsentForm.captureConsentForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )
       )
     }

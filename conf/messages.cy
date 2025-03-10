@@ -383,6 +383,11 @@ error.individual.email-capture.empty                = User entered no input
 error.individual.email-capture.invalid              = User entered an email which did not pass validation
 error.individual.email-capture.max-length           = User entered an email address which is too long
 
+## Capture Consent Page ##
+individual.capture-consent.heading                  = Capture consent
+individual.capture-consent.form-legend              = Do you consent?
+individual.capture-consent.form-error               = Select yes or no
+
 ## Sign Up Confirmation page ##
 sign-up-confirmation.heading                                         = Rydych wedi cofrestru’n llwyddiannus
 sign-up-confirmation.heading.panel.current                           = Mae wedi llwyddo i gofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm, o ran y flwyddyn dreth bresennol ({0})
