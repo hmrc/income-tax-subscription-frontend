@@ -41,7 +41,7 @@ class EmailCaptureController @Inject()(auditingService: AuditingService,
     Ok(view(
       emailForm = EmailCaptureForm.form,
       postAction = routes.EmailCaptureController.submit(),
-      backUrl = "/"
+      backUrl = controllers.individual.email.routes.CaptureConsentController.show().url
     ))
   }
 
@@ -50,7 +50,7 @@ class EmailCaptureController @Inject()(auditingService: AuditingService,
       formWithErrors => Future.successful(BadRequest(view(
         emailForm = formWithErrors,
         postAction = routes.EmailCaptureController.submit(),
-        backUrl = "/"
+        backUrl = controllers.individual.email.routes.CaptureConsentController.show().url
       ))), { email =>
         auditBetaContactDetails(email) map { _ =>
           Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)

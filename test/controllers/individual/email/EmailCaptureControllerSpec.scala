@@ -39,7 +39,7 @@ class EmailCaptureControllerSpec extends ControllerSpec
       mockView(
         form = EmailCaptureForm.form,
         postAction = routes.EmailCaptureController.submit(),
-        backUrl = "/"
+        backUrl = controllers.individual.email.routes.CaptureConsentController.show().url
       )
 
       val result: Future[Result] = TestEmailCaptureController.show(request)
@@ -89,7 +89,7 @@ class EmailCaptureControllerSpec extends ControllerSpec
         mockView(
           form = EmailCaptureForm.form.bind(Map.empty[String, String]),
           postAction = routes.EmailCaptureController.submit(),
-          backUrl = "/"
+          backUrl = controllers.individual.email.routes.CaptureConsentController.show().url
         )
 
         val result: Future[Result] = TestEmailCaptureController.submit(

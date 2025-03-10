@@ -130,4 +130,14 @@ trait MockSessionDataService extends MockitoSugar with BeforeAndAfterEach {
       .thenReturn(Future.successful(result))
   }
 
+  def mockFetchConsentStatus(result: GetSessionDataResponse[YesNo]): Unit = {
+    when(mockSessionDataService.fetchConsentStatus(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(result))
+  }
+
+  def mockSaveConsentStatus(consentStatus: YesNo)(result: SaveSessionDataResponse): Unit = {
+    when(mockSessionDataService.saveConsentStatus(ArgumentMatchers.eq(consentStatus))(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(result))
+  }
+
 }

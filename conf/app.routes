@@ -60,6 +60,10 @@ GET         /no-compatible-software                              controllers.ind
 GET         /business/what-year-to-sign-up                       controllers.individual.tasklist.taxyear.WhatYearToSignUpController.show(editMode: Boolean ?= false)
 POST        /business/what-year-to-sign-up                       controllers.individual.tasklist.taxyear.WhatYearToSignUpController.submit(editMode: Boolean ?= false)
 
+# Capture consent routes
+GET         /capture-consent                                    controllers.individual.email.CaptureConsentController.show()
+POST        /capture-consent                                    controllers.individual.email.CaptureConsentController.submit()
+
 # Email capture routes
 GET         /email-capture                                       controllers.individual.email.EmailCaptureController.show()
 POST        /email-capture                                       controllers.individual.email.EmailCaptureController.submit()
