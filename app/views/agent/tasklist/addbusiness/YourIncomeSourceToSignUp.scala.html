@@ -17,12 +17,12 @@
 @import config.AppConfig
 @import models.common._
 @import models.common.business._
-@import utilities.UserMatchingSessionUtil.ClientDetails
 @import utilities.AccountingPeriodUtil
 @import utilities.UserMatchingSessionUtil.ClientDetails
 @import views.html.templates.AgentMainTemplate
 @import views.html.helpers.{ContinueButton, SaveAndContinueButtonHelper, PageHeadingHelper}
 @import views.html.helpers.ButtonHelper
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukTag
 
 @this(
     agentMainTemplate: AgentMainTemplate,
@@ -32,7 +32,8 @@
     pageHeadingHelper: PageHeadingHelper,
     saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
     govukSummaryList : GovukSummaryList,
-    buttonHelper: ButtonHelper
+    buttonHelper: ButtonHelper,
+    govukTag : GovukTag
 )
 
 @(postAction: Call, backUrl: String, clientDetails: ClientDetails, incomeSources: IncomeSources, prepopulated: Boolean)(implicit request: Request[_], messages: Messages)
@@ -97,14 +98,47 @@
     }
 }
 
-@incomeSourceChangeLabel(isComplete: Boolean, isConfirmed: Boolean) = @{
-  if(isConfirmed) {
-    Text(messages("base.change"))
-  } else if (isComplete) {
-    Text(messages("base.check"))
-  } else {
-    Text(messages("base.add-details"))
-  }
+@maybeIncomeSourceChangeAction(isComplete: Boolean, isConfirmed: Boolean, href: String, visuallyHidden: Option[String] = None): Seq[ActionItem] = @{
+    if(isComplete && isConfirmed) {
+        Seq(ActionItem(
+            href = href,
+            content = Text(messages("base.change")),
+            visuallyHiddenText = visuallyHidden
+        ))
+    } else {
+        Seq.empty
+    }
+}
+
+@statusTag(isCompleteAndConfirmed: Boolean) = @{
+    if(isCompleteAndConfirmed) {
+        Text(messages("base.status.completed"))
+    } else {
+        HtmlContent(govukTag(Tag(
+            content = Text(messages("base.status.incomplete")),
+            classes = "govuk-tag--blue"
+        )))
+    }
+}
+
+@maybeStatusTagAction(isComplete: Boolean, isConfirmed: Boolean, href: String, visuallyHidden: Option[String] = None): Option[Actions] = @{
+    if (isComplete && isConfirmed) {
+        None
+    } else {
+        Some(Actions(
+            items = Seq(
+                ActionItem(
+                    href = href,
+                    content = if(isComplete) {
+                        Text(messages("base.check-details"))
+                    } else {
+                        Text(messages("base.add-details"))
+                    },
+                    visuallyHiddenText = visuallyHidden
+                )
+            )
+        ))
+    }
 }
 
 @selfEmploymentSection = {
@@ -117,24 +151,35 @@
                     content = Text(messages("agent.your-income-source.self-employed.business-name-para"))
                 ),
                 value = Value(Text(selfEmploymentName(business,index)))
+            ),
+            SummaryListRow(
+                key = Key(content = Text(messages("base.status.label"))),
+                value = Value(statusTag(business.isComplete && incomeSources.selfEmploymentAccountingMethod.isDefined && business.confirmed)),
+                actions = maybeStatusTagAction(
+                    isComplete = business.isComplete && incomeSources.selfEmploymentAccountingMethod.isDefined,
+                    isConfirmed = business.confirmed,
+                    href = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${business.id}&isEditMode=true",
+                    visuallyHidden = business.businessName.map(_.businessName)
+                )
             )),
             card = Some(Card(
                 title = Some(CardTitle(
                     content = Text(selfEmploymentTrade(business, index))
                 )),
                 actions = Some(Actions(
-                    items = Seq(
-                        ActionItem(
+                    items =
+                        maybeIncomeSourceChangeAction(
+                            isComplete = business.isComplete,
+                            isConfirmed = business.confirmed,
                             href = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${business.id}&isEditMode=true",
-                            content = incomeSourceChangeLabel(business.isComplete && incomeSources.selfEmploymentAccountingMethod.isDefined, business.confirmed),
-                            visuallyHiddenText = business.businessName.map(_.businessName)
-                        ),
-                        ActionItem(
+                            visuallyHidden = business.businessName.map(_.businessName)
+                        ) ++
+                        Seq(ActionItem(
                             href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show(business.id).url,
                             content = Text(messages("base.remove")),
-                            visuallyHiddenText = business.businessName.map(_.businessName)
+                            visuallyHiddenText = business.businessName.map(_.businessName
                         )
-                    )
+                    ))
                 ))
             ))
         ))
@@ -151,6 +196,7 @@
 
 @propertySection = {
     <h2 class="govuk-heading-m">@messages("agent.your-income-source.income-from-property")</h2>
+    <p class="govuk-body">@messages("agent.your-income-source.income-from-property.para")</p>
 
     @incomeSources.ukProperty.map { ukProperty =>
         @govukSummaryList(SummaryList(
@@ -165,22 +211,31 @@
                         startDate(ukProperty.startDate)
                     }
                 ))
+            ),
+            SummaryListRow(
+                key = Key(content = Text(messages("base.status.label"))),
+                value = Value(statusTag(ukProperty.confirmed)),
+                actions = maybeStatusTagAction(
+                    isComplete = ukProperty.isComplete,
+                    isConfirmed = ukProperty.confirmed,
+                    href = controllers.agent.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url
+                )
             )),
             card = Some(Card(
                 title = Some(CardTitle(
                     content = Text(messages("agent.your-income-source.uk-property"))
                 )),
                 actions = Some(Actions(
-                    items = Seq(
-                        ActionItem(
-                            href = controllers.agent.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url,
-                            content = incomeSourceChangeLabel(ukProperty.isComplete, ukProperty.confirmed)
-                        ),
-                        ActionItem(
+                    items =
+                        maybeIncomeSourceChangeAction(
+                            isComplete = ukProperty.isComplete,
+                            isConfirmed = ukProperty.confirmed,
+                            href = controllers.agent.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url
+                        ) ++
+                        Seq(ActionItem(
                             href = controllers.agent.tasklist.ukproperty.routes.RemoveUkPropertyController.show.url,
                             content = Text(messages("base.remove"))
-                        )
-                    )
+                        ))
                 ))
             ))
         ))
@@ -205,22 +260,31 @@
                         startDate(foreignProperty.startDate)
                     }
                 ))
+            ),
+            SummaryListRow(
+                key = Key(content = Text(messages("base.status.label"))),
+                value = Value(statusTag(foreignProperty.confirmed)),
+                actions = maybeStatusTagAction(
+                    isComplete = foreignProperty.isComplete,
+                    isConfirmed = foreignProperty.confirmed,
+                    href = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
+                )
             )),
             card = Some(Card(
                 title = Some(CardTitle(
                     content = Text(messages("agent.your-income-source.foreign-property"))
                 )),
                 actions = Some(Actions(
-                    items = Seq(
-                        ActionItem(
-                            href = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url,
-                            content = incomeSourceChangeLabel(foreignProperty.isComplete, foreignProperty.confirmed)
-                        ),
-                        ActionItem(
+                    items =
+                        maybeIncomeSourceChangeAction(
+                            isComplete = foreignProperty.isComplete,
+                            isConfirmed = foreignProperty.confirmed,
+                            href = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
+                        ) ++
+                        Seq(ActionItem(
                             href = controllers.agent.tasklist.overseasproperty.routes.RemoveOverseasPropertyController.show.url,
                             content = Text(messages("base.remove"))
-                        )
-                    )
+                        ))
                 ))
             ))
         ))

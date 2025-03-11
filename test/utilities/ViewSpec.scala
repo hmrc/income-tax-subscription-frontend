@@ -262,7 +262,6 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
         case cardActionValues :: Nil =>
           val cardLink: Element = titleWrapper
             .selectHead("div.govuk-summary-card__actions")
-            .selectHead(".govuk-summary-card__action")
             .selectHead("a")
 
           checkpoint {
