@@ -1,0 +1,54 @@
+@*
+ * Copyright 2025 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import views.html.helpers.{ContinueButton, PageHeadingHelper}
+@import views.html.templates.AgentMainTemplate
+@import utilities.UserMatchingSessionUtil.ClientDetails
+
+@this(
+    mainTemplate: AgentMainTemplate,
+    continueButton: ContinueButton,
+    pageHeadingHelper: PageHeadingHelper,
+    form: FormWithCSRF
+)
+
+@(postAction: Call, backUrl: String, clientDetails: ClientDetails)(implicit request: Request[_], messages: Messages)
+
+@mainTemplate(title = messages("agent.income-sources-incomplete.heading"), backLink = Some(backUrl)) {
+
+    @pageHeadingHelper(
+        heading = messages("agent.income-sources-incomplete.heading"),
+        caption = messages("agent.income-sources-incomplete.caption", clientDetails.name, clientDetails.formattedNino),
+        isSection = false
+    )
+
+    <p class="govuk-body">@messages("agent.income-sources-incomplete.para-one")</p>
+
+    <p class="govuk-body">@messages("agent.income-sources-incomplete.para-two")</p>
+
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("agent.income-sources-incomplete.bullet-one")</li>
+        <li>@messages("agent.income-sources-incomplete.bullet-two")</li>
+    </ul>
+
+    <p class="govuk-body">@messages("agent.income-sources-incomplete.para-three")</p>
+
+    @form(action = postAction) {
+        @continueButton(alternateText = Some(messages("agent.income-sources-incomplete.check-income-sources")))
+    }
+
+}

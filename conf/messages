@@ -751,6 +751,16 @@ agent.your-income-source.foreign-property.add-link                  = Add foreig
 agent.your-income-source.foreign-property.before-start-date-limit   = Before 6 April {0}
 agent.your-income-source.before-you-continue                        = Before you continue, make sure you have checked any income sources we added for you.
 
+# Agent income sources incomplete page
+agent.income-sources-incomplete.heading                             = There is a problem with your client’s income sources
+agent.income-sources-incomplete.caption                             = {0} | {1}
+agent.income-sources-incomplete.para-one                            = You need to check that you have entered all the information for your client’s income sources.
+agent.income-sources-incomplete.para-two                            = This includes income sources:
+agent.income-sources-incomplete.bullet-one                          = that you added
+agent.income-sources-incomplete.bullet-two                          = that we added for you
+agent.income-sources-incomplete.para-three                          = When you have entered all the information for an income source, it will show as ‘completed’.
+agent.income-sources-incomplete.check-income-sources                = Check your income sources
+
 # Property income page
 agent.property.income.title                                     = How much was your income from property this year?
 agent.property.income.heading                                   = How much was your income from property this year?

@@ -123,6 +123,10 @@ GET         /throttle-end                                        controllers.age
 GET         /your-income-source                                  controllers.agent.tasklist.addbusiness.YourIncomeSourceToSignUpController.show
 POST        /your-income-source                                  controllers.agent.tasklist.addbusiness.YourIncomeSourceToSignUpController.submit
 
+# Income sources incomplete
+GET         /income-sources-incomplete                           controllers.agent.tasklist.IncomeSourcesIncompleteController.show
+POST        /income-sources-incomplete                           controllers.agent.tasklist.IncomeSourcesIncompleteController.submit
+
 # Agent Global Check Your Answers
 GET         /final-check-your-answers                            controllers.agent.GlobalCheckYourAnswersController.show
 POST        /final-check-your-answers                            controllers.agent.GlobalCheckYourAnswersController.submit
