@@ -27,7 +27,7 @@ import helpers.servicemocks.AuthStub
 import models.common.AccountingYearModel
 import models.status.MandationStatus.{Mandated, Voluntary}
 import models.status.MandationStatusModel
-import models.{Current, EligibilityStatus, Next, Yes, YesNo}
+import models.{Current, EligibilityStatus, Next}
 import play.api.http.Status._
 import play.api.libs.json.Json
 import utilities.AccountingPeriodUtil
@@ -125,45 +125,45 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
 
   "POST /report-quarterly/income-and-expenses/sign-up/business/what-year-to-sign-up" when {
 
-      "redirect to the Global CYA page when in edit mode" when {
+    "redirect to the Global CYA page when in edit mode" when {
 
-        "selecting the Next radio button" in {
-          val userInput = Next
+      "selecting the Next radio button" in {
+        val userInput = Next
 
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYearModel](SelectedTaxYear, AccountingYearModel(userInput))
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYearModel](SelectedTaxYear, AccountingYearModel(userInput))
 
-          When("POST /business/what-year-to-sign-up is called")
-          val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = true, Some(userInput))
+        When("POST /business/what-year-to-sign-up is called")
+        val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = true, Some(userInput))
 
-          Then("Should return a SEE_OTHER with a redirect location of Global CYA")
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(IndividualURI.globalCheckYourAnswersURI)
-          )
-        }
+        Then("Should return a SEE_OTHER with a redirect location of Global CYA")
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(IndividualURI.globalCheckYourAnswersURI)
+        )
       }
+    }
 
-      "redirect to the What You Need to Do ORM page when not in edit mode" when {
+    "redirect to the What You Need to Do ORM page when not in edit mode" when {
 
-        "selecting the Current radio button" in {
-          val userInput = Current
+      "selecting the Current radio button" in {
+        val userInput = Current
 
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYearModel](SelectedTaxYear, AccountingYearModel(userInput))
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYearModel](SelectedTaxYear, AccountingYearModel(userInput))
 
-          When("POST /business/what-year-to-sign-up is called")
-          val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, Some(userInput))
+        When("POST /business/what-year-to-sign-up is called")
+        val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, Some(userInput))
 
-          Then("Should return a SEE_OTHER with a redirect location of What You Need to Do")
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(IndividualURI.whatYouNeedToDoURI)
-          )
-        }
+        Then("Should return a SEE_OTHER with a redirect location of What You Need to Do")
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(IndividualURI.whatYouNeedToDoURI)
+        )
       }
+    }
 
     "return BAD_REQUEST" when {
       "no option has been selected" in {
