@@ -16,8 +16,10 @@
 
 package controllers.individual
 
+import config.featureswitch.FeatureSwitch.EmailCaptureConsent
+import config.featureswitch.FeatureSwitching
 import models.status.MandationStatus.{Mandated, Voluntary}
-import models.{EligibilityStatus, Yes}
+import models.{Current, EligibilityStatus, Next, No, Yes}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -37,7 +39,13 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
   with MockGetEligibilityStatusService
   with MockReferenceRetrieval
   with MockSubscriptionDetailsService
-  with MockSessionDataService {
+  with MockSessionDataService
+  with FeatureSwitching {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(EmailCaptureConsent)
+  }
 
   object TestWhatYouNeedToDoController extends WhatYouNeedToDoController(
     mock[WhatYouNeedToDo],
@@ -80,6 +88,7 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
         mockFetchSoftwareStatus(Right(Some(Yes)))
         mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
+        mockFetchConsentStatus(Right(None))
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(true),
@@ -101,7 +110,7 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockFetchSoftwareStatus(Right(Some(Yes)))
         mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
-
+        mockFetchConsentStatus(Right(None))
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(false),
@@ -123,6 +132,7 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
         mockFetchSoftwareStatus(Right(Some(Yes)))
         mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
+        mockFetchConsentStatus(Right(None))
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(true),
@@ -144,6 +154,7 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockFetchSoftwareStatus(Right(Some(Yes)))
         mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
+        mockFetchConsentStatus(Right(None))
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(false),
@@ -165,6 +176,7 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockFetchSoftwareStatus(Right(Some(Yes)))
         mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
+        mockFetchConsentStatus(Right(None))
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(false),
@@ -194,24 +206,58 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
   }
 
   "backUrl" when {
-    "return the what year to sign up page url" when {
-      "the user is eligible for both years and not mandated for the current year" in new Setup {
-        val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, mandatedCurrentYear = false)
+    "the email capture consent feature switch is disabled" should {
+      "return the what year to sign up page url" when {
+        "the user is eligible for both years and not mandated for the current year" in new Setup {
+          val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, mandatedCurrentYear = false, None, Some(Current))
 
-        backUrl mustBe controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+          backUrl mustBe controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+        }
+      }
+      "return the using software page url" when {
+        "the user is eligible for next year only" in new Setup {
+          val backUrl: String = controller.backUrl(eligibleNextYearOnly = true, mandatedCurrentYear = false, None, None)
+
+          backUrl mustBe controllers.individual.routes.UsingSoftwareController.show().url
+        }
+        "the user is mandated for the current year" in new Setup {
+
+          val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, mandatedCurrentYear = true, None, None)
+
+          backUrl mustBe controllers.individual.routes.UsingSoftwareController.show().url
+        }
       }
     }
-    "return the using software page url" when {
-      "the user is eligible for next year only" in new Setup {
-        val backUrl: String = controller.backUrl(eligibleNextYearOnly = true, mandatedCurrentYear = false)
+    "the email capture consent feature switch is enabled" when {
+      "the user is eligible for next year only" should {
+        "return the Using Software page url" in new Setup {
+          enable(EmailCaptureConsent)
+          val backUrl: String = controller.backUrl(eligibleNextYearOnly = true, mandatedCurrentYear = false, consentStatus = Some(Yes), None)
 
-        backUrl mustBe controllers.individual.routes.UsingSoftwareController.show().url
+          backUrl mustBe controllers.individual.routes.UsingSoftwareController.show().url
+        }
       }
-      "the user is mandated for the current year" in new Setup {
+      "the user is mandated or signing up for current year" should {
+        "return the email capture page url when selected Yes to consenting" in new Setup {
+          enable(EmailCaptureConsent)
+          val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, mandatedCurrentYear = false, consentStatus = Some(Yes), Some(Current))
 
-        val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, mandatedCurrentYear = true)
+          backUrl mustBe controllers.individual.email.routes.EmailCaptureController.show().url
+        }
+        "return the capture consent page url when selected No to consenting" in new Setup {
+          enable(EmailCaptureConsent)
+          val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, mandatedCurrentYear = false, consentStatus = Some(No), Some(Current))
 
-        backUrl mustBe controllers.individual.routes.UsingSoftwareController.show().url
+          backUrl mustBe controllers.individual.email.routes.CaptureConsentController.show().url
+        }
+      }
+      "the user is voluntarily signing up for next year" should {
+        "return the What Year to Sign Up page url" in new Setup {
+          enable(EmailCaptureConsent)
+          val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, mandatedCurrentYear = false, consentStatus = None, Some(Next))
+
+          backUrl mustBe controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+        }
       }
     }
   }
