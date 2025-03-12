@@ -16,6 +16,7 @@
 
 package controllers.individual
 
+import config.featureswitch.FeatureSwitch.EmailCaptureConsent
 import connectors.httpparser.SaveSessionDataHttpParser.{SaveSessionDataSuccessResponse, UnexpectedStatusFailure}
 import forms.individual.UsingSoftwareForm
 import models.status.MandationStatus.{Mandated, Voluntary}
@@ -27,7 +28,7 @@ import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAuditingService, MockClientDetailsRetrieval, MockGetEligibilityStatusService, MockMandationStatusService, MockSessionDataService}
+import services.mocks._
 import uk.gov.hmrc.http.InternalServerException
 import views.html.individual.UsingSoftware
 
@@ -50,6 +51,11 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
     mockAuthService,
     appConfig
   )
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(EmailCaptureConsent)
+  }
 
   trait Setup {
     val usingSoftware: UsingSoftware = mock[UsingSoftware]
@@ -113,7 +119,7 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.individual.routes.WhatYouNeedToDoController.show.url)
         }
-        "the user is mandated for the current tax year" in new Setup {
+        "the email capture consent feature switch is disabled and the user is mandated for the current tax year" in new Setup {
           mockGetMandationService(Mandated, Voluntary)
           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
           mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
@@ -122,6 +128,19 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.individual.routes.WhatYouNeedToDoController.show.url)
+        }
+      }
+      "redirect to the capture consent page" when {
+        "the email capture consent feature switch is enabled and the user is mandated for the current tax year" in new Setup {
+          enable(EmailCaptureConsent)
+          mockGetMandationService(Mandated, Voluntary)
+          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+          mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
+
+          val result: Future[Result] = controller.submit()(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, Yes))
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.individual.email.routes.CaptureConsentController.show().url)
         }
       }
       "redirect to the what year to sign up page" when {
