@@ -271,6 +271,10 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
     def showNoSoftware(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/no-compatible-software", sessionData)
 
+    def showIncomeSourcesIncomplete(sessionData: Map[String, String] = ClientData.basicClientData, hasJourneyState: Boolean = true): WSResponse = get("/income-sources-incomplete", sessionData, withJourneyStateSignUp = hasJourneyState)
+
+    def submitIncomeSourcesIncomplete(sessionData: Map[String, String] = ClientData.basicClientData, hasJourneyState: Boolean = true): WSResponse = post("/income-sources-incomplete", sessionData, withJourneyStateSignUp = hasJourneyState)(Map.empty[String, Seq[String]])
+
     def whatYouNeedToDo(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/what-you-need-to-do", sessionData)
 
     def submitWhatYouNeedToDo(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = post("/what-you-need-to-do", sessionData)(Map.empty)

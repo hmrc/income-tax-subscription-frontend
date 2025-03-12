@@ -731,6 +731,16 @@ agent.your-income-source.foreign-property.add-link                  = Ychwanegu 
 agent.your-income-source.foreign-property.before-start-date-limit   = Cyn 6 Ebrill {0}
 agent.your-income-source.before-you-continue                        = Cyn i chi fynd yn eich blaen, gwnewch yn siŵr eich bod wedi gwirio unrhyw ffynonellau incwm rydym wedi’u hychwanegu ar eich rhan.
 
+# Agent income sources incomplete page
+agent.income-sources-incomplete.heading                             = Mae problem gyda ffynonellau incwm eich cleient
+agent.income-sources-incomplete.caption                             = {0} | {1}
+agent.income-sources-incomplete.para-one                            = Mae angen i chi wirio’ch bod wedi nodi’r holl wybodaeth ar gyfer ffynonellau incwm eich cleient.
+agent.income-sources-incomplete.para-two                            = Mae hyn yn cynnwys y canlynol:
+agent.income-sources-incomplete.bullet-one                          = ffynonellau incwm rydych wedi’u hychwanegu
+agent.income-sources-incomplete.bullet-two                          = ffynonellau incwm yr ydym wedi’u hychwanegu ar eich rhan
+agent.income-sources-incomplete.para-three                          = Pan fyddwch wedi nodi’r holl wybodaeth ar gyfer ffynhonnell incwm, bydd yn dangos fel ‘wedi’i gwblhau’.
+agent.income-sources-incomplete.check-income-sources                = Gwirio’ch ffynonellau incwm
+
 # Property income page
 agent.property.income.title                                     = Faint oedd eich incwm o eiddo y flwyddyn hon?
 agent.property.income.heading                                   = Faint oedd eich incwm o eiddo y flwyddyn hon?
