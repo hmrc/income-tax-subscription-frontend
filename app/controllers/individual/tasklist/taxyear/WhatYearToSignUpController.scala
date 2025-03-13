@@ -18,10 +18,11 @@ package controllers.individual.tasklist.taxyear
 
 import auth.individual.SignUpController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.EmailCaptureConsent
 import controllers.utils.ReferenceRetrieval
 import forms.individual.business.AccountingYearForm
-import models.AccountingYear
 import models.common.AccountingYearModel
+import models.{AccountingYear, Current}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
@@ -59,7 +60,12 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
       referenceRetrieval.getIndividualReference flatMap { reference =>
         subscriptionDetailsService.fetchSelectedTaxYear(reference) map {
           case Some(taxYearModel) if !taxYearModel.editable =>
-            Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
+            taxYearModel.accountingYear match {
+              case Current if isEnabled(EmailCaptureConsent) =>
+                Redirect(controllers.individual.email.routes.CaptureConsentController.show())
+              case _ =>
+                Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
+            }
           case accountingYearModel =>
             Ok(view(
               accountingYearForm = AccountingYearForm.accountingYearForm.fill(accountingYearModel.map(aym => aym.accountingYear)),
@@ -80,10 +86,16 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
               case Right(_) =>
                 if (isEditMode) {
                   Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
-                } else  {
-                  Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
+                } else {
+                  accountingYear match {
+                    case Current if isEnabled(EmailCaptureConsent) =>
+                      Redirect(controllers.individual.email.routes.CaptureConsentController.show())
+                    case _ =>
+                      Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
+                  }
                 }
-              case Left(_) => throw new InternalServerException("[WhatYearToSignUpController][submit] - Could not save accounting year")
+              case Left(_) =>
+                throw new InternalServerException("[WhatYearToSignUpController][submit] - Could not save accounting year")
             }
           }
         )
