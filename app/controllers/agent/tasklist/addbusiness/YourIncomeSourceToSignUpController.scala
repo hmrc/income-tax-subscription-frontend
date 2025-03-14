@@ -54,20 +54,15 @@ class YourIncomeSourceToSignUpController @Inject()(view: YourIncomeSourceToSignU
 
   def submit: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     subscriptionDetailsService.fetchAllIncomeSources(request.reference) flatMap { incomeSources =>
-      val continue: Result = Redirect(continueLocation)
       if (incomeSources.isComplete) {
         subscriptionDetailsService.saveIncomeSourcesConfirmation(request.reference) map {
-          case Right(_) => continue
+          case Right(_) => Redirect(controllers.agent.routes.GlobalCheckYourAnswersController.show)
           case Left(_) => throw new InternalServerException("[YourIncomeSourceToSignUpController][submit] - failed to save income sources confirmation")
         }
       } else {
-        Future.successful(continue)
+        Future.successful(Redirect(controllers.agent.tasklist.routes.IncomeSourcesIncompleteController.show))
       }
     }
-  }
-
-  def continueLocation: Call = {
-    controllers.agent.routes.GlobalCheckYourAnswersController.show
   }
 
   def backUrl: String = {

@@ -132,6 +132,70 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.verifySaveSubscriptionDetails[Boolean](SubscriptionDataKeys.IncomeSourceConfirmation, true, Some(1))
       }
     }
+    "the user has incomplete businesses" should {
+      "redirect to the incomplete income sources page" when {
+        "a sole trader business is incomplete" in {
+          AuthStub.stubAuthSuccess()
+          IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(
+            OK, Seq(testBusiness("12345")),
+            Some(testAccountingMethod.accountingMethod)
+          )
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
+
+          val res = IncomeTaxSubscriptionFrontend.submitYourIncomeSourcesAgent()
+
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(controllers.agent.tasklist.routes.IncomeSourcesIncompleteController.show.url)
+          )
+
+          IncomeTaxSubscriptionConnectorStub.verifySaveSubscriptionDetails[Boolean](SubscriptionDataKeys.IncomeSourceConfirmation, true, Some(0))
+        }
+        "a uk property business is incomplete" in {
+          AuthStub.stubAuthSuccess()
+          IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(
+            OK, Seq(testBusiness("12345", confirmed = true)),
+            Some(testAccountingMethod.accountingMethod)
+          )
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel.copy(confirmed = false)))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
+
+          val res = IncomeTaxSubscriptionFrontend.submitYourIncomeSourcesAgent()
+
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(controllers.agent.tasklist.routes.IncomeSourcesIncompleteController.show.url)
+          )
+
+          IncomeTaxSubscriptionConnectorStub.verifySaveSubscriptionDetails[Boolean](SubscriptionDataKeys.IncomeSourceConfirmation, true, Some(0))
+        }
+        "a foreign property business is incomplete" in {
+          AuthStub.stubAuthSuccess()
+          IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(
+            OK, Seq(testBusiness("12345", confirmed = true)),
+            Some(testAccountingMethod.accountingMethod)
+          )
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel.copy(confirmed = false)))
+
+          val res = IncomeTaxSubscriptionFrontend.submitYourIncomeSourcesAgent()
+
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(controllers.agent.tasklist.routes.IncomeSourcesIncompleteController.show.url)
+          )
+
+          IncomeTaxSubscriptionConnectorStub.verifySaveSubscriptionDetails[Boolean](SubscriptionDataKeys.IncomeSourceConfirmation, true, Some(0))
+        }
+      }
+    }
   }
 
 }
