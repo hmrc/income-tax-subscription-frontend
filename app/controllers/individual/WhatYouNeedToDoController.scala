@@ -16,11 +16,13 @@
 
 package controllers.individual
 
+import _root_.config.featureswitch.FeatureSwitch.EmailCaptureConsent
+import _root_.config.featureswitch.FeatureSwitching
 import auth.individual.SignUpController
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
 import models.status.MandationStatus.Mandated
-import models.{Next, Yes}
+import models._
 import play.api.mvc._
 import services._
 import uk.gov.hmrc.http.InternalServerException
@@ -39,7 +41,7 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
                                          (val auditingService: AuditingService,
                                           val appConfig: AppConfig,
                                           val authService: AuthService)
-                                         (implicit mcc: MessagesControllerComponents, val ec: ExecutionContext) extends SignUpController {
+                                         (implicit mcc: MessagesControllerComponents, val ec: ExecutionContext) extends SignUpController with FeatureSwitching {
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
@@ -49,10 +51,15 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
         eligibilityStatus <- getEligibilityStatusService.getEligibilityStatus
         usingSoftwareStatus <- sessionDataService.fetchSoftwareStatus
         selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
+        consentStatus <- sessionDataService.fetchConsentStatus
       } yield {
-        val selectedNextTaxYear: Boolean = selectedTaxYear.map(_.accountingYear).contains(Next)
+        val taxYearSelection: Option[AccountingYear] = selectedTaxYear.map(_.accountingYear)
+        val consentYesNo: Option[YesNo] = consentStatus match {
+          case Left(_) => throw new InternalServerException("[WhatYouNeedToDoController][show] - Could not fetch email consent status")
+          case Right(yesNo) => yesNo
+        }
         usingSoftwareStatus match {
-          case Left(_) => throw new InternalServerException("[UsingSoftwareController][show] - Could not fetch software status")
+          case Left(_) => throw new InternalServerException("[WhatYouNeedToDoController][show] - Could not fetch software status")
           case Right(selectedSoftwareStatus) =>
             Ok(whatYouNeedToDo(
               postAction = routes.WhatYouNeedToDoController.submit,
@@ -60,10 +67,12 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
               mandatedCurrentYear = mandationStatus.currentYearStatus.isMandated,
               mandatedNextYear = mandationStatus.nextYearStatus.isMandated,
               isUsingSoftware = selectedSoftwareStatus.contains(Yes),
-              signUpNextTaxYear = selectedNextTaxYear,
+              signUpNextTaxYear = taxYearSelection.contains(Next),
               backUrl = backUrl(
                 eligibleNextYearOnly = eligibilityStatus.eligibleNextYearOnly,
-                mandatedCurrentYear = mandationStatus.currentYearStatus == Mandated
+                mandatedCurrentYear = mandationStatus.currentYearStatus == Mandated,
+                consentStatus = consentYesNo,
+                taxYearSelection = taxYearSelection
               )
             ))
         }
@@ -74,11 +83,25 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
     _ => Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
   }
 
-  def backUrl(eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean): String = {
-    if (!(eligibleNextYearOnly || mandatedCurrentYear)) {
-      controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+  def backUrl(eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean, consentStatus: Option[YesNo], taxYearSelection: Option[AccountingYear]): String = {
+
+    if (isEnabled(EmailCaptureConsent)) {
+      if(eligibleNextYearOnly) {
+        controllers.individual.routes.UsingSoftwareController.show().url
+      } else {
+        (taxYearSelection, consentStatus) match {
+          case (Some(Current), Some(Yes)) => controllers.individual.email.routes.EmailCaptureController.show().url
+          case (Some(Current), Some(No)) => controllers.individual.email.routes.CaptureConsentController.show().url
+          case _ => controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+        }
+      }
     } else {
-      controllers.individual.routes.UsingSoftwareController.show().url
+      if (!(eligibleNextYearOnly || mandatedCurrentYear)) {
+        controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+      } else {
+        controllers.individual.routes.UsingSoftwareController.show().url
+      }
     }
   }
+
 }

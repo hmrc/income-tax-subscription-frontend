@@ -44,7 +44,7 @@ class CaptureConsentController @Inject()(view: CaptureConsent,
         case Right(maybeYesNo) =>
           Ok(view(
             captureConsentForm = captureConsentForm.fill(maybeYesNo),
-            postAction = controllers.individual.email.routes.EmailCaptureController.submit(),
+            postAction = controllers.individual.email.routes.CaptureConsentController.submit(),
             backUrl = controllers.individual.routes.UsingSoftwareController.show().url
           ))
       }

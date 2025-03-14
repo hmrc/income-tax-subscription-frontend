@@ -25,7 +25,7 @@ import helpers.servicemocks.AuthStub
 import models.{EligibilityStatus, Yes, YesNo}
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
-import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.http.Status.{NO_CONTENT, OK, SEE_OTHER}
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys.{PrePopFlag, SelectedTaxYear}
 
@@ -41,6 +41,7 @@ class WhatYouNeedToDoControllerISpec extends ComponentSpecBase {
       SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
       SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
       SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.HAS_SOFTWARE)(OK, Json.toJson(testSoftwareOption))
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.CAPTURE_CONSENT)(NO_CONTENT)
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
 
       When(s"GET ${routes.WhatYouNeedToDoController.show.url} is called")
