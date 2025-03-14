@@ -97,14 +97,16 @@ your-income-source.foreign-property.start-date-para             = Start date
 your-income-source.foreign-property.before-start-date-limit     = Before 6 April {0}
 your-income-source.foreign-property.add-link                    = Add foreign property
 
+# Individual income sources incomplete page
+individual.income-sources-incomplete.title                    = There is a problem with your income sources
+individual.income-sources-incomplete.heading                  = There is a problem with your income sources
+individual.income-sources-incomplete.para1                    = You need to check that you have entered all the information for your income sources.
+individual.income-sources-incomplete.para2                    = This includes income sources:
+individual.income-sources-incomplete.bullet1                  = that you added
+individual.income-sources-incomplete.bullet2                  = that we added for you
+individual.income-sources-incomplete.para3                    = When you have entered all the information for an income source, it will show as ‘completed’.
+individual.income-sources-incomplete.button-text              = Check your income sources
 
-error.business-income-source.all-sources                        = Select Sole trader business, UK property rental or Overseas property rental
-error.business-income-source.self-employed-uk-property          = You need to select Sole trader business or UK property rental
-error.business-income-source.self-employed-overseas-property    = You need to select Sole trader business or Overseas property rental
-error.business-income-source.uk-property-overseas-property      = You need to select UK property rental or Overseas property rental
-error.business-income-source.self-employed                      = You need to select Sole trader business
-error.business-income-source.uk-property                        = You need to select UK property rental
-error.business-income-source.overseas-property                  = You need to select Overseas property rental
 
 # Cannot Use Service page
 cannot-use-service.title                                        = You cannot use this service

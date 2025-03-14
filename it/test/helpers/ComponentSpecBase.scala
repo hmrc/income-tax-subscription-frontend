@@ -502,6 +502,10 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
         )
       )
     }
+    def showIncomeSourcesIncomplete(includeState: Boolean = true): WSResponse = get("/details/income-sources-incomplete", includeState = includeState)
+    def submitIncomeSourcesIncomplete(sessionData: Map[String, String] = Map.empty): WSResponse = {
+      post("/details/income-sources-incomplete", sessionData)(Map.empty)
+    }
 
     def iv(): WSResponse = get("/iv")
 
