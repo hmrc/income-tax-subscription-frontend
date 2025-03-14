@@ -115,6 +115,23 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         document.mainContent.selectOptionalNth("p", 4) mustBe None
       }
     }
+
+    "have a form" which {
+      def form(document: Document): Element = document.mainContent.getForm
+
+      "has the correct attributes" in new ViewTest() {
+        form(document).attr("method") mustBe testCall.method
+        form(document).attr("action") mustBe testCall.url
+      }
+      "has a continue button" in new ViewTest() {
+        form(document).getGovukSubmitButton.text mustBe AgentIncomeSource.continue
+      }
+      "has a save and come back later button" in new ViewTest() {
+        val button: Element = form(document).selectHead(".govuk-button--secondary")
+        button.text mustBe AgentIncomeSource.saveAndComeBackLater
+        button.attr("href") mustBe controllers.agent.tasklist.routes.ProgressSavedController.show(Some("income-sources")).url
+      }
+    }
   }
 
   "YourIncomeSourceToSignUp" when {
@@ -147,20 +164,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           val link: Element = document.mainContent.getElementById("add-foreign-property").selectHead("a")
           link.text mustBe AgentIncomeSource.foreignPropertyLinkText
           link.attr("href") mustBe AgentIncomeSource.foreignPropertyLink
-        }
-      }
-
-      "have a form" which {
-        def form(document: Document): Element = document.mainContent.getForm
-
-        "has the correct attributes" in new ViewTest(noIncomeSources) {
-          form(document).attr("method") mustBe testCall.method
-          form(document).attr("action") mustBe testCall.url
-        }
-        "has no save and come back later button" in new ViewTest(noIncomeSources) {
-          val button: Element = form(document).getGovukSubmitButton
-          button.text mustBe AgentIncomeSource.saveAndComeBackLater
-          button.attr("href") mustBe controllers.agent.tasklist.routes.ProgressSavedController.show(Some("income-sources")).url
         }
       }
     }
@@ -292,32 +295,32 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         }
 
         "has a sole trader card with no accounting method" in new ViewTest(completeIncomeSources.copy(selfEmploymentAccountingMethod = None)) {
-            document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
-              title = "business trade",
-              cardActions = Seq(
-                SummaryListActionValues(
-                  href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idOne").url,
-                  text = s"${AgentIncomeSource.remove} business name (business trade)",
-                  visuallyHidden = s"business name (business trade)"
-                )
+          document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
+            title = "business trade",
+            cardActions = Seq(
+              SummaryListActionValues(
+                href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idOne").url,
+                text = s"${AgentIncomeSource.remove} business name (business trade)",
+                visuallyHidden = s"business name (business trade)"
+              )
+            ),
+            rows = Seq(
+              SummaryListRowValues(
+                key = AgentIncomeSource.soleTraderBusinessNameKey,
+                value = Some("business name"),
+                actions = Seq.empty
               ),
-              rows = Seq(
-                SummaryListRowValues(
-                  key = AgentIncomeSource.soleTraderBusinessNameKey,
-                  value = Some("business name"),
-                  actions = Seq.empty
-                ),
-                SummaryListRowValues(
-                  key = AgentIncomeSource.statusTagKey,
-                  value = Some(AgentIncomeSource.incompleteTag),
-                  actions = Seq(SummaryListActionValues(
-                    href = AgentIncomeSource.soleTraderChangeLinkOne,
-                    text = s"${AgentIncomeSource.addDetails} business name (business trade)",
-                    visuallyHidden = "business name (business trade)"
-                  ))
-                )
+              SummaryListRowValues(
+                key = AgentIncomeSource.statusTagKey,
+                value = Some(AgentIncomeSource.incompleteTag),
+                actions = Seq(SummaryListActionValues(
+                  href = AgentIncomeSource.soleTraderChangeLinkOne,
+                  text = s"${AgentIncomeSource.addDetails} business name (business trade)",
+                  visuallyHidden = "business name (business trade)"
+                ))
               )
             )
+          )
         }
       }
       "have a income from property section" which {
@@ -379,21 +382,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
               )
             )
           )
-        }
-      }
-
-      "have a form" which {
-        def form(document: Document): Element = document.mainContent.getForm
-
-        "has the correct attributes" in new ViewTest(incompleteIncomeSources) {
-          form(document).attr("method") mustBe testCall.method
-          form(document).attr("action") mustBe testCall.url
-        }
-
-        "has a save and come back later button" in new ViewTest(incompleteIncomeSources) {
-          val button: Element = form(document).getGovukSubmitButton
-          button.text mustBe AgentIncomeSource.saveAndComeBackLater
-          button.attr("href") mustBe AgentIncomeSource.progressSavedLink
         }
       }
     }
@@ -648,20 +636,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           }
         }
       }
-      "have a form" which {
-        def form(document: Document): Element = document.mainContent.getForm
-
-        "has the correct attributes" in new ViewTest(completeIncomeSources) {
-          form(document).attr("method") mustBe testCall.method
-          form(document).attr("action") mustBe testCall.url
-        }
-
-        "has a save and come back later button" in new ViewTest(completeIncomeSources) {
-          val button: Element = form(document).getGovukSubmitButton
-          button.text mustBe AgentIncomeSource.saveAndComeBackLater
-          button.attr("href") mustBe controllers.agent.tasklist.routes.ProgressSavedController.show(Some("income-sources")).url
-        }
-      }
     }
     "there are fully complete and confirmed income sources added" should {
       def completeAndConfirmedIncomeSources: IncomeSources = IncomeSources(completeAndConfirmedSelfEmployments, Some(Cash), completeAndConfirmedUKProperty, completeAndConfirmedForeignProperty)
@@ -774,23 +748,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
               )
             )
           )
-        }
-      }
-
-      "have a form" which {
-        def form(document: Document): Element = document.mainContent.getForm
-
-        "has the correct attributes" in new ViewTest(completeAndConfirmedIncomeSources) {
-          form(document).attr("method") mustBe testCall.method
-          form(document).attr("action") mustBe testCall.url
-        }
-        "has a continue button" in new ViewTest(completeAndConfirmedIncomeSources) {
-          form(document).getGovukSubmitButton.text mustBe AgentIncomeSource.continue
-        }
-        "has a save and come back later button" in new ViewTest(completeAndConfirmedIncomeSources) {
-          val button: Element = form(document).selectHead(".govuk-button--secondary")
-          button.text mustBe AgentIncomeSource.saveAndComeBackLater
-          button.attr("href") mustBe controllers.agent.tasklist.routes.ProgressSavedController.show(Some("income-sources")).url
         }
       }
     }
