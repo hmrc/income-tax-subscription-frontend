@@ -145,6 +145,10 @@ GET         /throttle-end                                        controllers.ind
 GET         /details/your-income-source                          controllers.individual.tasklist.addbusiness.YourIncomeSourceToSignUpController.show
 POST        /details/your-income-source                          controllers.individual.tasklist.addbusiness.YourIncomeSourceToSignUpController.submit
 
+# Problem With Income Sources
+GET         /details/income-sources-incomplete                   controllers.individual.tasklist.IncomeSourcesIncompleteController.show
+POST        /details/income-sources-incomplete                   controllers.individual.tasklist.IncomeSourcesIncompleteController.submit
+
 # Global Check Your Answers
 GET         /final-check-your-answers                            controllers.individual.GlobalCheckYourAnswersController.show
 POST        /final-check-your-answers                            controllers.individual.GlobalCheckYourAnswersController.submit
