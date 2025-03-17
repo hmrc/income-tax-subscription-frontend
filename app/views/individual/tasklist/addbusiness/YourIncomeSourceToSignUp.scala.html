@@ -22,7 +22,6 @@
 @import views.html.templates.PrincipalMainTemplate
 @import uk.gov.hmrc.hmrcfrontend.views.html.components._
 @import utilities.AccountingPeriodUtil
-@import views.html.helpers.ButtonHelper
 
 
 @this(
@@ -31,8 +30,7 @@
     appConfig: AppConfig,
     form: FormWithCSRF,
     saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
-    govukSummaryList: GovukSummaryList,
-    buttonHelper: ButtonHelper
+    govukSummaryList: GovukSummaryList
 )
 
 @(postAction: Call, backUrl: String, incomeSources: IncomeSources, isPrePopulated: Boolean)(implicit request: Request[_], messages: Messages)
@@ -65,19 +63,11 @@
     }
 
     @form(action = postAction) {
-        @if(!incomeSources.hasNoIncomeSources && incomeSources.isComplete) {
             @saveAndContinueButtonHelper(
                 isIndividual = true,
                 saveAndContinueText = Some(messages("base.save-and-continue")),
                 saveAndReturnReference = Some("income-sources")
             )
-        } else {
-            @buttonHelper(
-                buttonText = messages("base.save-and-come-back-later"),
-                classes = Some("govuk-button--secondary"),
-                href = Some(controllers.individual.tasklist.routes.ProgressSavedController.show(Some("income-sources")).url)
-            )
-        }
     }
 }
 
