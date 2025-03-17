@@ -189,6 +189,22 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         hasSignOutLink = true
       )
     }
+    "have a form" which {
+      def form(document: Document): Element = document.mainContent.getForm
+
+      "has the correct attributes" in new ViewTest() {
+        form(document).attr("method") mustBe testCall.method
+        form(document).attr("action") mustBe testCall.url
+      }
+      "has a continue button" in new ViewTest() {
+        form(document).getGovukSubmitButton.text mustBe IndividualIncomeSource.continue
+      }
+      "has a save and come back later button" in new ViewTest() {
+        val button: Element = form(document).selectHead(".govuk-button--secondary")
+        button.text mustBe IndividualIncomeSource.saveAndComeBackLater
+        button.attr("href") mustBe controllers.individual.tasklist.routes.ProgressSavedController.show(Some("income-sources")).url
+      }
+    }
   }
 
   "YourIncomeSourceToSignUp" when {
@@ -240,21 +256,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         val link: Element = document.mainContent.getElementById("add-foreign-property").selectHead("a")
         link.text mustBe IndividualIncomeSource.addForeignPropertyLinkText
         link.attr("href") mustBe IndividualIncomeSource.addForeignPropertyLink
-      }
-
-
-      "have a form" which {
-        def form(document: Document): Element = document.mainContent.getForm
-
-        "has the correct attributes" in new ViewTest(noIncomeSources) {
-          form(document).attr("method") mustBe testCall.method
-          form(document).attr("action") mustBe testCall.url
-        }
-        "has a save and come back later button" in new ViewTest(noIncomeSources) {
-          val button: Element = form(document).getGovukSubmitButton
-          button.text mustBe IndividualIncomeSource.saveAndComeBackLater
-          button.attr("href") mustBe controllers.individual.tasklist.routes.ProgressSavedController.show(Some("income-sources")).url
-        }
       }
 
       "not have a second paragraph" when {
@@ -426,21 +427,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
               )
             )
           }
-        }
-      }
-
-      "have a form" which {
-        def form(document: Document): Element = document.mainContent.getForm
-
-        "has the correct attributes" in new ViewTest(incompleteIncomeSources) {
-          form(document).attr("method") mustBe testCall.method
-          form(document).attr("action") mustBe testCall.url
-        }
-
-        "has a save and come back later button" in new ViewTest(incompleteIncomeSources) {
-          val button: Element = form(document).getGovukSubmitButton
-          button.text mustBe IndividualIncomeSource.saveAndComeBackLater
-          button.attr("href") mustBe controllers.individual.tasklist.routes.ProgressSavedController.show(Some("income-sources")).url
         }
       }
 
@@ -730,20 +716,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         }
 
       }
-      "have a form" which {
-        def form(document: Document): Element = document.mainContent.getForm
 
-        "has the correct attributes" in new ViewTest(completeIncomeSources) {
-          form(document).attr("method") mustBe testCall.method
-          form(document).attr("action") mustBe testCall.url
-        }
-
-        "has a save and come back later button" in new ViewTest(completeIncomeSources) {
-          val button: Element = form(document).getGovukSubmitButton
-          button.text mustBe IndividualIncomeSource.saveAndComeBackLater
-          button.attr("href") mustBe controllers.individual.tasklist.routes.ProgressSavedController.show(Some("income-sources")).url
-        }
-      }
       "have a second paragraph" when {
         "data has been pre-populated" in new ViewTest(completeIncomeSources, isPrePopulated = true) {
           document.mainContent.selectNth("p", 5).text mustBe IndividualIncomeSource.incomeSourcesPara2
@@ -870,21 +843,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
               )
             )
           )
-        }
-      }
-
-      "have a form" which {
-        def form(document: Document): Element = document.mainContent.getForm
-
-        "has the correct attributes" in new ViewTest(completeAndConfirmedIncomeSources) {
-          form(document).attr("method") mustBe testCall.method
-          form(document).attr("action") mustBe testCall.url
-        }
-        "has a continue button" in new ViewTest(completeAndConfirmedIncomeSources) {
-          form(document).getGovukSubmitButton.text mustBe IndividualIncomeSource.continue
-        }
-        "has a save and come back later button" in new ViewTest(completeAndConfirmedIncomeSources) {
-          form(document).selectHead(".govuk-button--secondary").text mustBe IndividualIncomeSource.saveAndComeBackLater
         }
       }
 

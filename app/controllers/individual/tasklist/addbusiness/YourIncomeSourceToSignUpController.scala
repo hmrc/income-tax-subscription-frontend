@@ -52,17 +52,13 @@ class YourIncomeSourceToSignUpController @Inject()(identify: IdentifierAction,
     subscriptionDetailsService.fetchAllIncomeSources(request.reference) flatMap { incomeSources =>
       if (incomeSources.isComplete) {
         subscriptionDetailsService.saveIncomeSourcesConfirmation(request.reference) map {
-          case Right(_) => Redirect(continueLocation)
+          case Right(_) => Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
           case Left(_) => throw new InternalServerException("[YourIncomeSourceToSignUpController][submit] - failed to save income sources confirmation")
         }
       } else {
-        Future.successful(Redirect(continueLocation))
+        Future.successful(Redirect(controllers.individual.tasklist.routes.IncomeSourcesIncompleteController.show))
       }
     }
-  }
-
-  def continueLocation: Call = {
-    controllers.individual.routes.GlobalCheckYourAnswersController.show
   }
 
   def backUrl: String = {
