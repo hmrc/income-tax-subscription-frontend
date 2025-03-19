@@ -130,6 +130,14 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
           clientDetailsForm.bind(testInput).errors must contain(FormError(clientNino, errors))
         }
 
+        "succeed if a lowercase NINO is supplied" in {
+          val lowerCaseNino = testClientNino.toLowerCase
+          val testInput = setupTestData(nino = lowerCaseNino)
+          val expected = UserDetailsModel(testClientFirstName, testClientLastName, testClientNino, dob)
+          val actual = clientDetailsForm.bind(testInput).value
+          actual mustBe Some(expected)
+        }
+
       }
 
       "when testing the DoB" should {

@@ -21,8 +21,9 @@ import forms.validation.Constraints.{invalidFormat, maxLength, ninoRegex, nonEmp
 import forms.validation.utils.ConstraintUtil._
 import models.DateModel
 import models.usermatching.UserDetailsModel
-import play.api.data.Form
-import play.api.data.Forms.{default, mapping, text}
+import play.api.data.{Form, Mapping}
+import play.api.data.Forms.{default, mapping, of, text}
+import play.api.data.format.Formats.stringFormat
 import play.api.data.validation.{Constraint, Invalid, Valid}
 
 import java.time.LocalDate
@@ -50,7 +51,7 @@ object ClientDetailsForm {
   val emptyClientNino: Constraint[String] = nonEmpty("agent.error.nino.empty")
 
   val validateClientNino: Constraint[String] = {
-    constraint[String](nino => if (nino.filterNot(_.isWhitespace).matches(ninoRegex)) Valid else Invalid("agent.error.nino.invalid"))
+    constraint[String](nino => if (nino.filterNot(_.isWhitespace).toUpperCase().matches(ninoRegex)) Valid else Invalid("agent.error.nino.invalid"))
   }
 
   val dateInPast: Constraint[DateModel] = constraint[DateModel] { dateModel =>
@@ -67,7 +68,7 @@ object ClientDetailsForm {
       clientLastName -> default(text, "").verifying(lastNameNonEmpty andThen lastNameMaxLength andThen lastNameInvalid),
       clientNino -> default(text, "").verifying(emptyClientNino andThen validateClientNino),
       clientDateOfBirth -> DateModelMapping.dateModelMapping(isAgent = true, errorContext, None, None, None).verifying(dateInPast)
-    )(UserDetailsModel.apply)(UserDetailsModel.unapply)
+    )((a,b,c,d) => UserDetailsModel(a, b, c.toUpperCase(), d))(UserDetailsModel.unapply)
   )
 
 }
