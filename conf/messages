@@ -97,6 +97,7 @@ your-income-source.foreign-property.start-date-para             = Start date
 your-income-source.foreign-property.before-start-date-limit     = Before 6 April {0}
 your-income-source.foreign-property.add-link                    = Add foreign property
 
+
 # Individual income sources incomplete page
 individual.income-sources-incomplete.title                    = There is a problem with your income sources
 individual.income-sources-incomplete.heading                  = There is a problem with your income sources

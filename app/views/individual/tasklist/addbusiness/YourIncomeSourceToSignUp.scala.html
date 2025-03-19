@@ -22,6 +22,8 @@
 @import views.html.templates.PrincipalMainTemplate
 @import uk.gov.hmrc.hmrcfrontend.views.html.components._
 @import utilities.AccountingPeriodUtil
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukTag
+
 
 
 @this(
@@ -30,7 +32,8 @@
     appConfig: AppConfig,
     form: FormWithCSRF,
     saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
-    govukSummaryList: GovukSummaryList
+    govukSummaryList: GovukSummaryList,
+    govukTag : GovukTag
 )
 
 @(postAction: Call, backUrl: String, incomeSources: IncomeSources, isPrePopulated: Boolean)(implicit request: Request[_], messages: Messages)
@@ -92,13 +95,46 @@
     }
 }
 
-@incomeSourceChangeLabel(isComplete: Boolean, isConfirmed: Boolean) = @{
-    if (isConfirmed) {
-        Text(messages("base.change"))
-    } else if (isComplete) {
-        Text(messages("base.check"))
+@maybeIncomeSourceChangeAction(isComplete: Boolean, isConfirmed: Boolean, href: String, visuallyHidden: Option[String] = None): Seq[ActionItem] = @{
+    if(isComplete && isConfirmed) {
+        Seq(ActionItem(
+            href = href,
+            content = Text(messages("base.change")),
+            visuallyHiddenText = visuallyHidden
+        ))
     } else {
-        Text(messages("base.add-details"))
+        Seq.empty
+    }
+}
+
+@statusTag(isCompleteAndConfirmed: Boolean) = @{
+    if(isCompleteAndConfirmed) {
+        Text(messages("base.status.completed"))
+    } else {
+        HtmlContent(govukTag(Tag(
+            content = Text(messages("base.status.incomplete")),
+            classes = "govuk-tag--blue"
+        )))
+    }
+}
+
+@maybeStatusTagAction(isComplete: Boolean, isConfirmed: Boolean, href: String, visuallyHidden: Option[String] = None): Option[Actions] = @{
+    if (isComplete && isConfirmed) {
+        None
+    } else {
+        Some(Actions(
+            items = Seq(
+                ActionItem(
+                    href = href,
+                    content = if(isComplete) {
+                        Text(messages("base.check-details"))
+                    } else {
+                        Text(messages("base.add-details"))
+                    },
+                    visuallyHiddenText = visuallyHidden
+                )
+            )
+        ))
     }
 }
 
@@ -112,27 +148,33 @@
                 SummaryListRow(
                     key = Key(content = Text(messages("your-income-source.self-employed.business-name.para"))),
                     value = Value(Text(selfEmploymentName(business, index)))
+                ),
+            SummaryListRow(
+                key = Key(content = Text(messages("base.status.label"))),
+                value = Value(statusTag(business.isComplete && incomeSources.selfEmploymentAccountingMethod.isDefined && business.confirmed)),
+                actions = maybeStatusTagAction(
+                    isComplete = business.isComplete && incomeSources.selfEmploymentAccountingMethod.isDefined,
+                    isConfirmed = business.confirmed,
+                    href = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${business.id}&isEditMode=true",
+                    visuallyHidden = business.businessName.map(_.businessName)
                 )
-            ),
+            )),
             card = Some(Card(
                 title = Some(CardTitle(content = Text(selfEmploymentTrade(business, index)))),
                 actions = Some(Actions(
-                    items = Seq(
-                        ActionItem(
+                    items =
+                        maybeIncomeSourceChangeAction(
+                            isComplete = business.isComplete,
+                            isConfirmed = business.confirmed,
                             href = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${business.id}&isEditMode=true",
-                            content = incomeSourceChangeLabel(
-                                business.isComplete && incomeSources.selfEmploymentAccountingMethod.isDefined,
-                                business.confirmed
-                            ),
-                            visuallyHiddenText = business.businessName.map(_.businessName)
-                        ),
-                        ActionItem(
-                            href = controllers.individual.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController
-                            .show(business.id).url,
+                            visuallyHidden = business.businessName.map(_.businessName)
+                        ) ++
+                        Seq(ActionItem(
+                            href = controllers.individual.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show(business.id).url,
                             content = Text(messages("base.remove")),
-                            visuallyHiddenText = business.businessName.map(_.businessName)
+                            visuallyHiddenText = business.businessName.map(_.businessName
                         )
-                    )
+                    ))
                 ))
             ))
         ))
@@ -147,43 +189,47 @@
 }
 
 @incomeFromProperty = {
-
     <h2 class="govuk-heading-m">@messages("your-income-source.income-from-property.heading")</h2>
-
     <p class="govuk-body">@messages("your-income-source.income-from-property.para")</p>
 
     @incomeSources.ukProperty.map { ukProperty =>
         @govukSummaryList(SummaryList(
-            rows = Seq(SummaryListRow(
-                key = Key(
-                    content = Text(messages("your-income-source.property.start-date-para"))
+            rows = Seq(
+                SummaryListRow(
+                    key = Key(content = Text(messages("your-income-source.property.start-date-para"))),
+                    value = Value(Text(
+                        if (ukProperty.startDateBeforeLimit.contains(true) || ukProperty.startDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))) {
+                            messages("your-income-source.property.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
+                        } else {
+                            startDate(ukProperty.startDate)
+                        }
+                    ))
                 ),
-            value = Value(Text(
-                if(ukProperty.startDateBeforeLimit.contains(true) || ukProperty.startDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))) {
-                    messages("your-income-source.property.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
-                } else {
-                    startDate(ukProperty.startDate)
-                }
-            ))
-        )),
-        card = Some(Card(
-            title = Some(CardTitle(
-                content = Text(messages("your-income-source.uk-property"))
-            )),
-            actions = Some(Actions(
-                items = Seq(
-                    ActionItem(
-                        href = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url,
-                        content = incomeSourceChangeLabel(ukProperty.isComplete, ukProperty.confirmed),
-                    ),
-                    ActionItem(
-                        href = controllers.individual.tasklist.ukproperty.routes.RemoveUkPropertyController.show.url,
-                        content = Text(messages("base.remove"))
-                    )
+               SummaryListRow(
+                key = Key(content = Text(messages("base.status.label"))),
+                value = Value(statusTag(ukProperty.confirmed)),
+                actions = maybeStatusTagAction(
+                    isComplete = ukProperty.isComplete,
+                    isConfirmed = ukProperty.confirmed,
+                    href = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url
                 )
+            )),
+            card = Some(Card(
+                title = Some(CardTitle(content = Text(messages("your-income-source.uk-property")))),
+                  actions = Some(Actions(
+                    items =
+                        maybeIncomeSourceChangeAction(
+                            isComplete = ukProperty.isComplete,
+                            isConfirmed = ukProperty.confirmed,
+                            href = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url,
+                        ) ++
+                        Seq(ActionItem(
+                            href = controllers.individual.tasklist.ukproperty.routes.RemoveUkPropertyController.show.url,
+                            content = Text(messages("base.remove"))
+                        ))
+                ))
             ))
         ))
-    ))
     }.getOrElse {
         <div id="add-uk-property" class="govuk-!-padding-bottom-6">
             <p class="govuk-body">
@@ -194,33 +240,43 @@
 
     @incomeSources.foreignProperty.map { foreignProperty =>
         @govukSummaryList(SummaryList(
-            rows = Seq(SummaryListRow(
-                key = Key(
-                    content = Text(messages("your-income-source.foreign-property.start-date-para"))
+            rows = Seq(
+                SummaryListRow(
+                    key = Key(content = Text(messages("your-income-source.foreign-property.start-date-para"))),
+                    value = Value(Text(
+                        if (foreignProperty.startDateBeforeLimit.contains(true) ||
+                            foreignProperty.startDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))) {
+                            messages("your-income-source.foreign-property.before-start-date-limit",
+                            AccountingPeriodUtil.getStartDateLimit.getYear.toString)
+                        } else {
+                            startDate(foreignProperty.startDate)
+                        }
+                    ))
                 ),
-                value = Value(Text(
-                    if(foreignProperty.startDateBeforeLimit.contains(true) || foreignProperty.startDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))) {
-                        messages("your-income-source.foreign-property.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
-                    } else {
-                        startDate(foreignProperty.startDate)
-                    }
-                ))
+            SummaryListRow(
+                key = Key(content = Text(messages("base.status.label"))),
+                value = Value(statusTag(foreignProperty.confirmed)),
+                actions = maybeStatusTagAction(
+                    isComplete = foreignProperty.isComplete,
+                    isConfirmed = foreignProperty.confirmed,
+                    href = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
+                )
             )),
             card = Some(Card(
                 title = Some(CardTitle(
                     content = Text(messages("your-income-source.foreign-property"))
                 )),
                 actions = Some(Actions(
-                    items = Seq(
-                        ActionItem(
+                    items =
+                        maybeIncomeSourceChangeAction(
+                            isComplete = foreignProperty.isComplete,
+                            isConfirmed = foreignProperty.confirmed,
                             href = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url,
-                            content = incomeSourceChangeLabel(foreignProperty.isComplete, foreignProperty.confirmed),
-                        ),
-                        ActionItem(
+                        ) ++
+                        Seq(ActionItem(
                             href = controllers.individual.tasklist.overseasproperty.routes.RemoveOverseasPropertyController.show.url,
                             content = Text(messages("base.remove"))
-                        )
-                    )
+                        ))
                 ))
             ))
         ))
@@ -230,9 +286,8 @@
                 <a class="govuk-link" href="@controllers.individual.tasklist.overseasproperty.routes.ForeignPropertyStartDateBeforeLimitController.show()">@messages("your-income-source.foreign-property.add-link")</a>
             </p>
         </div>
+        }
     }
-
-}
 
 
 

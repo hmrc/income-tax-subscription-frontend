@@ -39,15 +39,15 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     val incomeSourcesPara2: String = "Before you continue, make sure you have checked any income sources we added for you."
 
     val addDetails: String = "Add details"
-    val check: String = "Check"
+    val checkDetails: String = "Check details"
     val change: String = "Change"
     val remove: String = "Remove"
+    val statusTagKey = "Status"
+    val incompleteTag: String = "Incomplete"
+    val completedTag: String = "Completed"
 
-    val ukPropertyChange = "(UK property)"
-    val ukPropertyRemove = "(UK property)"
-
-    val foreignPropertyChange = "(Foreign property)"
-    val foreignPropertyRemove = "(Foreign property)"
+    val ukPropertyHiddenText = "(UK property)"
+    val foreignPropertyHiddenText = "(Foreign property)"
 
     val selfEmploymentHeading = "Sole trader businesses"
     val selfEmploymentPara: String = "You’re a sole trader if you run your own business as an individual and work for yourself. " +
@@ -292,11 +292,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
             title = "Business 1",
             cardActions = Seq(
               SummaryListActionValues(
-                href = IndividualIncomeSource.soleTraderChangeLinkTwo,
-                text = s"${IndividualIncomeSource.addDetails} business name (Business 1)",
-                visuallyHidden = s"business name (Business 1)"
-              ),
-              SummaryListActionValues(
                 href = IndividualIncomeSource.soleTraderRemoveLinkTwo,
                 text = s"${IndividualIncomeSource.remove} business name (Business 1)",
                 visuallyHidden = s"business name (Business 1)"
@@ -307,6 +302,15 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 key = IndividualIncomeSource.soleTraderBusinessNameKey,
                 value = Some("business name"),
                 actions = Seq.empty
+              ),
+              SummaryListRowValues(
+                key = IndividualIncomeSource.statusTagKey,
+                value = Some(IndividualIncomeSource.incompleteTag),
+                actions = Seq(SummaryListActionValues(
+                  href = IndividualIncomeSource.soleTraderChangeLinkTwo,
+                  text = s"${IndividualIncomeSource.addDetails} business name (Business 1)",
+                  visuallyHidden = s"business name (Business 1)"
+                ))
               )
             )
           )
@@ -316,11 +320,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(2))(
             title = "business trade",
             cardActions = Seq(
-              SummaryListActionValues(
-                href = IndividualIncomeSource.soleTraderChangeLinkThree,
-                text = s"${IndividualIncomeSource.addDetails} (business trade)",
-                visuallyHidden = s"(business trade)"
-              ),
               SummaryListActionValues(
                 href = IndividualIncomeSource.soleTraderRemoveLinkThree,
                 text = s"${IndividualIncomeSource.remove} (business trade)",
@@ -332,6 +331,15 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 key = IndividualIncomeSource.soleTraderBusinessNameKey,
                 value = Some("Business 2"),
                 actions = Seq.empty
+              ),
+              SummaryListRowValues(
+                key = IndividualIncomeSource.statusTagKey,
+                value = Some(IndividualIncomeSource.incompleteTag),
+                actions = Seq(SummaryListActionValues(
+                  href = IndividualIncomeSource.soleTraderChangeLinkThree,
+                  text = s"${IndividualIncomeSource.addDetails} (business trade)",
+                  visuallyHidden = s"(business trade)"
+                ))
               )
             )
           )
@@ -341,11 +349,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(3))(
             title = "Business 3",
             cardActions = Seq(
-              SummaryListActionValues(
-                href = IndividualIncomeSource.soleTraderChangeLinkFour,
-                text = s"${IndividualIncomeSource.addDetails} (Business 3)",
-                visuallyHidden = s"(Business 3)"
-              ),
               SummaryListActionValues(
                 href = IndividualIncomeSource.soleTraderRemoveLinkFour,
                 text = s"${IndividualIncomeSource.remove} (Business 3)",
@@ -357,6 +360,15 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 key = IndividualIncomeSource.soleTraderBusinessNameKey,
                 value = Some("Business 3"),
                 actions = Seq.empty
+              ),
+              SummaryListRowValues(
+                key = IndividualIncomeSource.statusTagKey,
+                value = Some(IndividualIncomeSource.incompleteTag),
+                actions = Seq(SummaryListActionValues(
+                  href = IndividualIncomeSource.soleTraderChangeLinkFour,
+                  text = s"${IndividualIncomeSource.addDetails} (Business 3)",
+                  visuallyHidden = "(Business 3)"
+                ))
               )
             )
           )
@@ -383,13 +395,8 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
               title = IndividualIncomeSource.ukPropertyCardTitle,
               cardActions = Seq(
                 SummaryListActionValues(
-                  href = IndividualIncomeSource.ukPropertyChangeLink,
-                  text = s"${IndividualIncomeSource.addDetails} ${IndividualIncomeSource.ukPropertyChange}",
-                  visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
-                ),
-                SummaryListActionValues(
                   href = IndividualIncomeSource.ukPropertyRemoveLink,
-                  text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.ukPropertyRemove}",
+                  text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.ukPropertyHiddenText}",
                   visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
                 )
               ),
@@ -398,6 +405,15 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                   key = IndividualIncomeSource.propertyStartDate,
                   value = Some(""),
                   actions = Seq.empty
+                ),
+                SummaryListRowValues(
+                  key = IndividualIncomeSource.statusTagKey,
+                  value = Some(IndividualIncomeSource.incompleteTag),
+                  actions = Seq(SummaryListActionValues(
+                    href = IndividualIncomeSource.ukPropertyChangeLink,
+                    text = s"${IndividualIncomeSource.addDetails} ${IndividualIncomeSource.ukPropertyHiddenText}",
+                    visuallyHidden = IndividualIncomeSource.ukPropertyHiddenText
+                  ))
                 )
               )
             )
@@ -408,13 +424,8 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
               title = IndividualIncomeSource.foreignPropertyCardTitle,
               cardActions = Seq(
                 SummaryListActionValues(
-                  href = IndividualIncomeSource.foreignPropertyChangeLink,
-                  text = s"${IndividualIncomeSource.addDetails} ${IndividualIncomeSource.foreignPropertyChange}",
-                  visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
-                ),
-                SummaryListActionValues(
                   href = IndividualIncomeSource.foreignPropertyRemoveLink,
-                  text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.foreignPropertyRemove}",
+                  text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.foreignPropertyHiddenText}",
                   visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
                 )
               ),
@@ -423,6 +434,15 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                   key = IndividualIncomeSource.propertyStartDate,
                   value = Some(""),
                   actions = Seq.empty
+                ),
+                SummaryListRowValues(
+                  key = IndividualIncomeSource.statusTagKey,
+                  value = Some(IndividualIncomeSource.incompleteTag),
+                  actions = Seq(SummaryListActionValues(
+                    href = IndividualIncomeSource.foreignPropertyChangeLink,
+                    text = s"${IndividualIncomeSource.addDetails} ${IndividualIncomeSource.foreignPropertyHiddenText}",
+                    visuallyHidden = IndividualIncomeSource.foreignPropertyHiddenText
+                  ))
                 )
               )
             )
@@ -470,11 +490,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
               title = "business trade",
               cardActions = Seq(
                 SummaryListActionValues(
-                  href = IndividualIncomeSource.soleTraderChangeLinkOne,
-                  text = s"${IndividualIncomeSource.check} business name (business trade)",
-                  visuallyHidden = s"business name (business trade)"
-                ),
-                SummaryListActionValues(
                   href = controllers.individual.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idOne").url,
                   text = s"${IndividualIncomeSource.remove} business name (business trade)",
                   visuallyHidden = s"business name (business trade)"
@@ -485,6 +500,15 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                   key = IndividualIncomeSource.soleTraderBusinessNameKey,
                   value = Some("business name"),
                   actions = Seq.empty
+                ),
+                SummaryListRowValues(
+                  key = IndividualIncomeSource.statusTagKey,
+                  value = Some(IndividualIncomeSource.incompleteTag),
+                  actions = Seq(SummaryListActionValues(
+                    href = IndividualIncomeSource.soleTraderChangeLinkOne,
+                    text = s"${IndividualIncomeSource.checkDetails} business name (business trade)",
+                    visuallyHidden = "business name (business trade)"
+                  ))
                 )
               )
             )
@@ -496,11 +520,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
               title = "business trade",
               cardActions = Seq(
                 SummaryListActionValues(
-                  href = IndividualIncomeSource.soleTraderChangeLinkOne,
-                  text = s"${IndividualIncomeSource.addDetails} business name (business trade)",
-                  visuallyHidden = s"business name (business trade)"
-                ),
-                SummaryListActionValues(
                   href = controllers.individual.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idOne").url,
                   text = s"${IndividualIncomeSource.remove} business name (business trade)",
                   visuallyHidden = s"business name (business trade)"
@@ -511,6 +530,15 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                   key = IndividualIncomeSource.soleTraderBusinessNameKey,
                   value = Some("business name"),
                   actions = Seq.empty
+                ),
+                SummaryListRowValues(
+                  key = IndividualIncomeSource.statusTagKey,
+                  value = Some(IndividualIncomeSource.incompleteTag),
+                  actions = Seq(SummaryListActionValues(
+                    href = IndividualIncomeSource.soleTraderChangeLinkOne,
+                    text = s"${IndividualIncomeSource.addDetails} business name (business trade)",
+                    visuallyHidden = "business name (business trade)"
+                  ))
                 )
               )
             )
@@ -545,13 +573,8 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 title = IndividualIncomeSource.ukPropertyCardTitle,
                 cardActions = Seq(
                   SummaryListActionValues(
-                    href = IndividualIncomeSource.ukPropertyChangeLink,
-                    text = s"${IndividualIncomeSource.check} ${IndividualIncomeSource.ukPropertyChange}",
-                    visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
-                  ),
-                  SummaryListActionValues(
                     href = IndividualIncomeSource.ukPropertyRemoveLink,
-                    text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.ukPropertyRemove}",
+                    text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.ukPropertyHiddenText}",
                     visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
                   )
                 ),
@@ -560,6 +583,15 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                     key = IndividualIncomeSource.propertyStartDate,
                     value = Some(limitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))),
                     actions = Seq.empty
+                  ),
+                  SummaryListRowValues(
+                    key = IndividualIncomeSource.statusTagKey,
+                    value = Some(IndividualIncomeSource.incompleteTag),
+                    actions = Seq(SummaryListActionValues(
+                      href = IndividualIncomeSource.ukPropertyChangeLink,
+                      text = s"${IndividualIncomeSource.checkDetails} ${IndividualIncomeSource.ukPropertyHiddenText}",
+                      visuallyHidden = IndividualIncomeSource.ukPropertyHiddenText
+                    ))
                   )
                 )
               )
@@ -575,13 +607,8 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 title = IndividualIncomeSource.ukPropertyCardTitle,
                 cardActions = Seq(
                   SummaryListActionValues(
-                    href = IndividualIncomeSource.ukPropertyChangeLink,
-                    text = s"${IndividualIncomeSource.check} ${IndividualIncomeSource.ukPropertyChange}",
-                    visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
-                  ),
-                  SummaryListActionValues(
                     href = IndividualIncomeSource.ukPropertyRemoveLink,
-                    text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.ukPropertyRemove}",
+                    text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.ukPropertyHiddenText}",
                     visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
                   )
                 ),
@@ -590,6 +617,15 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                     key = IndividualIncomeSource.propertyStartDate,
                     value = Some(IndividualIncomeSource.propertyDateBeforeLimit),
                     actions = Seq.empty
+                  ),
+                  SummaryListRowValues(
+                    key = IndividualIncomeSource.statusTagKey,
+                    value = Some(IndividualIncomeSource.incompleteTag),
+                    actions = Seq(SummaryListActionValues(
+                      href = IndividualIncomeSource.ukPropertyChangeLink,
+                      text = s"${IndividualIncomeSource.checkDetails} ${IndividualIncomeSource.ukPropertyHiddenText}",
+                      visuallyHidden = IndividualIncomeSource.ukPropertyHiddenText
+                    ))
                   )
                 )
               )
@@ -603,13 +639,8 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 title = IndividualIncomeSource.ukPropertyCardTitle,
                 cardActions = Seq(
                   SummaryListActionValues(
-                    href = IndividualIncomeSource.ukPropertyChangeLink,
-                    text = s"${IndividualIncomeSource.check} ${IndividualIncomeSource.ukPropertyChange}",
-                    visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
-                  ),
-                  SummaryListActionValues(
                     href = IndividualIncomeSource.ukPropertyRemoveLink,
-                    text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.ukPropertyRemove}",
+                    text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.ukPropertyHiddenText}",
                     visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
                   )
                 ),
@@ -618,6 +649,15 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                     key = IndividualIncomeSource.propertyStartDate,
                     value = Some(IndividualIncomeSource.propertyDateBeforeLimit),
                     actions = Seq.empty
+                  ),
+                  SummaryListRowValues(
+                    key = IndividualIncomeSource.statusTagKey,
+                    value = Some(IndividualIncomeSource.incompleteTag),
+                    actions = Seq(SummaryListActionValues(
+                      href = IndividualIncomeSource.ukPropertyChangeLink,
+                      text = s"${IndividualIncomeSource.checkDetails} ${IndividualIncomeSource.ukPropertyHiddenText}",
+                      visuallyHidden = IndividualIncomeSource.ukPropertyHiddenText
+                    ))
                   )
                 )
               )
@@ -635,13 +675,8 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 title = IndividualIncomeSource.foreignPropertyCardTitle,
                 cardActions = Seq(
                   SummaryListActionValues(
-                    href = IndividualIncomeSource.foreignPropertyChangeLink,
-                    text = s"${IndividualIncomeSource.check} ${IndividualIncomeSource.foreignPropertyChange}",
-                    visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
-                  ),
-                  SummaryListActionValues(
                     href = IndividualIncomeSource.foreignPropertyRemoveLink,
-                    text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.foreignPropertyRemove}",
+                    text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.foreignPropertyHiddenText}",
                     visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
                   )
                 ),
@@ -650,6 +685,15 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                     key = IndividualIncomeSource.propertyStartDate,
                     value = Some(limitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))),
                     actions = Seq.empty
+                  ),
+                  SummaryListRowValues(
+                    key = IndividualIncomeSource.statusTagKey,
+                    value = Some(IndividualIncomeSource.incompleteTag),
+                    actions = Seq(SummaryListActionValues(
+                      href = IndividualIncomeSource.foreignPropertyChangeLink,
+                      text = s"${IndividualIncomeSource.checkDetails} ${IndividualIncomeSource.foreignPropertyHiddenText}",
+                      visuallyHidden = IndividualIncomeSource.foreignPropertyHiddenText
+                    ))
                   )
                 )
               )
@@ -665,13 +709,8 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 title = IndividualIncomeSource.foreignPropertyCardTitle,
                 cardActions = Seq(
                   SummaryListActionValues(
-                    href = IndividualIncomeSource.foreignPropertyChangeLink,
-                    text = s"${IndividualIncomeSource.check} ${IndividualIncomeSource.foreignPropertyChange}",
-                    visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
-                  ),
-                  SummaryListActionValues(
                     href = IndividualIncomeSource.foreignPropertyRemoveLink,
-                    text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.foreignPropertyRemove}",
+                    text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.foreignPropertyHiddenText}",
                     visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
                   )
                 ),
@@ -680,6 +719,15 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                     key = IndividualIncomeSource.propertyStartDate,
                     value = Some(IndividualIncomeSource.propertyDateBeforeLimit),
                     actions = Seq.empty
+                  ),
+                  SummaryListRowValues(
+                    key = IndividualIncomeSource.statusTagKey,
+                    value = Some(IndividualIncomeSource.incompleteTag),
+                    actions = Seq(SummaryListActionValues(
+                      href = IndividualIncomeSource.foreignPropertyChangeLink,
+                      text = s"${IndividualIncomeSource.checkDetails} ${IndividualIncomeSource.foreignPropertyHiddenText}",
+                      visuallyHidden = IndividualIncomeSource.foreignPropertyHiddenText
+                    ))
                   )
                 )
               )
@@ -693,13 +741,8 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 title = IndividualIncomeSource.foreignPropertyCardTitle,
                 cardActions = Seq(
                   SummaryListActionValues(
-                    href = IndividualIncomeSource.foreignPropertyChangeLink,
-                    text = s"${IndividualIncomeSource.check} ${IndividualIncomeSource.foreignPropertyChange}",
-                    visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
-                  ),
-                  SummaryListActionValues(
                     href = IndividualIncomeSource.foreignPropertyRemoveLink,
-                    text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.foreignPropertyRemove}",
+                    text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.foreignPropertyHiddenText}",
                     visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
                   )
                 ),
@@ -708,6 +751,15 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                     key = IndividualIncomeSource.propertyStartDate,
                     value = Some(IndividualIncomeSource.propertyDateBeforeLimit),
                     actions = Seq.empty
+                  ),
+                  SummaryListRowValues(
+                    key = IndividualIncomeSource.statusTagKey,
+                    value = Some(IndividualIncomeSource.incompleteTag),
+                    actions = Seq(SummaryListActionValues(
+                      href = IndividualIncomeSource.foreignPropertyChangeLink,
+                      text = s"${IndividualIncomeSource.checkDetails} ${IndividualIncomeSource.foreignPropertyHiddenText}",
+                      visuallyHidden = IndividualIncomeSource.foreignPropertyHiddenText
+                    ))
                   )
                 )
               )
@@ -801,12 +853,12 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
             cardActions = Seq(
               SummaryListActionValues(
                 href = IndividualIncomeSource.ukPropertyChangeLink,
-                text = s"${IndividualIncomeSource.change} ${IndividualIncomeSource.ukPropertyChange}",
+                text = s"${IndividualIncomeSource.change} ${IndividualIncomeSource.ukPropertyHiddenText}",
                 visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
               ),
               SummaryListActionValues(
                 href = IndividualIncomeSource.ukPropertyRemoveLink,
-                text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.ukPropertyRemove}",
+                text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.ukPropertyHiddenText}",
                 visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
               )
             ),
@@ -814,6 +866,11 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
               SummaryListRowValues(
                 key = IndividualIncomeSource.propertyStartDate,
                 value = Some(IndividualIncomeSource.propertyDateBeforeLimit),
+                actions = Seq.empty
+              ),
+              SummaryListRowValues(
+                key = IndividualIncomeSource.statusTagKey,
+                value = Some(IndividualIncomeSource.completedTag),
                 actions = Seq.empty
               )
             )
@@ -826,12 +883,12 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
             cardActions = Seq(
               SummaryListActionValues(
                 href = IndividualIncomeSource.foreignPropertyChangeLink,
-                text = s"${IndividualIncomeSource.change} ${IndividualIncomeSource.foreignPropertyChange}",
+                text = s"${IndividualIncomeSource.change} ${IndividualIncomeSource.foreignPropertyHiddenText}",
                 visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
               ),
               SummaryListActionValues(
                 href = IndividualIncomeSource.foreignPropertyRemoveLink,
-                text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.foreignPropertyRemove}",
+                text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.foreignPropertyHiddenText}",
                 visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
               )
             ),
@@ -839,6 +896,11 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
               SummaryListRowValues(
                 key = IndividualIncomeSource.propertyStartDate,
                 value = Some(IndividualIncomeSource.propertyDateBeforeLimit),
+                actions = Seq.empty
+              ),
+              SummaryListRowValues(
+                key = IndividualIncomeSource.statusTagKey,
+                value = Some(IndividualIncomeSource.completedTag),
                 actions = Seq.empty
               )
             )
