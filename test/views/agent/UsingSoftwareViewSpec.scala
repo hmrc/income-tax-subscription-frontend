@@ -77,10 +77,6 @@ class UsingSoftwareViewSpec extends ViewSpec {
       document().mainContent.selectNth("p", 3).selectHead("a").attr("href") mustBe linkHref
     }
 
-    "have a subheading" in {
-      document().mainContent.selectNth("h2", 1).text mustBe subheading
-    }
-
     "have a form" which {
       def form: Element = document().selectHead("form")
 
@@ -92,9 +88,9 @@ class UsingSoftwareViewSpec extends ViewSpec {
       "has the correct radio inputs" in {
         form.mustHaveYesNoRadioInputs(selector = "fieldset")(
           name = radioName,
-          legend = heading,
+          legend = subheading,
           isHeading = false,
-          isLegendHidden = true,
+          isLegendHidden = false,
           hint = None,
           errorMessage = None
         )

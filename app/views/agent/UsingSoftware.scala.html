@@ -46,11 +46,10 @@
         @findSoftwareNewTabLink()
     </p>
 
-    <h2 class="govuk-heading-m">@messages("agent.using-software.subheading")</h2>
-
     @yesNoRadioHelper(
       field = usingSoftwareForm(fieldName),
-      legend = messages("agent.using-software.heading"),
+      legend = messages("agent.using-software.subheading"),
+      headingClasses = "govuk-fieldset__legend--m",
       isPageHeading = false
     )
     @continueButton()
