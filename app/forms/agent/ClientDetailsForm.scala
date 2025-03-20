@@ -51,7 +51,7 @@ object ClientDetailsForm {
   val emptyClientNino: Constraint[String] = nonEmpty("agent.error.nino.empty")
 
   val validateClientNino: Constraint[String] = {
-    constraint[String](nino => if (nino.filterNot(_.isWhitespace).toUpperCase().matches(ninoRegex)) Valid else Invalid("agent.error.nino.invalid"))
+    constraint[String](nino => if (nino.filterNot(_.isWhitespace).matches(ninoRegex)) Valid else Invalid("agent.error.nino.invalid"))
   }
 
   val dateInPast: Constraint[DateModel] = constraint[DateModel] { dateModel =>
@@ -66,9 +66,9 @@ object ClientDetailsForm {
     mapping(
       clientFirstName -> default(text, "").verifying(firstNameNonEmpty andThen firstNameMaxLength andThen firstNameInvalid),
       clientLastName -> default(text, "").verifying(lastNameNonEmpty andThen lastNameMaxLength andThen lastNameInvalid),
-      clientNino -> default(text, "").verifying(emptyClientNino andThen validateClientNino),
+      clientNino -> default(text, "").transform[String](_.toUpperCase, identity).verifying(emptyClientNino andThen validateClientNino),
       clientDateOfBirth -> DateModelMapping.dateModelMapping(isAgent = true, errorContext, None, None, None).verifying(dateInPast)
-    )((a,b,c,d) => UserDetailsModel(a, b, c.toUpperCase(), d))(UserDetailsModel.unapply)
+    )(UserDetailsModel.apply)(UserDetailsModel.unapply)
   )
 
 }
