@@ -687,6 +687,12 @@ agent.no-software.para3.href                                     = https://www.g
 agent.no-software.para4                                          = When you have compatible software, you can come back to sign up your client.
 agent.no-software.para5                                          = Meanwhile, you’ll need to make sure your client submits their Self Assessment tax return as normal.
 
+## Agent email capture page ##
+agent.email-capture.heading                                      = Enter your email address
+agent.email-capture.hint                                         = Email hint
+error.agent.email-capture.empty                                  = Email is missing error
+error.agent.email-capture.max-length                             = Email is too long error
+error.agent.email-capture.invalid                                = Email is invalid error
 
 ## Agent what you need to do page ##
 agent.what-you-need-to-do.title                                                  = What you need to do

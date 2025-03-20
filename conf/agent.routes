@@ -69,6 +69,10 @@ POST        /using-software                                     controllers.agen
 # No to using Software
 GET         /no-compatible-software                             controllers.agent.NoSoftwareController.show()
 
+# Email capture routes
+GET         /email-capture                                       controllers.agent.email.EmailCaptureController.show()
+POST        /email-capture                                       controllers.agent.email.EmailCaptureController.submit()
+
 # What you need to do
 GET         /what-you-need-to-do                                controllers.agent.WhatYouNeedToDoController.show()
 POST        /what-you-need-to-do                                controllers.agent.WhatYouNeedToDoController.submit
