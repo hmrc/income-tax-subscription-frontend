@@ -21,9 +21,8 @@ import forms.validation.Constraints.{invalidFormat, maxLength, ninoRegex, nonEmp
 import forms.validation.utils.ConstraintUtil._
 import models.DateModel
 import models.usermatching.UserDetailsModel
-import play.api.data.{Form, Mapping}
-import play.api.data.Forms.{default, mapping, of, text}
-import play.api.data.format.Formats.stringFormat
+import play.api.data.Form
+import play.api.data.Forms.{default, mapping, text}
 import play.api.data.validation.{Constraint, Invalid, Valid}
 
 import java.time.LocalDate
