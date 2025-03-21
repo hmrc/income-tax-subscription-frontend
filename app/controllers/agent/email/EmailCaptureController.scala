@@ -41,7 +41,8 @@ class EmailCaptureController @Inject()(identify: IdentifierAction,
     Ok(view(
       emailForm = EmailCaptureForm.form,
       postAction = routes.EmailCaptureController.submit(),
-      backUrl = "capture consent url"))
+      backUrl = controllers.agent.email.routes.CaptureConsentController.show().url
+    ))
   }
 
 
@@ -50,7 +51,7 @@ class EmailCaptureController @Inject()(identify: IdentifierAction,
       formWithErrors => Future.successful(BadRequest(view(
         emailForm = formWithErrors,
         postAction = routes.EmailCaptureController.submit(),
-        backUrl = "capture consent url"
+        backUrl = controllers.agent.email.routes.CaptureConsentController.show().url
       ))), {
         email =>
           auditBetaContactDetails(email) map { _ =>

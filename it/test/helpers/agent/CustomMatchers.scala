@@ -18,8 +18,10 @@ package helpers.agent
 
 import models.DateModel
 import org.jsoup.Jsoup
-import org.scalatest.matchers.{HavePropertyMatchResult, HavePropertyMatcher}
+import org.scalatest.matchers._
 import play.api.libs.ws.WSResponse
+
+import scala.jdk.CollectionConverters.CollectionHasAsScala
 
 trait CustomMatchers {
 
@@ -77,6 +79,17 @@ trait CustomMatchers {
         "no error heading found"
       )
     }
+
+  def elementTextBySelector(selector: String)(expectedValue: String): HavePropertyMatcher[WSResponse, String] = (response: WSResponse) => {
+    val body = Jsoup.parse(response.body)
+
+    HavePropertyMatchResult(
+      body.select(selector).asScala.headOption.exists(_.text == expectedValue),
+      s"select($selector)",
+      expectedValue,
+      body.select(selector).asScala.headOption.map(_.text).getOrElse("")
+    )
+  }
 
   def redirectURI(expectedValue: String): HavePropertyMatcher[WSResponse, String] = new HavePropertyMatcher[WSResponse, String] {
     def apply(response: WSResponse): HavePropertyMatchResult[String] = {

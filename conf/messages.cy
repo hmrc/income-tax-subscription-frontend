@@ -657,6 +657,12 @@ agent.no-software.para3.href                                     = https://www.g
 agent.no-software.para4                                          = Pan gewch feddalwedd sy’n cydweddu, gallwch ddod yn ôl i gofrestru’ch cleient.
 agent.no-software.para5                                          = Yn y cyfamser, bydd angen i chi sicrhau bod eich cleient yn cyflwyno ei Ffurflen Dreth Hunanasesiad yn ôl yr arfer.
 
+## Agent Capture Consent Page ##
+agent.capture-consent.heading                  = Capture consent
+agent.capture-consent.caption                  = {0} | {1}
+agent.capture-consent.form-legend              = Does your client consent?
+agent.capture-consent.form-error               = Select yes or no
+
 ## Agent email capture page ##
 agent.email-capture.heading                                      = Enter your email address
 agent.email-capture.hint                                         = Email hint
