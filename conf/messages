@@ -1088,7 +1088,7 @@ agent.throttle-end.line-2                                          = To finish a
 # Global Check Your Answers
 individual.global-check-your-answers.heading                                                    = Declaration
 individual.global-check-your-answers.para                                                       = This is the information you have given to us.
-individual.global-check-your-answers.print-information                                          = Print this information
+individual.global-check-your-answers.print-information                                          = Print this page
 individual.global-check-your-answers.before-signing-up.heading                                  = Check your answers before signing up
 individual.global-check-your-answers.compatible-software.label                                  = Software works with Making Tax Digital for Income Tax
 individual.global-check-your-answers.tax-year.label                                             = When you’re signing up from
@@ -1143,6 +1143,6 @@ agent.global-check-your-answers.tax-year.label                                  
 agent.global-check-your-answers.using-software                                                  = Software works with Making Tax Digital for Income Tax
 agent.global-check-your-answers.tax-year.current                                                = Current tax year
 agent.global-check-your-answers.tax-year.next                                                   = Next tax year
-agent.global-check-your-answers.print-information                                               = Print this information
+agent.global-check-your-answers.print-information                                               = Print this page
 agent.global-check-your-answers.para2                                                           = By continuing, you’re confirming that the information you have given is correct to the best of your knowledge.
 agent.global-check-your-answers.para3                                                           = When you continue, we’ll sign up your client. This may take a few seconds.
