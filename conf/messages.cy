@@ -657,6 +657,13 @@ agent.no-software.para3.href                                     = https://www.g
 agent.no-software.para4                                          = Pan gewch feddalwedd sy’n cydweddu, gallwch ddod yn ôl i gofrestru’ch cleient.
 agent.no-software.para5                                          = Yn y cyfamser, bydd angen i chi sicrhau bod eich cleient yn cyflwyno ei Ffurflen Dreth Hunanasesiad yn ôl yr arfer.
 
+## Agent email capture page ##
+agent.email-capture.heading                                      = Enter your email address
+agent.email-capture.hint                                         = Email hint
+error.agent.email-capture.empty                                  = Email is missing error
+error.agent.email-capture.max-length                             = Email is too long error
+error.agent.email-capture.invalid                                = Email is invalid error
+
 ## Agent what you need to do page ##
 agent.what-you-need-to-do.title                                                = Beth y mae angen i chi ei wneud
 agent.what-you-need-to-do.heading                                              = Beth y mae angen i chi ei wneud
