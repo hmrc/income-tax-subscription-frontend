@@ -66,7 +66,8 @@ class CaptureConsentControllerISpec extends ComponentSpecBase {
           result must have(
             httpStatus(OK),
             pageTitle(s"${messages("agent.capture-consent.heading")} - $serviceNameGovUk"),
-            radioButtonSet(id = "yes-no", selectedRadioButton = Some(Yes.toString))
+            radioButtonSet(id = "yes-no", selectedRadioButton = Some(Yes.toString)),
+            backUrl(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
           )
         }
         "the user previously selected no" in {
@@ -79,7 +80,8 @@ class CaptureConsentControllerISpec extends ComponentSpecBase {
           result must have(
             httpStatus(OK),
             pageTitle(s"${messages("agent.capture-consent.heading")} - $serviceNameGovUk"),
-            radioButtonSet(id = "yes-no", selectedRadioButton = Some(No.toString))
+            radioButtonSet(id = "yes-no", selectedRadioButton = Some(No.toString)),
+            backUrl(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
           )
         }
         "the user previously selected nothing" in {
@@ -92,7 +94,8 @@ class CaptureConsentControllerISpec extends ComponentSpecBase {
           result must have(
             httpStatus(OK),
             pageTitle(s"${messages("agent.capture-consent.heading")} - $serviceNameGovUk"),
-            radioButtonSet(id = "yes-no", selectedRadioButton = None)
+            radioButtonSet(id = "yes-no", selectedRadioButton = None),
+            backUrl(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
           )
         }
       }
@@ -188,7 +191,8 @@ class CaptureConsentControllerISpec extends ComponentSpecBase {
             httpStatus(BAD_REQUEST),
             pageTitle(s"Error: ${messages("agent.capture-consent.heading")} - $serviceNameGovUk"),
             errorDisplayed(),
-            elementTextBySelector(".govuk-error-message")(s"Error: ${messages("agent.capture-consent.form-error")}")
+            elementTextBySelector(".govuk-error-message")(s"Error: ${messages("agent.capture-consent.form-error")}"),
+            backUrl(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
           )
 
         }

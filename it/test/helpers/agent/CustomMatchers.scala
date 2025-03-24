@@ -91,6 +91,18 @@ trait CustomMatchers {
     )
   }
 
+  def backUrl(expectedValue: String): HavePropertyMatcher[WSResponse, String] = (response: WSResponse) => {
+    val body = Jsoup.parse(response.body)
+    val backButton = body.select(".govuk-back-link").asScala.headOption
+
+    HavePropertyMatchResult(
+      backButton.exists(_.attr("href") == expectedValue),
+      "backUrl",
+      expectedValue,
+      backButton.map(_.attr("href")).getOrElse("")
+    )
+  }
+
   def redirectURI(expectedValue: String): HavePropertyMatcher[WSResponse, String] = new HavePropertyMatcher[WSResponse, String] {
     def apply(response: WSResponse): HavePropertyMatchResult[String] = {
       val redirectLocation: Option[String] = response.header("Location")
