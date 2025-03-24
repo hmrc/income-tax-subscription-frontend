@@ -473,11 +473,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       post("/business/task-list", sessionData)(Map.empty)
     }
 
-    def getAddAnotherClient(hasSubmitted: Boolean): WSResponse =
-      if (hasSubmitted)
-        get("/add-another", Map(ITSASessionKeys.MTDITID -> testMtdId))
-      else
-        get("/add-another")
+    def getAddAnotherClient: WSResponse = get("/add-another")
 
     def confirmation(): WSResponse = get("/confirmation")
 

@@ -17,34 +17,116 @@
 package controllers.agent
 
 import common.Constants.ITSASessionKeys
-import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
+import connectors.stubs.SessionDataConnectorStub
+import helpers.IntegrationTestConstants.basGatewaySignIn
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
-import play.api.http.Status.{OK, SEE_OTHER}
-import services.{AgentEndOfJourneyThrottle, AgentStartOfJourneyThrottle}
-
+import models.Yes
+import play.api.http.Status.{INTERNAL_SERVER_ERROR, NO_CONTENT, OK, SEE_OTHER}
+import play.api.libs.json.{JsBoolean, JsString}
 
 class AddAnotherClientControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
-  "GET /add-another" when {
-    s"clear the Subscription Details session variables" in {
-      Given("I setup the wiremock stubs")
-      AuthStub.stubAuthSuccess()
-      SessionDataConnectorStub.stubDeleteAllSessionData()(OK)
-      IncomeTaxSubscriptionConnectorStub.stubSubscriptionDeleteAll()
+  s"GET ${routes.AddAnotherClientController.addAnother().url}" should {
+    "redirect to the login page" when {
+      "the user is unauthenticated" in {
+        AuthStub.stubUnauthorised()
 
-      When("I call GET /add-another")
-      val res = IncomeTaxSubscriptionFrontend.getAddAnotherClient(hasSubmitted = true)
-      val expectedRedirect: String = controllers.agent.matching.routes.ClientDetailsController.show().url
+        val result = IncomeTaxSubscriptionFrontend.getAddAnotherClient
 
-      Then(s"The result must have a status of SEE_OTHER and redirect to '$expectedRedirect'")
-      res must have(
-        httpStatus(SEE_OTHER),
-        redirectURI(expectedRedirect)
-      )
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(basGatewaySignIn("/client/add-another"))
+        )
+      }
+    }
+    "redirect to the enter client details page" when {
+      "email passed is present in session" in {
+        AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.EMAIL_PASSED)(OK, JsBoolean(true))
+        SessionDataConnectorStub.stubDeleteAllSessionData(OK)
+        SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.EMAIL_PASSED, true)(OK)
 
-      val cookie = getSessionMap(res)
-      cookie.keys must not contain ITSASessionKeys.MTDITID
+        val result = IncomeTaxSubscriptionFrontend.getAddAnotherClient
+
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(controllers.agent.matching.routes.ClientDetailsController.show().url)
+        )
+      }
+      "capture consent is present in session" in {
+        AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.EMAIL_PASSED)(NO_CONTENT)
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.CAPTURE_CONSENT)(OK, JsString(Yes.toString))
+        SessionDataConnectorStub.stubDeleteAllSessionData(OK)
+        SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.EMAIL_PASSED, true)(OK)
+
+        val result = IncomeTaxSubscriptionFrontend.getAddAnotherClient
+
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(controllers.agent.matching.routes.ClientDetailsController.show().url)
+        )
+      }
+      "neither email passed or capture consent is present in session" in {
+        AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.EMAIL_PASSED)(NO_CONTENT)
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.CAPTURE_CONSENT)(NO_CONTENT)
+        SessionDataConnectorStub.stubDeleteAllSessionData(OK)
+
+        val result = IncomeTaxSubscriptionFrontend.getAddAnotherClient
+
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(controllers.agent.matching.routes.ClientDetailsController.show().url)
+        )
+      }
+    }
+    "return an internal server error" when {
+      "there was a problem fetching the email passed session flag" in {
+        AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.EMAIL_PASSED)(INTERNAL_SERVER_ERROR)
+
+        val result = IncomeTaxSubscriptionFrontend.getAddAnotherClient
+
+        result must have(
+          httpStatus(INTERNAL_SERVER_ERROR)
+        )
+      }
+      "there was a problem fetching the capture consent session flag" in {
+        AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.EMAIL_PASSED)(NO_CONTENT)
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.CAPTURE_CONSENT)(INTERNAL_SERVER_ERROR)
+
+        val result = IncomeTaxSubscriptionFrontend.getAddAnotherClient
+
+        result must have(
+          httpStatus(INTERNAL_SERVER_ERROR)
+        )
+      }
+      "there was a problem deleting session data" in {
+        AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.EMAIL_PASSED)(OK, JsBoolean(true))
+        SessionDataConnectorStub.stubDeleteAllSessionData(INTERNAL_SERVER_ERROR)
+
+        val result = IncomeTaxSubscriptionFrontend.getAddAnotherClient
+
+        result must have(
+          httpStatus(INTERNAL_SERVER_ERROR)
+        )
+      }
+      "there was a problem when saving the email passed session flag" in {
+        AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.EMAIL_PASSED)(OK, JsBoolean(true))
+        SessionDataConnectorStub.stubDeleteAllSessionData(OK)
+        SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.EMAIL_PASSED, true)(INTERNAL_SERVER_ERROR)
+
+        val result = IncomeTaxSubscriptionFrontend.getAddAnotherClient
+
+        result must have(
+          httpStatus(INTERNAL_SERVER_ERROR)
+        )
+      }
     }
   }
 

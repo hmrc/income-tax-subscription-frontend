@@ -54,6 +54,7 @@ object Constants {
 
     val HAS_SOFTWARE = "HAS_SOFTWARE"
     val CAPTURE_CONSENT = "CAPTURE_CONSENT"
+    val EMAIL_PASSED = "EMAIL_PASSED"
 
     def throttlePassed(throttle: Throttle) = s"throttle-${throttle.throttleId}"
 
