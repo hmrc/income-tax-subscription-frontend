@@ -21,9 +21,10 @@ import connectors.SessionDataConnector
 import connectors.httpparser.DeleteSessionDataHttpParser.DeleteSessionDataResponse
 import connectors.httpparser.GetSessionDataHttpParser.GetSessionDataResponse
 import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataResponse
-import models.{EligibilityStatus, YesNo}
 import models.status.MandationStatusModel
+import models.{EligibilityStatus, YesNo}
 import uk.gov.hmrc.http.HeaderCarrier
+
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
@@ -100,6 +101,14 @@ class SessionDataService @Inject()(sessionDataConnector: SessionDataConnector) {
 
   def saveConsentStatus(consentStatus: YesNo)(implicit hc: HeaderCarrier): Future[SaveSessionDataResponse] = {
     sessionDataConnector.saveSessionData(ITSASessionKeys.CAPTURE_CONSENT, consentStatus)
+  }
+
+  def fetchEmailPassed(implicit hc: HeaderCarrier): Future[GetSessionDataResponse[Boolean]] = {
+    sessionDataConnector.getSessionData[Boolean](ITSASessionKeys.EMAIL_PASSED)
+  }
+
+  def saveEmailPassed(emailPassed: Boolean)(implicit hc: HeaderCarrier): Future[SaveSessionDataResponse] = {
+    sessionDataConnector.saveSessionData(ITSASessionKeys.EMAIL_PASSED, emailPassed)
   }
 
 }

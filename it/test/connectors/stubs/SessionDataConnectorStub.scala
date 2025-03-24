@@ -46,7 +46,7 @@ object SessionDataConnectorStub extends WireMockMethods {
     ).thenReturn(responseStatus)
   }
 
-  def stubDeleteAllSessionData()(responseStatus: Int): Unit = {
+  def stubDeleteAllSessionData(responseStatus: Int): Unit = {
     when(
       method = DELETE,
       uri = sessionIdDataUri()
