@@ -40,10 +40,10 @@ class ClientDetailsJourneyRefiner @Inject()(implicit val executionContext: Execu
           hasMtditid = request.session.get(ITSASessionKeys.MTDITID).isDefined
         )
       } match {
-      case Some(ClientDetails) =>
+      case Some(ClientDetails | ConfirmedClient | SignPosted) =>
         Future.successful(Right(request))
-      case state@(None | Some(SignPosted | ConfirmedClient)) =>
-        logger.info(s"[Agent][ClientDetailsJourneyRefiner] - Incorrect user state, current: ${state.map(_.key)}, sending to add another client")
+      case None =>
+        logger.info(s"[Agent][ClientDetailsJourneyRefiner] - Incorrect user state, current: None, sending to add another client")
         Future.successful(Left(Redirect(controllers.agent.routes.AddAnotherClientController.addAnother())))
       case Some(Confirmation) =>
         logger.info(s"[Agent][ClientDetailsJourneyRefiner] - Incorrect user state, current: ${Confirmation.key}, sending to confirmation page")

@@ -47,7 +47,7 @@ class AddAnotherClientController @Inject()(identify: IdentifierAction,
       Redirect(controllers.agent.matching.routes.ClientDetailsController.show())
         .addingToSession(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name)
         .removingFromSession(MTDITID, CLIENT_DETAILS_CONFIRMED)
-        .clearUserName
+        .clearAllUserDetails
     }
   }
 

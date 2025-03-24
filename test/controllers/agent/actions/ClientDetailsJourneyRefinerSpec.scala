@@ -55,6 +55,24 @@ class ClientDetailsJourneyRefinerSpec extends PlaySpec {
 
         status(result) mustBe OK
       }
+      "the request has a sign posted state" in {
+        val result: Future[Result] = clientDetailsJourneyRefiner.invokeBlock(
+          identifierRequest(Some(JourneyStep.SignPosted)), { _: IdentifierRequest[_] =>
+            Future.successful(Results.Ok)
+          }
+        )
+
+        status(result) mustBe OK
+      }
+      "the request has a confirmed client state" in {
+        val result: Future[Result] = clientDetailsJourneyRefiner.invokeBlock(
+          identifierRequest(Some(JourneyStep.ConfirmedClient)), { _: IdentifierRequest[_] =>
+            Future.successful(Results.Ok)
+          }
+        )
+
+        status(result) mustBe OK
+      }
     }
     "redirect to the add another client route" when {
       "the request has no state" in {
@@ -67,26 +85,7 @@ class ClientDetailsJourneyRefinerSpec extends PlaySpec {
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.agent.routes.AddAnotherClientController.addAnother().url)
       }
-      "the request has a sign posted state" in {
-        val result: Future[Result] = clientDetailsJourneyRefiner.invokeBlock(
-          identifierRequest(Some(JourneyStep.SignPosted)), { _: IdentifierRequest[_] =>
-            Future.successful(Results.Ok)
-          }
-        )
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.agent.routes.AddAnotherClientController.addAnother().url)
-      }
-      "the request has a confirmed client state" in {
-        val result: Future[Result] = clientDetailsJourneyRefiner.invokeBlock(
-          identifierRequest(Some(JourneyStep.ConfirmedClient)), { _: IdentifierRequest[_] =>
-            Future.successful(Results.Ok)
-          }
-        )
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.agent.routes.AddAnotherClientController.addAnother().url)
-      }
     }
 
     "redirect to the confirmation page" when {
