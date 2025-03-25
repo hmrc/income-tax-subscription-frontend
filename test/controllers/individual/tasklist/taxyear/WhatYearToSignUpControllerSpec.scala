@@ -113,52 +113,24 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
       }
     }
     "the user is not allowed to select a tax year" when {
-      "the email capture consent feature switch is enabled" when {
-        "they are only eligible for the next tax year" should {
-          "redirect to the what you need to do page" in {
-            enable(EmailCaptureConsent)
+      "they are only eligible for the next tax year" should {
+        "redirect to the what you need to do page" in {
+          mockFetchSelectedTaxYear(Some(AccountingYearModel(Next, editable = false)))
 
-            mockFetchSelectedTaxYear(Some(AccountingYearModel(Next, editable = false)))
+          val result: Future[Result] = TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequest)
 
-            val result: Future[Result] = TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequest)
-
-            status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(controllers.individual.routes.WhatYouNeedToDoController.show.url)
-          }
-        }
-        "they are mandated for the current tax year" should {
-          "redirect to the capture consent page" in {
-            enable(EmailCaptureConsent)
-
-            mockFetchSelectedTaxYear(Some(AccountingYearModel(Current, editable = false)))
-
-            val result: Future[Result] = TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequest)
-
-            status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(controllers.individual.email.routes.CaptureConsentController.show().url)
-          }
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.individual.routes.WhatYouNeedToDoController.show.url)
         }
       }
-      "the email capture consent feature switch is disabled" when {
-        "they are only eligible for the next tax year" should {
-          "redirect to the what you need to do page" in {
-            mockFetchSelectedTaxYear(Some(AccountingYearModel(Next, editable = false)))
+      "they are mandated for the current tax year" should {
+        "redirect to the what you need to do page" in {
+          mockFetchSelectedTaxYear(Some(AccountingYearModel(Current, editable = false)))
 
-            val result: Future[Result] = TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequest)
+          val result: Future[Result] = TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequest)
 
-            status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(controllers.individual.routes.WhatYouNeedToDoController.show.url)
-          }
-        }
-        "they are mandated for the current tax year" should {
-          "redirect to the what you need to do page" in {
-            mockFetchSelectedTaxYear(Some(AccountingYearModel(Current, editable = false)))
-
-            val result: Future[Result] = TestWhatYearToSignUpController.show(isEditMode = false)(subscriptionRequest)
-
-            status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(controllers.individual.routes.WhatYouNeedToDoController.show.url)
-          }
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.individual.routes.WhatYouNeedToDoController.show.url)
         }
       }
     }

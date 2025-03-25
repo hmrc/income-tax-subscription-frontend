@@ -477,9 +477,9 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
     def confirmation(): WSResponse = get("/confirmation")
 
-    def submitAccountingYear(inEditMode: Boolean, sessionData: Map[String, String] = ClientData.basicClientData, request: Option[AccountingYear]): WSResponse = {
+    def submitAccountingYear(inEditMode: Boolean, sessionData: Map[String, String] = ClientData.basicClientData, request: Option[AccountingYear], withJourneyState: Boolean = true): WSResponse = {
       val uri = s"/business/what-year-to-sign-up?editMode=$inEditMode"
-      post(uri, sessionData)(
+      post(uri, sessionData, withJourneyStateSignUp = withJourneyState)(
         request.fold(Map.empty[String, Seq[String]])(
           model => AccountingYearForm.accountingYearForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )

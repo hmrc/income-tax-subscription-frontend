@@ -16,17 +16,17 @@
 
 package controllers.agent.tasklist.taxyear
 
+import config.featureswitch.FeatureSwitch.EmailCaptureConsent
 import config.featureswitch.FeatureSwitching
 import config.{AppConfig, MockConfig}
-import connectors.httpparser.PostSubscriptionDetailsHttpParser
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
+import connectors.httpparser.{GetSessionDataHttpParser, PostSubscriptionDetailsHttpParser}
 import controllers.ControllerSpec
 import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}
 import forms.agent.AccountingYearForm
 import models.common.AccountingYearModel
 import models.status.MandationStatus.Voluntary
-import models.{Current, EligibilityStatus}
-import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
+import models.{AccountingYear, Current, EligibilityStatus, Next}
 import play.api.http.Status
 import play.api.mvc.Result
 import play.api.test.Helpers._
@@ -41,8 +41,14 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
   with MockIdentifierAction
   with MockConfirmedClientJourneyRefiner
   with MockSubscriptionDetailsService
+  with MockSessionDataService
   with MockAccountingPeriodService
   with FeatureSwitching {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(EmailCaptureConsent)
+  }
 
   implicit val appConfig: AppConfig = MockConfig
 
@@ -51,6 +57,7 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
     fakeIdentifierAction,
     fakeConfirmedClientJourneyRefiner,
     mockSubscriptionDetailsService,
+    mockSessionDataService,
     mockAccountingPeriodService
   )(appConfig)
 
@@ -82,58 +89,117 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
     }
   }
 
-  "submit" should {
-    def callSubmit(isEditMode: Boolean): Future[Result] = TestWhatYearToSignUpController.submit(isEditMode = isEditMode)(
-      request.withMethod("POST").withFormUrlEncodedBody(AccountingYearForm.accountingYear -> "CurrentYear")
+  "submit" when {
+    def callSubmit(isEditMode: Boolean, taxYear: AccountingYear = Current): Future[Result] = TestWhatYearToSignUpController.submit(isEditMode = isEditMode)(
+      request.withMethod("POST").withFormUrlEncodedBody(AccountingYearForm.accountingYear -> taxYear.toString)
     )
 
     def callSubmitWithErrorForm(isEditMode: Boolean): Future[Result] = TestWhatYearToSignUpController.submit(isEditMode = isEditMode)(
       request.withMethod("POST").withFormUrlEncodedBody()
     )
 
-    "redirect to global check your answers page" when {
-      "in edit mode" in {
-        mockView()
+    "in edit mode" must {
+      "redirect to the global check your answers page" in {
         mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
 
-        val goodRequest = callSubmit(isEditMode = true)
+        val result: Future[Result] = callSubmit(isEditMode = true)
 
-        status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.GlobalCheckYourAnswersController.show.url)
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.agent.routes.GlobalCheckYourAnswersController.show.url)
       }
     }
-    "redirect to What You Need To Do page" when {
-      "not in edit mode" in {
-        mockView()
-        mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
+    "not in edit mode" when {
+      "no option is selected" must {
+        "return a bad request with the page content" in {
+          mockView()
 
-        val goodRequest = callSubmit(isEditMode = false)
+          val result: Future[Result] = callSubmitWithErrorForm(isEditMode = false)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.WhatYouNeedToDoController.show().url)
-        status(goodRequest) must be(Status.SEE_OTHER)
+          status(result) mustBe BAD_REQUEST
+          contentType(result) mustBe Some(HTML)
+        }
+      }
+      "current tax year is selected" when {
+        "the email capture consent feature switch is enabled" when {
+          "the email passed flag is not present in session" must {
+            "save the tax year and redirect to the capture consent page" in {
+              enable(EmailCaptureConsent)
+
+              mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
+              mockFetchEmailPassed(Right(None))
+
+              val result: Future[Result] = callSubmit(isEditMode = false)
+
+              status(result) mustBe SEE_OTHER
+              redirectLocation(result) mustBe Some(controllers.agent.email.routes.CaptureConsentController.show().url)
+            }
+          }
+          "the email passed flag is present in session" should {
+            "save the tax year and redirect to the what you need to do page" in {
+              enable(EmailCaptureConsent)
+
+              mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
+              mockFetchEmailPassed(Right(Some(true)))
+
+              val result: Future[Result] = callSubmit(isEditMode = false)
+
+              status(result) mustBe SEE_OTHER
+              redirectLocation(result) mustBe Some(controllers.agent.routes.WhatYouNeedToDoController.show().url)
+            }
+          }
+        }
+        "the email capture consent feature switch is disabled" must {
+          "save the tax year and redirect to the what you need to do page" in {
+            mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
+            mockFetchEmailPassed(Right(None))
+
+            val result: Future[Result] = callSubmit(isEditMode = false)
+
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(controllers.agent.routes.WhatYouNeedToDoController.show().url)
+          }
+        }
+      }
+      "next tax year is selected" must {
+        "save the tax year and redirect to the capture consent page" when {
+          "the email capture consent feature switch is enabled" in {
+            enable(EmailCaptureConsent)
+
+            mockSaveSelectedTaxYear(AccountingYearModel(Next))(Right(PostSubscriptionDetailsSuccessResponse))
+            mockFetchEmailPassed(Right(None))
+
+            val result: Future[Result] = callSubmit(isEditMode = false, taxYear = Next)
+
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(controllers.agent.routes.WhatYouNeedToDoController.show().url)
+          }
+          "the email capture consent feature switch is disabled" in {
+            mockFetchEmailPassed(Right(None))
+            mockSaveSelectedTaxYear(AccountingYearModel(Next))(Right(PostSubscriptionDetailsSuccessResponse))
+
+            val result: Future[Result] = callSubmit(isEditMode = false, taxYear = Next)
+
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(controllers.agent.routes.WhatYouNeedToDoController.show().url)
+          }
+        }
       }
     }
-
-    "return a bad request status (400)" when {
-      "there is an invalid submission with an error form" in {
-        mockView()
-
-        val badRequest = callSubmitWithErrorForm(isEditMode = false)
-
-        status(badRequest) must be(Status.BAD_REQUEST)
-      }
-    }
-
-    "throw an exception" when {
-      "there is a failure while saving the tax year" in {
-        mockView()
+    "there was a problem saving the tax year selection" must {
+      "throw an internal server exception" in {
         mockSaveSelectedTaxYear(AccountingYearModel(Current))(Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
-        val request = callSubmit(isEditMode = false)
+        intercept[InternalServerException](await(callSubmit(isEditMode = false)))
+          .message mustBe "[WhatYearToSignUpController][saveSelectedTaxYear] - Could not save accounting year"
+      }
+    }
+    "there was a problem fetching the email passed flag from session" must {
+      "throw an internal server exception" in {
+        mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
+        mockFetchEmailPassed(Left(GetSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
-        request.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
-        intercept[InternalServerException](await(request))
-          .message mustBe "[WhatYearToSignUpController][submit] - Could not save accounting year"
+        intercept[InternalServerException](await(callSubmit(isEditMode = false)))
+          .message mustBe "[WhatYearToSignUpController][fetchEmailPassed] - Could not fetch the email passed session flag"
       }
     }
   }
