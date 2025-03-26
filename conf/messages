@@ -49,6 +49,8 @@ base.warning                                                    = Warning
 base.accept-and-continue                                        = Accept and continue
 base.tax-year.current                                           = Current tax year (6 April {0} to 5 April {1})
 base.tax-year.next                                              = Next tax year (6 April {0} to 5 April {1})
+base.print-page                                                 = Print this page
+
 
 ## Preferences call back page
 preferences-callback.title                                      = Do you want to continue?
@@ -362,7 +364,7 @@ sign-up-complete.what-now.submit-annual                         = Submit your an
 agent.sign-up-confirmation.heading                                                  = Sign up complete
 agent.sign-up-confirmation.heading.panel.current                                    = Your client is signed up for Making Tax Digital for Income Tax from {0} onwards
 agent.sign-up-confirmation.heading.panel.next                                       = Your client is signed up for Making Tax Digital for Income Tax from {0} onwards
-agent.sign-up-confirmation.print-confirmation                                       = Print this page
+
 
 agent.sign-up-confirmation.what-must-do.heading                                     = What you must do now
 agent.sign-up-confirmation.what-you-must-do.para1                                   = Read how to {0}
@@ -429,8 +431,6 @@ individual.capture-consent.form-error               = Select yes or no
 sign-up-confirmation.heading                                         = Sign up complete
 sign-up-confirmation.heading.panel.current                           = is now signed up for Making Tax Digital for Income Tax for the current tax year ({0})
 sign-up-confirmation.heading.panel.next                              = is now signed up for Making Tax Digital for Income Tax for the next tax year ({0})
-
-sign-up-confirmation.print-confirmation                              = Print this page
 
 sign-up-confirmation.what-you-must-do.heading                        = What you must do now
 
@@ -1088,7 +1088,6 @@ agent.throttle-end.line-2                                          = To finish a
 # Global Check Your Answers
 individual.global-check-your-answers.heading                                                    = Declaration
 individual.global-check-your-answers.para                                                       = This is the information you have given to us.
-individual.global-check-your-answers.print-information                                          = Print this information
 individual.global-check-your-answers.before-signing-up.heading                                  = Check your answers before signing up
 individual.global-check-your-answers.compatible-software.label                                  = Software works with Making Tax Digital for Income Tax
 individual.global-check-your-answers.tax-year.label                                             = When you’re signing up from
@@ -1143,6 +1142,5 @@ agent.global-check-your-answers.tax-year.label                                  
 agent.global-check-your-answers.using-software                                                  = Software works with Making Tax Digital for Income Tax
 agent.global-check-your-answers.tax-year.current                                                = Current tax year
 agent.global-check-your-answers.tax-year.next                                                   = Next tax year
-agent.global-check-your-answers.print-information                                               = Print this information
 agent.global-check-your-answers.para2                                                           = By continuing, you’re confirming that the information you have given is correct to the best of your knowledge.
 agent.global-check-your-answers.para3                                                           = When you continue, we’ll sign up your client. This may take a few seconds.
