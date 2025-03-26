@@ -436,7 +436,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     val heading: String = "Declaration"
     val caption = "FirstName LastName | ZZ 11 11 11 Z"
     val para1: String = "This is the information you have given to us."
-    val printLink = "Print this information"
+    val printLink = "Print this page"
     val subheading = "Check your answers before signing up"
 
     object UsingSoftwareSection {

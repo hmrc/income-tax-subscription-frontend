@@ -426,7 +426,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
     val paraOne: String = "This is the information you have given to us."
 
-    val printLink = "Print this information"
+    val printLink = "Print this page"
 
     val beforeSigningUpHeading: String = "Check your answers before signing up"
 
