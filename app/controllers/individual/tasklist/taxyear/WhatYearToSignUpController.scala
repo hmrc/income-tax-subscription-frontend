@@ -42,8 +42,7 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
                                            val authService: AuthService,
                                            val appConfig: AppConfig)
                                           (implicit val ec: ExecutionContext,
-                                           mcc: MessagesControllerComponents)
-  extends SignUpController {
+                                           mcc: MessagesControllerComponents) extends SignUpController {
 
   def view(accountingYearForm: Form[AccountingYear], isEditMode: Boolean)(implicit request: Request[_]): Html = {
     whatYearToSignUp(
@@ -60,15 +59,10 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
       referenceRetrieval.getIndividualReference flatMap { reference =>
         subscriptionDetailsService.fetchSelectedTaxYear(reference) map {
           case Some(taxYearModel) if !taxYearModel.editable =>
-            taxYearModel.accountingYear match {
-              case Current if isEnabled(EmailCaptureConsent) =>
-                Redirect(controllers.individual.email.routes.CaptureConsentController.show())
-              case _ =>
-                Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
-            }
+            Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
           case accountingYearModel =>
             Ok(view(
-              accountingYearForm = AccountingYearForm.accountingYearForm.fill(accountingYearModel.map(aym => aym.accountingYear)),
+              accountingYearForm = AccountingYearForm.accountingYearForm.fill(accountingYearModel.map(_.accountingYear)),
               isEditMode = isEditMode
             ))
         }

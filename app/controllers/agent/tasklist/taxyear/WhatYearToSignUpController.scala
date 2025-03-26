@@ -17,13 +17,17 @@
 package controllers.agent.tasklist.taxyear
 
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.EmailCaptureConsent
+import config.featureswitch.FeatureSwitching
+import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccess
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import forms.agent.AccountingYearForm
-import models.AccountingYear
 import models.common.AccountingYearModel
+import models.requests.agent.ConfirmedClientRequest
+import models.{AccountingYear, Current}
 import play.api.data.Form
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.Html
 import services._
 import uk.gov.hmrc.http.InternalServerException
@@ -37,17 +41,19 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
                                            identify: IdentifierAction,
                                            journeyRefiner: ConfirmedClientJourneyRefiner,
                                            subscriptionDetailsService: SubscriptionDetailsService,
+                                           sessionDataService: SessionDataService,
                                            accountingPeriodService: AccountingPeriodService)
                                           (val appConfig: AppConfig)
                                           (implicit mcc: MessagesControllerComponents,
-                                           ec: ExecutionContext) extends SignUpBaseController {
+                                           ec: ExecutionContext) extends SignUpBaseController with FeatureSwitching {
 
-  def view(accountingYearForm: Form[AccountingYear], clientName: String, clientNino: String, isEditMode: Boolean)(implicit request: Request[_]): Html =
+  def view(accountingYearForm: Form[AccountingYear], isEditMode: Boolean)
+          (implicit request: ConfirmedClientRequest[_]): Html =
     whatYearToSignUp(
       accountingYearForm = accountingYearForm,
       postAction = controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.submit(editMode = isEditMode),
-      clientName = clientName,
-      clientNino = clientNino,
+      clientName = request.clientDetails.name,
+      clientNino = request.clientDetails.formattedNino,
       backUrl = backUrl(isEditMode),
       endYearOfCurrentTaxPeriod = accountingPeriodService.currentTaxYear,
       isEditMode = isEditMode
@@ -60,8 +66,6 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
       case accountingYearModel =>
         Ok(view(
           accountingYearForm = AccountingYearForm.accountingYearForm.fill(accountingYearModel.map(aym => aym.accountingYear)),
-          clientName = request.clientDetails.name,
-          clientNino = request.clientDetails.formattedNino,
           isEditMode = isEditMode
         ))
     }
@@ -72,22 +76,39 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
       formWithErrors =>
         Future.successful(BadRequest(view(
           accountingYearForm = formWithErrors,
-          clientName = request.clientDetails.name,
-          clientNino = request.clientDetails.formattedNino,
           isEditMode = isEditMode
         ))),
       accountingYear => {
-        subscriptionDetailsService.saveSelectedTaxYear(request.reference, AccountingYearModel(accountingYear)) map {
-          case Right(_) =>
-            if (isEditMode) {
-              Redirect(controllers.agent.routes.GlobalCheckYourAnswersController.show)
-            } else {
-              Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
+        saveSelectedTaxYear(accountingYear) flatMap { _ =>
+          if (isEditMode) {
+            Future.successful(Redirect(controllers.agent.routes.GlobalCheckYourAnswersController.show))
+          } else {
+            fetchEmailPassed map { emailPassed =>
+              if (accountingYear == Current && isEnabled(EmailCaptureConsent) && !emailPassed) {
+                Redirect(controllers.agent.email.routes.CaptureConsentController.show())
+              } else {
+                Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
+              }
             }
-          case Left(_) => throw new InternalServerException("[WhatYearToSignUpController][submit] - Could not save accounting year")
+          }
         }
       }
     )
+  }
+
+  private def saveSelectedTaxYear(accountingYear: AccountingYear)
+                                 (implicit request: ConfirmedClientRequest[_]): Future[PostSubscriptionDetailsSuccess] = {
+    subscriptionDetailsService.saveSelectedTaxYear(request.reference, AccountingYearModel(accountingYear)) map {
+      case Right(response) => response
+      case Left(_) => throw new InternalServerException("[WhatYearToSignUpController][saveSelectedTaxYear] - Could not save accounting year")
+    }
+  }
+
+  private def fetchEmailPassed(implicit request: ConfirmedClientRequest[_]): Future[Boolean] = {
+    sessionDataService.fetchEmailPassed map {
+      case Right(result) => result.getOrElse(false)
+      case Left(_) => throw new InternalServerException("[WhatYearToSignUpController][fetchEmailPassed] - Could not fetch the email passed session flag")
+    }
   }
 
   def backUrl(isEditMode: Boolean): Option[String] = {
