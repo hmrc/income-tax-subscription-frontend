@@ -53,7 +53,7 @@ class CannotTakePartViewSpec extends ViewSpec {
     }
 
     "have a subheading" in {
-      document.mainContent.selectHead("h2").text mustBe CannotTakePartMessages.subheading
+      document.mainContent.getSubHeading("h2", 1).text mustBe CannotTakePartMessages.subheading
     }
 
     "have a first paragraph" in {

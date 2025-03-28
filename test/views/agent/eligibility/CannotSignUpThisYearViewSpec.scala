@@ -63,7 +63,7 @@ class CannotSignUpThisYearViewSpec extends ViewSpec {
     }
 
     "have a first subheading" in {
-      mainContent.selectNth("h2", 1).text mustBe CannotSignUpMessages.subheading1
+      mainContent.getSubHeading("h2", 1).text mustBe CannotSignUpMessages.subheading1
     }
 
     "have a second paragraph" in {
@@ -97,7 +97,7 @@ class CannotSignUpThisYearViewSpec extends ViewSpec {
     }
 
     "have a second subheading" in {
-      mainContent.selectNth("h2", 2).text mustBe CannotSignUpMessages.subheading2
+      mainContent.getSubHeading("h2", 2).text mustBe CannotSignUpMessages.subheading2
     }
 
     "have a fourth paragraph" in {

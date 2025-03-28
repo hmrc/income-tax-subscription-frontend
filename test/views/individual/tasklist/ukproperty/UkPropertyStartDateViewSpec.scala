@@ -60,7 +60,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
     }
 
     "have a paragraph" in {
-      document().mainContent.selectNth("p", 2).text mustBe PropertyStartDateMessages.para1
+      document().mainContent.selectNth("p", 1).text mustBe PropertyStartDateMessages.para1
     }
 
     "have a form" which {

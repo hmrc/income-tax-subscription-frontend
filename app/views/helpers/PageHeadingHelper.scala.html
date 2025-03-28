@@ -14,21 +14,25 @@
  * limitations under the License.
  *@
 
+@import views.html.helpers.HmrcPageHeadingHelper
+
 @this(
-    hmrcPageHeading: HmrcPageHeading
+        hmrcPageHeadingHelper: HmrcPageHeadingHelper
 )
+
 
 @(heading: String, caption: String, isSection: Boolean)(implicit messages: Messages)
 
 @if(isSection) {
-    @hmrcPageHeading(PageHeading(
+    @hmrcPageHeadingHelper(PageHeading(
         text = heading,
         section = Some(caption),
         language = Some(messages.lang.language),
-        headingClasses = Some("govuk-heading-l"),
-        captionClasses = Some("govuk-caption-l")
+        headingClasses = None,
+        captionClasses = None
     ))
+
 } else {
-    <span class="govuk-caption-l">@caption</span>
+    <h2 class="govuk-caption-l hmrc-caption-l">@caption</h2>
     <h1 class="govuk-heading-l">@heading</h1>
 }
