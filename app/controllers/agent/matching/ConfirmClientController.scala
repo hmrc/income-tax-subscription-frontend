@@ -203,7 +203,6 @@ class ConfirmClientController @Inject()(checkYourClientDetails: CheckYourClientD
             Redirect(routes.ConfirmedClientResolver.resolve)
               .addingToSession(ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true")
               .removingFromSession(FailedClientMatching)
-              .clearUserDetailsExceptName
           case Left(_) => throw new InternalServerException("[ConfirmClientController][handleApprovedAgent] - failure when saving utr to session")
         }
       case Left(_) => throw new InternalServerException("[ConfirmClientController][handleApprovedAgent] - failure when saving nino to session")
