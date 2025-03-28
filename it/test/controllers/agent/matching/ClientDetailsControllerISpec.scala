@@ -16,16 +16,18 @@
 
 package controllers.agent.matching
 
-import connectors.stubs.IncomeTaxSubscriptionConnectorStub
+import common.Constants.ITSASessionKeys
+import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.IntegrationTestConstants.{AgentURI, testARN}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.{AgentLockoutStub, AuthStub}
 import helpers.{IntegrationTestModels, UserMatchingIntegrationResultSupport}
 import models.usermatching.UserDetailsModel
 import org.jsoup.Jsoup
-import play.api.http.Status.{BAD_REQUEST, SEE_OTHER}
+import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
+import play.api.libs.json.JsBoolean
 import play.api.libs.ws.WSResponse
-import play.api.test.Helpers.OK
+//import play.api.test.Helpers.OK
 
 
 class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIntegrationResultSupport {
@@ -131,6 +133,9 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         AuthStub.stubAuthSuccess()
         val clientDetails: UserDetailsModel = IntegrationTestModels.testClientDetails
         AgentLockoutStub.stubAgentIsNotLocked(testARN)
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.EMAIL_PASSED)(OK, JsBoolean(true))
+        SessionDataConnectorStub.stubDeleteAllSessionData(OK)
+        SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.EMAIL_PASSED, true)(OK)
 
         When("I call POST /client-details")
         val res = IncomeTaxSubscriptionFrontend.submitClientDetails(newSubmission = Some(clientDetails), storedSubmission = None)
@@ -151,6 +156,9 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         AuthStub.stubAuthSuccess()
         AgentLockoutStub.stubAgentIsNotLocked(testARN)
         val clientDetails: UserDetailsModel = IntegrationTestModels.testClientDetails
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.EMAIL_PASSED)(OK, JsBoolean(true))
+        SessionDataConnectorStub.stubDeleteAllSessionData(OK)
+        SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.EMAIL_PASSED, true)(OK)
 
         When("I call POST /client-details")
         val res = IncomeTaxSubscriptionFrontend.submitClientDetails(newSubmission = Some(clientDetails), storedSubmission = Some(clientDetails))
@@ -172,6 +180,9 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         val clientDetails = IntegrationTestModels.testClientDetails
         AgentLockoutStub.stubAgentIsNotLocked(testARN)
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionDeleteAll()
+        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.EMAIL_PASSED)(OK, JsBoolean(true))
+        SessionDataConnectorStub.stubDeleteAllSessionData(OK)
+        SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.EMAIL_PASSED, true)(OK)
 
         When("I call POST /client-details")
         val submittedUserDetails = clientDetails.copy(firstName = "NotMatching")
