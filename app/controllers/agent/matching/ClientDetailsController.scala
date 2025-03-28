@@ -44,11 +44,11 @@ class ClientDetailsController @Inject()(view: ClientDetails,
   def show(isEditMode: Boolean): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     startAgentSignupAudit(agentReferenceNumber = Some(request.arn))
     handleLockOut {
-      Ok(view(
+      Future.successful(Ok(view(
         clientDetailsForm = clientDetailsForm.fill(request.fetchUserDetails),
         postAction = routes.ClientDetailsController.submit(editMode = isEditMode),
         isEditMode = isEditMode
-      ))
+      )))
     }
   }
 
@@ -56,22 +56,22 @@ class ClientDetailsController @Inject()(view: ClientDetails,
     handleLockOut {
       clientDetailsForm.bindFromRequest().fold(
         formWithErrors =>
-          BadRequest(view(
+          Future.successful(BadRequest(view(
             clientDetailsForm = formWithErrors,
             postAction = routes.ClientDetailsController.submit(editMode = isEditMode),
             isEditMode = isEditMode
-          )),
+          ))),
         clientDetails => {
-          sessionClearingService.clearAgentSession(routes.ConfirmClientController.show()).saveUserDetails(clientDetails)
+          sessionClearingService.clearAgentSession(routes.ConfirmClientController.show())map(_.saveUserDetails(clientDetails))
         }
       )
     }
   }
 
-  private def handleLockOut(f: => Result)(implicit request: IdentifierRequest[_]): Future[Result] = {
-    lockoutService.getLockoutStatus(request.arn) map {
+  private def handleLockOut(f: => Future[Result])(implicit request: IdentifierRequest[_]): Future[Result] = {
+    lockoutService.getLockoutStatus(request.arn) flatMap {
       case Right(NotLockedOut) => f
-      case Right(_) => Redirect(controllers.agent.matching.routes.ClientDetailsLockoutController.show.url)
+      case Right(_) => Future.successful(Redirect(controllers.agent.matching.routes.ClientDetailsLockoutController.show.url))
       case Left(_) => throw new InternalServerException("[ClientDetailsController][handleLockOut] lockout failure")
     }
   }

@@ -30,6 +30,6 @@ class AddAnotherClientController @Inject()(identify: IdentifierAction,
                                           (implicit mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   def addAnother(): Action[AnyContent] = identify.async { implicit request =>
-    Future.successful(sessionClearingService.clearAgentSession(controllers.agent.matching.routes.ClientDetailsController.show()))
+    sessionClearingService.clearAgentSession(controllers.agent.matching.routes.ClientDetailsController.show())
   }
 }
