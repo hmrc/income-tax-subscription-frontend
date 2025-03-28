@@ -23,7 +23,7 @@ import models.audits.SignupStartedAuditing
 import models.requests.agent.IdentifierRequest
 import models.usermatching.NotLockedOut
 import play.api.mvc._
-import services.{AuditingService, UserLockoutService}
+import services.{AuditingService, SessionClearingService, UserLockoutService}
 import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import utilities.UserMatchingSessionUtil.{UserMatchingSessionRequestUtil, UserMatchingSessionResultUtil}
@@ -37,7 +37,8 @@ class ClientDetailsController @Inject()(view: ClientDetails,
                                         identify: IdentifierAction,
                                         journeyRefiner: ClientDetailsJourneyRefiner,
                                         lockoutService: UserLockoutService,
-                                        auditingService: AuditingService)
+                                        auditingService: AuditingService,
+                                        sessionClearingService: SessionClearingService)
                                        (implicit cc: MessagesControllerComponents, ec: ExecutionContext) extends SignUpBaseController {
 
   def show(isEditMode: Boolean): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
@@ -60,7 +61,9 @@ class ClientDetailsController @Inject()(view: ClientDetails,
             postAction = routes.ClientDetailsController.submit(editMode = isEditMode),
             isEditMode = isEditMode
           )),
-        clientDetails => Redirect(routes.ConfirmClientController.show()).saveUserDetails(clientDetails)
+        clientDetails => {
+          sessionClearingService.clearAgentSession(routes.ConfirmClientController.show()).saveUserDetails(clientDetails)
+        }
       )
     }
   }
