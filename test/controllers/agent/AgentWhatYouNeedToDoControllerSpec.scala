@@ -17,11 +17,13 @@
 package controllers.agent
 
 import config.MockConfig
+import config.featureswitch.FeatureSwitch.EmailCaptureConsent
+import config.featureswitch.FeatureSwitching
 import controllers.ControllerSpec
 import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}
 import models.common.AccountingYearModel
 import models.status.MandationStatus.{Mandated, Voluntary}
-import models.{Current, EligibilityStatus, Next, Yes}
+import models.{Current, EligibilityStatus, Next, No, Yes}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -42,9 +44,15 @@ class AgentWhatYouNeedToDoControllerSpec
     with MockGetEligibilityStatusService
     with MockMandationStatusService
     with MockSubscriptionDetailsService
-    with MockSessionDataService {
+    with MockSessionDataService
+    with FeatureSwitching {
 
   val appConfig = MockConfig
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(EmailCaptureConsent)
+  }
 
   object TestWhatYouNeedToDoController extends WhatYouNeedToDoController(
     mock[WhatYouNeedToDo],
@@ -76,6 +84,7 @@ class AgentWhatYouNeedToDoControllerSpec
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
         mockFetchSoftwareStatus(Right(Some(Yes)))
+        mockFetchConsentStatus(Right(Some(Yes)))
 
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
@@ -102,6 +111,7 @@ class AgentWhatYouNeedToDoControllerSpec
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
         mockFetchSoftwareStatus(Right(Some(Yes)))
+        mockFetchConsentStatus(Right(None))
 
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
@@ -127,6 +137,7 @@ class AgentWhatYouNeedToDoControllerSpec
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
         mockFetchSoftwareStatus(Right(Some(Yes)))
+        mockFetchConsentStatus(Right(Some(Yes)))
 
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
@@ -152,6 +163,7 @@ class AgentWhatYouNeedToDoControllerSpec
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
         mockFetchSoftwareStatus(Right(Some(Yes)))
+        mockFetchConsentStatus(Right(Some(Yes)))
 
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
@@ -179,6 +191,7 @@ class AgentWhatYouNeedToDoControllerSpec
           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
           mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
           mockFetchSoftwareStatus(Right(Some(Yes)))
+          mockFetchConsentStatus(Right(Some(Yes)))
 
           when(whatYouNeedToDo(
             ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
@@ -206,6 +219,7 @@ class AgentWhatYouNeedToDoControllerSpec
           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
           mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
           mockFetchSoftwareStatus(Right(Some(Yes)))
+          mockFetchConsentStatus(Right(Some(Yes)))
 
           when(whatYouNeedToDo(
             ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
@@ -235,6 +249,7 @@ class AgentWhatYouNeedToDoControllerSpec
           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
           mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
           mockFetchSoftwareStatus(Right(Some(Yes)))
+          mockFetchConsentStatus(Right(None))
 
           when(whatYouNeedToDo(
             ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
@@ -261,6 +276,7 @@ class AgentWhatYouNeedToDoControllerSpec
           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
           mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
           mockFetchSoftwareStatus(Right(Some(Yes)))
+          mockFetchConsentStatus(Right(None))
 
           when(whatYouNeedToDo(
             ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
@@ -296,4 +312,68 @@ class AgentWhatYouNeedToDoControllerSpec
     }
   }
 
+  "backUrl" when {
+    "the EmailCaptureConsent feature switch is disabled" should {
+      "return the What Year To Sign Up page" when {
+        "the user is eligible for both years and not mandated for the current year" in new Setup {
+          val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, mandatedCurrentYear = false, None, Some(Current))
+
+          backUrl mustBe controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+        }
+      }
+      "return the Using Software page" when {
+        "the user is eligible for next year only" in new Setup {
+          val backUrl: String = controller.backUrl(eligibleNextYearOnly = true, mandatedCurrentYear = false, None, Some(Next))
+
+          backUrl mustBe controllers.agent.routes.UsingSoftwareController.show.url
+        }
+        "the user is mandated for the current year" in new Setup {
+
+          val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, mandatedCurrentYear = true, None, Some(Current))
+
+          backUrl mustBe controllers.agent.routes.UsingSoftwareController.show.url
+        }
+      }
+    }
+    "the EmailCaptureConsent feature switch is enabled" when {
+      "the user is eligible for next year only" should {
+        "return the Using Software page" in new Setup {
+          enable(EmailCaptureConsent)
+          val backUrl: String = controller.backUrl(eligibleNextYearOnly = true, mandatedCurrentYear = false, captureConsentStatus = Some(Yes), Some(Next))
+
+          backUrl mustBe controllers.agent.routes.UsingSoftwareController.show.url
+        }
+      }
+      "the user is mandated or signing up for current year" should {
+        "return the Email Capture page when selected Yes for consent" in new Setup {
+          enable(EmailCaptureConsent)
+          val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, mandatedCurrentYear = true, captureConsentStatus = Some(Yes), Some(Current))
+
+          backUrl mustBe controllers.agent.email.routes.EmailCaptureController.show().url
+        }
+        "return the Capture Consent page when selected No for consent" in new Setup {
+          enable(EmailCaptureConsent)
+          val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, mandatedCurrentYear = true, captureConsentStatus = Some(No), Some(Current))
+
+          backUrl mustBe controllers.agent.email.routes.CaptureConsentController.show().url
+        }
+      }
+      "the user is voluntarily signing up for next year" should {
+        "return the What Year to Sign Up page" in new Setup {
+          enable(EmailCaptureConsent)
+          val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, mandatedCurrentYear = false, captureConsentStatus = None, Some(Next))
+
+          backUrl mustBe controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+        }
+      }
+      "the user is voluntarily signing up for current year" should {
+        "return the What Year to Sign Up page" in new Setup {
+          enable(EmailCaptureConsent)
+          val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, mandatedCurrentYear = false, captureConsentStatus = None, Some(Current))
+
+          backUrl mustBe controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+        }
+      }
+    }
+  }
 }
