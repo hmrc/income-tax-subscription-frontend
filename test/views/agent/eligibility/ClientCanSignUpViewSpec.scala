@@ -68,7 +68,7 @@ class ClientCanSignUpViewSpec extends ViewSpec {
     }
 
     "have the first subheading" in new ViewTest {
-      mainContent.mainContent.selectNth("h2", 1).text() mustBe ClientCanSignUpMessages.subheading1
+      mainContent.mainContent.getSubHeading("h2", 1).text() mustBe ClientCanSignUpMessages.subheading1
     }
 
 
@@ -97,7 +97,7 @@ class ClientCanSignUpViewSpec extends ViewSpec {
     }
 
     "have the second subheading" in new ViewTest {
-      mainContent.selectNth("h2", 2).text() mustBe ClientCanSignUpMessages.subheading2
+      mainContent.getSubHeading("h2", 2).text() mustBe ClientCanSignUpMessages.subheading2
     }
 
     "have the fourth paragraph" in new ViewTest {

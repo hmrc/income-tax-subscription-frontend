@@ -46,7 +46,7 @@ class PropertyStartDateBeforeLimitViewSpec extends ViewSpec {
     }
 
     "have a caption for the page section" in {
-      document().mainContent.selectHead(".govuk-caption-l").text mustBe Messages.caption
+      document().mainContent.mustHaveCaption(Messages.caption, isSection = true)
     }
 
     "have a form" which {

@@ -167,6 +167,11 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
       element.select("p").get(index).text()
     }
 
+    def getSubHeading(selector: String, nth: Int = 0): Element = {
+      val captionExists = element.selectOptionally("h2.govuk-caption-l").isDefined
+      mainContent.selectNth(selector, if (captionExists) nth + 1 else nth)
+    }
+
     def getLinkNth(index: Int = 0): Element = {
       element.select(".govuk-link").get(index)
     }
@@ -206,6 +211,27 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
 
   implicit class ElementTests(element: Element) {
 
+    def mustHaveCaption(caption: String, isSection: Boolean): Assertion = {
+
+      val checkpoint: Checkpoint = new Checkpoint()
+
+      if (isSection) {
+        checkpoint {
+          element.selectHead("h2.govuk-caption-l").text mustBe s"This section is $caption"
+        }
+        checkpoint {
+          element.selectHead("h2.govuk-caption-l").selectHead("span.govuk-visually-hidden").text mustBe "This section is"
+        }
+      } else {
+        checkpoint {
+          element.selectHead("h2.govuk-caption-l").text mustBe caption
+        }
+      }
+
+      checkpoint.reportAll()
+      Succeeded
+    }
+
     def mustHaveHeadingAndCaption(heading: String, caption: String, isSection: Boolean): Assertion = {
 
       val checkpoint: Checkpoint = new Checkpoint()
@@ -216,14 +242,14 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
 
       if (isSection) {
         checkpoint {
-          element.selectHead("p.govuk-caption-l").text mustBe s"This section is $caption"
+          element.selectHead("h2.govuk-caption-l").text mustBe s"This section is $caption"
         }
         checkpoint {
-          element.selectHead("p.govuk-caption-l").selectHead("span.govuk-visually-hidden").text mustBe "This section is"
+          element.selectHead("h2.govuk-caption-l").selectHead("span.govuk-visually-hidden").text mustBe "This section is"
         }
       } else {
         checkpoint {
-          element.selectHead("span.govuk-caption-l").text mustBe caption
+          element.selectHead("h2.govuk-caption-l").text mustBe caption
         }
       }
 
