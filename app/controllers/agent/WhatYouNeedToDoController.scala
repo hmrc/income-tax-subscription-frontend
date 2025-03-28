@@ -17,12 +17,15 @@
 package controllers.agent
 
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.EmailCaptureConsent
+import config.featureswitch.FeatureSwitching
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import models.status.MandationStatus.Mandated
-import models.{Current, No, Yes}
+import models._
 import play.api.mvc._
 import services._
+import uk.gov.hmrc.http.InternalServerException
 import views.html.agent.WhatYouNeedToDo
 
 import javax.inject.{Inject, Singleton}
@@ -38,7 +41,7 @@ class WhatYouNeedToDoController @Inject()(view: WhatYouNeedToDo,
                                           sessionDataService: SessionDataService
                                          )(val appConfig: AppConfig)
                                          (implicit mcc: MessagesControllerComponents, val ec: ExecutionContext)
-  extends SignUpBaseController {
+  extends SignUpBaseController with FeatureSwitching {
 
   def show: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     for {
@@ -46,9 +49,13 @@ class WhatYouNeedToDoController @Inject()(view: WhatYouNeedToDo,
       mandationStatus <- mandationStatusService.getMandationStatus
       taxYearSelection <- subscriptionDetailsService.fetchSelectedTaxYear(request.reference)
       softwareStatus <- sessionDataService.fetchSoftwareStatus
+      captureConsentStatus <- sessionDataService.fetchConsentStatus
     } yield {
       val isCurrentYear = taxYearSelection.map(_.accountingYear).contains(Current)
-
+      val consentYesNo: Option[YesNo] = captureConsentStatus match {
+        case Left(_) => throw new InternalServerException("[WhatYouNeedToDoController][show] - Could not fetch email consent status")
+        case Right(yesNo) => yesNo
+      }
       val usingSoftwareStatus: Boolean = softwareStatus match {
         case Right(Some(Yes)) => true
         case Right(Some(No)) => false
@@ -68,7 +75,9 @@ class WhatYouNeedToDoController @Inject()(view: WhatYouNeedToDo,
         clientNino = request.clientDetails.formattedNino,
         backUrl = Some(backUrl(
           eligibleNextYearOnly = eligibilityStatus.eligibleNextYearOnly,
-          mandatedCurrentYear = mandationStatus.currentYearStatus == Mandated
+          mandatedCurrentYear = mandationStatus.currentYearStatus == Mandated,
+          captureConsentStatus = consentYesNo,
+          taxYearSelection = taxYearSelection.map(_.accountingYear)
         ))
       ))
     }
@@ -78,11 +87,23 @@ class WhatYouNeedToDoController @Inject()(view: WhatYouNeedToDo,
     Redirect(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
   }
 
-  def backUrl(eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean): String = {
-    if (eligibleNextYearOnly || mandatedCurrentYear) {
-      controllers.agent.routes.UsingSoftwareController.show.url
+  def backUrl(eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean, captureConsentStatus: Option[YesNo], taxYearSelection: Option[AccountingYear]): String = {
+    if (isEnabled(EmailCaptureConsent)) {
+      if (eligibleNextYearOnly) {
+        controllers.agent.routes.UsingSoftwareController.show.url
+      } else {
+        (taxYearSelection, captureConsentStatus) match {
+          case (Some(Current), Some(Yes)) => controllers.agent.email.routes.EmailCaptureController.show().url
+          case (Some(Current), Some(No)) => controllers.agent.email.routes.CaptureConsentController.show().url
+          case _ => controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+        }
+      }
     } else {
-      controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+      if (!(eligibleNextYearOnly || mandatedCurrentYear)) {
+        controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+      } else {
+        controllers.agent.routes.UsingSoftwareController.show.url
+      }
     }
   }
 }

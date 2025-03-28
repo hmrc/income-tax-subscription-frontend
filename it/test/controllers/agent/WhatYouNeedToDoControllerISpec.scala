@@ -26,7 +26,7 @@ import helpers.agent.servicemocks.AuthStub
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
 import models.{EligibilityStatus, Yes, YesNo}
-import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.http.Status.{NO_CONTENT, OK, SEE_OTHER}
 import play.api.libs.json.{JsString, Json}
 import utilities.SubscriptionDataKeys.SelectedTaxYear
 import utilities.agent.TestConstants.testUtr
@@ -57,6 +57,7 @@ class WhatYouNeedToDoControllerISpec extends ComponentSpecBase with FeatureSwitc
       SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
       SessionDataConnectorStub.stubSaveSessionData[YesNo](ITSASessionKeys.HAS_SOFTWARE, Yes)(OK)
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.CAPTURE_CONSENT)(NO_CONTENT)
 
 
       When(s"GET ${routes.WhatYouNeedToDoController.show().url} is called")
