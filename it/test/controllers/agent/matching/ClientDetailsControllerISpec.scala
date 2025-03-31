@@ -27,7 +27,6 @@ import org.jsoup.Jsoup
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import play.api.libs.json.JsBoolean
 import play.api.libs.ws.WSResponse
-//import play.api.test.Helpers.OK
 
 
 class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIntegrationResultSupport {
