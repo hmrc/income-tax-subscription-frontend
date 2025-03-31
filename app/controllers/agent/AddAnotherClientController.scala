@@ -22,7 +22,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionClearingService
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
 
 @Singleton
 class AddAnotherClientController @Inject()(identify: IdentifierAction,

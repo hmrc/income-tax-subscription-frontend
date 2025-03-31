@@ -56,21 +56,21 @@ class SessionClearingService @Inject()(sessionDataService: SessionDataService)
 
   private def fetchEmailPassed(implicit hc: HeaderCarrier): Future[Option[Boolean]] = {
     sessionDataService.fetchEmailPassed map {
-      case Left(error) => throw new InternalServerException(s"[AddAnotherClientController][fetchEmailPassed] - Unexpected failure: $error")
+      case Left(error) => throw new InternalServerException(s"[SessionClearingService][fetchEmailPassed] - Unexpected failure: $error")
       case Right(result) => result
     }
   }
 
   private def fetchConsentStatus(implicit request: Request[_], hc: HeaderCarrier): Future[Option[YesNo]] = {
     sessionDataService.fetchConsentStatus map {
-      case Left(error) => throw new InternalServerException(s"[AddAnotherClientController][fetchConsentStatus] - Unexpected failure: $error")
+      case Left(error) => throw new InternalServerException(s"[SessionClearingService][fetchConsentStatus] - Unexpected failure: $error")
       case Right(result) => result
     }
   }
 
   private def deleteSessionData(implicit request: Request[_], hc: HeaderCarrier): Future[DeleteSessionDataSuccess] = {
     sessionDataService.deleteSessionAll map {
-      case Left(error) => throw new InternalServerException(s"[AddAnotherClientController][deleteSessionData] - Unexpected failure: $error")
+      case Left(error) => throw new InternalServerException(s"[SessionClearingService][deleteSessionData] - Unexpected failure: $error")
       case Right(result) => result
     }
   }
@@ -79,7 +79,7 @@ class SessionClearingService @Inject()(sessionDataService: SessionDataService)
                                       (implicit request: Request[_], hc: HeaderCarrier): Future[SaveSessionDataSuccess] = {
     if (emailConsentCaptured) {
       sessionDataService.saveEmailPassed(emailPassed = true) map {
-        case Left(error) => throw new InternalServerException(s"[AddAnotherClientController][saveEmailConsentCaptured] - Unexpected error: $error")
+        case Left(error) => throw new InternalServerException(s"[SessionClearingService][saveEmailConsentCaptured] - Unexpected failure: $error")
         case Right(result) => result
       }
     } else {

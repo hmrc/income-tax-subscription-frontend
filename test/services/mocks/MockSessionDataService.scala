@@ -145,4 +145,9 @@ trait MockSessionDataService extends MockitoSugar with BeforeAndAfterEach {
       .thenReturn(Future.successful(result))
   }
 
+  def mockSaveEmailPassed(emailPassed: Boolean)(result: SaveSessionDataResponse): Unit = {
+    when(mockSessionDataService.saveEmailPassed(ArgumentMatchers.eq(emailPassed))(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(result))
+  }
+
 }
