@@ -25,8 +25,9 @@ import models.DateModel
 import models.usermatching.UserDetailsModel
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import play.api.mvc.Result
+import play.api.mvc.Results.Redirect
 import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, session, status}
-import services.mocks.{MockAuditingService, MockUserLockoutService}
+import services.mocks._
 import uk.gov.hmrc.http.InternalServerException
 import utilities.UserMatchingSessionUtil.{dobD, dobM, dobY, firstName, lastName, nino}
 import views.agent.matching.mocks.MockClientDetails
@@ -38,7 +39,8 @@ class ClientDetailsControllerSpec extends ControllerSpec
   with MockIdentifierAction
   with MockClientDetailsJourneyRefiner
   with MockUserLockoutService
-  with MockAuditingService {
+  with MockAuditingService
+  with MockSessionClearingService {
 
   "show" must {
     "return OK with the page content" when {
@@ -96,6 +98,7 @@ class ClientDetailsControllerSpec extends ControllerSpec
     "redirect to the confirm client page adding the client details to session" when {
       "the user is not locked out, is not in edit mode and has no validation errors" in {
         setupMockNotLockedOut(testARN)
+        mockClearAgentSessionSuccess(Redirect(routes.ConfirmClientController.show()))
 
         val result: Future[Result] = TestClientDetailsController.submit(false)(
           request.withMethod("POST").withFormUrlEncodedBody(
@@ -182,7 +185,8 @@ class ClientDetailsControllerSpec extends ControllerSpec
     fakeIdentifierAction,
     fakeClientDetailsJourneyRefiner,
     mockUserLockoutService,
-    mockAuditingService
+    mockAuditingService,
+    mockSessionClearingService
   )
 
 }
