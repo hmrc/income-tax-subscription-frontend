@@ -15,25 +15,27 @@
  *@
 
 @import forms.individual.business.ForeignPropertyStartDateBeforeLimitForm
-@import forms.submapping.YesNoMapping
 @import play.api.data.Form
 @import utilities.AccountingPeriodUtil
-@import views.html.helpers.{DetailsHelper, SaveAndContinueButtonHelper, PageHeadingHelper, YesNoRadioHelper}
+@import views.html.helpers.{SaveAndContinueButtonHelper, PageHeadingHelper, YesNoRadioHelper}
 @import views.html.templates.PrincipalMainTemplate
+@import views.html.helpers.CaptionHelper
 
 @this(
     mainTemplate: PrincipalMainTemplate,
     form: FormWithCSRF,
     yesNoRadioHelper: YesNoRadioHelper,
     pageHeadingHelper: PageHeadingHelper,
-    saveAndContinueButtonHelper: SaveAndContinueButtonHelper
+    saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
+    captionHelper: CaptionHelper
 )
+
 
 @(startDateBeforeLimitForm: Form[_], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = messages("individual.foreign-property.start-date-before-limit.heading", AccountingPeriodUtil.getStartDateLimit.getYear.toString), optForm = Some(startDateBeforeLimitForm), backLink = Some(backUrl)) {
 
-    <span class="govuk-caption-l">@messages("individual.foreign-property.start-date-before-limit.caption")</span>
+    @captionHelper(caption = messages("individual.foreign-property.start-date-before-limit.caption"), isSection = true)
 
     @form(action = postAction) {
 

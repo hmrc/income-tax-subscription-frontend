@@ -1,5 +1,5 @@
 @*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,14 @@
  * limitations under the License.
  *@
 
-@import views.html.helpers.HmrcPageHeadingHelper
+@this()
 
-@this(
-        hmrcPageHeadingHelper: HmrcPageHeadingHelper
-)
+@(caption: String, isSection: Boolean = true)(implicit messages: Messages)
+
+@visuallyHiddenText = @{
+    <span class="govuk-visually-hidden">{messages("base.section-caption.hidden")} </span>
+}
+
+<h2 class="govuk-caption-l hmrc-caption-l">@{if(isSection) visuallyHiddenText}@caption</h2>
 
 
-@(heading: String, caption: String, isSection: Boolean, headingClasses: Option[String] = None)(implicit messages: Messages)
-
-@hmrcPageHeadingHelper(
-    PageHeading(
-        text = heading,
-        section = Some(caption),
-        language = Some(messages.lang.language),
-        headingClasses = headingClasses
-    ),
-    isSection
-)

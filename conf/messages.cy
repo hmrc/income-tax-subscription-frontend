@@ -50,6 +50,7 @@ base.accept-and-continue                                        = Derbyn ac yn e
 base.tax-year.current                                           = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
 base.tax-year.next                                              = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
 base.print-page                                                 = Argraffwch y dudalen hon
+base.section-caption.hidden                                     = Teitl yr adran hon yw
 
 ## Preferences call back page
 preferences-callback.title                                      = Ydych chi am fynd yn eich blaen?

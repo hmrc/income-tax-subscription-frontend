@@ -52,7 +52,7 @@ class NoSoftwareViewSpec extends ViewSpec {
     }
 
     "have the first subheading" in {
-      document.mainContent.selectNth("h2", 1).text mustBe NoSoftwareMessages.subheadingOne
+      document.mainContent.getSubHeading("h2", 1).text mustBe NoSoftwareMessages.subheadingOne
     }
 
     "have the second paragraph" in {
@@ -60,7 +60,7 @@ class NoSoftwareViewSpec extends ViewSpec {
     }
 
     "have the second subheading" in {
-      document.mainContent.selectNth("h2", 2).text mustBe NoSoftwareMessages.subheadingTwo
+      document.mainContent.getSubHeading("h2", 2).text mustBe NoSoftwareMessages.subheadingTwo
     }
 
     "have a third paragraph" which {
