@@ -49,6 +49,7 @@ base.warning                                                    = Rhybudd
 base.accept-and-continue                                        = Derbyn ac yn eich blaen
 base.tax-year.current                                           = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
 base.tax-year.next                                              = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
+base.print-page                                                 = Argraffwch y dudalen hon
 
 ## Preferences call back page
 preferences-callback.title                                      = Ydych chi am fynd yn eich blaen?
@@ -330,7 +331,6 @@ sign-up-complete.what-now.submit-annual                         = Cyflwynwch eic
 agent.sign-up-confirmation.heading                                                  = Rydych wedi gorffen cofrestru
 agent.sign-up-confirmation.heading.panel.current                                    = Rydych wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o’r {0} ymlaen
 agent.sign-up-confirmation.heading.panel.next                                       = Rydych wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o’r {0} ymlaen
-agent.sign-up-confirmation.print-confirmation                                       = Argraffwch y dudalen hon
 
 agent.sign-up-confirmation.what-must-do.heading                                     = Yr hyn y mae’n rhaid i chi ei wneud nawr
 agent.sign-up-confirmation.what-you-must-do.para1                                   = Darllenwch sut i {0}
@@ -398,8 +398,6 @@ individual.capture-consent.form-error               = Select yes or no
 sign-up-confirmation.heading                                         = Rydych wedi cofrestru’n llwyddiannus
 sign-up-confirmation.heading.panel.current                           = Mae wedi llwyddo i gofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm, o ran y flwyddyn dreth bresennol ({0})
 sign-up-confirmation.heading.panel.next                              = Mae wedi llwyddo i gofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm, o ran y flwyddyn dreth nesaf ({0})
-
-sign-up-confirmation.print-confirmation                              = Argraffwch y dudalen hon
 
 sign-up-confirmation.what-you-must-do.heading                        = Yr hyn y mae’n rhaid i chi ei wneud nawr
 
@@ -1087,7 +1085,6 @@ agent.throttle-end.line-2                                          = I orffen co
 # Global Check Your Answers
 individual.global-check-your-answers.heading                                                    = Datganiad
 individual.global-check-your-answers.para                                                       = Dyma’r wybodaeth rydych wedi’i rhoi i ni.
-individual.global-check-your-answers.print-information                                          = Argraffwch eich gwybodaeth
 individual.global-check-your-answers.before-signing-up.heading                                  = Gwirio’ch atebion cyn cofrestru
 individual.global-check-your-answers.compatible-software.label                                  = Mae meddalwedd yn gweithio gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 individual.global-check-your-answers.tax-year.label                                             = Pan fyddwch yn cofrestru o
@@ -1142,6 +1139,5 @@ agent.global-check-your-answers.tax-year.label                                  
 agent.global-check-your-answers.using-software                                                  = Mae meddalwedd yn gweithio gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 agent.global-check-your-answers.tax-year.current                                                = Blwyddyn dreth bresennol
 agent.global-check-your-answers.tax-year.next                                                   = Blwyddyn dreth nesaf
-agent.global-check-your-answers.print-information                                               = Argraffwch eich gwybodaeth
 agent.global-check-your-answers.para2                                                           = Drwy fynd yn eich blaen, rydych yn cadarnhau bod yr wybodaeth rydych wedi’i rhoi’n gywir ac yn gyflawn hyd eithaf eich gwybodaeth.
 agent.global-check-your-answers.para3                                                           = Pan fyddwch chi’n parhau, byddwn ni’n cofrestru’ch cleient. Gall hyn gymryd ychydig o eiliadau.
