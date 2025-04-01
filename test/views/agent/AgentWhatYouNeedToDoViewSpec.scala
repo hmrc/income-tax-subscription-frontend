@@ -46,7 +46,6 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
 
   "WhatYouNeedToDo" when {
     "the body of the content" should {
-      import WhatYouNeedToDoMessages._
 
       def docHasSoftwareAndCTY: Element = mainContentPrePop(hasSoftware = true, taxYearSelectionIsCurrent = true)
 
@@ -215,7 +214,7 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
       }
 
       "have a sub heading" in {
-        allScenarios.foreach(_.selectHead("h2").text mustBe WhatYouNeedToDoMessages.subHeading)
+        allScenarios.foreach(_.getSubHeading("h2", 1).text mustBe WhatYouNeedToDoMessages.subHeading)
       }
 
       "have a fifth paragraph" when {

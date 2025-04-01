@@ -138,7 +138,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     "there are no income sources added" should {
       "have a sole trader section" which {
         "has a heading" in new ViewTest(noIncomeSources) {
-          document.mainContent.selectNth("h2", 1).text mustBe AgentIncomeSource.soleTrader
+          document.mainContent.getSubHeading("h2", 1).text mustBe AgentIncomeSource.soleTrader
         }
         "has an add business link" in new ViewTest(noIncomeSources) {
           val link: Element = document.mainContent.getElementById("add-self-employment").selectHead("a")
@@ -148,7 +148,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       }
       "have a property section" which {
         "has a heading" in new ViewTest(noIncomeSources) {
-          document.mainContent.selectNth("h2", 2).text mustBe AgentIncomeSource.incomeFromPropertyHeading
+          document.mainContent.getSubHeading("h2", 2).text mustBe AgentIncomeSource.incomeFromPropertyHeading
         }
         "has a paragraph" in new ViewTest(noIncomeSources) {
           document.mainContent.selectNth("p", 3).text mustBe AgentIncomeSource.incomeFromPropertyParagraph
@@ -170,7 +170,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     "there are incomplete income sources added" should {
       "have a sole trader section" which {
         "has a heading" in new ViewTest(incompleteIncomeSources) {
-          document.mainContent.selectNth("h2", 1).text mustBe AgentIncomeSource.soleTrader
+          document.mainContent.getSubHeading("h2", 1).text mustBe AgentIncomeSource.soleTrader
         }
         "has a first business card" in new ViewTest(incompleteIncomeSources) {
           document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
@@ -325,7 +325,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       }
       "have a income from property section" which {
         "has a heading" in new ViewTest(incompleteIncomeSources) {
-          document.mainContent.selectNth("h2", 6).text mustBe AgentIncomeSource.incomeFromPropertyHeading
+          document.mainContent.getSubHeading("h2", 6).text mustBe AgentIncomeSource.incomeFromPropertyHeading
         }
         "has a uk property summary card" in new ViewTest(incompleteIncomeSources) {
           document.mainContent.mustHaveSummaryCard("div.govuk-summary-card", Some(5))(
@@ -388,7 +388,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     "there are fully complete but not confirmed income sources added" should {
       "have a sole trader section" which {
         "has a heading" in new ViewTest(completeIncomeSources) {
-          document.mainContent.selectNth("h2", 1).text mustBe AgentIncomeSource.soleTrader
+          document.mainContent.getSubHeading("h2", 1).text mustBe AgentIncomeSource.soleTrader
         }
         "has a summary card with incomplete status tags and check details action link" when {
           "all details are present and confirmed and an accounting method is present" in new ViewTest(completeIncomeSources) {
@@ -428,7 +428,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       }
       "have an income from property section" which {
         "has a heading" in new ViewTest(completeIncomeSources) {
-          document.mainContent.selectNth("h2", 3).text mustBe AgentIncomeSource.incomeFromPropertyHeading
+          document.mainContent.getSubHeading("h2", 3).text mustBe AgentIncomeSource.incomeFromPropertyHeading
         }
         "has a UK property card" which {
           "displays a start date" when {
@@ -650,7 +650,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
       "have a sole trader section" which {
         "has a heading" in new ViewTest(completeAndConfirmedIncomeSources) {
-          document.mainContent.selectNth("h2", 1).text mustBe AgentIncomeSource.soleTrader
+          document.mainContent.getSubHeading("h2", 1).text mustBe AgentIncomeSource.soleTrader
         }
         "has a summary card" in new ViewTest(completeAndConfirmedIncomeSources) {
           document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
@@ -689,7 +689,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       }
       "have an income source from property section" which {
         "has a heading" in new ViewTest(completeAndConfirmedIncomeSources) {
-          document.mainContent.selectNth("h2", 3).text mustBe AgentIncomeSource.incomeFromPropertyHeading
+          document.mainContent.getSubHeading("h2", 3).text mustBe AgentIncomeSource.incomeFromPropertyHeading
         }
         "has a uk property summary card" in new ViewTest(completeAndConfirmedIncomeSources) {
           document.mainContent.mustHaveSummaryCard("div.govuk-summary-card", Some(2))(

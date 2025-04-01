@@ -65,7 +65,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     }
 
     "have an income sources subheading" in {
-      document().mainContent.selectNth("h2", 1).text mustBe GlobalCheckYourAnswersMessages.subheading
+      document().mainContent.getSubHeading("h2", 1).text mustBe GlobalCheckYourAnswersMessages.subheading
     }
 
     "have a summary of answers" when {
@@ -134,14 +134,14 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
       "no income sources are present" in {
         val mainContent: Element = document(details = minDetails()).mainContent
-        mainContent.selectOptionalNth("h2", 2) mustBe None
+        mainContent.selectOptionalNth("h2", 3) mustBe None
         mainContent.selectOptionalNth(".govuk-summary-list", 3) mustBe None
       }
 
       "all income sources are present" should {
 
         "display the sole trader income sources heading" in {
-          document().mainContent.selectNth("h2", 2).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.heading
+          document().mainContent.getSubHeading("h2", 2).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.heading
         }
 
         "display the first sole trader business" when {
@@ -263,7 +263,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
         }
 
         "display the property income sources heading" in {
-          document().mainContent.selectNth("h2", 3).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.Property.heading
+          document().mainContent.getSubHeading("h2", 3).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.Property.heading
         }
 
         "display the uk property income" when {

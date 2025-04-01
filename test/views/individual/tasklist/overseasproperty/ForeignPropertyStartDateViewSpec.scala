@@ -58,7 +58,7 @@ class ForeignPropertyStartDateViewSpec extends ViewSpec {
     }
 
     "have a paragraph" in {
-      document().mainContent.selectNth("p", 2).text mustBe OverseasPropertyStartDateMessages.paraOne
+      document().mainContent.selectNth("p", 1).text mustBe OverseasPropertyStartDateMessages.paraOne
     }
 
     "have a form" which {

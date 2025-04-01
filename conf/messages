@@ -50,7 +50,7 @@ base.accept-and-continue                                        = Accept and con
 base.tax-year.current                                           = Current tax year (6 April {0} to 5 April {1})
 base.tax-year.next                                              = Next tax year (6 April {0} to 5 April {1})
 base.print-page                                                 = Print this page
-
+base.section-caption.hidden                                     = This section is
 
 ## Preferences call back page
 preferences-callback.title                                      = Do you want to continue?
