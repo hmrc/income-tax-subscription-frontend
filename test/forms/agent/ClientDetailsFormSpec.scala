@@ -138,6 +138,13 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
           actual mustBe Some(expected)
         }
 
+        "succeed if there is whitespace in NINO" in {
+          val testInput = setupTestData(nino = "\tAA  1\t23456D\t\n")
+          val expected = UserDetailsModel(testClientFirstName, testClientLastName, "AA123456D", dob)
+          val actual = clientDetailsForm.bind(testInput).value
+          actual mustBe Some(expected)
+        }
+
       }
 
       "when testing the DoB" should {
