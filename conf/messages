@@ -688,17 +688,34 @@ agent.no-software.para4                                          = When you have
 agent.no-software.para5                                          = Meanwhile, you’ll need to make sure your client submits their Self Assessment tax return as normal.
 
 ## Agent Capture Consent Page ##
-agent.capture-consent.heading                  = Capture consent
-agent.capture-consent.caption                  = {0} | {1}
-agent.capture-consent.form-legend              = Does your client consent?
-agent.capture-consent.form-error               = Select yes or no
+agent.capture-consent.heading                               = Can HMRC contact you by email about Making Tax Digital for Income Tax?
+agent.capture-consent.para-one                              = We would like to ask for your help to improve Making Tax Digital for Income Tax.
+agent.capture-consent.contact-about.heading                 = What we will contact you about
+agent.capture-consent.contact-about.ask.para                = We will ask:
+agent.capture-consent.contact-about.ask.bullet-one          = for your feedback on your experience using Making Tax Digital for Income Tax
+agent.capture-consent.contact-about.ask.bullet-two          = what software you’re using with Making Tax Digital for Income Tax
+agent.capture-consent.contact-about.ask.bullet-three        = to arrange one-on-one contact with you for optional user research sessions
+agent.capture-consent.contact-about.update.para             = We will update you on:
+agent.capture-consent.contact-about.update.bullet-one       = issues affecting your use of Making Tax Digital for Income Tax
+agent.capture-consent.contact-about.update.bullet-two       = how your feedback is helping to improve Making Tax Digital for Income Tax
+agent.capture-consent.contact-about.update.bullet-three     = new features added to Making Tax Digital for Income Tax
+agent.capture-consent.contact-about.update.bullet-four      = when to submit your client’s quarterly updates
+agent.capture-consent.contact-about.never.para              = We will never:
+agent.capture-consent.contact-about.never.bullet-one        = contact you or your client to ask for your personal information
+agent.capture-consent.contact-about.never.bullet-two        = send you or your client a direct link to sign into Making Tax Digital for Income Tax
+agent.capture-consent.para-two                              = If you change your mind about us contacting you, you can withdraw your consent at any time. Information on how to withdraw your consent will be included in the emails we send to you.
+agent.capture-consent.form-error                            = Select yes if we can contact you by email about Making Tax Digital for Income Tax.
 
 ## Agent email capture page ##
-agent.email-capture.heading                                      = Enter your email address
-agent.email-capture.hint                                         = Email hint
-error.agent.email-capture.empty                                  = Email is missing error
-error.agent.email-capture.max-length                             = Email is too long error
-error.agent.email-capture.invalid                                = Email is invalid error
+agent.email-capture.heading                                 = Enter your contact email address
+agent.email-capture.para-one                                = Enter the email address you would like HMRC to use when contacting you about Making Tax Digital for Income Tax.
+agent.email-capture.legend                                  = Email address
+agent.email-capture.para-two                                = Full details of how we use contact information are in the {0}
+agent.email-capture.hmrc-privacy-notice.link-text           = HMRC Privacy Notice
+agent.email-capture.hmrc-privacy-notice.link-href           = https://www.gov.uk/government/publications/data-protection-act-dpa-information-hm-revenue-and-customs-hold-about-you/data-protection-act-dpa-information-hm-revenue-and-customs-hold-about-you
+error.agent.email-capture.empty                             = Enter an email address
+error.agent.email-capture.max-length                        = Your email address must be 254 characters or less
+error.agent.email-capture.invalid                           = Enter an email address in the correct format, like name@example.com
 
 ## Agent what you need to do page ##
 agent.what-you-need-to-do.title                                                  = What you need to do

@@ -645,7 +645,9 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
                                             isPageHeading: Boolean,
                                             hint: Option[String] = None,
                                             error: Option[String] = None,
-                                            autoComplete: Option[String] = None): Assertion = {
+                                            autoComplete: Option[String] = None,
+                                            spellcheck: Option[Boolean] = None,
+                                            inputType: String = "text"): Assertion = {
       val checkpoint: Checkpoint = new Checkpoint
       val formGroup: Element = element.selectHead(selector)
       val textInput: Element = formGroup.selectHead(s"input[name=$name]")
@@ -653,16 +655,24 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
       validateTextInputLabel(name, label, isPageHeading, isLabelHidden, checkpoint)
 
       checkpoint {
-        textInput.attr("type") mustBe "text"
+        textInput.attr("type") mustBe inputType
       }
+
       checkpoint {
         textInput.attr("name") mustBe name
       }
 
-      autoComplete.foreach(value =>
+      autoComplete.foreach { value =>
         checkpoint {
           textInput.attr("autocomplete") mustBe value
-        })
+        }
+      }
+
+      spellcheck.foreach { value =>
+        checkpoint {
+          textInput.attr("spellcheck") mustBe value.toString
+        }
+      }
 
       hint.foreach { value =>
         checkpoint {
