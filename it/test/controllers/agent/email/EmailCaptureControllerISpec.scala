@@ -154,8 +154,8 @@ class EmailCaptureControllerISpec extends ComponentSpecBase {
     }
   }
 
-  val serviceNameGovUk = "Use software to report your client’s Income Tax - GOV.UK"
-  val testValidEmail = "test@email.com"
+  lazy val serviceNameGovUk = "Use software to report your client’s Income Tax - GOV.UK"
+  lazy val testValidEmail = "test@email.com"
 
   def showEmailCapture(includeState: Boolean = true): WSResponse = {
     IncomeTaxSubscriptionFrontend.get("/email-capture", ClientData.basicClientData, withJourneyStateSignUp = includeState)

@@ -138,13 +138,13 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
       "have a second paragraph when signing up for next tax year" when {
 
         "user is mandated" in {
-          docNoSoftwareAndNTYMandated.selectNth("p", 2).text mustBe WhatYouNeedToDoMessages.ParaTwo.must(2025)
-          docHasSoftwareAndNTYMandated.selectNth("p", 2).text mustBe WhatYouNeedToDoMessages.ParaTwo.must(2025)
+          docNoSoftwareAndNTYMandated.selectNth("p", 2).text mustBe WhatYouNeedToDoMessages.ParaTwo.must(AccountingPeriodUtil.getNextTaxEndYear - 1)
+          docHasSoftwareAndNTYMandated.selectNth("p", 2).text mustBe WhatYouNeedToDoMessages.ParaTwo.must(AccountingPeriodUtil.getNextTaxEndYear - 1)
         }
 
         "user is not mandated" in {
-          docNoSoftwareAndNTY.selectNth("p", 2).text mustBe WhatYouNeedToDoMessages.ParaTwo.should(2025)
-          docHasSoftwareAndNTY.selectNth("p", 2).text mustBe WhatYouNeedToDoMessages.ParaTwo.should(2025)
+          docNoSoftwareAndNTY.selectNth("p", 2).text mustBe WhatYouNeedToDoMessages.ParaTwo.should(AccountingPeriodUtil.getNextTaxEndYear - 1)
+          docHasSoftwareAndNTY.selectNth("p", 2).text mustBe WhatYouNeedToDoMessages.ParaTwo.should(AccountingPeriodUtil.getNextTaxEndYear - 1)
         }
       }
 

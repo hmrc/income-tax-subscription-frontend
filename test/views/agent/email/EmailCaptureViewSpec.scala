@@ -60,40 +60,68 @@ class EmailCaptureViewSpec extends ViewSpec {
       )
     }
 
+    "have a heading" in {
+      document().mainContent.getH1Element.text mustBe EmailCaptureMessages.heading
+    }
+
+    "have an first paragraph" in {
+      document().mainContent.selectNth("p", 1).text mustBe EmailCaptureMessages.paraOne
+    }
+
+    "have a second paragraph" which {
+      def paragraph: Element = document().mainContent.selectNth("p", 2)
+
+      "has the correct text" in {
+        paragraph.text mustBe EmailCaptureMessages.paraTwo
+      }
+      "has a link which opens in a new tab" in {
+        val link = paragraph.selectHead("a")
+        link.text mustBe EmailCaptureMessages.hmrcPrivacyNotice
+        link.attr("href") mustBe "https://www.gov.uk/government/publications/data-protection-act-dpa-information-hm-revenue-and-customs-hold-about-you/data-protection-act-dpa-information-hm-revenue-and-customs-hold-about-you"
+        link.attr("rel") mustBe "noopener noreferrer"
+        link.attr("target") mustBe "_blank"
+      }
+    }
+
     "have a form" which {
-      def form(error: Boolean = false): Element = document(error).getForm
+      def form(error: Boolean = false): Element = document(error).mainContent.getForm
 
       "has the correct attributes" in {
         form().attr("method") mustBe testCall.method
         form().attr("action") mustBe testCall.url
       }
+
       "has a text input field with a heading label" when {
         "there is no error on the text field" in {
           form().mustHaveTextInput(".govuk-form-group")(
             name = EmailCaptureForm.formKey,
-            label = EmailCaptureMessages.heading,
+            label = EmailCaptureMessages.legend,
             isLabelHidden = false,
-            isPageHeading = true,
-            hint = Some(EmailCaptureMessages.hint),
+            isPageHeading = false,
             error = None,
-            autoComplete = Some("email")
+            autoComplete = Some("email"),
+            spellcheck = Some(false),
+            inputType = "email"
           )
         }
         "there is an error in the text field" in {
           form(error = true).mustHaveTextInput(".govuk-form-group")(
             name = EmailCaptureForm.formKey,
-            label = EmailCaptureMessages.heading,
+            label = EmailCaptureMessages.legend,
             isLabelHidden = false,
-            isPageHeading = true,
-            hint = Some(EmailCaptureMessages.hint),
+            isPageHeading = false,
             error = Some(EmailCaptureMessages.errorInvalid),
-            autoComplete = Some("email")
+            autoComplete = Some("email"),
+            spellcheck = Some(false),
+            inputType = "email"
           )
         }
       }
+
       "has a continue button" in {
         form().selectHead(".govuk-button").text mustBe EmailCaptureMessages.continue
       }
+
     }
   }
 
@@ -115,10 +143,13 @@ class EmailCaptureViewSpec extends ViewSpec {
   lazy val formError: FormError = FormError(EmailCaptureForm.formKey, s"error.agent.${EmailCaptureForm.formKey}.invalid")
 
   object EmailCaptureMessages {
-    val heading: String = "Enter your email address"
-    val hint: String = "Email hint"
+    val heading: String = "Enter your contact email address"
+    val paraOne: String = "Enter the email address you would like HMRC to use when contacting you about Making Tax Digital for Income Tax."
+    val legend: String = "Email address"
+    val hmrcPrivacyNotice: String = "HMRC Privacy Notice (opens in new tab)"
+    val paraTwo: String = s"Full details of how we use contact information are in the $hmrcPrivacyNotice"
     val continue: String = "Continue"
-    val errorInvalid: String = "Email is invalid error"
+    val errorInvalid: String = "Enter an email address in the correct format, like name@example.com"
   }
 
 }

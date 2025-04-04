@@ -23,7 +23,7 @@ import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino, testUtr}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import models.{No, Yes, YesNo}
-import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NO_CONTENT, OK, SEE_OTHER}
+import play.api.http.Status._
 import play.api.libs.json.JsString
 import play.api.libs.ws.WSResponse
 
@@ -153,7 +153,7 @@ class CaptureConsentControllerISpec extends ComponentSpecBase {
         }
       }
 
-      s"return a redirect to ${controllers.agent.routes.WhatYouNeedToDoController.show.url}" when {
+      s"return a redirect to ${controllers.agent.routes.WhatYouNeedToDoController.show().url}" when {
         "the user selects the No radio button" in {
           val userInput: YesNo = No
           Given("I setup the wiremock stubs")
@@ -217,9 +217,11 @@ class CaptureConsentControllerISpec extends ComponentSpecBase {
     }
   }
 
-  val serviceNameGovUk = "Use software to report your client’s Income Tax - GOV.UK"
+  lazy val serviceNameGovUk = "Use software to report your client’s Income Tax - GOV.UK"
 
-  def showCaptureConsent(includeState: Boolean = true): WSResponse = IncomeTaxSubscriptionFrontend.get("/capture-consent", ClientData.basicClientData, withJourneyStateSignUp = includeState)
+  def showCaptureConsent(includeState: Boolean = true): WSResponse = {
+    IncomeTaxSubscriptionFrontend.get("/capture-consent", ClientData.basicClientData, withJourneyStateSignUp = includeState)
+  }
 
   def submitCaptureConsent(request: Option[YesNo])(includeState: Boolean = true): WSResponse = {
     IncomeTaxSubscriptionFrontend.post("/capture-consent", ClientData.basicClientData, withJourneyStateSignUp = includeState)(

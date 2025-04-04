@@ -108,7 +108,7 @@ class CheckYourClientDetailsViewSpec extends ViewSpec {
           ),
           SummaryListRowValues(
             key = ConfirmClient.dob,
-            value = Some("6 April 2024"),
+            value = Some(testDob.toOutputDateFormat),
             actions = Seq(
               SummaryListActionValues(
                 href = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url,

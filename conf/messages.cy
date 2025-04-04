@@ -657,17 +657,34 @@ agent.no-software.para4                                          = Pan gewch fed
 agent.no-software.para5                                          = Yn y cyfamser, bydd angen i chi sicrhau bod eich cleient yn cyflwyno ei Ffurflen Dreth Hunanasesiad yn ôl yr arfer.
 
 ## Agent Capture Consent Page ##
-agent.capture-consent.heading                  = Capture consent
-agent.capture-consent.caption                  = {0} | {1}
-agent.capture-consent.form-legend              = Does your client consent?
-agent.capture-consent.form-error               = Select yes or no
+agent.capture-consent.heading                               = A all CThEF gysylltu â chi drwy e-bost ynglŷn â Troi Treth yn Ddigidol ar gyfer Treth Incwm?
+agent.capture-consent.para-one                              = Hoffwn ofyn am eich help i wella’r gwasanaeth Troi Treth Ddigidol ar gyfer Treth Incwm.
+agent.capture-consent.contact-about.heading                 = Beth fyddwn yn cysylltu â chi amdano
+agent.capture-consent.contact-about.ask.para                = Byddwn yn gofyn y canlynol:
+agent.capture-consent.contact-about.ask.bullet-one          = am eich adborth ar eich profiad o ddefnyddio Troi Treth Ddigidol ar gyfer Treth Incwm
+agent.capture-consent.contact-about.ask.bullet-two          = pa feddalwedd rydych chi’n defnyddio â Troi Treth yn Ddigidol ar gyfer Treth Incwm
+agent.capture-consent.contact-about.ask.bullet-three        = i drefnu cyswllt un-i-un gyda chi ar gyfer sesiynau ymchwil defnyddwyr dewisol
+agent.capture-consent.contact-about.update.para             = Byddwn yn eich diweddaru ar y canlynol:
+agent.capture-consent.contact-about.update.bullet-one       = materion sy’n effeithio ar eich defnydd o Droi Treth yn Ddigidol ar gyfer Treth Incwm
+agent.capture-consent.contact-about.update.bullet-two       = sut mae eich adborth yn helpu i wella gwasanaeth Troi Treth Ddigidol ar gyfer Treth Incwm
+agent.capture-consent.contact-about.update.bullet-three     = nodweddion newydd sydd wedi’u hychwanegu at Droi Treth yn Ddigidol ar gyfer Treth Incwm
+agent.capture-consent.contact-about.update.bullet-four      = pryd i gyflwyno diweddariadau chwarterol eich cleient
+agent.capture-consent.contact-about.never.para              = Ni fyddwn byth yn:
+agent.capture-consent.contact-about.never.bullet-one        = cysylltu â chi neu â’ch cleient er mwyn gofyn am eich gwybodaeth bersonol
+agent.capture-consent.contact-about.never.bullet-two        = anfon cysylltiad uniongyrchol atoch chi neu at eich cleient ar gyfer mewngofnodi i’r gwasanaeth Troi Treth yn Ddigidol ar gyfer Treth Incwm
+agent.capture-consent.para-two                              = Os byddwch yn newid eich meddwl ynglŷn â ni yn cysylltu â chi, gallwch dynnu’ch caniatâd yn ôl ar unrhyw adeg. Manylion am sut i dynnu’ch caniatâd yn ôl yn cael eu cynnwys ar yr e-byst a anfonwn atoch.
+agent.capture-consent.form-error                            = Dewiswch ‘Iawn’ os gallwn gysylltu â chi drwy e-bost ynglŷn â Throi Treth yn Ddigidol ar gyfer Treth Incwm.
 
 ## Agent email capture page ##
-agent.email-capture.heading                                      = Enter your email address
-agent.email-capture.hint                                         = Email hint
-error.agent.email-capture.empty                                  = Email is missing error
-error.agent.email-capture.max-length                             = Email is too long error
-error.agent.email-capture.invalid                                = Email is invalid error
+agent.email-capture.heading                                 = Nodwch eich cyfeiriad e-bost cyswllt
+agent.email-capture.para-one                                = Nodwch y cyfeiriad e-bost yr hoffech i CThEF i’w ddefnyddio wrth gysylltu gyda chi am Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+agent.email-capture.legend                                  = Cyfeiriad e-bost
+agent.email-capture.para-two                                = Ceir manylion llawn ynghylch sut rydym yn defnyddio gwybodaeth gyswllt yn {0}.
+agent.email-capture.hmrc-privacy-notice.link-text           = Hysbysiad Preifatrwydd CThEF
+agent.email-capture.hmrc-privacy-notice.link-href           = https://www.gov.uk/government/publications/data-protection-act-dpa-information-hm-revenue-and-customs-hold-about-you/63cba3e4-c360-41e5-ab8d-c34e6ddfb256
+error.agent.email-capture.empty                             = Nodwch gyfeiriad e-bost
+error.agent.email-capture.max-length                        = Rhaid i’ch cyfeiriad e-bost fod yn 254 o gymeriadau neu lai
+error.agent.email-capture.invalid                           = Nodwch gyfeiriad e-bost yn y fformat cywir, megis enw@enghraifft.com
 
 ## Agent what you need to do page ##
 agent.what-you-need-to-do.title                                                = Beth y mae angen i chi ei wneud
