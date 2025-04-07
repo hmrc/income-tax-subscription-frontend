@@ -416,16 +416,34 @@ individual.no-software.para-6.link                  = Self Assessment tax return
 individual.no-software.para-6.href                  = https://www.gov.uk/self-assessment-tax-returns/sending-return
 
 # Email capture page
-individual.email-capture.heading                    = Email capture
-individual.email-capture.hint                       = Enter a valid email address
-error.individual.email-capture.empty                = User entered no input
-error.individual.email-capture.invalid              = User entered an email which did not pass validation
-error.individual.email-capture.max-length           = User entered an email address which is too long
+individual.email-capture.heading                            = Enter your contact email address
+individual.email-capture.para-1                             = Enter the email address you would like HMRC to use when contacting you about Making Tax Digital for Income Tax.
+individual.email-capture.legend                             = Email address
+individual.email-capture.para-2                             = Full details of how we use contact information are in the {0}
+individual.email-capture.hmrc-privacy-notice.link-text      = HMRC Privacy Notice
+individual.email-capture.hmrc-privacy-notice.link-href      = https://www.gov.uk/government/publications/data-protection-act-dpa-information-hm-revenue-and-customs-hold-about-you/data-protection-act-dpa-information-hm-revenue-and-customs-hold-about-you
+error.individual.email-capture.empty                        = Enter an email address
+error.individual.email-capture.invalid                      = Enter an email address in the correct format, like name@example.com
+error.individual.email-capture.max-length                   = Your email address must be 254 characters or less
 
 ## Capture Consent Page ##
-individual.capture-consent.heading                  = Capture consent
-individual.capture-consent.form-legend              = Do you consent?
-individual.capture-consent.form-error               = Select yes or no
+individual.capture-consent.heading                  = Can HMRC contact you by email about Making Tax Digital for Income Tax?
+individual.capture-consent.subheading               = What we will contact you about
+individual.capture-consent.para-1                   = We would like to ask for your help to improve Making Tax Digital for Income Tax.
+individual.capture-consent.para-2                   = We will ask:
+individual.capture-consent.bullet-1                 = for your feedback on your experience using Making Tax Digital for Income Tax
+individual.capture-consent.bullet-2                 = what software you’re using with Making Tax Digital for Income Tax
+individual.capture-consent.bullet-3                 = to arrange one-on-one contact with you for optional user research sessions
+individual.capture-consent.para-3                   = We will update you on:
+individual.capture-consent.bullet-4                 = issues affecting your use of Making Tax Digital for Income Tax
+individual.capture-consent.bullet-5                 = how your feedback is helping to improve Making Tax Digital for Income Tax
+individual.capture-consent.bullet-6                 = new features added to Making Tax Digital for Income Tax
+individual.capture-consent.bullet-7                 = when to submit your quarterly updates
+individual.capture-consent.para-4                   = We will never:
+individual.capture-consent.bullet-8                 = contact you to ask for your personal information
+individual.capture-consent.bullet-9                 = send you a direct link to sign into Making Tax Digital for Income Tax
+individual.capture-consent.para-5                   = If you change your mind about us contacting you, you can withdraw your consent at any time. Information on how to withdraw your consent will be included in the emails we send to you.
+individual.capture-consent.form-error               = Select yes if we can contact you by email about Making Tax Digital for Income Tax.
 
 ## Sign Up Confirmation page ##
 sign-up-confirmation.heading                                         = Sign up complete

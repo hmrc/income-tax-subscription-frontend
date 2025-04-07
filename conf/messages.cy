@@ -384,16 +384,34 @@ individual.no-software.para-6.link              = Ffurflen Dreth Hunanasesiad
 individual.no-software.para-6.href              = https://www.gov.uk/ffurflenni-treth-hunanasesiad/anfon-ffurflen-dreth
 
 # Email capture page
-individual.email-capture.heading                    = Email capture
-individual.email-capture.hint                       = Enter a valid email address
-error.individual.email-capture.empty                = User entered no input
-error.individual.email-capture.invalid              = User entered an email which did not pass validation
-error.individual.email-capture.max-length           = User entered an email address which is too long
+individual.email-capture.heading                            = Nodwch eich cyfeiriad e-bost cyswllt
+individual.email-capture.para-1                             = Nodwch y cyfeiriad e-bost yr hoffech i CThEF i’w ddefnyddio wrth gysylltu gyda chi am Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+individual.email-capture.legend                             = Cyfeiriad e-bost
+individual.email-capture.para-2                             = Ceir manylion llawn ynghylch sut rydym yn defnyddio gwybodaeth gyswllt yn {0}
+individual.email-capture.hmrc-privacy-notice.link-text      = Hysbysiad Preifatrwydd CThEF
+individual.email-capture.hmrc-privacy-notice.link-href      = https://www.gov.uk/government/publications/data-protection-act-dpa-information-hm-revenue-and-customs-hold-about-you/63cba3e4-c360-41e5-ab8d-c34e6ddfb256
+error.individual.email-capture.empty                        = Nodwch gyfeiriad e-bost
+error.individual.email-capture.invalid                      = Nodwch gyfeiriad e-bost yn y fformat cywir, megis enw@enghraifft.com
+error.individual.email-capture.max-length                   = Rhaid i’ch cyfeiriad e-bost fod yn 254 o gymeriadau neu lai
 
 ## Capture Consent Page ##
-individual.capture-consent.heading                  = Capture consent
-individual.capture-consent.form-legend              = Do you consent?
-individual.capture-consent.form-error               = Select yes or no
+individual.capture-consent.heading                  = A all CThEF gysylltu â chi drwy e-bost ynglŷn â Troi Treth yn Ddigidol ar gyfer Treth Incwm?
+individual.capture-consent.subheading               = Beth fyddwn yn cysylltu â chi amdano
+individual.capture-consent.para-1                   = Hoffwn ofyn am eich help i wella’r gwasanaeth Troi Treth Ddigidol ar gyfer Treth Incwm.
+individual.capture-consent.para-2                   = Byddwn yn gofyn y canlynol:
+individual.capture-consent.bullet-1                 = am eich adborth ar eich profiad o ddefnyddio Troi Treth Ddigidol ar gyfer Treth Incwm
+individual.capture-consent.bullet-2                 = pa feddalwedd rydych chi’n defnyddio â Troi Treth yn Ddigidol ar gyfer Treth Incwm
+individual.capture-consent.bullet-3                 = i drefnu cyswllt un-i-un gyda chi ar gyfer sesiynau ymchwil defnyddwyr dewisol
+individual.capture-consent.para-3                   = Byddwn yn eich diweddaru ar y canlynol:
+individual.capture-consent.bullet-4                 = materion sy’n effeithio ar eich defnydd o Droi Treth yn Ddigidol ar gyfer Treth Incwm
+individual.capture-consent.bullet-5                 = sut mae eich adborth yn helpu i wella gwasanaeth Troi Treth Ddigidol ar gyfer Treth Incwm
+individual.capture-consent.bullet-6                 = nodweddion newydd sydd wedi’u hychwanegu at Droi Treth yn Ddigidol ar gyfer Treth Incwm
+individual.capture-consent.bullet-7                 = pryd i gyflwyno eich diweddariadau chwarterol
+individual.capture-consent.para-4                   = Ni fyddwn byth yn:
+individual.capture-consent.bullet-8                 = cysylltu â chi er mwyn gofyn am eich gwybodaeth bersonol
+individual.capture-consent.bullet-9                 = anfon cysylltiad uniongyrchol atoch chi ar gyfer mewngofnodi i’r gwasanaeth Troi Treth yn Ddigidol ar gyfer Treth Incwm
+individual.capture-consent.para-5                   = Os byddwch yn newid eich meddwl ynglŷn â ni yn cysylltu â chi, gallwch dynnu’ch caniatâd yn ôl ar unrhyw adeg. Manylion am sut i dynnu’ch caniatâd yn ôl yn cael eu cynnwys ar yr e-byst a anfonwn atoch.
+individual.capture-consent.form-error               = Dewiswch ‘Iawn’ os gallwn gysylltu â chi drwy e-bost ynglŷn â Throi Treth yn Ddigidol ar gyfer Treth Incwm.
 
 ## Sign Up Confirmation page ##
 sign-up-confirmation.heading                                         = Rydych wedi cofrestru’n llwyddiannus

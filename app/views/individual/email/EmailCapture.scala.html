@@ -18,28 +18,50 @@
 @import forms.individual.email.EmailCaptureForm
 @import views.html.templates.PrincipalMainTemplate
 @import views.html.helpers.{ContinueButton, TextInputHelper}
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 
 @this(
     mainTemplate: PrincipalMainTemplate,
     continueButton: ContinueButton,
     textInput: TextInputHelper,
-    form: FormWithCSRF
+    form: FormWithCSRF,
+    hmrcNewTabLinkHelper: HmrcNewTabLinkHelper
 )
 
 @(emailForm: Form[_], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = messages("individual.email-capture.heading"), optForm = Some(emailForm), backLink = Some(backUrl)) {
 
+    <h1 class="govuk-heading-l">@messages("individual.email-capture.heading")</h1>
+
+    <p class="govuk-body">@messages("individual.email-capture.para-1")</p>
+
     @form(postAction) {
         @textInput(
             field = emailForm(EmailCaptureForm.formKey),
-            label = messages("individual.email-capture.heading"),
-            hint = Some(messages("individual.email-capture.hint")),
-            autoComplete = Some("email")
+            label = messages("individual.email-capture.legend"),
+            inputType = "email",
+            spellcheck = Some(false),
+            autoComplete = Some("email"),
+            isPageHeading = false
         )
+
+        <p class="govuk-body">
+            @Html(messages(
+            key = "individual.email-capture.para-2",
+            args = hmrcPrivacyNoticeLink
+            ))
+        </p>
 
         @continueButton()
     }
-
 }
 
+@hmrcPrivacyNoticeLink = @{
+    hmrcNewTabLinkHelper(
+        NewTabLinkHelper(
+            messages("individual.email-capture.hmrc-privacy-notice.link-text"),
+            Some(messages("individual.email-capture.hmrc-privacy-notice.link-href"))
+        )
+    )
+}

@@ -50,29 +50,46 @@ class EmailCaptureViewSpec extends ViewSpec {
         form().attr("action") mustBe testCall.url
       }
 
+      "contains a heading" in {
+        document().mainContent.select("h1").text() mustBe EmailCaptureMessages.heading
+      }
+
+      "contains the first paragraph" in {
+        document().mainContent.selectNth("p", 1).text mustBe EmailCaptureMessages.paraOne
+      }
+
       "has a text input field with a heading label" when {
         "there is no error on the text field" in {
           form().mustHaveTextInput(".govuk-form-group")(
             name = EmailCaptureForm.formKey,
-            label = EmailCaptureMessages.heading,
+            label = EmailCaptureMessages.legend,
             isLabelHidden = false,
-            isPageHeading = true,
-            hint = Some(EmailCaptureMessages.hint),
+            isPageHeading = false,
             error = None,
-            autoComplete = Some("email")
+            autoComplete = Some("email"),
+            spellcheck = Some(false),
+            inputType = "email"
           )
         }
         "there is an error on the text field" in {
           form(error = true).mustHaveTextInput(".govuk-form-group")(
             name = EmailCaptureForm.formKey,
-            label = EmailCaptureMessages.heading,
+            label = EmailCaptureMessages.legend,
             isLabelHidden = false,
-            isPageHeading = true,
-            hint = Some(EmailCaptureMessages.hint),
+            isPageHeading = false,
             error = Some(EmailCaptureMessages.errorInvalid),
-            autoComplete = Some("email")
+            autoComplete = Some("email"),
+            spellcheck = Some(false),
+            inputType = "email"
           )
         }
+      }
+
+      "contains a second paragraph and with a link for privacy notice" in {
+        document().mainContent.selectNth("p", 2).text mustBe EmailCaptureMessages.paraTwo
+        val link = document().mainContent.selectNth(".govuk-link", 1)
+        link.text mustBe EmailCaptureMessages.linkTextTwo
+        link.attr("href") mustBe "https://www.gov.uk/government/publications/data-protection-act-dpa-information-hm-revenue-and-customs-hold-about-you/data-protection-act-dpa-information-hm-revenue-and-customs-hold-about-you"
       }
 
       "has a continue button" in {
@@ -98,10 +115,13 @@ class EmailCaptureViewSpec extends ViewSpec {
   lazy val view: EmailCapture = app.injector.instanceOf[EmailCapture]
 
   object EmailCaptureMessages {
-    val heading: String = "Email capture"
-    val hint: String = "Enter a valid email address"
+    val heading: String = "Enter your contact email address"
+    val paraOne: String = "Enter the email address you would like HMRC to use when contacting you about Making Tax Digital for Income Tax."
+    val legend: String = "Email address"
+    val paraTwo: String = "Full details of how we use contact information are in the HMRC Privacy Notice (opens in new tab)"
+    val linkTextTwo: String = "HMRC Privacy Notice (opens in new tab)"
     val continue: String = "Continue"
-    val errorInvalid: String = "User entered an email which did not pass validation"
+    val errorInvalid: String = "Enter an email address in the correct format, like name@example.com"
   }
 
 }
