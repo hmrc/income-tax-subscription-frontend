@@ -20,11 +20,11 @@
 @import forms.individual.email.CaptureConsentForm.fieldName
 
 @this(
-mainTemplate: AgentMainTemplate,
-yesNoRadioHelper: YesNoRadioHelper,
-continueButton: ContinueButton,
-pageHeadingHelper: PageHeadingHelper,
-form : FormWithCSRF
+    mainTemplate: AgentMainTemplate,
+    yesNoRadioHelper: YesNoRadioHelper,
+    continueButton: ContinueButton,
+    pageHeadingHelper: PageHeadingHelper,
+    form : FormWithCSRF
 )
 
 @(captureConsentForm: Form[YesNo], postAction: Call, clientName: String, clientNino: String, backUrl: String)(implicit request: Request[_], messages: Messages)
@@ -33,15 +33,38 @@ form : FormWithCSRF
 
     @form(action = postAction) {
 
-       @pageHeadingHelper(
-        heading = messages("agent.capture-consent.heading"),
-        caption = messages("agent.capture-consent.caption", clientName, clientNino),
-        isSection = false
-    )
+        <h1 class="govuk-heading-l">@messages("agent.capture-consent.heading")</h1>
+
+        <p class="govuk-body">@messages("agent.capture-consent.para-one")</p>
+
+        <h2 class="govuk-heading-m">@messages("agent.capture-consent.contact-about.heading")</h2>
+
+        <p class="govuk-body">@messages("agent.capture-consent.contact-about.ask.para")</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@messages("agent.capture-consent.contact-about.ask.bullet-one")</li>
+            <li>@messages("agent.capture-consent.contact-about.ask.bullet-two")</li>
+            <li>@messages("agent.capture-consent.contact-about.ask.bullet-three")</li>
+        </ul>
+
+        <p class="govuk-body">@messages("agent.capture-consent.contact-about.update.para")</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@messages("agent.capture-consent.contact-about.update.bullet-one")</li>
+            <li>@messages("agent.capture-consent.contact-about.update.bullet-two")</li>
+            <li>@messages("agent.capture-consent.contact-about.update.bullet-three")</li>
+            <li>@messages("agent.capture-consent.contact-about.update.bullet-four")</li>
+        </ul>
+
+        <p class="govuk-body">@messages("agent.capture-consent.contact-about.never.para")</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@messages("agent.capture-consent.contact-about.never.bullet-one")</li>
+            <li>@messages("agent.capture-consent.contact-about.never.bullet-two")</li>
+        </ul>
+
+        <p class="govuk-body">@messages("agent.capture-consent.para-two")</p>
 
         @yesNoRadioHelper(
             field = captureConsentForm(fieldName),
-            legend = messages("agent.capture-consent.form-legend"),
+            legend = messages("agent.capture-consent.heading"),
             headingClasses = "govuk-fieldset__legend--m",
             isPageHeading = false
         )

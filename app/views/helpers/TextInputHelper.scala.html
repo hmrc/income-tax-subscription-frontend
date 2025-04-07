@@ -24,7 +24,9 @@
         isPageHeading: Boolean = true,
         hint: Option[String] = None,
         classes: Option[String] = None,
-        autoComplete: Option[String] = None
+        autoComplete: Option[String] = None,
+        inputType: String = "text",
+        spellcheck: Option[Boolean] = None,
 )(implicit messages: Messages)
 
 
@@ -44,6 +46,8 @@
             )
         },
         classes = classes.getOrElse(""),
-        autocomplete = autoComplete
+        autocomplete = autoComplete,
+        inputType = inputType,
+        spellcheck = spellcheck
     ).withFormField(field)
 )

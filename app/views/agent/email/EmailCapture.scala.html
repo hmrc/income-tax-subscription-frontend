@@ -14,29 +14,55 @@
  * limitations under the License.
  *@
 
+@import forms.agent.email.EmailCaptureForm
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 @import views.html.templates.AgentMainTemplate
 @import views.html.helpers.{ContinueButton, TextInputHelper}
-@import forms.agent.email.EmailCaptureForm
 
 @this(
     mainTemplate: AgentMainTemplate,
     textInput: TextInputHelper,
     form: FormWithCSRF,
-    continueButton: ContinueButton
+    continueButton: ContinueButton,
+    hmrcNewTabLinkHelper: HmrcNewTabLinkHelper
 )
 
 @(emailForm: Form[_], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = messages("agent.email-capture.heading"), optForm = Some(emailForm), backLink = Some(backUrl)) {
 
+    <h1 class="govuk-heading-l">@messages("agent.email-capture.heading")</h1>
+
+    <p class="govuk-body">@messages("agent.email-capture.para-one")</p>
+
     @form(postAction) {
+
         @textInput(
             field = emailForm(EmailCaptureForm.formKey),
-            label = messages("agent.email-capture.heading"),
-            hint = Some(messages("agent.email-capture.hint")),
-            autoComplete = Some("email")
+            label = messages("agent.email-capture.legend"),
+            inputType = "email",
+            spellcheck = Some(false),
+            autoComplete = Some("email"),
+            isPageHeading = false,
         )
 
+        <p class="govuk-body">
+            @Html(messages(
+                key = "agent.email-capture.para-two",
+                args = hmrcPrivacyNoticeLink
+            ))
+        </p>
+
         @continueButton()
+
     }
+}
+
+@hmrcPrivacyNoticeLink = @{
+    hmrcNewTabLinkHelper(
+        NewTabLinkHelper(
+            messages("agent.email-capture.hmrc-privacy-notice.link-text"),
+            Some(messages("agent.email-capture.hmrc-privacy-notice.link-href"))
+        )
+    )
 }
