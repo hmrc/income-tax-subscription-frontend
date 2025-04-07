@@ -30,10 +30,39 @@ form : FormWithCSRF
 
 @mainTemplate(title = messages("individual.capture-consent.heading"), optForm = Some(captureConsentForm), backLink = Some(backUrl)) {
 
+    <h1 class="govuk-heading-l">@messages("individual.capture-consent.heading")</h1>
+
+    <p class="govuk-body">@messages("individual.capture-consent.para-1")</p>
+
+    <h2 class="govuk-heading-m">@messages("individual.capture-consent.subheading")</h2>
+
+    <p class="govuk-body">@messages("individual.capture-consent.para-2")</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@messages("individual.capture-consent.bullet-1")</li>
+            <li>@messages("individual.capture-consent.bullet-2")</li>
+            <li>@messages("individual.capture-consent.bullet-3")</li>
+        </ul>
+
+    <p class="govuk-body">@messages("individual.capture-consent.para-3")</p>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("individual.capture-consent.bullet-4")</li>
+        <li>@messages("individual.capture-consent.bullet-5")</li>
+        <li>@messages("individual.capture-consent.bullet-6")</li>
+        <li>@messages("individual.capture-consent.bullet-7")</li>
+    </ul>
+
+    <p class="govuk-body">@messages("individual.capture-consent.para-4")</p>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("individual.capture-consent.bullet-8")</li>
+        <li>@messages("individual.capture-consent.bullet-9")</li>
+    </ul>
+
+    <p class="govuk-body">@messages("individual.capture-consent.para-5")</p>
+
     @form(action = postAction) {
         @yesNoRadioHelper(
             field = captureConsentForm(fieldName),
-            legend = messages("individual.capture-consent.form-legend"),
+            legend = messages("individual.capture-consent.heading"),
             headingClasses = "govuk-fieldset__legend--m",
             isPageHeading = false
         )
