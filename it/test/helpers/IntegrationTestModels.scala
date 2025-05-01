@@ -71,6 +71,7 @@ object IntegrationTestModels {
 
   val testBusinesses: Option[Seq[SelfEmploymentData]] = Some(Seq(SelfEmploymentData(
     id = "12345",
+    startDateBeforeLimit = Some(true),
     businessStartDate = Some(BusinessStartDate(DateModel("05", "04", "2017"))),
     businessName = Some(testBusinessName),
     businessTradeName = Some(testBusinessTrade),
@@ -79,12 +80,14 @@ object IntegrationTestModels {
   )))
 
   val testFullPropertyModel: PropertyModel = PropertyModel(
+    startDateBeforeLimit = Some(true),
     accountingMethod = Some(Cash),
     startDate = Some(testValidStartDate),
     confirmed = true
   )
 
   val testFullOverseasPropertyModel: OverseasPropertyModel = OverseasPropertyModel(
+    startDateBeforeLimit = Some(true),
     accountingMethod = Some(Cash),
     startDate = Some(testValidStartDate),
     confirmed = true

@@ -44,6 +44,7 @@ class SubscriptionDataUtilSpec extends PlaySpec {
             businesses = Seq(
               SelfEmploymentData(
                 id = "test-id",
+                startDateBeforeLimit = Some(true),
                 businessStartDate = Some(BusinessStartDate(DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit))),
                 businessName = Some(BusinessNameModel("test name")),
                 businessTradeName = Some(BusinessTradeNameModel("test trade")),
@@ -53,11 +54,13 @@ class SubscriptionDataUtilSpec extends PlaySpec {
             )
           )),
           ukProperty = Some(UkProperty(
+            startDateBeforeLimit = Some(true),
             accountingPeriod = getCurrentTaxYear,
             tradingStartDate = DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit),
             accountingMethod = Cash
           )),
           overseasProperty = Some(OverseasProperty(
+            startDateBeforeLimit = Some(true),
             accountingPeriod = getCurrentTaxYear,
             tradingStartDate = DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit),
             accountingMethod = Cash
@@ -73,6 +76,7 @@ class SubscriptionDataUtilSpec extends PlaySpec {
             businesses = Seq(
               SelfEmploymentData(
                 id = "test-id",
+                startDateBeforeLimit = Some(false),
                 businessStartDate = Some(BusinessStartDate(DateModel.dateConvert(LocalDate.now))),
                 businessName = Some(BusinessNameModel("test name")),
                 businessTradeName = Some(BusinessTradeNameModel("test trade")),
@@ -82,11 +86,13 @@ class SubscriptionDataUtilSpec extends PlaySpec {
             )
           )),
           ukProperty = Some(UkProperty(
+            startDateBeforeLimit = Some(false),
             accountingPeriod = getCurrentTaxYear,
             tradingStartDate = DateModel.dateConvert(LocalDate.now),
             accountingMethod = Cash
           )),
           overseasProperty = Some(OverseasProperty(
+            startDateBeforeLimit = Some(false),
             accountingPeriod = getCurrentTaxYear,
             tradingStartDate = DateModel.dateConvert(LocalDate.now),
             accountingMethod = Cash
