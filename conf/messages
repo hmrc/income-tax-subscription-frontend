@@ -146,7 +146,7 @@ individual.what-you-need-to-do.bullet-1.no-software.href        = https://www.go
 individual.what-you-need-to-do.bullet-2                         = keep digital records of your business income and expenses
 individual.what-you-need-to-do.bullet-3                         = use software to send us quarterly updates
 individual.what-you-need-to-do.bullet-4.current                 = send any missed quarterly updates for the current tax year
-individual.what-you-need-to-do.bullet-5                         = make your final declaration by 31 January after the end of each tax year
+individual.what-you-need-to-do.bullet-5                         = make your tax return by 31 January after the end of each tax year
 individual.what-you-need-to-do.para-3                           = You’re also agreeing that {0} will apply if you miss deadlines for submitting your tax return or paying your bill.
 individual.what-you-need-to-do.para-3.link                      = our new penalties
 individual.what-you-need-to-do.para-3.href                      = https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers
@@ -384,7 +384,7 @@ agent.sign-up-confirmation.what-you-must-do.bullet1                             
 agent.sign-up-confirmation.what-you-must-do.bullet2                                 = how to keep digital records
 agent.sign-up-confirmation.what-you-must-do.bullet3                                 = when and how to send quarterly updates
 agent.sign-up-confirmation.what-you-must-do.current.year.bullet4                    = if you need to send any missed or backdated updates for the current tax year - and how to send them
-agent.sign-up-confirmation.what-you-must-do.bullet5                                 = when and how to make your client’s final declaration after the end of the tax year
+agent.sign-up-confirmation.what-you-must-do.bullet5                                 = when and how to make your client’s tax return after the end of the tax year
 agent.sign-up-confirmation.what-you-must-do.para3                                   = And your client will need to pay the tax they owe.
 
 agent.sign-up-confirmation.manage-client-account.heading                            = Manage your clients’ accounts
@@ -471,7 +471,7 @@ sign-up-confirmation.what-you-must-do.bullet1                        = how to au
 sign-up-confirmation.what-you-must-do.bullet2                        = how to keep digital records
 sign-up-confirmation.what-you-must-do.bullet3                        = when and how to send quarterly updates
 sign-up-confirmation.what-you-must-do.no.this.year.bullet4           = if you need to send any missed or backdated updates for the current tax year - and how to send them
-sign-up-confirmation.what-you-must-do.bullet5                        = when and how to make your final declaration after the end of the tax year
+sign-up-confirmation.what-you-must-do.bullet5                        = when and how to make your tax return after the end of the tax year
 sign-up-confirmation.what-you-must-do.para2                          = And you will need to pay the tax you owe.
 
 sign-up-confirmation.report-previous-tax-year.heading                = Report previous tax year
@@ -750,7 +750,7 @@ agent.voluntary.what-you-need-to-do.bullet-1-no-software-link                   
 agent.voluntary.what-you-need-to-do.bullet-2                                     = keep digital records of your client’s business income and expenses
 agent.voluntary.what-you-need-to-do.bullet-3                                     = use software to send us quarterly updates
 agent.voluntary.what-you-need-to-do.bullet-4-current-year                        = send any missed quarterly updates for the current tax year
-agent.voluntary.what-you-need-to-do.bullet-5                                     = make their final declaration by 31 January after the end of each tax year
+agent.voluntary.what-you-need-to-do.bullet-5                                     = make their tax return by 31 January after the end of each tax year
 agent.voluntary.what-you-need-to-do.para-3                                       = You’re also agreeing that {0} will apply to your client if they miss deadlines for submitting their tax return or paying their bill.
 agent.voluntary.what-you-need-to-do.para-3-link                                  = our new penalties
 agent.voluntary.what-you-need-to-do.para-4                                       = While you and your client are taking part voluntarily, your client will not get penalties for missed quarterly updates.
