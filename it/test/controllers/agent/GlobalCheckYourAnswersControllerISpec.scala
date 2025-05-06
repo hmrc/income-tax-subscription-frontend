@@ -195,11 +195,11 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
                 nino = testNino,
                 soleTraderBusinesses = Some(testSoleTraderBusinesses().copy(
                   businesses = testSoleTraderBusinesses().businesses.map(business =>
-                    business.copy(confirmed = true, businessStartDate = business.businessStartDate.map(date => date.copy(startDate = DateModel.dateConvert(date.startDate.toLocalDate))))
+                    business.copy(confirmed = true, businessStartDate = business.businessStartDate.map(date => date.copy(startDate = DateModel.dateConvert(date.startDate.toLocalDate))), startDateBeforeLimit = Some(true))
                   )
                 )),
-                ukProperty = Some(testUkProperty().copy(tradingStartDate = DateModel.dateConvert(testUkProperty().tradingStartDate.toLocalDate))),
-                overseasProperty = Some(testOverseasProperty().copy(tradingStartDate = DateModel.dateConvert(testOverseasProperty().tradingStartDate.toLocalDate)))
+                ukProperty = Some(testUkProperty().copy(tradingStartDate = DateModel.dateConvert(testUkProperty().tradingStartDate.toLocalDate), startDateBeforeLimit = Some(true))),
+                overseasProperty = Some(testOverseasProperty().copy(tradingStartDate = DateModel.dateConvert(testOverseasProperty().tradingStartDate.toLocalDate), startDateBeforeLimit = Some(true)))
               )
             )(NO_CONTENT)
 
@@ -235,6 +235,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
               Property,
               OK,
               Json.toJson(testFullPropertyModel.copy(
+                startDateBeforeLimit = Some(true),
                 accountingMethod = Some(testUkProperty(Next).accountingMethod),
                 startDate = Some(testUkProperty(Next).tradingStartDate)
               ))
@@ -243,6 +244,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
               OverseasProperty,
               OK,
               Json.toJson(testFullOverseasPropertyModel.copy(
+                startDateBeforeLimit = Some(true),
                 accountingMethod = Some(testOverseasProperty(Next).accountingMethod),
                 startDate = Some(testOverseasProperty(Next).tradingStartDate)
               ))
@@ -263,11 +265,11 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
                 nino = testNino,
                 soleTraderBusinesses = Some(testSoleTraderBusinesses(Next).copy(
                   businesses = testSoleTraderBusinesses(Next).businesses.map(business =>
-                    business.copy(confirmed = true, businessStartDate = business.businessStartDate.map(date => date.copy(startDate = DateModel.dateConvert(date.startDate.toLocalDate))))
+                    business.copy(confirmed = true, businessStartDate = business.businessStartDate.map(date => date.copy(startDate = DateModel.dateConvert(date.startDate.toLocalDate))), startDateBeforeLimit = Some(true))
                   )
                 )),
-                ukProperty = Some(testUkProperty(Next).copy(tradingStartDate = DateModel.dateConvert(testUkProperty(Next).tradingStartDate.toLocalDate))),
-                overseasProperty = Some(testOverseasProperty(Next).copy(tradingStartDate = DateModel.dateConvert(testOverseasProperty(Next).tradingStartDate.toLocalDate)))
+                ukProperty = Some(testUkProperty(Next).copy(tradingStartDate = DateModel.dateConvert(testUkProperty(Next).tradingStartDate.toLocalDate), startDateBeforeLimit = Some(true))),
+                overseasProperty = Some(testOverseasProperty(Next).copy(tradingStartDate = DateModel.dateConvert(testOverseasProperty(Next).tradingStartDate.toLocalDate), startDateBeforeLimit = Some(true)))
               )
             )(NO_CONTENT)
 

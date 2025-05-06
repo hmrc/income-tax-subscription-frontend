@@ -55,10 +55,10 @@ object TestConstants {
 
   val testSoleTraderBusinessesThisYear = SoleTraderBusinesses(testAccountingPeriodThisYear, testAccountMethod, testSelfEmploymentData)
   val testSoleTraderBusinessesNextYear = SoleTraderBusinesses(testAccountingPeriodNextYear, testAccountMethod, testSelfEmploymentData)
-  val testUkPropertyThisYear = UkProperty(testAccountingPeriodThisYear, testValidStartDate, testAccountMethod)
-  val testUkPropertyNextYear = UkProperty(testAccountingPeriodNextYear, testValidStartDate, testAccountMethod)
-  val testOverseasPropertyThisYear = OverseasProperty(testAccountingPeriodThisYear, testValidStartDate, testAccountMethod)
-  val testOverseasPropertyNextYear = OverseasProperty(testAccountingPeriodNextYear, testValidStartDate, testAccountMethod)
+  val testUkPropertyThisYear = UkProperty(startDateBeforeLimit = None, testAccountingPeriodThisYear, testValidStartDate, testAccountMethod)
+  val testUkPropertyNextYear = UkProperty(startDateBeforeLimit = None, testAccountingPeriodNextYear, testValidStartDate, testAccountMethod)
+  val testOverseasPropertyThisYear = OverseasProperty(startDateBeforeLimit = None, testAccountingPeriodThisYear, testValidStartDate, testAccountMethod)
+  val testOverseasPropertyNextYear = OverseasProperty(startDateBeforeLimit = None, testAccountingPeriodNextYear, testValidStartDate, testAccountMethod)
   lazy val businessStartDate = BusinessStartDate(DateModel("05", "04", "2017"))
 
   lazy val knownFactsRequest = KnownFactsRequest(

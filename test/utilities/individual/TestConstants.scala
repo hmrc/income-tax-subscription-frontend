@@ -52,8 +52,8 @@ object TestConstants {
   val testLastName = "Name"
 
   val testSoleTraderBusinesses: SoleTraderBusinesses = SoleTraderBusinesses(testAccountingPeriodThisYear, testAccountMethod, testSelfEmploymentData)
-  val testUkProperty: UkProperty = UkProperty(testAccountingPeriodThisYear, testValidStartDate, testAccountMethod)
-  val testOverseasProperty: OverseasProperty = OverseasProperty(testAccountingPeriodThisYear, testValidStartDate, testAccountMethod)
+  val testUkProperty: UkProperty = UkProperty(startDateBeforeLimit = None, testAccountingPeriodThisYear, testValidStartDate, testAccountMethod)
+  val testOverseasProperty: OverseasProperty = OverseasProperty(startDateBeforeLimit = None, testAccountingPeriodThisYear, testValidStartDate, testAccountMethod)
 
   val testCredentialId: String = UUID.randomUUID().toString
   val testCredentialId2: String = UUID.randomUUID().toString

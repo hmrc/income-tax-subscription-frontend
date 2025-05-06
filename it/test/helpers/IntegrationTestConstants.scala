@@ -86,12 +86,14 @@ object IntegrationTestConstants {
   )
 
   def testUkProperty(accountingYear: AccountingYear = Current): UkProperty = UkProperty(
+    startDateBeforeLimit = None,
     if (accountingYear == Current) AccountingPeriodUtil.getCurrentTaxYear else AccountingPeriodUtil.getNextTaxYear,
     tradingStartDate,
     testAccountMethod
   )
 
   def testOverseasProperty(accountingYear: AccountingYear = Current): OverseasProperty = OverseasProperty(
+    startDateBeforeLimit = None,
     if (accountingYear == Current) AccountingPeriodUtil.getCurrentTaxYear else AccountingPeriodUtil.getNextTaxYear,
     tradingStartDate,
     testAccountMethod

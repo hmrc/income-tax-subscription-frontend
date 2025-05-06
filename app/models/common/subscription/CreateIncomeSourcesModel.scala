@@ -45,6 +45,7 @@ object SoleTraderBusinesses {
 }
 
 case class UkProperty(
+                       startDateBeforeLimit: Option[Boolean] = None,
                        accountingPeriod: AccountingPeriodModel,
                        tradingStartDate: DateModel,
                        accountingMethod: AccountingMethod
@@ -55,6 +56,7 @@ object UkProperty {
 }
 
 case class OverseasProperty(
+                             startDateBeforeLimit: Option[Boolean] = None,
                              accountingPeriod: AccountingPeriodModel,
                              tradingStartDate: DateModel,
                              accountingMethod: AccountingMethod
@@ -81,6 +83,7 @@ object CreateIncomeSourcesModel {
           val startDate: DateModel = DateModel.dateConvert(business.startDate.getOrElse(AccountingPeriodUtil.getStartDateLimit))
           SelfEmploymentData(
             id = business.id,
+            startDateBeforeLimit = if (business.startDate.isEmpty) Some(true) else Some(false),
             businessStartDate = Some(BusinessStartDate(startDate)),
             businessName = Some(BusinessNameModel(business.name)),
             businessTradeName = Some(BusinessTradeNameModel(business.trade)),
@@ -96,6 +99,7 @@ object CreateIncomeSourcesModel {
       completeDetails.incomeSources.ukProperty map { property =>
         val startDate: DateModel = DateModel.dateConvert(property.startDate.getOrElse(AccountingPeriodUtil.getStartDateLimit))
         UkProperty(
+          startDateBeforeLimit = if (property.startDate.isEmpty) Some(true) else Some(false),
           accountingPeriod = accountingPeriod,
           tradingStartDate = startDate,
           accountingMethod = property.accountingMethod
@@ -107,6 +111,7 @@ object CreateIncomeSourcesModel {
       completeDetails.incomeSources.foreignProperty map { property =>
         val startDate: DateModel = DateModel.dateConvert(property.startDate.getOrElse(AccountingPeriodUtil.getStartDateLimit))
         OverseasProperty(
+          startDateBeforeLimit = if (property.startDate.isEmpty) Some(true) else Some(false),
           accountingPeriod = accountingPeriod,
           tradingStartDate = startDate,
           accountingMethod = property.accountingMethod
