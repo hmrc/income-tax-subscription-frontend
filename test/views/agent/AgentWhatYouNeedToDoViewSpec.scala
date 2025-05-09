@@ -308,7 +308,7 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
       val bulletTwo: String = "keep digital records of your client’s business income and expenses"
       val bulletThree: String = "use software to send us quarterly updates"
       val bulletFourCTYOnly: String = "send any missed quarterly updates for the current tax year"
-      val bulletFive: String = "make their final declaration by 31 January after the end of each tax year"
+      val bulletFive: String = "make their tax return by 31 January after the end of each tax year"
       val paraThree: String = "You’re also agreeing that our new penalties (opens in new tab) will apply to your client if they miss deadlines for submitting their tax return or paying their bill."
       val paraThreeLinkText: String = "our new penalties (opens in new tab)"
       val paraThreeLinkHref: String = "https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers"
