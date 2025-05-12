@@ -491,7 +491,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val bullet2 = "how to keep digital records"
     val bullet3 = "when and how to send quarterly updates"
     val bullet4NoThisYear = "if you need to send any missed or backdated updates for the current tax year - and how to send them"
-    val bullet5 = "when and how to make your final declaration after the end of the tax year"
+    val bullet5 = "when and how to make your tax return after the end of the tax year"
     val paraThree = "And you will need to pay the tax you owe."
 
     val previousTaxYearHeading = "Report previous tax year"

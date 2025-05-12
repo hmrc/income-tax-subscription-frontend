@@ -71,7 +71,7 @@ class WhatYouNeedToDoSpec extends ViewSpec {
     val bullet2: String = "keep digital records of your business income and expenses"
     val bullet3: String = "use software to send us quarterly updates"
     val bullet4CTY: String = "send any missed quarterly updates for the current tax year"
-    val bullet5: String = "make your final declaration by 31 January after the end of each tax year"
+    val bullet5: String = "make your tax return by 31 January after the end of each tax year"
 
     val para3: String = "You’re also agreeing that our new penalties (opens in new tab) will apply if you miss deadlines for submitting your tax return or paying your bill."
     val para3Href: String = "https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers"
@@ -286,3 +286,5 @@ class WhatYouNeedToDoSpec extends ViewSpec {
     }
   }
 }
+
+
