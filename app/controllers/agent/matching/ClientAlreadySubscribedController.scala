@@ -16,33 +16,31 @@
 
 package controllers.agent.matching
 
-import auth.agent.UserMatchingController
-import config.AppConfig
+import controllers.SignUpBaseController
+import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AuditingService, AuthService}
+import play.api.{Configuration, Environment}
+import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import views.html.agent.matching.ClientAlreadySubscribed
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 @Singleton
-class ClientAlreadySubscribedController @Inject()(val auditingService: AuditingService,
-                                                  val authService: AuthService,
+class ClientAlreadySubscribedController @Inject()(identify: IdentifierAction,
+                                                  journeyRefiner: ConfirmedClientJourneyRefiner,
                                                   clientAlreadySubscribed: ClientAlreadySubscribed)
-                                                 (implicit val ec: ExecutionContext,
-                                                  val appConfig: AppConfig,
-                                                  mcc: MessagesControllerComponents) extends UserMatchingController {
+                                                 (val config: Configuration, val env: Environment)
+                                                 (implicit mcc: MessagesControllerComponents) extends SignUpBaseController with AuthRedirects {
 
-  val show: Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      Future.successful(Ok(clientAlreadySubscribed(
-        postAction = controllers.agent.matching.routes.ClientAlreadySubscribedController.submit
-      )))
+  val show: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
+    Future.successful(Ok(clientAlreadySubscribed(
+      postAction = controllers.agent.matching.routes.ClientAlreadySubscribedController.submit
+    )))
   }
 
-  val submit: Action[AnyContent] = Authenticated.async { _ =>
-    _ =>
-      Future.successful(Redirect(controllers.agent.matching.routes.ClientDetailsController.show()))
+  val submit: Action[AnyContent] = (identify andThen journeyRefiner).async { _ =>
+    Future.successful(Redirect(controllers.agent.matching.routes.ClientDetailsController.show()))
   }
 
 }

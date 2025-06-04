@@ -17,15 +17,19 @@
 package controllers.agent.matching
 
 import controllers.agent.AgentControllerBaseSpec
+import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}
 import messagelookup.agent.MessageLookup.{ClientAlreadySubscribed => messages}
 import org.jsoup.Jsoup
+import play.api.{Configuration, Environment}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
-import services.mocks.MockAuditingService
 import views.html.agent.matching.ClientAlreadySubscribed
 
-class ClientAlreadySubscribedControllerSpec extends AgentControllerBaseSpec with MockAuditingService {
+class ClientAlreadySubscribedControllerSpec extends AgentControllerBaseSpec
+  with MockIdentifierAction
+  with MockConfirmedClientJourneyRefiner
+{
 
   override val controllerName: String = "ClientAlreadySubscribedController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
@@ -33,12 +37,14 @@ class ClientAlreadySubscribedControllerSpec extends AgentControllerBaseSpec with
   private def withController(testCode: ClientAlreadySubscribedController => Any): Unit = {
 
     val clientAlreadySubscribedView = app.injector.instanceOf[ClientAlreadySubscribed]
+    val mockConfiguration: Configuration = mock[Configuration]
+    val mockEnvironment: Environment = mock[Environment]
 
     val controller = new ClientAlreadySubscribedController(
-      mockAuditingService,
-      mockAuthService,
+      fakeIdentifierAction,
+      fakeConfirmedClientJourneyRefiner,
       clientAlreadySubscribedView
-    )
+    )(mockConfiguration, mockEnvironment)
     testCode(controller)
   }
 
