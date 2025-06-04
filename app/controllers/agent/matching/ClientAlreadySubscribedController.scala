@@ -32,13 +32,13 @@ class ClientAlreadySubscribedController @Inject()(identify: IdentifierAction,
                                                  (val config: Configuration, val env: Environment)
                                                  (implicit mcc: MessagesControllerComponents) extends SignUpBaseController with AuthRedirects {
 
-  val show: Action[AnyContent] = (identify).async { implicit request =>
+  val show: Action[AnyContent] = identify.async { implicit request =>
     Future.successful(Ok(clientAlreadySubscribed(
       postAction = controllers.agent.matching.routes.ClientAlreadySubscribedController.submit
     )))
   }
 
-  val submit: Action[AnyContent] = (identify).async { _ =>
+  val submit: Action[AnyContent] = identify.async { _ =>
     Future.successful(Redirect(controllers.agent.matching.routes.ClientDetailsController.show()))
   }
 
