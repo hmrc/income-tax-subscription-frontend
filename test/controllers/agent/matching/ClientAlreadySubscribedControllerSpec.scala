@@ -36,13 +36,11 @@ class ClientAlreadySubscribedControllerSpec extends AgentControllerBaseSpec
   private def withController(testCode: ClientAlreadySubscribedController => Any): Unit = {
 
     val clientAlreadySubscribedView = app.injector.instanceOf[ClientAlreadySubscribed]
-    val mockConfiguration: Configuration = mock[Configuration]
-    val mockEnvironment: Environment = mock[Environment]
 
     val controller = new ClientAlreadySubscribedController(
       fakeIdentifierAction,
       clientAlreadySubscribedView
-    )(mockConfiguration, mockEnvironment)
+    )
     testCode(controller)
   }
 

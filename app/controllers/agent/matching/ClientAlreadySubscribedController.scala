@@ -17,10 +17,8 @@
 package controllers.agent.matching
 
 import controllers.SignUpBaseController
-import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
+import controllers.agent.actions.IdentifierAction
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import play.api.{Configuration, Environment}
-import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import views.html.agent.matching.ClientAlreadySubscribed
 
 import javax.inject.{Inject, Singleton}
@@ -29,8 +27,7 @@ import scala.concurrent.Future
 @Singleton
 class ClientAlreadySubscribedController @Inject()(identify: IdentifierAction,
                                                   clientAlreadySubscribed: ClientAlreadySubscribed)
-                                                 (val config: Configuration, val env: Environment)
-                                                 (implicit mcc: MessagesControllerComponents) extends SignUpBaseController with AuthRedirects {
+                                                 (implicit mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   val show: Action[AnyContent] = identify.async { implicit request =>
     Future.successful(Ok(clientAlreadySubscribed(
