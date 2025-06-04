@@ -23,6 +23,7 @@ import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.Html
 import utilities.{AccountingPeriodUtil, ImplicitDateFormatter, ImplicitDateFormatterImpl, ViewSpec}
 import views.html.agent.confirmation.SignUpConfirmation
+import config.featureswitch.FeatureSwitch.EmailCaptureConsent
 
 class SignUpConfirmationViewSpec extends ViewSpec {
 
@@ -135,6 +136,22 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
       }
 
+      "contains a CST contact section" which {
+        "has a heading" in {
+          enable(EmailCaptureConsent)
+          mainContent.selectNth("h2", 3).text mustBe SignUpConfirmationMessages.cstContactHeading
+        }
+        "has the contact details" in {
+          enable(EmailCaptureConsent)
+          mainContent.selectNth("p.govuk-body", 7).text mustBe SignUpConfirmationMessages.cstContactPara
+        }
+        "has a link for call charges" in {
+          enable(EmailCaptureConsent)
+          mainContent.selectNth(".govuk-link", 4).text mustBe SignUpConfirmationMessages.cstContactLinkText
+          mainContent.selectNth(".govuk-link", 4).attr("href") mustBe SignUpConfirmationMessages.cstContactLinkHref
+        }
+      }
+
       "have a button to sign up another client" in {
         mainContent.selectHead(".govuk-button").text() mustBe SignUpConfirmationMessages.signUpAnotherClient
         mainContent.selectHead(".govuk-button").attr("href") mustBe controllers.agent.routes.AddAnotherClientController.addAnother().url
@@ -215,6 +232,12 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         "contains paragraph with a link" in {
           mainContent.select(".govuk-body").select("p").get(5).text() mustBe SignUpConfirmationMessages.manageAccountsPara
         }
+      }
+
+      "does not contain a CST contact section" in {
+        enable(EmailCaptureConsent)
+        mainContent.selectOptionalNth("h2", 3) mustBe None
+        mainContent.selectOptionalNth("p.govuk-body", 7) mustBe None
       }
 
       "have a button to sign up another client" in {
@@ -434,6 +457,11 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
     val manageAccountsHeading = "Manage your clients’ accounts"
     val manageAccountsPara = "Go to your agent services account (opens in new tab)"
+
+    val cstContactHeading = "Get help with Making Tax Digital for Income Tax"
+    val cstContactPara = "Phone: 03003 229 619 Monday to Friday, 8am to 6pm (except public holidays)"
+    val cstContactLinkText = "Find out about call charges (opens in new tab)"
+    val cstContactLinkHref = "https://www.gov.uk/call-charges"
 
     val signUpAnotherClient = "Sign up another client"
   }

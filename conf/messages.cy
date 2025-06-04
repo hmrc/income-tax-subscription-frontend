@@ -446,6 +446,12 @@ sign-up-confirmation.report-previous-tax-year.heading                = Rhoi gwyb
 sign-up-confirmation.report-previous-tax-year.plus.one.heading       = Rhoi gwybod am y flwyddyn dreth bresennol a blynyddoedd treth blaenorol
 sign-up-confirmation.report-previous-tax-year.para                   = Mae’n rhaid i chi barhau i gyflwyno’ch Ffurflenni Treth Hunanasesiad ar gyfer y blynyddoedd treth hyd at 5 Ebril {0} yn ôl yr arfer.
 
+sign-up-confirmation.contact-support.heading                         = Cael help gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+sign-up-confirmation.contact-support.phone-number                    = Ffôn: 0300 200 1900
+sign-up-confirmation.contact-support.para                            = Dydd Llun i Ddydd Gwener, 8am hyd at 5pm (heblaw am wyliau cyhoeddus)
+sign-up-confirmation.contact-support.link-text                       = Dysgwch am gostau galwadau
+sign-up-confirmation.contact-support.link-href                       = https://www.gov.uk/costau-galwadau
+
 sign-up-confirmation.preference-set.online.heading                   = Eich dewis o ohebiaeth
 sign-up-confirmation.preference-set.online.para-one                  = Os ydych wedi dewis cael eich llythyrau treth ar-lein, gwnewch yn siŵr eich bod wedi dilysu’ch cyfeiriad e-bost.
 

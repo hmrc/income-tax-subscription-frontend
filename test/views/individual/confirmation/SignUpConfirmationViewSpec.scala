@@ -16,6 +16,7 @@
 
 package views.individual.confirmation
 
+import config.featureswitch.FeatureSwitch.EmailCaptureConsent
 import models.DateModel
 import models.common.AccountingPeriodModel
 import org.jsoup.Jsoup
@@ -147,6 +148,22 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           preferenceSection(preference = Some(true)).selectNth("p", 1).text mustBe SignUpConfirmationMessages.onlinePreferenceParaOne
         }
       }
+
+      "contains a CST contact section" which {
+        "has a heading" in {
+          enable(EmailCaptureConsent)
+          mainContent().selectNth("h2", 3).text mustBe SignUpConfirmationMessages.cstContactHeading
+        }
+        "has the contact details" in {
+          enable(EmailCaptureConsent)
+          mainContent().selectNth("p.govuk-body", 7).text mustBe SignUpConfirmationMessages.cstContactPara
+        }
+        "has a link for call charges" in {
+          enable(EmailCaptureConsent)
+          mainContent().selectNth(".govuk-link", 3).text mustBe SignUpConfirmationMessages.cstContactLinkText
+          mainContent().selectNth(".govuk-link", 3).attr("href") mustBe SignUpConfirmationMessages.cstContactLinkHref
+        }
+      }
     }
 
     "the user has software and for next year only" should {
@@ -244,6 +261,12 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           preferenceSection(preference = Some(true)).selectNth("h2", 1).text mustBe SignUpConfirmationMessages.onlinePreferenceHeading
           preferenceSection(preference = Some(true)).selectNth("p", 1).text mustBe SignUpConfirmationMessages.onlinePreferenceParaOne
         }
+      }
+
+      "does not contain a CST contact section" in {
+        enable(EmailCaptureConsent)
+        mainContent().selectOptionalNth("h2", 3) mustBe None
+        mainContent().selectOptionalNth("p.govuk-body", 7) mustBe None
       }
     }
 
@@ -498,6 +521,11 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val previousNextTaxYearHeading = "Report current and previous tax years"
     val paragraphThisYear = s"You must submit your Self Assessment tax returns for the years ended 5 April $thisYear using your HMRC online services account as normal."
     val paragraphNextYear = s"You must submit your Self Assessment tax returns for the years ended 5 April $nextYear using your HMRC online services account as normal."
+
+    val cstContactHeading = "Get help with Making Tax Digital for Income Tax"
+    val cstContactPara = "Phone: 03003 229 619 Monday to Friday, 8am to 6pm (except public holidays)"
+    val cstContactLinkText = "Find out about call charges (opens in new tab)"
+    val cstContactLinkHref = "https://www.gov.uk/call-charges"
 
     val onlinePreferenceHeading = "Your communication preferences"
     val onlinePreferenceParaOne = "If you’ve chosen to get your tax letters online, make sure you have verified your email address."

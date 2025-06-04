@@ -20,12 +20,15 @@
 @import utilities.AccountingPeriodUtil
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcNewTabLinkHelper
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
+@import config.featureswitch.FeatureSwitchingImpl
+@import config.featureswitch.FeatureSwitch.EmailCaptureConsent
 
 @this(
-  principalMainTemplate: PrincipalMainTemplate,
-  govukPanel: GovukPanel,
-  accountingPeriodHelper: AccountingPeriodHelper,
-  hmrcNewTabLinkHelper: HmrcNewTabLinkHelper
+    principalMainTemplate: PrincipalMainTemplate,
+    govukPanel: GovukPanel,
+    accountingPeriodHelper: AccountingPeriodHelper,
+    hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
+    featureSwitching: FeatureSwitchingImpl
 )
 
 @(mandatedCurrentYear: Boolean, taxYearSelectionIsNext: Boolean, individualUserNameMaybe: Option[String], individualUserNino: String, preference: Option[Boolean], usingSoftwareStatus: Boolean)(implicit request: Request[_], messages: Messages)
@@ -108,6 +111,21 @@ classes = "govuk-!-margin-bottom-4"
 <p class="govuk-body">@messages("sign-up-confirmation.what-you-must-do.para2")</p>
 
 @reportPreviousTaxYear
+
+@if(featureSwitching.isEnabled(EmailCaptureConsent)) {
+    <h2 class="govuk-heading-m">@messages("sign-up-confirmation.contact-support.heading")</h2>
+    <p class="govuk-body">
+        @messages("sign-up-confirmation.contact-support.phone-number")
+        <br>
+        @messages("sign-up-confirmation.contact-support.para")
+    </p>
+    <p class="govuk-body">@hmrcNewTabLinkHelper(NewTabLinkHelper(
+        text = messages("sign-up-confirmation.contact-support.link-text"),
+        href = Some(messages("sign-up-confirmation.contact-support.link-href"))
+    ))
+    </p>
+}
+
 }
 
 @noSoftwareAndCurrentYear = {
