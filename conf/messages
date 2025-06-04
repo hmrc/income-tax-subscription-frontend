@@ -478,6 +478,12 @@ sign-up-confirmation.report-previous-tax-year.heading                = Report pr
 sign-up-confirmation.report-previous-tax-year.plus.one.heading       = Report current and previous tax years
 sign-up-confirmation.report-previous-tax-year.para                   = You must submit your Self Assessment tax returns for the years ended 5 April {0} using your HMRC online services account as normal.
 
+sign-up-confirmation.contact-support.heading                         = Get help with Making Tax Digital for Income Tax
+sign-up-confirmation.contact-support.phone-number                    = Phone: 03003 229 619
+sign-up-confirmation.contact-support.para                            = Monday to Friday, 8am to 6pm (except public holidays)
+sign-up-confirmation.contact-support.link-text                       = Find out about call charges
+sign-up-confirmation.contact-support.link-href                       = https://www.gov.uk/call-charges
+
 sign-up-confirmation.preference-set.online.heading                   = Your communication preferences
 sign-up-confirmation.preference-set.online.para-one                  = If you’ve chosen to get your tax letters online, make sure you have verified your email address.
 
