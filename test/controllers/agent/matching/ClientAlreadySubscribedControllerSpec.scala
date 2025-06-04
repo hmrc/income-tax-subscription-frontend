@@ -28,7 +28,6 @@ import views.html.agent.matching.ClientAlreadySubscribed
 
 class ClientAlreadySubscribedControllerSpec extends AgentControllerBaseSpec
   with MockIdentifierAction
-  with MockConfirmedClientJourneyRefiner
 {
 
   override val controllerName: String = "ClientAlreadySubscribedController"
@@ -42,7 +41,6 @@ class ClientAlreadySubscribedControllerSpec extends AgentControllerBaseSpec
 
     val controller = new ClientAlreadySubscribedController(
       fakeIdentifierAction,
-      fakeConfirmedClientJourneyRefiner,
       clientAlreadySubscribedView
     )(mockConfiguration, mockEnvironment)
     testCode(controller)
