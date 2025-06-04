@@ -22,21 +22,20 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import views.html.agent.matching.ClientAlreadySubscribed
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
 
 @Singleton
 class ClientAlreadySubscribedController @Inject()(identify: IdentifierAction,
                                                   clientAlreadySubscribed: ClientAlreadySubscribed)
                                                  (implicit mcc: MessagesControllerComponents) extends SignUpBaseController {
 
-  val show: Action[AnyContent] = identify.async { implicit request =>
-    Future.successful(Ok(clientAlreadySubscribed(
+  val show: Action[AnyContent] = identify { implicit request =>
+    Ok(clientAlreadySubscribed(
       postAction = controllers.agent.matching.routes.ClientAlreadySubscribedController.submit
-    )))
+    ))
   }
 
-  val submit: Action[AnyContent] = identify.async { _ =>
-    Future.successful(Redirect(controllers.agent.matching.routes.ClientDetailsController.show()))
+  val submit: Action[AnyContent] = identify { _ =>
+    Redirect(controllers.agent.matching.routes.ClientDetailsController.show())
   }
 
 }
