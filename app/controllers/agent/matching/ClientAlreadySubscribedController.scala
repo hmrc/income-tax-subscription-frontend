@@ -16,33 +16,26 @@
 
 package controllers.agent.matching
 
-import auth.agent.UserMatchingController
-import config.AppConfig
+import controllers.SignUpBaseController
+import controllers.agent.actions.IdentifierAction
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AuditingService, AuthService}
 import views.html.agent.matching.ClientAlreadySubscribed
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ClientAlreadySubscribedController @Inject()(val auditingService: AuditingService,
-                                                  val authService: AuthService,
+class ClientAlreadySubscribedController @Inject()(identify: IdentifierAction,
                                                   clientAlreadySubscribed: ClientAlreadySubscribed)
-                                                 (implicit val ec: ExecutionContext,
-                                                  val appConfig: AppConfig,
-                                                  mcc: MessagesControllerComponents) extends UserMatchingController {
+                                                 (implicit mcc: MessagesControllerComponents) extends SignUpBaseController {
 
-  val show: Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      Future.successful(Ok(clientAlreadySubscribed(
-        postAction = controllers.agent.matching.routes.ClientAlreadySubscribedController.submit
-      )))
+  val show: Action[AnyContent] = identify { implicit request =>
+    Ok(clientAlreadySubscribed(
+      postAction = controllers.agent.matching.routes.ClientAlreadySubscribedController.submit
+    ))
   }
 
-  val submit: Action[AnyContent] = Authenticated.async { _ =>
-    _ =>
-      Future.successful(Redirect(controllers.agent.matching.routes.ClientDetailsController.show()))
+  val submit: Action[AnyContent] = identify { _ =>
+    Redirect(controllers.agent.matching.routes.ClientDetailsController.show())
   }
 
 }
