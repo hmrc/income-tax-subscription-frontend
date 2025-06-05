@@ -16,7 +16,7 @@
 
 package controllers.agent.matching
 
-import helpers.IntegrationTestConstants.AgentURI
+import helpers.IntegrationTestConstants.{AgentURI, basGatewaySignIn}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import play.api.http.Status.{OK, SEE_OTHER}
@@ -35,6 +35,19 @@ class ClientAlreadySubscribedControllerISpec extends ComponentSpecBase {
       res must have(
         httpStatus(OK),
         pageTitle(messages("agent.client-already-subscribed.title") + serviceNameGovUk)
+      )
+    }
+    "user is unauthenticated" in {
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubUnauthorised()
+
+      When("GET /error/client-already-subscribed is called")
+      val res = IncomeTaxSubscriptionFrontend.clientAlreadySubscribed()
+
+      Then("Should return a SEE_OTHER with a redirect location of gg sign in")
+      res must have(
+        httpStatus(SEE_OTHER),
+        redirectURI(basGatewaySignIn("/client/error/client-already-subscribed"))
       )
     }
   }
