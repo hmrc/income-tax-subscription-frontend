@@ -43,7 +43,7 @@ object UserMatchingSessionUtil {
         nino -> userDetails.nino
       )
 
-    def clearAllUserDetails(implicit request: Request[AnyContent]): Result =
+    def clearAllUserDetails(implicit request: Request[_]): Result =
       result.removingFromSession(
         firstName,
         lastName,

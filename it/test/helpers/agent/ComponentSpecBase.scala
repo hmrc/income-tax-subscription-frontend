@@ -353,15 +353,28 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       ClientData.detailedClientData
     )(Map.empty)
 
+    def confirmClient(withJourneyState: Boolean = true): WSResponse = get(
+      uri = "/confirm-client",
+      additionalCookies = if (withJourneyState) {
+        Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name).addUserDetails(Some(IntegrationTestModels.testClientDetails))
+      } else {
+        Map.empty[String, String].addUserDetails(Some(IntegrationTestModels.testClientDetails))
+      },
+      withClientDetailsConfirmed = false,
+      withJourneyStateSignUp = false
+    )
+
     def submitConfirmClient(previouslyFailedAttempts: Int = 0,
-                            storedUserDetails: Option[UserDetailsModel] = Some(IntegrationTestModels.testClientDetails)): WSResponse = {
+                            storedUserDetails: Option[UserDetailsModel] = Some(IntegrationTestModels.testClientDetails),
+                            withJourneyState: Boolean = true): WSResponse = {
       val failedAttemptCounter: Map[String, String] = previouslyFailedAttempts match {
         case 0 => Map.empty
         case _ => Map(ITSASessionKeys.FailedClientMatching -> previouslyFailedAttempts.toString)
       }
+      val journeyStateMap: Map[String, String] = if (withJourneyState) Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name) else Map.empty[String, String]
       post("/confirm-client",
-        additionalCookies = failedAttemptCounter ++ Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name)
-          .addUserDetails(storedUserDetails), withClientDetailsConfirmed = false)(Map.empty)
+        additionalCookies = failedAttemptCounter ++ journeyStateMap
+          .addUserDetails(storedUserDetails), withClientDetailsConfirmed = false, withJourneyStateSignUp = false)(Map.empty)
     }
 
     def businessIncomeSource(sessionData: Map[String, String] = Map.empty): WSResponse = {
