@@ -16,13 +16,11 @@
 
 package auth.agent
 
-import auth.agent.AgentJourneyState._
 import auth.individual.AuthPredicate.{AuthPredicate, AuthPredicateSuccess}
 import cats.implicits._
 import common.Constants
 import common.Constants.ITSASessionKeys
 import play.api.mvc.{Result, Results}
-import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.http.SessionKeys._
 
 import scala.concurrent.Future
@@ -35,36 +33,15 @@ object AuthPredicates extends Results {
 
   lazy val timeoutRoute: Result = Redirect(controllers.agent.routes.SessionTimeoutController.show)
 
-  lazy val homeRoute: Result = Redirect(controllers.agent.matching.routes.HomeController.index)
-
-  private lazy val addAnotherClientRoute: Result = Redirect(controllers.agent.routes.AddAnotherClientController.addAnother())
-
   val notSubmitted: AuthPredicate[IncomeTaxAgentUser] = request => _ =>
     if (request.session.get(ITSASessionKeys.MTDITID).isEmpty) Right(AuthPredicateSuccess)
     else Left(Future.successful(confirmationRoute))
-
-  val hasSubmitted: AuthPredicate[IncomeTaxAgentUser] = request => _ =>
-    if (request.session.get(ITSASessionKeys.MTDITID).nonEmpty) Right(AuthPredicateSuccess)
-    else Left(Future.failed(new NotFoundException("auth.AuthPredicates.hasSubmitted")))
-
-  val hasClientDetails: AuthPredicate[IncomeTaxAgentUser] = request => _ =>
-    if (request.session.get(ITSASessionKeys.CLIENT_DETAILS_CONFIRMED).isDefined) Right(AuthPredicateSuccess)
-    else Left(Future.successful(Redirect(controllers.agent.matching.routes.CannotGoBackToPreviousClientController.show)))
 
   val timeoutPredicate: AuthPredicate[IncomeTaxAgentUser] = request => _ =>
     if (request.session.get(lastRequestTimestamp).nonEmpty && request.session.get(authToken).isEmpty) {
       Left(Future.successful(timeoutRoute))
     }
     else Right(AuthPredicateSuccess)
-
-  val signUpJourneyPredicate: AuthPredicate[IncomeTaxAgentUser] = request => _ =>
-    if (request.session.isInState(AgentSignUp)) Right(AuthPredicateSuccess)
-    else Left(Future.successful(homeRoute))
-
-  val userMatchingJourneyPredicate: AuthPredicate[IncomeTaxAgentUser] = request => _ =>
-    if (request.session.isInState(AgentUserMatching)) Right(AuthPredicateSuccess)
-    else if (request.session.isInState(AgentSignUp)) Right(AuthPredicateSuccess)
-    else Left(Future.successful(addAnotherClientRoute))
 
   val arnPredicate: AuthPredicate[IncomeTaxAgentUser] = _ => user =>
     if (user.enrolments.getEnrolment(Constants.hmrcAsAgent).nonEmpty) Right(AuthPredicateSuccess)
@@ -73,13 +50,5 @@ object AuthPredicates extends Results {
   val defaultPredicates: AuthPredicate[IncomeTaxAgentUser] = timeoutPredicate |+| arnPredicate
 
   val homePredicates: AuthPredicate[IncomeTaxAgentUser] = defaultPredicates |+| notSubmitted
-
-  val userMatchingPredicates: AuthPredicate[IncomeTaxAgentUser] = homePredicates |+| userMatchingJourneyPredicate
-
-  val preSignUpPredicates: AuthPredicate[IncomeTaxAgentUser] = homePredicates |+| hasClientDetails
-
-  val subscriptionPredicates: AuthPredicate[IncomeTaxAgentUser] = homePredicates |+| hasClientDetails |+| signUpJourneyPredicate
-
-  val confirmationPredicates: AuthPredicate[IncomeTaxAgentUser] = defaultPredicates |+| hasClientDetails |+| hasSubmitted
 
 }

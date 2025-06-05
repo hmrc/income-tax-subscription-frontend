@@ -16,9 +16,6 @@
 
 package auth.agent
 
-import common.Constants.ITSASessionKeys
-import play.api.mvc._
-
 sealed trait AgentJourneyState {
   val name: String
 }
@@ -29,17 +26,4 @@ object AgentUserMatching extends AgentJourneyState {
 
 object AgentSignUp extends AgentJourneyState {
   override val name: String = "signUp"
-}
-
-object AgentJourneyState {
-
-  implicit class SessionFunctions(session: Session) {
-    def isInState(state: AgentJourneyState): Boolean = session.get(ITSASessionKeys.JourneyStateKey) contains state.name
-  }
-
-  implicit class ResultFunctions(result: Result) {
-    def withJourneyState(state: AgentJourneyState)(implicit header: RequestHeader): Result =
-      result.addingToSession(ITSASessionKeys.JourneyStateKey -> state.name)
-  }
-
 }
