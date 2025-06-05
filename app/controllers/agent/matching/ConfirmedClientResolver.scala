@@ -16,10 +16,12 @@
 
 package controllers.agent.matching
 
-import auth.agent.{AgentSignUp, IncomeTaxAgentUser, UserMatchingController}
+import auth.agent.AgentSignUp
 import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.{FailedClientMatching, JourneyStateKey}
 import config.AppConfig
+import controllers.SignUpBaseController
+import controllers.agent.actions.IdentifierAction
 import controllers.utils.ReferenceRetrieval
 import models.EligibilityStatus
 import models.agent.JourneyStep
@@ -28,12 +30,14 @@ import play.api.mvc._
 import services.PrePopDataService.PrePopResult
 import services._
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
+import utilities.UserMatchingSessionUtil._
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ConfirmedClientResolver @Inject()(getEligibilityStatusService: GetEligibilityStatusService,
+class ConfirmedClientResolver @Inject()(identify: IdentifierAction,
+                                        getEligibilityStatusService: GetEligibilityStatusService,
                                         throttlingService: ThrottlingService,
                                         referenceRetrieval: ReferenceRetrieval,
                                         subscriptionDetailsService: SubscriptionDetailsService,
@@ -44,51 +48,51 @@ class ConfirmedClientResolver @Inject()(getEligibilityStatusService: GetEligibil
                                         val authService: AuthService,
                                         val appConfig: AppConfig)
                                        (implicit val ec: ExecutionContext,
-                                        mcc: MessagesControllerComponents) extends UserMatchingController {
+                                        mcc: MessagesControllerComponents) extends SignUpBaseController {
 
-  def resolve: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
-      val arn: String = user.arn
-
-      throttlingService.throttled(AgentStartOfJourneyThrottle) {
-        getEligibilityStatusService.getEligibilityStatus flatMap {
-          case EligibilityStatus(false, false) =>
-            for {
-              nino <- ninoService.getNino
-              utr <- utrService.getUTR
-              _ <- auditingService.audit(EligibilityAuditModel(
-                agentReferenceNumber = Some(arn),
-                utr = Some(utr),
-                nino = Some(nino),
-                eligibility = "ineligible",
-                failureReason = Some("control-list-ineligible")
-              ))
-            } yield {
-              Redirect(controllers.agent.eligibility.routes.CannotTakePartController.show)
-                .addingToSession(ITSASessionKeys.JourneyStateKey -> JourneyStep.SignPosted.key)
-                .removingFromSession(FailedClientMatching)
-                .clearUserDetailsExceptName
-            }
-          case EligibilityStatus(thisYear, _) =>
-            for {
-              result <- goToSignUpClient(nextYearOnly = !thisYear)
-            } yield {
-              result.addingToSession(
-                JourneyStateKey -> AgentSignUp.name
-              )
-            }
+  def resolve: Action[AnyContent] = identify.async { implicit request =>
+    throttlingService.throttled(AgentStartOfJourneyThrottle) {
+      getEligibilityStatusService.getEligibilityStatus flatMap {
+        case EligibilityStatus(false, false) =>
+          for {
+            nino <- ninoService.getNino
+            utr <- utrService.getUTR
+            _ <- auditingService.audit(EligibilityAuditModel(
+              agentReferenceNumber = Some(request.arn),
+              utr = Some(utr),
+              nino = Some(nino),
+              eligibility = "ineligible",
+              failureReason = Some("control-list-ineligible")
+            ))
+          } yield {
+            Redirect(controllers.agent.eligibility.routes.CannotTakePartController.show)
+              .addingToSession(ITSASessionKeys.JourneyStateKey -> JourneyStep.SignPosted.key)
+              .removingFromSession(FailedClientMatching)
+              .clearUserDetailsExceptName
+          }
+        case EligibilityStatus(thisYear, _) =>
+          for {
+            result <- goToSignUpClient(
+              arn = request.arn,
+              nextYearOnly = !thisYear
+            )
+          } yield {
+            result.addingToSession(
+              JourneyStateKey -> AgentSignUp.name
+            )
+          }
         }
       }
   }
 
-  private def goToSignUpClient(nextYearOnly: Boolean)
-                              (implicit hc: HeaderCarrier, request: Request[AnyContent], user: IncomeTaxAgentUser): Future[Result] = {
+  private def goToSignUpClient(arn: String, nextYearOnly: Boolean)
+                              (implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
     for {
-      reference <- referenceRetrieval.getAgentReference
+      reference <- referenceRetrieval.getReference(Some(arn))
       nino <- ninoService.getNino
       utr <- utrService.getUTR
       _ <- auditingService.audit(EligibilityAuditModel(
-        agentReferenceNumber = Some(user.arn),
+        agentReferenceNumber = Some(arn),
         utr = Some(utr),
         nino = Some(nino),
         eligibility = if (nextYearOnly) "eligible - next tax year only" else "eligible",
