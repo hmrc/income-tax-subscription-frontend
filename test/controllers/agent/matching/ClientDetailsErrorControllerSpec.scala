@@ -17,16 +17,16 @@
 package controllers.agent.matching
 
 import controllers.agent.AgentControllerBaseSpec
+import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{contentType, _}
 import play.twirl.api.HtmlFormat
-import services.mocks.MockAuditingService
 import views.html.agent.matching.ClientDetailsError
 
-class ClientDetailsErrorControllerSpec extends AgentControllerBaseSpec with MockAuditingService {
+class ClientDetailsErrorControllerSpec extends AgentControllerBaseSpec with MockIdentifierAction {
 
   // Required for trait but no authorisation tests are required
   override val controllerName: String = "ClientDetailsErrorController"
@@ -37,8 +37,7 @@ class ClientDetailsErrorControllerSpec extends AgentControllerBaseSpec with Mock
     .thenReturn(HtmlFormat.empty)
 
   object TestClientDetailsErrorController extends ClientDetailsErrorController(
-    mockAuditingService,
-    mockAuthService,
+    fakeIdentifierAction,
     mockClientDetailsError
   )
 
