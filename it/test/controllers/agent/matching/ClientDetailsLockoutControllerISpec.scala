@@ -16,7 +16,7 @@
 
 package controllers.agent.matching
 
-import helpers.IntegrationTestConstants.{AgentURI, testARN}
+import helpers.IntegrationTestConstants.{AgentURI, basGatewaySignIn, testARN}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.{AgentLockoutStub, AuthStub}
 import play.api.http.Status.{OK, SEE_OTHER}
@@ -24,37 +24,50 @@ import play.api.http.Status.{OK, SEE_OTHER}
 class ClientDetailsLockoutControllerISpec extends ComponentSpecBase {
 
   "GET /error/lockout" when {
-    "the agent is still locked out" should {
-      "show the locked out page" in {
-        Given("I setup the wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        AgentLockoutStub.stubAgentIsLocked(testARN)
-
-        When("I call GET /error/lockout")
+    "the agent is not authorised" should {
+      "redirect to login page" in {
+        AuthStub.stubUnauthorised()
         val res = IncomeTaxSubscriptionFrontend.showClientDetailsLockout()
-        val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
-        Then("The result must have a status of OK")
+
         res must have(
-          httpStatus(OK),
-          pageTitle(messages("agent.client-details-lockout.title") + serviceNameGovUk)
+          httpStatus(SEE_OTHER),
+          redirectURI(basGatewaySignIn("/client/error/lockout"))
         )
       }
     }
+    "the agent is authorised" when {
+      "the agent is still locked out" should {
+        "show the locked out page" in {
+          Given("I setup the wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          AgentLockoutStub.stubAgentIsLocked(testARN)
 
-    "the agent is no longer locked out" should {
-      "show the client details page" in {
-        Given("I setup the wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        AgentLockoutStub.stubAgentIsNotLocked(testARN)
+          When("I call GET /error/lockout")
+          val res = IncomeTaxSubscriptionFrontend.showClientDetailsLockout()
+          val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
+          Then("The result must have a status of OK")
+          res must have(
+            httpStatus(OK),
+            pageTitle(messages("agent.client-details-lockout.title") + serviceNameGovUk)
+          )
+        }
+      }
 
-        When("I call GET /error/lockout")
-        val res = IncomeTaxSubscriptionFrontend.showClientDetailsLockout()
+      "the agent is no longer locked out" should {
+        "show the client details page" in {
+          Given("I setup the wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          AgentLockoutStub.stubAgentIsNotLocked(testARN)
 
-        Then("The result must have a status of SEE_OTHER")
-        res must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(AgentURI.clientDetailsURI)
-        )
+          When("I call GET /error/lockout")
+          val res = IncomeTaxSubscriptionFrontend.showClientDetailsLockout()
+
+          Then("The result must have a status of SEE_OTHER")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(AgentURI.clientDetailsURI)
+          )
+        }
       }
     }
   }

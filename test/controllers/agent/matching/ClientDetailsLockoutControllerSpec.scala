@@ -17,21 +17,21 @@
 package controllers.agent.matching
 
 import controllers.agent.AgentControllerBaseSpec
+import controllers.agent.actions.mocks.MockIdentifierAction
 import messagelookup.agent.MessageLookup.{ClientDetailsLockout => messages}
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Cookie, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.mocks.{MockAuditingService, MockUserLockoutService}
+import services.mocks.MockUserLockoutService
 import uk.gov.hmrc.http.InternalServerException
-import utilities.agent.TestConstants.testARN
 import views.html.agent.matching.ClientDetailsLockout
 
 import java.time.Duration
 
 class ClientDetailsLockoutControllerSpec extends AgentControllerBaseSpec
-  with MockUserLockoutService with MockAuditingService {
+  with MockUserLockoutService with MockIdentifierAction{
 
   // Required for trait but no authorisation tests are required
   override val controllerName: String = "ClientDetailsLockoutController"
@@ -41,8 +41,7 @@ class ClientDetailsLockoutControllerSpec extends AgentControllerBaseSpec
 
     val clientDetailsLockoutView = app.injector.instanceOf[ClientDetailsLockout]
     val controller = new ClientDetailsLockoutController(
-      mockAuditingService,
-      mockAuthService,
+      fakeIdentifierAction,
       mockUserLockoutService,
       clientDetailsLockoutView
     )
