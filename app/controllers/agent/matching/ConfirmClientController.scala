@@ -16,59 +16,58 @@
 
 package controllers.agent.matching
 
-import auth.agent.{IncomeTaxAgentUser, UserMatchingController}
 import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.FailedClientMatching
-import config.AppConfig
+import controllers.SignUpBaseController
+import controllers.agent.actions.{ClientDetailsJourneyRefiner, IdentifierAction}
 import models.audits.EligibilityAuditing.EligibilityAuditModel
 import models.audits.EnterDetailsAuditing.EnterDetailsAuditModel
+import models.requests.agent.IdentifierRequest
 import models.usermatching.{LockedOut, NotLockedOut, UserDetailsModel}
 import play.api.mvc._
 import play.twirl.api.Html
 import services._
 import services.agent._
 import uk.gov.hmrc.http.InternalServerException
+import utilities.UserMatchingSessionUtil.{UserMatchingSessionRequestUtil, UserMatchingSessionResultUtil}
 import views.html.agent.matching.CheckYourClientDetails
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ConfirmClientController @Inject()(checkYourClientDetails: CheckYourClientDetails,
+class ConfirmClientController @Inject()(identify: IdentifierAction,
+                                        journeyRefiner: ClientDetailsJourneyRefiner,
+                                        auditingService: AuditingService,
+                                        checkYourClientDetails: CheckYourClientDetails,
                                         agentQualificationService: AgentQualificationService,
+                                        sessionDataService: SessionDataService,
                                         lockOutService: UserLockoutService)
-                                       (val auditingService: AuditingService,
-                                        val authService: AuthService,
-                                        val sessionDataService: SessionDataService,
-                                        val appConfig: AppConfig,
-                                        val subscriptionDetailsService: SubscriptionDetailsService)
-                                       (implicit val ec: ExecutionContext,
-                                        mcc: MessagesControllerComponents) extends UserMatchingController {
+                                       (implicit ec: ExecutionContext,
+                                        mcc: MessagesControllerComponents) extends SignUpBaseController {
 
-  def show(): Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
-      withLockOutCheck {
-        request.fetchUserDetails match {
-          case Some(clientDetails) => Future.successful(Ok(view(clientDetails)))
-          case _ => Future.successful(Redirect(controllers.agent.matching.routes.ClientDetailsController.show()))
-        }
+  def show(): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
+    withLockOutCheck {
+      request.fetchUserDetails match {
+        case Some(clientDetails) => Future.successful(Ok(view(clientDetails)))
+        case _ => Future.successful(Redirect(controllers.agent.matching.routes.ClientDetailsController.show()))
       }
+    }
   }
 
-  def submit(): Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
-      withLockOutCheck {
-        withClientDetails { clientDetails =>
-          agentQualificationService.orchestrateAgentQualification(clientDetails, user.arn) flatMap {
-            case Left(NoClientMatched) => handleFailedClientMatch(user.arn, clientDetails)
-            case Left(ClientAlreadySubscribed) => Future.successful(handleClientAlreadySubscribed(user.arn, clientDetails))
-            case Left(UnexpectedFailure) => Future.successful(handleUnexpectedFailure(user.arn, clientDetails))
-            case Left(UnApprovedAgent(nino, _)) => handleUnapprovedAgent(nino, user.arn, clientDetails)
-            case Right(ApprovedAgent(nino, None)) => Future.successful(handleApprovedAgentWithoutClientUTR(user.arn, nino, clientDetails))
-            case Right(ApprovedAgent(nino, Some(utr))) => handleApprovedAgent(user.arn, nino, utr, clientDetails)
-          }
+  def submit(): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
+    withLockOutCheck {
+      withClientDetails { clientDetails =>
+        agentQualificationService.orchestrateAgentQualification(clientDetails, request.arn) flatMap {
+          case Left(NoClientMatched) => handleFailedClientMatch(clientDetails)
+          case Left(ClientAlreadySubscribed) => Future.successful(handleClientAlreadySubscribed(clientDetails))
+          case Left(UnexpectedFailure) => Future.successful(handleUnexpectedFailure(clientDetails))
+          case Left(UnApprovedAgent(nino, _)) => handleUnapprovedAgent(nino, clientDetails)
+          case Right(ApprovedAgent(nino, None)) => Future.successful(handleApprovedAgentWithoutClientUTR(nino, clientDetails))
+          case Right(ApprovedAgent(nino, Some(utr))) => handleApprovedAgent(nino, utr, clientDetails)
         }
       }
+    }
   }
 
   def view(userDetailsModel: UserDetailsModel)(implicit request: Request[_]): Html = {
@@ -78,23 +77,23 @@ class ConfirmClientController @Inject()(checkYourClientDetails: CheckYourClientD
     )
   }
 
-  private def auditDetailsEntered(arn: String, clientDetails: UserDetailsModel, numberOfAttempts: Int, lockedOut: Boolean)
-                                 (implicit request: Request[AnyContent]): Unit = {
+  private def auditDetailsEntered(clientDetails: UserDetailsModel, numberOfAttempts: Int, lockedOut: Boolean)
+                                 (implicit request: IdentifierRequest[_]): Unit = {
     auditingService.audit(EnterDetailsAuditModel(
-      agentReferenceNumber = arn,
+      agentReferenceNumber = request.arn,
       userDetails = clientDetails,
       numberOfAttempts = numberOfAttempts,
       lockedOut = lockedOut
     ))
   }
 
-  private def getCurrentFailureCount()(implicit request: Request[AnyContent]): Int = {
+  private def getCurrentFailureCount()(implicit request: IdentifierRequest[_]): Int = {
     request.session.get(FailedClientMatching).fold(0)(_.toInt)
   }
 
   private def withLockOutCheck(f: => Future[Result])
-                              (implicit user: IncomeTaxAgentUser, request: Request[_]): Future[Result] = {
-    lockOutService.getLockoutStatus(user.arn) flatMap {
+                              (implicit request: IdentifierRequest[_]): Future[Result] = {
+    lockOutService.getLockoutStatus(request.arn) flatMap {
       case Right(NotLockedOut) => f
       case Right(_: LockedOut) => Future.successful(Redirect(controllers.agent.matching.routes.ClientDetailsLockoutController.show.url))
       case Left(_) => throw new InternalServerException("[ClientDetailsLockoutController][handleLockOut] lockout status failure")
@@ -109,15 +108,15 @@ class ConfirmClientController @Inject()(checkYourClientDetails: CheckYourClientD
     }
   }
 
-  private def handleFailedClientMatch(arn: String, clientDetails: UserDetailsModel)
-                                     (implicit request: Request[AnyContent]): Future[Result] = {
+  private def handleFailedClientMatch(clientDetails: UserDetailsModel)
+                                     (implicit request: IdentifierRequest[_]): Future[Result] = {
     val currentFailureCount = request.session.get(FailedClientMatching).fold(0)(_.toInt)
 
-    lockOutService.incrementLockout(arn, currentFailureCount) map {
+    lockOutService.incrementLockout(request.arn, currentFailureCount) map {
       case Right(LockoutUpdate(NotLockedOut, Some(newCount))) =>
-        auditDetailsEntered(arn, clientDetails, newCount, lockedOut = false)
+        auditDetailsEntered(clientDetails, newCount, lockedOut = false)
         auditingService.audit(EligibilityAuditModel(
-          agentReferenceNumber = Some(arn),
+          agentReferenceNumber = Some(request.arn),
           utr = None,
           nino = None,
           eligibility = "ineligible",
@@ -126,9 +125,9 @@ class ConfirmClientController @Inject()(checkYourClientDetails: CheckYourClientD
         Redirect(controllers.agent.matching.routes.ClientDetailsErrorController.show)
           .addingToSession(FailedClientMatching -> newCount.toString)
       case Right(LockoutUpdate(_: LockedOut, None)) =>
-        auditDetailsEntered(arn, clientDetails, 0, lockedOut = true)
+        auditDetailsEntered(clientDetails, 0, lockedOut = true)
         auditingService.audit(EligibilityAuditModel(
-          agentReferenceNumber = Some(arn),
+          agentReferenceNumber = Some(request.arn),
           utr = None,
           nino = None,
           eligibility = "ineligible",
@@ -141,11 +140,11 @@ class ConfirmClientController @Inject()(checkYourClientDetails: CheckYourClientD
     }
   }
 
-  private def handleClientAlreadySubscribed(arn: String, clientDetails: UserDetailsModel)
-                                           (implicit request: Request[AnyContent]): Result = {
-    auditDetailsEntered(arn, clientDetails, getCurrentFailureCount(), lockedOut = false)
+  private def handleClientAlreadySubscribed(clientDetails: UserDetailsModel)
+                                           (implicit request: IdentifierRequest[_]): Result = {
+    auditDetailsEntered(clientDetails, getCurrentFailureCount(), lockedOut = false)
     auditingService.audit(EligibilityAuditModel(
-      agentReferenceNumber = Some(arn),
+      agentReferenceNumber = Some(request.arn),
       utr = None,
       nino = Some(clientDetails.nino),
       eligibility = "ineligible",
@@ -155,17 +154,17 @@ class ConfirmClientController @Inject()(checkYourClientDetails: CheckYourClientD
       .removingFromSession(FailedClientMatching)
   }
 
-  private def handleUnexpectedFailure(arn: String, clientDetails: UserDetailsModel)
-                                     (implicit request: Request[AnyContent]): Result = {
-    auditDetailsEntered(arn, clientDetails, getCurrentFailureCount(), lockedOut = false)
+  private def handleUnexpectedFailure(clientDetails: UserDetailsModel)
+                                     (implicit request: IdentifierRequest[_]): Result = {
+    auditDetailsEntered(clientDetails, getCurrentFailureCount(), lockedOut = false)
     throw new InternalServerException("[ConfirmClientController][handleUnexpectedFailure] - orchestrate agent qualification failed with an unexpected failure")
   }
 
-  private def handleUnapprovedAgent(nino: String, arn: String, clientDetails: UserDetailsModel)
-                                   (implicit request: Request[AnyContent]): Future[Result] = {
-    auditDetailsEntered(arn, clientDetails, getCurrentFailureCount(), lockedOut = false)
+  private def handleUnapprovedAgent(nino: String, clientDetails: UserDetailsModel)
+                                   (implicit request: IdentifierRequest[_]): Future[Result] = {
+    auditDetailsEntered(clientDetails, getCurrentFailureCount(), lockedOut = false)
     auditingService.audit(EligibilityAuditModel(
-      agentReferenceNumber = Some(arn),
+      agentReferenceNumber = Some(request.arn),
       utr = None,
       nino = Some(clientDetails.nino),
       eligibility = "ineligible",
@@ -179,11 +178,11 @@ class ConfirmClientController @Inject()(checkYourClientDetails: CheckYourClientD
     }
   }
 
-  private def handleApprovedAgentWithoutClientUTR(arn: String, nino: String, clientDetails: UserDetailsModel)
-                                                 (implicit request: Request[AnyContent]): Result = {
-    auditDetailsEntered(arn, clientDetails, getCurrentFailureCount(), lockedOut = false)
+  private def handleApprovedAgentWithoutClientUTR(nino: String, clientDetails: UserDetailsModel)
+                                                 (implicit request: IdentifierRequest[_]): Result = {
+    auditDetailsEntered(clientDetails, getCurrentFailureCount(), lockedOut = false)
     auditingService.audit(EligibilityAuditModel(
-      agentReferenceNumber = Some(arn),
+      agentReferenceNumber = Some(request.arn),
       utr = None,
       nino = Some(nino),
       eligibility = "ineligible",
@@ -193,9 +192,9 @@ class ConfirmClientController @Inject()(checkYourClientDetails: CheckYourClientD
       .removingFromSession(FailedClientMatching)
   }
 
-  private def handleApprovedAgent(arn: String, nino: String, utr: String, clientDetails: UserDetailsModel)
-                                 (implicit request: Request[AnyContent]): Future[Result] = {
-    auditDetailsEntered(arn, clientDetails, getCurrentFailureCount(), lockedOut = false)
+  private def handleApprovedAgent(nino: String, utr: String, clientDetails: UserDetailsModel)
+                                 (implicit request: IdentifierRequest[_]): Future[Result] = {
+    auditDetailsEntered(clientDetails, getCurrentFailureCount(), lockedOut = false)
     sessionDataService.saveNino(nino) flatMap {
       case Right(_) =>
         sessionDataService.saveUTR(utr) map {
