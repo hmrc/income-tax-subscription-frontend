@@ -18,10 +18,7 @@ package auth.agent
 
 import auth.individual.IncomeTaxUser
 import common.Extractors
-import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.http.InternalServerException
-import utilities.UserMatchingSessionUtil.UserMatchingSessionRequestUtil
 
 class IncomeTaxAgentUser(val enrolments: Enrolments,
                          val affinityGroup: Option[AffinityGroup],
@@ -29,11 +26,5 @@ class IncomeTaxAgentUser(val enrolments: Enrolments,
   extends IncomeTaxUser with Extractors {
 
   lazy val arn: String = getArnFromEnrolments(enrolments).get
-
-  def clientName(implicit request: Request[AnyContent]): String = {
-    request.fetchClientName.getOrElse(
-      throw new InternalServerException("[IncomeTaxAgentUser][clientName] - could not retrieve client name from request session")
-    )
-  }
 
 }

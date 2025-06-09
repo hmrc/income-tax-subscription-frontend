@@ -20,38 +20,36 @@ import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.FailedClientMatching
 import connectors.httpparser.SaveSessionDataHttpParser
 import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataSuccessResponse
-import controllers.agent.AgentControllerBaseSpec
+import controllers.ControllerSpec
+import controllers.agent.actions.mocks.{MockClientDetailsJourneyRefiner, MockIdentifierAction}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.mvc.{AnyContent, Request, Result}
+import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, _}
 import play.twirl.api.HtmlFormat
 import services.agent._
 import services.mocks._
 import uk.gov.hmrc.http.InternalServerException
-import utilities.agent.TestConstants.{testARN, testNino, testUtr}
+import utilities.UserMatchingTestSupport
+import utilities.agent.TestConstants.{testNino, testUtr}
 import utilities.agent.{TestConstants, TestModels}
 import views.html.agent.matching.CheckYourClientDetails
 
 import scala.concurrent.Future
 
-class ConfirmClientControllerSpec extends AgentControllerBaseSpec
+class ConfirmClientControllerSpec extends ControllerSpec
   with MockUserLockoutService
   with MockSubscriptionDetailsService
   with MockAuditingService
-  with MockSessionDataService {
-
-  override val controllerName: String = "ConfirmClientController"
-  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestConfirmClientController.show(),
-    "submit" -> TestConfirmClientController.submit()
-  )
+  with MockSessionDataService
+  with MockIdentifierAction
+  with MockClientDetailsJourneyRefiner
+  with UserMatchingTestSupport {
 
   lazy val mockAgentQualificationService: AgentQualificationService = mock[AgentQualificationService]
-
-  private lazy val TestConfirmClientController = createTestConfirmClientController(mock[CheckYourClientDetails])
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -76,11 +74,10 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
       ArgumentMatchers.any())
     ).thenReturn(Future.successful(Left(expectedResult)))
 
-  lazy val arn: String = TestConstants.testARN
   lazy val utr: String = TestConstants.testUtr
   lazy val nino: String = TestConstants.testNino
 
-  private lazy val request = userMatchingRequest.buildRequest(Some(TestModels.testClientDetails))
+  val builtRequest: FakeRequest[AnyContent] = request.buildRequest(Some(TestModels.testClientDetails))
 
   "show" should {
 
@@ -88,20 +85,20 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
 
     "redirect to client details" when {
       "client details are missing from the session" in withController { controller =>
-        setupMockNotLockedOut(arn)
+        setupMockNotLockedOut(testARN)
 
-        val result = call(controller, userMatchingRequest)
+        val result = call(controller, request)
 
         status(result) must be(Status.SEE_OTHER)
 
-        await(result).verifyStoredUserDetailsIs(None)(userMatchingRequest)
+        await(result).verifyStoredUserDetailsIs(None)(request)
         redirectLocation(result) mustBe Some(controllers.agent.matching.routes.ClientDetailsController.show().url)
       }
     }
 
     "return ok (200)" when {
       "client details are in the session" in withController { controller =>
-        setupMockNotLockedOut(arn)
+        setupMockNotLockedOut(testARN)
 
         val r = request.buildRequest(Some(TestModels.testClientDetails))
 
@@ -115,7 +112,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
 
     "throw an exception" when {
       "the lockout check fails" in withController { controller =>
-        setupMockLockStatusFailureResponse(arn)
+        setupMockLockStatusFailureResponse(testARN)
 
         val r = request.buildRequest(Some(TestModels.testClientDetails))
 
@@ -131,7 +128,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
       "redirect to the lockout route" in withController { controller =>
         setupMockLockedOut(testARN)
 
-        val result: Future[Result] = controller.submit()(request)
+        val result: Future[Result] = controller.submit()(builtRequest)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(routes.ClientDetailsLockoutController.show.url)
@@ -141,7 +138,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
       "throw an internal server exception" in withController { controller =>
         setupMockLockStatusFailureResponse(testARN)
 
-        intercept[InternalServerException](await(controller.submit()(request)))
+        intercept[InternalServerException](await(controller.submit()(builtRequest)))
           .message mustBe "[ClientDetailsLockoutController][handleLockOut] lockout status failure"
       }
     }
@@ -150,7 +147,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
         "redirect to the enter client details page" in withController { controller =>
           setupMockNotLockedOut(testARN)
 
-          val result: Future[Result] = controller.submit()(userMatchingRequest)
+          val result: Future[Result] = controller.submit()(request)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(routes.ClientDetailsController.show().url)
@@ -164,7 +161,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
               mockOrchestrateAgentQualificationFailure(testARN, NoClientMatched)
               setupIncrementNotLockedOut(testARN, 0, 3)
 
-              val result: Future[Result] = controller.submit()(request)
+              val result: Future[Result] = controller.submit()(builtRequest)
 
               status(result) mustBe SEE_OTHER
               redirectLocation(result) mustBe Some(routes.ClientDetailsErrorController.show.url)
@@ -176,7 +173,9 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
               mockOrchestrateAgentQualificationFailure(testARN, NoClientMatched)
               setupIncrementLockedOut(testARN, 2, 3)
 
-              val result: Future[Result] = controller.submit()(request.addingToSession(FailedClientMatching -> 2.toString))
+              val lockoutRequest = builtRequest.withSession(builtRequest.session.data ++: Seq(FailedClientMatching -> 2.toString): _*)
+
+              val result: Future[Result] = controller.submit()(lockoutRequest)
 
               status(result) mustBe SEE_OTHER
               redirectLocation(result) mustBe Some(routes.ClientDetailsLockoutController.show.url)
@@ -188,7 +187,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
               mockOrchestrateAgentQualificationFailure(testARN, NoClientMatched)
               setupIncrementLockedOutFailure(testARN, 0)
 
-              intercept[InternalServerException](await(controller.submit()(request)))
+              intercept[InternalServerException](await(controller.submit()(builtRequest)))
                 .message mustBe "ConfirmClientController.lockUser failure"
             }
           }
@@ -198,7 +197,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
             setupMockNotLockedOut(testARN)
             mockOrchestrateAgentQualificationFailure(testARN, ClientAlreadySubscribed)
 
-            val result: Future[Result] = controller.submit()(request)
+            val result: Future[Result] = controller.submit()(builtRequest)
 
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(routes.ClientAlreadySubscribedController.show.url)
@@ -209,7 +208,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
             setupMockNotLockedOut(testARN)
             mockOrchestrateAgentQualificationFailure(testARN, UnexpectedFailure)
 
-            intercept[InternalServerException](await(controller.submit()(request)))
+            intercept[InternalServerException](await(controller.submit()(builtRequest)))
               .message mustBe "[ConfirmClientController][handleUnexpectedFailure] - orchestrate agent qualification failed with an unexpected failure"
           }
         }
@@ -221,7 +220,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
             when(mockSessionDataService.saveNino(ArgumentMatchers.anyString())(ArgumentMatchers.any()))
               .thenReturn(Future.successful(Right(SaveSessionDataSuccessResponse)))
 
-            val result: Future[Result] = controller.submit()(request)
+            val result: Future[Result] = controller.submit()(builtRequest)
 
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(routes.NoClientRelationshipController.show.url)
@@ -234,7 +233,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
             setupMockNotLockedOut(testARN)
             mockOrchestrateAgentQualificationSuccess(testARN, testNino, None)
 
-            val result: Future[Result] = controller.submit()(request)
+            val result: Future[Result] = controller.submit()(builtRequest)
 
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(routes.NoSAController.show.url)
@@ -249,7 +248,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
                 mockSaveNino(testNino)(Right(SaveSessionDataSuccessResponse))
                 mockSaveUTR(testUtr)(Right(SaveSessionDataSuccessResponse))
 
-                val result: Future[Result] = controller.submit()(request)
+                val result: Future[Result] = controller.submit()(builtRequest)
 
                 status(result) mustBe SEE_OTHER
                 redirectLocation(result) mustBe Some(routes.ConfirmedClientResolver.resolve.url)
@@ -262,7 +261,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
                 mockSaveNino(testNino)(Right(SaveSessionDataSuccessResponse))
                 mockSaveUTR(testUtr)(Left(SaveSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
-                intercept[InternalServerException](await(controller.submit()(request)))
+                intercept[InternalServerException](await(controller.submit()(builtRequest)))
                   .message mustBe "[ConfirmClientController][handleApprovedAgent] - failure when saving utr to session"
               }
             }
@@ -273,7 +272,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
               mockOrchestrateAgentQualificationSuccess(testARN, testNino, Some(testUtr))
               mockSaveNino(testNino)(Left(SaveSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
-              intercept[InternalServerException](await(controller.submit()(request)))
+              intercept[InternalServerException](await(controller.submit()(builtRequest)))
                 .message mustBe "[ConfirmClientController][handleApprovedAgent] - failure when saving nino to session"
             }
           }
@@ -281,8 +280,6 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
       }
     }
   }
-
-  authorisationTests()
 
   private def withController(testCode: ConfirmClientController => Any): Unit = {
     val checkYourClientDetailsView = mock[CheckYourClientDetails]
@@ -293,14 +290,13 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
   }
 
   private def createTestConfirmClientController(mockedView: CheckYourClientDetails) = new ConfirmClientController(
+    fakeIdentifierAction,
+    fakeClientDetailsJourneyRefiner,
+    mockAuditingService,
     mockedView,
     mockAgentQualificationService,
-    mockUserLockoutService
-  )(
-    mockAuditingService,
-    mockAuthService,
     mockSessionDataService,
-    appConfig,
-    mockSubscriptionDetailsService
+    mockUserLockoutService
   )
+
 }

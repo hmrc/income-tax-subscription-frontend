@@ -16,7 +16,6 @@
 
 package controllers.agent.matching
 
-import auth.agent.AgentJourneyState._
 import auth.agent._
 import common.Constants.ITSASessionKeys.JourneyStateKey
 import config.AppConfig
@@ -68,7 +67,5 @@ class HomeController @Inject()(val auditingService: AuditingService,
       }
     }
   }
-
-  implicit val cacheSessionFunctions: Session => SessionFunctions = AgentJourneyState.SessionFunctions
 
 }
