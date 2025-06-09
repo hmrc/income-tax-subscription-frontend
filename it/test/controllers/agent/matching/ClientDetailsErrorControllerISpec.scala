@@ -16,25 +16,44 @@
 
 package controllers.agent.matching
 
+import helpers.IntegrationTestConstants.basGatewaySignIn
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
-import play.api.http.Status.OK
+import play.api.http.Status.{OK, SEE_OTHER}
 
 class ClientDetailsErrorControllerISpec extends ComponentSpecBase {
 
   "GET /error/client-details" should {
-    "show the no matching client page" in {
-      Given("I setup the Wiremock stubs")
-      AuthStub.stubAuthSuccess()
+    "the user is not authenticated" should {
+      "redirect to the login page" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubUnauthorised()
 
-      When("GET /error/client-details is called")
-      val res = IncomeTaxSubscriptionFrontend.showClientDetailsError()
-      val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
-      Then("Should return a OK with the no matching client page")
-      res must have(
-        httpStatus(OK),
-        pageTitle(messages("agent.client-details-error.heading") + serviceNameGovUk)
-      )
+        When("GET /error/client-details is called")
+        val res = IncomeTaxSubscriptionFrontend.showClientDetailsError()
+
+        Then("Should return a SEE_OTHER with a redirect location of gg sign in")
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(basGatewaySignIn("/client/error/client-details"))
+        )
+      }
+
+      "when the user is authenticated" should {
+        "show the no matching client page" in {
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+
+          When("GET /error/client-details is called")
+          val res = IncomeTaxSubscriptionFrontend.showClientDetailsError()
+          val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
+          Then("Should return a OK with the no matching client page")
+          res must have(
+            httpStatus(OK),
+            pageTitle(messages("agent.client-details-error.heading") + serviceNameGovUk)
+          )
+        }
+      }
     }
   }
 }
