@@ -16,25 +16,22 @@
 
 package controllers.agent.matching
 
-import auth.agent.UserMatchingController
-import config.AppConfig
+import controllers.SignUpBaseController
+import controllers.agent.actions.IdentifierAction
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AuditingService, AuthService}
 import views.html.agent.matching.ClientDetailsError
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ClientDetailsErrorController @Inject()(val auditingService: AuditingService,
-                                             val authService: AuthService,
+class ClientDetailsErrorController @Inject()(identify: IdentifierAction,
                                              clientDetailsError: ClientDetailsError)
                                             (implicit val ec: ExecutionContext,
-                                             val appConfig: AppConfig,
-                                             mcc: MessagesControllerComponents) extends UserMatchingController {
+                                             mcc: MessagesControllerComponents) extends SignUpBaseController {
 
-  def show: Action[AnyContent] = Authenticated.async { implicit request =>
-    _ => Future.successful(Ok(clientDetailsError()))
+  def show: Action[AnyContent] = identify { implicit request =>
+    Ok(clientDetailsError())
   }
 
 }
