@@ -42,3 +42,12 @@ $hmrc-assets-path: "/report-quarterly/income-and-expenses/sign-up/assets/lib/hmr
 .app-task-list__post-list-padding {
     padding-right: govuk-spacing(6)
 }
+
+@media print {
+  .hmrc-user-research-banner {
+    display: none !important;
+  }
+  .hmrc-sign-out-nav__link {
+      display: none !important;
+  }
+}

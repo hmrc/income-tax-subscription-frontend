@@ -16,12 +16,14 @@
 
 package controllers.agent.matching
 
-import auth.agent.{IncomeTaxAgentUser, UserMatchingController}
 import config.AppConfig
+import controllers.SignUpBaseController
+import controllers.agent.actions.IdentifierAction
+import models.requests.agent.IdentifierRequest
 import models.usermatching.{LockedOut, NotLockedOut}
 import play.api.i18n.Messages
 import play.api.mvc._
-import services.{AuditingService, AuthService, UserLockoutService}
+import services.UserLockoutService
 import uk.gov.hmrc.http.InternalServerException
 import views.html.agent.matching.ClientDetailsLockout
 
@@ -30,16 +32,15 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ClientDetailsLockoutController @Inject()(val auditingService: AuditingService,
-                                               val authService: AuthService,
+class ClientDetailsLockoutController @Inject()(identify: IdentifierAction,
                                                lockoutService: UserLockoutService,
                                                clientDetailsLockOut: ClientDetailsLockout)
                                               (implicit val ec: ExecutionContext,
                                                val appConfig: AppConfig,
-                                               mcc: MessagesControllerComponents) extends UserMatchingController {
+                                               mcc: MessagesControllerComponents) extends SignUpBaseController {
 
-  private def handleLockOut(f: => Future[Result])(implicit user: IncomeTaxAgentUser, request: Request[_]): Future[Result] = {
-    lockoutService.getLockoutStatus(user.arn) flatMap {
+  private def handleLockOut(f: => Future[Result])(implicit request: IdentifierRequest[_]): Future[Result] = {
+    lockoutService.getLockoutStatus(request.arn) flatMap {
       case Right(_: LockedOut) => f
       case Right(NotLockedOut) => Future.successful(Redirect(controllers.agent.matching.routes.ClientDetailsController.show()))
       case Left(_) => throw new InternalServerException("[ClientDetailsLockoutController][handleLockOut] lockout status failure")
@@ -64,12 +65,11 @@ class ClientDetailsLockoutController @Inject()(val auditingService: AuditingServ
     s"${if (h > 0) hs else ""}${if (m > 0) ms else ""}${if (s > 0) ss else ""}".trim
   }
 
-  lazy val show: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
-      handleLockOut {
-        val duration = Duration.ofSeconds(appConfig.matchingLockOutSeconds)
-        Future.successful(Ok(clientDetailsLockOut(durationText(duration))))
-      }
+  lazy val show: Action[AnyContent] = identify async { implicit request =>
+    handleLockOut {
+      val duration = Duration.ofSeconds(appConfig.matchingLockOutSeconds)
+      Future.successful(Ok(clientDetailsLockOut(durationText(duration))))
+    }
   }
 
 }
