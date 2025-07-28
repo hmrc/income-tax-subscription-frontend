@@ -18,6 +18,8 @@ package models.common
 
 import models.{AccountingMethod, DateModel}
 import play.api.libs.json.{Json, OFormat}
+import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
+import config.featureswitch.FeatureSwitching
 
 case class OverseasPropertyModel(
                                   startDateBeforeLimit: Option[Boolean] = None,
@@ -25,14 +27,19 @@ case class OverseasPropertyModel(
                                   startDate: Option[DateModel] = None,
                                   confirmed: Boolean = false
                                 ) {
-
-  val isComplete: Boolean = {
-    startDateBeforeLimit match {
-      case Some(true) => accountingMethod.isDefined
-      case _ => accountingMethod.isDefined && startDate.isDefined
+  def isComplete(removeAccountingMethod: Boolean): Boolean = {
+    if (removeAccountingMethod) {
+      startDateBeforeLimit match {
+        case Some(true) => true
+        case _ => startDate.isDefined
+      }
+    } else {
+      startDateBeforeLimit match {
+        case Some(true) => accountingMethod.isDefined
+        case _ => accountingMethod.isDefined && startDate.isDefined
+      }
     }
   }
-
 }
 
 object OverseasPropertyModel {

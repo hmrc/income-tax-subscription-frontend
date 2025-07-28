@@ -77,30 +77,30 @@ class OverseasPropertyModelSpec extends PlaySpec {
   "OverseasPropertyModel.isComplete" must {
     "return true" when {
       "startDateBeforeLimit is defined and true and accounting method is defined" in {
-        OverseasPropertyModel(startDateBeforeLimit = Some(true), accountingMethod = Some(Cash)).isComplete mustBe true
+        OverseasPropertyModel(startDateBeforeLimit = Some(true), accountingMethod = Some(Cash)).isComplete(removeAccountingMethod = true) mustBe true
       }
       "startDateBeforeLimit is defined and false, start date and accounting method are defined" in {
-        OverseasPropertyModel(startDateBeforeLimit = Some(false), accountingMethod = Some(Cash), startDate = Some(dateModel)).isComplete mustBe true
+        OverseasPropertyModel(startDateBeforeLimit = Some(false), accountingMethod = Some(Cash), startDate = Some(dateModel)).isComplete(removeAccountingMethod = false) mustBe true
       }
       "startDateBeforeLimit is not defined, start date and accounting method are defined" in {
-        OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(dateModel)).isComplete mustBe true
+        OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(dateModel)).isComplete(removeAccountingMethod = false) mustBe true
       }
     }
     "return false" when {
       "startDateBeforeLimit is defined and true and accounting method is not defined" in {
-        OverseasPropertyModel(startDateBeforeLimit = Some(true)).isComplete mustBe false
+        OverseasPropertyModel(startDateBeforeLimit = Some(true)).isComplete(removeAccountingMethod = false) mustBe false
       }
       "startDateBeforeLimit is defined and false, start date is not defined" in {
-        OverseasPropertyModel(startDateBeforeLimit = Some(false), accountingMethod = Some(Cash)).isComplete mustBe false
+        OverseasPropertyModel(startDateBeforeLimit = Some(false), accountingMethod = Some(Cash)).isComplete(removeAccountingMethod = false) mustBe false
       }
       "startDateBeforeLimit is defined and false, accounting method is not defined" in {
-        OverseasPropertyModel(startDateBeforeLimit = Some(false), startDate = Some(dateModel)).isComplete mustBe false
+        OverseasPropertyModel(startDateBeforeLimit = Some(false), startDate = Some(dateModel)).isComplete(removeAccountingMethod = false) mustBe false
       }
       "startDateBeforeLimit is not defined, start date is not defined" in {
-        OverseasPropertyModel(accountingMethod = Some(Cash)).isComplete mustBe false
+        OverseasPropertyModel(accountingMethod = Some(Cash)).isComplete(removeAccountingMethod = false) mustBe false
       }
       "startDateBeforeLimit is not defined, accounting method is not defined" in {
-        OverseasPropertyModel(startDate = Some(dateModel)).isComplete mustBe false
+        OverseasPropertyModel(startDate = Some(dateModel)).isComplete(removeAccountingMethod = false) mustBe false
       }
     }
   }

@@ -25,7 +25,6 @@
 @import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
 @import config.featureswitch.FeatureSwitchingImpl
 
-
 @this(
     agentMainTemplate: AgentMainTemplate,
     appConfig: AppConfig,
@@ -35,7 +34,7 @@
     saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
     govukSummaryList : GovukSummaryList,
     govukTag : GovukTag,
-    featureSwitching: FeatureSwitchingImpl,
+    featureSwitching: FeatureSwitchingImpl
 )
 
 @(postAction: Call, backUrl: String, clientDetails: ClientDetails, incomeSources: IncomeSources, prepopulated: Boolean)(implicit request: Request[_], messages: Messages)
@@ -262,9 +261,9 @@
             ),
             SummaryListRow(
                 key = Key(content = Text(messages("base.status.label"))),
-                value = Value(statusTag(foreignProperty.confirmed)),
+                value = Value(statusTag(foreignProperty.isComplete(featureSwitching.isEnabled(RemoveAccountingMethod)) && foreignProperty.confirmed)),
                 actions = maybeStatusTagAction(
-                    isComplete = foreignProperty.isComplete,
+                    isComplete = foreignProperty.isComplete(featureSwitching.isEnabled(RemoveAccountingMethod)),
                     isConfirmed = foreignProperty.confirmed,
                     href = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
                 )
@@ -276,7 +275,7 @@
                 actions = Some(Actions(
                     items =
                         maybeIncomeSourceChangeAction(
-                            isComplete = foreignProperty.isComplete,
+                            isComplete = foreignProperty.isComplete(featureSwitching.isEnabled(RemoveAccountingMethod)),
                             isConfirmed = foreignProperty.confirmed,
                             href = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
                         ) ++

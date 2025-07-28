@@ -16,6 +16,7 @@
 
 package controllers.individual.tasklist.overseasproperty
 
+import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
@@ -30,6 +31,12 @@ import utilities.SubscriptionDataKeys.OverseasProperty
 import java.time.LocalDate
 
 class ForeignPropertyStartDateControllerISpec extends ComponentSpecBase {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(RemoveAccountingMethod)
+  }
+
   "GET /report-quarterly/income-and-expenses/sign-up/business/overseas-property-start-date" when {
     "Subscription Details returns all data" should {
       "show the overseas property start date page" in {
@@ -94,6 +101,38 @@ class ForeignPropertyStartDateControllerISpec extends ComponentSpecBase {
         )
 
         IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(expected, Some(1))
+      }
+    }
+
+    "redirect to the overseas property check your answers page" when {
+      "not in edit mode" when {
+        "feature switch is enabled" in {
+          enable(RemoveAccountingMethod)
+
+          val userInput = testValidStartDate
+          val expected   = OverseasPropertyModel(startDate = Some(userInput))
+
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+            OverseasProperty,
+            NO_CONTENT
+          )
+
+          IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(expected)
+          IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
+
+          When("POST /overseas-property-start-date is called")
+          val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyStartDate(inEditMode = false, Some(userInput))
+
+          Then("Should skip the accounting method page and go straight to check-your-answers")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(IndividualURI.overseasPropertyCYAURI)
+          )
+
+          IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(expected, Some(1))
+        }
       }
     }
 
