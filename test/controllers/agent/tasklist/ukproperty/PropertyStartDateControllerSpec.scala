@@ -16,6 +16,7 @@
 
 package controllers.agent.tasklist.ukproperty
 
+import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
 import config.featureswitch.FeatureSwitching
 import config.{AppConfig, MockConfig}
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.{PostSubscriptionDetailsSuccessResponse, UnexpectedStatusFailure}
@@ -44,6 +45,11 @@ class PropertyStartDateControllerSpec extends ControllerSpec
   with FeatureSwitching
   with GuiceOneAppPerSuite
   with I18nSupport {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(RemoveAccountingMethod)
+  }
 
   "show" must {
     "return OK with the page content" when {
@@ -98,6 +104,33 @@ class PropertyStartDateControllerSpec extends ControllerSpec
 
         status(result) mustBe OK
         contentType(result) mustBe Some(HTML)
+      }
+    }
+    "have a backlink" when {
+      "remove accounting method feature switch is enabled" in {
+        enable(RemoveAccountingMethod)
+        mockPropertyStartDate(
+          postAction = routes.PropertyStartDateController.submit(),
+          backUrl = routes.PropertyStartDateBeforeLimitController.show().url,
+          clientDetails = clientDetails
+        )
+
+        val backUrl = TestPropertyStartDateController.backUrl(isEditMode = false, isGlobalEdit = false)
+
+        backUrl mustBe routes.PropertyStartDateBeforeLimitController.show().url
+
+      }
+      "remove accounting method feature switch is disabled" in {
+        mockPropertyStartDate(
+          postAction = routes.PropertyStartDateController.submit(),
+          backUrl = routes.PropertyIncomeSourcesController.show().url,
+          clientDetails = clientDetails
+        )
+
+        val backUrl = TestPropertyStartDateController.backUrl(isEditMode = false, isGlobalEdit = false)
+
+        backUrl mustBe routes.PropertyIncomeSourcesController.show().url
+
       }
     }
   }
@@ -235,7 +268,8 @@ class PropertyStartDateControllerSpec extends ControllerSpec
     fakeConfirmedClientJourneyRefiner,
     mockSubscriptionDetailsService,
     mockView,
-    implicitDateFormatter
+    implicitDateFormatter)(
+    appConfig
   )
 
   override def messagesApi: MessagesApi = cc.messagesApi

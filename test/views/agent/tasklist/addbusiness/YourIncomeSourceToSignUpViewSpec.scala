@@ -159,6 +159,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           link.text mustBe AgentIncomeSource.ukPropertyLinkText
           link.attr("href") mustBe AgentIncomeSource.ukPropertyLink
         }
+        //TODO add test
 
         "has an add foreign property link" in new ViewTest(noIncomeSources) {
           val link: Element = document.mainContent.getElementById("add-foreign-property").selectHead("a")

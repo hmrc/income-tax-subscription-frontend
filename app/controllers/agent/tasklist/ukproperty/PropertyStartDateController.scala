@@ -23,6 +23,9 @@ import forms.agent.PropertyStartDateForm.propertyStartDateForm
 import models.DateModel
 import play.api.data.Form
 import play.api.mvc._
+import _root_.config.featureswitch.FeatureSwitch.RemoveAccountingMethod
+import _root_.config.featureswitch.FeatureSwitching
+import _root_.config.AppConfig
 import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
 import utilities.ImplicitDateFormatter
@@ -36,8 +39,9 @@ class PropertyStartDateController @Inject()(identify: IdentifierAction,
                                             subscriptionDetailsService: SubscriptionDetailsService,
                                             view: PropertyStartDate,
                                             implicitDateFormatter: ImplicitDateFormatter)
+                                           (val appConfig: AppConfig)
                                            (implicit mcc: MessagesControllerComponents,
-                                            ec: ExecutionContext) extends SignUpBaseController {
+                                            ec: ExecutionContext) extends SignUpBaseController with FeatureSwitching {
 
   def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     for {
@@ -69,8 +73,12 @@ class PropertyStartDateController @Inject()(identify: IdentifierAction,
     )
   }
 
-  private def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean): String = {
-    routes.PropertyIncomeSourcesController.show(editMode = isEditMode, isGlobalEdit = isGlobalEdit).url
+  def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean): String = {
+    if (isEnabled(RemoveAccountingMethod)) {
+      routes.PropertyStartDateBeforeLimitController.show(isEditMode, isGlobalEdit).url
+    } else {
+      routes.PropertyIncomeSourcesController.show(editMode = isEditMode, isGlobalEdit = isGlobalEdit).url
+    }
   }
 
   private def form(implicit request: Request[_]): Form[DateModel] = {

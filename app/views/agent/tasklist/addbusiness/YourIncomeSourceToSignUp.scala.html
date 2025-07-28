@@ -22,6 +22,9 @@
 @import views.html.templates.AgentMainTemplate
 @import views.html.helpers.{ContinueButton, SaveAndContinueButtonHelper, PageHeadingHelper}
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukTag
+@import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
+@import config.featureswitch.FeatureSwitchingImpl
+
 
 @this(
     agentMainTemplate: AgentMainTemplate,
@@ -31,7 +34,8 @@
     pageHeadingHelper: PageHeadingHelper,
     saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
     govukSummaryList : GovukSummaryList,
-    govukTag : GovukTag
+    govukTag : GovukTag,
+    featureSwitching: FeatureSwitchingImpl,
 )
 
 @(postAction: Call, backUrl: String, clientDetails: ClientDetails, incomeSources: IncomeSources, prepopulated: Boolean)(implicit request: Request[_], messages: Messages)
@@ -232,7 +236,12 @@
     }.getOrElse {
         <div id="add-uk-property" class="govuk-!-padding-bottom-6">
             <p class="govuk-body">
-                <a class="govuk-link" href="@controllers.agent.tasklist.ukproperty.routes.PropertyIncomeSourcesController.show()">@messages("agent.your-income-source.uk-property.add-link")</a>
+                <a class="govuk-link" href=@{
+                    if(featureSwitching.isEnabled(RemoveAccountingMethod)) {
+                        controllers.agent.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show()
+                    } else {
+                        controllers.agent.tasklist.ukproperty.routes.PropertyIncomeSourcesController.show()
+                    }}>@messages("agent.your-income-source.uk-property.add-link")</a>
             </p>
         </div>
     }
