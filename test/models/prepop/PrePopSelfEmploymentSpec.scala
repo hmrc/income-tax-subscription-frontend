@@ -34,11 +34,6 @@ class PrePopSelfEmploymentSpec extends PlaySpec with Matchers {
         Json.fromJson[PrePopSelfEmployment](prePopSelfEmploymentJsonMinimal) mustBe JsSuccess(prePopSelfEmploymentModelMinimal)
       }
     }
-    "fail to read from json" when {
-      "accountingMethod is missing from the json" in {
-        Json.fromJson[PrePopSelfEmployment](prePopSelfEmploymentJsonFull - "accountingMethod") mustBe JsError(__ \ "accountingMethod", "error.path.missing")
-      }
-    }
   }
 
   "toSelfEmploymentData" should {
@@ -106,7 +101,7 @@ class PrePopSelfEmploymentSpec extends PlaySpec with Matchers {
       postcode = Some("ZZ1 1ZZ")
     )),
     startDate = Some(date),
-    accountingMethod = Cash
+    accountingMethod = Some(Cash)
   )
 
   lazy val prePopSelfEmploymentJsonMinimal: JsObject = Json.obj(
@@ -118,7 +113,7 @@ class PrePopSelfEmploymentSpec extends PlaySpec with Matchers {
     trade = None,
     address = None,
     startDate = None,
-    accountingMethod = Accruals
+    accountingMethod = Some(Accruals)
   )
 
 }

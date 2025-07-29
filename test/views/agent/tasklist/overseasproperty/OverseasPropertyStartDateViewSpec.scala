@@ -23,7 +23,6 @@ import org.jsoup.nodes.Element
 import play.api.data.{Form, FormError}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import play.twirl.api.HtmlFormat
 import utilities.UserMatchingSessionUtil.ClientDetails
 import utilities.{AccountingPeriodUtil, ViewSpec}
 import views.html.agent.tasklist.overseasproperty.OverseasPropertyStartDate

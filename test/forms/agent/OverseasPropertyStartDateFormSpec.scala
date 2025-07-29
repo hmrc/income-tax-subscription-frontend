@@ -16,10 +16,8 @@
 
 package forms.agent
 
-import forms.agent.OverseasPropertyStartDateForm.{overseasPropertyStartDateForm, startDate}
+import forms.agent.OverseasPropertyStartDateForm.overseasPropertyStartDateForm
 import forms.formatters.DateModelMapping
-import forms.formatters.DateModelMapping.{day, month, year}
-import forms.validation.testutils.DataMap.DataMap
 import models.DateModel
 import org.scalatestplus.play.PlaySpec
 import play.api.data.{Form, FormError}

@@ -19,7 +19,7 @@ package controllers
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Request}
+import play.api.mvc.{AnyContent, MessagesControllerComponents}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.stubMessagesControllerComponents
 

@@ -49,7 +49,7 @@ class GetPrePopDataHttpParserSpec extends PlaySpec {
             trade = None,
             address = None,
             startDate = None,
-            accountingMethod = Cash
+            accountingMethod = Some(Cash)
           ))),
           ukPropertyAccountingMethod = None,
           foreignPropertyAccountingMethod = None
@@ -57,7 +57,7 @@ class GetPrePopDataHttpParserSpec extends PlaySpec {
       }
       "produce an error" when {
         "the json could not be parsed" in {
-          val httpResponse = HttpResponse(OK, json = Json.obj("selfEmployment" -> Json.arr(Json.obj())), headers = Map.empty)
+          val httpResponse = HttpResponse(OK, json = Json.obj("selfEmployment" -> Json.arr(Json.obj("accountingMethod" -> "Z"))), headers = Map.empty)
 
           val res = GetPrePopDataParser.getPrePopDataResponseHttpReads.read(testHttpVerb, testUri, httpResponse)
 

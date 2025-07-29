@@ -18,10 +18,10 @@ package services.mocks
 
 import connectors.httpparser.DeleteSessionDataHttpParser.DeleteSessionDataResponse
 import connectors.httpparser.GetSessionDataHttpParser.{GetSessionDataResponse, InvalidJson, UnexpectedStatusFailure}
+import connectors.httpparser.SaveSessionDataHttpParser
 import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataResponse
-import connectors.httpparser.{DeleteSessionDataHttpParser, SaveSessionDataHttpParser}
-import models.{EligibilityStatus, YesNo}
 import models.status.MandationStatusModel
+import models.{EligibilityStatus, YesNo}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, Suite}

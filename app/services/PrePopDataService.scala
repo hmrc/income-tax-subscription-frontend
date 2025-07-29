@@ -31,8 +31,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PrePopDataService @Inject()(ninoService: NinoService,
-                                  prePopConnector: PrePopConnector,
+class PrePopDataService @Inject()(prePopConnector: PrePopConnector,
                                   subscriptionDetailsService: SubscriptionDetailsService,
                                   uuidProvider: UUIDProvider)
                                  (implicit ec: ExecutionContext) extends Logging {
@@ -84,7 +83,7 @@ class PrePopDataService @Inject()(ninoService: NinoService,
         val selfEmployments: Seq[SelfEmploymentData] = prePopSelfEmployments.map(_.toSelfEmploymentData(
           id = uuidProvider.getUUID
         ))
-        val accountingMethod: Option[AccountingMethod] = prePopSelfEmployments.headOption.map(_.accountingMethod)
+        val accountingMethod: Option[AccountingMethod] = prePopSelfEmployments.headOption.flatMap(_.accountingMethod)
         subscriptionDetailsService.saveBusinesses(reference, selfEmployments, accountingMethod) map {
           case Left(error) =>
             logger.error(s"[PrePopDataService][savePrePopSelfEmployments] - Error saving self employment businesses. Error: $error")
