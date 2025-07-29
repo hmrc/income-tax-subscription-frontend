@@ -16,6 +16,7 @@
 
 package views.agent.tasklist.addbusiness
 
+import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
 import models.common.business._
 import models.common.{IncomeSources, OverseasPropertyModel, PropertyModel}
 import models.{Cash, DateModel}
@@ -154,11 +155,21 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           document.mainContent.selectNth("p", 3).text mustBe AgentIncomeSource.incomeFromPropertyParagraph
         }
 
-        "has an add uk property link" in new ViewTest(noIncomeSources) {
-          val link: Element = document.mainContent.getElementById("add-uk-property").selectHead("a")
-          link.text mustBe AgentIncomeSource.ukPropertyLinkText
-          link.attr("href") mustBe AgentIncomeSource.ukPropertyLink
+        "has an add uk property link" when {
+          "remove accounting method feature switch is enabled" in new ViewTest(noIncomeSources) {
+            enable(RemoveAccountingMethod)
+            val link: Element = document.mainContent.getElementById("add-uk-property").selectHead("a")
+            link.text mustBe AgentIncomeSource.ukPropertyLinkText
+            link.attr("href") mustBe controllers.agent.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show().url
+          }
+          "remove accounting method feature switch is disabled" in new ViewTest(noIncomeSources) {
+            disable(RemoveAccountingMethod)
+            val link: Element = document.mainContent.getElementById("add-uk-property").selectHead("a")
+            link.text mustBe AgentIncomeSource.ukPropertyLinkText
+            link.attr("href") mustBe AgentIncomeSource.ukPropertyLink
+          }
         }
+
 
         "has an add foreign property link" in new ViewTest(noIncomeSources) {
           val link: Element = document.mainContent.getElementById("add-foreign-property").selectHead("a")

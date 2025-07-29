@@ -520,6 +520,18 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       )
     }
 
+    def ukPropertyStartDateBeforeLimit(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
+      get("/business/property-start-date-before-limit", sessionData)
+    }
+
+    def submitUkPropertyStartDateBeforeLimit(isEditMode: Boolean = false, isGlobalEdit: Boolean = false, sessionData: Map[String, String] = ClientData.basicClientData)(request: Option[YesNo]): WSResponse = {
+      post(s"/business/property-start-date-before-limit?editMode=$isEditMode&isGlobalEdit=$isGlobalEdit", sessionData)(
+        request.fold(Map.empty[String, Seq[String]])( yesNo =>
+            UkPropertyStartDateBeforeLimitForm.ukPropertyStartDateBeforeLimitForm.fill(yesNo).data.map {case (k, v) => (k, Seq(v)) }
+        )
+      )
+    }
+
     def submitOverseasPropertyAccountingMethod(inEditMode: Boolean, request: Option[AccountingMethod], sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
       val uri = s"/business/overseas-property-accounting-method?editMode=$inEditMode"
       post(uri, sessionData)(
