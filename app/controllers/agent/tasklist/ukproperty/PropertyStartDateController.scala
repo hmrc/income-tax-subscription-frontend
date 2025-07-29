@@ -23,9 +23,9 @@ import forms.agent.PropertyStartDateForm.propertyStartDateForm
 import models.DateModel
 import play.api.data.Form
 import play.api.mvc._
-import _root_.config.featureswitch.FeatureSwitch.RemoveAccountingMethod
-import _root_.config.featureswitch.FeatureSwitching
-import _root_.config.AppConfig
+import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
+import config.featureswitch.FeatureSwitching
+import config.AppConfig
 import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
 import utilities.ImplicitDateFormatter

@@ -31,7 +31,7 @@ object UkPropertyStartDateBeforeLimitForm {
   def ukPropertyStartDateBeforeLimitForm: Form[YesNo] = Form(
     single(
       startDateBeforeLimit -> YesNoMapping.yesNoMapping(
-        yesNoInvalid = Invalid(s"agent.error.$errorContext.income-source.$startDateBeforeLimit.invalid", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
+        yesNoInvalid = Invalid(s"agent.error.$errorContext.$startDateBeforeLimit.invalid", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
       )
     )
   )
