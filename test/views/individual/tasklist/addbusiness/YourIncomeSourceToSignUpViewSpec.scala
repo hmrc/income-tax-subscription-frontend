@@ -16,7 +16,6 @@
 
 package views.individual.tasklist.addbusiness
 
-import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
 import models.common.business._
 import models.common.{IncomeSources, OverseasPropertyModel, PropertyModel}
 import models.{Cash, DateModel}
@@ -31,11 +30,6 @@ import views.html.individual.tasklist.addbusiness.YourIncomeSourceToSignUp
 import java.time.format.DateTimeFormatter
 
 class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(RemoveAccountingMethod)
-  }
 
   object IndividualIncomeSource {
     val title = "Your income sources"

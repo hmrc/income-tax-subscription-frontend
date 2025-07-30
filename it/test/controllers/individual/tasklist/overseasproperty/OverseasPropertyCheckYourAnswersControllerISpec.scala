@@ -168,6 +168,30 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
         )
         IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(expectedProperty, Some(1))
       }
+
+      "not save the property answers when foreign property is incomplete" in {
+        enable(RemoveAccountingMethod)
+        val testProperty = OverseasPropertyModel(startDateBeforeLimit = Some(false), startDate = None)
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+          OverseasProperty,
+          OK,
+          Json.toJson(testProperty)
+        )
+
+        When("POST business/overseas-property-check-your-answers is called")
+        val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers()
+
+        Then("Should return a SEE_OTHER with a redirect location of your income sources page")
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(IndividualURI.yourIncomeSourcesURI)
+        )
+
+        verifyPost(subscriptionUri(OverseasProperty), count = Some(0))
+      }
     }
   }
 

@@ -84,10 +84,10 @@ class OverseasPropertyCheckYourAnswersController @Inject()(view: OverseasPropert
       }
     }
   }
-  private def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean, isConfirmed: Boolean, resultSaved: Option[YesNo])(implicit request: SignUpRequest[_]): String = {
-    if (isEnabled(RemoveAccountingMethod) && isGlobalEdit && isConfirmed) {
+  private def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean, isConfirmed: Boolean, resultSaved: Option[YesNo]): String = {
+    if (isGlobalEdit && isConfirmed) {
       controllers.individual.routes.GlobalCheckYourAnswersController.show.url
-    } else if (isEnabled(RemoveAccountingMethod) && isGlobalEdit || isEditMode) {
+    } else if (isGlobalEdit || isEditMode) {
       controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
     } else if (isEnabled(RemoveAccountingMethod)) {
       resultSaved match {

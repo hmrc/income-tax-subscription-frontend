@@ -28,7 +28,6 @@ object SubscriptionDataKeys {
   val IncomeSourceConfirmation = "IncomeSourceConfirmation"
   val SoleTraderBusinessesKey = "SoleTraderBusinesses"
   val EligibilityInterruptPassed = "EligibilityInterruptPassed"
-  val StartDateBeforeLimit = "startDateBeforeLimit"
 
   val subscriptionId = "subscriptionId"
   val lastUpdatedTimestamp = "lastUpdatedTimestamp"

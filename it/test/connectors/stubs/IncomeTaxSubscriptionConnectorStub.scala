@@ -168,13 +168,6 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
     ).thenReturn(responseStatus)
   }
 
-  def stubStartDateBeforeLimit(status: Int, responseBody: JsValue): Unit = {
-    when(
-      method = GET,
-      uri    = subscriptionUri(StartDateBeforeLimit)
-    ).thenReturn(status, responseBody)
-  }
-
   case class SubscriptionData(id: String, data: Map[String, JsValue])
 
 }

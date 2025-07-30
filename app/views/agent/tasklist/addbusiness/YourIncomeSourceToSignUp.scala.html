@@ -261,7 +261,7 @@
             ),
             SummaryListRow(
                 key = Key(content = Text(messages("base.status.label"))),
-                value = Value(statusTag(foreignProperty.isComplete(featureSwitching.isEnabled(RemoveAccountingMethod)) && foreignProperty.confirmed)),
+                value = Value(statusTag(foreignProperty.confirmed)),
                 actions = maybeStatusTagAction(
                     isComplete = foreignProperty.isComplete(featureSwitching.isEnabled(RemoveAccountingMethod)),
                     isConfirmed = foreignProperty.confirmed,

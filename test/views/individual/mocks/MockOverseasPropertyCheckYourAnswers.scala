@@ -31,14 +31,6 @@ trait MockOverseasPropertyCheckYourAnswers extends PlaySpec with MockitoSugar wi
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockView)
-
-    when(mockView(
-      ArgumentMatchers.any[OverseasPropertyModel](),
-      ArgumentMatchers.any[Call](),
-      ArgumentMatchers.any[String](),
-      ArgumentMatchers.any[Boolean]()
-    )(ArgumentMatchers.any(), ArgumentMatchers.any()))
-      .thenReturn(HtmlFormat.empty)
   }
 
   val mockView: OverseasPropertyCheckYourAnswers = mock[OverseasPropertyCheckYourAnswers]

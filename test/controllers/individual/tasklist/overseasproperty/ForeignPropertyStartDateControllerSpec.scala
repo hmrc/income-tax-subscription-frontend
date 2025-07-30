@@ -42,6 +42,11 @@ class ForeignPropertyStartDateControllerSpec extends ControllerBaseSpec
   with MockOverseasPropertyStartDate
   with FeatureSwitching {
 
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(RemoveAccountingMethod)
+  }
+
   override val controllerName: String = "ForeignPropertyStartDateController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
     "show" -> TestForeignPropertyStartDateController.show(isEditMode = false, isGlobalEdit = false),

@@ -23,7 +23,7 @@ import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionD
 import controllers.individual.ControllerBaseSpec
 import controllers.individual.actions.mocks.{MockIdentifierAction, MockSignUpJourneyRefiner}
 import models.common.OverseasPropertyModel
-import models.{Cash, DateModel, Yes}
+import models.{Cash, DateModel, No, Yes}
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
@@ -192,6 +192,24 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
           val result = await(controller.show(false, isGlobalEdit = true)(subscriptionRequest))
           status(result) mustBe OK
         }
+      }
+
+      "not in edit mode when start date is before limit is No" in withController { controller =>
+        enable(RemoveAccountingMethod)
+        mockFetchForeignPropertyStartDateBeforeLimit(Some(No))
+        val property = testOverseasProperty.copy(confirmed = false)
+        mockFetchOverseasProperty(Some(property))
+        mockOverseasPropertyCheckYourAnswersView(
+          viewModel = property,
+          postAction = routes.OverseasPropertyCheckYourAnswersController.submit(),
+          backUrl = controllers.individual.tasklist.overseasproperty.routes.ForeignPropertyStartDateController.show().url,
+          isGlobalEdit = false
+        )
+
+        val result: Future[Result] =
+          await(controller.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest))
+
+        status(result) mustBe OK
       }
 
       "throw an exception if cannot retrieve overseas property details" in withController { controller =>
