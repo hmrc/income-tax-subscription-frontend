@@ -22,6 +22,7 @@ import config.AppConfig
 import controllers.utils.ReferenceRetrieval
 import models.common.PropertyModel
 import play.api.mvc._
+import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import views.html.individual.tasklist.ukproperty.PropertyCheckYourAnswers
@@ -59,7 +60,7 @@ class PropertyCheckYourAnswersController @Inject()(propertyCheckYourAnswersView:
     _ =>
       referenceRetrieval.getIndividualReference flatMap { reference =>
         withProperty(reference) {
-          case property if property.isComplete =>
+          case property if property.isComplete(isEnabled(RemoveAccountingMethod)) =>
             subscriptionDetailsService.saveProperty(reference, property.copy(confirmed = true)).map {
               case Right(_) =>
                 if (isGlobalEdit) Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)

@@ -32,6 +32,11 @@ import java.time.format.DateTimeFormatter
 //scalastyle:off
 class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(RemoveAccountingMethod)
+  }
+
   "YourIncomeSourceToSignUp" should {
     "display the template correctly" when {
       "there are no income sources added" in new TemplateViewTest(
@@ -75,10 +80,9 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     }
 
     "have a lead paragraph" which {
-      "summarises the page and tells the user to check sources" when {
-        "the pre-pop feature switch is enabled" in new ViewTest {
+      "summarises the page and tells the user to check sources" in new ViewTest {
           document.mainContent.selectNth("p", 1).text mustBe AgentIncomeSource.lead
-        }
+
       }
     }
 
@@ -154,27 +158,26 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         "has a paragraph" in new ViewTest(noIncomeSources) {
           document.mainContent.selectNth("p", 3).text mustBe AgentIncomeSource.incomeFromPropertyParagraph
         }
-
-        "has an add uk property link" when {
-          "remove accounting method feature switch is enabled" in new ViewTest(noIncomeSources) {
-            enable(RemoveAccountingMethod)
-            val link: Element = document.mainContent.getElementById("add-uk-property").selectHead("a")
-            link.text mustBe AgentIncomeSource.ukPropertyLinkText
-            link.attr("href") mustBe controllers.agent.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show().url
-          }
-          "remove accounting method feature switch is disabled" in new ViewTest(noIncomeSources) {
+        "when remove accounting method feature switch disabled" should {
+          "have an add uk property link" in new ViewTest(noIncomeSources) {
             disable(RemoveAccountingMethod)
             val link: Element = document.mainContent.getElementById("add-uk-property").selectHead("a")
             link.text mustBe AgentIncomeSource.ukPropertyLinkText
             link.attr("href") mustBe AgentIncomeSource.ukPropertyLink
           }
+          "have an add foreign property link" in new ViewTest(noIncomeSources) {
+            val link: Element = document.mainContent.getElementById("add-foreign-property").selectHead("a")
+            link.text mustBe AgentIncomeSource.foreignPropertyLinkText
+            link.attr("href") mustBe AgentIncomeSource.foreignPropertyLink
+          }
         }
-
-
-        "has an add foreign property link" in new ViewTest(noIncomeSources) {
-          val link: Element = document.mainContent.getElementById("add-foreign-property").selectHead("a")
-          link.text mustBe AgentIncomeSource.foreignPropertyLinkText
-          link.attr("href") mustBe AgentIncomeSource.foreignPropertyLink
+        "when remove accounting method feature switch enabled" should {
+          "have an add uk property link" in new ViewTest(noIncomeSources) {
+            enable(RemoveAccountingMethod)
+            val link: Element = document.mainContent.getElementById("add-uk-property").selectHead("a")
+            link.text mustBe AgentIncomeSource.ukPropertyLinkText
+            link.attr("href") mustBe controllers.agent.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show().url
+          }
         }
       }
     }
@@ -650,6 +653,11 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     }
     "there are fully complete and confirmed income sources added" should {
       def completeAndConfirmedIncomeSources: IncomeSources = IncomeSources(completeAndConfirmedSelfEmployments, Some(Cash), completeAndConfirmedUKProperty, completeAndConfirmedForeignProperty)
+      def completeAndConfirmedIncomeSourcesNoAccMethod: IncomeSources = IncomeSources(
+        completeAndConfirmedSelfEmployments, Some(Cash),
+        completeAndConfirmedUKProperty.map(_.copy(accountingMethod = None)),
+        completeAndConfirmedForeignProperty.map(_.copy(accountingMethod = None))
+      )
 
       "have a heading and caption" in new ViewTest(completeAndConfirmedIncomeSources) {
         document.mainContent.mustHaveHeadingAndCaption(
@@ -702,63 +710,127 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         "has a heading" in new ViewTest(completeAndConfirmedIncomeSources) {
           document.mainContent.getSubHeading("h2", 3).text mustBe AgentIncomeSource.incomeFromPropertyHeading
         }
-        "has a uk property summary card" in new ViewTest(completeAndConfirmedIncomeSources) {
-          document.mainContent.mustHaveSummaryCard("div.govuk-summary-card", Some(2))(
-            title = AgentIncomeSource.ukPropertyTitle,
-            cardActions = Seq(
-              SummaryListActionValues(
-                href = AgentIncomeSource.ukPropertyChangeLink,
-                text = s"${AgentIncomeSource.change} ${AgentIncomeSource.ukPropertyHiddenText}",
-                visuallyHidden = AgentIncomeSource.ukPropertyHiddenText
+        "when remove accounting method feature switch disabled" which {
+          "has a uk property summary card" in new ViewTest(completeAndConfirmedIncomeSources) {
+            document.mainContent.mustHaveSummaryCard("div.govuk-summary-card", Some(2))(
+              title = AgentIncomeSource.ukPropertyTitle,
+              cardActions = Seq(
+                SummaryListActionValues(
+                  href = AgentIncomeSource.ukPropertyChangeLink,
+                  text = s"${AgentIncomeSource.change} ${AgentIncomeSource.ukPropertyHiddenText}",
+                  visuallyHidden = AgentIncomeSource.ukPropertyHiddenText
+                ),
+                SummaryListActionValues(
+                  href = AgentIncomeSource.ukPropertyRemoveLink,
+                  text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.ukPropertyHiddenText}",
+                  visuallyHidden = AgentIncomeSource.ukPropertyHiddenText
+                )
               ),
-              SummaryListActionValues(
-                href = AgentIncomeSource.ukPropertyRemoveLink,
-                text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.ukPropertyHiddenText}",
-                visuallyHidden = AgentIncomeSource.ukPropertyHiddenText
-              )
-            ),
-            rows = Seq(
-              SummaryListRowValues(
-                key = AgentIncomeSource.ukPropertyStartDate,
-                value = Some(AgentIncomeSource.propertyDateBeforeLimit),
-                actions = Seq.empty
-              ),
-              SummaryListRowValues(
-                key = AgentIncomeSource.statusTagKey,
-                value = Some(AgentIncomeSource.completedTag),
-                actions = Seq.empty
+              rows = Seq(
+                SummaryListRowValues(
+                  key = AgentIncomeSource.ukPropertyStartDate,
+                  value = Some(AgentIncomeSource.propertyDateBeforeLimit),
+                  actions = Seq.empty
+                ),
+                SummaryListRowValues(
+                  key = AgentIncomeSource.statusTagKey,
+                  value = Some(AgentIncomeSource.completedTag),
+                  actions = Seq.empty
+                )
               )
             )
-          )
+          }
+          "has a foreign property summary card" in new ViewTest(completeAndConfirmedIncomeSources) {
+            document.mainContent.mustHaveSummaryCard("div.govuk-summary-card", Some(3))(
+              title = AgentIncomeSource.foreignPropertyTitle,
+              cardActions = Seq(
+                SummaryListActionValues(
+                  href = AgentIncomeSource.foreignPropertyChangeLink,
+                  text = s"${AgentIncomeSource.change} ${AgentIncomeSource.foreignPropertyHiddenText}",
+                  visuallyHidden = AgentIncomeSource.foreignPropertyHiddenText
+                ),
+                SummaryListActionValues(
+                  href = AgentIncomeSource.foreignPropertyHiddenTextLink,
+                  text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.foreignPropertyHiddenText}",
+                  visuallyHidden = AgentIncomeSource.foreignPropertyHiddenText
+                )
+              ),
+              rows = Seq(
+                SummaryListRowValues(
+                  key = AgentIncomeSource.foreignPropertyStartDate,
+                  value = Some(AgentIncomeSource.propertyDateBeforeLimit),
+                  actions = Seq.empty
+                ),
+                SummaryListRowValues(
+                  key = AgentIncomeSource.statusTagKey,
+                  value = Some(AgentIncomeSource.completedTag),
+                  actions = Seq.empty
+                )
+              )
+            )
+          }
         }
-        "has a foreign property summary card" in new ViewTest(completeAndConfirmedIncomeSources) {
-          document.mainContent.mustHaveSummaryCard("div.govuk-summary-card", Some(3))(
-            title = AgentIncomeSource.foreignPropertyTitle,
-            cardActions = Seq(
-              SummaryListActionValues(
-                href = AgentIncomeSource.foreignPropertyChangeLink,
-                text = s"${AgentIncomeSource.change} ${AgentIncomeSource.foreignPropertyHiddenText}",
-                visuallyHidden = AgentIncomeSource.foreignPropertyHiddenText
+        "when remove accounting method feature switch enabled" which {
+          "has a uk property summary card" in new ViewTest(completeAndConfirmedIncomeSourcesNoAccMethod) {
+            enable(RemoveAccountingMethod)
+            document.mainContent.mustHaveSummaryCard("div.govuk-summary-card", Some(2))(
+              title = AgentIncomeSource.ukPropertyTitle,
+              cardActions = Seq(
+                SummaryListActionValues(
+                  href = AgentIncomeSource.ukPropertyChangeLink,
+                  text = s"${AgentIncomeSource.change} ${AgentIncomeSource.ukPropertyHiddenText}",
+                  visuallyHidden = AgentIncomeSource.ukPropertyHiddenText
+                ),
+                SummaryListActionValues(
+                  href = AgentIncomeSource.ukPropertyRemoveLink,
+                  text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.ukPropertyHiddenText}",
+                  visuallyHidden = AgentIncomeSource.ukPropertyHiddenText
+                )
               ),
-              SummaryListActionValues(
-                href = AgentIncomeSource.foreignPropertyHiddenTextLink,
-                text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.foreignPropertyHiddenText}",
-                visuallyHidden = AgentIncomeSource.foreignPropertyHiddenText
-              )
-            ),
-            rows = Seq(
-              SummaryListRowValues(
-                key = AgentIncomeSource.foreignPropertyStartDate,
-                value = Some(AgentIncomeSource.propertyDateBeforeLimit),
-                actions = Seq.empty
-              ),
-              SummaryListRowValues(
-                key = AgentIncomeSource.statusTagKey,
-                value = Some(AgentIncomeSource.completedTag),
-                actions = Seq.empty
+              rows = Seq(
+                SummaryListRowValues(
+                  key = AgentIncomeSource.ukPropertyStartDate,
+                  value = Some(AgentIncomeSource.propertyDateBeforeLimit),
+                  actions = Seq.empty
+                ),
+                SummaryListRowValues(
+                  key = AgentIncomeSource.statusTagKey,
+                  value = Some(AgentIncomeSource.completedTag),
+                  actions = Seq.empty
+                )
               )
             )
-          )
+          }
+          "has a foreign property summary card" in new ViewTest(completeAndConfirmedIncomeSourcesNoAccMethod) {
+            enable(RemoveAccountingMethod)
+            document.mainContent.mustHaveSummaryCard("div.govuk-summary-card", Some(3))(
+              title = AgentIncomeSource.foreignPropertyTitle,
+              cardActions = Seq(
+                SummaryListActionValues(
+                  href = AgentIncomeSource.foreignPropertyChangeLink,
+                  text = s"${AgentIncomeSource.change} ${AgentIncomeSource.foreignPropertyHiddenText}",
+                  visuallyHidden = AgentIncomeSource.foreignPropertyHiddenText
+                ),
+                SummaryListActionValues(
+                  href = AgentIncomeSource.foreignPropertyHiddenTextLink,
+                  text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.foreignPropertyHiddenText}",
+                  visuallyHidden = AgentIncomeSource.foreignPropertyHiddenText
+                )
+              ),
+              rows = Seq(
+                SummaryListRowValues(
+                  key = AgentIncomeSource.foreignPropertyStartDate,
+                  value = Some(AgentIncomeSource.propertyDateBeforeLimit),
+                  actions = Seq.empty
+                ),
+                SummaryListRowValues(
+                  key = AgentIncomeSource.statusTagKey,
+                  value = Some(AgentIncomeSource.completedTag),
+                  actions = Seq.empty
+                )
+              )
+            )
+          }
         }
       }
     }

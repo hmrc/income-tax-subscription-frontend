@@ -210,7 +210,7 @@
                 key = Key(content = Text(messages("base.status.label"))),
                 value = Value(statusTag(ukProperty.confirmed)),
                 actions = maybeStatusTagAction(
-                    isComplete = ukProperty.isComplete,
+                    isComplete = ukProperty.isComplete(featureSwitching.isEnabled(RemoveAccountingMethod)),
                     isConfirmed = ukProperty.confirmed,
                     href = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url
                 )
@@ -220,7 +220,7 @@
                   actions = Some(Actions(
                     items =
                         maybeIncomeSourceChangeAction(
-                            isComplete = ukProperty.isComplete,
+                            isComplete = ukProperty.isComplete(featureSwitching.isEnabled(RemoveAccountingMethod)),
                             isConfirmed = ukProperty.confirmed,
                             href = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url,
                         ) ++

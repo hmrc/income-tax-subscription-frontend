@@ -16,6 +16,7 @@
 
 package views.individual.tasklist.addbusiness
 
+import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
 import models.common.business._
 import models.common.{IncomeSources, OverseasPropertyModel, PropertyModel}
 import models.{Cash, DateModel}
@@ -30,6 +31,11 @@ import views.html.individual.tasklist.addbusiness.YourIncomeSourceToSignUp
 import java.time.format.DateTimeFormatter
 
 class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(RemoveAccountingMethod)
+  }
 
   object IndividualIncomeSource {
     val title = "Your income sources"
@@ -784,6 +790,10 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     "there are complete and confirmed set of income sources added" should {
 
       def completeAndConfirmedIncomeSources: IncomeSources = IncomeSources(completeAndConfirmedSelfEmployments, Some(Cash), completeAndConfirmedUKProperty, completeAndConfirmedForeignProperty)
+      def completeAndConfirmedIncomeSourcesNoAccMethod: IncomeSources = IncomeSources(
+        completeAndConfirmedSelfEmployments, Some(Cash),
+        completeAndConfirmedUKProperty.map(_.copy(accountingMethod = None)),
+        completeAndConfirmedForeignProperty.map(_.copy(accountingMethod = None)))
 
       "have a heading for the page" in new ViewTest(completeAndConfirmedIncomeSources) {
         document.mainContent.getH1Element.text mustBe IndividualIncomeSource.heading
@@ -847,64 +857,129 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           document.mainContent.selectNth("p", 4).text mustBe IndividualIncomeSource.incomeFromPropertiesPara
         }
 
-        "has a UK property card" in new ViewTest(completeAndConfirmedIncomeSources) {
-          document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(2))(
-            title = IndividualIncomeSource.ukPropertyCardTitle,
-            cardActions = Seq(
-              SummaryListActionValues(
-                href = IndividualIncomeSource.ukPropertyChangeLink,
-                text = s"${IndividualIncomeSource.change} ${IndividualIncomeSource.ukPropertyHiddenText}",
-                visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
+        "when remove accounting method feature switch disabled" should {
+          "has a UK property card" in new ViewTest(completeAndConfirmedIncomeSources) {
+            document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(2))(
+              title = IndividualIncomeSource.ukPropertyCardTitle,
+              cardActions = Seq(
+                SummaryListActionValues(
+                  href = IndividualIncomeSource.ukPropertyChangeLink,
+                  text = s"${IndividualIncomeSource.change} ${IndividualIncomeSource.ukPropertyHiddenText}",
+                  visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
+                ),
+                SummaryListActionValues(
+                  href = IndividualIncomeSource.ukPropertyRemoveLink,
+                  text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.ukPropertyHiddenText}",
+                  visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
+                )
               ),
-              SummaryListActionValues(
-                href = IndividualIncomeSource.ukPropertyRemoveLink,
-                text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.ukPropertyHiddenText}",
-                visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
-              )
-            ),
-            rows = Seq(
-              SummaryListRowValues(
-                key = IndividualIncomeSource.propertyStartDate,
-                value = Some(IndividualIncomeSource.propertyDateBeforeLimit),
-                actions = Seq.empty
-              ),
-              SummaryListRowValues(
-                key = IndividualIncomeSource.statusTagKey,
-                value = Some(IndividualIncomeSource.completedTag),
-                actions = Seq.empty
+              rows = Seq(
+                SummaryListRowValues(
+                  key = IndividualIncomeSource.propertyStartDate,
+                  value = Some(IndividualIncomeSource.propertyDateBeforeLimit),
+                  actions = Seq.empty
+                ),
+                SummaryListRowValues(
+                  key = IndividualIncomeSource.statusTagKey,
+                  value = Some(IndividualIncomeSource.completedTag),
+                  actions = Seq.empty
+                )
               )
             )
-          )
-        }
+          }
 
-        "has a foreign property card" in new ViewTest(completeAndConfirmedIncomeSources) {
-          document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(3))(
-            title = IndividualIncomeSource.foreignPropertyCardTitle,
-            cardActions = Seq(
-              SummaryListActionValues(
-                href = IndividualIncomeSource.foreignPropertyChangeLink,
-                text = s"${IndividualIncomeSource.change} ${IndividualIncomeSource.foreignPropertyHiddenText}",
-                visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
+          "has a foreign property card" in new ViewTest(completeAndConfirmedIncomeSources) {
+            document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(3))(
+              title = IndividualIncomeSource.foreignPropertyCardTitle,
+              cardActions = Seq(
+                SummaryListActionValues(
+                  href = IndividualIncomeSource.foreignPropertyChangeLink,
+                  text = s"${IndividualIncomeSource.change} ${IndividualIncomeSource.foreignPropertyHiddenText}",
+                  visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
+                ),
+                SummaryListActionValues(
+                  href = IndividualIncomeSource.foreignPropertyRemoveLink,
+                  text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.foreignPropertyHiddenText}",
+                  visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
+                )
               ),
-              SummaryListActionValues(
-                href = IndividualIncomeSource.foreignPropertyRemoveLink,
-                text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.foreignPropertyHiddenText}",
-                visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
-              )
-            ),
-            rows = Seq(
-              SummaryListRowValues(
-                key = IndividualIncomeSource.propertyStartDate,
-                value = Some(IndividualIncomeSource.propertyDateBeforeLimit),
-                actions = Seq.empty
-              ),
-              SummaryListRowValues(
-                key = IndividualIncomeSource.statusTagKey,
-                value = Some(IndividualIncomeSource.completedTag),
-                actions = Seq.empty
+              rows = Seq(
+                SummaryListRowValues(
+                  key = IndividualIncomeSource.propertyStartDate,
+                  value = Some(IndividualIncomeSource.propertyDateBeforeLimit),
+                  actions = Seq.empty
+                ),
+                SummaryListRowValues(
+                  key = IndividualIncomeSource.statusTagKey,
+                  value = Some(IndividualIncomeSource.completedTag),
+                  actions = Seq.empty
+                )
               )
             )
-          )
+          }
+        }
+        "when remove accounting method feature switch enabled" should {
+          "has a UK property card" in new ViewTest(completeAndConfirmedIncomeSourcesNoAccMethod) {
+            enable(RemoveAccountingMethod)
+            document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(2))(
+              title = IndividualIncomeSource.ukPropertyCardTitle,
+              cardActions = Seq(
+                SummaryListActionValues(
+                  href = IndividualIncomeSource.ukPropertyChangeLink,
+                  text = s"${IndividualIncomeSource.change} ${IndividualIncomeSource.ukPropertyHiddenText}",
+                  visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
+                ),
+                SummaryListActionValues(
+                  href = IndividualIncomeSource.ukPropertyRemoveLink,
+                  text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.ukPropertyHiddenText}",
+                  visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
+                )
+              ),
+              rows = Seq(
+                SummaryListRowValues(
+                  key = IndividualIncomeSource.propertyStartDate,
+                  value = Some(IndividualIncomeSource.propertyDateBeforeLimit),
+                  actions = Seq.empty
+                ),
+                SummaryListRowValues(
+                  key = IndividualIncomeSource.statusTagKey,
+                  value = Some(IndividualIncomeSource.completedTag),
+                  actions = Seq.empty
+                )
+              )
+            )
+          }
+
+          "has a foreign property card" in new ViewTest(completeAndConfirmedIncomeSourcesNoAccMethod) {
+            enable(RemoveAccountingMethod)
+            document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(3))(
+              title = IndividualIncomeSource.foreignPropertyCardTitle,
+              cardActions = Seq(
+                SummaryListActionValues(
+                  href = IndividualIncomeSource.foreignPropertyChangeLink,
+                  text = s"${IndividualIncomeSource.change} ${IndividualIncomeSource.foreignPropertyHiddenText}",
+                  visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
+                ),
+                SummaryListActionValues(
+                  href = IndividualIncomeSource.foreignPropertyRemoveLink,
+                  text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.foreignPropertyHiddenText}",
+                  visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
+                )
+              ),
+              rows = Seq(
+                SummaryListRowValues(
+                  key = IndividualIncomeSource.propertyStartDate,
+                  value = Some(IndividualIncomeSource.propertyDateBeforeLimit),
+                  actions = Seq.empty
+                ),
+                SummaryListRowValues(
+                  key = IndividualIncomeSource.statusTagKey,
+                  value = Some(IndividualIncomeSource.completedTag),
+                  actions = Seq.empty
+                )
+              )
+            )
+          }
         }
       }
 
