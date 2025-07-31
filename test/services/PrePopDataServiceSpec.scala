@@ -107,7 +107,7 @@ class PrePopDataServiceSpec extends PlaySpec
             mockSavePrePopFlag(flag = true)(Right(PostSubscriptionDetailsSuccessResponse))
             mockSaveBusinesses(
               businesses = Seq(expectedMinimalSelfEmploymentData),
-              accountingMethod = Some(accountingMethod)
+              accountingMethod = None
             )(Right(PostSubscriptionDetailsSuccessResponse))
             mockSaveProperty(expectedUkProperty)(Right(PostSubscriptionDetailsSuccessResponse))
             mockSaveOverseasProperty(expectedForeignProperty)(Right(PostSubscriptionDetailsSuccessResponse))
@@ -119,7 +119,7 @@ class PrePopDataServiceSpec extends PlaySpec
             verifySavePrePopFlag(flag = true)
             verifySaveBusinesses(
               businesses = Seq(expectedMinimalSelfEmploymentData),
-              accountingMethod = Some(accountingMethod)
+              accountingMethod = None
             )
             verifySaveProperty(expectedUkProperty)
             verifySaveOverseasProperty(expectedForeignProperty)
@@ -132,7 +132,7 @@ class PrePopDataServiceSpec extends PlaySpec
               mockSavePrePopFlag(flag = true)(Right(PostSubscriptionDetailsSuccessResponse))
               mockSaveBusinesses(
                 businesses = Seq(expectedMinimalSelfEmploymentData),
-                accountingMethod = Some(accountingMethod)
+                accountingMethod = None
               )(Right(PostSubscriptionDetailsSuccessResponse))
 
               await(service.prePopIncomeSources(reference, testNino)) mustBe PrePopSuccess
@@ -142,7 +142,7 @@ class PrePopDataServiceSpec extends PlaySpec
               verifySavePrePopFlag(flag = true)
               verifySaveBusinesses(
                 businesses = Seq(expectedMinimalSelfEmploymentData),
-                accountingMethod = Some(accountingMethod)
+                accountingMethod = None
               )
             }
             "returned a save failure when saving" in {
@@ -152,7 +152,7 @@ class PrePopDataServiceSpec extends PlaySpec
               mockSavePrePopFlag(flag = true)(Right(PostSubscriptionDetailsSuccessResponse))
               mockSaveBusinesses(
                 businesses = Seq(expectedMinimalSelfEmploymentData),
-                accountingMethod = Some(accountingMethod)
+                accountingMethod = None
               )(Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
               await(service.prePopIncomeSources(reference, testNino)) mustBe PrePopSuccess
@@ -162,7 +162,7 @@ class PrePopDataServiceSpec extends PlaySpec
               verifySavePrePopFlag(flag = true)
               verifySaveBusinesses(
                 businesses = Seq(expectedMinimalSelfEmploymentData),
-                accountingMethod = Some(accountingMethod)
+                accountingMethod = None
               )
             }
           }
@@ -335,7 +335,7 @@ class PrePopDataServiceSpec extends PlaySpec
     trade = None,
     address = None,
     startDate = None,
-    accountingMethod = Some(accountingMethod)
+    accountingMethod = None
   )
 
   lazy val testUUID: String = "test-uuid"

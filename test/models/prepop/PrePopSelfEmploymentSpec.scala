@@ -104,16 +104,14 @@ class PrePopSelfEmploymentSpec extends PlaySpec with Matchers {
     accountingMethod = Some(Cash)
   )
 
-  lazy val prePopSelfEmploymentJsonMinimal: JsObject = Json.obj(
-    "accountingMethod" -> "accruals"
-  )
+  lazy val prePopSelfEmploymentJsonMinimal: JsObject = Json.obj()
 
   lazy val prePopSelfEmploymentModelMinimal: PrePopSelfEmployment = PrePopSelfEmployment(
     name = None,
     trade = None,
     address = None,
     startDate = None,
-    accountingMethod = Some(Accruals)
+    accountingMethod = None
   )
 
 }
