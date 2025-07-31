@@ -18,6 +18,8 @@ package controllers.individual.tasklist.overseasproperty
 
 import auth.individual.SignUpController
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
+import config.featureswitch.FeatureSwitching
 import controllers.utils.ReferenceRetrieval
 import forms.individual.business.ForeignPropertyStartDateForm.startDateForm
 import models.DateModel
@@ -41,7 +43,7 @@ class ForeignPropertyStartDateController @Inject()(view: ForeignPropertyStartDat
                                                    val appConfig: AppConfig,
                                                    val languageUtils: LanguageUtils)
                                                   (implicit val ec: ExecutionContext,
-                                                   mcc: MessagesControllerComponents) extends SignUpController with ImplicitDateFormatter {
+                                                   mcc: MessagesControllerComponents) extends SignUpController with ImplicitDateFormatter with FeatureSwitching {
 
   def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
@@ -72,6 +74,8 @@ class ForeignPropertyStartDateController @Inject()(view: ForeignPropertyStartDat
             subscriptionDetailsService.saveForeignPropertyStartDate(reference, startDate) map {
               case Right(_) =>
                 if (isEditMode || isGlobalEdit) {
+                  Redirect(routes.OverseasPropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit))
+                } else if (isEnabled(RemoveAccountingMethod)) {
                   Redirect(routes.OverseasPropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit))
                 } else {
                   Redirect(routes.OverseasPropertyAccountingMethodController.show())

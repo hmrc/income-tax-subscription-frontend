@@ -18,8 +18,12 @@ package controllers.individual.tasklist.overseasproperty
 
 import auth.individual.SignUpController
 import config.AppConfig
-import controllers.utils.ReferenceRetrieval
+import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
+import config.featureswitch.FeatureSwitching
+import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
 import models.common.OverseasPropertyModel
+import models.requests.individual.SignUpRequest
+import models.{No, Yes, YesNo}
 import play.api.mvc._
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
@@ -30,58 +34,70 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class OverseasPropertyCheckYourAnswersController @Inject()(view: OverseasPropertyCheckYourAnswers,
-                                                           subscriptionDetailsService: SubscriptionDetailsService,
-                                                           referenceRetrieval: ReferenceRetrieval)
+                                                           identify: IdentifierAction,
+                                                           journeyRefiner: SignUpJourneyRefiner,
+                                                           subscriptionDetailsService: SubscriptionDetailsService)
                                                           (val auditingService: AuditingService,
                                                            val authService: AuthService,
                                                            val appConfig: AppConfig)
                                                           (implicit val ec: ExecutionContext,
-                                                           mcc: MessagesControllerComponents) extends SignUpController {
+                                                           mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching {
 
-  def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      referenceRetrieval.getIndividualReference flatMap { reference =>
-        withProperty(reference) { property =>
-          Future.successful(Ok(view(
+  def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
+    withProperty(request.reference) { property =>
+      if (isEnabled(RemoveAccountingMethod)) {
+        subscriptionDetailsService.fetchForeignPropertyStartDateBeforeLimit(request.reference).map {
+          case Some(resultSaved) =>
+            Ok(view(
+              viewModel = property,
+              postAction = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.submit(isGlobalEdit = isGlobalEdit),
+              backUrl = backUrl(isEditMode, isGlobalEdit, property.confirmed, Some(resultSaved)),
+              isGlobalEdit = isGlobalEdit
+            ))
+        }
+      } else {
+        Future.successful {
+          Ok(view(
             viewModel = property,
             postAction = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.submit(isGlobalEdit = isGlobalEdit),
-            backUrl = backUrl(isEditMode, isGlobalEdit, property.confirmed),
+            backUrl = backUrl(isEditMode, isGlobalEdit, property.confirmed, None),
             isGlobalEdit = isGlobalEdit
-          )))
+          ))
         }
       }
+    }
   }
-
-  def submit(isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      referenceRetrieval.getIndividualReference flatMap { reference =>
-        withProperty(reference) {
-          case property if property.isComplete =>
-            subscriptionDetailsService.saveOverseasProperty(reference, property.copy(confirmed = true)) map {
-              case Right(_) =>
-                if (isGlobalEdit) {
-                  Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
-                } else {
-                  Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
-                }
-              case Left(_) => throw new InternalServerException("[OverseasPropertyCheckYourAnswersController][submit] - Could not confirm property details")
+  def submit(isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
+    withProperty(request.reference) { property =>
+      if (property.isComplete(isEnabled(RemoveAccountingMethod))) {
+        subscriptionDetailsService.saveOverseasProperty(request.reference, property.copy(confirmed = true)) map {
+          case Right(_) =>
+            if (isGlobalEdit) {
+              Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
+            } else {
+              Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
             }
-          case _ => Future.successful(Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show))
+          case Left(_) => throw new InternalServerException("[OverseasPropertyCheckYourAnswersController][submit] - Could not confirm property details")
         }
+      } else {
+        Future.successful(Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show))
       }
+    }
   }
-
-
-  private def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean, isConfirmed: Boolean): String = {
+  private def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean, isConfirmed: Boolean, resultSaved: Option[YesNo]): String = {
     if (isGlobalEdit && isConfirmed) {
       controllers.individual.routes.GlobalCheckYourAnswersController.show.url
     } else if (isGlobalEdit || isEditMode) {
       controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
+    } else if (isEnabled(RemoveAccountingMethod)) {
+      resultSaved match {
+        case Some(Yes) => controllers.individual.tasklist.overseasproperty.routes.ForeignPropertyStartDateBeforeLimitController.show().url
+        case Some(No) => controllers.individual.tasklist.overseasproperty.routes.ForeignPropertyStartDateController.show().url
+      }
     } else {
       controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyAccountingMethodController.show().url
     }
   }
-
 
   private def withProperty(reference: String)(f: OverseasPropertyModel => Future[Result])(implicit hc: HeaderCarrier) =
     subscriptionDetailsService.fetchOverseasProperty(reference).flatMap {
