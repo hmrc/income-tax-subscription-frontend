@@ -227,6 +227,12 @@ agent.property.income-source.details.content.bullet1                = mis Mai 20
 agent.property.income-source.details.content.bullet2                = mis Mawrth 2024, mae eich cleient yn defnyddio cyfrifyddu traddodiadol
 agent.error.property.income-source.start-date-before-limit.invalid  = Dewiswch ‘Iawn’ os oedd eich cleient wedi dechrau cael incwm o eiddo yn y DU cyn 6 Ebrill {0}
 
+# Agent Property Start Date Before Limit
+agent.property.start-date-before-limit.heading                  = Eiddo eich cleient yn y DU
+agent.property.start-date-before-limit.heading.caption          = {0} | {1}
+agent.property.start-date-before-limit.heading.legend           = A oedd yr incwm hwn wedi dechrau cyn 6 Ebrill {0}?
+agent.error.property.start-date-before-limit.invalid            = Dewiswch ‘Iawn’ os oedd eich cleient wedi dechrau cael incwm o eiddo yn y DU cyn 6 Ebrill {0}
+
 # Agent Property Start Date errors
 agent.error.property.day-month-year.empty                       = Nodwch y dyddiad y gwnaeth eich cleient ddechrau cael incwm o eiddo yn y DU
 agent.error.property.day.empty                                  = Mae’n rhaid i’r dyddiad gynnwys diwrnod

@@ -16,6 +16,7 @@
 
 package controllers.individual.tasklist.overseasproperty
 
+import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import forms.individual.business.ForeignPropertyStartDateBeforeLimitForm
 import helpers.ComponentSpecBase
@@ -30,6 +31,11 @@ import utilities.{AccountingPeriodUtil, SubscriptionDataKeys}
 import java.time.LocalDate
 
 class ForeignPropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBase {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(RemoveAccountingMethod)
+  }
 
   s"GET ${routes.ForeignPropertyStartDateBeforeLimitController.show()}" when {
     "the user is unauthenticated" should {
@@ -262,6 +268,33 @@ class ForeignPropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBa
             result must have(
               httpStatus(SEE_OTHER),
               redirectURI(routes.OverseasPropertyCheckYourAnswersController.show(isGlobalEdit = true).url)
+            )
+          }
+        }
+      }
+      "redirect to foreign property check your answers page" when {
+        "the user answers 'Yes'" when {
+          "the feature switch is enabled" in {
+            enable(RemoveAccountingMethod)
+            AuthStub.stubAuthSuccess()
+
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+              id = SubscriptionDataKeys.OverseasProperty,
+              responseStatus = NO_CONTENT
+            )
+            IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(
+              property = OverseasPropertyModel(startDateBeforeLimit = Some(true))
+            )
+            IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetails(
+              id = SubscriptionDataKeys.IncomeSourceConfirmation
+            )
+
+            val result = IncomeTaxSubscriptionFrontend
+              .submitForeignPropertyStartDateBeforeLimit()(request = Some(Yes))
+
+            result must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(routes.OverseasPropertyCheckYourAnswersController.show().url)
             )
           }
         }

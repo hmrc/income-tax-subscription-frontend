@@ -16,6 +16,8 @@
 
 package views.individual.tasklist.overseasproperty
 
+import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
+import config.featureswitch.FeatureSwitching
 import models.common.OverseasPropertyModel
 import models.{Cash, DateModel}
 import org.jsoup.Jsoup
@@ -25,7 +27,11 @@ import views.html.individual.tasklist.overseasproperty.OverseasPropertyCheckYour
 
 import java.time.format.DateTimeFormatter
 
-class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
+class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec with FeatureSwitching {
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(RemoveAccountingMethod)
+  }
 
   "OverseasPropertyCheckYourAnswers" must {
     "have the correct template" in new TemplateViewTest(
@@ -93,6 +99,49 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
             startDateBeforeLimitRow(Some(OverseasPropertyCheckYourAnswers.beforeStartDateLimit)),
             accountingMethodRow(Some(OverseasPropertyCheckYourAnswers.cash))
           ))
+        }
+      }
+
+      "feature switch is enabled" when {
+        "all data is missing" when {
+          "not in edit mode" in {
+            enable(RemoveAccountingMethod)
+            document(viewModel = emptyOverseasProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+              startDateBeforeLimitRow(None)
+            ))
+          }
+          "in global edit mode" in {
+            enable(RemoveAccountingMethod)
+            document(viewModel = emptyOverseasProperty, isGlobalEdit = true).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+              startDateBeforeLimitRow(None, globalEditMode = true)
+            ))
+          }
+        }
+        "data is complete" when {
+          "the start date before limit was answered with 'Yes'" in {
+            enable(RemoveAccountingMethod)
+            document(viewModel = completeProperty.copy(startDateBeforeLimit = Some(true))).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+              startDateBeforeLimitRow(Some(OverseasPropertyCheckYourAnswers.beforeStartDateLimit))
+            ))
+          }
+          "the start date before limit was answered with 'No' and no start date was provided" in {
+            enable(RemoveAccountingMethod)
+            document(viewModel = completeProperty.copy(startDateBeforeLimit = Some(false), startDate = None)).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+              startDateBeforeLimitRow(None)
+            ))
+          }
+          "the start date before limit was answered with 'No' and the stored start date is after the limit" in {
+            enable(RemoveAccountingMethod)
+            document(viewModel = completeProperty.copy(startDateBeforeLimit = Some(false), startDate = Some(limitDate))).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+              startDateBeforeLimitRow(Some(limitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))))
+            ))
+          }
+          "the start date before limit was answered with 'No' but there is a stored start date before the limit" in {
+            enable(RemoveAccountingMethod)
+            document(viewModel = completeProperty.copy(startDateBeforeLimit = Some(false), startDate = Some(olderThanLimitDate))).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+              startDateBeforeLimitRow(Some(OverseasPropertyCheckYourAnswers.beforeStartDateLimit))
+            ))
+          }
         }
       }
     }
