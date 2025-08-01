@@ -19,6 +19,8 @@ package controllers.individual.tasklist.ukproperty
 import auth.individual.SignUpController
 import com.google.inject.Inject
 import config.AppConfig
+import config.featureswitch.FeatureSwitching
+import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
 import controllers.utils.ReferenceRetrieval
 import models.common.PropertyModel
 import play.api.mvc._
@@ -37,7 +39,7 @@ class PropertyCheckYourAnswersController @Inject()(propertyCheckYourAnswersView:
                                                    val authService: AuthService,
                                                    val appConfig: AppConfig)
                                                   (implicit val ec: ExecutionContext,
-                                                   mcc: MessagesControllerComponents) extends SignUpController {
+                                                   mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching {
 
   def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
