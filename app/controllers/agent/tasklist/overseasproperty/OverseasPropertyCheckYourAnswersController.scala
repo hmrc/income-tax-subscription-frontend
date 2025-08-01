@@ -17,6 +17,8 @@
 package controllers.agent.tasklist.overseasproperty
 
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
+import config.featureswitch.FeatureSwitching
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import models.common.OverseasPropertyModel
@@ -34,7 +36,7 @@ class OverseasPropertyCheckYourAnswersController @Inject()(identify: IdentifierA
                                                            subscriptionDetailsService: SubscriptionDetailsService,
                                                            view: OverseasPropertyCheckYourAnswers,
                                                            val appConfig: AppConfig)
-                                                          (implicit cc: MessagesControllerComponents, ec: ExecutionContext) extends SignUpBaseController {
+                                                          (implicit cc: MessagesControllerComponents, ec: ExecutionContext) extends SignUpBaseController with FeatureSwitching {
 
   def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
     withOverseasProperty(request.reference) { overseasProperty =>
@@ -49,8 +51,8 @@ class OverseasPropertyCheckYourAnswersController @Inject()(identify: IdentifierA
   }
 
   def submit(isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
-    withOverseasProperty(request.reference) {
-      case overseasProperty if overseasProperty.isComplete =>
+    withOverseasProperty(request.reference) { overseasProperty =>
+      if (overseasProperty.isComplete(isEnabled(RemoveAccountingMethod)))  {
         subscriptionDetailsService.saveOverseasProperty(request.reference, overseasProperty.copy(confirmed = true)) map {
           case Right(_) =>
             if (isGlobalEdit) {
@@ -60,7 +62,9 @@ class OverseasPropertyCheckYourAnswersController @Inject()(identify: IdentifierA
             }
           case Left(_) => throw new InternalServerException("[OverseasPropertyCheckYourAnswersController][submit] - Could not confirm overseas property")
         }
-      case _ => Future.successful(Redirect(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show))
+      } else {
+        Future.successful(Redirect(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show))
+      }
     }
   }
 

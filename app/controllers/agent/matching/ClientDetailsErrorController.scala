@@ -22,7 +22,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import views.html.agent.matching.ClientDetailsError
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class ClientDetailsErrorController @Inject()(identify: IdentifierAction,

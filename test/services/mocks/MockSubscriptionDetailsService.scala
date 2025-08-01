@@ -20,7 +20,7 @@ import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionD
 import connectors.httpparser.RetrieveReferenceHttpParser.RetrieveReferenceResponse
 import models.common._
 import models.common.business.SelfEmploymentData
-import models.{AccountingMethod, DateModel}
+import models.{AccountingMethod, DateModel, YesNo}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -65,6 +65,11 @@ trait MockSubscriptionDetailsService extends PlaySpec with MockitoSugar with Bef
 
   def mockFetchOverseasProperty(result: Option[OverseasPropertyModel]): Unit = {
     when(mockSubscriptionDetailsService.fetchOverseasProperty(ArgumentMatchers.any())(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(result))
+  }
+
+  def mockFetchForeignPropertyStartDateBeforeLimit(result: Option[YesNo]): Unit = {
+    when(mockSubscriptionDetailsService.fetchForeignPropertyStartDateBeforeLimit(ArgumentMatchers.any())(ArgumentMatchers.any()))
       .thenReturn(Future.successful(result))
   }
 

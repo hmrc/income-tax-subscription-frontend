@@ -75,7 +75,7 @@ class PrePopConnectorISpec extends ComponentSpecBase {
               month = "02",
               year = "2000"
             )),
-            accountingMethod = Cash
+            accountingMethod = Some(Cash)
           ))),
           ukPropertyAccountingMethod = Some(Accruals),
           foreignPropertyAccountingMethod = Some(Cash)

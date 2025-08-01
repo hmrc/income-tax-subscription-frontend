@@ -16,7 +16,10 @@
 
 package controllers.agent.tasklist.overseasproperty
 
+import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
+import config.featureswitch.FeatureSwitching
 import config.{AppConfig, MockConfig}
+import config.MockConfig
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.{PostSubscriptionDetailsSuccessResponse, UnexpectedStatusFailure}
 import controllers.ControllerSpec
 import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}
@@ -35,7 +38,8 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerSpec
   with MockIdentifierAction
   with MockConfirmedClientJourneyRefiner
   with MockSubscriptionDetailsService
-  with MockOverseasPropertyCheckYourAnswers {
+  with MockOverseasPropertyCheckYourAnswers
+  with FeatureSwitching {
 
   "show" when {
     "no property data was returned" should {
@@ -130,6 +134,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerSpec
     "property data was returned" which {
       "is missing the accounting method" should {
         "redirect to the your income sources page" in {
+          disable(RemoveAccountingMethod)
           mockFetchOverseasProperty(Some(fullOverseasProperty.copy(accountingMethod = None)))
 
           val result: Future[Result] = TestOverseasPropertyCheckYourAnswersController.submit(isGlobalEdit = false)(request)
@@ -185,6 +190,8 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerSpec
       }
     }
   }
+
+  val appConfig: AppConfig = mock[AppConfig]
 
   lazy val fullOverseasProperty: OverseasPropertyModel = OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("1", "1", "1980")))
 

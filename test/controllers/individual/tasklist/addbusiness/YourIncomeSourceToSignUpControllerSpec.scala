@@ -18,7 +18,7 @@ package controllers.individual.tasklist.addbusiness
 
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.{PostSubscriptionDetailsSuccessResponse, UnexpectedStatusFailure}
 import controllers.individual.ControllerBaseSpec
-import controllers.individual.actions.mocks.{MockIdentifierAction, MockSignUpJourneyRefiner}
+import controllers.individual.actions.mocks.MockSignUpJourneyRefiner
 import models.common.business._
 import models.common.{IncomeSources, OverseasPropertyModel, PropertyModel}
 import models.{Cash, DateModel}

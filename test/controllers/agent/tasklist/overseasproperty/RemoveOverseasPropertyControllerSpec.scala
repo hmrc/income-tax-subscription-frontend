@@ -31,7 +31,7 @@ import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSubscriptionDetailsService}
+import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
 import utilities.SubscriptionDataKeys
 import views.html.agent.tasklist.overseasproperty.RemoveOverseasPropertyBusiness

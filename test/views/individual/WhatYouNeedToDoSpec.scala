@@ -17,12 +17,10 @@
 package views.individual
 
 import org.jsoup.Jsoup
-import org.jsoup.nodes.{Document, Element}
+import org.jsoup.nodes.Document
 import play.twirl.api.HtmlFormat
 import utilities.{AccountingPeriodUtil, ViewSpec}
 import views.html.individual.WhatYouNeedToDo
-
-import java.time.format.DateTimeFormatter
 
 class WhatYouNeedToDoSpec extends ViewSpec {
 

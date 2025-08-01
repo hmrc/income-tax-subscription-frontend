@@ -22,7 +22,6 @@ import play.twirl.api.HtmlFormat
 import utilities.{AccountingPeriodUtil, ViewSpec}
 import views.html.agent.WhatYouNeedToDo
 
-import java.time.format.DateTimeFormatter
 import scala.util.Random
 
 class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
