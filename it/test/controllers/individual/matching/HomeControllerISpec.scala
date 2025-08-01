@@ -273,7 +273,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
       postcode = Some("ZZ1 1ZZ")
     )),
     startDate = Some(DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit)),
-    accountingMethod = Accruals
+    accountingMethod = Some(Accruals)
   )
 
   lazy val selfEmploymentDetails: Seq[SelfEmploymentData] = Seq(

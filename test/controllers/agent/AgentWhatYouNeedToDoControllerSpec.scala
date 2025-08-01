@@ -23,16 +23,15 @@ import controllers.ControllerSpec
 import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}
 import models.common.AccountingYearModel
 import models.status.MandationStatus.{Mandated, Voluntary}
-import models.{Current, EligibilityStatus, Next, No, Yes}
+import models._
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.http.Status.{OK, SEE_OTHER}
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.mvc.Result
 import play.api.test.Helpers.{HTML, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.mocks._
-import utilities.agent.TestConstants.{testFormattedNino, testName}
 import views.html.agent.WhatYouNeedToDo
 
 import scala.concurrent.Future

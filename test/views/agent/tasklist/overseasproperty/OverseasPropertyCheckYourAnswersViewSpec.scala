@@ -17,7 +17,7 @@
 package views.agent.tasklist.overseasproperty
 
 import models.common.OverseasPropertyModel
-import models.{Accruals, Cash, DateModel}
+import models.{Cash, DateModel}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.HtmlFormat

@@ -22,7 +22,6 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.api.data.FormError
 import play.twirl.api.Html
-import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import utilities.ViewSpec
 import views.html.agent.UsingSoftware
 

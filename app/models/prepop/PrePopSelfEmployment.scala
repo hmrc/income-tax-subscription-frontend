@@ -25,7 +25,7 @@ case class PrePopSelfEmployment(name: Option[String],
                                 trade: Option[String],
                                 address: Option[Address],
                                 startDate: Option[DateModel],
-                                accountingMethod: AccountingMethod) {
+                                accountingMethod: Option[AccountingMethod]) {
 
   def toSelfEmploymentData(id: String): SelfEmploymentData = {
 

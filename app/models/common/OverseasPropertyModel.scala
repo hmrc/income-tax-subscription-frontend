@@ -18,8 +18,6 @@ package models.common
 
 import models.{AccountingMethod, DateModel}
 import play.api.libs.json.{Json, OFormat}
-import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
-import config.featureswitch.FeatureSwitching
 
 case class OverseasPropertyModel(
                                   startDateBeforeLimit: Option[Boolean] = None,

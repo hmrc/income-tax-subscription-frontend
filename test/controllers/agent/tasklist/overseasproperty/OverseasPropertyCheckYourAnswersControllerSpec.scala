@@ -19,6 +19,7 @@ package controllers.agent.tasklist.overseasproperty
 import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
 import config.featureswitch.FeatureSwitching
 import config.{AppConfig, MockConfig}
+import config.MockConfig
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.{PostSubscriptionDetailsSuccessResponse, UnexpectedStatusFailure}
 import controllers.ControllerSpec
 import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}

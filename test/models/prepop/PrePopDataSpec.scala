@@ -51,7 +51,7 @@ class PrePopDataSpec extends PlaySpec with Matchers {
         trade = None,
         address = None,
         startDate = None,
-        accountingMethod = Cash
+        accountingMethod = Some(Cash)
       )
     )),
     ukPropertyAccountingMethod = Some(Accruals),

@@ -16,20 +16,14 @@
 
 package views.agent.matching
 
-import messagelookup.agent.MessageLookup
-import messagelookup.agent.MessageLookup.{Base => common}
 import models.DateModel
 import models.usermatching.UserDetailsModel
-import models.usermatching.UserDetailsModel._
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
-import utilities.UserMatchingSessionUtil.ClientDetails
-import utilities.agent.TestConstants
 import utilities.{TestModels, ViewSpec}
-import views.agent.helpers.ConfirmClientIdConstants._
 import views.html.agent.matching.CheckYourClientDetails
 
 class CheckYourClientDetailsViewSpec extends ViewSpec {

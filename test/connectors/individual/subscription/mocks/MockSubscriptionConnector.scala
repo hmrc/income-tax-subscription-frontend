@@ -25,7 +25,6 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.BAD_REQUEST
-import play.api.libs.json.JsValue
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.UnitTestTrait
 import utilities.individual.TestConstants._

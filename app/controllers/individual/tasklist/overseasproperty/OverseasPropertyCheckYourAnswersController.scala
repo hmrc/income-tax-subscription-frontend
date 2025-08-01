@@ -22,7 +22,6 @@ import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
 import config.featureswitch.FeatureSwitching
 import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
 import models.common.OverseasPropertyModel
-import models.requests.individual.SignUpRequest
 import models.{No, Yes, YesNo}
 import play.api.mvc._
 import services.{AuditingService, AuthService, SubscriptionDetailsService}

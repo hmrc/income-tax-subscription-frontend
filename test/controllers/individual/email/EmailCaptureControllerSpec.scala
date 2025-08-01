@@ -18,7 +18,7 @@ package controllers.individual.email
 
 import common.Constants.ITSASessionKeys.FULLNAME
 import controllers.ControllerSpec
-import controllers.individual.actions.mocks.{MockIdentifierAction, MockSignUpJourneyRefiner}
+import controllers.individual.actions.mocks.MockSignUpJourneyRefiner
 import forms.individual.email.EmailCaptureForm
 import models.audits.BetaContactDetails
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
