@@ -17,6 +17,7 @@
 package controllers.agent.tasklist.ukproperty
 
 import common.Constants.ITSASessionKeys
+import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub.subscriptionUri
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.IntegrationTestConstants.{AgentURI, testNino, testUtr}
@@ -31,11 +32,16 @@ import utilities.SubscriptionDataKeys.Property
 
 class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
 
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(RemoveAccountingMethod)
+  }
+
   "GET /report-quarterly/income-and-expenses/sign-up/client/business/uk-property-check-your-answers" should {
     "return OK" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
-      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(PropertyModel(accountingMethod = Some(Cash))))
+      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(PropertyModel(startDateBeforeLimit = Some(false))))
       SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
       SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
@@ -52,84 +58,133 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
     }
   }
 
-  "POST /report-quarterly/income-and-expenses/sign-up/client/business/uk-property-check-your-answers" should {
-    "redirect to the your clients income sources page" when {
-      "the client has answered all the questions for uk property" in {
-        AuthStub.stubAuthSuccess()
-        val testProperty = PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testProperty))
-        IncomeTaxSubscriptionConnectorStub.stubSaveProperty(testProperty.copy(confirmed = true))
-        IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+  "POST /report-quarterly/income-and-expenses/sign-up/client/business/uk-property-check-your-answers" when {
+    "remove accounting method feature switch is disabled" should {
+      "redirect to the your clients income sources page" when {
+        "the client has answered all the questions for uk property" in {
+          AuthStub.stubAuthSuccess()
+          val testProperty = PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testProperty))
+          IncomeTaxSubscriptionConnectorStub.stubSaveProperty(testProperty.copy(confirmed = true))
+          IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
-        When("POST business/uk-property-check-your-answers is called")
-        val res = IncomeTaxSubscriptionFrontend.submitPropertyCheckYourAnswers()
+          When("POST business/uk-property-check-your-answers is called")
+          val res = IncomeTaxSubscriptionFrontend.submitPropertyCheckYourAnswers()
 
-        Then("Should return a SEE_OTHER with a redirect location of the your income sources page")
-        res must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(AgentURI.yourIncomeSourcesURI)
-        )
+          Then("Should return a SEE_OTHER with a redirect location of the your income sources page")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(AgentURI.yourIncomeSourcesURI)
+          )
 
-        IncomeTaxSubscriptionConnectorStub.verifySaveProperty(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true), Some(1))
-      }
+          IncomeTaxSubscriptionConnectorStub.verifySaveProperty(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true), Some(1))
+        }
 
-      "the client has answered partial questions for uk property" in {
-        AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(PropertyModel(accountingMethod = Some(Cash))))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        "the client has answered partial questions for uk property" in {
+          AuthStub.stubAuthSuccess()
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(PropertyModel(accountingMethod = Some(Cash))))
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
-        When("POST business/uk-property-check-your-answers is called")
-        val res = IncomeTaxSubscriptionFrontend.submitPropertyCheckYourAnswers()
+          When("POST business/uk-property-check-your-answers is called")
+          val res = IncomeTaxSubscriptionFrontend.submitPropertyCheckYourAnswers()
 
-        Then("Should return a SEE_OTHER with a redirect location of task list page")
-        res must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(AgentURI.yourIncomeSourcesURI)
-        )
-        verifyPost(subscriptionUri(Property), count = Some(0))
+          Then("Should return a SEE_OTHER with a redirect location of task list page")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(AgentURI.yourIncomeSourcesURI)
+          )
+          verifyPost(subscriptionUri(Property), count = Some(0))
+        }
       }
     }
+    "remove accounting method feature switch is enabled" should {
+      "redirect to the your clients income sources page" when {
+        "the client has answered all the questions for uk property" in {
+          enable(RemoveAccountingMethod)
+          AuthStub.stubAuthSuccess()
+          val testProperty = PropertyModel(startDateBeforeLimit = Some(false), startDate = Some(DateModel("10", "11", "2021")))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testProperty))
+          IncomeTaxSubscriptionConnectorStub.stubSaveProperty(testProperty.copy(confirmed = true))
+          IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
-    "return INTERNAL_SERVER_ERROR" when {
-      "the property details could not be retrieved" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+          When("POST business/uk-property-check-your-answers is called")
+          val res = IncomeTaxSubscriptionFrontend.submitPropertyCheckYourAnswers()
 
-        When("POST business/uk-property-check-your-answers is called")
-        val res = IncomeTaxSubscriptionFrontend.submitPropertyCheckYourAnswers()
+          Then("Should return a SEE_OTHER with a redirect location of the your income sources page")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(AgentURI.yourIncomeSourcesURI)
+          )
 
-        Then("Should return a INTERNAL_SERVER_ERROR")
-        res must have(
-          httpStatus(INTERNAL_SERVER_ERROR)
-        )
-      }
+          IncomeTaxSubscriptionConnectorStub.verifySaveProperty(
+            PropertyModel(startDateBeforeLimit = Some(false), startDate = Some(DateModel("10", "11", "2021")), confirmed = true),
+            Some(1)
+          )
+        }
 
-      "the property details could not be confirmed" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-          Property,
-          OK,
-          Json.toJson(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021"))))
-        )
-        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetailsFailure(Property)
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        "the client has answered partial questions for uk property" in {
+          enable(RemoveAccountingMethod)
+          AuthStub.stubAuthSuccess()
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(PropertyModel(startDateBeforeLimit = Some(false))))
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
-        When("POST business/uk-property-check-your-answers is called")
-        val res = IncomeTaxSubscriptionFrontend.submitPropertyCheckYourAnswers()
+          When("POST business/uk-property-check-your-answers is called")
+          val res = IncomeTaxSubscriptionFrontend.submitPropertyCheckYourAnswers()
 
-        Then("Should return a INTERNAL_SERVER_ERROR")
-        res must have(
-          httpStatus(INTERNAL_SERVER_ERROR)
-        )
+          Then("Should return a SEE_OTHER with a redirect location of task list page")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(AgentURI.yourIncomeSourcesURI)
+          )
+          verifyPost(subscriptionUri(Property), count = Some(0))
+        }
       }
     }
   }
+
+  "return INTERNAL_SERVER_ERROR" when {
+    "the property details could not be retrieved" in {
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubAuthSuccess()
+      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+
+      When("POST business/uk-property-check-your-answers is called")
+      val res = IncomeTaxSubscriptionFrontend.submitPropertyCheckYourAnswers()
+
+      Then("Should return a INTERNAL_SERVER_ERROR")
+      res must have(
+        httpStatus(INTERNAL_SERVER_ERROR)
+      )
+    }
+
+    "the property details could not be confirmed" in {
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubAuthSuccess()
+      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+        Property,
+        OK,
+        Json.toJson(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021"))))
+      )
+      IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetailsFailure(Property)
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+
+      When("POST business/uk-property-check-your-answers is called")
+      val res = IncomeTaxSubscriptionFrontend.submitPropertyCheckYourAnswers()
+
+      Then("Should return a INTERNAL_SERVER_ERROR")
+      res must have(
+        httpStatus(INTERNAL_SERVER_ERROR)
+      )
+    }
+  }
+
 }

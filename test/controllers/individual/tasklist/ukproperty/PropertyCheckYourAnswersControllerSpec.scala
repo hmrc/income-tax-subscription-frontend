@@ -16,6 +16,7 @@
 
 package controllers.individual.tasklist.ukproperty
 
+import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
 import connectors.httpparser.PostSubscriptionDetailsHttpParser
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.individual.ControllerBaseSpec
@@ -38,6 +39,11 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
 
   override val controllerName: String = "PropertyCheckYourAnswersController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(RemoveAccountingMethod)
+  }
 
   "show" should {
     "return an OK status with the property CYA page" when {
@@ -135,16 +141,46 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
   "submit" when {
     "not in global edit mode" should {
       "redirect to the your income sources page and confirm the uk property details" when {
-        "the user submits a start date and accounting method" in withController { controller =>
-          mockFetchProperty(Some(testFullProperty))
-          mockSaveProperty(testFullProperty.copy(confirmed = true))(
-            Right(PostSubscriptionDetailsSuccessResponse)
-          )
+        "remove accounting method feature switch is disabled" when {
+          "the user submits a start date and accounting method" in withController { controller =>
+            mockFetchProperty(Some(testFullProperty))
+            mockSaveProperty(testFullProperty.copy(confirmed = true))(
+              Right(PostSubscriptionDetailsSuccessResponse)
+            )
 
-          val result: Future[Result] = await(controller.submit(isGlobalEdit = false)(subscriptionRequest))
+            val result: Future[Result] = await(controller.submit(isGlobalEdit = false)(subscriptionRequest))
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
+          }
+        }
+        "remove accounting method feature switch is enabled" when {
+          "the user submits a start date" in withController { controller =>
+            enable(RemoveAccountingMethod)
+            val testProperty = PropertyModel(startDate = Some(DateModel("10", "11", "2021")))
+            mockFetchProperty(Some(testProperty))
+            mockSaveProperty(testProperty.copy(confirmed = true))(
+              Right(PostSubscriptionDetailsSuccessResponse)
+            )
+
+            val result: Future[Result] = await(controller.submit(isGlobalEdit = false)(subscriptionRequest))
+
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
+          }
+          "the user submits a start date before limit" in withController { controller =>
+            enable(RemoveAccountingMethod)
+            val testProperty = PropertyModel(startDateBeforeLimit = Some(true))
+            mockFetchProperty(Some(testProperty))
+            mockSaveProperty(testProperty.copy(confirmed = true))(
+              Right(PostSubscriptionDetailsSuccessResponse)
+            )
+
+            val result: Future[Result] = await(controller.submit(isGlobalEdit = false)(subscriptionRequest))
+
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
+          }
         }
       }
 

@@ -19,6 +19,8 @@
 @import utilities.UserMatchingSessionUtil.ClientDetails
 @import utilities.AccountingPeriodUtil
 @import views.html.helpers.{SaveAndContinueButtonHelper, PageHeadingHelper}
+@import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
+@import config.featureswitch.FeatureSwitchingImpl
 
 
 @this(
@@ -26,7 +28,8 @@
         form: FormWithCSRF,
         govukSummaryList: GovukSummaryList,
         pageHeadingHelper: PageHeadingHelper,
-        saveAndContinueButtonHelper: SaveAndContinueButtonHelper
+        saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
+        featureSwitching: FeatureSwitchingImpl
 )
 
 @(
@@ -61,46 +64,16 @@
     )
 
     @govukSummaryList(SummaryList(
-        rows = Seq(
-            SummaryListRow(
-                key = Key(content = Text(messages("agent.property.check-your-answers.start-date.question"))),
-                value = Value(content = Text(
-                    if(viewModel.startDateBeforeLimit.contains(true) || viewModel.startDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))) {
-                        messages("agent.property.check-your-answers.start-date-before-limit.answer", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
-                    } else {
-                        startDate(viewModel.startDate)
-                    }
-                )),
-                actions = Some(Actions(
-                    items = Seq(
-                        ActionItem(
-                            href = controllers.agent.tasklist.ukproperty.routes.PropertyIncomeSourcesController.show(editMode = true, isGlobalEdit = isGlobalEdit).url,
-                            content = Text(
-                                if(viewModel.startDateBeforeLimit.contains(true) || viewModel.startDate.isDefined) {
-                                    messages("base.change")
-                                } else {
-                                    messages("base.add")
-                                }
-                            ),
-                            visuallyHiddenText = Some(messages("agent.property.check-your-answers.start-date.question"))
-                        )
-                    )
-                ))
-            ),
-            SummaryListRow(
-                key = Key(content = Text(messages("agent.property.check-your-answers.accounting-method.question"))),
-                value = Value(content = Text(accountingMethod(viewModel.accountingMethod))),
-                actions = Some(Actions(
-                    items = Seq(
-                        ActionItem(
-                            href = controllers.agent.tasklist.ukproperty.routes.PropertyIncomeSourcesController.show(editMode = true, isGlobalEdit = isGlobalEdit).url,
-                            content = Text(messages(if(viewModel.accountingMethod.isDefined) "base.change" else "base.add")),
-                            visuallyHiddenText = Some(messages("agent.property.check-your-answers.accounting-method.question"))
-                        )
-                    )
-                ))
+        rows = if(featureSwitching.isEnabled(RemoveAccountingMethod)) {
+            Seq(
+                startDateRow(controllers.agent.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show(editMode = true, isGlobalEdit = isGlobalEdit).url)
             )
-        )
+        } else {
+            Seq(
+                startDateRow(actionHref = controllers.agent.tasklist.ukproperty.routes.PropertyIncomeSourcesController.show(editMode = true, isGlobalEdit = isGlobalEdit).url),
+                accountingMethodRow
+            )
+        }
     ))
 
     @form(action = postAction) {
@@ -110,4 +83,49 @@
             saveAndReturnReference = Some("uk-property-check-your-answers")
         )
     }
+}
+
+@startDateRow(actionHref: String) = @{
+    SummaryListRow(
+        key = Key(content = Text(messages("agent.property.check-your-answers.start-date.question"))),
+        value = Value(content = Text(
+            if(viewModel.startDateBeforeLimit.contains(true) || viewModel.startDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))) {
+                messages("agent.property.check-your-answers.start-date-before-limit.answer", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
+            } else {
+                startDate(viewModel.startDate)
+            }
+        )),
+        actions = Some(Actions(
+            items = Seq(
+                ActionItem(
+                    href = actionHref,
+                    content = Text(
+                        if(viewModel.startDateBeforeLimit.contains(true) || viewModel.startDate.isDefined) {
+                            messages("base.change")
+                        } else {
+                            messages("base.add")
+                        }
+                    ),
+                    visuallyHiddenText = Some(messages("agent.property.check-your-answers.start-date.question"))
+                )
+            )
+        ))
+    )
+}
+
+@accountingMethodRow = @{
+    SummaryListRow(
+        key = Key(content = Text(messages("agent.property.check-your-answers.accounting-method.question"))),
+        value = Value(content = Text(accountingMethod(viewModel.accountingMethod))),
+        actions = Some(Actions(
+            items = Seq(
+                ActionItem(
+                    href = controllers.agent.tasklist.ukproperty.routes.PropertyIncomeSourcesController.show(editMode = true, isGlobalEdit = isGlobalEdit).url,
+                    content = Text(messages(if(viewModel.accountingMethod.isDefined) "base.change" else "base.add")),
+                    visuallyHiddenText = Some(messages("agent.property.check-your-answers.accounting-method.question"))
+                )
+            )
+        ))
+    )
+
 }
