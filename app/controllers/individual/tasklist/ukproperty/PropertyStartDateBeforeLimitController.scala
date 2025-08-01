@@ -25,6 +25,8 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import views.html.individual.tasklist.ukproperty.PropertyStartDateBeforeLimit
+import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
+import config.featureswitch.FeatureSwitching
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,7 +39,7 @@ class PropertyStartDateBeforeLimitController @Inject()(subscriptionDetailsServic
                                                        val authService: AuthService,
                                                        val auditingService: AuditingService)
                                                       (implicit mcc: MessagesControllerComponents,
-                                                       val ec: ExecutionContext) extends SignUpController {
+                                                       val ec: ExecutionContext) extends SignUpController with FeatureSwitching {
 
   def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
@@ -71,10 +73,12 @@ class PropertyStartDateBeforeLimitController @Inject()(subscriptionDetailsServic
               case Right(_) =>
                 answer match {
                   case Yes =>
-                    if (isEditMode || isGlobalEdit) {
-                      Redirect(routes.PropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit))
-                    } else {
-                      Redirect(routes.PropertyAccountingMethodController.show())
+                      if (isEditMode || isGlobalEdit) {
+                        Redirect(routes.PropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit))
+                      } else if (isEnabled(RemoveAccountingMethod)) {
+                        Redirect(routes.PropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit))
+                      } else {
+                      Redirect(routes.PropertyAccountingMethodController.show(isEditMode, isGlobalEdit))
                     }
                   case No =>
                     Redirect(routes.PropertyStartDateController.show(isEditMode, isGlobalEdit))

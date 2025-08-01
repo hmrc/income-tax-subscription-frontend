@@ -29,6 +29,8 @@ import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.ImplicitDateFormatter
 import views.html.individual.tasklist.ukproperty.PropertyStartDate
+import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
+import config.featureswitch.FeatureSwitching
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -42,7 +44,7 @@ class PropertyStartDateController @Inject()(view: PropertyStartDate,
                                             val appConfig: AppConfig,
                                             val languageUtils: LanguageUtils)
                                            (implicit val ec: ExecutionContext,
-                                            mcc: MessagesControllerComponents) extends SignUpController with ImplicitDateFormatter {
+                                            mcc: MessagesControllerComponents) extends SignUpController with ImplicitDateFormatter with FeatureSwitching {
 
   def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
@@ -73,6 +75,8 @@ class PropertyStartDateController @Inject()(view: PropertyStartDate,
               case Right(_) =>
                 if (isEditMode || isGlobalEdit) {
                   Redirect(routes.PropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit))
+                } else if (isEnabled(RemoveAccountingMethod)) {
+                    Redirect(routes.PropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit))
                 } else {
                   Redirect(routes.PropertyAccountingMethodController.show())
                 }
