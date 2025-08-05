@@ -75,9 +75,8 @@ class GetCompleteDetailsService @Inject()(subscriptionDetailsService: Subscripti
     if (selfEmployments.forall(_.confirmed) && ukPropertyBusiness.forall(_.confirmed && foreignPropertyBusiness.forall(_.confirmed))) {
       Try {
         val soleTraderBusinesses: Option[SoleTraderBusinesses] = {
-          selfEmploymentsAccountingMethod map { accountingMethod =>
-            SoleTraderBusinesses(
-              accountingMethod = accountingMethod,
+          Some(SoleTraderBusinesses(
+              accountingMethod = selfEmploymentsAccountingMethod,
               businesses = selfEmployments.map { selfEmploymentData =>
                 val selectedStartDateBeforeLimit: Boolean = selfEmploymentData.startDateBeforeLimit.contains(true)
                 val startDateIsBeforeLimit: Boolean = selfEmploymentData.businessStartDate.exists(_.startDate.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))
@@ -95,7 +94,7 @@ class GetCompleteDetailsService @Inject()(subscriptionDetailsService: Subscripti
                 )
               }
             )
-          }
+          )
         }
 
         val ukProperty: Option[UKProperty] = ukPropertyBusiness.map { property =>
@@ -108,7 +107,7 @@ class GetCompleteDetailsService @Inject()(subscriptionDetailsService: Subscripti
             } else {
               Some(property.startDate.get.toLocalDate)
             },
-            accountingMethod = property.accountingMethod.get
+            accountingMethod = property.accountingMethod
           )
         }
 
@@ -122,7 +121,7 @@ class GetCompleteDetailsService @Inject()(subscriptionDetailsService: Subscripti
             } else {
               Some(property.startDate.get.toLocalDate)
             },
-            accountingMethod = property.accountingMethod.get
+            accountingMethod = property.accountingMethod
           )
         }
 
@@ -157,7 +156,7 @@ object GetCompleteDetailsService {
                           )
 
   case class SoleTraderBusinesses(
-                                   accountingMethod: AccountingMethod,
+                                   accountingMethod: Option[AccountingMethod],
                                    businesses: Seq[SoleTraderBusiness]
                                  )
 
@@ -171,12 +170,12 @@ object GetCompleteDetailsService {
 
   case class UKProperty(
                          startDate: Option[LocalDate],
-                         accountingMethod: AccountingMethod
+                         accountingMethod: Option[AccountingMethod]
                        )
 
   case class ForeignProperty(
                               startDate: Option[LocalDate],
-                              accountingMethod: AccountingMethod
+                              accountingMethod: Option[AccountingMethod]
                             )
 
   case object GetCompleteDetailsFailure

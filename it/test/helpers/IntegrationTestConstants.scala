@@ -81,7 +81,7 @@ object IntegrationTestConstants {
 
   def testSoleTraderBusinesses(accountingYear: AccountingYear = Current): SoleTraderBusinesses = SoleTraderBusinesses(
     if (accountingYear == Current) AccountingPeriodUtil.getCurrentTaxYear else AccountingPeriodUtil.getNextTaxYear,
-    testAccountMethod,
+    Some(testAccountMethod),
     testSelfEmploymentData
   )
 
@@ -89,14 +89,14 @@ object IntegrationTestConstants {
     startDateBeforeLimit = None,
     if (accountingYear == Current) AccountingPeriodUtil.getCurrentTaxYear else AccountingPeriodUtil.getNextTaxYear,
     tradingStartDate,
-    testAccountMethod
+    Some(testAccountMethod)
   )
 
   def testOverseasProperty(accountingYear: AccountingYear = Current): OverseasProperty = OverseasProperty(
     startDateBeforeLimit = None,
     if (accountingYear == Current) AccountingPeriodUtil.getCurrentTaxYear else AccountingPeriodUtil.getNextTaxYear,
     tradingStartDate,
-    testAccountMethod
+    Some(testAccountMethod)
   )
 
   lazy val testSelfEmploymentData: Seq[SelfEmploymentData] =

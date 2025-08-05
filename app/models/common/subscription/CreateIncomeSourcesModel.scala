@@ -36,7 +36,7 @@ case class CreateIncomeSourcesModel(
 
 case class SoleTraderBusinesses(
                                  accountingPeriod: AccountingPeriodModel,
-                                 accountingMethod: AccountingMethod,
+                                 accountingMethod: Option[AccountingMethod],
                                  businesses: Seq[SelfEmploymentData]
                                )
 
@@ -48,7 +48,7 @@ case class UkProperty(
                        startDateBeforeLimit: Option[Boolean] = None,
                        accountingPeriod: AccountingPeriodModel,
                        tradingStartDate: DateModel,
-                       accountingMethod: AccountingMethod
+                       accountingMethod: Option[AccountingMethod]
                      )
 
 object UkProperty {
@@ -59,7 +59,7 @@ case class OverseasProperty(
                              startDateBeforeLimit: Option[Boolean] = None,
                              accountingPeriod: AccountingPeriodModel,
                              tradingStartDate: DateModel,
-                             accountingMethod: AccountingMethod
+                             accountingMethod: Option[AccountingMethod]
                            )
 
 object OverseasProperty {
@@ -158,7 +158,7 @@ object CreateIncomeSourcesModel {
         case (selfEmployments, Some(accountingMethod)) =>
           Some(SoleTraderBusinesses(
             accountingPeriod = accountingPeriod,
-            accountingMethod = accountingMethod.accountingMethod,
+            accountingMethod = Some(accountingMethod.accountingMethod),
             businesses = selfEmployments
           ))
       }
@@ -172,7 +172,7 @@ object CreateIncomeSourcesModel {
           Some(UkProperty(
             accountingPeriod = accountingPeriod,
             tradingStartDate = startDate,
-            accountingMethod = accountingMethod
+            accountingMethod = Some(accountingMethod)
           ))
 
         case (Some(_), None) =>
@@ -193,7 +193,7 @@ object CreateIncomeSourcesModel {
           Some(OverseasProperty(
             accountingPeriod = accountingPeriod,
             tradingStartDate = startDate,
-            accountingMethod = accountingMethod
+            accountingMethod = Some(accountingMethod)
           ))
 
         case (Some(_), None) =>

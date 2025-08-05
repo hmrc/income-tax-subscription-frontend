@@ -53,12 +53,12 @@ object TestConstants {
   lazy val agentServiceName: String = hmrcAsAgent
   lazy val testARN: String = new Generator().nextAtedUtr.utr //Not a valid ARN, for test purposes only
 
-  val testSoleTraderBusinessesThisYear = SoleTraderBusinesses(testAccountingPeriodThisYear, testAccountMethod, testSelfEmploymentData)
-  val testSoleTraderBusinessesNextYear = SoleTraderBusinesses(testAccountingPeriodNextYear, testAccountMethod, testSelfEmploymentData)
-  val testUkPropertyThisYear = UkProperty(startDateBeforeLimit = None, testAccountingPeriodThisYear, testValidStartDate, testAccountMethod)
-  val testUkPropertyNextYear = UkProperty(startDateBeforeLimit = None, testAccountingPeriodNextYear, testValidStartDate, testAccountMethod)
-  val testOverseasPropertyThisYear = OverseasProperty(startDateBeforeLimit = None, testAccountingPeriodThisYear, testValidStartDate, testAccountMethod)
-  val testOverseasPropertyNextYear = OverseasProperty(startDateBeforeLimit = None, testAccountingPeriodNextYear, testValidStartDate, testAccountMethod)
+  val testSoleTraderBusinessesThisYear = SoleTraderBusinesses(testAccountingPeriodThisYear, Some(testAccountMethod), testSelfEmploymentData)
+  val testSoleTraderBusinessesNextYear = SoleTraderBusinesses(testAccountingPeriodNextYear, Some(testAccountMethod), testSelfEmploymentData)
+  val testUkPropertyThisYear = UkProperty(startDateBeforeLimit = None, testAccountingPeriodThisYear, testValidStartDate, Some(testAccountMethod))
+  val testUkPropertyNextYear = UkProperty(startDateBeforeLimit = None, testAccountingPeriodNextYear, testValidStartDate, Some(testAccountMethod))
+  val testOverseasPropertyThisYear = OverseasProperty(startDateBeforeLimit = None, testAccountingPeriodThisYear, testValidStartDate, Some(testAccountMethod))
+  val testOverseasPropertyNextYear = OverseasProperty(startDateBeforeLimit = None, testAccountingPeriodNextYear, testValidStartDate, Some(testAccountMethod))
   lazy val businessStartDate = BusinessStartDate(DateModel("05", "04", "2017"))
 
   lazy val knownFactsRequest = KnownFactsRequest(
