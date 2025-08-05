@@ -17,6 +17,7 @@
 package views.individual.tasklist.addbusiness
 
 import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
+import config.featureswitch.FeatureSwitching
 import models.common.business._
 import models.common.{IncomeSources, OverseasPropertyModel, PropertyModel}
 import models.{Cash, DateModel}
@@ -30,7 +31,7 @@ import views.html.individual.tasklist.addbusiness.YourIncomeSourceToSignUp
 
 import java.time.format.DateTimeFormatter
 
-class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
+class YourIncomeSourceToSignUpViewSpec extends ViewSpec with FeatureSwitching {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -791,7 +792,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
       def completeAndConfirmedIncomeSources: IncomeSources = IncomeSources(completeAndConfirmedSelfEmployments, Some(Cash), completeAndConfirmedUKProperty, completeAndConfirmedForeignProperty)
       def completeAndConfirmedIncomeSourcesNoAccMethod: IncomeSources = IncomeSources(
-        completeAndConfirmedSelfEmployments, Some(Cash),
+        completeAndConfirmedSelfEmployments, None,
         completeAndConfirmedUKProperty.map(_.copy(accountingMethod = None)),
         completeAndConfirmedForeignProperty.map(_.copy(accountingMethod = None)))
 
@@ -815,29 +816,69 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           document.mainContent.selectNth("p", 2).text mustBe IndividualIncomeSource.selfEmploymentPara
         }
 
-        "has a sole trader business card" in new ViewTest(completeAndConfirmedIncomeSources) {
-          document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
-            title = "business trade",
-            cardActions = Seq(
-              SummaryListActionValues(
-                href = IndividualIncomeSource.soleTraderChangeLinkOne,
-                text = s"${IndividualIncomeSource.change} business name (business trade)",
-                visuallyHidden = s"business name (business trade)"
+        "when remove accounting method is disabled" should {
+          "has a sole trader business card" in new ViewTest(completeAndConfirmedIncomeSources) {
+            document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
+              title = "business trade",
+              cardActions = Seq(
+                SummaryListActionValues(
+                  href = IndividualIncomeSource.soleTraderChangeLinkOne,
+                  text = s"${IndividualIncomeSource.change} business name (business trade)",
+                  visuallyHidden = s"business name (business trade)"
+                ),
+                SummaryListActionValues(
+                  href = IndividualIncomeSource.soleTraderRemoveLinkOne,
+                  text = s"${IndividualIncomeSource.remove} business name (business trade)",
+                  visuallyHidden = s"business name (business trade)"
+                )
               ),
-              SummaryListActionValues(
-                href = IndividualIncomeSource.soleTraderRemoveLinkOne,
-                text = s"${IndividualIncomeSource.remove} business name (business trade)",
-                visuallyHidden = s"business name (business trade)"
-              )
-            ),
-            rows = Seq(
-              SummaryListRowValues(
-                key = IndividualIncomeSource.soleTraderBusinessNameKey,
-                value = Some("business name"),
-                actions = Seq.empty
+              rows = Seq(
+                SummaryListRowValues(
+                  key = IndividualIncomeSource.soleTraderBusinessNameKey,
+                  value = Some("business name"),
+                  actions = Seq.empty
+                ),
+                SummaryListRowValues(
+                  key = IndividualIncomeSource.statusTagKey,
+                  value = Some(IndividualIncomeSource.completedTag),
+                  actions = Seq.empty
+                )
               )
             )
-          )
+          }
+        }
+
+        "when remove accounting method is enabled" should {
+          "has a sole trader business card" in new ViewTest(completeAndConfirmedIncomeSourcesNoAccMethod) {
+            enable(RemoveAccountingMethod)
+            document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
+              title = "business trade",
+              cardActions = Seq(
+                SummaryListActionValues(
+                  href = IndividualIncomeSource.soleTraderChangeLinkOne,
+                  text = s"${IndividualIncomeSource.change} business name (business trade)",
+                  visuallyHidden = s"business name (business trade)"
+                ),
+                SummaryListActionValues(
+                  href = IndividualIncomeSource.soleTraderRemoveLinkOne,
+                  text = s"${IndividualIncomeSource.remove} business name (business trade)",
+                  visuallyHidden = s"business name (business trade)"
+                )
+              ),
+              rows = Seq(
+                SummaryListRowValues(
+                  key = IndividualIncomeSource.soleTraderBusinessNameKey,
+                  value = Some("business name"),
+                  actions = Seq.empty
+                ),
+                SummaryListRowValues(
+                  key = IndividualIncomeSource.statusTagKey,
+                  value = Some(IndividualIncomeSource.completedTag),
+                  actions = Seq.empty
+                )
+              )
+            )
+          }
         }
 
         "has an add business link" in new ViewTest(completeAndConfirmedIncomeSources) {

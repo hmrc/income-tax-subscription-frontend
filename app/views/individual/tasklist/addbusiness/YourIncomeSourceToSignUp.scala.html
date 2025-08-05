@@ -152,9 +152,9 @@
                 ),
             SummaryListRow(
                 key = Key(content = Text(messages("base.status.label"))),
-                value = Value(statusTag(business.isComplete && incomeSources.selfEmploymentAccountingMethod.isDefined && business.confirmed)),
+                value = Value(statusTag(business.isComplete && business.confirmed && (featureSwitching.isEnabled(RemoveAccountingMethod) || incomeSources.selfEmploymentAccountingMethod.isDefined))),
                 actions = maybeStatusTagAction(
-                    isComplete = business.isComplete && incomeSources.selfEmploymentAccountingMethod.isDefined,
+                    isComplete = business.isComplete && (featureSwitching.isEnabled(RemoveAccountingMethod) || incomeSources.selfEmploymentAccountingMethod.isDefined),
                     isConfirmed = business.confirmed,
                     href = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${business.id}&isEditMode=true",
                     visuallyHidden = business.businessName.map(_.businessName)
