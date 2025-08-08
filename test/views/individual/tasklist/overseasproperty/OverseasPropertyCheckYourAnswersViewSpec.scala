@@ -54,55 +54,57 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec with FeatureSwit
       )
     }
 
-    "display a summary of answers" when {
-      "all data is missing" when {
-        "not in edit mode" in {
-          document(viewModel = emptyOverseasProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-            startDateBeforeLimitRow(None),
-            accountingMethodRow(None)
-          ))
+    "remove accounting method feature switch is disabled" should {
+      "display a summary of answers" when {
+        "all data is missing" when {
+          "not in edit mode" in {
+            document(viewModel = emptyOverseasProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+              startDateBeforeLimitRow(None),
+              accountingMethodRow(None)
+            ))
+          }
+          "in global edit mode" in {
+            document(viewModel = emptyOverseasProperty, isGlobalEdit = true).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+              startDateBeforeLimitRow(None, globalEditMode = true),
+              accountingMethodRow(None, globalEditMode = true)
+            ))
+          }
         }
-        "in global edit mode" in {
-          document(viewModel = emptyOverseasProperty, isGlobalEdit = true).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-            startDateBeforeLimitRow(None, globalEditMode = true),
-            accountingMethodRow(None, globalEditMode = true)
-          ))
-        }
-      }
-      "data is complete" when {
-        "the start date before limit was answered with 'Yes'" in {
-          document(viewModel = completeProperty.copy(startDateBeforeLimit = Some(true))).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-            startDateBeforeLimitRow(Some(OverseasPropertyCheckYourAnswers.beforeStartDateLimit)),
-            accountingMethodRow(Some(OverseasPropertyCheckYourAnswers.cash))
-          ))
-        }
-        "the start date before limit was answered with 'No' and no start date was provided" in {
-          document(
-            viewModel = completeProperty.copy(startDateBeforeLimit = Some(false), startDate = None)
-          ).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-            startDateBeforeLimitRow(None),
-            accountingMethodRow(Some(OverseasPropertyCheckYourAnswers.cash))
-          ))
-        }
-        "the start date before limit was answered with 'No' and the stored start date is after the limit" in {
-          document(
-            viewModel = completeProperty.copy(startDateBeforeLimit = Some(false), startDate = Some(limitDate))
-          ).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-            startDateBeforeLimitRow(Some(limitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy")))),
-            accountingMethodRow(Some(OverseasPropertyCheckYourAnswers.cash))
-          ))
-        }
-        "the start date before limit was answered with 'No' but there is a stored start date before the limit" in {
-          document(
-            viewModel = completeProperty.copy(startDateBeforeLimit = Some(false), startDate = Some(olderThanLimitDate))
-          ).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-            startDateBeforeLimitRow(Some(OverseasPropertyCheckYourAnswers.beforeStartDateLimit)),
-            accountingMethodRow(Some(OverseasPropertyCheckYourAnswers.cash))
-          ))
+        "data is complete" when {
+          "the start date before limit was answered with 'Yes'" in {
+            document(viewModel = completeProperty.copy(startDateBeforeLimit = Some(true))).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+              startDateBeforeLimitRow(Some(OverseasPropertyCheckYourAnswers.beforeStartDateLimit)),
+              accountingMethodRow(Some(OverseasPropertyCheckYourAnswers.cash))
+            ))
+          }
+          "the start date before limit was answered with 'No' and no start date was provided" in {
+            document(
+              viewModel = completeProperty.copy(startDateBeforeLimit = Some(false), startDate = None)
+            ).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+              startDateBeforeLimitRow(None),
+              accountingMethodRow(Some(OverseasPropertyCheckYourAnswers.cash))
+            ))
+          }
+          "the start date before limit was answered with 'No' and the stored start date is after the limit" in {
+            document(
+              viewModel = completeProperty.copy(startDateBeforeLimit = Some(false), startDate = Some(limitDate))
+            ).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+              startDateBeforeLimitRow(Some(limitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy")))),
+              accountingMethodRow(Some(OverseasPropertyCheckYourAnswers.cash))
+            ))
+          }
+          "the start date before limit was answered with 'No' but there is a stored start date before the limit" in {
+            document(
+              viewModel = completeProperty.copy(startDateBeforeLimit = Some(false), startDate = Some(olderThanLimitDate))
+            ).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+              startDateBeforeLimitRow(Some(OverseasPropertyCheckYourAnswers.beforeStartDateLimit)),
+              accountingMethodRow(Some(OverseasPropertyCheckYourAnswers.cash))
+            ))
+          }
         }
       }
 
-      "feature switch is enabled" when {
+      "remove accounting method feature switch is enabled" when {
         "all data is missing" when {
           "not in edit mode" in {
             enable(RemoveAccountingMethod)

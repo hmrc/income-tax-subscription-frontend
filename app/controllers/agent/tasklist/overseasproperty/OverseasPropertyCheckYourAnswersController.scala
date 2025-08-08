@@ -81,6 +81,8 @@ class OverseasPropertyCheckYourAnswersController @Inject()(identify: IdentifierA
       controllers.agent.routes.GlobalCheckYourAnswersController.show.url
     } else if (isEditMode || isGlobalEdit) {
       controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
+    } else if (isEnabled(RemoveAccountingMethod)) {
+      controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateBeforeLimitController.show().url
     } else {
       controllers.agent.tasklist.overseasproperty.routes.IncomeSourcesOverseasPropertyController.show().url
     }
