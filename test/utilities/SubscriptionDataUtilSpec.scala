@@ -40,7 +40,7 @@ class SubscriptionDataUtilSpec extends PlaySpec {
           nino = testNino,
           soleTraderBusinesses = Some(SoleTraderBusinesses(
             accountingPeriod = getCurrentTaxYear,
-            accountingMethod = Cash,
+            accountingMethod = Some(Cash),
             businesses = Seq(
               SelfEmploymentData(
                 id = "test-id",
@@ -57,13 +57,13 @@ class SubscriptionDataUtilSpec extends PlaySpec {
             startDateBeforeLimit = Some(true),
             accountingPeriod = getCurrentTaxYear,
             tradingStartDate = DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit),
-            accountingMethod = Cash
+            accountingMethod = Some(Cash)
           )),
           overseasProperty = Some(OverseasProperty(
             startDateBeforeLimit = Some(true),
             accountingPeriod = getCurrentTaxYear,
             tradingStartDate = DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit),
-            accountingMethod = Cash
+            accountingMethod = Some(Cash)
           ))
         )
       }
@@ -72,7 +72,7 @@ class SubscriptionDataUtilSpec extends PlaySpec {
           nino = testNino,
           soleTraderBusinesses = Some(SoleTraderBusinesses(
             accountingPeriod = getCurrentTaxYear,
-            accountingMethod = Cash,
+            accountingMethod = Some(Cash),
             businesses = Seq(
               SelfEmploymentData(
                 id = "test-id",
@@ -89,13 +89,13 @@ class SubscriptionDataUtilSpec extends PlaySpec {
             startDateBeforeLimit = Some(false),
             accountingPeriod = getCurrentTaxYear,
             tradingStartDate = DateModel.dateConvert(LocalDate.now),
-            accountingMethod = Cash
+            accountingMethod = Some(Cash)
           )),
           overseasProperty = Some(OverseasProperty(
             startDateBeforeLimit = Some(false),
             accountingPeriod = getCurrentTaxYear,
             tradingStartDate = DateModel.dateConvert(LocalDate.now),
-            accountingMethod = Cash
+            accountingMethod = Some(Cash)
           ))
         )
       }
@@ -117,7 +117,7 @@ class SubscriptionDataUtilSpec extends PlaySpec {
   def completeDetails(hasStartDate: Boolean): GetCompleteDetailsService.CompleteDetails = GetCompleteDetailsService.CompleteDetails(
     incomeSources = GetCompleteDetailsService.IncomeSources(
       soleTraderBusinesses = Some(GetCompleteDetailsService.SoleTraderBusinesses(
-        accountingMethod = Cash,
+        accountingMethod = Some(Cash),
         businesses = Seq(GetCompleteDetailsService.SoleTraderBusiness(
           id = "test-id",
           name = "test name",
@@ -129,13 +129,13 @@ class SubscriptionDataUtilSpec extends PlaySpec {
       ukProperty = Some(
         GetCompleteDetailsService.UKProperty(
           startDate = if (hasStartDate) Some(LocalDate.now) else None,
-          accountingMethod = Cash
+          accountingMethod = Some(Cash)
         )
       ),
       foreignProperty = Some(
         GetCompleteDetailsService.ForeignProperty(
           startDate = if (hasStartDate) Some(LocalDate.now) else None,
-          accountingMethod = Cash
+          accountingMethod = Some(Cash)
         )
       )
     ),

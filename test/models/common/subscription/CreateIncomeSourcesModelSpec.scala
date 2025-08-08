@@ -35,7 +35,7 @@ class CreateIncomeSourcesModelSpec extends PlaySpec with MustMatchers {
 
   val fullSoleTraderBusinesses: SoleTraderBusinesses = SoleTraderBusinesses(
     accountingPeriod = AccountingPeriodModel(now, now),
-    accountingMethod = Cash,
+    accountingMethod = Some(Cash),
     businesses = Seq(
       SelfEmploymentData(
         id = "testBusinessId",
@@ -53,13 +53,13 @@ class CreateIncomeSourcesModelSpec extends PlaySpec with MustMatchers {
   val fullUkProperty: UkProperty = UkProperty(
     accountingPeriod = AccountingPeriodModel(now, now),
     tradingStartDate = LocalDate.now,
-    accountingMethod = Accruals
+    accountingMethod = Some(Accruals)
   )
 
   val fullOverseasProperty: OverseasProperty = OverseasProperty(
     accountingPeriod = AccountingPeriodModel(now, now),
     tradingStartDate = LocalDate.now,
-    accountingMethod = Cash
+    accountingMethod = Some(Cash)
   )
 
   val fullCreateIncomeSourcesModel: CreateIncomeSourcesModel = CreateIncomeSourcesModel(
@@ -241,10 +241,6 @@ class CreateIncomeSourcesModelSpec extends PlaySpec with MustMatchers {
         Json.fromJson[SoleTraderBusinesses](fullSoleTraderBusinessesJson - "accountingPeriod") mustBe
           JsError(JsPath \ "accountingPeriod", "error.path.missing")
       }
-      "accountingMethod is missing from the json" in {
-        Json.fromJson[SoleTraderBusinesses](fullSoleTraderBusinessesJson - "accountingMethod") mustBe
-          JsError(JsPath \ "accountingMethod", "error.path.missing")
-      }
       "businesses is missing from the json" in {
         Json.fromJson[SoleTraderBusinesses](fullSoleTraderBusinessesJson - "businesses") mustBe
           JsError(JsPath \ "businesses", "error.path.missing")
@@ -265,9 +261,6 @@ class CreateIncomeSourcesModelSpec extends PlaySpec with MustMatchers {
       "tradingStartDate is missing from the json" in {
         Json.fromJson[UkProperty](fullUkPropertyJson - "tradingStartDate") mustBe JsError(JsPath \ "tradingStartDate", "error.path.missing")
       }
-      "accountingMethod is missing from the json" in {
-        Json.fromJson[UkProperty](fullUkPropertyJson - "accountingMethod") mustBe JsError(JsPath \ "accountingMethod", "error.path.missing")
-      }
     }
   }
 
@@ -283,9 +276,6 @@ class CreateIncomeSourcesModelSpec extends PlaySpec with MustMatchers {
       }
       "tradingStartDate is missing from the json" in {
         Json.fromJson[OverseasProperty](fullOverseasPropertyJson - "tradingStartDate") mustBe JsError(JsPath \ "tradingStartDate", "error.path.missing")
-      }
-      "accountingMethod is missing from the json" in {
-        Json.fromJson[OverseasProperty](fullOverseasPropertyJson - "accountingMethod") mustBe JsError(JsPath \ "accountingMethod", "error.path.missing")
       }
     }
   }

@@ -81,7 +81,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
               OK,
               Json.toJson(testFullPropertyModel.copy(
                 startDateBeforeLimit = Some(true),
-                accountingMethod = Some(testUkProperty().accountingMethod),
+                accountingMethod = testUkProperty().accountingMethod,
                 startDate = Some(testUkProperty().tradingStartDate)
               ))
             )
@@ -90,7 +90,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
               OK,
               Json.toJson(testFullOverseasPropertyModel.copy(
                 startDateBeforeLimit = Some(true),
-                accountingMethod = Some(testOverseasProperty().accountingMethod),
+                accountingMethod = testOverseasProperty().accountingMethod,
                 startDate = Some(testOverseasProperty().tradingStartDate)
               ))
             )
@@ -142,7 +142,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
               OK,
               Json.toJson(testFullPropertyModel.copy(
                 startDateBeforeLimit = Some(true),
-                accountingMethod = Some(testUkProperty().accountingMethod),
+                accountingMethod = testUkProperty().accountingMethod,
                 startDate = Some(testUkProperty().tradingStartDate)
               ))
             )
@@ -151,7 +151,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
               OK,
               Json.toJson(testFullOverseasPropertyModel.copy(
                 startDateBeforeLimit = Some(true),
-                accountingMethod = Some(testOverseasProperty().accountingMethod),
+                accountingMethod = testOverseasProperty().accountingMethod,
                 startDate = Some(testOverseasProperty().tradingStartDate)
               ))
             )
@@ -186,7 +186,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
               OK,
               Json.toJson(testFullPropertyModel.copy(
                 startDateBeforeLimit = Some(true),
-                accountingMethod = Some(testUkProperty(Next).accountingMethod),
+                accountingMethod = testUkProperty().accountingMethod,
                 startDate = Some(testUkProperty(Next).tradingStartDate)
               ))
             )
@@ -195,7 +195,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
               OK,
               Json.toJson(testFullOverseasPropertyModel.copy(
                 startDateBeforeLimit = Some(true),
-                accountingMethod = Some(testOverseasProperty(Next).accountingMethod),
+                accountingMethod = testOverseasProperty().accountingMethod,
                 startDate = Some(testOverseasProperty(Next).tradingStartDate)
               ))
             )
@@ -246,7 +246,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
               Property,
               OK,
               Json.toJson(testFullPropertyModel.copy(
-                accountingMethod = Some(testUkProperty().accountingMethod),
+                accountingMethod = testUkProperty().accountingMethod,
                 startDate = Some(testUkProperty().tradingStartDate)
               ))
             )
@@ -254,7 +254,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
               OverseasProperty,
               OK,
               Json.toJson(testFullOverseasPropertyModel.copy(
-                accountingMethod = Some(testOverseasProperty().accountingMethod),
+                accountingMethod = testOverseasProperty().accountingMethod,
                 startDate = Some(testOverseasProperty().tradingStartDate)
               ))
             )
@@ -289,7 +289,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             Property,
             OK,
             Json.toJson(testFullPropertyModel.copy(
-              accountingMethod = Some(testUkProperty().accountingMethod),
+              accountingMethod = testUkProperty().accountingMethod,
               startDate = Some(testUkProperty().tradingStartDate)
             ))
           )
@@ -297,7 +297,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             OverseasProperty,
             OK,
             Json.toJson(testFullOverseasPropertyModel.copy(
-              accountingMethod = Some(testOverseasProperty().accountingMethod),
+              accountingMethod = testOverseasProperty().accountingMethod,
               startDate = Some(testOverseasProperty().tradingStartDate)
             ))
           )
@@ -321,7 +321,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             Property,
             OK,
             Json.toJson(testFullPropertyModel.copy(
-              accountingMethod = Some(testUkProperty().accountingMethod),
+              accountingMethod = testUkProperty().accountingMethod,
               startDate = Some(testUkProperty().tradingStartDate)
             ))
           )
@@ -329,7 +329,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             OverseasProperty,
             OK,
             Json.toJson(testFullOverseasPropertyModel.copy(
-              accountingMethod = Some(testOverseasProperty().accountingMethod),
+              accountingMethod = testOverseasProperty().accountingMethod,
               startDate = Some(testOverseasProperty().tradingStartDate)
             ))
           )
@@ -366,7 +366,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             Property,
             OK,
             Json.toJson(testFullPropertyModel.copy(
-              accountingMethod = Some(testUkProperty().accountingMethod),
+              accountingMethod = testUkProperty().accountingMethod,
               startDate = Some(testUkProperty().tradingStartDate)
             ))
           )
@@ -374,7 +374,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             OverseasProperty,
             OK,
             Json.toJson(testFullOverseasPropertyModel.copy(
-              accountingMethod = Some(testOverseasProperty().accountingMethod),
+              accountingMethod = testOverseasProperty().accountingMethod,
               startDate = Some(testOverseasProperty().tradingStartDate)
             ))
           )
@@ -413,7 +413,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             Property,
             OK,
             Json.toJson(testFullPropertyModel.copy(
-              accountingMethod = Some(testUkProperty().accountingMethod),
+              accountingMethod = testUkProperty().accountingMethod,
               startDate = Some(testUkProperty().tradingStartDate)
             ))
           )
@@ -421,7 +421,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             OverseasProperty,
             OK,
             Json.toJson(testFullOverseasPropertyModel.copy(
-              accountingMethod = Some(testOverseasProperty().accountingMethod),
+              accountingMethod = testOverseasProperty().accountingMethod,
               startDate = Some(testOverseasProperty().tradingStartDate)
             ))
           )

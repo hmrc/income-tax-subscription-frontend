@@ -382,6 +382,11 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
       Succeeded
     }
 
+    def mustNotHaveSummaryListRow(key: String): Assertion = {
+      val summaryListRows = element.selectHead(".govuk-summary-list").select(".govuk-summary-list__row")
+      summaryListRows.contains(key) mustBe false
+    }
+
     //scalastyle:off
     def mustHaveTaskList(selector: String)(idPrefix: String, items: Seq[TaskListItemValues]): Assertion = {
       val checkpoint: Checkpoint = new Checkpoint()
