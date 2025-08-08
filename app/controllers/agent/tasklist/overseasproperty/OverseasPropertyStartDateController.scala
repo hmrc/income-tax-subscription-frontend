@@ -27,6 +27,9 @@ import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
 import utilities.ImplicitDateFormatter
 import views.html.agent.tasklist.overseasproperty.OverseasPropertyStartDate
+import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
+import config.featureswitch.FeatureSwitching
+import config.AppConfig
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,8 +40,9 @@ class OverseasPropertyStartDateController @Inject()(identify: IdentifierAction,
                                                     subscriptionDetailsService: SubscriptionDetailsService,
                                                     view: OverseasPropertyStartDate,
                                                     implicitDateFormatter: ImplicitDateFormatter)
+                                                   (val appConfig: AppConfig)
                                                    (implicit val ec: ExecutionContext,
-                                                    mcc: MessagesControllerComponents) extends SignUpBaseController {
+                                                    mcc: MessagesControllerComponents) extends SignUpBaseController with FeatureSwitching {
   def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     for {
       startDate <- subscriptionDetailsService.fetchForeignPropertyStartDate(request.reference)
@@ -69,8 +73,12 @@ class OverseasPropertyStartDateController @Inject()(identify: IdentifierAction,
     )
   }
 
-  private def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean): String = {
-    routes.IncomeSourcesOverseasPropertyController.show(editMode = isEditMode, isGlobalEdit = isGlobalEdit).url
+  def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean): String = {
+    if (isEnabled(RemoveAccountingMethod)) {
+      routes.OverseasPropertyStartDateBeforeLimitController.show(isEditMode, isGlobalEdit).url
+    } else {
+      routes.IncomeSourcesOverseasPropertyController.show(editMode = isEditMode, isGlobalEdit = isGlobalEdit).url
+    }
   }
 
   private def form(implicit request: Request[_]): Form[DateModel] = {
