@@ -868,6 +868,12 @@ agent.foreign-property.income-sources.accounting-method.radio.cash              
 agent.foreign-property.income-sources.accounting-method.radio.accruals              = Traditional accounting
 agent.error.overseas.property.income-source.start-date-before-limit.invalid         = Select ‘Yes’ if your client started getting income from foreign property before 6 April {0}
 
+# Agent Overseas Property Start Date Before Limit
+agent.overseas.property.start-date-before-limit.title           = Your client’s foreign property
+agent.overseas.property.start-date-before-limit.caption         = {0} | {1}
+agent.overseas.property.start-date-before-limit.heading         = Your client’s foreign property
+agent.overseas.property.start-date-before-limit.legend          = Did this income start before 6 April {0}?
+agent.error.overseas.property.start-date-before-limit.invalid   = Select ‘Yes’ if your client started getting income from foreign property before 6 April {0}
 
 ## Business Name
 agent.business.name.title                                       = Business name

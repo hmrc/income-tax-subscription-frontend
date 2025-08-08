@@ -19,7 +19,6 @@ package controllers.agent.tasklist.overseasproperty
 import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
 import config.featureswitch.FeatureSwitching
 import config.{AppConfig, MockConfig}
-import config.MockConfig
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.{PostSubscriptionDetailsSuccessResponse, UnexpectedStatusFailure}
 import controllers.ControllerSpec
 import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}
@@ -41,6 +40,11 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerSpec
   with MockOverseasPropertyCheckYourAnswers
   with FeatureSwitching {
 
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(RemoveAccountingMethod)
+  }
+
   "show" when {
     "no property data was returned" should {
       "throw an exception" in {
@@ -54,7 +58,8 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerSpec
     }
     "property data was returned" should {
       "return OK with the page contents" when {
-        "not in edit mode" in {
+        "not in edit mode" when {
+          "remove accounting feature switch is disabled" in {
             mockFetchOverseasProperty(Some(fullOverseasProperty))
             mockOverseasPropertyCheckYourAnswers(
               viewModel = fullOverseasProperty,
@@ -69,6 +74,23 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerSpec
             status(result) mustBe OK
             contentType(result) mustBe Some(HTML)
           }
+          "remove accounting method feature switch is enabled" in {
+            enable(RemoveAccountingMethod)
+            mockFetchOverseasProperty(Some(fullOverseasProperty))
+            mockOverseasPropertyCheckYourAnswers(
+              viewModel = fullOverseasProperty,
+              postAction = routes.OverseasPropertyCheckYourAnswersController.submit(),
+              isGlobalEdit = false,
+              backUrl = routes.OverseasPropertyStartDateBeforeLimitController.show().url,
+              clientDetails = clientDetails
+            )
+
+            val result: Future[Result] = TestOverseasPropertyCheckYourAnswersController.show(isEditMode = false, isGlobalEdit = false)(request)
+
+            status(result) mustBe OK
+            contentType(result) mustBe Some(HTML)
+          }
+        }
         "in edit mode" in {
           mockFetchOverseasProperty(Some(fullOverseasProperty))
           mockOverseasPropertyCheckYourAnswers(
@@ -121,86 +143,166 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerSpec
   }
 
   "submit" when {
-    "no property data was returned" should {
-      "throw an exception" in {
-        mockFetchOverseasProperty(None)
-
-        val result: Future[Result] = TestOverseasPropertyCheckYourAnswersController.submit(isGlobalEdit = false)(request)
-
-        intercept[InternalServerException](await(result))
-          .message mustBe "[OverseasPropertyCheckYourAnswersController] - Could not retrieve overseas property details"
-      }
-    }
-    "property data was returned" which {
-      "is missing the accounting method" should {
-        "redirect to the your income sources page" in {
-          disable(RemoveAccountingMethod)
-          mockFetchOverseasProperty(Some(fullOverseasProperty.copy(accountingMethod = None)))
-
-          val result: Future[Result] = TestOverseasPropertyCheckYourAnswersController.submit(isGlobalEdit = false)(request)
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
-        }
-      }
-      "is missing the start date" should {
-        "redirect to the your income sources page" in {
-          mockFetchOverseasProperty(Some(fullOverseasProperty.copy(startDate = None)))
-
-          val result: Future[Result] = TestOverseasPropertyCheckYourAnswersController.submit(isGlobalEdit = false)(request)
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
-        }
-      }
-    }
-    "property data was returned and is complete" should {
-      "save the property as confirmed and redirect to the global check your answers" when {
-        "in global edit mode" in {
-          mockFetchOverseasProperty(Some(fullOverseasProperty))
-          mockSaveOverseasProperty(fullOverseasProperty.copy(confirmed = true))(Right(PostSubscriptionDetailsSuccessResponse))
-
-          val result: Future[Result] = TestOverseasPropertyCheckYourAnswersController.submit(isGlobalEdit = true)(request)
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.agent.routes.GlobalCheckYourAnswersController.show.url)
-        }
-      }
-      "save the property as confirmed and redirect to the your income sources" when {
-        "not in edit mode" in {
-          mockFetchOverseasProperty(Some(fullOverseasProperty))
-          mockSaveOverseasProperty(fullOverseasProperty.copy(confirmed = true))(Right(PostSubscriptionDetailsSuccessResponse))
-
-          val result: Future[Result] = TestOverseasPropertyCheckYourAnswersController.submit(isGlobalEdit = false)(request)
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
-        }
-      }
-      "throw an exception" when {
-        "a failure occured when saving the confirmed property" in {
-          mockFetchOverseasProperty(Some(fullOverseasProperty))
-          mockSaveOverseasProperty(fullOverseasProperty.copy(confirmed = true))(Left(UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
+    "remove accounting method feature switch is disabled" when {
+      "no property data was returned" should {
+        "throw an exception" in {
+          mockFetchOverseasProperty(None)
 
           val result: Future[Result] = TestOverseasPropertyCheckYourAnswersController.submit(isGlobalEdit = false)(request)
 
           intercept[InternalServerException](await(result))
-            .message mustBe "[OverseasPropertyCheckYourAnswersController][submit] - Could not confirm overseas property"
+            .message mustBe "[OverseasPropertyCheckYourAnswersController] - Could not retrieve overseas property details"
+        }
+      }
+      "property data was returned" which {
+        "is missing the accounting method" should {
+          "redirect to the your income sources page" in {
+            disable(RemoveAccountingMethod)
+            mockFetchOverseasProperty(Some(fullOverseasProperty.copy(accountingMethod = None)))
+
+            val result: Future[Result] = TestOverseasPropertyCheckYourAnswersController.submit(isGlobalEdit = false)(request)
+
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
+          }
+        }
+        "is missing the start date" should {
+          "redirect to the your income sources page" in {
+            mockFetchOverseasProperty(Some(fullOverseasProperty.copy(startDate = None)))
+
+            val result: Future[Result] = TestOverseasPropertyCheckYourAnswersController.submit(isGlobalEdit = false)(request)
+
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
+          }
+        }
+      }
+      "property data was returned and is complete" should {
+        "save the property as confirmed and redirect to the global check your answers" when {
+          "in global edit mode" in {
+            mockFetchOverseasProperty(Some(fullOverseasProperty))
+            mockSaveOverseasProperty(fullOverseasProperty.copy(confirmed = true))(Right(PostSubscriptionDetailsSuccessResponse))
+
+            val result: Future[Result] = TestOverseasPropertyCheckYourAnswersController.submit(isGlobalEdit = true)(request)
+
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(controllers.agent.routes.GlobalCheckYourAnswersController.show.url)
+          }
+        }
+        "save the property as confirmed and redirect to the your income sources" when {
+          "not in edit mode" in {
+            mockFetchOverseasProperty(Some(fullOverseasProperty))
+            mockSaveOverseasProperty(fullOverseasProperty.copy(confirmed = true))(Right(PostSubscriptionDetailsSuccessResponse))
+
+            val result: Future[Result] = TestOverseasPropertyCheckYourAnswersController.submit(isGlobalEdit = false)(request)
+
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
+          }
+        }
+        "throw an exception" when {
+          "a failure occured when saving the confirmed property" in {
+            mockFetchOverseasProperty(Some(fullOverseasProperty))
+            mockSaveOverseasProperty(fullOverseasProperty.copy(confirmed = true))(Left(UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
+
+            val result: Future[Result] = TestOverseasPropertyCheckYourAnswersController.submit(isGlobalEdit = false)(request)
+
+            intercept[InternalServerException](await(result))
+              .message mustBe "[OverseasPropertyCheckYourAnswersController][submit] - Could not confirm overseas property"
+          }
+        }
+      }
+    }
+    "remove accounting method feature switch is enabled" when {
+      "no overseas property data was returned" should {
+        "throw an exception" in {
+          enable(RemoveAccountingMethod)
+          mockFetchOverseasProperty(None)
+
+          val result: Future[Result] = TestOverseasPropertyCheckYourAnswersController.submit(isGlobalEdit = false)(request)
+
+          intercept[InternalServerException](await(result))
+            .message mustBe "[OverseasPropertyCheckYourAnswersController] - Could not retrieve overseas property details"
+        }
+      }
+      "incomplete overseas property data is returned" which {
+        "is missing the start date" should {
+          "redirect to the your income sources page" in {
+            enable(RemoveAccountingMethod)
+            mockFetchOverseasProperty(Some(OverseasPropertyModel(startDateBeforeLimit = Some(false))))
+
+            val result: Future[Result] = TestOverseasPropertyCheckYourAnswersController.submit(isGlobalEdit = false)(request)
+
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
+          }
+        }
+        "is missing the start date before limit" should {
+          "redirect to the your income sources page" in {
+            enable(RemoveAccountingMethod)
+            mockFetchOverseasProperty(Some(OverseasPropertyModel(startDateBeforeLimit = Some(false))))
+
+            val result: Future[Result] = TestOverseasPropertyCheckYourAnswersController.submit(isGlobalEdit = false)(request)
+
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
+          }
+        }
+      }
+      "complete overseas property data is returned" should {
+        "save and confirm the overseas property and redirect to your income sources" when {
+          "not in edit mode" in {
+            enable(RemoveAccountingMethod)
+            val testOverseasProperty = OverseasPropertyModel(startDateBeforeLimit = Some(true))
+            mockFetchOverseasProperty(Some(testOverseasProperty))
+            mockSaveOverseasProperty(testOverseasProperty.copy(confirmed = true))(Right(PostSubscriptionDetailsSuccessResponse))
+
+            val result: Future[Result] = TestOverseasPropertyCheckYourAnswersController.submit(isGlobalEdit = false)(request)
+
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
+          }
+        }
+        "save and confirm the property and redirect to your income sources" when {
+          "in global edit mode" in {
+            enable(RemoveAccountingMethod)
+            val testOverseasProperty = OverseasPropertyModel(startDateBeforeLimit = Some(false), startDate = Some(DateModel("1", "1", "2025")))
+            mockFetchOverseasProperty(Some(testOverseasProperty))
+            mockSaveOverseasProperty(testOverseasProperty.copy(confirmed = true))(Right(PostSubscriptionDetailsSuccessResponse))
+
+            val result: Future[Result] = TestOverseasPropertyCheckYourAnswersController.submit(isGlobalEdit = true)(request)
+
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(controllers.agent.routes.GlobalCheckYourAnswersController.show.url)
+          }
+        }
+        "throw and exception" when {
+          "a failure ocurred when saving the confirmed overseas property" in {
+            enable(RemoveAccountingMethod)
+            val testOverseasProperty = OverseasPropertyModel(startDateBeforeLimit = Some(false), startDate = Some(DateModel("1", "1", "2025")))
+            mockFetchOverseasProperty(Some(testOverseasProperty))
+            mockSaveOverseasProperty(testOverseasProperty.copy(confirmed = true))(Left(UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
+
+            val result: Future[Result] = TestOverseasPropertyCheckYourAnswersController.submit(isGlobalEdit = false)(request)
+
+            intercept[InternalServerException](await(result))
+              .message mustBe "[OverseasPropertyCheckYourAnswersController][submit] - Could not confirm overseas property"
+          }
         }
       }
     }
   }
 
-  val appConfig: AppConfig = mock[AppConfig]
+    val appConfig: AppConfig = mock[AppConfig]
 
-  lazy val fullOverseasProperty: OverseasPropertyModel = OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("1", "1", "1980")))
+    lazy val fullOverseasProperty: OverseasPropertyModel = OverseasPropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("1", "1", "1980")))
 
-  object TestOverseasPropertyCheckYourAnswersController extends OverseasPropertyCheckYourAnswersController(
-    fakeIdentifierAction,
-    fakeConfirmedClientJourneyRefiner,
-    mockSubscriptionDetailsService,
-    mockView,
-    MockConfig
-  )
+    object TestOverseasPropertyCheckYourAnswersController extends OverseasPropertyCheckYourAnswersController(
+      fakeIdentifierAction,
+      fakeConfirmedClientJourneyRefiner,
+      mockSubscriptionDetailsService,
+      mockView,
+      MockConfig
+    )
 
-}
+  }
