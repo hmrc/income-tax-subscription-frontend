@@ -89,7 +89,7 @@ class PropertyModelSpec extends PlaySpec with FeatureSwitching with BeforeAndAft
       "return true when accounting method is None" when {
         "startDateBeforeLimit is defined and true" in {
           enable(RemoveAccountingMethod)
-          PropertyModel(startDateBeforeLimit = Some(true), accountingMethod = None).isComplete(featureSwitchEnabled = true) mustBe true
+          PropertyModel(startDateBeforeLimit = Some(true), accountingMethod = None).isComplete(removeAccountingMethod = true) mustBe true
         }
         "startDateBeforeLimit is defined and false and start date is defined" in {
           enable(RemoveAccountingMethod)
@@ -97,7 +97,7 @@ class PropertyModelSpec extends PlaySpec with FeatureSwitching with BeforeAndAft
             startDateBeforeLimit = Some(false),
             startDate = Some(dateModel),
             accountingMethod = None
-          ).isComplete(featureSwitchEnabled = true) mustBe true
+          ).isComplete(removeAccountingMethod = true) mustBe true
         }
         "start date is defined" in {
           enable(RemoveAccountingMethod)
@@ -105,47 +105,47 @@ class PropertyModelSpec extends PlaySpec with FeatureSwitching with BeforeAndAft
             startDateBeforeLimit = None,
             startDate = Some(dateModel),
             accountingMethod = None
-          ).isComplete(featureSwitchEnabled = true) mustBe true
+          ).isComplete(removeAccountingMethod = true) mustBe true
         }
       }
       "return false" when {
         "startDateBeforeLimit is defined and false and start date is not defined" in {
           enable(RemoveAccountingMethod)
-          PropertyModel(startDateBeforeLimit = Some(false)).isComplete(featureSwitchEnabled = true) mustBe false
+          PropertyModel(startDateBeforeLimit = Some(false)).isComplete(removeAccountingMethod = true) mustBe false
         }
         "startDateBeforeLimit is not defined and start date is not defined" in {
           enable(RemoveAccountingMethod)
-          PropertyModel().isComplete(featureSwitchEnabled = true) mustBe false
+          PropertyModel().isComplete(removeAccountingMethod = true) mustBe false
         }
       }
     }
     "the remove accounting method feature switch is disabled" must {
       "return true" when {
         "startDateBeforeLimit is defined and true and accounting method is defined" in {
-          PropertyModel(startDateBeforeLimit = Some(true), accountingMethod = Some(Cash)).isComplete() mustBe true
+          PropertyModel(startDateBeforeLimit = Some(true), accountingMethod = Some(Cash)).isComplete(false) mustBe true
         }
         "startDateBeforeLimit is defined and false, start date and accounting method are defined" in {
-          PropertyModel(startDateBeforeLimit = Some(false), accountingMethod = Some(Cash), startDate = Some(dateModel)).isComplete() mustBe true
+          PropertyModel(startDateBeforeLimit = Some(false), accountingMethod = Some(Cash), startDate = Some(dateModel)).isComplete(false) mustBe true
         }
         "startDateBeforeLimit is not defined, start date and accounting method are defined" in {
-          PropertyModel(accountingMethod = Some(Cash), startDate = Some(dateModel)).isComplete() mustBe true
+          PropertyModel(accountingMethod = Some(Cash), startDate = Some(dateModel)).isComplete(false) mustBe true
         }
       }
       "return false" when {
         "startDateBeforeLimit is defined and true and accounting method is not defined" in {
-          PropertyModel(startDateBeforeLimit = Some(true)).isComplete() mustBe false
+          PropertyModel(startDateBeforeLimit = Some(true)).isComplete(false) mustBe false
         }
         "startDateBeforeLimit is defined and false, start date is not defined" in {
-          PropertyModel(startDateBeforeLimit = Some(false), accountingMethod = Some(Cash)).isComplete() mustBe false
+          PropertyModel(startDateBeforeLimit = Some(false), accountingMethod = Some(Cash)).isComplete(false) mustBe false
         }
         "startDateBeforeLimit is defined and false, accounting method is not defined" in {
-          PropertyModel(startDateBeforeLimit = Some(false), startDate = Some(dateModel)).isComplete() mustBe false
+          PropertyModel(startDateBeforeLimit = Some(false), startDate = Some(dateModel)).isComplete(false) mustBe false
         }
         "startDateBeforeLimit is not defined, start date is not defined" in {
-          PropertyModel(accountingMethod = Some(Cash)).isComplete() mustBe false
+          PropertyModel(accountingMethod = Some(Cash)).isComplete(false) mustBe false
         }
         "startDateBeforeLimit is not defined, accounting method is not defined" in {
-          PropertyModel(startDate = Some(dateModel)).isComplete() mustBe false
+          PropertyModel(startDate = Some(dateModel)).isComplete(false) mustBe false
         }
       }
     }
