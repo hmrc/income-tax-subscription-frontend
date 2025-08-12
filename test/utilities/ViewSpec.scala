@@ -135,7 +135,7 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
 
     def getNthListItem(nth: Int): Element = element.selectHead(s"li:nth-of-type($nth)")
 
-    def getBulletPoints: Elements = element.getElementsByTag("li")
+    def getBulletPoints: Elements = element.select("ul.govuk-list.govuk-list--bullet")
 
     def getH1Element: Element = element.selectHead("h1")
 
