@@ -163,7 +163,7 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
     "not in edit mode" when {
       "the email capture consent feature switch is enabled" when {
         "the user signs up for the current tax year" should {
-          "redirect to the capture consent page" in {
+          "redirect to accounting period page" in {
             enable(EmailCaptureConsent)
 
             mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
@@ -171,7 +171,7 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
             val goodRequest = callSubmit(isEditMode = false, accountingYear = Current)
 
             status(goodRequest) mustBe SEE_OTHER
-            redirectLocation(goodRequest) mustBe Some(controllers.individual.email.routes.CaptureConsentController.show().url)
+            redirectLocation(goodRequest) mustBe Some(controllers.individual.accountingperiod.routes.AccountingPeriodController.show.url)
           }
         }
         "the user signs up for the next tax year" should {
@@ -187,15 +187,15 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
           }
         }
       }
-      "the email captrue consent feature switch is disabled" when {
+      "the email capture consent feature switch is disabled" when {
         "the user signs up for the current tax year" should {
-          "redirect to the what you need to do page" in {
+          "redirect to the accounting period page" in {
             mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
 
             val goodRequest = callSubmit(isEditMode = false, accountingYear = Current)
 
             status(goodRequest) mustBe SEE_OTHER
-            redirectLocation(goodRequest) mustBe Some(controllers.individual.routes.WhatYouNeedToDoController.show.url)
+            redirectLocation(goodRequest) mustBe Some(controllers.individual.accountingperiod.routes.AccountingPeriodController.show.url)
           }
         }
         "the user signs up for the next tax year" should {

@@ -145,7 +145,7 @@ class CaptureConsentViewSpec extends ViewSpec {
     captureConsent(
       if (hasError) CaptureConsentForm.captureConsentForm.withError(testFormError) else CaptureConsentForm.captureConsentForm,
       testCall,
-      testBackUrl
+      controllers.individual.accountingperiod.routes.AccountingPeriodController.show.url
     )
   }
 
