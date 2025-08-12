@@ -82,7 +82,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     "have a lead paragraph" which {
       "summarises the page and tells the user to check sources" in new ViewTest {
           document.mainContent.selectNth("p", 1).text mustBe AgentIncomeSource.lead
-
       }
     }
 
@@ -654,7 +653,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     "there are fully complete and confirmed income sources added" should {
       def completeAndConfirmedIncomeSources: IncomeSources = IncomeSources(completeAndConfirmedSelfEmployments, Some(Cash), completeAndConfirmedUKProperty, completeAndConfirmedForeignProperty)
       def completeAndConfirmedIncomeSourcesNoAccMethod: IncomeSources = IncomeSources(
-        completeAndConfirmedSelfEmployments, Some(Cash),
+        completeAndConfirmedSelfEmployments, None,
         completeAndConfirmedUKProperty.map(_.copy(accountingMethod = None)),
         completeAndConfirmedForeignProperty.map(_.copy(accountingMethod = None))
       )
@@ -711,6 +710,35 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           document.mainContent.getSubHeading("h2", 3).text mustBe AgentIncomeSource.incomeFromPropertyHeading
         }
         "when remove accounting method feature switch disabled" which {
+          "has a sole trader summary card" in new ViewTest(completeAndConfirmedIncomeSources) {
+            document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
+              title = "business trade",
+              cardActions = Seq(
+                SummaryListActionValues(
+                  href = AgentIncomeSource.soleTraderChangeLinkOne,
+                  text = s"${AgentIncomeSource.change} business name (business trade)",
+                  visuallyHidden = s"business name (business trade)"
+                ),
+                SummaryListActionValues(
+                  href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idOne").url,
+                  text = s"${AgentIncomeSource.remove} business name (business trade)",
+                  visuallyHidden = s"business name (business trade)"
+                )
+              ),
+              rows = Seq(
+                SummaryListRowValues(
+                  key = AgentIncomeSource.soleTraderBusinessNameKey,
+                  value = Some("business name"),
+                  actions = Seq.empty
+                ),
+                SummaryListRowValues(
+                  key = AgentIncomeSource.statusTagKey,
+                  value = Some(AgentIncomeSource.completedTag),
+                  actions = Seq.empty
+                )
+              )
+            )
+          }
           "has a uk property summary card" in new ViewTest(completeAndConfirmedIncomeSources) {
             document.mainContent.mustHaveSummaryCard("div.govuk-summary-card", Some(2))(
               title = AgentIncomeSource.ukPropertyTitle,
@@ -771,8 +799,40 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           }
         }
         "when remove accounting method feature switch enabled" which {
+          "has a sole trader summary card" in new ViewTest(completeAndConfirmedIncomeSourcesNoAccMethod) {
+            enable(RemoveAccountingMethod)
+
+            document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
+              title = "business trade",
+              cardActions = Seq(
+                SummaryListActionValues(
+                  href = AgentIncomeSource.soleTraderChangeLinkOne,
+                  text = s"${AgentIncomeSource.change} business name (business trade)",
+                  visuallyHidden = s"business name (business trade)"
+                ),
+                SummaryListActionValues(
+                  href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idOne").url,
+                  text = s"${AgentIncomeSource.remove} business name (business trade)",
+                  visuallyHidden = s"business name (business trade)"
+                )
+              ),
+              rows = Seq(
+                SummaryListRowValues(
+                  key = AgentIncomeSource.soleTraderBusinessNameKey,
+                  value = Some("business name"),
+                  actions = Seq.empty
+                ),
+                SummaryListRowValues(
+                  key = AgentIncomeSource.statusTagKey,
+                  value = Some(AgentIncomeSource.completedTag),
+                  actions = Seq.empty
+                )
+              )
+            )
+          }
           "has a uk property summary card" in new ViewTest(completeAndConfirmedIncomeSourcesNoAccMethod) {
             enable(RemoveAccountingMethod)
+
             document.mainContent.mustHaveSummaryCard("div.govuk-summary-card", Some(2))(
               title = AgentIncomeSource.ukPropertyTitle,
               cardActions = Seq(
@@ -803,6 +863,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           }
           "has a foreign property summary card" in new ViewTest(completeAndConfirmedIncomeSourcesNoAccMethod) {
             enable(RemoveAccountingMethod)
+
             document.mainContent.mustHaveSummaryCard("div.govuk-summary-card", Some(3))(
               title = AgentIncomeSource.foreignPropertyTitle,
               cardActions = Seq(
