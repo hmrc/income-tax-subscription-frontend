@@ -51,6 +51,7 @@ base.tax-year.current                                           = Blwyddyn dreth
 base.tax-year.next                                              = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
 base.print-page                                                 = Argraffwch y dudalen hon
 base.section-caption.hidden                                     = Teitl yr adran hon yw
+base.or                                                         = neu
 
 ## Preferences call back page
 preferences-callback.title                                      = Ydych chi am fynd yn eich blaen?
@@ -151,6 +152,27 @@ business.what-year-to-sign-up.para2.link-href                   = https://www.go
 business.what-year-to-sign-up.option-1                          = Blwyddyn dreth bresennol
 business.what-year-to-sign-up.option-1.hint                     = Bydd angen i chi ddefnyddio’ch meddalwedd i anfon unrhyw ddiweddariadau chwarterol a gollwyd ar gyfer y flwyddyn hyd yma
 business.what-year-to-sign-up.option-2                          = Blwyddyn dreth nesaf
+
+## Accounting period
+accounting-period.heading                                       = Pa gyfnod cyfrifyddu yr ydych yn ei ddefynyddio ar gyfer eich busnes?
+accounting-period.para-1                                        = Dyma’r cyfnod cyfrifyddu rydych chi’n ei ddefnyddio bob blwyddyn wrth roi gwybod am incwm eich busnes a’ch treuliau busnes i CThEF.
+accounting-period.para-2                                        = Mae eich cyfnod cyfrifyddu yn rhedeg o ddyddiad dechrau’ch cofnodion neu’ch cyfrifon. Nodwch y dyddiad y caewyd eich llyfrau neu’ch cyfrifon.
+accounting-period.sixth-april-to-fifth-april                    = 6 Ebrill i 5 Ebrill
+accounting-period.sixth-april-to-fifth-april.hint               = Mae eich llyfrau neu’ch cyfrifon yn dechrau ar 6 Ebrill ac yn cau ar 5 Ebrill y flwyddyn ganlynol (er enghraifft, 6 Ebrill 2026 i 5 Ebrill 2027)
+accounting-period.first-april-to-thirty-first-march             = 1 Ebrill i 31 Mawrth
+accounting-period.first-april-to-thirty-first-march.hint        = Mae eich llyfrau neu’ch cyfrifon yn dechrau ar 1 Ebrill ac yn cau ar 31 Mawrth y flwyddyn ganlynol (er enghraifft, 1 Ebrill 2026 i 31 Mawrth 2027)
+accounting-period.other                                         = Dim un o’r rhain
+accounting-period.error                                         = Dewiswch a yw’ch cyfnod cyfrifyddu yn rhedeg o 6 Ebrill i 5 Ebrill, 1 Ebrill i 31 Mawrth, neu dim un o’r rhain
+
+## Accounting period not supported
+accounting-period-not-supported.heading                         = Ni allwch gofrestru ar hyn o bryd
+accounting-period-not-supported.para-one                        = Nid yw’ch busnes yn defnyddio cyfnod cyfrifyddu sy’n rhedeg o naill ai:
+accounting-period-not-supported.bullet-one                      = 1 Ebrill i 31 Mawrth
+accounting-period-not-supported.bullet-two                      = 6 Ebrill i 5 Ebrill
+accounting-period-not-supported.para-two                        = Mae Troi Treth yn Ddigidol (MTD) ar gyfer Treth Incwm ond ar gael i bobl sy’n defnyddio’r cyfnodau cyfrifyddu busnes hyn.
+accounting-period-not-supported.para-three                      = Yn y dyfodol, mae’n bosibl y caiff y gwasanaeth hwn ei ymestyn i ragor o bobl.
+accounting-period-not-supported.send-self-assessment            = Parhewch i gyflwyno’ch {0} yn ôl yr arfer.
+accounting-period-not-supported.send-self-assessment.link       = Ffurflen Dreth Hunanasesiad
 
 # Property Start Date Before Limit Page
 property.start-date-before-limit.heading                        = A oeddech wedi dechrau cael yr incwm hwn cyn 6 Ebrill {0}?
