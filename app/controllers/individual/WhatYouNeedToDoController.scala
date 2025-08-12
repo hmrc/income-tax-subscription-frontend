@@ -96,10 +96,12 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
         }
       }
     } else {
-      if (!(eligibleNextYearOnly || mandatedCurrentYear)) {
-        controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
-      } else {
+      if (eligibleNextYearOnly || mandatedCurrentYear) {
         controllers.individual.routes.UsingSoftwareController.show().url
+      } else if (taxYearSelection.contains(Current)){
+        controllers.individual.accountingperiod.routes.AccountingPeriodController.show.url
+      } else {
+        controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
       }
     }
   }
