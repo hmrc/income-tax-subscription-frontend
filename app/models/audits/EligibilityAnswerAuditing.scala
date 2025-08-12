@@ -24,7 +24,7 @@ object EligibilityAnswerAuditing {
 
   case class EligibilityAnswerAuditModel(eligible: Boolean,
                                          answer: String,
-                                         question: String,
+                                         question: String
                                          ) extends AuditModel {
 
     override val transactionName: Option[String] = None
