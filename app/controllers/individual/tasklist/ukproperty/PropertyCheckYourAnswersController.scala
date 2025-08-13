@@ -69,7 +69,7 @@ class PropertyCheckYourAnswersController @Inject()(identify: IdentifierAction,
     }
   }
 
-  private def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean, isConfirmed: Boolean, propertyStartDateBeforeLimit: Boolean): String = {
+  def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean, isConfirmed: Boolean, propertyStartDateBeforeLimit: Boolean): String = {
     if (isGlobalEdit && isConfirmed) {
       controllers.individual.routes.GlobalCheckYourAnswersController.show.url
     } else if (isEditMode || isGlobalEdit) {

@@ -49,6 +49,7 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerSpec
     disable(RemoveAccountingMethod)
   }
 
+
   "Show" should {
     "return ok and display the page" when {
       "property data is available" when {
@@ -84,10 +85,40 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerSpec
     }
     "throw an internal server exception" when {
       "property data is not available" in {
-
+        mockFetchProperty(None)
+        val result: Future[Result] = TestPropertyCheckYourAnswersController.show(isEditMode = false, isGlobalEdit = false)(request)
+        intercept[InternalServerException](await(result))
+          .message mustBe "[PropertyCheckYourAnswersController] - Could not retrieve property details"
       }
     }
   }
+
+  "BackURL" when {
+    "not in edit mode" when {
+      "Remove Accounting Method feature switch is enabled" should {
+        "redirect to Property Start Date Before Limit page when start date before limit is true" in {}
+        "redirect to Property Start Date page when start date before limit is false" in {}
+      }
+
+      "Remove Accounting Method feature switch is disabled" should {
+        "redirect to Property Accounting Method page" in {}
+      }
+    }
+
+    "in edit mode" should {
+      "redirect to Your Income Source page" in {}
+    }
+
+    "in global edit mode" when {
+      "is confirmed" should {
+        "redirect to Global Check Your Answers page" in {}
+      }
+      "is not confirmed" should {
+        "redirect to Your Income Source page" in {}
+      }
+    }
+  }
+
   object TestPropertyCheckYourAnswersController extends PropertyCheckYourAnswersController(
     fakeIdentifierAction,
     fakeSignUpJourneyRefiner,
