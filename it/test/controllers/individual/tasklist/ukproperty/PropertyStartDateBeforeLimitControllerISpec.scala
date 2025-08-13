@@ -16,6 +16,7 @@
 
 package controllers.individual.tasklist.ukproperty
 
+import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import forms.individual.business.PropertyStartDateBeforeLimitForm
 import helpers.ComponentSpecBase
@@ -30,6 +31,11 @@ import utilities.{AccountingPeriodUtil, SubscriptionDataKeys}
 import java.time.LocalDate
 
 class PropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBase {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(RemoveAccountingMethod)
+  }
 
   s"GET ${routes.PropertyStartDateBeforeLimitController.show()}" when {
     "the user is unauthenticated" should {
@@ -262,6 +268,33 @@ class PropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBase {
             result must have(
               httpStatus(SEE_OTHER),
               redirectURI(routes.PropertyCheckYourAnswersController.show(isGlobalEdit = true).url)
+            )
+          }
+        }
+      }
+      "redirect to property check your answers page" when {
+        "the user answers 'Yes'" when {
+          "the remove accounting method feature switch is enabled" in {
+            enable(RemoveAccountingMethod)
+            AuthStub.stubAuthSuccess()
+
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+              id = SubscriptionDataKeys.Property,
+              responseStatus = NO_CONTENT
+            )
+            IncomeTaxSubscriptionConnectorStub.stubSaveProperty(
+              property = PropertyModel(startDateBeforeLimit = Some(true))
+            )
+            IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetails(
+              id = SubscriptionDataKeys.IncomeSourceConfirmation
+            )
+
+            val result = IncomeTaxSubscriptionFrontend
+              .submitUKPropertyStartDateBeforeLimit()(request = Some(Yes))
+
+            result must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(routes.PropertyCheckYourAnswersController.show().url)
             )
           }
         }
