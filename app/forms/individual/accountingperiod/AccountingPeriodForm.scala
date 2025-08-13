@@ -24,7 +24,7 @@ import play.api.data.{Form, FormError, Mapping}
 
 object AccountingPeriodForm {
 
-  val fieldName: String = "accounting-period"
+  val fieldName: String = "accountingPeriod"
   val accountingPeriodForm: Form[BusinessAccountingPeriod] = Form(
     single(
       fieldName -> accountingPeriodMapping("accounting-period.error")
