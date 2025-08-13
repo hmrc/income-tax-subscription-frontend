@@ -16,6 +16,7 @@
 
 package controllers.individual.tasklist.ukproperty
 
+import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub.subscriptionUri
 import helpers.ComponentSpecBase
@@ -29,6 +30,13 @@ import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys.Property
 
 class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(RemoveAccountingMethod)
+  }
+
+  lazy val propertyCheckYourAnswersController: PropertyCheckYourAnswersController = app.injector.instanceOf[PropertyCheckYourAnswersController]
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/uk-property-check-your-answers" should {
     "return OK" in {
@@ -68,7 +76,7 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
   "POST /report-quarterly/income-and-expenses/sign-up/business/uk-property-check-your-answers" should {
     "redirect to the your income sources page" when {
       "the user has answered all the questions for uk property" should {
-        "redirect to the tasks list page and save property answers" in {
+        "redirect to the your income sources page and save property answers" in {
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
@@ -95,7 +103,7 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
       }
 
       "the user has answered partial questions for uk property" should {
-        "redirect to the tasks list page but not save property answers" in {
+        "redirect to the your income sources page but not save property answers" in {
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
@@ -114,6 +122,91 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
           )
 
           verifyPost(subscriptionUri(Property), count = Some(0))
+        }
+      }
+
+      "when Accounting Method feature switch is enabled" should {
+        "save when StartDateBeforeLimit is true and start date is not defined" in {
+          enable(RemoveAccountingMethod)
+          val testProperty = PropertyModel(startDateBeforeLimit = Some(true), startDate = None)
+          val expectedProperty = testProperty.copy(confirmed = true)
+
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+            Property,
+            OK,
+            Json.toJson(testProperty)
+          )
+          IncomeTaxSubscriptionConnectorStub.stubSaveProperty(
+            expectedProperty
+          )
+          IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
+
+          When("POST business/uk-property-check-your-answers is called")
+          val res = IncomeTaxSubscriptionFrontend.submitPropertyCheckYourAnswers()
+
+          Then("Should return a SEE_OTHER with a redirect location of the your income sources page")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(IndividualURI.yourIncomeSourcesURI)
+          )
+
+          IncomeTaxSubscriptionConnectorStub.verifySaveProperty(expectedProperty, Some(1))
+        }
+
+        "save when StartDateBeforeLimit is false and start date defined" in {
+          enable(RemoveAccountingMethod)
+          val testProperty = PropertyModel(startDateBeforeLimit = Some(false), startDate = Some(DateModel("10", "11", "2021")))
+          val expectedProperty = testProperty.copy(confirmed = true)
+
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+            Property,
+            OK,
+            Json.toJson(testProperty)
+          )
+          IncomeTaxSubscriptionConnectorStub.stubSaveProperty(
+            expectedProperty
+          )
+          IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
+
+          When("POST business/uk-property-check-your-answers is called")
+          val res = IncomeTaxSubscriptionFrontend.submitPropertyCheckYourAnswers()
+
+          Then("Should return a SEE_OTHER with a redirect location of the your income sources page")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(IndividualURI.yourIncomeSourcesURI)
+          )
+
+          IncomeTaxSubscriptionConnectorStub.verifySaveProperty(expectedProperty, Some(1))
+        }
+
+        "save when StartDateBeforeLimit is false and start date is not defined" in {
+          enable(RemoveAccountingMethod)
+          val testProperty = PropertyModel(startDateBeforeLimit = Some(false), startDate = None)
+          val expectedProperty = testProperty.copy(confirmed = true)
+
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+            Property,
+            OK,
+            Json.toJson(testProperty)
+          )
+
+          When("POST business/uk-property-check-your-answers is called")
+          val res = IncomeTaxSubscriptionFrontend.submitPropertyCheckYourAnswers()
+
+          Then("Should return a SEE_OTHER with a redirect location of the your income sources page")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(IndividualURI.yourIncomeSourcesURI)
+          )
+
+          IncomeTaxSubscriptionConnectorStub.verifySaveProperty(expectedProperty, Some(0))
         }
       }
     }
@@ -150,6 +243,76 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
         res must have(
           httpStatus(INTERNAL_SERVER_ERROR)
         )
+      }
+    }
+  }
+
+  "BackURL" when {
+    "not in edit mode" when {
+      "Remove Accounting Method feature switch is enabled" should {
+        "redirect to Property Start Date Before Limit page when start date before limit is true" in {
+          enable(RemoveAccountingMethod)
+          propertyCheckYourAnswersController.backUrl(
+            isEditMode = false,
+            isGlobalEdit = false,
+            isConfirmed = false,
+            propertyStartDateBeforeLimit = true
+          ) mustBe controllers.individual.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show().url
+        }
+        "redirect to Property Start Date page when start date before limit is false" in {
+          enable(RemoveAccountingMethod)
+          propertyCheckYourAnswersController.backUrl(
+            isEditMode = false,
+            isGlobalEdit = false,
+            isConfirmed = false,
+            propertyStartDateBeforeLimit = false
+          ) mustBe controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.show().url
+        }
+      }
+
+      "Remove Accounting Method feature switch is disabled" should {
+        "redirect to Property Accounting Method page" in {
+          propertyCheckYourAnswersController.backUrl(
+            isEditMode = false,
+            isGlobalEdit = false,
+            isConfirmed = false,
+            propertyStartDateBeforeLimit = false
+          ) mustBe controllers.individual.tasklist.ukproperty.routes.PropertyAccountingMethodController.show().url
+        }
+      }
+    }
+
+    "in edit mode" should {
+      "redirect to Your Income Source page" in {
+        propertyCheckYourAnswersController.backUrl(
+          isEditMode = true,
+          isGlobalEdit = false,
+          isConfirmed = false,
+          propertyStartDateBeforeLimit = false
+        ) mustBe controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
+      }
+    }
+
+    "in global edit mode" when {
+      "is confirmed" should {
+        "redirect to Global Check Your Answers page" in {
+          propertyCheckYourAnswersController.backUrl(
+            isEditMode = false,
+            isGlobalEdit = true,
+            isConfirmed = true,
+            propertyStartDateBeforeLimit = false
+          ) mustBe controllers.individual.routes.GlobalCheckYourAnswersController.show.url
+        }
+      }
+      "is not confirmed" should {
+        "redirect to Your Income Source page" in {
+          propertyCheckYourAnswersController.backUrl(
+            isEditMode = false,
+            isGlobalEdit = true,
+            isConfirmed = false,
+            propertyStartDateBeforeLimit = false
+          ) mustBe controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
+        }
       }
     }
   }
