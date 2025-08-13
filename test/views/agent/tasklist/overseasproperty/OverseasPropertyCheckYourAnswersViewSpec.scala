@@ -16,6 +16,8 @@
 
 package views.agent.tasklist.overseasproperty
 
+import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
+import config.featureswitch.FeatureSwitching
 import models.common.OverseasPropertyModel
 import models.{Cash, DateModel}
 import org.jsoup.Jsoup
@@ -27,8 +29,12 @@ import views.html.agent.tasklist.overseasproperty.OverseasPropertyCheckYourAnswe
 
 import java.time.format.DateTimeFormatter
 
-class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
+class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec with FeatureSwitching {
 
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(RemoveAccountingMethod)
+  }
 
   private val overseasPropertyCheckYourAnswersView = app.injector.instanceOf[OverseasPropertyCheckYourAnswers]
 
@@ -77,7 +83,10 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
   private def startDateRow(value: Option[String], globalEditMode: Boolean = false) = {
     simpleSummaryRow(OverseasPropertyCheckYourAnswers.startDate)(
       value,
-      controllers.agent.tasklist.overseasproperty.routes.IncomeSourcesOverseasPropertyController.show(editMode = true, isGlobalEdit = globalEditMode).url
+      if (isEnabled(RemoveAccountingMethod))
+        controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateBeforeLimitController.show(editMode = true, isGlobalEdit = globalEditMode).url
+      else
+        controllers.agent.tasklist.overseasproperty.routes.IncomeSourcesOverseasPropertyController.show(editMode = true, isGlobalEdit = globalEditMode).url
     )
   }
 
@@ -123,70 +132,124 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
     }
 
     "display a summary of answers" when {
-      "not in edit mode" when {
-        "all data is complete" in {
-          document(completeForeignProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-            startDateRow(value = Some(limitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy")))),
-            accountingMethodRow(value = Some(OverseasPropertyCheckYourAnswers.cash))
-          ))
-        }
-        "all data is missing" in {
-          document(incompleteForeignProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-            startDateRow(value = None),
-            accountingMethodRow(value = None)
-          ))
-        }
-        "start date before limit field is present" which {
-          "is true" in {
-            document(completeForeignProperty.copy(startDateBeforeLimit = Some(true))).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-              startDateRow(value = Some(OverseasPropertyCheckYourAnswers.beforeStartDateLimit)),
+      "remove accounting method feature switch is disabled" when {
+        "not in edit mode" when {
+          "all data is complete" in {
+            document(completeForeignProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+              startDateRow(value = Some(limitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy")))),
               accountingMethodRow(value = Some(OverseasPropertyCheckYourAnswers.cash))
             ))
           }
-          "is false" when {
-            "the stored start date is not older than the limit" in {
-              document(completeForeignProperty.copy(startDateBeforeLimit = Some(false))).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-                startDateRow(value = Some(limitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy")))),
-                accountingMethodRow(value = Some(OverseasPropertyCheckYourAnswers.cash))
-              ))
-            }
-            "the stored start date is older than the limit" in {
-              document(completeForeignProperty.copy(
-                startDateBeforeLimit = Some(false),
-                startDate = Some(olderThanLimitDate)
-              )).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+          "all data is missing" in {
+            document(incompleteForeignProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+              startDateRow(value = None),
+              accountingMethodRow(value = None)
+            ))
+          }
+          "start date before limit field is present" which {
+            "is true" in {
+              document(completeForeignProperty.copy(startDateBeforeLimit = Some(true))).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
                 startDateRow(value = Some(OverseasPropertyCheckYourAnswers.beforeStartDateLimit)),
                 accountingMethodRow(value = Some(OverseasPropertyCheckYourAnswers.cash))
               ))
             }
+            "is false" when {
+              "the stored start date is not older than the limit" in {
+                document(completeForeignProperty.copy(startDateBeforeLimit = Some(false))).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+                  startDateRow(value = Some(limitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy")))),
+                  accountingMethodRow(value = Some(OverseasPropertyCheckYourAnswers.cash))
+                ))
+              }
+              "the stored start date is older than the limit" in {
+                document(completeForeignProperty.copy(
+                  startDateBeforeLimit = Some(false),
+                  startDate = Some(olderThanLimitDate)
+                )).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+                  startDateRow(value = Some(OverseasPropertyCheckYourAnswers.beforeStartDateLimit)),
+                  accountingMethodRow(value = Some(OverseasPropertyCheckYourAnswers.cash))
+                ))
+              }
+            }
+          }
+          "in global edit mode" in {
+            document(completeForeignProperty, isGlobalEdit = true).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+              startDateRow(value = Some(limitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))), globalEditMode = true),
+              accountingMethodRow(value = Some(OverseasPropertyCheckYourAnswers.cash), globalEditMode = true)
+            ))
           }
         }
-        "in global edit mode" in {
-          document(completeForeignProperty, isGlobalEdit = true).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-            startDateRow(value = Some(limitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))), globalEditMode = true),
-            accountingMethodRow(value = Some(OverseasPropertyCheckYourAnswers.cash), globalEditMode = true)
-          ))
+      }
+      "remove accounting method feature switch is enabled" when {
+        "in edit mode" when {
+          "data is complete" which {
+            "has a start date" in {
+              enable(RemoveAccountingMethod)
+              document(OverseasPropertyModel(startDate = Some(limitDate))).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+                startDateRow(value = Some(limitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))))
+              ))
+            }
+            "start date before limit field is present" which {
+              "is true" in {
+                enable(RemoveAccountingMethod)
+                document(OverseasPropertyModel(startDateBeforeLimit = Some(true))).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+                  startDateRow(value = Some(OverseasPropertyCheckYourAnswers.beforeStartDateLimit))
+                ))
+              }
+              "is false" when {
+                "the stored start date is not older than the limit" in {
+                  enable(RemoveAccountingMethod)
+                  document(OverseasPropertyModel(startDateBeforeLimit = Some(false), startDate = Some(limitDate))).mainContent
+                    .mustHaveSummaryList(".govuk-summary-list")(Seq(
+                      startDateRow(value = Some(limitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))))
+                    ))
+                }
+                "the stored start date is older than the limit" in {
+                  enable(RemoveAccountingMethod)
+                  document(OverseasPropertyModel(
+                    startDateBeforeLimit = Some(false),
+                    startDate = Some(olderThanLimitDate)
+                  )).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+                    startDateRow(value = Some(OverseasPropertyCheckYourAnswers.beforeStartDateLimit))
+                  ))
+                }
+              }
+            }
+          }
+          "all data is missing" in {
+            enable(RemoveAccountingMethod)
+            document(incompleteForeignProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+              startDateRow(value = None)
+            ))
+          }
+        }
+        "in global edit mode" when {
+          "all data is complete" in {
+            enable(RemoveAccountingMethod)
+            document(completeForeignProperty, isGlobalEdit = true).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+              startDateRow(value = Some(limitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))), globalEditMode = true)
+            ))
+          }
         }
       }
     }
+  }
 
-    "have a form" which {
-      def form: Element = document().mainContent.getForm
+  "have a form" which {
+    def form: Element = document().mainContent.getForm
 
-      "has the correct attributes" in {
-        form.attr("method") mustBe "POST"
-        form.attr("action") mustBe controllers.agent.tasklist.overseasproperty.routes.IncomeSourcesOverseasPropertyController.submit().url
-      }
+    "has the correct attributes" in {
+      form.attr("method") mustBe "POST"
+      form.attr("action") mustBe controllers.agent.tasklist.overseasproperty.routes.IncomeSourcesOverseasPropertyController.submit().url
+    }
 
-      "has a confirm and continue button" in {
-        form.selectNth(".govuk-button", 1).text mustBe OverseasPropertyCheckYourAnswers.confirmedAndContinue
-      }
+    "has a confirm and continue button" in {
+      form.selectNth(".govuk-button", 1).text mustBe OverseasPropertyCheckYourAnswers.confirmedAndContinue
+    }
 
-      "has a save and come back later button" in {
-        val saveAndComeBackLater = form.selectNth(".govuk-button", 2)
-        saveAndComeBackLater.text mustBe OverseasPropertyCheckYourAnswers.saveAndComeBack
-        saveAndComeBackLater.attr("href") mustBe controllers.agent.tasklist.routes.ProgressSavedController.show(location = Some("overseas-property-check-your-answers")).url
-      }
+    "has a save and come back later button" in {
+      val saveAndComeBackLater = form.selectNth(".govuk-button", 2)
+      saveAndComeBackLater.text mustBe OverseasPropertyCheckYourAnswers.saveAndComeBack
+      saveAndComeBackLater.attr("href") mustBe controllers.agent.tasklist.routes.ProgressSavedController.show(location = Some("overseas-property-check-your-answers")).url
     }
   }
 }

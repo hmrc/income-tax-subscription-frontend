@@ -144,7 +144,13 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
           }
         }
       }
-      "in global edit mode" in {}
+      "in global edit mode" when {
+        "all data is complete" in {
+          document(completeProperty, isGlobalEdit = true).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+            startDateRow(value = Some(limitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))), globalEditMode = true)
+          ))
+        }
+      }
     }
 
     "have a form" which {

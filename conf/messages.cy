@@ -847,6 +847,13 @@ agent.foreign-property.income-sources.accounting-method.radio.cash              
 agent.foreign-property.income-sources.accounting-method.radio.accruals              = Cyfrifyddu traddodiadol
 agent.error.overseas.property.income-source.start-date-before-limit.invalid         = Dewiswch ‘Iawn’ os oedd eich cleient wedi dechrau cael incwm o eiddo tramor cyn 6 Ebrill {0}
 
+# Agent Overseas Property Start Date Before Limit
+agent.overseas.property.start-date-before-limit.title            = Eiddo tramor eich cleient
+agent.overseas.property.start-date-before-limit.caption          = {0} | {1}
+agent.overseas.property.start-date-before-limit.heading          = Eiddo tramor eich cleient
+agent.overseas.property.start-date-before-limit.legend           = A oedd yr incwm hwn wedi dechrau cyn 6 Ebrill {0}?
+agent.error.overseas.property.start-date-before-limit.invalid    = Dewiswch ‘Iawn’ os oedd eich cleient wedi dechrau cael incwm o eiddo tramor cyn 6 Ebrill {0}
+
 ## Business Name
 agent.business.name.title                                       = Enw’r busnes
 agent.business.name.heading                                     = Beth yw enw busnes eich cleient?

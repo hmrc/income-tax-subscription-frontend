@@ -177,6 +177,12 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
             link.text mustBe AgentIncomeSource.ukPropertyLinkText
             link.attr("href") mustBe controllers.agent.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show().url
           }
+          "have an add foreign property link" in new ViewTest(noIncomeSources) {
+            enable(RemoveAccountingMethod)
+            val link: Element = document.mainContent.getElementById("add-foreign-property").selectHead("a")
+            link.text mustBe AgentIncomeSource.foreignPropertyLinkText
+            link.attr("href") mustBe controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateBeforeLimitController.show().url
+          }
         }
       }
     }
