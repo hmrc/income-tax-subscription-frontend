@@ -71,7 +71,7 @@ class AccountingPeriodViewSpec extends ViewSpec {
 
       "has the correct radio inputs" in {
         form.mustHaveRadioInput(selector = "fieldset")(
-          name = "accounting-period",
+          name = "accountingPeriod",
           legend = AccountingPeriodMessages.heading,
           isHeading = false,
           isLegendHidden = true,

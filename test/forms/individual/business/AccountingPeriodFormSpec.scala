@@ -27,14 +27,13 @@ import play.api.data.FormError
 
 class AccountingPeriodFormSpec extends PlaySpec with GuiceOneAppPerTest {
 
-  val testInputs = Seq(SixthAprilToFifthApril, FirstAprilToThirtyFirstMarch, OtherAccountingPeriod)
 
   def boundForm(testInput: Map[String, String]): Option[BusinessAccountingPeriod] = accountingPeriodForm.bind(testInput).value
 
   "AccountingPeriodForm" should {
 
     "return valid accounting period" when {
-      testInputs.foreach { accountingPeriod =>
+      Seq(SixthAprilToFifthApril, FirstAprilToThirtyFirstMarch, OtherAccountingPeriod).foreach { accountingPeriod =>
 
         s"${accountingPeriod.key} is provided to the form" in {
           val testInput: Map[String, String] = Map(AccountingPeriodForm.fieldName -> accountingPeriod.key)
