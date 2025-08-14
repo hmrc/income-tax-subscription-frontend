@@ -26,8 +26,9 @@ case class PropertyModel(
                           confirmed: Boolean = false
                         ) {
 
-  def isComplete(featureSwitchEnabled: Boolean = false): Boolean = {
-    if (featureSwitchEnabled) {
+
+  def isComplete(removeAccountingMethod: Boolean): Boolean = {
+    if (removeAccountingMethod) {
       startDateBeforeLimit match {
         case Some(true) => true
         case _ => startDate.isDefined

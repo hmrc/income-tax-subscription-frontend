@@ -122,25 +122,25 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec with FeatureSwit
         "data is complete" when {
           "the start date before limit was answered with 'Yes'" in {
             enable(RemoveAccountingMethod)
-            document(viewModel = completeProperty.copy(startDateBeforeLimit = Some(true))).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+            document(viewModel = OverseasPropertyModel(startDateBeforeLimit = Some(true))).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
               startDateBeforeLimitRow(Some(OverseasPropertyCheckYourAnswers.beforeStartDateLimit))
             ))
           }
           "the start date before limit was answered with 'No' and no start date was provided" in {
             enable(RemoveAccountingMethod)
-            document(viewModel = completeProperty.copy(startDateBeforeLimit = Some(false), startDate = None)).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+            document(viewModel = OverseasPropertyModel(startDateBeforeLimit = Some(false), startDate = None)).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
               startDateBeforeLimitRow(None)
             ))
           }
           "the start date before limit was answered with 'No' and the stored start date is after the limit" in {
             enable(RemoveAccountingMethod)
-            document(viewModel = completeProperty.copy(startDateBeforeLimit = Some(false), startDate = Some(limitDate))).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+            document(viewModel = OverseasPropertyModel(startDateBeforeLimit = Some(false), startDate = Some(limitDate))).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
               startDateBeforeLimitRow(Some(limitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))))
             ))
           }
           "the start date before limit was answered with 'No' but there is a stored start date before the limit" in {
             enable(RemoveAccountingMethod)
-            document(viewModel = completeProperty.copy(startDateBeforeLimit = Some(false), startDate = Some(olderThanLimitDate))).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+            document(viewModel = OverseasPropertyModel(startDateBeforeLimit = Some(false), startDate = Some(olderThanLimitDate))).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
               startDateBeforeLimitRow(Some(OverseasPropertyCheckYourAnswers.beforeStartDateLimit))
             ))
           }

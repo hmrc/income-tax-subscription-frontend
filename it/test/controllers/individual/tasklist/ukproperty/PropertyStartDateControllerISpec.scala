@@ -16,6 +16,7 @@
 
 package controllers.individual.tasklist.ukproperty
 
+import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.IntegrationTestConstants.IndividualURI
 import helpers.IntegrationTestModels.testFullPropertyModel
@@ -28,6 +29,11 @@ import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys.Property
 
 class PropertyStartDateControllerISpec extends ComponentSpecBase {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(RemoveAccountingMethod)
+  }
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/property-start-date" should {
 
@@ -86,6 +92,38 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
             httpStatus(SEE_OTHER),
             redirectURI(IndividualURI.accountingMethodPropertyURI)
           )
+        }
+      }
+    }
+
+    "redirect to the overseas property check your answers page" when {
+      "not in edit mode" when {
+        "feature switch is enabled" in {
+          enable(RemoveAccountingMethod)
+
+          val userInput = IntegrationTestModels.testValidStartDate
+          val expected   = PropertyModel(startDate = Some(userInput))
+
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+            Property,
+            NO_CONTENT
+          )
+
+          IncomeTaxSubscriptionConnectorStub.stubSaveProperty(expected)
+          IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
+
+          When("POST /overseas-property-start-date is called")
+          val res = IncomeTaxSubscriptionFrontend.submitPropertyStartDate(inEditMode = false, Some(userInput))
+
+          Then("Should skip the accounting method page and go straight to check-your-answers")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(IndividualURI.ukPropertyCYAURI)
+          )
+
+          IncomeTaxSubscriptionConnectorStub.verifySaveProperty(expected, Some(1))
         }
       }
     }

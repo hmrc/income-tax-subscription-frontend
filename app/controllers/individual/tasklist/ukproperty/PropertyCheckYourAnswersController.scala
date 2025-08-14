@@ -16,78 +16,84 @@
 
 package controllers.individual.tasklist.ukproperty
 
-import auth.individual.SignUpController
-import com.google.inject.Inject
 import config.AppConfig
-import controllers.utils.ReferenceRetrieval
+import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
+import config.featureswitch.FeatureSwitching
+import controllers.SignUpBaseController
+import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
 import models.common.PropertyModel
 import play.api.mvc._
-import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
-import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import views.html.individual.tasklist.ukproperty.PropertyCheckYourAnswers
 
-import javax.inject.Singleton
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PropertyCheckYourAnswersController @Inject()(propertyCheckYourAnswersView: PropertyCheckYourAnswers,
+class PropertyCheckYourAnswersController @Inject()(identify: IdentifierAction,
+                                                   journeyRefiner: SignUpJourneyRefiner,
                                                    subscriptionDetailsService: SubscriptionDetailsService,
-                                                   referenceRetrieval: ReferenceRetrieval)
-                                                  (val auditingService: AuditingService,
-                                                   val authService: AuthService,
-                                                   val appConfig: AppConfig)
+                                                   view: PropertyCheckYourAnswers)
+                                                  (val appConfig: AppConfig)
                                                   (implicit val ec: ExecutionContext,
-                                                   mcc: MessagesControllerComponents) extends SignUpController {
+                                                   mcc: MessagesControllerComponents) extends SignUpBaseController with FeatureSwitching {
 
-  def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      referenceRetrieval.getIndividualReference flatMap { reference =>
-        withProperty(reference) { property =>
-          Future.successful(Ok(
-            propertyCheckYourAnswersView(
-              viewModel = property,
-              postAction = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.submit(isGlobalEdit),
-              backUrl = backUrl(isEditMode, isGlobalEdit, property.confirmed),
-              isGlobalEdit = isGlobalEdit
-            )
-          ))
-        }
-      }
+  def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
+    withProperty(request.reference) { property =>
+      Future.successful(Ok(view(
+        viewModel = property,
+        postAction = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.submit(isGlobalEdit = isGlobalEdit),
+        backUrl = backUrl(isEditMode, isGlobalEdit, property.confirmed, property.startDateBeforeLimit.contains(true)),
+        isGlobalEdit = isGlobalEdit
+      )))
+    }
   }
 
-  def submit(isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      referenceRetrieval.getIndividualReference flatMap { reference =>
-        withProperty(reference) {
-          case property if property.isComplete(isEnabled(RemoveAccountingMethod)) =>
-            subscriptionDetailsService.saveProperty(reference, property.copy(confirmed = true)).map {
-              case Right(_) =>
-                if (isGlobalEdit) Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
-                else Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
-              case Left(_) => throw new InternalServerException("[PropertyCheckYourAnswersController][submit] - Could not confirm property")
+  def submit(isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
+    withProperty(request.reference) { property =>
+      if (property.isComplete(isEnabled(RemoveAccountingMethod))) {
+        subscriptionDetailsService.saveProperty(request.reference, property.copy(confirmed = true)) map {
+          case Right(_) =>
+            if (isGlobalEdit) {
+              Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
+            } else {
+              Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
             }
-          case _ => Future.successful(Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show))
+          case Left(_) =>
+            throw new InternalServerException("[PropertyCheckYourAnswersController][submit] - Could not confirm property")
         }
+      } else {
+        Future.successful(Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show))
       }
+    }
   }
 
-  private def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean, isConfirmed: Boolean): String = {
+  def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean, isConfirmed: Boolean, propertyStartDateBeforeLimit: Boolean): String = {
     if (isGlobalEdit && isConfirmed) {
       controllers.individual.routes.GlobalCheckYourAnswersController.show.url
     } else if (isEditMode || isGlobalEdit) {
       controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
     } else {
-      controllers.individual.tasklist.ukproperty.routes.PropertyAccountingMethodController.show().url
+      if (isEnabled(RemoveAccountingMethod)) {
+        if (propertyStartDateBeforeLimit) {
+          controllers.individual.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show().url
+        } else {
+          controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.show().url
+        }
+      } else {
+        controllers.individual.tasklist.ukproperty.routes.PropertyAccountingMethodController.show().url
+      }
     }
   }
 
   private def withProperty(reference: String)(f: PropertyModel => Future[Result])(implicit hc: HeaderCarrier) = {
     subscriptionDetailsService.fetchProperty(reference).flatMap { maybeProperty =>
-      val property = maybeProperty.getOrElse(
+      f(maybeProperty.getOrElse(
         throw new InternalServerException("[PropertyCheckYourAnswersController] - Could not retrieve property details")
-      )
-      f(property)
+      ))
     }
   }
+
+
 }

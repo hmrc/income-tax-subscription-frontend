@@ -16,6 +16,8 @@
 
 package controllers.individual.tasklist.ukproperty
 
+import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
+import config.featureswitch.FeatureSwitching
 import connectors.httpparser.PostSubscriptionDetailsHttpParser
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.individual.ControllerBaseSpec
@@ -35,7 +37,13 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockAuditingService
   with MockReferenceRetrieval
-  with MockPropertyStartDate {
+  with MockPropertyStartDate
+  with FeatureSwitching {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(RemoveAccountingMethod)
+  }
 
   override val controllerName: String = "PropertyStartDateController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -162,6 +170,22 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
 
         status(goodRequest) mustBe SEE_OTHER
         redirectLocation(goodRequest) mustBe Some(routes.PropertyAccountingMethodController.show().url)
+      }
+    }
+
+    "not in edit mode" should {
+      "redirect to the property check your answers page" when {
+        "accounting method feature switch is enabled" in {
+          enable(RemoveAccountingMethod)
+
+          mockSavePropertyStartDate(testPropertyStartDateModel)(Right(PostSubscriptionDetailsSuccessResponse))
+
+          val goodRequest = await(callSubmit(isEditMode = true, isGlobalEdit = true))
+
+          status(goodRequest) mustBe SEE_OTHER
+          redirectLocation(goodRequest) mustBe Some(routes.PropertyCheckYourAnswersController.show(editMode = true, isGlobalEdit = true).url
+          )
+        }
       }
     }
 
