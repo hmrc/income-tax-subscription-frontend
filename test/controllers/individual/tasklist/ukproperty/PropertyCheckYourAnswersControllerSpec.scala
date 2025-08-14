@@ -16,20 +16,19 @@
 
 package controllers.individual.tasklist.ukproperty
 
-import config.{AppConfig, MockConfig}
 import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
 import config.featureswitch.FeatureSwitching
+import config.{AppConfig, MockConfig}
 import connectors.httpparser.PostSubscriptionDetailsHttpParser
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.ControllerSpec
-import controllers.individual.ControllerBaseSpec
 import controllers.individual.actions.mocks.{MockIdentifierAction, MockSignUpJourneyRefiner}
 import models.common.PropertyModel
 import models.{Cash, DateModel}
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
-import play.api.mvc.{Action, AnyContent, Codec, Result}
-import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
-import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSubscriptionDetailsService}
+import play.api.mvc.Result
+import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, status}
+import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
 import views.individual.mocks.MockPropertyCheckYourAnswers
 
@@ -52,37 +51,98 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerSpec
 
   "Show" should {
     "return ok and display the page" when {
-      "property data is available" when {
-        "remove accounting method feature switch is enabled and start date before limit is false" in {
-          enable(RemoveAccountingMethod)
-          val propertyModel = PropertyModel(startDateBeforeLimit = Some(false))
-          mockFetchProperty(Some(propertyModel))
-          mockPropertyCheckYourAnswersView(
-            viewModel = propertyModel,
-            postAction = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.submit(),
-            backUrl = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.show().url,
-            isGlobalEdit = false
-          )
-          val result: Future[Result] = TestPropertyCheckYourAnswersController.show(isEditMode = false, isGlobalEdit = false)(request)
-          status(result) mustBe OK
-          contentType(result) mustBe Some(HTML)
-        }
 
-        "remove accounting method feature switch is disabled" in {
-          val propertyModel = PropertyModel()
-          mockFetchProperty(Some(propertyModel))
-          mockPropertyCheckYourAnswersView(
-            viewModel = propertyModel,
-            postAction = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.submit(),
-            backUrl = controllers.individual.tasklist.ukproperty.routes.PropertyAccountingMethodController.show().url,
-            isGlobalEdit = false
-          )
-          val result: Future[Result] = TestPropertyCheckYourAnswersController.show(isEditMode = false, isGlobalEdit = false)(request)
-          status(result) mustBe OK
-          contentType(result) mustBe Some(HTML)
+      "return ok and display the page" when {
+        "remove accounting method feature switch is enabled" which {
+          "has full property data" in {
+            enable(RemoveAccountingMethod)
+            val propertyModel = PropertyModel(startDateBeforeLimit = Some(true))
+            mockFetchProperty(Some(propertyModel))
+            mockPropertyCheckYourAnswersView(
+              viewModel = propertyModel,
+              postAction = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.submit(),
+              backUrl = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show().url,
+              isGlobalEdit = false
+            )
+            val result: Future[Result] = TestPropertyCheckYourAnswersController.show(isEditMode = false, isGlobalEdit = false)(request)
+            status(result) mustBe OK
+            contentType(result) mustBe Some(HTML)
+          }
+          "has partial property data" in {
+            enable(RemoveAccountingMethod)
+            val propertyModel = PropertyModel(startDateBeforeLimit = Some(false))
+            mockFetchProperty(Some(propertyModel))
+            mockPropertyCheckYourAnswersView(
+              viewModel = propertyModel,
+              postAction = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.submit(),
+              backUrl = controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url,
+              isGlobalEdit = false
+            )
+            val result: Future[Result] = TestPropertyCheckYourAnswersController.show(isEditMode = true, isGlobalEdit = false)(request)
+            status(result) mustBe OK
+            contentType(result) mustBe Some(HTML)
+          }
+
+          "is in Global Edit mode" in {
+            enable(RemoveAccountingMethod)
+            val propertyModel = PropertyModel(startDateBeforeLimit = Some(false), startDate = Some(DateModel("10", "11", "2021")), confirmed = true)
+            mockFetchProperty(Some(propertyModel))
+            mockPropertyCheckYourAnswersView(
+              viewModel = propertyModel,
+              postAction = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.submit(isGlobalEdit = true),
+              backUrl = controllers.individual.routes.GlobalCheckYourAnswersController.show.url,
+              isGlobalEdit = true
+            )
+            val result: Future[Result] = TestPropertyCheckYourAnswersController.show(isEditMode = false, isGlobalEdit = true)(request)
+            status(result) mustBe OK
+            contentType(result) mustBe Some(HTML)
+          }
+        }
+        "remove accounting method feature switch is disabled" which {
+          "has full property data" in {
+            val propertyModel = PropertyModel(startDateBeforeLimit = Some(true), accountingMethod = Some(Cash))
+            mockFetchProperty(Some(propertyModel))
+            mockPropertyCheckYourAnswersView(
+              viewModel = propertyModel,
+              postAction = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.submit(),
+              backUrl = controllers.individual.tasklist.ukproperty.routes.PropertyAccountingMethodController.show().url,
+              isGlobalEdit = false
+            )
+            val result: Future[Result] = TestPropertyCheckYourAnswersController.show(isEditMode = false, isGlobalEdit = false)(request)
+            status(result) mustBe OK
+            contentType(result) mustBe Some(HTML)
+          }
+          "has partial property data" in {
+            val propertyModel = PropertyModel(startDateBeforeLimit = Some(false), accountingMethod = Some(Cash))
+            mockFetchProperty(Some(propertyModel))
+            mockPropertyCheckYourAnswersView(
+              viewModel = propertyModel,
+              postAction = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.submit(),
+              backUrl = controllers.individual.tasklist.ukproperty.routes.PropertyAccountingMethodController.show().url,
+              isGlobalEdit = false
+            )
+            val result: Future[Result] = TestPropertyCheckYourAnswersController.show(isEditMode = false, isGlobalEdit = false)(request)
+            status(result) mustBe OK
+            contentType(result) mustBe Some(HTML)
+          }
+
+          "is in Global Edit mode" in {
+            val propertyModel = PropertyModel(startDateBeforeLimit = Some(false), startDate = Some(DateModel("10", "11", "2021")), accountingMethod = Some(Cash), confirmed = true)
+            mockFetchProperty(Some(propertyModel))
+            mockPropertyCheckYourAnswersView(
+              viewModel = propertyModel,
+              postAction = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.submit(isGlobalEdit = true),
+              backUrl = controllers.individual.routes.GlobalCheckYourAnswersController.show.url,
+              isGlobalEdit = true
+            )
+            val result: Future[Result] = TestPropertyCheckYourAnswersController.show(isEditMode = false, isGlobalEdit = true)(request)
+            status(result) mustBe OK
+            contentType(result) mustBe Some(HTML)
+          }
         }
       }
     }
+
     "throw an internal server exception" when {
       "property data is not available" in {
         mockFetchProperty(None)
