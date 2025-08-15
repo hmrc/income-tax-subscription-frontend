@@ -1139,9 +1139,9 @@ agent.throttle-end.line-1                                          = We are expe
 agent.throttle-end.line-2                                          = To finish and complete signing up your client, try again or sign out and come back later.
 
 # Global Check Your Answers
-individual.global-check-your-answers.heading                                                    = Declaration
-individual.global-check-your-answers.para                                                       = This is the information you have given to us.
-individual.global-check-your-answers.before-signing-up.heading                                  = Check your answers before signing up
+individual.global-check-your-answers.heading                                                    = Check your answers before signing up
+individual.global-check-your-answers.para                                                       = Before you are signed up to Making Tax Digital for Income Tax, you need to check the information you have given us and confirm it is correct. You can change any incorrect data.
+individual.global-check-your-answers.before-signing-up.heading                                  = Information we hold for you
 individual.global-check-your-answers.compatible-software.label                                  = Software works with Making Tax Digital for Income Tax
 individual.global-check-your-answers.tax-year.label                                             = When you’re signing up from
 individual.global-check-your-answers.tax.year.current                                           = Current tax year
