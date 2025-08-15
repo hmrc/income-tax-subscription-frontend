@@ -60,6 +60,13 @@ GET         /no-compatible-software                              controllers.ind
 GET         /business/what-year-to-sign-up                       controllers.individual.tasklist.taxyear.WhatYearToSignUpController.show(editMode: Boolean ?= false)
 POST        /business/what-year-to-sign-up                       controllers.individual.tasklist.taxyear.WhatYearToSignUpController.submit(editMode: Boolean ?= false)
 
+# Accounting Period
+GET         /accounting-period-check                            controllers.individual.accountingperiod.AccountingPeriodController.show
+POST        /accounting-period-check                            controllers.individual.accountingperiod.AccountingPeriodController.submit
+
+# Accounting Period Not Supported
+GET         /accounting-period-not-supported                    controllers.individual.accountingperiod.AccountingPeriodNotSupportedController.show
+
 # Capture consent routes
 GET         /capture-consent                                    controllers.individual.email.CaptureConsentController.show()
 POST        /capture-consent                                    controllers.individual.email.CaptureConsentController.submit()

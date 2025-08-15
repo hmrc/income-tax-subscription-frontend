@@ -23,11 +23,13 @@ import config.AppConfig
 import config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import connectors.stubs.SessionDataConnectorStub.stubGetSessionData
 import forms.individual._
+import forms.individual.accountingperiod.AccountingPeriodForm
 import forms.individual.business._
 import forms.individual.email.{CaptureConsentForm, EmailCaptureForm}
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import models._
+import models.common.BusinessAccountingPeriod
 import models.individual.JourneyStep.{Confirmation, PreSignUp}
 import org.jsoup.nodes.Element
 import org.scalatest._
@@ -402,6 +404,18 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
         ))
     }
 
+    def accountingPeriod: WSResponse = get("/accounting-period-check")
+
+    def submitAccountingPeriod(request: Option[BusinessAccountingPeriod]): WSResponse = {
+      post("/accounting-period-check")(
+        request.fold(Map.empty[String, Seq[String]])(
+          model => AccountingPeriodForm.accountingPeriodForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        )
+      )
+    }
+
+    def accountingPeriodNotSupported: WSResponse = get("/accounting-period-not-supported")
+
     def submitMaintenance(): WSResponse = post("/error/maintenance")(Map.empty)
 
     def submitAddMTDITOverview(): WSResponse = post("/claim-enrolment/overview", Map(JourneyStateKey -> ClaimEnrolmentJourney.name))(Map.empty)
@@ -502,7 +516,9 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
         )
       )
     }
+
     def showIncomeSourcesIncomplete(includeState: Boolean = true): WSResponse = get("/details/income-sources-incomplete", includeState = includeState)
+
     def submitIncomeSourcesIncomplete(sessionData: Map[String, String] = Map.empty): WSResponse = {
       post("/details/income-sources-incomplete", sessionData)(Map.empty)
     }

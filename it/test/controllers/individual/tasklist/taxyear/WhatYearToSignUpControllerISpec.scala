@@ -145,7 +145,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
       }
     }
 
-    "redirect to the What You Need to Do ORM page when not in edit mode" when {
+    "redirect to the Accounting Period page" when {
 
       "selecting the Current radio button" in {
         val userInput = Current
@@ -157,10 +157,10 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
         When("POST /business/what-year-to-sign-up is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, Some(userInput))
 
-        Then("Should return a SEE_OTHER with a redirect location of What You Need to Do")
+        Then("Should return a SEE_OTHER with a redirect location of Accounting Period")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(IndividualURI.whatYouNeedToDoURI)
+          redirectURI(controllers.individual.accountingperiod.routes.AccountingPeriodController.show.url)
         )
       }
     }

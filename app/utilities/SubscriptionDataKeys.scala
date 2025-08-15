@@ -19,6 +19,7 @@ package utilities
 object SubscriptionDataKeys {
   val BusinessName = "BusinessName"
   val SelectedTaxYear = "SelectedTaxYear"
+  val AccountingPeriod = "AccountingPeriod"
   val PropertyAccountingMethod = "PropertyAccountingMethod"
   val OverseasPropertyAccountingMethod = "OverseasPropertyAccountingMethod"
   val PropertyStartDate = "PropertyStartDate"
