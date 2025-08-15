@@ -88,7 +88,7 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
   val completeDetails: CompleteDetails = CompleteDetails(
     incomeSources = IncomeSources(
       soleTraderBusinesses = Some(SoleTraderBusinesses(
-        accountingMethod = Cash,
+        accountingMethod = Some(Cash),
         businesses = Seq(
           SoleTraderBusiness(
             id = "id",
@@ -107,11 +107,11 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
       )),
       ukProperty = Some(UKProperty(
         startDate = Some(LocalDate.of(1980, 1, 2)),
-        accountingMethod = Cash
+        accountingMethod = Some(Cash)
       )),
       foreignProperty = Some(ForeignProperty(
         startDate = Some(LocalDate.of(1980, 1, 3)),
-        accountingMethod = Cash
+        accountingMethod = Some(Cash)
       ))
     ),
     taxYear = AccountingYearModel(Current)
