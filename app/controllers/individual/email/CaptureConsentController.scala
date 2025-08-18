@@ -45,7 +45,7 @@ class CaptureConsentController @Inject()(view: CaptureConsent,
           Ok(view(
             captureConsentForm = captureConsentForm.fill(maybeYesNo),
             postAction = controllers.individual.email.routes.CaptureConsentController.submit(),
-            backUrl = controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+            backUrl = controllers.individual.accountingperiod.routes.AccountingPeriodController.show.url
           ))
       }
     }
@@ -57,7 +57,7 @@ class CaptureConsentController @Inject()(view: CaptureConsent,
         Future.successful(BadRequest(view(
           captureConsentForm = formWithErrors,
           postAction = controllers.individual.email.routes.CaptureConsentController.submit(),
-          backUrl = controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+          backUrl = controllers.individual.accountingperiod.routes.AccountingPeriodController.show.url
         ))),
       yesNo =>
         for {

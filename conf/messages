@@ -51,6 +51,7 @@ base.tax-year.current                                           = Current tax ye
 base.tax-year.next                                              = Next tax year (6 April {0} to 5 April {1})
 base.print-page                                                 = Print this page
 base.section-caption.hidden                                     = This section is
+base.or                                                         = or
 
 ## Preferences call back page
 preferences-callback.title                                      = Do you want to continue?
@@ -164,6 +165,28 @@ business.what-year-to-sign-up.para2.link-href                   = https://www.go
 business.what-year-to-sign-up.option-1                          = Current tax year
 business.what-year-to-sign-up.option-1.hint                     = You’ll need to use your software to send any missed quarterly updates for the year so far
 business.what-year-to-sign-up.option-2                          = Next tax year
+
+## Accounting period
+accounting-period.heading                                       = What accounting period do you use for your business?
+accounting-period.para-1                                        = This is the accounting period you use each year when reporting your business income and expenses to HMRC.
+accounting-period.para-2                                        = Your accounting period runs from the date your books or accounts start. It ends on the date your books or accounts are made up to.
+accounting-period.sixth-april-to-fifth-april                    = 6 April to 5 April
+accounting-period.sixth-april-to-fifth-april.hint               = Your books or accounts start on 6 April and are made up to 5 April of the following year (such as, 6 April 2026 to 5 April 2027)
+accounting-period.first-april-to-thirty-first-march             = 1 April to 31 March
+accounting-period.first-april-to-thirty-first-march.hint        = Your books or accounts start on 1 April and are made up to 31 March of the following year (such as, 1 April 2026 to 31 March 2027)
+accounting-period.other                                         = Neither of these
+accounting-period.error                                         = Select if your accounting period runs from 6 April to 5 April, 1 April to 31 March, or neither of these
+
+## Accounting period not supported
+accounting-period-not-supported.heading                         = You cannot sign up yet
+accounting-period-not-supported.para-one                        = Your business does not use an accounting period that runs from either:
+accounting-period-not-supported.bullet-one                      = 1 April to 31 March
+accounting-period-not-supported.bullet-two                      = 6 April to 5 April
+accounting-period-not-supported.para-two                        = Making Tax Digital for Income Tax is only available to people who use these business accounting periods.
+accounting-period-not-supported.para-three                      = In the future, we may extend this service to more people.
+accounting-period-not-supported.send-self-assessment            = Continue submitting your {0} as normal.
+accounting-period-not-supported.send-self-assessment.link       = Self Assessment tax return
+
 
 # Property Start Date Before Limit Page
 property.start-date-before-limit.heading                        = Did you start getting this income before 6 April {0}?
