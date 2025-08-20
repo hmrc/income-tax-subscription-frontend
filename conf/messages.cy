@@ -1163,8 +1163,9 @@ individual.global-check-your-answers.income-sources.foreign-property.value      
 individual.global-check-your-answers.income-sources.foreign-property.start-date                 = Dyddiad dechrau
 individual.global-check-your-answers.income-sources.foreign-property.before-start-date-limit    = Cyn 6 Ebrill {0}
 individual.global-check-your-answers.income-sources.foreign-property.accounting-method          = Dull cyfrifyddu
-individual.global-check-your-answers.para-two                                                   = Drwy fynd yn eich blaen, rydych yn cadarnhau bod yr wybodaeth rydych wedi’i rhoi’n gywir ac yn gyflawn hyd eithaf eich gwybodaeth.
-individual.global-check-your-answers.para-three                                                 = Pan fyddwch chi’n parhau, byddwn ni’n eich cofrestru. Gall hyn gymryd ychydig o eiliadau.
+individual.gloabl-check-your-answers.bottom.heading                                             = Datganiad
+individual.global-check-your-answers.para-two                                                   = Mae’n rhaid i’r wybodaeth a roddwyd gennych fod yn gywir hyd eithaf eich gwybodaeth.
+individual.global-check-your-answers.para-three                                                 = Wrth gadarnhau, byddwch yn cael eich cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
 
 # Agent Global Check Your Answers
 agent.global-check-your-answers.heading                                                         = Datganiad

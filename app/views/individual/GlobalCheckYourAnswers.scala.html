@@ -53,12 +53,6 @@
 
     <p class="govuk-body">@messages("individual.global-check-your-answers.para")</p>
 
-    <p class="govuk-body govuk-!-display-none-print hmrc-!-js-visible">
-        <a href="#" data-module="hmrc-print-link" class="govuk-link">
-            @messages("base.print-page")
-        </a>
-    </p>
-
     <h2 class="govuk-heading-m">@messages("individual.global-check-your-answers.before-signing-up.heading")</h2>
 
     @compatibleSoftwareSection()
@@ -80,6 +74,12 @@
             saveAndReturnReference = Some("global-check-your-answers")
         )
     }
+
+    <p class="govuk-body govuk-!-display-none-print hmrc-!-js-visible">
+    <a href="#" data-module="hmrc-print-link" class="govuk-link">
+        @messages("base.print-page")
+    </a>
+    </p>
 
 }
 
