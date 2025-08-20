@@ -17,7 +17,7 @@
 package views.individual.accountingperiod
 
 import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
+import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.Html
 import utilities.ViewSpec
 import views.html.individual.accountingPeriod.AccountingPeriodNotSupported
@@ -31,11 +31,11 @@ class AccountingPeriodNotSupportedViewSpec extends ViewSpec {
     import AccountingPeriodNotSupportedMessages._
 
     "have the correct template details" in new TemplateViewTest(
-        view = page,
-        isAgent = false,
-        title = heading,
-        backLink = Some(controllers.individual.accountingperiod.routes.AccountingPeriodController.show.url)
-      )
+      view = page,
+      isAgent = false,
+      title = heading,
+      backLink = Some(controllers.individual.accountingperiod.routes.AccountingPeriodController.show.url)
+    )
 
     "have a heading" in {
       document.getH1Element.text mustBe AccountingPeriodNotSupportedMessages.heading
@@ -56,16 +56,14 @@ class AccountingPeriodNotSupportedViewSpec extends ViewSpec {
       document.mainContent.selectNth("p", 2).text mustBe paraTwo
     }
 
-    "have the correct third paragraph" in {
-      document.mainContent.selectNth("p", 3).text mustBe paraThree
-    }
+    "have the correct third paragraph" which {
+      def para: Element = document.mainContent.selectNth("p", 3)
 
-    "have the correct fourth paragraph" which {
       "has the correct text" in {
-        document.mainContent.selectNth("p", 4).text mustBe paraFour
+        para.text mustBe paraFour
       }
       "has a link" in {
-        val link = document.mainContent.selectNth("p", 4).selectHead("a")
+        val link = para.selectHead("a")
         link.text mustBe paraFourLinkText
         link.attr("href") mustBe paraFourLinkHref
       }
@@ -81,13 +79,12 @@ class AccountingPeriodNotSupportedViewSpec extends ViewSpec {
   private def document: Document = Jsoup.parse(page.body)
 
   object AccountingPeriodNotSupportedMessages {
-    val heading = "You cannot sign up yet"
-    val paraOne = "Your business does not use an accounting period that runs from either:"
-    val bulletOne = "1 April to 31 March"
-    val bulletTwo = "6 April to 5 April"
-    val paraTwo = "Making Tax Digital for Income Tax is only available to people who use these business accounting periods."
-    val paraThree = "In the future, we may extend this service to more people."
-    val paraFour = "Continue submitting your Self Assessment tax return as normal."
+    val heading = "Your business accounting period is not yet supported"
+    val paraOne = "Making Tax Digital for Income Tax is only available to people who use these business accounting periods:"
+    val bulletOne = "6 April to 5 April"
+    val bulletTwo = "1 April to 31 March"
+    val paraTwo = "From 2026/27, this service will be extended to people with any accounting period."
+    val paraFour = "You’ll need to continue to submit your Self Assessment tax return as normal."
     val paraFourLinkText = "Self Assessment tax return"
     val paraFourLinkHref = "https://www.gov.uk/self-assessment-tax-returns/sending-return"
   }

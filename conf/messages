@@ -178,13 +178,12 @@ accounting-period.other                                         = Neither of the
 accounting-period.error                                         = Select if your accounting period runs from 6 April to 5 April, 1 April to 31 March, or neither of these
 
 ## Accounting period not supported
-accounting-period-not-supported.heading                         = You cannot sign up yet
-accounting-period-not-supported.para-one                        = Your business does not use an accounting period that runs from either:
-accounting-period-not-supported.bullet-one                      = 1 April to 31 March
-accounting-period-not-supported.bullet-two                      = 6 April to 5 April
-accounting-period-not-supported.para-two                        = Making Tax Digital for Income Tax is only available to people who use these business accounting periods.
-accounting-period-not-supported.para-three                      = In the future, we may extend this service to more people.
-accounting-period-not-supported.send-self-assessment            = Continue submitting your {0} as normal.
+accounting-period-not-supported.heading                         = Your business accounting period is not yet supported
+accounting-period-not-supported.para-one                        = Making Tax Digital for Income Tax is only available to people who use these business accounting periods:
+accounting-period-not-supported.bullet-one                      = 6 April to 5 April
+accounting-period-not-supported.bullet-two                      = 1 April to 31 March
+accounting-period-not-supported.para-two                        = From 2026/27, this service will be extended to people with any accounting period.
+accounting-period-not-supported.send-self-assessment            = You’ll need to continue to submit your {0} as normal.
 accounting-period-not-supported.send-self-assessment.link       = Self Assessment tax return
 
 
