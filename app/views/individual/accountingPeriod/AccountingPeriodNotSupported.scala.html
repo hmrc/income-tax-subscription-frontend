@@ -33,12 +33,11 @@
 
     <p class="govuk-body">@messages("accounting-period-not-supported.para-two")</p>
 
-    <p class="govuk-body">@messages("accounting-period-not-supported.para-three") </p>
-
     <p class="govuk-body">
-    @Html(messages("accounting-period-not-supported.send-self-assessment",
-            <a class="govuk-link" href="https://www.gov.uk/self-assessment-tax-returns/sending-return">{messages("accounting-period-not-supported.send-self-assessment.link")}</a>
-    ))
+        @Html(messages(
+            key = "accounting-period-not-supported.send-self-assessment",
+            args = <a class="govuk-link" href="https://www.gov.uk/self-assessment-tax-returns/sending-return">{messages("accounting-period-not-supported.send-self-assessment.link")}</a>
+        ))
     </p>
 
 }

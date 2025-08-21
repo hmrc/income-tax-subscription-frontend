@@ -165,13 +165,12 @@ accounting-period.other                                         = Dim un o’r r
 accounting-period.error                                         = Dewiswch a yw’ch cyfnod cyfrifyddu yn rhedeg o 6 Ebrill i 5 Ebrill, 1 Ebrill i 31 Mawrth, neu dim un o’r rhain
 
 ## Accounting period not supported
-accounting-period-not-supported.heading                         = Ni allwch gofrestru ar hyn o bryd
-accounting-period-not-supported.para-one                        = Nid yw’ch busnes yn defnyddio cyfnod cyfrifyddu sy’n rhedeg o naill ai:
-accounting-period-not-supported.bullet-one                      = 1 Ebrill i 31 Mawrth
-accounting-period-not-supported.bullet-two                      = 6 Ebrill i 5 Ebrill
-accounting-period-not-supported.para-two                        = Mae Troi Treth yn Ddigidol (MTD) ar gyfer Treth Incwm ond ar gael i bobl sy’n defnyddio’r cyfnodau cyfrifyddu busnes hyn.
-accounting-period-not-supported.para-three                      = Yn y dyfodol, mae’n bosibl y caiff y gwasanaeth hwn ei ymestyn i ragor o bobl.
-accounting-period-not-supported.send-self-assessment            = Parhewch i gyflwyno’ch {0} yn ôl yr arfer.
+accounting-period-not-supported.heading                         = Nid yw cyfnod cyfrifyddu’ch busnes wedi’i gefnogi eto
+accounting-period-not-supported.para-one                        = Dim ond i bobl sy’n defnyddio’r cyfnodau cyfrifyddu busnes hyn y mae Troi Treth yn Ddigidol ar gyfer Treth Incwm ar gael:
+accounting-period-not-supported.bullet-one                      = 6 Ebrill i 5 Ebrill
+accounting-period-not-supported.bullet-two                      = 1 Ebrill i 31 Mawrth
+accounting-period-not-supported.para-two                        = O 2026/27 ymlaen, bydd y gwasanaeth hwn yn cael ei ymestyn i bobl ag unrhyw gyfnod cyfrifyddu.
+accounting-period-not-supported.send-self-assessment            = Bydd angen i chi barhau i gyflwyno’ch {0} fel arfer.
 accounting-period-not-supported.send-self-assessment.link       = Ffurflen Dreth Hunanasesiad
 
 # Property Start Date Before Limit Page

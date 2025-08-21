@@ -30,6 +30,7 @@ class AccountingPeriodNotSupportedController @Inject()(view: AccountingPeriodNot
                                                       (implicit val mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   val show: Action[AnyContent] = (identify andThen journeyRefiner) { implicit request =>
-      Ok(view(backUrl = routes.AccountingPeriodController.show.url))
+    Ok(view(backUrl = routes.AccountingPeriodController.show.url))
   }
+
 }
