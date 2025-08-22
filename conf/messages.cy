@@ -1163,7 +1163,7 @@ individual.global-check-your-answers.income-sources.foreign-property.value      
 individual.global-check-your-answers.income-sources.foreign-property.start-date                 = Dyddiad dechrau
 individual.global-check-your-answers.income-sources.foreign-property.before-start-date-limit    = Cyn 6 Ebrill {0}
 individual.global-check-your-answers.income-sources.foreign-property.accounting-method          = Dull cyfrifyddu
-individual.gloabl-check-your-answers.bottom.heading                                             = Datganiad
+individual.global-check-your-answers.bottom.heading                                             = Datganiad
 individual.global-check-your-answers.para-two                                                   = Mae’n rhaid i’r wybodaeth a roddwyd gennych fod yn gywir hyd eithaf eich gwybodaeth.
 individual.global-check-your-answers.para-three                                                 = Wrth gadarnhau, byddwch yn cael eich cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
 

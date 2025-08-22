@@ -26,6 +26,7 @@
 @import views.html.helpers.{ContinueButton, CheckYourAnswers, CheckYourAnswersRow, SaveAndContinueButtonHelper}
 @import views.html.templates.PrincipalMainTemplate
 @import config.AppConfig
+@import utilities.AccountingPeriodUtil
 
 @this(
         mainTemplate: PrincipalMainTemplate,
@@ -61,7 +62,7 @@
 
     @incomeSourcesSection(completeDetails.incomeSources)
 
-    <h2 class="govuk-heading-m">@messages("individual.gloabl-check-your-answers.bottom.heading")</h2>
+    <h2 class="govuk-heading-m">@messages("individual.global-check-your-answers.bottom.heading")</h2>
 
     <p class="govuk-body">@messages("individual.global-check-your-answers.para-two")</p>
 
@@ -118,8 +119,12 @@
 
 @taxYear(accountingYear: AccountingYear) = @{
     accountingYear match {
-        case Current => messages("individual.global-check-your-answers.tax.year.current")
-        case Next => messages("individual.global-check-your-answers.tax.year.next")
+        case Current => {
+            s"${AccountingPeriodUtil.getCurrentTaxYear.startDate.year} ${messages("base.to")} ${AccountingPeriodUtil.getCurrentTaxYear.endDate.year}"
+        }
+        case Next => {
+            s"${AccountingPeriodUtil.getNextTaxYear.startDate.year} ${messages("base.to")} ${AccountingPeriodUtil.getNextTaxYear.endDate.year}"
+        }
     }
 }
 
