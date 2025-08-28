@@ -72,9 +72,10 @@ class AccountingPeriodViewSpec extends ViewSpec {
       "has the correct radio inputs" in {
         form.mustHaveRadioInput(selector = "fieldset")(
           name = "accountingPeriod",
-          legend = AccountingPeriodMessages.heading,
+          legend = AccountingPeriodMessages.legend,
           isHeading = false,
-          isLegendHidden = true,
+          isLegendHidden = false,
+          headingClasses = Some("govuk-fieldset__legend--m"),
           hint = None,
           errorMessage = None,
           radioContents = Seq(
@@ -111,9 +112,10 @@ class AccountingPeriodViewSpec extends ViewSpec {
   private def document(hasError: Boolean = false): Document = Jsoup.parse(page(hasError).body)
 
   object AccountingPeriodMessages {
-    val heading = "What accounting period do you use for your business?"
+    val heading = "Your business accounting period"
     val paraOne = "This is the accounting period you use each year when reporting your business income and expenses to HMRC."
     val paraTwo = "Your accounting period runs from the date your books or accounts start. It ends on the date your books or accounts are made up to."
+    val legend = "What accounting period do you use for your business?"
     val sixthToFifth = "6 April to 5 April"
     val sixthToFifthHint = "Your books or accounts start on 6 April and are made up to 5 April of the following year (such as, 6 April 2026 to 5 April 2027)"
     val firstToThirtyFirst = "1 April to 31 March"

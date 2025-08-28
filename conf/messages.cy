@@ -154,15 +154,16 @@ business.what-year-to-sign-up.option-1.hint                     = Bydd angen i c
 business.what-year-to-sign-up.option-2                          = Blwyddyn dreth nesaf
 
 ## Accounting period
-accounting-period.heading                                       = Pa gyfnod cyfrifyddu yr ydych yn ei ddefynyddio ar gyfer eich busnes?
-accounting-period.para-1                                        = Dyma’r cyfnod cyfrifyddu rydych chi’n ei ddefnyddio bob blwyddyn wrth roi gwybod am incwm eich busnes a’ch treuliau busnes i CThEF.
-accounting-period.para-2                                        = Mae eich cyfnod cyfrifyddu yn rhedeg o ddyddiad dechrau’ch cofnodion neu’ch cyfrifon. Nodwch y dyddiad y caewyd eich llyfrau neu’ch cyfrifon.
+accounting-period.heading                                       = Cyfnod cyfrifyddu eich busnes
+accounting-period.para-1                                        = Dyma’r cyfnod cyfrifyddu rydych chi’n ei ddefnyddio bob blwyddyn wrth roi gwybod i CThEF am eich incwm a threuliau busnes.
+accounting-period.para-2                                        = Mae eich cyfnod cyfrifyddu yn rhedeg o ddyddiad dechrau’ch cofnodion neu’ch cyfrifon. Mae’n dod i ben ar y dyddiad y caewyd eich llyfrau neu’ch cyfrifon.
+accounting-period.legend                                        = Pa gyfnod cyfrifyddu yr ydych yn ei ddefnyddio ar gyfer eich busnes?
 accounting-period.sixth-april-to-fifth-april                    = 6 Ebrill i 5 Ebrill
 accounting-period.sixth-april-to-fifth-april.hint               = Mae eich llyfrau neu’ch cyfrifon yn dechrau ar 6 Ebrill ac yn cau ar 5 Ebrill y flwyddyn ganlynol (er enghraifft, 6 Ebrill 2026 i 5 Ebrill 2027)
 accounting-period.first-april-to-thirty-first-march             = 1 Ebrill i 31 Mawrth
 accounting-period.first-april-to-thirty-first-march.hint        = Mae eich llyfrau neu’ch cyfrifon yn dechrau ar 1 Ebrill ac yn cau ar 31 Mawrth y flwyddyn ganlynol (er enghraifft, 1 Ebrill 2026 i 31 Mawrth 2027)
 accounting-period.other                                         = Dim un o’r rhain
-accounting-period.error                                         = Dewiswch a yw’ch cyfnod cyfrifyddu yn rhedeg o 6 Ebrill i 5 Ebrill, 1 Ebrill i 31 Mawrth, neu dim un o’r rhain
+accounting-period.error                                         = Dewiswch pa gyfnod cyfrifyddu rydych yn ei ddefnyddio ar gyfer eich busnes
 
 ## Accounting period not supported
 accounting-period-not-supported.heading                         = Nid yw cyfnod cyfrifyddu’ch busnes wedi’i gefnogi eto

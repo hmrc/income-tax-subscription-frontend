@@ -460,6 +460,7 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
                                              legend: String,
                                              isHeading: Boolean,
                                              isLegendHidden: Boolean,
+                                             headingClasses: Option[String] = None,
                                              hint: Option[String],
                                              errorMessage: Option[String],
                                              radioContents: Seq[RadioItem],
@@ -468,7 +469,7 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
       val checkpoint: Checkpoint = new Checkpoint()
       val radioFieldSet: Element = element.selectHead(selector)
 
-      validateFieldSetLegend(radioFieldSet, legend, isHeading, isLegendHidden, checkpoint)
+      validateFieldSetLegend(radioFieldSet, legend, isHeading, isLegendHidden, headingClasses, checkpoint)
 
       hint.foreach { hint =>
         val radioFieldSetHint: Element = radioFieldSet.selectHead(".govuk-hint")
@@ -507,6 +508,7 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
                                        legend: String,
                                        isHeading: Boolean,
                                        isLegendHidden: Boolean,
+                                       headingClasses: Option[String],
                                        checkpoint: Checkpoint): Unit = {
       val radioFieldSetLegend: Element = radioFieldSet.selectHead("legend")
       if (isHeading) {
@@ -525,6 +527,11 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
       } else {
         checkpoint {
           radioFieldSetLegend.attr("class") mustNot include("govuk-visually-hidden")
+
+          headingClasses map { classes =>
+            radioFieldSetLegend.attr("class") must include(classes)
+          }
+
         }
       }
     }

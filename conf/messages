@@ -167,15 +167,16 @@ business.what-year-to-sign-up.option-1.hint                     = You’ll need 
 business.what-year-to-sign-up.option-2                          = Next tax year
 
 ## Accounting period
-accounting-period.heading                                       = What accounting period do you use for your business?
+accounting-period.heading                                       = Your business accounting period
 accounting-period.para-1                                        = This is the accounting period you use each year when reporting your business income and expenses to HMRC.
 accounting-period.para-2                                        = Your accounting period runs from the date your books or accounts start. It ends on the date your books or accounts are made up to.
+accounting-period.legend                                        = What accounting period do you use for your business?
 accounting-period.sixth-april-to-fifth-april                    = 6 April to 5 April
 accounting-period.sixth-april-to-fifth-april.hint               = Your books or accounts start on 6 April and are made up to 5 April of the following year (such as, 6 April 2026 to 5 April 2027)
 accounting-period.first-april-to-thirty-first-march             = 1 April to 31 March
 accounting-period.first-april-to-thirty-first-march.hint        = Your books or accounts start on 1 April and are made up to 31 March of the following year (such as, 1 April 2026 to 31 March 2027)
 accounting-period.other                                         = Neither of these
-accounting-period.error                                         = Select if your accounting period runs from 6 April to 5 April, 1 April to 31 March, or neither of these
+accounting-period.error                                         = Select which accounting period you use for your business
 
 ## Accounting period not supported
 accounting-period-not-supported.heading                         = Your business accounting period is not yet supported
