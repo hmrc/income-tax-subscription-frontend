@@ -40,8 +40,9 @@
 @form(action = postAction) {
         @radioHelper(
             field = accountingPeriodForm(fieldName),
-            legend = messages("accounting-period.heading"),
+            legend = messages("accounting-period.legend"),
             isPageHeading = false,
+            headingClasses = "govuk-fieldset__legend--m",
             radioItems = Seq(
                 RadioItem(
                     content = Text(messages(s"accounting-period.${SixthAprilToFifthApril.key}")),
