@@ -139,7 +139,7 @@ class AccountingPeriodControllerISpec extends ComponentSpecBase with FeatureSwit
 
           result must have(
             httpStatus(SEE_OTHER),
-            redirectURI(controllers.individual.accountingperiod.routes.AccountingPeriodNotSupportedController.show.url)
+            redirectURI(controllers.individual.accountingperiod.routes.AccountingPeriodNonStandardController.show.url)
           )
         }
       }

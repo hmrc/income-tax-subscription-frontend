@@ -73,7 +73,7 @@ class AccountingPeriodController @Inject()(view: AccountingPeriod,
                   .map(_ => Redirect(nextPage))
               case OtherAccountingPeriod =>
                 audit(eligible = false, answer = OtherAccountingPeriod)
-                  .map(_ => Redirect(routes.AccountingPeriodNotSupportedController.show))
+                  .map(_ => Redirect(routes.AccountingPeriodNonStandardController.show))
             }
           case Left(_) => throw new InternalServerException("[AccountingPeriodController][submit] - Failed to save accounting period")
         }
