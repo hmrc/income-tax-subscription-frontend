@@ -36,7 +36,7 @@ class ClientDetailsViewSpec extends ViewSpec {
 
   val clientDetailsForm: Form[UserDetailsModel] = ClientDetailsForm.clientDetailsForm
 
-  val testError: FormError = FormError("startDate", "agent.error.client-details.date-of-birth.day-month-year.empty")
+  val testError: FormError = FormError("clientDateOfBirth", "agent.error.client-details.date-of-birth.all.empty")
 
   private def page(isEditMode: Boolean): HtmlFormat.Appendable = clientDetails(
     clientDetailsForm = ClientDetailsForm.clientDetailsForm,

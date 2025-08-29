@@ -966,25 +966,12 @@ agent.sign-up-complete.what-now.agent-services-account.link     = agent service 
 agent.sign-up-complete.what-now.send-quarterly                  = You will need to send quarterly updates using your software by:
 
 ## Errors ##
-agent.error.client-details.date-of-birth.invalid-chars                              = Enter a date of birth using numbers 0 to 9
-agent.error.client-details.date-of-birth.day-month-year.empty                       = Enter your client’s date of birth
-agent.error.client-details.date-of-birth.date.empty                                 = Enter your client’s date of birth
-agent.error.client-details.date-of-birth.day.empty                                  = Their date of birth must include a day
-agent.error.client-details.date-of-birth.month.empty                                = Their date of birth must include a month
-agent.error.client-details.date-of-birth.year.empty                                 = Their date of birth must include a year
-agent.error.client-details.date-of-birth.day-month.empty                            = Their date of birth must include a day and a month
-agent.error.client-details.date-of-birth.day-year.empty                             = Their date of birth must include a day and a year
-agent.error.client-details.date-of-birth.month-year.empty                           = Their date of birth must include a month and a year
-agent.error.client-details.date-of-birth.day-month-year.not-in-past                 = Their date of birth must be in the past
-agent.error.client-details.date-of-birth.day-month-year.invalid                     = The date must be a real date
-agent.error.client-details.date-of-birth.date.invalid                               = The date must be a real date
-agent.error.client-details.date-of-birth.day.invalid                                = The date must be a real date
-agent.error.client-details.date-of-birth.month.invalid                              = The date must be a real date
-agent.error.client-details.date-of-birth.year.invalid                               = The date must be a real date
-agent.error.client-details.date-of-birth.day-month.invalid                          = The date must be a real date
-agent.error.client-details.date-of-birth.day-year.invalid                           = The date must be a real date
-agent.error.client-details.date-of-birth.month-year.invalid                         = The date must be a real date
-agent.error.client-details.date-of-birth.year.length                                = The year must be in four digits. For example, 2020.
+agent.error.client-details.date-of-birth.all.empty                       = Enter your client’s date of birth
+agent.error.client-details.date-of-birth.invalid                         = The date must be a real date
+agent.error.client-details.date-of-birth.required                        = Their date of birth must include a {0}
+agent.error.client-details.date-of-birth.required.two                    = Their date of birth must include a {0} and a {1}
+agent.error.client-details.date-of-birth.day-month-year.not-in-past      = Their date of birth must be in the past
+agent.error.client-details.date-of-birth.year.length                     = The year must be in four digits. For example, 2020.
 
 # Sole Trader Eligibility invalid
 agent.error.eligibility.sole-trader.invalid                     = Select yes if your client is a sole trader that began trading on or after {0}?

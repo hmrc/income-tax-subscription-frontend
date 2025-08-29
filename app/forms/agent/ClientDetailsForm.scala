@@ -16,7 +16,7 @@
 
 package forms.agent
 
-import forms.formatters.DateModelMapping
+import forms.formatters.LocalDateMapping
 import forms.validation.Constraints.{invalidFormat, maxLength, ninoRegex, nonEmpty}
 import forms.validation.utils.ConstraintUtil._
 import models.DateModel
@@ -27,7 +27,7 @@ import play.api.data.validation.{Constraint, Invalid, Valid}
 
 import java.time.LocalDate
 
-object ClientDetailsForm {
+object ClientDetailsForm extends LocalDateMapping {
 
   val clientFirstName = "clientFirstName"
   val clientLastName = "clientLastName"
@@ -36,7 +36,7 @@ object ClientDetailsForm {
 
   val nameMaxLength = 105
 
-  val errorContext: String = "client-details.date-of-birth"
+  val dobErrorContext: String = "client-details.date-of-birth"
 
   val firstNameNonEmpty: Constraint[String] = nonEmpty("agent.error.client-details.first-name.empty")
   val lastNameNonEmpty: Constraint[String] = nonEmpty("agent.error.client-details.last-name.empty")
@@ -57,7 +57,7 @@ object ClientDetailsForm {
     if (dateModel.toLocalDate.isBefore(LocalDate.now)) {
       Valid
     } else {
-      Invalid(s"agent.error.$errorContext.day-month-year.not-in-past")
+      Invalid(s"agent.error.$dobErrorContext.day-month-year.not-in-past")
     }
   }
 
@@ -66,8 +66,13 @@ object ClientDetailsForm {
       clientFirstName -> default(text, "").verifying(firstNameNonEmpty andThen firstNameMaxLength andThen firstNameInvalid),
       clientLastName -> default(text, "").verifying(lastNameNonEmpty andThen lastNameMaxLength andThen lastNameInvalid),
       clientNino -> default(text, "").transform[String](_.filterNot(_.isWhitespace).toUpperCase, identity).verifying(emptyClientNino andThen validateClientNino),
-      clientDateOfBirth -> DateModelMapping.dateModelMapping(isAgent = true, errorContext, None, None, None).verifying(dateInPast)
+      clientDateOfBirth -> localDate(
+        invalidKey = s"agent.error.$dobErrorContext.invalid",
+        allRequiredKey = s"agent.error.$dobErrorContext.all.empty",
+        twoRequiredKey = s"agent.error.$dobErrorContext.required.two",
+        requiredKey = s"agent.error.$dobErrorContext.required",
+        invalidYearKey = s"agent.error.$dobErrorContext.year.length")
+        .transform(DateModel.dateConvert, DateModel.dateConvert).verifying(dateInPast)
     )(UserDetailsModel.apply)(UserDetailsModel.unapply)
   )
-
 }
