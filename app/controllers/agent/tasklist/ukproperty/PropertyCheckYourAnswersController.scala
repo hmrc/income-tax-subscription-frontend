@@ -21,6 +21,8 @@ import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import models.common.PropertyModel
 import play.api.mvc._
+import config.featureswitch.FeatureSwitching
+import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
 import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import views.html.agent.tasklist.ukproperty.PropertyCheckYourAnswers
@@ -34,7 +36,8 @@ class PropertyCheckYourAnswersController @Inject()(identify: IdentifierAction,
                                                    subscriptionDetailsService: SubscriptionDetailsService,
                                                    view: PropertyCheckYourAnswers,
                                                    val appConfig: AppConfig)
-                                                  (implicit cc: MessagesControllerComponents, ec: ExecutionContext) extends SignUpBaseController {
+                                                  (implicit cc: MessagesControllerComponents, ec: ExecutionContext)
+  extends SignUpBaseController with FeatureSwitching {
 
   def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
     withProperty(request.reference) { property =>
@@ -50,7 +53,7 @@ class PropertyCheckYourAnswersController @Inject()(identify: IdentifierAction,
 
   def submit(isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
     withProperty(request.reference) {
-      case property if property.isComplete =>
+      case property if property.isComplete(isEnabled(RemoveAccountingMethod)) =>
         subscriptionDetailsService.saveProperty(request.reference, property.copy(confirmed = true)) map {
           case Right(_) =>
             if (isGlobalEdit) {
@@ -78,6 +81,8 @@ class PropertyCheckYourAnswersController @Inject()(identify: IdentifierAction,
       controllers.agent.routes.GlobalCheckYourAnswersController.show.url
     } else if (isEditMode || isGlobalEdit) {
       controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
+    } else if (isEnabled(RemoveAccountingMethod)) {
+      routes.PropertyStartDateBeforeLimitController.show().url
     } else {
       routes.PropertyIncomeSourcesController.show().url
     }

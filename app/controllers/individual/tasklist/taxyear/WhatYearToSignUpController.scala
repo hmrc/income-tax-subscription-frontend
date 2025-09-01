@@ -18,7 +18,6 @@ package controllers.individual.tasklist.taxyear
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.EmailCaptureConsent
 import controllers.utils.ReferenceRetrieval
 import forms.individual.business.AccountingYearForm
 import models.common.AccountingYearModel
@@ -82,8 +81,8 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
                   Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
                 } else {
                   accountingYear match {
-                    case Current if isEnabled(EmailCaptureConsent) =>
-                      Redirect(controllers.individual.email.routes.CaptureConsentController.show())
+                    case Current =>
+                      Redirect(controllers.individual.accountingperiod.routes.AccountingPeriodController.show)
                     case _ =>
                       Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
                   }

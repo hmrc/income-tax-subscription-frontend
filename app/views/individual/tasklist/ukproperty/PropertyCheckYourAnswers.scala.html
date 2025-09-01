@@ -18,13 +18,16 @@
 @import utilities.AccountingPeriodUtil
 @import views.html.templates.PrincipalMainTemplate
 @import views.html.helpers.{SaveAndContinueButtonHelper, PageHeadingHelper}
+@import config.featureswitch.FeatureSwitchingImpl
+@import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
 
 @this(
     mainTemplate: PrincipalMainTemplate,
     form: FormWithCSRF,
     govukSummaryList: GovukSummaryList,
     pageHeadingHelper: PageHeadingHelper,
-    saveAndContinueButtonHelper: SaveAndContinueButtonHelper
+    saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
+    featureSwitching: FeatureSwitchingImpl
 )
 
 @(
@@ -47,6 +50,7 @@
 
     @govukSummaryList(SummaryList(
         rows = Seq(
+            Some(
             SummaryListRow(
                 key = Key(content = Text(messages("business.check-your-answers.content.uk-property-start-date.question"))),
                 value = if(viewModel.startDateBeforeLimit.contains(true) || viewModel.startDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))) {
@@ -64,10 +68,12 @@
                                 Text(messages("base.add"))
                             },
                             visuallyHiddenText = Some(messages("business.check-your-answers.content.uk-property-start-date.question"))
-                        )
+                     )
                     )
                 ))
-            ),
+            )
+        ) ++
+        (if (!featureSwitching.isEnabled(RemoveAccountingMethod)) Some(
             SummaryListRow(
                 key = Key(content = Text(messages("business.check-your-answers.content.uk-property-accounting-method.question"))),
                 value = Value(content = Text(accountingMethod(viewModel.accountingMethod))),
@@ -81,8 +87,9 @@
                     )
                 ))
             )
-        )
-    ))
+        ) else None)
+    ).flatten
+))
 
     @form(action = postAction) {
 

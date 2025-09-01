@@ -26,10 +26,18 @@ case class PropertyModel(
                           confirmed: Boolean = false
                         ) {
 
-  val isComplete: Boolean = {
-    startDateBeforeLimit match {
-      case Some(true) => accountingMethod.isDefined
-      case _ => accountingMethod.isDefined && startDate.isDefined
+
+  def isComplete(removeAccountingMethod: Boolean): Boolean = {
+    if (removeAccountingMethod) {
+      startDateBeforeLimit match {
+        case Some(true) => true
+        case _ => startDate.isDefined
+      }
+    } else {
+      startDateBeforeLimit match {
+        case Some(true) => accountingMethod.isDefined
+        case _ => accountingMethod.isDefined && startDate.isDefined
+      }
     }
   }
 

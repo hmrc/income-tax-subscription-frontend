@@ -135,7 +135,7 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
 
     def getNthListItem(nth: Int): Element = element.selectHead(s"li:nth-of-type($nth)")
 
-    def getBulletPoints: Elements = element.getElementsByTag("li")
+    def getBulletPoints: Elements = element.select("ul.govuk-list.govuk-list--bullet")
 
     def getH1Element: Element = element.selectHead("h1")
 
@@ -382,6 +382,11 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
       Succeeded
     }
 
+    def mustNotHaveSummaryListRow(key: String): Assertion = {
+      val summaryListRows = element.selectHead(".govuk-summary-list").select(".govuk-summary-list__row")
+      summaryListRows.contains(key) mustBe false
+    }
+
     //scalastyle:off
     def mustHaveTaskList(selector: String)(idPrefix: String, items: Seq[TaskListItemValues]): Assertion = {
       val checkpoint: Checkpoint = new Checkpoint()
@@ -455,6 +460,7 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
                                              legend: String,
                                              isHeading: Boolean,
                                              isLegendHidden: Boolean,
+                                             headingClasses: Option[String] = None,
                                              hint: Option[String],
                                              errorMessage: Option[String],
                                              radioContents: Seq[RadioItem],
@@ -463,7 +469,7 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
       val checkpoint: Checkpoint = new Checkpoint()
       val radioFieldSet: Element = element.selectHead(selector)
 
-      validateFieldSetLegend(radioFieldSet, legend, isHeading, isLegendHidden, checkpoint)
+      validateFieldSetLegend(radioFieldSet, legend, isHeading, isLegendHidden, headingClasses, checkpoint)
 
       hint.foreach { hint =>
         val radioFieldSetHint: Element = radioFieldSet.selectHead(".govuk-hint")
@@ -502,6 +508,7 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
                                        legend: String,
                                        isHeading: Boolean,
                                        isLegendHidden: Boolean,
+                                       headingClasses: Option[String],
                                        checkpoint: Checkpoint): Unit = {
       val radioFieldSetLegend: Element = radioFieldSet.selectHead("legend")
       if (isHeading) {
@@ -520,6 +527,11 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
       } else {
         checkpoint {
           radioFieldSetLegend.attr("class") mustNot include("govuk-visually-hidden")
+
+          headingClasses map { classes =>
+            radioFieldSetLegend.attr("class") must include(classes)
+          }
+
         }
       }
     }

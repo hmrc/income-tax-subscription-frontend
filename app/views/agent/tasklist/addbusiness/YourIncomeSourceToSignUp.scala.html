@@ -147,9 +147,9 @@
             ),
             SummaryListRow(
                 key = Key(content = Text(messages("base.status.label"))),
-                value = Value(statusTag(business.isComplete && incomeSources.selfEmploymentAccountingMethod.isDefined && business.confirmed)),
+                value = Value(statusTag(business.isComplete && business.confirmed && (featureSwitching.isEnabled(RemoveAccountingMethod) || incomeSources.selfEmploymentAccountingMethod.isDefined))),
                 actions = maybeStatusTagAction(
-                    isComplete = business.isComplete && incomeSources.selfEmploymentAccountingMethod.isDefined,
+                    isComplete = business.isComplete && (featureSwitching.isEnabled(RemoveAccountingMethod) || incomeSources.selfEmploymentAccountingMethod.isDefined),
                     isConfirmed = business.confirmed,
                     href = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${business.id}&isEditMode=true",
                     visuallyHidden = business.businessName.map(_.businessName)
@@ -209,7 +209,7 @@
                 key = Key(content = Text(messages("base.status.label"))),
                 value = Value(statusTag(ukProperty.confirmed)),
                 actions = maybeStatusTagAction(
-                    isComplete = ukProperty.isComplete,
+                    isComplete = ukProperty.isComplete(featureSwitching.isEnabled(RemoveAccountingMethod)),
                     isConfirmed = ukProperty.confirmed,
                     href = controllers.agent.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url
                 )
@@ -221,7 +221,7 @@
                 actions = Some(Actions(
                     items =
                         maybeIncomeSourceChangeAction(
-                            isComplete = ukProperty.isComplete,
+                            isComplete = ukProperty.isComplete(featureSwitching.isEnabled(RemoveAccountingMethod)),
                             isConfirmed = ukProperty.confirmed,
                             href = controllers.agent.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url
                         ) ++
@@ -289,7 +289,12 @@
     }.getOrElse {
         <div id="add-foreign-property" class="govuk-!-padding-bottom-6">
             <p class="govuk-body">
-                <a class="govuk-link" href="@controllers.agent.tasklist.overseasproperty.routes.IncomeSourcesOverseasPropertyController.show()">@messages("agent.your-income-source.foreign-property.add-link")</a>
+                <a class="govuk-link" href=@{
+                   if(featureSwitching.isEnabled(RemoveAccountingMethod)) {
+                   controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateBeforeLimitController.show()
+                   } else {
+                   controllers.agent.tasklist.overseasproperty.routes.IncomeSourcesOverseasPropertyController.show()
+                   }}>@messages("agent.your-income-source.foreign-property.add-link")</a>
             </p>
         </div>
     }

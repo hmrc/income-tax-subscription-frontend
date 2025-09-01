@@ -208,8 +208,15 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
   "backUrl" when {
     "the email capture consent feature switch is disabled" should {
       "return the what year to sign up page url" when {
-        "the user is eligible for both years and not mandated for the current year" in new Setup {
+        "the user is eligible for both years, not mandated and selects 'Current' year" in new Setup {
           val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, mandatedCurrentYear = false, None, Some(Current))
+
+          backUrl mustBe controllers.individual.accountingperiod.routes.AccountingPeriodController.show.url
+        }
+      }
+      "return the what tax year to sign up page url" when {
+        "the user is eligible for both years, not mandated and selects 'Next' year" in new Setup {
+          val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, mandatedCurrentYear = false, None, Some(Next))
 
           backUrl mustBe controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
         }

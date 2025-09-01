@@ -29,6 +29,8 @@
 @import views.html.templates.AgentMainTemplate
 @import utilities.AccountingPeriodUtil
 @import utilities.UserMatchingSessionUtil.ClientDetails
+@import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
+@import config.featureswitch.FeatureSwitchingImpl
 
 @this(
     mainTemplate: AgentMainTemplate,
@@ -39,7 +41,8 @@
     govukSummaryList : GovukSummaryList,
     implicitDateFormatter: ImplicitDateFormatterImpl,
     accountingPeriodService: AccountingPeriodService,
-    form: FormWithCSRF
+    form: FormWithCSRF,
+    featureSwitching: FeatureSwitchingImpl
 )
 
 @(postAction: Call,
@@ -122,40 +125,46 @@
 
         @govukSummaryList(SummaryList(
             rows = Seq(
-                SummaryListRow(
-                    key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.self-employment.trade"))),
-                    value = Value(content = Text(business.trade), classes = "govuk-!-font-weight-bold"),
-                    actions = Some(Actions(
-                        items = Seq(
-                            ActionItem(
-                                href = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${business.id}&isEditMode=true&isGlobalEdit=true",
-                                content = Text(messages("base.change")),
-                                visuallyHiddenText = Some(s"${business.trade} - ${business.name}")
+                    SummaryListRow(
+                        key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.self-employment.trade"))),
+                        value = Value(content = Text(business.trade), classes = "govuk-!-font-weight-bold"),
+                        actions = Some(Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${business.id}&isEditMode=true&isGlobalEdit=true",
+                                    content = Text(messages("base.change")),
+                                    visuallyHiddenText = Some(s"${business.trade} - ${business.name}")
+                                )
                             )
+                        ))
+                    ),
+                    SummaryListRow(
+                        key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.self-employment.name"))),
+                        value = Value(content = Text(business.name))
+                    ),
+                    SummaryListRow(
+                        key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.self-employment.start-date"))),
+                        value = Value(content = Text(
+                            business.startDate.map(_.toLongDate).getOrElse(
+                                messages("agent.global-check-your-answers.income-sources.self-employment.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
+                            )
+                        ))
+                    ),
+                    SummaryListRow(
+                        key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.self-employment.address"))),
+                        value = Value(content = Text(business.address.toString))
+                    )
+                ) ++ {
+                if(featureSwitching.isEnabled(RemoveAccountingMethod))
+                    Seq.empty[SummaryListRow]
+                else
+                    Seq(
+                        SummaryListRow(
+                            key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.self-employment.accounting-method"))),
+                            value = Value(content = Text(accountingMethod(soleTraderBusinesses.accountingMethod)))
                         )
-                    ))
-                ),
-                SummaryListRow(
-                    key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.self-employment.name"))),
-                    value = Value(content = Text(business.name))
-                ),
-                SummaryListRow(
-                    key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.self-employment.start-date"))),
-                    value = Value(content = Text(
-                        business.startDate.map(_.toLongDate).getOrElse(
-                            messages("agent.global-check-your-answers.income-sources.self-employment.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
-                        )
-                    ))
-                ),
-                SummaryListRow(
-                    key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.self-employment.address"))),
-                    value = Value(content = Text(business.address.toString))
-                ),
-                SummaryListRow(
-                    key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.self-employment.accounting-method"))),
-                    value = Value(content = Text(accountingMethod(soleTraderBusinesses.accountingMethod)))
-                )
-            )
+                    )
+                }
         ))
     }
 }
@@ -163,66 +172,80 @@
 @toUKPropertyDisplay(ukProperty: UKProperty) = {
 
     @govukSummaryList(SummaryList(
-        rows = Seq(
-            SummaryListRow(
-                key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.property.label"))),
-                value = Value(content = Text(messages("agent.global-check-your-answers.income-sources.uk-property.label")), classes = "govuk-!-font-weight-bold"),
-                actions = Some(Actions(
-                    items = Seq(
-                        ActionItem(
-                            href = controllers.agent.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(isGlobalEdit = true).url,
-                            content = Text(messages("base.change")),
-                            visuallyHiddenText = Some(messages("agent.global-check-your-answers.income-sources.uk-property.label"))
+        rows =
+            Seq(
+                SummaryListRow(
+                    key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.property.label"))),
+                    value = Value(content = Text(messages("agent.global-check-your-answers.income-sources.uk-property.label")), classes = "govuk-!-font-weight-bold"),
+                    actions = Some(Actions(
+                        items = Seq(
+                            ActionItem(
+                                href = controllers.agent.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(isGlobalEdit = true).url,
+                                content = Text(messages("base.change")),
+                                visuallyHiddenText = Some(messages("agent.global-check-your-answers.income-sources.uk-property.label"))
+                            )
+                        )
+                    ))
+                ),
+                SummaryListRow(
+                    key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.uk-property.start-date"))),
+                    value = Value(content = Text(
+                        ukProperty.startDate.map(_.toLongDate).getOrElse(
+                            messages("agent.global-check-your-answers.income-sources.uk-property.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
+                        )
+                    ))
+                )
+            ) ++ {
+                if(featureSwitching.isEnabled(RemoveAccountingMethod))
+                    Seq.empty[SummaryListRow]
+                else
+                    Seq(
+                        SummaryListRow(
+                            key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.uk-property.accounting-method"))),
+                            value = Value(content = Text(accountingMethod(ukProperty.accountingMethod)))
                         )
                     )
-                ))
-            ),
-            SummaryListRow(
-                key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.uk-property.start-date"))),
-                value = Value(content = Text(
-                    ukProperty.startDate.map(_.toLongDate).getOrElse(
-                        messages("agent.global-check-your-answers.income-sources.uk-property.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
-                    )
-                ))
-            ),
-            SummaryListRow(
-                key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.uk-property.accounting-method"))),
-                value = Value(content = Text(accountingMethod(ukProperty.accountingMethod)))
-            )
-        )
+            }
     ))
 }
 
 @toForeignPropertyDisplay(foreignProperty: ForeignProperty) = {
 
     @govukSummaryList(SummaryList(
-        rows = Seq(
-            SummaryListRow(
-                key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.property.label"))),
-                value = Value(content = Text(messages("agent.global-check-your-answers.income-sources.foreign-property.label")), classes = "govuk-!-font-weight-bold"),
-                actions = Some(Actions(
-                    items = Seq(
-                        ActionItem(
-                            href = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(isGlobalEdit = true).url,
-                            content = Text(messages("base.change")),
-                            visuallyHiddenText = Some(messages("agent.global-check-your-answers.income-sources.foreign-property.label"))
+        rows =
+            Seq(
+                SummaryListRow(
+                    key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.property.label"))),
+                    value = Value(content = Text(messages("agent.global-check-your-answers.income-sources.foreign-property.label")), classes = "govuk-!-font-weight-bold"),
+                    actions = Some(Actions(
+                        items = Seq(
+                            ActionItem(
+                                href = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(isGlobalEdit = true).url,
+                                content = Text(messages("base.change")),
+                                visuallyHiddenText = Some(messages("agent.global-check-your-answers.income-sources.foreign-property.label"))
+                            )
+                        )
+                    ))
+                ),
+                SummaryListRow(
+                    key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.foreign-property.start-date"))),
+                    value = Value(content = Text(
+                        foreignProperty.startDate.map(_.toLongDate).getOrElse(
+                            messages("agent.global-check-your-answers.income-sources.foreign-property.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
+                        )
+                    ))
+                )
+            ) ++ {
+                if(featureSwitching.isEnabled(RemoveAccountingMethod))
+                    Seq.empty[SummaryListRow]
+                else
+                    Seq(
+                        SummaryListRow(
+                            key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.foreign-property.accounting-method"))),
+                            value = Value(content = Text(accountingMethod(foreignProperty.accountingMethod)))
                         )
                     )
-                ))
-            ),
-            SummaryListRow(
-                key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.foreign-property.start-date"))),
-                value = Value(content = Text(
-                    foreignProperty.startDate.map(_.toLongDate).getOrElse(
-                        messages("agent.global-check-your-answers.income-sources.foreign-property.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
-                    )
-                ))
-            ),
-            SummaryListRow(
-                key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.foreign-property.accounting-method"))),
-                value = Value(content = Text(accountingMethod(foreignProperty.accountingMethod)))
-            )
-        )
+            }
     ))
 }
 
@@ -255,9 +278,9 @@
     }
 }
 
-@accountingMethod(accountingMethod: AccountingMethod) = @{
+@accountingMethod(accountingMethod: Option[AccountingMethod]) = @{
     accountingMethod match {
-        case Cash => messages("base.accounting-method.cash")
-        case Accruals => messages("base.accounting-method.accruals")
+        case Some(Cash) => messages("base.accounting-method.cash")
+        case Some(Accruals) => messages("base.accounting-method.accruals")
     }
 }

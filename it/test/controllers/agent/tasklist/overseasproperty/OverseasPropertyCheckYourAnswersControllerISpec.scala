@@ -17,6 +17,7 @@
 package controllers.agent.tasklist.overseasproperty
 
 import _root_.common.Constants.ITSASessionKeys
+import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub.subscriptionUri
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.IntegrationTestConstants._
@@ -31,6 +32,11 @@ import utilities.SubscriptionDataKeys.OverseasProperty
 import utilities.UserMatchingSessionUtil
 
 class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(RemoveAccountingMethod)
+  }
 
   "GET /report-quarterly/income-and-expenses/sign-up/client/business/overseas-property-check-your-answers" should {
     "return OK" in {
@@ -58,10 +64,10 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
     }
   }
 
-  "POST /report-quarterly/income-and-expenses/sign-up/client/business/overseas-property-check-your-answers" should {
-    "redirect to the agent your income source page" when {
-      "the user answered all the overseas property questions" should {
-        "save the property answers" in {
+  "POST /report-quarterly/income-and-expenses/sign-up/client/business/overseas-property-check-your-answers" when {
+    "remove accounting method feature switch is disabled" should {
+    "redirect to the your clients income source page" when {
+      "the client has answered all questions for overseas property" in {
           val testProperty = OverseasPropertyModel(
             accountingMethod = Some(Cash),
             startDate = Some(DateModel("10", "11", "2021"))
@@ -91,10 +97,67 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
 
           IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(expectedProperty, Some(1))
         }
-      }
 
-      "the user answered partial overseas property questions" should {
-        "not save the property answers" in {
+      "the client has answered partial overseas property questions" in {
+          AuthStub.stubAuthSuccess()
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(OverseasPropertyModel(accountingMethod = Some(Cash))))
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+
+          When("POST business/overseas-property-check-your-answers is called")
+          val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers(
+            Map(
+              UserMatchingSessionUtil.firstName -> testFirstName,
+              UserMatchingSessionUtil.lastName -> testLastName
+            )
+          )
+
+          Then("Should return a SEE_OTHER with a redirect location of the your income sources page")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(AgentURI.yourIncomeSourcesURI)
+          )
+
+          verifyPost(subscriptionUri(OverseasProperty), count = Some(0))
+        }
+      }
+    }
+
+    "remove accounting method feature switch is enabled" should {
+      "redirect to your clients income sources page" when {
+        "the client has answered all the questiosn for overseas property" in {
+          enable(RemoveAccountingMethod)
+          val testProperty = OverseasPropertyModel(
+            startDate = Some(DateModel("10", "11", "2021"))
+          )
+          val expectedProperty = testProperty.copy(confirmed = true)
+
+          AuthStub.stubAuthSuccess()
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testProperty))
+          IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(expectedProperty)
+          IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+
+          When("POST business/overseas-property-check-your-answers is called")
+          val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers(
+            Map(
+              UserMatchingSessionUtil.firstName -> testFirstName,
+              UserMatchingSessionUtil.lastName -> testLastName
+            )
+          )
+
+          Then("Should return a SEE_OTHER with a redirect location of the your income sources page")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(AgentURI.yourIncomeSourcesURI)
+          )
+
+          IncomeTaxSubscriptionConnectorStub.verifySaveOverseasProperty(expectedProperty, Some(1))
+        }
+
+        "the client has answered partial questions for overseas property" in {
+          enable(RemoveAccountingMethod)
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(OverseasPropertyModel(accountingMethod = Some(Cash))))
           SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))

@@ -26,6 +26,8 @@
 @import views.html.helpers.{ContinueButton, CheckYourAnswers, CheckYourAnswersRow, SaveAndContinueButtonHelper}
 @import views.html.templates.PrincipalMainTemplate
 @import config.AppConfig
+@import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
+@import config.featureswitch.FeatureSwitchingImpl
 
 @this(
         mainTemplate: PrincipalMainTemplate,
@@ -36,7 +38,8 @@
         readyToSignUpButton: ReadyToSignUpButton,
         saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
         form: FormWithCSRF,
-        appConfig: AppConfig
+        appConfig: AppConfig,
+        featureSwitching: FeatureSwitchingImpl
 )
 
 @(
@@ -167,12 +170,18 @@
                 SummaryListRow(
                     key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.self-employment.address"))),
                     value = Value(content = Text(business.address.toString))
-                ),
-                SummaryListRow(
-                    key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.self-employment.accounting-method"))),
-                    value = Value(content = Text(accountingMethod(soleTraderBusinesses.accountingMethod)))
                 )
-            )
+            ) ++ {
+                if(featureSwitching.isEnabled(RemoveAccountingMethod))
+                    Seq.empty[SummaryListRow]
+                else
+                    Seq(
+                        SummaryListRow(
+                            key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.self-employment.accounting-method"))),
+                            value = Value(content = Text(accountingMethod(soleTraderBusinesses.accountingMethod)))
+                        )
+                    )
+            }
         ))
     }
 }
@@ -200,12 +209,18 @@
                         messages("individual.global-check-your-answers.income-sources.uk-property.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
                     )
                 ))
-            ),
-            SummaryListRow(
-                key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.uk-property.accounting-method"))),
-                value = Value(content = Text(accountingMethod(ukProperty.accountingMethod)))
             )
-        )
+        ) ++ {
+            if(featureSwitching.isEnabled(RemoveAccountingMethod))
+                Seq.empty[SummaryListRow]
+            else
+                Seq(
+                    SummaryListRow(
+                        key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.uk-property.accounting-method"))),
+                        value = Value(content = Text(accountingMethod(ukProperty.accountingMethod)))
+                    )
+                )
+        }
     ))
 }
 
@@ -232,18 +247,24 @@
                         messages("individual.global-check-your-answers.income-sources.foreign-property.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
                     )
                 ))
-            ),
-            SummaryListRow(
-                key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.foreign-property.accounting-method"))),
-                value = Value(content = Text(accountingMethod(foreignProperty.accountingMethod)))
             )
-        )
+        ) ++ {
+            if(featureSwitching.isEnabled(RemoveAccountingMethod))
+                Seq.empty[SummaryListRow]
+            else
+                Seq(
+                    SummaryListRow(
+                        key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.foreign-property.accounting-method"))),
+                        value = Value(content = Text(accountingMethod(foreignProperty.accountingMethod)))
+                    )
+                )
+        }
     ))
 }
 
-@accountingMethod(accountingMethod: AccountingMethod) = @{
+@accountingMethod(accountingMethod: Option[AccountingMethod]) = @{
     accountingMethod match {
-        case Cash => messages("base.accounting-method.cash")
-        case Accruals => messages("base.accounting-method.accruals")
+        case Some(Cash) => messages("base.accounting-method.cash")
+        case Some(Accruals) => messages("base.accounting-method.accruals")
     }
 }

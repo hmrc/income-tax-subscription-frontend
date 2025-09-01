@@ -31,6 +31,8 @@ import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
 import utilities.{AccountingPeriodUtil, ImplicitDateFormatter}
 import views.agent.mocks.MockOverseasPropertyStartDate
+import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
+import config.featureswitch.FeatureSwitching
 
 import scala.concurrent.Future
 
@@ -39,8 +41,14 @@ class OverseasPropertyStartDateControllerSpec extends ControllerSpec
   with MockConfirmedClientJourneyRefiner
   with MockSubscriptionDetailsService
   with MockOverseasPropertyStartDate
+  with FeatureSwitching
   with GuiceOneAppPerSuite
   with I18nSupport {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(RemoveAccountingMethod)
+  }
 
   "show" must {
     "return OK with the page content" when {
@@ -95,6 +103,33 @@ class OverseasPropertyStartDateControllerSpec extends ControllerSpec
 
         status(result) mustBe OK
         contentType(result) mustBe Some(HTML)
+      }
+    }
+    "have a backlink" when {
+      "remove accounting method feature switch is enabled" in {
+        enable(RemoveAccountingMethod)
+        mockOverseasPropertyStartDate(
+          postAction = routes.OverseasPropertyStartDateController.submit(),
+          backUrl = routes.OverseasPropertyStartDateBeforeLimitController.show().url,
+          clientDetails = clientDetails
+        )
+
+        val backUrl = TestOverseasPropertyStartDateController.backUrl(isEditMode = false, isGlobalEdit = false)
+
+        backUrl mustBe routes.OverseasPropertyStartDateBeforeLimitController.show().url
+
+      }
+      "remove accounting method feature switch is disabled" in {
+        mockOverseasPropertyStartDate(
+          postAction = routes.OverseasPropertyStartDateController.submit(),
+          backUrl = routes.IncomeSourcesOverseasPropertyController.show().url,
+          clientDetails = clientDetails
+        )
+
+        val backUrl = TestOverseasPropertyStartDateController.backUrl(isEditMode = false, isGlobalEdit = false)
+
+        backUrl mustBe routes.IncomeSourcesOverseasPropertyController.show().url
+
       }
     }
   }
@@ -232,7 +267,8 @@ class OverseasPropertyStartDateControllerSpec extends ControllerSpec
     fakeConfirmedClientJourneyRefiner,
     mockSubscriptionDetailsService,
     mockView,
-    implicitDateFormatter
+    implicitDateFormatter)(
+    appConfig
   )
 
   override def messagesApi: MessagesApi = cc.messagesApi

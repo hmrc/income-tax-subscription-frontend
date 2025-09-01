@@ -51,6 +51,7 @@ base.tax-year.current                                           = Blwyddyn dreth
 base.tax-year.next                                              = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
 base.print-page                                                 = Argraffwch y dudalen hon
 base.section-caption.hidden                                     = Teitl yr adran hon yw
+base.or                                                         = neu
 
 ## Preferences call back page
 preferences-callback.title                                      = Ydych chi am fynd yn eich blaen?
@@ -151,6 +152,27 @@ business.what-year-to-sign-up.para2.link-href                   = https://www.go
 business.what-year-to-sign-up.option-1                          = Blwyddyn dreth bresennol
 business.what-year-to-sign-up.option-1.hint                     = Bydd angen i chi ddefnyddio’ch meddalwedd i anfon unrhyw ddiweddariadau chwarterol a gollwyd ar gyfer y flwyddyn hyd yma
 business.what-year-to-sign-up.option-2                          = Blwyddyn dreth nesaf
+
+## Accounting period
+accounting-period.heading                                       = Cyfnod cyfrifyddu eich busnes
+accounting-period.para-1                                        = Dyma’r cyfnod cyfrifyddu rydych chi’n ei ddefnyddio bob blwyddyn wrth roi gwybod i CThEF am eich incwm a threuliau busnes.
+accounting-period.para-2                                        = Mae eich cyfnod cyfrifyddu yn rhedeg o ddyddiad dechrau’ch cofnodion neu’ch cyfrifon. Mae’n dod i ben ar y dyddiad y caewyd eich llyfrau neu’ch cyfrifon.
+accounting-period.legend                                        = Pa gyfnod cyfrifyddu yr ydych yn ei ddefnyddio ar gyfer eich busnes?
+accounting-period.sixth-april-to-fifth-april                    = 6 Ebrill i 5 Ebrill
+accounting-period.sixth-april-to-fifth-april.hint               = Mae eich llyfrau neu’ch cyfrifon yn dechrau ar 6 Ebrill ac yn cau ar 5 Ebrill y flwyddyn ganlynol (er enghraifft, 6 Ebrill 2026 i 5 Ebrill 2027)
+accounting-period.first-april-to-thirty-first-march             = 1 Ebrill i 31 Mawrth
+accounting-period.first-april-to-thirty-first-march.hint        = Mae eich llyfrau neu’ch cyfrifon yn dechrau ar 1 Ebrill ac yn cau ar 31 Mawrth y flwyddyn ganlynol (er enghraifft, 1 Ebrill 2026 i 31 Mawrth 2027)
+accounting-period.other                                         = Dim un o’r rhain
+accounting-period.error                                         = Dewiswch pa gyfnod cyfrifyddu rydych yn ei ddefnyddio ar gyfer eich busnes
+
+## Accounting period not supported
+accounting-period-not-supported.heading                         = Nid yw cyfnod cyfrifyddu’ch busnes wedi’i gefnogi eto
+accounting-period-not-supported.para-one                        = Dim ond i bobl sy’n defnyddio’r cyfnodau cyfrifyddu busnes hyn y mae Troi Treth yn Ddigidol ar gyfer Treth Incwm ar gael:
+accounting-period-not-supported.bullet-one                      = 6 Ebrill i 5 Ebrill
+accounting-period-not-supported.bullet-two                      = 1 Ebrill i 31 Mawrth
+accounting-period-not-supported.para-two                        = O 2026/27 ymlaen, bydd y gwasanaeth hwn yn cael ei ymestyn i bobl ag unrhyw gyfnod cyfrifyddu.
+accounting-period-not-supported.send-self-assessment            = Bydd angen i chi barhau i gyflwyno’ch {0} fel arfer.
+accounting-period-not-supported.send-self-assessment.link       = Ffurflen Dreth Hunanasesiad
 
 # Property Start Date Before Limit Page
 property.start-date-before-limit.heading                        = A oeddech wedi dechrau cael yr incwm hwn cyn 6 Ebrill {0}?
@@ -846,6 +868,13 @@ agent.foreign-property.income-sources.accounting-method.accordion.content.bullet
 agent.foreign-property.income-sources.accounting-method.radio.cash                  = Cyfrifyddu ar sail arian parod
 agent.foreign-property.income-sources.accounting-method.radio.accruals              = Cyfrifyddu traddodiadol
 agent.error.overseas.property.income-source.start-date-before-limit.invalid         = Dewiswch ‘Iawn’ os oedd eich cleient wedi dechrau cael incwm o eiddo tramor cyn 6 Ebrill {0}
+
+# Agent Overseas Property Start Date Before Limit
+agent.overseas.property.start-date-before-limit.title            = Eiddo tramor eich cleient
+agent.overseas.property.start-date-before-limit.caption          = {0} | {1}
+agent.overseas.property.start-date-before-limit.heading          = Eiddo tramor eich cleient
+agent.overseas.property.start-date-before-limit.legend           = A oedd yr incwm hwn wedi dechrau cyn 6 Ebrill {0}?
+agent.error.overseas.property.start-date-before-limit.invalid    = Dewiswch ‘Iawn’ os oedd eich cleient wedi dechrau cael incwm o eiddo tramor cyn 6 Ebrill {0}
 
 ## Business Name
 agent.business.name.title                                       = Enw’r busnes
