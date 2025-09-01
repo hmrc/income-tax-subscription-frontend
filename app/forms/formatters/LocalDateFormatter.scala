@@ -18,10 +18,8 @@ package forms.formatters
 
 import play.api.data.FormError
 import play.api.data.format.Formatter
-import play.api.i18n.Messages
 
 import java.time.{LocalDate, Month}
-import scala.util.control.Exception.nonFatalCatch
 import scala.util.{Failure, Success, Try}
 
 private[formatters] class LocalDateFormatter(
@@ -130,7 +128,6 @@ private class MonthFormatter(invalidKey: String, args: Seq[String]) extends Form
       .bind(key, data)
       .flatMap {
         str =>
-          println(Console.CYAN + args + Console.RESET)
           months
             .find(m => m.getValue.toString == str.replaceAll("^0+", "") || m.toString == str.toUpperCase || m.toString.take(3) == str.toUpperCase)
             .map(x => Right(x.getValue))
