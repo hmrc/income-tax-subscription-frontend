@@ -16,15 +16,13 @@
 
 @import views.html.helpers.{ContinueButton, YesNoRadioHelper, PageHeadingHelper}
 @import views.html.templates.PrincipalMainTemplate
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 @import forms.individual.accountingperiod.AccountingPeriodNonStandardForm._
 
 @this(
 mainTemplate: PrincipalMainTemplate,
 yesNoRadioHelper: YesNoRadioHelper,
 continueButton: ContinueButton,
-form : FormWithCSRF,
-hmrcNewTabLinkHelper: HmrcNewTabLinkHelper
+form : FormWithCSRF
 )
 
 @(nonStandardAccountingPeriodForm: Form[YesNo], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
