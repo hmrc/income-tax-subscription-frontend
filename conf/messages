@@ -1079,13 +1079,13 @@ agent.business.progress-saved.content.sign-up-another-client-link     = sign up 
 agent.business.progress-saved.content.paragraph2                      = If you sign out, you’ll need to sign in again using the same Government Gateway User ID.
 
 ## Cannot go back to previous client
-agent.cannot-go-back-previous-client.title                      = You cannot go back to previous client
-agent.cannot-go-back-previous-client.heading                    = You cannot go back to previous client
-agent.cannot-go-back-previous-client.radio-option.heading       = To manage your client’s information you can:
-agent.cannot-go-back-previous-client.agent-service-account      = Go to your agent service account, if you finished signing the client up
-agent.cannot-go-back-previous-client.re-enter-client-details    = Re-enter the details of a client you did not finish signing up
-agent.cannot-go-back-previous-client.sign-up-another-client     = Sign up another client
-agent.cannot-go-back-previous-client.error.empty                = You must choose what you want to do next before you can continue.
+agent.cannot-go-back-previous-client.title                      = Sorry, there is a problem
+agent.cannot-go-back-previous-client.heading                    = Sorry, there is a problem
+agent.cannot-go-back-previous-client.para1                      = Choose what you want to do next.
+agent.cannot-go-back-previous-client.para2                      = You can:
+agent.cannot-go-back-previous-client.agent-service-account      = <a class="govuk-link" href="{0}">Go to your agent service account</a>, if you finished signing the client up.
+agent.cannot-go-back-previous-client.re-enter-client-details    = <a class="govuk-link" href="{0}">Re-enter the details of a client you did not finish signing up</a>
+agent.cannot-go-back-previous-client.sign-up-another-client     = <a class="govuk-link" href="{0}">Sign up another client</a>
 
 # Remove overseas property business
 remove-overseas-property-business.heading                       = Are you sure you want to delete your foreign property business?

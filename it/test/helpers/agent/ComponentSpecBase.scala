@@ -574,13 +574,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
     def showCannotGoBackToPreviousClient(): WSResponse = get("/cannot-go-back-to-previous-client")
 
-    def submitCannotGoBackToPreviousClient(cannotGoBack: Option[CannotGoBack]): WSResponse = post("/cannot-go-back-to-previous-client")(
-      cannotGoBack.fold(Map.empty[String, Seq[String]])(
-        model =>
-          CannotGoBackToPreviousClientForm.cannotGoBackToPreviousClientForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
-      )
-    )
-
     def noSA(): WSResponse = get("/register-for-SA")
 
     def getRouting(editMode: Boolean = false): WSResponse = get(s"/business/routing?editMode=$editMode")

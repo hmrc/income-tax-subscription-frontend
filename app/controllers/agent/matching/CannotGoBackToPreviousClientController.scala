@@ -19,8 +19,6 @@ package controllers.agent.matching
 import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.agent.actions.IdentifierAction
-import forms.agent.CannotGoBackToPreviousClientForm.cannotGoBackToPreviousClientForm
-import models.CannotGoBack
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import views.html.agent.matching.CannotGoBackToPreviousClient
 
@@ -28,30 +26,12 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton
 class CannotGoBackToPreviousClientController @Inject()(view: CannotGoBackToPreviousClient,
-                                                       identify: IdentifierAction,
-                                                       appConfig: AppConfig)
-                                                      (implicit cc: MessagesControllerComponents) extends SignUpBaseController {
+                                                       identify: IdentifierAction)
+                                                      (implicit cc: MessagesControllerComponents,
+                                                       appConfig: AppConfig) extends SignUpBaseController {
 
   val show: Action[AnyContent] = identify { implicit request =>
-    Ok(view(
-      cannotGoBackToPreviousClientForm = cannotGoBackToPreviousClientForm,
-      postAction = routes.CannotGoBackToPreviousClientController.submit
-    ))
-  }
-
-  val submit: Action[AnyContent] = identify { implicit request =>
-    cannotGoBackToPreviousClientForm.bindFromRequest().fold(
-      formWithErrors => BadRequest(view(
-        cannotGoBackToPreviousClientForm = formWithErrors,
-        postAction = routes.CannotGoBackToPreviousClientController.submit
-      )),
-      {
-        case CannotGoBack.AgentServiceAccount =>
-          Redirect(appConfig.agentServicesAccountHomeUrl)
-        case CannotGoBack.ReenterClientDetails | CannotGoBack.SignUpAnotherClient =>
-          Redirect(controllers.agent.routes.AddAnotherClientController.addAnother())
-      }
-    )
+    Ok(view())
   }
 
 }
