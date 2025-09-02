@@ -64,6 +64,10 @@ POST        /business/what-year-to-sign-up                       controllers.ind
 GET         /accounting-period-check                            controllers.individual.accountingperiod.AccountingPeriodController.show
 POST        /accounting-period-check                            controllers.individual.accountingperiod.AccountingPeriodController.submit
 
+# Accounting period Non Standard
+GET         /accounting-period-non-standard                      controllers.individual.accountingperiod.AccountingPeriodNonStandardController.show
+POST        /accounting-period-non-standard                      controllers.individual.accountingperiod.AccountingPeriodNonStandardController.submit
+
 # Accounting Period Not Supported
 GET         /accounting-period-not-supported                    controllers.individual.accountingperiod.AccountingPeriodNotSupportedController.show
 
