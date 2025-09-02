@@ -165,6 +165,14 @@ accounting-period.first-april-to-thirty-first-march.hint        = Mae eich llyfr
 accounting-period.other                                         = Dim un o’r rhain
 accounting-period.error                                         = Dewiswch pa gyfnod cyfrifyddu rydych yn ei ddefnyddio ar gyfer eich busnes
 
+## Accounting period non standard
+accounting-period-non-standard.heading                         = Nid yw cyfnod cyfrifyddu’ch busnes wedi’i gefnogi eto
+accounting-period-non-standard.para-one                        = Dim ond i bobl sy’n defnyddio’r cyfnodau cyfrifyddu busnes hyn y mae’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar gael:
+accounting-period-non-standard.bullet-one                      = 6 Ebrill i 5 Ebrill
+accounting-period-non-standard.bullet-two                      = 1 Ebrill i 31 Mawrth
+accounting-period-non-standard.form-legend                     = A hoffech gofrestru ar gyfer y flwyddyn dreth nesaf?
+accounting-period-non-standard.form-error                      = Dewiswch a hoffech gofrestru ar gyfer y flwyddyn dreth nesaf, sef 2026 i 2027
+
 ## Accounting period not supported
 accounting-period-not-supported.heading                         = Nid yw cyfnod cyfrifyddu’ch busnes wedi’i gefnogi eto
 accounting-period-not-supported.para-one                        = Dim ond i bobl sy’n defnyddio’r cyfnodau cyfrifyddu busnes hyn y mae Troi Treth yn Ddigidol ar gyfer Treth Incwm ar gael:

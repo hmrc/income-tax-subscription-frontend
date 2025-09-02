@@ -23,7 +23,7 @@ import config.AppConfig
 import config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import connectors.stubs.SessionDataConnectorStub.stubGetSessionData
 import forms.individual._
-import forms.individual.accountingperiod.AccountingPeriodForm
+import forms.individual.accountingperiod.{AccountingPeriodForm, AccountingPeriodNonStandardForm}
 import forms.individual.business._
 import forms.individual.email.{CaptureConsentForm, EmailCaptureForm}
 import helpers.IntegrationTestConstants._
@@ -410,6 +410,15 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
       post("/accounting-period-check")(
         request.fold(Map.empty[String, Seq[String]])(
           model => AccountingPeriodForm.accountingPeriodForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        )
+      )
+    }
+
+    def showNonStandardAccountingPeriod(): WSResponse = get("/accounting-period-non-standard")
+    def submitNonStandardAccountingPeriod(request: Option[YesNo]): WSResponse = {
+      post("/accounting-period-non-standard")(
+        request.fold(Map.empty[String, Seq[String]])(
+          model => AccountingPeriodNonStandardForm.nonStandardAccountingPeriodForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )
       )
     }
