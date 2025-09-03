@@ -19,9 +19,6 @@ package controllers.agent.matching
 import config.MockConfig
 import controllers.ControllerSpec
 import controllers.agent.actions.mocks.MockIdentifierAction
-import forms.agent.CannotGoBackToPreviousClientForm
-import forms.agent.CannotGoBackToPreviousClientForm.cannotGoBackToPreviousClientForm
-import models.CannotGoBack.{AgentServiceAccount, ReenterClientDetails, SignUpAnotherClient}
 import play.api.http.Status
 import play.api.mvc.Result
 import play.api.test.Helpers._
@@ -36,69 +33,17 @@ class CannotGoBackToPreviousClientControllerSpec extends ControllerSpec
 
   object TestCannotGoBackToPreviousClient extends CannotGoBackToPreviousClientController(
     mockCannotGoBackToPreviousClient,
-    fakeIdentifierAction,
-    MockConfig
-  )
+    fakeIdentifierAction
+  )(cc, MockConfig)
 
   "show" must {
     "return OK with the page content" in {
-      mockView(
-        cannotGoBackToPreviousClientForm = cannotGoBackToPreviousClientForm,
-        postAction = routes.CannotGoBackToPreviousClientController.submit
-      )
+      mockView()
 
       val result: Future[Result] = TestCannotGoBackToPreviousClient.show()(request)
 
       status(result) must be(Status.OK)
       contentType(result) mustBe Some(HTML)
-    }
-  }
-  "submit" must {
-    "redirect to the agent services account" when {
-      "agent services account is selected" in {
-        val result = TestCannotGoBackToPreviousClient.submit()(
-          request
-            .withMethod("POST")
-            .withFormUrlEncodedBody(CannotGoBackToPreviousClientForm.cannotGoBackToPreviousClient -> AgentServiceAccount.key)
-        )
-        status(result) must be(Status.SEE_OTHER)
-        redirectLocation(result) mustBe Some(MockConfig.agentServicesAccountHomeUrl)
-      }
-    }
-    "redirect to the add another client route" when {
-      "re-enter client details is selected" in {
-        val result = TestCannotGoBackToPreviousClient.submit()(
-          request
-            .withMethod("POST")
-            .withFormUrlEncodedBody(CannotGoBackToPreviousClientForm.cannotGoBackToPreviousClient -> ReenterClientDetails.key)
-        )
-        status(result) must be(Status.SEE_OTHER)
-        redirectLocation(result) mustBe Some(controllers.agent.routes.AddAnotherClientController.addAnother().url)
-      }
-      "sign up another client is selected" in {
-        val result = TestCannotGoBackToPreviousClient.submit()(
-          request
-            .withMethod("POST")
-            .withFormUrlEncodedBody(CannotGoBackToPreviousClientForm.cannotGoBackToPreviousClient -> SignUpAnotherClient.key)
-        )
-        status(result) must be(Status.SEE_OTHER)
-        redirectLocation(result) mustBe Some(controllers.agent.routes.AddAnotherClientController.addAnother().url)
-      }
-    }
-    "return a bad request" when {
-      "no option was selected" in {
-        mockView(
-          cannotGoBackToPreviousClientForm = cannotGoBackToPreviousClientForm.bind(Map.empty[String, String]),
-          postAction = routes.CannotGoBackToPreviousClientController.submit
-        )
-
-        val result: Future[Result] = TestCannotGoBackToPreviousClient.submit()(
-          request.withMethod("POST").withFormUrlEncodedBody()
-        )
-
-        status(result) mustBe BAD_REQUEST
-        contentType(result) mustBe Some(HTML)
-      }
     }
   }
 }

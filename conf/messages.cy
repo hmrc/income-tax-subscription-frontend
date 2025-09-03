@@ -1084,13 +1084,13 @@ agent.business.progress-saved.content.sign-up-another-client-link     = cofrestr
 agent.business.progress-saved.content.paragraph2                      = Os byddwch yn allgofnodi, bydd angen i chi fewngofnodi eto gan ddefnyddio’r un Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth.
 
 ## Cannot go back to previous client
-agent.cannot-go-back-previous-client.title                      = Ni allwch fynd yn ôl i gleient blaenorol
-agent.cannot-go-back-previous-client.heading                    = Ni allwch fynd yn ôl i gleient blaenorol
-agent.cannot-go-back-previous-client.radio-option.heading       = I reoli manylion eich cleient, gallwch wneud y canlynol:
-agent.cannot-go-back-previous-client.agent-service-account      = Mynd i’ch cyfrif gwasanaethau asiant, os ydych wedi gorffen cofrestru’r cleient
-agent.cannot-go-back-previous-client.re-enter-client-details    = Nodi manylion eto ar gyfer cleient na wnaethoch orffen ei gofrestru
-agent.cannot-go-back-previous-client.sign-up-another-client     = Cofrestru cleient arall
-agent.cannot-go-back-previous-client.error.empty                = Mae’n rhaid i chi ddewis yr hyn rydych am ei wneud nesaf cyn mynd yn eich blaen.
+agent.cannot-go-back-previous-client.title                      = Mae’n ddrwg gennym – mae problem
+agent.cannot-go-back-previous-client.heading                    = Mae’n ddrwg gennym – mae problem
+agent.cannot-go-back-previous-client.para1                      = Beth hoffech ei wneud nesaf?
+agent.cannot-go-back-previous-client.para2                      = Gallwch wneud y canlynol:
+agent.cannot-go-back-previous-client.agent-service-account      = <a class="govuk-link" href="{0}">Mynd i’ch cyfrif gwasanaethau asiant</a>, os ydych wedi gorffen cofrestru’r cleient
+agent.cannot-go-back-previous-client.re-enter-client-details    = <a class="govuk-link" href="{0}">Nodi manylion eto ar gyfer cleient na wnaethoch orffen ei gofrestru</a>
+agent.cannot-go-back-previous-client.sign-up-another-client     = <a class="govuk-link" href="{0}">Cofrestru cleient arall</a>
 
 # Remove overseas property business
 remove-overseas-property-business.heading                       = A ydych yn siŵr eich bod am ddileu’ch busnes eiddo tramor?

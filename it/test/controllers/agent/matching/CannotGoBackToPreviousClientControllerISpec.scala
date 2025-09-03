@@ -18,8 +18,6 @@ package controllers.agent.matching
 
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
-import models.CannotGoBack.{AgentServiceAccount, ReenterClientDetails, SignUpAnotherClient}
-import play.api.http.Status._
 
 
 class CannotGoBackToPreviousClientControllerISpec extends ComponentSpecBase {
@@ -45,77 +43,6 @@ class CannotGoBackToPreviousClientControllerISpec extends ComponentSpecBase {
     }
   }
 
-  "POST /report-quarterly/income-and-expenses/sign-up/client/cannot-go-back-to-previous-client" should {
-    "redirect to Agent Service Account" when {
-      "selecting the Agent Service Account radio button" in {
-        val userInput = AgentServiceAccount
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-
-        When("POST /client/cannot-go-back-to-previous-client is called")
-        val res = IncomeTaxSubscriptionFrontend.submitCannotGoBackToPreviousClient(Some(userInput))
-
-        Then("Should return a SEE_OTHER with a redirect location of Agent Service Account")
-        res must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(appConfig.agentServicesAccountHomeUrl)
-        )
-      }
-    }
-    "redirect to Enter Client Details" when {
-      "selecting the Reenter Client Details radio button" in {
-        val userInput = ReenterClientDetails
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-
-        When("POST /client/cannot-go-back-to-previous-client is called")
-        val res = IncomeTaxSubscriptionFrontend.submitCannotGoBackToPreviousClient(Some(userInput))
-
-        Then("Should return a SEE_OTHER with a redirect location of Enter Client Details")
-        res must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(controllers.agent.routes.AddAnotherClientController.addAnother().url)
-        )
-      }
-      "selecting the Sign Up Another Client radio button" in {
-        val userInput = SignUpAnotherClient
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-
-        When("POST /client/cannot-go-back-to-previous-client is called")
-        val res = IncomeTaxSubscriptionFrontend.submitCannotGoBackToPreviousClient(Some(userInput))
-
-        Then("Should return a SEE_OTHER with a redirect location of Enter Client Details")
-        res must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(controllers.agent.routes.AddAnotherClientController.addAnother().url)
-        )
-      }
-    }
-    "return an error page(BAD Request)" when {
-      "no input is selected" in {
-
-        val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
-        Then("Should return a OK with the Cannot Go Back To Previous Client page")
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-
-        When("POST /client/cannot-go-back-to-previous-client is called")
-        val res = IncomeTaxSubscriptionFrontend.submitCannotGoBackToPreviousClient(None)
-
-        Then("Should return a SEE_OTHER with a redirect location of Enter Client Details")
-        res must have(
-          httpStatus(BAD_REQUEST),
-          pageTitle("Error: " + messages("agent.cannot-go-back-previous-client.title") + serviceNameGovUk),
-          errorDisplayed()
-        )
-      }
-    }
-  }
 }
 
 

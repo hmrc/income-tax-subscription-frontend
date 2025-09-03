@@ -16,15 +16,12 @@
 
 package views.agent
 
-import forms.agent.CannotGoBackToPreviousClientForm
-import messagelookup.agent.MessageLookup
+import config.MockConfig
+import config.MockConfig.mockMessages.messages
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
-import play.api.data.FormError
 import play.twirl.api.Html
-import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import utilities.ViewSpec
 import views.html.agent.matching.CannotGoBackToPreviousClient
 
@@ -32,22 +29,12 @@ class CannotGoBackToPreviousClientViewSpec extends ViewSpec {
 
   private val cannotGoBackToPreviousClient: CannotGoBackToPreviousClient = app.injector.instanceOf[CannotGoBackToPreviousClient]
 
-
-  val testFormError: FormError = FormError(CannotGoBackToPreviousClientForm.cannotGoBackToPreviousClient, "agent.cannot-go-back-previous-client.error.empty")
-
   "cannot go back to previous client" must {
     "have the correct template details" when {
       "the page has no error" in new TemplateViewTest(
         view = page(),
         isAgent = true,
         title = CannotGoBack.heading
-      )
-
-      "the page has error" in new TemplateViewTest(
-        view = page(hasError = true),
-        isAgent = true,
-        title = CannotGoBack.heading,
-        error = Some(testFormError)
       )
     }
 
@@ -57,72 +44,46 @@ class CannotGoBackToPreviousClientViewSpec extends ViewSpec {
 
     "have a body" which {
       val paragraphs: Elements = document().select(".govuk-body").select("p")
+      val bullets: Elements = document().select(".govuk-list").select("li")
 
       "has paragraph " in {
-        paragraphs.get(0).text() mustBe CannotGoBack.radioOptionHeading
+        paragraphs.get(0).text() mustBe CannotGoBack.para1
+        paragraphs.get(1).text() mustBe CannotGoBack.para2
+      }
+
+      "has bulleted list" which {
+        "has correct text" in {
+          bullets.get(0).text() mustBe CannotGoBack.agentServiceAccountOptionText
+          bullets.get(1).text() mustBe CannotGoBack.reenterClientDetailsOptionText
+          bullets.get(2).text() mustBe CannotGoBack.signUpAnotherClientOptionText
+        }
+        "has correct links" in {
+          bullets.select(".govuk-link").get(0).attr("href") mustBe CannotGoBack.agentServiceAccountOptionLink
+          bullets.select(".govuk-link").get(1).attr("href") mustBe CannotGoBack.reenterClientDetailsOptionLink
+          bullets.select(".govuk-link").get(2).attr("href") mustBe CannotGoBack.signUpAnotherClientOptionLink
+        }
       }
     }
 
-
-    "have a form" which {
-      def form = document().selectHead("form")
-
-      "has correct attributes" in {
-        form.attr("method") mustBe testCall.method
-        form.attr("action") mustBe testCall.url
-      }
-
-      "has the correct radio inputs" in {
-        form.mustHaveRadioInput(selector = "fieldset")(
-          name = CannotGoBackToPreviousClientForm.cannotGoBackToPreviousClient,
-          legend = CannotGoBack.heading,
-          isHeading = false,
-          isLegendHidden = true,
-          hint = None,
-          errorMessage = None,
-          radioContents = Seq(
-            RadioItem(
-              content = Text(CannotGoBack.agentServiceAccountOptionText),
-              value = Some(CannotGoBack.agentServiceAccountOptionLabel),
-            ),
-            RadioItem(
-              content = Text(CannotGoBack.reenterClientDetailsOptionText),
-              value = Some(CannotGoBack.reenterClientDetailsOptionLabel),
-            ),
-            RadioItem(
-              content = Text(CannotGoBack.signUpAnotherClientOptionText),
-              value = Some(CannotGoBack.signUpAnotherClientOptionLabel),
-            )
-          )
-        )
-      }
-
-      "has a continue button" in {
-        document().select("button[id=continue-button]").text mustBe MessageLookup.Base.continue
-      }
-    }
 
   }
 
-  private def page(hasError: Boolean = false): Html =
-    cannotGoBackToPreviousClient(
-      if (hasError) CannotGoBackToPreviousClientForm.cannotGoBackToPreviousClientForm.withError(testFormError) else CannotGoBackToPreviousClientForm.cannotGoBackToPreviousClientForm,
-      postAction = testCall
-    )
+  private def page(): Html =
+    cannotGoBackToPreviousClient()(request,messages,MockConfig)
 
-  private def document(hasError: Boolean = false): Document =
-    Jsoup.parse(page(hasError).body)
+  private def document(): Document =
+    Jsoup.parse(page().body)
 
   private object CannotGoBack {
-    val heading = "You cannot go back to previous client"
-    val radioOptionHeading = "To manage your client’s information you can:"
-    val agentServiceAccountOptionLabel = "agent-service-account"
-    val agentServiceAccountOptionText = "Go to your agent service account, if you finished signing the client up"
-    val reenterClientDetailsOptionLabel = "re-enter-client-details"
+    val heading = "Sorry, there is a problem"
+    val para1 = "Choose what you want to do next."
+    val para2 = "You can:"
+    val agentServiceAccountOptionLink = "/agent-services-account"
+    val agentServiceAccountOptionText = "Go to your agent service account, if you finished signing the client up."
+    val reenterClientDetailsOptionLink = "/report-quarterly/income-and-expenses/sign-up/client/add-another"
     val reenterClientDetailsOptionText = "Re-enter the details of a client you did not finish signing up"
-    val signUpAnotherClientOptionLabel = "sign-up-another-client"
+    val signUpAnotherClientOptionLink = "/report-quarterly/income-and-expenses/sign-up/client/add-another"
     val signUpAnotherClientOptionText = "Sign up another client"
-
   }
 
 }
