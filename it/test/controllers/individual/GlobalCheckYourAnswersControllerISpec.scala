@@ -24,6 +24,7 @@ import helpers.IntegrationTestModels._
 import helpers.WiremockHelper.verifyPost
 import helpers._
 import helpers.servicemocks.{AuthStub, ChannelPreferencesStub, TaxEnrolmentsStub}
+import models.common.BusinessAccountingPeriod
 import models.common.subscription.{CreateIncomeSourcesModel, SignUpModel}
 import models.sps.SPSPayload
 import models.status.MandationStatus.Voluntary
@@ -47,6 +48,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
       "all data was received and is complete" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(AccountingPeriod, OK, Json.toJson(BusinessAccountingPeriod.SixthAprilToFifthApril.key))
         IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty), Some(testAccountMethod))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))

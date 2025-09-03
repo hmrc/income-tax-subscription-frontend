@@ -17,7 +17,8 @@
 package controllers.individual
 
 import config.featureswitch.FeatureSwitching
-import models.common.AccountingYearModel
+import models.common.BusinessAccountingPeriod.SixthAprilToFifthApril
+import models.common.{AccountingYearModel, BusinessAccountingPeriod}
 import models.common.business.Address
 import models.common.subscription.{CreateIncomeSourcesModel, SubscriptionFailureResponse}
 import models.{Cash, Current}
@@ -51,6 +52,7 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
   object TestGlobalCheckYourAnswersController extends GlobalCheckYourAnswersController(
     subscriptionService = mockSubscriptionOrchestrationService,
     getCompleteDetailsService = mock[GetCompleteDetailsService],
+    subscriptionDetailsService = mockSubscriptionDetailsService,
     ninoService = mockNinoService,
     utrService = mockUTRService,
     referenceRetrieval = mockReferenceRetrieval,
@@ -74,6 +76,7 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
     val controller: GlobalCheckYourAnswersController = new GlobalCheckYourAnswersController(
       subscriptionService = mockSubscriptionOrchestrationService,
       getCompleteDetailsService = mockGetCompleteDetailsService,
+      subscriptionDetailsService = mockSubscriptionDetailsService,
       ninoService = mockNinoService,
       utrService = mockUTRService,
       referenceRetrieval = mockReferenceRetrieval,
@@ -123,6 +126,9 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
         when(mockGetCompleteDetailsService.getCompleteSignUpDetails(any())(any()))
           .thenReturn(Future.successful(Left(GetCompleteDetailsService.GetCompleteDetailsFailure)))
 
+        when(mockSubscriptionDetailsService.fetchAccountingPeriod(any())(any()))
+          .thenReturn(Future.successful(Some(SixthAprilToFifthApril)))
+
         val result: Future[Result] = controller.show(subscriptionRequest)
 
         status(result) mustBe SEE_OTHER
@@ -134,10 +140,14 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
         when(mockGetCompleteDetailsService.getCompleteSignUpDetails(any())(any()))
           .thenReturn(Future.successful(Right(completeDetails)))
 
+        when(mockSubscriptionDetailsService.fetchAccountingPeriod(any())(any()))
+          .thenReturn(Future.successful(Some(SixthAprilToFifthApril)))
+
         when(mockGlobalCheckYourAnswers(
           ArgumentMatchers.eq(routes.GlobalCheckYourAnswersController.submit),
           ArgumentMatchers.eq(tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url),
-          ArgumentMatchers.eq(completeDetails)
+          ArgumentMatchers.eq(completeDetails),
+          ArgumentMatchers.any()
         )(ArgumentMatchers.any(), ArgumentMatchers.any()))
           .thenReturn(HtmlFormat.empty)
 
