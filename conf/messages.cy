@@ -944,25 +944,12 @@ agent.sign-up-complete.what-now.agent-services-account.link     = cyfrif gwasana
 agent.sign-up-complete.what-now.send-quarterly                  = Bydd yn rhaid i chi anfon diweddariadau chwarterol gan ddefnyddio’ch meddalwedd erbyn:
 
 ## Errors ##
-agent.error.client-details.date-of-birth.invalid-chars                              = Nodwch ddyddiad geni gan ddefnyddio’r rhifau 0 i 9
-agent.error.client-details.date-of-birth.day-month-year.empty                       = Nodwch ddyddiad geni’ch cleient
-agent.error.client-details.date-of-birth.date.empty                                 = Nodwch ddyddiad geni’ch cleient
-agent.error.client-details.date-of-birth.day.empty                                  = Rhaid i’w dyddiad geni gynnwys diwrnod
-agent.error.client-details.date-of-birth.month.empty                                = Rhaid i’w dyddiad geni gynnwys mis
-agent.error.client-details.date-of-birth.year.empty                                 = Rhaid i’w dyddiad geni gynnwys blwyddyn
-agent.error.client-details.date-of-birth.day-month.empty                            = Rhaid i’w dyddiad geni gynnwys diwrnod a mis
-agent.error.client-details.date-of-birth.day-year.empty                             = Rhaid i’w dyddiad geni gynnwys diwrnod a blwyddyn
-agent.error.client-details.date-of-birth.month-year.empty                           = Rhaid i’w dyddiad geni gynnwys mis a blwyddyn
-agent.error.client-details.date-of-birth.day-month-year.not-in-past                 = Rhaid i’w dyddiad geni fod yn y gorffennol
-agent.error.client-details.date-of-birth.day-month-year.invalid                     = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.client-details.date-of-birth.date.invalid                               = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.client-details.date-of-birth.day.invalid                                = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.client-details.date-of-birth.month.invalid                              = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.client-details.date-of-birth.year.invalid                               = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.client-details.date-of-birth.day-month.invalid                          = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.client-details.date-of-birth.day-year.invalid                           = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.client-details.date-of-birth.month-year.invalid                         = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.client-details.date-of-birth.year.length                                = Mae’n rhaid i flwyddyn fod yn bedwar digid. Er enghraifft, 2020.
+agent.error.client-details.date-of-birth.all.empty                       = Nodwch ddyddiad geni’ch cleient
+agent.error.client-details.date-of-birth.invalid                         = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.client-details.date-of-birth.required                        = Rhaid i’w dyddiad geni gynnwys {0}
+agent.error.client-details.date-of-birth.required.two                    = Rhaid i’w dyddiad geni gynnwys {0} a {1}
+agent.error.client-details.date-of-birth.day-month-year.not-in-past      = Rhaid i’w dyddiad geni fod yn y gorffennol
+agent.error.client-details.date-of-birth.year.length                     = Mae’n rhaid i flwyddyn fod yn bedwar digid. Er enghraifft, 2020.
 
 # Sole Trader Eligibility invalid
 agent.error.eligibility.sole-trader.invalid                     = Dewiswch ‘Iawn’ os ydych yn unig fasnachwr a ddechreuodd fasnachu ar neu ar ôl {0}

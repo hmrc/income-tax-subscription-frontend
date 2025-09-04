@@ -15,8 +15,6 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import forms.formatters.DateErrorMapping
-@import forms.formatters.DateValidation.DateField
 @import forms.formatters.DateValidation.DayField
 @import forms.formatters.DateValidation.MonthField
 @import forms.formatters.DateValidation.YearField
@@ -46,15 +44,30 @@
   }
 }
 
-@errorKey = @{
+@errorMessageKey = @{
   error map { error =>
     error.message
   }
 }
 
-@inputClass(key: DateField, size: Int) = @{
-  s"govuk-input--width-$size" +
-          {errorKey.fold("")(messageKey => if(DateErrorMapping.highlightField(key, messageKey)) s" govuk-input--error" else "")}
+@inputClass(key: String, size: Int) = @{
+    val dateFields = Seq(DayField.toString, MonthField.toString, YearField.toString)
+
+    def maybeErrorClass: String = {
+        errorMessageKey.fold("")(errorKey =>
+            if(dateFields.exists(field => errorKey.contains(field))) { //DateModelMapping uses error message keys to highlight fields.
+                if(errorKey.contains(key)) "govuk-input--error" else ""
+            } else {
+                error.map(_.args) match {
+                    case Some(Seq()) => "govuk-input--error"
+                    case Some(args) if args.contains(key) => s"govuk-input--error"
+                    case _ => ""
+                }
+            }
+        )
+    }
+
+    s"govuk-input--width-$size $maybeErrorClass".trim
 }
 
 @fieldsetLegendClass = @{
@@ -70,21 +83,21 @@
     InputItem(
       name = "dateDay",
       autocomplete = if(isDateOfBirth) Some("bday-day") else None ,
-      classes = inputClass(DayField, 2),
+      classes = inputClass("day", 2),
       label =  Some(messages("base.day")),
       value = parentForm(s"${field.name}-dateDay").value
     ),
     InputItem(
       name = "dateMonth",
       autocomplete = if(isDateOfBirth) Some("bday-month") else None ,
-      classes = inputClass(MonthField, 2),
+      classes = inputClass("month", 2),
       label =  Some(messages("base.month")),
       value = parentForm(s"${field.name}-dateMonth").value
     ),
     InputItem(
       name = "dateYear",
       autocomplete = if(isDateOfBirth) Some("bday-year") else None ,
-      classes = inputClass(YearField, 4),
+      classes = inputClass("year", 4),
       label =  Some(messages("base.year")),
       value = parentForm(s"${field.name}-dateYear").value
     )
