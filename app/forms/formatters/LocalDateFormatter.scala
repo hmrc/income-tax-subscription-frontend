@@ -20,6 +20,7 @@ import play.api.data.FormError
 import play.api.data.format.Formatter
 
 import java.time.{LocalDate, Month}
+import scala.util.control.Exception.nonFatalCatch
 import scala.util.{Failure, Success, Try}
 
 private[formatters] class LocalDateFormatter(
@@ -33,13 +34,6 @@ private[formatters] class LocalDateFormatter(
 
   private val fieldKeys: List[String] = List("Day", "Month", "Year")
 
-  private def yearLengthIsValid(year: Option[String]): Boolean = year.exists(_.length == 4) && year.exists(_.forall(_.isDigit))
-  private def monthLengthIsValid(month: String): Boolean = if (month.forall(_.isDigit)) month.toInt <= 12 else true
-  private def dayLengthIsValid(day: String): Boolean = day match {
-      case day if day.forall(_.isDigit) => 0 < day.toInt && day.toInt <= 31
-      case _ => false
-    }
-
   private def toDate(key: String, day: Int, month: Int, year: Int): Either[Seq[FormError], LocalDate] = {
     Try(LocalDate.of(year, month, day)) match {
       case Success(date) =>
@@ -51,22 +45,33 @@ private[formatters] class LocalDateFormatter(
 
   private def formatDate(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
 
-    def int(args: Seq[String] = args) = intFormatter(
-      requiredKey = invalidKey,
-      wholeNumberKey = invalidKey,
-      nonNumericKey = invalidKey,
-      args
+    def dayLengthInvalid(day: Int): Boolean = day < 1 || day > 31
+    def yearLengthInvalid(year: Int): Boolean = year.toString.length != 4
+
+    val dayFormatter = new DayYearFormatter(requiredKey, invalidKey, invalidKey, additionalValidation = dayLengthInvalid, Seq("day"))
+    val monthFormatter = new MonthFormatter(invalidKey, Seq("month"))
+    val yearFormatter = new DayYearFormatter(requiredKey, invalidYearKey, invalidYearKey, additionalValidation = yearLengthInvalid, Seq("year"))
+
+    val formattedFields = Map(
+      "day" -> dayFormatter.bind(s"$key-dateDay", data),
+      "month" -> monthFormatter.bind(s"$key-dateMonth", data),
+      "year" -> yearFormatter.bind(s"$key-dateYear", data)
     )
 
-    val month = new MonthFormatter(invalidKey, Seq("month"))
-
-    for {
-      day <- int(Seq("day")).bind(s"$key-dateDay", data)
-      month <- month.bind(s"$key-dateMonth", data)
-      year <- int(Seq("year")).bind(s"$key-dateYear", data)
-      date <- toDate(key, day, month, year)
-    } yield date
-
+    formattedFields.collect { case (_, Left(value)) => value } match {
+      case Nil => for {
+        day <- formattedFields("day")
+        month <- formattedFields("month")
+        year <- formattedFields("year")
+        date <- toDate(key, day, month, year)
+      } yield date
+      case errors =>
+        if (errors.size > 1) {
+          Left(Seq(FormError(key, invalidKey)))
+        } else {
+          Left(errors.flatten.toSeq)
+        }
+    }
   }
 
   override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
@@ -83,22 +88,7 @@ private[formatters] class LocalDateFormatter(
 
     fields.count(_._2.isDefined) match {
       case 3 =>
-        val lengthErrors = fields.collect {
-          case("Day", value) if !dayLengthIsValid(value.getOrElse("")) => FormError(s"$key-dateDay", invalidKey, Seq("day"))
-          case("Month", value) if !monthLengthIsValid(value.getOrElse("")) => FormError(s"$key-dateMonth", invalidKey, Seq("month"))
-          case("Year", value) if !yearLengthIsValid(value) => FormError(s"$key-dateYear", invalidYearKey, Seq("year"))
-        }.toList
-
-        if (lengthErrors.nonEmpty) {
-          if (lengthErrors.length > 1) {
-            Left(List(FormError(key, invalidKey)))
-          } else {
-            Left(lengthErrors)
-          }
-        } else {
-          formatDate(key, data)
-        }
-
+        formatDate(key, data)
       case 2 =>
         Left(List(FormError(key, s"$requiredKey", missingFields.map(_.toLowerCase) ++ args)))
       case 1 =>
@@ -116,7 +106,7 @@ private[formatters] class LocalDateFormatter(
     )
 }
 
-private class MonthFormatter(invalidKey: String, args: Seq[String]) extends Formatter[Int] with Formatters {
+private class MonthFormatter(invalidKey: String, args: Seq[String] = Seq.empty) extends Formatter[Int] with Formatters {
 
   private val baseFormatter = stringFormatter(invalidKey, args)
 
@@ -129,14 +119,48 @@ private class MonthFormatter(invalidKey: String, args: Seq[String]) extends Form
       .flatMap {
         str =>
           months
-            .find(m => m.getValue.toString == str.replaceAll("^0+", "") || m.toString == str.toUpperCase || m.toString.take(3) == str.toUpperCase)
+            .find(m => m.getValue.toString == str.trim.replaceAll("^0+|\\s+", "") || m.toString == str.toUpperCase || m.toString.take(3) == str.toUpperCase)
             .map(x => Right(x.getValue))
-            .getOrElse{
-              Left(List(FormError(key, invalidKey, args)))}
+            .getOrElse {
+              Left(List(FormError(key, invalidKey, args)))
+            }
       }
   }
 
   override def unbind(key: String, value: Int): Map[String, String] =
     Map(key -> value.toString)
 }
+
+private class DayYearFormatter(requiredKey: String,
+                               invalidKey: String,
+                               validationKey: String,
+                               additionalValidation: Int => Boolean = _ => false,
+                               args: Seq[String] = Seq.empty) extends Formatter[Int] with Formatters {
+  private val baseFormatter = stringFormatter(requiredKey, args)
+
+  override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Int] = {
+
+    val baseFormatted = {
+      baseFormatter
+        .bind(key, data)
+        .map(_.replaceAll("^0+|\\s+", ""))
+        .flatMap { s =>
+          nonFatalCatch
+            .either(s.toInt)
+            .left.map(_ => {
+            Seq(FormError(key, invalidKey, args))
+          })
+        }
+    }
+
+    baseFormatted match {
+      case Right(value) if additionalValidation(value) => Left(Seq(FormError(key, validationKey, args)))
+      case _ => baseFormatted
+    }
+  }
+
+  override def unbind(key: String, value: Int): Map[String, String] =
+    baseFormatter.unbind(key, value.toString)
+}
+
 

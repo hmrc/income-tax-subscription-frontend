@@ -43,7 +43,7 @@ class LocalDateFormatterSpec extends AnyWordSpecLike with Matchers {
     case (key, Some(value)) => (key, value)
   }.toMap
 
-  "bind" should {
+  "bind" must {
     "return a valid localDate when all fields are valid" when {
       "a valid date is provided" in {
         val result = localDateFormatter().bind(bindKey, input(Some("31"), Some("1"), Some("2025")))
@@ -55,6 +55,10 @@ class LocalDateFormatterSpec extends AnyWordSpecLike with Matchers {
       }
       "day and month has leading zeros" in {
         val result = localDateFormatter().bind(bindKey, input(Some("01"), Some("01"), Some("2025")))
+        result mustBe Right(LocalDate.of(2025, 1, 1))
+      }
+      "there is whitespace" in {
+        val result = localDateFormatter().bind(bindKey, input(Some(" 0 1 "), Some(" 0 1 "), Some(" 20 25")))
         result mustBe Right(LocalDate.of(2025, 1, 1))
       }
       "month is provided as a the full month name" in {
@@ -152,7 +156,7 @@ class LocalDateFormatterSpec extends AnyWordSpecLike with Matchers {
     }
   }
 
-  "unbind" should {
+  "unbind" must {
     "return a map with the date fields" in {
       val result = localDateFormatter().unbind(bindKey, LocalDate.of(2025, 1, 31))
       result mustBe Map(
@@ -163,4 +167,19 @@ class LocalDateFormatterSpec extends AnyWordSpecLike with Matchers {
     }
   }
 
+  "monthFormatter unbind" must {
+    "return a map with the correct value" in {
+      val result = new MonthFormatter("error.invalid").unbind(bindKey, 12)
+      result mustBe Map(bindKey -> "12")
+    }
+  }
+
+  "dayYearFormatter unbind" must {
+    "return a map with the correct value" in {
+      val result = new DayYearFormatter(
+        "error.required", "error.invalid", "error.validation"
+      ).unbind(bindKey, 31)
+      result mustBe Map(s"$bindKey" -> "31")
+    }
+  }
 }

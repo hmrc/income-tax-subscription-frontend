@@ -54,8 +54,8 @@
     val dateFields = Seq(DayField.toString, MonthField.toString, YearField.toString)
 
     def maybeErrorClass: String = {
-        errorMessageKey.fold("")(errorKey => //DateModelMapping uses error message keys to highlight fields.
-            if(dateFields.exists(field => errorKey.contains(field))) {
+        errorMessageKey.fold("")(errorKey =>
+            if(dateFields.exists(field => errorKey.contains(field))) { //DateModelMapping uses error message keys to highlight fields.
                 if(errorKey.contains(key)) "govuk-input--error" else ""
             } else {
                 error.map(_.args) match {
