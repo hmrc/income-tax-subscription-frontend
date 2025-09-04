@@ -32,7 +32,7 @@ private[formatters] class LocalDateFormatter(
                                               args: Seq[String] = Seq.empty
                                             ) extends Formatter[LocalDate] with Formatters {
 
-  private val fieldKeys: List[String] = List("Day", "Month", "Year")
+  private val fieldKeys: Seq[String] = Seq("Day", "Month", "Year")
 
   private def toDate(key: String, day: Int, month: Int, year: Int): Either[Seq[FormError], LocalDate] = {
     Try(LocalDate.of(year, month, day)) match {
@@ -84,17 +84,17 @@ private[formatters] class LocalDateFormatter(
     lazy val missingFields: Seq[String] = fields
       .withFilter(_._2.isEmpty)
       .map(_._1)
-      .toList
+      .toSeq
 
     fields.count(_._2.isDefined) match {
       case 3 =>
         formatDate(key, data)
       case 2 =>
-        Left(List(FormError(key, s"$requiredKey", missingFields.map(_.toLowerCase) ++ args)))
+        Left(Seq(FormError(key, s"$requiredKey", missingFields.map(_.toLowerCase) ++ args)))
       case 1 =>
-        Left(List(FormError(key, twoRequiredKey, missingFields.map(_.toLowerCase) ++ args)))
+        Left(Seq(FormError(key, twoRequiredKey, missingFields.map(_.toLowerCase) ++ args)))
       case _ =>
-        Left(List(FormError(key, allRequiredKey, args)))
+        Left(Seq(FormError(key, allRequiredKey, args)))
     }
   }
 
@@ -122,7 +122,7 @@ private class MonthFormatter(invalidKey: String, args: Seq[String] = Seq.empty) 
             .find(m => m.getValue.toString == str.trim.replaceAll("^0+|\\s+", "") || m.toString == str.toUpperCase || m.toString.take(3) == str.toUpperCase)
             .map(x => Right(x.getValue))
             .getOrElse {
-              Left(List(FormError(key, invalidKey, args)))
+              Left(Seq(FormError(key, invalidKey, args)))
             }
       }
   }
