@@ -26,8 +26,10 @@
 @import views.html.helpers.{ContinueButton, CheckYourAnswers, CheckYourAnswersRow, SaveAndContinueButtonHelper}
 @import views.html.templates.PrincipalMainTemplate
 @import config.AppConfig
+@import utilities.AccountingPeriodUtil
 @import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
 @import config.featureswitch.FeatureSwitchingImpl
+@import models.common.BusinessAccountingPeriod._
 
 @this(
         mainTemplate: PrincipalMainTemplate,
@@ -45,7 +47,8 @@
 @(
         postAction: Call,
         backUrl: String,
-        completeDetails: CompleteDetails
+        completeDetails: CompleteDetails,
+        maybeAccountingPeriod: Option[BusinessAccountingPeriod]
 )(implicit request: Request[_], messages: Messages)
 
 @import implicitDateFormatter.LongDate
@@ -56,11 +59,7 @@
 
     <p class="govuk-body">@messages("individual.global-check-your-answers.para")</p>
 
-    <p class="govuk-body govuk-!-display-none-print hmrc-!-js-visible">
-        <a href="#" data-module="hmrc-print-link" class="govuk-link">
-            @messages("base.print-page")
-        </a>
-    </p>
+    @accountingPeriod(maybeAccountingPeriod)
 
     <h2 class="govuk-heading-m">@messages("individual.global-check-your-answers.before-signing-up.heading")</h2>
 
@@ -69,6 +68,8 @@
     @taxYearSection(completeDetails.taxYear)
 
     @incomeSourcesSection(completeDetails.incomeSources)
+
+    <h2 class="govuk-heading-m">@messages("individual.global-check-your-answers.bottom.heading")</h2>
 
     <p class="govuk-body">@messages("individual.global-check-your-answers.para-two")</p>
 
@@ -81,6 +82,12 @@
             saveAndReturnReference = Some("global-check-your-answers")
         )
     }
+
+    <p class="govuk-body govuk-!-display-none-print hmrc-!-js-visible">
+    <a href="#" data-module="hmrc-print-link" class="govuk-link">
+        @messages("individual.global-check-your-answers.print-link")
+    </a>
+    </p>
 
 }
 
@@ -119,8 +126,12 @@
 
 @taxYear(accountingYear: AccountingYear) = @{
     accountingYear match {
-        case Current => messages("individual.global-check-your-answers.tax.year.current")
-        case Next => messages("individual.global-check-your-answers.tax.year.next")
+        case Current => {
+            s"${AccountingPeriodUtil.getCurrentTaxYear.startDate.year} ${messages("base.to")} ${AccountingPeriodUtil.getCurrentTaxYear.endDate.year}"
+        }
+        case Next => {
+            s"${AccountingPeriodUtil.getNextTaxYear.startDate.year} ${messages("base.to")} ${AccountingPeriodUtil.getNextTaxYear.endDate.year}"
+        }
     }
 }
 
@@ -128,7 +139,7 @@
     @incomeSources.soleTraderBusinesses.map(toSoleTraderBusinessesDisplay)
 
     @if(incomeSources.ukProperty.isDefined || incomeSources.foreignProperty.isDefined) {
-        <h2 class="govuk-heading-m">@messages("individual.global-check-your-answers.income-sources.property.heading")</h2>
+        <h2 id="property-business-heading" class="govuk-heading-m">@messages("individual.global-check-your-answers.income-sources.property.heading")</h2>
     }
 
     @incomeSources.ukProperty.map(toUKPropertyDisplay)
@@ -137,7 +148,7 @@
 
 @toSoleTraderBusinessesDisplay(soleTraderBusinesses: SoleTraderBusinesses) = {
 
-    <h2 class="govuk-heading-m">@messages("individual.global-check-your-answers.income-sources.self-employment.heading")</h2>
+    <h2 id="sole-trader-business-heading" class="govuk-heading-m">@messages("individual.global-check-your-answers.income-sources.self-employment.heading")</h2>
 
     @soleTraderBusinesses.businesses.map { business =>
         @govukSummaryList(SummaryList(
@@ -266,5 +277,21 @@
     accountingMethod match {
         case Some(Cash) => messages("base.accounting-method.cash")
         case Some(Accruals) => messages("base.accounting-method.accruals")
+    }
+}
+
+@accountingPeriod(accountingPeriod: Option[BusinessAccountingPeriod]) = @{
+    accountingPeriod match {
+        case Some(SixthAprilToFifthApril) =>
+            <p class="govuk-body">
+                <span class="govuk-!-font-weight-bold">{messages("individual.global-check-your-answers.accounting.period")}:</span>
+                {messages("accounting-period.sixth-april-to-fifth-april")}
+            </p>
+        case Some(FirstAprilToThirtyFirstMarch) =>
+            <p class="govuk-body">
+                <span class="govuk-!-font-weight-bold">{messages("individual.global-check-your-answers.accounting.period")}:</span>
+                 {messages("accounting-period.first-april-to-thirty-first-march")}
+            </p>
+        case _ => ""
     }
 }

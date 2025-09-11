@@ -24,19 +24,18 @@ import controllers.utils.ReferenceRetrieval
 import models.common.subscription.CreateIncomeSourcesModel
 import models.individual.JourneyStep.Confirmation
 import play.api.mvc._
-import play.twirl.api.Html
 import services.GetCompleteDetailsService.CompleteDetails
 import services._
 import services.individual.SubscriptionOrchestrationService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import views.html.individual.GlobalCheckYourAnswers
-
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class GlobalCheckYourAnswersController @Inject()(subscriptionService: SubscriptionOrchestrationService,
                                                  getCompleteDetailsService: GetCompleteDetailsService,
+                                                 subscriptionDetailsService: SubscriptionDetailsService,
                                                  ninoService: NinoService,
                                                  utrService: UTRService,
                                                  referenceRetrieval: ReferenceRetrieval,
@@ -50,12 +49,15 @@ class GlobalCheckYourAnswersController @Inject()(subscriptionService: Subscripti
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
       referenceRetrieval.getIndividualReference flatMap { reference =>
+        subscriptionDetailsService.fetchAccountingPeriod(reference) flatMap { maybeAccountingPeriod =>
         withCompleteDetails(reference) { completeDetails =>
-          Future.successful(Ok(view(
+          Future.successful(Ok(globalCheckYourAnswers(
             postAction = routes.GlobalCheckYourAnswersController.submit,
             backUrl = backUrl,
-            completeDetails = completeDetails
+            completeDetails = completeDetails,
+            maybeAccountingPeriod = maybeAccountingPeriod
           )))
+        }
         }
       }
   }
@@ -97,19 +99,6 @@ class GlobalCheckYourAnswersController @Inject()(subscriptionService: Subscripti
         }
       }
     }
-  }
-
-
-  private def view(
-                    postAction: Call,
-                    backUrl: String,
-                    completeDetails: CompleteDetails)
-                  (implicit request: Request[AnyContent]): Html = {
-    globalCheckYourAnswers(
-      postAction = postAction,
-      backUrl = backUrl,
-      completeDetails = completeDetails
-    )
   }
 
   private def withCompleteDetails(reference: String)

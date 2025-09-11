@@ -966,25 +966,12 @@ agent.sign-up-complete.what-now.agent-services-account.link     = agent service 
 agent.sign-up-complete.what-now.send-quarterly                  = You will need to send quarterly updates using your software by:
 
 ## Errors ##
-agent.error.client-details.date-of-birth.invalid-chars                              = Enter a date of birth using numbers 0 to 9
-agent.error.client-details.date-of-birth.day-month-year.empty                       = Enter your client’s date of birth
-agent.error.client-details.date-of-birth.date.empty                                 = Enter your client’s date of birth
-agent.error.client-details.date-of-birth.day.empty                                  = Their date of birth must include a day
-agent.error.client-details.date-of-birth.month.empty                                = Their date of birth must include a month
-agent.error.client-details.date-of-birth.year.empty                                 = Their date of birth must include a year
-agent.error.client-details.date-of-birth.day-month.empty                            = Their date of birth must include a day and a month
-agent.error.client-details.date-of-birth.day-year.empty                             = Their date of birth must include a day and a year
-agent.error.client-details.date-of-birth.month-year.empty                           = Their date of birth must include a month and a year
-agent.error.client-details.date-of-birth.day-month-year.not-in-past                 = Their date of birth must be in the past
-agent.error.client-details.date-of-birth.day-month-year.invalid                     = The date must be a real date
-agent.error.client-details.date-of-birth.date.invalid                               = The date must be a real date
-agent.error.client-details.date-of-birth.day.invalid                                = The date must be a real date
-agent.error.client-details.date-of-birth.month.invalid                              = The date must be a real date
-agent.error.client-details.date-of-birth.year.invalid                               = The date must be a real date
-agent.error.client-details.date-of-birth.day-month.invalid                          = The date must be a real date
-agent.error.client-details.date-of-birth.day-year.invalid                           = The date must be a real date
-agent.error.client-details.date-of-birth.month-year.invalid                         = The date must be a real date
-agent.error.client-details.date-of-birth.year.length                                = The year must be in four digits. For example, 2020.
+agent.error.client-details.date-of-birth.all.empty                       = Enter your client’s date of birth
+agent.error.client-details.date-of-birth.invalid                         = The date must be a real date
+agent.error.client-details.date-of-birth.required                        = Their date of birth must include a {0}
+agent.error.client-details.date-of-birth.required.two                    = Their date of birth must include a {0} and a {1}
+agent.error.client-details.date-of-birth.day-month-year.not-in-past      = Their date of birth must be in the past
+agent.error.client-details.date-of-birth.year.length                     = The year must be in four digits. For example, 2020.
 
 # Sole Trader Eligibility invalid
 agent.error.eligibility.sole-trader.invalid                     = Select yes if your client is a sole trader that began trading on or after {0}?
@@ -1087,13 +1074,13 @@ agent.business.progress-saved.content.sign-up-another-client-link     = sign up 
 agent.business.progress-saved.content.paragraph2                      = If you sign out, you’ll need to sign in again using the same Government Gateway User ID.
 
 ## Cannot go back to previous client
-agent.cannot-go-back-previous-client.title                      = You cannot go back to previous client
-agent.cannot-go-back-previous-client.heading                    = You cannot go back to previous client
-agent.cannot-go-back-previous-client.radio-option.heading       = To manage your client’s information you can:
-agent.cannot-go-back-previous-client.agent-service-account      = Go to your agent service account, if you finished signing the client up
-agent.cannot-go-back-previous-client.re-enter-client-details    = Re-enter the details of a client you did not finish signing up
-agent.cannot-go-back-previous-client.sign-up-another-client     = Sign up another client
-agent.cannot-go-back-previous-client.error.empty                = You must choose what you want to do next before you can continue.
+agent.cannot-go-back-previous-client.title                      = Sorry, there is a problem
+agent.cannot-go-back-previous-client.heading                    = Sorry, there is a problem
+agent.cannot-go-back-previous-client.para1                      = Choose what you want to do next.
+agent.cannot-go-back-previous-client.para2                      = You can:
+agent.cannot-go-back-previous-client.agent-service-account      = <a class="govuk-link" href="{0}">Go to your agent service account</a>, if you finished signing the client up.
+agent.cannot-go-back-previous-client.re-enter-client-details    = <a class="govuk-link" href="{0}">Re-enter the details of a client you did not finish signing up</a>
+agent.cannot-go-back-previous-client.sign-up-another-client     = <a class="govuk-link" href="{0}">Sign up another client</a>
 
 # Remove overseas property business
 remove-overseas-property-business.heading                       = Are you sure you want to delete your foreign property business?
@@ -1170,33 +1157,36 @@ agent.throttle-end.line-1                                          = We are expe
 agent.throttle-end.line-2                                          = To finish and complete signing up your client, try again or sign out and come back later.
 
 # Global Check Your Answers
-individual.global-check-your-answers.heading                                                    = Declaration
-individual.global-check-your-answers.para                                                       = This is the information you have given to us.
-individual.global-check-your-answers.before-signing-up.heading                                  = Check your answers before signing up
-individual.global-check-your-answers.compatible-software.label                                  = Software works with Making Tax Digital for Income Tax
-individual.global-check-your-answers.tax-year.label                                             = When you’re signing up from
+individual.global-check-your-answers.heading                                                    = Check your answers before signing up
+individual.global-check-your-answers.para                                                       = Before you are signed up to Making Tax Digital for Income Tax, you need to check the information you have given us and confirm it is correct. You can change any incorrect data.
+individual.global-check-your-answers.accounting.period                                          = Accounting Period
+individual.global-check-your-answers.before-signing-up.heading                                  = Information we hold for you
+individual.global-check-your-answers.compatible-software.label                                  = Your chosen software works with Making Tax Digital for Income Tax
+individual.global-check-your-answers.tax-year.label                                             = Tax year
 individual.global-check-your-answers.tax.year.current                                           = Current tax year
 individual.global-check-your-answers.tax.year.next                                              = Next tax year
 individual.global-check-your-answers.income-sources.self-employment.heading                     = Sole trader businesses
 individual.global-check-your-answers.income-sources.self-employment.trade                       = Trade
 individual.global-check-your-answers.income-sources.self-employment.name                        = Business name
-individual.global-check-your-answers.income-sources.self-employment.start-date                  = Start date
+individual.global-check-your-answers.income-sources.self-employment.start-date                  = Business start date
 individual.global-check-your-answers.income-sources.self-employment.before-start-date-limit     = Before 6 April {0}
-individual.global-check-your-answers.income-sources.self-employment.address                     = Address
+individual.global-check-your-answers.income-sources.self-employment.address                     = Business address
 individual.global-check-your-answers.income-sources.self-employment.accounting-method           = Accounting method
-individual.global-check-your-answers.income-sources.property.heading                            = Income from property
-individual.global-check-your-answers.income-sources.uk-property.label                           = Property
+individual.global-check-your-answers.income-sources.property.heading                            = Property income
+individual.global-check-your-answers.income-sources.uk-property.label                           = Property income type
 individual.global-check-your-answers.income-sources.uk-property.value                           = UK property
-individual.global-check-your-answers.income-sources.uk-property.start-date                      = Start date
+individual.global-check-your-answers.income-sources.uk-property.start-date                      = Tax start date
 individual.global-check-your-answers.income-sources.uk-property.before-start-date-limit         = Before 6 April {0}
 individual.global-check-your-answers.income-sources.uk-property.accounting-method               = Accounting method
-individual.global-check-your-answers.income-sources.foreign-property.label                      = Property
+individual.global-check-your-answers.income-sources.foreign-property.label                      = Property income type
 individual.global-check-your-answers.income-sources.foreign-property.value                      = Foreign property
-individual.global-check-your-answers.income-sources.foreign-property.start-date                 = Start date
+individual.global-check-your-answers.income-sources.foreign-property.start-date                 = Tax start date
 individual.global-check-your-answers.income-sources.foreign-property.before-start-date-limit    = Before 6 April {0}
 individual.global-check-your-answers.income-sources.foreign-property.accounting-method          = Accounting method
-individual.global-check-your-answers.para-two                                                   = By continuing, you’re confirming that the information you have given is correct to the best of your knowledge.
-individual.global-check-your-answers.para-three                                                 = When you continue, we’ll sign you up. This may take a few seconds.
+individual.global-check-your-answers.bottom.heading                                             = Declaration
+individual.global-check-your-answers.para-two                                                   = The information you have given must be correct to the best of your knowledge.
+individual.global-check-your-answers.para-three                                                 = By confirming, you will be signed up to Making Tax Digital for Income Tax.
+individual.global-check-your-answers.print-link                                                 = Print this page
 
 # Agent Global Check Your Answers
 agent.global-check-your-answers.heading                                                         = Declaration

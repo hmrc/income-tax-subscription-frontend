@@ -944,25 +944,12 @@ agent.sign-up-complete.what-now.agent-services-account.link     = cyfrif gwasana
 agent.sign-up-complete.what-now.send-quarterly                  = Bydd yn rhaid i chi anfon diweddariadau chwarterol gan ddefnyddio’ch meddalwedd erbyn:
 
 ## Errors ##
-agent.error.client-details.date-of-birth.invalid-chars                              = Nodwch ddyddiad geni gan ddefnyddio’r rhifau 0 i 9
-agent.error.client-details.date-of-birth.day-month-year.empty                       = Nodwch ddyddiad geni’ch cleient
-agent.error.client-details.date-of-birth.date.empty                                 = Nodwch ddyddiad geni’ch cleient
-agent.error.client-details.date-of-birth.day.empty                                  = Rhaid i’w dyddiad geni gynnwys diwrnod
-agent.error.client-details.date-of-birth.month.empty                                = Rhaid i’w dyddiad geni gynnwys mis
-agent.error.client-details.date-of-birth.year.empty                                 = Rhaid i’w dyddiad geni gynnwys blwyddyn
-agent.error.client-details.date-of-birth.day-month.empty                            = Rhaid i’w dyddiad geni gynnwys diwrnod a mis
-agent.error.client-details.date-of-birth.day-year.empty                             = Rhaid i’w dyddiad geni gynnwys diwrnod a blwyddyn
-agent.error.client-details.date-of-birth.month-year.empty                           = Rhaid i’w dyddiad geni gynnwys mis a blwyddyn
-agent.error.client-details.date-of-birth.day-month-year.not-in-past                 = Rhaid i’w dyddiad geni fod yn y gorffennol
-agent.error.client-details.date-of-birth.day-month-year.invalid                     = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.client-details.date-of-birth.date.invalid                               = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.client-details.date-of-birth.day.invalid                                = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.client-details.date-of-birth.month.invalid                              = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.client-details.date-of-birth.year.invalid                               = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.client-details.date-of-birth.day-month.invalid                          = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.client-details.date-of-birth.day-year.invalid                           = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.client-details.date-of-birth.month-year.invalid                         = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.client-details.date-of-birth.year.length                                = Mae’n rhaid i flwyddyn fod yn bedwar digid. Er enghraifft, 2020.
+agent.error.client-details.date-of-birth.all.empty                       = Nodwch ddyddiad geni’ch cleient
+agent.error.client-details.date-of-birth.invalid                         = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.client-details.date-of-birth.required                        = Rhaid i’w dyddiad geni gynnwys {0}
+agent.error.client-details.date-of-birth.required.two                    = Rhaid i’w dyddiad geni gynnwys {0} a {1}
+agent.error.client-details.date-of-birth.day-month-year.not-in-past      = Rhaid i’w dyddiad geni fod yn y gorffennol
+agent.error.client-details.date-of-birth.year.length                     = Mae’n rhaid i flwyddyn fod yn bedwar digid. Er enghraifft, 2020.
 
 # Sole Trader Eligibility invalid
 agent.error.eligibility.sole-trader.invalid                     = Dewiswch ‘Iawn’ os ydych yn unig fasnachwr a ddechreuodd fasnachu ar neu ar ôl {0}
@@ -1084,13 +1071,13 @@ agent.business.progress-saved.content.sign-up-another-client-link     = cofrestr
 agent.business.progress-saved.content.paragraph2                      = Os byddwch yn allgofnodi, bydd angen i chi fewngofnodi eto gan ddefnyddio’r un Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth.
 
 ## Cannot go back to previous client
-agent.cannot-go-back-previous-client.title                      = Ni allwch fynd yn ôl i gleient blaenorol
-agent.cannot-go-back-previous-client.heading                    = Ni allwch fynd yn ôl i gleient blaenorol
-agent.cannot-go-back-previous-client.radio-option.heading       = I reoli manylion eich cleient, gallwch wneud y canlynol:
-agent.cannot-go-back-previous-client.agent-service-account      = Mynd i’ch cyfrif gwasanaethau asiant, os ydych wedi gorffen cofrestru’r cleient
-agent.cannot-go-back-previous-client.re-enter-client-details    = Nodi manylion eto ar gyfer cleient na wnaethoch orffen ei gofrestru
-agent.cannot-go-back-previous-client.sign-up-another-client     = Cofrestru cleient arall
-agent.cannot-go-back-previous-client.error.empty                = Mae’n rhaid i chi ddewis yr hyn rydych am ei wneud nesaf cyn mynd yn eich blaen.
+agent.cannot-go-back-previous-client.title                      = Mae’n ddrwg gennym – mae problem
+agent.cannot-go-back-previous-client.heading                    = Mae’n ddrwg gennym – mae problem
+agent.cannot-go-back-previous-client.para1                      = Beth hoffech ei wneud nesaf?
+agent.cannot-go-back-previous-client.para2                      = Gallwch wneud y canlynol:
+agent.cannot-go-back-previous-client.agent-service-account      = <a class="govuk-link" href="{0}">Mynd i’ch cyfrif gwasanaethau asiant</a>, os ydych wedi gorffen cofrestru’r cleient
+agent.cannot-go-back-previous-client.re-enter-client-details    = <a class="govuk-link" href="{0}">Nodi manylion eto ar gyfer cleient na wnaethoch orffen ei gofrestru</a>
+agent.cannot-go-back-previous-client.sign-up-another-client     = <a class="govuk-link" href="{0}">Cofrestru cleient arall</a>
 
 # Remove overseas property business
 remove-overseas-property-business.heading                       = A ydych yn siŵr eich bod am ddileu’ch busnes eiddo tramor?
@@ -1168,24 +1155,25 @@ agent.throttle-end.line-1                                          = Rydym yn gw
 agent.throttle-end.line-2                                          = I orffen cofrestru’ch cleient, rhowch gynnig arall arni neu allgofnodwch a dod yn ôl yn nes ymlaen.
 
 # Global Check Your Answers
-individual.global-check-your-answers.heading                                                    = Datganiad
-individual.global-check-your-answers.para                                                       = Dyma’r wybodaeth rydych wedi’i rhoi i ni.
-individual.global-check-your-answers.before-signing-up.heading                                  = Gwirio’ch atebion cyn cofrestru
-individual.global-check-your-answers.compatible-software.label                                  = Mae meddalwedd yn gweithio gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-individual.global-check-your-answers.tax-year.label                                             = Pan fyddwch yn cofrestru o
+individual.global-check-your-answers.heading                                                    = Gwiriwch eich atebion
+individual.global-check-your-answers.para                                                       = Cyn i chi gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, mae angen i chi wirio’r wybodaeth rydych wedi’i rhoi i ni a chadarnhau ei bod yn gywir. Gallwch newid unrhyw ddata sy’n anghywir.
+individual.global-check-your-answers.accounting.period                                          = Cyfnod cyfrifyddu
+individual.global-check-your-answers.before-signing-up.heading                                  = Gwybodaeth sydd gennym ar eich cyfer
+individual.global-check-your-answers.compatible-software.label                                  = Mae’r feddalwedd rydych wedi’i dewis yn gweithio gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+individual.global-check-your-answers.tax-year.label                                             = Blwyddyn dreth
 individual.global-check-your-answers.tax.year.current                                           = Flwyddyn dreth bresennol
 individual.global-check-your-answers.tax.year.next                                              = Flwyddyn dreth nesaf
 individual.global-check-your-answers.income-sources.self-employment.heading                     = Busnesau unig fasnachwr
-individual.global-check-your-answers.income-sources.self-employment.trade                       = Masnach
+individual.global-check-your-answers.income-sources.self-employment.trade                       = Gwaith masnach
 individual.global-check-your-answers.income-sources.self-employment.name                        = Enw’r busnes
-individual.global-check-your-answers.income-sources.self-employment.start-date                  = Dyddiad dechrau
+individual.global-check-your-answers.income-sources.self-employment.start-date                  = Dyddiad dechrau’r busnes
 individual.global-check-your-answers.income-sources.self-employment.before-start-date-limit     = Cyn 6 Ebrill {0}
-individual.global-check-your-answers.income-sources.self-employment.address                     = Cyfeiriad
+individual.global-check-your-answers.income-sources.self-employment.address                     = Cyfeiriad y busnes
 individual.global-check-your-answers.income-sources.self-employment.accounting-method           = Dull cyfrifyddu
 individual.global-check-your-answers.income-sources.property.heading                            = Incwm o eiddo
-individual.global-check-your-answers.income-sources.uk-property.label                           = Eiddo
+individual.global-check-your-answers.income-sources.uk-property.label                           = Math yr incwm o eiddo
 individual.global-check-your-answers.income-sources.uk-property.value                           = Eiddo yn y DU
-individual.global-check-your-answers.income-sources.uk-property.start-date                      = Dyddiad dechrau
+individual.global-check-your-answers.income-sources.uk-property.start-date                      = dyddiad dechrau’r
 individual.global-check-your-answers.income-sources.uk-property.before-start-date-limit         = Cyn 6 Ebrill {0}
 individual.global-check-your-answers.income-sources.uk-property.accounting-method               = Dull cyfrifyddu
 individual.global-check-your-answers.income-sources.foreign-property.label                      = Eiddo
@@ -1193,8 +1181,10 @@ individual.global-check-your-answers.income-sources.foreign-property.value      
 individual.global-check-your-answers.income-sources.foreign-property.start-date                 = Dyddiad dechrau
 individual.global-check-your-answers.income-sources.foreign-property.before-start-date-limit    = Cyn 6 Ebrill {0}
 individual.global-check-your-answers.income-sources.foreign-property.accounting-method          = Dull cyfrifyddu
-individual.global-check-your-answers.para-two                                                   = Drwy fynd yn eich blaen, rydych yn cadarnhau bod yr wybodaeth rydych wedi’i rhoi’n gywir ac yn gyflawn hyd eithaf eich gwybodaeth.
-individual.global-check-your-answers.para-three                                                 = Pan fyddwch chi’n parhau, byddwn ni’n eich cofrestru. Gall hyn gymryd ychydig o eiliadau.
+individual.global-check-your-answers.bottom.heading                                             = Datganiad
+individual.global-check-your-answers.para-two                                                   = Mae’n rhaid i’r wybodaeth a roddwyd gennych fod yn gywir hyd eithaf eich gwybodaeth.
+individual.global-check-your-answers.para-three                                                 = Wrth gadarnhau, byddwch yn cael eich cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+individual.global-check-your-answers.print-link                                                 = Argraffwch y dudalen hon
 
 # Agent Global Check Your Answers
 agent.global-check-your-answers.heading                                                         = Datganiad

@@ -129,13 +129,14 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
       "no income sources are present" in {
         val mainContent: Element = document(details = minDetails()).mainContent
-        mainContent.selectOptionalNth("h2", 2) mustBe None
+        mainContent.selectOptionally("#sole-trader-business-heading") mustBe None
+        mainContent.selectOptionally("#property-business-heading") mustBe None
         mainContent.selectOptionalNth(".govuk-summary-list", 3) mustBe None
       }
 
       "all income sources are present" should {
         "display the sole trader income sources heading" in {
-          document().mainContent.selectNth("h2", 2).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.heading
+          document().mainContent.selectHead("#sole-trader-business-heading").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.heading
         }
 
         "display the first sole trader business" when {
@@ -266,7 +267,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
         }
 
         "display the property income sources heading" in {
-          document().mainContent.selectNth("h2", 3).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.Property.heading
+          document().mainContent.selectHead("#property-business-heading").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.Property.heading
         }
 
         "display the uk property income" when {
@@ -407,12 +408,16 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       }
     }
 
+    "have a second subheading" in {
+      document().mainContent.selectNth("h2", 4).text mustBe GlobalCheckYourAnswersMessages.subheading
+    }
+
     "have a second paragraph" in {
-      document().mainContent.selectNth("p", 3).text mustBe GlobalCheckYourAnswersMessages.paraTwo
+      document().mainContent.selectNth("p", 2).text mustBe GlobalCheckYourAnswersMessages.paraTwo
     }
 
     "have a third paragraph" in {
-      document().mainContent.selectNth("p", 4).text mustBe GlobalCheckYourAnswersMessages.paraThree
+      document().mainContent.selectNth("p", 3).text mustBe GlobalCheckYourAnswersMessages.paraThree
     }
 
     "have a form" which {
@@ -441,7 +446,8 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
   def page(completeDetails: CompleteDetails): Html = globalCheckYourAnswers(
     postAction = testCall,
     backUrl = testBackUrl,
-    completeDetails = completeDetails
+    completeDetails = completeDetails,
+    maybeAccountingPeriod = None
   )
 
   def document(details: CompleteDetails = completeDetails()): Document = Jsoup.parse(page(
@@ -450,23 +456,23 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
   object GlobalCheckYourAnswersMessages {
 
-    val heading: String = "Declaration"
+    val heading: String = "Check your answers before signing up"
 
-    val paraOne: String = "This is the information you have given to us."
+    val paraOne: String = "Before you are signed up to Making Tax Digital for Income Tax, you need to check the information you have given us and confirm it is correct. You can change any incorrect data."
 
     val printLink = "Print this page"
 
-    val beforeSigningUpHeading: String = "Check your answers before signing up"
+    val beforeSigningUpHeading: String = "Information we hold for you"
 
     object CompatibleSoftware {
-      val key: String = "Software works with Making Tax Digital for Income Tax"
+      val key: String = "Your chosen software works with Making Tax Digital for Income Tax"
       val yes: String = "Yes"
     }
 
     object SelectedTaxYear {
-      val key: String = "When you’re signing up from"
-      val current: String = "Current tax year"
-      val next: String = "Next tax year"
+      val key: String = "Tax year"
+      val current: String = "2025 to 2026"
+      val next: String = "2026 to 2027"
     }
 
     object IncomeSources {
@@ -475,36 +481,37 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
         val heading: String = "Sole trader businesses"
         val trade: String = "Trade"
         val name: String = "Business name"
-        val startDate: String = "Start date"
-        val address: String = "Address"
+        val startDate: String = "Business start date"
+        val address: String = "Business address"
         val accountingMethod: String = "Accounting method"
         val beforeStartDateLimit: String = s"Before 6 April ${AccountingPeriodUtil.getStartDateLimit.getYear}"
       }
 
       object Property {
-        val heading: String = "Income from property"
+        val heading: String = "Property income"
       }
 
       object UKProperty {
-        val key: String = "Property"
+        val key: String = "Property income type"
         val value: String = "UK property"
-        val startDate: String = "Start date"
+        val startDate: String = "Tax start date"
         val accountingMethod: String = "Accounting method"
         val beforeStartDateLimit: String = s"Before 6 April ${AccountingPeriodUtil.getStartDateLimit.getYear}"
       }
 
       object ForeignProperty {
-        val key: String = "Property"
+        val key: String = "Property income type"
         val value: String = "Foreign property"
-        val startDate: String = "Start date"
+        val startDate: String = "Tax start date"
         val accountingMethod: String = "Accounting method"
         val beforeStartDateLimit: String = s"Before 6 April ${AccountingPeriodUtil.getStartDateLimit.getYear}"
       }
 
     }
 
-    val paraTwo: String = "By continuing, you’re confirming that the information you have given is correct to the best of your knowledge."
-    val paraThree: String = "When you continue, we’ll sign you up. This may take a few seconds."
+    val subheading: String = "Declaration"
+    val paraTwo: String = "The information you have given must be correct to the best of your knowledge."
+    val paraThree: String = "By confirming, you will be signed up to Making Tax Digital for Income Tax."
 
     object Form {
       val confirmAndContinue: String = "Confirm and continue"
