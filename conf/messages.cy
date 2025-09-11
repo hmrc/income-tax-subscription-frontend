@@ -781,10 +781,9 @@ individual.you-can-sign-up-now.paragraph-3 = Os ydych yn cael incwm o eiddo, byd
 individual.you-can-sign-up-now.paragraph-4 = Bydd hefyd angen i chi ddewis os ydych am gofrestru yn ystod y flwyddyn dreth presennol neu o’r flwyddyn dreth nesaf ymlaen.
 
 # Client details page
-agent.client-details-error.heading                              = Mae problem wedi codi
-agent.client-details-error.line-1                               = Nid yw’r manylion a nodwyd gennych yn cyd-fynd â’n cofnodion.
-agent.client-details-error.line-2                               = Gwiriwch y manylion a {0}.
-agent.client-details-error.line-2.link                          = rhowch gynnig arall arni
+agent.client-details-error.heading                              = Mae problem gyda’r manylion ynghylch eich cleient
+agent.client-details-error.line-1                               = Nid yw’r manylion a nodwyd gennych am eich cleient yn cyd-fynd â’n cofnodion.
+agent.client-details-error.line-2.link                          = Gwiriwch y manylion a rhowch gynnig arall arni
 
 # Client Details Lockout
 agent.client-details-lockout.title                              = Rydych wedi cael eich cloi allan

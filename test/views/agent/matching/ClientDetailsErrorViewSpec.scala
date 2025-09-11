@@ -46,20 +46,16 @@ class ClientDetailsErrorViewSpec extends ViewSpec {
       mainContent.selectNth("p", 1).text mustBe ClientDetailsErrorMessages.lineOne
     }
 
-    "have a second line" in {
-      val secondLine = mainContent.selectNth("p", 2)
-      secondLine.text mustBe ClientDetailsErrorMessages.lineTwo
-
-      val link = secondLine.selectHead("a")
-      link.text mustBe ClientDetailsErrorMessages.lineTwoLink
-      link.attr("href") mustBe controllers.agent.routes.AddAnotherClientController.addAnother().url
+    "have a button" in {
+      val button = mainContent.select(".govuk-button")
+      button.text mustBe ClientDetailsErrorMessages.button
+      button.attr("href") mustBe controllers.agent.routes.AddAnotherClientController.addAnother().url
     }
   }
 
   object ClientDetailsErrorMessages {
-    val heading: String = "There is a problem"
-    val lineOne: String = "The details you entered do not match our records."
-    val lineTwoLink: String = "try again"
-    val lineTwo: String = s"Check the details and $lineTwoLink."
+    val heading: String = "There is a problem with your client details"
+    val lineOne: String = "The details you entered for your client do not match our records."
+    val button: String = "Check the details and try again"
   }
 }
