@@ -803,10 +803,9 @@ agent.voluntary.what-you-need-to-do.para-6                                      
 
 
 # Client details page
-agent.client-details-error.heading                              = There is a problem
-agent.client-details-error.line-1                               = The details you entered do not match our records.
-agent.client-details-error.line-2                               = Check the details and {0}.
-agent.client-details-error.line-2.link                          = try again
+agent.client-details-error.heading                              = There is a problem with your client details
+agent.client-details-error.line-1                               = The details you entered for your client do not match our records.
+agent.client-details-error.line-2.link                          = Check the details and try again
 
 # Client Details Lockout
 agent.client-details-lockout.title                              = You’ve been locked out
