@@ -306,11 +306,11 @@
         <div id="add-foreign-property" class="govuk-!-padding-bottom-6">
             <p class="govuk-body">
                 <a class="govuk-link" href=@{
-                   if(featureSwitching.isEnabled(RemoveAccountingMethod)) {
-                   controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateBeforeLimitController.show()
-                   } else {
-                   controllers.agent.tasklist.overseasproperty.routes.IncomeSourcesOverseasPropertyController.show()
-                   }}>@messages("agent.your-income-source.foreign-property.add-link")</a>
+                    if(featureSwitching.isEnabled(RemoveAccountingMethod)) {
+                        controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateBeforeLimitController.show()
+                    } else {
+                        controllers.agent.tasklist.overseasproperty.routes.IncomeSourcesOverseasPropertyController.show()
+                    }}>@messages("agent.your-income-source.foreign-property.add-link")</a>
             </p>
         </div>
     }
