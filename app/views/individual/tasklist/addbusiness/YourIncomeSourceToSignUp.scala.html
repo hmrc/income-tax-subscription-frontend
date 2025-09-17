@@ -77,7 +77,7 @@
 
 @selfEmploymentName(business: SelfEmploymentData, index: Int) = @{
     (business.businessName) match {
-        case Some(BusinessNameModel(name)) => messages("your-income-source.self-employed.business-name", name)
+        case Some(BusinessNameModel(name)) if name.trim.length > 0 => messages("your-income-source.self-employed.business-name", name)
         case _ => messages("your-income-source.self-employed.label-none", index)
     }
 }
@@ -194,43 +194,51 @@
     <p class="govuk-body">@messages("your-income-source.income-from-property.para")</p>
 
     @incomeSources.ukProperty.map { ukProperty =>
-        @govukSummaryList(SummaryList(
-            rows = Seq(
-                SummaryListRow(
-                    key = Key(content = Text(messages("your-income-source.property.start-date-para"))),
-                    value = Value(Text(
-                        if (ukProperty.startDateBeforeLimit.contains(true) || ukProperty.startDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))) {
-                            messages("your-income-source.property.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
-                        } else {
-                            startDate(ukProperty.startDate)
-                        }
-                    ))
-                ),
-               SummaryListRow(
-                key = Key(content = Text(messages("base.status.label"))),
-                value = Value(statusTag(ukProperty.confirmed)),
-                actions = maybeStatusTagAction(
-                    isComplete = ukProperty.isComplete(featureSwitching.isEnabled(RemoveAccountingMethod)),
-                    isConfirmed = ukProperty.confirmed,
-                    href = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url
-                )
-            )),
-            card = Some(Card(
-                title = Some(CardTitle(content = Text(messages("your-income-source.uk-property")))),
-                  actions = Some(Actions(
-                    items =
-                        maybeIncomeSourceChangeAction(
+
+        @{
+            val text = if(ukProperty.startDateBeforeLimit.contains(true) || ukProperty.startDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))) {
+                messages("agent.your-income-source.property.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
+            } else {
+                startDate(ukProperty.startDate)
+            }
+
+            val row = if(text != "") {
+                Seq(SummaryListRow(
+                    key = Key(
+                        content = Text(messages("agent.your-income-source.property.start-date-para"))
+                    ),
+                    value = Value(Text(text))
+                ))
+            } else {
+                Seq()
+            }
+
+            govukSummaryList(SummaryList(
+                rows = row ++ Seq(SummaryListRow(
+                    key = Key(content = Text(messages("base.status.label"))),
+                    value = Value(statusTag(ukProperty.confirmed)),
+                    actions = maybeStatusTagAction(
+                        isComplete = ukProperty.isComplete(featureSwitching.isEnabled(RemoveAccountingMethod)),
+                        isConfirmed = ukProperty.confirmed,
+                        href = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url
+                    )
+                )),
+                card = Some(Card(
+                    title = Some(CardTitle(content = Text(messages("your-income-source.uk-property")))),
+                    actions = Some(Actions(
+                        items = maybeIncomeSourceChangeAction(
                             isComplete = ukProperty.isComplete(featureSwitching.isEnabled(RemoveAccountingMethod)),
                             isConfirmed = ukProperty.confirmed,
                             href = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url,
-                        ) ++
-                        Seq(ActionItem(
+                        ) ++ Seq(ActionItem(
                             href = controllers.individual.tasklist.ukproperty.routes.RemoveUkPropertyController.show.url,
                             content = Text(messages("base.remove"))
                         ))
+                    ))
                 ))
             ))
-        ))
+        }
+
     }.getOrElse {
         <div id="add-uk-property" class="govuk-!-padding-bottom-6">
             <p class="govuk-body">
@@ -240,47 +248,53 @@
     }
 
     @incomeSources.foreignProperty.map { foreignProperty =>
-        @govukSummaryList(SummaryList(
-            rows = Seq(
-                SummaryListRow(
-                    key = Key(content = Text(messages("your-income-source.foreign-property.start-date-para"))),
-                    value = Value(Text(
-                        if (foreignProperty.startDateBeforeLimit.contains(true) ||
-                            foreignProperty.startDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))) {
-                            messages("your-income-source.foreign-property.before-start-date-limit",
-                            AccountingPeriodUtil.getStartDateLimit.getYear.toString)
-                        } else {
-                            startDate(foreignProperty.startDate)
-                        }
-                    ))
-                ),
-            SummaryListRow(
-                key = Key(content = Text(messages("base.status.label"))),
-                value = Value(statusTag(foreignProperty.confirmed)),
-                actions = maybeStatusTagAction(
-                    isComplete = foreignProperty.isComplete(featureSwitching.isEnabled(RemoveAccountingMethod)),
-                    isConfirmed = foreignProperty.confirmed,
-                    href = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
-                )
-            )),
-            card = Some(Card(
-                title = Some(CardTitle(
-                    content = Text(messages("your-income-source.foreign-property"))
+
+        @{
+            val text = if (foreignProperty.startDateBeforeLimit.contains(true) || foreignProperty.startDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))) {
+                messages("agent.your-income-source.foreign-property.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
+            } else {
+                startDate(foreignProperty.startDate)
+            }
+
+            val row = if (text != "") {
+                Seq(SummaryListRow(
+                    key = Key(
+                        content = Text(messages("agent.your-income-source.property.start-date-para"))
+                    ),
+                    value = Value(Text(text))
+                ))
+            } else {
+                Seq()
+            }
+
+            govukSummaryList(SummaryList(
+                rows = row ++ Seq(SummaryListRow(
+                    key = Key(content = Text(messages("base.status.label"))),
+                    value = Value(statusTag(foreignProperty.confirmed)),
+                    actions = maybeStatusTagAction(
+                        isComplete = foreignProperty.isComplete(featureSwitching.isEnabled(RemoveAccountingMethod)),
+                        isConfirmed = foreignProperty.confirmed,
+                        href = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
+                    )
                 )),
-                actions = Some(Actions(
-                    items =
-                        maybeIncomeSourceChangeAction(
+                card = Some(Card(
+                    title = Some(CardTitle(
+                        content = Text(messages("your-income-source.foreign-property"))
+                    )),
+                    actions = Some(Actions(
+                        items = maybeIncomeSourceChangeAction(
                             isComplete = foreignProperty.isComplete(featureSwitching.isEnabled(RemoveAccountingMethod)),
                             isConfirmed = foreignProperty.confirmed,
                             href = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
-                        ) ++
-                        Seq(ActionItem(
+                        ) ++ Seq(ActionItem(
                             href = controllers.individual.tasklist.overseasproperty.routes.RemoveOverseasPropertyController.show.url,
                             content = Text(messages("base.remove"))
                         ))
+                    ))
                 ))
             ))
-        ))
+        }
+
     }.getOrElse {
         <div id="add-foreign-property" class="govuk-!-padding-bottom-6">
             <p class="govuk-body">
@@ -289,6 +303,3 @@
         </div>
         }
     }
-
-
-
