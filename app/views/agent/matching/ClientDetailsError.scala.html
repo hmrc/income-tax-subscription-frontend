@@ -14,12 +14,12 @@
  * limitations under the License.
  *@
 
-@import views.agent.helpers._
+@import views.html.helpers._
 @import views.html.templates.AgentMainTemplate
 
 @this(
     mainTemplate: AgentMainTemplate,
-    form: FormWithCSRF
+    buttonHelper: ButtonHelper
 )
 
 @()(implicit request: Request[_], messages: Messages)
@@ -31,7 +31,9 @@
     <p class="govuk-body">@messages("agent.client-details-error.line-1")</p>
 
     <p class="govuk-body">
-        @Html(messages("agent.client-details-error.line-2", <a href={controllers.agent.routes.AddAnotherClientController.addAnother().url} class="govuk-link">{messages("agent.client-details-error.line-2.link")}</a>))
+        @buttonHelper(
+          buttonText = messages("agent.client-details-error.line-2.link"),
+          href=Some(controllers.agent.routes.AddAnotherClientController.addAnother().url)
+        )
     </p>
-
 }
