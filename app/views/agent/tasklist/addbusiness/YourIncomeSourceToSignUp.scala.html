@@ -192,20 +192,26 @@
     <p class="govuk-body">@messages("agent.your-income-source.income-from-property.para")</p>
 
     @incomeSources.ukProperty.map { ukProperty =>
-        @govukSummaryList(SummaryList(
-            rows = Seq(SummaryListRow(
+
+        val text = if(ukProperty.startDateBeforeLimit.contains(true) || ukProperty.startDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))) {
+            messages("agent.your-income-source.property.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
+        } else {
+            startDate(ukProperty.startDate)
+        }
+
+        val row = if (text != "") {
+            Seq(SummaryListRow(
                 key = Key(
                     content = Text(messages("agent.your-income-source.property.start-date-para"))
                 ),
-                value = Value(Text(
-                    if(ukProperty.startDateBeforeLimit.contains(true) || ukProperty.startDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))) {
-                        messages("agent.your-income-source.property.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
-                    } else {
-                        startDate(ukProperty.startDate)
-                    }
-                ))
-            ),
-            SummaryListRow(
+                value = Value(Text(text))
+            ))
+        } else {
+            Seq()
+        }
+
+        @govukSummaryList(SummaryList(
+            rows = row ++ Seq(SummaryListRow(
                 key = Key(content = Text(messages("base.status.label"))),
                 value = Value(statusTag(ukProperty.confirmed)),
                 actions = maybeStatusTagAction(
@@ -246,20 +252,26 @@
     }
 
     @incomeSources.foreignProperty.map { foreignProperty =>
-        @govukSummaryList(SummaryList(
-            rows = Seq(SummaryListRow(
+
+        val text = if (foreignProperty.startDateBeforeLimit.contains(true) || foreignProperty.startDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))) {
+            messages("agent.your-income-source.foreign-property.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
+        } else {
+            startDate(foreignProperty.startDate)
+        }
+
+        val row = if (text != "") {
+            row = Seq(SummaryListRow(
                 key = Key(
                     content = Text(messages("agent.your-income-source.property.start-date-para"))
                 ),
-                value = Value(Text(
-                    if(foreignProperty.startDateBeforeLimit.contains(true) || foreignProperty.startDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))) {
-                        messages("agent.your-income-source.foreign-property.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
-                    } else {
-                        startDate(foreignProperty.startDate)
-                    }
-                ))
-            ),
-            SummaryListRow(
+                value = Value(Text(text))
+            ))
+        } else {
+            Seq()
+        }
+
+        @govukSummaryList(SummaryList(
+            rows = row ++ Seq(SummaryListRow(
                 key = Key(content = Text(messages("base.status.label"))),
                 value = Value(statusTag(foreignProperty.confirmed)),
                 actions = maybeStatusTagAction(
