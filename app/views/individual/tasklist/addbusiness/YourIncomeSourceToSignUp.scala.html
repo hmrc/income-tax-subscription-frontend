@@ -77,7 +77,7 @@
 
 @selfEmploymentName(business: SelfEmploymentData, index: Int) = @{
     (business.businessName) match {
-        case Some(BusinessNameModel(name)) if name.trim.length > 0 => messages("your-income-source.self-employed.business-name", name)
+        case Some(BusinessNameModel(name)) => messages("your-income-source.self-employed.business-name", name)
         case _ => messages("your-income-source.self-employed.label-none", index)
     }
 }
