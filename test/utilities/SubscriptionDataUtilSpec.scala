@@ -20,13 +20,10 @@ import models.common.AccountingYearModel
 import models.common.business._
 import models.common.subscription.CreateIncomeSourcesModel.createIncomeSources
 import models.common.subscription.{CreateIncomeSourcesModel, OverseasProperty, SoleTraderBusinesses, UkProperty}
-import models.{Cash, Current, DateModel}
-import org.scalatest.matchers.should.Matchers._
+import models.{Current, DateModel}
 import org.scalatestplus.play.PlaySpec
 import services.GetCompleteDetailsService
-import uk.gov.hmrc.http.InternalServerException
 import utilities.AccountingPeriodUtil.getCurrentTaxYear
-import utilities.TestModels._
 import utilities.individual.TestConstants._
 
 import java.time.LocalDate
@@ -40,7 +37,6 @@ class SubscriptionDataUtilSpec extends PlaySpec {
           nino = testNino,
           soleTraderBusinesses = Some(SoleTraderBusinesses(
             accountingPeriod = getCurrentTaxYear,
-            accountingMethod = Some(Cash),
             businesses = Seq(
               SelfEmploymentData(
                 id = "test-id",
@@ -56,14 +52,12 @@ class SubscriptionDataUtilSpec extends PlaySpec {
           ukProperty = Some(UkProperty(
             startDateBeforeLimit = Some(true),
             accountingPeriod = getCurrentTaxYear,
-            tradingStartDate = DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit),
-            accountingMethod = Some(Cash)
+            tradingStartDate = DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit)
           )),
           overseasProperty = Some(OverseasProperty(
             startDateBeforeLimit = Some(true),
             accountingPeriod = getCurrentTaxYear,
-            tradingStartDate = DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit),
-            accountingMethod = Some(Cash)
+            tradingStartDate = DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit)
           ))
         )
       }
@@ -72,7 +66,6 @@ class SubscriptionDataUtilSpec extends PlaySpec {
           nino = testNino,
           soleTraderBusinesses = Some(SoleTraderBusinesses(
             accountingPeriod = getCurrentTaxYear,
-            accountingMethod = Some(Cash),
             businesses = Seq(
               SelfEmploymentData(
                 id = "test-id",
@@ -88,14 +81,12 @@ class SubscriptionDataUtilSpec extends PlaySpec {
           ukProperty = Some(UkProperty(
             startDateBeforeLimit = Some(false),
             accountingPeriod = getCurrentTaxYear,
-            tradingStartDate = DateModel.dateConvert(LocalDate.now),
-            accountingMethod = Some(Cash)
+            tradingStartDate = DateModel.dateConvert(LocalDate.now)
           )),
           overseasProperty = Some(OverseasProperty(
             startDateBeforeLimit = Some(false),
             accountingPeriod = getCurrentTaxYear,
-            tradingStartDate = DateModel.dateConvert(LocalDate.now),
-            accountingMethod = Some(Cash)
+            tradingStartDate = DateModel.dateConvert(LocalDate.now)
           ))
         )
       }
@@ -117,7 +108,6 @@ class SubscriptionDataUtilSpec extends PlaySpec {
   def completeDetails(hasStartDate: Boolean): GetCompleteDetailsService.CompleteDetails = GetCompleteDetailsService.CompleteDetails(
     incomeSources = GetCompleteDetailsService.IncomeSources(
       soleTraderBusinesses = Some(GetCompleteDetailsService.SoleTraderBusinesses(
-        accountingMethod = Some(Cash),
         businesses = Seq(GetCompleteDetailsService.SoleTraderBusiness(
           id = "test-id",
           name = "test name",
@@ -128,14 +118,12 @@ class SubscriptionDataUtilSpec extends PlaySpec {
       )),
       ukProperty = Some(
         GetCompleteDetailsService.UKProperty(
-          startDate = if (hasStartDate) Some(LocalDate.now) else None,
-          accountingMethod = Some(Cash)
+          startDate = if (hasStartDate) Some(LocalDate.now) else None
         )
       ),
       foreignProperty = Some(
         GetCompleteDetailsService.ForeignProperty(
-          startDate = if (hasStartDate) Some(LocalDate.now) else None,
-          accountingMethod = Some(Cash)
+          startDate = if (hasStartDate) Some(LocalDate.now) else None
         )
       )
     ),

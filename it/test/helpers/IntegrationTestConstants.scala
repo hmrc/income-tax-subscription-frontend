@@ -25,7 +25,6 @@ import uk.gov.hmrc.domain.Generator
 import utilities.AccountingPeriodUtil
 
 import java.net.URLEncoder
-import java.time.LocalDate
 import java.util.UUID
 import scala.util.matching.Regex
 
@@ -71,7 +70,6 @@ object IntegrationTestConstants {
   private val testBusinessTradeName = BusinessTradeNameModel("test trade")
   private val testStartDate = AccountingPeriodUtil.getCurrentTaxYear.startDate
   private val testEndDate = AccountingPeriodUtil.getCurrentTaxYear.endDate
-  val testAccountMethod: AccountingMethod = Cash
 
   val testAccountingPeriod: AccountingPeriodModel = testAccountingPeriod(testStartDate, testEndDate)
 
@@ -81,22 +79,19 @@ object IntegrationTestConstants {
 
   def testSoleTraderBusinesses(accountingYear: AccountingYear = Current): SoleTraderBusinesses = SoleTraderBusinesses(
     if (accountingYear == Current) AccountingPeriodUtil.getCurrentTaxYear else AccountingPeriodUtil.getNextTaxYear,
-    Some(testAccountMethod),
     testSelfEmploymentData
   )
 
   def testUkProperty(accountingYear: AccountingYear = Current): UkProperty = UkProperty(
     startDateBeforeLimit = None,
     if (accountingYear == Current) AccountingPeriodUtil.getCurrentTaxYear else AccountingPeriodUtil.getNextTaxYear,
-    tradingStartDate,
-    Some(testAccountMethod)
+    tradingStartDate
   )
 
   def testOverseasProperty(accountingYear: AccountingYear = Current): OverseasProperty = OverseasProperty(
     startDateBeforeLimit = None,
     if (accountingYear == Current) AccountingPeriodUtil.getCurrentTaxYear else AccountingPeriodUtil.getNextTaxYear,
-    tradingStartDate,
-    Some(testAccountMethod)
+    tradingStartDate
   )
 
   lazy val testSelfEmploymentData: Seq[SelfEmploymentData] =
@@ -120,8 +115,6 @@ object IntegrationTestConstants {
     val cannotSignUpForCurrentYearURI = s"$baseURI/error/cannot-sign-up-for-current-year"
     val whatYouNeedToDoURI = s"$baseURI/what-you-need-to-do"
     val usingSoftwareURI = s"$baseURI/using-software"
-    val accountingMethodPropertyURI = s"$baseURI/business/accounting-method-property"
-    val accountingMethodOverseasPropertyURI = s"$baseURI/business/overseas-property-accounting-method"
     val spsHandoffRouteURI = s"$baseURI/sps-handoff"
     val claimEnrolSpsHandoffRouteURI = s"$baseURI/claim-enrolment/sps-handoff"
     val spsHandoffURI = s"/paperless/choose/capture?returnUrl=DO8MisXKpizAWqbqizwb%2FJa9%2BNCLHHqgAm55zTvph%2FNMwk%2F2vsApxzF%2FJsaw9jIyrHFfSwQrP%2BqQcQU90FfT%2BDcR9uIsDgZ5Bi3z4iYCJe0%3D&returnLinkText=lYCIdN%2BV3wGYJ1SSm%2BPhNA%3D%3D&regime=KucfrgeglpOjHad59vo1xg%3D%3D"

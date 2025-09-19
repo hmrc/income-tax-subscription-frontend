@@ -24,7 +24,6 @@ import models.common._
 import models.common.business._
 import models.common.subscription.EnrolmentKey
 import models.usermatching.UserDetailsModel
-import utilities.AccountingPeriodUtil
 
 import java.time.LocalDate
 
@@ -37,10 +36,6 @@ object IntegrationTestModels {
   val testAccountingYearCurrentConfirmed: AccountingYearModel = AccountingYearModel(Current, confirmed = true)
   val testAccountingYearNext: AccountingYearModel = AccountingYearModel(Next)
   val testAccountingYearNextConfirmed: AccountingYearModel = AccountingYearModel(Next, confirmed = true)
-  val testEndDateNext: DateModel = AccountingPeriodUtil.getCurrentTaxYear.endDate.plusYears(1).plusDays(-1)
-  val testEndDatePlus1Y: DateModel = AccountingPeriodUtil.getCurrentTaxYear.endDate.plusYears(1)
-  val testAccountingPeriod: AccountingPeriodModel =
-    testAccountingPeriod(testStartDate, testEndDate)
 
   private val testBusinessName: BusinessNameModel = BusinessNameModel("test business")
   private val testBusinessTrade: BusinessTradeNameModel = BusinessTradeNameModel("test trade")
@@ -54,7 +49,6 @@ object IntegrationTestModels {
       postcode = Some("ZZ1 1ZZ")
     )
   )
-  val testAccountingMethod: AccountingMethodModel = AccountingMethodModel(Cash)
   val testValidStartDate: DateModel = DateModel.dateConvert(LocalDate.now.plusDays(6))
   val testValidStartDate2: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(2))
   //noinspection ScalaStyle
@@ -81,14 +75,12 @@ object IntegrationTestModels {
 
   val testFullPropertyModel: PropertyModel = PropertyModel(
     startDateBeforeLimit = Some(true),
-    accountingMethod = Some(Cash),
     startDate = Some(testValidStartDate),
     confirmed = true
   )
 
   val testFullOverseasPropertyModel: OverseasPropertyModel = OverseasPropertyModel(
     startDateBeforeLimit = Some(true),
-    accountingMethod = Some(Cash),
     startDate = Some(testValidStartDate),
     confirmed = true
   )

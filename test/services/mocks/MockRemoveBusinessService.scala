@@ -37,12 +37,12 @@ trait MockRemoveBusinessService extends UnitTestTrait with MockitoSugar with Bef
   }
 
   def verifyDeleteBusiness(businessId: String): Unit = {
-    verify(mockRemoveBusinessService).deleteBusiness(ArgumentMatchers.any(), ArgumentMatchers.eq(businessId), ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any())
+    verify(mockRemoveBusinessService).deleteBusiness(ArgumentMatchers.any(), ArgumentMatchers.eq(businessId), ArgumentMatchers.any())(ArgumentMatchers.any())
   }
 
   def mockDeleteBusiness(value: Future[Either[RemoveBusinessFailure, DeleteSubscriptionDetailsSuccess]]): Unit = {
     when(mockRemoveBusinessService.deleteBusiness
-    (ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())
+    (ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())
     (ArgumentMatchers.any()))
       .thenReturn(value)
   }

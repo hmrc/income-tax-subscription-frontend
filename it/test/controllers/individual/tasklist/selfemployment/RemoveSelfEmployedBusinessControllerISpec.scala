@@ -27,6 +27,7 @@ import play.api.http.Status._
 import utilities.SubscriptionDataKeys.SoleTraderBusinessesKey
 
 class RemoveSelfEmployedBusinessControllerISpec extends ComponentSpecBase {
+
   "GET /report-quarterly/income-and-expenses/sign-up/business/remove-business" should {
     "return OK" in {
       Given("I setup the Wiremock stubs")
@@ -71,7 +72,7 @@ class RemoveSelfEmployedBusinessControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
 
         IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
-        IncomeTaxSubscriptionConnectorStub.stubSaveSoleTraderBusinessDetails(Seq.empty[SelfEmploymentData], None)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSoleTraderBusinessDetails(Seq.empty[SelfEmploymentData])
         IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetails(SoleTraderBusinessesKey)
         IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 

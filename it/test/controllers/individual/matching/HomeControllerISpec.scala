@@ -26,7 +26,7 @@ import models.common.business.{Address, SelfEmploymentData}
 import models.common.{OverseasPropertyModel, PropertyModel}
 import models.individual.JourneyStep.PreSignUp
 import models.prepop.{PrePopData, PrePopSelfEmployment}
-import models.{Accruals, Cash, DateModel, EligibilityStatus}
+import models.{DateModel, EligibilityStatus}
 import play.api.http.Status._
 import play.api.libs.json.{JsBoolean, JsString, Json}
 import services.{IndividualStartOfJourneyThrottle, StartOfJourneyThrottleId}
@@ -150,9 +150,9 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
         PrePopStub.stubGetPrePop(testNino)(OK, Json.toJson(fullPrePopData))
         IncomeTaxSubscriptionConnectorStub.stubSavePrePopFlag()
 
-        IncomeTaxSubscriptionConnectorStub.stubSaveSoleTraderBusinessDetails(selfEmploymentDetails, Some(Accruals))
-        IncomeTaxSubscriptionConnectorStub.stubSaveProperty(PropertyModel(accountingMethod = Some(Cash)))
-        IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(OverseasPropertyModel(accountingMethod = Some(Cash)))
+        IncomeTaxSubscriptionConnectorStub.stubSaveSoleTraderBusinessDetails(selfEmploymentDetails)
+        IncomeTaxSubscriptionConnectorStub.stubSaveProperty(PropertyModel())
+        IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(OverseasPropertyModel())
         IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
         val res = IncomeTaxSubscriptionFrontend.indexPage()
@@ -260,9 +260,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
   lazy val eligibleBothYears: EligibilityStatus = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)
 
   lazy val fullPrePopData: PrePopData = PrePopData(
-    selfEmployment = Some(Seq(prePopSelfEmployment)),
-    ukPropertyAccountingMethod = Some(Cash),
-    foreignPropertyAccountingMethod = Some(Cash)
+    selfEmployment = Some(Seq(prePopSelfEmployment))
   )
 
   lazy val prePopSelfEmployment: PrePopSelfEmployment = PrePopSelfEmployment(
@@ -272,8 +270,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
       lines = Seq("1 long road"),
       postcode = Some("ZZ1 1ZZ")
     )),
-    startDate = Some(DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit)),
-    accountingMethod = Some(Accruals)
+    startDate = Some(DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit))
   )
 
   lazy val selfEmploymentDetails: Seq[SelfEmploymentData] = Seq(

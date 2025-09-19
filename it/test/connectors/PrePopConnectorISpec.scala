@@ -21,7 +21,7 @@ import helpers.IntegrationTestConstants.testNino
 import helpers.servicemocks.PrePopStub
 import models.common.business.Address
 import models.prepop.{PrePopData, PrePopSelfEmployment}
-import models.{Accruals, Cash, DateModel, ErrorModel}
+import models.{DateModel, ErrorModel}
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK}
 import play.api.libs.json.{JsString, Json}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -51,12 +51,9 @@ class PrePopConnectorISpec extends ComponentSpecBase {
                   "day" -> "01",
                   "month" -> "02",
                   "year" -> "2000"
-                ),
-                "accountingMethod" -> "cash"
+                )
               )
-            ),
-            "ukPropertyAccountingMethod" -> "accruals",
-            "foreignPropertyAccountingMethod" -> "cash"
+            )
           )
         )
 
@@ -74,11 +71,8 @@ class PrePopConnectorISpec extends ComponentSpecBase {
               day = "01",
               month = "02",
               year = "2000"
-            )),
-            accountingMethod = Some(Cash)
-          ))),
-          ukPropertyAccountingMethod = Some(Accruals),
-          foreignPropertyAccountingMethod = Some(Cash)
+            ))
+          )))
         ))
 
       }
@@ -88,7 +82,7 @@ class PrePopConnectorISpec extends ComponentSpecBase {
           body = Json.obj()
         )
 
-        connector.getPrePopData(testNino).futureValue mustBe Right(PrePopData(None, None, None))
+        connector.getPrePopData(testNino).futureValue mustBe Right(PrePopData(None))
       }
     }
     "return a failure" when {

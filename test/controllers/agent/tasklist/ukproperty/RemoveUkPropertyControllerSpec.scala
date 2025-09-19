@@ -22,7 +22,6 @@ import controllers.agent.AgentControllerBaseSpec
 import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}
 import forms.agent.ClientRemoveUkPropertyForm
 import forms.submapping.YesNoMapping
-import models.Cash
 import models.common.PropertyModel
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -49,7 +48,7 @@ class RemoveUkPropertyControllerSpec extends AgentControllerBaseSpec
 
   "show" when {
     "return OK and display the client remove Uk property page" in withController { controller =>
-      mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash))))
+      mockFetchProperty(Some(PropertyModel()))
       val result: Future[Result] = controller.show(subscriptionRequest)
 
       status(result) mustBe OK

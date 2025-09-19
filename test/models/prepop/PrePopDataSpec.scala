@@ -16,7 +16,8 @@
 
 package models.prepop
 
-import models.{Accruals, Cash}
+import models.DateModel
+import models.common.business.Address
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.{JsObject, JsSuccess, Json}
@@ -29,7 +30,7 @@ class PrePopDataSpec extends PlaySpec with Matchers {
         Json.fromJson[PrePopData](prePopDataJson) mustBe JsSuccess(prePopDataModel)
       }
       "all optional data is missing" in {
-        Json.fromJson[PrePopData](Json.obj()) mustBe JsSuccess(PrePopData(None, None, None))
+        Json.fromJson[PrePopData](Json.obj()) mustBe JsSuccess(PrePopData(None))
       }
     }
   }
@@ -37,25 +38,36 @@ class PrePopDataSpec extends PlaySpec with Matchers {
   lazy val prePopDataJson: JsObject = Json.obj(
     "selfEmployment" -> Json.arr(
       Json.obj(
-        "accountingMethod" -> "cash"
+        "name" -> "test-name",
+        "trade" -> "test-trade",
+        "address" -> Json.obj(
+          "lines" -> Json.arr(
+            "test-line-one",
+            "test-line-two"
+          ),
+          "postcode" -> "test-postcode"
+        ),
+        "startDate" -> Json.obj(
+          "day" -> "1",
+          "month" -> "1",
+          "year" -> "2000"
+        )
       )
-    ),
-    "ukPropertyAccountingMethod" -> "accruals",
-    "foreignPropertyAccountingMethod" -> "cash"
+    )
   )
 
   lazy val prePopDataModel: PrePopData = PrePopData(
     selfEmployment = Some(Seq(
       PrePopSelfEmployment(
-        name = None,
-        trade = None,
-        address = None,
-        startDate = None,
-        accountingMethod = Some(Cash)
+        name = Some("test-name"),
+        trade = Some("test-trade"),
+        address = Some(Address(
+          lines = Seq("test-line-one", "test-line-two"),
+          postcode = Some("test-postcode")
+        )),
+        startDate = Some(DateModel("1", "1", "2000"))
       )
-    )),
-    ukPropertyAccountingMethod = Some(Accruals),
-    foreignPropertyAccountingMethod = Some(Cash)
+    ))
   )
 
 }
