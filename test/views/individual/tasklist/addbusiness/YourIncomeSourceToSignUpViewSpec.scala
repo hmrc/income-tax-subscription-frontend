@@ -409,11 +409,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec with FeatureSwitching {
               ),
               rows = Seq(
                 SummaryListRowValues(
-                  key = IndividualIncomeSource.propertyStartDate,
-                  value = Some(""),
-                  actions = Seq.empty
-                ),
-                SummaryListRowValues(
                   key = IndividualIncomeSource.statusTagKey,
                   value = Some(IndividualIncomeSource.incompleteTag),
                   actions = Seq(SummaryListActionValues(
@@ -437,11 +432,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec with FeatureSwitching {
                 )
               ),
               rows = Seq(
-                SummaryListRowValues(
-                  key = IndividualIncomeSource.propertyStartDate,
-                  value = Some(""),
-                  actions = Seq.empty
-                ),
                 SummaryListRowValues(
                   key = IndividualIncomeSource.statusTagKey,
                   value = Some(IndividualIncomeSource.incompleteTag),
