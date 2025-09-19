@@ -20,7 +20,7 @@ import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionD
 import connectors.httpparser.RetrieveReferenceHttpParser.RetrieveReferenceResponse
 import models.common._
 import models.common.business.SelfEmploymentData
-import models.{AccountingMethod, DateModel, YesNo}
+import models.{DateModel, YesNo}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -89,27 +89,6 @@ trait MockSubscriptionDetailsService extends PlaySpec with MockitoSugar with Bef
       .thenReturn(Future.successful(result))
   }
 
-  def mockSaveStreamlineProperty(maybeStartDate: Option[DateModel], maybeStartDateBeforeLimit: Option[Boolean], accountingMethod: AccountingMethod)
-                                (result: PostSubscriptionDetailsResponse): Unit = {
-    when(mockSubscriptionDetailsService.saveStreamlineProperty(
-      ArgumentMatchers.any(),
-      ArgumentMatchers.eq(maybeStartDate),
-      ArgumentMatchers.eq(maybeStartDateBeforeLimit),
-      ArgumentMatchers.eq(accountingMethod)
-    )(ArgumentMatchers.any())).thenReturn(Future.successful(result))
-  }
-
-  def mockSaveStreamlineForeignProperty(maybeStartDate: Option[DateModel], maybeStartDateBeforeLimit: Option[Boolean], accountingMethod: AccountingMethod)
-                                (result: PostSubscriptionDetailsResponse): Unit = {
-    when(mockSubscriptionDetailsService.saveStreamlineForeignProperty(
-      ArgumentMatchers.any(),
-      ArgumentMatchers.eq(maybeStartDate),
-      ArgumentMatchers.eq(maybeStartDateBeforeLimit),
-      ArgumentMatchers.eq(accountingMethod)
-    )(ArgumentMatchers.any())).thenReturn(Future.successful(result))
-  }
-
-
   def verifySaveProperty(propertyModel: PropertyModel, count: Int = 1): Unit = {
     if (count == 0) {
       verify(mockSubscriptionDetailsService, times(count)).saveProperty(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any())
@@ -158,9 +137,9 @@ trait MockSubscriptionDetailsService extends PlaySpec with MockitoSugar with Bef
     }
   }
 
-  def mockFetchAllSelfEmployments(selfEmployments: Seq[SelfEmploymentData], accountingMethod: Option[AccountingMethod] = None): Unit = {
+  def mockFetchAllSelfEmployments(selfEmployments: Seq[SelfEmploymentData]): Unit = {
     when(mockSubscriptionDetailsService.fetchAllSelfEmployments(ArgumentMatchers.any())(ArgumentMatchers.any()))
-      .thenReturn(Future.successful((selfEmployments, accountingMethod)))
+      .thenReturn(Future.successful(selfEmployments))
   }
 
   def mockFetchPropertyStartDate(date: Option[DateModel]): Unit = {
@@ -170,16 +149,6 @@ trait MockSubscriptionDetailsService extends PlaySpec with MockitoSugar with Bef
 
   def mockSavePropertyStartDate(date: DateModel)(result: PostSubscriptionDetailsResponse): Unit = {
     when(mockSubscriptionDetailsService.savePropertyStartDate(ArgumentMatchers.any(), ArgumentMatchers.eq(date))(ArgumentMatchers.any()))
-      .thenReturn(Future.successful(result))
-  }
-
-  def mockFetchPropertyAccountingMethod(accountingMethod: Option[AccountingMethod]): Unit = {
-    when(mockSubscriptionDetailsService.fetchAccountingMethodProperty(ArgumentMatchers.any())(ArgumentMatchers.any()))
-      .thenReturn(Future.successful(accountingMethod))
-  }
-
-  def mockSavePropertyAccountingMethod(accountingMethod: AccountingMethod)(result: PostSubscriptionDetailsResponse): Unit = {
-    when(mockSubscriptionDetailsService.saveAccountingMethodProperty(ArgumentMatchers.any(), ArgumentMatchers.eq(accountingMethod))(ArgumentMatchers.any()))
       .thenReturn(Future.successful(result))
   }
 
@@ -193,31 +162,21 @@ trait MockSubscriptionDetailsService extends PlaySpec with MockitoSugar with Bef
       .thenReturn(Future.successful(result))
   }
 
-  def mockFetchOverseasPropertyAccountingMethod(accountingMethod: Option[AccountingMethod]): Unit = {
-    when(mockSubscriptionDetailsService.fetchOverseasPropertyAccountingMethod(ArgumentMatchers.any())(ArgumentMatchers.any()))
-      .thenReturn(Future.successful(accountingMethod))
-  }
-
-  def mockSaveOverseasAccountingMethodProperty(accountingMethod: AccountingMethod)(result: PostSubscriptionDetailsResponse): Unit = {
-    when(mockSubscriptionDetailsService.saveOverseasAccountingMethodProperty(ArgumentMatchers.any(), ArgumentMatchers.eq(accountingMethod))(ArgumentMatchers.any()))
-      .thenReturn(Future.successful(result))
-  }
-
   def mockFetchAllIncomeSources(incomeSources: IncomeSources): Unit = {
     when(mockSubscriptionDetailsService.fetchAllIncomeSources(ArgumentMatchers.any())(ArgumentMatchers.any()))
       .thenReturn(Future.successful(incomeSources))
   }
 
-  def mockSaveBusinesses(businesses: Seq[SelfEmploymentData], accountingMethod: Option[AccountingMethod])(result: PostSubscriptionDetailsResponse): Unit = {
-    when(mockSubscriptionDetailsService.saveBusinesses(ArgumentMatchers.any(), ArgumentMatchers.eq(businesses), ArgumentMatchers.eq(accountingMethod))(ArgumentMatchers.any()))
+  def mockSaveBusinesses(businesses: Seq[SelfEmploymentData])(result: PostSubscriptionDetailsResponse): Unit = {
+    when(mockSubscriptionDetailsService.saveBusinesses(ArgumentMatchers.any(), ArgumentMatchers.eq(businesses))(ArgumentMatchers.any()))
       .thenReturn(Future.successful(result))
   }
 
-  def verifySaveBusinesses(businesses: Seq[SelfEmploymentData], accountingMethod: Option[AccountingMethod], count: Int = 1): Unit = {
+  def verifySaveBusinesses(businesses: Seq[SelfEmploymentData], count: Int = 1): Unit = {
     if (count == 0) {
-      verify(mockSubscriptionDetailsService, times(count)).saveBusinesses(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any())
+      verify(mockSubscriptionDetailsService, times(count)).saveBusinesses(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any())
     } else {
-      verify(mockSubscriptionDetailsService, times(count)).saveBusinesses(ArgumentMatchers.any(), ArgumentMatchers.eq(businesses), ArgumentMatchers.eq(accountingMethod))(ArgumentMatchers.any())
+      verify(mockSubscriptionDetailsService, times(count)).saveBusinesses(ArgumentMatchers.any(), ArgumentMatchers.eq(businesses))(ArgumentMatchers.any())
     }
   }
 

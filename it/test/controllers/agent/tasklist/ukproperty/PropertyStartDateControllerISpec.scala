@@ -91,7 +91,7 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
           When("POST /property-commencement-date is called")
           val res = IncomeTaxSubscriptionFrontend.submitUkPropertyStartDate(isEditMode = false, Some(userInput))
 
-          Then("Should return a SEE_OTHER with a redirect location of property accounting method page")
+          Then("Should return a SEE_OTHER with a redirect location of the uk property check your answers page")
           res must have(
             httpStatus(SEE_OTHER),
             redirectURI(AgentURI.ukPropertyCheckYourAnswersURI)

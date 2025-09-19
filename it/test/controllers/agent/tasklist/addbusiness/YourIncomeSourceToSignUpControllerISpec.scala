@@ -30,10 +30,6 @@ import utilities.SubscriptionDataKeys
 
 class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-  }
-
   private val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
 
   s"GET ${routes.YourIncomeSourceToSignUpController.show.url}" should {
@@ -110,8 +106,7 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(
-          OK, Seq(testBusiness("12345", confirmed = true)),
-          Some(testAccountingMethod.accountingMethod)
+          OK, Seq(testBusiness("12345", confirmed = true))
         )
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
@@ -137,8 +132,7 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         "a sole trader business is incomplete" in {
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(
-            OK, Seq(testBusiness("12345")),
-            Some(testAccountingMethod.accountingMethod)
+            OK, Seq(testBusiness("12345"))
           )
           SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
           SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
@@ -157,8 +151,7 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         "a uk property business is incomplete" in {
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(
-            OK, Seq(testBusiness("12345", confirmed = true)),
-            Some(testAccountingMethod.accountingMethod)
+            OK, Seq(testBusiness("12345", confirmed = true))
           )
           SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
           SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
@@ -177,8 +170,7 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         "a foreign property business is incomplete" in {
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(
-            OK, Seq(testBusiness("12345", confirmed = true)),
-            Some(testAccountingMethod.accountingMethod)
+            OK, Seq(testBusiness("12345", confirmed = true))
           )
           SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
           SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))

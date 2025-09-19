@@ -20,7 +20,6 @@ import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import models.audits.SaveAndComebackAuditing
 import models.audits.SaveAndComebackAuditing.SaveAndComeBackAuditModel
-import models.common.business.AccountingMethodModel
 import models.requests.agent.ConfirmedClientRequest
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.api.{Configuration, Environment}
@@ -74,7 +73,7 @@ class ProgressSavedController @Inject()(identify: IdentifierAction,
                                (implicit request: ConfirmedClientRequest[AnyContent],
                                 hc: HeaderCarrier): Future[SaveAndComeBackAuditModel] = {
     for {
-      (businesses, accountingMethod) <- subscriptionDetailsService.fetchAllSelfEmployments(request.reference)
+      businesses <- subscriptionDetailsService.fetchAllSelfEmployments(request.reference)
       property <- subscriptionDetailsService.fetchProperty(request.reference)
       overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(request.reference)
       selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(request.reference)
@@ -88,7 +87,6 @@ class ProgressSavedController @Inject()(identify: IdentifierAction,
         currentTaxYear = AccountingPeriodUtil.getTaxEndYear(currentDateProvider.getCurrentDate),
         selectedTaxYear = selectedTaxYear,
         selfEmployments = businesses,
-        maybeSelfEmploymentAccountingMethod = accountingMethod.map(AccountingMethodModel.apply),
         maybePropertyModel = property,
         maybeOverseasPropertyModel = overseasProperty
       )

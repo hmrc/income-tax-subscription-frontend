@@ -22,7 +22,6 @@ import controllers.agent.AgentControllerBaseSpec
 import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}
 import forms.agent.RemoveClientOverseasPropertyForm
 import forms.submapping.YesNoMapping
-import models.Cash
 import models.common.OverseasPropertyModel
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -49,7 +48,7 @@ class RemoveOverseasPropertyControllerSpec extends AgentControllerBaseSpec
 
   "show" when {
     "return OK and display the client remove overseas property page" in withController { controller =>
-      mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
+      mockFetchOverseasProperty(Some(OverseasPropertyModel()))
       val result: Future[Result] = controller.show(subscriptionRequest)
 
       status(result) mustBe OK
@@ -134,6 +133,7 @@ class RemoveOverseasPropertyControllerSpec extends AgentControllerBaseSpec
       }
     }
   }
+
   private def withController(testCode: RemoveOverseasPropertyController => Any): Unit = {
     val view = mock[RemoveOverseasPropertyBusiness]
 

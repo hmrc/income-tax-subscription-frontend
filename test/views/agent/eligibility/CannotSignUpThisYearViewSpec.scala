@@ -76,9 +76,6 @@ class CannotSignUpThisYearViewSpec extends ViewSpec {
       "has a first point" in {
         bulletList.selectNth("li", 1).text mustBe CannotSignUpMessages.bullet1
       }
-      "has a second point" in {
-        bulletList.selectNth("li", 2).text mustBe CannotSignUpMessages.bullet2
-      }
     }
 
     "have a third paragraph" in {
@@ -161,7 +158,6 @@ class CannotSignUpThisYearViewSpec extends ViewSpec {
     val subheading1 = "What happens next"
     val para2 = "For each of your client’s businesses, you’ll need their:"
     val bullet1 = "business start date (or the date they started getting property income)"
-    val bullet2 = "accounting method (cash basis or traditional accounting - this is also called accruals or standard accounting)"
     val para3 = "If they’re a sole trader, you’ll also need your client’s:"
     val bullet3 = "business trading name and address"
     val bullet4 = "trade (the nature of their business)"

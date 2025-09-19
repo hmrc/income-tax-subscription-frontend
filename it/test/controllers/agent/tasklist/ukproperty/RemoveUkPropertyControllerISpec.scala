@@ -21,7 +21,6 @@ import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnecto
 import helpers.IntegrationTestConstants.{AgentURI, basGatewaySignIn, testNino, testUtr}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
-import models.Cash
 import models.common.PropertyModel
 import play.api.http.Status._
 import play.api.libs.json.{JsString, Json}
@@ -49,7 +48,7 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase {
       SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
       SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK,
-        Json.toJson(PropertyModel(accountingMethod = Some(Cash))))
+        Json.toJson(PropertyModel()))
 
       When("GET client/business/remove-uk-property-business is called")
       val res = IncomeTaxSubscriptionFrontend.getClientRemoveUkProperty
@@ -67,7 +66,7 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase {
       SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
       SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT,
-        Json.toJson(PropertyModel(accountingMethod = Some(Cash))))
+        Json.toJson(PropertyModel()))
 
       When("GET client/business/remove-uk-property-business is called")
       val res = IncomeTaxSubscriptionFrontend.getClientRemoveUkProperty

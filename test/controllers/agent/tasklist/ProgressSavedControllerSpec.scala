@@ -21,7 +21,7 @@ import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockI
 import models.audits.SaveAndComebackAuditing.SaveAndComeBackAuditModel
 import models.common.business._
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel, TimestampModel}
-import models.{Cash, Current, DateModel}
+import models.{Current, DateModel}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import play.api.http.Status.OK
@@ -71,7 +71,7 @@ class ProgressSavedControllerSpec extends ControllerSpec
             mockFetchLastUpdatedTimestamp(Some(TimestampModel(dateTime)))
             mockProgressSaved(fakeExpiryDate, clientDetails)
             mockCurrentDate(LocalDate.now())
-            mockFetchAllSelfEmployments(selfEmployments, Some(Cash))
+            mockFetchAllSelfEmployments(selfEmployments)
             mockFetchProperty(Some(ukProperty))
             mockFetchOverseasProperty(Some(foreignProperty))
             mockFetchSelectedTaxYear(Some(accountingYear))
@@ -90,7 +90,6 @@ class ProgressSavedControllerSpec extends ControllerSpec
               currentTaxYear = AccountingPeriodUtil.getTaxEndYear(LocalDate.now),
               selectedTaxYear = Some(accountingYear),
               selfEmployments = selfEmployments,
-              maybeSelfEmploymentAccountingMethod = Some(AccountingMethodModel(Cash)),
               maybePropertyModel = Some(ukProperty),
               maybeOverseasPropertyModel = Some(foreignProperty)
             ))
@@ -99,7 +98,7 @@ class ProgressSavedControllerSpec extends ControllerSpec
             mockFetchLastUpdatedTimestamp(Some(TimestampModel(dateTime)))
             mockProgressSaved(fakeExpiryDate, clientDetails)
             mockCurrentDate(LocalDate.now())
-            mockFetchAllSelfEmployments(Seq.empty, None)
+            mockFetchAllSelfEmployments(Seq.empty)
             mockFetchProperty(None)
             mockFetchOverseasProperty(None)
             mockFetchSelectedTaxYear(None)
@@ -118,7 +117,6 @@ class ProgressSavedControllerSpec extends ControllerSpec
               currentTaxYear = AccountingPeriodUtil.getTaxEndYear(LocalDate.now),
               selectedTaxYear = None,
               selfEmployments = Seq.empty,
-              maybeSelfEmploymentAccountingMethod = None,
               maybePropertyModel = None,
               maybeOverseasPropertyModel = None
             ))
@@ -170,13 +168,11 @@ class ProgressSavedControllerSpec extends ControllerSpec
 
   lazy val ukProperty: PropertyModel = PropertyModel(
     startDateBeforeLimit = Some(false),
-    accountingMethod = Some(Cash),
     startDate = Some(DateModel.dateConvert(LocalDate.now))
   )
 
   lazy val foreignProperty: OverseasPropertyModel = OverseasPropertyModel(
     startDateBeforeLimit = Some(false),
-    accountingMethod = Some(Cash),
     startDate = Some(DateModel.dateConvert(LocalDate.now))
   )
 

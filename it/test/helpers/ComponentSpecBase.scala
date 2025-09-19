@@ -449,26 +449,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
     def youCanSignUp(): WSResponse = get("/you-can-sign-up-now")
 
-    def submitPropertyAccountingMethod(inEditMode: Boolean, request: Option[AccountingMethod]): WSResponse = {
-      val uri = s"/business/accounting-method-property?editMode=$inEditMode"
-      post(uri, Map(ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true"))(
-        request.fold(Map.empty[String, Seq[String]])(
-          model =>
-            AccountingMethodPropertyForm.accountingMethodPropertyForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
-        )
-      )
-    }
-
-    def submitForeignPropertyAccountingMethod(inEditMode: Boolean, request: Option[AccountingMethod]): WSResponse = {
-      val uri = s"/business/overseas-property-accounting-method?editMode=$inEditMode"
-      post(uri)(
-        request.fold(Map.empty[String, Seq[String]])(
-          model =>
-            AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
-        )
-      )
-    }
-
     def ukPropertyStartDateBeforeLimit(isEditMode: Boolean = false, isGlobalEdit: Boolean = false): WSResponse = {
       get(s"/business/property-start-date-before-limit?editMode=$isEditMode&isGlobalEdit=$isGlobalEdit")
     }

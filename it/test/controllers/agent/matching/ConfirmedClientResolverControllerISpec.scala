@@ -26,7 +26,7 @@ import helpers.servicemocks.{EligibilityStub, PrePopStub, ThrottlingStub}
 import models.agent.JourneyStep.SignPosted
 import models.common.business._
 import models.common.{OverseasPropertyModel, PropertyModel}
-import models.{Accruals, Cash, DateModel, EligibilityStatus}
+import models.{DateModel, EligibilityStatus}
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, NO_CONTENT, OK, SEE_OTHER}
 import play.api.libs.json.{JsBoolean, JsString, Json}
 import play.api.{Configuration, Environment}
@@ -248,7 +248,74 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
   }
 
   s"GET ${routes.ConfirmedClientResolver.resolve.url}" when {
-      "pre-pop income sources and continue as normal" in {
+    "pre-pop income sources and continue as normal" in {
+
+      AuthStub.stubAuthSuccess()
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle))(OK, JsBoolean(true))
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(
+        responseStatus = OK,
+        responseBody = Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+      )
+      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.PrePopFlag, NO_CONTENT)
+      PrePopStub.stubGetPrePop(testNino)(
+        status = OK,
+        body = Json.obj(
+          "selfEmployment" -> Json.arr(
+            Json.obj(
+              "name" -> "ABC",
+              "trade" -> "Plumbing",
+              "address" -> Json.obj(
+                "lines" -> Json.arr(
+                  "1 long road"
+                ),
+                "postcode" -> "ZZ1 1ZZ"
+              ),
+              "startDate" -> Json.obj(
+                "day" -> "01",
+                "month" -> "02",
+                "year" -> "2000"
+              )
+            )
+          )
+        )
+      )
+      IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
+      IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[Boolean](SubscriptionDataKeys.PrePopFlag, true)
+      IncomeTaxSubscriptionConnectorStub.stubSaveSoleTraderBusinessDetails(
+        selfEmployments = Seq(SelfEmploymentData(
+          id = "test-uuid",
+          startDateBeforeLimit = Some(true),
+          businessName = Some(BusinessNameModel("ABC")),
+          businessTradeName = Some(BusinessTradeNameModel("Plumbing")),
+          businessAddress = Some(BusinessAddressModel(Address(
+            lines = Seq(
+              "1 long road"
+            ),
+            postcode = Some("ZZ1 1ZZ")
+          )))
+        ))
+      )
+      IncomeTaxSubscriptionConnectorStub.stubSaveProperty(
+        PropertyModel()
+      )
+      IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(
+        OverseasPropertyModel()
+      )
+
+      val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
+
+      res must have(
+        httpStatus(SEE_OTHER),
+        redirectURI(controllers.agent.eligibility.routes.ClientCanSignUpController.show().url)
+      )
+
+      getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
+    }
+    "result in technical difficulties" when {
+      "there was an error returned from the pre-pop connection" in {
 
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle))(OK, JsBoolean(true))
@@ -261,88 +328,17 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.PrePopFlag, NO_CONTENT)
         PrePopStub.stubGetPrePop(testNino)(
-          status = OK,
-          body = Json.obj(
-            "selfEmployment" -> Json.arr(
-              Json.obj(
-                "name" -> "ABC",
-                "trade" -> "Plumbing",
-                "address" -> Json.obj(
-                  "lines" -> Json.arr(
-                    "1 long road"
-                  ),
-                  "postcode" -> "ZZ1 1ZZ"
-                ),
-                "startDate" -> Json.obj(
-                  "day" -> "01",
-                  "month" -> "02",
-                  "year" -> "2000"
-                ),
-                "accountingMethod" -> "cash"
-              )
-            ),
-            "ukPropertyAccountingMethod" -> "accruals",
-            "foreignPropertyAccountingMethod" -> "cash"
-          )
-        )
-        IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
-        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[Boolean](SubscriptionDataKeys.PrePopFlag, true)
-        IncomeTaxSubscriptionConnectorStub.stubSaveSoleTraderBusinessDetails(
-          selfEmployments = Seq(SelfEmploymentData(
-            id = "test-uuid",
-            businessStartDate = Some(BusinessStartDate(DateModel("01", "02", "2000"))),
-            businessName = Some(BusinessNameModel("ABC")),
-            businessTradeName = Some(BusinessTradeNameModel("Plumbing")),
-            businessAddress = Some(BusinessAddressModel(Address(
-              lines = Seq(
-                "1 long road"
-              ),
-              postcode = Some("ZZ1 1ZZ")
-            )))
-          )),
-          accountingMethod = Some(Cash)
-        )
-        IncomeTaxSubscriptionConnectorStub.stubSaveProperty(
-          PropertyModel(accountingMethod = Some(Accruals))
-        )
-        IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(
-          OverseasPropertyModel(accountingMethod = Some(Cash))
+          status = INTERNAL_SERVER_ERROR,
+          body = Json.obj()
         )
 
         val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
 
         res must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(controllers.agent.eligibility.routes.ClientCanSignUpController.show().url)
+          httpStatus(INTERNAL_SERVER_ERROR)
         )
-
-        getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
       }
-      "result in technical difficulties" when {
-        "there was an error returned from the pre-pop connection" in {
-
-          AuthStub.stubAuthSuccess()
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle))(OK, JsBoolean(true))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(
-            responseStatus = OK,
-            responseBody = Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
-          )
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.PrePopFlag, NO_CONTENT)
-          PrePopStub.stubGetPrePop(testNino)(
-            status = INTERNAL_SERVER_ERROR,
-            body = Json.obj()
-          )
-
-          val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
-
-          res must have(
-            httpStatus(INTERNAL_SERVER_ERROR)
-          )
-        }
-      }
+    }
   }
 
   override val env: Environment = app.injector.instanceOf[Environment]

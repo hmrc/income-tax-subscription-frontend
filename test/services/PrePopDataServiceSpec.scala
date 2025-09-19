@@ -18,11 +18,10 @@ package services
 
 import config.{AppConfig, MockConfig}
 import connectors.httpparser.PostSubscriptionDetailsHttpParser
-import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
+import connectors.httpparser.PostSubscriptionDetailsHttpParser.{PostSubscriptionDetailsSuccessResponse, UnexpectedStatusFailure}
 import connectors.mocks.MockPrePopConnector
 import models._
 import models.common.business._
-import models.common.{OverseasPropertyModel, PropertyModel}
 import models.prepop.{PrePopData, PrePopSelfEmployment}
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.play.PlaySpec
@@ -82,11 +81,8 @@ class PrePopDataServiceSpec extends PlaySpec
             mockUUID(testUUID)
             mockSavePrePopFlag(flag = true)(Right(PostSubscriptionDetailsSuccessResponse))
             mockSaveBusinesses(
-              businesses = Seq(expectedFullSelfEmploymentData, expectedFullSelfEmploymentData),
-              accountingMethod = Some(accountingMethod)
+              businesses = Seq(expectedFullSelfEmploymentData, expectedFullSelfEmploymentData)
             )(Right(PostSubscriptionDetailsSuccessResponse))
-            mockSaveProperty(expectedUkProperty)(Right(PostSubscriptionDetailsSuccessResponse))
-            mockSaveOverseasProperty(expectedForeignProperty)(Right(PostSubscriptionDetailsSuccessResponse))
 
             await(service.prePopIncomeSources(reference, testNino)) mustBe PrePopSuccess
 
@@ -94,11 +90,8 @@ class PrePopDataServiceSpec extends PlaySpec
             verifyGetPrePopData(testNino)
             verifySavePrePopFlag(flag = true)
             verifySaveBusinesses(
-              businesses = Seq(expectedFullSelfEmploymentData, expectedFullSelfEmploymentData),
-              accountingMethod = Some(accountingMethod)
+              businesses = Seq(expectedFullSelfEmploymentData, expectedFullSelfEmploymentData)
             )
-            verifySaveProperty(expectedUkProperty)
-            verifySaveOverseasProperty(expectedForeignProperty)
           }
           "the fetched pre-pop data has minimal income source data and saving of the data was successful" in {
             mockFetchPrePopFlag(None)
@@ -106,11 +99,8 @@ class PrePopDataServiceSpec extends PlaySpec
             mockUUID(testUUID)
             mockSavePrePopFlag(flag = true)(Right(PostSubscriptionDetailsSuccessResponse))
             mockSaveBusinesses(
-              businesses = Seq(expectedMinimalSelfEmploymentData),
-              accountingMethod = None
+              businesses = Seq(expectedMinimalSelfEmploymentData)
             )(Right(PostSubscriptionDetailsSuccessResponse))
-            mockSaveProperty(expectedUkProperty)(Right(PostSubscriptionDetailsSuccessResponse))
-            mockSaveOverseasProperty(expectedForeignProperty)(Right(PostSubscriptionDetailsSuccessResponse))
 
             await(service.prePopIncomeSources(reference, testNino)) mustBe PrePopSuccess
 
@@ -118,11 +108,8 @@ class PrePopDataServiceSpec extends PlaySpec
             verifyGetPrePopData(testNino)
             verifySavePrePopFlag(flag = true)
             verifySaveBusinesses(
-              businesses = Seq(expectedMinimalSelfEmploymentData),
-              accountingMethod = None
+              businesses = Seq(expectedMinimalSelfEmploymentData)
             )
-            verifySaveProperty(expectedUkProperty)
-            verifySaveOverseasProperty(expectedForeignProperty)
           }
           "the fetched pre-pop data has only self employment data" which {
             "was saved successfully" in {
@@ -131,8 +118,7 @@ class PrePopDataServiceSpec extends PlaySpec
               mockUUID(testUUID)
               mockSavePrePopFlag(flag = true)(Right(PostSubscriptionDetailsSuccessResponse))
               mockSaveBusinesses(
-                businesses = Seq(expectedMinimalSelfEmploymentData),
-                accountingMethod = None
+                businesses = Seq(expectedMinimalSelfEmploymentData)
               )(Right(PostSubscriptionDetailsSuccessResponse))
 
               await(service.prePopIncomeSources(reference, testNino)) mustBe PrePopSuccess
@@ -141,8 +127,7 @@ class PrePopDataServiceSpec extends PlaySpec
               verifyGetPrePopData(testNino)
               verifySavePrePopFlag(flag = true)
               verifySaveBusinesses(
-                businesses = Seq(expectedMinimalSelfEmploymentData),
-                accountingMethod = None
+                businesses = Seq(expectedMinimalSelfEmploymentData)
               )
             }
             "returned a save failure when saving" in {
@@ -151,80 +136,17 @@ class PrePopDataServiceSpec extends PlaySpec
               mockUUID(testUUID)
               mockSavePrePopFlag(flag = true)(Right(PostSubscriptionDetailsSuccessResponse))
               mockSaveBusinesses(
-                businesses = Seq(expectedMinimalSelfEmploymentData),
-                accountingMethod = None
+                businesses = Seq(expectedMinimalSelfEmploymentData)
               )(Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
-              await(service.prePopIncomeSources(reference, testNino)) mustBe PrePopSuccess
+              await(service.prePopIncomeSources(reference, testNino)) mustBe PrePopFailure(UnexpectedStatusFailure(INTERNAL_SERVER_ERROR).toString)
 
               verifyFetchPrePopFlag()
               verifyGetPrePopData(testNino)
               verifySavePrePopFlag(flag = true)
               verifySaveBusinesses(
-                businesses = Seq(expectedMinimalSelfEmploymentData),
-                accountingMethod = None
+                businesses = Seq(expectedMinimalSelfEmploymentData)
               )
-            }
-          }
-          "the fetched pre-pop data has only a uk property accounting method" which {
-            "was saved successfully" in {
-              mockFetchPrePopFlag(None)
-              mockGetPrePopData(testNino)(Right(ukPropertyOnlyPrePopData))
-              mockUUID(testUUID)
-              mockSavePrePopFlag(flag = true)(Right(PostSubscriptionDetailsSuccessResponse))
-              mockSaveProperty(expectedUkProperty)(Right(PostSubscriptionDetailsSuccessResponse))
-
-              await(service.prePopIncomeSources(reference, testNino)) mustBe PrePopSuccess
-
-              verifyFetchPrePopFlag()
-              verifyGetPrePopData(testNino)
-              verifySavePrePopFlag(flag = true)
-              verifySaveProperty(expectedUkProperty)
-
-            }
-            "returned a save failure when saving" in {
-              mockFetchPrePopFlag(None)
-              mockGetPrePopData(testNino)(Right(ukPropertyOnlyPrePopData))
-              mockUUID(testUUID)
-              mockSavePrePopFlag(flag = true)(Right(PostSubscriptionDetailsSuccessResponse))
-              mockSaveProperty(expectedUkProperty)(Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
-
-              await(service.prePopIncomeSources(reference, testNino)) mustBe PrePopSuccess
-
-              verifyFetchPrePopFlag()
-              verifyGetPrePopData(testNino)
-              verifySavePrePopFlag(flag = true)
-              verifySaveProperty(expectedUkProperty)
-            }
-          }
-          "the fetched pre-pop data has only a foreign property accounting method" which {
-            "was saved successfully" in {
-              mockFetchPrePopFlag(None)
-              mockGetPrePopData(testNino)(Right(foreignPropertyOnlyPrePopData))
-              mockUUID(testUUID)
-              mockSavePrePopFlag(flag = true)(Right(PostSubscriptionDetailsSuccessResponse))
-              mockSaveOverseasProperty(expectedForeignProperty)(Right(PostSubscriptionDetailsSuccessResponse))
-
-              await(service.prePopIncomeSources(reference, testNino)) mustBe PrePopSuccess
-
-              verifyFetchPrePopFlag()
-              verifyGetPrePopData(testNino)
-              verifySavePrePopFlag(flag = true)
-              verifySaveOverseasProperty(expectedForeignProperty)
-            }
-            "returned a save failure when saving" in {
-              mockFetchPrePopFlag(None)
-              mockGetPrePopData(testNino)(Right(foreignPropertyOnlyPrePopData))
-              mockUUID(testUUID)
-              mockSavePrePopFlag(flag = true)(Right(PostSubscriptionDetailsSuccessResponse))
-              mockSaveOverseasProperty(expectedForeignProperty)(Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
-
-              await(service.prePopIncomeSources(reference, testNino)) mustBe PrePopSuccess
-
-              verifyFetchPrePopFlag()
-              verifyGetPrePopData(testNino)
-              verifySavePrePopFlag(flag = true)
-              verifySaveOverseasProperty(expectedForeignProperty)
             }
           }
         }
@@ -241,11 +163,8 @@ class PrePopDataServiceSpec extends PlaySpec
             verifySavePrePopFlag(flag = true, count = 0)
             verifySaveBusinesses(
               businesses = Seq(expectedMinimalSelfEmploymentData),
-              accountingMethod = Some(accountingMethod),
               count = 0
             )
-            verifySaveProperty(expectedUkProperty, count = 0)
-            verifySaveOverseasProperty(expectedForeignProperty, count = 0)
           }
           "there was a problem when saving the pre-pop flag" in {
             val error = PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)
@@ -261,11 +180,8 @@ class PrePopDataServiceSpec extends PlaySpec
             verifySavePrePopFlag(flag = true)
             verifySaveBusinesses(
               businesses = Seq(expectedMinimalSelfEmploymentData),
-              accountingMethod = Some(accountingMethod),
               count = 0
             )
-            verifySaveProperty(expectedUkProperty, count = 0)
-            verifySaveOverseasProperty(expectedForeignProperty, count = 0)
           }
         }
       }
@@ -276,37 +192,19 @@ class PrePopDataServiceSpec extends PlaySpec
     selfEmployment = Some(Seq(
       fullPrePopSelfEmployment,
       fullPrePopSelfEmployment
-    )),
-    ukPropertyAccountingMethod = Some(Accruals),
-    foreignPropertyAccountingMethod = Some(Cash)
+    ))
   )
 
   lazy val minimalPrePopData: PrePopData = PrePopData(
     selfEmployment = Some(Seq(
       minimalPrePopSelfEmployment
-    )),
-    ukPropertyAccountingMethod = Some(Accruals),
-    foreignPropertyAccountingMethod = Some(Cash)
+    ))
   )
 
   lazy val selfEmploymentOnlyPrePopData: PrePopData = PrePopData(
     selfEmployment = Some(Seq(
       minimalPrePopSelfEmployment
-    )),
-    ukPropertyAccountingMethod = None,
-    foreignPropertyAccountingMethod = None
-  )
-
-  lazy val ukPropertyOnlyPrePopData: PrePopData = PrePopData(
-    selfEmployment = None,
-    ukPropertyAccountingMethod = Some(Accruals),
-    foreignPropertyAccountingMethod = None
-  )
-
-  lazy val foreignPropertyOnlyPrePopData: PrePopData = PrePopData(
-    selfEmployment = None,
-    ukPropertyAccountingMethod = None,
-    foreignPropertyAccountingMethod = Some(Cash)
+    ))
   )
 
   val name: String = "ABC"
@@ -320,22 +218,18 @@ class PrePopDataServiceSpec extends PlaySpec
 
   val startDate: DateModel = DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit)
 
-  lazy val accountingMethod: AccountingMethod = Cash
-
   lazy val fullPrePopSelfEmployment: PrePopSelfEmployment = PrePopSelfEmployment(
     name = Some(name),
     trade = Some(trade),
     address = Some(address),
-    startDate = Some(startDate),
-    accountingMethod = Some(accountingMethod)
+    startDate = Some(startDate)
   )
 
   lazy val minimalPrePopSelfEmployment: PrePopSelfEmployment = PrePopSelfEmployment(
     name = None,
     trade = None,
     address = None,
-    startDate = None,
-    accountingMethod = None
+    startDate = None
   )
 
   lazy val testUUID: String = "test-uuid"
@@ -351,13 +245,5 @@ class PrePopDataServiceSpec extends PlaySpec
 
   lazy val expectedMinimalSelfEmploymentData: SelfEmploymentData = SelfEmploymentData(
     id = testUUID
-  )
-
-  lazy val expectedUkProperty: PropertyModel = PropertyModel(
-    accountingMethod = Some(Accruals)
-  )
-
-  lazy val expectedForeignProperty: OverseasPropertyModel = OverseasPropertyModel(
-    accountingMethod = Some(Cash)
   )
 }

@@ -16,16 +16,15 @@
 
 package models.prepop
 
+import models.DateModel
 import models.common.business._
-import models.{AccountingMethod, DateModel}
 import play.api.libs.json.{Json, OFormat}
 import utilities.AccountingPeriodUtil
 
 case class PrePopSelfEmployment(name: Option[String],
                                 trade: Option[String],
                                 address: Option[Address],
-                                startDate: Option[DateModel],
-                                accountingMethod: Option[AccountingMethod]) {
+                                startDate: Option[DateModel]) {
 
   def toSelfEmploymentData(id: String): SelfEmploymentData = {
 

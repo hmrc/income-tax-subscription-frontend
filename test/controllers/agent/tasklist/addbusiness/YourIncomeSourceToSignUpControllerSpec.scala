@@ -19,9 +19,9 @@ package controllers.agent.tasklist.addbusiness
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.agent.AgentControllerBaseSpec
 import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}
+import models.DateModel
 import models.common.business._
 import models.common.{IncomeSources, OverseasPropertyModel, PropertyModel}
-import models.{Cash, DateModel}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import play.api.http.Status.{OK, SEE_OTHER}
@@ -43,7 +43,6 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
 
   val incomeSources: IncomeSources = IncomeSources(
     selfEmployments = Seq(testSelfEmployment("id"), testSelfEmployment("id2")),
-    selfEmploymentAccountingMethod = Some(Cash),
     ukProperty = Some(testUkProperty),
     foreignProperty = Some(testForeignProperty)
   )
@@ -94,7 +93,6 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
         mockFetchAllIncomeSources(
           IncomeSources(
             selfEmployments = Seq(testSelfEmployment("id"), testSelfEmployment("id2")),
-            selfEmploymentAccountingMethod = Some(Cash),
             ukProperty = Some(testUkProperty),
             foreignProperty = Some(testForeignProperty)
           )
@@ -112,7 +110,6 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
         mockFetchAllIncomeSources(
           IncomeSources(
             selfEmployments = Seq(testSelfEmployment("id"), testSelfEmployment("id2")),
-            selfEmploymentAccountingMethod = Some(Cash),
             ukProperty = None,
             foreignProperty = None
           )
@@ -130,7 +127,6 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
         mockFetchAllIncomeSources(
           IncomeSources(
             selfEmployments = Seq.empty,
-            selfEmploymentAccountingMethod = None,
             ukProperty = Some(testUkProperty),
             foreignProperty = None
           )
@@ -148,7 +144,6 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
         mockFetchAllIncomeSources(
           IncomeSources(
             selfEmployments = Seq.empty,
-            selfEmploymentAccountingMethod = None,
             ukProperty = None,
             foreignProperty = Some(testForeignProperty)
           )
@@ -166,9 +161,9 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
   }
 
   "backUrl" when {
-      "go to the ORM page" in new Setup {
-        controller.backUrl mustBe controllers.agent.routes.WhatYouNeedToDoController.show().url
-      }
+    "go to the ORM page" in new Setup {
+      controller.backUrl mustBe controllers.agent.routes.WhatYouNeedToDoController.show().url
+    }
   }
 
   trait Setup {
@@ -209,13 +204,11 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
   )
 
   def testUkProperty: PropertyModel = PropertyModel(
-    accountingMethod = Some(Cash),
     startDate = Some(DateModel("2", "2", "1981")),
     confirmed = true
   )
 
   def testForeignProperty: OverseasPropertyModel = OverseasPropertyModel(
-    accountingMethod = Some(Cash),
     startDate = Some(DateModel("3", "3", "1982")),
     confirmed = true
   )

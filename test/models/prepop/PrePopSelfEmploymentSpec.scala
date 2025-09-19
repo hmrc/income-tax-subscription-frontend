@@ -16,8 +16,8 @@
 
 package models.prepop
 
+import models.DateModel
 import models.common.business._
-import models.{Accruals, Cash, DateModel}
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json._
@@ -87,8 +87,7 @@ class PrePopSelfEmploymentSpec extends PlaySpec with Matchers {
       "day" -> date.day,
       "month" -> date.month,
       "year" -> date.year
-    ),
-    "accountingMethod" -> "cash"
+    )
   )
 
   lazy val prePopSelfEmploymentModelFull: PrePopSelfEmployment = PrePopSelfEmployment(
@@ -100,8 +99,7 @@ class PrePopSelfEmploymentSpec extends PlaySpec with Matchers {
       ),
       postcode = Some("ZZ1 1ZZ")
     )),
-    startDate = Some(date),
-    accountingMethod = Some(Cash)
+    startDate = Some(date)
   )
 
   lazy val prePopSelfEmploymentJsonMinimal: JsObject = Json.obj()
@@ -110,8 +108,7 @@ class PrePopSelfEmploymentSpec extends PlaySpec with Matchers {
     name = None,
     trade = None,
     address = None,
-    startDate = None,
-    accountingMethod = None
+    startDate = None
   )
 
 }

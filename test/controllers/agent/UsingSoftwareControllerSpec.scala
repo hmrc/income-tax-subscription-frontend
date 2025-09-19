@@ -156,7 +156,7 @@ class UsingSoftwareControllerSpec extends ControllerSpec
           )
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.agent.routes.WhatYouNeedToDoController.show.url)
+          redirectLocation(result) mustBe Some(controllers.agent.routes.WhatYouNeedToDoController.show().url)
         }
         "the user is mandated for the current tax year" in {
 

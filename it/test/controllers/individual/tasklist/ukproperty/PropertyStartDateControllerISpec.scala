@@ -16,7 +16,6 @@
 
 package controllers.individual.tasklist.ukproperty
 
-import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.IntegrationTestConstants.IndividualURI
 import helpers.IntegrationTestModels.testFullPropertyModel
@@ -29,11 +28,6 @@ import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys.Property
 
 class PropertyStartDateControllerISpec extends ComponentSpecBase {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(RemoveAccountingMethod)
-  }
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/property-start-date" should {
 
@@ -73,62 +67,33 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/property-start-date" should {
-    "redirect to the uk property accounting method page" when {
-      "not in edit mode" when {
-        "enter a valid start date" in {
-          val userInput: DateModel = IntegrationTestModels.testValidStartDate
-
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
-          IncomeTaxSubscriptionConnectorStub.stubSaveProperty(PropertyModel(startDate = Some(userInput)))
-          IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
-
-          When("POST /property-start-date is called")
-          val res = IncomeTaxSubscriptionFrontend.submitPropertyStartDate(inEditMode = false, Some(userInput))
-
-          Then("Should return a SEE_OTHER with a redirect location of property accounting method page")
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(IndividualURI.accountingMethodPropertyURI)
-          )
-        }
-      }
-    }
-
-    "redirect to the overseas property check your answers page" when {
-      "not in edit mode" when {
-        "feature switch is enabled" in {
-          enable(RemoveAccountingMethod)
-
-          val userInput = IntegrationTestModels.testValidStartDate
-          val expected   = PropertyModel(startDate = Some(userInput))
-
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-            Property,
-            NO_CONTENT
-          )
-
-          IncomeTaxSubscriptionConnectorStub.stubSaveProperty(expected)
-          IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
-
-          When("POST /overseas-property-start-date is called")
-          val res = IncomeTaxSubscriptionFrontend.submitPropertyStartDate(inEditMode = false, Some(userInput))
-
-          Then("Should skip the accounting method page and go straight to check-your-answers")
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(IndividualURI.ukPropertyCYAURI)
-          )
-
-          IncomeTaxSubscriptionConnectorStub.verifySaveProperty(expected, Some(1))
-        }
-      }
-    }
-
     "redirect to uk property check your answers page" when {
+      "not in edit mode" in {
+
+        val userInput = IntegrationTestModels.testValidStartDate
+        val expected = PropertyModel(startDate = Some(userInput))
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+          Property,
+          NO_CONTENT
+        )
+
+        IncomeTaxSubscriptionConnectorStub.stubSaveProperty(expected)
+        IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
+
+        When("POST /overseas-property-start-date is called")
+        val res = IncomeTaxSubscriptionFrontend.submitPropertyStartDate(inEditMode = false, Some(userInput))
+
+        Then("Should return a SEE_OTHER to the uk property check your answers page")
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(IndividualURI.ukPropertyCYAURI)
+        )
+
+        IncomeTaxSubscriptionConnectorStub.verifySaveProperty(expected, Some(1))
+      }
       "in edit mode" when {
         "not changing the start date" in {
           val userInput: DateModel = IntegrationTestModels.testValidStartDate

@@ -28,6 +28,7 @@ import play.api.libs.json.JsString
 import utilities.SubscriptionDataKeys.SoleTraderBusinessesKey
 
 class RemoveSelfEmploymentBusinessControllerISpec extends ComponentSpecBase {
+
   "GET /report-quarterly/income-and-expenses/sign-up/client/business/remove-business" should {
     "return SEE_OTHER to login page" when {
       "user is unauthenticated" in {
@@ -88,7 +89,7 @@ class RemoveSelfEmploymentBusinessControllerISpec extends ComponentSpecBase {
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
         IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
-        IncomeTaxSubscriptionConnectorStub.stubSaveSoleTraderBusinessDetails(Seq.empty, None)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSoleTraderBusinessDetails(Seq.empty)
         IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetails(SoleTraderBusinessesKey)
         IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
@@ -146,7 +147,7 @@ class RemoveSelfEmploymentBusinessControllerISpec extends ComponentSpecBase {
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
         IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
-        IncomeTaxSubscriptionConnectorStub.stubSaveSoleTraderBusinessDetails(Seq.empty, None)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSoleTraderBusinessDetails(Seq.empty)
         IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetailsFailure(SoleTraderBusinessesKey)
         IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 

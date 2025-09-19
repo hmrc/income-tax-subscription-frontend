@@ -20,18 +20,12 @@ import models._
 import models.common._
 import models.common.business._
 import models.usermatching.{UserDetailsModel, UserMatchSuccessResponseModel}
-import uk.gov.hmrc.domain.Generator
 import utilities.individual.TestConstants
 import utilities.individual.TestConstants.{testFirstName, testLastName, testNino, testUtr}
 
 import java.time.LocalDate
 
 object TestModels {
-
-  /*
-   * this function returns a random nino each time it is called, if you need a constant nino use TestConstants.testNino
-   */
-  def newNino: String = new Generator().nextNino.nino
 
   val testStartDateThisYear = AccountingPeriodUtil.getCurrentTaxYear.startDate
   val testEndDateThisYear = AccountingPeriodUtil.getCurrentTaxYear.endDate
@@ -41,39 +35,17 @@ object TestModels {
 
   val testAccountingPeriodThisYear: AccountingPeriodModel = testAccountingPeriod(testStartDateThisYear, testEndDateThisYear)
   val testAccountingPeriodNextYear: AccountingPeriodModel = testAccountingPeriod(testStartDateNextYear, testEndDateNextYear)
-  val adjustedTestAccountingPeriod: AccountingPeriodModel =
-    testAccountingPeriod(testStartDateThisYear, testEndDateThisYear.plusDays(1))
-
-  val testAccountingPeriodMatched = AccountingPeriodModel(testStartDateThisYear, DateModel("05", "04", "2018"))
 
   def testAccountingPeriod(startDate: DateModel = testStartDateThisYear,
                            endDate: DateModel = testEndDateThisYear): AccountingPeriodModel =
     AccountingPeriodModel(startDate, endDate)
 
   val testBusinessName = BusinessNameModel("test business")
-  val testSelectedTaxYearCurrent = AccountingYearModel(Current, confirmed = true)
-  val testSelectedTaxYearNext = AccountingYearModel(Next)
-  val testAccountingMethod = AccountingMethodModel(Cash)
-  val testAccountMethod: AccountingMethod = Cash
   val testBusinessTradeName = BusinessTradeNameModel("test trade name")
   val testBusinessStartDate = BusinessStartDate(DateModel("05", "04", "2018"))
-  val testBusinessAddressModel = BusinessAddressModel(Address(Seq("line 1", "line 2"), Some("TF2 1PF")))
   val testId = "testId"
 
   val testValidStartDate = DateModel.dateConvert(LocalDate.now.minusYears(3))
-
-  val testFullPropertyModel: PropertyModel = PropertyModel(
-    accountingMethod = Some(testAccountMethod),
-    startDate = Some(testValidStartDate),
-    confirmed = true
-  )
-
-  val testFullOverseasPropertyModel: OverseasPropertyModel = OverseasPropertyModel(
-    accountingMethod = Some(testAccountMethod),
-    startDate = Some(testValidStartDate),
-    confirmed = true
-  )
-
 
   lazy val testUserDetails = UserDetailsModel(testFirstName, testLastName, TestConstants.testNino, testStartDateThisYear)
 
@@ -81,14 +53,4 @@ object TestModels {
 
   lazy val testMatchNoUtrModel = UserMatchSuccessResponseModel(testFirstName, testLastName, TestConstants.testNino, testNino, None)
 
-  lazy val testSummaryDataSelfEmploymentData =
-    Seq(SelfEmploymentData
-    (
-      id = testId,
-      businessStartDate = Some(testBusinessStartDate),
-      businessName = Some(testBusinessName),
-      businessTradeName = Some(testBusinessTradeName),
-      businessAddress = Some(BusinessAddressModel(Address(Seq("line 1", "line 2"), Some("TF2 1PF"))))
-    )
-    )
 }

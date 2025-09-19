@@ -16,10 +16,10 @@
 
 package models.common
 
-import models.{AccountingMethod, DateModel}
+import models.DateModel
 import play.api.libs.json.{Json, OFormat}
 
-case class IncomeSourcesOverseasPropertyModel(accountingMethod: AccountingMethod, startDate: DateModel)
+case class IncomeSourcesOverseasPropertyModel(startDate: DateModel)
 
   object IncomeSourcesOverseasPropertyModel {
     implicit val format: OFormat[IncomeSourcesOverseasPropertyModel] = Json.format[IncomeSourcesOverseasPropertyModel]

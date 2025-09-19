@@ -17,50 +17,38 @@
 package models.common.subscription
 
 import models.common.business._
-import models.common.{AccountingPeriodModel, AccountingYearModel, OverseasPropertyModel, PropertyModel}
-import models.{AccountingMethod, Current, DateModel, Next}
+import models.common.{AccountingPeriodModel, AccountingYearModel}
+import models.{Current, DateModel, Next}
 import play.api.libs.json.{Json, OFormat}
 import services.GetCompleteDetailsService.CompleteDetails
-import uk.gov.hmrc.http.InternalServerException
 import utilities.AccountingPeriodUtil
 import utilities.AccountingPeriodUtil.{getCurrentTaxYear, getNextTaxYear}
 
-case class CreateIncomeSourcesModel(
-                                     nino: String,
-                                     soleTraderBusinesses: Option[SoleTraderBusinesses] = None,
-                                     ukProperty: Option[UkProperty] = None,
-                                     overseasProperty: Option[OverseasProperty] = None
-                                   ) {
+case class CreateIncomeSourcesModel(nino: String,
+                                    soleTraderBusinesses: Option[SoleTraderBusinesses] = None,
+                                    ukProperty: Option[UkProperty] = None,
+                                    overseasProperty: Option[OverseasProperty] = None) {
   require(soleTraderBusinesses.isDefined || ukProperty.isDefined || overseasProperty.isDefined, "at least one income source is required")
 }
 
-case class SoleTraderBusinesses(
-                                 accountingPeriod: AccountingPeriodModel,
-                                 accountingMethod: Option[AccountingMethod],
-                                 businesses: Seq[SelfEmploymentData]
-                               )
+case class SoleTraderBusinesses(accountingPeriod: AccountingPeriodModel,
+                                businesses: Seq[SelfEmploymentData])
 
 object SoleTraderBusinesses {
   implicit val format: OFormat[SoleTraderBusinesses] = Json.format[SoleTraderBusinesses]
 }
 
-case class UkProperty(
-                       startDateBeforeLimit: Option[Boolean] = None,
-                       accountingPeriod: AccountingPeriodModel,
-                       tradingStartDate: DateModel,
-                       accountingMethod: Option[AccountingMethod]
-                     )
+case class UkProperty(startDateBeforeLimit: Option[Boolean] = None,
+                      accountingPeriod: AccountingPeriodModel,
+                      tradingStartDate: DateModel)
 
 object UkProperty {
   implicit val format: OFormat[UkProperty] = Json.format[UkProperty]
 }
 
-case class OverseasProperty(
-                             startDateBeforeLimit: Option[Boolean] = None,
-                             accountingPeriod: AccountingPeriodModel,
-                             tradingStartDate: DateModel,
-                             accountingMethod: Option[AccountingMethod]
-                           )
+case class OverseasProperty(startDateBeforeLimit: Option[Boolean] = None,
+                            accountingPeriod: AccountingPeriodModel,
+                            tradingStartDate: DateModel)
 
 object OverseasProperty {
   implicit val format: OFormat[OverseasProperty] = Json.format[OverseasProperty]
@@ -91,7 +79,7 @@ object CreateIncomeSourcesModel {
             confirmed = true
           )
         }
-        SoleTraderBusinesses(accountingPeriod, businesses.accountingMethod, selfEmployments)
+        SoleTraderBusinesses(accountingPeriod, selfEmployments)
       }
     }
 
@@ -101,8 +89,7 @@ object CreateIncomeSourcesModel {
         UkProperty(
           startDateBeforeLimit = if (property.startDate.isEmpty) Some(true) else Some(false),
           accountingPeriod = accountingPeriod,
-          tradingStartDate = startDate,
-          accountingMethod = property.accountingMethod
+          tradingStartDate = startDate
         )
       }
     }
@@ -113,8 +100,7 @@ object CreateIncomeSourcesModel {
         OverseasProperty(
           startDateBeforeLimit = if (property.startDate.isEmpty) Some(true) else Some(false),
           accountingPeriod = accountingPeriod,
-          tradingStartDate = startDate,
-          accountingMethod = property.accountingMethod
+          tradingStartDate = startDate
         )
       }
     }
