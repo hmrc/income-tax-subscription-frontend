@@ -18,16 +18,13 @@
 @import utilities.AccountingPeriodUtil
 @import views.html.templates.PrincipalMainTemplate
 @import views.html.helpers.{SaveAndContinueButtonHelper, PageHeadingHelper}
-@import config.featureswitch.FeatureSwitchingImpl
-@import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
 
 @this(
     mainTemplate: PrincipalMainTemplate,
     form: FormWithCSRF,
     govukSummaryList: GovukSummaryList,
     pageHeadingHelper: PageHeadingHelper,
-    saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
-    featureSwitching: FeatureSwitchingImpl
+    saveAndContinueButtonHelper: SaveAndContinueButtonHelper
 )
 
 @(
@@ -50,7 +47,6 @@
 
     @govukSummaryList(SummaryList(
         rows = Seq(
-            Some(
             SummaryListRow(
                 key = Key(content = Text(messages("business.check-your-answers.content.uk-property-start-date.question"))),
                 value = if(viewModel.startDateBeforeLimit.contains(true) || viewModel.startDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))) {
@@ -72,24 +68,8 @@
                     )
                 ))
             )
-        ) ++
-        (if (!featureSwitching.isEnabled(RemoveAccountingMethod)) Some(
-            SummaryListRow(
-                key = Key(content = Text(messages("business.check-your-answers.content.uk-property-accounting-method.question"))),
-                value = Value(content = Text(accountingMethod(viewModel.accountingMethod))),
-                actions = Some(Actions(
-                    items = Seq(
-                        ActionItem(
-                            href = controllers.individual.tasklist.ukproperty.routes.PropertyAccountingMethodController.show(editMode = true, isGlobalEdit = isGlobalEdit).url,
-                            content = Text(messages(if(viewModel.accountingMethod.isDefined) "base.change" else "base.add")),
-                            visuallyHiddenText = Some(messages("business.check-your-answers.content.uk-property-accounting-method.question"))
-                        )
-                    )
-                ))
-            )
-        ) else None)
-    ).flatten
-))
+        )
+    ))
 
     @form(action = postAction) {
 
@@ -106,14 +86,6 @@
 @startDate(maybeStartDate: Option[DateModel]) = @{
     maybeStartDate match {
         case Some(startDate) => startDate.toCheckYourAnswersDateFormat
-        case None => ""
-    }
-}
-
-@accountingMethod(accountingMethod: Option[AccountingMethod]) = @{
-    accountingMethod match {
-        case Some(Cash) => messages("business.check-your-answers.content.accounting-method.cash")
-        case Some(Accruals) => messages("business.check-your-answers.content.accounting-method.accruals")
         case None => ""
     }
 }

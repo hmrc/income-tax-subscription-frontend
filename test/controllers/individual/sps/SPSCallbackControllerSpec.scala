@@ -57,7 +57,7 @@ class SPSCallbackControllerSpec extends ControllerBaseSpec with MockAuditingServ
         val result: Future[Result] = TestSPSCallbackController.callback(Some("testEntityId"))(request(hasEntityId = true)).run()
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.individual.routes.UsingSoftwareController.show.url)
+        redirectLocation(result) mustBe Some(controllers.individual.routes.UsingSoftwareController.show().url)
       }
     }
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import forms.agent.UkPropertyIncomeSourcesForm
+@import forms.agent.UkPropertyStartDateBeforeLimitForm
 @import play.api.data.Form
 @import utilities.AccountingPeriodUtil
 @import utilities.UserMatchingSessionUtil.ClientDetails
@@ -31,19 +31,19 @@
 
 @(ukPropertyStartDateBeforeLimitForm: Form[_], postAction: Call, backUrl: String, clientDetails: ClientDetails)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("agent.property.income-source.heading"), optForm = Some(ukPropertyStartDateBeforeLimitForm), backLink = Some(backUrl)) {
+@mainTemplate(title = messages("agent.uk-property.start-date-before-limit.heading"), optForm = Some(ukPropertyStartDateBeforeLimitForm), backLink = Some(backUrl)) {
 
     @pageHeadingHelper(
-        heading = messages("agent.property.income-source.heading"),
-        caption = messages("agent.property.income-source.heading.caption", clientDetails.name, clientDetails.formattedNino),
+        heading = messages("agent.uk-property.start-date-before-limit.heading"),
+        caption = messages("agent.uk-property.start-date-before-limit.caption", clientDetails.name, clientDetails.formattedNino),
         isSection = false
     )
 
     @form(action = postAction) {
 
         @yesNoRadioHelper(
-            field = ukPropertyStartDateBeforeLimitForm(UkPropertyIncomeSourcesForm.startDateBeforeLimit),
-            legend = messages("agent.property.income-source.start-date-before-limit.legend", AccountingPeriodUtil.getStartDateLimit.getYear.toString),
+            field = ukPropertyStartDateBeforeLimitForm(UkPropertyStartDateBeforeLimitForm.startDateBeforeLimit),
+            legend = messages("agent.uk-property.start-date-before-limit.legend", AccountingPeriodUtil.getStartDateLimit.getYear.toString),
             isPageHeading = false,
             headingClasses = "govuk-!-font-weight-bold",
             inline = true

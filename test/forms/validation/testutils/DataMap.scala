@@ -16,7 +16,6 @@
 
 package forms.validation.testutils
 
-import forms.agent.AccountingMethodOverseasPropertyForm
 import forms.formatters.DateModelMapping
 import forms.individual.business.AccountingYearForm
 import forms.validation.utils.ConstraintUtil._
@@ -39,8 +38,6 @@ object DataMap {
       Map(s"$prefix-${DateModelMapping.day}" -> day, s"$prefix-${DateModelMapping.month}" -> month, s"$prefix-${DateModelMapping.year}" -> year)
 
     val emptyDate: String => DataMap = (prefix: String) => date(prefix)("", "", "")
-
-    def overseasPropertyAccountingMethod(iType: String): DataMap = Map(AccountingMethodOverseasPropertyForm.accountingMethodOverseasProperty -> iType)
 
     def accountingYear(iType: String): DataMap = Map(AccountingYearForm.accountingYear -> iType)
 

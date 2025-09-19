@@ -19,7 +19,7 @@ package models.audits
 import models.audits.SaveAndComebackAuditing.SaveAndComeBackAuditModel
 import models.common.business._
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
-import models.{Cash, Current, DateModel}
+import models.{Current, DateModel}
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.libs.json.Json
@@ -36,14 +36,11 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
       businessAddress = Some(BusinessAddressModel(Address(Seq("line 1"), Some("ZZ1 1ZZ"))))
     )
   )
-  private val selfEmploymentAccountingMethod = Some(AccountingMethodModel(Cash))
   private val property = Some(PropertyModel(
-    accountingMethod = Some(Cash),
     startDate = Some(DateModel("6", "5", "2020")),
     confirmed = true
   ))
   private val overseasProperty = Some(OverseasPropertyModel(
-    accountingMethod = Some(Cash),
     startDate = Some(DateModel("6", "5", "2020")),
     confirmed = true
   ))
@@ -60,18 +57,15 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
           |"income": [
           |  {
           |    "incomeSource": "ukProperty",
-          |    "commencementDate": "2020-05-06",
-          |    "accountingType": "Cash"
+          |    "commencementDate": "2020-05-06"
           |  },
           |  {
           |    "incomeSource": "foreignProperty",
-          |    "commencementDate": "2020-05-06",
-          |    "accountingType": "Cash"
+          |    "commencementDate": "2020-05-06"
           |  },
           |  {
           |    "incomeSource": "selfEmployment",
           |    "numberOfBusinesses": "1",
-          |    "accountingType": "Cash",
           |    "businesses": [
           |      {
           |        "businessName": "Money Business",
@@ -99,7 +93,6 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
         currentTaxYear = currentYear,
         selectedTaxYear = selectedTaxYear,
         selfEmployments = selfEmployments,
-        maybeSelfEmploymentAccountingMethod = selfEmploymentAccountingMethod,
         maybePropertyModel = property,
         maybeOverseasPropertyModel = overseasProperty
       )
@@ -119,18 +112,15 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
           |"income": [
           |  {
           |    "incomeSource": "ukProperty",
-          |    "commencementDate": "2020-05-06",
-          |    "accountingType": "Cash"
+          |    "commencementDate": "2020-05-06"
           |  },
           |  {
           |    "incomeSource": "foreignProperty",
-          |    "commencementDate": "2020-05-06",
-          |    "accountingType": "Cash"
+          |    "commencementDate": "2020-05-06"
           |  },
           |  {
           |    "incomeSource": "selfEmployment",
           |    "numberOfBusinesses": "2",
-          |    "accountingType": "Cash",
           |    "businesses": [
           |      {
           |        "businessName": "Money Business",
@@ -176,7 +166,6 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
             businessTradeName = Some(BusinessTradeNameModel("Consulting")),
             businessAddress = Some(BusinessAddressModel(Address(Seq("line 1"), Some("ZZ1 1ZZ"))))
           ),
-        maybeSelfEmploymentAccountingMethod = selfEmploymentAccountingMethod,
         maybePropertyModel = property,
         maybeOverseasPropertyModel = overseasProperty
       )
@@ -196,13 +185,11 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
           |"income": [
           |  {
           |    "incomeSource": "ukProperty",
-          |    "commencementDate": "2020-05-06",
-          |    "accountingType": "Cash"
+          |    "commencementDate": "2020-05-06"
           |  },
           |  {
           |    "incomeSource": "foreignProperty",
-          |    "commencementDate": "2020-05-06",
-          |    "accountingType": "Cash"
+          |    "commencementDate": "2020-05-06"
           |  }
           |],
           |"taxYear": "2022-2023"
@@ -217,7 +204,6 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
         currentTaxYear = currentYear,
         selectedTaxYear = selectedTaxYear,
         selfEmployments = Seq.empty,
-        maybeSelfEmploymentAccountingMethod = selfEmploymentAccountingMethod,
         maybePropertyModel = property,
         maybeOverseasPropertyModel = overseasProperty
       )
@@ -237,8 +223,7 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
           |"income": [
           |  {
           |    "incomeSource": "ukProperty",
-          |    "commencementDate": "2020-05-06",
-          |    "accountingType": "Cash"
+          |    "commencementDate": "2020-05-06"
           |  }
           |],
           |"taxYear": "2022-2023"
@@ -253,7 +238,6 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
         currentTaxYear = currentYear,
         selectedTaxYear = selectedTaxYear,
         selfEmployments = Seq.empty,
-        maybeSelfEmploymentAccountingMethod = selfEmploymentAccountingMethod,
         maybePropertyModel = property,
         maybeOverseasPropertyModel = None
       )
@@ -283,7 +267,6 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
         currentTaxYear = currentYear,
         selectedTaxYear = selectedTaxYear,
         selfEmployments = Seq.empty,
-        maybeSelfEmploymentAccountingMethod = None,
         maybePropertyModel = None,
         maybeOverseasPropertyModel = None
       )
@@ -315,7 +298,6 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
         currentTaxYear = currentYear,
         selectedTaxYear = selectedTaxYear,
         selfEmployments = Seq.empty,
-        maybeSelfEmploymentAccountingMethod = None,
         maybePropertyModel = None,
         maybeOverseasPropertyModel = None
       )
@@ -333,7 +315,6 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
         currentTaxYear = currentYear,
         selectedTaxYear = None,
         selfEmployments = Seq.empty,
-        maybeSelfEmploymentAccountingMethod = None,
         maybePropertyModel = None,
         maybeOverseasPropertyModel = None
       )

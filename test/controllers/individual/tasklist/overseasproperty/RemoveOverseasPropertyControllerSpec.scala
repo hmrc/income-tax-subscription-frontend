@@ -21,7 +21,6 @@ import connectors.subscriptiondata.mocks.MockIncomeTaxSubscriptionConnector
 import controllers.individual.ControllerBaseSpec
 import forms.individual.business.RemoveOverseasPropertyForm
 import forms.submapping.YesNoMapping
-import models.Cash
 import models.common.OverseasPropertyModel
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -51,7 +50,7 @@ class RemoveOverseasPropertyControllerSpec extends ControllerBaseSpec
 
   "show" should {
     "return OK and display the remove overseas property page" in withController { controller =>
-      mockFetchOverseasProperty(Some(OverseasPropertyModel(accountingMethod = Some(Cash))))
+      mockFetchOverseasProperty(Some(OverseasPropertyModel()))
       val result: Future[Result] = controller.show(subscriptionRequest)
       status(result) mustBe OK
       contentType(result) mustBe Some(HTML)

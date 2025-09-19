@@ -16,11 +16,9 @@
 
 package views.individual.tasklist.addbusiness
 
-import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
-import config.featureswitch.FeatureSwitching
+import models.DateModel
 import models.common.business._
 import models.common.{IncomeSources, OverseasPropertyModel, PropertyModel}
-import models.{Cash, DateModel}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.api.mvc.Call
@@ -31,12 +29,7 @@ import views.html.individual.tasklist.addbusiness.YourIncomeSourceToSignUp
 
 import java.time.format.DateTimeFormatter
 
-class YourIncomeSourceToSignUpViewSpec extends ViewSpec with FeatureSwitching {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(RemoveAccountingMethod)
-  }
+class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
   object IndividualIncomeSource {
     val title = "Your income sources"
@@ -112,12 +105,10 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec with FeatureSwitching {
     )
   )
   val completeAndConfirmedUKProperty: Option[PropertyModel] = Some(PropertyModel(
-    accountingMethod = Some(Cash),
     startDate = Some(DateModel("1", "1", "1981")),
     confirmed = true
   ))
   val completeAndConfirmedForeignProperty: Option[OverseasPropertyModel] = Some(OverseasPropertyModel(
-    accountingMethod = Some(Cash),
     startDate = Some(DateModel("1", "1", "1982")),
     confirmed = true
   ))
@@ -130,13 +121,9 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec with FeatureSwitching {
       businessTradeName = Some(BusinessTradeNameModel("business trade")),
       businessAddress = Some(BusinessAddressModel(Address(Seq("1 Long Road"), Some("ZZ1 1ZZ")))))
   )
-  val completeUKProperty: Option[PropertyModel] = Some(PropertyModel(
-    accountingMethod = Some(Cash),
-    startDate = Some(DateModel("1", "1", "1981"))))
+  val completeUKProperty: Option[PropertyModel] = Some(PropertyModel(startDate = Some(DateModel("1", "1", "1981"))))
 
-  val completeForeignProperty: Option[OverseasPropertyModel] = Some(OverseasPropertyModel(
-    accountingMethod = Some(Cash),
-    startDate = Some(DateModel("1", "1", "1982"))))
+  val completeForeignProperty: Option[OverseasPropertyModel] = Some(OverseasPropertyModel(startDate = Some(DateModel("1", "1", "1982"))))
 
   val ukProperty: Option[PropertyModel] = Some(PropertyModel())
   val foreignProperty: Option[OverseasPropertyModel] = Some(OverseasPropertyModel())
@@ -152,7 +139,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec with FeatureSwitching {
   val olderThanLimitDate: DateModel = DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit.minusDays(1))
   val limitDate: DateModel = DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit)
 
-  def view(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None, None), isPrePopulated: Boolean = false): Html = {
+  def view(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None), isPrePopulated: Boolean = false): Html = {
     incomeSource(
       postAction = testCall,
       backUrl = testBackUrl,
@@ -161,7 +148,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec with FeatureSwitching {
     )
   }
 
-  class ViewTest(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None, None), isPrePopulated: Boolean = false) {
+  class ViewTest(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None), isPrePopulated: Boolean = false) {
     def document: Document = Jsoup.parse(view(incomeSources, isPrePopulated).body)
   }
 
@@ -175,21 +162,21 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec with FeatureSwitching {
         hasSignOutLink = true
       )
       "there are incomplete income sources added" in new TemplateViewTest(
-        view = view(IncomeSources(incompleteSelfEmployments, None, incompleteUKProperty, incompleteForeignProperty)),
+        view = view(IncomeSources(incompleteSelfEmployments, incompleteUKProperty, incompleteForeignProperty)),
         title = IndividualIncomeSource.title,
         isAgent = false,
         backLink = Some(testBackUrl),
         hasSignOutLink = true
       )
       "there are complete income sources added" in new TemplateViewTest(
-        view = view(IncomeSources(completeSelfEmployments, Some(Cash), completeUKProperty, completeForeignProperty)),
+        view = view(IncomeSources(completeSelfEmployments, completeUKProperty, completeForeignProperty)),
         title = IndividualIncomeSource.title,
         isAgent = false,
         backLink = Some(testBackUrl),
         hasSignOutLink = true
       )
       "there are complete and confirmed income sources added" in new TemplateViewTest(
-        view = view(IncomeSources(completeAndConfirmedSelfEmployments, Some(Cash), completeAndConfirmedUKProperty, completeAndConfirmedForeignProperty)),
+        view = view(IncomeSources(completeAndConfirmedSelfEmployments, completeAndConfirmedUKProperty, completeAndConfirmedForeignProperty)),
         title = IndividualIncomeSource.title,
         isAgent = false,
         backLink = Some(testBackUrl),
@@ -217,7 +204,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec with FeatureSwitching {
   "YourIncomeSourceToSignUp" when {
 
     "there are no income sources added" should {
-      def noIncomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None, None)
+      def noIncomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None)
 
       "have a heading for the page" in new ViewTest(noIncomeSources) {
         document.mainContent.getH1Element.text mustBe IndividualIncomeSource.heading
@@ -274,7 +261,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec with FeatureSwitching {
 
     "there are incomplete set of income sources added" should {
 
-      def incompleteIncomeSources: IncomeSources = IncomeSources(incompleteSelfEmployments, None, incompleteUKProperty, incompleteForeignProperty)
+      def incompleteIncomeSources: IncomeSources = IncomeSources(incompleteSelfEmployments, incompleteUKProperty, incompleteForeignProperty)
 
       "have a heading for the page" in new ViewTest(incompleteIncomeSources) {
         document.mainContent.getH1Element.text mustBe IndividualIncomeSource.heading
@@ -461,7 +448,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec with FeatureSwitching {
     }
 
     "there are complete set of income sources added" should {
-      def completeIncomeSources: IncomeSources = IncomeSources(completeSelfEmployments, Some(Cash), completeUKProperty, completeForeignProperty)
+      def completeIncomeSources: IncomeSources = IncomeSources(completeSelfEmployments, completeUKProperty, completeForeignProperty)
 
       "have a heading for the page" in new ViewTest(completeIncomeSources) {
         document.mainContent.getH1Element.text mustBe IndividualIncomeSource.heading
@@ -482,7 +469,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec with FeatureSwitching {
         }
 
         "has a summary card with change link" when {
-          "all details are present and confirmed and an accounting method is present" in new ViewTest(completeIncomeSources) {
+          "all details are present and confirmed" in new ViewTest(completeIncomeSources) {
             document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
               title = "business trade",
               cardActions = Seq(
@@ -504,36 +491,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec with FeatureSwitching {
                   actions = Seq(SummaryListActionValues(
                     href = IndividualIncomeSource.soleTraderChangeLinkOne,
                     text = s"${IndividualIncomeSource.checkDetails} business name (business trade)",
-                    visuallyHidden = "business name (business trade)"
-                  ))
-                )
-              )
-            )
-          }
-        }
-        "has a summary card with add detail link" when {
-          "there is no accounting method present in the income sources" in new ViewTest(completeIncomeSources.copy(selfEmploymentAccountingMethod = None)) {
-            document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
-              title = "business trade",
-              cardActions = Seq(
-                SummaryListActionValues(
-                  href = controllers.individual.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idOne").url,
-                  text = s"${IndividualIncomeSource.remove} business name (business trade)",
-                  visuallyHidden = s"business name (business trade)"
-                )
-              ),
-              rows = Seq(
-                SummaryListRowValues(
-                  key = IndividualIncomeSource.soleTraderBusinessNameKey,
-                  value = Some("business name"),
-                  actions = Seq.empty
-                ),
-                SummaryListRowValues(
-                  key = IndividualIncomeSource.statusTagKey,
-                  value = Some(IndividualIncomeSource.incompleteTag),
-                  actions = Seq(SummaryListActionValues(
-                    href = IndividualIncomeSource.soleTraderChangeLinkOne,
-                    text = s"${IndividualIncomeSource.addDetails} business name (business trade)",
                     visuallyHidden = "business name (business trade)"
                   ))
                 )
@@ -780,11 +737,11 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec with FeatureSwitching {
 
     "there are complete and confirmed set of income sources added" should {
 
-      def completeAndConfirmedIncomeSources: IncomeSources = IncomeSources(completeAndConfirmedSelfEmployments, Some(Cash), completeAndConfirmedUKProperty, completeAndConfirmedForeignProperty)
-      def completeAndConfirmedIncomeSourcesNoAccMethod: IncomeSources = IncomeSources(
-        completeAndConfirmedSelfEmployments, None,
-        completeAndConfirmedUKProperty.map(_.copy(accountingMethod = None)),
-        completeAndConfirmedForeignProperty.map(_.copy(accountingMethod = None)))
+      def completeAndConfirmedIncomeSources: IncomeSources = IncomeSources(
+        completeAndConfirmedSelfEmployments,
+        completeAndConfirmedUKProperty,
+        completeAndConfirmedForeignProperty
+      )
 
       "have a heading for the page" in new ViewTest(completeAndConfirmedIncomeSources) {
         document.mainContent.getH1Element.text mustBe IndividualIncomeSource.heading
@@ -806,69 +763,34 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec with FeatureSwitching {
           document.mainContent.selectNth("p", 2).text mustBe IndividualIncomeSource.selfEmploymentPara
         }
 
-        "when remove accounting method is disabled" should {
-          "has a sole trader business card" in new ViewTest(completeAndConfirmedIncomeSources) {
-            document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
-              title = "business trade",
-              cardActions = Seq(
-                SummaryListActionValues(
-                  href = IndividualIncomeSource.soleTraderChangeLinkOne,
-                  text = s"${IndividualIncomeSource.change} business name (business trade)",
-                  visuallyHidden = s"business name (business trade)"
-                ),
-                SummaryListActionValues(
-                  href = IndividualIncomeSource.soleTraderRemoveLinkOne,
-                  text = s"${IndividualIncomeSource.remove} business name (business trade)",
-                  visuallyHidden = s"business name (business trade)"
-                )
+        "has a sole trader business card" in new ViewTest(completeAndConfirmedIncomeSources) {
+          document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
+            title = "business trade",
+            cardActions = Seq(
+              SummaryListActionValues(
+                href = IndividualIncomeSource.soleTraderChangeLinkOne,
+                text = s"${IndividualIncomeSource.change} business name (business trade)",
+                visuallyHidden = s"business name (business trade)"
               ),
-              rows = Seq(
-                SummaryListRowValues(
-                  key = IndividualIncomeSource.soleTraderBusinessNameKey,
-                  value = Some("business name"),
-                  actions = Seq.empty
-                ),
-                SummaryListRowValues(
-                  key = IndividualIncomeSource.statusTagKey,
-                  value = Some(IndividualIncomeSource.completedTag),
-                  actions = Seq.empty
-                )
+              SummaryListActionValues(
+                href = IndividualIncomeSource.soleTraderRemoveLinkOne,
+                text = s"${IndividualIncomeSource.remove} business name (business trade)",
+                visuallyHidden = s"business name (business trade)"
+              )
+            ),
+            rows = Seq(
+              SummaryListRowValues(
+                key = IndividualIncomeSource.soleTraderBusinessNameKey,
+                value = Some("business name"),
+                actions = Seq.empty
+              ),
+              SummaryListRowValues(
+                key = IndividualIncomeSource.statusTagKey,
+                value = Some(IndividualIncomeSource.completedTag),
+                actions = Seq.empty
               )
             )
-          }
-        }
-
-        "when remove accounting method is enabled" should {
-          "has a sole trader business card" in new ViewTest(completeAndConfirmedIncomeSourcesNoAccMethod) {
-            enable(RemoveAccountingMethod)
-            document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
-              title = "business trade",
-              cardActions = Seq(
-                SummaryListActionValues(
-                  href = IndividualIncomeSource.soleTraderChangeLinkOne,
-                  text = s"${IndividualIncomeSource.change} business name (business trade)",
-                  visuallyHidden = s"business name (business trade)"
-                ),
-                SummaryListActionValues(
-                  href = IndividualIncomeSource.soleTraderRemoveLinkOne,
-                  text = s"${IndividualIncomeSource.remove} business name (business trade)",
-                  visuallyHidden = s"business name (business trade)"
-                )
-              ),
-              rows = Seq(
-                SummaryListRowValues(
-                  key = IndividualIncomeSource.soleTraderBusinessNameKey,
-                  value = Some("business name"),
-                  actions = Seq.empty
-                ),
-                SummaryListRowValues(
-                  key = IndividualIncomeSource.statusTagKey,
-                  value = Some(IndividualIncomeSource.completedTag),
-                  actions = Seq.empty
-                )
-              )
-            )
-          }
+          )
         }
 
         "has an add business link" in new ViewTest(completeAndConfirmedIncomeSources) {
@@ -888,129 +810,64 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec with FeatureSwitching {
           document.mainContent.selectNth("p", 4).text mustBe IndividualIncomeSource.incomeFromPropertiesPara
         }
 
-        "when remove accounting method feature switch disabled" should {
-          "has a UK property card" in new ViewTest(completeAndConfirmedIncomeSources) {
-            document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(2))(
-              title = IndividualIncomeSource.ukPropertyCardTitle,
-              cardActions = Seq(
-                SummaryListActionValues(
-                  href = IndividualIncomeSource.ukPropertyChangeLink,
-                  text = s"${IndividualIncomeSource.change} ${IndividualIncomeSource.ukPropertyHiddenText}",
-                  visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
-                ),
-                SummaryListActionValues(
-                  href = IndividualIncomeSource.ukPropertyRemoveLink,
-                  text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.ukPropertyHiddenText}",
-                  visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
-                )
+        "has a UK property card" in new ViewTest(completeAndConfirmedIncomeSources) {
+          document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(2))(
+            title = IndividualIncomeSource.ukPropertyCardTitle,
+            cardActions = Seq(
+              SummaryListActionValues(
+                href = IndividualIncomeSource.ukPropertyChangeLink,
+                text = s"${IndividualIncomeSource.change} ${IndividualIncomeSource.ukPropertyHiddenText}",
+                visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
               ),
-              rows = Seq(
-                SummaryListRowValues(
-                  key = IndividualIncomeSource.propertyStartDate,
-                  value = Some(IndividualIncomeSource.propertyDateBeforeLimit),
-                  actions = Seq.empty
-                ),
-                SummaryListRowValues(
-                  key = IndividualIncomeSource.statusTagKey,
-                  value = Some(IndividualIncomeSource.completedTag),
-                  actions = Seq.empty
-                )
+              SummaryListActionValues(
+                href = IndividualIncomeSource.ukPropertyRemoveLink,
+                text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.ukPropertyHiddenText}",
+                visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
+              )
+            ),
+            rows = Seq(
+              SummaryListRowValues(
+                key = IndividualIncomeSource.propertyStartDate,
+                value = Some(IndividualIncomeSource.propertyDateBeforeLimit),
+                actions = Seq.empty
+              ),
+              SummaryListRowValues(
+                key = IndividualIncomeSource.statusTagKey,
+                value = Some(IndividualIncomeSource.completedTag),
+                actions = Seq.empty
               )
             )
-          }
-
-          "has a foreign property card" in new ViewTest(completeAndConfirmedIncomeSources) {
-            document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(3))(
-              title = IndividualIncomeSource.foreignPropertyCardTitle,
-              cardActions = Seq(
-                SummaryListActionValues(
-                  href = IndividualIncomeSource.foreignPropertyChangeLink,
-                  text = s"${IndividualIncomeSource.change} ${IndividualIncomeSource.foreignPropertyHiddenText}",
-                  visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
-                ),
-                SummaryListActionValues(
-                  href = IndividualIncomeSource.foreignPropertyRemoveLink,
-                  text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.foreignPropertyHiddenText}",
-                  visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
-                )
-              ),
-              rows = Seq(
-                SummaryListRowValues(
-                  key = IndividualIncomeSource.propertyStartDate,
-                  value = Some(IndividualIncomeSource.propertyDateBeforeLimit),
-                  actions = Seq.empty
-                ),
-                SummaryListRowValues(
-                  key = IndividualIncomeSource.statusTagKey,
-                  value = Some(IndividualIncomeSource.completedTag),
-                  actions = Seq.empty
-                )
-              )
-            )
-          }
+          )
         }
-        "when remove accounting method feature switch enabled" should {
-          "has a UK property card" in new ViewTest(completeAndConfirmedIncomeSourcesNoAccMethod) {
-            enable(RemoveAccountingMethod)
-            document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(2))(
-              title = IndividualIncomeSource.ukPropertyCardTitle,
-              cardActions = Seq(
-                SummaryListActionValues(
-                  href = IndividualIncomeSource.ukPropertyChangeLink,
-                  text = s"${IndividualIncomeSource.change} ${IndividualIncomeSource.ukPropertyHiddenText}",
-                  visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
-                ),
-                SummaryListActionValues(
-                  href = IndividualIncomeSource.ukPropertyRemoveLink,
-                  text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.ukPropertyHiddenText}",
-                  visuallyHidden = s"(${IndividualIncomeSource.ukPropertyCardTitle})"
-                )
-              ),
-              rows = Seq(
-                SummaryListRowValues(
-                  key = IndividualIncomeSource.propertyStartDate,
-                  value = Some(IndividualIncomeSource.propertyDateBeforeLimit),
-                  actions = Seq.empty
-                ),
-                SummaryListRowValues(
-                  key = IndividualIncomeSource.statusTagKey,
-                  value = Some(IndividualIncomeSource.completedTag),
-                  actions = Seq.empty
-                )
-              )
-            )
-          }
 
-          "has a foreign property card" in new ViewTest(completeAndConfirmedIncomeSourcesNoAccMethod) {
-            enable(RemoveAccountingMethod)
-            document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(3))(
-              title = IndividualIncomeSource.foreignPropertyCardTitle,
-              cardActions = Seq(
-                SummaryListActionValues(
-                  href = IndividualIncomeSource.foreignPropertyChangeLink,
-                  text = s"${IndividualIncomeSource.change} ${IndividualIncomeSource.foreignPropertyHiddenText}",
-                  visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
-                ),
-                SummaryListActionValues(
-                  href = IndividualIncomeSource.foreignPropertyRemoveLink,
-                  text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.foreignPropertyHiddenText}",
-                  visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
-                )
+        "has a foreign property card" in new ViewTest(completeAndConfirmedIncomeSources) {
+          document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(3))(
+            title = IndividualIncomeSource.foreignPropertyCardTitle,
+            cardActions = Seq(
+              SummaryListActionValues(
+                href = IndividualIncomeSource.foreignPropertyChangeLink,
+                text = s"${IndividualIncomeSource.change} ${IndividualIncomeSource.foreignPropertyHiddenText}",
+                visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
               ),
-              rows = Seq(
-                SummaryListRowValues(
-                  key = IndividualIncomeSource.propertyStartDate,
-                  value = Some(IndividualIncomeSource.propertyDateBeforeLimit),
-                  actions = Seq.empty
-                ),
-                SummaryListRowValues(
-                  key = IndividualIncomeSource.statusTagKey,
-                  value = Some(IndividualIncomeSource.completedTag),
-                  actions = Seq.empty
-                )
+              SummaryListActionValues(
+                href = IndividualIncomeSource.foreignPropertyRemoveLink,
+                text = s"${IndividualIncomeSource.remove} ${IndividualIncomeSource.foreignPropertyHiddenText}",
+                visuallyHidden = s"(${IndividualIncomeSource.foreignPropertyCardTitle})"
+              )
+            ),
+            rows = Seq(
+              SummaryListRowValues(
+                key = IndividualIncomeSource.propertyStartDate,
+                value = Some(IndividualIncomeSource.propertyDateBeforeLimit),
+                actions = Seq.empty
+              ),
+              SummaryListRowValues(
+                key = IndividualIncomeSource.statusTagKey,
+                value = Some(IndividualIncomeSource.completedTag),
+                actions = Seq.empty
               )
             )
-          }
+          )
         }
       }
 

@@ -17,9 +17,7 @@
 package services
 
 import connectors.PrePopConnector
-import models.AccountingMethod
 import models.common.business.SelfEmploymentData
-import models.common.{OverseasPropertyModel, PropertyModel}
 import models.prepop.{PrePopData, PrePopSelfEmployment}
 import play.api.Logging
 import services.PrePopDataService.PrePopResult
@@ -39,16 +37,7 @@ class PrePopDataService @Inject()(prePopConnector: PrePopConnector,
   def prePopIncomeSources(reference: String, nino: String)(implicit hc: HeaderCarrier): Future[PrePopResult] = {
     handlePrePopFlag(reference) {
       retrievePrePopData(reference, nino) { prePopData =>
-        val saveSelfEmployments: Future[PrePopResult] = savePrePopSelfEmployments(reference)(prePopData.selfEmployment)
-        val saveUKProperty: Future[PrePopResult] = savePrePopUkProperty(reference)(prePopData.ukPropertyAccountingMethod)
-        val saveForeignProperty: Future[PrePopResult] = savePrePopOverseasProperty(reference)(prePopData.foreignPropertyAccountingMethod)
-        for {
-          _ <- saveSelfEmployments
-          _ <- saveUKProperty
-          _ <- saveForeignProperty
-        } yield {
-          PrePopSuccess
-        }
+        savePrePopSelfEmployments(reference)(prePopData.selfEmployment)
       }
     }
   }
@@ -83,45 +72,9 @@ class PrePopDataService @Inject()(prePopConnector: PrePopConnector,
         val selfEmployments: Seq[SelfEmploymentData] = prePopSelfEmployments.map(_.toSelfEmploymentData(
           id = uuidProvider.getUUID
         ))
-        val accountingMethod: Option[AccountingMethod] = prePopSelfEmployments.headOption.flatMap(_.accountingMethod)
-        subscriptionDetailsService.saveBusinesses(reference, selfEmployments, accountingMethod) map {
+        subscriptionDetailsService.saveBusinesses(reference, selfEmployments) map {
           case Left(error) =>
             logger.error(s"[PrePopDataService][savePrePopSelfEmployments] - Error saving self employment businesses. Error: $error")
-            PrePopFailure(error.toString)
-          case Right(_) =>
-            PrePopSuccess
-        }
-      case None => Future.successful(PrePopSuccess)
-    }
-
-  }
-
-  private def savePrePopUkProperty(reference: String)
-                                  (prePopUkPropertyAccountingMethod: Option[AccountingMethod])
-                                  (implicit hc: HeaderCarrier): Future[PrePopResult] = {
-    prePopUkPropertyAccountingMethod match {
-      case Some(_) =>
-        val ukProperty: PropertyModel = PropertyModel(accountingMethod = prePopUkPropertyAccountingMethod)
-        subscriptionDetailsService.saveProperty(reference, ukProperty) map {
-          case Left(error) =>
-            logger.error(s"[PrePopDataService][savePrePopUkProperty] - Error saving Uk property. Error: $error")
-            PrePopFailure(error.toString)
-          case Right(_) =>
-            PrePopSuccess
-        }
-      case None => Future.successful(PrePopSuccess)
-    }
-  }
-
-  private def savePrePopOverseasProperty(reference: String)
-                                        (prePopForeignPropertyAccountingMethod: Option[AccountingMethod])
-                                        (implicit hc: HeaderCarrier): Future[PrePopResult] = {
-    prePopForeignPropertyAccountingMethod match {
-      case Some(_) =>
-        val overseasProperty: OverseasPropertyModel = OverseasPropertyModel(accountingMethod = prePopForeignPropertyAccountingMethod)
-        subscriptionDetailsService.saveOverseasProperty(reference, overseasProperty) map {
-          case Left(error) =>
-            logger.error(s"[PrePopDataService][savePrePopOverseasProperty] - Error saving Overseas property. Error: $error")
             PrePopFailure(error.toString)
           case Right(_) =>
             PrePopSuccess

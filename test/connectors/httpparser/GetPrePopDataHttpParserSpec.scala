@@ -16,8 +16,8 @@
 
 package connectors.httpparser
 
+import models.ErrorModel
 import models.prepop.{PrePopData, PrePopSelfEmployment}
-import models.{Cash, ErrorModel}
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers.{INTERNAL_SERVER_ERROR, OK}
@@ -30,9 +30,7 @@ class GetPrePopDataHttpParserSpec extends PlaySpec {
 
   val validJson: JsObject = Json.obj(
     "selfEmployment" -> Json.arr(
-      Json.obj(
-        "accountingMethod" -> "cash"
-      )
+      Json.obj()
     )
   )
 
@@ -48,16 +46,13 @@ class GetPrePopDataHttpParserSpec extends PlaySpec {
             name = None,
             trade = None,
             address = None,
-            startDate = None,
-            accountingMethod = Some(Cash)
-          ))),
-          ukPropertyAccountingMethod = None,
-          foreignPropertyAccountingMethod = None
+            startDate = None
+          )))
         ))
       }
       "produce an error" when {
         "the json could not be parsed" in {
-          val httpResponse = HttpResponse(OK, json = Json.obj("selfEmployment" -> Json.arr(Json.obj("accountingMethod" -> "Z"))), headers = Map.empty)
+          val httpResponse = HttpResponse(OK, json = Json.arr(), headers = Map.empty)
 
           val res = GetPrePopDataParser.getPrePopDataResponseHttpReads.read(testHttpVerb, testUri, httpResponse)
 

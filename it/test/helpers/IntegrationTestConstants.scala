@@ -25,7 +25,6 @@ import uk.gov.hmrc.domain.Generator
 import utilities.AccountingPeriodUtil
 
 import java.net.URLEncoder
-import java.time.LocalDate
 import java.util.UUID
 import scala.util.matching.Regex
 
@@ -71,7 +70,6 @@ object IntegrationTestConstants {
   private val testBusinessTradeName = BusinessTradeNameModel("test trade")
   private val testStartDate = AccountingPeriodUtil.getCurrentTaxYear.startDate
   private val testEndDate = AccountingPeriodUtil.getCurrentTaxYear.endDate
-  val testAccountMethod: AccountingMethod = Cash
 
   val testAccountingPeriod: AccountingPeriodModel = testAccountingPeriod(testStartDate, testEndDate)
 
@@ -81,22 +79,19 @@ object IntegrationTestConstants {
 
   def testSoleTraderBusinesses(accountingYear: AccountingYear = Current): SoleTraderBusinesses = SoleTraderBusinesses(
     if (accountingYear == Current) AccountingPeriodUtil.getCurrentTaxYear else AccountingPeriodUtil.getNextTaxYear,
-    Some(testAccountMethod),
     testSelfEmploymentData
   )
 
   def testUkProperty(accountingYear: AccountingYear = Current): UkProperty = UkProperty(
     startDateBeforeLimit = None,
     if (accountingYear == Current) AccountingPeriodUtil.getCurrentTaxYear else AccountingPeriodUtil.getNextTaxYear,
-    tradingStartDate,
-    Some(testAccountMethod)
+    tradingStartDate
   )
 
   def testOverseasProperty(accountingYear: AccountingYear = Current): OverseasProperty = OverseasProperty(
     startDateBeforeLimit = None,
     if (accountingYear == Current) AccountingPeriodUtil.getCurrentTaxYear else AccountingPeriodUtil.getNextTaxYear,
-    tradingStartDate,
-    Some(testAccountMethod)
+    tradingStartDate
   )
 
   lazy val testSelfEmploymentData: Seq[SelfEmploymentData] =

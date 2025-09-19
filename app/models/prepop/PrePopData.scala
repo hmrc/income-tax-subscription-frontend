@@ -16,12 +16,9 @@
 
 package models.prepop
 
-import models.AccountingMethod
 import play.api.libs.json.{Json, OFormat}
 
-case class PrePopData(selfEmployment: Option[Seq[PrePopSelfEmployment]],
-                      ukPropertyAccountingMethod: Option[AccountingMethod],
-                      foreignPropertyAccountingMethod: Option[AccountingMethod])
+case class PrePopData(selfEmployment: Option[Seq[PrePopSelfEmployment]])
 
 object PrePopData {
   implicit val format: OFormat[PrePopData] = Json.format[PrePopData]

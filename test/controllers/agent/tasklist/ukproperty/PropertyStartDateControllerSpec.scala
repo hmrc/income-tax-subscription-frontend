@@ -16,7 +16,6 @@
 
 package controllers.agent.tasklist.ukproperty
 
-import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
 import config.featureswitch.FeatureSwitching
 import config.{AppConfig, MockConfig}
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.{PostSubscriptionDetailsSuccessResponse, UnexpectedStatusFailure}
@@ -46,18 +45,13 @@ class PropertyStartDateControllerSpec extends ControllerSpec
   with GuiceOneAppPerSuite
   with I18nSupport {
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(RemoveAccountingMethod)
-  }
-
   "show" must {
     "return OK with the page content" when {
       "there is no start date already stored" in {
         mockFetchPropertyStartDate(None)
         mockPropertyStartDate(
           postAction = routes.PropertyStartDateController.submit(),
-          backUrl = routes.PropertyIncomeSourcesController.show().url,
+          backUrl = routes.PropertyStartDateBeforeLimitController.show().url,
           clientDetails = clientDetails
         )
 
@@ -70,7 +64,7 @@ class PropertyStartDateControllerSpec extends ControllerSpec
         mockFetchPropertyStartDate(Some(date))
         mockPropertyStartDate(
           postAction = routes.PropertyStartDateController.submit(),
-          backUrl = routes.PropertyIncomeSourcesController.show().url,
+          backUrl = routes.PropertyStartDateBeforeLimitController.show().url,
           clientDetails = clientDetails
         )
 
@@ -83,7 +77,7 @@ class PropertyStartDateControllerSpec extends ControllerSpec
         mockFetchPropertyStartDate(None)
         mockPropertyStartDate(
           postAction = routes.PropertyStartDateController.submit(editMode = true),
-          backUrl = routes.PropertyIncomeSourcesController.show(editMode = true).url,
+          backUrl = routes.PropertyStartDateBeforeLimitController.show(editMode = true).url,
           clientDetails = clientDetails
         )
 
@@ -96,7 +90,7 @@ class PropertyStartDateControllerSpec extends ControllerSpec
         mockFetchPropertyStartDate(None)
         mockPropertyStartDate(
           postAction = routes.PropertyStartDateController.submit(isGlobalEdit = true),
-          backUrl = routes.PropertyIncomeSourcesController.show(isGlobalEdit = true).url,
+          backUrl = routes.PropertyStartDateBeforeLimitController.show(isGlobalEdit = true).url,
           clientDetails = clientDetails
         )
 
@@ -104,33 +98,6 @@ class PropertyStartDateControllerSpec extends ControllerSpec
 
         status(result) mustBe OK
         contentType(result) mustBe Some(HTML)
-      }
-    }
-    "have a backlink" when {
-      "remove accounting method feature switch is enabled" in {
-        enable(RemoveAccountingMethod)
-        mockPropertyStartDate(
-          postAction = routes.PropertyStartDateController.submit(),
-          backUrl = routes.PropertyStartDateBeforeLimitController.show().url,
-          clientDetails = clientDetails
-        )
-
-        val backUrl = TestPropertyStartDateController.backUrl(isEditMode = false, isGlobalEdit = false)
-
-        backUrl mustBe routes.PropertyStartDateBeforeLimitController.show().url
-
-      }
-      "remove accounting method feature switch is disabled" in {
-        mockPropertyStartDate(
-          postAction = routes.PropertyStartDateController.submit(),
-          backUrl = routes.PropertyIncomeSourcesController.show().url,
-          clientDetails = clientDetails
-        )
-
-        val backUrl = TestPropertyStartDateController.backUrl(isEditMode = false, isGlobalEdit = false)
-
-        backUrl mustBe routes.PropertyIncomeSourcesController.show().url
-
       }
     }
   }
@@ -141,7 +108,7 @@ class PropertyStartDateControllerSpec extends ControllerSpec
         "not in edit mode" in {
           mockPropertyStartDate(
             postAction = routes.PropertyStartDateController.submit(),
-            backUrl = routes.PropertyIncomeSourcesController.show().url,
+            backUrl = routes.PropertyStartDateBeforeLimitController.show().url,
             clientDetails = clientDetails
           )
 
@@ -155,7 +122,7 @@ class PropertyStartDateControllerSpec extends ControllerSpec
         "in edit mode" in {
           mockPropertyStartDate(
             postAction = routes.PropertyStartDateController.submit(editMode = true),
-            backUrl = routes.PropertyIncomeSourcesController.show(editMode = true).url,
+            backUrl = routes.PropertyStartDateBeforeLimitController.show(editMode = true).url,
             clientDetails = clientDetails
           )
 
@@ -169,7 +136,7 @@ class PropertyStartDateControllerSpec extends ControllerSpec
         "in global edit mode" in {
           mockPropertyStartDate(
             postAction = routes.PropertyStartDateController.submit(isGlobalEdit = true),
-            backUrl = routes.PropertyIncomeSourcesController.show(isGlobalEdit = true).url,
+            backUrl = routes.PropertyStartDateBeforeLimitController.show(isGlobalEdit = true).url,
             clientDetails = clientDetails
           )
 

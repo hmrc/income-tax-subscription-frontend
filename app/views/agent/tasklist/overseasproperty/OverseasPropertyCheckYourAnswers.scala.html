@@ -19,16 +19,13 @@
 @import utilities.UserMatchingSessionUtil.ClientDetails
 @import utilities.AccountingPeriodUtil
 @import views.html.helpers.{SaveAndContinueButtonHelper, PageHeadingHelper}
-@import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
-@import config.featureswitch.FeatureSwitchingImpl
 
 @this(
         mainTemplate: AgentMainTemplate,
         form: FormWithCSRF,
         govukSummaryList: GovukSummaryList,
         pageHeadingHelper: PageHeadingHelper,
-        saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
-        featureSwitching: FeatureSwitchingImpl
+        saveAndContinueButtonHelper: SaveAndContinueButtonHelper
 )
 
 @(
@@ -74,31 +71,6 @@
     )
 }
 
-@accountingMethod(accountingMethod: Option[AccountingMethod]) = @{
-    accountingMethod match {
-        case Some(Cash) => messages("business.check-your-answers.content.accounting-method.cash")
-        case Some(Accruals) => messages("business.check-your-answers.content.accounting-method.accruals")
-        case None => ""
-    }
-}
-
-@accountingMethodRow = @{
-    SummaryListRow(
-        key = Key(content = Text(messages("agent.overseas-property.check-your-answers.accounting-method.question"))),
-        value = Value(content = Text(accountingMethod(viewModel.accountingMethod))),
-        actions = Some(Actions(
-            items = Seq(
-                ActionItem(
-                    href = controllers.agent.tasklist.overseasproperty.routes.IncomeSourcesOverseasPropertyController.show(editMode = true, isGlobalEdit = isGlobalEdit).url,
-                    content = Text(messages(if(viewModel.accountingMethod.isDefined) "base.change" else "base.add")),
-                    visuallyHiddenText = Some(messages("agent.overseas-property.check-your-answers.accounting-method.question"))
-                )
-            )
-        ))
-    )
-
-}
-
 @mainTemplate(title = messages("agent.overseas-property.check-your-answers.title"), backLink = Some(backUrl)) {
 
     @pageHeadingHelper(
@@ -108,17 +80,10 @@
     )
 
     @govukSummaryList(SummaryList(
-            rows = if(featureSwitching.isEnabled(RemoveAccountingMethod)) {
-                Seq(
-                    startDateRow(controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateBeforeLimitController.show(editMode = true, isGlobalEdit = isGlobalEdit).url)
-                )
-            } else {
-                Seq(
-                    startDateRow(actionHref = controllers.agent.tasklist.overseasproperty.routes.IncomeSourcesOverseasPropertyController.show(editMode = true, isGlobalEdit = isGlobalEdit).url),
-                    accountingMethodRow
-                )
-            }
-        ))
+        rows = Seq(
+            startDateRow(controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateBeforeLimitController.show(editMode = true, isGlobalEdit = isGlobalEdit).url)
+        )
+    ))
 
     @form(action = postAction) {
         @saveAndContinueButtonHelper(
@@ -127,4 +92,5 @@
             saveAndReturnReference = Some("overseas-property-check-your-answers")
         )
     }
+
 }

@@ -16,12 +16,11 @@
 
 package controllers.individual
 
-import config.featureswitch.FeatureSwitching
+import models.Current
+import models.common.AccountingYearModel
 import models.common.BusinessAccountingPeriod.SixthAprilToFifthApril
-import models.common.{AccountingYearModel, BusinessAccountingPeriod}
 import models.common.business.Address
 import models.common.subscription.{CreateIncomeSourcesModel, SubscriptionFailureResponse}
-import models.{Cash, Current}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -46,8 +45,7 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
   with MockSubscriptionOrchestrationService
   with MockNinoService
   with MockUTRService
-  with MockReferenceRetrieval
-  with FeatureSwitching {
+  with MockReferenceRetrieval {
 
   object TestGlobalCheckYourAnswersController extends GlobalCheckYourAnswersController(
     subscriptionService = mockSubscriptionOrchestrationService,
@@ -91,7 +89,6 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
   val completeDetails: CompleteDetails = CompleteDetails(
     incomeSources = IncomeSources(
       soleTraderBusinesses = Some(SoleTraderBusinesses(
-        accountingMethod = Some(Cash),
         businesses = Seq(
           SoleTraderBusiness(
             id = "id",
@@ -109,12 +106,10 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
         )
       )),
       ukProperty = Some(UKProperty(
-        startDate = Some(LocalDate.of(1980, 1, 2)),
-        accountingMethod = Some(Cash)
+        startDate = Some(LocalDate.of(1980, 1, 2))
       )),
       foreignProperty = Some(ForeignProperty(
-        startDate = Some(LocalDate.of(1980, 1, 3)),
-        accountingMethod = Some(Cash)
+        startDate = Some(LocalDate.of(1980, 1, 3))
       ))
     ),
     taxYear = AccountingYearModel(Current)

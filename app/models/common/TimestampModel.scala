@@ -31,7 +31,7 @@ object TimestampModel {
   }
 
   private val writes: Writes[TimestampModel] = new Writes[TimestampModel] {
-    def writes(model: TimestampModel): JsValue = JsString(model.dateTime.toString())
+    def writes(model: TimestampModel): JsValue = JsString(model.dateTime.toString)
   }
 
   implicit val format: Format[TimestampModel] = Format[TimestampModel](reads, writes)

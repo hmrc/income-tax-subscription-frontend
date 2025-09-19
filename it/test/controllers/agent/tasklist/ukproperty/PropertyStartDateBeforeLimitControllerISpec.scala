@@ -18,7 +18,7 @@ package controllers.agent.tasklist.ukproperty
 
 import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
-import forms.agent.UkPropertyIncomeSourcesForm
+import forms.agent.UkPropertyStartDateBeforeLimitForm
 import helpers.IntegrationTestConstants.{basGatewaySignIn, testUtr}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
@@ -29,12 +29,12 @@ import play.api.libs.json.{JsString, Json}
 import utilities.SubscriptionDataKeys.Property
 import utilities.agent.TestConstants.testNino
 
-
 class PropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBase {
 
   lazy val controller: PropertyStartDateBeforeLimitController = app.injector.instanceOf[PropertyStartDateBeforeLimitController]
 
   val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
+
   s"GET ${routes.PropertyStartDateBeforeLimitController.show().url}" when {
     "the user is unauthenticated" should {
       "redirect to the login page" in {
@@ -62,8 +62,8 @@ class PropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBase {
 
           res must have(
             httpStatus(OK),
-            pageTitle(messages("agent.property.income-source.heading") + serviceNameGovUk),
-            radioButtonSet(UkPropertyIncomeSourcesForm.startDateBeforeLimit, Some("No")),
+            pageTitle(messages("agent.uk-property.start-date-before-limit.heading") + serviceNameGovUk),
+            radioButtonSet(UkPropertyStartDateBeforeLimitForm.startDateBeforeLimit, Some("No")),
           )
         }
         "the question has been answered Yes previously" in {
@@ -78,8 +78,8 @@ class PropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBase {
 
           res must have(
             httpStatus(OK),
-            pageTitle(messages("agent.property.income-source.heading") + serviceNameGovUk),
-            radioButtonSet(UkPropertyIncomeSourcesForm.startDateBeforeLimit, Some("Yes")),
+            pageTitle(messages("agent.uk-property.start-date-before-limit.heading") + serviceNameGovUk),
+            radioButtonSet(UkPropertyStartDateBeforeLimitForm.startDateBeforeLimit, Some("Yes")),
           )
         }
         "the question has not been answered" in {
@@ -92,15 +92,15 @@ class PropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBase {
 
           res must have(
             httpStatus(OK),
-            pageTitle(messages("agent.property.income-source.heading") + serviceNameGovUk),
-            radioButtonSet(UkPropertyIncomeSourcesForm.startDateBeforeLimit, None),
+            pageTitle(messages("agent.uk-property.start-date-before-limit.heading") + serviceNameGovUk),
+            radioButtonSet(UkPropertyStartDateBeforeLimitForm.startDateBeforeLimit, None),
           )
         }
       }
     }
   }
 
-  s"POST ${routes.PropertyIncomeSourcesController.submit().url}" when {
+  s"POST ${routes.PropertyStartDateBeforeLimitController.submit().url}" when {
     "the user is unauthenticated" should {
       "redirect to the login page" in {
         AuthStub.stubUnauthorised()
@@ -124,7 +124,7 @@ class PropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBase {
 
         res must have(
           httpStatus(BAD_REQUEST),
-          pageTitle("Error: " + messages("agent.property.income-source.heading") + " - Use software to report your client’s Income Tax - GOV.UK")
+          pageTitle("Error: " + messages("agent.uk-property.start-date-before-limit.heading") + " - Use software to report your client’s Income Tax - GOV.UK")
         )
       }
       "throw an exception" when {
