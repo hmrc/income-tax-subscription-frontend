@@ -265,8 +265,8 @@ agent.error.property.start-date-before-limit.invalid            = Dewiswch ‘Ia
 
 # Agent Property Start Date errors
 agent.error.property.empty                                      = Nodwch y dyddiad y gwnaeth eich cleient ddechrau cael incwm o eiddo yn y DU
-agent.error.property.required                                   =
-agent.error.property.required.two                               =
+agent.error.property.required                                   = Mae’n rhaid i’r dyddiad gynnwys {0}
+agent.error.property.required.two                               = Mae’n rhaid i’r dyddiad gynnwys {0} a {1}
 agent.error.property.day.empty                                  = Mae’n rhaid i’r dyddiad gynnwys diwrnod
 agent.error.property.month.empty                                = Mae’n rhaid i’r dyddiad gynnwys mis
 agent.error.property.year.empty                                 = Mae’n rhaid i’r dyddiad gynnwys blwyddyn
@@ -1013,8 +1013,8 @@ agent.no-sa.line-1                                              = I ddefnyddio�
 
 # Agent Overseas Property Start Date Page errors
 agent.error.overseas.property.empty                             = Nodwch y dyddiad y gwnaeth eich cleient ddechrau cael incwm o eiddo tramor
-agent.error.overseas.property.required                          =
-agent.error.overseas.property.required.two                      =
+agent.error.overseas.property.required                          = Mae’n rhaid i’r dyddiad gynnwys {0}
+agent.error.overseas.property.required.two                      = Mae’n rhaid i’r dyddiad gynnwys {0} a {1}
 agent.error.overseas.property.month-year.empty                  = Mae’n rhaid i’r dyddiad gynnwys mis a blwyddyn
 agent.error.overseas.property.day-month.empty                   = Mae’n rhaid i’r dyddiad gynnwys diwrnod a mis
 agent.error.overseas.property.day-year.empty                    = Mae’n rhaid i’r dyddiad gynnwys diwrnod a blwyddyn

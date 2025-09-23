@@ -279,8 +279,8 @@ agent.error.property.start-date-before-limit.invalid            = Select â€˜Yesâ
 
 # Agent Property Start Date errors
 agent.error.property.empty                                      = Enter the date your client started getting income from UK property
-agent.error.property.required                                   = Their date of birth must include a {0}
-agent.error.property.required.two                               = Their date of birth must include a {0} and a {1}
+agent.error.property.required                                   = The date must include a {0}
+agent.error.property.required.two                               = The date must include a {0} and a {1}
 agent.error.property.day.empty                                  = The date must include a day
 agent.error.property.month.empty                                = The date must include a month
 agent.error.property.year.empty                                 = The date must include a year
@@ -338,8 +338,8 @@ agent.overseas-property.start-date.hint                         = For example, 2
 
 # Agent Overseas Property Start Date Page errors
 agent.error.overseas.property.empty                             = Enter the date your client started getting income from foreign property
-agent.error.overseas.property.required                                   = Their date of birth must include a {0}
-agent.error.overseas.property.required.two                               = Their date of birth must include a {0} and a {1}
+agent.error.overseas.property.required                          = The date must include a {0}
+agent.error.overseas.property.required.two                      = The date must must include a {0} and a {1}
 agent.error.overseas.property.month-year.empty                  = The date must include a month and year
 agent.error.overseas.property.day-month.empty                   = The date must include a day and month
 agent.error.overseas.property.day-year.empty                    = The date must include a day and year
