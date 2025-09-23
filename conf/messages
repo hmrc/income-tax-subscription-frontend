@@ -224,6 +224,9 @@ error.property.day-month.invalid                                = The date must 
 error.property.day-year.invalid                                 = The date must be a real date
 error.property.month-year.invalid                               = The date must be a real date
 error.property.year.length                                      = Year must include 4 numbers
+error.property.empty                                            = Enter the date you started getting income from foreign property
+error.property.required.two                                     = The date must include a {0} and {1}
+error.property.required                                         = The date must include a {0}
 
 # Agent Property Start Date Date
 agent.property.start-date.heading.caption                       = {0} | {1}
@@ -290,6 +293,10 @@ error.individual.foreign-property.day-month.invalid                       = The 
 error.individual.foreign-property.day-year.invalid                        = The date must be a real date
 error.individual.foreign-property.month-year.invalid                      = The date must be a real date
 error.individual.foreign-property.year.length                             = Year must include 4 numbers
+error.individual.foreign-property.invalid                                 = The date must be a real date
+error.individual.foreign-property.empty                                   = Enter the date you started getting income from foreign property
+error.individual.foreign-property.required.two                            = The date must include a {0} and {1}
+error.individual.foreign-property.required                                = The date must include a {0}
 
 ## Foreign property start date before limit
 individual.foreign-property.start-date-before-limit.heading             = Did you start getting this income before 6 April {0}?

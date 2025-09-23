@@ -276,6 +276,10 @@ error.individual.foreign-property.day-month.invalid              = Mae’n rhaid
 error.individual.foreign-property.day-year.invalid               = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
 error.individual.foreign-property.month-year.invalid             = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
 error.individual.foreign-property.year.length                    = Mae’n rhaid i’r flwyddyn gynnwys 4 rhif
+error.individual.foreign-property.invalid                        = Mae’n rhaid i’r dyddiad gynnwys diwrnod
+error.individual.foreign-property.empty                          = Nodwch y dyddiad y gwnaethoch ddechrau cael incwm o eiddo tramor
+error.individual.foreign-property.required.two                   = Mae’n rhaid i’r dyddiad gynnwys {0} a {1}
+error.individual.foreign-property.required                       = Mae’n rhaid i’r dyddiad gynnwys {0}
 
 ## Foreign property start date before limit
 individual.foreign-property.start-date-before-limit.heading             = A oeddech wedi dechrau cael yr incwm hwn cyn 6 Ebrill {0}?

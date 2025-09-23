@@ -16,15 +16,16 @@
 
 package forms.individual.business
 
-import forms.formatters.DateModelMapping.dateModelMapping
 import models.DateModel
 import play.api.data.Form
 import play.api.data.Forms.single
 import utilities.AccountingPeriodUtil
+import forms.formatters.LocalDateMapping
+import forms.validation.utils.ConstraintUtil.{isAfter, isBefore}
 
 import java.time.LocalDate
 
-object ForeignPropertyStartDateForm {
+object ForeignPropertyStartDateForm extends LocalDateMapping {
 
   val startDate: String = "startDate"
 
@@ -36,7 +37,15 @@ object ForeignPropertyStartDateForm {
 
   def startDateForm(f: LocalDate => String): Form[DateModel] = Form(
     single(
-      startDate -> dateModelMapping(isAgent = false, errorContext, Some(minStartDate), Some(maxStartDate), Some(f))
+      startDate -> localDate(
+        invalidKey = s"error.$errorContext.invalid",
+        allRequiredKey = s"error.$errorContext.empty",
+        twoRequiredKey = s"error.$errorContext.required.two",
+        requiredKey = s"error.$errorContext.required",
+        invalidYearKey = s"error.$errorContext.year.length"
+      ).transform(DateModel.dateConvert,DateModel.dateConvert)
+        .verifying(isAfter(minStartDate, errorContext, f))
+        .verifying(isBefore(maxStartDate, errorContext, f))
     )
   )
 
