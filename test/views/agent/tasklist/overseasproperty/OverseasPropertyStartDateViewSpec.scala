@@ -42,7 +42,7 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
     val minDate = "The date must be on or after 11 April 2021"
   }
 
-  val testError: FormError = FormError("startDate", "agent.error.overseas.property.day-month-year.empty")
+  val testError: FormError = FormError("startDate", "agent.error.overseas.property.empty")
 
   val overseasPropertyStartDate: OverseasPropertyStartDate = app.injector.instanceOf[OverseasPropertyStartDate]
   val defaultForm: Form[DateModel] = OverseasPropertyStartDateForm.overseasPropertyStartDateForm(LocalDate.now, LocalDate.now, _.toString)

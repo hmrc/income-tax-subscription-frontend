@@ -264,7 +264,9 @@ agent.property.start-date-before-limit.heading.legend           = A oedd yr incw
 agent.error.property.start-date-before-limit.invalid            = Dewiswch ‘Iawn’ os oedd eich cleient wedi dechrau cael incwm o eiddo yn y DU cyn 6 Ebrill {0}
 
 # Agent Property Start Date errors
-agent.error.property.day-month-year.empty                       = Nodwch y dyddiad y gwnaeth eich cleient ddechrau cael incwm o eiddo yn y DU
+agent.error.property.empty                                      = Nodwch y dyddiad y gwnaeth eich cleient ddechrau cael incwm o eiddo yn y DU
+agent.error.property.required                                   =
+agent.error.property.required.two                               =
 agent.error.property.day.empty                                  = Mae’n rhaid i’r dyddiad gynnwys diwrnod
 agent.error.property.month.empty                                = Mae’n rhaid i’r dyddiad gynnwys mis
 agent.error.property.year.empty                                 = Mae’n rhaid i’r dyddiad gynnwys blwyddyn
@@ -1010,7 +1012,9 @@ agent.no-sa.heading                                             = Nid yw’ch cl
 agent.no-sa.line-1                                              = I ddefnyddio’r gwasanaeth hwn, rhaid i’ch cleient <a class="govuk-link" id="sa-signup" href="{0}">gofrestru ar gyfer Hunanasesiad</a>.
 
 # Agent Overseas Property Start Date Page errors
-agent.error.overseas.property.day-month-year.empty              = Nodwch y dyddiad y gwnaeth eich cleient ddechrau cael incwm o eiddo tramor
+agent.error.overseas.property.empty                             = Nodwch y dyddiad y gwnaeth eich cleient ddechrau cael incwm o eiddo tramor
+agent.error.overseas.property.required                          =
+agent.error.overseas.property.required.two                      =
 agent.error.overseas.property.month-year.empty                  = Mae’n rhaid i’r dyddiad gynnwys mis a blwyddyn
 agent.error.overseas.property.day-month.empty                   = Mae’n rhaid i’r dyddiad gynnwys diwrnod a mis
 agent.error.overseas.property.day-year.empty                    = Mae’n rhaid i’r dyddiad gynnwys diwrnod a blwyddyn

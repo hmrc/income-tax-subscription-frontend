@@ -16,8 +16,10 @@
 
 package forms.validation.utils
 
-import play.api.data.validation.{Constraint, Valid, ValidationResult}
+import models.DateModel
+import play.api.data.validation.{Constraint, Invalid, Valid, ValidationResult}
 
+import java.time.LocalDate
 
 object ConstraintUtil {
 
@@ -32,7 +34,31 @@ object ConstraintUtil {
           case r => r
         }
       )
-
   }
 
+  def isAfter(
+    minDate: LocalDate,
+    errorContext: String,
+    convert: LocalDate => String
+  ): Constraint[DateModel] = constraint[DateModel] { dateModel =>
+    val date = minDate.minusDays(1)
+    if (dateModel.toLocalDate.isAfter(date)) {
+      Valid
+    } else {
+      Invalid(s"agent.error.$errorContext.day-month-year.min-date", convert(date))
+    }
+  }
+
+  def isBefore(
+    maxDate: LocalDate,
+    errorContext: String,
+    convert: LocalDate => String
+  ): Constraint[DateModel] = constraint[DateModel] { dateModel =>
+    val date = maxDate.plusDays(1)
+    if (dateModel.toLocalDate.isBefore(date)) {
+      Valid
+    } else {
+      Invalid(s"agent.error.$errorContext.day-month-year.max-date", convert(date))
+    }
+  }
 }

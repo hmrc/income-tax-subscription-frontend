@@ -147,7 +147,7 @@ class UkPropertyIncomeSourcesViewSpec extends ViewSpec {
     val no = "No"
   }
 
-  lazy val testErrorStartDate: FormError = FormError("startDate", "agent.error.property.day-month-year.empty")
+  lazy val testErrorStartDate: FormError = FormError("startDate", "agent.error.property.empty")
   lazy val testErrorAccountingMethod: FormError = FormError("accountingMethodProperty", "agent.error.accounting-method-property.invalid")
 
   lazy val propertyIncomeSourcesForm: Form[(YesNo, AccountingMethod)] = UkPropertyIncomeSourcesForm.ukPropertyIncomeSourcesForm

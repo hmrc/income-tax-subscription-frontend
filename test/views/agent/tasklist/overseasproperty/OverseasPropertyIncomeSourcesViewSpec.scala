@@ -55,7 +55,7 @@ class OverseasPropertyIncomeSourcesViewSpec extends ViewSpec {
     val no = "No"
   }
 
-  val testErrorStartDate: FormError = FormError("startDate", "agent.error.property.day-month-year.empty")
+  val testErrorStartDate: FormError = FormError("startDate", "agent.error.property.empty")
   val testErrorAccountingMethod: FormError = FormError("accountingMethodProperty", "agent.error.accounting-method-property.invalid")
 
   val overseasPropertyIncomeSourcesForm: Form[(DateModel, AccountingMethod)] = IncomeSourcesOverseasPropertyForm.incomeSourcesOverseasPropertyForm(_.toString)
