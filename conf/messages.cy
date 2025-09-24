@@ -210,6 +210,9 @@ error.property.day-month.invalid                                = Mae’n rhaid 
 error.property.day-year.invalid                                 = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
 error.property.month-year.invalid                               = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
 error.property.year.length                                      = Mae’n rhaid i’r flwyddyn gynnwys 4 rhif
+error.property.empty                                            = Nodwch y dyddiad y gwnaethoch ddechrau cael incwm o eiddo yn y DU
+error.property.required.two                                     = Mae’n rhaid i’r dyddiad gynnwys {0} a {1}
+error.property.required                                         = Mae’n rhaid i’r dyddiad gynnwys {0}
 
 # Agent Property Start Date Date
 agent.property.start-date.heading                               = Dyddiad dechrau ar gyfer incwm o eiddo yn y DU
