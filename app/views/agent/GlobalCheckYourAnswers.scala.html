@@ -29,8 +29,6 @@
 @import views.html.templates.AgentMainTemplate
 @import utilities.AccountingPeriodUtil
 @import utilities.UserMatchingSessionUtil.ClientDetails
-@import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
-@import config.featureswitch.FeatureSwitchingImpl
 
 @this(
     mainTemplate: AgentMainTemplate,
@@ -41,8 +39,7 @@
     govukSummaryList : GovukSummaryList,
     implicitDateFormatter: ImplicitDateFormatterImpl,
     accountingPeriodService: AccountingPeriodService,
-    form: FormWithCSRF,
-    featureSwitching: FeatureSwitchingImpl
+    form: FormWithCSRF
 )
 
 @(postAction: Call,
@@ -154,17 +151,7 @@
                         key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.self-employment.address"))),
                         value = Value(content = Text(business.address.toString))
                     )
-                ) ++ {
-                if(featureSwitching.isEnabled(RemoveAccountingMethod))
-                    Seq.empty[SummaryListRow]
-                else
-                    Seq(
-                        SummaryListRow(
-                            key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.self-employment.accounting-method"))),
-                            value = Value(content = Text(accountingMethod(soleTraderBusinesses.accountingMethod)))
-                        )
-                    )
-                }
+                )
         ))
     }
 }
@@ -195,17 +182,7 @@
                         )
                     ))
                 )
-            ) ++ {
-                if(featureSwitching.isEnabled(RemoveAccountingMethod))
-                    Seq.empty[SummaryListRow]
-                else
-                    Seq(
-                        SummaryListRow(
-                            key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.uk-property.accounting-method"))),
-                            value = Value(content = Text(accountingMethod(ukProperty.accountingMethod)))
-                        )
-                    )
-            }
+            )
     ))
 }
 
@@ -235,17 +212,7 @@
                         )
                     ))
                 )
-            ) ++ {
-                if(featureSwitching.isEnabled(RemoveAccountingMethod))
-                    Seq.empty[SummaryListRow]
-                else
-                    Seq(
-                        SummaryListRow(
-                            key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.foreign-property.accounting-method"))),
-                            value = Value(content = Text(accountingMethod(foreignProperty.accountingMethod)))
-                        )
-                    )
-            }
+            )
     ))
 }
 
@@ -275,12 +242,5 @@
     accountingYear match {
         case Current => messages("agent.global-check-your-answers.tax-year.current")
         case Next => messages("agent.global-check-your-answers.tax-year.next")
-    }
-}
-
-@accountingMethod(accountingMethod: Option[AccountingMethod]) = @{
-    accountingMethod match {
-        case Some(Cash) => messages("base.accounting-method.cash")
-        case Some(Accruals) => messages("base.accounting-method.accruals")
     }
 }

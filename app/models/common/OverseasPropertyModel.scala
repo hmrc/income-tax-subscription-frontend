@@ -16,26 +16,18 @@
 
 package models.common
 
-import models.{AccountingMethod, DateModel}
+import models.DateModel
 import play.api.libs.json.{Json, OFormat}
 
 case class OverseasPropertyModel(
                                   startDateBeforeLimit: Option[Boolean] = None,
-                                  accountingMethod: Option[AccountingMethod] = None,
                                   startDate: Option[DateModel] = None,
                                   confirmed: Boolean = false
                                 ) {
-  def isComplete(removeAccountingMethod: Boolean): Boolean = {
-    if (removeAccountingMethod) {
-      startDateBeforeLimit match {
-        case Some(true) => true
-        case _ => startDate.isDefined
-      }
-    } else {
-      startDateBeforeLimit match {
-        case Some(true) => accountingMethod.isDefined
-        case _ => accountingMethod.isDefined && startDate.isDefined
-      }
+  val isComplete: Boolean = {
+    startDateBeforeLimit match {
+      case Some(true) => true
+      case _ => startDate.isDefined
     }
   }
 }

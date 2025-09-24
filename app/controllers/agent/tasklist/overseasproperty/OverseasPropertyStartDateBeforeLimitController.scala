@@ -68,7 +68,8 @@ class OverseasPropertyStartDateBeforeLimitController @Inject()(identify: Identif
             } else {
               Redirect(routes.OverseasPropertyCheckYourAnswersController.show(editMode = isEditMode, isGlobalEdit = isGlobalEdit))
             }
-          case Left(_) => throw new InternalServerException("[OverseasPropertyStartDateBeforeLimitController][saveDataAndContinue] - Could not save foreign property start date before limit")
+          case Left(_) =>
+            throw new InternalServerException("[OverseasPropertyStartDateBeforeLimitController] - Could not save foreign property start date before limit")
         }
       }
     )

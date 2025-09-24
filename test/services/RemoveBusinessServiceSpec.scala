@@ -19,8 +19,8 @@ package services
 import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscriptionDetailsSuccessResponse
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import connectors.httpparser.{DeleteSubscriptionDetailsHttpParser, PostSubscriptionDetailsHttpParser}
+import models.DateModel
 import models.common.business._
-import models.{Cash, DateModel}
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import services.mocks.{MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService}
@@ -49,39 +49,39 @@ class RemoveBusinessServiceSpec extends UnitTestTrait
   "deleteBusiness" must {
     "remove the business from the businesses list and delete the sole trader businesses" when {
       "only a single business exists in the businesses list and is flagged for removal" in {
-        mockSaveBusinesses(Seq.empty, Some(Cash))(Right(PostSubscriptionDetailsSuccessResponse))
+        mockSaveBusinesses(Seq.empty)(Right(PostSubscriptionDetailsSuccessResponse))
         mockDeleteSubscriptionDetails(SubscriptionDataKeys.SoleTraderBusinessesKey)(Right(DeleteSubscriptionDetailsSuccessResponse))
 
-        val result = TestRemoveBusiness.deleteBusiness(testReference, testBusinessId, Seq(testBusiness("id")), Some(Cash))
+        val result = TestRemoveBusiness.deleteBusiness(testReference, testBusinessId, Seq(testBusiness("id")))
 
         await(result) mustBe Right(DeleteSubscriptionDetailsSuccessResponse)
       }
     }
     "remove the business from the business list but don't delete anything" when {
       "the business to remove was not the only business" in {
-        mockSaveBusinesses(Seq(testBusiness("id2")), Some(Cash))(Right(PostSubscriptionDetailsSuccessResponse))
+        mockSaveBusinesses(Seq(testBusiness("id2")))(Right(PostSubscriptionDetailsSuccessResponse))
 
-        val result = TestRemoveBusiness.deleteBusiness(testReference, testBusinessId, Seq(testBusiness("id"), testBusiness("id2")), Some(Cash))
+        val result = TestRemoveBusiness.deleteBusiness(testReference, testBusinessId, Seq(testBusiness("id"), testBusiness("id2")))
 
         await(result) mustBe Right(DeleteSubscriptionDetailsSuccessResponse)
       }
     }
     "return a failure response" when {
       "saving the businesses failed" in {
-        mockSaveBusinesses(Seq.empty, Some(Cash))(Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
+        mockSaveBusinesses(Seq.empty)(Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
-        val result = TestRemoveBusiness.deleteBusiness(testReference, testBusinessId, Seq(testBusiness("id")), Some(Cash))
+        val result = TestRemoveBusiness.deleteBusiness(testReference, testBusinessId, Seq(testBusiness("id")))
 
         await(result) mustBe Left(RemoveBusinessService.SaveBusinessFailure)
       }
 
       "deleting the remnants of the businesses" in {
-        mockSaveBusinesses(Seq.empty, Some(Cash))(Right(PostSubscriptionDetailsSuccessResponse))
+        mockSaveBusinesses(Seq.empty)(Right(PostSubscriptionDetailsSuccessResponse))
         mockDeleteSubscriptionDetails(SubscriptionDataKeys.SoleTraderBusinessesKey)(
           Left(DeleteSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
         )
 
-        val result = TestRemoveBusiness.deleteBusiness(testReference, testBusinessId, Seq(testBusiness("id")), Some(Cash))
+        val result = TestRemoveBusiness.deleteBusiness(testReference, testBusinessId, Seq(testBusiness("id")))
 
         await(result) mustBe Left(RemoveBusinessService.DeleteBusinessesFailure)
       }

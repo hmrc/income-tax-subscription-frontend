@@ -16,11 +16,9 @@
 
 package models.common
 
-import models.AccountingMethod
 import models.common.business.SelfEmploymentData
 
 case class IncomeSources(selfEmployments: Seq[SelfEmploymentData],
-                         selfEmploymentAccountingMethod: Option[AccountingMethod],
                          ukProperty: Option[PropertyModel],
                          foreignProperty: Option[OverseasPropertyModel]) {
 

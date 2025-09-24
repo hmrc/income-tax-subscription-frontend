@@ -20,11 +20,10 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, stubFor}
 import helpers.WiremockHelper
 import helpers.servicemocks.WireMockMethods
-import models.AccountingMethod
 import models.common.business.SelfEmploymentData
 import models.common.{OverseasPropertyModel, PropertyModel, SoleTraderBusinesses}
 import play.api.http.Status
-import play.api.libs.json.{JsBoolean, JsValue, Json, OFormat, Writes}
+import play.api.libs.json._
 import uk.gov.hmrc.crypto.{Decrypter, Encrypter}
 import utilities.SubscriptionDataKeys._
 
@@ -50,29 +49,22 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
   def stubSoleTraderBusinessesDetails(
                                        responseStatus: Int,
                                        businesses: Seq[SelfEmploymentData] = Seq.empty,
-                                       accountingMethod: Option[AccountingMethod] = None
                                      )(implicit crypto: Encrypter with Decrypter): Unit = {
     when(
       method = GET,
       uri = subscriptionUri(SoleTraderBusinessesKey)
     ).thenReturn(
       responseStatus,
-      Json.toJson(SoleTraderBusinesses(
-        businesses = businesses.map(_.toSoleTraderBusiness),
-        accountingMethod = accountingMethod)
+      Json.toJson(SoleTraderBusinesses(businesses = businesses.map(_.toSoleTraderBusiness))
       )(SoleTraderBusinesses.encryptedFormat))
   }
 
-  def stubSaveSoleTraderBusinessDetails(
-                                         selfEmployments: Seq[SelfEmploymentData],
-                                         accountingMethod: Option[AccountingMethod]
-                                       )(implicit crypto: Encrypter with Decrypter): Unit = {
+  def stubSaveSoleTraderBusinessDetails(selfEmployments: Seq[SelfEmploymentData])(implicit crypto: Encrypter with Decrypter): Unit = {
     when(
       method = POST,
       uri = subscriptionUri(SoleTraderBusinessesKey),
       body = Json.toJson(SoleTraderBusinesses(
-        businesses = selfEmployments.map(_.toSoleTraderBusiness),
-        accountingMethod = accountingMethod
+        businesses = selfEmployments.map(_.toSoleTraderBusiness)
       ))(SoleTraderBusinesses.encryptedFormat)
     ).thenReturn(
       Status.OK
@@ -161,6 +153,7 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
     val response = aResponse().withStatus(Status.INTERNAL_SERVER_ERROR)
     stubFor(mapping.willReturn(response))
   }
+
   def stubDeleteIncomeSourceConfirmation(responseStatus: Int): Unit = {
     when(
       method = DELETE,

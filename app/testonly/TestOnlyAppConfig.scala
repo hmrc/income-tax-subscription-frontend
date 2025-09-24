@@ -28,17 +28,11 @@ import javax.inject.{Inject, Singleton}
 class TestOnlyAppConfig @Inject()(config: ServicesConfig, configuration: Configuration)
   extends FrontendAppConfig(config: ServicesConfig, configuration: Configuration) {
 
-  override lazy val ggAuthenticationURL: String = config.baseUrl("gg-authentication")
-
   lazy val entityResolverURL: String = config.baseUrl("entity-resolver")
-
-  lazy val preferencesURL: String = config.baseUrl("preferences")
 
   lazy val protectedMicroServiceTestOnlyUrl = s"$microServiceUrl/income-tax-subscription/test-only"
 
   lazy val matchingStubsURL: String = config.baseUrl("matching-stubs")
-
-  lazy val taxEnrolmentsURL: String = config.baseUrl("tax-enrolments")
 
   lazy val enrolmentStoreStubUrl: String = config.baseUrl("enrolment-store-stub")
 

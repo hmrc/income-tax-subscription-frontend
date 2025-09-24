@@ -16,8 +16,6 @@
 
 package controllers.individual.tasklist.overseasproperty
 
-import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
-import config.featureswitch.FeatureSwitching
 import connectors.httpparser.PostSubscriptionDetailsHttpParser
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.individual.ControllerBaseSpec
@@ -39,13 +37,7 @@ class ForeignPropertyStartDateControllerSpec extends ControllerBaseSpec
   with MockAuthService
   with MockAuditingService
   with MockReferenceRetrieval
-  with MockOverseasPropertyStartDate
-  with FeatureSwitching {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(RemoveAccountingMethod)
-  }
+  with MockOverseasPropertyStartDate {
 
   override val controllerName: String = "ForeignPropertyStartDateController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -157,20 +149,7 @@ class ForeignPropertyStartDateControllerSpec extends ControllerBaseSpec
     }
 
     "not in edit mode" should {
-      "redirect to the overseas property accounting method page" in withController { controller =>
-        mockSaveOverseasPropertyStartDate(testValidMaxStartDate)(Right(PostSubscriptionDetailsSuccessResponse))
-
-        val goodRequest = await(callPost(controller, isEditMode = false, isGlobalEdit = false))
-
-        status(goodRequest) mustBe SEE_OTHER
-        redirectLocation(goodRequest) mustBe Some(routes.OverseasPropertyAccountingMethodController.show().url)
-      }
-    }
-
-    "not in edit mode" should {
-      "redirect to the overseas property check your answers page when feature switch is enabled" in withController { controller =>
-        enable(RemoveAccountingMethod)
-
+      "redirect to the overseas property check your answers page" in withController { controller =>
         mockSaveOverseasPropertyStartDate(testValidMaxStartDate)(Right(PostSubscriptionDetailsSuccessResponse))
 
         val result = await(callPost(controller, isEditMode = false, isGlobalEdit = false))

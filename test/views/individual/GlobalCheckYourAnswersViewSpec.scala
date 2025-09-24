@@ -25,7 +25,6 @@ import play.twirl.api.Html
 import services.GetCompleteDetailsService._
 import utilities.{AccountingPeriodUtil, ViewSpec}
 import views.html.individual.GlobalCheckYourAnswers
-import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
 
 import java.time.LocalDate
 
@@ -169,17 +168,12 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
                 key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.address,
                 value = Some("1 Long Road, Lonely City, ZZ11ZZ"),
                 actions = Seq.empty
-              ),
-              SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.accountingMethod,
-                value = Some(GlobalCheckYourAnswersMessages.Common.cash),
-                actions = Seq.empty
               )
             ))
           }
           "there is no start date present" in {
             def summaryList: Element = document(
-              details = completeDetails(soleTraderBusinesses = Some(selfEmploymentIncomeSource(accountingMethod = Some(Cash), startDate = None)))
+              details = completeDetails(soleTraderBusinesses = Some(selfEmploymentIncomeSource(startDate = None)))
             ).mainContent.selectNth(".govuk-summary-list", 3)
 
             summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
@@ -208,22 +202,8 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
                 key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.address,
                 value = Some("1 Long Road, Lonely City, ZZ11ZZ"),
                 actions = Seq.empty
-              ),
-              SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.accountingMethod,
-                value = Some(GlobalCheckYourAnswersMessages.Common.cash),
-                actions = Seq.empty
               )
             ))
-          }
-          "there is no accounting method present" in {
-            enable(RemoveAccountingMethod)
-            def summaryList: Element = document(
-              details = completeDetails(soleTraderBusinesses = Some(selfEmploymentIncomeSource(accountingMethod = None, startDate = None)))
-            ).mainContent.selectNth(".govuk-summary-list", 3)
-
-            summaryList.mustNotHaveSummaryListRow(key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.accountingMethod)
-            disable(RemoveAccountingMethod)
           }
         }
 
@@ -257,11 +237,6 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
               key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.address,
               value = Some("2 Long Road, Lonely City, ZZ22ZZ"),
               actions = Seq.empty
-            ),
-            SummaryListRowValues(
-              key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.accountingMethod,
-              value = Some(GlobalCheckYourAnswersMessages.Common.cash),
-              actions = Seq.empty
             )
           ))
         }
@@ -290,11 +265,6 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
                 key = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.startDate,
                 value = Some("2 January 1980"),
                 actions = Seq.empty
-              ),
-              SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.accountingMethod,
-                value = Some(GlobalCheckYourAnswersMessages.Common.cash),
-                actions = Seq.empty
               )
             ))
           }
@@ -319,22 +289,8 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
                 key = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.startDate,
                 value = Some(GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.beforeStartDateLimit),
                 actions = Seq.empty
-              ),
-              SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.accountingMethod,
-                value = Some(GlobalCheckYourAnswersMessages.Common.cash),
-                actions = Seq.empty
               )
             ))
-          }
-          "there is no accounting method present" in {
-            enable(RemoveAccountingMethod)
-            def summaryList: Element = document(
-              details = completeDetails(ukProperty = Some(ukPropertyIncomeSource(accountingMethod = None, startDate = None)))
-            ).mainContent.selectNth(".govuk-summary-list", 5)
-
-            summaryList.mustNotHaveSummaryListRow(key = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.accountingMethod)
-            disable(RemoveAccountingMethod)
           }
         }
 
@@ -357,11 +313,6 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
               SummaryListRowValues(
                 key = GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.startDate,
                 value = Some("3 January 1980"),
-                actions = Seq.empty
-              ),
-              SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.accountingMethod,
-                value = Some(GlobalCheckYourAnswersMessages.Common.cash),
                 actions = Seq.empty
               )
             ))
@@ -387,22 +338,8 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
                 key = GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.startDate,
                 value = Some(GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.beforeStartDateLimit),
                 actions = Seq.empty
-              ),
-              SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.accountingMethod,
-                value = Some(GlobalCheckYourAnswersMessages.Common.cash),
-                actions = Seq.empty
               )
             ))
-          }
-          "there is no accounting method present" in {
-            enable(RemoveAccountingMethod)
-            def summaryList: Element = document(
-              details = completeDetails(foreignProperty = Some(foreignPropertyIncomeSource(accountingMethod = None, startDate = None)))
-            ).mainContent.selectNth(".govuk-summary-list", 6)
-
-            summaryList.mustNotHaveSummaryListRow(key = GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.accountingMethod)
-            disable(RemoveAccountingMethod)
           }
         }
       }
@@ -483,7 +420,6 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
         val name: String = "Business name"
         val startDate: String = "Business start date"
         val address: String = "Business address"
-        val accountingMethod: String = "Accounting method"
         val beforeStartDateLimit: String = s"Before 6 April ${AccountingPeriodUtil.getStartDateLimit.getYear}"
       }
 
@@ -495,7 +431,6 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
         val key: String = "Property income type"
         val value: String = "UK property"
         val startDate: String = "Tax start date"
-        val accountingMethod: String = "Accounting method"
         val beforeStartDateLimit: String = s"Before 6 April ${AccountingPeriodUtil.getStartDateLimit.getYear}"
       }
 
@@ -503,7 +438,6 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
         val key: String = "Property income type"
         val value: String = "Foreign property"
         val startDate: String = "Tax start date"
-        val accountingMethod: String = "Accounting method"
         val beforeStartDateLimit: String = s"Before 6 April ${AccountingPeriodUtil.getStartDateLimit.getYear}"
       }
 
@@ -520,15 +454,12 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
     object Common {
       val change: String = "Change"
-      val cash: String = "Cash basis accounting"
-      val accruals: String = "Traditional accounting"
     }
 
 
   }
 
-  def selfEmploymentIncomeSource(accountingMethod: Option[AccountingMethod], count: Int = 1, startDate: Option[LocalDate] = Some(LocalDate.of(1980, 1, 1))): SoleTraderBusinesses = SoleTraderBusinesses(
-    accountingMethod = accountingMethod,
+  def selfEmploymentIncomeSource(count: Int = 1, startDate: Option[LocalDate] = Some(LocalDate.of(1980, 1, 1))): SoleTraderBusinesses = SoleTraderBusinesses(
     businesses = (1 to count) map { index =>
       SoleTraderBusiness(
         id = s"id-$index",
@@ -546,20 +477,18 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     }
   )
 
-  def ukPropertyIncomeSource(accountingMethod: Option[AccountingMethod] = Some(Cash), startDate: Option[LocalDate] = Some(LocalDate.of(1980, 1, 2))): UKProperty = UKProperty(
-    startDate = startDate,
-    accountingMethod = accountingMethod
+  def ukPropertyIncomeSource(startDate: Option[LocalDate] = Some(LocalDate.of(1980, 1, 2))): UKProperty = UKProperty(
+    startDate = startDate
   )
 
-  def foreignPropertyIncomeSource(accountingMethod: Option[AccountingMethod] = Some(Cash), startDate: Option[LocalDate] = Some(LocalDate.of(1980, 1, 3))): ForeignProperty = ForeignProperty(
-    startDate = startDate,
-    accountingMethod = accountingMethod
+  def foreignPropertyIncomeSource(startDate: Option[LocalDate] = Some(LocalDate.of(1980, 1, 3))): ForeignProperty = ForeignProperty(
+    startDate = startDate
   )
 
   def completeDetails(
-                       soleTraderBusinesses: Option[SoleTraderBusinesses] = Some(selfEmploymentIncomeSource(Some(Cash), 2)),
-                       ukProperty: Option[UKProperty] = Some(ukPropertyIncomeSource(Some(Cash))),
-                       foreignProperty: Option[ForeignProperty] = Some(foreignPropertyIncomeSource(Some(Cash))),
+                       soleTraderBusinesses: Option[SoleTraderBusinesses] = Some(selfEmploymentIncomeSource(2)),
+                       ukProperty: Option[UKProperty] = Some(ukPropertyIncomeSource()),
+                       foreignProperty: Option[ForeignProperty] = Some(foreignPropertyIncomeSource()),
                        taxYear: AccountingYear = Current
                      ): CompleteDetails = CompleteDetails(
     incomeSources = IncomeSources(

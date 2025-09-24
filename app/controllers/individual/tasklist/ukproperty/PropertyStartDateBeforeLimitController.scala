@@ -18,8 +18,6 @@ package controllers.individual.tasklist.ukproperty
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
-import config.featureswitch.FeatureSwitching
 import controllers.utils.ReferenceRetrieval
 import forms.individual.business.PropertyStartDateBeforeLimitForm
 import models.{No, Yes}
@@ -39,7 +37,7 @@ class PropertyStartDateBeforeLimitController @Inject()(subscriptionDetailsServic
                                                        val authService: AuthService,
                                                        val auditingService: AuditingService)
                                                       (implicit mcc: MessagesControllerComponents,
-                                                       val ec: ExecutionContext) extends SignUpController with FeatureSwitching {
+                                                       val ec: ExecutionContext) extends SignUpController {
 
   def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
@@ -73,13 +71,7 @@ class PropertyStartDateBeforeLimitController @Inject()(subscriptionDetailsServic
               case Right(_) =>
                 answer match {
                   case Yes =>
-                    if (isEditMode || isGlobalEdit) {
-                      Redirect(routes.PropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit))
-                    } else if (isEnabled(RemoveAccountingMethod)) {
-                      Redirect(routes.PropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit))
-                    } else {
-                      Redirect(routes.PropertyAccountingMethodController.show(isEditMode, isGlobalEdit))
-                    }
+                    Redirect(routes.PropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit))
                   case No =>
                     Redirect(routes.PropertyStartDateController.show(isEditMode, isGlobalEdit))
                 }

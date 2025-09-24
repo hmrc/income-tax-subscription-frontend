@@ -18,7 +18,6 @@ package services
 
 import connectors.IncomeTaxSubscriptionConnector
 import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.{DeleteSubscriptionDetailsSuccess, DeleteSubscriptionDetailsSuccessResponse}
-import models.AccountingMethod
 import models.common.business.SelfEmploymentData
 import services.RemoveBusinessService.{DeleteBusinessesFailure, RemoveBusinessFailure, SaveBusinessFailure}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -33,23 +32,22 @@ class RemoveBusinessService @Inject()(val incomeTaxSubscriptionConnector: Income
                                      (implicit val ec: ExecutionContext) {
 
 
-  def deleteBusiness(reference: String, businessId: String, businesses: Seq[SelfEmploymentData], accountingMethod: Option[AccountingMethod])(
+  def deleteBusiness(reference: String, businessId: String, businesses: Seq[SelfEmploymentData])(
     implicit hc: HeaderCarrier
   ): Future[Either[RemoveBusinessFailure, DeleteSubscriptionDetailsSuccess]] = {
     val remainingBusinesses = businesses.filterNot(_.id == businessId)
 
-    subscriptionDetailsService.saveBusinesses(reference, remainingBusinesses, accountingMethod)
-      .flatMap {
-        case Right(_) => if (remainingBusinesses.isEmpty) {
-          incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, SoleTraderBusinessesKey) map {
-            case Right(value) => Right(value)
-            case Left(_) => Left(DeleteBusinessesFailure)
-          }
-        } else {
-          Future.successful(Right(DeleteSubscriptionDetailsSuccessResponse))
+    subscriptionDetailsService.saveBusinesses(reference, remainingBusinesses).flatMap {
+      case Right(_) => if (remainingBusinesses.isEmpty) {
+        incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, SoleTraderBusinessesKey) map {
+          case Right(value) => Right(value)
+          case Left(_) => Left(DeleteBusinessesFailure)
         }
-        case Left(_) => Future.successful(Left(SaveBusinessFailure))
+      } else {
+        Future.successful(Right(DeleteSubscriptionDetailsSuccessResponse))
       }
+      case Left(_) => Future.successful(Left(SaveBusinessFailure))
+    }
   }
 
 }
