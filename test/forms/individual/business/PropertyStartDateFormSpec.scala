@@ -63,18 +63,41 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
           )
           form.bind(DataMap.EmptyMap).errors must contain(expectedError)
         }
-        "it is not within 7 days from current day" in {
-          val sevenDaysInFuture: LocalDate = LocalDate.now.plusDays(7)
-          val maxTest = form.bind(DataMap.govukDate(startDate)(
-            sevenDaysInFuture.getDayOfMonth.toString,
-            sevenDaysInFuture.getMonthValue.toString,
-            sevenDaysInFuture.getYear.toString
+
+        def boundForm(day: String, month: String, year: String): Form[DateModel] = {
+          form.bind(Map(
+            s"${PropertyStartDateForm.startDate}-${DateModelMapping.day}" -> day,
+            s"${PropertyStartDateForm.startDate}-${DateModelMapping.month}" -> month,
+            s"${PropertyStartDateForm.startDate}-${DateModelMapping.year}" -> year
           ))
-          maxTest.errors must contain(FormError(dayKeyError, s"$errorContext.day-month-year.max-date", List(PropertyStartDateForm.maxStartDate.toString)))
         }
-        "it is before year 1900" in {
-          val minTest = form.bind(DataMap.govukDate(startDate)("31", "12", "1899"))
-          minTest.errors must contain(FormError(dayKeyError, s"$errorContext.day-month-year.min-date", List(PropertyStartDateForm.minStartDate.toString)))
+
+        val minStartDate: LocalDate = PropertyStartDateForm.minStartDate
+        val maxStartDate: LocalDate = PropertyStartDateForm.maxStartDate
+
+        "it is not within 7 days from current day" in {
+          val date: DateModel = DateModel.dateConvert(maxStartDate.plusDays(1))
+          val expectedError: FormError = FormError(
+            key = s"${PropertyStartDateForm.startDate}",
+            message = s"$errorContext.day-month-year.max-date"
+          )
+
+          val error = boundForm(day = date.day, month = date.month, year = date.year)
+            .errors.head
+
+          error.copy(args = Seq.empty) mustBe expectedError
+        }
+        "it is before minimum date" in {
+          val date: DateModel = DateModel.dateConvert(minStartDate.minusDays(1))
+          val expectedError: FormError = FormError(
+            key = s"${PropertyStartDateForm.startDate}",
+            message = s"$errorContext.day-month-year.min-date"
+          )
+
+          val error = boundForm(day = date.day, month = date.month, year = date.year)
+            .errors.head
+
+          error.copy(args = Seq.empty) mustBe expectedError
         }
         "it is missing the day" in {
           val expectedError:FormError=FormError(

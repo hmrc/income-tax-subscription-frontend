@@ -32,6 +32,7 @@ object OverseasPropertyStartDateForm extends LocalDateMapping {
 
   def minStartDate: LocalDate = AccountingPeriodUtil.getStartDateLimit
 
+  val prefix = Some("agent.")
   val errorContext: String = "overseas.property"
 
   def overseasPropertyStartDateForm(minStartDate: LocalDate, maxStartDate: LocalDate, f: LocalDate => String): Form[DateModel] = Form(
@@ -43,8 +44,8 @@ object OverseasPropertyStartDateForm extends LocalDateMapping {
         requiredKey = s"agent.error.$errorContext.required",
         invalidYearKey = s"agent.error.$errorContext.year.length"
       ).transform(DateModel.dateConvert, DateModel.dateConvert)
-        .verifying(isAfter(minStartDate, errorContext, f))
-        .verifying(isBefore(maxStartDate, errorContext, f))
+        .verifying(isAfter(minStartDate, errorContext, f, prefix))
+        .verifying(isBefore(maxStartDate, errorContext, f, prefix))
     )
   )
 }

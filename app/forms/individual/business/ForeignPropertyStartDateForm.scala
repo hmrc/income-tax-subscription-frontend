@@ -29,7 +29,7 @@ object ForeignPropertyStartDateForm extends LocalDateMapping {
 
   val startDate: String = "startDate"
 
-  val errorContext: String = "individual.foreign-property"
+  val errorContext: String = "foreign-property"
 
   def maxStartDate: LocalDate = LocalDate.now().plusDays(6)
 

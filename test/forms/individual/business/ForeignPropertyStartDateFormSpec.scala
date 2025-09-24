@@ -32,6 +32,9 @@ class ForeignPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite
   val dateMonthKey: String = s"$startDate-${DateModelMapping.month}"
   val dateYearKey: String = s"$startDate-${DateModelMapping.year}"
 
+  val minStartDate: LocalDate = ForeignPropertyStartDateForm.minStartDate
+  val maxStartDate: LocalDate = ForeignPropertyStartDateForm.maxStartDate
+
   def boundForm(dateModel: DateModel): Form[DateModel] = {
     startDateForm(_.toString).bind(Map(
       dateDayKey -> dateModel.day,
@@ -306,18 +309,16 @@ class ForeignPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite
       }
 
       "the date entered is too late" in {
-        val expectedError:FormError=FormError(
-          key = s"${ForeignPropertyStartDateForm.startDate}",
-          message = s"agent.error.$errorContext.day-month-year.max-date",
+        val date: DateModel = DateModel.dateConvert(maxStartDate.plusDays(1))
+        val expectedError: FormError = FormError(
+          key = s"${PropertyStartDateForm.startDate}",
+          message = s"error.$errorContext.day-month-year.max-date"
         )
-        val date: DateModel = DateModel.dateConvert(LocalDate.now.plusDays(7))
 
-        val error=boundForm(date).errors.head
-        error.copy(args=Seq.empty) mustBe expectedError
+        val error = boundForm(date)
+          .errors.head
 
-        boundForm(date).errors mustBe Seq(
-            expectedError
-        )
+        error.copy(args = Seq.empty) mustBe expectedError
       }
     }
   }

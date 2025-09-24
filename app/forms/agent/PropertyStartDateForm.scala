@@ -21,9 +21,7 @@ import forms.validation.utils.ConstraintUtil.{isAfter, isBefore}
 import models.DateModel
 import play.api.data.Form
 import play.api.data.Forms.single
-import play.api.i18n.Messages
-import uk.gov.hmrc.play.language.LanguageUtils
-import utilities.{AccountingPeriodUtil, ImplicitDateFormatter}
+import utilities.AccountingPeriodUtil
 
 import java.time.LocalDate
 
@@ -34,6 +32,7 @@ object PropertyStartDateForm extends LocalDateMapping {
 
   def minStartDate: LocalDate = AccountingPeriodUtil.getStartDateLimit
 
+  val prefix = Some("agent.")
   val errorContext: String = "property"
 
   def propertyStartDateForm(minStartDate: LocalDate, maxStartDate: LocalDate, f: LocalDate => String): Form[DateModel] = Form(
@@ -45,8 +44,8 @@ object PropertyStartDateForm extends LocalDateMapping {
         requiredKey = s"agent.error.$errorContext.required",
         invalidYearKey = s"agent.error.$errorContext.year.length"
       ).transform(DateModel.dateConvert, DateModel.dateConvert)
-        .verifying(isAfter(minStartDate, errorContext, f))
-        .verifying(isBefore(maxStartDate, errorContext, f))
+        .verifying(isAfter(minStartDate, errorContext, f, prefix))
+        .verifying(isBefore(maxStartDate, errorContext, f, prefix))
     )
   )
 }
