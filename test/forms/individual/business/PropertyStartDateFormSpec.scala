@@ -49,9 +49,6 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
     }
     "when testing the validation" should {
       "output the appropriate error messages for the start date" when {
-        val dayKeyError: String = s"$startDate-$day"
-        val monthKeyError: String = s"$startDate-$month"
-        val yearKeyError: String = s"$startDate-$year"
 
         val errorContext: String = "error.property"
 
@@ -180,7 +177,6 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
               args = Seq("year")
             )
             val test = form.bind(DataMap.govukDate(startDate)("1", "1", "123"))
-            println(test+"<---------------")
             test.errors must contain(expectedError)
           }
           "the year is 5 digits" in {
