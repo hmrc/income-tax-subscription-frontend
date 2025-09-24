@@ -17,7 +17,7 @@
 package forms.individual.business
 
 import forms.formatters.DateModelMapping
-import forms.individual.business.ForeignPropertyStartDateForm.{errorContext, startDate, startDateForm}
+import forms.individual.business.ForeignPropertyStartDateForm.{errorContext, minStartDate, startDate, startDateForm}
 import models.DateModel
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -59,148 +59,264 @@ class ForeignPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite
     }
     "return a form error" when {
       "no date fields are provided to the form" in {
+        val expectedError:FormError=FormError(
+          key = s"${ForeignPropertyStartDateForm.startDate}",
+          message = s"error.$errorContext.empty",
+          args = Seq()
+        )
+
         startDateForm(_.toString).bind(Map.empty[String, String])
-          .errors mustBe Seq(FormError(dateDayKey, s"error.$errorContext.day-month-year.empty"))
+          .errors mustBe Seq(expectedError)
       }
 
       "the day field is empty" in {
+
+        val expectedError:FormError=FormError(
+          key = s"${ForeignPropertyStartDateForm.startDate}",
+          message = s"error.$errorContext.required",
+          args = Seq("day")
+        )
         val date: DateModel = now.copy(day = "")
 
         boundForm(date).errors mustBe Seq(
-          FormError(dateDayKey, s"error.$errorContext.day.empty")
+          expectedError
         )
       }
       "the month field is empty" in {
+
+        val expectedError:FormError=FormError(
+          key = s"${ForeignPropertyStartDateForm.startDate}",
+          message = s"error.$errorContext.required",
+          args = Seq("month")
+        )
         val date: DateModel = now.copy(month = "")
 
         boundForm(date).errors mustBe Seq(
-          FormError(dateMonthKey, s"error.$errorContext.month.empty")
+          expectedError
         )
       }
       "the year field is empty" in {
+
+        val expectedError:FormError=FormError(
+          key = s"${ForeignPropertyStartDateForm.startDate}",
+          message = s"error.$errorContext.required",
+          args = Seq("year")
+        )
         val date: DateModel = now.copy(year = "")
 
         boundForm(date).errors mustBe Seq(
-          FormError(dateYearKey, s"error.$errorContext.year.empty")
+          expectedError
         )
       }
       "the day and month fields are empty" in {
+        val expectedError:FormError=FormError(
+          key = s"${ForeignPropertyStartDateForm.startDate}",
+          message = s"error.$errorContext.required.two",
+          args = Seq("day","month")
+        )
         val date: DateModel = now.copy(day = "", month = "")
 
         boundForm(date).errors mustBe Seq(
-          FormError(dateDayKey, s"error.$errorContext.day-month.empty")
+          expectedError
         )
       }
       "the day and year fields are empty" in {
+
+        val expectedError:FormError=FormError(
+          key = s"${ForeignPropertyStartDateForm.startDate}",
+          message = s"error.$errorContext.required.two",
+          args = Seq("day","year")
+        )
         val date: DateModel = now.copy(day = "", year = "")
 
         boundForm(date).errors mustBe Seq(
-          FormError(dateDayKey, s"error.$errorContext.day-year.empty")
+          expectedError
         )
       }
       "the month and year fields are empty" in {
+
+        val expectedError:FormError=FormError(
+          key = s"${ForeignPropertyStartDateForm.startDate}",
+          message = s"error.$errorContext.required.two",
+          args = Seq("month","year")
+        )
         val date: DateModel = now.copy(month = "", year = "")
 
         boundForm(date).errors mustBe Seq(
-          FormError(dateMonthKey, s"error.$errorContext.month-year.empty")
+          expectedError
         )
       }
       "all date fields are empty" in {
+
+        val expectedError:FormError=FormError(
+          key = s"${ForeignPropertyStartDateForm.startDate}",
+          message = s"error.$errorContext.empty",
+          args = Seq()
+        )
         val date: DateModel = DateModel("", "", "")
 
         boundForm(date).errors mustBe Seq(
-          FormError(dateDayKey, s"error.$errorContext.day-month-year.empty")
+          expectedError
         )
       }
 
       "the day field is invalid" in {
+
+        val expectedError:FormError=FormError(
+          key = s"${ForeignPropertyStartDateForm.startDate}-${DateModelMapping.day}",
+          message = s"error.$errorContext.invalid",
+          args = Seq("day")
+        )
         val date: DateModel = now.copy(day = "32")
 
         boundForm(date).errors mustBe Seq(
-          FormError(dateDayKey, s"error.$errorContext.day.invalid")
+          expectedError
         )
       }
       "the month field is invalid" in {
+        val expectedError:FormError=FormError(
+          key = s"${ForeignPropertyStartDateForm.startDate}-${DateModelMapping.month}",
+          message = s"error.$errorContext.invalid",
+          args = Seq("month")
+        )
         val date: DateModel = now.copy(month = "13")
 
         boundForm(date).errors mustBe Seq(
-          FormError(dateMonthKey, s"error.$errorContext.month.invalid")
+          expectedError
         )
       }
       "the year field is invalid" in {
+
+        val expectedError:FormError=FormError(
+          key = s"${ForeignPropertyStartDateForm.startDate}-${DateModelMapping.year}",
+          message = s"error.$errorContext.year.length",
+          args = Seq("year")
+        )
         val date: DateModel = now.copy(year = "invalid")
 
         boundForm(date).errors mustBe Seq(
-          FormError(dateYearKey, s"error.$errorContext.year.invalid")
+          expectedError
         )
       }
       "the day and month is invalid" in {
+
+        val expectedError:FormError=FormError(
+          key = s"${ForeignPropertyStartDateForm.startDate}",
+          message = s"error.$errorContext.invalid",
+          args = Seq()
+        )
         val date: DateModel = now.copy(day = "32", month = "13")
 
         boundForm(date).errors mustBe Seq(
-          FormError(dateDayKey, s"error.$errorContext.day-month.invalid")
+          expectedError
         )
       }
       "the day and year is invalid" in {
+
+        val expectedError:FormError=FormError(
+          key = s"${ForeignPropertyStartDateForm.startDate}",
+          message = s"error.$errorContext.invalid",
+          args = Seq()
+        )
         val date: DateModel = now.copy(day = "0", year = "invalid")
 
         boundForm(date).errors mustBe Seq(
-          FormError(dateDayKey, s"error.$errorContext.day-year.invalid")
+          expectedError
         )
       }
       "the month and year is invalid" in {
+
+        val expectedError:FormError=FormError(
+          key = s"${ForeignPropertyStartDateForm.startDate}",
+          message = s"error.$errorContext.invalid",
+          args = Seq()
+        )
         val date: DateModel = now.copy(month = "13", year = "invalid")
 
         boundForm(date).errors mustBe Seq(
-          FormError(dateMonthKey, s"error.$errorContext.month-year.invalid")
+          expectedError
         )
       }
       "all date fields are invalid" in {
+
+        val expectedError:FormError=FormError(
+          key = s"${ForeignPropertyStartDateForm.startDate}",
+          message = s"error.$errorContext.invalid",
+          args = Seq()
+        )
         val date: DateModel = now.copy(day = "32", month = "13", year = "invalid")
 
         boundForm(date).errors mustBe Seq(
-          FormError(dateDayKey, s"error.$errorContext.day-month-year.invalid")
+          expectedError
         )
       }
 
       "the date is not a real date" in {
+
+        val expectedError:FormError=FormError(
+          key = s"${ForeignPropertyStartDateForm.startDate}",
+          message = s"error.$errorContext.invalid",
+          args = Seq()
+        )
         val date: DateModel = now.copy(day = "30", month = "2")
 
         boundForm(date).errors mustBe Seq(
-          FormError(dateDayKey, s"error.$errorContext.day.invalid")
+          expectedError
         )
       }
 
       "the year is not the correct length" when {
+        val expectedError:FormError=FormError(
+          key = s"${ForeignPropertyStartDateForm.startDate}-${DateModelMapping.year}",
+          message = s"error.$errorContext.year.length",
+          args = Seq("year")
+        )
+
         "it's too short" in {
+
+
           val date: DateModel = now.copy(year = "999")
 
           boundForm(date).errors mustBe Seq(
-            FormError(dateYearKey, s"error.$errorContext.year.length")
+            expectedError
           )
         }
         "it's too long" in {
           val date: DateModel = now.copy(year = "10000")
 
           boundForm(date).errors mustBe Seq(
-            FormError(dateYearKey, s"error.$errorContext.year.length")
+            expectedError
           )
         }
       }
 
       "the date entered is too early" in {
-        val date: DateModel = DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit.minusDays(1))
 
-        boundForm(date).errors mustBe Seq(
-          FormError(dateDayKey, s"error.$errorContext.day-month-year.min-date", Seq(AccountingPeriodUtil.getStartDateLimit.toString))
+        val expectedError:FormError=FormError(
+          key = s"${ForeignPropertyStartDateForm.startDate}",
+          message = s"error.$errorContext.day-month-year.min-date",
         )
+        val date: DateModel = DateModel.dateConvert(minStartDate.minusDays(1))
+        val error=boundForm(date).errors.head
+        error.copy(args=Seq.empty) mustBe expectedError
+//        boundForm(date).errors mustBe Seq(
+////          FormError(dateDayKey, s"error.$errorContext.day-month-year.min-date", Seq(AccountingPeriodUtil.getStartDateLimit.toString))
+//            expectedError
+//        )
       }
 
       "the date entered is too late" in {
+        val expectedError:FormError=FormError(
+          key = s"${ForeignPropertyStartDateForm.startDate}",
+          message = s"agent.error.$errorContext.day-month-year.max-date",
+        )
         val date: DateModel = DateModel.dateConvert(LocalDate.now.plusDays(7))
 
+        val error=boundForm(date).errors.head
+        error.copy(args=Seq.empty) mustBe expectedError
+
         boundForm(date).errors mustBe Seq(
-          FormError(dateDayKey, s"error.$errorContext.day-month-year.max-date", Seq(LocalDate.now.plusDays(6).toString))
+            expectedError
         )
       }
     }

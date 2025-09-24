@@ -16,6 +16,7 @@
 
 package forms.individual.business
 
+import forms.formatters.DateModelMapping
 import forms.formatters.DateModelMapping.{day, month, year}
 import forms.individual.business.PropertyStartDateForm.{propertyStartDateForm, startDate}
 import forms.validation.testutils.DataMap.DataMap
@@ -55,7 +56,12 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
         val errorContext: String = "error.property"
 
         "the date is not supplied to the map" in {
-          form.bind(DataMap.EmptyMap).errors must contain(FormError(dayKeyError, s"$errorContext.day-month-year.empty"))
+          val expectedError:FormError=FormError(
+            key = s"${PropertyStartDateForm.startDate}",
+            message = s"$errorContext.empty",
+            args = Seq()
+          )
+          form.bind(DataMap.EmptyMap).errors must contain(expectedError)
         }
         "it is not within 7 days from current day" in {
           val sevenDaysInFuture: LocalDate = LocalDate.now.plusDays(7)
@@ -71,45 +77,97 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
           minTest.errors must contain(FormError(dayKeyError, s"$errorContext.day-month-year.min-date", List(PropertyStartDateForm.minStartDate.toString)))
         }
         "it is missing the day" in {
+          val expectedError:FormError=FormError(
+            key = s"${PropertyStartDateForm.startDate}",
+            message = s"$errorContext.required",
+            args = Seq("day")
+          )
+
           val test = form.bind(DataMap.govukDate(startDate)("", "4", "2017"))
-          test.errors must contain(FormError(dayKeyError, s"$errorContext.day.empty"))
+          test.errors must contain(expectedError)
         }
         "it is missing the month" in {
+          val expectedError:FormError=FormError(
+            key = s"${PropertyStartDateForm.startDate}",
+            message = s"$errorContext.required",
+            args = Seq("month")
+          )
           val test = form.bind(DataMap.govukDate(startDate)("1", "", "2017"))
-          test.errors must contain(FormError(monthKeyError, s"$errorContext.month.empty"))
+          test.errors must contain(expectedError)
         }
         "it is missing the year" in {
+          val expectedError:FormError=FormError(
+            key = s"${PropertyStartDateForm.startDate}",
+            message = s"$errorContext.required",
+            args = Seq("year")
+          )
           val test = form.bind(DataMap.govukDate(startDate)("1", "1", ""))
-          test.errors must contain(FormError(yearKeyError, s"$errorContext.year.empty"))
+          test.errors must contain(expectedError)
         }
         "it is missing multiple fields" in {
+          val expectedError:FormError=FormError(
+            key = s"${PropertyStartDateForm.startDate}",
+            message = s"$errorContext.required.two",
+            args = Seq("day","month")
+          )
           val test = form.bind(DataMap.govukDate(startDate)("", "", "2017"))
-          test.errors must contain(FormError(dayKeyError, s"$errorContext.day-month.empty"))
+          test.errors must contain(expectedError)
         }
         "it has an invalid day" in {
+          val expectedError:FormError=FormError(
+            key = s"${PropertyStartDateForm.startDate}-${DateModelMapping.day}",
+            message = s"$errorContext.invalid",
+            args = Seq("day")
+          )
           val test = form.bind(DataMap.govukDate(startDate)("0", "1", "2017"))
-          test.errors must contain(FormError(dayKeyError, s"$errorContext.day.invalid"))
+          test.errors must contain(expectedError)
         }
         "it has an invalid month" in {
+          val expectedError:FormError=FormError(
+            key = s"${PropertyStartDateForm.startDate}-${DateModelMapping.month}",
+            message = s"$errorContext.invalid",
+            args = Seq("month")
+          )
           val test = form.bind(DataMap.govukDate(startDate)("1", "13", "2017"))
-          test.errors must contain(FormError(monthKeyError, s"$errorContext.month.invalid"))
+          test.errors must contain(expectedError)
         }
         "it has an invalid year" in {
+          val expectedError:FormError=FormError(
+            key = s"${PropertyStartDateForm.startDate}-${DateModelMapping.year}",
+            message = s"$errorContext.year.length",
+            args = Seq("year")
+          )
           val test = form.bind(DataMap.govukDate(startDate)("1", "1", "invalid"))
-          test.errors must contain(FormError(yearKeyError, s"$errorContext.year.invalid"))
+          test.errors must contain(expectedError)
         }
         "it has multiple invalid fields" in {
+          val expectedError:FormError=FormError(
+            key = s"${PropertyStartDateForm.startDate}",
+            message = s"$errorContext.invalid",
+            args = Seq()
+          )
           val test = form.bind(DataMap.govukDate(startDate)("0", "0", "2017"))
-          test.errors must contain(FormError(dayKeyError, s"$errorContext.day-month.invalid"))
+          test.errors must contain(expectedError)
         }
         "the year provided is not the correct length" when {
           "the year is 3 digits" in {
+            val expectedError:FormError=FormError(
+              key = s"${PropertyStartDateForm.startDate}-${DateModelMapping.year}",
+              message = s"$errorContext.year.length",
+              args = Seq("year")
+            )
             val test = form.bind(DataMap.govukDate(startDate)("1", "1", "123"))
-            test.errors must contain(FormError(yearKeyError, s"$errorContext.year.length"))
+            println(test+"<---------------")
+            test.errors must contain(expectedError)
           }
           "the year is 5 digits" in {
+            val expectedError:FormError=FormError(
+              key = s"${PropertyStartDateForm.startDate}-${DateModelMapping.year}",
+              message = s"$errorContext.year.length",
+              args = Seq("year")
+            )
             val test = form.bind(DataMap.govukDate(startDate)("1", "1", "12345"))
-            test.errors must contain(FormError(yearKeyError, s"$errorContext.year.length"))
+            test.errors must contain(expectedError)
           }
         }
       }
