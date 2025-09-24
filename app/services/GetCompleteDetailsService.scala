@@ -18,7 +18,6 @@ package services
 
 import config.AppConfig
 import config.featureswitch.FeatureSwitching
-import models.AccountingMethod
 import models.common.business.{Address, SelfEmploymentData}
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
 import play.api.Logging
@@ -49,14 +48,13 @@ class GetCompleteDetailsService @Inject()(subscriptionDetailsService: Subscripti
     val fetchSelectedTaxYear = subscriptionDetailsService.fetchSelectedTaxYear(reference)
 
     for {
-      (selfEmployments, accountingMethod) <- fetchAllSelfEmployments
+      selfEmployments <- fetchAllSelfEmployments
       ukProperty <- fetchUKProperty
       foreignProperty <- fetchForeignProperty
       selectedTaxYear <- fetchSelectedTaxYear
     } yield {
       createCompleteDetails(
         selfEmployments,
-        accountingMethod,
         ukProperty,
         foreignProperty,
         selectedTaxYear
@@ -66,7 +64,6 @@ class GetCompleteDetailsService @Inject()(subscriptionDetailsService: Subscripti
   }
 
   private def createCompleteDetails(selfEmployments: Seq[SelfEmploymentData],
-                                    selfEmploymentsAccountingMethod: Option[AccountingMethod],
                                     ukPropertyBusiness: Option[PropertyModel],
                                     foreignPropertyBusiness: Option[OverseasPropertyModel],
                                     selectedTaxYear: Option[AccountingYearModel]
@@ -76,25 +73,23 @@ class GetCompleteDetailsService @Inject()(subscriptionDetailsService: Subscripti
       Try {
         val soleTraderBusinesses: Option[SoleTraderBusinesses] = {
           Some(SoleTraderBusinesses(
-              accountingMethod = selfEmploymentsAccountingMethod,
-              businesses = selfEmployments.map { selfEmploymentData =>
-                val selectedStartDateBeforeLimit: Boolean = selfEmploymentData.startDateBeforeLimit.contains(true)
-                val startDateIsBeforeLimit: Boolean = selfEmploymentData.businessStartDate.exists(_.startDate.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))
+            businesses = selfEmployments.map { selfEmploymentData =>
+              val selectedStartDateBeforeLimit: Boolean = selfEmploymentData.startDateBeforeLimit.contains(true)
+              val startDateIsBeforeLimit: Boolean = selfEmploymentData.businessStartDate.exists(_.startDate.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))
 
-                SoleTraderBusiness(
-                  id = selfEmploymentData.id,
-                  name = selfEmploymentData.businessName.get.businessName,
-                  trade = selfEmploymentData.businessTradeName.get.businessTradeName,
-                  startDate =  if (selectedStartDateBeforeLimit || startDateIsBeforeLimit) {
-                    None
-                  } else {
-                    Some(selfEmploymentData.businessStartDate.get.startDate.toLocalDate)
-                  },
-                  address = selfEmploymentData.businessAddress.get.address
-                )
-              }
-            )
-          )
+              SoleTraderBusiness(
+                id = selfEmploymentData.id,
+                name = selfEmploymentData.businessName.get.businessName,
+                trade = selfEmploymentData.businessTradeName.get.businessTradeName,
+                startDate = if (selectedStartDateBeforeLimit || startDateIsBeforeLimit) {
+                  None
+                } else {
+                  Some(selfEmploymentData.businessStartDate.get.startDate.toLocalDate)
+                },
+                address = selfEmploymentData.businessAddress.get.address
+              )
+            }
+          ))
         }
 
         val ukProperty: Option[UKProperty] = ukPropertyBusiness.map { property =>
@@ -106,8 +101,7 @@ class GetCompleteDetailsService @Inject()(subscriptionDetailsService: Subscripti
               None
             } else {
               Some(property.startDate.get.toLocalDate)
-            },
-            accountingMethod = property.accountingMethod
+            }
           )
         }
 
@@ -120,8 +114,7 @@ class GetCompleteDetailsService @Inject()(subscriptionDetailsService: Subscripti
               None
             } else {
               Some(property.startDate.get.toLocalDate)
-            },
-            accountingMethod = property.accountingMethod
+            }
           )
         }
 
@@ -144,39 +137,24 @@ class GetCompleteDetailsService @Inject()(subscriptionDetailsService: Subscripti
 
 object GetCompleteDetailsService {
 
-  case class CompleteDetails(
-                              incomeSources: IncomeSources,
-                              taxYear: AccountingYearModel
-                            )
+  case class CompleteDetails(incomeSources: IncomeSources,
+                             taxYear: AccountingYearModel)
 
-  case class IncomeSources(
-                            soleTraderBusinesses: Option[SoleTraderBusinesses],
-                            ukProperty: Option[UKProperty],
-                            foreignProperty: Option[ForeignProperty]
-                          )
+  case class IncomeSources(soleTraderBusinesses: Option[SoleTraderBusinesses],
+                           ukProperty: Option[UKProperty],
+                           foreignProperty: Option[ForeignProperty])
 
-  case class SoleTraderBusinesses(
-                                   accountingMethod: Option[AccountingMethod],
-                                   businesses: Seq[SoleTraderBusiness]
-                                 )
+  case class SoleTraderBusinesses(businesses: Seq[SoleTraderBusiness])
 
-  case class SoleTraderBusiness(
-                                 id: String,
-                                 name: String,
-                                 trade: String,
-                                 startDate: Option[LocalDate],
-                                 address: Address
-                               )
+  case class SoleTraderBusiness(id: String,
+                                name: String,
+                                trade: String,
+                                startDate: Option[LocalDate],
+                                address: Address)
 
-  case class UKProperty(
-                         startDate: Option[LocalDate],
-                         accountingMethod: Option[AccountingMethod]
-                       )
+  case class UKProperty(startDate: Option[LocalDate])
 
-  case class ForeignProperty(
-                              startDate: Option[LocalDate],
-                              accountingMethod: Option[AccountingMethod]
-                            )
+  case class ForeignProperty(startDate: Option[LocalDate])
 
   case object GetCompleteDetailsFailure
 

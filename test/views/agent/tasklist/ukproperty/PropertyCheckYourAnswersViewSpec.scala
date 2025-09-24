@@ -16,9 +16,8 @@
 
 package views.agent.tasklist.ukproperty
 
-import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
+import models.DateModel
 import models.common.PropertyModel
-import models.{Cash, DateModel}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.HtmlFormat
@@ -53,95 +52,41 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
     }
 
     "display a summary of answers" when {
-      "remove accounting method feature switch is disabled" when {
-        "not in edit mode" when {
-          "all data is complete" in {
-            document(completeProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-              startDateRow(value = Some(limitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy")))),
-              accountingMethodRow(value = Some(PropertyCheckYourAnswers.cash))
-            ))
-          }
-          "all data is missing" in {
-            document(emptyProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-              startDateRow(value = None),
-              accountingMethodRow(value = None)
+      "in edit mode" when {
+        "data is complete" which {
+          "has a start date" in {
+            document(PropertyModel(startDate = Some(limitDate))).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+              startDateRow(value = Some(limitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))))
             ))
           }
           "start date before limit field is present" which {
             "is true" in {
-              document(completeProperty.copy(startDateBeforeLimit = Some(true))).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-                startDateRow(value = Some(PropertyCheckYourAnswers.beforeStartDateLimit)),
-                accountingMethodRow(value = Some(PropertyCheckYourAnswers.cash))
+              document(PropertyModel(startDateBeforeLimit = Some(true))).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+                startDateRow(value = Some(PropertyCheckYourAnswers.beforeStartDateLimit))
               ))
             }
             "is false" when {
               "the stored start date is not older than the limit" in {
-                document(completeProperty.copy(startDateBeforeLimit = Some(false))).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-                  startDateRow(value = Some(limitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy")))),
-                  accountingMethodRow(value = Some(PropertyCheckYourAnswers.cash))
-                ))
+                document(PropertyModel(startDateBeforeLimit = Some(false), startDate = Some(limitDate))).mainContent
+                  .mustHaveSummaryList(".govuk-summary-list")(Seq(
+                    startDateRow(value = Some(limitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))))
+                  ))
               }
               "the stored start date is older than the limit" in {
-                document(completeProperty.copy(
+                document(PropertyModel(
                   startDateBeforeLimit = Some(false),
                   startDate = Some(olderThanLimitDate)
                 )).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-                  startDateRow(value = Some(PropertyCheckYourAnswers.beforeStartDateLimit)),
-                  accountingMethodRow(value = Some(PropertyCheckYourAnswers.cash))
-                ))
-              }
-            }
-          }
-          "in global edit mode" in {
-            document(completeProperty, isGlobalEdit = true).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-              startDateRow(value = Some(limitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))), globalEditMode = true),
-              accountingMethodRow(value = Some(PropertyCheckYourAnswers.cash), globalEditMode = true)
-            ))
-          }
-        }
-      }
-      "remove accounting method feature switch is enabled" when {
-        "in edit mode" when {
-          "data is complete" which {
-            "has a start date" in {
-              enable(RemoveAccountingMethod)
-              document(PropertyModel(startDate = Some(limitDate))).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-                startDateRow(value = Some(limitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))))
-              ))
-            }
-            "start date before limit field is present" which {
-              "is true" in {
-                enable(RemoveAccountingMethod)
-                document(PropertyModel(startDateBeforeLimit = Some(true))).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
                   startDateRow(value = Some(PropertyCheckYourAnswers.beforeStartDateLimit))
                 ))
               }
-              "is false" when {
-                "the stored start date is not older than the limit" in {
-                  enable(RemoveAccountingMethod)
-                  document(PropertyModel(startDateBeforeLimit = Some(false), startDate = Some(limitDate))).mainContent
-                    .mustHaveSummaryList(".govuk-summary-list")(Seq(
-                      startDateRow(value = Some(limitDate.toLocalDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))))
-                    ))
-                }
-                "the stored start date is older than the limit" in {
-                  enable(RemoveAccountingMethod)
-                  document(PropertyModel(
-                    startDateBeforeLimit = Some(false),
-                    startDate = Some(olderThanLimitDate)
-                  )).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-                    startDateRow(value = Some(PropertyCheckYourAnswers.beforeStartDateLimit))
-                  ))
-                }
-              }
             }
           }
-          "all data is missing" in {
-            enable(RemoveAccountingMethod)
-            document(emptyProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
-              startDateRow(value = None)
-            ))
-          }
+        }
+        "all data is missing" in {
+          document(emptyProperty).mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+            startDateRow(value = None)
+          ))
         }
       }
       "in global edit mode" when {
@@ -176,7 +121,7 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
 
   private lazy val propertyCheckYourAnswersView = app.injector.instanceOf[PropertyCheckYourAnswers]
   private lazy val completeProperty: PropertyModel = PropertyModel(
-    accountingMethod = Some(Cash),
+    startDateBeforeLimit = Some(false),
     startDate = Some(limitDate)
   )
   private lazy val emptyProperty: PropertyModel = PropertyModel()
@@ -188,14 +133,11 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
     val heading = "Check your answers"
     val caption = "FirstName LastName | ZZ 11 11 11 Z"
     val startDateQuestion = "Start date"
-    val accountMethodQuestion = "Accounting method"
     val confirmedAndContinue = "Confirm and continue"
     val saveAndComeBack = "Save and come back later"
     val change = "Change"
     val add = "Add"
     val beforeStartDateLimit = s"Before 6 April ${AccountingPeriodUtil.getStartDateLimit.getYear}"
-    val cash = "Cash basis accounting"
-    val accruals = "Traditional accounting"
   }
 
   private def simpleSummaryRow(key: String): (Option[String], String) => SummaryListRowValues = {
@@ -216,21 +158,11 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
   private def startDateRow(value: Option[String], globalEditMode: Boolean = false) = {
     simpleSummaryRow(PropertyCheckYourAnswers.startDateQuestion)(
       value,
-      if (isEnabled(RemoveAccountingMethod))
-        controllers.agent.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show(editMode = true, isGlobalEdit = globalEditMode).url
-      else
-        controllers.agent.tasklist.ukproperty.routes.PropertyIncomeSourcesController.show(editMode = true, isGlobalEdit = globalEditMode).url
+      controllers.agent.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show(editMode = true, isGlobalEdit = globalEditMode).url
     )
   }
 
-  private def accountingMethodRow(value: Option[String], globalEditMode: Boolean = false) = {
-    simpleSummaryRow(PropertyCheckYourAnswers.accountMethodQuestion)(
-      value,
-      controllers.agent.tasklist.ukproperty.routes.PropertyIncomeSourcesController.show(editMode = true, isGlobalEdit = globalEditMode).url
-    )
-  }
-
-  private def page(viewModel: PropertyModel, isGlobalEdit: Boolean = false): HtmlFormat.Appendable = propertyCheckYourAnswersView(
+  private def page(viewModel: PropertyModel, isGlobalEdit: Boolean): HtmlFormat.Appendable = propertyCheckYourAnswersView(
     viewModel = viewModel,
     postAction = controllers.agent.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.submit(isGlobalEdit = isGlobalEdit),
     isGlobalEdit = isGlobalEdit,

@@ -16,6 +16,8 @@
 
 package controllers.agent.tasklist.ukproperty
 
+import config.AppConfig
+import config.featureswitch.FeatureSwitching
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import forms.agent.PropertyStartDateForm
@@ -23,9 +25,6 @@ import forms.agent.PropertyStartDateForm.propertyStartDateForm
 import models.DateModel
 import play.api.data.Form
 import play.api.mvc._
-import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
-import config.featureswitch.FeatureSwitching
-import config.AppConfig
 import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
 import utilities.ImplicitDateFormatter
@@ -74,11 +73,7 @@ class PropertyStartDateController @Inject()(identify: IdentifierAction,
   }
 
   def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean): String = {
-    if (isEnabled(RemoveAccountingMethod)) {
-      routes.PropertyStartDateBeforeLimitController.show(isEditMode, isGlobalEdit).url
-    } else {
-      routes.PropertyIncomeSourcesController.show(editMode = isEditMode, isGlobalEdit = isGlobalEdit).url
-    }
+    routes.PropertyStartDateBeforeLimitController.show(isEditMode, isGlobalEdit).url
   }
 
   private def form(implicit request: Request[_]): Form[DateModel] = {

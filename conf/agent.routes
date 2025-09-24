@@ -85,10 +85,6 @@ POST        /what-you-need-to-do                                controllers.agen
 GET         /business/property-commencement-date                controllers.agent.tasklist.ukproperty.PropertyStartDateController.show(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
 POST        /business/property-commencement-date                controllers.agent.tasklist.ukproperty.PropertyStartDateController.submit(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
 
-# Agent Streamline UK Property Income Sources
-GET         /business/income-sources-property                   controllers.agent.tasklist.ukproperty.PropertyIncomeSourcesController.show(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
-POST        /business/income-sources-property                   controllers.agent.tasklist.ukproperty.PropertyIncomeSourcesController.submit(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
-
 # Agent UK Property Start Date Before Limit
 GET         /business/property-start-date-before-limit          controllers.agent.tasklist.ukproperty.PropertyStartDateBeforeLimitController.show(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
 POST        /business/property-start-date-before-limit          controllers.agent.tasklist.ukproperty.PropertyStartDateBeforeLimitController.submit(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
@@ -96,10 +92,6 @@ POST        /business/property-start-date-before-limit          controllers.agen
 #Overseas Property Start Date Routes
 GET         /business/overseas-commencement-date                controllers.agent.tasklist.overseasproperty.OverseasPropertyStartDateController.show(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
 POST        /business/overseas-commencement-date                controllers.agent.tasklist.overseasproperty.OverseasPropertyStartDateController.submit(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
-
-# Foreign Property Incomes Sources Routes
-GET         /business/income-sources-foreign-property            controllers.agent.tasklist.overseasproperty.IncomeSourcesOverseasPropertyController.show(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
-POST        /business/income-sources-foreign-property            controllers.agent.tasklist.overseasproperty.IncomeSourcesOverseasPropertyController.submit(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
 
 # Agent Overseas Property Start Date Before Limit
 GET         /business/overseas-property-start-date-before-limit          controllers.agent.tasklist.overseasproperty.OverseasPropertyStartDateBeforeLimitController.show(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)

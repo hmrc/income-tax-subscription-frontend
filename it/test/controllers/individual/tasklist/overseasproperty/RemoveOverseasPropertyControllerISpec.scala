@@ -21,7 +21,7 @@ import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.IndividualURI
 import helpers.servicemocks.AuthStub
 import models.common.OverseasPropertyModel
-import models.{Cash, No, Yes}
+import models.{No, Yes}
 import play.api.http.Status._
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys
@@ -35,8 +35,8 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
     s"return $OK" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
-      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty,OK,
-        Json.toJson(OverseasPropertyModel(accountingMethod = Some(Cash))))
+      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK,
+        Json.toJson(OverseasPropertyModel()))
 
       When(s"GET ${routes.RemoveOverseasPropertyController.show.url}")
       val res = IncomeTaxSubscriptionFrontend.getRemoveOverseasProperty()
@@ -51,7 +51,7 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
     "redirect to Business Already removed page" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
-      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty,NO_CONTENT,
+      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, NO_CONTENT,
         Json.toJson(OverseasPropertyModel(None)))
 
       When("GET client/business/remove-uk-property-business is called")

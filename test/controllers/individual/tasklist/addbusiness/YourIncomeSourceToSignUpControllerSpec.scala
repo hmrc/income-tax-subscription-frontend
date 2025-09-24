@@ -19,9 +19,9 @@ package controllers.individual.tasklist.addbusiness
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.{PostSubscriptionDetailsSuccessResponse, UnexpectedStatusFailure}
 import controllers.individual.ControllerBaseSpec
 import controllers.individual.actions.mocks.MockSignUpJourneyRefiner
+import models.DateModel
 import models.common.business._
 import models.common.{IncomeSources, OverseasPropertyModel, PropertyModel}
-import models.{Cash, DateModel}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
@@ -49,10 +49,10 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
     "return OK status" when {
       "there are no income sources added" in new Setup {
 
-        mockFetchAllIncomeSources(IncomeSources(Seq.empty, None, None, None))
+        mockFetchAllIncomeSources(IncomeSources(Seq.empty, None, None))
         mockFetchPrePopFlag(Some(true))
 
-        mockYourIncomeSourceToSignUpView(IncomeSources(Seq.empty[SelfEmploymentData], None, None, None), isPrePopped = true)
+        mockYourIncomeSourceToSignUpView(IncomeSources(Seq.empty[SelfEmploymentData], None, None), isPrePopped = true)
 
         val result: Result = await(controller.show()(subscriptionRequest))
 
@@ -63,7 +63,6 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
 
         mockFetchAllIncomeSources(IncomeSources(
           Seq(testSelfEmployment("id"), testSelfEmployment("id2")),
-          Some(Cash),
           Some(testUkProperty),
           Some(testForeignProperty)
         ))
@@ -75,7 +74,6 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
               testSelfEmployment("id"),
               testSelfEmployment("id2")
             ),
-            selfEmploymentAccountingMethod = Some(Cash),
             ukProperty = Some(testUkProperty),
             foreignProperty = Some(testForeignProperty)
           ),
@@ -88,10 +86,10 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
         contentType(result) mustBe Some(HTML)
       }
       "there is a PrePop flag" in new Setup {
-        mockFetchAllIncomeSources(IncomeSources(Seq.empty, None, None, None))
+        mockFetchAllIncomeSources(IncomeSources(Seq.empty, None, None))
         mockFetchPrePopFlag(Some(true))
 
-        mockYourIncomeSourceToSignUpView(IncomeSources(Seq.empty[SelfEmploymentData], None, None, None), isPrePopped = true)
+        mockYourIncomeSourceToSignUpView(IncomeSources(Seq.empty[SelfEmploymentData], None, None), isPrePopped = true)
 
         val result: Result = await(controller.show()(subscriptionRequest))
 
@@ -100,10 +98,10 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
       }
       "there is no PrePop flag" when {
         "fetching the flag returns false" in new Setup {
-          mockFetchAllIncomeSources(IncomeSources(Seq.empty, None, None, None))
+          mockFetchAllIncomeSources(IncomeSources(Seq.empty, None, None))
           mockFetchPrePopFlag(Some(false))
 
-          mockYourIncomeSourceToSignUpView(IncomeSources(Seq.empty[SelfEmploymentData], None, None, None), isPrePopped = false)
+          mockYourIncomeSourceToSignUpView(IncomeSources(Seq.empty[SelfEmploymentData], None, None), isPrePopped = false)
 
           val result: Result = await(controller.show()(subscriptionRequest))
 
@@ -111,10 +109,10 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
           contentType(result) mustBe Some(HTML)
         }
         "fetching the flag returns none" in new Setup {
-          mockFetchAllIncomeSources(IncomeSources(Seq.empty, None, None, None))
+          mockFetchAllIncomeSources(IncomeSources(Seq.empty, None, None))
           mockFetchPrePopFlag(None)
 
-          mockYourIncomeSourceToSignUpView(IncomeSources(Seq.empty[SelfEmploymentData], None, None, None), isPrePopped = false)
+          mockYourIncomeSourceToSignUpView(IncomeSources(Seq.empty[SelfEmploymentData], None, None), isPrePopped = false)
 
           val result: Result = await(controller.show()(subscriptionRequest))
 
@@ -130,7 +128,6 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
       "all income sources are complete" in new Setup {
         mockFetchAllIncomeSources(IncomeSources(
           Seq(testSelfEmployment("id"), testSelfEmployment("id2")),
-          Some(Cash),
           Some(testUkProperty),
           Some(testForeignProperty)
         ))
@@ -146,7 +143,6 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
       "only self employment income sources are added and complete" in new Setup {
         mockFetchAllIncomeSources(IncomeSources(
           Seq(testSelfEmployment("id"), testSelfEmployment("id2")),
-          Some(Cash),
           None,
           None,
         ))
@@ -162,7 +158,6 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
       "only uk property income sources are added and complete" in new Setup {
         mockFetchAllIncomeSources(IncomeSources(
           Seq.empty,
-          None,
           Some(testUkProperty),
           None
         ))
@@ -179,7 +174,6 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
         mockFetchAllIncomeSources(IncomeSources(
           Seq.empty,
           None,
-          None,
           Some(testForeignProperty)
         ))
         mockSaveIncomeSourceConfirmation(Right(PostSubscriptionDetailsSuccessResponse))
@@ -193,10 +187,9 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
       }
     }
     "throw an exception" when {
-      "failed to save income sources" in new Setup{
+      "failed to save income sources" in new Setup {
         mockFetchAllIncomeSources(IncomeSources(
           Seq(testSelfEmployment("id"), testSelfEmployment("id2")),
-          Some(Cash),
           Some(testUkProperty),
           Some(testForeignProperty)
         ))
@@ -211,9 +204,9 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
   }
 
   "backUrl" when {
-      "go to the ORM page" in new Setup {
-        controller.backUrl mustBe controllers.individual.routes.WhatYouNeedToDoController.show.url
-      }
+    "go to the ORM page" in new Setup {
+      controller.backUrl mustBe controllers.individual.routes.WhatYouNeedToDoController.show.url
+    }
   }
 
   trait Setup {
@@ -252,13 +245,11 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
   )
 
   def testUkProperty: PropertyModel = PropertyModel(
-    accountingMethod = Some(Cash),
     startDate = Some(DateModel("2", "2", "1981")),
     confirmed = true
   )
 
   def testForeignProperty: OverseasPropertyModel = OverseasPropertyModel(
-    accountingMethod = Some(Cash),
     startDate = Some(DateModel("3", "3", "1982")),
     confirmed = true
   )

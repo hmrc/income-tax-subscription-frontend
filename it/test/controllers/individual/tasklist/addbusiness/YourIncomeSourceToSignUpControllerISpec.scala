@@ -40,7 +40,7 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         AuthStub.stubUnauthorised()
         val res = IncomeTaxSubscriptionFrontend.yourIncomeSources()
 
-        res must have (
+        res must have(
           httpStatus(SEE_OTHER),
           redirectURI(basGatewaySignIn("/details/your-income-source"))
         )
@@ -69,7 +69,7 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
 
-        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(NO_CONTENT, testBusinesses.getOrElse(Seq.empty), Some(testAccountingMethod.accountingMethod))
+        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(NO_CONTENT, testBusinesses.getOrElse(Seq.empty))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.PrePopFlag, OK, Json.toJson(Some(true)))
@@ -94,8 +94,7 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
 
         IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(
           OK,
-          Seq(testBusiness("12345", confirmed = true)),
-          Some(testAccountingMethod.accountingMethod)
+          Seq(testBusiness("12345", confirmed = true))
         )
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
@@ -119,8 +118,7 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         "a sole trader business is incomplete" in {
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(
-            OK, Seq(testBusiness("12345")),
-            Some(testAccountingMethod.accountingMethod)
+            OK, Seq(testBusiness("12345"))
           )
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
@@ -137,8 +135,7 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         "a uk property business is incomplete" in {
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(
-            OK, Seq(testBusiness("12345", confirmed = true)),
-            Some(testAccountingMethod.accountingMethod)
+            OK, Seq(testBusiness("12345", confirmed = true))
           )
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel.copy(confirmed = false)))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
@@ -155,8 +152,7 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         "a foreign property business is incomplete" in {
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(
-            OK, Seq(testBusiness("12345", confirmed = true)),
-            Some(testAccountingMethod.accountingMethod)
+            OK, Seq(testBusiness("12345", confirmed = true))
           )
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel.copy(confirmed = false)))

@@ -16,7 +16,7 @@
 
 package models.audits
 
-import models.common.business.{AccountingMethodModel, Address, SelfEmploymentData}
+import models.common.business.{Address, SelfEmploymentData}
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
 import models.{Current, Next}
 import play.api.libs.json.Format.GenericFormat
@@ -24,13 +24,14 @@ import play.api.libs.json._
 import services.JsonAuditModel
 
 object SaveAndComebackAuditing {
-  val signUpSaveAndComeBackAudit: String = "SignUpSaveAndComeBack"
+
+  private val signUpSaveAndComeBackAudit: String = "SignUpSaveAndComeBack"
   val individualUserType: String = "individual"
   val agentUserType: String = "agent"
 
-  val ukPropertyIncomeSource = "ukProperty"
-  val overseasPropertyIncomeSource = "foreignProperty"
-  val selfEmploymentIncomeSource = "selfEmployment"
+  private val ukPropertyIncomeSource = "ukProperty"
+  private val overseasPropertyIncomeSource = "foreignProperty"
+  private val selfEmploymentIncomeSource = "selfEmployment"
 
   case class SaveAndComeBackAuditModel(
                                         userType: String,
@@ -41,7 +42,6 @@ object SaveAndComebackAuditing {
                                         currentTaxYear: Int,
                                         selectedTaxYear: Option[AccountingYearModel],
                                         selfEmployments: Seq[SelfEmploymentData],
-                                        maybeSelfEmploymentAccountingMethod: Option[AccountingMethodModel],
                                         maybePropertyModel: Option[PropertyModel],
                                         maybeOverseasPropertyModel: Option[OverseasPropertyModel]
                                       ) extends JsonAuditModel {
@@ -50,19 +50,17 @@ object SaveAndComebackAuditing {
     private val overseasPropertyAsJson: Option[JsValue] = maybeOverseasPropertyModel.map { overseasProperty =>
       Json.toJson(AuditDetailPropertyIncome(
         incomeSource = overseasPropertyIncomeSource,
-        commencementDate = overseasProperty.startDate.map(_.toDesDateFormat),
-        accountingType = overseasProperty.accountingMethod.map(_.toString)
+        commencementDate = overseasProperty.startDate.map(_.toDesDateFormat)
       ))
     }
     private val ukPropertyAsJson: Option[JsValue] = maybePropertyModel.map { property =>
       Json.toJson(AuditDetailPropertyIncome(
         incomeSource = ukPropertyIncomeSource,
-        commencementDate = property.startDate.map(_.toDesDateFormat),
-        accountingType = property.accountingMethod.map(_.toString)
+        commencementDate = property.startDate.map(_.toDesDateFormat)
       ))
     }
     val income: Seq[JsValue] = Seq() ++ ukPropertyAsJson ++ overseasPropertyAsJson ++
-      selfEmploymentAsJson(selfEmployments, maybeSelfEmploymentAccountingMethod)
+      selfEmploymentAsJson(selfEmployments)
 
     override val detail: JsValue = Json.obj(
       "userType" -> userType,
@@ -77,8 +75,7 @@ object SaveAndComebackAuditing {
   }
 
   private def selfEmploymentAsJson(
-                                    selfEmployments: Seq[SelfEmploymentData],
-                                    maybeSelfEmploymentAccountingMethod: Option[AccountingMethodModel]
+                                    selfEmployments: Seq[SelfEmploymentData]
                                   ): Option[JsValue] =
     selfEmployments match {
       case Seq() => None
@@ -88,7 +85,6 @@ object SaveAndComebackAuditing {
           numberOfBusinesses = s"${
             selfEmployments.size
           }",
-          accountingType = maybeSelfEmploymentAccountingMethod.map(_.accountingMethod.toString),
           businesses = selfEmployments.map(se => AuditDetailBusinessIncome(
             businessName = se.businessName.map(_.businessName),
             businessCommencementDate = se.businessStartDate.map(_.startDate.toDesDateFormat),
@@ -101,8 +97,7 @@ object SaveAndComebackAuditing {
 
 case class AuditDetailPropertyIncome(
                                       incomeSource: String,
-                                      commencementDate: Option[String],
-                                      accountingType: Option[String]
+                                      commencementDate: Option[String]
                                     )
 
 object AuditDetailPropertyIncome {
@@ -112,7 +107,6 @@ object AuditDetailPropertyIncome {
 case class AuditDetailSelfEmploymentIncome(
                                             incomeSource: String,
                                             numberOfBusinesses: String,
-                                            accountingType: Option[String],
                                             businesses: Seq[AuditDetailBusinessIncome]
                                           )
 

@@ -21,7 +21,6 @@ import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnecto
 import helpers.IntegrationTestConstants.{AgentURI, basGatewaySignIn}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
-import models.Cash
 import models.common.OverseasPropertyModel
 import play.api.http.Status._
 import play.api.libs.json.{JsString, Json}
@@ -30,6 +29,7 @@ import utilities.SubscriptionDataKeys.{IncomeSourceConfirmation, OverseasPropert
 import utilities.agent.TestConstants.{testNino, testUtr}
 
 class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
+
   "GET /report-quarterly/income-and-expenses/sign-up/client/business/remove-overseas-property-business" should {
     "redirect to the login page" when {
       "the user is unauthenticated" in {
@@ -50,7 +50,7 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
       SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
       SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK,
-        Json.toJson(OverseasPropertyModel(accountingMethod = Some(Cash))))
+        Json.toJson(OverseasPropertyModel()))
 
       When("GET client/business/remove-overseas-property-business is called")
       val res = IncomeTaxSubscriptionFrontend.getRemoveClientOverseasProperty()

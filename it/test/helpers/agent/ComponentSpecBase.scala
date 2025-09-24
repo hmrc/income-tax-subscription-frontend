@@ -33,7 +33,6 @@ import helpers.agent.servicemocks.WireMockMethods
 import helpers.servicemocks.AuditStub
 import helpers.{IntegrationTestModels, UserMatchingIntegrationRequestSupport}
 import models._
-import models.common.{OverseasPropertyModel, PropertyModel}
 import models.usermatching.UserDetailsModel
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
@@ -390,23 +389,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
     def accountingYear(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/business/what-year-to-sign-up", sessionData)
 
-    def businessAccountingPeriodPrior(): WSResponse = get("/business/accounting-period-prior")
-
-    def businessAccountingMethod(): WSResponse = get("/business/accounting-method")
-
-    def propertyAccountingMethod(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/business/accounting-method-property", sessionData)
-
-    def overseasPropertyAccountingMethod(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/business/overseas-property-accounting-method", sessionData)
-
-    def overseasPropertyIncomeSources(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/business/income-sources-foreign-property", sessionData)
-
-    def submitOverseasPropertyIncomeSources(isEditMode: Boolean, maybeOverseasProperty: Option[OverseasPropertyModel], sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
-      val uri = s"/business/income-sources-foreign-property?editMode=$isEditMode"
-      post(uri, sessionData)(
-        IncomeSourcesOverseasPropertyForm.createOverseasPropertyMapData(maybeOverseasProperty).map { case (k, v) => (k, Seq(v)) }
-      )
-    }
-
     def ukPropertyStartDate(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/business/property-commencement-date", sessionData)
 
     def submitUkPropertyStartDate(isEditMode: Boolean = false, request: Option[DateModel], sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
@@ -452,8 +434,8 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
     def submitOverseasPropertyStartDateBeforeLimit(isEditMode: Boolean = false, isGlobalEdit: Boolean = false, sessionData: Map[String, String] = ClientData.basicClientData)(request: Option[YesNo]): WSResponse = {
       post(s"/business/overseas-property-start-date-before-limit?editMode=$isEditMode&isGlobalEdit=$isGlobalEdit", sessionData)(
-        request.fold(Map.empty[String, Seq[String]])( yesNo =>
-          OverseasPropertyStartDateBeforeLimitForm.overseasPropertyStartDateBeforeLimitForm.fill(yesNo).data.map {case (k, v) => (k, Seq(v)) }
+        request.fold(Map.empty[String, Seq[String]])(yesNo =>
+          OverseasPropertyStartDateBeforeLimitForm.overseasPropertyStartDateBeforeLimitForm.fill(yesNo).data.map { case (k, v) => (k, Seq(v)) }
         )
       )
     }
@@ -511,45 +493,14 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       )
     }
 
-    def submitPropertyAccountingMethod(inEditMode: Boolean, request: Option[AccountingMethod], sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
-      val uri = s"/business/accounting-method-property?editMode=$inEditMode"
-      post(uri, sessionData)(
-        request.fold(Map.empty[String, Seq[String]])(
-          model =>
-            AccountingMethodPropertyForm.accountingMethodPropertyForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
-        )
-      )
-    }
-
-    def ukPropertyIncomeSources(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
-      get("/business/income-sources-property", sessionData)
-    }
-
-    def submitUkPropertyIncomeSources(isEditMode: Boolean, maybeProperty: Option[PropertyModel], sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
-      val uri = s"/business/income-sources-property?editMode=$isEditMode"
-      post(uri, sessionData)(
-        UkPropertyIncomeSourcesForm.createPropertyMapData(maybeProperty).map { case (k, v) => (k, Seq(v)) }
-      )
-    }
-
     def ukPropertyStartDateBeforeLimit(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
       get("/business/property-start-date-before-limit", sessionData)
     }
 
     def submitUkPropertyStartDateBeforeLimit(isEditMode: Boolean = false, isGlobalEdit: Boolean = false, sessionData: Map[String, String] = ClientData.basicClientData)(request: Option[YesNo]): WSResponse = {
       post(s"/business/property-start-date-before-limit?editMode=$isEditMode&isGlobalEdit=$isGlobalEdit", sessionData)(
-        request.fold(Map.empty[String, Seq[String]])( yesNo =>
-            UkPropertyStartDateBeforeLimitForm.ukPropertyStartDateBeforeLimitForm.fill(yesNo).data.map {case (k, v) => (k, Seq(v)) }
-        )
-      )
-    }
-
-    def submitOverseasPropertyAccountingMethod(inEditMode: Boolean, request: Option[AccountingMethod], sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
-      val uri = s"/business/overseas-property-accounting-method?editMode=$inEditMode"
-      post(uri, sessionData)(
-        request.fold(Map.empty[String, Seq[String]])(
-          model =>
-            AccountingMethodOverseasPropertyForm.accountingMethodOverseasPropertyForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        request.fold(Map.empty[String, Seq[String]])(yesNo =>
+          UkPropertyStartDateBeforeLimitForm.ukPropertyStartDateBeforeLimitForm.fill(yesNo).data.map { case (k, v) => (k, Seq(v)) }
         )
       )
     }

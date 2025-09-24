@@ -69,8 +69,11 @@ class ConfirmationController @Inject()(view: SignUpConfirmation,
   }
 
   val submit: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
-    subscriptionDetailsService.deleteAll(request.reference) map { _ =>
-      Redirect(controllers.agent.routes.AddAnotherClientController.addAnother())
+    subscriptionDetailsService.deleteAll(request.reference) map { response =>
+      response.status match {
+        case OK => Redirect(controllers.agent.routes.AddAnotherClientController.addAnother())
+        case _ => throw new InternalServerException("[ConfirmationController][submit] - failure deleting all client details")
+      }
     }
   }
 

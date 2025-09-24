@@ -33,9 +33,7 @@ import java.time.OffsetDateTime
 import java.util.UUID
 
 object TestConstants {
-  /*
-  * this nino is a constant, if you need a fresh one use TestModels.newNino
-  */
+
   lazy val testNino: String = new Generator().nextNino.nino
   lazy val testId: String = "testId"
   lazy val testUtr: String = UUID.randomUUID().toString
@@ -51,9 +49,9 @@ object TestConstants {
   val testFirstName = "Test"
   val testLastName = "Name"
 
-  val testSoleTraderBusinesses: SoleTraderBusinesses = SoleTraderBusinesses(testAccountingPeriodThisYear, Some(testAccountMethod), testSelfEmploymentData)
-  val testUkProperty: UkProperty = UkProperty(startDateBeforeLimit = None, testAccountingPeriodThisYear, testValidStartDate, Some(testAccountMethod))
-  val testOverseasProperty: OverseasProperty = OverseasProperty(startDateBeforeLimit = None, testAccountingPeriodThisYear, testValidStartDate, Some(testAccountMethod))
+  val testSoleTraderBusinesses: SoleTraderBusinesses = SoleTraderBusinesses(testAccountingPeriodThisYear, testSelfEmploymentData)
+  val testUkProperty: UkProperty = UkProperty(startDateBeforeLimit = None, testAccountingPeriodThisYear, testValidStartDate)
+  val testOverseasProperty: OverseasProperty = OverseasProperty(startDateBeforeLimit = None, testAccountingPeriodThisYear, testValidStartDate)
 
   val testCredentialId: String = UUID.randomUUID().toString
   val testCredentialId2: String = UUID.randomUUID().toString
@@ -77,9 +75,9 @@ object TestConstants {
 
   val testMatchFailure = Left(UserMatchFailureResponseModel)
 
-  val testGroupId = UUID.randomUUID().toString
+  val testGroupId: String = UUID.randomUUID().toString
 
-  val testCredId = UUID.randomUUID().toString
+  val testCredId: String = UUID.randomUUID().toString
 
   val testEnrolmentKey = EnrolmentKey(mtdItsaEnrolmentName, MTDITID -> testMTDID)
 
@@ -91,10 +89,6 @@ object TestConstants {
 
   val testSignUpIncomeSourcesFailure = Left(SignUpIncomeSourcesFailureResponse(INTERNAL_SERVER_ERROR))
 
-  val testCreateIncomeSourcesSuccess = Right(CreateIncomeSourcesSuccess)
-
-  val testCreateIncomeSourcesFailure = Left(CreateIncomeSourcesFailure(INTERNAL_SERVER_ERROR))
-
   val testCreateIncomeSourcesFromTaskListSuccess = Right(CreateIncomeSourcesSuccess)
 
   val testCreateIncomeSourcesFromTaskListFailure = Left(CreateIncomeSourcesFailure(INTERNAL_SERVER_ERROR))
@@ -105,17 +99,6 @@ object TestConstants {
       id = testId,
       businessStartDate = Some(businessStartDate),
       businessName = Some(testBusinessName),
-      businessTradeName = Some(testBusinessTradeName),
-      businessAddress = Some(BusinessAddressModel(Address(Seq("line 1", "line 2"), Some("TF2 1PF"))))
-    )
-    )
-
-  lazy val testUncompletedSelfEmploymentData: Seq[SelfEmploymentData] =
-    Seq(SelfEmploymentData
-    (
-      id = testId,
-      businessStartDate = Some(businessStartDate),
-      businessName = None,
       businessTradeName = Some(testBusinessTradeName),
       businessAddress = Some(BusinessAddressModel(Address(Seq("line 1", "line 2"), Some("TF2 1PF"))))
     )

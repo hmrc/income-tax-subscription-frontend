@@ -43,8 +43,6 @@ base.minute                                                     = minute
 base.minutes                                                    = minutes
 base.second                                                     = second
 base.seconds                                                    = seconds
-base.accounting-method.cash                                     = Cash basis accounting
-base.accounting-method.accruals                                 = Traditional accounting
 base.warning                                                    = Warning
 base.accept-and-continue                                        = Accept and continue
 base.tax-year.current                                           = Current tax year (6 April {0} to 5 April {1})
@@ -201,30 +199,6 @@ property.start-date-before-limit.heading                        = Did you start 
 property.start-date-before-limit.caption                        = Your UK property
 error.property.start-date-before-limit.invalid                  = Select ‘Yes’ if you started getting income from UK property before 6 April {0}
 
-# Property Accounting Method Page
-property.accounting-method.title                                = What accounting method do you use for your UK property business?
-property.accounting-method.heading                              = What accounting method do you use for your UK property business?
-property.accounting-method.caption                              = UK property
-property.accounting-method.accordion.summary                    = Help with accounting methods
-property.accounting-method.accordion.subheading                 = Example
-property.accounting-method.accordion.content.para               = You created an invoice for someone in March 2017, but did not receive the money until May 2017. If you tell HMRC you received this income in:
-property.accounting-method.accordion.content.bullet1            = May 2017, you use ‘cash basis accounting’
-property.accounting-method.accordion.content.bullet2            = March 2017, you use ‘traditional accounting’
-property.accounting-method.cash                                 = You record on the date you either receive a payment from your tenants into your bank account, or pay a bill, for example for repairs and maintenance. Most small businesses use this method.
-property.accounting-method.accruals                             = You record on the date you send an invoice to, or request a payment from your tenants, even if you do not receive or pay any money. You record on the date you receive an invoice for repairs or maintenance. This is also called ‘accruals’ or ‘standard accounting’.
-
-# Overseas Property accounting method Page
-overseas.property.accounting-method.title                        = What accounting method do you use for your foreign property business?
-overseas.property.accounting-method.heading                      = What accounting method do you use for your foreign property business?
-overseas.property.accounting-method.caption                      = Foreign property
-overseas.property.accounting-method.accordion.summary            = Help with accounting methods
-overseas.property.accounting-method.accordion.subheading         = Example
-overseas.property.accounting-method.accordion.content.para       = You created an invoice for someone in March 2017, but did not receive the money until May 2017. If you tell HMRC you received this income in:
-overseas.property.accounting-method.accordion.content.bullet1    = May 2017, you use ‘cash basis accounting’
-overseas.property.accounting-method.accordion.content.bullet2    = March 2017, you use ‘traditional accounting’
-overseas.property.accounting-method.cash                         = You record on the date you either receive a payment from your tenants into your bank account, or pay a bill, for example for repairs and maintenance. Most small businesses use this method.
-overseas.property.accounting-method.accruals                     = You record on the date you send an invoice to, or request a payment from your tenants, even if you do not receive or pay any money. You record on the date you receive an invoice for repairs or maintenance. This is also called ‘accruals’ or ‘standard accounting’.
-
 ## Property Start Date Date
 business.property.name.title                                    = Start date for income from UK property
 business.property.name.heading                                  = Start date
@@ -257,18 +231,11 @@ agent.property.start-date.heading                               = Start date for
 agent.property.start-date.para-one                              = We need to know the exact start date.
 agent.property.start-date.hint                                  = For example, 27 9 {0}
 
-# Agent Property Income Source
-agent.property.income-source.heading                                = Your client’s UK property
-agent.property.income-source.heading.caption                        = {0} | {1}
-agent.property.income-source.start-date-before-limit.legend         = Did this income start before 6 April {0}?
-agent.property.income-source.para1                                  = What accounting method does your client use for their UK property business?
-agent.property.income-source.radio.cash                             = Cash basis accounting
-agent.property.income-source.radio.accruals                         = Traditional accounting
-agent.property.income-source.details.summary                        = Help with accounting method
-agent.property.income-source.details.subheading                     = Example
-agent.property.income-source.details.content.para                   = Your client created an invoice for someone in March 2017, but did not receive the money until May 2017. If your client tells HMRC they received this income in:
-agent.property.income-source.details.content.bullet1                = May 2017, they use cash basis accounting
-agent.property.income-source.details.content.bullet2                = March 2017, you use traditional accounting
+# Agent uk property start date before limit
+agent.uk-property.start-date-before-limit.heading                   = Your client’s UK property
+agent.uk-property.start-date-before-limit.caption                   = {0} | {1}
+agent.uk-property.start-date-before-limit.legend                    = Did this income start before 6 April {0}?
+
 agent.error.property.income-source.start-date-before-limit.invalid  = Select ‘Yes’ if your client started getting income from UK property before 6 April {0}
 
 # Agent Property Start Date Before Limit
@@ -539,18 +506,6 @@ error.property.income.invalid                                   = You must selec
 error.date.empty                                                = You must enter a date
 error.date.invalid                                              = You must enter a valid date
 
-error.accounting-method.empty                                   = Select how you record your income and expenses for your self-employed business
-error.accounting-method.invalid                                 = Select how you record your income and expenses for your self-employed business
-error.accounting-method-property.empty                          = Select if you use cash basis accounting or traditional accounting
-error.accounting-method-property.invalid                        = Select if you use cash basis accounting or traditional accounting
-
-#Overseas Property accounting method errors
-error.overseas-property-accounting-method.invalid               = Select if you use cash basis accounting or traditional accounting
-error.overseas-property-accounting-method.empty                 = Select if you use cash basis accounting or traditional accounting
-
-#Agent Overseas Property accounting method errors
-error.agent.overseas-property-accounting-method.empty           = Select if your client uses cash basis accounting or traditional accounting
-
 error.user-details.first-name.empty                             = Enter your first name
 error.user-details.last-name.empty                              = Enter your last name
 error.user-details.first-name.invalid                           = Enter a valid first name
@@ -687,7 +642,6 @@ agent.cannot-sign-up.inset-text.para                            = You’ll need 
 agent.cannot-sign-up.subheading1                                = What happens next
 agent.cannot-sign-up.para2                                      = For each of your client’s businesses, you’ll need their:
 agent.cannot-sign-up.bullet1                                    = business start date (or the date they started getting property income)
-agent.cannot-sign-up.bullet2                                    = accounting method (cash basis or traditional accounting - this is also called accruals or standard accounting)
 agent.cannot-sign-up.para3                                      = If they’re a sole trader, you’ll also need your client’s:
 agent.cannot-sign-up.bullet3                                    = business trading name and address
 agent.cannot-sign-up.bullet4                                    = trade (the nature of their business)
@@ -707,7 +661,6 @@ agent.client-can-sign-up.para1                                  = You can sign u
 agent.client-can-sign-up.subheading1                            = What happens next
 agent.client-can-sign-up.para2                                  = For each of your client’s businesses or income from property, you’ll need their:
 agent.client-can-sign-up.bullet1                                = start date - if it started within the last 2 tax years
-agent.client-can-sign-up.bullet2                                = accounting method - cash basis or traditional accounting (this is also called accruals or standard accounting)
 agent.client-can-sign-up.para3                                  = If they’re a sole trader, you’ll also need your client’s:
 agent.client-can-sign-up.bullet3                                = business trading name and address
 agent.client-can-sign-up.bullet4                                = trade (the nature of their business)
@@ -875,33 +828,6 @@ agent.business.what-year-to-sign-up.option-current-hint         = You or your cl
 agent.error.business.what-year-to-sign-up.empty                 = Select the tax year you want to sign your client up for
 agent.error.business.what-year-to-sign-up.invalid               = Select the tax year you want to sign your client up for
 
-# Agent Property Accounting Method Page
-agent.property.accounting-method.heading                        = What accounting method does your client use for their UK property business?
-agent.property.accounting-method.heading.caption                = {0} | {1}
-agent.property.accounting-method.radio.cash                     = Cash basis accounting
-agent.property.accounting-method.radio.accruals                 = Traditional accounting
-
-# Agent Overseas Property Accounting Method Page
-agent.overseas-property.accounting-method.heading               = What accounting method does your client use for their foreign property business?
-agent.overseas-property.accounting-method.heading.caption       = {0} | {1}
-
-#Agent Overseas Property Incomes Sources Page
-agent.foreign-property.income-sources.title                                         = Your client’s foreign property
-agent.foreign-property.income-sources.caption                                       = {0} | {1}
-agent.foreign-property.income-sources.heading                                       = Your client’s foreign property
-agent.foreign-property.income-source.start-date-before-limit.legend                 = Did this income start before 6 April {0}?
-agent.foreign-property.income-sources.start-date.heading                            = When did your client’s foreign property business start?
-agent.foreign-property.income-sources.start-date.hint                               = For example, 17 8 2014
-agent.foreign-property.income-sources.accounting-method.heading                     = What accounting method does your client use for their foreign property business?
-agent.foreign-property.income-sources.accounting-method.accordion.summary           = Help with accounting method
-agent.foreign-property.income-sources.accounting-method.accordion.subheading        = Example
-agent.foreign-property.income-sources.accounting-method.accordion.content.para      = Your client created an invoice for someone in March 2017, but did not receive the money until May 2017. If your client tells HMRC they received this income in:
-agent.foreign-property.income-sources.accounting-method.accordion.content.bullet1   = May 2017, they use cash basis accounting
-agent.foreign-property.income-sources.accounting-method.accordion.content.bullet2   = March 2017, you use traditional accounting
-agent.foreign-property.income-sources.accounting-method.radio.cash                  = Cash basis accounting
-agent.foreign-property.income-sources.accounting-method.radio.accruals              = Traditional accounting
-agent.error.overseas.property.income-source.start-date-before-limit.invalid         = Select ‘Yes’ if your client started getting income from foreign property before 6 April {0}
-
 # Agent Overseas Property Start Date Before Limit
 agent.overseas.property.start-date-before-limit.title           = Your client’s foreign property
 agent.overseas.property.start-date-before-limit.caption         = {0} | {1}
@@ -979,8 +905,6 @@ agent.error.client-details.date-of-birth.year.length                     = The y
 # Sole Trader Eligibility invalid
 agent.error.eligibility.sole-trader.invalid                     = Select yes if your client is a sole trader that began trading on or after {0}?
 
-agent.error.accounting-method-property.invalid                  = Select if your client uses cash basis accounting or traditional accounting
-
 agent.error.not-eligible.empty                                  = You must select an option to continue
 agent.error.not-eligible.invalid                                = You must select an option to continue
 
@@ -1049,7 +973,6 @@ agent.property.check-your-answers.title                               = Check yo
 agent.property.check-your-answers.heading                             = Check your answers
 agent.property.check-your-answers.heading.caption                     = {0} | {1}
 agent.property.check-your-answers.start-date.question                 = Start date
-agent.property.check-your-answers.accounting-method.question          = Accounting method
 agent.property.check-your-answers.start-date-before-limit.answer      = Before 6 April {0}
 
 ## Agent Overseas property check your answers
@@ -1057,7 +980,6 @@ agent.overseas-property.check-your-answers.title                                
 agent.overseas-property.check-your-answers.heading                              = Check your answers
 agent.overseas-property.check-your-answers.heading.caption                      = {0} | {1}
 agent.overseas-property.check-your-answers.start-date.question                  = Start date
-agent.overseas-property.check-your-answers.accounting-method.question           = Accounting method
 agent.overseas-property.check-your-answers.start-date-before-limit.answer       = Before 6 April {0}
 
 ## Agent remove business
@@ -1092,14 +1014,11 @@ error.remove-overseas-property-business.invalid                 = Select yes if 
 
 business.check-your-answers.heading                             = Check your answers
 business.check-your-answers.content.tax-year.title              = Check your answers - tax year
-business.check-your-answers.content.accounting-method.cash      = Cash basis accounting
-business.check-your-answers.content.accounting-method.accruals  = Traditional accounting
 
 ## UK property check your answers
 business.check-your-answers.content.uk-property.title                                   = Check your answers - UK property
 business.check-your-answers.content.uk-property.caption                                 = UK property
 business.check-your-answers.content.uk-property-start-date.question                     = Start date
-business.check-your-answers.content.uk-property-accounting-method.question              = Accounting method
 business.check-your-answers.content.uk-property-start-date-before-limit.before-limit    = Before 6 April {0}
 
 ## Overseas property check your answers
@@ -1107,7 +1026,6 @@ business.check-your-answers.content.overseas-property.title                     
 business.check-your-answers.content.overseas-property.caption                                   = Foreign property
 business.check-your-answers.content.overseas-property-start-date.question                       = Start date
 business.check-your-answers.content.overseas-property-start-date-before-limit.before-limit      = Before 6 April {0}
-business.check-your-answers.content.overseas-property-accounting-method.question                = Accounting method
 
 ## Remove business
 business.remove-sole-trader-business.title        = Are you sure you want to delete this business?
@@ -1174,18 +1092,15 @@ individual.global-check-your-answers.income-sources.self-employment.name        
 individual.global-check-your-answers.income-sources.self-employment.start-date                  = Business start date
 individual.global-check-your-answers.income-sources.self-employment.before-start-date-limit     = Before 6 April {0}
 individual.global-check-your-answers.income-sources.self-employment.address                     = Business address
-individual.global-check-your-answers.income-sources.self-employment.accounting-method           = Accounting method
 individual.global-check-your-answers.income-sources.property.heading                            = Property income
 individual.global-check-your-answers.income-sources.uk-property.label                           = Property income type
 individual.global-check-your-answers.income-sources.uk-property.value                           = UK property
 individual.global-check-your-answers.income-sources.uk-property.start-date                      = Tax start date
 individual.global-check-your-answers.income-sources.uk-property.before-start-date-limit         = Before 6 April {0}
-individual.global-check-your-answers.income-sources.uk-property.accounting-method               = Accounting method
 individual.global-check-your-answers.income-sources.foreign-property.label                      = Property income type
 individual.global-check-your-answers.income-sources.foreign-property.value                      = Foreign property
 individual.global-check-your-answers.income-sources.foreign-property.start-date                 = Tax start date
 individual.global-check-your-answers.income-sources.foreign-property.before-start-date-limit    = Before 6 April {0}
-individual.global-check-your-answers.income-sources.foreign-property.accounting-method          = Accounting method
 individual.global-check-your-answers.bottom.heading                                             = Declaration
 individual.global-check-your-answers.para-two                                                   = The information you have given must be correct to the best of your knowledge.
 individual.global-check-your-answers.para-three                                                 = By confirming, you will be signed up to Making Tax Digital for Income Tax.
@@ -1202,18 +1117,14 @@ agent.global-check-your-answers.income-sources.self-employment.name             
 agent.global-check-your-answers.income-sources.self-employment.start-date                       = Start date
 agent.global-check-your-answers.income-sources.self-employment.before-start-date-limit          = Before 6 April {0}
 agent.global-check-your-answers.income-sources.self-employment.address                          = Address
-agent.global-check-your-answers.income-sources.self-employment-accounting-method.heading        = Sole trader businesses accounting method
-agent.global-check-your-answers.income-sources.self-employment.accounting-method                = Accounting method
 agent.global-check-your-answers.income-sources.property.label                                   = Property
 agent.global-check-your-answers.income-sources.uk-property.label                                = UK property
 agent.global-check-your-answers.income-sources.foreign-property.label                           = Foreign property
 agent.global-check-your-answers.income-sources.uk-property.start-date                           = Start date
 agent.global-check-your-answers.income-sources.uk-property.before-start-date-limit              = Before 6 April {0}
-agent.global-check-your-answers.income-sources.uk-property.accounting-method                    = Accounting method
 agent.global-check-your-answers.income-sources.property.heading                                 = Income from property
 agent.global-check-your-answers.income-sources.foreign-property.start-date                      = Start date
 agent.global-check-your-answers.income-sources.foreign-property.before-start-date-limit         = Before 6 April {0}
-agent.global-check-your-answers.income-sources.foreign-property.accounting-method               = Accounting method
 agent.global-check-your-answers.tax-year.heading                                                = Selected tax year
 agent.global-check-your-answers.tax-year.label                                                  = When you’re signing up from
 agent.global-check-your-answers.using-software                                                  = Software works with Making Tax Digital for Income Tax

@@ -18,8 +18,6 @@ package controllers.individual.tasklist.ukproperty
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
-import config.featureswitch.FeatureSwitching
 import controllers.utils.ReferenceRetrieval
 import forms.individual.business.PropertyStartDateForm
 import forms.individual.business.PropertyStartDateForm._
@@ -44,7 +42,7 @@ class PropertyStartDateController @Inject()(view: PropertyStartDate,
                                             val appConfig: AppConfig,
                                             val languageUtils: LanguageUtils)
                                            (implicit val ec: ExecutionContext,
-                                            mcc: MessagesControllerComponents) extends SignUpController with ImplicitDateFormatter with FeatureSwitching {
+                                            mcc: MessagesControllerComponents) extends SignUpController with ImplicitDateFormatter {
 
   def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
@@ -72,14 +70,7 @@ class PropertyStartDateController @Inject()(view: PropertyStartDate,
           },
           startDate =>
             subscriptionDetailsService.savePropertyStartDate(reference, startDate) map {
-              case Right(_) =>
-                if (isEditMode || isGlobalEdit) {
-                  Redirect(routes.PropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit))
-                } else if (isEnabled(RemoveAccountingMethod)) {
-                  Redirect(routes.PropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit))
-                } else {
-                  Redirect(routes.PropertyAccountingMethodController.show())
-                }
+              case Right(_) => Redirect(routes.PropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit))
               case Left(_) => throw new InternalServerException("[PropertyStartDateController][submit] - Could not save start date")
             }
         )

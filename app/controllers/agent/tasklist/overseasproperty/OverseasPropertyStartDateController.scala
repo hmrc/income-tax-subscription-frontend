@@ -16,6 +16,7 @@
 
 package controllers.agent.tasklist.overseasproperty
 
+import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import forms.agent.OverseasPropertyStartDateForm
@@ -27,9 +28,6 @@ import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
 import utilities.ImplicitDateFormatter
 import views.html.agent.tasklist.overseasproperty.OverseasPropertyStartDate
-import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
-import config.featureswitch.FeatureSwitching
-import config.AppConfig
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -42,14 +40,15 @@ class OverseasPropertyStartDateController @Inject()(identify: IdentifierAction,
                                                     implicitDateFormatter: ImplicitDateFormatter)
                                                    (val appConfig: AppConfig)
                                                    (implicit val ec: ExecutionContext,
-                                                    mcc: MessagesControllerComponents) extends SignUpBaseController with FeatureSwitching {
+                                                    mcc: MessagesControllerComponents) extends SignUpBaseController {
+
   def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     for {
       startDate <- subscriptionDetailsService.fetchForeignPropertyStartDate(request.reference)
     } yield {
       Ok(view(
         overseasPropertyStartDateForm = form.fill(startDate),
-        postAction = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
+        postAction = routes.OverseasPropertyStartDateController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
         backUrl = backUrl(isEditMode, isGlobalEdit),
         clientDetails = request.clientDetails
       ))
@@ -61,7 +60,7 @@ class OverseasPropertyStartDateController @Inject()(identify: IdentifierAction,
       formWithErrors =>
         Future.successful(BadRequest(view(
           overseasPropertyStartDateForm = formWithErrors,
-          postAction = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
+          postAction = routes.OverseasPropertyStartDateController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
           backUrl = backUrl(isEditMode, isGlobalEdit),
           clientDetails = request.clientDetails
         ))),
@@ -74,11 +73,7 @@ class OverseasPropertyStartDateController @Inject()(identify: IdentifierAction,
   }
 
   def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean): String = {
-    if (isEnabled(RemoveAccountingMethod)) {
-      routes.OverseasPropertyStartDateBeforeLimitController.show(isEditMode, isGlobalEdit).url
-    } else {
-      routes.IncomeSourcesOverseasPropertyController.show(editMode = isEditMode, isGlobalEdit = isGlobalEdit).url
-    }
+    routes.OverseasPropertyStartDateBeforeLimitController.show(isEditMode, isGlobalEdit).url
   }
 
   private def form(implicit request: Request[_]): Form[DateModel] = {

@@ -20,20 +20,20 @@ import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.IndividualURI
 import helpers.servicemocks.AuthStub
-import models.Cash
 import models.common.PropertyModel
 import play.api.http.Status._
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys
 import utilities.SubscriptionDataKeys.Property
 
-class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
+class RemoveUkPropertyControllerISpec extends ComponentSpecBase {
+
   "GET /report-quarterly/income-and-expenses/sign-up/business/remove-uk-property-business" should {
     "return OK" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
-      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property,OK,
-        Json.toJson(PropertyModel(accountingMethod = Some(Cash))))
+      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK,
+        Json.toJson(PropertyModel()))
       When("GET /business/remove-uk-property-business is called")
       val res = IncomeTaxSubscriptionFrontend.getRemoveUkProperty
       val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
@@ -47,8 +47,8 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase  {
     "redirect to Business Already removed page" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
-      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property,NO_CONTENT,
-        Json.toJson(PropertyModel(accountingMethod = Some(Cash))))
+      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT,
+        Json.toJson(PropertyModel()))
 
       When("GET client/business/remove-uk-property-business is called")
       val res = IncomeTaxSubscriptionFrontend.getRemoveUkProperty

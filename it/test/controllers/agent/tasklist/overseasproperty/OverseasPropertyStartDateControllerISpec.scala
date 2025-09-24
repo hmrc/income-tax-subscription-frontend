@@ -91,7 +91,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
           When("POST /overseas-property-start-date is called")
           val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyStartDate(inEditMode = false, Some(userInput))
 
-          Then("Should return a SEE_OTHER with a redirect location of property accounting method page")
+          Then("Should return a SEE_OTHER with a redirect location of the foreign property check your answers")
           res must have(
             httpStatus(SEE_OTHER),
             redirectURI(AgentURI.overseasPropertyCheckYourAnswersURI)

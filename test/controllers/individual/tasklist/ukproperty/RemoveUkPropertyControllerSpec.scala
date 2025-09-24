@@ -21,7 +21,6 @@ import connectors.subscriptiondata.mocks.MockIncomeTaxSubscriptionConnector
 import controllers.individual.ControllerBaseSpec
 import forms.individual.business.RemoveUkPropertyForm
 import forms.submapping.YesNoMapping
-import models.Cash
 import models.common.PropertyModel
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
@@ -43,7 +42,7 @@ class RemoveUkPropertyControllerSpec extends ControllerBaseSpec
   "show" should {
     "return OK and display the remove Uk property page" in {
       mockRemoveUkProperty()
-      mockFetchProperty(Some(PropertyModel(accountingMethod = Some(Cash))))
+      mockFetchProperty(Some(PropertyModel()))
 
       val result: Future[Result] = TestRemoveUkPropertyController.show(subscriptionRequest)
 
