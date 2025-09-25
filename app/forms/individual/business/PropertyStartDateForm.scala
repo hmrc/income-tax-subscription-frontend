@@ -17,7 +17,7 @@
 package forms.individual.business
 
 import forms.formatters.LocalDateMapping
-import forms.validation.utils.ConstraintUtil.{isAfter, isBefore}
+import forms.validation.Constraints.{isAfter, isBefore}
 import models.DateModel
 import play.api.data.Form
 import play.api.data.Forms.single
