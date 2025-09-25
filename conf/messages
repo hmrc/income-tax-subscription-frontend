@@ -207,26 +207,13 @@ business.property.para1                                         = We need to kno
 business.property.start-date.hint                               = For example, 27 9 {0}
 
 # Property Start Date errors
-error.property.day-month-year.empty                             = Enter the date you started getting income from UK property
-error.property.day.empty                                        = The date must include a day
-error.property.month.empty                                      = The date must include a month
-error.property.year.empty                                       = The date must include a year
-error.property.day-month.empty                                  = The date must include a day and a month
-error.property.day-year.empty                                   = The date must include a day and a year
-error.property.month-year.empty                                 = The date must include a month and a year
+error.property.empty                                            = Enter the date you started getting income from UK property
+error.property.required                                         = The date must include a {0}
+error.property.required.two                                     = The date must include a {0} and {1}
 error.property.day-month-year.max-date                          = The date cannot be more than 7 days in the future
 error.property.day-month-year.min-date                          = The date must be on or after {0}
-error.property.invalid                                          = The date must be a real date
-error.property.day.invalid                                      = The date must be a real date
-error.property.month.invalid                                    = The date must be a real date
-error.property.year.invalid                                     = The date must be a real date
-error.property.day-month.invalid                                = The date must be a real date
-error.property.day-year.invalid                                 = The date must be a real date
-error.property.month-year.invalid                               = The date must be a real date
 error.property.year.length                                      = Year must include 4 numbers
-error.property.empty                                            = Enter the date you started getting income from UK property
-error.property.required.two                                     = The date must include a {0} and {1}
-error.property.required                                         = The date must include a {0}
+error.property.invalid                                          = The date must be a real date
 
 # Agent Property Start Date Date
 agent.property.start-date.heading.caption                       = {0} | {1}
@@ -251,21 +238,9 @@ agent.error.property.start-date-before-limit.invalid            = Select â€˜Yesâ
 agent.error.property.empty                                      = Enter the date your client started getting income from UK property
 agent.error.property.required                                   = The date must include a {0}
 agent.error.property.required.two                               = The date must include a {0} and {1}
-agent.error.property.day.empty                                  = The date must include a day
-agent.error.property.month.empty                                = The date must include a month
-agent.error.property.year.empty                                 = The date must include a year
-agent.error.property.day-month.empty                            = The date must include a day and a month
-agent.error.property.day-year.empty                             = The date must include a day and a year
-agent.error.property.month-year.empty                           = The date must include a month and a year
 agent.error.property.day-month-year.max-date                    = The date cannot be more than 7 days in the future
 agent.error.property.day-month-year.min-date                    = The date must be on or after {0}
 agent.error.property.invalid                                    = The date must be a real date
-agent.error.property.day.invalid                                = The date must be a real date
-agent.error.property.month.invalid                              = The date must be a real date
-agent.error.property.year.invalid                               = The date must be a real date
-agent.error.property.day-month.invalid                          = The date must be a real date
-agent.error.property.day-year.invalid                           = The date must be a real date
-agent.error.property.month-year.invalid                         = The date must be a real date
 agent.error.property.year.length                                = Year must include 4 numbers
 
 ## Foreign Property Start Date
@@ -276,27 +251,13 @@ individual.foreign-property.start-date.para-one                 = We need to kno
 individual.foreign-property.start-date.hint                     = For example, 27 9 {0}.
 
 # Foreign Property Start Date Errors
-error.individual.foreign-property.day-month-year.empty                    = Enter the date you started getting income from foreign property
-error.individual.foreign-property.day.empty                               = The date must include a day
-error.individual.foreign-property.month.empty                             = The date must include a month
-error.individual.foreign-property.year.empty                              = The date must include a year
-error.individual.foreign-property.day-month.empty                         = The date must include a day and a month
-error.individual.foreign-property.day-year.empty                          = The date must include a day and a year
-error.individual.foreign-property.month-year.empty                        = The date must include a month and a year
+error.individual.foreign-property.empty                                   = Enter the date you started getting income from foreign property
+error.individual.foreign-property.required                                = The date must include a {0}
+error.individual.foreign-property.required.two                            = The date must include a {0} and {1}
 error.individual.foreign-property.day-month-year.max-date                 = The date cannot be more than 7 days in the future
 error.individual.foreign-property.day-month-year.min-date                 = The date must be on or after {0}
-error.individual.foreign-property.day-month-year.invalid                  = The date must be a real date
-error.individual.foreign-property.day.invalid                             = The date must be a real date
-error.individual.foreign-property.month.invalid                           = The date must be a real date
-error.individual.foreign-property.year.invalid                            = The date must be a real date
-error.individual.foreign-property.day-month.invalid                       = The date must be a real date
-error.individual.foreign-property.day-year.invalid                        = The date must be a real date
-error.individual.foreign-property.month-year.invalid                      = The date must be a real date
-error.individual.foreign-property.year.length                             = Year must include 4 numbers
 error.individual.foreign-property.invalid                                 = The date must be a real date
-error.individual.foreign-property.empty                                   = Enter the date you started getting income from foreign property
-error.individual.foreign-property.required.two                            = The date must include a {0} and {1}
-error.individual.foreign-property.required                                = The date must include a {0}
+error.individual.foreign-property.year.length                             = Year must include 4 numbers
 
 ## Foreign property start date before limit
 individual.foreign-property.start-date-before-limit.heading             = Did you start getting this income before 6 April {0}?
@@ -314,21 +275,9 @@ agent.overseas-property.start-date.hint                         = For example, 2
 agent.error.overseas.property.empty                             = Enter the date your client started getting income from foreign property
 agent.error.overseas.property.required                          = The date must include a {0}
 agent.error.overseas.property.required.two                      = The date must include a {0} and {1}
-agent.error.overseas.property.month-year.empty                  = The date must include a month and year
-agent.error.overseas.property.day-month.empty                   = The date must include a day and month
-agent.error.overseas.property.day-year.empty                    = The date must include a day and year
-agent.error.overseas.property.year.empty                        = The date must include a year
-agent.error.overseas.property.day.empty                         = The date must include a day
-agent.error.overseas.property.month.empty                       = The date must include a month
 agent.error.overseas.property.day-month-year.max-date           = The date cannot be more than 7 days in the future
 agent.error.overseas.property.day-month-year.min-date           = The date must be on or after {0}
 agent.error.overseas.property.invalid                           = The date must be a real date
-agent.error.overseas.property.month-year.invalid                = The date must be a real date
-agent.error.overseas.property.day-month.invalid                 = The date must be a real date
-agent.error.overseas.property.day-year.invalid                  = The date must be a real date
-agent.error.overseas.property.year.invalid                      = The date must be a real date
-agent.error.overseas.property.day.invalid                       = The date must be a real date
-agent.error.overseas.property.month.invalid                     = The date must be a real date
 agent.error.overseas.property.year.length                       = Year must include 4 numbers
 
 ## Timeout page ##
