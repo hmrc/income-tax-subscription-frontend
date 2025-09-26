@@ -16,7 +16,7 @@
 
 package forms.validation.utils
 
-import play.api.data.validation.{Constraint, Valid, ValidationResult}
+import play.api.data.validation.{Constraint, Invalid, Valid, ValidationResult}
 
 
 object ConstraintUtil {
@@ -32,7 +32,5 @@ object ConstraintUtil {
           case r => r
         }
       )
-
   }
-
 }

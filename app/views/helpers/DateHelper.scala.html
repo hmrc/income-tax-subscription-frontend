@@ -55,14 +55,10 @@
 
     def maybeErrorClass: String = {
         errorMessageKey.fold("")(errorKey =>
-            if(dateFields.exists(field => errorKey.contains(field))) { //DateModelMapping uses error message keys to highlight fields.
-                if(errorKey.contains(key)) "govuk-input--error" else ""
-            } else {
-                error.map(_.args) match {
-                    case Some(Seq()) => "govuk-input--error"
-                    case Some(args) if args.contains(key) => s"govuk-input--error"
-                    case _ => ""
-                }
+            error.map(_.args) match {
+                case Some(Seq()) => "govuk-input--error"
+                case Some(args) if args.contains(key) => s"govuk-input--error"
+                case _ => ""
             }
         )
     }

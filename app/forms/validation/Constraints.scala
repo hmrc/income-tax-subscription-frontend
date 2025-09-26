@@ -19,6 +19,9 @@ package forms.validation
 import forms.validation.utils.ConstraintUtil._
 import forms.validation.utils.Patterns
 import play.api.data.validation.{Constraint, Invalid, Valid}
+import models.DateModel
+
+import java.time.LocalDate
 
 import scala.util.{Failure, Success, Try}
 
@@ -52,6 +55,34 @@ object Constraints {
 
   val validateNino: Constraint[String] = {
     constraint[String](nino => if (nino.filterNot(_.isWhitespace).matches(ninoRegex)) Valid else Invalid("error.nino.invalid"))
+  }
+
+  def isAfter(
+               minDate: LocalDate,
+               errorContext: String,
+               convert: LocalDate => String,
+               prefix: Option[String] = None
+             ): Constraint[DateModel] = constraint[DateModel] { dateModel =>
+    val date = minDate.minusDays(1)
+    if (dateModel.toLocalDate.isAfter(date)) {
+      Valid
+    } else {
+      Invalid(s"${prefix.getOrElse("")}error.$errorContext.day-month-year.min-date", convert(date))
+    }
+  }
+
+  def isBefore(
+                maxDate: LocalDate,
+                errorContext: String,
+                convert: LocalDate => String,
+                prefix: Option[String] = None
+              ): Constraint[DateModel] = constraint[DateModel] { dateModel =>
+    val date = maxDate.plusDays(1)
+    if (dateModel.toLocalDate.isBefore(date)) {
+      Valid
+    } else {
+      Invalid(s"${prefix.getOrElse("")}error.$errorContext.day-month-year.max-date", convert(date))
+    }
   }
 
 }
