@@ -139,7 +139,7 @@ class ForeignPropertyStartDateViewSpec extends ViewSpec {
     }
   }
 
-  lazy val testError: FormError = FormError("startDate", "error.individual.foreign-property.day-month-year.empty")
+  lazy val testError: FormError = FormError("startDate", "error.individual.foreign-property.empty")
   lazy val foreignPropertyStartDate: ForeignPropertyStartDate = app.injector.instanceOf[ForeignPropertyStartDate]
 
   private def page(startDateForm: Form[DateModel]): Html = {
