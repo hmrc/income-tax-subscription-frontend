@@ -44,23 +44,13 @@
   }
 }
 
-@errorMessageKey = @{
-  error map { error =>
-    error.message
-  }
-}
-
 @inputClass(key: String, size: Int) = @{
-    val dateFields = Seq(DayField.toString, MonthField.toString, YearField.toString)
-
     def maybeErrorClass: String = {
-        errorMessageKey.fold("")(errorKey =>
-            error.map(_.args) match {
-                case Some(Seq()) => "govuk-input--error"
-                case Some(args) if args.contains(key) => s"govuk-input--error"
-                case _ => ""
-            }
-        )
+        error.map(_.args) match {
+            case Some(Seq()) => "govuk-input--error"
+            case Some(args) if args.contains(messages(s"base.$key").toLowerCase()) => s"govuk-input--error"
+            case _ => ""
+        }
     }
 
     s"govuk-input--width-$size $maybeErrorClass".trim

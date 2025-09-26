@@ -19,10 +19,11 @@ package forms.formatters
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.data.{Form, FormError}
+import utilities.UnitTestTrait
 
 import java.time.LocalDate
 
-class LocalDateMappingSpec extends AnyWordSpecLike with Matchers with LocalDateMapping {
+class LocalDateMappingSpec extends UnitTestTrait with Matchers with LocalDateMapping {
 
   val testForm: Form[LocalDate] = Form("field" -> localDate(
     invalidKey = "invalidKey",
@@ -48,7 +49,7 @@ class LocalDateMappingSpec extends AnyWordSpecLike with Matchers with LocalDateM
         "field-dateMonth" -> "2",
         "field-dateYear" -> "2023")
       )
-      result.errors must contain(FormError("field", "invalidKey", Seq()))
+      result.errors must contain(FormError("field-dateDay", "invalidKey", Seq()))
     }
 
     "fail to bind an incomplete date" in {
@@ -57,7 +58,7 @@ class LocalDateMappingSpec extends AnyWordSpecLike with Matchers with LocalDateM
         "field-dateMonth" -> "",
         "field-dateYear" -> "2023")
       )
-      result.errors must contain(FormError("field", "twoRequiredKey", Seq("day", "month")))
+      result.errors must contain(FormError("field-dateDay", "twoRequiredKey", Seq("day", "month")))
     }
 
     "fail to bind an empty date" in {
@@ -66,7 +67,7 @@ class LocalDateMappingSpec extends AnyWordSpecLike with Matchers with LocalDateM
         "field-dateMonth" -> "",
         "field-dateYear" -> "")
       )
-      result.errors must contain(FormError("field", "allRequiredKey", Seq.empty))
+      result.errors must contain(FormError("field-dateDay", "allRequiredKey", Seq.empty))
     }
 
     "unbind a valid date" in {

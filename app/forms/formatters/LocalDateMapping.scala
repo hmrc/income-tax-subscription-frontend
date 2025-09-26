@@ -18,18 +18,19 @@ package forms.formatters
 
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
+import play.api.i18n.Messages
 
 import java.time.LocalDate
 
 trait LocalDateMapping {
 
-  protected def localDate(
-                           invalidKey: String,
-                           allRequiredKey: String,
-                           twoRequiredKey: String,
-                           requiredKey: String,
-                           invalidYearKey: String,
-                           args: Seq[String] = Seq.empty): FieldMapping[LocalDate] =
+  protected def localDate(invalidKey: String,
+                          allRequiredKey: String,
+                          twoRequiredKey: String,
+                          requiredKey: String,
+                          invalidYearKey: String,
+                          args: Seq[String] = Seq.empty
+                         )(implicit messages: Messages): FieldMapping[LocalDate] =
     of(new LocalDateFormatter(invalidKey, allRequiredKey, twoRequiredKey, requiredKey, invalidYearKey, args))
 
 }

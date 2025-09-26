@@ -20,17 +20,21 @@ import forms.agent.PropertyStartDateForm.propertyStartDateForm
 import forms.formatters.DateModelMapping
 import models.DateModel
 import org.scalatestplus.play.PlaySpec
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.data.{Form, FormError}
+import play.api.i18n.{Lang, MessagesApi, MessagesImpl}
+import utilities.UnitTestTrait
 
 import java.time.LocalDate
 
-class PropertyStartDateFormSpec extends PlaySpec {
+class PropertyStartDateFormSpec extends PlaySpec with UnitTestTrait {
 
   val minStartDate: LocalDate = PropertyStartDateForm.minStartDate
   val maxStartDate: LocalDate = PropertyStartDateForm.maxStartDate
   val errorContext: String = "agent.error.property"
 
   def form: Form[DateModel] = {
+
     propertyStartDateForm(minStartDate, maxStartDate, _.toString)
   }
 
@@ -84,7 +88,7 @@ class PropertyStartDateFormSpec extends PlaySpec {
       }
       "a date missing it's day field is provided" in {
         val expectedError: FormError = FormError(
-          key = s"${PropertyStartDateForm.startDate}",
+          key = s"${PropertyStartDateForm.startDate}-dateDay",
           message = s"$errorContext.required",
           args = Seq("day")
         )
@@ -94,7 +98,7 @@ class PropertyStartDateFormSpec extends PlaySpec {
       }
       "a date missing it's month field is provided" in {
         val expectedError: FormError = FormError(
-          key = s"${PropertyStartDateForm.startDate}",
+          key = s"${PropertyStartDateForm.startDate}-dateMonth",
           message = s"$errorContext.required",
           args = Seq("month")
         )
@@ -104,7 +108,7 @@ class PropertyStartDateFormSpec extends PlaySpec {
       }
       "a date missing it's year field is provided" in {
         val expectedError: FormError = FormError(
-          key = s"${PropertyStartDateForm.startDate}",
+          key = s"${PropertyStartDateForm.startDate}-dateYear",
           message = s"$errorContext.required",
           args = Seq("year")
         )
@@ -114,7 +118,7 @@ class PropertyStartDateFormSpec extends PlaySpec {
       }
       "a date missing it's day and month fields is provided" in {
         val expectedError: FormError = FormError(
-          key = s"${PropertyStartDateForm.startDate}",
+          key = s"${PropertyStartDateForm.startDate}-dateDay",
           message = s"$errorContext.required.two",
           args = Seq("day", "month")
         )
@@ -124,7 +128,7 @@ class PropertyStartDateFormSpec extends PlaySpec {
       }
       "a date missing it's month and year fields is provided" in {
         val expectedError: FormError = FormError(
-          key = s"${PropertyStartDateForm.startDate}",
+          key = s"${PropertyStartDateForm.startDate}-dateMonth",
           message = s"$errorContext.required.two",
           args = Seq("month", "year")
         )
@@ -134,7 +138,7 @@ class PropertyStartDateFormSpec extends PlaySpec {
       }
       "a date missing it's day, month and year fields is provided" in {
         val expectedError: FormError = FormError(
-          key = s"${PropertyStartDateForm.startDate}",
+          key = s"${PropertyStartDateForm.startDate}-dateDay",
           message = s"$errorContext.empty"
         )
 

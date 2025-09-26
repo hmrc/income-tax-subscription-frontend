@@ -22,6 +22,7 @@ import play.api.data.Forms.single
 import utilities.AccountingPeriodUtil
 import forms.formatters.LocalDateMapping
 import forms.validation.Constraints.{isAfter, isBefore}
+import play.api.i18n.Messages
 
 import java.time.LocalDate
 
@@ -35,7 +36,7 @@ object ForeignPropertyStartDateForm extends LocalDateMapping {
 
   def minStartDate: LocalDate = AccountingPeriodUtil.getStartDateLimit
 
-  def startDateForm(f: LocalDate => String): Form[DateModel] = Form(
+  def startDateForm(f: LocalDate => String)(implicit messages: Messages): Form[DateModel] = Form(
     single(
       startDate -> localDate(
         invalidKey = s"error.$errorContext.invalid",

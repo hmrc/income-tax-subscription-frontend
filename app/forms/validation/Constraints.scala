@@ -22,7 +22,6 @@ import play.api.data.validation.{Constraint, Invalid, Valid}
 import models.DateModel
 
 import java.time.LocalDate
-
 import scala.util.{Failure, Success, Try}
 
 object Constraints {

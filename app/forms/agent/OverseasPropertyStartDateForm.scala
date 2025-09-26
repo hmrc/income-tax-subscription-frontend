@@ -17,10 +17,11 @@
 package forms.agent
 
 import forms.formatters.LocalDateMapping
-import forms.validation.Constraints.{isAfter,isBefore}
+import forms.validation.Constraints.{isAfter, isBefore}
 import models.DateModel
 import play.api.data.Form
 import play.api.data.Forms.single
+import play.api.i18n.Messages
 import utilities.AccountingPeriodUtil
 
 import java.time.LocalDate
@@ -35,7 +36,8 @@ object OverseasPropertyStartDateForm extends LocalDateMapping {
   val prefix = Some("agent.")
   val errorContext: String = "overseas.property"
 
-  def overseasPropertyStartDateForm(minStartDate: LocalDate, maxStartDate: LocalDate, f: LocalDate => String): Form[DateModel] = Form(
+  def overseasPropertyStartDateForm(minStartDate: LocalDate, maxStartDate: LocalDate, f: LocalDate => String
+                                   )(implicit messages: Messages): Form[DateModel] = Form(
     single(
       startDate -> localDate(
         invalidKey = s"agent.error.$errorContext.invalid",

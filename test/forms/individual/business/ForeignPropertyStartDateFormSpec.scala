@@ -20,13 +20,12 @@ import forms.formatters.DateModelMapping
 import forms.individual.business.ForeignPropertyStartDateForm.{errorContext, minStartDate, startDate, startDateForm}
 import models.DateModel
 import org.scalatestplus.play.PlaySpec
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.data.{Form, FormError}
-import utilities.AccountingPeriodUtil
+import utilities.{AccountingPeriodUtil, UnitTestTrait}
 
 import java.time.LocalDate
 
-class ForeignPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
+class ForeignPropertyStartDateFormSpec extends PlaySpec with UnitTestTrait {
 
   val dateDayKey: String = s"$startDate-${DateModelMapping.day}"
   val dateMonthKey: String = s"$startDate-${DateModelMapping.month}"
@@ -62,8 +61,8 @@ class ForeignPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite
     }
     "return a form error" when {
       "no date fields are provided to the form" in {
-        val expectedError:FormError=FormError(
-          key = s"${ForeignPropertyStartDateForm.startDate}",
+        val expectedError: FormError = FormError(
+          key = s"${ForeignPropertyStartDateForm.startDate}-dateDay",
           message = s"error.$errorContext.empty",
           args = Seq()
         )
@@ -74,8 +73,8 @@ class ForeignPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite
 
       "the day field is empty" in {
 
-        val expectedError:FormError=FormError(
-          key = s"${ForeignPropertyStartDateForm.startDate}",
+        val expectedError: FormError = FormError(
+          key = s"${ForeignPropertyStartDateForm.startDate}-dateDay",
           message = s"error.$errorContext.required",
           args = Seq("day")
         )
@@ -87,8 +86,8 @@ class ForeignPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite
       }
       "the month field is empty" in {
 
-        val expectedError:FormError=FormError(
-          key = s"${ForeignPropertyStartDateForm.startDate}",
+        val expectedError: FormError = FormError(
+          key = s"${ForeignPropertyStartDateForm.startDate}-dateMonth",
           message = s"error.$errorContext.required",
           args = Seq("month")
         )
@@ -100,8 +99,8 @@ class ForeignPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite
       }
       "the year field is empty" in {
 
-        val expectedError:FormError=FormError(
-          key = s"${ForeignPropertyStartDateForm.startDate}",
+        val expectedError: FormError = FormError(
+          key = s"${ForeignPropertyStartDateForm.startDate}-dateYear",
           message = s"error.$errorContext.required",
           args = Seq("year")
         )
@@ -112,10 +111,10 @@ class ForeignPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite
         )
       }
       "the day and month fields are empty" in {
-        val expectedError:FormError=FormError(
-          key = s"${ForeignPropertyStartDateForm.startDate}",
+        val expectedError: FormError = FormError(
+          key = s"${ForeignPropertyStartDateForm.startDate}-dateDay",
           message = s"error.$errorContext.required.two",
-          args = Seq("day","month")
+          args = Seq("day", "month")
         )
         val date: DateModel = now.copy(day = "", month = "")
 
@@ -125,10 +124,10 @@ class ForeignPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite
       }
       "the day and year fields are empty" in {
 
-        val expectedError:FormError=FormError(
-          key = s"${ForeignPropertyStartDateForm.startDate}",
+        val expectedError: FormError = FormError(
+          key = s"${ForeignPropertyStartDateForm.startDate}-dateDay",
           message = s"error.$errorContext.required.two",
-          args = Seq("day","year")
+          args = Seq("day", "year")
         )
         val date: DateModel = now.copy(day = "", year = "")
 
@@ -138,10 +137,10 @@ class ForeignPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite
       }
       "the month and year fields are empty" in {
 
-        val expectedError:FormError=FormError(
-          key = s"${ForeignPropertyStartDateForm.startDate}",
+        val expectedError: FormError = FormError(
+          key = s"${ForeignPropertyStartDateForm.startDate}-dateMonth",
           message = s"error.$errorContext.required.two",
-          args = Seq("month","year")
+          args = Seq("month", "year")
         )
         val date: DateModel = now.copy(month = "", year = "")
 
@@ -151,8 +150,8 @@ class ForeignPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite
       }
       "all date fields are empty" in {
 
-        val expectedError:FormError=FormError(
-          key = s"${ForeignPropertyStartDateForm.startDate}",
+        val expectedError: FormError = FormError(
+          key = s"${ForeignPropertyStartDateForm.startDate}-dateDay",
           message = s"error.$errorContext.empty",
           args = Seq()
         )
@@ -165,7 +164,7 @@ class ForeignPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite
 
       "the day field is invalid" in {
 
-        val expectedError:FormError=FormError(
+        val expectedError: FormError = FormError(
           key = s"${ForeignPropertyStartDateForm.startDate}-${DateModelMapping.day}",
           message = s"error.$errorContext.invalid",
           args = Seq("day")
@@ -177,7 +176,7 @@ class ForeignPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite
         )
       }
       "the month field is invalid" in {
-        val expectedError:FormError=FormError(
+        val expectedError: FormError = FormError(
           key = s"${ForeignPropertyStartDateForm.startDate}-${DateModelMapping.month}",
           message = s"error.$errorContext.invalid",
           args = Seq("month")
@@ -190,7 +189,7 @@ class ForeignPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite
       }
       "the year field is invalid" in {
 
-        val expectedError:FormError=FormError(
+        val expectedError: FormError = FormError(
           key = s"${ForeignPropertyStartDateForm.startDate}-${DateModelMapping.year}",
           message = s"error.$errorContext.year.length",
           args = Seq("year")
@@ -203,8 +202,8 @@ class ForeignPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite
       }
       "the day and month is invalid" in {
 
-        val expectedError:FormError=FormError(
-          key = s"${ForeignPropertyStartDateForm.startDate}",
+        val expectedError: FormError = FormError(
+          key = s"${ForeignPropertyStartDateForm.startDate}-dateDay",
           message = s"error.$errorContext.invalid",
           args = Seq()
         )
@@ -216,8 +215,8 @@ class ForeignPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite
       }
       "the day and year is invalid" in {
 
-        val expectedError:FormError=FormError(
-          key = s"${ForeignPropertyStartDateForm.startDate}",
+        val expectedError: FormError = FormError(
+          key = s"${ForeignPropertyStartDateForm.startDate}-dateDay",
           message = s"error.$errorContext.invalid",
           args = Seq()
         )
@@ -229,8 +228,8 @@ class ForeignPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite
       }
       "the month and year is invalid" in {
 
-        val expectedError:FormError=FormError(
-          key = s"${ForeignPropertyStartDateForm.startDate}",
+        val expectedError: FormError = FormError(
+          key = s"${ForeignPropertyStartDateForm.startDate}-dateMonth",
           message = s"error.$errorContext.invalid",
           args = Seq()
         )
@@ -242,8 +241,8 @@ class ForeignPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite
       }
       "all date fields are invalid" in {
 
-        val expectedError:FormError=FormError(
-          key = s"${ForeignPropertyStartDateForm.startDate}",
+        val expectedError: FormError = FormError(
+          key = s"${ForeignPropertyStartDateForm.startDate}-dateDay",
           message = s"error.$errorContext.invalid",
           args = Seq()
         )
@@ -256,8 +255,8 @@ class ForeignPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite
 
       "the date is not a real date" in {
 
-        val expectedError:FormError=FormError(
-          key = s"${ForeignPropertyStartDateForm.startDate}",
+        val expectedError: FormError = FormError(
+          key = s"${ForeignPropertyStartDateForm.startDate}-dateDay",
           message = s"error.$errorContext.invalid",
           args = Seq()
         )
@@ -269,15 +268,13 @@ class ForeignPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite
       }
 
       "the year is not the correct length" when {
-        val expectedError:FormError=FormError(
+        val expectedError: FormError = FormError(
           key = s"${ForeignPropertyStartDateForm.startDate}-${DateModelMapping.year}",
           message = s"error.$errorContext.year.length",
           args = Seq("year")
         )
 
         "it's too short" in {
-
-
           val date: DateModel = now.copy(year = "999")
 
           boundForm(date).errors mustBe Seq(
@@ -294,18 +291,14 @@ class ForeignPropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite
       }
 
       "the date entered is too early" in {
-
-        val expectedError:FormError=FormError(
+        val expectedError: FormError = FormError(
           key = s"${ForeignPropertyStartDateForm.startDate}",
           message = s"error.$errorContext.day-month-year.min-date",
         )
         val date: DateModel = DateModel.dateConvert(minStartDate.minusDays(1))
-        val error=boundForm(date).errors.head
-        error.copy(args=Seq.empty) mustBe expectedError
-//        boundForm(date).errors mustBe Seq(
-////          FormError(dateDayKey, s"error.$errorContext.day-month-year.min-date", Seq(AccountingPeriodUtil.getStartDateLimit.toString))
-//            expectedError
-//        )
+        val error = boundForm(date).errors.head
+        error.copy(args = Seq.empty) mustBe expectedError
+
       }
 
       "the date entered is too late" in {
