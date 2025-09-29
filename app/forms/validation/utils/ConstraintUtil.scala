@@ -16,7 +16,7 @@
 
 package forms.validation.utils
 
-import play.api.data.validation.{Constraint, Invalid, Valid, ValidationResult}
+import play.api.data.validation.{Constraint, Valid, ValidationResult}
 
 
 object ConstraintUtil {

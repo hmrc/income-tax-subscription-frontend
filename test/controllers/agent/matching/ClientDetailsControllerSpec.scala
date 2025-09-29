@@ -24,9 +24,11 @@ import forms.formatters.DateModelMapping
 import models.DateModel
 import models.usermatching.UserDetailsModel
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
-import play.api.mvc.Result
+import play.api.i18n.Messages
 import play.api.mvc.Results.Redirect
-import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, session, status}
+import play.api.mvc.{MessagesControllerComponents, Result}
+import play.api.test.FakeRequest
+import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, session, status, stubMessagesControllerComponents}
 import services.mocks._
 import uk.gov.hmrc.http.InternalServerException
 import utilities.UserMatchingSessionUtil.{dobD, dobM, dobY, firstName, lastName, nino}
@@ -41,6 +43,12 @@ class ClientDetailsControllerSpec extends ControllerSpec
   with MockUserLockoutService
   with MockAuditingService
   with MockSessionClearingService {
+
+  implicit override val cc: MessagesControllerComponents =
+    stubMessagesControllerComponents()
+
+  implicit val messages: Messages =
+    cc.messagesApi.preferred(request)
 
   "show" must {
     "return OK with the page content" when {
@@ -180,7 +188,7 @@ class ClientDetailsControllerSpec extends ControllerSpec
     }
   }
 
-  object TestClientDetailsController extends ClientDetailsController(
+  object TestClientDetailsController extends ClientDetailsController (
     mockClientDetails,
     fakeIdentifierAction,
     fakeClientDetailsJourneyRefiner,
