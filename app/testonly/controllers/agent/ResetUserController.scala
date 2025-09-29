@@ -21,22 +21,20 @@ import common.Constants.ITSASessionKeys
 import config.AppConfig
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
+import controllers.SignUpBaseController
+import controllers.agent.actions.IdentifierAction
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ResetUserController @Inject()(val auditingService: AuditingService,
-                                    val authService: AuthService,
-                                    val appConfig: AppConfig)
+class ResetUserController @Inject()(identify: IdentifierAction)
                                    (implicit val ec: ExecutionContext,
-                                    mcc: MessagesControllerComponents) extends StatelessController {
+                                    mcc: MessagesControllerComponents) extends SignUpBaseController {
 
-  val resetUser: Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
+  val resetUser: Action[AnyContent] = identify.async { implicit request =>
       Future.successful(
         Ok("User reset successfully")
-          .removingFromSession(ITSASessionKeys.MTDITID)
-      )
+          .removingFromSession(ITSASessionKeys.MTDITID))
   }
 }

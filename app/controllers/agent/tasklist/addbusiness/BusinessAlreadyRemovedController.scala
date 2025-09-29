@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,23 +16,21 @@
 
 package controllers.agent.tasklist.addbusiness
 
-import auth.agent.StatelessController
-import config.AppConfig
+import controllers.SignUpBaseController
+import controllers.agent.actions.IdentifierAction
 import play.api.mvc._
-import services.{AuditingService, AuthService}
 import views.html.agent.tasklist.addbusiness.BusinessAlreadyRemoved
+
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class BusinessAlreadyRemovedController @Inject()(businessAlreadyRemoved: BusinessAlreadyRemoved)
-                                                (val auditingService: AuditingService,
-                                                 val appConfig: AppConfig,
-                                                 val authService: AuthService)
-                                                (implicit mcc: MessagesControllerComponents, val ec: ExecutionContext) extends StatelessController {
+class BusinessAlreadyRemovedController @Inject()(identify: IdentifierAction,
+                                                 businessAlreadyRemoved: BusinessAlreadyRemoved)
+                                                (implicit mcc: MessagesControllerComponents, val ec: ExecutionContext) extends SignUpBaseController {
 
-  def show(): Action[AnyContent] = Authenticated { implicit request =>
-    _ =>
-      Ok(businessAlreadyRemoved())
+  def show(): Action[AnyContent] = identify { implicit request =>
+    Ok(businessAlreadyRemoved())
   }
+
 }

@@ -17,11 +17,14 @@
 package controllers.agent.matching
 
 import auth.agent._
+import auth.individual.SignUpController
 import common.Constants.ITSASessionKeys.JourneyStateKey
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
 import play.api.mvc._
 import services._
+import controllers.SignUpBaseController
+import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,26 +35,27 @@ class HomeController @Inject()(val auditingService: AuditingService,
                                val appConfig: AppConfig)
                               (getEligibilityStatusService: GetEligibilityStatusService,
                                subscriptionDetailsService: SubscriptionDetailsService,
-                               referenceRetrieval: ReferenceRetrieval)
+                               referenceRetrieval: ReferenceRetrieval,
+                               identify: IdentifierAction,
+                               journeyRefiner: ConfirmedClientJourneyRefiner)
                               (implicit val ec: ExecutionContext,
-                               mcc: MessagesControllerComponents) extends StatelessController {
+                               mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   def home: Action[AnyContent] = Action.async {
     Future.successful(Redirect(controllers.agent.matching.routes.HomeController.index))
   }
 
-  def index: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
+  def index: Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
       if (request.session.get(JourneyStateKey).contains(AgentUserMatching.name)) {
         Future.successful(Redirect(routes.ClientDetailsController.show()))
       } else if (request.session.get(JourneyStateKey).contains(AgentSignUp.name)) {
-        continueToSignUp
+        continueToSignUp(request, request.arn)
       } else {
         Future.successful(Redirect(controllers.agent.routes.AddAnotherClientController.addAnother()))
       }
   }
 
-  private def continueToSignUp(implicit request: Request[AnyContent], user: IncomeTaxAgentUser): Future[Result] = {
+  private def continueToSignUp(implicit request: Request[AnyContent], userArn: String): Future[Result] = {
     referenceRetrieval.getAgentReference flatMap { reference =>
       subscriptionDetailsService.fetchEligibilityInterruptPassed(reference) flatMap {
         case Some(_) =>

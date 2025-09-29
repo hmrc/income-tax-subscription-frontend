@@ -20,6 +20,7 @@ import config.MockConfig
 import config.featureswitch.FeatureSwitch.ThrottlingFeature
 import config.featureswitch.FeatureSwitchingUtil
 import controllers.agent.AgentControllerBaseSpec
+import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}
 import models.EligibilityStatus
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
@@ -34,7 +35,9 @@ class HomeControllerSpec extends AgentControllerBaseSpec
   with MockThrottlingConnector
   with MockReferenceRetrieval
   with FeatureSwitchingUtil
-  with MockSubscriptionDetailsService {
+  with MockSubscriptionDetailsService
+  with MockIdentifierAction
+  with MockConfirmedClientJourneyRefiner{
 
   override val controllerName: String = "HomeControllerSpec"
 
@@ -49,7 +52,9 @@ class HomeControllerSpec extends AgentControllerBaseSpec
   )(
     mockGetEligibilityStatusService,
     mockSubscriptionDetailsService,
-    mockReferenceRetrieval
+    mockReferenceRetrieval,
+    fakeIdentifierAction,
+    fakeConfirmedClientJourneyRefiner
   )(executionContext, mockMessagesControllerComponents)
 
   override def beforeEach(): Unit = {

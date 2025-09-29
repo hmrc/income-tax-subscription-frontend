@@ -27,6 +27,8 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.{AuditingService, AuthService}
 import uk.gov.hmrc.http.{HttpPatch, HttpResponse}
 import uk.gov.hmrc.http.HttpReads.Implicits._
+import controllers.agent.actions.IdentifierAction
+import controllers.SignUpBaseController
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -37,20 +39,20 @@ import scala.concurrent.{ExecutionContext, Future}
   * But we need to stub out the enrolment calls which we cannot simulate solely using the auth stubs
   */
 @Singleton
-class AuthUpdateController @Inject()(val auditingService: AuditingService,
+class AuthUpdateController @Inject()(identify: IdentifierAction)
+                                    (val auditingService: AuditingService,
                                      val authService: AuthService,
                                      val appConfig: AppConfig,
                                      http: HttpPatch)
                                     (implicit val ec: ExecutionContext,
-                                     mcc: MessagesControllerComponents) extends StatelessController {
+                                     mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   lazy val noAction: Future[String] = Future.successful("no actions taken")
   lazy val updated: Future[Result] = Future.successful(Ok("updated"))
 
   lazy val updateURL = s"${appConfig.authUrl}/auth/authority"
 
-  val update: Action[AnyContent] = Authenticated.async { implicit user =>
-    _ =>
+  val update: Action[AnyContent] = identify.async { implicit user =>
       val confidencePatch = http.PATCH[JsObject, HttpResponse](updateURL, Json.obj("confidenceLevel" -> 200))
       confidencePatch.flatMap(_ => updated)
   }
