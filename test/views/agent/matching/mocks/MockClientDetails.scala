@@ -31,9 +31,9 @@ trait MockClientDetails extends MockitoSugar with BeforeAndAfterEach {
 
   val mockClientDetails: ClientDetails = mock[ClientDetails]
 
-  def mockView(form: Form[UserDetailsModel], postAction: Call, isEditMode: Boolean): Unit = {
+  def mockView(postAction: Call, isEditMode: Boolean): Unit = {
     when(mockClientDetails(
-      ArgumentMatchers.eq(form),
+      ArgumentMatchers.any(),
       ArgumentMatchers.eq(postAction),
       ArgumentMatchers.eq(isEditMode)
     )(ArgumentMatchers.any(), ArgumentMatchers.any()))

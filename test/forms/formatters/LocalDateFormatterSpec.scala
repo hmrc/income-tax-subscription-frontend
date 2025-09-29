@@ -20,10 +20,11 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.data.FormError
 import play.api.data.format.Formatter
+import utilities.UnitTestTrait
 
 import java.time.LocalDate
 
-class LocalDateFormatterSpec extends AnyWordSpecLike with Matchers {
+class LocalDateFormatterSpec extends UnitTestTrait with Matchers {
 
   def localDateFormatter(): Formatter[LocalDate] = new LocalDateFormatter(
     invalidKey = "error.invalid",
@@ -44,7 +45,7 @@ class LocalDateFormatterSpec extends AnyWordSpecLike with Matchers {
   }.toMap
 
   "bind" must {
-    "return a valid localDate when all fields are valid" when {
+    "return a localDate when all fields are valid" when {
       "a valid date is provided" in {
         val result = localDateFormatter().bind(bindKey, input(Some("31"), Some("1"), Some("2025")))
         result mustBe Right(LocalDate.of(2025, 1, 31))
@@ -70,53 +71,53 @@ class LocalDateFormatterSpec extends AnyWordSpecLike with Matchers {
         result mustBe Right(LocalDate.of(2025, 12, 31))
       }
     }
-    "return a FormError with no args" when {
+    "return a FormError with no args and the first field as the key" when {
       "all fields are empty" in {
         val result = localDateFormatter().bind(bindKey, input(None, None, None))
-        result mustBe Left(Seq(FormError(bindKey, "error.allRequired")))
+        result mustBe Left(Seq(FormError(s"$bindKey-dateDay", "error.allRequired")))
       }
       "there are multiple invalid fields" which {
         "has an invalid day and month" in {
           val result = localDateFormatter().bind(bindKey, input(Some("32"), Some("13"), Some("2025")))
-          result mustBe Left(Seq(FormError(bindKey, "error.invalid")))
+          result mustBe Left(Seq(FormError(s"$bindKey-dateDay", "error.invalid")))
         }
         "has an invalid day and year" in {
           val result = localDateFormatter().bind(bindKey, input(Some("32"), Some("1"), Some("2o25")))
-          result mustBe Left(Seq(FormError(bindKey, "error.invalid")))
+          result mustBe Left(Seq(FormError(s"$bindKey-dateDay", "error.invalid")))
         }
         "has an invalid month and year" in {
           val result = localDateFormatter().bind(bindKey, input(Some("1"), Some("13"), Some("2o25")))
-          result mustBe Left(Seq(FormError(bindKey, "error.invalid")))
+          result mustBe Left(Seq(FormError(s"$bindKey-dateMonth", "error.invalid")))
         }
       }
     }
-    "return a FormError with the field name as an arg" when {
+    "return a FormError with the field names as args and the first field as the key" when {
       "one field is empty" when {
         "day is empty" in {
           val result = localDateFormatter().bind(bindKey, input(Some(""), Some("1"), Some("2025")))
-          result mustBe Left(Seq(FormError(bindKey, "error.required", Seq("day"))))
+          result mustBe Left(Seq(FormError(s"$bindKey-dateDay", "error.required", Seq("day"))))
         }
         "month is empty" in {
           val result = localDateFormatter().bind(bindKey, input(Some("1"), Some(""), Some("2025")))
-          result mustBe Left(Seq(FormError(bindKey, "error.required", Seq("month"))))
+          result mustBe Left(Seq(FormError(s"$bindKey-dateMonth", "error.required", Seq("month"))))
         }
         "year is empty" in {
           val result = localDateFormatter().bind(bindKey, input(Some("31"), Some("12"), Some("")))
-          result mustBe Left(Seq(FormError(bindKey, "error.required", Seq("year"))))
+          result mustBe Left(Seq(FormError(s"$bindKey-dateYear", "error.required", Seq("year"))))
         }
       }
       "two fields are empty" when {
         "day and month are empty" in {
           val result = localDateFormatter().bind(bindKey, input(Some(""), Some(""), Some("2025")))
-          result mustBe Left(Seq(FormError(bindKey, "error.twoRequired", Seq("day", "month"))))
+          result mustBe Left(Seq(FormError(s"$bindKey-dateDay", "error.twoRequired", Seq("day", "month"))))
         }
         "day and year are empty" in {
           val result = localDateFormatter().bind(bindKey, input(Some(""), Some("12"), Some("")))
-          result mustBe Left(Seq(FormError(bindKey, "error.twoRequired", Seq("day", "year"))))
+          result mustBe Left(Seq(FormError(s"$bindKey-dateDay", "error.twoRequired", Seq("day", "year"))))
         }
         "month and year are empty" in {
           val result = localDateFormatter().bind(bindKey, input(Some("15"), Some(""), Some("")))
-          result mustBe Left(Seq(FormError(bindKey, "error.twoRequired", Seq("month", "year"))))
+          result mustBe Left(Seq(FormError(s"$bindKey-dateMonth", "error.twoRequired", Seq("month", "year"))))
         }
       }
       "day is invalid" which {

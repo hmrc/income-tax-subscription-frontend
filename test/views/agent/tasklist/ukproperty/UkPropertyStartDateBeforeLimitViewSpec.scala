@@ -117,7 +117,7 @@ class UkPropertyStartDateBeforeLimitViewSpec extends ViewSpec {
     val no = "No"
   }
 
-  lazy val testError: FormError = FormError("start-date-before-limit", "agent.error.property.day-month-year.empty")
+  lazy val testError: FormError = FormError("start-date-before-limit", "agent.error.property.empty")
 
   lazy val ukPropertyStartDateBeforeLimitForm: Form[YesNo] = UkPropertyStartDateBeforeLimitForm.ukPropertyStartDateBeforeLimitForm
 

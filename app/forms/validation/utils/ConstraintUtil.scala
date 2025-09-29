@@ -32,7 +32,5 @@ object ConstraintUtil {
           case r => r
         }
       )
-
   }
-
 }

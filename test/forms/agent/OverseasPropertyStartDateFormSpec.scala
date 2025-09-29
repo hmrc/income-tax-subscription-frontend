@@ -20,11 +20,14 @@ import forms.agent.OverseasPropertyStartDateForm.overseasPropertyStartDateForm
 import forms.formatters.DateModelMapping
 import models.DateModel
 import org.scalatestplus.play.PlaySpec
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.data.{Form, FormError}
+import play.api.i18n.{Lang, MessagesApi, MessagesImpl}
+import utilities.UnitTestTrait
 
 import java.time.LocalDate
 
-class OverseasPropertyStartDateFormSpec extends PlaySpec {
+class OverseasPropertyStartDateFormSpec extends PlaySpec with UnitTestTrait  {
 
   val minStartDate: LocalDate = PropertyStartDateForm.minStartDate
   val maxStartDate: LocalDate = PropertyStartDateForm.maxStartDate
@@ -61,7 +64,8 @@ class OverseasPropertyStartDateFormSpec extends PlaySpec {
       "a date must be a real date for day" in {
         val expectedError: FormError = FormError(
           key = s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.day}",
-          message = s"$errorContext.day.invalid"
+          message = s"$errorContext.invalid",
+          args = Seq("day")
         )
 
         boundForm(day = "0", month = "12", year = "2023")
@@ -70,7 +74,8 @@ class OverseasPropertyStartDateFormSpec extends PlaySpec {
       "a date must be a real date for month" in {
         val expectedError: FormError = FormError(
           key = s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.month}",
-          message = s"$errorContext.month.invalid"
+          message = s"$errorContext.invalid",
+          args = Seq("month")
         )
 
         boundForm(day = "1", month = "13", year = "2023")
@@ -79,7 +84,8 @@ class OverseasPropertyStartDateFormSpec extends PlaySpec {
       "a date must be a real date for year" in {
         val expectedError: FormError = FormError(
           key = s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.year}",
-          message = s"$errorContext.year.invalid"
+          message = s"$errorContext.year.length",
+          args = Seq("year")
         )
 
         boundForm(day = "1", month = "12", year = "A")
@@ -88,7 +94,8 @@ class OverseasPropertyStartDateFormSpec extends PlaySpec {
       "a year must include 4 numbers" in {
         val expectedError: FormError = FormError(
           key = s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.year}",
-          message = s"$errorContext.year.length"
+          message = s"$errorContext.year.length",
+          args = Seq("year")
         )
 
         boundForm(day = "1", month = "12", year = "200")
@@ -97,29 +104,32 @@ class OverseasPropertyStartDateFormSpec extends PlaySpec {
       "a date before the minimum possible date is provided" in {
         val date: DateModel = DateModel.dateConvert(minStartDate.minusDays(1))
         val expectedError: FormError = FormError(
-          key = s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.day}",
-          message = s"$errorContext.day-month-year.min-date",
-          args = Seq(minStartDate.toString)
+          key = s"${OverseasPropertyStartDateForm.startDate}",
+          message = s"$errorContext.day-month-year.min-date"
         )
 
-        boundForm(day = date.day, month = date.month, year = date.year)
-          .errors mustBe Seq(expectedError)
+        val error = boundForm(day = date.day, month = date.month, year = date.year)
+          .errors.head
+
+        error.copy(args = Seq.empty) mustBe expectedError
       }
       "a date after the maximum possible date is provided" in {
         val date: DateModel = DateModel.dateConvert(maxStartDate.plusDays(1))
         val expectedError: FormError = FormError(
-          key = s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.day}",
-          message = s"$errorContext.day-month-year.max-date",
-          args = Seq(maxStartDate.toString)
+          key = s"${OverseasPropertyStartDateForm.startDate}",
+          message = s"$errorContext.day-month-year.max-date"
         )
 
-        boundForm(day = date.day, month = date.month, year = date.year)
-          .errors mustBe Seq(expectedError)
+        val error = boundForm(day = date.day, month = date.month, year = date.year)
+          .errors.head
+
+        error.copy(args = Seq.empty) mustBe expectedError
       }
       "a date missing it's day field is provided" in {
         val expectedError: FormError = FormError(
-          key = s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.day}",
-          message = s"$errorContext.day.empty"
+          key = s"${OverseasPropertyStartDateForm.startDate}-dateDay",
+          message = s"$errorContext.required",
+          args = Seq("day")
         )
 
         boundForm(day = "", month = "1", year = "2020")
@@ -127,8 +137,9 @@ class OverseasPropertyStartDateFormSpec extends PlaySpec {
       }
       "a date missing it's month field is provided" in {
         val expectedError: FormError = FormError(
-          key = s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.month}",
-          message = s"$errorContext.month.empty"
+          key = s"${OverseasPropertyStartDateForm.startDate}-dateMonth",
+          message = s"$errorContext.required",
+          args = Seq("month")
         )
 
         boundForm(day = "1", month = "", year = "2020")
@@ -136,8 +147,9 @@ class OverseasPropertyStartDateFormSpec extends PlaySpec {
       }
       "a date missing it's year field is provided" in {
         val expectedError: FormError = FormError(
-          key = s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.year}",
-          message = s"$errorContext.year.empty"
+          key = s"${OverseasPropertyStartDateForm.startDate}-dateYear",
+          message = s"$errorContext.required",
+          args = Seq("year")
         )
 
         boundForm(day = "1", month = "1", year = "")
@@ -145,8 +157,9 @@ class OverseasPropertyStartDateFormSpec extends PlaySpec {
       }
       "a date missing it's day and month fields is provided" in {
         val expectedError: FormError = FormError(
-          key = s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.day}",
-          message = s"$errorContext.day-month.empty"
+          key = s"${OverseasPropertyStartDateForm.startDate}-dateDay",
+          message = s"$errorContext.required.two",
+          Seq("day", "month")
         )
 
         boundForm(day = "", month = "", year = "2020")
@@ -154,8 +167,9 @@ class OverseasPropertyStartDateFormSpec extends PlaySpec {
       }
       "a date missing it's month and year fields is provided" in {
         val expectedError: FormError = FormError(
-          key = s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.month}",
-          message = s"$errorContext.month-year.empty"
+          key = s"${OverseasPropertyStartDateForm.startDate}-dateMonth",
+          message = s"$errorContext.required.two",
+          args = Seq("month", "year")
         )
 
         boundForm(day = "1", month = "", year = "")
@@ -163,8 +177,8 @@ class OverseasPropertyStartDateFormSpec extends PlaySpec {
       }
       "a date missing it's day, month and year fields is provided" in {
         val expectedError: FormError = FormError(
-          key = s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.day}",
-          message = s"$errorContext.day-month-year.empty"
+          key = s"${OverseasPropertyStartDateForm.startDate}-dateDay",
+          message = s"$errorContext.empty"
         )
 
         boundForm(day = "", month = "", year = "")

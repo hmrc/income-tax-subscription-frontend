@@ -16,26 +16,38 @@
 
 package forms.agent
 
-import forms.formatters.DateModelMapping.dateModelMapping
+import forms.formatters.LocalDateMapping
+import forms.validation.Constraints.{isAfter, isBefore}
 import models.DateModel
 import play.api.data.Form
 import play.api.data.Forms.single
+import play.api.i18n.Messages
 import utilities.AccountingPeriodUtil
 
 import java.time.LocalDate
 
-object PropertyStartDateForm {
+object PropertyStartDateForm extends LocalDateMapping {
   val startDate: String = "startDate"
 
   def maxStartDate: LocalDate = LocalDate.now().plusDays(6)
 
   def minStartDate: LocalDate = AccountingPeriodUtil.getStartDateLimit
 
+  val prefix = Some("agent.")
   val errorContext: String = "property"
 
-  def propertyStartDateForm(minStartDate: LocalDate, maxStartDate: LocalDate, f: LocalDate => String): Form[DateModel] = Form(
+  def propertyStartDateForm(minStartDate: LocalDate, maxStartDate: LocalDate, f: LocalDate => String
+                           )(implicit messages: Messages): Form[DateModel] = Form(
     single(
-      startDate -> dateModelMapping(isAgent = true, errorContext = errorContext, Some(minStartDate), Some(maxStartDate), Some(f))
+      startDate -> localDate(
+        invalidKey = s"agent.error.$errorContext.invalid",
+        allRequiredKey = s"agent.error.$errorContext.empty",
+        twoRequiredKey = s"agent.error.$errorContext.required.two",
+        requiredKey = s"agent.error.$errorContext.required",
+        invalidYearKey = s"agent.error.$errorContext.year.length"
+      ).transform(DateModel.dateConvert, DateModel.dateConvert)
+        .verifying(isAfter(minStartDate, errorContext, f, prefix))
+        .verifying(isBefore(maxStartDate, errorContext, f, prefix))
     )
   )
 }
