@@ -80,6 +80,7 @@ agent.business-already-removed.back-to-income-sources-link-text = ffynonellau in
 your-income-source.heading                                      = Eich ffynonellau incwm
 your-income-source.manage.para-1                                = Ychwanegwch bob un o’r ffynonellau hyn yr ydych yn cael incwm ohonynt. Gwiriwch, newidiwch neu ychwanegwch fanylion at unrhyw un a ddechreuwyd yn flaenorol. Dilëwch unrhyw un sydd wedi dod i ben cyn 6 Ebrill {0}.
 your-income-source.manage.para-2                                = Cyn i chi fynd yn eich blaen, gwnewch yn siŵr eich bod wedi gwirio unrhyw ffynonellau incwm rydym wedi’u hychwanegu ar eich rhan.
+your-income-source.manage.para-3                                = Nid oes angen i chi ychwanegu incwm o bartneriaethau.
 your-income-source.self-employed.heading                        = Busnesau unig fasnachwr
 your-income-source.self-employed.description                    = Rydych yn unig fasnachwr os ydych yn rhedeg eich busnes eich hun fel unigolyn ac yn gweithio i chi’ch hun. Enw arall ar hyn yw bod yn hunangyflogedig. Nid ydych yn unig fasnachwr os daw eich incwm busnes o gwmni cyfyngedig yn unig.
 your-income-source.self-employed.label-none                     = Busnes {0}

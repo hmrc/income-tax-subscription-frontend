@@ -31,7 +31,8 @@
     form: FormWithCSRF,
     saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
     govukSummaryList: GovukSummaryList,
-    govukTag : GovukTag
+    govukTag : GovukTag,
+    govukInsetText: GovukInsetText
 )
 
 @(postAction: Call, backUrl: String, incomeSources: IncomeSources, isPrePopulated: Boolean)(implicit request: Request[_], messages: Messages)
@@ -52,6 +53,10 @@
                 (AccountingPeriodUtil.getCurrentTaxEndYear - 1).toString
             )
         </p>
+
+    @govukInsetText(InsetText(
+        content = Text(messages("your-income-source.manage.para-3"))
+    ))
 
     @selfEmploymentSection
 
