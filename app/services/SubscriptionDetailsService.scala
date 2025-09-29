@@ -79,7 +79,7 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
   def saveSelectedTaxYear(reference: String, selectedTaxYear: AccountingYearModel)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] =
     incomeTaxSubscriptionConnector.saveSubscriptionDetails[AccountingYearModel](reference, SelectedTaxYear, selectedTaxYear)
 
-  def fetchAccountingPeriod(reference:String)(implicit hc: HeaderCarrier): Future[Option[BusinessAccountingPeriod]] = {
+  def fetchAccountingPeriod(reference: String)(implicit hc: HeaderCarrier): Future[Option[BusinessAccountingPeriod]] = {
     incomeTaxSubscriptionConnector.getSubscriptionDetails[BusinessAccountingPeriod](reference, AccountingPeriod)
   }
 
@@ -106,7 +106,7 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
     }
   }
 
-  def saveBusinesses(reference: String, selfEmploymentData: Seq[SelfEmploymentData], accountingMethod: Option[AccountingMethod])
+  def saveBusinesses(reference: String, selfEmploymentData: Seq[SelfEmploymentData])
                     (implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
     val soleTraderBusinesses = SoleTraderBusinesses(
       businesses = selfEmploymentData.map { se =>
@@ -119,8 +119,7 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
           trade = se.businessTradeName.map(_.businessTradeName),
           address = se.businessAddress.map(_.address).map(address => EncryptingAddress(address.lines, address.postcode))
         )
-      },
-      accountingMethod = accountingMethod
+      }
     )
     incomeTaxSubscriptionConnector.saveSubscriptionDetails(reference, SoleTraderBusinessesKey, soleTraderBusinesses)(implicitly, SoleTraderBusinesses.encryptedFormat).flatMap {
       result =>
@@ -133,40 +132,6 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
       result =>
         taskListStatusUpdate(reference, incomeTaxSubscriptionConnector, result)
     }
-
-  def saveStreamlineProperty(reference: String,
-                             maybeStartDate: Option[DateModel],
-                             maybeStartDateBeforeLimit: Option[Boolean],
-                             accountingMethod: AccountingMethod)
-                            (implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
-    fetchProperty(reference) map {
-      case Some(property) => property
-      case None => PropertyModel()
-    } flatMap { propertyModel =>
-      val updatedPropertyModel = maybeStartDate match {
-        case Some(startDate) => propertyModel.copy(startDate = Some(startDate), accountingMethod = Some(accountingMethod), confirmed = false)
-        case None => propertyModel.copy(startDateBeforeLimit = maybeStartDateBeforeLimit, accountingMethod = Some(accountingMethod), confirmed = false)
-      }
-      saveProperty(reference, updatedPropertyModel)
-    }
-  }
-
-  def saveStreamlineForeignProperty(reference: String,
-                                    maybeStartDate: Option[DateModel],
-                                    maybeStartDateBeforeLimit: Option[Boolean],
-                                    accountingMethod: AccountingMethod)
-                                   (implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
-    fetchOverseasProperty(reference) map {
-      case Some(overseasProperty) => overseasProperty
-      case None => OverseasPropertyModel()
-    } flatMap { overseasPropertyModel =>
-      val updatedOverseasPropertyModel = maybeStartDate match {
-        case Some(startDate) => overseasPropertyModel.copy(startDate = Some(startDate), accountingMethod = Some(accountingMethod), confirmed = false)
-        case None => overseasPropertyModel.copy(startDateBeforeLimit = maybeStartDateBeforeLimit, accountingMethod = Some(accountingMethod), confirmed = false)
-      }
-      saveOverseasProperty(reference, updatedOverseasPropertyModel)
-    }
-  }
 
   def fetchPropertyStartDateBeforeLimit(reference: String)(implicit hc: HeaderCarrier): Future[Option[YesNo]] = {
     fetchProperty(reference) map { maybeProperty =>
@@ -245,19 +210,6 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
     }
   }
 
-  def fetchAccountingMethodProperty(reference: String)(implicit hc: HeaderCarrier): Future[Option[AccountingMethod]] =
-    fetchProperty(reference).map(_.flatMap(_.accountingMethod))
-
-  def saveAccountingMethodProperty(reference: String, accountingMethod: AccountingMethod)
-                                  (implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
-    fetchProperty(reference) map {
-      case Some(property) => property.copy(accountingMethod = Some(accountingMethod), confirmed = false)
-      case None => PropertyModel(accountingMethod = Some(accountingMethod))
-    } flatMap { model =>
-      saveProperty(reference, model)
-    }
-  }
-
   def retrieveReference(utr: String)(implicit hc: HeaderCarrier): Future[RetrieveReferenceResponse] = {
     incomeTaxSubscriptionConnector.retrieveReference(utr)
   }
@@ -274,37 +226,24 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
     }
   }
 
-  def fetchOverseasPropertyAccountingMethod(reference: String)(implicit hc: HeaderCarrier): Future[Option[AccountingMethod]] =
-    fetchOverseasProperty(reference).map(_.flatMap(_.accountingMethod))
-
-  def saveOverseasAccountingMethodProperty(reference: String, accountingMethod: AccountingMethod)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
-    fetchOverseasProperty(reference) map {
-      case Some(property) => property.copy(accountingMethod = Some(accountingMethod), confirmed = false)
-      case None => OverseasPropertyModel(accountingMethod = Some(accountingMethod))
-    } flatMap { model =>
-      saveOverseasProperty(reference, model)
-    }
-  }
-
-  def fetchAllSelfEmployments(reference: String)(implicit hc: HeaderCarrier): Future[(Seq[SelfEmploymentData], Option[AccountingMethod])] = {
+  def fetchAllSelfEmployments(reference: String)(implicit hc: HeaderCarrier): Future[Seq[SelfEmploymentData]] = {
     incomeTaxSubscriptionConnector.getSubscriptionDetails[SoleTraderBusinesses](
       reference = reference,
       id = SoleTraderBusinessesKey
     )(implicitly, SoleTraderBusinesses.encryptedFormat) map {
-      case Some(value) => (value.businesses.map(_.toSelfEmploymentData), value.accountingMethod)
-      case None => (Seq.empty[SelfEmploymentData], None)
+      case Some(value) => value.businesses.map(_.toSelfEmploymentData)
+      case None => Seq.empty[SelfEmploymentData]
     }
   }
 
   def fetchAllIncomeSources(reference: String)(implicit hc: HeaderCarrier): Future[IncomeSources] = {
     for {
-      (selfEmployments, accountingMethod) <- fetchAllSelfEmployments(reference)
+      selfEmployments <- fetchAllSelfEmployments(reference)
       ukProperty <- fetchProperty(reference)
       foreignProperty <- fetchOverseasProperty(reference)
     } yield {
       IncomeSources(
         selfEmployments,
-        accountingMethod,
         ukProperty,
         foreignProperty
       )

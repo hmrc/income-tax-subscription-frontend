@@ -31,7 +31,7 @@ import java.time.LocalDate
 
 class UkPropertyStartDateViewSpec extends ViewSpec {
 
-  val testError: FormError = FormError("startDate", "agent.error.property.day-month-year.empty")
+  val testError: FormError = FormError("startDate", "agent.error.property.empty")
   val propertyStartDateView: PropertyStartDate = app.injector.instanceOf[PropertyStartDate]
   val defaultForm: Form[DateModel] = PropertyStartDateForm.propertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString)
 

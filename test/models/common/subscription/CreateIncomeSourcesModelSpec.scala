@@ -16,16 +16,16 @@
 
 package models.common.subscription
 
+import models.DateModel
 import models.common.AccountingPeriodModel
 import models.common.business._
-import models.{Accruals, Cash, DateModel}
 import org.scalatest.matchers.must.{Matchers => MustMatchers}
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json._
 import utilities.individual.TestConstants.testNino
-import scala.language.implicitConversions
 
 import java.time.LocalDate
+import scala.language.implicitConversions
 
 class CreateIncomeSourcesModelSpec extends PlaySpec with MustMatchers {
 
@@ -35,7 +35,6 @@ class CreateIncomeSourcesModelSpec extends PlaySpec with MustMatchers {
 
   val fullSoleTraderBusinesses: SoleTraderBusinesses = SoleTraderBusinesses(
     accountingPeriod = AccountingPeriodModel(now, now),
-    accountingMethod = Some(Cash),
     businesses = Seq(
       SelfEmploymentData(
         id = "testBusinessId",
@@ -52,14 +51,12 @@ class CreateIncomeSourcesModelSpec extends PlaySpec with MustMatchers {
 
   val fullUkProperty: UkProperty = UkProperty(
     accountingPeriod = AccountingPeriodModel(now, now),
-    tradingStartDate = LocalDate.now,
-    accountingMethod = Some(Accruals)
+    tradingStartDate = LocalDate.now
   )
 
   val fullOverseasProperty: OverseasProperty = OverseasProperty(
     accountingPeriod = AccountingPeriodModel(now, now),
-    tradingStartDate = LocalDate.now,
-    accountingMethod = Some(Cash)
+    tradingStartDate = LocalDate.now
   )
 
   val fullCreateIncomeSourcesModel: CreateIncomeSourcesModel = CreateIncomeSourcesModel(
@@ -82,7 +79,6 @@ class CreateIncomeSourcesModelSpec extends PlaySpec with MustMatchers {
         "year" -> now.getYear.toString
       )
     ),
-    "accountingMethod" -> "Cash",
     "businesses" -> Json.arr(
       Json.obj(
         "id" -> "testBusinessId",
@@ -130,8 +126,7 @@ class CreateIncomeSourcesModelSpec extends PlaySpec with MustMatchers {
       "day" -> now.getDayOfMonth.toString,
       "month" -> now.getMonthValue.toString,
       "year" -> now.getYear.toString
-    ),
-    "accountingMethod" -> "Accruals"
+    )
   )
 
   val fullOverseasPropertyJson: JsObject = Json.obj(
@@ -151,8 +146,7 @@ class CreateIncomeSourcesModelSpec extends PlaySpec with MustMatchers {
       "day" -> now.getDayOfMonth.toString,
       "month" -> now.getMonthValue.toString,
       "year" -> now.getYear.toString
-    ),
-    "accountingMethod" -> "Cash"
+    )
   )
 
   val fullCreateIncomeSourcesModelJson: JsObject = Json.obj(
@@ -160,132 +154,6 @@ class CreateIncomeSourcesModelSpec extends PlaySpec with MustMatchers {
     "soleTraderBusinesses" -> fullSoleTraderBusinessesJson,
     "ukProperty" -> fullUkPropertyJson,
     "overseasProperty" -> fullOverseasPropertyJson
-  )
-
-  val missingAccountingMethodSoleTraderBusinesses: SoleTraderBusinesses = SoleTraderBusinesses(
-    accountingPeriod = AccountingPeriodModel(now, now),
-    accountingMethod = None,
-    businesses = Seq(
-      SelfEmploymentData(
-        id = "testBusinessId",
-        businessStartDate = Some(BusinessStartDate(now)),
-        businessName = Some(BusinessNameModel("testBusinessName")),
-        businessTradeName = Some(BusinessTradeNameModel("testBusinessTrade")),
-        businessAddress = Some(BusinessAddressModel(
-          address = Address(lines = Seq("line 1", "line 2"), postcode = Some("testPostcode"))
-        )),
-        confirmed = true
-      )
-    )
-  )
-
-  val missingAccountingMethodUkProperty: UkProperty = UkProperty(
-    accountingPeriod = AccountingPeriodModel(now, now),
-    tradingStartDate = LocalDate.now,
-    accountingMethod = None
-  )
-
-  val missingAccountingMethodOverseasProperty: OverseasProperty = OverseasProperty(
-    accountingPeriod = AccountingPeriodModel(now, now),
-    tradingStartDate = LocalDate.now,
-    accountingMethod = None
-  )
-
-  val missingAccountingMethodCreateIncomeSourcesModel: CreateIncomeSourcesModel = CreateIncomeSourcesModel(
-    nino = testNino,
-    soleTraderBusinesses = Some(missingAccountingMethodSoleTraderBusinesses),
-    ukProperty = Some(missingAccountingMethodUkProperty),
-    overseasProperty = Some(missingAccountingMethodOverseasProperty)
-  )
-
-  val missingAccountingMethodSoleTraderBusinessesJson: JsObject = Json.obj(
-    "accountingPeriod" -> Json.obj(
-      "startDate" -> Json.obj(
-        "day" -> now.getDayOfMonth.toString,
-        "month" -> now.getMonthValue.toString,
-        "year" -> now.getYear.toString
-      ),
-      "endDate" -> Json.obj(
-        "day" -> now.getDayOfMonth.toString,
-        "month" -> now.getMonthValue.toString,
-        "year" -> now.getYear.toString
-      )
-    ),
-    "businesses" -> Json.arr(
-      Json.obj(
-        "id" -> "testBusinessId",
-        "businessStartDate" -> Json.obj(
-          "startDate" -> Json.obj(
-            "day" -> now.getDayOfMonth.toString,
-            "month" -> now.getMonthValue.toString,
-            "year" -> now.getYear.toString
-          )
-        ),
-        "businessName" -> Json.obj(
-          "businessName" -> "testBusinessName"
-        ),
-        "businessTradeName" -> Json.obj(
-          "businessTradeName" -> "testBusinessTrade"
-        ),
-        "businessAddress" -> Json.obj(
-          "address" -> Json.obj(
-            "lines" -> Json.arr(
-              "line 1",
-              "line 2"
-            ),
-            "postcode" -> "testPostcode"
-          )
-        ),
-        "confirmed" -> true
-      )
-    )
-  )
-
-  val missingAccountingMethodUkPropertyJson: JsObject = Json.obj(
-    "accountingPeriod" -> Json.obj(
-      "startDate" -> Json.obj(
-        "day" -> now.getDayOfMonth.toString,
-        "month" -> now.getMonthValue.toString,
-        "year" -> now.getYear.toString
-      ),
-      "endDate" -> Json.obj(
-        "day" -> now.getDayOfMonth.toString,
-        "month" -> now.getMonthValue.toString,
-        "year" -> now.getYear.toString
-      )
-    ),
-    "tradingStartDate" -> Json.obj(
-      "day" -> now.getDayOfMonth.toString,
-      "month" -> now.getMonthValue.toString,
-      "year" -> now.getYear.toString
-    )
-  )
-
-  val missingAccountingMethodOverseasPropertyJson: JsObject = Json.obj(
-    "accountingPeriod" -> Json.obj(
-      "startDate" -> Json.obj(
-        "day" -> now.getDayOfMonth.toString,
-        "month" -> now.getMonthValue.toString,
-        "year" -> now.getYear.toString
-      ),
-      "endDate" -> Json.obj(
-        "day" -> now.getDayOfMonth.toString,
-        "month" -> now.getMonthValue.toString,
-        "year" -> now.getYear.toString
-      )
-    ),
-    "tradingStartDate" -> Json.obj(
-      "day" -> now.getDayOfMonth.toString,
-      "month" -> now.getMonthValue.toString,
-      "year" -> now.getYear.toString
-    )
-  )
-
-  val missingAccountingMethodCreateIncomeSourcesModelJson: JsObject = Json.obj(
-    "nino" -> testNino,
-    "soleTraderBusinesses" -> missingAccountingMethodSoleTraderBusinessesJson,
-    "ukProperty" -> missingAccountingMethodUkPropertyJson,
-    "overseasProperty" -> missingAccountingMethodOverseasPropertyJson
   )
 
   "CreateIncomeSourcesModel" must {
@@ -320,30 +188,6 @@ class CreateIncomeSourcesModelSpec extends PlaySpec with MustMatchers {
           fullCreateIncomeSourcesModelJson - "soleTraderBusinesses" - "ukProperty"
         )
         val expectedModel = fullCreateIncomeSourcesModel.copy(soleTraderBusinesses = None, ukProperty = None)
-
-        readModel mustBe JsSuccess(expectedModel)
-      }
-      "there is no accounting method in sole trader" in {
-        val readModel = Json.fromJson[CreateIncomeSourcesModel](
-          missingAccountingMethodCreateIncomeSourcesModelJson - "ukProperty" - "overseasProperty"
-        )
-        val expectedModel = missingAccountingMethodCreateIncomeSourcesModel.copy(ukProperty = None, overseasProperty = None)
-
-        readModel mustBe JsSuccess(expectedModel)
-      }
-      "there is no accounting method in uk property" in {
-        val readModel = Json.fromJson[CreateIncomeSourcesModel](
-          missingAccountingMethodCreateIncomeSourcesModelJson - "soleTraderBusinesses" - "overseasProperty"
-        )
-        val expectedModel = missingAccountingMethodCreateIncomeSourcesModel.copy(soleTraderBusinesses = None, overseasProperty = None)
-
-        readModel mustBe JsSuccess(expectedModel)
-      }
-      "there is no accounting method in overseas property" in {
-        val readModel = Json.fromJson[CreateIncomeSourcesModel](
-          missingAccountingMethodCreateIncomeSourcesModelJson - "soleTraderBusinesses" - "ukProperty"
-        )
-        val expectedModel = missingAccountingMethodCreateIncomeSourcesModel.copy(soleTraderBusinesses = None, ukProperty = None)
 
         readModel mustBe JsSuccess(expectedModel)
       }

@@ -156,7 +156,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
     val minDate = "The date must be on or after 11 April 2021"
   }
 
-  lazy val testError: FormError = FormError("startDate", "error.property.day-month-year.empty")
+  lazy val testError: FormError = FormError("startDate", "error.property.empty")
   lazy val propertyStartDate: PropertyStartDate = app.injector.instanceOf[PropertyStartDate]
 
   private def page(propertyStartDateForm: Form[DateModel]): Html = {

@@ -43,8 +43,6 @@ base.minute                                                     = munud
 base.minutes                                                    = munudau
 base.second                                                     = eiliad
 base.seconds                                                    = eiliadau
-base.accounting-method.cash                                     = Cyfrifyddu ar sail arian parod
-base.accounting-method.accruals                                 = Cyfrifyddu traddodiadol
 base.warning                                                    = Rhybudd
 base.accept-and-continue                                        = Derbyn ac yn eich blaen
 base.tax-year.current                                           = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
@@ -82,6 +80,7 @@ agent.business-already-removed.back-to-income-sources-link-text = ffynonellau in
 your-income-source.heading                                      = Eich ffynonellau incwm
 your-income-source.manage.para-1                                = Ychwanegwch bob un o’r ffynonellau hyn yr ydych yn cael incwm ohonynt. Gwiriwch, newidiwch neu ychwanegwch fanylion at unrhyw un a ddechreuwyd yn flaenorol. Dilëwch unrhyw un sydd wedi dod i ben cyn 6 Ebrill {0}.
 your-income-source.manage.para-2                                = Cyn i chi fynd yn eich blaen, gwnewch yn siŵr eich bod wedi gwirio unrhyw ffynonellau incwm rydym wedi’u hychwanegu ar eich rhan.
+your-income-source.manage.para-3                                = Nid oes angen i chi ychwanegu incwm o bartneriaethau.
 your-income-source.self-employed.heading                        = Busnesau unig fasnachwr
 your-income-source.self-employed.description                    = Rydych yn unig fasnachwr os ydych yn rhedeg eich busnes eich hun fel unigolyn ac yn gweithio i chi’ch hun. Enw arall ar hyn yw bod yn hunangyflogedig. Nid ydych yn unig fasnachwr os daw eich incwm busnes o gwmni cyfyngedig yn unig.
 your-income-source.self-employed.label-none                     = Busnes {0}
@@ -187,30 +186,6 @@ property.start-date-before-limit.heading                        = A oeddech wedi
 property.start-date-before-limit.caption                        = Eich eiddo yn y DU
 error.property.start-date-before-limit.invalid                  = Dewiswch ‘Iawn’ os oeddech wedi dechrau cael incwm o eiddo yn y DU cyn 6 Ebrill {0}
 
-# Property Accounting Method Page
-property.accounting-method.title                                = Pa ddull cyfrifyddu a ydych yn ei ddefnyddio ar gyfer eich busnes eiddo yn y DU?
-property.accounting-method.heading                              = Pa ddull cyfrifyddu a ydych yn ei ddefnyddio ar gyfer eich busnes eiddo yn y DU?
-property.accounting-method.caption                              = Eiddo yn y DU
-property.accounting-method.accordion.summary                    = Help gyda dulliau cyfrifyddu
-property.accounting-method.accordion.subheading                 = Enghraifft
-property.accounting-method.accordion.content.para               = Gwnaethoch greu anfoneb i rywun ym mis Mawrth 2017, ond ni chawsoch yr arian tan fis Mai 2017. Os ydych yn rhoi gwybod i CThEF eich bod wedi cael yr incwm hwn ym:
-property.accounting-method.accordion.content.bullet1            = mis Mai 2017, rydych yn defnyddio ‘Cyfrifyddu ar sail arian parod’
-property.accounting-method.accordion.content.bullet2            = mis Mawrth 2017, rydych yn defnyddio ‘Cyfrifyddu traddodiadol’
-property.accounting-method.cash                                 = Rydych yn cofnodi naill ai ar y dyddiad yr ydych yn cael taliad gan eich tenantiaid i mewn i’ch cyfrif banc, neu ar y dyddiad yr ydych yn talu bil, er enghraifft ar gyfer atgyweirio a chynnal a chadw.
-property.accounting-method.accruals                             = Rydych yn cofnodi ar y dyddiad yr ydych yn anfon anfoneb at eich tenantiaid, neu’n gofyn am daliad ganddynt, hyd yn oed os nad ydych yn cael nac yn talu unrhyw arian. Rydych yn cofnodi ar y dyddiad yr ydych yn cael anfoneb ar gyfer atgyweirio neu gynnal a chadw. Enw arall ar hyn yw cyfrifyddu ar sail croniadau neu gyfrifyddu safonol.
-
-# Overseas Property accounting method Page
-overseas.property.accounting-method.title                        = Pa ddull cyfrifyddu ydych yn ei ddefnyddio ar gyfer eich busnes eiddo tramor?
-overseas.property.accounting-method.heading                      = Pa ddull cyfrifyddu ydych yn ei ddefnyddio ar gyfer eich busnes eiddo tramor?
-overseas.property.accounting-method.caption                      = Eiddo tramor
-overseas.property.accounting-method.accordion.summary            = Help gyda dulliau cyfrifyddu
-overseas.property.accounting-method.accordion.subheading         = Enghraifft
-overseas.property.accounting-method.accordion.content.para       = Gwnaethoch greu anfoneb i rywun ym mis Mawrth 2017, ond ni chawsoch yr arian tan fis Mai 2017. Os ydych yn rhoi gwybod i CThEF eich bod wedi cael yr incwm hwn ym:
-overseas.property.accounting-method.accordion.content.bullet1    = mis Mai 2017, rydych yn defnyddio ‘Cyfrifyddu ar sail arian parod’
-overseas.property.accounting-method.accordion.content.bullet2    = mis Mawrth 2017, rydych yn defnyddio ‘Cyfrifyddu traddodiadol’
-overseas.property.accounting-method.cash                         = Rydych yn cofnodi naill ai ar y dyddiad yr ydych yn cael taliad gan eich tenantiaid i mewn i’ch cyfrif banc, neu ar y dyddiad yr ydych yn talu bil, er enghraifft ar gyfer atgyweirio a chynnal a chadw.
-overseas.property.accounting-method.accruals                     = Rydych yn cofnodi ar y dyddiad yr ydych yn anfon anfoneb at eich tenantiaid, neu’n gofyn am daliad ganddynt, hyd yn oed os nad ydych yn cael nac yn talu unrhyw arian. Rydych yn cofnodi ar y dyddiad yr ydych yn cael anfoneb ar gyfer atgyweirio neu gynnal a chadw. Enw arall ar hyn yw cyfrifyddu ar sail croniadau neu gyfrifyddu safonol.
-
 ## Property Start Date Date
 business.property.name.title                                    = Dyddiad dechrau ar gyfer incwm o eiddo yn y DU
 business.property.name.heading                                  = Dyddiad dechrau
@@ -219,23 +194,13 @@ business.property.para1                                         = Mae angen i ni
 business.property.start-date.hint                               = Er enghraifft, 27 9 {0}
 
 # Property Start Date errors
-error.property.day-month-year.empty                             = Nodwch y dyddiad y gwnaethoch ddechrau cael incwm o eiddo yn y DU
-error.property.day.empty                                        = Mae’n rhaid i’r dyddiad gynnwys diwrnod
-error.property.month.empty                                      = Mae’n rhaid i’r dyddiad gynnwys mis
-error.property.year.empty                                       = Mae’n rhaid i’r dyddiad gynnwys blwyddyn
-error.property.day-month.empty                                  = Mae’n rhaid i’r dyddiad gynnwys diwrnod a mis
-error.property.day-year.empty                                   = Mae’n rhaid i’r dyddiad gynnwys diwrnod a blwyddyn
-error.property.month-year.empty                                 = Mae’n rhaid i’r dyddiad gynnwys mis a blwyddyn
+error.property.empty                                            = Nodwch y dyddiad y gwnaethoch ddechrau cael incwm o eiddo yn y DU
+error.property.required                                         = Mae’n rhaid i’r dyddiad gynnwys {0}
+error.property.required.two                                     = Mae’n rhaid i’r dyddiad gynnwys {0} a {1}
 error.property.day-month-year.max-date                          = Ni all y dyddiad fod yn fwy na 7 diwrnod yn y dyfodol
 error.property.day-month-year.min-date                          = Mae’n rhaid i’r dyddiad fod ar neu ar ôl {0}
-error.property.day-month-year.invalid                           = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.property.day.invalid                                      = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.property.month.invalid                                    = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.property.year.invalid                                     = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.property.day-month.invalid                                = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.property.day-year.invalid                                 = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.property.month-year.invalid                               = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
 error.property.year.length                                      = Mae’n rhaid i’r flwyddyn gynnwys 4 rhif
+error.property.invalid                                          = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
 
 # Agent Property Start Date Date
 agent.property.start-date.heading                               = Dyddiad dechrau ar gyfer incwm o eiddo yn y DU
@@ -243,18 +208,11 @@ agent.property.start-date.heading.caption                       = {0} | {1}
 agent.property.start-date.para-one                              = Mae angen i ni wybod yr union ddyddiad dechrau.
 agent.property.start-date.hint                                  = Er enghraifft, 27 9 {0}
 
-# Agent Property Income Source
-agent.property.income-source.heading                                = Eiddo eich cleient yn y DU
-agent.property.income-source.heading.caption                        = {0} | {1}
-agent.property.income-source.start-date-before-limit.legend         = A oedd yr incwm hwn wedi dechrau cyn 6 Ebrill {0}?
-agent.property.income-source.para1                                  = Pa ddull cyfrifo y mae’ch cleient yn ei ddefnyddio ar gyfer ei fusnes eiddo yn y DU?
-agent.property.income-source.radio.cash                             = Cyfrifyddu ar sail arian parod
-agent.property.income-source.radio.accruals                         = Cyfrifyddu traddodiadol
-agent.property.income-source.details.summary                        = Help gyda dull cyfrifyddu
-agent.property.income-source.details.subheading                     = Enghraifft
-agent.property.income-source.details.content.para                   = Creodd eich cleient anfoneb i rywun ym mis Mawrth 2024, ond ni dderbyniodd yr arian tan fis Mai 2024. Os ydych yn rhoi gwybod i CThEF eich cleient wedi cael yr incwm hwn ym:
-agent.property.income-source.details.content.bullet1                = mis Mai 2024, mae eich cleient yn defnyddio cyfrifyddu ar sail arian parod
-agent.property.income-source.details.content.bullet2                = mis Mawrth 2024, mae eich cleient yn defnyddio cyfrifyddu traddodiadol
+# Agent uk property start date before limit
+agent.uk-property.start-date-before-limit.heading                   = Eiddo eich cleient yn y DU
+agent.uk-property.start-date-before-limit.caption                   = {0} | {1}
+agent.uk-property.start-date-before-limit.legend                    = A oedd yr incwm hwn wedi dechrau cyn 6 Ebrill {0}?
+
 agent.error.property.income-source.start-date-before-limit.invalid  = Dewiswch ‘Iawn’ os oedd eich cleient wedi dechrau cael incwm o eiddo yn y DU cyn 6 Ebrill {0}
 
 # Agent Property Start Date Before Limit
@@ -264,22 +222,12 @@ agent.property.start-date-before-limit.heading.legend           = A oedd yr incw
 agent.error.property.start-date-before-limit.invalid            = Dewiswch ‘Iawn’ os oedd eich cleient wedi dechrau cael incwm o eiddo yn y DU cyn 6 Ebrill {0}
 
 # Agent Property Start Date errors
-agent.error.property.day-month-year.empty                       = Nodwch y dyddiad y gwnaeth eich cleient ddechrau cael incwm o eiddo yn y DU
-agent.error.property.day.empty                                  = Mae’n rhaid i’r dyddiad gynnwys diwrnod
-agent.error.property.month.empty                                = Mae’n rhaid i’r dyddiad gynnwys mis
-agent.error.property.year.empty                                 = Mae’n rhaid i’r dyddiad gynnwys blwyddyn
-agent.error.property.day-month.empty                            = Mae’n rhaid i’r dyddiad gynnwys diwrnod a mis
-agent.error.property.day-year.empty                             = Mae’n rhaid i’r dyddiad gynnwys diwrnod a blwyddyn
-agent.error.property.month-year.empty                           = Mae’n rhaid i’r dyddiad gynnwys mis a blwyddyn
+agent.error.property.empty                                      = Nodwch y dyddiad y gwnaeth eich cleient ddechrau cael incwm o eiddo yn y DU
+agent.error.property.required                                   = Mae’n rhaid i’r dyddiad gynnwys {0}
+agent.error.property.required.two                               = Mae’n rhaid i’r dyddiad gynnwys {0} a {1}
 agent.error.property.day-month-year.max-date                    = Mae’n rhaid i’r dyddiad gwnaeth y busnes eiddo yn y DU ddechrau masnachu fod ar neu cyn {0}
 agent.error.property.day-month-year.min-date                    = Mae’n rhaid i’r dyddiad fod ar neu ar ôl {0}
-agent.error.property.day-month-year.invalid                     = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.property.day.invalid                                = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.property.month.invalid                              = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.property.year.invalid                               = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.property.day-month.invalid                          = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.property.day-year.invalid                           = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.property.month-year.invalid                         = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.property.invalid                                    = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
 agent.error.property.year.length                                = Mae’n rhaid i’r flwyddyn gynnwys 4 rhif
 
 ## Foreign Property Start Date
@@ -290,22 +238,12 @@ individual.foreign-property.start-date.para-one                  = Mae angen i n
 individual.foreign-property.start-date.hint                      = Er enghraifft, 27 9 {0}
 
 # Foreign Property Start Date Errors
-error.individual.foreign-property.day-month-year.empty           = Nodwch y dyddiad y gwnaethoch ddechrau cael incwm o eiddo tramor
-error.individual.foreign-property.day.empty                      = Mae’n rhaid i’r dyddiad gynnwys diwrnod
-error.individual.foreign-property.month.empty                    = Mae’n rhaid i’r dyddiad gynnwys mis
-error.individual.foreign-property.year.empty                     = Mae’n rhaid i’r dyddiad gynnwys blwyddyn
-error.individual.foreign-property.day-month.empty                = Mae’n rhaid i’r dyddiad gynnwys diwrnod a mis
-error.individual.foreign-property.day-year.empty                 = Mae’n rhaid i’r dyddiad gynnwys diwrnod a blwyddyn
-error.individual.foreign-property.month-year.empty               = Mae’n rhaid i’r dyddiad gynnwys mis a blwyddyn
+error.individual.foreign-property.empty                          = Nodwch y dyddiad y gwnaethoch ddechrau cael incwm o eiddo tramor
+error.individual.foreign-property.required                       = Mae’n rhaid i’r dyddiad gynnwys {0}
+error.individual.foreign-property.required.two                   = Mae’n rhaid i’r dyddiad gynnwys {0} a {1}
 error.individual.foreign-property.day-month-year.max-date        = Ni all y dyddiad fod yn fwy na 7 diwrnod yn y dyfodol
 error.individual.foreign-property.day-month-year.min-date        = Mae’n rhaid i’r dyddiad fod ar neu ar ôl {0}
-error.individual.foreign-property.day-month-year.invalid         = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.individual.foreign-property.day.invalid                    = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.individual.foreign-property.month.invalid                  = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.individual.foreign-property.year.invalid                   = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.individual.foreign-property.day-month.invalid              = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.individual.foreign-property.day-year.invalid               = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-error.individual.foreign-property.month-year.invalid             = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+error.individual.foreign-property.invalid                        = Mae’n rhaid i’r dyddiad gynnwys diwrnod
 error.individual.foreign-property.year.length                    = Mae’n rhaid i’r flwyddyn gynnwys 4 rhif
 
 ## Foreign property start date before limit
@@ -502,18 +440,6 @@ error.property.income.invalid                                   = Rhaid i chi dd
 error.date.empty                                                = Rhaid i chi nodi dyddiad
 error.date.invalid                                              = Rhaid i chi nodi dyddiad dilys
 
-error.accounting-method.empty                                   = Dewiswch sut rydych chi’n cofnodi’ch incwm a’ch treuliau ar gyfer eich busnes hunangyflogedig
-error.accounting-method-property.empty                          = Dewiswch a ydych yn defnyddio cyfrifyddu ar sail arian parod neu gyfrifyddu traddodiadol
-error.accounting-method.invalid                                 = Dewiswch sut rydych chi’n cofnodi’ch incwm a’ch treuliau ar gyfer eich busnes hunangyflogedig
-error.accounting-method-property.invalid                        = Dewiswch a ydych yn defnyddio cyfrifyddu ar sail arian parod neu gyfrifyddu traddodiadol
-
-#Overseas Property accounting method errors
-error.overseas-property-accounting-method.invalid               = Dewiswch a ydych yn defnyddio cyfrifyddu ar sail arian parod neu gyfrifyddu traddodiadol
-error.overseas-property-accounting-method.empty                 = Dewiswch a ydych yn defnyddio cyfrifyddu ar sail arian parod neu gyfrifyddu traddodiadol
-
-#Agent Overseas Property accounting method errors
-error.agent.overseas-property-accounting-method.empty           = Dewiswch a yw’ch cleient yn defnyddio cyfrifyddu ar sail arian parod neu gyfrifyddu traddodiadol
-
 error.user-details.first-name.empty                             = Nodwch eich enw cyntaf
 error.user-details.last-name.empty                              = Nodwch eich enw olaf
 error.user-details.first-name.invalid                           = Nodwch enw cyntaf dilys
@@ -651,7 +577,6 @@ agent.cannot-sign-up.inset-text.para                            = Bydd angen i c
 agent.cannot-sign-up.subheading1                                = Yr hyn sy’n digwydd nesaf
 agent.cannot-sign-up.para2                                      = Ar gyfer pob un o fusnesau eich cleient, bydd angen y canlynol arnoch:
 agent.cannot-sign-up.bullet1                                    = dyddiad dechrau ei fusnes (neu’r dyddiad y dechreuodd gael incwm o eiddo)
-agent.cannot-sign-up.bullet2                                    = ei ddull cyfrifyddu (ar sail arian parod neu gyfrifyddu traddodiadol - enw arall ar hyn yw cyfrifyddu ar sail croniadau neu gyfrifyddu safonol)
 agent.cannot-sign-up.para3                                      = Os yw’n unig fasnachwr, bydd hefyd angen y canlynol arnoch:
 agent.cannot-sign-up.bullet3                                    = enw masnachu a chyfeiriad busnes eich cleient
 agent.cannot-sign-up.bullet4                                    = masnach eich cleient (natur ei fusnes)
@@ -671,7 +596,6 @@ agent.client-can-sign-up.para1                                  = Gallwch gofres
 agent.client-can-sign-up.subheading1                            = Yr hyn sy’n digwydd nesaf
 agent.client-can-sign-up.para2                                  = Ar gyfer pob un o fusnesau neu incwm o eiddo eich cleient, bydd angen y canlynol arnoch:
 agent.client-can-sign-up.bullet1                                = dyddiad dechrau - os yw wedi dechrau o fewn y 2 flynedd dreth ddiwethaf
-agent.client-can-sign-up.bullet2                                = ei ddull cyfrifyddu - ar sail arian parod neu gyfrifyddu traddodiadol (enw arall ar hyn yw cyfrifyddu ar sail croniadau neu gyfrifyddu safonol)
 agent.client-can-sign-up.para3                                  = Os yw’n unig fasnachwr, bydd hefyd angen y canlynol arnoch:
 agent.client-can-sign-up.bullet3                                = enw masnachu a chyfeiriad busnes eich cleient
 agent.client-can-sign-up.bullet4                                = masnach eich cleient (natur ei fusnes)
@@ -849,33 +773,6 @@ agent.business.what-year-to-sign-up.option-current-hint         = Bydd angen i c
 agent.error.business.what-year-to-sign-up.empty                 = Dewiswch y flwyddyn dreth yr ydych am gofrestru eich cleient ar ei chyfer
 agent.error.business.what-year-to-sign-up.invalid               = Dewiswch y flwyddyn dreth yr ydych am gofrestru eich cleient ar ei chyfer
 
-# Agent Property Accounting Method Page
-agent.property.accounting-method.heading                        = Pa ddull cyfrifo y mae’ch cleient yn ei ddefnyddio ar gyfer ei fusnes eiddo yn y DU?
-agent.property.accounting-method.heading.caption                = {0} | {1}
-agent.property.accounting-method.radio.cash                     = Cyfrifyddu ar sail arian parod
-agent.property.accounting-method.radio.accruals                 = Cyfrifyddu traddodiadol
-
-# Agent Overseas Property Accounting Method Page
-agent.overseas-property.accounting-method.heading               = Pa ddull cyfrifo y mae’ch cleient yn ei ddefnyddio ar gyfer ei fusnes eiddo tramor?
-agent.overseas-property.accounting-method.heading.caption       = {0} | {1}
-
-#Agent Overseas Property Incomes Sources Page
-agent.foreign-property.income-sources.title                                         = Eiddo tramor eich cleient
-agent.foreign-property.income-sources.caption                                       = {0} | {1}
-agent.foreign-property.income-sources.heading                                       = Eiddo tramor eich cleient
-agent.foreign-property.income-source.start-date-before-limit.legend                 = A oedd yr incwm hwn wedi dechrau cyn 6 Ebrill {0}?
-agent.foreign-property.income-sources.start-date.heading                            = Pryd gwnaeth busnes eiddo tramor eich cleient ddechrau?
-agent.foreign-property.income-sources.start-date.hint                               = Er enghraifft, 17 8 2014
-agent.foreign-property.income-sources.accounting-method.heading                     = Pa ddull cyfrifo y mae’ch cleient yn ei ddefnyddio ar gyfer ei fusnes eiddo tramor?
-agent.foreign-property.income-sources.accounting-method.accordion.summary           = Help gyda dull cyfrifyddu
-agent.foreign-property.income-sources.accounting-method.accordion.subheading        = Enghraifft
-agent.foreign-property.income-sources.accounting-method.accordion.content.para      = Creodd eich cleient anfoneb i rywun ym mis Mawrth 2024, ond ni dderbyniodd yr arian tan fis Mai 2024. Os ydych yn rhoi gwybod i CThEF eich cleient wedi cael yr incwm hwn ym:
-agent.foreign-property.income-sources.accounting-method.accordion.content.bullet1   = mis Mai 2024, mae eich cleient yn defnyddio cyfrifyddu ar sail arian parod
-agent.foreign-property.income-sources.accounting-method.accordion.content.bullet2   = mis Mawrth 2024, mae eich cleient yn defnyddio cyfrifyddu traddodiadol
-agent.foreign-property.income-sources.accounting-method.radio.cash                  = Cyfrifyddu ar sail arian parod
-agent.foreign-property.income-sources.accounting-method.radio.accruals              = Cyfrifyddu traddodiadol
-agent.error.overseas.property.income-source.start-date-before-limit.invalid         = Dewiswch ‘Iawn’ os oedd eich cleient wedi dechrau cael incwm o eiddo tramor cyn 6 Ebrill {0}
-
 # Agent Overseas Property Start Date Before Limit
 agent.overseas.property.start-date-before-limit.title            = Eiddo tramor eich cleient
 agent.overseas.property.start-date-before-limit.caption          = {0} | {1}
@@ -953,8 +850,6 @@ agent.error.client-details.date-of-birth.year.length                     = Mae�
 # Sole Trader Eligibility invalid
 agent.error.eligibility.sole-trader.invalid                     = Dewiswch ‘Iawn’ os ydych yn unig fasnachwr a ddechreuodd fasnachu ar neu ar ôl {0}
 
-agent.error.accounting-method-property.invalid                  = Dewiswch a yw’ch cleient yn defnyddio cyfrifyddu ar sail arian parod neu gyfrifyddu traddodiadol
-
 agent.error.not-eligible.empty                                  = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 agent.error.not-eligible.invalid                                = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 
@@ -1010,22 +905,12 @@ agent.no-sa.heading                                             = Nid yw’ch cl
 agent.no-sa.line-1                                              = I ddefnyddio’r gwasanaeth hwn, rhaid i’ch cleient <a class="govuk-link" id="sa-signup" href="{0}">gofrestru ar gyfer Hunanasesiad</a>.
 
 # Agent Overseas Property Start Date Page errors
-agent.error.overseas.property.day-month-year.empty              = Nodwch y dyddiad y gwnaeth eich cleient ddechrau cael incwm o eiddo tramor
-agent.error.overseas.property.month-year.empty                  = Mae’n rhaid i’r dyddiad gynnwys mis a blwyddyn
-agent.error.overseas.property.day-month.empty                   = Mae’n rhaid i’r dyddiad gynnwys diwrnod a mis
-agent.error.overseas.property.day-year.empty                    = Mae’n rhaid i’r dyddiad gynnwys diwrnod a blwyddyn
-agent.error.overseas.property.year.empty                        = Mae’n rhaid i’r dyddiad gynnwys blwyddyn
-agent.error.overseas.property.day.empty                         = Mae’n rhaid i’r dyddiad gynnwys diwrnod
-agent.error.overseas.property.month.empty                       = Mae’n rhaid i’r dyddiad gynnwys mis
+agent.error.overseas.property.empty                             = Nodwch y dyddiad y gwnaeth eich cleient ddechrau cael incwm o eiddo tramor
+agent.error.overseas.property.required                          = Mae’n rhaid i’r dyddiad gynnwys {0}
+agent.error.overseas.property.required.two                      = Mae’n rhaid i’r dyddiad gynnwys {0} a {1}
 agent.error.overseas.property.day-month-year.max-date           = Ni all y dyddiad fod yn fwy na 7 diwrnod yn y dyfodol
 agent.error.overseas.property.day-month-year.min-date           = Mae’n rhaid i’r dyddiad fod ar neu ar ôl {0}
-agent.error.overseas.property.day-month-year.invalid            = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.overseas.property.month-year.invalid                = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.overseas.property.day-month.invalid                 = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.overseas.property.day-year.invalid                  = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.overseas.property.year.invalid                      = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.overseas.property.day.invalid                       = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.overseas.property.month.invalid                     = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.overseas.property.invalid                           = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
 agent.error.overseas.property.year.length                       = Mae’n rhaid i’r flwyddyn gynnwys 4 rhif
 
 ## agent Tax Year Check Your Answers
@@ -1042,7 +927,6 @@ agent.property.check-your-answers.title                               = Gwirio�
 agent.property.check-your-answers.heading                             = Gwirio’ch atebion
 agent.property.check-your-answers.heading.caption                     = {0} | {1}
 agent.property.check-your-answers.start-date.question                 = Dyddiad dechrau
-agent.property.check-your-answers.accounting-method.question          = Dull cyfrifyddu
 agent.property.check-your-answers.start-date-before-limit.answer      = Cyn 6 Ebrill {0}
 
 ## Agent Overseas property check your answers
@@ -1050,7 +934,6 @@ agent.overseas-property.check-your-answers.title                                
 agent.overseas-property.check-your-answers.heading                              = Gwirio’ch atebion
 agent.overseas-property.check-your-answers.heading.caption                      = {0} | {1}
 agent.overseas-property.check-your-answers.start-date.question                  = Dyddiad dechrau
-agent.overseas-property.check-your-answers.accounting-method.question           = Dull cyfrifyddu
 agent.overseas-property.check-your-answers.start-date-before-limit.answer       = Cyn 6 Ebrill {0}
 
 ## Agent remove business
@@ -1085,14 +968,11 @@ error.remove-overseas-property-business.invalid                 = Dewiswch ‘Ia
 
 business.check-your-answers.heading                             = Gwiriwch eich atebion
 business.check-your-answers.content.tax-year.title              = Gwirio’ch atebion – blwyddyn dreth
-business.check-your-answers.content.accounting-method.cash      = Cyfrifyddu ar sail arian parod
-business.check-your-answers.content.accounting-method.accruals  = Cyfrifyddu traddodiadol
 
 ## UK property check your answers
 business.check-your-answers.content.uk-property.title                                   = Gwirio’ch atebion – Eiddo yn y DU
 business.check-your-answers.content.uk-property.caption                                 = Eiddo yn y DU
 business.check-your-answers.content.uk-property-start-date.question                     = Dyddiad dechrau
-business.check-your-answers.content.uk-property-accounting-method.question              = Dull cyfrifyddu
 business.check-your-answers.content.uk-property-start-date-before-limit.before-limit    = Cyn 6 Ebrill {0}
 
 ## Overseas property check your answers
@@ -1100,7 +980,6 @@ business.check-your-answers.content.overseas-property.title                     
 business.check-your-answers.content.overseas-property.caption                                   = Eiddo tramor
 business.check-your-answers.content.overseas-property-start-date.question                       = Dyddiad dechrau
 business.check-your-answers.content.overseas-property-start-date-before-limit.before-limit      = Cyn 6 Ebrill {0}
-business.check-your-answers.content.overseas-property-accounting-method.question                = Dull cyfrifyddu
 
 ## Remove business
 business.remove-sole-trader-business.title        = A ydych yn siŵr eich bod am ddileu’r busnes hwn?
@@ -1168,18 +1047,15 @@ individual.global-check-your-answers.income-sources.self-employment.name        
 individual.global-check-your-answers.income-sources.self-employment.start-date                  = Dyddiad dechrau’r busnes
 individual.global-check-your-answers.income-sources.self-employment.before-start-date-limit     = Cyn 6 Ebrill {0}
 individual.global-check-your-answers.income-sources.self-employment.address                     = Cyfeiriad y busnes
-individual.global-check-your-answers.income-sources.self-employment.accounting-method           = Dull cyfrifyddu
 individual.global-check-your-answers.income-sources.property.heading                            = Incwm o eiddo
 individual.global-check-your-answers.income-sources.uk-property.label                           = Math yr incwm o eiddo
 individual.global-check-your-answers.income-sources.uk-property.value                           = Eiddo yn y DU
 individual.global-check-your-answers.income-sources.uk-property.start-date                      = dyddiad dechrau’r
 individual.global-check-your-answers.income-sources.uk-property.before-start-date-limit         = Cyn 6 Ebrill {0}
-individual.global-check-your-answers.income-sources.uk-property.accounting-method               = Dull cyfrifyddu
 individual.global-check-your-answers.income-sources.foreign-property.label                      = Eiddo
 individual.global-check-your-answers.income-sources.foreign-property.value                      = Eiddo tramor
 individual.global-check-your-answers.income-sources.foreign-property.start-date                 = Dyddiad dechrau
 individual.global-check-your-answers.income-sources.foreign-property.before-start-date-limit    = Cyn 6 Ebrill {0}
-individual.global-check-your-answers.income-sources.foreign-property.accounting-method          = Dull cyfrifyddu
 individual.global-check-your-answers.bottom.heading                                             = Datganiad
 individual.global-check-your-answers.para-two                                                   = Mae’n rhaid i’r wybodaeth a roddwyd gennych fod yn gywir hyd eithaf eich gwybodaeth.
 individual.global-check-your-answers.para-three                                                 = Wrth gadarnhau, byddwch yn cael eich cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
@@ -1196,18 +1072,14 @@ agent.global-check-your-answers.income-sources.self-employment.name             
 agent.global-check-your-answers.income-sources.self-employment.start-date                       = Dyddiad dechrau
 agent.global-check-your-answers.income-sources.self-employment.before-start-date-limit          = Cyn 6 Ebrill {0}
 agent.global-check-your-answers.income-sources.self-employment.address                          = Cyfeiriad
-agent.global-check-your-answers.income-sources.self-employment-accounting-method.heading        = Dull cyfrifyddu busnesau unig fasnachwr
-agent.global-check-your-answers.income-sources.self-employment.accounting-method                = Dull cyfrifyddu
 agent.global-check-your-answers.income-sources.property.label                                   = Eiddo
 agent.global-check-your-answers.income-sources.uk-property.label                                = Eiddo yn y DU
 agent.global-check-your-answers.income-sources.foreign-property.label                           = Eiddo tramor
 agent.global-check-your-answers.income-sources.uk-property.start-date                           = Dyddiad dechrau
 agent.global-check-your-answers.income-sources.uk-property.before-start-date-limit              = Cyn 6 Ebrill {0}
-agent.global-check-your-answers.income-sources.uk-property.accounting-method                    = Dull cyfrifyddu
 agent.global-check-your-answers.income-sources.property.heading                                 = Incwm o eiddo
 agent.global-check-your-answers.income-sources.foreign-property.start-date                      = Dyddiad dechrau
 agent.global-check-your-answers.income-sources.foreign-property.before-start-date-limit         = Cyn 6 Ebrill {0}
-agent.global-check-your-answers.income-sources.foreign-property.accounting-method               = Dull cyfrifyddu
 agent.global-check-your-answers.tax-year.heading                                                = Y flwyddyn dreth a ddewiswyd
 agent.global-check-your-answers.tax-year.label                                                  = Blwydden treth
 agent.global-check-your-answers.using-software                                                  = Mae meddalwedd yn gweithio gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm

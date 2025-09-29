@@ -22,8 +22,6 @@
 @import views.html.templates.AgentMainTemplate
 @import views.html.helpers.{ContinueButton, SaveAndContinueButtonHelper, PageHeadingHelper}
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukTag
-@import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
-@import config.featureswitch.FeatureSwitchingImpl
 
 @this(
     agentMainTemplate: AgentMainTemplate,
@@ -33,8 +31,7 @@
     pageHeadingHelper: PageHeadingHelper,
     saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
     govukSummaryList : GovukSummaryList,
-    govukTag : GovukTag,
-    featureSwitching: FeatureSwitchingImpl
+    govukTag : GovukTag
 )
 
 @(postAction: Call, backUrl: String, clientDetails: ClientDetails, incomeSources: IncomeSources, prepopulated: Boolean)(implicit request: Request[_], messages: Messages)
@@ -147,9 +144,9 @@
             ),
             SummaryListRow(
                 key = Key(content = Text(messages("base.status.label"))),
-                value = Value(statusTag(business.isComplete && business.confirmed && (featureSwitching.isEnabled(RemoveAccountingMethod) || incomeSources.selfEmploymentAccountingMethod.isDefined))),
+                value = Value(statusTag(business.isComplete && business.confirmed)),
                 actions = maybeStatusTagAction(
-                    isComplete = business.isComplete && (featureSwitching.isEnabled(RemoveAccountingMethod) || incomeSources.selfEmploymentAccountingMethod.isDefined),
+                    isComplete = business.isComplete,
                     isConfirmed = business.confirmed,
                     href = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${business.id}&isEditMode=true",
                     visuallyHidden = business.businessName.map(_.businessName)
@@ -216,7 +213,7 @@
                     key = Key(content = Text(messages("base.status.label"))),
                     value = Value(statusTag(ukProperty.confirmed)),
                     actions = maybeStatusTagAction(
-                        isComplete = ukProperty.isComplete(featureSwitching.isEnabled(RemoveAccountingMethod)),
+                        isComplete = ukProperty.isComplete,
                         isConfirmed = ukProperty.confirmed,
                         href = controllers.agent.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url
                     )
@@ -228,7 +225,7 @@
                     actions = Some(Actions(
                         items =
                             maybeIncomeSourceChangeAction(
-                                isComplete = ukProperty.isComplete(featureSwitching.isEnabled(RemoveAccountingMethod)),
+                                isComplete = ukProperty.isComplete,
                                 isConfirmed = ukProperty.confirmed,
                                 href = controllers.agent.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url
                             ) ++ Seq(ActionItem(
@@ -243,12 +240,9 @@
     }.getOrElse {
         <div id="add-uk-property" class="govuk-!-padding-bottom-6">
             <p class="govuk-body">
-                <a class="govuk-link" href=@{
-                    if(featureSwitching.isEnabled(RemoveAccountingMethod)) {
-                        controllers.agent.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show()
-                    } else {
-                        controllers.agent.tasklist.ukproperty.routes.PropertyIncomeSourcesController.show()
-                    }}>@messages("agent.your-income-source.uk-property.add-link")</a>
+                <a class="govuk-link" href=@{controllers.agent.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show()}>
+                    @messages("agent.your-income-source.uk-property.add-link")
+                </a>
             </p>
         </div>
     }
@@ -278,7 +272,7 @@
                     key = Key(content = Text(messages("base.status.label"))),
                     value = Value(statusTag(foreignProperty.confirmed)),
                     actions = maybeStatusTagAction(
-                        isComplete = foreignProperty.isComplete(featureSwitching.isEnabled(RemoveAccountingMethod)),
+                        isComplete = foreignProperty.isComplete,
                         isConfirmed = foreignProperty.confirmed,
                         href = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
                     )
@@ -290,7 +284,7 @@
                     actions = Some(Actions(
                         items =
                             maybeIncomeSourceChangeAction(
-                                isComplete = foreignProperty.isComplete(featureSwitching.isEnabled(RemoveAccountingMethod)),
+                                isComplete = foreignProperty.isComplete,
                                 isConfirmed = foreignProperty.confirmed,
                                 href = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
                             ) ++ Seq(ActionItem(
@@ -305,12 +299,9 @@
     }.getOrElse {
         <div id="add-foreign-property" class="govuk-!-padding-bottom-6">
             <p class="govuk-body">
-                <a class="govuk-link" href=@{
-                    if(featureSwitching.isEnabled(RemoveAccountingMethod)) {
-                        controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateBeforeLimitController.show()
-                    } else {
-                        controllers.agent.tasklist.overseasproperty.routes.IncomeSourcesOverseasPropertyController.show()
-                    }}>@messages("agent.your-income-source.foreign-property.add-link")</a>
+                <a class="govuk-link" href=@{controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateBeforeLimitController.show()}>
+                    @messages("agent.your-income-source.foreign-property.add-link")
+                </a>
             </p>
         </div>
     }

@@ -21,7 +21,7 @@ import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
-import uk.gov.hmrc.auth.core.{AuthConnector, BearerTokenExpired}
+import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.Retrieval
 import uk.gov.hmrc.http.HeaderCarrier
@@ -35,7 +35,7 @@ trait MockAuth extends PlaySpec with MockitoSugar with BeforeAndAfterEach {
     reset(mockAuth)
   }
 
-  val mockAuth = mock[AuthConnector]
+  val mockAuth: AuthConnector = mock[AuthConnector]
 
   def mockAuthorise[T](predicate: Predicate, retrieval: Retrieval[T])(result: T): Unit =
     when(mockAuth.authorise[T](

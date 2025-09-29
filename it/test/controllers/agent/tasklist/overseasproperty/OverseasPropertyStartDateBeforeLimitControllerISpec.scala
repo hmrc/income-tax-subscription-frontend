@@ -28,6 +28,7 @@ import play.api.http.Status._
 import play.api.libs.json.{JsString, Json}
 import utilities.SubscriptionDataKeys.OverseasProperty
 import utilities.agent.TestConstants.testNino
+
 class OverseasPropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBase {
 
   lazy val controller: OverseasPropertyStartDateBeforeLimitController = app.injector.instanceOf[OverseasPropertyStartDateBeforeLimitController]
@@ -98,7 +99,7 @@ class OverseasPropertyStartDateBeforeLimitControllerISpec extends ComponentSpecB
     }
   }
 
-  s"POST ${routes.IncomeSourcesOverseasPropertyController.submit().url}" when {
+  s"POST ${routes.OverseasPropertyStartDateBeforeLimitController.submit().url}" when {
     "the user is unauthenticated" should {
       "redirect to the login page" in {
         AuthStub.stubUnauthorised()

@@ -24,6 +24,7 @@ import models.usermatching.UserDetailsModel
 import play.api.data.Form
 import play.api.data.Forms.{default, mapping, text}
 import play.api.data.validation.{Constraint, Invalid, Valid}
+import play.api.i18n.Messages
 
 import java.time.LocalDate
 
@@ -61,7 +62,7 @@ object ClientDetailsForm extends LocalDateMapping {
     }
   }
 
-  val clientDetailsForm: Form[UserDetailsModel] = Form[UserDetailsModel](
+  def clientDetailsForm(implicit messages: Messages): Form[UserDetailsModel] = Form[UserDetailsModel](
     mapping(
       clientFirstName -> default(text, "").verifying(firstNameNonEmpty andThen firstNameMaxLength andThen firstNameInvalid),
       clientLastName -> default(text, "").verifying(lastNameNonEmpty andThen lastNameMaxLength andThen lastNameInvalid),

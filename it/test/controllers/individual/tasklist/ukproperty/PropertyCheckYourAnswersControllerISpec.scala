@@ -16,25 +16,19 @@
 
 package controllers.individual.tasklist.ukproperty
 
-import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub.subscriptionUri
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.IndividualURI
 import helpers.agent.WiremockHelper.verifyPost
 import helpers.servicemocks.AuthStub
+import models.DateModel
 import models.common.PropertyModel
-import models.{Cash, DateModel}
 import play.api.http.Status._
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys.Property
 
 class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(RemoveAccountingMethod)
-  }
 
   lazy val propertyCheckYourAnswersController: PropertyCheckYourAnswersController = app.injector.instanceOf[PropertyCheckYourAnswersController]
 
@@ -42,7 +36,7 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
     "return OK" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
-      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(PropertyModel(accountingMethod = Some(Cash))))
+      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(PropertyModel()))
 
       When("GET business/uk-property-check-your-answers is called")
       val res = IncomeTaxSubscriptionFrontend.getPropertyCheckYourAnswers()
@@ -82,10 +76,10 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
             Property,
             OK,
-            Json.toJson(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021"))))
+            Json.toJson(PropertyModel(startDate = Some(DateModel("10", "11", "2021"))))
           )
           IncomeTaxSubscriptionConnectorStub.stubSaveProperty(
-            PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true)
+            PropertyModel(startDate = Some(DateModel("10", "11", "2021")), confirmed = true)
           )
           IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
@@ -98,7 +92,7 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
             redirectURI(IndividualURI.yourIncomeSourcesURI)
           )
 
-          IncomeTaxSubscriptionConnectorStub.verifySaveProperty(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021")), confirmed = true), Some(1))
+          IncomeTaxSubscriptionConnectorStub.verifySaveProperty(PropertyModel(startDate = Some(DateModel("10", "11", "2021")), confirmed = true), Some(1))
         }
       }
 
@@ -109,7 +103,7 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
             Property,
             OK,
-            Json.toJson(PropertyModel(accountingMethod = Some(Cash)))
+            Json.toJson(PropertyModel())
           )
 
           When("POST business/uk-property-check-your-answers is called")
@@ -125,89 +119,84 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
         }
       }
 
-      "when Accounting Method feature switch is enabled" should {
-        "save when StartDateBeforeLimit is true and start date is not defined" in {
-          enable(RemoveAccountingMethod)
-          val testProperty = PropertyModel(startDateBeforeLimit = Some(true), startDate = None)
-          val expectedProperty = testProperty.copy(confirmed = true)
+      "save when StartDateBeforeLimit is true and start date is not defined" in {
+        val testProperty = PropertyModel(startDateBeforeLimit = Some(true), startDate = None)
+        val expectedProperty = testProperty.copy(confirmed = true)
 
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-            Property,
-            OK,
-            Json.toJson(testProperty)
-          )
-          IncomeTaxSubscriptionConnectorStub.stubSaveProperty(
-            expectedProperty
-          )
-          IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+          Property,
+          OK,
+          Json.toJson(testProperty)
+        )
+        IncomeTaxSubscriptionConnectorStub.stubSaveProperty(
+          expectedProperty
+        )
+        IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
-          When("POST business/uk-property-check-your-answers is called")
-          val res = IncomeTaxSubscriptionFrontend.submitPropertyCheckYourAnswers()
+        When("POST business/uk-property-check-your-answers is called")
+        val res = IncomeTaxSubscriptionFrontend.submitPropertyCheckYourAnswers()
 
-          Then("Should return a SEE_OTHER with a redirect location of the your income sources page")
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(IndividualURI.yourIncomeSourcesURI)
-          )
+        Then("Should return a SEE_OTHER with a redirect location of the your income sources page")
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(IndividualURI.yourIncomeSourcesURI)
+        )
 
-          IncomeTaxSubscriptionConnectorStub.verifySaveProperty(expectedProperty, Some(1))
-        }
+        IncomeTaxSubscriptionConnectorStub.verifySaveProperty(expectedProperty, Some(1))
+      }
 
-        "save when StartDateBeforeLimit is false and start date defined" in {
-          enable(RemoveAccountingMethod)
-          val testProperty = PropertyModel(startDateBeforeLimit = Some(false), startDate = Some(DateModel("10", "11", "2021")))
-          val expectedProperty = testProperty.copy(confirmed = true)
+      "save when StartDateBeforeLimit is false and start date defined" in {
+        val testProperty = PropertyModel(startDateBeforeLimit = Some(false), startDate = Some(DateModel("10", "11", "2021")))
+        val expectedProperty = testProperty.copy(confirmed = true)
 
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-            Property,
-            OK,
-            Json.toJson(testProperty)
-          )
-          IncomeTaxSubscriptionConnectorStub.stubSaveProperty(
-            expectedProperty
-          )
-          IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+          Property,
+          OK,
+          Json.toJson(testProperty)
+        )
+        IncomeTaxSubscriptionConnectorStub.stubSaveProperty(
+          expectedProperty
+        )
+        IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
-          When("POST business/uk-property-check-your-answers is called")
-          val res = IncomeTaxSubscriptionFrontend.submitPropertyCheckYourAnswers()
+        When("POST business/uk-property-check-your-answers is called")
+        val res = IncomeTaxSubscriptionFrontend.submitPropertyCheckYourAnswers()
 
-          Then("Should return a SEE_OTHER with a redirect location of the your income sources page")
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(IndividualURI.yourIncomeSourcesURI)
-          )
+        Then("Should return a SEE_OTHER with a redirect location of the your income sources page")
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(IndividualURI.yourIncomeSourcesURI)
+        )
 
-          IncomeTaxSubscriptionConnectorStub.verifySaveProperty(expectedProperty, Some(1))
-        }
+        IncomeTaxSubscriptionConnectorStub.verifySaveProperty(expectedProperty, Some(1))
+      }
 
-        "save when StartDateBeforeLimit is false and start date is not defined" in {
-          enable(RemoveAccountingMethod)
-          val testProperty = PropertyModel(startDateBeforeLimit = Some(false), startDate = None)
-          val expectedProperty = testProperty.copy(confirmed = true)
+      "save when StartDateBeforeLimit is false and start date is not defined" in {
+        val testProperty = PropertyModel(startDateBeforeLimit = Some(false), startDate = None)
+        val expectedProperty = testProperty.copy(confirmed = true)
 
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-            Property,
-            OK,
-            Json.toJson(testProperty)
-          )
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+          Property,
+          OK,
+          Json.toJson(testProperty)
+        )
 
-          When("POST business/uk-property-check-your-answers is called")
-          val res = IncomeTaxSubscriptionFrontend.submitPropertyCheckYourAnswers()
+        When("POST business/uk-property-check-your-answers is called")
+        val res = IncomeTaxSubscriptionFrontend.submitPropertyCheckYourAnswers()
 
-          Then("Should return a SEE_OTHER with a redirect location of the your income sources page")
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(IndividualURI.yourIncomeSourcesURI)
-          )
+        Then("Should return a SEE_OTHER with a redirect location of the your income sources page")
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(IndividualURI.yourIncomeSourcesURI)
+        )
 
-          IncomeTaxSubscriptionConnectorStub.verifySaveProperty(expectedProperty, Some(0))
-        }
+        IncomeTaxSubscriptionConnectorStub.verifySaveProperty(expectedProperty, Some(0))
       }
     }
 
@@ -232,7 +221,7 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
           Property,
           OK,
-          Json.toJson(PropertyModel(accountingMethod = Some(Cash), startDate = Some(DateModel("10", "11", "2021"))))
+          Json.toJson(PropertyModel(startDate = Some(DateModel("10", "11", "2021"))))
         )
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetailsFailure(Property)
 
@@ -249,36 +238,21 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
 
   "BackURL" when {
     "not in edit mode" when {
-      "Remove Accounting Method feature switch is enabled" should {
-        "redirect to Property Start Date Before Limit page when start date before limit is true" in {
-          enable(RemoveAccountingMethod)
-          propertyCheckYourAnswersController.backUrl(
-            isEditMode = false,
-            isGlobalEdit = false,
-            isConfirmed = false,
-            propertyStartDateBeforeLimit = true
-          ) mustBe controllers.individual.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show().url
-        }
-        "redirect to Property Start Date page when start date before limit is false" in {
-          enable(RemoveAccountingMethod)
-          propertyCheckYourAnswersController.backUrl(
-            isEditMode = false,
-            isGlobalEdit = false,
-            isConfirmed = false,
-            propertyStartDateBeforeLimit = false
-          ) mustBe controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.show().url
-        }
+      "redirect to Property Start Date Before Limit page when start date before limit is true" in {
+        propertyCheckYourAnswersController.backUrl(
+          isEditMode = false,
+          isGlobalEdit = false,
+          isConfirmed = false,
+          propertyStartDateBeforeLimit = true
+        ) mustBe controllers.individual.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show().url
       }
-
-      "Remove Accounting Method feature switch is disabled" should {
-        "redirect to Property Accounting Method page" in {
-          propertyCheckYourAnswersController.backUrl(
-            isEditMode = false,
-            isGlobalEdit = false,
-            isConfirmed = false,
-            propertyStartDateBeforeLimit = false
-          ) mustBe controllers.individual.tasklist.ukproperty.routes.PropertyAccountingMethodController.show().url
-        }
+      "redirect to Property Start Date page when start date before limit is false" in {
+        propertyCheckYourAnswersController.backUrl(
+          isEditMode = false,
+          isGlobalEdit = false,
+          isConfirmed = false,
+          propertyStartDateBeforeLimit = false
+        ) mustBe controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.show().url
       }
     }
 

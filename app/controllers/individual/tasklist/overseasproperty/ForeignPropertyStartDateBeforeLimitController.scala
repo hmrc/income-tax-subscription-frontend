@@ -18,8 +18,6 @@ package controllers.individual.tasklist.overseasproperty
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
-import config.featureswitch.FeatureSwitching
 import controllers.utils.ReferenceRetrieval
 import forms.individual.business.ForeignPropertyStartDateBeforeLimitForm
 import models.{No, Yes}
@@ -39,7 +37,7 @@ class ForeignPropertyStartDateBeforeLimitController @Inject()(subscriptionDetail
                                                               val authService: AuthService,
                                                               val auditingService: AuditingService)
                                                              (implicit mcc: MessagesControllerComponents,
-                                                              val ec: ExecutionContext) extends SignUpController with FeatureSwitching {
+                                                              val ec: ExecutionContext) extends SignUpController {
 
   def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
@@ -73,13 +71,7 @@ class ForeignPropertyStartDateBeforeLimitController @Inject()(subscriptionDetail
               case Right(_) =>
                 answer match {
                   case Yes =>
-                    if (isEditMode || isGlobalEdit) {
-                      Redirect(routes.OverseasPropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit))
-                    } else if (isEnabled(RemoveAccountingMethod)) {
-                      Redirect(routes.OverseasPropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit))
-                    } else {
-                      Redirect(routes.OverseasPropertyAccountingMethodController.show())
-                    }
+                    Redirect(routes.OverseasPropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit))
                   case No =>
                     Redirect(routes.ForeignPropertyStartDateController.show(isEditMode, isGlobalEdit))
                 }

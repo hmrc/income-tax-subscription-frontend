@@ -16,10 +16,9 @@
 
 package views.agent.tasklist.addbusiness
 
-import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
+import models.DateModel
 import models.common.business._
 import models.common.{IncomeSources, OverseasPropertyModel, PropertyModel}
-import models.{Cash, DateModel}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.Html
@@ -32,11 +31,6 @@ import java.time.format.DateTimeFormatter
 //scalastyle:off
 class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(RemoveAccountingMethod)
-  }
-
   "YourIncomeSourceToSignUp" should {
     "display the template correctly" when {
       "there are no income sources added" in new TemplateViewTest(
@@ -47,21 +41,21 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         hasSignOutLink = true
       )
       "there are incomplete income sources added" in new TemplateViewTest(
-        view = view(IncomeSources(incompleteSelfEmployments, None, incompleteUKProperty, incompleteForeignProperty)),
+        view = view(IncomeSources(incompleteSelfEmployments, incompleteUKProperty, incompleteForeignProperty)),
         title = AgentIncomeSource.heading,
         isAgent = true,
         backLink = Some(testBackUrl),
         hasSignOutLink = true
       )
       "there are complete income sources added" in new TemplateViewTest(
-        view = view(IncomeSources(completeSelfEmployments, Some(Cash), completeUKProperty, completeForeignProperty)),
+        view = view(IncomeSources(completeSelfEmployments, completeUKProperty, completeForeignProperty)),
         title = AgentIncomeSource.heading,
         isAgent = true,
         backLink = Some(testBackUrl),
         hasSignOutLink = true
       )
       "there are complete and confirmed income sources added" in new TemplateViewTest(
-        view = view(IncomeSources(completeAndConfirmedSelfEmployments, Some(Cash), completeAndConfirmedUKProperty, completeAndConfirmedForeignProperty)),
+        view = view(IncomeSources(completeAndConfirmedSelfEmployments, completeAndConfirmedUKProperty, completeAndConfirmedForeignProperty)),
         title = AgentIncomeSource.heading,
         isAgent = true,
         backLink = Some(testBackUrl),
@@ -81,7 +75,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
     "have a lead paragraph" which {
       "summarises the page and tells the user to check sources" in new ViewTest {
-          document.mainContent.selectNth("p", 1).text mustBe AgentIncomeSource.lead
+        document.mainContent.selectNth("p", 1).text mustBe AgentIncomeSource.lead
       }
     }
 
@@ -157,32 +151,15 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         "has a paragraph" in new ViewTest(noIncomeSources) {
           document.mainContent.selectNth("p", 3).text mustBe AgentIncomeSource.incomeFromPropertyParagraph
         }
-        "when remove accounting method feature switch disabled" should {
-          "have an add uk property link" in new ViewTest(noIncomeSources) {
-            disable(RemoveAccountingMethod)
-            val link: Element = document.mainContent.getElementById("add-uk-property").selectHead("a")
-            link.text mustBe AgentIncomeSource.ukPropertyLinkText
-            link.attr("href") mustBe AgentIncomeSource.ukPropertyLink
-          }
-          "have an add foreign property link" in new ViewTest(noIncomeSources) {
-            val link: Element = document.mainContent.getElementById("add-foreign-property").selectHead("a")
-            link.text mustBe AgentIncomeSource.foreignPropertyLinkText
-            link.attr("href") mustBe AgentIncomeSource.foreignPropertyLink
-          }
+        "have an add uk property link" in new ViewTest(noIncomeSources) {
+          val link: Element = document.mainContent.getElementById("add-uk-property").selectHead("a")
+          link.text mustBe AgentIncomeSource.ukPropertyLinkText
+          link.attr("href") mustBe controllers.agent.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show().url
         }
-        "when remove accounting method feature switch enabled" should {
-          "have an add uk property link" in new ViewTest(noIncomeSources) {
-            enable(RemoveAccountingMethod)
-            val link: Element = document.mainContent.getElementById("add-uk-property").selectHead("a")
-            link.text mustBe AgentIncomeSource.ukPropertyLinkText
-            link.attr("href") mustBe controllers.agent.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show().url
-          }
-          "have an add foreign property link" in new ViewTest(noIncomeSources) {
-            enable(RemoveAccountingMethod)
-            val link: Element = document.mainContent.getElementById("add-foreign-property").selectHead("a")
-            link.text mustBe AgentIncomeSource.foreignPropertyLinkText
-            link.attr("href") mustBe controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateBeforeLimitController.show().url
-          }
+        "have an add foreign property link" in new ViewTest(noIncomeSources) {
+          val link: Element = document.mainContent.getElementById("add-foreign-property").selectHead("a")
+          link.text mustBe AgentIncomeSource.foreignPropertyLinkText
+          link.attr("href") mustBe controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateBeforeLimitController.show().url
         }
       }
     }
@@ -312,35 +289,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           link.text mustBe AgentIncomeSource.soleTraderLinkText
           link.attr("href") mustBe AgentIncomeSource.soleTraderLink
         }
-
-        "has a sole trader card with no accounting method" in new ViewTest(completeIncomeSources.copy(selfEmploymentAccountingMethod = None)) {
-          document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
-            title = "business trade",
-            cardActions = Seq(
-              SummaryListActionValues(
-                href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idOne").url,
-                text = s"${AgentIncomeSource.remove} business name (business trade)",
-                visuallyHidden = s"business name (business trade)"
-              )
-            ),
-            rows = Seq(
-              SummaryListRowValues(
-                key = AgentIncomeSource.soleTraderBusinessNameKey,
-                value = Some("business name"),
-                actions = Seq.empty
-              ),
-              SummaryListRowValues(
-                key = AgentIncomeSource.statusTagKey,
-                value = Some(AgentIncomeSource.incompleteTag),
-                actions = Seq(SummaryListActionValues(
-                  href = AgentIncomeSource.soleTraderChangeLinkOne,
-                  text = s"${AgentIncomeSource.addDetails} business name (business trade)",
-                  visuallyHidden = "business name (business trade)"
-                ))
-              )
-            )
-          )
-        }
       }
       "have a income from property section" which {
         "has a heading" in new ViewTest(incompleteIncomeSources) {
@@ -357,11 +305,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
               )
             ),
             rows = Seq(
-              SummaryListRowValues(
-                key = AgentIncomeSource.ukPropertyStartDate,
-                value = Some(AgentIncomeSource.propertyDateBeforeLimit),
-                actions = Seq.empty
-              ),
               SummaryListRowValues(
                 key = AgentIncomeSource.statusTagKey,
                 value = Some(AgentIncomeSource.incompleteTag),
@@ -386,11 +329,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
             ),
             rows = Seq(
               SummaryListRowValues(
-                key = AgentIncomeSource.foreignPropertyStartDate,
-                value = Some(AgentIncomeSource.propertyDateBeforeLimit),
-                actions = Seq.empty
-              ),
-              SummaryListRowValues(
                 key = AgentIncomeSource.statusTagKey,
                 value = Some(AgentIncomeSource.incompleteTag),
                 actions = Seq(SummaryListActionValues(
@@ -410,7 +348,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           document.mainContent.getSubHeading("h2", 1).text mustBe AgentIncomeSource.soleTrader
         }
         "has a summary card with incomplete status tags and check details action link" when {
-          "all details are present and confirmed and an accounting method is present" in new ViewTest(completeIncomeSources) {
+          "all details are present and confirmed" in new ViewTest(completeIncomeSources) {
             document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
               title = "business trade",
               cardActions = Seq(
@@ -657,12 +595,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       }
     }
     "there are fully complete and confirmed income sources added" should {
-      def completeAndConfirmedIncomeSources: IncomeSources = IncomeSources(completeAndConfirmedSelfEmployments, Some(Cash), completeAndConfirmedUKProperty, completeAndConfirmedForeignProperty)
-      def completeAndConfirmedIncomeSourcesNoAccMethod: IncomeSources = IncomeSources(
-        completeAndConfirmedSelfEmployments, None,
-        completeAndConfirmedUKProperty.map(_.copy(accountingMethod = None)),
-        completeAndConfirmedForeignProperty.map(_.copy(accountingMethod = None))
-      )
+      def completeAndConfirmedIncomeSources: IncomeSources = IncomeSources(completeAndConfirmedSelfEmployments, completeAndConfirmedUKProperty, completeAndConfirmedForeignProperty)
 
       "have a heading and caption" in new ViewTest(completeAndConfirmedIncomeSources) {
         document.mainContent.mustHaveHeadingAndCaption(
@@ -715,189 +648,92 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         "has a heading" in new ViewTest(completeAndConfirmedIncomeSources) {
           document.mainContent.getSubHeading("h2", 3).text mustBe AgentIncomeSource.incomeFromPropertyHeading
         }
-        "when remove accounting method feature switch disabled" which {
-          "has a sole trader summary card" in new ViewTest(completeAndConfirmedIncomeSources) {
-            document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
-              title = "business trade",
-              cardActions = Seq(
-                SummaryListActionValues(
-                  href = AgentIncomeSource.soleTraderChangeLinkOne,
-                  text = s"${AgentIncomeSource.change} business name (business trade)",
-                  visuallyHidden = s"business name (business trade)"
-                ),
-                SummaryListActionValues(
-                  href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idOne").url,
-                  text = s"${AgentIncomeSource.remove} business name (business trade)",
-                  visuallyHidden = s"business name (business trade)"
-                )
+        "has a sole trader summary card" in new ViewTest(completeAndConfirmedIncomeSources) {
+          document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
+            title = "business trade",
+            cardActions = Seq(
+              SummaryListActionValues(
+                href = AgentIncomeSource.soleTraderChangeLinkOne,
+                text = s"${AgentIncomeSource.change} business name (business trade)",
+                visuallyHidden = s"business name (business trade)"
               ),
-              rows = Seq(
-                SummaryListRowValues(
-                  key = AgentIncomeSource.soleTraderBusinessNameKey,
-                  value = Some("business name"),
-                  actions = Seq.empty
-                ),
-                SummaryListRowValues(
-                  key = AgentIncomeSource.statusTagKey,
-                  value = Some(AgentIncomeSource.completedTag),
-                  actions = Seq.empty
-                )
+              SummaryListActionValues(
+                href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idOne").url,
+                text = s"${AgentIncomeSource.remove} business name (business trade)",
+                visuallyHidden = s"business name (business trade)"
+              )
+            ),
+            rows = Seq(
+              SummaryListRowValues(
+                key = AgentIncomeSource.soleTraderBusinessNameKey,
+                value = Some("business name"),
+                actions = Seq.empty
+              ),
+              SummaryListRowValues(
+                key = AgentIncomeSource.statusTagKey,
+                value = Some(AgentIncomeSource.completedTag),
+                actions = Seq.empty
               )
             )
-          }
-          "has a uk property summary card" in new ViewTest(completeAndConfirmedIncomeSources) {
-            document.mainContent.mustHaveSummaryCard("div.govuk-summary-card", Some(2))(
-              title = AgentIncomeSource.ukPropertyTitle,
-              cardActions = Seq(
-                SummaryListActionValues(
-                  href = AgentIncomeSource.ukPropertyChangeLink,
-                  text = s"${AgentIncomeSource.change} ${AgentIncomeSource.ukPropertyHiddenText}",
-                  visuallyHidden = AgentIncomeSource.ukPropertyHiddenText
-                ),
-                SummaryListActionValues(
-                  href = AgentIncomeSource.ukPropertyRemoveLink,
-                  text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.ukPropertyHiddenText}",
-                  visuallyHidden = AgentIncomeSource.ukPropertyHiddenText
-                )
-              ),
-              rows = Seq(
-                SummaryListRowValues(
-                  key = AgentIncomeSource.ukPropertyStartDate,
-                  value = Some(AgentIncomeSource.propertyDateBeforeLimit),
-                  actions = Seq.empty
-                ),
-                SummaryListRowValues(
-                  key = AgentIncomeSource.statusTagKey,
-                  value = Some(AgentIncomeSource.completedTag),
-                  actions = Seq.empty
-                )
-              )
-            )
-          }
-          "has a foreign property summary card" in new ViewTest(completeAndConfirmedIncomeSources) {
-            document.mainContent.mustHaveSummaryCard("div.govuk-summary-card", Some(3))(
-              title = AgentIncomeSource.foreignPropertyTitle,
-              cardActions = Seq(
-                SummaryListActionValues(
-                  href = AgentIncomeSource.foreignPropertyChangeLink,
-                  text = s"${AgentIncomeSource.change} ${AgentIncomeSource.foreignPropertyHiddenText}",
-                  visuallyHidden = AgentIncomeSource.foreignPropertyHiddenText
-                ),
-                SummaryListActionValues(
-                  href = AgentIncomeSource.foreignPropertyHiddenTextLink,
-                  text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.foreignPropertyHiddenText}",
-                  visuallyHidden = AgentIncomeSource.foreignPropertyHiddenText
-                )
-              ),
-              rows = Seq(
-                SummaryListRowValues(
-                  key = AgentIncomeSource.foreignPropertyStartDate,
-                  value = Some(AgentIncomeSource.propertyDateBeforeLimit),
-                  actions = Seq.empty
-                ),
-                SummaryListRowValues(
-                  key = AgentIncomeSource.statusTagKey,
-                  value = Some(AgentIncomeSource.completedTag),
-                  actions = Seq.empty
-                )
-              )
-            )
-          }
+          )
         }
-        "when remove accounting method feature switch enabled" which {
-          "has a sole trader summary card" in new ViewTest(completeAndConfirmedIncomeSourcesNoAccMethod) {
-            enable(RemoveAccountingMethod)
-
-            document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
-              title = "business trade",
-              cardActions = Seq(
-                SummaryListActionValues(
-                  href = AgentIncomeSource.soleTraderChangeLinkOne,
-                  text = s"${AgentIncomeSource.change} business name (business trade)",
-                  visuallyHidden = s"business name (business trade)"
-                ),
-                SummaryListActionValues(
-                  href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idOne").url,
-                  text = s"${AgentIncomeSource.remove} business name (business trade)",
-                  visuallyHidden = s"business name (business trade)"
-                )
+        "has a uk property summary card" in new ViewTest(completeAndConfirmedIncomeSources) {
+          document.mainContent.mustHaveSummaryCard("div.govuk-summary-card", Some(2))(
+            title = AgentIncomeSource.ukPropertyTitle,
+            cardActions = Seq(
+              SummaryListActionValues(
+                href = AgentIncomeSource.ukPropertyChangeLink,
+                text = s"${AgentIncomeSource.change} ${AgentIncomeSource.ukPropertyHiddenText}",
+                visuallyHidden = AgentIncomeSource.ukPropertyHiddenText
               ),
-              rows = Seq(
-                SummaryListRowValues(
-                  key = AgentIncomeSource.soleTraderBusinessNameKey,
-                  value = Some("business name"),
-                  actions = Seq.empty
-                ),
-                SummaryListRowValues(
-                  key = AgentIncomeSource.statusTagKey,
-                  value = Some(AgentIncomeSource.completedTag),
-                  actions = Seq.empty
-                )
+              SummaryListActionValues(
+                href = AgentIncomeSource.ukPropertyRemoveLink,
+                text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.ukPropertyHiddenText}",
+                visuallyHidden = AgentIncomeSource.ukPropertyHiddenText
+              )
+            ),
+            rows = Seq(
+              SummaryListRowValues(
+                key = AgentIncomeSource.ukPropertyStartDate,
+                value = Some(AgentIncomeSource.propertyDateBeforeLimit),
+                actions = Seq.empty
+              ),
+              SummaryListRowValues(
+                key = AgentIncomeSource.statusTagKey,
+                value = Some(AgentIncomeSource.completedTag),
+                actions = Seq.empty
               )
             )
-          }
-          "has a uk property summary card" in new ViewTest(completeAndConfirmedIncomeSourcesNoAccMethod) {
-            enable(RemoveAccountingMethod)
-
-            document.mainContent.mustHaveSummaryCard("div.govuk-summary-card", Some(2))(
-              title = AgentIncomeSource.ukPropertyTitle,
-              cardActions = Seq(
-                SummaryListActionValues(
-                  href = AgentIncomeSource.ukPropertyChangeLink,
-                  text = s"${AgentIncomeSource.change} ${AgentIncomeSource.ukPropertyHiddenText}",
-                  visuallyHidden = AgentIncomeSource.ukPropertyHiddenText
-                ),
-                SummaryListActionValues(
-                  href = AgentIncomeSource.ukPropertyRemoveLink,
-                  text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.ukPropertyHiddenText}",
-                  visuallyHidden = AgentIncomeSource.ukPropertyHiddenText
-                )
+          )
+        }
+        "has a foreign property summary card" in new ViewTest(completeAndConfirmedIncomeSources) {
+          document.mainContent.mustHaveSummaryCard("div.govuk-summary-card", Some(3))(
+            title = AgentIncomeSource.foreignPropertyTitle,
+            cardActions = Seq(
+              SummaryListActionValues(
+                href = AgentIncomeSource.foreignPropertyChangeLink,
+                text = s"${AgentIncomeSource.change} ${AgentIncomeSource.foreignPropertyHiddenText}",
+                visuallyHidden = AgentIncomeSource.foreignPropertyHiddenText
               ),
-              rows = Seq(
-                SummaryListRowValues(
-                  key = AgentIncomeSource.ukPropertyStartDate,
-                  value = Some(AgentIncomeSource.propertyDateBeforeLimit),
-                  actions = Seq.empty
-                ),
-                SummaryListRowValues(
-                  key = AgentIncomeSource.statusTagKey,
-                  value = Some(AgentIncomeSource.completedTag),
-                  actions = Seq.empty
-                )
+              SummaryListActionValues(
+                href = AgentIncomeSource.foreignPropertyHiddenTextLink,
+                text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.foreignPropertyHiddenText}",
+                visuallyHidden = AgentIncomeSource.foreignPropertyHiddenText
+              )
+            ),
+            rows = Seq(
+              SummaryListRowValues(
+                key = AgentIncomeSource.foreignPropertyStartDate,
+                value = Some(AgentIncomeSource.propertyDateBeforeLimit),
+                actions = Seq.empty
+              ),
+              SummaryListRowValues(
+                key = AgentIncomeSource.statusTagKey,
+                value = Some(AgentIncomeSource.completedTag),
+                actions = Seq.empty
               )
             )
-          }
-          "has a foreign property summary card" in new ViewTest(completeAndConfirmedIncomeSourcesNoAccMethod) {
-            enable(RemoveAccountingMethod)
-
-            document.mainContent.mustHaveSummaryCard("div.govuk-summary-card", Some(3))(
-              title = AgentIncomeSource.foreignPropertyTitle,
-              cardActions = Seq(
-                SummaryListActionValues(
-                  href = AgentIncomeSource.foreignPropertyChangeLink,
-                  text = s"${AgentIncomeSource.change} ${AgentIncomeSource.foreignPropertyHiddenText}",
-                  visuallyHidden = AgentIncomeSource.foreignPropertyHiddenText
-                ),
-                SummaryListActionValues(
-                  href = AgentIncomeSource.foreignPropertyHiddenTextLink,
-                  text = s"${AgentIncomeSource.remove} ${AgentIncomeSource.foreignPropertyHiddenText}",
-                  visuallyHidden = AgentIncomeSource.foreignPropertyHiddenText
-                )
-              ),
-              rows = Seq(
-                SummaryListRowValues(
-                  key = AgentIncomeSource.foreignPropertyStartDate,
-                  value = Some(AgentIncomeSource.propertyDateBeforeLimit),
-                  actions = Seq.empty
-                ),
-                SummaryListRowValues(
-                  key = AgentIncomeSource.statusTagKey,
-                  value = Some(AgentIncomeSource.completedTag),
-                  actions = Seq.empty
-                )
-              )
-            )
-          }
+          )
         }
       }
     }
@@ -928,13 +764,11 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     val ukPropertyTitle = "UK property"
     val ukPropertyStartDate = "Start date"
     val ukPropertyLinkText = "Add UK property"
-    val ukPropertyLink: String = controllers.agent.tasklist.ukproperty.routes.PropertyIncomeSourcesController.show().url
     val ukPropertyChangeLink: String = controllers.agent.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url
     val ukPropertyRemoveLink: String = controllers.agent.tasklist.ukproperty.routes.RemoveUkPropertyController.show.url
     val foreignPropertyTitle = "Foreign property"
     val foreignPropertyStartDate = "Start date"
     val foreignPropertyLinkText = "Add foreign property"
-    val foreignPropertyLink: String = controllers.agent.tasklist.overseasproperty.routes.IncomeSourcesOverseasPropertyController.show().url
     val foreignPropertyChangeLink: String = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
     val foreignPropertyHiddenTextLink: String = controllers.agent.tasklist.overseasproperty.routes.RemoveOverseasPropertyController.show.url
     val progressSavedLink: String = controllers.agent.tasklist.routes.ProgressSavedController.show(Some("income-sources")).url
@@ -971,24 +805,18 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
   )
 
   lazy val completeSelfEmployments: Seq[SelfEmploymentData] = Seq(completeSelfEmploymentData)
-  lazy val completeUKProperty: Option[PropertyModel] = Some(PropertyModel(
-    accountingMethod = Some(Cash),
-    startDate = Some(DateModel("1", "1", "1981"))))
+  lazy val completeUKProperty: Option[PropertyModel] = Some(PropertyModel(startDate = Some(DateModel("1", "1", "1981"))))
 
-  lazy val completeForeignProperty: Option[OverseasPropertyModel] = Some(OverseasPropertyModel(
-    accountingMethod = Some(Cash),
-    startDate = Some(DateModel("2", "2", "1982"))))
+  lazy val completeForeignProperty: Option[OverseasPropertyModel] = Some(OverseasPropertyModel(startDate = Some(DateModel("2", "2", "1982"))))
 
   lazy val completeAndConfirmedSelfEmployments: Seq[SelfEmploymentData] = Seq(
     completeSelfEmploymentData.copy(confirmed = true)
   )
   lazy val completeAndConfirmedUKProperty: Option[PropertyModel] = Some(PropertyModel(
-    accountingMethod = Some(Cash),
     startDate = Some(DateModel("1", "1", "1981")),
     confirmed = true
   ))
   lazy val completeAndConfirmedForeignProperty: Option[OverseasPropertyModel] = Some(OverseasPropertyModel(
-    accountingMethod = Some(Cash),
     startDate = Some(DateModel("2", "2", "1982")),
     confirmed = true
   ))
@@ -999,10 +827,10 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     SelfEmploymentData(id = "idThree", businessTradeName = Some(BusinessTradeNameModel("business trade"))),
     SelfEmploymentData(id = "idFour")
   )
-  lazy val incompleteUKProperty: Option[PropertyModel] = Some(PropertyModel(startDate = Some(DateModel("1", "1", "1981"))))
-  lazy val incompleteForeignProperty: Option[OverseasPropertyModel] = Some(OverseasPropertyModel(startDate = Some(DateModel("2", "2", "1982"))))
+  lazy val incompleteUKProperty: Option[PropertyModel] = Some(PropertyModel(startDateBeforeLimit = Some(false)))
+  lazy val incompleteForeignProperty: Option[OverseasPropertyModel] = Some(OverseasPropertyModel(startDateBeforeLimit = Some(false)))
 
-  def view(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None, None), prepopulated: Boolean = false): Html = {
+  def view(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None), prepopulated: Boolean = false): Html = {
     incomeSourceView(
       postAction = testCall,
       backUrl = testBackUrl,
@@ -1012,14 +840,14 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     )
   }
 
-  class ViewTest(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None, None), prepopulated: Boolean = false) {
+  class ViewTest(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None), prepopulated: Boolean = false) {
     def document: Document = Jsoup.parse(view(incomeSources, prepopulated).body)
   }
 
-  lazy val noIncomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None, None)
-  lazy val incompleteIncomeSources: IncomeSources = IncomeSources(incompleteSelfEmployments, Some(Cash), incompleteUKProperty, incompleteForeignProperty)
-  lazy val completeIncomeSources: IncomeSources = IncomeSources(completeSelfEmployments, Some(Cash), completeUKProperty, completeForeignProperty)
-  lazy val completeAndConfirmedIncomeSources: IncomeSources = IncomeSources(completeAndConfirmedSelfEmployments, Some(Cash), completeAndConfirmedUKProperty, completeAndConfirmedForeignProperty)
+  lazy val noIncomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None)
+  lazy val incompleteIncomeSources: IncomeSources = IncomeSources(incompleteSelfEmployments, incompleteUKProperty, incompleteForeignProperty)
+  lazy val completeIncomeSources: IncomeSources = IncomeSources(completeSelfEmployments, completeUKProperty, completeForeignProperty)
+  lazy val completeAndConfirmedIncomeSources: IncomeSources = IncomeSources(completeAndConfirmedSelfEmployments, completeAndConfirmedUKProperty, completeAndConfirmedForeignProperty)
 
 
   lazy val olderThanLimitDate: DateModel = DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit.minusDays(1))

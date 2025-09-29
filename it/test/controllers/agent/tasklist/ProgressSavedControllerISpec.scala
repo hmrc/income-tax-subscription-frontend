@@ -21,10 +21,10 @@ import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnecto
 import helpers.IntegrationTestConstants._
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
+import models.EligibilityStatus
 import models.common.business.{BusinessStartDate, SelfEmploymentData}
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
-import models.{Cash, EligibilityStatus}
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, NO_CONTENT, OK, SEE_OTHER}
 import play.api.libs.json.{JsNumber, JsObject, JsString, Json}
 import play.api.libs.ws.WSResponse
@@ -52,8 +52,7 @@ class ProgressSavedControllerISpec extends ComponentSpecBase {
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(
             OK,
-            Seq(SelfEmploymentData(testId, Some(false), Some(BusinessStartDate(startDate)))),
-            Some(Cash)
+            Seq(SelfEmploymentData(testId, Some(false), Some(BusinessStartDate(startDate))))
           )
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(lastUpdatedTimestamp, OK, JsObject(Seq(("$date", JsNumber(1)))))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)

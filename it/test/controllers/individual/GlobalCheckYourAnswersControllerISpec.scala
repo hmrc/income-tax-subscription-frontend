@@ -49,7 +49,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(AccountingPeriod, OK, Json.toJson(BusinessAccountingPeriod.SixthAprilToFifthApril.key))
-        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty), Some(testAccountMethod))
+        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
@@ -77,13 +77,12 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
           "all calls were successful" in {
             Given("I setup the Wiremock stubs")
             AuthStub.stubAuthSuccess()
-            IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty), Some(testAccountMethod))
+            IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
               Property,
               OK,
               Json.toJson(testFullPropertyModel.copy(
                 startDateBeforeLimit = Some(true),
-                accountingMethod = testUkProperty().accountingMethod,
                 startDate = Some(testUkProperty().tradingStartDate)
               ))
             )
@@ -92,7 +91,6 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
               OK,
               Json.toJson(testFullOverseasPropertyModel.copy(
                 startDateBeforeLimit = Some(true),
-                accountingMethod = testOverseasProperty().accountingMethod,
                 startDate = Some(testOverseasProperty().tradingStartDate)
               ))
             )
@@ -138,13 +136,12 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
           "sign up indicated the customer is already signed up" in {
             Given("I setup the Wiremock stubs")
             AuthStub.stubAuthSuccess()
-            IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty), Some(testAccountMethod))
+            IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
               Property,
               OK,
               Json.toJson(testFullPropertyModel.copy(
                 startDateBeforeLimit = Some(true),
-                accountingMethod = testUkProperty().accountingMethod,
                 startDate = Some(testUkProperty().tradingStartDate)
               ))
             )
@@ -153,7 +150,6 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
               OK,
               Json.toJson(testFullOverseasPropertyModel.copy(
                 startDateBeforeLimit = Some(true),
-                accountingMethod = testOverseasProperty().accountingMethod,
                 startDate = Some(testOverseasProperty().tradingStartDate)
               ))
             )
@@ -182,13 +178,12 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
           "all calls were successful" in {
             Given("I setup the Wiremock stubs")
             AuthStub.stubAuthSuccess()
-            IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty), Some(testAccountMethod))
+            IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
               Property,
               OK,
               Json.toJson(testFullPropertyModel.copy(
                 startDateBeforeLimit = Some(true),
-                accountingMethod = testUkProperty().accountingMethod,
                 startDate = Some(testUkProperty(Next).tradingStartDate)
               ))
             )
@@ -197,7 +192,6 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
               OK,
               Json.toJson(testFullOverseasPropertyModel.copy(
                 startDateBeforeLimit = Some(true),
-                accountingMethod = testOverseasProperty().accountingMethod,
                 startDate = Some(testOverseasProperty(Next).tradingStartDate)
               ))
             )
@@ -243,12 +237,11 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
           "sign up indicated the customer is already signed up" in {
             Given("I setup the Wiremock stubs")
             AuthStub.stubAuthSuccess()
-            IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty), Some(testAccountMethod))
+            IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
               Property,
               OK,
               Json.toJson(testFullPropertyModel.copy(
-                accountingMethod = testUkProperty().accountingMethod,
                 startDate = Some(testUkProperty().tradingStartDate)
               ))
             )
@@ -256,7 +249,6 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
               OverseasProperty,
               OK,
               Json.toJson(testFullOverseasPropertyModel.copy(
-                accountingMethod = testOverseasProperty().accountingMethod,
                 startDate = Some(testOverseasProperty().tradingStartDate)
               ))
             )
@@ -286,12 +278,11 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
         "sign up failed" in {
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty), Some(testAccountMethod))
+          IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
             Property,
             OK,
             Json.toJson(testFullPropertyModel.copy(
-              accountingMethod = testUkProperty().accountingMethod,
               startDate = Some(testUkProperty().tradingStartDate)
             ))
           )
@@ -299,7 +290,6 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             OverseasProperty,
             OK,
             Json.toJson(testFullOverseasPropertyModel.copy(
-              accountingMethod = testOverseasProperty().accountingMethod,
               startDate = Some(testOverseasProperty().tradingStartDate)
             ))
           )
@@ -318,12 +308,11 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
         "create income sources failed" in {
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty), Some(testAccountMethod))
+          IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
             Property,
             OK,
             Json.toJson(testFullPropertyModel.copy(
-              accountingMethod = testUkProperty().accountingMethod,
               startDate = Some(testUkProperty().tradingStartDate)
             ))
           )
@@ -331,7 +320,6 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             OverseasProperty,
             OK,
             Json.toJson(testFullOverseasPropertyModel.copy(
-              accountingMethod = testOverseasProperty().accountingMethod,
               startDate = Some(testOverseasProperty().tradingStartDate)
             ))
           )
@@ -363,12 +351,11 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
         "add known facts failed" in {
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty), Some(testAccountMethod))
+          IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
             Property,
             OK,
             Json.toJson(testFullPropertyModel.copy(
-              accountingMethod = testUkProperty().accountingMethod,
               startDate = Some(testUkProperty().tradingStartDate)
             ))
           )
@@ -376,7 +363,6 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             OverseasProperty,
             OK,
             Json.toJson(testFullOverseasPropertyModel.copy(
-              accountingMethod = testOverseasProperty().accountingMethod,
               startDate = Some(testOverseasProperty().tradingStartDate)
             ))
           )
@@ -410,12 +396,11 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
         "enrolment failed" in {
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty), Some(testAccountMethod))
+          IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
             Property,
             OK,
             Json.toJson(testFullPropertyModel.copy(
-              accountingMethod = testUkProperty().accountingMethod,
               startDate = Some(testUkProperty().tradingStartDate)
             ))
           )
@@ -423,7 +408,6 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             OverseasProperty,
             OK,
             Json.toJson(testFullOverseasPropertyModel.copy(
-              accountingMethod = testOverseasProperty().accountingMethod,
               startDate = Some(testOverseasProperty().tradingStartDate)
             ))
           )

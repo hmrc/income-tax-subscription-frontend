@@ -47,7 +47,7 @@ class SessionClearingService @Inject()(sessionDataService: SessionDataService)
     }
   }
 
-  private def fetchEmailConsentCaptured(implicit request: Request[_], hc: HeaderCarrier): Future[Boolean] = {
+  private def fetchEmailConsentCaptured(implicit hc: HeaderCarrier): Future[Boolean] = {
     fetchEmailPassed flatMap {
       case Some(_) => Future.successful(true)
       case None => fetchConsentStatus.map(_.isDefined)
@@ -61,14 +61,14 @@ class SessionClearingService @Inject()(sessionDataService: SessionDataService)
     }
   }
 
-  private def fetchConsentStatus(implicit request: Request[_], hc: HeaderCarrier): Future[Option[YesNo]] = {
+  private def fetchConsentStatus(implicit hc: HeaderCarrier): Future[Option[YesNo]] = {
     sessionDataService.fetchConsentStatus map {
       case Left(error) => throw new InternalServerException(s"[SessionClearingService][fetchConsentStatus] - Unexpected failure: $error")
       case Right(result) => result
     }
   }
 
-  private def deleteSessionData(implicit request: Request[_], hc: HeaderCarrier): Future[DeleteSessionDataSuccess] = {
+  private def deleteSessionData(implicit hc: HeaderCarrier): Future[DeleteSessionDataSuccess] = {
     sessionDataService.deleteSessionAll map {
       case Left(error) => throw new InternalServerException(s"[SessionClearingService][deleteSessionData] - Unexpected failure: $error")
       case Right(result) => result
@@ -76,7 +76,7 @@ class SessionClearingService @Inject()(sessionDataService: SessionDataService)
   }
 
   private def saveEmailConsentCaptured(emailConsentCaptured: Boolean)
-                                      (implicit request: Request[_], hc: HeaderCarrier): Future[SaveSessionDataSuccess] = {
+                                      (implicit hc: HeaderCarrier): Future[SaveSessionDataSuccess] = {
     if (emailConsentCaptured) {
       sessionDataService.saveEmailPassed(emailPassed = true) map {
         case Left(error) => throw new InternalServerException(s"[SessionClearingService][saveEmailConsentCaptured] - Unexpected failure: $error")

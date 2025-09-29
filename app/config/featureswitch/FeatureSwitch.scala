@@ -28,8 +28,7 @@ object FeatureSwitch {
     ThrottlingFeature,
     CheckClientRelationship,
     CheckMultiAgentRelationship,
-    EmailCaptureConsent,
-    RemoveAccountingMethod
+    EmailCaptureConsent
   )
 
   def apply(str: String): FeatureSwitch =
@@ -58,11 +57,6 @@ object FeatureSwitch {
   case object EmailCaptureConsent extends FeatureSwitch {
     override val name: String = s"$prefix.email-capture-consent"
     override val displayText: String = "EmailCaptureConsent"
-  }
-
-  case object RemoveAccountingMethod extends FeatureSwitch {
-    override val name: String = s"$prefix.remove-accounting-method"
-    override val displayText: String = "RemoveAccountingMethod"
   }
 
 }

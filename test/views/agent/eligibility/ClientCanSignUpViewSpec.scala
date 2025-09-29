@@ -80,7 +80,6 @@ class ClientCanSignUpViewSpec extends ViewSpec {
       def bulletList: Element = mainContent.selectNth("ul", 1)
 
       bulletList.selectNth("li", 1).text mustBe ClientCanSignUpMessages.bullet1
-      bulletList.selectNth("li", 2).text mustBe ClientCanSignUpMessages.bullet2
 
     }
 
@@ -130,7 +129,6 @@ class ClientCanSignUpViewSpec extends ViewSpec {
     val subheading1 = "What happens next"
     val para2 = "For each of your client’s businesses or income from property, you’ll need their:"
     val bullet1 = "start date - if it started within the last 2 tax years"
-    val bullet2 = "accounting method - cash basis or traditional accounting (this is also called accruals or standard accounting)"
     val para3 = "If they’re a sole trader, you’ll also need your client’s:"
     val bullet3 = "business trading name and address"
     val bullet4 = "trade (the nature of their business)"

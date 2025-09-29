@@ -19,7 +19,7 @@ package utilities.agent
 
 import models.common._
 import models.usermatching.UserDetailsModel
-import models.{AccountingMethod => _, _}
+import models._
 
 object TestModels {
 

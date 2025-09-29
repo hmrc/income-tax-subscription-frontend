@@ -22,7 +22,7 @@ import models.audits.SaveAndComebackAuditing.SaveAndComeBackAuditModel
 import models.common.business._
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel, TimestampModel}
 import models.status.MandationStatus.Voluntary
-import models.{Cash, DateModel, EligibilityStatus, Next}
+import models.{DateModel, EligibilityStatus, Next}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
@@ -75,14 +75,11 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
       businessAddress = Some(BusinessAddressModel(Address(Seq("line 1"), Some("ZZ1 1ZZ"))))
     )
   )
-  private val selfEmploymentAccountingMethod = Some(AccountingMethodModel(Cash))
   private val property = Some(PropertyModel(
-    accountingMethod = Some(Cash),
     startDate = Some(DateModel("1", "1", "1980")),
     confirmed = true
   ))
   private val overseasProperty = Some(OverseasPropertyModel(
-    accountingMethod = Some(Cash),
     startDate = Some(DateModel("1", "1", "1980")),
     confirmed = true
   ))
@@ -110,7 +107,7 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
 
       "the location parameter is provided" in withController { (controller, mockedView) =>
         mockFetchLastUpdatedTimestamp(Some(testTimestamp))
-        mockFetchAllSelfEmployments(encryptedSelfEmployments, selfEmploymentAccountingMethod.map(_.accountingMethod))
+        mockFetchAllSelfEmployments(encryptedSelfEmployments)
         mockFetchProperty(property)
         mockFetchOverseasProperty(overseasProperty)
         mockFetchSelectedTaxYear(selectedTaxYear)
@@ -136,7 +133,6 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
           currentTaxYear = currentYear,
           selectedTaxYear = selectedTaxYear,
           selfEmployments = decryptedSelfEmployments,
-          maybeSelfEmploymentAccountingMethod = selfEmploymentAccountingMethod,
           maybePropertyModel = property,
           maybeOverseasPropertyModel = overseasProperty
         ))

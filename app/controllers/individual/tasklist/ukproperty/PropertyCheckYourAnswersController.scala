@@ -17,8 +17,6 @@
 package controllers.individual.tasklist.ukproperty
 
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.RemoveAccountingMethod
-import config.featureswitch.FeatureSwitching
 import controllers.SignUpBaseController
 import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
 import models.common.PropertyModel
@@ -37,7 +35,7 @@ class PropertyCheckYourAnswersController @Inject()(identify: IdentifierAction,
                                                    view: PropertyCheckYourAnswers)
                                                   (val appConfig: AppConfig)
                                                   (implicit val ec: ExecutionContext,
-                                                   mcc: MessagesControllerComponents) extends SignUpBaseController with FeatureSwitching {
+                                                   mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     withProperty(request.reference) { property =>
@@ -52,7 +50,7 @@ class PropertyCheckYourAnswersController @Inject()(identify: IdentifierAction,
 
   def submit(isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
     withProperty(request.reference) { property =>
-      if (property.isComplete(isEnabled(RemoveAccountingMethod))) {
+      if (property.isComplete) {
         subscriptionDetailsService.saveProperty(request.reference, property.copy(confirmed = true)) map {
           case Right(_) =>
             if (isGlobalEdit) {
@@ -75,14 +73,10 @@ class PropertyCheckYourAnswersController @Inject()(identify: IdentifierAction,
     } else if (isEditMode || isGlobalEdit) {
       controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
     } else {
-      if (isEnabled(RemoveAccountingMethod)) {
-        if (propertyStartDateBeforeLimit) {
-          controllers.individual.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show().url
-        } else {
-          controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.show().url
-        }
+      if (propertyStartDateBeforeLimit) {
+        controllers.individual.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show().url
       } else {
-        controllers.individual.tasklist.ukproperty.routes.PropertyAccountingMethodController.show().url
+        controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.show().url
       }
     }
   }
