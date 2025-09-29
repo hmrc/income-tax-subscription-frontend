@@ -19,15 +19,11 @@ package controllers.agent.matching
 import controllers.ControllerSpec
 import controllers.agent.actions.mocks.{MockClientDetailsJourneyRefiner, MockIdentifierAction}
 import forms.agent.ClientDetailsForm
-import forms.agent.ClientDetailsForm.clientDetailsForm
 import forms.formatters.DateModelMapping
-import models.DateModel
-import models.usermatching.UserDetailsModel
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import play.api.i18n.Messages
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{MessagesControllerComponents, Result}
-import play.api.test.FakeRequest
 import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, session, status, stubMessagesControllerComponents}
 import services.mocks._
 import uk.gov.hmrc.http.InternalServerException
@@ -54,7 +50,10 @@ class ClientDetailsControllerSpec extends ControllerSpec
     "return OK with the page content" when {
       "the user is not locked out and is not in edit mode" in {
         setupMockNotLockedOut(testARN)
-        mockView(clientDetailsForm, routes.ClientDetailsController.submit(), isEditMode = false)
+        mockView(
+          postAction = routes.ClientDetailsController.submit(),
+          isEditMode = false
+        )
 
         val result: Future[Result] = TestClientDetailsController.show(false)(request)
 
@@ -64,7 +63,6 @@ class ClientDetailsControllerSpec extends ControllerSpec
       "the user is not locked out and is in edit mode" in {
         setupMockNotLockedOut(testARN)
         mockView(
-          form = clientDetailsForm.fill(UserDetailsModel("FirstName", "LastName", "ZZ111111Z", DateModel("1", "2", "1980"))),
           postAction = routes.ClientDetailsController.submit(editMode = true),
           isEditMode = true
         )
@@ -137,7 +135,6 @@ class ClientDetailsControllerSpec extends ControllerSpec
         "the input produces an error and is not in edit mode" in {
           setupMockNotLockedOut(testARN)
           mockView(
-            form = clientDetailsForm.bind(Map.empty[String, String]),
             postAction = routes.ClientDetailsController.submit(),
             isEditMode = false
           )
@@ -154,7 +151,6 @@ class ClientDetailsControllerSpec extends ControllerSpec
         "the input produces an error and is in edit mode" in {
           setupMockNotLockedOut(testARN)
           mockView(
-            form = clientDetailsForm.bind(Map.empty[String, String]),
             postAction = routes.ClientDetailsController.submit(editMode = true),
             isEditMode = true
           )
