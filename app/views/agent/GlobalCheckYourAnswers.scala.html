@@ -116,7 +116,9 @@
 
 @toSoleTraderBusinessesDisplay(soleTraderBusinesses: SoleTraderBusinesses) = {
 
-    <h2 class="govuk-heading-m">@messages("agent.global-check-your-answers.income-sources.subheading")</h2>
+    @if(soleTraderBusinesses.businesses.nonEmpty) {
+        <h2 class="govuk-heading-m">@messages("agent.global-check-your-answers.income-sources.subheading")</h2>
+    }
 
     @soleTraderBusinesses.businesses.map { business =>
 
