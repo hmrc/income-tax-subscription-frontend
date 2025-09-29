@@ -22,11 +22,12 @@ import models.usermatching.UserDetailsModel
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.data.FormError
+import utilities.UnitTestTrait
 import utilities.agent.TestConstants
 
 import java.time.LocalDate
 
-class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
+class ClientDetailsFormSpec extends PlaySpec with UnitTestTrait {
 
   import forms.agent.ClientDetailsForm._
 
@@ -143,43 +144,43 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
               val testInput = setupTestData(dob = DateModel("", "", ""))
 
               val errors = clientDetailsForm.bind(testInput).errors
-              errors must contain(FormError(s"$clientDateOfBirth", ErrorKey.dateAllEmpty))
+              errors must contain(FormError(s"$clientDateOfBirth-dateDay", ErrorKey.dateAllEmpty))
             }
             "has an empty day" in {
               val testInput = setupTestData(dob = DateModel("", "12", "1980"))
 
               val errors = clientDetailsForm.bind(testInput).errors
-              errors must contain(FormError(s"$clientDateOfBirth", ErrorKey.dateRequired, Seq("day")))
+              errors must contain(FormError(s"$clientDateOfBirth-dateDay", ErrorKey.dateRequired, Seq("day")))
             }
             "has an empty month" in {
               val testInput = setupTestData(dob = DateModel("31", "", "1980"))
 
               val errors = clientDetailsForm.bind(testInput).errors
-              errors must contain(FormError(s"$clientDateOfBirth", ErrorKey.dateRequired, Seq("month")))
+              errors must contain(FormError(s"$clientDateOfBirth-dateMonth", ErrorKey.dateRequired, Seq("month")))
             }
             "has an empty year" in {
               val testInput = setupTestData(dob = DateModel("31", "12", ""))
 
               val errors = clientDetailsForm.bind(testInput).errors
-              errors must contain(FormError(s"$clientDateOfBirth", ErrorKey.dateRequired, Seq("year")))
+              errors must contain(FormError(s"$clientDateOfBirth-dateYear", ErrorKey.dateRequired, Seq("year")))
             }
             "has an empty day and month" in {
               val testInput = setupTestData(dob = DateModel("", "", "1980"))
 
               val errors = clientDetailsForm.bind(testInput).errors
-              errors must contain(FormError(s"$clientDateOfBirth", ErrorKey.dateRequiredTwo, Seq("day", "month")))
+              errors must contain(FormError(s"$clientDateOfBirth-dateDay", ErrorKey.dateRequiredTwo, Seq("day", "month")))
             }
             "has an empty day and year" in {
               val testInput = setupTestData(dob = DateModel("", "1", ""))
 
               val errors = clientDetailsForm.bind(testInput).errors
-              errors must contain(FormError(s"$clientDateOfBirth", ErrorKey.dateRequiredTwo, Seq("day", "year")))
+              errors must contain(FormError(s"$clientDateOfBirth-dateDay", ErrorKey.dateRequiredTwo, Seq("day", "year")))
             }
             "has an empty month and year" in {
               val testInput = setupTestData(dob = DateModel("1", "", ""))
 
               val errors = clientDetailsForm.bind(testInput).errors
-              errors must contain(FormError(s"$clientDateOfBirth", ErrorKey.dateRequiredTwo, Seq("month", "year")))
+              errors must contain(FormError(s"$clientDateOfBirth-dateMonth", ErrorKey.dateRequiredTwo, Seq("month", "year")))
             }
           }
           "an invalid day is supplied" which {
@@ -234,7 +235,7 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
             val testInput = setupTestData(dob = DateModel("32", "13", "1980"))
 
             val errors = clientDetailsForm.bind(testInput).errors
-            errors must contain(FormError(s"$clientDateOfBirth", ErrorKey.dateInvalid))
+            errors must contain(FormError(s"$clientDateOfBirth-dateDay", ErrorKey.dateInvalid))
           }
           "error if a date not in the past is supplied" in {
             val futureDate: LocalDate = LocalDate.now
@@ -245,7 +246,8 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
           "not a leap year" in {
             val testInput = setupTestData(dob = DateModel("29", "2", "2025"))
 
-            clientDetailsForm.bind(testInput).errors must contain(FormError(clientDateOfBirth, ErrorKey.dateInvalid))
+            val errors = clientDetailsForm.bind(testInput).errors
+            errors must contain(FormError(s"$clientDateOfBirth-dateDay", ErrorKey.dateInvalid))
           }
         }
         "bind successfully" when {

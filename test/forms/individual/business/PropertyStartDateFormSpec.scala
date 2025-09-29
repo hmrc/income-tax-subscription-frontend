@@ -22,17 +22,17 @@ import forms.individual.business.PropertyStartDateForm.{propertyStartDateForm, s
 import forms.validation.testutils.DataMap.DataMap
 import models.DateModel
 import org.scalatestplus.play.PlaySpec
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.data.{Form, FormError}
-import utilities.AccountingPeriodUtil
+import utilities.{AccountingPeriodUtil, UnitTestTrait}
 
 import java.time.LocalDate
 
 
-class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
+class PropertyStartDateFormSpec extends PlaySpec with UnitTestTrait {
 
   def form: Form[DateModel] = {
-    propertyStartDateForm(PropertyStartDateForm.minStartDate, PropertyStartDateForm.maxStartDate, d => d.toString)
+    propertyStartDateForm(PropertyStartDateForm.minStartDate, PropertyStartDateForm.maxStartDate, d => d.toString
+    )
   }
 
   "The PropertyStartDateForm" should {
@@ -53,8 +53,8 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
         val errorContext: String = "error.property"
 
         "the date is not supplied to the map" in {
-          val expectedError:FormError=FormError(
-            key = s"${PropertyStartDateForm.startDate}",
+          val expectedError: FormError = FormError(
+            key = s"${PropertyStartDateForm.startDate}-dateDay",
             message = s"$errorContext.empty",
             args = Seq()
           )
@@ -97,8 +97,8 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
           error.copy(args = Seq.empty) mustBe expectedError
         }
         "it is missing the day" in {
-          val expectedError:FormError=FormError(
-            key = s"${PropertyStartDateForm.startDate}",
+          val expectedError: FormError = FormError(
+            key = s"${PropertyStartDateForm.startDate}-dateDay",
             message = s"$errorContext.required",
             args = Seq("day")
           )
@@ -107,8 +107,8 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
           test.errors must contain(expectedError)
         }
         "it is missing the month" in {
-          val expectedError:FormError=FormError(
-            key = s"${PropertyStartDateForm.startDate}",
+          val expectedError: FormError = FormError(
+            key = s"${PropertyStartDateForm.startDate}-dateMonth",
             message = s"$errorContext.required",
             args = Seq("month")
           )
@@ -116,8 +116,8 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
           test.errors must contain(expectedError)
         }
         "it is missing the year" in {
-          val expectedError:FormError=FormError(
-            key = s"${PropertyStartDateForm.startDate}",
+          val expectedError: FormError = FormError(
+            key = s"${PropertyStartDateForm.startDate}-dateYear",
             message = s"$errorContext.required",
             args = Seq("year")
           )
@@ -125,16 +125,16 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
           test.errors must contain(expectedError)
         }
         "it is missing multiple fields" in {
-          val expectedError:FormError=FormError(
-            key = s"${PropertyStartDateForm.startDate}",
+          val expectedError: FormError = FormError(
+            key = s"${PropertyStartDateForm.startDate}-dateDay",
             message = s"$errorContext.required.two",
-            args = Seq("day","month")
+            args = Seq("day", "month")
           )
           val test = form.bind(DataMap.govukDate(startDate)("", "", "2017"))
           test.errors must contain(expectedError)
         }
         "it has an invalid day" in {
-          val expectedError:FormError=FormError(
+          val expectedError: FormError = FormError(
             key = s"${PropertyStartDateForm.startDate}-${DateModelMapping.day}",
             message = s"$errorContext.invalid",
             args = Seq("day")
@@ -143,7 +143,7 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
           test.errors must contain(expectedError)
         }
         "it has an invalid month" in {
-          val expectedError:FormError=FormError(
+          val expectedError: FormError = FormError(
             key = s"${PropertyStartDateForm.startDate}-${DateModelMapping.month}",
             message = s"$errorContext.invalid",
             args = Seq("month")
@@ -152,7 +152,7 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
           test.errors must contain(expectedError)
         }
         "it has an invalid year" in {
-          val expectedError:FormError=FormError(
+          val expectedError: FormError = FormError(
             key = s"${PropertyStartDateForm.startDate}-${DateModelMapping.year}",
             message = s"$errorContext.year.length",
             args = Seq("year")
@@ -161,8 +161,8 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
           test.errors must contain(expectedError)
         }
         "it has multiple invalid fields" in {
-          val expectedError:FormError=FormError(
-            key = s"${PropertyStartDateForm.startDate}",
+          val expectedError: FormError = FormError(
+            key = s"${PropertyStartDateForm.startDate}-dateDay",
             message = s"$errorContext.invalid",
             args = Seq()
           )
@@ -171,7 +171,7 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
         }
         "the year provided is not the correct length" when {
           "the year is 3 digits" in {
-            val expectedError:FormError=FormError(
+            val expectedError: FormError = FormError(
               key = s"${PropertyStartDateForm.startDate}-${DateModelMapping.year}",
               message = s"$errorContext.year.length",
               args = Seq("year")
@@ -180,7 +180,7 @@ class PropertyStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
             test.errors must contain(expectedError)
           }
           "the year is 5 digits" in {
-            val expectedError:FormError=FormError(
+            val expectedError: FormError = FormError(
               key = s"${PropertyStartDateForm.startDate}-${DateModelMapping.year}",
               message = s"$errorContext.year.length",
               args = Seq("year")
