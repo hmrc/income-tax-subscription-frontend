@@ -17,16 +17,13 @@
 package controllers.agent.matching
 
 import auth.agent._
-import auth.individual.SignUpController
 import common.Constants.ITSASessionKeys.JourneyStateKey
 import config.AppConfig
+import controllers.SignUpBaseController
+import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import controllers.utils.ReferenceRetrieval
 import play.api.mvc._
 import services._
-import controllers.SignUpBaseController
-import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
-import uk.gov.hmrc.auth.core.AuthorisationException
-import uk.gov.hmrc.http.InternalServerException
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,8 +35,7 @@ class HomeController @Inject()(val auditingService: AuditingService,
                               (getEligibilityStatusService: GetEligibilityStatusService,
                                subscriptionDetailsService: SubscriptionDetailsService,
                                referenceRetrieval: ReferenceRetrieval,
-                               identify: IdentifierAction,
-                               journeyRefiner: ConfirmedClientJourneyRefiner)
+                               identify: IdentifierAction)
                               (implicit val ec: ExecutionContext,
                                mcc: MessagesControllerComponents) extends SignUpBaseController {
 

@@ -36,8 +36,7 @@ class HomeControllerSpec extends AgentControllerBaseSpec
   with MockReferenceRetrieval
   with FeatureSwitchingUtil
   with MockSubscriptionDetailsService
-  with MockIdentifierAction
-  with MockConfirmedClientJourneyRefiner{
+  with MockIdentifierAction{
 
   override val controllerName: String = "HomeControllerSpec"
 
@@ -53,8 +52,7 @@ class HomeControllerSpec extends AgentControllerBaseSpec
     mockGetEligibilityStatusService,
     mockSubscriptionDetailsService,
     mockReferenceRetrieval,
-    fakeIdentifierAction,
-    fakeConfirmedClientJourneyRefiner
+    fakeIdentifierAction
   )(executionContext, mockMessagesControllerComponents)
 
   override def beforeEach(): Unit = {
