@@ -47,7 +47,7 @@ class HomeController @Inject()(val auditingService: AuditingService,
     Future.successful(Redirect(controllers.agent.matching.routes.HomeController.index))
   }
 
-  def index: Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
+  def index: Action[AnyContent] = identify.async { implicit request =>
       if (request.session.get(JourneyStateKey).contains(AgentUserMatching.name)) {
         Future.successful(Redirect(routes.ClientDetailsController.show()))
       } else if (request.session.get(JourneyStateKey).contains(AgentSignUp.name)) {
