@@ -15,20 +15,14 @@
  *@
 
 @import config.AppConfig
-@import models.common.{IncomeSources => _, SoleTraderBusinesses => _, _}
 @import models._
-@import models.common.business.SelfEmploymentData
+@import models.common.{IncomeSources => _, SoleTraderBusinesses => _, _}
 @import services.AccountingPeriodService
 @import services.GetCompleteDetailsService._
-@import services.GetCompleteDetailsService.IncomeSources
-@import utilities.ImplicitDateFormatterImpl
-@import views.html.helpers.SignUpMyClientButton
-@import views.html.helpers.PageHeadingHelper
-@import views.html.helpers.SaveAndContinueButtonHelper
-@import views.html.helpers.{CheckYourAnswers, CheckYourAnswersRow}
-@import views.html.templates.AgentMainTemplate
-@import utilities.AccountingPeriodUtil
+@import utilities.{AccountingPeriodUtil, ImplicitDateFormatterImpl}
 @import utilities.UserMatchingSessionUtil.ClientDetails
+@import views.html.helpers.{PageHeadingHelper, SaveAndContinueButtonHelper, SignUpMyClientButton}
+@import views.html.templates.AgentMainTemplate
 
 @this(
     mainTemplate: AgentMainTemplate,
@@ -94,7 +88,7 @@
 
     @incomeSources.soleTraderBusinesses.map(toSoleTraderBusinessesDisplay)
     @if(incomeSources.ukProperty.nonEmpty || incomeSources.foreignProperty.nonEmpty) {
-        <h2 class="govuk-heading-m">@messages("agent.global-check-your-answers.income-sources.property.heading")</h2>
+        <h2 id="property-business-heading" class="govuk-heading-m">@messages("agent.global-check-your-answers.income-sources.property.heading")</h2>
     }
     @incomeSources.ukProperty.map(toUKPropertyDisplay)
     @incomeSources.foreignProperty.map(toForeignPropertyDisplay)
@@ -117,7 +111,7 @@
 @toSoleTraderBusinessesDisplay(soleTraderBusinesses: SoleTraderBusinesses) = {
 
     @if(soleTraderBusinesses.businesses.nonEmpty) {
-        <h2 class="govuk-heading-m">@messages("agent.global-check-your-answers.income-sources.subheading")</h2>
+        <h2 id="sole-trader-business-heading" class="govuk-heading-m">@messages("agent.global-check-your-answers.income-sources.subheading")</h2>
     }
 
     @soleTraderBusinesses.businesses.map { business =>
