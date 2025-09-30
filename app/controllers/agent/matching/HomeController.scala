@@ -25,6 +25,8 @@ import play.api.mvc._
 import services._
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
+import uk.gov.hmrc.auth.core.AuthorisationException
+import uk.gov.hmrc.http.InternalServerException
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -53,7 +55,7 @@ class HomeController @Inject()(val auditingService: AuditingService,
       } else {
         Future.successful(Redirect(controllers.agent.routes.AddAnotherClientController.addAnother()))
       }
-  }
+    }
 
   private def continueToSignUp(implicit request: Request[AnyContent], userArn: String): Future[Result] = {
     referenceRetrieval.getAgentReference flatMap { reference =>
