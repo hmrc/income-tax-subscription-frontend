@@ -30,7 +30,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class HomeController @Inject()(val auditingService: AuditingService,
-                               val authService: AuthService,
                                val appConfig: AppConfig)
                               (getEligibilityStatusService: GetEligibilityStatusService,
                                subscriptionDetailsService: SubscriptionDetailsService,
