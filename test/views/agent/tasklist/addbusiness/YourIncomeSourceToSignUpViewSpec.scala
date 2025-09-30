@@ -79,6 +79,12 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       }
     }
 
+    "have a lead paragraph" which {
+      "tells the agent not to add income from partnerships" in new ViewTest{
+        document.mainContent.select(".govuk-inset-text").text mustBe AgentIncomeSource.paragraph3
+      }
+    }
+
     "have a final paragraph" when {
       "the income sources were prepopulated and the income sources have not been confirmed" in new ViewTest(
         incomeSources = completeIncomeSources,
@@ -742,6 +748,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
   object AgentIncomeSource {
     val heading = "Your client’s income sources"
     val lead = s"Add all of these sources that your client gets income from. Check, change or add details to any that were started previously. Remove any that ceased before 6 April ${AccountingPeriodUtil.getCurrentTaxEndYear - 1}."
+    val paragraph3:String= "You do not need to add income from partnerships."
     val paragraph1: String = "If your client is self-employed, you must add all of their sole trader businesses if they have more than one. " +
       "If they have income from property you must add it, but this is limited to one UK property business."
     val paragraph1Overseas: String = "Your client can have up to 50 sole trader businesses. " +

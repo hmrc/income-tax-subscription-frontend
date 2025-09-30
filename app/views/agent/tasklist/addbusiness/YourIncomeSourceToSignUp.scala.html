@@ -31,7 +31,8 @@
     pageHeadingHelper: PageHeadingHelper,
     saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
     govukSummaryList : GovukSummaryList,
-    govukTag : GovukTag
+    govukTag : GovukTag,
+    govukInsetText: GovukInsetText
 )
 
 @(postAction: Call, backUrl: String, clientDetails: ClientDetails, incomeSources: IncomeSources, prepopulated: Boolean)(implicit request: Request[_], messages: Messages)
@@ -47,6 +48,10 @@
     <p class="govuk-body">
             @messages("agent.your-income-source.lead", (AccountingPeriodUtil.getCurrentTaxEndYear - 1).toString)
     </p>
+
+    @govukInsetText(InsetText(
+        content = Text(messages("agent.your-income-source.para-1"))
+    ))
 
     @selfEmploymentSection
 
