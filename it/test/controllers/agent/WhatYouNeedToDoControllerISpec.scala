@@ -19,7 +19,7 @@ package controllers.agent
 import common.Constants.ITSASessionKeys
 import config.featureswitch.FeatureSwitching
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
-import helpers.IntegrationTestConstants.{AgentURI, Auth, basGatewaySignIn, testNino}
+import helpers.IntegrationTestConstants.{AgentURI, basGatewaySignIn, testNino}
 import helpers.IntegrationTestModels.testAccountingYearCurrent
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub

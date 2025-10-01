@@ -23,10 +23,10 @@ import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnecto
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import helpers.servicemocks.{EligibilityStub, PrePopStub, ThrottlingStub}
+import models.EligibilityStatus
 import models.agent.JourneyStep.SignPosted
 import models.common.business._
 import models.common.{OverseasPropertyModel, PropertyModel}
-import models.{DateModel, EligibilityStatus}
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, NO_CONTENT, OK, SEE_OTHER}
 import play.api.libs.json.{JsBoolean, JsString, Json}
 import play.api.{Configuration, Environment}

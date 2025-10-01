@@ -17,6 +17,7 @@
 package connectors
 
 
+import common.Constants.{utrEnrolmentIdentifierKey, utrEnrolmentName}
 import connectors.agent.EnrolmentStoreProxyConnector
 import connectors.agent.httpparsers.AllocateEnrolmentResponseHttpParser.{EnrolFailure, EnrolSuccess}
 import connectors.agent.httpparsers.AssignEnrolmentToUserHttpParser.{EnrolmentAssigned, EnrolmentAssignmentFailure}
@@ -30,7 +31,6 @@ import helpers.servicemocks.EnrolmentStoreProxyStub._
 import models.common.subscription.EnrolmentKey
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
-import common.Constants.{utrEnrolmentIdentifierKey, utrEnrolmentName}
 
 
 class EnrolmentStoreProxyConnectorISpec extends ComponentSpecBase {

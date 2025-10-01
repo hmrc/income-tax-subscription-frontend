@@ -16,14 +16,12 @@
 
 package helpers
 
-import _root_.common.Constants.ITSASessionKeys
 import helpers.IntegrationTestConstants._
 import play.api.libs.crypto.CookieSigner
 import uk.gov.hmrc.crypto.{PlainText, SymmetricCryptoFactory}
 import uk.gov.hmrc.http.SessionKeys
 
 import java.net.URLEncoder
-import java.time.LocalDateTime
 
 trait SessionCookieBaker {
   private val cookieKey = "gvBoGdgzqG1AarzF1LY0zQ=="
