@@ -16,16 +16,18 @@
 
 package testonly.form.individual
 
-import forms.formatters.DateModelMapping
+import forms.formatters.LocalDateMapping
 import forms.validation.Constraints._
 import forms.validation.utils.ConstraintUtil._
 import forms.validation.utils.MappingUtil._
+import models.DateModel
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.data.validation.{Constraint, Invalid, Valid}
+import play.api.i18n.Messages
 import testonly.models.UserToStubModel
 
-object UserToStubForm {
+object UserToStubForm extends LocalDateMapping {
 
   val userFirstName = "userFirstName"
   val userLastName = "userLastName"
@@ -35,6 +37,8 @@ object UserToStubForm {
 
   val nameMaxLength = 105
 
+  val errorMessage = "error.message"
+
   val firstNameNonEmpty: Constraint[String] = nonEmpty("error.user-details.first-name.empty")
   val lastNameNonEmpty: Constraint[String] = nonEmpty("error.user-details.last-name.empty")
 
@@ -43,8 +47,6 @@ object UserToStubForm {
 
   val firstNameMaxLength: Constraint[String] = maxLength(nameMaxLength, "error.user-details.first-name.max-length")
   val lastNameMaxLength: Constraint[String] = maxLength(nameMaxLength, "error.user-details.last-name.max-length")
-
-  val emptyUtr: Constraint[String] = nonEmpty("You must enter an SA UTR")
 
   val utrRegex = """^(?:[ \t]*\d[ \t]*){10}$"""
 
@@ -56,13 +58,19 @@ object UserToStubForm {
       case _ => Valid
     }
 
-  val userDetailsForm: Form[UserToStubModel] = Form(
+  def userDetailsForm(implicit messages: Messages): Form[UserToStubModel] = Form(
     mapping(
       userFirstName -> oText.toText.verifying(firstNameNonEmpty andThen firstNameMaxLength andThen firstNameInvalid),
       userLastName -> oText.toText.verifying(lastNameNonEmpty andThen lastNameMaxLength andThen lastNameInvalid),
       userNino -> oText.toText.verifying(emptyNino andThen validateNino),
       userSautr -> oText.verifying(validateUtr),
-      userDateOfBirth -> DateModelMapping.dateModelMapping(isAgent = false, "user-details.date-of-birth", None, None, None)
+      userDateOfBirth -> localDate(
+        invalidKey = errorMessage,
+        allRequiredKey = errorMessage,
+        twoRequiredKey = errorMessage,
+        requiredKey = errorMessage,
+        invalidYearKey = errorMessage)
+        .transform(DateModel.dateConvert, DateModel.dateConvert)
     )(UserToStubModel.apply)(UserToStubModel.unapply)
   )
 
