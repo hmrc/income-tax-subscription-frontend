@@ -77,22 +77,15 @@ class ClientCanSignUpViewSpec extends ViewSpec {
       mainContent.getNthParagraph(2).text mustBe ClientCanSignUpMessages.para2
     }
 
-    "have a first bullet list" in new ViewTest {
-      def bulletList: Element = mainContent.selectNth("ul", 1)
-
-      bulletList.selectNth("li", 1).text mustBe ClientCanSignUpMessages.bullet1
-
-    }
-
     "have the third paragraph" in new ViewTest {
       mainContent.getNthParagraph(3).text mustBe ClientCanSignUpMessages.para3
     }
 
-    "have a second bullet list" in new ViewTest {
-      def bulletList: Element = mainContent.selectNth("ul", 2)
+    "have a first bullet list" in new ViewTest {
+      def bulletList: Element = mainContent.selectNth("ul", 1)
 
-      bulletList.selectNth("li", 1).text mustBe ClientCanSignUpMessages.bullet3
-      bulletList.selectNth("li", 2).text mustBe ClientCanSignUpMessages.bullet4
+      bulletList.selectNth("li", 1).text mustBe ClientCanSignUpMessages.bullet1
+      bulletList.selectNth("li", 2).text mustBe ClientCanSignUpMessages.bullet2
 
     }
 
@@ -104,11 +97,11 @@ class ClientCanSignUpViewSpec extends ViewSpec {
       mainContent.getNthParagraph(4).text mustBe ClientCanSignUpMessages.para4
     }
 
-    "have a third bullet list" in new ViewTest {
-      def bulletList: Element = mainContent.selectNth("ul", 3)
+    "have a second bullet list" in new ViewTest {
+      def bulletList: Element = mainContent.selectNth("ul", 2)
 
-      bulletList.selectNth("li", 1).text mustBe ClientCanSignUpMessages.bullet5
-      bulletList.selectNth("li", 2).text mustBe ClientCanSignUpMessages.bullet6
+      bulletList.selectNth("li", 1).text mustBe ClientCanSignUpMessages.bullet3
+      bulletList.selectNth("li", 2).text mustBe ClientCanSignUpMessages.bullet4
 
     }
 
@@ -128,15 +121,14 @@ class ClientCanSignUpViewSpec extends ViewSpec {
     val heading = "You can sign up this client"
     val para1 = "You can sign up this client for Making Tax Digital for Income Tax now."
     val subheading1 = "What happens next"
-    val para2 = "For each of your client’s businesses or income from property, you’ll need their:"
-    val bullet1 = "start date - if it started within the last 2 tax years"
+    val para2 = "For each of your client’s businesses or income from property, you’ll need their start date if it started within the last 2 tax years."
     val para3 = "If they’re a sole trader, you’ll also need your client’s:"
-    val bullet3 = "business trading name and address"
-    val bullet4 = "trade (the nature of their business)"
+    val bullet1 = "business trading name and address"
+    val bullet2 = "trade (the nature of their business)"
     val subheading2 = "If you do not sign up your client now"
     val para4 = "If you do not sign up your client now, you’ll need to:"
-    val bullet5 = "make sure they continue to submit their Self Assessment tax returns as normal"
-    val bullet6 = "re-enter their details if you return to sign them up later"
+    val bullet3 = "make sure they continue to submit their Self Assessment tax returns as normal"
+    val bullet4 = "re-enter their details if you return to sign them up later"
 
     val continueButton = "Sign up this client"
     val signUpAnotherClient = "Or you can check if you can sign up another client. We will not save the details you entered about FirstName LastName."
