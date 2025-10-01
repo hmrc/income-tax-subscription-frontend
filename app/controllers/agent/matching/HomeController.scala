@@ -29,7 +29,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class HomeController @Inject()(val auditingService: AuditingService)
+class HomeController @Inject()
                               (getEligibilityStatusService: GetEligibilityStatusService,
                                subscriptionDetailsService: SubscriptionDetailsService,
                                referenceRetrieval: ReferenceRetrieval,

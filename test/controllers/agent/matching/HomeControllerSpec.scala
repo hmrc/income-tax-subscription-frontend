@@ -39,9 +39,7 @@ class HomeControllerSpec extends ControllerSpec
   with MockReferenceRetrieval
   with FeatureSwitchingUtil
   with MockSubscriptionDetailsService
-  with MockIdentifierAction{
-
- val controllerName: String = "HomeControllerSpec"
+  with MockIdentifierAction {
 
   val userMatchingRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
     ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name
@@ -52,10 +50,7 @@ class HomeControllerSpec extends ControllerSpec
     ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true"
   )
 
-  private def testHomeController() = new HomeController(
-    mockAuditingService
-  )(
-    mockGetEligibilityStatusService,
+  private def testHomeController() = new HomeController(mockGetEligibilityStatusService,
     mockSubscriptionDetailsService,
     mockReferenceRetrieval,
     fakeIdentifierAction
