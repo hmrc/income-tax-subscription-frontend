@@ -16,13 +16,10 @@
 
 package testonly.controllers.agent
 
-import auth.agent.StatelessController
 import common.Constants.ITSASessionKeys
-import config.AppConfig
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AuditingService, AuthService}
 import controllers.SignUpBaseController
 import controllers.agent.actions.IdentifierAction
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

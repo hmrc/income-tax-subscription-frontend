@@ -43,10 +43,6 @@ class HomeControllerSpec extends ControllerSpec
 
  val controllerName: String = "HomeControllerSpec"
 
-   val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "index" -> testHomeController().index()
-  )
-
   val userMatchingRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
     ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name
   )
@@ -57,8 +53,7 @@ class HomeControllerSpec extends ControllerSpec
   )
 
   private def testHomeController() = new HomeController(
-    mockAuditingService,
-    MockConfig
+    mockAuditingService
   )(
     mockGetEligibilityStatusService,
     mockSubscriptionDetailsService,
