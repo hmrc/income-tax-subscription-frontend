@@ -124,6 +124,20 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       }
     }
 
+    "have the correct income source headings" when {
+      "only sole trader businesses are present" in {
+        val mainContent: Element = document(details = minDetails(soleTraderBusinesses = Some(selfEmploymentIncomeSource()))).mainContent
+        mainContent.selectHead("#sole-trader-business-heading").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.heading
+        mainContent.selectOptionally("#property-business-heading") mustBe None
+      }
+
+      "only property income sources are present" in {
+        val mainContent: Element = document(details = minDetails(ukProperty = Some(ukPropertyIncomeSource()))).mainContent
+        mainContent.selectOptionally("#sole-trader-business-heading") mustBe None
+        mainContent.selectHead("#property-business-heading").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.Property.heading
+      }
+    }
+
     "have the correct income sources displayed" when {
 
       "no income sources are present" in {
