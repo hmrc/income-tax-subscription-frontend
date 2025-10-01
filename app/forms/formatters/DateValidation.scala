@@ -20,8 +20,8 @@ import cats.data.Validated.Invalid
 import cats.data.{NonEmptyList, Validated, ValidatedNel}
 import cats.implicits._
 import forms.formatters.DateErrorMapping._
-import forms.formatters.DateModelMapping._
 import models.DateModel
+import models.DateModel.HtmlIds
 
 import java.time.LocalDate
 import scala.util.{Failure, Success, Try}
@@ -29,7 +29,7 @@ import scala.util.{Failure, Success, Try}
 object DateValidation {
   implicit def ordering[A <: DateField]: Ordering[A] = Ordering.by(_.toString)
 
-  type DateFormValidation[A] = ValidatedNel[FieldValidationError, A]
+  private type DateFormValidation[A] = ValidatedNel[FieldValidationError, A]
 
   final case class Day(value: Int)
   final case class Month(value: Int)

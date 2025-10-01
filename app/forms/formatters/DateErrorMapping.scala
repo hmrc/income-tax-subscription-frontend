@@ -16,7 +16,7 @@
 
 package forms.formatters
 
-import forms.formatters.DateModelMapping.{DateModelValidation, HtmlIds}
+import models.DateModel.{DateModelValidation, HtmlIds}
 import forms.formatters.DateValidation.{DateField, DayField, MonthField, YearField}
 import play.api.data.FormError
 

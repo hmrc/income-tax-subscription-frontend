@@ -19,7 +19,7 @@ package forms.formatters
 import cats.data.NonEmptyList
 import cats.data.Validated.{Invalid, Valid}
 import forms.formatters.DateErrorMapping._
-import forms.formatters.DateModelMapping.HtmlIds
+import models.DateModel.HtmlIds
 import forms.formatters.DateValidation.{Day, DayField, DayMonth, Month, MonthField, ValidDate, Year, YearField}
 import models.DateModel
 import org.scalatest.matchers.must.Matchers

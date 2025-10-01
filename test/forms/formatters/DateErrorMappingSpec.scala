@@ -17,7 +17,7 @@
 package forms.formatters
 
 import forms.formatters.DateErrorMapping._
-import forms.formatters.DateModelMapping.{DateModelValidation, HtmlIds}
+import models.DateModel.{DateModelValidation, HtmlIds}
 import forms.formatters.DateValidation.{DayField, MonthField, YearField}
 import models.DateModel
 import org.scalatest.matchers.must.Matchers

@@ -16,12 +16,10 @@
 
 package views.agent.matching.mocks
 
-import models.usermatching.UserDetailsModel
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.data.Form
 import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
 import views.html.agent.matching.ClientDetails
