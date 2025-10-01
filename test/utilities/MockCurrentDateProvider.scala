@@ -16,10 +16,10 @@
 
 package utilities
 
-import java.time.LocalDate
-
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
+
+import java.time.LocalDate
 
 trait MockCurrentDateProvider  extends MockitoSugar {
   val mockCurrentDateProvider: CurrentDateProvider = mock[CurrentDateProvider]

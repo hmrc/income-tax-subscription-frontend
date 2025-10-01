@@ -18,8 +18,8 @@ package forms.validation
 
 import forms.validation.utils.ConstraintUtil._
 import forms.validation.utils.Patterns
-import play.api.data.validation.{Constraint, Invalid, Valid}
 import models.DateModel
+import play.api.data.validation.{Constraint, Invalid, Valid}
 
 import java.time.LocalDate
 import scala.util.{Failure, Success, Try}

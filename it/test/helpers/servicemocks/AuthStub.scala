@@ -18,11 +18,11 @@ package helpers.servicemocks
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.Constants
+import common.Constants._
 import helpers.IntegrationTestConstants._
 import play.api.http.Status._
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel}
-import Constants._
 
 object AuthStub extends WireMockMethods {
   def stubAuthOrgAffinity(): StubMapping = {

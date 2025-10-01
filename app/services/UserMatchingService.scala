@@ -19,10 +19,10 @@ package services
 import config.AppConfig
 import connectors.usermatching.AuthenticatorConnector
 import connectors.usermatching.httpparsers.MatchUserHttpParser.MatchUserResponse
-import javax.inject.{Inject, Singleton}
 import models.usermatching.UserDetailsModel
 import uk.gov.hmrc.http.HeaderCarrier
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 

@@ -17,7 +17,6 @@
 package forms.formatters
 
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.data.{Form, FormError}
 import utilities.UnitTestTrait
 

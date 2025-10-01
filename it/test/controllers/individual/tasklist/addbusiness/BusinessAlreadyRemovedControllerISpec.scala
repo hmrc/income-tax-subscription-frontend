@@ -18,9 +18,9 @@ package controllers.individual.tasklist.addbusiness
 
 import helpers.ComponentSpecBase
 import helpers.servicemocks.AuthStub
+import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
-import play.api.http.Status.{OK, SEE_OTHER}
 
 class BusinessAlreadyRemovedControllerISpec extends ComponentSpecBase with AuthRedirects {
 

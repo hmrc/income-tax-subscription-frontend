@@ -16,11 +16,9 @@
 
 package forms.agent
 
-import forms.formatters.DateModelMapping._
 import models.DateModel
 import models.usermatching.UserDetailsModel
 import org.scalatestplus.play.PlaySpec
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.data.FormError
 import utilities.UnitTestTrait
 import utilities.agent.TestConstants
@@ -42,9 +40,9 @@ class ClientDetailsFormSpec extends PlaySpec with UnitTestTrait {
                     dob: DateModel = dob
                    ): Map[String, String] = {
     Map(
-      s"$clientDateOfBirth-$day" -> dob.day,
-      s"$clientDateOfBirth-$month" -> dob.month,
-      s"$clientDateOfBirth-$year" -> dob.year,
+      s"$clientDateOfBirth-dateDay" -> dob.day,
+      s"$clientDateOfBirth-dateMonth" -> dob.month,
+      s"$clientDateOfBirth-dateYear" -> dob.year,
       clientFirstName -> fname,
       clientNino -> nino,
       clientLastName -> lname

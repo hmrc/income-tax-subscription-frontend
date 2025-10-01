@@ -16,8 +16,6 @@
 
 package messagelookup.individual
 
-import models.DateModel
-
 object MessageLookup {
 
   object Base {

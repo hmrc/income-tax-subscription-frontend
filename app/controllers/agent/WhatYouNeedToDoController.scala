@@ -21,8 +21,8 @@ import config.featureswitch.FeatureSwitch.EmailCaptureConsent
 import config.featureswitch.FeatureSwitching
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
-import models.status.MandationStatus.Mandated
 import models._
+import models.status.MandationStatus.Mandated
 import play.api.mvc._
 import services._
 import uk.gov.hmrc.http.InternalServerException

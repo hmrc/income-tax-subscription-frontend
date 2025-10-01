@@ -17,6 +17,7 @@
 package helpers.agent
 
 import play.api.libs.json.{JsValue, Writes}
+
 import scala.language.implicitConversions
 
 object ImplicitConversions {

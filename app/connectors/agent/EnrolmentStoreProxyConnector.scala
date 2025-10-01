@@ -24,12 +24,10 @@ import connectors.agent.httpparsers.EnrolmentStoreProxyHttpParser.EnrolmentStore
 import connectors.agent.httpparsers.QueryUsersHttpParser.QueryUsersResponse
 import connectors.agent.httpparsers.UpsertEnrolmentResponseHttpParser.UpsertEnrolmentResponse
 import models.common.subscription.EnrolmentKey
+import play.api.libs.json.{JsObject, Json}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import javax.inject.{Inject, Singleton}
-import play.api.libs.json.{JsObject, Json}
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpClient
-
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton

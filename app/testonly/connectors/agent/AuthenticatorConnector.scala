@@ -19,11 +19,10 @@
 package testonly.connectors.agent
 
 import connectors.RawResponseReads
-import javax.inject.{Inject, Singleton}
 import testonly.TestOnlyAppConfig
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton

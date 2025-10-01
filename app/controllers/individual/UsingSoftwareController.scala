@@ -25,7 +25,7 @@ import models.{No, Yes, YesNo}
 import play.api.data.Form
 import play.api.mvc._
 import play.twirl.api.Html
-import services.{AuditingService, AuthService, GetEligibilityStatusService, MandationStatusService, SessionDataService}
+import services._
 import uk.gov.hmrc.http.InternalServerException
 import views.html.individual.UsingSoftware
 

@@ -16,14 +16,14 @@
 
 package models
 
-import java.time.format.{DateTimeFormatter, ResolverStyle}
-import java.time.{LocalDate, ZoneId}
-import java.util.Date
-
 import com.ibm.icu.text.SimpleDateFormat
 import models.DateModel._
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
+
+import java.time.format.{DateTimeFormatter, ResolverStyle}
+import java.time.{LocalDate, ZoneId}
+import java.util.Date
 
 case class DateModel(day: String, month: String, year: String) {
 

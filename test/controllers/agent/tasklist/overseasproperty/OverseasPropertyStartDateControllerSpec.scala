@@ -21,7 +21,6 @@ import connectors.httpparser.PostSubscriptionDetailsHttpParser.{PostSubscription
 import controllers.ControllerSpec
 import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}
 import forms.agent.OverseasPropertyStartDateForm
-import forms.formatters.DateModelMapping
 import models.DateModel
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -156,9 +155,9 @@ class OverseasPropertyStartDateControllerSpec extends ControllerSpec
               .withHeaders("Content-Type" -> "application/x-www-form-urlencoded")
               .withMethod(POST)
               .withFormUrlEncodedBody(
-                s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.day}" -> date.day,
-                s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.month}" -> date.month,
-                s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.year}" -> date.year
+                s"${OverseasPropertyStartDateForm.startDate}-dateDay" -> date.day,
+                s"${OverseasPropertyStartDateForm.startDate}-dateMonth" -> date.month,
+                s"${OverseasPropertyStartDateForm.startDate}-dateYear" -> date.year
               )
           )
 
@@ -173,9 +172,9 @@ class OverseasPropertyStartDateControllerSpec extends ControllerSpec
               .withHeaders("Content-Type" -> "application/x-www-form-urlencoded")
               .withMethod(POST)
               .withFormUrlEncodedBody(
-                s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.day}" -> date.day,
-                s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.month}" -> date.month,
-                s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.year}" -> date.year
+                s"${OverseasPropertyStartDateForm.startDate}-dateDay" -> date.day,
+                s"${OverseasPropertyStartDateForm.startDate}-dateMonth" -> date.month,
+                s"${OverseasPropertyStartDateForm.startDate}-dateYear" -> date.year
               )
           )
 
@@ -190,9 +189,9 @@ class OverseasPropertyStartDateControllerSpec extends ControllerSpec
               .withHeaders("Content-Type" -> "application/x-www-form-urlencoded")
               .withMethod(POST)
               .withFormUrlEncodedBody(
-                s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.day}" -> date.day,
-                s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.month}" -> date.month,
-                s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.year}" -> date.year
+                s"${OverseasPropertyStartDateForm.startDate}-dateDay" -> date.day,
+                s"${OverseasPropertyStartDateForm.startDate}-dateMonth" -> date.month,
+                s"${OverseasPropertyStartDateForm.startDate}-dateYear" -> date.year
               )
           )
 
@@ -210,9 +209,9 @@ class OverseasPropertyStartDateControllerSpec extends ControllerSpec
             .withHeaders("Content-Type" -> "application/x-www-form-urlencoded")
             .withMethod(POST)
             .withFormUrlEncodedBody(
-              s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.day}" -> date.day,
-              s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.month}" -> date.month,
-              s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.year}" -> date.year
+              s"${OverseasPropertyStartDateForm.startDate}-dateDay" -> date.day,
+              s"${OverseasPropertyStartDateForm.startDate}-dateMonth" -> date.month,
+              s"${OverseasPropertyStartDateForm.startDate}-dateYear" -> date.year
             )
         )
 

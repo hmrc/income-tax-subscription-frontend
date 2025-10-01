@@ -19,11 +19,10 @@ package services.agent
 import connectors.agent.EnrolmentStoreProxyConnector
 import connectors.agent.httpparsers.EnrolmentStoreProxyHttpParser
 import models.common.subscription.EnrolmentKey
-
-import javax.inject.{Inject, Singleton}
 import services.agent.CheckEnrolmentAllocationService._
 import uk.gov.hmrc.http.HeaderCarrier
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton

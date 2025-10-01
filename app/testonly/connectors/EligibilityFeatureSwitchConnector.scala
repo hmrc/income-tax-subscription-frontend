@@ -17,12 +17,11 @@
 package testonly.connectors
 
 import config.AppConfig
-import javax.inject.Inject
 import testonly.models.FeatureSwitchSetting
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class EligibilityFeatureSwitchConnector @Inject()(http: HttpClient, appConfig: AppConfig)

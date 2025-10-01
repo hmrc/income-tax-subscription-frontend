@@ -17,12 +17,9 @@
 package forms.agent
 
 import forms.agent.PropertyStartDateForm.propertyStartDateForm
-import forms.formatters.DateModelMapping
 import models.DateModel
 import org.scalatestplus.play.PlaySpec
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.data.{Form, FormError}
-import play.api.i18n.{Lang, MessagesApi, MessagesImpl}
 import utilities.UnitTestTrait
 
 import java.time.LocalDate
@@ -40,9 +37,9 @@ class PropertyStartDateFormSpec extends PlaySpec with UnitTestTrait {
 
   def boundForm(day: String, month: String, year: String): Form[DateModel] = {
     form.bind(Map(
-      s"${PropertyStartDateForm.startDate}-${DateModelMapping.day}" -> day,
-      s"${PropertyStartDateForm.startDate}-${DateModelMapping.month}" -> month,
-      s"${PropertyStartDateForm.startDate}-${DateModelMapping.year}" -> year
+      s"${PropertyStartDateForm.startDate}-dateDay" -> day,
+      s"${PropertyStartDateForm.startDate}-dateMonth" -> month,
+      s"${PropertyStartDateForm.startDate}-dateYear" -> year
     ))
   }
 
