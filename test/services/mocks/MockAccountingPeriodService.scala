@@ -16,12 +16,12 @@
 
 package services.mocks
 
-import java.time.LocalDate
-
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import services.AccountingPeriodService
+
+import java.time.LocalDate
 
 trait MockAccountingPeriodService extends BeforeAndAfterEach with MockitoSugar {
   self: Suite =>

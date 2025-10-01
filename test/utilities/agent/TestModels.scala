@@ -17,9 +17,9 @@
 package utilities.agent
 
 
+import models._
 import models.common._
 import models.usermatching.UserDetailsModel
-import models._
 
 object TestModels {
 

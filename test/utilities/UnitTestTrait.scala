@@ -31,9 +31,9 @@ import play.api.test.FakeRequest
 import play.twirl.api.Html
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.language.LanguageUtils
-import scala.language.implicitConversions
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.language.implicitConversions
 
 trait UnitTestTrait extends PlaySpec
   with GuiceOneServerPerSuite

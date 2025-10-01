@@ -19,7 +19,7 @@ package controllers.individual
 import config.featureswitch.FeatureSwitch.EmailCaptureConsent
 import config.featureswitch.FeatureSwitching
 import models.status.MandationStatus.{Mandated, Voluntary}
-import models.{Current, EligibilityStatus, Next, No, Yes}
+import models._
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

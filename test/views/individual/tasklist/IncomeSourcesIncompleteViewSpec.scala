@@ -19,8 +19,8 @@ package views.individual.tasklist
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.Html
-import views.html.individual.tasklist.IncomeSourcesIncomplete
 import utilities.ViewSpec
+import views.html.individual.tasklist.IncomeSourcesIncomplete
 
 class IncomeSourcesIncompleteViewSpec extends ViewSpec {
   "IncomeSourcesIncomplete" must {

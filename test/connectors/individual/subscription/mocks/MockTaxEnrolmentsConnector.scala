@@ -19,7 +19,7 @@ package connectors.individual.subscription.mocks
 import connectors.individual.subscription.TaxEnrolmentsConnector
 import connectors.individual.subscription.httpparsers.AllocateEnrolmentResponseHttpParser.AllocateEnrolmentResponse
 import connectors.individual.subscription.httpparsers.UpsertEnrolmentResponseHttpParser.UpsertEnrolmentResponse
-import models.common.subscription.{EmacEnrolmentRequest, EnrolFailure, EnrolSuccess, EnrolmentKey, EnrolmentVerifiers, KnownFactsFailure, KnownFactsSuccess}
+import models.common.subscription._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar

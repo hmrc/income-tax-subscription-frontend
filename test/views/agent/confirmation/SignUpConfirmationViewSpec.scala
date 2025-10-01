@@ -16,6 +16,7 @@
 
 package views.agent.confirmation
 
+import config.featureswitch.FeatureSwitch.EmailCaptureConsent
 import models.DateModel
 import models.common.AccountingPeriodModel
 import org.jsoup.Jsoup
@@ -23,7 +24,6 @@ import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.Html
 import utilities.{AccountingPeriodUtil, ImplicitDateFormatter, ImplicitDateFormatterImpl, ViewSpec}
 import views.html.agent.confirmation.SignUpConfirmation
-import config.featureswitch.FeatureSwitch.EmailCaptureConsent
 
 class SignUpConfirmationViewSpec extends ViewSpec {
 
