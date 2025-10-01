@@ -19,7 +19,6 @@ package controllers.agent.matching
 import controllers.ControllerSpec
 import controllers.agent.actions.mocks.{MockClientDetailsJourneyRefiner, MockIdentifierAction}
 import forms.agent.ClientDetailsForm
-import forms.formatters.DateModelMapping
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import play.api.i18n.Messages
 import play.api.mvc.Results.Redirect
@@ -110,9 +109,9 @@ class ClientDetailsControllerSpec extends ControllerSpec
           request.withMethod("POST").withFormUrlEncodedBody(
             ClientDetailsForm.clientFirstName -> "FirstName",
             ClientDetailsForm.clientLastName -> "LastName",
-            s"${ClientDetailsForm.clientDateOfBirth}-${DateModelMapping.day}" -> "1",
-            s"${ClientDetailsForm.clientDateOfBirth}-${DateModelMapping.month}" -> "2",
-            s"${ClientDetailsForm.clientDateOfBirth}-${DateModelMapping.year}" -> "1980",
+            s"${ClientDetailsForm.clientDateOfBirth}-dateDay" -> "1",
+            s"${ClientDetailsForm.clientDateOfBirth}-dateMonth" -> "2",
+            s"${ClientDetailsForm.clientDateOfBirth}-dateYear" -> "1980",
             ClientDetailsForm.clientNino -> "AA000011D"
           )
         )

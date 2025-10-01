@@ -20,8 +20,6 @@ import connectors.httpparser.DeleteSessionDataHttpParser.DeleteSessionDataSucces
 import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataSuccessResponse
 import connectors.httpparser.{DeleteSessionDataHttpParser, GetSessionDataHttpParser, SaveSessionDataHttpParser}
 import models.Yes
-
-import scala.concurrent.ExecutionContext.Implicits.global
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status._
 import play.api.mvc.{AnyContent, Call}
@@ -29,6 +27,8 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{INTERNAL_SERVER_ERROR, await, defaultAwaitTimeout}
 import services.mocks.MockSessionDataService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class SessionClearingServiceSpec extends PlaySpec with MockSessionDataService {
 

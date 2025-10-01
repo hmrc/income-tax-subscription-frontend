@@ -17,7 +17,7 @@
 package connectors.usermatching.mocks
 
 import connectors.usermatching.CitizenDetailsConnector
-import models.usermatching.{CitizenDetailsFailureResponse, CitizenDetails}
+import models.usermatching.{CitizenDetails, CitizenDetailsFailureResponse}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach

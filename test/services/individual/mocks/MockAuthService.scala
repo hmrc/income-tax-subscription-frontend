@@ -25,8 +25,8 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, Retrieval, ~}
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.individual.TestConstants.testCredId
 import utilities.individual.TestConstants
+import utilities.individual.TestConstants.testCredId
 
 import scala.concurrent.{ExecutionContext, Future}
 

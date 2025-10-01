@@ -19,11 +19,10 @@ package connectors.individual.subscription
 import config.AppConfig
 import connectors.individual.subscription.httpparsers.AllocateEnrolmentResponseHttpParser._
 import connectors.individual.subscription.httpparsers.UpsertEnrolmentResponseHttpParser._
-import javax.inject.Inject
 import models.common.subscription.{EmacEnrolmentRequest, EnrolmentKey, EnrolmentVerifiers}
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TaxEnrolmentsConnector @Inject()(appConfig: AppConfig,

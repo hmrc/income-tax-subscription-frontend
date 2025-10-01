@@ -16,11 +16,11 @@
 
 package models.usermatching
 
-import java.time.LocalDate
-
 import models.DateModel
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.domain.Nino
+
+import java.time.LocalDate
 
 
 case class UserMatchRequestModel(firstName: String, lastName: String, dateOfBirth: LocalDate, nino: Nino)

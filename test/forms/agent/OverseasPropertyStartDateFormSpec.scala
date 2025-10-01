@@ -17,12 +17,9 @@
 package forms.agent
 
 import forms.agent.OverseasPropertyStartDateForm.overseasPropertyStartDateForm
-import forms.formatters.DateModelMapping
 import models.DateModel
 import org.scalatestplus.play.PlaySpec
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.data.{Form, FormError}
-import play.api.i18n.{Lang, MessagesApi, MessagesImpl}
 import utilities.UnitTestTrait
 
 import java.time.LocalDate
@@ -39,9 +36,9 @@ class OverseasPropertyStartDateFormSpec extends PlaySpec with UnitTestTrait  {
 
   def boundForm(day: String, month: String, year: String): Form[DateModel] = {
     form.bind(Map(
-      s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.day}" -> day,
-      s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.month}" -> month,
-      s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.year}" -> year
+      s"${OverseasPropertyStartDateForm.startDate}-dateDay" -> day,
+      s"${OverseasPropertyStartDateForm.startDate}-dateMonth" -> month,
+      s"${OverseasPropertyStartDateForm.startDate}-dateYear" -> year
     ))
   }
 
@@ -63,7 +60,7 @@ class OverseasPropertyStartDateFormSpec extends PlaySpec with UnitTestTrait  {
     "return a form error" when {
       "a date must be a real date for day" in {
         val expectedError: FormError = FormError(
-          key = s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.day}",
+          key = s"${OverseasPropertyStartDateForm.startDate}-dateDay",
           message = s"$errorContext.invalid",
           args = Seq("day")
         )
@@ -73,7 +70,7 @@ class OverseasPropertyStartDateFormSpec extends PlaySpec with UnitTestTrait  {
       }
       "a date must be a real date for month" in {
         val expectedError: FormError = FormError(
-          key = s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.month}",
+          key = s"${OverseasPropertyStartDateForm.startDate}-dateMonth",
           message = s"$errorContext.invalid",
           args = Seq("month")
         )
@@ -83,7 +80,7 @@ class OverseasPropertyStartDateFormSpec extends PlaySpec with UnitTestTrait  {
       }
       "a date must be a real date for year" in {
         val expectedError: FormError = FormError(
-          key = s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.year}",
+          key = s"${OverseasPropertyStartDateForm.startDate}-dateYear",
           message = s"$errorContext.year.length",
           args = Seq("year")
         )
@@ -93,7 +90,7 @@ class OverseasPropertyStartDateFormSpec extends PlaySpec with UnitTestTrait  {
       }
       "a year must include 4 numbers" in {
         val expectedError: FormError = FormError(
-          key = s"${OverseasPropertyStartDateForm.startDate}-${DateModelMapping.year}",
+          key = s"${OverseasPropertyStartDateForm.startDate}-dateYear",
           message = s"$errorContext.year.length",
           args = Seq("year")
         )

@@ -17,7 +17,7 @@
 package connectors.usermatching.httpparsers
 
 import connectors.usermatching.httpparsers.CitizenDetailsResponseHttpParser.GetCitizenDetailsHttpReads
-import models.usermatching.{CitizenDetailsFailureResponse, CitizenDetails}
+import models.usermatching.{CitizenDetails, CitizenDetailsFailureResponse}
 import org.scalatest.EitherValues
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}

@@ -16,8 +16,7 @@
 
 package forms.individual.business
 
-import forms.formatters.DateModelMapping
-import forms.individual.business.ForeignPropertyStartDateForm.{errorContext, minStartDate, startDate, startDateForm}
+import forms.individual.business.ForeignPropertyStartDateForm.{errorContext, startDate, startDateForm}
 import models.DateModel
 import org.scalatestplus.play.PlaySpec
 import play.api.data.{Form, FormError}
@@ -27,9 +26,9 @@ import java.time.LocalDate
 
 class ForeignPropertyStartDateFormSpec extends PlaySpec with UnitTestTrait {
 
-  val dateDayKey: String = s"$startDate-${DateModelMapping.day}"
-  val dateMonthKey: String = s"$startDate-${DateModelMapping.month}"
-  val dateYearKey: String = s"$startDate-${DateModelMapping.year}"
+  val dateDayKey: String = s"$startDate-dateDay"
+  val dateMonthKey: String = s"$startDate-dateMonth"
+  val dateYearKey: String = s"$startDate-dateYear"
 
   val minStartDate: LocalDate = ForeignPropertyStartDateForm.minStartDate
   val maxStartDate: LocalDate = ForeignPropertyStartDateForm.maxStartDate
@@ -165,7 +164,7 @@ class ForeignPropertyStartDateFormSpec extends PlaySpec with UnitTestTrait {
       "the day field is invalid" in {
 
         val expectedError: FormError = FormError(
-          key = s"${ForeignPropertyStartDateForm.startDate}-${DateModelMapping.day}",
+          key = s"${ForeignPropertyStartDateForm.startDate}-dateDay",
           message = s"error.$errorContext.invalid",
           args = Seq("day")
         )
@@ -177,7 +176,7 @@ class ForeignPropertyStartDateFormSpec extends PlaySpec with UnitTestTrait {
       }
       "the month field is invalid" in {
         val expectedError: FormError = FormError(
-          key = s"${ForeignPropertyStartDateForm.startDate}-${DateModelMapping.month}",
+          key = s"${ForeignPropertyStartDateForm.startDate}-dateMonth",
           message = s"error.$errorContext.invalid",
           args = Seq("month")
         )
@@ -190,7 +189,7 @@ class ForeignPropertyStartDateFormSpec extends PlaySpec with UnitTestTrait {
       "the year field is invalid" in {
 
         val expectedError: FormError = FormError(
-          key = s"${ForeignPropertyStartDateForm.startDate}-${DateModelMapping.year}",
+          key = s"${ForeignPropertyStartDateForm.startDate}-dateYear",
           message = s"error.$errorContext.year.length",
           args = Seq("year")
         )
@@ -269,7 +268,7 @@ class ForeignPropertyStartDateFormSpec extends PlaySpec with UnitTestTrait {
 
       "the year is not the correct length" when {
         val expectedError: FormError = FormError(
-          key = s"${ForeignPropertyStartDateForm.startDate}-${DateModelMapping.year}",
+          key = s"${ForeignPropertyStartDateForm.startDate}-dateYear",
           message = s"error.$errorContext.year.length",
           args = Seq("year")
         )
@@ -315,5 +314,4 @@ class ForeignPropertyStartDateFormSpec extends PlaySpec with UnitTestTrait {
       }
     }
   }
-
 }

@@ -16,8 +16,6 @@
 
 package forms.individual.business
 
-import forms.formatters.DateModelMapping
-import forms.formatters.DateModelMapping.{day, month, year}
 import forms.individual.business.PropertyStartDateForm.{propertyStartDateForm, startDate}
 import forms.validation.testutils.DataMap.DataMap
 import models.DateModel
@@ -41,7 +39,9 @@ class PropertyStartDateFormSpec extends PlaySpec with UnitTestTrait {
       val testDateMonth = "4"
       val testDateYear = AccountingPeriodUtil.getStartDateLimit.getYear.toString
       val testInput = Map(
-        s"$startDate-$day" -> testDateDay, s"$startDate-$month" -> testDateMonth, s"$startDate-$year" -> testDateYear
+        s"$startDate-dateDay" -> testDateDay,
+        s"$startDate-dateMonth" -> testDateMonth,
+        s"$startDate-dateYear" -> testDateYear
       )
       val expected = DateModel(testDateDay, testDateMonth, testDateYear)
       val actual = form.bind(testInput).value
@@ -63,9 +63,9 @@ class PropertyStartDateFormSpec extends PlaySpec with UnitTestTrait {
 
         def boundForm(day: String, month: String, year: String): Form[DateModel] = {
           form.bind(Map(
-            s"${PropertyStartDateForm.startDate}-${DateModelMapping.day}" -> day,
-            s"${PropertyStartDateForm.startDate}-${DateModelMapping.month}" -> month,
-            s"${PropertyStartDateForm.startDate}-${DateModelMapping.year}" -> year
+            s"${PropertyStartDateForm.startDate}-dateDay" -> day,
+            s"${PropertyStartDateForm.startDate}-dateMonth" -> month,
+            s"${PropertyStartDateForm.startDate}-dateYear" -> year
           ))
         }
 
@@ -135,7 +135,7 @@ class PropertyStartDateFormSpec extends PlaySpec with UnitTestTrait {
         }
         "it has an invalid day" in {
           val expectedError: FormError = FormError(
-            key = s"${PropertyStartDateForm.startDate}-${DateModelMapping.day}",
+            key = s"${PropertyStartDateForm.startDate}-dateDay",
             message = s"$errorContext.invalid",
             args = Seq("day")
           )
@@ -144,7 +144,7 @@ class PropertyStartDateFormSpec extends PlaySpec with UnitTestTrait {
         }
         "it has an invalid month" in {
           val expectedError: FormError = FormError(
-            key = s"${PropertyStartDateForm.startDate}-${DateModelMapping.month}",
+            key = s"${PropertyStartDateForm.startDate}-dateMonth",
             message = s"$errorContext.invalid",
             args = Seq("month")
           )
@@ -153,7 +153,7 @@ class PropertyStartDateFormSpec extends PlaySpec with UnitTestTrait {
         }
         "it has an invalid year" in {
           val expectedError: FormError = FormError(
-            key = s"${PropertyStartDateForm.startDate}-${DateModelMapping.year}",
+            key = s"${PropertyStartDateForm.startDate}-dateYear",
             message = s"$errorContext.year.length",
             args = Seq("year")
           )
@@ -172,7 +172,7 @@ class PropertyStartDateFormSpec extends PlaySpec with UnitTestTrait {
         "the year provided is not the correct length" when {
           "the year is 3 digits" in {
             val expectedError: FormError = FormError(
-              key = s"${PropertyStartDateForm.startDate}-${DateModelMapping.year}",
+              key = s"${PropertyStartDateForm.startDate}-dateYear",
               message = s"$errorContext.year.length",
               args = Seq("year")
             )
@@ -181,7 +181,7 @@ class PropertyStartDateFormSpec extends PlaySpec with UnitTestTrait {
           }
           "the year is 5 digits" in {
             val expectedError: FormError = FormError(
-              key = s"${PropertyStartDateForm.startDate}-${DateModelMapping.year}",
+              key = s"${PropertyStartDateForm.startDate}-dateYear",
               message = s"$errorContext.year.length",
               args = Seq("year")
             )

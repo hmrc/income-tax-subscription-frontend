@@ -17,7 +17,6 @@
 package utilities
 
 import java.time.LocalDate
-
 import javax.inject.{Inject, Singleton}
 
 @Singleton

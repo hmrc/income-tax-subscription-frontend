@@ -22,7 +22,6 @@ import connectors.httpparser.PostSubscriptionDetailsHttpParser.{PostSubscription
 import controllers.ControllerSpec
 import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}
 import forms.agent.PropertyStartDateForm
-import forms.formatters.DateModelMapping
 import models.DateModel
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
@@ -159,9 +158,9 @@ class PropertyStartDateControllerSpec extends ControllerSpec
               .withHeaders("Content-Type" -> "application/x-www-form-urlencoded")
               .withMethod(POST)
               .withFormUrlEncodedBody(
-                s"${PropertyStartDateForm.startDate}-${DateModelMapping.day}" -> date.day,
-                s"${PropertyStartDateForm.startDate}-${DateModelMapping.month}" -> date.month,
-                s"${PropertyStartDateForm.startDate}-${DateModelMapping.year}" -> date.year
+                s"${PropertyStartDateForm.startDate}-dateDay" -> date.day,
+                s"${PropertyStartDateForm.startDate}-dateMonth" -> date.month,
+                s"${PropertyStartDateForm.startDate}-dateYear" -> date.year
               )
           )
 
@@ -176,9 +175,9 @@ class PropertyStartDateControllerSpec extends ControllerSpec
               .withHeaders("Content-Type" -> "application/x-www-form-urlencoded")
               .withMethod(POST)
               .withFormUrlEncodedBody(
-                s"${PropertyStartDateForm.startDate}-${DateModelMapping.day}" -> date.day,
-                s"${PropertyStartDateForm.startDate}-${DateModelMapping.month}" -> date.month,
-                s"${PropertyStartDateForm.startDate}-${DateModelMapping.year}" -> date.year
+                s"${PropertyStartDateForm.startDate}-dateDay" -> date.day,
+                s"${PropertyStartDateForm.startDate}-dateMonth" -> date.month,
+                s"${PropertyStartDateForm.startDate}-dateYear" -> date.year
               )
           )
 
@@ -193,9 +192,9 @@ class PropertyStartDateControllerSpec extends ControllerSpec
               .withHeaders("Content-Type" -> "application/x-www-form-urlencoded")
               .withMethod(POST)
               .withFormUrlEncodedBody(
-                s"${PropertyStartDateForm.startDate}-${DateModelMapping.day}" -> date.day,
-                s"${PropertyStartDateForm.startDate}-${DateModelMapping.month}" -> date.month,
-                s"${PropertyStartDateForm.startDate}-${DateModelMapping.year}" -> date.year
+                s"${PropertyStartDateForm.startDate}-dateDay" -> date.day,
+                s"${PropertyStartDateForm.startDate}-dateMonth" -> date.month,
+                s"${PropertyStartDateForm.startDate}-dateYear" -> date.year
               )
           )
 
@@ -213,9 +212,9 @@ class PropertyStartDateControllerSpec extends ControllerSpec
             .withHeaders("Content-Type" -> "application/x-www-form-urlencoded")
             .withMethod(POST)
             .withFormUrlEncodedBody(
-              s"${PropertyStartDateForm.startDate}-${DateModelMapping.day}" -> date.day,
-              s"${PropertyStartDateForm.startDate}-${DateModelMapping.month}" -> date.month,
-              s"${PropertyStartDateForm.startDate}-${DateModelMapping.year}" -> date.year
+              s"${PropertyStartDateForm.startDate}-dateDay" -> date.day,
+              s"${PropertyStartDateForm.startDate}-dateMonth" -> date.month,
+              s"${PropertyStartDateForm.startDate}-dateYear" -> date.year
             )
         )
 

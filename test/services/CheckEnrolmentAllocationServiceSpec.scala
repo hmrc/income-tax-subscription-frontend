@@ -16,6 +16,7 @@
 
 package services
 
+import common.Constants.{utrEnrolmentIdentifierKey, utrEnrolmentName}
 import connectors.agent.httpparsers.EnrolmentStoreProxyHttpParser
 import connectors.agent.mocks.MockEnrolmentStoreProxyConnector
 import models.common.subscription.EnrolmentKey
@@ -25,7 +26,6 @@ import play.api.test.Helpers._
 import services.agent.CheckEnrolmentAllocationService
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.HeaderCarrier
-import common.Constants.{utrEnrolmentIdentifierKey, utrEnrolmentName}
 
 import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global

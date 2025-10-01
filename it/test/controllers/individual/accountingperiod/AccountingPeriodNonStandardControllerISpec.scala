@@ -21,10 +21,10 @@ import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnecto
 import helpers.ComponentSpecBase
 import helpers.servicemocks.AuthStub
 import models.common.AccountingYearModel
-import models.{Current, EligibilityStatus, Next, No, Yes, YesNo}
 import models.status.MandationStatus.{Mandated, Voluntary}
 import models.status.MandationStatusModel
-import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NO_CONTENT, OK, SEE_OTHER}
+import models._
+import play.api.http.Status._
 import play.api.libs.json.Json
 import play.api.libs.ws.WSResponse
 import utilities.SubscriptionDataKeys.SelectedTaxYear

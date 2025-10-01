@@ -17,7 +17,6 @@
 package helpers.servicemocks
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import models.status.MandationStatus.Voluntary
 import models.status.{MandationStatus, MandationStatusModel, MandationStatusRequest}
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK}
 import play.api.libs.json.{JsValue, Json}

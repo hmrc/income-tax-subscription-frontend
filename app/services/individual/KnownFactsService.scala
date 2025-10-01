@@ -17,14 +17,13 @@
 package services.individual
 
 import common.Constants
+import common.Constants.GovernmentGateway._
 import config.AppConfig
 import connectors.individual.subscription.TaxEnrolmentsConnector
-
-import javax.inject.{Inject, Singleton}
 import models.common.subscription.{EnrolmentKey, EnrolmentVerifiers, KnownFactsFailure, KnownFactsSuccess}
 import uk.gov.hmrc.http.HeaderCarrier
-import Constants.GovernmentGateway._
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton

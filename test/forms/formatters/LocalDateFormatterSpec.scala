@@ -17,7 +17,6 @@
 package forms.formatters
 
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.data.FormError
 import play.api.data.format.Formatter
 import utilities.UnitTestTrait
@@ -41,7 +40,7 @@ class LocalDateFormatterSpec extends UnitTestTrait with Matchers {
     s"$bindKey-dateMonth" -> month,
     s"$bindKey-dateYear" -> year
   ).collect {
-    case (key, Some(value)) => (key, value)
+    case (k, Some(v)) => (k, v)
   }.toMap
 
   "bind" must {

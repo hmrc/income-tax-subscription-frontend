@@ -16,15 +16,13 @@
 
 package testonly.connectors
 
-import java.util.UUID
-
-import javax.inject.Inject
 import play.api.libs.json.{JsObject, Json}
 import testonly.TestOnlyAppConfig
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
+import java.util.UUID
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class EnrolmentStoreStubConnector @Inject()(appConfig: TestOnlyAppConfig,

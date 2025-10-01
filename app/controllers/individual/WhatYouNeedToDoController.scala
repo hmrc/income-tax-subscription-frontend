@@ -21,8 +21,8 @@ import _root_.config.featureswitch.FeatureSwitching
 import auth.individual.SignUpController
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
-import models.status.MandationStatus.Mandated
 import models._
+import models.status.MandationStatus.Mandated
 import play.api.mvc._
 import services._
 import uk.gov.hmrc.http.InternalServerException

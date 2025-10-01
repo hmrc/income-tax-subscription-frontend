@@ -24,7 +24,7 @@ import helpers.IntegrationTestConstants.{IndividualURI, basGatewaySignIn, testNi
 import helpers.WiremockHelper.verifyPost
 import helpers.servicemocks.{AuthStub, SubscriptionStub}
 import play.api.http.Status._
-import play.api.libs.json.{JsString, Json}
+import play.api.libs.json.JsString
 
 class SPSCallbackForClaimEnrolControllerISpec extends ComponentSpecBase {
 

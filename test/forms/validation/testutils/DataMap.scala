@@ -16,7 +16,6 @@
 
 package forms.validation.testutils
 
-import forms.formatters.DateModelMapping
 import forms.individual.business.AccountingYearForm
 import forms.validation.utils.ConstraintUtil._
 import play.api.data.validation._
@@ -32,10 +31,10 @@ object DataMap {
     def DataMap(elems: (String, String)*): DataMap = Map(elems: _*)
 
     def date(prefix: String)(day: String, month: String, year: String): DataMap =
-      Map(s"$prefix.${DateModelMapping.day}" -> day, s"$prefix.${DateModelMapping.month}" -> month, s"$prefix.${DateModelMapping.year}" -> year)
+      Map(s"$prefix.dateDay" -> day, s"$prefix.dateMonth" -> month, s"$prefix.dateYear" -> year)
 
     def govukDate(prefix: String)(day: String, month: String, year: String): DataMap =
-      Map(s"$prefix-${DateModelMapping.day}" -> day, s"$prefix-${DateModelMapping.month}" -> month, s"$prefix-${DateModelMapping.year}" -> year)
+      Map(s"$prefix-dateDay" -> day, s"$prefix-dateMonth" -> month, s"$prefix-dateYear" -> year)
 
     val emptyDate: String => DataMap = (prefix: String) => date(prefix)("", "", "")
 
