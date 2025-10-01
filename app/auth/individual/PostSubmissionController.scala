@@ -16,9 +16,10 @@
 
 package auth.individual
 
-import javax.inject.Inject
 import play.api.mvc.MessagesControllerComponents
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel, CredentialRole, Enrolments}
+
+import javax.inject.Inject
 
 abstract class PostSubmissionController @Inject()(implicit mcc: MessagesControllerComponents) extends BaseFrontendController {
 

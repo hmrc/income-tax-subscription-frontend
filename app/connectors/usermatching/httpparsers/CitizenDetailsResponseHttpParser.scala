@@ -16,7 +16,7 @@
 
 package connectors.usermatching.httpparsers
 
-import models.usermatching.{CitizenDetailsFailureResponse, CitizenDetails}
+import models.usermatching.{CitizenDetails, CitizenDetailsFailureResponse}
 import play.api.Logging
 import play.api.http.Status.{NOT_FOUND, OK}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}

@@ -16,11 +16,11 @@
 
 package utilities
 
-import java.time.LocalDate
 import models.DateModel
 import models.common.AccountingPeriodModel
-import java.time.Month.JANUARY
-import java.time.Month.APRIL
+
+import java.time.LocalDate
+import java.time.Month.{APRIL, JANUARY}
 
 object AccountingPeriodUtil {
   private val fifth = 5

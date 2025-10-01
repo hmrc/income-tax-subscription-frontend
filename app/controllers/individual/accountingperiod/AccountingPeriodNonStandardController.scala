@@ -19,13 +19,13 @@ import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
 import forms.individual.accountingperiod.AccountingPeriodNonStandardForm.nonStandardAccountingPeriodForm
-import models.{No, Yes}
 import models.common.AccountingYearModel
-import models.Next
+import models.{Next, No, Yes}
 import play.api.mvc._
 import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
 import views.html.individual.accountingPeriod.AccountingPeriodNonStandard
+
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 @Singleton

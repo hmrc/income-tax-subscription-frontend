@@ -21,6 +21,7 @@ import config.AppConfig
 import play.api.mvc._
 import services.{AuditingService, AuthService}
 import views.html.agent.tasklist.addbusiness.BusinessAlreadyRemoved
+
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 

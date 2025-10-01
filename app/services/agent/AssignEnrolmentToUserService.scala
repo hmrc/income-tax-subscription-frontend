@@ -17,10 +17,10 @@
 package services.agent
 
 import connectors.agent.EnrolmentStoreProxyConnector
-import javax.inject.{Inject, Singleton}
 import services.agent.AssignEnrolmentToUserService.{EnrolmentAssignedToUsers, EnrolmentAssignmentFailed, EnrolmentAssignmentResponse}
 import uk.gov.hmrc.http.HeaderCarrier
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
