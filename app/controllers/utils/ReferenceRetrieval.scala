@@ -38,8 +38,8 @@ class ReferenceRetrieval @Inject()(subscriptionDetailsService: SubscriptionDetai
     getReference(arn = None)
   }
 
-  def getAgentReference(implicit hc: HeaderCarrier, request: Request[_], user: IncomeTaxAgentUser): Future[String] = {
-    getReference(arn = Some(user.arn))
+  def getAgentReference(implicit hc: HeaderCarrier, request: Request[_], userArn: String): Future[String] = {
+    getReference(arn = Some(userArn))
   }
 
   def getReference(arn: Option[String])

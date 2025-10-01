@@ -16,40 +16,44 @@
 
 package controllers.agent.matching
 
+import auth.agent.{AgentSignUp, AgentUserMatching}
+import common.Constants.ITSASessionKeys
 import config.MockConfig
 import config.featureswitch.FeatureSwitch.ThrottlingFeature
 import config.featureswitch.FeatureSwitchingUtil
+import controllers.ControllerSpec
 import controllers.agent.AgentControllerBaseSpec
+import controllers.agent.actions.mocks.MockIdentifierAction
 import models.EligibilityStatus
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSubscriptionDetailsService, MockThrottlingConnector}
 
 import scala.concurrent.Future
 
-class HomeControllerSpec extends AgentControllerBaseSpec
+class HomeControllerSpec extends ControllerSpec
   with MockAuditingService
   with MockThrottlingConnector
   with MockReferenceRetrieval
   with FeatureSwitchingUtil
-  with MockSubscriptionDetailsService {
+  with MockSubscriptionDetailsService
+  with MockIdentifierAction {
 
-  override val controllerName: String = "HomeControllerSpec"
-
-  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "index" -> testHomeController().index()
+  val userMatchingRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
+    ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name
   )
 
-  private def testHomeController() = new HomeController(
-    mockAuditingService,
-    mockAuthService,
-    MockConfig
-  )(
-    mockGetEligibilityStatusService,
+  val agentSignUpRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
+    ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
+    ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true"
+  )
+
+  private def testHomeController() = new HomeController(mockGetEligibilityStatusService,
     mockSubscriptionDetailsService,
-    mockReferenceRetrieval
+    mockReferenceRetrieval,
+    fakeIdentifierAction
   )(executionContext, mockMessagesControllerComponents)
 
   override def beforeEach(): Unit = {
@@ -123,6 +127,4 @@ class HomeControllerSpec extends AgentControllerBaseSpec
       }
     }
   }
-
-  authorisationTests()
 }
