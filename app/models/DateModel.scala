@@ -57,8 +57,6 @@ case class DateModel(day: String, month: String, year: String) {
 
 object DateModel {
 
-  type DateModelValidation = Either[Seq[FormError], DateModel]
-
   val outputFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM uuuu").withResolverStyle(ResolverStyle.STRICT)
 
   val desFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("uuuu-MM-dd").withResolverStyle(ResolverStyle.STRICT)
@@ -68,18 +66,4 @@ object DateModel {
   def dateConvert(date: LocalDate): DateModel = DateModel(date.getDayOfMonth.toString, date.getMonthValue.toString, date.getYear.toString)
 
   implicit val format: OFormat[DateModel] = Json.format[DateModel]
-
-  // Encapsulation of field ids.
-  // We should never send people to the field with id "key".  Only to an editable field.
-  // The sole exception to this is the fallback position where all our checks have passed
-  // but the values do not parse to a local date for some reason.
-  case class HtmlIds(key: String) {
-    private val day: String = "dateDay"
-    private val month: String = "dateMonth"
-    private val year: String = "dateYear"
-
-    val totalDayKey: String = s"$key-$day"
-    val totalMonthKey: String = s"$key-$month"
-    val totalYearKey: String = s"$key-$year"
-  }
 }
