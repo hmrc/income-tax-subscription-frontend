@@ -68,6 +68,7 @@ class ReferenceRetrievalSpec extends PlaySpec
   implicit val agentUser: IncomeTaxAgentUser = new IncomeTaxAgentUser(
     Enrolments(Set(Enrolment("HMRC-AS-AGENT", Seq(EnrolmentIdentifier("ARN", arn)), "activated", None)))
     , None, ConfidenceLevel.L50)
+    implicit val userArn: String = arn
 
   implicit val request: Request[AnyContent] = FakeRequest()
 
