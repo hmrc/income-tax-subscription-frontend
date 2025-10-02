@@ -41,7 +41,7 @@ class UsingSoftwareController @Inject()(view: UsingSoftware,
                                         mcc: MessagesControllerComponents)
   extends SignUpBaseController {
 
-  val show: Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
+  def show(editMode: Boolean): Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
     for {
       usingSoftwareStatus <- sessionDataService.fetchSoftwareStatus
       eligibilityStatus <- eligibilityStatusService.getEligibilityStatus
@@ -50,7 +50,7 @@ class UsingSoftwareController @Inject()(view: UsingSoftware,
         case Left(_) => throw new InternalServerException("[UsingSoftwareController][show] - Could not fetch software status")
         case Right(maybeYesNo) => Ok(view(
           usingSoftwareForm = usingSoftwareForm.fill(maybeYesNo),
-          postAction = routes.UsingSoftwareController.submit,
+          postAction = routes.UsingSoftwareController.submit(editMode),
           clientName = request.clientDetails.name,
           clientNino = request.clientDetails.formattedNino,
           backUrl = backUrl(eligibilityStatus.eligibleNextYearOnly)
@@ -59,13 +59,13 @@ class UsingSoftwareController @Inject()(view: UsingSoftware,
     }
   }
 
-  val submit: Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
+  def submit(editMode: Boolean): Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
     usingSoftwareForm.bindFromRequest().fold(
       formWithErrors =>
         eligibilityStatusService.getEligibilityStatus map { eligibilityStatus =>
           BadRequest(view(
             usingSoftwareForm = formWithErrors,
-            postAction = routes.UsingSoftwareController.submit,
+            postAction = routes.UsingSoftwareController.submit(editMode),
             clientName = request.clientDetails.name,
             clientNino = request.clientDetails.formattedNino,
             backUrl = backUrl(eligibilityStatus.eligibleNextYearOnly)
@@ -87,13 +87,15 @@ class UsingSoftwareController @Inject()(view: UsingSoftware,
             case Right(_) =>
               yesNo match {
                 case Yes =>
-                    if (isMandatedCurrentYear || isEligibleNextYearOnly) {
-                      Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
-                    } else {
-                      Redirect(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show())
-                    }
+                  if (editMode) {
+                    Redirect(controllers.agent.routes.GlobalCheckYourAnswersController.show)
+                  } else if (isMandatedCurrentYear || isEligibleNextYearOnly) {
+                    Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
+                  } else {
+                    Redirect(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show())
+                  }
                 case No =>
-                  Redirect(controllers.agent.routes.NoSoftwareController.show())
+                  Redirect(controllers.agent.routes.NoSoftwareController.show(editMode))
               }
           }
         }

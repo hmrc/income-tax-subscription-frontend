@@ -211,8 +211,8 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
       }
     }
     "not in edit mode" must {
-      s"return ${controllers.agent.routes.UsingSoftwareController.show.url}" in {
-        TestWhatYearToSignUpController.backUrl(false) mustBe Some(controllers.agent.routes.UsingSoftwareController.show.url)
+      s"return ${controllers.agent.routes.UsingSoftwareController.show(false).url}" in {
+        TestWhatYearToSignUpController.backUrl(false) mustBe Some(controllers.agent.routes.UsingSoftwareController.show(false).url)
       }
     }
   }

@@ -55,7 +55,7 @@ class HomeController @Inject()
     referenceRetrieval.getAgentReference flatMap { reference =>
       subscriptionDetailsService.fetchEligibilityInterruptPassed(reference) flatMap {
         case Some(_) =>
-          Future.successful(Redirect(controllers.agent.routes.UsingSoftwareController.show))
+          Future.successful(Redirect(controllers.agent.routes.UsingSoftwareController.show(false)))
         case None =>
           getEligibilityStatusService.getEligibilityStatus map { eligibilityStatus =>
             if (eligibilityStatus.eligibleNextYearOnly) {

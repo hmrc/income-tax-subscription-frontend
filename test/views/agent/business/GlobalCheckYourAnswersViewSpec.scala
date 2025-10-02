@@ -57,17 +57,6 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       document().mainContent.selectNth("p", 1).text mustBe GlobalCheckYourAnswersMessages.para1
     }
 
-    "have a print information link" in {
-      val link = document().mainContent.selectHead("div > p > a.govuk-link")
-      link.text mustBe GlobalCheckYourAnswersMessages.printLink
-      link.attr("data-module") mustBe "hmrc-print-link"
-      link.attr("href") mustBe "#"
-    }
-
-    "have an income sources subheading" in {
-      document().mainContent.getSubHeading("h2", 1).text mustBe GlobalCheckYourAnswersMessages.subheading
-    }
-
     "have a summary of answers" when {
       "display the yes for using software" in {
         def summaryList: Element = document().mainContent.selectNth(".govuk-summary-list", 1)
@@ -76,7 +65,13 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
           SummaryListRowValues(
             key = GlobalCheckYourAnswersMessages.UsingSoftwareSection.key,
             value = Some(GlobalCheckYourAnswersMessages.UsingSoftwareSection.value),
-            actions = Seq.empty
+            actions = Seq(
+              SummaryListActionValues(
+                href = controllers.agent.routes.UsingSoftwareController.show(editMode = true).url,
+                text = s"${GlobalCheckYourAnswersMessages.SelectedTaxYear.change} ${GlobalCheckYourAnswersMessages.UsingSoftwareSection.key}",
+                visuallyHidden = GlobalCheckYourAnswersMessages.UsingSoftwareSection.key
+              )
+            )
           )
         ))
       }
@@ -155,11 +150,11 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       "all income sources are present" should {
 
         "display the sole trader income sources heading" in {
-          document().mainContent.getSubHeading("h2", 2).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.heading
+          document().mainContent.getSubHeading("h2", 1).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.heading
         }
 
         "display the first sole trader business" when {
-          "there is a start date present" in {
+          "there is a table present present" in {
             def summaryList: Element = document().mainContent.selectNth(".govuk-summary-list", 3)
 
             summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
@@ -169,8 +164,8 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
                 actions = Seq(
                   SummaryListActionValues(
                     href = GlobalCheckYourAnswersMessages.IncomeSources.firstIncome,
-                    text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} Plumbing-1 - ABC-1",
-                    visuallyHidden = "Plumbing-1 - ABC-1"
+                    text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} ABC-1",
+                    visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} ABC-1"
                   )
                 )
               ),
@@ -203,8 +198,8 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
                 actions = Seq(
                   SummaryListActionValues(
                     href = GlobalCheckYourAnswersMessages.IncomeSources.firstIncome,
-                    text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} Plumbing-1 - ABC-1",
-                    visuallyHidden = "Plumbing-1 - ABC-1"
+                    text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} ABC-1",
+                    visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} ABC-1"
                   )
                 )
               ),
@@ -238,8 +233,8 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
               actions = Seq(
                 SummaryListActionValues(
                   href = GlobalCheckYourAnswersMessages.IncomeSources.nextIncome,
-                  text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} Plumbing-2 - ABC-2",
-                  visuallyHidden = "Plumbing-2 - ABC-2"
+                  text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} ABC-2",
+                  visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} ABC-2"
                 )
               )
             ),
@@ -262,7 +257,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
         }
 
         "display the property income sources heading" in {
-          document().mainContent.getSubHeading("h2", 3).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.Property.heading
+          document().mainContent.getSubHeading("h2", 2).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.Property.heading
         }
 
         "display the uk property income" when {
@@ -366,11 +361,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     }
 
     "have a second paragraph" in {
-      document().mainContent.selectNth("p", 3).text mustBe GlobalCheckYourAnswersMessages.para2
-    }
-
-    "have a third paragraph" in {
-      document().mainContent.selectNth("p", 4).text mustBe GlobalCheckYourAnswersMessages.para3
+      document().mainContent.selectNth("p", 3).text mustBe GlobalCheckYourAnswersMessages.para3
     }
 
     "have a form" which {
@@ -412,9 +403,9 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
 
   object GlobalCheckYourAnswersMessages {
-    val heading: String = "Declaration"
+    val heading: String = "Check your answers before signing up"
     val caption = "FirstName LastName | ZZ 11 11 11 Z"
-    val para1: String = "This is the information you have given to us."
+    val para1: String = "Before your client is signed up to Making Tax Digital for Income Tax you need to check the information you have given us and confirm it is correct. You can change any incorrect data."
     val printLink = "Print this page"
     val subheading = "Check your answers before signing up"
 
@@ -424,9 +415,9 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     }
 
     object SelectedTaxYear {
-      val key: String = "When you’re signing up from"
-      val current: String = "Current tax year"
-      val next: String = "Next tax year"
+      val key: String = "Selected tax year"
+      val current: String = "2025 to 2026"
+      val next: String = "2026 to 2027"
       val change: String = "Change"
     }
 
@@ -445,6 +436,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
         val address: String = "Address"
         val beforeStartDateLimit = s"Before 6 April ${AccountingPeriodUtil.getStartDateLimit.getYear}"
         val change: String = "Change"
+        val details: String = "details of sole trader business"
       }
 
       object Property {

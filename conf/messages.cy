@@ -1037,12 +1037,12 @@ agent.throttle-end.line-2                                          = I orffen co
 individual.global-check-your-answers.heading                                                    = Gwiriwch eich atebion
 individual.global-check-your-answers.para                                                       = Cyn i chi gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, mae angen i chi wirio’r wybodaeth rydych wedi’i rhoi i ni a chadarnhau ei bod yn gywir. Gallwch newid unrhyw ddata sy’n anghywir.
 individual.global-check-your-answers.accounting.period                                          = Cyfnod cyfrifyddu
-individual.global-check-your-answers.before-signing-up.heading                                  = Gwybodaeth sydd gennym ar eich cyfer
 individual.global-check-your-answers.compatible-software.label                                  = Mae’r feddalwedd rydych wedi’i dewis yn gweithio gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 individual.global-check-your-answers.tax-year.label                                             = Blwyddyn dreth
 individual.global-check-your-answers.tax.year.current                                           = Flwyddyn dreth bresennol
 individual.global-check-your-answers.tax.year.next                                              = Flwyddyn dreth nesaf
 individual.global-check-your-answers.income-sources.self-employment.heading                     = Busnesau unig fasnachwr
+individual.global-check-your-answers.income-sources.self-employment.change                      =
 individual.global-check-your-answers.income-sources.self-employment.trade                       = Gwaith masnach
 individual.global-check-your-answers.income-sources.self-employment.name                        = Enw’r busnes
 individual.global-check-your-answers.income-sources.self-employment.start-date                  = Dyddiad dechrau’r busnes
@@ -1065,9 +1065,10 @@ individual.global-check-your-answers.print-link                                 
 # Agent Global Check Your Answers
 agent.global-check-your-answers.heading                                                         = Datganiad
 agent.global-check-your-answers.caption                                                         = {0} | {1}
-agent.global-check-your-answers.para1                                                           = Dyma’r wybodaeth rydych wedi’i rhoi i ni.
+agent.global-check-your-answers.para                                                            = Cyn i chi gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, mae angen i chi wirio’r wybodaeth rydych wedi’i rhoi i ni a chadarnhau ei bod yn gywir. Gallwch newid unrhyw ddata sy’n anghywir.
 agent.global-check-your-answers.subheading                                                      = Gwirio’ch atebion cyn cofrestru
 agent.global-check-your-answers.income-sources.subheading                                       = Busnesau unig fasnachwr
+agent.global-check-your-answers.income-sources.self-employment.change                           =
 agent.global-check-your-answers.income-sources.self-employment.trade                            = Masnach
 agent.global-check-your-answers.income-sources.self-employment.name                             = Enw’r busnes
 agent.global-check-your-answers.income-sources.self-employment.start-date                       = Dyddiad dechrau

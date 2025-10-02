@@ -32,9 +32,9 @@ class NoSoftwareController @Inject()(view: NoSoftware,
                                     (implicit mcc: MessagesControllerComponents,
                                      val ec: ExecutionContext) extends SignUpBaseController {
 
-  val show: Action[AnyContent] = (identify andThen journeyRefiner) { implicit request =>
+  def show(editMode: Boolean): Action[AnyContent] = (identify andThen journeyRefiner) { implicit request =>
     Ok(view(
-      backUrl = controllers.agent.routes.UsingSoftwareController.show.url,
+      backUrl = controllers.agent.routes.UsingSoftwareController.show(editMode).url,
       postAction = controllers.agent.routes.AddAnotherClientController.addAnother(),
       clientName = request.clientDetails.name,
       clientNino = request.clientDetails.formattedNino
