@@ -17,7 +17,6 @@
 package services.agent
 
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.{CheckClientRelationship, CheckMultiAgentRelationship}
 import config.featureswitch.FeatureSwitching
 import connectors.agent.AgentSPSConnector
 import models.ConnectorError
@@ -90,16 +89,12 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
 
   private[services] def checkClientRelationships(arn: String, nino: String)
                                                 (implicit hc: HeaderCarrier): Future[Unit] = {
-    if (isEnabled(CheckClientRelationship)) {
       clientRelationshipService.isMTDPreExistingRelationship(arn, nino) map { maybeRelationship =>
-        if (isEnabled(CheckMultiAgentRelationship) && !maybeRelationship) {
+        if (!maybeRelationship) {
           clientRelationshipService.isMTDSuppAgentRelationship(arn, nino) map (_ => ())
         } else {
           Future.successful(maybeRelationship)
         }
       }
-    } else {
-      Future.successful(())
-    }
   }
 }
