@@ -136,7 +136,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
         Then("Should return OK with the global check your answers page")
         res must have(
           httpStatus(OK),
-          pageTitle(messages("agent.global-check-your-answers.heading") + serviceNameGovUk)
+          pageTitle(messages("agent.global-check-your-answers.subheading") + serviceNameGovUk)
         )
       }
     }

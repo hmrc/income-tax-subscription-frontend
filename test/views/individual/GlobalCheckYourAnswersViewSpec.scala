@@ -58,10 +58,6 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       link.attr("href") mustBe "#"
     }
 
-    "have a before signing up subheading" in {
-      document().mainContent.selectNth("h2", 1).text mustBe GlobalCheckYourAnswersMessages.beforeSigningUpHeading
-    }
-
     "have a summary of answers" when {
       "display the yes for using software" in {
         def summaryList: Element = document().mainContent.selectNth(".govuk-summary-list", 1)
@@ -70,7 +66,13 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
           SummaryListRowValues(
             key = GlobalCheckYourAnswersMessages.CompatibleSoftware.key,
             value = Some(GlobalCheckYourAnswersMessages.CompatibleSoftware.yes),
-            actions = Seq.empty
+            actions = Seq(
+              SummaryListActionValues(
+                href = controllers.individual.routes.UsingSoftwareController.show(editMode = true).url,
+                text = s"${GlobalCheckYourAnswersMessages.Common.change} ${GlobalCheckYourAnswersMessages.CompatibleSoftware.key}",
+                visuallyHidden = GlobalCheckYourAnswersMessages.CompatibleSoftware.key
+              )
+            )
           )
         ))
       }
@@ -163,8 +165,8 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
                 actions = Seq(
                   SummaryListActionValues(
                     href = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=id-1&isEditMode=true&isGlobalEdit=true",
-                    text = s"${GlobalCheckYourAnswersMessages.Common.change} Plumbing-1 - ABC-1",
-                    visuallyHidden = "Plumbing-1 - ABC-1"
+                    text = s"${GlobalCheckYourAnswersMessages.Common.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} ABC-1",
+                    visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} ABC-1"
                   )
                 )
               ),
@@ -197,8 +199,8 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
                 actions = Seq(
                   SummaryListActionValues(
                     href = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=id-1&isEditMode=true&isGlobalEdit=true",
-                    text = s"${GlobalCheckYourAnswersMessages.Common.change} Plumbing-1 - ABC-1",
-                    visuallyHidden = "Plumbing-1 - ABC-1"
+                    text = s"${GlobalCheckYourAnswersMessages.Common.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} ABC-1",
+                    visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} ABC-1"
                   )
                 )
               ),
@@ -232,8 +234,8 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
               actions = Seq(
                 SummaryListActionValues(
                   href = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=id-2&isEditMode=true&isGlobalEdit=true",
-                  text = s"${GlobalCheckYourAnswersMessages.Common.change} Plumbing-2 - ABC-2",
-                  visuallyHidden = "Plumbing-2 - ABC-2"
+                  text = s"${GlobalCheckYourAnswersMessages.Common.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} ABC-2",
+                  visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} ABC-2"
                 )
               )
             ),
@@ -360,7 +362,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     }
 
     "have a second subheading" in {
-      document().mainContent.selectNth("h2", 4).text mustBe GlobalCheckYourAnswersMessages.subheading
+      document().mainContent.selectNth("h2", 3).text mustBe GlobalCheckYourAnswersMessages.subheading
     }
 
     "have a second paragraph" in {
@@ -421,7 +423,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     }
 
     object SelectedTaxYear {
-      val key: String = "Tax year"
+      val key: String = "Selected tax year"
       val current: String = "2025 to 2026"
       val next: String = "2026 to 2027"
     }
@@ -430,6 +432,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
       object SoleTrader {
         val heading: String = "Sole trader businesses"
+        val details: String = "details of sole trader business"
         val trade: String = "Trade"
         val name: String = "Business name"
         val startDate: String = "Business start date"
@@ -454,7 +457,6 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
         val startDate: String = "Tax start date"
         val beforeStartDateLimit: String = s"Before 6 April ${AccountingPeriodUtil.getStartDateLimit.getYear}"
       }
-
     }
 
     val subheading: String = "Declaration"
@@ -469,8 +471,6 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     object Common {
       val change: String = "Change"
     }
-
-
   }
 
   def selfEmploymentIncomeSource(count: Int = 1, startDate: Option[LocalDate] = Some(LocalDate.of(1980, 1, 1))): SoleTraderBusinesses = SoleTraderBusinesses(

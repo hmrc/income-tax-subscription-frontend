@@ -50,15 +50,4 @@ object AccountingYear {
   }
 
   implicit val format: Format[AccountingYear] = Format[AccountingYear](accountingYearReads, accountingYearWrites)
-
-  def toDates(accountingYear: AccountingYear, endYearOfCurrentTaxPeriod: Int): (LocalDate, LocalDate) = {
-    val year = accountingYear match {
-      case Current => endYearOfCurrentTaxPeriod - 1
-      case Next => endYearOfCurrentTaxPeriod
-    }
-    (
-      LocalDate.of(year, 4, 6),
-      LocalDate.of(year + 1, 4, 5)
-    )
-  }
 }

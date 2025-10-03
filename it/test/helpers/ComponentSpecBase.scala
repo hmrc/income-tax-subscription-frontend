@@ -236,10 +236,10 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
       )
     )
 
-    def showUsingSoftware(): WSResponse = get("/using-software")
+    def showUsingSoftware(): WSResponse = get("/using-software/false")
 
     def submitUsingSoftware(request: Option[YesNo]): WSResponse = {
-      post("/using-software")(
+      post("/using-software/false")(
         request.fold(Map.empty[String, Seq[String]])(
           model => UsingSoftwareForm.usingSoftwareForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )
@@ -256,7 +256,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
       )
     }
 
-    def showNoSoftware(): WSResponse = get("/no-compatible-software")
+    def showNoSoftware(): WSResponse = get("/no-compatible-software/false")
 
     def showEmailCapture(includeState: Boolean = true): WSResponse = get("/email-capture", includeState = includeState)
 

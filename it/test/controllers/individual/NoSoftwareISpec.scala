@@ -24,11 +24,11 @@ class NoSoftwareISpec extends ComponentSpecBase {
 
   val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
 
-  s"GET ${controllers.individual.routes.NoSoftwareController.show.url}" should {
+  s"GET ${controllers.individual.routes.NoSoftwareController.show(false).url}" should {
     "return OK and show the No Software page" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
-      When(s"GET ${controllers.individual.routes.NoSoftwareController.show.url}")
+      When(s"GET ${controllers.individual.routes.NoSoftwareController.show(false).url}")
       val result = IncomeTaxSubscriptionFrontend.showNoSoftware()
       Then("The result should be OK with page content")
       result must have(

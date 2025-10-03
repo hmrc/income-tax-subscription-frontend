@@ -63,7 +63,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
             res must have(
               httpStatus(SEE_OTHER),
-              redirectURI(controllers.agent.routes.UsingSoftwareController.show.url)
+              redirectURI(controllers.agent.routes.UsingSoftwareController.show(false).url)
             )
           }
         }

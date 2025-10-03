@@ -29,7 +29,7 @@ class NoSoftwareControllerISpec extends ComponentSpecBase {
 
   val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
 
-  s"GET ${controllers.agent.routes.NoSoftwareController.show()}" should {
+  s"GET ${controllers.agent.routes.NoSoftwareController.show(false)}" should {
     "return SEE_OTHER to the login page when the user is unauthenticated" in {
       AuthStub.stubUnauthorised()
 
@@ -37,7 +37,7 @@ class NoSoftwareControllerISpec extends ComponentSpecBase {
 
       res must have(
         httpStatus(SEE_OTHER),
-        redirectURI(basGatewaySignIn("/client/no-compatible-software"))
+        redirectURI(basGatewaySignIn("/client/no-compatible-software/false"))
       )
     }
 
@@ -47,7 +47,7 @@ class NoSoftwareControllerISpec extends ComponentSpecBase {
       SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
       SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
-      When(s"GET ${controllers.agent.routes.NoSoftwareController.show()}")
+      When(s"GET ${controllers.agent.routes.NoSoftwareController.show(false)}")
       val result = IncomeTaxSubscriptionFrontend.showNoSoftware()
       Then("The result should be OK with page content")
       result must have(
