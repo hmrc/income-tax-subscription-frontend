@@ -17,7 +17,6 @@
 package services.agent
 
 import config.MockConfig
-import config.featureswitch.FeatureSwitch
 import models.ConnectorError
 import models.common.subscription.SubscriptionSuccess
 import org.scalatest.concurrent.ScalaFutures.whenReady
@@ -34,11 +33,6 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService
   with MockClientRelationshipService
   with MockAgentSPSConnector {
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    enable(FeatureSwitch.CheckClientRelationship)
-    disable(FeatureSwitch.CheckMultiAgentRelationship)
-  }
 
   object TestSubscriptionOrchestrationService extends SubscriptionOrchestrationService(
     mockSubscriptionService,
@@ -71,9 +65,10 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService
         verifyCheckMTDSuppAgentRelationship(testARN, testNino, 0)
       }
 
-      "there is no pre existing agent-client relationship" in {
+      "there is a multi-agent-client relationship" in {
         mockSignUpSuccess(testNino, testUtr, testTaxYear)
         preExistingMTDRelationship(testARN, testNino)(isPreExistingMTDRelationship = false)
+        suppAgentRelationship(testARN, testNino)(isMTDSuppAgentRelationship = true)
         mockCreateIncomeSourcesFromTaskListSuccess(testMTDID, testCreateIncomeSourcesThisYear)
         mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(Right(AutoEnrolmentService.EnrolmentAssigned))
         mockAgentSpsConnectorSuccess(testARN, testUtr, testNino, testMTDID)
@@ -83,7 +78,22 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService
         await(res) mustBe testSubscriptionSuccess
         verifyAgentSpsConnector(testARN, testUtr, testNino, testMTDID, 1)
         verifyCheckPreExistingMTDRelationship(testARN, testNino)
-        verifyCheckMTDSuppAgentRelationship(testARN, testNino, 0)
+        verifyCheckMTDSuppAgentRelationship(testARN, testNino)
+      }
+      "there is no supporting-agent client relationship" in {
+        mockSignUpSuccess(testNino, testUtr, testTaxYear)
+        preExistingMTDRelationship(testARN, testNino)(isPreExistingMTDRelationship = false)
+        suppAgentRelationship(testARN, testNino)(isMTDSuppAgentRelationship = false)
+        mockCreateIncomeSourcesFromTaskListSuccess(testMTDID, testCreateIncomeSourcesThisYear)
+        mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(Right(AutoEnrolmentService.EnrolmentAssigned))
+        mockAgentSpsConnectorSuccess(testARN, testUtr, testNino, testMTDID)
+
+        val res = TestSubscriptionOrchestrationService.createSubscriptionFromTaskList(testARN, testUtr, testCreateIncomeSourcesThisYear)
+
+        await(res) mustBe testSubscriptionSuccess
+        verifyAgentSpsConnector(testARN, testUtr, testNino, testMTDID, 1)
+        verifyCheckPreExistingMTDRelationship(testARN, testNino)
+        verifyCheckMTDSuppAgentRelationship(testARN, testNino)
       }
 
       "the sign up indicated the customer was already signed up" in {
@@ -93,41 +103,6 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService
 
         await(res) mustBe Right(None)
         verifyAgentSpsConnector(testARN, testUtr, testNino, testMTDID, 0)
-      }
-
-      "the CheckMultiAgentRelationship feature switch is on" when {
-        "there is a multi-agent-client relationship" in {
-          enable(FeatureSwitch.CheckMultiAgentRelationship)
-          mockSignUpSuccess(testNino, testUtr, testTaxYear)
-          preExistingMTDRelationship(testARN, testNino)(isPreExistingMTDRelationship = false)
-          suppAgentRelationship(testARN, testNino)(isMTDSuppAgentRelationship = true)
-          mockCreateIncomeSourcesFromTaskListSuccess(testMTDID, testCreateIncomeSourcesThisYear)
-          mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(Right(AutoEnrolmentService.EnrolmentAssigned))
-          mockAgentSpsConnectorSuccess(testARN, testUtr, testNino, testMTDID)
-
-          val res = TestSubscriptionOrchestrationService.createSubscriptionFromTaskList(testARN, testUtr, testCreateIncomeSourcesThisYear)
-
-          await(res) mustBe testSubscriptionSuccess
-          verifyAgentSpsConnector(testARN, testUtr, testNino, testMTDID, 1)
-          verifyCheckPreExistingMTDRelationship(testARN, testNino)
-          verifyCheckMTDSuppAgentRelationship(testARN, testNino)
-        }
-        "there is no supporting-agent client relationship" in {
-          enable(FeatureSwitch.CheckMultiAgentRelationship)
-          mockSignUpSuccess(testNino, testUtr, testTaxYear)
-          preExistingMTDRelationship(testARN, testNino)(isPreExistingMTDRelationship = false)
-          suppAgentRelationship(testARN, testNino)(isMTDSuppAgentRelationship = false)
-          mockCreateIncomeSourcesFromTaskListSuccess(testMTDID, testCreateIncomeSourcesThisYear)
-          mockAutoClaimEnrolment(testUtr, testNino, testMTDID)(Right(AutoEnrolmentService.EnrolmentAssigned))
-          mockAgentSpsConnectorSuccess(testARN, testUtr, testNino, testMTDID)
-
-          val res = TestSubscriptionOrchestrationService.createSubscriptionFromTaskList(testARN, testUtr, testCreateIncomeSourcesThisYear)
-
-          await(res) mustBe testSubscriptionSuccess
-          verifyAgentSpsConnector(testARN, testUtr, testNino, testMTDID, 1)
-          verifyCheckPreExistingMTDRelationship(testARN, testNino)
-          verifyCheckMTDSuppAgentRelationship(testARN, testNino)
-        }
       }
     }
 
@@ -146,8 +121,6 @@ class SubscriptionOrchestrationServiceSpec extends MockSubscriptionService
       }
 
       "check agent-client relationship fails" in {
-        enable(FeatureSwitch.CheckMultiAgentRelationship)
-
         mockSignUpSuccess(testNino, testUtr, testTaxYear)
         mockCreateIncomeSourcesFromTaskListSuccess(testMTDID, testCreateIncomeSourcesThisYear)
         preExistingMTDRelationshipFailure(testARN, testNino)(failure = testException)

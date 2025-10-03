@@ -17,7 +17,6 @@
 package controllers.agent
 
 import common.Constants.ITSASessionKeys
-import config.featureswitch.FeatureSwitch
 import connectors.agent.httpparsers.QueryUsersHttpParser.principalUserIdKey
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, MultipleIncomeSourcesSubscriptionAPIStub, SessionDataConnectorStub, UsersGroupsSearchStub}
 import helpers.IntegrationTestConstants._
@@ -38,12 +37,6 @@ import utilities.AccountingPeriodUtil
 import utilities.SubscriptionDataKeys._
 
 class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    enable(FeatureSwitch.CheckClientRelationship)
-    enable(FeatureSwitch.CheckMultiAgentRelationship)
-  }
 
   def testSignUpModel(taxYear: String): SignUpModel = SignUpModel(
     nino = testNino,
