@@ -149,10 +149,15 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
           mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
 
-          val result: Future[Result] = controller.submit(false)(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, Yes))
+          Seq(false, true).foreach { editMode =>
+            val result: Future[Result] = controller.submit(editMode)(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, Yes))
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(editMode match {
+              case false => controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+              case true => controllers.individual.routes.GlobalCheckYourAnswersController.show.url
+            })
+          }
         }
       }
     }
