@@ -111,7 +111,7 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
     val title = "Check your answers - Foreign property"
     val heading = "Check your answers"
     val caption = "Foreign property"
-    val startDateQuestion = "Start date"
+    val startDateQuestion = "Property start date"
     val confirmedAndContinue = "Confirm and continue"
     val saveAndComeBack = "Save and come back later"
     val change = "Change"

@@ -927,14 +927,14 @@ agent.business.check-your-answers.content.tax-year.caption            = Y flwydd
 agent.property.check-your-answers.title                               = Gwirio’ch atebion – Eiddo yn y DU
 agent.property.check-your-answers.heading                             = Gwirio’ch atebion
 agent.property.check-your-answers.heading.caption                     = {0} | {1}
-agent.property.check-your-answers.start-date.question                 = Dyddiad dechrau
+agent.property.check-your-answers.start-date.question                 = Dyddiad dechrau’r eiddo
 agent.property.check-your-answers.start-date-before-limit.answer      = Cyn 6 Ebrill {0}
 
 ## Agent Overseas property check your answers
 agent.overseas-property.check-your-answers.title                                = Gwirio’ch atebion – Eiddo tramor
 agent.overseas-property.check-your-answers.heading                              = Gwirio’ch atebion
 agent.overseas-property.check-your-answers.heading.caption                      = {0} | {1}
-agent.overseas-property.check-your-answers.start-date.question                  = Dyddiad dechrau
+agent.overseas-property.check-your-answers.start-date.question                  = Dyddiad dechrau’r eiddo
 agent.overseas-property.check-your-answers.start-date-before-limit.answer       = Cyn 6 Ebrill {0}
 
 ## Agent remove business
@@ -973,13 +973,13 @@ business.check-your-answers.content.tax-year.title              = Gwirio’ch at
 ## UK property check your answers
 business.check-your-answers.content.uk-property.title                                   = Gwirio’ch atebion – Eiddo yn y DU
 business.check-your-answers.content.uk-property.caption                                 = Eiddo yn y DU
-business.check-your-answers.content.uk-property-start-date.question                     = Dyddiad dechrau
+business.check-your-answers.content.uk-property-start-date.question                     = Dyddiad dechrau’r eiddo
 business.check-your-answers.content.uk-property-start-date-before-limit.before-limit    = Cyn 6 Ebrill {0}
 
 ## Overseas property check your answers
 business.check-your-answers.content.overseas-property.title                                     = Gwirio’ch atebion – Eiddo tramor
 business.check-your-answers.content.overseas-property.caption                                   = Eiddo tramor
-business.check-your-answers.content.overseas-property-start-date.question                       = Dyddiad dechrau
+business.check-your-answers.content.overseas-property-start-date.question                       = Dyddiad dechrau’r eiddo
 business.check-your-answers.content.overseas-property-start-date-before-limit.before-limit      = Cyn 6 Ebrill {0}
 
 ## Remove business

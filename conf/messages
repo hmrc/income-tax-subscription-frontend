@@ -930,14 +930,14 @@ agent.business.check-your-answers.content.tax-year.next-tax-year      = Next tax
 agent.property.check-your-answers.title                               = Check your answers - UK property
 agent.property.check-your-answers.heading                             = Check your answers
 agent.property.check-your-answers.heading.caption                     = {0} | {1}
-agent.property.check-your-answers.start-date.question                 = Start date
+agent.property.check-your-answers.start-date.question                 = Property start date
 agent.property.check-your-answers.start-date-before-limit.answer      = Before 6 April {0}
 
 ## Agent Overseas property check your answers
 agent.overseas-property.check-your-answers.title                                = Check your answers - Foreign property
 agent.overseas-property.check-your-answers.heading                              = Check your answers
 agent.overseas-property.check-your-answers.heading.caption                      = {0} | {1}
-agent.overseas-property.check-your-answers.start-date.question                  = Start date
+agent.overseas-property.check-your-answers.start-date.question                  = Property start date
 agent.overseas-property.check-your-answers.start-date-before-limit.answer       = Before 6 April {0}
 
 ## Agent remove business
@@ -976,13 +976,13 @@ business.check-your-answers.content.tax-year.title              = Check your ans
 ## UK property check your answers
 business.check-your-answers.content.uk-property.title                                   = Check your answers - UK property
 business.check-your-answers.content.uk-property.caption                                 = UK property
-business.check-your-answers.content.uk-property-start-date.question                     = Start date
+business.check-your-answers.content.uk-property-start-date.question                     = Property start date
 business.check-your-answers.content.uk-property-start-date-before-limit.before-limit    = Before 6 April {0}
 
 ## Overseas property check your answers
 business.check-your-answers.content.overseas-property.title                                     = Check your answers - Foreign property
 business.check-your-answers.content.overseas-property.caption                                   = Foreign property
-business.check-your-answers.content.overseas-property-start-date.question                       = Start date
+business.check-your-answers.content.overseas-property-start-date.question                       = Property start date
 business.check-your-answers.content.overseas-property-start-date-before-limit.before-limit      = Before 6 April {0}
 
 ## Remove business
