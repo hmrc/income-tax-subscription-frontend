@@ -1042,7 +1042,8 @@ individual.global-check-your-answers.tax-year.label                             
 individual.global-check-your-answers.tax.year.current                                           = Flwyddyn dreth bresennol
 individual.global-check-your-answers.tax.year.next                                              = Flwyddyn dreth nesaf
 individual.global-check-your-answers.income-sources.self-employment.heading                     = Busnesau unig fasnachwr
-individual.global-check-your-answers.income-sources.self-employment.change                      =
+individual.global-check-your-answers.income-sources.self-employment.change                      = Newid
+individual.global-check-your-answers.income-sources.self-employment.hidden-text                 =
 individual.global-check-your-answers.income-sources.self-employment.trade                       = Gwaith masnach
 individual.global-check-your-answers.income-sources.self-employment.name                        = Enw’r busnes
 individual.global-check-your-answers.income-sources.self-employment.start-date                  = Dyddiad dechrau’r busnes
@@ -1068,7 +1069,8 @@ agent.global-check-your-answers.caption                                         
 agent.global-check-your-answers.para                                                            = Cyn i chi gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, mae angen i chi wirio’r wybodaeth rydych wedi’i rhoi i ni a chadarnhau ei bod yn gywir. Gallwch newid unrhyw ddata sy’n anghywir.
 agent.global-check-your-answers.subheading                                                      = Gwirio’ch atebion cyn cofrestru
 agent.global-check-your-answers.income-sources.subheading                                       = Busnesau unig fasnachwr
-agent.global-check-your-answers.income-sources.self-employment.change                           =
+agent.global-check-your-answers.income-sources.self-employment.change                           = Newid
+agent.global-check-your-answers.income-sources.self-employment.hidden-text                      =
 agent.global-check-your-answers.income-sources.self-employment.trade                            = Masnach
 agent.global-check-your-answers.income-sources.self-employment.name                             = Enw’r busnes
 agent.global-check-your-answers.income-sources.self-employment.start-date                       = Dyddiad dechrau

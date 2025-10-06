@@ -165,7 +165,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
                 actions = Seq(
                   SummaryListActionValues(
                     href = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=id-1&isEditMode=true&isGlobalEdit=true",
-                    text = s"${GlobalCheckYourAnswersMessages.Common.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} ABC-1",
+                    text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} ABC-1",
                     visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} ABC-1"
                   )
                 )
@@ -199,7 +199,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
                 actions = Seq(
                   SummaryListActionValues(
                     href = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=id-1&isEditMode=true&isGlobalEdit=true",
-                    text = s"${GlobalCheckYourAnswersMessages.Common.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} ABC-1",
+                    text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} ABC-1",
                     visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} ABC-1"
                   )
                 )
@@ -234,7 +234,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
               actions = Seq(
                 SummaryListActionValues(
                   href = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=id-2&isEditMode=true&isGlobalEdit=true",
-                  text = s"${GlobalCheckYourAnswersMessages.Common.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} ABC-2",
+                  text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} ABC-2",
                   visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} ABC-2"
                 )
               )
@@ -432,7 +432,8 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
       object SoleTrader {
         val heading: String = "Sole trader businesses"
-        val details: String = "details of sole trader business"
+        val change: String = "Change details"
+        val details: String = "of sole trader business"
         val trade: String = "Trade"
         val name: String = "Business name"
         val startDate: String = "Business start date"

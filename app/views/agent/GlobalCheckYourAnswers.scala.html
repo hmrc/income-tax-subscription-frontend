@@ -124,8 +124,8 @@
                             items = Seq(
                                 ActionItem(
                                     href = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${business.id}&isEditMode=true&isGlobalEdit=true",
-                                    content = Text(messages("base.change")),
-                                    visuallyHiddenText = Some(messages("agent.global-check-your-answers.income-sources.self-employment.change", business.name))
+                                    content = Text(messages("agent.global-check-your-answers.income-sources.self-employment.change")),
+                                    visuallyHiddenText = Some(messages("agent.global-check-your-answers.income-sources.self-employment.hidden-text", business.name))
                                 )
                             )
                         ))

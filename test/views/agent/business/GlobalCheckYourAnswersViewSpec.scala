@@ -435,8 +435,8 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
         val startDate: String = "Start date"
         val address: String = "Address"
         val beforeStartDateLimit = s"Before 6 April ${AccountingPeriodUtil.getStartDateLimit.getYear}"
-        val change: String = "Change"
-        val details: String = "details of sole trader business"
+        val change: String = "Change details"
+        val details: String = "of sole trader business"
       }
 
       object Property {
