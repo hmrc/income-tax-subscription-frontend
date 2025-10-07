@@ -73,7 +73,8 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
   def view(userDetailsModel: UserDetailsModel)(implicit request: Request[_]): Html = {
     checkYourClientDetails(
       userDetailsModel,
-      routes.ConfirmClientController.submit()
+      routes.ConfirmClientController.submit(),
+      backUrl = backUrl
     )
   }
 
@@ -209,4 +210,7 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
 
   }
 
+  def backUrl: String = {
+    controllers.agent.matching.routes.ClientDetailsController.show().url
+  }
 }

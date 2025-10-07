@@ -16,6 +16,7 @@
 
 package controllers.agent.matching
 
+import config.AppConfig
 import controllers.ControllerSpec
 import controllers.agent.actions.mocks.{MockClientDetailsJourneyRefiner, MockIdentifierAction}
 import forms.agent.ClientDetailsForm
@@ -27,6 +28,7 @@ import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, red
 import services.mocks._
 import uk.gov.hmrc.http.InternalServerException
 import utilities.UserMatchingSessionUtil.{dobD, dobM, dobY, firstName, lastName, nino}
+import views.ViewSpecTrait.testBackUrl
 import views.agent.matching.mocks.MockClientDetails
 
 import scala.concurrent.Future
@@ -38,6 +40,8 @@ class ClientDetailsControllerSpec extends ControllerSpec
   with MockUserLockoutService
   with MockAuditingService
   with MockSessionClearingService {
+
+  implicit val appConfig: AppConfig = mock[AppConfig]
 
   implicit override val cc: MessagesControllerComponents =
     stubMessagesControllerComponents()
@@ -51,6 +55,7 @@ class ClientDetailsControllerSpec extends ControllerSpec
         setupMockNotLockedOut(testARN)
         mockView(
           postAction = routes.ClientDetailsController.submit(),
+          backUrl = testBackUrl,
           isEditMode = false
         )
 
@@ -63,6 +68,7 @@ class ClientDetailsControllerSpec extends ControllerSpec
         setupMockNotLockedOut(testARN)
         mockView(
           postAction = routes.ClientDetailsController.submit(editMode = true),
+          backUrl = testBackUrl,
           isEditMode = true
         )
 
@@ -135,6 +141,7 @@ class ClientDetailsControllerSpec extends ControllerSpec
           setupMockNotLockedOut(testARN)
           mockView(
             postAction = routes.ClientDetailsController.submit(),
+            backUrl = testBackUrl,
             isEditMode = false
           )
 
@@ -151,6 +158,7 @@ class ClientDetailsControllerSpec extends ControllerSpec
           setupMockNotLockedOut(testARN)
           mockView(
             postAction = routes.ClientDetailsController.submit(editMode = true),
+            backUrl = testBackUrl,
             isEditMode = true
           )
 

@@ -16,6 +16,7 @@
 
 package controllers.agent.matching
 
+import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ClientDetailsJourneyRefiner, IdentifierAction}
 import forms.agent.ClientDetailsForm.clientDetailsForm
@@ -39,7 +40,7 @@ class ClientDetailsController @Inject()(view: ClientDetails,
                                         lockoutService: UserLockoutService,
                                         auditingService: AuditingService,
                                         sessionClearingService: SessionClearingService)
-                                       (implicit cc: MessagesControllerComponents, ec: ExecutionContext) extends SignUpBaseController {
+                                       (implicit cc: MessagesControllerComponents, ec: ExecutionContext, appConfig: AppConfig) extends SignUpBaseController {
 
   def show(isEditMode: Boolean): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     startAgentSignupAudit(agentReferenceNumber = Some(request.arn))
@@ -47,6 +48,7 @@ class ClientDetailsController @Inject()(view: ClientDetails,
       Future.successful(Ok(view(
         clientDetailsForm = clientDetailsForm.fill(request.fetchUserDetails),
         postAction = routes.ClientDetailsController.submit(editMode = isEditMode),
+        backUrl = backUrl,
         isEditMode = isEditMode
       )))
     }
@@ -59,6 +61,7 @@ class ClientDetailsController @Inject()(view: ClientDetails,
           Future.successful(BadRequest(view(
             clientDetailsForm = formWithErrors,
             postAction = routes.ClientDetailsController.submit(editMode = isEditMode),
+            backUrl = backUrl,
             isEditMode = isEditMode
           ))),
         clientDetails => {
@@ -83,6 +86,10 @@ class ClientDetailsController @Inject()(view: ClientDetails,
       nino = None
     )
     auditingService.audit(auditModel)
+  }
+
+  def backUrl: String = {
+    appConfig.agentSigningUpUrl
   }
 
 }
