@@ -27,10 +27,10 @@ form : FormWithCSRF,
 hmrcNewTabLinkHelper: HmrcNewTabLinkHelper
 )
 
-@(usingSoftwareForm: Form[YesNo], postAction: Call)(implicit request: Request[_], messages: Messages)
+@(usingSoftwareForm: Form[YesNo], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
 
 
-@mainTemplate(title = messages("individual.using-software.heading"), optForm = Some(usingSoftwareForm)) {
+@mainTemplate(title = messages("individual.using-software.heading"), optForm = Some(usingSoftwareForm), backLink = Some(backUrl)) {
   @form(action = postAction) {
 
     <h1 class="govuk-heading-l">@messages("individual.using-software.heading")</h1>
