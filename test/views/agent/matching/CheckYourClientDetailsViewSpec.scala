@@ -44,7 +44,8 @@ class CheckYourClientDetailsViewSpec extends ViewSpec {
 
   def page(): HtmlFormat.Appendable = checkYourClientDetails(
     userDetailsModel = testClientDetails,
-    postAction = postAction
+    postAction = postAction,
+    backUrl = testBackUrl
   )(FakeRequest(), implicitly)
 
   def document(): Document = Jsoup.parse(page().body)

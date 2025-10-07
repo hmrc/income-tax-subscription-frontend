@@ -108,4 +108,8 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
           }
       )
   }
+
+  def backUrl: String = {
+    controllers.individual.routes.YouCanSignUpController.show.url
+  }
 }

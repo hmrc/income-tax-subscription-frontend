@@ -24,9 +24,9 @@
     continueButton: ContinueButton
 )
 
-@(postAction: Call, clientName: String, clientNino: String)(implicit request: Request[_], messages: Messages)
+@(postAction: Call, backUrl: String, clientName: String, clientNino: String)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("agent.client-can-sign-up.heading")) {
+@mainTemplate(title = messages("agent.client-can-sign-up.heading"), backLink = Some(backUrl)) {
 
     @pageHeadingHelper(
         heading = messages("agent.client-can-sign-up.heading"),
