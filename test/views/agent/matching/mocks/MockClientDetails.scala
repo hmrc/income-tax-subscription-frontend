@@ -17,7 +17,8 @@
 package views.agent.matching.mocks
 
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.Call
@@ -28,13 +29,30 @@ trait MockClientDetails extends MockitoSugar with BeforeAndAfterEach {
   suite: Suite =>
 
   val mockClientDetails: ClientDetails = mock[ClientDetails]
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockClientDetails)
+    when(mockClientDetails(any(), any(), any(), any())(any(), any()))
+      .thenReturn(HtmlFormat.empty)
+    when(mockClientDetails.render(any(), any(), any(), any(), any(), any()))
+      .thenReturn(HtmlFormat.empty)
+  }
 
-  def mockView(postAction: Call, isEditMode: Boolean): Unit = {
+  def mockView(postAction: Call, backUrl: String, isEditMode: Boolean): Unit = {
     when(mockClientDetails(
       ArgumentMatchers.any(),
       ArgumentMatchers.eq(postAction),
+      ArgumentMatchers.eq(backUrl),
       ArgumentMatchers.eq(isEditMode)
     )(ArgumentMatchers.any(), ArgumentMatchers.any()))
       .thenReturn(HtmlFormat.empty)
+    when(mockClientDetails.render(
+      ArgumentMatchers.any(),
+      ArgumentMatchers.eq(postAction),
+      ArgumentMatchers.eq(backUrl),
+      ArgumentMatchers.eq(isEditMode),
+      ArgumentMatchers.any(),
+      ArgumentMatchers.any())
+    ).thenReturn(HtmlFormat.empty)
   }
 }

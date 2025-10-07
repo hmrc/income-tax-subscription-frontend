@@ -69,7 +69,8 @@ class YouCanSignUpSpec extends ViewSpec {
 
   private def page: Html = {
     youCanSignUp(
-      postAction = controllers.individual.sps.routes.SPSHandoffController.redirectToSPS
+      postAction = controllers.individual.sps.routes.SPSHandoffController.redirectToSPS,
+      backUrl = testBackUrl
     )
   }
 

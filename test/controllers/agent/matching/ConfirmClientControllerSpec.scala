@@ -283,7 +283,7 @@ class ConfirmClientControllerSpec extends ControllerSpec
 
   private def withController(testCode: ConfirmClientController => Any): Unit = {
     val checkYourClientDetailsView = mock[CheckYourClientDetails]
-    when(checkYourClientDetailsView(any(), any())(any(), any()))
+    when(checkYourClientDetailsView(any(), any(), any())(any(), any()))
       .thenReturn(HtmlFormat.empty)
     val controller = createTestConfirmClientController(checkYourClientDetailsView)
     testCode(controller)

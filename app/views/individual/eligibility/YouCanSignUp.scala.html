@@ -25,9 +25,9 @@
   form: FormWithCSRF
 )
 
-@(postAction: Call)(implicit request: Request[_], messages: Messages)
+@(postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("individual.you-can-sign-up-now.heading")) {
+@mainTemplate(title = messages("individual.you-can-sign-up-now.heading"), backLink = Some(backUrl)) {
 
     <h1 class="govuk-heading-xl">@messages("individual.you-can-sign-up-now.heading")</h1>
 

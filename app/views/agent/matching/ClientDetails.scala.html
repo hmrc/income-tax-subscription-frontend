@@ -29,9 +29,9 @@
     dateHelper: DateHelper
 )
 
-@(clientDetailsForm: Form[UserDetailsModel], postAction: Call, isEditMode: Boolean)(implicit request: Request[_], messages: Messages)
+@(clientDetailsForm: Form[UserDetailsModel], postAction: Call, backUrl: String, isEditMode: Boolean)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("agent.client-details.title"), optForm = Some(clientDetailsForm)) {
+@mainTemplate(title = messages("agent.client-details.title"), optForm = Some(clientDetailsForm), backLink = Some(backUrl)) {
 
 
     @form(action = postAction) {
