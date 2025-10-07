@@ -1043,7 +1043,7 @@ individual.global-check-your-answers.tax.year.current                           
 individual.global-check-your-answers.tax.year.next                                              = Flwyddyn dreth nesaf
 individual.global-check-your-answers.income-sources.self-employment.heading                     = Busnesau unig fasnachwr
 individual.global-check-your-answers.income-sources.self-employment.change                      = Newid
-individual.global-check-your-answers.income-sources.self-employment.hidden-text                 =
+individual.global-check-your-answers.income-sources.self-employment.hidden-text                 = busnesau unig fasnachwr {0}
 individual.global-check-your-answers.income-sources.self-employment.trade                       = Gwaith masnach
 individual.global-check-your-answers.income-sources.self-employment.name                        = Enw’r busnes
 individual.global-check-your-answers.income-sources.self-employment.start-date                  = Dyddiad dechrau’r busnes
@@ -1070,7 +1070,7 @@ agent.global-check-your-answers.para                                            
 agent.global-check-your-answers.subheading                                                      = Gwirio’ch atebion cyn cofrestru
 agent.global-check-your-answers.income-sources.subheading                                       = Busnesau unig fasnachwr
 agent.global-check-your-answers.income-sources.self-employment.change                           = Newid
-agent.global-check-your-answers.income-sources.self-employment.hidden-text                      =
+agent.global-check-your-answers.income-sources.self-employment.hidden-text                      = busnesau unig fasnachwr {0}
 agent.global-check-your-answers.income-sources.self-employment.trade                            = Masnach
 agent.global-check-your-answers.income-sources.self-employment.name                             = Enw’r busnes
 agent.global-check-your-answers.income-sources.self-employment.start-date                       = Dyddiad dechrau
