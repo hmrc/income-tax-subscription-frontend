@@ -30,6 +30,7 @@ import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, red
 import play.twirl.api.HtmlFormat
 import services.mocks._
 import uk.gov.hmrc.http.InternalServerException
+import views.ViewSpecTrait.testBackUrl
 import views.html.individual.UsingSoftware
 
 import scala.concurrent.Future
@@ -41,8 +42,11 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
   with MockMandationStatusService
   with MockSessionDataService {
 
+  val mockUsingSoftware: UsingSoftware = mock[UsingSoftware]
+
+  when(mockUsingSoftware(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   object TestUsingSoftwareController extends UsingSoftwareController(
-    mock[UsingSoftware],
+    mockUsingSoftware,
     mockSessionDataService,
     mockGetEligibilityStatusService,
     mockMandationStatusService
@@ -83,10 +87,11 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
       mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
       when(usingSoftware(
         ArgumentMatchers.eq(UsingSoftwareForm.usingSoftwareForm),
-        ArgumentMatchers.eq(routes.UsingSoftwareController.submit())
+        ArgumentMatchers.eq(routes.UsingSoftwareController.submit()),
+        ArgumentMatchers.eq(testBackUrl)
       )(any(), any())).thenReturn(HtmlFormat.empty)
 
-      val result: Future[Result] = controller.show()(
+      val result: Future[Result] = TestUsingSoftwareController.show()(
         subscriptionRequest
       )
       status(result) mustBe OK
@@ -99,7 +104,7 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
       "return a bad request with the page content" in new Setup {
         mockGetMandationService(Voluntary, Mandated)
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
-        when(usingSoftware(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+        when(usingSoftware(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.submit()(subscriptionRequest)
 
