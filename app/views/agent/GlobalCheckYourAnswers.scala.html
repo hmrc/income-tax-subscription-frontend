@@ -72,10 +72,6 @@
     }
 }
 
-@declarationParagraph() = {
-    <p class="govuk-body">@messages("agent.global-check-your-answers.para1")</p>
-}
-
 @incomeSourcesSection(incomeSources: IncomeSources) = {
 
     @incomeSources.soleTraderBusinesses.map(toSoleTraderBusinessesDisplay)

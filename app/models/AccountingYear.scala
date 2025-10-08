@@ -20,8 +20,6 @@ import models.Current.CURRENT
 import models.Next.NEXT
 import play.api.libs.json._
 
-import java.time.LocalDate
-
 sealed trait AccountingYear
 
 case object Current extends AccountingYear {

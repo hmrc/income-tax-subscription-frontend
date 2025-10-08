@@ -18,9 +18,8 @@ package controllers.agent.matching
 
 import auth.agent._
 import common.Constants.ITSASessionKeys.JourneyStateKey
-import config.AppConfig
 import controllers.SignUpBaseController
-import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
+import controllers.agent.actions.IdentifierAction
 import controllers.utils.ReferenceRetrieval
 import play.api.mvc._
 import services._

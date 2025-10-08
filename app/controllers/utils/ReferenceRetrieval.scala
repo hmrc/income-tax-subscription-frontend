@@ -16,7 +16,6 @@
 
 package controllers.utils
 
-import auth.agent.IncomeTaxAgentUser
 import connectors.httpparser.{GetSessionDataHttpParser, RetrieveReferenceHttpParser, SaveSessionDataHttpParser}
 import models.audits.SignupRetrieveAuditing.SignupRetrieveAuditModel
 import play.api.mvc.Request

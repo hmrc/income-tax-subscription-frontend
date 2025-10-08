@@ -106,7 +106,8 @@ class UsingSoftwareViewSpec extends ViewSpec {
   private def page(hasError: Boolean = false): Html = {
     usingSoftware(
       if (hasError) UsingSoftwareForm.usingSoftwareForm.withError(testFormError) else UsingSoftwareForm.usingSoftwareForm,
-      testCall
+      testCall,
+      testBackUrl
     )
   }
 
