@@ -53,7 +53,7 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
     usingSoftware(
       usingSoftwareForm = usingSoftwareForm,
       postAction = controllers.individual.routes.UsingSoftwareController.submit(editMode),
-      backUrl = backUrl
+      backUrl = backUrl(editMode)
     )
   }
 
@@ -113,7 +113,11 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
       )
   }
 
-  def backUrl: String = {
-    controllers.individual.routes.YouCanSignUpController.show.url
+  def backUrl(editMode: Boolean): String = {
+    if (editMode) {
+      controllers.individual.routes.GlobalCheckYourAnswersController.show.url
+    } else {
+      controllers.individual.routes.YouCanSignUpController.show.url
+    }
   }
 }

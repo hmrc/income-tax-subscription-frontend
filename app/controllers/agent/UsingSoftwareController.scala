@@ -53,7 +53,7 @@ class UsingSoftwareController @Inject()(view: UsingSoftware,
           postAction = routes.UsingSoftwareController.submit(editMode),
           clientName = request.clientDetails.name,
           clientNino = request.clientDetails.formattedNino,
-          backUrl = backUrl(eligibilityStatus.eligibleNextYearOnly)
+          backUrl = backUrl(eligibilityStatus.eligibleNextYearOnly, editMode)
         ))
       }
     }
@@ -68,7 +68,7 @@ class UsingSoftwareController @Inject()(view: UsingSoftware,
             postAction = routes.UsingSoftwareController.submit(editMode),
             clientName = request.clientDetails.name,
             clientNino = request.clientDetails.formattedNino,
-            backUrl = backUrl(eligibilityStatus.eligibleNextYearOnly)
+            backUrl = backUrl(eligibilityStatus.eligibleNextYearOnly, editMode)
           ))
         },
       yesNo =>
@@ -102,8 +102,10 @@ class UsingSoftwareController @Inject()(view: UsingSoftware,
     )
   }
 
-  def backUrl(eligibleNextYearOnly: Boolean): String = {
-    if (eligibleNextYearOnly) {
+  def backUrl(eligibleNextYearOnly: Boolean, editMode: Boolean): String = {
+    if (editMode) {
+      controllers.agent.routes.GlobalCheckYourAnswersController.show.url
+    } else if (eligibleNextYearOnly) {
       controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url
     } else {
       controllers.agent.eligibility.routes.ClientCanSignUpController.show().url
