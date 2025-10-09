@@ -39,6 +39,7 @@ class ClientCanSignUpController @Inject()(identify: IdentifierAction,
   def show: Action[AnyContent] = (identify andThen journeyRefiner) { implicit request =>
         Ok(view(
           routes.ClientCanSignUpController.submit(),
+          backUrl = backUrl,
           clientName = request.clientDetails.name,
           clientNino = request.clientDetails.formattedNino
         ))
@@ -52,5 +53,9 @@ class ClientCanSignUpController @Inject()(identify: IdentifierAction,
       case Left(_) =>
         throw new InternalServerException("[ClientCanSignUpController][continueToSignUpClient] - Failed to save eligibility interrupt passed")
     }
+  }
+
+  def backUrl: String = {
+    controllers.agent.matching.routes.ConfirmClientController.show().url
   }
 }

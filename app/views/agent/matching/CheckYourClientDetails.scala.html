@@ -28,10 +28,11 @@
 
 @(
         userDetailsModel: UserDetailsModel,
-        postAction: Call
+        postAction: Call,
+        backUrl: String
 )(implicit request: Request[_], messages: Messages)
 
-@agentMainTemplate(title = messages("agent.client-details.summary.title")) {
+@agentMainTemplate(title = messages("agent.client-details.summary.title"), backLink = Some(backUrl)) {
 
         @pageHeadingHelper(
             heading = messages("agent.client-details.summary.heading"),

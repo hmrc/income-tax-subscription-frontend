@@ -35,6 +35,7 @@ class ClientCanSignUpViewSpec extends ViewSpec {
   class ViewTest {
     val page: HtmlFormat.Appendable = view(
       postAction = testCall,
+      backUrl = testBackUrl,
       clientName = clientName,
       clientNino = clientNino
     )

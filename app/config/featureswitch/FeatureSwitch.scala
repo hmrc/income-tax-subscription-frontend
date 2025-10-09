@@ -26,8 +26,6 @@ object FeatureSwitch {
 
   val switches: Set[FeatureSwitch] = Set(
     ThrottlingFeature,
-    CheckClientRelationship,
-    CheckMultiAgentRelationship,
     EmailCaptureConsent
   )
 
@@ -42,16 +40,6 @@ object FeatureSwitch {
   case object ThrottlingFeature extends FeatureSwitch {
     override val name = s"$prefix.throttle"
     override val displayText = "Throttle"
-  }
-
-  case object CheckClientRelationship extends FeatureSwitch {
-    override val name: String = s"$prefix.agent-client-relationships"
-    override val displayText: String = "CheckClientRelationship"
-  }
-
-  case object CheckMultiAgentRelationship extends FeatureSwitch {
-    override val name: String = s"$prefix.multi-agent-client-relationships"
-    override val displayText: String = "CheckMultiAgentRelationship"
   }
 
   case object EmailCaptureConsent extends FeatureSwitch {

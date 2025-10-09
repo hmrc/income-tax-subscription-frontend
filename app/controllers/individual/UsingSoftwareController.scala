@@ -52,7 +52,8 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
           (implicit request: Request[_]): Html = {
     usingSoftware(
       usingSoftwareForm = usingSoftwareForm,
-      postAction = controllers.individual.routes.UsingSoftwareController.submit()
+      postAction = controllers.individual.routes.UsingSoftwareController.submit(),
+      backUrl = backUrl
     )
   }
 
@@ -107,5 +108,9 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
             }
           }
       )
+  }
+
+  def backUrl: String = {
+    controllers.individual.routes.YouCanSignUpController.show.url
   }
 }

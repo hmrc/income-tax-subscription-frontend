@@ -37,7 +37,12 @@ class YouCanSignUpController @Inject()(view: YouCanSignUp)
   def show: Action[AnyContent] = Authenticated { implicit request =>
     _ =>
       Ok(view(
-        postAction = controllers.individual.sps.routes.SPSHandoffController.redirectToSPS
+        postAction = controllers.individual.sps.routes.SPSHandoffController.redirectToSPS,
+        backUrl = backUrl
       ))
+  }
+
+  def backUrl: String = {
+    appConfig.individualSigningUpUrl
   }
 }
