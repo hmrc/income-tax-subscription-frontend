@@ -104,7 +104,7 @@ class ForeignPropertyStartDateViewSpec extends ViewSpec {
             )
           }
           "is for a max start date error" in {
-            val dateValidationError = FormError("startDate", "error.individual.foreign-property.day-month-year.max-date", List("11 April 2021"))
+            val dateValidationError = FormError("startDate", "error.individual.foreign-property.day-month-year.max-date", List("18 April 2021"))
             form(maybeError = Some(dateValidationError)).mustHaveDateInput(
               id = "startDate",
               legend = OverseasPropertyStartDateMessages.heading,
@@ -164,7 +164,7 @@ class ForeignPropertyStartDateViewSpec extends ViewSpec {
     val hint = s"For example, 27 9 ${AccountingPeriodUtil.getStartDateLimit.getYear}."
     val saveAndContinue = "Save and continue"
     val saveAndComeBackLater = "Save and come back later"
-    val maxDate = "The date cannot be more than 7 days in the future"
+    val maxDate = "The date must be before 18 April 2021"
     val minDate = "The date must be on or after 11 April 2021"
   }
 
