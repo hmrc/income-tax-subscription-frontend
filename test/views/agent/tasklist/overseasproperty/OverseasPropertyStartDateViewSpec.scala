@@ -38,7 +38,7 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
     val saveAndContinue = "Save and continue"
     val saveAndComeBackLater = "Save and come back later"
     val backLink = "Back"
-    val maxDate = "The date cannot be more than 7 days in the future"
+    val maxDate = "The date must be before 18 April 2021"
     val minDate = "The date must be on or after 11 April 2021"
   }
 
@@ -144,7 +144,7 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
 
 
     "must display max date error form error on page" in {
-      val dateValidationError = FormError("startDate", "agent.error.overseas.property.day-month-year.max-date")
+      val dateValidationError = FormError("startDate", "agent.error.overseas.property.day-month-year.max-date", List("18 April 2021"))
       val formWithError = OverseasPropertyStartDateForm
         .overseasPropertyStartDateForm(LocalDate.now(), LocalDate.now(), d => d.toString)
         .withError(dateValidationError)

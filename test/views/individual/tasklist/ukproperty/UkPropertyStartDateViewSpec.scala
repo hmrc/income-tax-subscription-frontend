@@ -106,7 +106,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
             )
           }
           "is for a max start date error" in {
-            val dateValidationError = FormError("startDate", "error.property.day-month-year.max-date", List("11 April 2021"))
+            val dateValidationError = FormError("startDate", "error.property.day-month-year.max-date", List("18 April 2021"))
             form(maybeError = Some(dateValidationError)).mustHaveDateInput(
               id = "startDate",
               legend = PropertyStartDateMessages.heading,
@@ -152,7 +152,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
     val saveAndComeBackLater = "Save and come back later"
     val backLink = "Back"
     val update = "Update"
-    val maxDate = "The date cannot be more than 7 days in the future"
+    val maxDate = "The date must be before 18 April 2021"
     val minDate = "The date must be on or after 11 April 2021"
   }
 
