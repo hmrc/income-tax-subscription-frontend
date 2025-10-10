@@ -47,7 +47,7 @@ class NoSoftwareControllerISpec extends ComponentSpecBase {
       SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
       SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
-      When(s"GET ${controllers.agent.routes.NoSoftwareController.show()}")
+      When(s"GET ${controllers.agent.routes.NoSoftwareController.show(false)}")
       val result = IncomeTaxSubscriptionFrontend.showNoSoftware()
       Then("The result should be OK with page content")
       result must have(

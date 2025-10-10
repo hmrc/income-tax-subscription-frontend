@@ -77,8 +77,8 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
 
   override val controllerName: String = "UsingSoftwareController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestUsingSoftwareController.show(),
-    "submit" -> TestUsingSoftwareController.submit()
+    "show" -> TestUsingSoftwareController.show(false),
+    "submit" -> TestUsingSoftwareController.submit(false)
   )
 
   "show" must {
@@ -87,11 +87,11 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
       mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
       when(usingSoftware(
         ArgumentMatchers.eq(UsingSoftwareForm.usingSoftwareForm),
-        ArgumentMatchers.eq(routes.UsingSoftwareController.submit()),
+        ArgumentMatchers.eq(routes.UsingSoftwareController.submit(false)),
         ArgumentMatchers.eq(testBackUrl)
       )(any(), any())).thenReturn(HtmlFormat.empty)
 
-      val result: Future[Result] = TestUsingSoftwareController.show()(
+      val result: Future[Result] = TestUsingSoftwareController.show(false)(
         subscriptionRequest
       )
       status(result) mustBe OK
@@ -106,7 +106,7 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         when(usingSoftware(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
 
-        val result: Future[Result] = controller.submit()(subscriptionRequest)
+        val result: Future[Result] = controller.submit(false)(subscriptionRequest)
 
         status(result) mustBe BAD_REQUEST
         contentType(result) mustBe Some(HTML)
@@ -119,7 +119,7 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
           mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
 
-          val result: Future[Result] = controller.submit()(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, Yes))
+          val result: Future[Result] = controller.submit(false)(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, Yes))
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.individual.routes.WhatYouNeedToDoController.show.url)
@@ -129,7 +129,7 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
           mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
 
-          val result: Future[Result] = controller.submit()(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, Yes))
+          val result: Future[Result] = controller.submit(false)(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, Yes))
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.individual.routes.WhatYouNeedToDoController.show.url)
@@ -142,7 +142,7 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
           mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
 
-          val result: Future[Result] = controller.submit()(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, Yes))
+          val result: Future[Result] = controller.submit(false)(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, Yes))
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.individual.email.routes.CaptureConsentController.show().url)
@@ -154,10 +154,15 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
           mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
 
-          val result: Future[Result] = controller.submit()(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, Yes))
+          Seq(false, true).foreach { editMode =>
+            val result: Future[Result] = controller.submit(editMode)(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, Yes))
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(editMode match {
+              case false => controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+              case true => controllers.individual.routes.GlobalCheckYourAnswersController.show.url
+            })
+          }
         }
       }
     }
@@ -167,10 +172,10 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
         mockGetMandationService(Voluntary, Voluntary)
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
 
-        val result: Future[Result] = controller.submit()(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, No))
+        val result: Future[Result] = controller.submit(false)(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, No))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.individual.routes.NoSoftwareController.show.url)
+        redirectLocation(result) mustBe Some(controllers.individual.routes.NoSoftwareController.show(false).url)
       }
     }
     "an error occurs when saving the software status" should {
@@ -179,7 +184,7 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
         mockGetMandationService(Voluntary, Voluntary)
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
 
-        val result: Future[Result] = controller.submit()(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, Yes))
+        val result: Future[Result] = controller.submit(false)(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, Yes))
 
         intercept[InternalServerException](await(result))
           .message mustBe "[UsingSoftwareController][submit] - Could not save using software answer"

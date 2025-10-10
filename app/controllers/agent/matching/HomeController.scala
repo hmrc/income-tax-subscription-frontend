@@ -18,9 +18,8 @@ package controllers.agent.matching
 
 import auth.agent._
 import common.Constants.ITSASessionKeys.JourneyStateKey
-import config.AppConfig
 import controllers.SignUpBaseController
-import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
+import controllers.agent.actions.IdentifierAction
 import controllers.utils.ReferenceRetrieval
 import play.api.mvc._
 import services._
@@ -55,7 +54,7 @@ class HomeController @Inject()
     referenceRetrieval.getAgentReference flatMap { reference =>
       subscriptionDetailsService.fetchEligibilityInterruptPassed(reference) flatMap {
         case Some(_) =>
-          Future.successful(Redirect(controllers.agent.routes.UsingSoftwareController.show))
+          Future.successful(Redirect(controllers.agent.routes.UsingSoftwareController.show(false)))
         case None =>
           getEligibilityStatusService.getEligibilityStatus map { eligibilityStatus =>
             if (eligibilityStatus.eligibleNextYearOnly) {

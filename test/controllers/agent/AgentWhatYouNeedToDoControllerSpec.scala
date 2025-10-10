@@ -16,7 +16,7 @@
 
 package controllers.agent
 
-import config.MockConfig
+import config.{AppConfig, MockConfig}
 import config.featureswitch.FeatureSwitch.EmailCaptureConsent
 import config.featureswitch.FeatureSwitching
 import controllers.ControllerSpec
@@ -46,7 +46,7 @@ class AgentWhatYouNeedToDoControllerSpec
     with MockSessionDataService
     with FeatureSwitching {
 
-  val appConfig = MockConfig
+  val appConfig: AppConfig = MockConfig
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -121,7 +121,7 @@ class AgentWhatYouNeedToDoControllerSpec
           ArgumentMatchers.any(),
           ArgumentMatchers.eq(clientDetails.name),
           ArgumentMatchers.eq(clientDetails.formattedNino),
-          ArgumentMatchers.eq(Some(routes.UsingSoftwareController.show.url)),
+          ArgumentMatchers.eq(Some(routes.UsingSoftwareController.show(false).url)),
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
@@ -147,7 +147,7 @@ class AgentWhatYouNeedToDoControllerSpec
           ArgumentMatchers.any(),
           ArgumentMatchers.eq(clientDetails.name),
           ArgumentMatchers.eq(clientDetails.formattedNino),
-          ArgumentMatchers.eq(Some(routes.UsingSoftwareController.show.url)),
+          ArgumentMatchers.eq(Some(routes.UsingSoftwareController.show(false).url)),
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
@@ -229,7 +229,7 @@ class AgentWhatYouNeedToDoControllerSpec
             ArgumentMatchers.any(),
             ArgumentMatchers.eq(clientDetails.name),
             ArgumentMatchers.eq(clientDetails.formattedNino),
-            ArgumentMatchers.eq(Some(routes.UsingSoftwareController.show.url)),
+            ArgumentMatchers.eq(Some(routes.UsingSoftwareController.show(false).url)),
 
           )(any(), any())).thenReturn(HtmlFormat.empty)
 
@@ -259,7 +259,7 @@ class AgentWhatYouNeedToDoControllerSpec
             ArgumentMatchers.any(),
             ArgumentMatchers.eq(clientDetails.name),
             ArgumentMatchers.eq(clientDetails.formattedNino),
-            ArgumentMatchers.eq(Some(controllers.agent.routes.UsingSoftwareController.show.url)),
+            ArgumentMatchers.eq(Some(controllers.agent.routes.UsingSoftwareController.show(false).url)),
           )(any(), any())).thenReturn(HtmlFormat.empty)
 
           val result: Future[Result] = controller.show(
@@ -286,7 +286,7 @@ class AgentWhatYouNeedToDoControllerSpec
             ArgumentMatchers.any(),
             ArgumentMatchers.eq(clientDetails.name),
             ArgumentMatchers.eq(clientDetails.formattedNino),
-            ArgumentMatchers.eq(Some(controllers.agent.routes.UsingSoftwareController.show.url)),
+            ArgumentMatchers.eq(Some(controllers.agent.routes.UsingSoftwareController.show(false).url)),
 
           )(any(), any())).thenReturn(HtmlFormat.empty)
 
@@ -324,13 +324,13 @@ class AgentWhatYouNeedToDoControllerSpec
         "the user is eligible for next year only" in new Setup {
           val backUrl: String = controller.backUrl(eligibleNextYearOnly = true, mandatedCurrentYear = false, None, Some(Next))
 
-          backUrl mustBe controllers.agent.routes.UsingSoftwareController.show.url
+          backUrl mustBe controllers.agent.routes.UsingSoftwareController.show(false).url
         }
         "the user is mandated for the current year" in new Setup {
 
           val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, mandatedCurrentYear = true, None, Some(Current))
 
-          backUrl mustBe controllers.agent.routes.UsingSoftwareController.show.url
+          backUrl mustBe controllers.agent.routes.UsingSoftwareController.show(false).url
         }
       }
     }
@@ -340,7 +340,7 @@ class AgentWhatYouNeedToDoControllerSpec
           enable(EmailCaptureConsent)
           val backUrl: String = controller.backUrl(eligibleNextYearOnly = true, mandatedCurrentYear = false, captureConsentStatus = Some(Yes), Some(Next))
 
-          backUrl mustBe controllers.agent.routes.UsingSoftwareController.show.url
+          backUrl mustBe controllers.agent.routes.UsingSoftwareController.show(false).url
         }
       }
       "the user is mandated or signing up for current year" should {

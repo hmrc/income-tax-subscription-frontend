@@ -48,16 +48,16 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
   private val form: Form[YesNo] = UsingSoftwareForm.usingSoftwareForm
 
 
-  def view(usingSoftwareForm: Form[YesNo])
+  def view(usingSoftwareForm: Form[YesNo], editMode: Boolean)
           (implicit request: Request[_]): Html = {
     usingSoftware(
       usingSoftwareForm = usingSoftwareForm,
-      postAction = controllers.individual.routes.UsingSoftwareController.submit(),
-      backUrl = backUrl
+      postAction = controllers.individual.routes.UsingSoftwareController.submit(editMode),
+      backUrl = backUrl(editMode)
     )
   }
 
-  def show(): Action[AnyContent] = Authenticated.async { implicit request =>
+  def show(editMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
       for {
         usingSoftwareStatus <- sessionDataService.fetchSoftwareStatus
@@ -66,19 +66,20 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
           case Left(_) => throw new InternalServerException("[UsingSoftwareController][show] - Could not fetch software status")
           case Right(maybeYesNo) =>
             Ok(view(
-              usingSoftwareForm = form.fill(maybeYesNo)
+              usingSoftwareForm = form.fill(maybeYesNo),
+              editMode = editMode
             ))
         }
-
       }
   }
 
-  def submit(): Action[AnyContent] = Authenticated.async { implicit request =>
+  def submit(editMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(
-            usingSoftwareForm = formWithErrors
+            usingSoftwareForm = formWithErrors,
+            editMode = editMode
           ))),
         yesNo =>
           for {
@@ -95,7 +96,9 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
               case Right(_) =>
                 yesNo match {
                   case Yes =>
-                    if (isEnabled(EmailCaptureConsent) && isMandatedCurrentYear) {
+                    if (editMode) {
+                      Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
+                    } else if (isEnabled(EmailCaptureConsent) && isMandatedCurrentYear) {
                       Redirect(controllers.individual.email.routes.CaptureConsentController.show())
                     } else if (isMandatedCurrentYear || isEligibleNextYearOnly) {
                       Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
@@ -103,14 +106,18 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
                       Redirect(controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show())
                     }
                   case No =>
-                    Redirect(controllers.individual.routes.NoSoftwareController.show)
+                    Redirect(controllers.individual.routes.NoSoftwareController.show(editMode))
                 }
-            }
+              }
           }
       )
   }
 
-  def backUrl: String = {
-    controllers.individual.routes.YouCanSignUpController.show.url
+  def backUrl(editMode: Boolean): String = {
+    if (editMode) {
+      controllers.individual.routes.GlobalCheckYourAnswersController.show.url
+    } else {
+      controllers.individual.routes.YouCanSignUpController.show.url
+    }
   }
 }

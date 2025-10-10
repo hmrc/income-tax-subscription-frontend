@@ -34,10 +34,10 @@ class NoSoftwareController @Inject()(noSoftware: NoSoftware)
                                     (implicit mcc: MessagesControllerComponents, val ec: ExecutionContext)
   extends SignUpController {
 
-  def show: Action[AnyContent] = Authenticated { implicit request =>
+  def show(editMode: Boolean): Action[AnyContent] = Authenticated { implicit request =>
     _ =>
       Ok(noSoftware(
-        backUrl = controllers.individual.routes.UsingSoftwareController.show().url
+        backUrl = controllers.individual.routes.UsingSoftwareController.show(editMode).url
       ))
   }
 }

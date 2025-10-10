@@ -70,7 +70,7 @@ class PreSignUpJourneyRefinerSpec extends PlaySpec {
           )
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.individual.routes.UsingSoftwareController.show().url)
+          redirectLocation(result) mustBe Some(controllers.individual.routes.UsingSoftwareController.show(false).url)
         }
       }
       "redirect to the sps handoff" when {

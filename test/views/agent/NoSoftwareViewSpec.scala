@@ -29,7 +29,7 @@ class NoSoftwareViewSpec extends ViewSpec {
   private val fullName = "FirstName LastName"
   private val nino = "ZZ 11 11 11 Z"
   private val postAction: Call = controllers.agent.routes.AddAnotherClientController.addAnother()
-  private val backUrl: String = controllers.agent.routes.UsingSoftwareController.show.url
+  private val backUrl: String = controllers.agent.routes.UsingSoftwareController.show(false).url
 
   "NoSoftware" must {
 

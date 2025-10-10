@@ -163,7 +163,7 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
 
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(controllers.agent.routes.UsingSoftwareController.show.url)
+            redirectURI(controllers.agent.routes.UsingSoftwareController.show(false).url)
           )
 
           getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
@@ -214,7 +214,7 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
 
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(controllers.agent.routes.UsingSoftwareController.show.url)
+            redirectURI(controllers.agent.routes.UsingSoftwareController.show(false).url)
           )
 
           getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)

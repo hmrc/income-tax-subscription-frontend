@@ -132,7 +132,7 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
     val title = "Check your answers - UK property"
     val heading = "Check your answers"
     val caption = "FirstName LastName | ZZ 11 11 11 Z"
-    val startDateQuestion = "Start date"
+    val startDateQuestion = "Property start date"
     val confirmedAndContinue = "Confirm and continue"
     val saveAndComeBack = "Save and come back later"
     val change = "Change"

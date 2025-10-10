@@ -50,7 +50,7 @@ class PreSignUpJourneyRefiner @Inject()(implicit val executionContext: Execution
       case Some(SignUp) =>
         if (request.session.get(ITSASessionKeys.SPSEntityId).isDefined) {
           logger.info(s"[Individual][PreSignUpJourneyRefiner] - SPS entity id found in session. Sending to using software page")
-          Future.successful(Left(Redirect(controllers.individual.routes.UsingSoftwareController.show())))
+          Future.successful(Left(Redirect(controllers.individual.routes.UsingSoftwareController.show(false))))
         } else {
           logger.info(s"[Individual][PreSignUpJourneyRefiner] - Sign up state without an sps entity id. Sending to SPS")
           Future.successful(Left(Redirect(controllers.individual.sps.routes.SPSHandoffController.redirectToSPS)))

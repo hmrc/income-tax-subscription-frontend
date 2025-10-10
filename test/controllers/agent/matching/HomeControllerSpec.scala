@@ -18,15 +18,13 @@ package controllers.agent.matching
 
 import auth.agent.{AgentSignUp, AgentUserMatching}
 import common.Constants.ITSASessionKeys
-import config.MockConfig
 import config.featureswitch.FeatureSwitch.ThrottlingFeature
 import config.featureswitch.FeatureSwitchingUtil
 import controllers.ControllerSpec
-import controllers.agent.AgentControllerBaseSpec
 import controllers.agent.actions.mocks.MockIdentifierAction
 import models.EligibilityStatus
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Result}
+import play.api.mvc.{AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSubscriptionDetailsService, MockThrottlingConnector}
@@ -90,7 +88,7 @@ class HomeControllerSpec extends ControllerSpec
           val result: Future[Result] = testHomeController().index()(agentSignUpRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.agent.routes.UsingSoftwareController.show.url)
+          redirectLocation(result) mustBe Some(controllers.agent.routes.UsingSoftwareController.show(false).url)
         }
       }
       "the user has not previously confirmed to sign up their client" when {

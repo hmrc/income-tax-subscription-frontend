@@ -115,7 +115,7 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
     if (isEditMode) {
       Some(controllers.agent.routes.GlobalCheckYourAnswersController.show.url)
     } else {
-      Some(controllers.agent.routes.UsingSoftwareController.show.url)
+      Some(controllers.agent.routes.UsingSoftwareController.show(false).url)
     }
   }
 

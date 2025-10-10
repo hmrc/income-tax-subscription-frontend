@@ -102,7 +102,7 @@ class CannotSignUpThisYearControllerISpec extends ComponentSpecBase {
 
         result must have(
           httpStatus(SEE_OTHER),
-          redirectURI(controllers.agent.routes.UsingSoftwareController.show.url)
+          redirectURI(controllers.agent.routes.UsingSoftwareController.show(false).url)
         )
       }
     }

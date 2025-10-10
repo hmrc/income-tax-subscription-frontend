@@ -225,13 +225,13 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
         "the user is eligible for next year only" in new Setup {
           val backUrl: String = controller.backUrl(eligibleNextYearOnly = true, mandatedCurrentYear = false, None, None)
 
-          backUrl mustBe controllers.individual.routes.UsingSoftwareController.show().url
+          backUrl mustBe controllers.individual.routes.UsingSoftwareController.show(false).url
         }
         "the user is mandated for the current year" in new Setup {
 
           val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, mandatedCurrentYear = true, None, None)
 
-          backUrl mustBe controllers.individual.routes.UsingSoftwareController.show().url
+          backUrl mustBe controllers.individual.routes.UsingSoftwareController.show(false).url
         }
       }
     }
@@ -241,7 +241,7 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
           enable(EmailCaptureConsent)
           val backUrl: String = controller.backUrl(eligibleNextYearOnly = true, mandatedCurrentYear = false, consentStatus = Some(Yes), None)
 
-          backUrl mustBe controllers.individual.routes.UsingSoftwareController.show().url
+          backUrl mustBe controllers.individual.routes.UsingSoftwareController.show(false).url
         }
       }
       "the user is mandated or signing up for current year" should {

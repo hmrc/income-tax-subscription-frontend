@@ -28,7 +28,6 @@ import play.api.http.Status._
 import play.api.libs.json.Json
 import play.api.libs.ws.WSResponse
 
-
 class UsingSoftwareControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
   val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
@@ -126,7 +125,7 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase with FeatureSwitchi
         }
       }
 
-      s"return a redirect to ${controllers.individual.routes.NoSoftwareController.show.url}" when {
+      s"return a redirect to ${controllers.individual.routes.NoSoftwareController.show().url}" when {
         "the user selects the No radio button" in {
           val userInput = No
 
@@ -143,7 +142,7 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase with FeatureSwitchi
 
           result must have(
             httpStatus(SEE_OTHER),
-            redirectURI(controllers.individual.routes.NoSoftwareController.show.url)
+            redirectURI(controllers.individual.routes.NoSoftwareController.show().url)
           )
         }
       }
