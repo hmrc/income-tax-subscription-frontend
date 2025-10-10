@@ -63,11 +63,11 @@ GET         /business/what-year-to-sign-up                      controllers.agen
 POST        /business/what-year-to-sign-up                      controllers.agent.tasklist.taxyear.WhatYearToSignUpController.submit(editMode: Boolean ?= false)
 
 # Using software
-GET         /using-software/:editMode                           controllers.agent.UsingSoftwareController.show(editMode: Boolean)
-POST        /using-software/:editMode                           controllers.agent.UsingSoftwareController.submit(editMode: Boolean)
+GET         /using-software                                     controllers.agent.UsingSoftwareController.show(editMode: Boolean ?= false)
+POST        /using-software                                     controllers.agent.UsingSoftwareController.submit(editMode: Boolean ?= false)
 
 # No to using Software
-GET         /no-compatible-software/:editMode                   controllers.agent.NoSoftwareController.show(editMode: Boolean)
+GET         /no-compatible-software                             controllers.agent.NoSoftwareController.show(editMode: Boolean ?= false)
 
 # Capture consent routes
 GET         /capture-consent                                    controllers.agent.email.CaptureConsentController.show()

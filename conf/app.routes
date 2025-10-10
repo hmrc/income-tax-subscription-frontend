@@ -50,10 +50,10 @@ GET         /you-can-sign-up-now                                 controllers.ind
 GET         /what-you-need-to-do                                 controllers.individual.WhatYouNeedToDoController.show
 POST        /what-you-need-to-do                                 controllers.individual.WhatYouNeedToDoController.submit
 
-GET         /using-software/:editMode                            controllers.individual.UsingSoftwareController.show(editMode: Boolean)
-POST        /using-software/:editMode                            controllers.individual.UsingSoftwareController.submit(editMode: Boolean)
+GET         /using-software                                      controllers.individual.UsingSoftwareController.show(editMode: Boolean ?= false)
+POST        /using-software                                      controllers.individual.UsingSoftwareController.submit(editMode: Boolean ?= false)
 
-GET         /no-compatible-software/:editMode                    controllers.individual.NoSoftwareController.show(editMode: Boolean)
+GET         /no-compatible-software                              controllers.individual.NoSoftwareController.show(editMode: Boolean ?= false)
 ################## Business Routes
 
 #What Tax Year To Sign Up Routes

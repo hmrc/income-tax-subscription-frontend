@@ -29,7 +29,7 @@ class NoSoftwareControllerISpec extends ComponentSpecBase {
 
   val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
 
-  s"GET ${controllers.agent.routes.NoSoftwareController.show(false)}" should {
+  s"GET ${controllers.agent.routes.NoSoftwareController.show()}" should {
     "return SEE_OTHER to the login page when the user is unauthenticated" in {
       AuthStub.stubUnauthorised()
 
@@ -37,7 +37,7 @@ class NoSoftwareControllerISpec extends ComponentSpecBase {
 
       res must have(
         httpStatus(SEE_OTHER),
-        redirectURI(basGatewaySignIn("/client/no-compatible-software/false"))
+        redirectURI(basGatewaySignIn("/client/no-compatible-software"))
       )
     }
 

@@ -32,7 +32,7 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase with FeatureSwitchi
 
   val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
 
-  s"GET ${controllers.individual.routes.UsingSoftwareController.show(false).url}" when {
+  s"GET ${controllers.individual.routes.UsingSoftwareController.show().url}" when {
 
     "the Session Details Connector returns some data for Has Software" should {
 
@@ -45,7 +45,7 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase with FeatureSwitchi
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.HAS_SOFTWARE)(OK, Json.toJson(testOption))
 
 
-        When(s"GET ${controllers.individual.routes.UsingSoftwareController.show(false).url}")
+        When(s"GET ${controllers.individual.routes.UsingSoftwareController.show().url}")
         val result = IncomeTaxSubscriptionFrontend.showUsingSoftware()
 
         Then("The result should be OK with page content")
@@ -67,7 +67,7 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase with FeatureSwitchi
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.HAS_SOFTWARE)(NO_CONTENT)
 
 
-        When(s"GET ${controllers.individual.routes.UsingSoftwareController.show(false).url}")
+        When(s"GET ${controllers.individual.routes.UsingSoftwareController.show().url}")
         val result = IncomeTaxSubscriptionFrontend.showUsingSoftware()
 
         Then("The result should be OK with page content")
@@ -90,7 +90,7 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase with FeatureSwitchi
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.HAS_SOFTWARE)(INTERNAL_SERVER_ERROR)
 
 
-        When(s"GET ${controllers.individual.routes.UsingSoftwareController.show(false).url}")
+        When(s"GET ${controllers.individual.routes.UsingSoftwareController.show().url}")
         val result = IncomeTaxSubscriptionFrontend.showUsingSoftware()
 
         Then("Should return a INTERNAL_SERVER_ERROR")
@@ -101,7 +101,7 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase with FeatureSwitchi
     }
   }
 
-  s"POST ${controllers.individual.routes.UsingSoftwareController.submit(false).url}" when {
+  s"POST ${controllers.individual.routes.UsingSoftwareController.submit().url}" when {
 
       s"return a redirect to ${controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url}" when {
         "the user selects the Yes radio button" in {
@@ -113,7 +113,7 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase with FeatureSwitchi
           SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
           SessionDataConnectorStub.stubSaveSessionData[YesNo](ITSASessionKeys.HAS_SOFTWARE, userInput)(OK)
 
-          When(s"POST ${controllers.individual.routes.UsingSoftwareController.submit(false).url} is called")
+          When(s"POST ${controllers.individual.routes.UsingSoftwareController.submit().url} is called")
           val result: WSResponse = IncomeTaxSubscriptionFrontend.submitUsingSoftware(request = Some(userInput))
 
           Then("Should return SEE_OTHER to the What Year to Sign Up controller")
@@ -125,7 +125,7 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase with FeatureSwitchi
         }
       }
 
-      s"return a redirect to ${controllers.individual.routes.NoSoftwareController.show(false).url}" when {
+      s"return a redirect to ${controllers.individual.routes.NoSoftwareController.show().url}" when {
         "the user selects the No radio button" in {
           val userInput = No
 
@@ -135,14 +135,14 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase with FeatureSwitchi
           SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
           SessionDataConnectorStub.stubSaveSessionData[YesNo](ITSASessionKeys.HAS_SOFTWARE, userInput)(OK)
 
-          When(s"POST ${controllers.individual.routes.UsingSoftwareController.submit(false).url} is called")
+          When(s"POST ${controllers.individual.routes.UsingSoftwareController.submit().url} is called")
           val result: WSResponse = IncomeTaxSubscriptionFrontend.submitUsingSoftware(request = Some(userInput))
 
           Then("Should return SEE_OTHER to the What Year to Sign Up Controller")
 
           result must have(
             httpStatus(SEE_OTHER),
-            redirectURI(controllers.individual.routes.NoSoftwareController.show(false).url)
+            redirectURI(controllers.individual.routes.NoSoftwareController.show().url)
           )
         }
       }
@@ -157,7 +157,7 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase with FeatureSwitchi
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK)
 
-        When(s"POST ${controllers.individual.routes.UsingSoftwareController.submit(false).url} is called")
+        When(s"POST ${controllers.individual.routes.UsingSoftwareController.submit().url} is called")
         val result: WSResponse = IncomeTaxSubscriptionFrontend.submitUsingSoftware(request = None)
 
         Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
@@ -180,7 +180,7 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase with FeatureSwitchi
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK)
 
-        When(s"POST ${controllers.individual.routes.UsingSoftwareController.submit(false).url} is called")
+        When(s"POST ${controllers.individual.routes.UsingSoftwareController.submit().url} is called")
         val result = IncomeTaxSubscriptionFrontend.submitUsingSoftware(request = Some(userInput))
 
         Then("Should return a INTERNAL_SERVER_ERROR")

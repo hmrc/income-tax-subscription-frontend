@@ -33,7 +33,7 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
 
   val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
 
-  s"GET ${controllers.agent.routes.UsingSoftwareController.show(false).url}" when {
+  s"GET ${controllers.agent.routes.UsingSoftwareController.show().url}" when {
 
     "the user is unauthenticated" should {
       "redirect to the login page" in {
@@ -43,7 +43,7 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
 
         result must have(
           httpStatus(SEE_OTHER),
-          redirectURI(basGatewaySignIn("/client/using-software/false"))
+          redirectURI(basGatewaySignIn("/client/using-software"))
         )
       }
     }
@@ -75,7 +75,7 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
 
     "the Session Details Connector returns no data for Has Software" should {
 
-      "show(false) the Using Software page without a radio option selected" in {
+      "show the Using Software page without a radio option selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Mandated)))
@@ -85,7 +85,7 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.HAS_SOFTWARE)(NO_CONTENT)
 
 
-        When(s"GET ${controllers.agent.routes.UsingSoftwareController.show(false).url}")
+        When(s"GET ${controllers.agent.routes.UsingSoftwareController.show().url}")
         val result = IncomeTaxSubscriptionFrontend.showUsingSoftware()
 
         Then("The result should be OK with page content")
@@ -110,7 +110,7 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.HAS_SOFTWARE)(INTERNAL_SERVER_ERROR)
 
 
-        When(s"GET ${controllers.agent.routes.UsingSoftwareController.show(false).url}")
+        When(s"GET ${controllers.agent.routes.UsingSoftwareController.show().url}")
         val result = IncomeTaxSubscriptionFrontend.showUsingSoftware()
 
         Then("Should return a INTERNAL_SERVER_ERROR")
@@ -121,7 +121,7 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
     }
   }
 
-  s"POST ${controllers.agent.routes.UsingSoftwareController.submit(false).url}" should {
+  s"POST ${controllers.agent.routes.UsingSoftwareController.submit().url}" should {
     "return a redirect to the login page" when {
       "the user is unauthenticated" in {
         AuthStub.stubUnauthorised()
@@ -130,7 +130,7 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
 
         result must have(
           httpStatus(SEE_OTHER),
-          redirectURI(basGatewaySignIn("/client/using-software/false"))
+          redirectURI(basGatewaySignIn("/client/using-software"))
         )
       }
     }
@@ -146,7 +146,7 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
         SessionDataConnectorStub.stubSaveSessionData[YesNo](ITSASessionKeys.HAS_SOFTWARE, userInput)(OK)
 
-        When(s"POST ${controllers.agent.routes.UsingSoftwareController.submit(false).url} is called")
+        When(s"POST ${controllers.agent.routes.UsingSoftwareController.submit().url} is called")
         val result: WSResponse = IncomeTaxSubscriptionFrontend.submitUsingSoftware(request = Some(userInput))
 
         Then("Should return SEE_OTHER to the What Year To Sign Up Controller")
