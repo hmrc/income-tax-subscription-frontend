@@ -167,7 +167,7 @@
                             ActionItem(
                                 href = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${business.id}&isEditMode=true&isGlobalEdit=true",
                                 content = Text(messages("individual.global-check-your-answers.income-sources.self-employment.change")),
-                                visuallyHiddenText = Some(messages("individual.global-check-your-answers.income-sources.self-employment.hidden-text", business.name))
+                                visuallyHiddenText = Some(messages("individual.global-check-your-answers.income-sources.self-employment.hidden-text", business.trade, business.name))
                             )
                         )
                     ))

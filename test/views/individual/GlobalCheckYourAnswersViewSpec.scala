@@ -165,8 +165,8 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
                 actions = Seq(
                   SummaryListActionValues(
                     href = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=id-1&isEditMode=true&isGlobalEdit=true",
-                    text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} ABC-1",
-                    visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} ABC-1"
+                    text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1",
+                    visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1"
                   )
                 )
               ),
@@ -199,8 +199,8 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
                 actions = Seq(
                   SummaryListActionValues(
                     href = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=id-1&isEditMode=true&isGlobalEdit=true",
-                    text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} ABC-1",
-                    visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} ABC-1"
+                    text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1",
+                    visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1"
                   )
                 )
               ),
@@ -234,8 +234,8 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
               actions = Seq(
                 SummaryListActionValues(
                   href = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=id-2&isEditMode=true&isGlobalEdit=true",
-                  text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} ABC-2",
-                  visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} ABC-2"
+                  text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-2, ABC-2",
+                  visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-2, ABC-2"
                 )
               )
             ),
