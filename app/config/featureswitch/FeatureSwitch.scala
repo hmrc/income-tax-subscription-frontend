@@ -26,7 +26,8 @@ object FeatureSwitch {
 
   val switches: Set[FeatureSwitch] = Set(
     ThrottlingFeature,
-    EmailCaptureConsent
+    EmailCaptureConsent,
+    SignalControlGatewayEligibility
   )
 
   def apply(str: String): FeatureSwitch =
@@ -45,6 +46,11 @@ object FeatureSwitch {
   case object EmailCaptureConsent extends FeatureSwitch {
     override val name: String = s"$prefix.email-capture-consent"
     override val displayText: String = "EmailCaptureConsent"
+  }
+
+  case object SignalControlGatewayEligibility extends FeatureSwitch {
+    override val name: String = s"$prefix.signal-control-gateway-eligibility"
+    override val displayText: String = "Use the signal control gateway eligibility result"
   }
 
 }
