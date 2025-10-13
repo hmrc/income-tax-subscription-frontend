@@ -16,15 +16,17 @@
 
 package services.mocks
 
+import config.MockConfig
 import connectors.individual.eligibility.mocks.MockGetEligibilityStatusConnector
 import models.EligibilityStatus
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
-import org.scalatest.BeforeAndAfterEach
+import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import services.GetEligibilityStatusService
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 trait MockGetEligibilityStatusService extends PlaySpec with MockitoSugar with BeforeAndAfterEach {
@@ -42,8 +44,14 @@ trait MockGetEligibilityStatusService extends PlaySpec with MockitoSugar with Be
   }
 }
 
-trait TestGetEligibilityStatusService extends MockGetEligibilityStatusConnector with MockSessionDataService with MockUTRService {
+trait TestGetEligibilityStatusService extends MockGetEligibilityStatusConnector with MockSessionDataService with MockNinoService with MockUTRService {
+  suite: Suite =>
 
-  object TestGetEligibilityStatusService extends GetEligibilityStatusService(mockGetEligibilityStatusConnector, mockUTRService, mockSessionDataService)
+  object TestGetEligibilityStatusService extends GetEligibilityStatusService(
+    mockGetEligibilityStatusConnector,
+    mockNinoService,
+    mockUTRService,
+    mockSessionDataService
+  )(MockConfig)
 
 }
