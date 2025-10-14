@@ -156,6 +156,9 @@ POST        /details/income-sources-incomplete                   controllers.ind
 GET         /final-check-your-answers                            controllers.individual.GlobalCheckYourAnswersController.show
 POST        /final-check-your-answers                            controllers.individual.GlobalCheckYourAnswersController.submit
 
+## Index route
+GET         /                                                    controllers.individual.eligibility.IndexController.index
+
 ## Signing Up route
 GET         /signing-up                                          controllers.individual.eligibility.SigningUpController.show
 POST        /signing-up                                          controllers.individual.eligibility.SigningUpController.submit
