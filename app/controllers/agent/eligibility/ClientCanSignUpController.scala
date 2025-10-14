@@ -48,7 +48,7 @@ class ClientCanSignUpController @Inject()(identify: IdentifierAction,
   def submit: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     subscriptionDetailsService.saveEligibilityInterruptPassed(request.reference) map {
       case Right(_) =>
-        Redirect(controllers.agent.routes.UsingSoftwareController.show)
+        Redirect(controllers.agent.routes.UsingSoftwareController.show(false))
           .addingToSession(JourneyStateKey -> AgentSignUp.name)
       case Left(_) =>
         throw new InternalServerException("[ClientCanSignUpController][continueToSignUpClient] - Failed to save eligibility interrupt passed")

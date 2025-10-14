@@ -105,7 +105,7 @@ class ConfirmedClientResolver @Inject()(identify: IdentifierAction,
         case PrePopResult.PrePopSuccess =>
           eligibilityInterrupt match {
             case Some(_) =>
-              Redirect(controllers.agent.routes.UsingSoftwareController.show)
+              Redirect(controllers.agent.routes.UsingSoftwareController.show(false))
             case None =>
               if (nextYearOnly) {
                 Redirect(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show)

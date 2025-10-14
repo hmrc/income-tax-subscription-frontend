@@ -24,7 +24,7 @@ object EligibilityStub extends WireMockMethods {
   def stubEligibilityResponse(sautr: String)(response: Boolean): Unit =
     when(
       method = GET,
-      uri = s"/income-tax-subscription-eligibility/eligibility/$sautr"
+      uri = s"/income-tax-subscription-eligibility/eligibility/utr/$sautr"
     ).thenReturn(
       status = OK,
       body = Json.obj("eligibleCurrentYear" -> response, "eligibleNextYear" -> false)
@@ -33,16 +33,61 @@ object EligibilityStub extends WireMockMethods {
   def stubEligibilityResponseBoth(sautr: String)(currentYearResponse: Boolean, nextYearResponse: Boolean): Unit =
     when(
       method = GET,
-      uri = s"/income-tax-subscription-eligibility/eligibility/$sautr"
+      uri = s"/income-tax-subscription-eligibility/eligibility/utr/$sautr"
     ).thenReturn(
       status = OK,
-      body = Json.obj("eligibleCurrentYear" -> currentYearResponse, "eligibleNextYear" -> nextYearResponse)
+      body = Json.obj(
+        "eligibleCurrentYear" -> currentYearResponse,
+        "eligibleNextYear" -> nextYearResponse
+      )
     )
+
+  def stubEligibilityResponseInvalid(sautr: String): Unit = {
+    when(
+      method = GET,
+      uri = s"/income-tax-subscription-eligibility/eligibility/utr/$sautr"
+    ).thenReturn(
+      status = OK,
+      body = Json.obj()
+    )
+  }
 
   def stubEligibilityResponseError(sautr: String): Unit = {
     when(
       method = GET,
-      uri = s"/income-tax-subscription-eligibility/eligibility/$sautr"
+      uri = s"/income-tax-subscription-eligibility/eligibility/utr/$sautr"
+    ).thenReturn(
+      status = INTERNAL_SERVER_ERROR
+    )
+  }
+
+  def stubEligibilityResponseBoth(nino: String, utr: String)(currentYearResponse: Boolean, nextYearResponse: Boolean): Unit = {
+    when(
+      method = GET,
+      uri = s"/income-tax-subscription-eligibility/eligibility/nino/$nino/utr/$utr"
+    ).thenReturn(
+      status = OK,
+      body = Json.obj(
+        "eligibleCurrentYear" -> currentYearResponse,
+        "eligibleNextYear" -> nextYearResponse
+      )
+    )
+  }
+
+  def stubEligibilityResponseInvalid(nino: String, sautr: String): Unit = {
+    when(
+      method = GET,
+      uri = s"/income-tax-subscription-eligibility/eligibility/nino/$nino/utr/$sautr"
+    ).thenReturn(
+      status = OK,
+      body = Json.obj()
+    )
+  }
+
+  def stubEligibilityResponseError(nino: String, sautr: String): Unit = {
+    when(
+      method = GET,
+      uri = s"/income-tax-subscription-eligibility/eligibility/nino/$nino/utr/$sautr"
     ).thenReturn(
       status = INTERNAL_SERVER_ERROR
     )

@@ -575,15 +575,14 @@ agent.cannot-sign-up.caption                                    = {0} | {1}
 agent.cannot-sign-up.para1                                      = Gallwch gofrestru’r cleient hwn ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm nawr. Byddwch yn ei gofrestru o’r flwyddyn dreth nesaf ymlaen ({0} i {1}).
 agent.cannot-sign-up.inset-text.para                            = Bydd angen i chi sicrhau bod eich cleient yn cyflwyno ei Ffurflen Dreth Hunanasesiad ar gyfer y flwyddyn dreth bresennol ({0} i {1}) yn ôl yr arfer.
 agent.cannot-sign-up.subheading1                                = Yr hyn sy’n digwydd nesaf
-agent.cannot-sign-up.para2                                      = Ar gyfer pob un o fusnesau eich cleient, bydd angen y canlynol arnoch:
-agent.cannot-sign-up.bullet1                                    = dyddiad dechrau ei fusnes (neu’r dyddiad y dechreuodd gael incwm o eiddo)
+agent.cannot-sign-up.para2                                      = Ar gyfer pob un o fusnesau eich cleient neu ei incwm o eiddo, bydd angen y dyddiad dechrau arnoch – os gwnaeth hyn ddechrau o fewn y 2 flynedd dreth ddiwethaf.
 agent.cannot-sign-up.para3                                      = Os yw’n unig fasnachwr, bydd hefyd angen y canlynol arnoch:
-agent.cannot-sign-up.bullet3                                    = enw masnachu a chyfeiriad busnes eich cleient
-agent.cannot-sign-up.bullet4                                    = masnach eich cleient (natur ei fusnes)
+agent.cannot-sign-up.bullet1                                    = enw masnachu a chyfeiriad busnes eich cleient
+agent.cannot-sign-up.bullet2                                    = masnach eich cleient (natur ei fusnes)
 agent.cannot-sign-up.subheading2                                = Os na fyddwch yn cofrestru’ch cleient nawr
 agent.cannot-sign-up.para4                                      = Os na fyddwch yn cofrestru’ch cleient nawr, bydd angen i chi wneud y canlynol:
-agent.cannot-sign-up.bullet5                                    = sicrhau ei fod yn parhau i gyflwyno ei Ffurflenni Treth Hunanasesiad yn ôl yr arfer
-agent.cannot-sign-up.bullet6                                    = ail-nodi ei fanylion os byddwch yn dychwelyd i’w gofrestru’n ddiweddarach
+agent.cannot-sign-up.bullet3                                    = sicrhau ei fod yn parhau i gyflwyno ei Ffurflenni Treth Hunanasesiad yn ôl yr arfer
+agent.cannot-sign-up.bullet4                                    = ail-nodi ei fanylion os byddwch yn dychwelyd i’w gofrestru’n ddiweddarach
 agent.cannot-sign-up.button-text                                = Cofrestru’r cleient hwn
 agent.cannot-sign-up.check-another                              = Neu, gallwch {0}. Ni fyddwn yn cadw’r manylion y gwnaethoch eu nodi am {1}.
 agent.cannot-sign-up.check-another.link                         = wirio a allwch gofrestru cleient arall
@@ -594,15 +593,14 @@ agent.client-can-sign-up.heading                                = Gallwch gofres
 agent.client-can-sign-up.caption                                = {0} | {1}
 agent.client-can-sign-up.para1                                  = Gallwch gofrestru’r cleient hwn ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm nawr.
 agent.client-can-sign-up.subheading1                            = Yr hyn sy’n digwydd nesaf
-agent.client-can-sign-up.para2                                  = Ar gyfer pob un o fusnesau neu incwm o eiddo eich cleient, bydd angen y canlynol arnoch:
-agent.client-can-sign-up.bullet1                                = dyddiad dechrau - os yw wedi dechrau o fewn y 2 flynedd dreth ddiwethaf
+agent.client-can-sign-up.para2                                  = Ar gyfer pob un o fusnesau eich cleient neu ei incwm o eiddo, bydd angen y dyddiad dechrau arnoch – os gwnaeth hyn ddechrau o fewn y 2 flynedd dreth ddiwethaf.
 agent.client-can-sign-up.para3                                  = Os yw’n unig fasnachwr, bydd hefyd angen y canlynol arnoch:
-agent.client-can-sign-up.bullet3                                = enw masnachu a chyfeiriad busnes eich cleient
-agent.client-can-sign-up.bullet4                                = masnach eich cleient (natur ei fusnes)
+agent.client-can-sign-up.bullet1                                = enw masnachu a chyfeiriad busnes eich cleient
+agent.client-can-sign-up.bullet2                                = masnach eich cleient (natur ei fusnes)
 agent.client-can-sign-up.subheading2                            = Os na fyddwch yn cofrestru’ch cleient nawr
 agent.client-can-sign-up.para4                                  = Os na fyddwch yn cofrestru’ch cleient nawr, bydd angen i chi wneud y canlynol:
-agent.client-can-sign-up.bullet5                                = sicrhau ei fod yn parhau i gyflwyno ei Ffurflenni Treth Hunanasesiad yn ôl yr arfer
-agent.client-can-sign-up.bullet6                                = ail-nodi ei fanylion os byddwch yn dychwelyd i’w gofrestru’n ddiweddarach
+agent.client-can-sign-up.bullet3                                = sicrhau ei fod yn parhau i gyflwyno ei Ffurflenni Treth Hunanasesiad yn ôl yr arfer
+agent.client-can-sign-up.bullet4                                = ail-nodi ei fanylion os byddwch yn dychwelyd i’w gofrestru’n ddiweddarach
 agent.client-can-sign-up.button-text                            = Cofrestru’r cleient hwn
 agent.client-can-sign-up.check-another                          = Neu, gallwch {0}. Ni fyddwn yn cadw’r manylion y gwnaethoch eu nodi am {1}.
 agent.client-can-sign-up.check-another-link                     = wirio a allwch gofrestru cleient arall
@@ -927,14 +925,14 @@ agent.business.check-your-answers.content.tax-year.caption            = Y flwydd
 agent.property.check-your-answers.title                               = Gwirio’ch atebion – Eiddo yn y DU
 agent.property.check-your-answers.heading                             = Gwirio’ch atebion
 agent.property.check-your-answers.heading.caption                     = {0} | {1}
-agent.property.check-your-answers.start-date.question                 = Dyddiad dechrau
+agent.property.check-your-answers.start-date.question                 = Dyddiad dechrau’r eiddo
 agent.property.check-your-answers.start-date-before-limit.answer      = Cyn 6 Ebrill {0}
 
 ## Agent Overseas property check your answers
 agent.overseas-property.check-your-answers.title                                = Gwirio’ch atebion – Eiddo tramor
 agent.overseas-property.check-your-answers.heading                              = Gwirio’ch atebion
 agent.overseas-property.check-your-answers.heading.caption                      = {0} | {1}
-agent.overseas-property.check-your-answers.start-date.question                  = Dyddiad dechrau
+agent.overseas-property.check-your-answers.start-date.question                  = Dyddiad dechrau’r eiddo
 agent.overseas-property.check-your-answers.start-date-before-limit.answer       = Cyn 6 Ebrill {0}
 
 ## Agent remove business
@@ -973,13 +971,13 @@ business.check-your-answers.content.tax-year.title              = Gwirio’ch at
 ## UK property check your answers
 business.check-your-answers.content.uk-property.title                                   = Gwirio’ch atebion – Eiddo yn y DU
 business.check-your-answers.content.uk-property.caption                                 = Eiddo yn y DU
-business.check-your-answers.content.uk-property-start-date.question                     = Dyddiad dechrau
+business.check-your-answers.content.uk-property-start-date.question                     = Dyddiad dechrau’r eiddo
 business.check-your-answers.content.uk-property-start-date-before-limit.before-limit    = Cyn 6 Ebrill {0}
 
 ## Overseas property check your answers
 business.check-your-answers.content.overseas-property.title                                     = Gwirio’ch atebion – Eiddo tramor
 business.check-your-answers.content.overseas-property.caption                                   = Eiddo tramor
-business.check-your-answers.content.overseas-property-start-date.question                       = Dyddiad dechrau
+business.check-your-answers.content.overseas-property-start-date.question                       = Dyddiad dechrau’r eiddo
 business.check-your-answers.content.overseas-property-start-date-before-limit.before-limit      = Cyn 6 Ebrill {0}
 
 ## Remove business
@@ -1037,12 +1035,13 @@ agent.throttle-end.line-2                                          = I orffen co
 individual.global-check-your-answers.heading                                                    = Gwiriwch eich atebion
 individual.global-check-your-answers.para                                                       = Cyn i chi gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, mae angen i chi wirio’r wybodaeth rydych wedi’i rhoi i ni a chadarnhau ei bod yn gywir. Gallwch newid unrhyw ddata sy’n anghywir.
 individual.global-check-your-answers.accounting.period                                          = Cyfnod cyfrifyddu
-individual.global-check-your-answers.before-signing-up.heading                                  = Gwybodaeth sydd gennym ar eich cyfer
 individual.global-check-your-answers.compatible-software.label                                  = Mae’r feddalwedd rydych wedi’i dewis yn gweithio gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 individual.global-check-your-answers.tax-year.label                                             = Blwyddyn dreth
 individual.global-check-your-answers.tax.year.current                                           = Flwyddyn dreth bresennol
 individual.global-check-your-answers.tax.year.next                                              = Flwyddyn dreth nesaf
 individual.global-check-your-answers.income-sources.self-employment.heading                     = Busnesau unig fasnachwr
+individual.global-check-your-answers.income-sources.self-employment.change                      = Newid
+individual.global-check-your-answers.income-sources.self-employment.hidden-text                 = busnesau unig fasnachwr {0}, {1}
 individual.global-check-your-answers.income-sources.self-employment.trade                       = Gwaith masnach
 individual.global-check-your-answers.income-sources.self-employment.name                        = Enw’r busnes
 individual.global-check-your-answers.income-sources.self-employment.start-date                  = Dyddiad dechrau’r busnes
@@ -1065,9 +1064,11 @@ individual.global-check-your-answers.print-link                                 
 # Agent Global Check Your Answers
 agent.global-check-your-answers.heading                                                         = Datganiad
 agent.global-check-your-answers.caption                                                         = {0} | {1}
-agent.global-check-your-answers.para1                                                           = Dyma’r wybodaeth rydych wedi’i rhoi i ni.
+agent.global-check-your-answers.para                                                            = Cyn i chi gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, mae angen i chi wirio’r wybodaeth rydych wedi’i rhoi i ni a chadarnhau ei bod yn gywir. Gallwch newid unrhyw ddata sy’n anghywir.
 agent.global-check-your-answers.subheading                                                      = Gwirio’ch atebion cyn cofrestru
 agent.global-check-your-answers.income-sources.subheading                                       = Busnesau unig fasnachwr
+agent.global-check-your-answers.income-sources.self-employment.change                           = Newid
+agent.global-check-your-answers.income-sources.self-employment.hidden-text                      = busnesau unig fasnachwr {0}, {1}
 agent.global-check-your-answers.income-sources.self-employment.trade                            = Masnach
 agent.global-check-your-answers.income-sources.self-employment.name                             = Enw’r busnes
 agent.global-check-your-answers.income-sources.self-employment.start-date                       = Dyddiad dechrau

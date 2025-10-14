@@ -99,7 +99,7 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
     if (isEditMode) {
       Some(controllers.individual.routes.GlobalCheckYourAnswersController.show.url)
     } else {
-      Some(controllers.individual.routes.UsingSoftwareController.show().url)
+      Some(controllers.individual.routes.UsingSoftwareController.show(editMode = isEditMode).url)
     }
   }
 }

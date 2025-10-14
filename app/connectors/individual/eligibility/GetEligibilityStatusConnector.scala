@@ -29,10 +29,16 @@ import scala.concurrent.{ExecutionContext, Future}
 class GetEligibilityStatusConnector @Inject()(appConfig: AppConfig, http: HttpClient)
                                              (implicit ec: ExecutionContext) {
 
-  def eligibilityUrl(sautr: String): String = s"${appConfig.incomeTaxEligibilityUrl}/eligibility/$sautr"
+  def eligibilityUrl(sautr: String): String = s"${appConfig.incomeTaxEligibilityUrl}/eligibility/utr/$sautr"
 
   def getEligibilityStatus(sautr: String)(implicit hc: HeaderCarrier): Future[HttpResult[EligibilityStatus]] = {
     http.GET(eligibilityUrl(sautr))
+  }
+
+  def eligibilityUrl(nino: String, sautr: String): String = s"${appConfig.incomeTaxEligibilityUrl}/eligibility/nino/$nino/utr/$sautr"
+
+  def getEligibilityStatus(nino: String, sautr: String)(implicit hc: HeaderCarrier): Future[HttpResult[EligibilityStatus]] = {
+    http.GET(eligibilityUrl(nino, sautr))
   }
 
 }

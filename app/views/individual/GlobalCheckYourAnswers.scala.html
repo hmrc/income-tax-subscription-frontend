@@ -58,8 +58,6 @@
 
     @accountingPeriod(maybeAccountingPeriod)
 
-    <h2 class="govuk-heading-m">@messages("individual.global-check-your-answers.before-signing-up.heading")</h2>
-
     @compatibleSoftwareSection()
 
     @taxYearSection(completeDetails.taxYear)
@@ -93,7 +91,16 @@
         rows = Seq(
             SummaryListRow(
                 key = Key(content = Text(messages("individual.global-check-your-answers.compatible-software.label"))),
-                value = Value(content = Text(Yes.toMessageString))
+                value = Value(content = Text(Yes.toMessageString)),
+                actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
+                            href = controllers.individual.routes.UsingSoftwareController.show(editMode = true).url,
+                            content = Text(messages("base.change")),
+                            visuallyHiddenText = Some(messages("individual.global-check-your-answers.compatible-software.label"))
+                        )
+                    )
+                ))
             )
         )
     ))
@@ -159,8 +166,8 @@
                         items = Seq(
                             ActionItem(
                                 href = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${business.id}&isEditMode=true&isGlobalEdit=true",
-                                content = Text(messages("base.change")),
-                                visuallyHiddenText = Some(s"${business.trade} - ${business.name}")
+                                content = Text(messages("individual.global-check-your-answers.income-sources.self-employment.change")),
+                                visuallyHiddenText = Some(messages("individual.global-check-your-answers.income-sources.self-employment.hidden-text", business.trade, business.name))
                             )
                         )
                     ))

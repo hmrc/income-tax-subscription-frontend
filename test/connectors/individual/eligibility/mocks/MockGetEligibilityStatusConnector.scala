@@ -21,20 +21,33 @@ import config.AppConfig
 import connectors.individual.eligibility.GetEligibilityStatusConnector
 import models.EligibilityStatus
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.when
+import org.mockito.Mockito._
+import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.JsValue
 import utilities.HttpResult.HttpResult
-import utilities.UnitTestTrait
 
 import scala.concurrent.Future
 
-trait MockGetEligibilityStatusConnector extends UnitTestTrait with MockitoSugar {
+trait MockGetEligibilityStatusConnector extends MockitoSugar with BeforeAndAfterEach {
+  suite: Suite =>
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockGetEligibilityStatusConnector)
+  }
 
   val mockGetEligibilityStatusConnector: GetEligibilityStatusConnector = mock[GetEligibilityStatusConnector]
 
-  def mockGetEligibilityStatus(sautr: String)(result: Future[HttpResult[EligibilityStatus]]): Unit =
-    when(mockGetEligibilityStatusConnector.getEligibilityStatus(ArgumentMatchers.eq(sautr))(ArgumentMatchers.any())).thenReturn(result)
+  def mockGetEligibilityStatus(sautr: String)(result: HttpResult[EligibilityStatus]): Unit = {
+    when(mockGetEligibilityStatusConnector.getEligibilityStatus(ArgumentMatchers.eq(sautr))(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(result))
+  }
+
+  def mockGetEligibilityStatus(nino: String, sautr: String)(result: HttpResult[EligibilityStatus]): Unit = {
+    when(mockGetEligibilityStatusConnector.getEligibilityStatus(ArgumentMatchers.eq(nino), ArgumentMatchers.eq(sautr))(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(result))
+  }
 
 }
 
