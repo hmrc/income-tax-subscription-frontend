@@ -18,21 +18,10 @@ package models
 
 import play.api.libs.json._
 
-import scala.util.Try
-
 case class EligibilityStatus(eligibleCurrentYear: Boolean, eligibleNextYear: Boolean) {
   val eligibleNextYearOnly: Boolean = !eligibleCurrentYear && eligibleNextYear
 }
 
 object EligibilityStatus {
   implicit val format: OFormat[EligibilityStatus] = Json.format[EligibilityStatus]
-
-  import play.api.libs.json.MapWrites.mapWrites
-  import play.api.libs.json.Reads.mapReads
-
-  implicit val eligibilityStatusYearMapReads: Reads[Map[String, Boolean]] =
-    mapReads[String, Boolean](s => JsResult.fromTry(Try(s)))
-
-  implicit val eligibilityStatusYearMapWrites: Writes[Map[String, Boolean]] =
-    mapWrites[String].contramap(_.map { case (k, v) => k -> v.toString })
 }

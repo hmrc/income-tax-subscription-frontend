@@ -16,6 +16,9 @@
 
 package services
 
+import config.AppConfig
+import config.featureswitch.FeatureSwitch.SignalControlGatewayEligibility
+import config.featureswitch.FeatureSwitching
 import connectors.individual.eligibility.GetEligibilityStatusConnector
 import models.EligibilityStatus
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
@@ -25,25 +28,50 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class GetEligibilityStatusService @Inject()(getEligibilityStatusConnector: GetEligibilityStatusConnector,
+                                            ninoService: NinoService,
                                             utrService: UTRService,
                                             sessionDataService: SessionDataService)
-                                           (implicit ec: ExecutionContext) {
+                                           (val appConfig: AppConfig)
+                                           (implicit ec: ExecutionContext) extends FeatureSwitching {
 
   def getEligibilityStatus(implicit hc: HeaderCarrier): Future[EligibilityStatus] = {
     sessionDataService.fetchEligibilityStatus flatMap {
       case Right(Some(value)) => Future.successful(value)
       case Right(None) =>
-        utrService.getUTR flatMap { utr =>
-          getEligibilityStatusConnector.getEligibilityStatus(utr) flatMap {
-            case Right(value) =>
-              sessionDataService.saveEligibilityStatus(value) map {
-                case Right(_) => value
-                case Left(error) => throw new SaveToSessionException(error.toString)
-              }
-            case Left(error) => throw new FetchFromAPIException(s"status = ${error.httpResponse.status}, body = ${error.httpResponse.body}")
-          }
+        if (isEnabled(SignalControlGatewayEligibility)) {
+          getAndSaveSignalControlGatewayEligibilityResults()
+        } else {
+          getAndSaveControlListEligibilityResults()
         }
       case Left(error) => throw new FetchFromSessionException(error.toString)
+    }
+  }
+
+  private def getAndSaveSignalControlGatewayEligibilityResults()(implicit hc: HeaderCarrier): Future[EligibilityStatus] = {
+    ninoService.getNino flatMap { nino =>
+      utrService.getUTR flatMap { utr =>
+        getEligibilityStatusConnector.getEligibilityStatus(nino, utr) flatMap {
+          case Right(value) =>
+            sessionDataService.saveEligibilityStatus(value) map {
+              case Right(_) => value
+              case Left(error) => throw new SaveToSessionException(error.toString)
+            }
+          case Left(error) => throw new FetchFromAPIException(s"status = ${error.httpResponse.status}, body = ${error.httpResponse.body}")
+        }
+      }
+    }
+  }
+
+  private def getAndSaveControlListEligibilityResults()(implicit hc: HeaderCarrier): Future[EligibilityStatus] = {
+    utrService.getUTR flatMap { utr =>
+      getEligibilityStatusConnector.getEligibilityStatus(utr) flatMap {
+        case Right(value) =>
+          sessionDataService.saveEligibilityStatus(value) map {
+            case Right(_) => value
+            case Left(error) => throw new SaveToSessionException(error.toString)
+          }
+        case Left(error) => throw new FetchFromAPIException(s"status = ${error.httpResponse.status}, body = ${error.httpResponse.body}")
+      }
     }
   }
 

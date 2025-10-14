@@ -70,26 +70,18 @@ class CannotSignUpThisYearViewSpec extends ViewSpec {
       mainContent.selectNth("p", 2).text mustBe CannotSignUpMessages.para2
     }
 
-    "have a first bullet list" which {
-      def bulletList: Element = mainContent.selectNth("ol.govuk-list--bullet", 1)
-
-      "has a first point" in {
-        bulletList.selectNth("li", 1).text mustBe CannotSignUpMessages.bullet1
-      }
-    }
-
     "have a third paragraph" in {
       mainContent.selectNth("p", 3).text mustBe CannotSignUpMessages.para3
     }
 
     "have a second bullet list" which {
-      def bulletList: Element = mainContent.selectNth("ol.govuk-list--bullet", 2)
+      def bulletList: Element = mainContent.selectNth("ol.govuk-list--bullet", 1)
 
       "has a first point" in {
-        bulletList.selectNth("li", 1).text mustBe CannotSignUpMessages.bullet3
+        bulletList.selectNth("li", 1).text mustBe CannotSignUpMessages.bullet1
       }
       "has a second point" in {
-        bulletList.selectNth("li", 2).text mustBe CannotSignUpMessages.bullet4
+        bulletList.selectNth("li", 2).text mustBe CannotSignUpMessages.bullet2
       }
     }
 
@@ -102,13 +94,13 @@ class CannotSignUpThisYearViewSpec extends ViewSpec {
     }
 
     "have a third bullet list" which {
-      def bulletList: Element = mainContent.selectNth("ol.govuk-list--bullet", 3)
+      def bulletList: Element = mainContent.selectNth("ol.govuk-list--bullet", 2)
 
       "has a first point" in {
-        bulletList.selectNth("li", 1).text mustBe CannotSignUpMessages.bullet5
+        bulletList.selectNth("li", 1).text mustBe CannotSignUpMessages.bullet3
       }
       "has a second point" in {
-        bulletList.selectNth("li", 2).text mustBe CannotSignUpMessages.bullet6
+        bulletList.selectNth("li", 2).text mustBe CannotSignUpMessages.bullet4
       }
     }
 
@@ -156,15 +148,14 @@ class CannotSignUpThisYearViewSpec extends ViewSpec {
     def insetPara(year: String, nextyear: String): String = s"You’ll need to make sure your client submits their Self Assessment tax return for the current tax year ($year to $nextyear) as normal."
 
     val subheading1 = "What happens next"
-    val para2 = "For each of your client’s businesses, you’ll need their:"
-    val bullet1 = "business start date (or the date they started getting property income)"
+    val para2 = "For each of your client’s businesses or income from property, you’ll need their start date if it started within the last 2 tax years."
     val para3 = "If they’re a sole trader, you’ll also need your client’s:"
-    val bullet3 = "business trading name and address"
-    val bullet4 = "trade (the nature of their business)"
+    val bullet1 = "business trading name and address"
+    val bullet2 = "trade (the nature of their business)"
     val subheading2 = "If you do not sign up your client now"
     val para4 = "If you do not sign up your client now, you’ll need to:"
-    val bullet5 = "make sure they continue to submit their Self Assessment tax returns as normal"
-    val bullet6 = "re-enter their details if you return to sign them up later"
+    val bullet3 = "make sure they continue to submit their Self Assessment tax returns as normal"
+    val bullet4 = "re-enter their details if you return to sign them up later"
 
     val signUpThisClientButton = "Sign up this client"
     val checkAnotherClientLinkText = "check if you can sign up another client"
