@@ -141,3 +141,7 @@ POST        /final-check-your-answers                            controllers.age
 
 # Cannot Go Back To Previous Client
 GET         /cannot-go-back-to-previous-client                   controllers.agent.matching.CannotGoBackToPreviousClientController.show
+
+## Signing Up route
+GET         /signing-up                                          controllers.agent.eligibility.SigningUpController.show
+POST        /signing-up                                          controllers.agent.eligibility.SigningUpController.submit
