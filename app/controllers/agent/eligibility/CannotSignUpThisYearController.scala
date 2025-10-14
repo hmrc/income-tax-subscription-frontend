@@ -36,7 +36,7 @@ class CannotSignUpThisYearController @Inject()(identify: IdentifierAction,
   }
 
   def submit: Action[AnyContent] = (identify andThen journeyRefiner) { _ =>
-    Redirect(controllers.agent.routes.UsingSoftwareController.show)
+    Redirect(controllers.agent.routes.UsingSoftwareController.show(false))
   }
 
 }

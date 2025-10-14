@@ -44,23 +44,15 @@
 
 @import implicitDateFormatter.LongDate
 
-@mainTemplate(title = messages("agent.global-check-your-answers.heading"), backLink = Some(backUrl)) {
+@mainTemplate(title = messages("agent.global-check-your-answers.subheading"), backLink = Some(backUrl)) {
 
     @pageHeadingHelper(
-        heading = messages("agent.global-check-your-answers.heading"),
+        heading = messages("agent.global-check-your-answers.subheading"),
         caption = messages("agent.global-check-your-answers.caption", clientDetails.name, clientDetails.formattedNino),
         isSection = false
     )
 
-    @declarationParagraph()
-
-    <p class="govuk-body govuk-!-display-none-print hmrc-!-js-visible">
-        <a href="#" data-module="hmrc-print-link" class="govuk-link">
-            @messages("base.print-page")
-        </a>
-    </p>
-
-    <h2 class="govuk-heading-m">@messages("agent.global-check-your-answers.subheading")</h2>
+    <p class="govuk-body">@messages("agent.global-check-your-answers.para")</p>
 
     @usingSoftwareSection()
 
@@ -80,10 +72,6 @@
     }
 }
 
-@declarationParagraph() = {
-    <p class="govuk-body">@messages("agent.global-check-your-answers.para1")</p>
-}
-
 @incomeSourcesSection(incomeSources: IncomeSources) = {
 
     @incomeSources.soleTraderBusinesses.map(toSoleTraderBusinessesDisplay)
@@ -96,16 +84,23 @@
 }
 
 @usingSoftwareSection() = {
-
-        @govukSummaryList(SummaryList(
-            rows = Seq(
-                SummaryListRow(
-                    key = Key(content = Text(messages("agent.global-check-your-answers.using-software"))),
-                    value = Value(content = Text(messages("base.yes")))
-                )
+    @govukSummaryList(SummaryList(
+        rows = Seq(
+            SummaryListRow(
+                key = Key(content = Text(messages("agent.global-check-your-answers.using-software"))),
+                value = Value(content = Text(messages("base.yes"))),
+                actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
+                            href = controllers.agent.routes.UsingSoftwareController.show(true).url,
+                            content = Text(messages("base.change")),
+                            visuallyHiddenText = Some(messages("agent.global-check-your-answers.using-software"))
+                        )
+                    )
+                ))
             )
-        ))
-
+        )
+    ))
 }
 
 @toSoleTraderBusinessesDisplay(soleTraderBusinesses: SoleTraderBusinesses) = {
@@ -125,8 +120,8 @@
                             items = Seq(
                                 ActionItem(
                                     href = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${business.id}&isEditMode=true&isGlobalEdit=true",
-                                    content = Text(messages("base.change")),
-                                    visuallyHiddenText = Some(s"${business.trade} - ${business.name}")
+                                    content = Text(messages("agent.global-check-your-answers.income-sources.self-employment.change")),
+                                    visuallyHiddenText = Some(messages("agent.global-check-your-answers.income-sources.self-employment.hidden-text", business.trade, business.name))
                                 )
                             )
                         ))
@@ -216,7 +211,7 @@
     @govukSummaryList(SummaryList(
         rows = Seq(
             SummaryListRow(
-                key = Key(content = Text(messages("agent.global-check-your-answers.tax-year.label"))),
+                key = Key(content = Text(messages("agent.global-check-your-answers.tax-year.heading"))),
                 value = Value(content = Text(taxYear(selectedTaxYear.accountingYear))),
                 actions = if(selectedTaxYear.editable) {
                     Some(Actions(
@@ -224,7 +219,7 @@
                             ActionItem(
                                 href = controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show(editMode = true).url,
                                 content = Text(messages("base.change")),
-                                visuallyHiddenText = Some(messages("agent.global-check-your-answers.tax-year.label"))
+                                visuallyHiddenText = Some(messages("agent.global-check-your-answers.tax-year.heading"))
                             )
                         )
                     ))
@@ -236,7 +231,11 @@
 
 @taxYear(accountingYear: AccountingYear) = @{
     accountingYear match {
-        case Current => messages("agent.global-check-your-answers.tax-year.current")
-        case Next => messages("agent.global-check-your-answers.tax-year.next")
+        case Current => {
+            s"${AccountingPeriodUtil.getCurrentTaxYear.startDate.year} ${messages("base.to")} ${AccountingPeriodUtil.getCurrentTaxYear.endDate.year}"
+        }
+        case Next => {
+            s"${AccountingPeriodUtil.getNextTaxYear.startDate.year} ${messages("base.to")} ${AccountingPeriodUtil.getNextTaxYear.endDate.year}"
+        }
     }
 }

@@ -87,7 +87,7 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
 
     if (isEnabled(EmailCaptureConsent)) {
       if(eligibleNextYearOnly) {
-        controllers.individual.routes.UsingSoftwareController.show().url
+        controllers.individual.routes.UsingSoftwareController.show(false).url
       } else {
         (taxYearSelection, consentStatus) match {
           case (Some(Current), Some(Yes)) => controllers.individual.email.routes.EmailCaptureController.show().url
@@ -97,7 +97,7 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
       }
     } else {
       if (eligibleNextYearOnly || mandatedCurrentYear) {
-        controllers.individual.routes.UsingSoftwareController.show().url
+        controllers.individual.routes.UsingSoftwareController.show(false).url
       } else if (taxYearSelection.contains(Current)){
         controllers.individual.accountingperiod.routes.AccountingPeriodController.show.url
       } else {

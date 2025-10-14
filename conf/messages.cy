@@ -925,14 +925,14 @@ agent.business.check-your-answers.content.tax-year.caption            = Y flwydd
 agent.property.check-your-answers.title                               = Gwirio’ch atebion – Eiddo yn y DU
 agent.property.check-your-answers.heading                             = Gwirio’ch atebion
 agent.property.check-your-answers.heading.caption                     = {0} | {1}
-agent.property.check-your-answers.start-date.question                 = Dyddiad dechrau
+agent.property.check-your-answers.start-date.question                 = Dyddiad dechrau’r eiddo
 agent.property.check-your-answers.start-date-before-limit.answer      = Cyn 6 Ebrill {0}
 
 ## Agent Overseas property check your answers
 agent.overseas-property.check-your-answers.title                                = Gwirio’ch atebion – Eiddo tramor
 agent.overseas-property.check-your-answers.heading                              = Gwirio’ch atebion
 agent.overseas-property.check-your-answers.heading.caption                      = {0} | {1}
-agent.overseas-property.check-your-answers.start-date.question                  = Dyddiad dechrau
+agent.overseas-property.check-your-answers.start-date.question                  = Dyddiad dechrau’r eiddo
 agent.overseas-property.check-your-answers.start-date-before-limit.answer       = Cyn 6 Ebrill {0}
 
 ## Agent remove business
@@ -971,13 +971,13 @@ business.check-your-answers.content.tax-year.title              = Gwirio’ch at
 ## UK property check your answers
 business.check-your-answers.content.uk-property.title                                   = Gwirio’ch atebion – Eiddo yn y DU
 business.check-your-answers.content.uk-property.caption                                 = Eiddo yn y DU
-business.check-your-answers.content.uk-property-start-date.question                     = Dyddiad dechrau
+business.check-your-answers.content.uk-property-start-date.question                     = Dyddiad dechrau’r eiddo
 business.check-your-answers.content.uk-property-start-date-before-limit.before-limit    = Cyn 6 Ebrill {0}
 
 ## Overseas property check your answers
 business.check-your-answers.content.overseas-property.title                                     = Gwirio’ch atebion – Eiddo tramor
 business.check-your-answers.content.overseas-property.caption                                   = Eiddo tramor
-business.check-your-answers.content.overseas-property-start-date.question                       = Dyddiad dechrau
+business.check-your-answers.content.overseas-property-start-date.question                       = Dyddiad dechrau’r eiddo
 business.check-your-answers.content.overseas-property-start-date-before-limit.before-limit      = Cyn 6 Ebrill {0}
 
 ## Remove business
@@ -1035,12 +1035,13 @@ agent.throttle-end.line-2                                          = I orffen co
 individual.global-check-your-answers.heading                                                    = Gwiriwch eich atebion
 individual.global-check-your-answers.para                                                       = Cyn i chi gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, mae angen i chi wirio’r wybodaeth rydych wedi’i rhoi i ni a chadarnhau ei bod yn gywir. Gallwch newid unrhyw ddata sy’n anghywir.
 individual.global-check-your-answers.accounting.period                                          = Cyfnod cyfrifyddu
-individual.global-check-your-answers.before-signing-up.heading                                  = Gwybodaeth sydd gennym ar eich cyfer
 individual.global-check-your-answers.compatible-software.label                                  = Mae’r feddalwedd rydych wedi’i dewis yn gweithio gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 individual.global-check-your-answers.tax-year.label                                             = Blwyddyn dreth
 individual.global-check-your-answers.tax.year.current                                           = Flwyddyn dreth bresennol
 individual.global-check-your-answers.tax.year.next                                              = Flwyddyn dreth nesaf
 individual.global-check-your-answers.income-sources.self-employment.heading                     = Busnesau unig fasnachwr
+individual.global-check-your-answers.income-sources.self-employment.change                      = Newid
+individual.global-check-your-answers.income-sources.self-employment.hidden-text                 = busnesau unig fasnachwr {0}, {1}
 individual.global-check-your-answers.income-sources.self-employment.trade                       = Gwaith masnach
 individual.global-check-your-answers.income-sources.self-employment.name                        = Enw’r busnes
 individual.global-check-your-answers.income-sources.self-employment.start-date                  = Dyddiad dechrau’r busnes
@@ -1063,9 +1064,11 @@ individual.global-check-your-answers.print-link                                 
 # Agent Global Check Your Answers
 agent.global-check-your-answers.heading                                                         = Datganiad
 agent.global-check-your-answers.caption                                                         = {0} | {1}
-agent.global-check-your-answers.para1                                                           = Dyma’r wybodaeth rydych wedi’i rhoi i ni.
+agent.global-check-your-answers.para                                                            = Cyn i chi gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, mae angen i chi wirio’r wybodaeth rydych wedi’i rhoi i ni a chadarnhau ei bod yn gywir. Gallwch newid unrhyw ddata sy’n anghywir.
 agent.global-check-your-answers.subheading                                                      = Gwirio’ch atebion cyn cofrestru
 agent.global-check-your-answers.income-sources.subheading                                       = Busnesau unig fasnachwr
+agent.global-check-your-answers.income-sources.self-employment.change                           = Newid
+agent.global-check-your-answers.income-sources.self-employment.hidden-text                      = busnesau unig fasnachwr {0}, {1}
 agent.global-check-your-answers.income-sources.self-employment.trade                            = Masnach
 agent.global-check-your-answers.income-sources.self-employment.name                             = Enw’r busnes
 agent.global-check-your-answers.income-sources.self-employment.start-date                       = Dyddiad dechrau

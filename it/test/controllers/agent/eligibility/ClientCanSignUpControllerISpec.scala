@@ -74,7 +74,7 @@ class ClientCanSignUpControllerISpec extends ComponentSpecBase {
 
   "POST /client/can-sign-up" when {
     "the user clicks sign up this client button" should {
-      s"return a redirect to ${controllers.agent.routes.UsingSoftwareController.show.url}" in {
+      s"return a redirect to ${controllers.agent.routes.UsingSoftwareController.show(false).url}" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
@@ -91,7 +91,7 @@ class ClientCanSignUpControllerISpec extends ComponentSpecBase {
 
         result must have(
           httpStatus(SEE_OTHER),
-          redirectURI(controllers.agent.routes.UsingSoftwareController.show.url)
+          redirectURI(controllers.agent.routes.UsingSoftwareController.show(false).url)
         )
       }
     }
