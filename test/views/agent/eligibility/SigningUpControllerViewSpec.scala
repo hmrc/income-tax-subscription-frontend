@@ -30,10 +30,6 @@ import views.html.agent.eligibility.SigningUp
 
 class SigningUpControllerViewSpec extends ViewSpec {
 
-
-  val document: Document = Jsoup.parse(page.body)
-  val mainContent: Element = document.mainContent
-
   implicit val testMessages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
   private val signingUp: SigningUp = app.injector.instanceOf[SigningUp]
@@ -46,6 +42,8 @@ class SigningUpControllerViewSpec extends ViewSpec {
 
   val testAccountingPeriodModel: AccountingPeriodModel = AccountingPeriodModel(startDate, endDate)
 
+  val document: Document = Jsoup.parse(page.body)
+  val mainContent: Element = document.mainContent
 
   def page: Html = {
     signingUp(
@@ -147,7 +145,7 @@ class SigningUpControllerViewSpec extends ViewSpec {
         "has the correct form" in {
           document.getForm must have(
             method("POST"),
-            action(routes.SigningUpController.submit.url)
+            action(controllers.eligibility.agent.routes.SigningUpController.submit.url)
           )
         }
       }
