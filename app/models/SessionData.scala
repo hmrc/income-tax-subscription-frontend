@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package models.requests.individual
+package models
 
-import models.SessionData.Data
-import play.api.mvc.{Request, WrappedRequest}
-
-case class IdentifierRequest[A](request: Request[A], mtditid: Option[String], nino: String, utr: Option[String], sessionData: Data = Map()) extends WrappedRequest[A](request)
+object SessionData {
+  type Data = Map[String, String]
+}

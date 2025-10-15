@@ -20,6 +20,7 @@ import config.AppConfig
 import connectors.httpparser.DeleteSessionDataHttpParser.DeleteSessionDataResponse
 import connectors.httpparser.GetSessionDataHttpParser.GetSessionDataResponse
 import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataResponse
+import models.SessionData.Data
 import play.api.libs.json._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
@@ -39,8 +40,16 @@ class SessionDataConnector @Inject()(appConfig: AppConfig,
     appConfig.microServiceUrl + s"/income-tax-subscription/session-data/id"
   }
 
+  private def allSessionDataUrl(): String = {
+    s"${appConfig.microServiceUrl}/income-tax-subscription/session-data/all"
+  }
+
   def getSessionData[T](id: String)(implicit hc: HeaderCarrier, reads: Reads[T]): Future[GetSessionDataResponse[T]] = {
     http.GET[GetSessionDataResponse[T]](sessionDataUrl(id))
+  }
+
+  def getAllSessionData()(implicit hc: HeaderCarrier, reads: Reads[Data]): Future[GetSessionDataResponse[Data]] = {
+    http.GET[GetSessionDataResponse[Data]](allSessionDataUrl())
   }
 
   def saveSessionData[T](id: String, data: T)(implicit hc: HeaderCarrier, writes: Writes[T]): Future[SaveSessionDataResponse] = {

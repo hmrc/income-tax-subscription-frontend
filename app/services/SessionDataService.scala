@@ -21,15 +21,23 @@ import connectors.SessionDataConnector
 import connectors.httpparser.DeleteSessionDataHttpParser.DeleteSessionDataResponse
 import connectors.httpparser.GetSessionDataHttpParser.GetSessionDataResponse
 import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataResponse
+import models.SessionData.Data
 import models.status.MandationStatusModel
 import models.{EligibilityStatus, YesNo}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SessionDataService @Inject()(sessionDataConnector: SessionDataConnector) {
+
+  def getAllSessionData()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Data] = {
+    sessionDataConnector.getAllSessionData().map {
+      case Right(value) => value.getOrElse(Map())
+      case _ => Map()
+    }
+  }
 
   def fetchReference(implicit hc: HeaderCarrier): Future[GetSessionDataResponse[String]] = {
     sessionDataConnector.getSessionData[String](ITSASessionKeys.REFERENCE)

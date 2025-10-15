@@ -17,6 +17,9 @@
 package controllers.agent.actions
 
 import auth.MockAuth
+import org.eclipse.jetty.server.session.SessionDataStore
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -32,15 +35,31 @@ import uk.gov.hmrc.auth.core.retrieve.~
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import services.SessionDataService
 
+import java.util.UUID
 
 class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with BeforeAndAfterEach with MockAuth {
+
+  private val mockSessionDataService = mock[SessionDataService]
+
+  private def random() =
+    UUID.randomUUID().toString
+
+  private val sessionData = Map(
+    random() -> random()
+  )
+
+  when(mockSessionDataService.getAllSessionData()(any(), any())).thenReturn(
+    Future.successful(sessionData)
+  )
 
   val identifierAction: IdentifierAction = new IdentifierAction(
     authConnector = mockAuth,
     parser = app.injector.instanceOf[BodyParsers.Default],
     config = app.injector.instanceOf[Configuration],
-    env = app.injector.instanceOf[Environment]
+    env = app.injector.instanceOf[Environment],
+    sessionDataService = mockSessionDataService
   )
 
   "IdentifierAction" when {
@@ -52,6 +71,7 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
 
         val result: Future[Result] = identifierAction { request =>
           request.arn mustBe "test-arn"
+          request.sessionData mustBe sessionData
           Results.Ok
         }(FakeRequest())
 
@@ -101,6 +121,4 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
       }
     }
   }
-
-
 }

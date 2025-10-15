@@ -21,6 +21,7 @@ import models.requests.agent.IdentifierRequest
 import play.api.mvc.Results._
 import play.api.mvc._
 import play.api.{Configuration, Environment, Logging}
+import services.SessionDataService
 import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
@@ -36,6 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class IdentifierAction @Inject()(val authConnector: AuthConnector,
                                  val parser: BodyParsers.Default,
                                  val config: Configuration,
+                                 sessionDataService: SessionDataService,
                                  val env: Environment)
                                 (implicit val executionContext: ExecutionContext)
   extends ActionBuilder[IdentifierRequest, AnyContent]
@@ -53,7 +55,9 @@ class IdentifierAction @Inject()(val authConnector: AuthConnector,
           enrolment.identifiers.headOption.map(_.value)
         } match {
           case Some(arn) =>
-            block(IdentifierRequest(request, arn))
+            sessionDataService.getAllSessionData().flatMap { sessionData =>
+              block(IdentifierRequest(request, arn, sessionData))
+            }
           case None =>
             logger.info(s"[Agent][IdentifierAction] - Agent user without agent reference number. Redirecting to not enrolled in agent services.")
             Future.successful(Redirect(controllers.agent.matching.routes.NotEnrolledAgentServicesController.show))

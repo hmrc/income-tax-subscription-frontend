@@ -19,6 +19,7 @@ package controllers.individual.actions
 import common.Constants
 import common.Constants.ITSASessionKeys
 import config.AppConfig
+import models.SessionData.Data
 import models.requests.individual.IdentifierRequest
 import play.api.mvc.Results._
 import play.api.mvc._
@@ -57,13 +58,16 @@ class IdentifierAction @Inject()(val authConnector: AuthConnector,
         val maybeMTDITID: Option[String] = allEnrolments.getEnrolment(Constants.mtdItsaEnrolmentName).flatMap(_.identifiers.headOption.map(_.value))
         val nino: String = maybeNino.getOrElse(throw new InternalServerException("[Individual][IdentifierAction] - CL250 User, no nino in retrieval"))
 
-        fetchUTRFromEnrolmentsOrSession(allEnrolments) flatMap { maybeUTR =>
-          block(IdentifierRequest(
-            request = request,
-            mtditid = maybeMTDITID,
-            nino = nino,
-            utr = maybeUTR
-          ))
+        sessionDataService.getAllSessionData().flatMap { sessionData =>
+          fetchUTRFromEnrolmentsOrSession(allEnrolments, sessionData) flatMap { maybeUTR =>
+            block(IdentifierRequest(
+              request = request,
+              mtditid = maybeMTDITID,
+              nino = nino,
+              utr = maybeUTR,
+              sessionData = sessionData
+            ))
+          }
         }
       case Some(Individual | Organisation) ~ _ ~ Some(User) ~ _ ~ _ =>
         Future.successful(Redirect(appConfig.identityVerificationURL).addingToSession(ITSASessionKeys.IdentityVerificationFlag -> "true")(request))
@@ -80,7 +84,7 @@ class IdentifierAction @Inject()(val authConnector: AuthConnector,
     }
   }
 
-  private def fetchUTRFromEnrolmentsOrSession(allEnrolments: Enrolments)(implicit hc: HeaderCarrier): Future[Option[String]] = {
+  private def fetchUTRFromEnrolmentsOrSession(allEnrolments: Enrolments, sessionData: Data)(implicit hc: HeaderCarrier): Future[Option[String]] = {
     allEnrolments.getEnrolment(Constants.utrEnrolmentName).flatMap(_.identifiers.headOption.map(_.value)) match {
       case Some(value) => Future.successful(Some(value))
       case None => sessionDataService.fetchUTR map {

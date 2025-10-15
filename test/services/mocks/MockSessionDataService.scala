@@ -20,9 +20,11 @@ import connectors.httpparser.DeleteSessionDataHttpParser.DeleteSessionDataRespon
 import connectors.httpparser.GetSessionDataHttpParser.{GetSessionDataResponse, InvalidJson, UnexpectedStatusFailure}
 import connectors.httpparser.SaveSessionDataHttpParser
 import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataResponse
+import models.SessionData.Data
 import models.status.MandationStatusModel
 import models.{EligibilityStatus, YesNo}
 import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
@@ -39,6 +41,8 @@ trait MockSessionDataService extends MockitoSugar with BeforeAndAfterEach {
     reset(mockSessionDataService)
     super.beforeEach()
   }
+
+  mockSessionData()
 
   def mockFetchReferenceSuccess(reference: Option[String]): Unit = {
     when(mockSessionDataService.fetchReference(ArgumentMatchers.any()))
@@ -150,4 +154,9 @@ trait MockSessionDataService extends MockitoSugar with BeforeAndAfterEach {
       .thenReturn(Future.successful(result))
   }
 
+  def mockSessionData(sessionData: Data = Map()): Unit = {
+    when(mockSessionDataService.getAllSessionData()(any(), any())).thenReturn(
+      Future.successful(sessionData)
+    )
+  }
 }
