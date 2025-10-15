@@ -54,4 +54,33 @@ object MessageLookup {
     def line1(testTime: String) = s"To sign your client up for quarterly reporting, you’ll have to try again in $testTime."
   }
 
+  object Heading {
+    val heading = "Signing up your clients for Making Tax Digital for Income Tax"
+  }
+
+  object BeforeSignUp {
+    val heading = "Before you sign up your clients"
+    val paraOne = "To sign up your clients, you must have their authorisation in your agent services account."
+    val paraTwoLinkText = "software that’s compatible with Making Tax Digital for Income Tax (opens in new tab)"
+    val paraTwo = s"Make sure you or your clients use $paraTwoLinkText."
+    val paraThree = "Make sure your client is a sole trader or gets income from property (inside or outside the UK)."
+  }
+
+  object AccountingPeriod {
+    val heading = "Accounting period"
+    val paraOne = "Make sure your client uses either:"
+    val bulletOne = "an accounting period that runs from 6 April to 5 April"
+    val bulletTwo = "an accounting period that runs from 1 April to 31 March (and their compatible software supports calendar update periods)"
+    val paraTwo = "From the 2026 to 2027 tax year, this service will be extended to people with any accounting period. You must submit your client’s Self Assessment tax return for the tax years up to 5 April 2025 as normal."
+  }
+
+  object CheckSignUp {
+    val heading = "We will check if you can sign up each client"
+    val paraOne = "When you continue, you’ll need to enter these details for one of your clients:"
+    val bulletOne = "name"
+    val bulletTwo = "National Insurance number"
+    val bulletThree = "date of birth"
+    val paraTwo = "We’ll check that client’s record and tell you if you can sign them up."
+  }
+
 }

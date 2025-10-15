@@ -23,6 +23,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
 import org.scalatest.Checkpoints.Checkpoint
+import org.scalatest.matchers.{HavePropertyMatchResult, HavePropertyMatcher}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.{Assertion, BeforeAndAfterEach, Succeeded}
@@ -94,6 +95,23 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
     }
 
   }
+
+  def method(method: String): HavePropertyMatcher[Element, String] =
+    (element: Element) => HavePropertyMatchResult(
+      element.attr("method") == method,
+      "method",
+      method,
+      element.attr("method")
+    )
+
+  def action(action: String): HavePropertyMatcher[Element, String] =
+    (element: Element) => HavePropertyMatchResult(
+      element.attr("action") == action,
+      "action",
+      action,
+      element.attr("action")
+    )
+
 
   implicit class CustomSelectors(element: Element) {
 

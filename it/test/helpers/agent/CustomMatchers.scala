@@ -25,6 +25,21 @@ import scala.jdk.CollectionConverters.CollectionHasAsScala
 
 trait CustomMatchers {
 
+  def redirectUri(expectedValue: String): HavePropertyMatcher[WSResponse, String] =
+    new HavePropertyMatcher[WSResponse, String] {
+      def apply(response: WSResponse) = {
+        val redirectLocation: Option[String] = response.header("Location")
+
+        val matchCondition = redirectLocation.exists(_.contains(expectedValue))
+        HavePropertyMatchResult(
+          matchCondition,
+          "redirectUri",
+          expectedValue,
+          redirectLocation.getOrElse("")
+        )
+      }
+    }
+
   def httpStatus(expectedValue: Int): HavePropertyMatcher[WSResponse, Int] =
     (response: WSResponse) => HavePropertyMatchResult(
       response.status == expectedValue,

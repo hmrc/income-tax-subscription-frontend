@@ -37,7 +37,7 @@ class SigningUpController @Inject()(appConfig: AppConfig,
   }
 
   val submit: Action[AnyContent] = Action { _ =>
-    Redirect(controllers.agent.tasklist.routes.IncomeSourcesIncompleteController.show)
+    Redirect(controllers.agent.matching.routes.ClientDetailsController.show())
   }
 
   val backLink: String = appConfig.govukGuidanceITSASignUpAgentLink
