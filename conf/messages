@@ -628,10 +628,10 @@ agent.client-can-sign-up.check-another                          = Or you can {0}
 agent.client-can-sign-up.check-another-link                     = check if you can sign up another client
 
 # Individual cannot sign up page
-cannot-sign-up.heading                                          = You can sign up to Making Tax Digital for Income Tax from the next tax year
+individual.cannot-sign-up.heading                                          = You can sign up to Making Tax Digital for Income Tax from the next tax year
 cannot-sign-up.paragraph1                                       = There is something that has prevented you from signing up to the current tax year ({0} to {1}). For example, other income or activities, or the length of time you have been self-employed or a landlord.
 cannot-sign-up.yes-no-radio-helper.heading                      = Would you like to sign up for the next tax year?
-error.cannot-sign-up.invalid                                    = You must select ‘yes’ or ‘no’
+error.cannot-sign-up.invalid                                               = You must select ‘yes’ or ‘no’
 
 # Individual declined sign up
 declined-sign-up-next-year.heading                              = What you need to do

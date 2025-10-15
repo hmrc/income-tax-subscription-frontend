@@ -25,7 +25,7 @@ import play.api.libs.ws.WSResponse
 
 class SigningUpControllerISpec extends ComponentSpecBase {
 
-  private val path = "/client/signing-up"
+  private val path = "/eligibility/client/signing-up"
   lazy val result: WSResponse = get(path)
   lazy val doc: Document = Jsoup.parse(result.body)
 

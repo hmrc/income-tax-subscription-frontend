@@ -157,8 +157,15 @@ GET         /final-check-your-answers                            controllers.ind
 POST        /final-check-your-answers                            controllers.individual.GlobalCheckYourAnswersController.submit
 
 ## Index route
-GET         /                                                    controllers.individual.eligibility.IndexController.index
+GET         /eligibility                                        controllers.individual.eligibility.IndexController.index
 
 ## Signing Up route
-GET         /signing-up                                          controllers.individual.eligibility.SigningUpController.show
-POST        /signing-up                                          controllers.individual.eligibility.SigningUpController.submit
+GET         /eligibility/signing-up                             controllers.individual.eligibility.SigningUpController.show
+POST        /eligibility/signing-up                             controllers.individual.eligibility.SigningUpController.submit
+
+## Index route
+GET         /eligibility/client                                  controllers.agent.eligibility.IndexController.index
+
+## Signing Up route
+GET         /eligibility/client/signing-up                        controllers.agent.eligibility.SigningUpController.show
+POST        /eligibility/client/signing-up                        controllers.agent.eligibility.SigningUpController.submit

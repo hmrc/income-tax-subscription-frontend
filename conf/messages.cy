@@ -606,7 +606,7 @@ agent.client-can-sign-up.check-another                          = Neu, gallwch {
 agent.client-can-sign-up.check-another-link                     = wirio a allwch gofrestru cleient arall
 
 # Individual cannot sign up page
-cannot-sign-up.heading                                          = Gallwch gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o’r flwyddyn dreth nesaf
+individual.cannot-sign-up.heading                                          = Gallwch gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o’r flwyddyn dreth nesaf
 cannot-sign-up.paragraph1                                       = Mae rhywbeth wedi eich atal rhag cofrestru ar gyfer y flwyddyn dreth bresennol ({0} i {1}). Er enghraifft, mathau penodol eraill o incwm neu weithgareddau, neu’r cyfnod o amser rydych wedi bod yn hunangyflogedig, neu’n landlord.
 cannot-sign-up.yes-no-radio-helper.heading                      = A hoffech gofrestru ar gyfer y flwyddyn dreth nesaf?
 error.cannot-sign-up.invalid                                    = Mae’n rhaid i chi ddewis ‘iawn’ neu ‘na’
