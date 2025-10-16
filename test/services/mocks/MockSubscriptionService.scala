@@ -16,11 +16,9 @@
 
 package services.mocks
 
-import connectors.individual.subscription.httpparsers.CreateIncomeSourcesResponseHttpParser.PostCreateIncomeSourceResponse
-import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
-import connectors.individual.subscription.httpparsers.SignUpIncomeSourcesResponseHttpParser.PostSignUpIncomeSourcesResponse
-import connectors.individual.subscription.mocks.{MockMisSubscriptionConnector, MockSubscriptionConnector}
-import models.common.subscription.{CreateIncomeSourcesModel, SubscriptionFailureResponse, SubscriptionSuccess}
+import connectors.httpparser.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
+import connectors.individual.subscription.mocks.MockSubscriptionConnector
+import models.common.subscription.{SubscriptionFailureResponse, SubscriptionSuccess}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -42,45 +40,6 @@ trait MockSubscriptionService extends UnitTestTrait with MockitoSugar with Befor
     reset(mockSubscriptionService)
   }
 
-
-  private def mockSignUpIncomeSources(nino: String, utr: String, taxYear: String)(result: Future[PostSignUpIncomeSourcesResponse]): Unit =
-    when(mockSubscriptionService.signUpIncomeSources(
-      ArgumentMatchers.eq(nino),
-      ArgumentMatchers.eq(utr),
-      ArgumentMatchers.eq(taxYear)
-    )(ArgumentMatchers.any[HeaderCarrier])).thenReturn(result)
-
-  private def mockCreateIncomeSourcesFromTaskList(mtdbsa: String, createIncomeSourcesModel: CreateIncomeSourcesModel)
-                                                 (result: Future[PostCreateIncomeSourceResponse]): Unit = {
-
-    when(mockSubscriptionService.createIncomeSourcesFromTaskList(
-      ArgumentMatchers.eq(mtdbsa),
-      ArgumentMatchers.eq(createIncomeSourcesModel)
-    )(ArgumentMatchers.any[HeaderCarrier]))
-      .thenReturn(result)
-  }
-
-  def mockSignUpSuccess(nino: String, utr: String, taxYear: String): Unit =
-    mockSignUpIncomeSources(nino, utr, taxYear)(Future.successful(testSignUpIncomeSourcesSuccess))
-
-  def mockAlreadySignedUp(nino: String, utr: String, taxYear: String): Unit =
-    mockSignUpIncomeSources(nino, utr, taxYear)(Future.successful(testAlreadySignUpIncomeSources))
-
-  def mockSignUpIncomeSourcesFailure(nino: String, utr: String, taxYear: String): Unit =
-    mockSignUpIncomeSources(nino, utr, taxYear)(Future.successful(testSignUpIncomeSourcesFailure))
-
-  def mockSignUpIncomeSourcesException(nino: String, utr: String, taxYear: String): Unit =
-    mockSignUpIncomeSources(nino, utr, taxYear)(Future.failed(testException))
-
-  def mockCreateIncomeSourcesFromTaskListSuccess(mtdbsa: String, createIncomeSourcesModel: CreateIncomeSourcesModel): Unit =
-    mockCreateIncomeSourcesFromTaskList(mtdbsa, createIncomeSourcesModel)(Future.successful(testCreateIncomeSourcesFromTaskListSuccess))
-
-  def mockCreateIncomeSourcesFromTaskListFailure(mtdbsa: String, createIncomeSourcesModel: CreateIncomeSourcesModel): Unit =
-    mockCreateIncomeSourcesFromTaskList(mtdbsa, createIncomeSourcesModel)(Future.successful(testCreateIncomeSourcesFromTaskListFailure))
-
-  def mockCreateIncomeSourcesFromTaskListException(mtdbsa: String, createIncomeSourcesModel: CreateIncomeSourcesModel): Unit =
-    mockCreateIncomeSourcesFromTaskList(mtdbsa, createIncomeSourcesModel)(Future.failed(testException))
-
   private def mockGetSubscription(nino: String)(result: Future[GetSubscriptionResponse]): Unit =
     when(mockSubscriptionService.getSubscription(ArgumentMatchers.eq(nino))(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(result)
@@ -98,11 +57,10 @@ trait MockSubscriptionService extends UnitTestTrait with MockitoSugar with Befor
     mockGetSubscription(nino)(Future.failed(testException))
 }
 
-trait TestSubscriptionService extends MockSubscriptionConnector with MockMisSubscriptionConnector {
+trait TestSubscriptionService extends MockSubscriptionConnector {
 
   object TestSubscriptionService extends SubscriptionService(
-    subscriptionConnector = mockSubscriptionConnector,
-    multipleIncomeSourcesSubscriptionConnector = mockMisSubscriptionConnector
+    subscriptionConnector = mockSubscriptionConnector
   )
 
 }

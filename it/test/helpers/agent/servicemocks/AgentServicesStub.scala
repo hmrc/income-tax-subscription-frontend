@@ -27,10 +27,20 @@ object AgentServicesStub extends WireMockMethods {
       .thenReturn(status = if (exists) Status.OK else Status.NOT_FOUND)
   }
 
+  def stubClientRelationship(arn: String, nino: String)(status: Int): Unit = {
+    when(method = GET, uri = AgentServicesConnector.agentClientURI(arn, nino))
+      .thenReturn(status = status)
+  }
+
   def stubMTDClientRelationship(arn: String, nino: String, exists: Boolean): Unit = {
 
     when(method = GET, uri = AgentServicesConnector.agentMTDClientURI(arn, nino))
       .thenReturn(status = if (exists) Status.OK else Status.NOT_FOUND)
+  }
+
+  def stubMTDClientRelationship(arn: String, nino: String)(status: Int): Unit = {
+    when(method = GET, uri = AgentServicesConnector.agentMTDClientURI(arn, nino))
+      .thenReturn(status = status)
   }
 
   def stubMTDSuppAgentRelationship(arn: String, nino: String, exists: Boolean): Unit = {
@@ -38,4 +48,11 @@ object AgentServicesStub extends WireMockMethods {
     when(method = GET, uri = AgentServicesConnector.suppAgentClientURI(arn, nino))
       .thenReturn(status = if (exists) Status.OK else Status.NOT_FOUND)
   }
+
+  def stubMTDSuppAgentRelationship(arn: String, nino: String)(status: Int): Unit = {
+
+    when(method = GET, uri = AgentServicesConnector.suppAgentClientURI(arn, nino))
+      .thenReturn(status = status)
+  }
+
 }

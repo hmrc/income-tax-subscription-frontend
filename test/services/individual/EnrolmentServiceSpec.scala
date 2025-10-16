@@ -16,18 +16,23 @@
 
 package services.individual
 
-import models.common.subscription.{EnrolFailure, EnrolSuccess}
+import auth.MockAuth
+import connectors.individual.httpparsers.AllocateEnrolmentResponseHttpParser.{EnrolFailure, EnrolSuccess}
+import connectors.individual.subscription.mocks.MockTaxEnrolmentsConnector
 import org.scalatest.concurrent.ScalaFutures
-import services.individual.mocks.TestEnrolmentService
+import org.scalatestplus.play.PlaySpec
 import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
-import utilities.UnitTestTrait
+import uk.gov.hmrc.http.HeaderCarrier
 import utilities.individual.TestConstants._
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class EnrolmentServiceSpec extends UnitTestTrait with TestEnrolmentService with ScalaFutures {
+class EnrolmentServiceSpec extends PlaySpec with ScalaFutures with MockTaxEnrolmentsConnector with MockAuth {
+
+  object TestEnrolmentService extends EnrolmentService(mockTaxEnrolmentsConnector, mockAuth)
 
   "addKnownFacts" should {
     def result: Future[Either[EnrolFailure, EnrolSuccess.type]] = TestEnrolmentService.enrol(testMTDID, testNino)
@@ -53,5 +58,7 @@ class EnrolmentServiceSpec extends UnitTestTrait with TestEnrolmentService with 
       whenReady(result.failed)(_ mustBe testException)
     }
   }
+
+  implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
 }

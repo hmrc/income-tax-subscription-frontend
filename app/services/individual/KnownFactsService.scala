@@ -18,19 +18,19 @@ package services.individual
 
 import common.Constants
 import common.Constants.GovernmentGateway._
-import config.AppConfig
-import connectors.individual.subscription.TaxEnrolmentsConnector
-import models.common.subscription.{EnrolmentKey, EnrolmentVerifiers, KnownFactsFailure, KnownFactsSuccess}
+import connectors.individual.TaxEnrolmentsConnector
+import connectors.individual.httpparsers.UpsertEnrolmentResponseHttpParser.{KnownFactsFailure, KnownFactsSuccess}
+import models.common.subscription.{EnrolmentKey, EnrolmentVerifiers}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
-class KnownFactsService @Inject()(taxEnrolmentsConnector: TaxEnrolmentsConnector,
-                                   appConfig: AppConfig) {
-  def addKnownFacts(mtditId: String, nino: String)(implicit hc: HeaderCarrier): Future[Either[KnownFactsFailure, KnownFactsSuccess.type]] = {
-    val enrolmentKey = EnrolmentKey(Constants.mtdItsaEnrolmentName, MTDITID -> mtditId)
+class KnownFactsService @Inject()(taxEnrolmentsConnector: TaxEnrolmentsConnector) {
+
+  def addKnownFacts(mtditid: String, nino: String)(implicit hc: HeaderCarrier): Future[Either[KnownFactsFailure, KnownFactsSuccess.type]] = {
+    val enrolmentKey = EnrolmentKey(Constants.mtdItsaEnrolmentName, MTDITID -> mtditid)
     val enrolmentVerifiers = EnrolmentVerifiers(NINO -> nino)
 
     taxEnrolmentsConnector.upsertEnrolment(enrolmentKey, enrolmentVerifiers)

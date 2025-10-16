@@ -26,7 +26,7 @@ import models.individual.JourneyStep.Confirmation
 import play.api.mvc._
 import services.GetCompleteDetailsService.CompleteDetails
 import services._
-import services.individual.SubscriptionOrchestrationService
+import services.individual.SignUpOrchestrationService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import views.html.individual.GlobalCheckYourAnswers
 
@@ -34,7 +34,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class GlobalCheckYourAnswersController @Inject()(subscriptionService: SubscriptionOrchestrationService,
+class GlobalCheckYourAnswersController @Inject()(signUpOrchestrationService: SignUpOrchestrationService,
                                                  getCompleteDetailsService: GetCompleteDetailsService,
                                                  subscriptionDetailsService: SubscriptionDetailsService,
                                                  ninoService: NinoService,
@@ -51,14 +51,14 @@ class GlobalCheckYourAnswersController @Inject()(subscriptionService: Subscripti
     _ =>
       referenceRetrieval.getIndividualReference flatMap { reference =>
         subscriptionDetailsService.fetchAccountingPeriod(reference) flatMap { maybeAccountingPeriod =>
-        withCompleteDetails(reference) { completeDetails =>
-          Future.successful(Ok(globalCheckYourAnswers(
-            postAction = routes.GlobalCheckYourAnswersController.submit,
-            backUrl = backUrl,
-            completeDetails = completeDetails,
-            maybeAccountingPeriod = maybeAccountingPeriod
-          )))
-        }
+          withCompleteDetails(reference) { completeDetails =>
+            Future.successful(Ok(globalCheckYourAnswers(
+              postAction = routes.GlobalCheckYourAnswersController.submit,
+              backUrl = backUrl,
+              completeDetails = completeDetails,
+              maybeAccountingPeriod = maybeAccountingPeriod
+            )))
+          }
         }
       }
   }
@@ -81,15 +81,18 @@ class GlobalCheckYourAnswersController @Inject()(subscriptionService: Subscripti
   private def signUp(completeDetails: CompleteDetails)
                     (onSuccessfulSignUp: Result)
                     (implicit request: Request[AnyContent]): Future[Result] = {
+
     val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
     val session = request.session
 
     ninoService.getNino flatMap { nino =>
       utrService.getUTR flatMap { utr =>
-        subscriptionService.signUpAndCreateIncomeSourcesFromTaskList(
-          createIncomeSourceModel = CreateIncomeSourcesModel.createIncomeSources(nino, completeDetails),
+        signUpOrchestrationService.orchestrateSignUp(
+          nino = nino,
           utr = utr,
-          maybeSpsEntityId = session.get(SPSEntityId)
+          taxYear = completeDetails.taxYear.accountingYear,
+          incomeSources = CreateIncomeSourcesModel.createIncomeSources(nino, completeDetails),
+          maybeEntityId = session.get(SPSEntityId)
         )(headerCarrier) map {
           case Right(_) =>
             onSuccessfulSignUp.addingToSession(JourneyStateKey -> Confirmation.key)

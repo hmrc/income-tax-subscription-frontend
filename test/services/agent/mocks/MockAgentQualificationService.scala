@@ -16,13 +16,15 @@
 
 package services.agent.mocks
 
+import org.scalatestplus.play.PlaySpec
 import services.agent._
 import services.mocks.{MockAuditingService, MockSubscriptionService, MockUserMatchingService}
 import utilities.agent.TestConstants
 import utilities.agent.TestConstants.testNino
 import utilities.agent.TestModels.testClientDetails
 
-trait MockAgentQualificationService extends MockClientRelationshipService
+trait MockAgentQualificationService extends PlaySpec
+  with MockClientRelationshipService
   with MockUserMatchingService
   with MockSubscriptionService
   with MockAuditingService {

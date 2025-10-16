@@ -18,7 +18,6 @@ package utilities.agent
 
 import models.DateModel
 import models.common.business.{Address, BusinessAddressModel, BusinessStartDate, SelfEmploymentData}
-import models.common.subscription.SignUpSourcesFailure.SignUpIncomeSourcesFailureResponse
 import models.common.subscription._
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import uk.gov.hmrc.domain.Generator
@@ -51,10 +50,6 @@ object TestConstants {
   val testSubscriptionSuccess = Right(Some(SubscriptionSuccess(testMTDID)))
 
   val testSubscriptionFailure = Left(SubscriptionFailureResponse(INTERNAL_SERVER_ERROR))
-
-  val testSignUpIncomeSourcesFailure = Left(SignUpIncomeSourcesFailureResponse(INTERNAL_SERVER_ERROR))
-
-  val testCreateSubscriptionFromTaskListFailure = Left(CreateIncomeSourcesFailure(INTERNAL_SERVER_ERROR))
 
   lazy val testCreateIncomeSourcesThisYear: CreateIncomeSourcesModel =
     CreateIncomeSourcesModel(

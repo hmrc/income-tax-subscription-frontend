@@ -21,13 +21,14 @@ import config.AppConfig
 import config.featureswitch.FeatureSwitching
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
-import models.common.subscription.{CreateIncomeSourcesModel, SubscriptionSuccess}
+import models.agent.JourneyStep.Confirmation
+import models.common.subscription.CreateIncomeSourcesModel
 import models.requests.agent.ConfirmedClientRequest
 import play.api.mvc._
 import play.twirl.api.Html
 import services.GetCompleteDetailsService.CompleteDetails
 import services._
-import services.agent.SubscriptionOrchestrationService
+import services.agent.SignUpOrchestrationService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.UserMatchingSessionUtil.ClientDetails
 import views.html.agent.GlobalCheckYourAnswers
@@ -42,9 +43,9 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
                                                  getCompleteDetailsService: GetCompleteDetailsService,
                                                  ninoService: NinoService,
                                                  utrService: UTRService,
-                                                 subscriptionService: SubscriptionOrchestrationService)
+                                                 signUpOrchestrationService: SignUpOrchestrationService)
                                                 (val appConfig: AppConfig,
-                                                  val subscriptionDetailsService: SubscriptionDetailsService,
+                                                 val subscriptionDetailsService: SubscriptionDetailsService,
                                                  val sessionDataService: SessionDataService)
                                                 (implicit val ec: ExecutionContext,
                                                  mcc: MessagesControllerComponents) extends SignUpBaseController with FeatureSwitching {
@@ -67,12 +68,8 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
   def submit: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     withCompleteDetails(request.reference) { completeDetails =>
       signUp(completeDetails) {
-        case Some(id) =>
-          Redirect(controllers.agent.routes.ConfirmationController.show)
-            .addingToSession(ITSASessionKeys.MTDITID -> id)
-        case None =>
-          Redirect(controllers.agent.routes.ConfirmationController.show)
-            .addingToSession(ITSASessionKeys.MTDITID -> "already-signed-up")
+        Redirect(controllers.agent.routes.ConfirmationController.show)
+          .addingToSession(ITSASessionKeys.JourneyStateKey -> Confirmation.key)
       }
     }
   }
@@ -82,24 +79,24 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
   }
 
   private def signUp(completeDetails: CompleteDetails)
-                    (onSuccessfulSignUp: Option[String] => Result)
+                    (onSuccessfulSignUp: => Result)
                     (implicit request: ConfirmedClientRequest[AnyContent]): Future[Result] = {
     val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
 
     ninoService.getNino flatMap { nino =>
       utrService.getUTR flatMap { utr =>
-        subscriptionService.createSubscriptionFromTaskList(
+        signUpOrchestrationService.orchestrateSignUp(
           arn = request.arn,
+          nino = nino,
           utr = utr,
-          createIncomeSourcesModel = CreateIncomeSourcesModel.createIncomeSources(nino, completeDetails)
+          taxYear = completeDetails.taxYear.accountingYear,
+          incomeSources = CreateIncomeSourcesModel.createIncomeSources(nino, completeDetails)
         )(headerCarrier) map {
-          case Right(Some(SubscriptionSuccess(id))) =>
-            onSuccessfulSignUp(Some(id))
-          case Right(None) =>
-            onSuccessfulSignUp(None)
+          case Right(_) =>
+            onSuccessfulSignUp
           case Left(failure) =>
             throw new InternalServerException(
-              s"[GlobalCheckYourAnswersController][submit] - failure response received from submission: ${failure.toString}"
+              s"[GlobalCheckYourAnswersController][submit] - failure response received from submission: $failure"
             )
         }
       }

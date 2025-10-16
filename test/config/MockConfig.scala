@@ -39,7 +39,7 @@ trait MockConfig extends UnitTestTrait with AppConfig {
   override def prePopUrl(nino: String): String = s"/income-tax-subscription/pre-pop/$nino"
 
   override val clientMatchingUrl = "/income-tax-subscription/client-matching"
-  override val signUpIncomeSourcesUrl = "/income-tax-subscription/mis/sign-up"
+  override val signUpUrl = "/income-tax-subscription/mis/sign-up"
   override val createIncomeSourcesUrl = "/income-tax-subscription/mis/create"
   override val microServiceUrl: String = "income-tax-subscription"
   override val agentClientRelationshipsUrl: String = "/agent-subscription"
