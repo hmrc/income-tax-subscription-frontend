@@ -61,7 +61,7 @@
   <p class="govuk-body">@messages("agent.signing-up.check-sign-up.para-2")</p>
 }
 
-@mainTemplate(title = messages("agent.signing-up.heading"), backLink = Some(backUrl)) {
+@mainTemplate(title = messages("agent.signing-up.heading"), backLink = Some(backUrl), showSignOutLink = false) {
 
   <h1 class="govuk-heading-l">@messages("agent.signing-up.heading")</h1>
   @beforeSignUp

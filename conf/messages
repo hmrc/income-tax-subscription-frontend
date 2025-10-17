@@ -1109,17 +1109,6 @@ individual.signing-up.identity-verification.para-1                             =
 individual.signing-up.identity-verification.bullet-1                           = use an app to match you to your photo ID
 individual.signing-up.identity-verification.bullet-2                           = answer questions about information we hold about you
 
-## Accounting period check
-accounting-period-check.heading                                         = What accounting period do you use for your business?
-accounting-period-check.para-1                                          = This is the accounting period you use each year when reporting your business income and expenses to HMRC.
-accounting-period-check.para-2                                          = Your accounting period runs from the date your books or accounts start. It ends on the date your books or accounts are made up to.
-accounting-period-check.sixth-april-to-fifth-april                       = 6 April to 5 April
-accounting-period-check.sixth-april-to-fifth-april.hint                  = Your books or accounts start on 6 April and are made up to 5 April of the following year (such as, 6 April 2026 to 5 April 2027)
-accounting-period-check.first-april-to-thirty-first-march                 = 1 April to 31 March
-accounting-period-check.first-april-to-thirty-first-march.hint            = Your books or accounts start on 1 April and are made up to 31 March of the following year (such as, 1 April 2026 to 31 March 2027)
-accounting-period-check.other                                           = Neither of these
-accounting-period-check.error                                           = Select if your accounting period runs from 6 April to 5 April, 1 April to 31 March, or neither of these
-
 ## Sign Up To Pilot Page ##
 sign-up.heading                                                         = You may be able to sign up
 sign-up.para-1                                                          = Based on your business accounting period, you may be able to sign up for Making Tax Digital for Income Tax.

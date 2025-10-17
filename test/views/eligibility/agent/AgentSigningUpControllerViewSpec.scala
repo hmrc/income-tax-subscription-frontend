@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 
-package views.agent.eligibility
+package views.eligibility.agent
 
-import controllers.agent.eligibility.routes
 import messagelookup.agent.MessageLookup._
 import models.DateModel
 import models.common.AccountingPeriodModel
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import utilities.ViewSpec
-import views.html.agent.eligibility.SigningUp
+import views.html.eligibility.agent.SigningUp
 
-class SigningUpControllerViewSpec extends ViewSpec {
+class AgentSigningUpControllerViewSpec extends ViewSpec {
 
   implicit val testMessages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
@@ -59,7 +57,7 @@ class SigningUpControllerViewSpec extends ViewSpec {
         title = Heading.heading,
         isAgent = true,
         backLink = Some(testBackUrl),
-        hasSignOutLink = true,
+        hasSignOutLink = false,
         error = None)
 
       "has main content" which {

@@ -21,7 +21,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utilities.AccountingPeriodUtil
-import views.html.agent.eligibility.SigningUp
+import views.html.eligibility.agent.SigningUp
 
 import javax.inject.{Inject, Singleton}
 

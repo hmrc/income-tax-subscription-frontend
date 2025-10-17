@@ -16,25 +16,18 @@
 
 package controllers.eligibility.individual
 
-import helpers.IntegrationTestConstants.{AgentURI, IndividualURI}
-import helpers.agent.ComponentSpecBase
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
+import helpers.ComponentSpecBase
+import helpers.IntegrationTestConstants.IndividualURI
 import play.api.http.Status.{OK, SEE_OTHER}
-import play.api.libs.ws.WSResponse
 
 class SigningUpControllerISpec extends ComponentSpecBase {
 
   private val path = s"${controllers.eligibility.individual.routes.SigningUpController.show.url}"
-  lazy val result: WSResponse = get(path)
-  lazy val doc: Document = Jsoup.parse(result.body)
-
-  lazy val submitResult: WSResponse = post(path)(Map.empty)
-
 
   s"GET $path" should {
     "return OK" in {
-      result must have(
+      val res = IncomeTaxSubscriptionFrontend.individualSigningUp()
+      res must have(
         httpStatus(OK)
       )
     }
@@ -42,9 +35,10 @@ class SigningUpControllerISpec extends ComponentSpecBase {
 
   s"POST $path" should {
     "redirect to the start of the agent sign up" in {
+      val submitResult = IncomeTaxSubscriptionFrontend.individualSigningUpPost()
       submitResult must have(
         httpStatus(SEE_OTHER),
-        redirectUri(IndividualURI.youCanSignUpNow)
+        redirectURI(IndividualURI.youCanSignUpNow)
       )
     }
   }

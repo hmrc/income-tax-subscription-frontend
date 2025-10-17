@@ -17,20 +17,18 @@
 package controllers.eligibility.individual
 
 import helpers.IntegrationTestConstants.IndividualURI
-import helpers.agent.{ComponentSpecBase, CustomMatchers}
+import helpers.{ComponentSpecBase, CustomMatchers}
 import play.api.libs.ws.WSResponse
 import play.api.test.Helpers._
 
 class IndexControllerISpec extends ComponentSpecBase with CustomMatchers {
 
-  def result(): WSResponse = get(s"${controllers.eligibility.individual.routes.IndexController.index.url}")
-
-
   "GET /" when {
     s"return $SEE_OTHER" in {
-      result() must have(
+      val res = IncomeTaxSubscriptionFrontend.individualIndex()
+      res must have(
         httpStatus(SEE_OTHER),
-        redirectUri(IndividualURI.youCanSignUpNow)
+        redirectURI(IndividualURI.youCanSignUpNow)
       )
     }
   }

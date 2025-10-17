@@ -159,4 +159,40 @@ object MessageLookup {
     val signOutText = "Sign out"
   }
 
+  object IndividualSignUpTerms {
+    val heading = "Signing up for Making Tax Digital for Income Tax"
+    val subheading = "How to sign up"
+
+    object Heading {
+      val paraOne: String = "Making Tax Digital for Income Tax is a new way of reporting income to HMRC. " +
+        "It’s currently in a voluntary phase for selected self-employed businesses and landlords."
+    }
+
+    object beforeYouSignUp {
+      val heading = "Before you sign up"
+      val paraOne = "To sign up, you must be a sole trader or get income from either a UK or foreign property."
+      val paraTwoLinkText = "software that works with Making Tax Digital for Income Tax (opens in new tab)"
+      val paraTwo = s"You must also use $paraTwoLinkText."
+    }
+
+    object soleTrader {
+      val heading = "Sole trader"
+      val paraOne = "You’re a sole trader if you run your own business as an individual and work for yourself. This is also known as being self-employed."
+      val paraTwo = "You’re not a sole trader if your only business income is from a limited company."
+    }
+
+    object incomeProperty {
+      val heading = "Income from property"
+      val paraOne = "You can sign up if you get income from property in the UK or from property in another country. For example, letting houses, flats or holiday homes, on a long or short term basis."
+    }
+
+    object identityVerification {
+      val heading = "We may need to check your identity"
+      val paraOne = "To confirm your identity, you can either:"
+      val bulletOne = "use an app to match you to your photo ID"
+      val bulletTwo = "answer questions about information we hold about you"
+    }
+
+  }
+
 }

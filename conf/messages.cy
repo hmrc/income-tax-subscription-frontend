@@ -1107,17 +1107,6 @@ individual.signing-up.identity-verification.para-1                             =
 individual.signing-up.identity-verification.bullet-1                           = defnyddio ap i’ch paru â’ch ID ffotograffig
 individual.signing-up.identity-verification.bullet-2                           = ateb cwestiynau ynghylch yr wybodaeth sydd gennym amdanoch
 
-## Accounting period check
-accounting-period-check.heading                                         = Pa gyfnod cyfrifyddu yr ydych yn ei ddefynyddio ar gyfer eich busnes?
-accounting-period-check.para-1                                          = Dyma’r cyfnod cyfrifyddu rydych chi’n ei ddefnyddio bob blwyddyn wrth roi gwybod am incwm eich busnes a’ch treuliau busnes i CThEF.
-accounting-period-check.para-2                                          = Mae eich cyfnod cyfrifyddu yn rhedeg o ddyddiad dechrau’ch cofnodion neu’ch cyfrifon. Nodwch y dyddiad y caewyd eich llyfrau neu’ch cyfrifon.
-accounting-period-check.sixth-april-to-fifth-april                       = 6 Ebrill i 5 Ebrill
-accounting-period-check.sixth-april-to-fifth-april.hint                  = Mae eich llyfrau neu’ch cyfrifon yn dechrau ar 6 Ebrill ac yn cau ar 5 Ebrill y flwyddyn ganlynol (er enghraifft, 6 Ebrill 2026 i 5 Ebrill 2027)
-accounting-period-check.first-april-to-thirty-first-march                 = 1 Ebrill i 31 Mawrth
-accounting-period-check.first-april-to-thirty-first-march.hint            = Mae eich llyfrau neu’ch cyfrifon yn dechrau ar 1 Ebrill ac yn cau ar 31 Mawrth y flwyddyn ganlynol (er enghraifft, 1 Ebrill 2026 i 31 Mawrth 2027)
-accounting-period-check.other                                           = Dim un o’r rhain
-accounting-period-check.error                                           = Dewiswch a yw’ch cyfnod cyfrifyddu yn rhedeg o 6 Ebrill i 5 Ebrill, 1 Ebrill i 31 Mawrth, neu dim un o’r rhain
-
 ## Sign Up To Pilot Page ##
 sign-up.heading                                                         = Mae’n bosibl y byddwch yn gallu cofrestru
 sign-up.para-1                                                          = Yn seiliedig ar eich cyfnod cyfrifyddu busnes, mae’n bosibl y byddwch yn gallu cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
