@@ -14,21 +14,23 @@
  * limitations under the License.
  */
 
-package controllers.agent.eligibility
+package controllers.eligibility.agent
 
+import controllers.agent.eligibility.routes
+import helpers.IntegrationTestConstants.AgentURI
 import helpers.agent.{ComponentSpecBase, CustomMatchers}
 import play.api.libs.ws.WSResponse
 import play.api.test.Helpers._
 
 class IndexControllerISpec extends ComponentSpecBase with CustomMatchers {
 
-  def result(): WSResponse = get("/client")
+  def result(): WSResponse = get(s"${controllers.eligibility.agent.routes.IndexController.index.url}")
 
   "GET /client" when {
     s"return $SEE_OTHER" in {
       result() must have(
         httpStatus(SEE_OTHER),
-        redirectUri(routes.SigningUpController.show.url)
+        redirectUri(AgentURI.youCanSignUpNow)
       )
     }
   }

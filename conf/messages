@@ -628,7 +628,7 @@ agent.client-can-sign-up.check-another                          = Or you can {0}
 agent.client-can-sign-up.check-another-link                     = check if you can sign up another client
 
 # Individual cannot sign up page
-individual.cannot-sign-up.heading                                          = You can sign up to Making Tax Digital for Income Tax from the next tax year
+cannot-sign-up.heading                                          = You can sign up to Making Tax Digital for Income Tax from the next tax year
 cannot-sign-up.paragraph1                                       = There is something that has prevented you from signing up to the current tax year ({0} to {1}). For example, other income or activities, or the length of time you have been self-employed or a landlord.
 cannot-sign-up.yes-no-radio-helper.heading                      = Would you like to sign up for the next tax year?
 error.cannot-sign-up.invalid                                               = You must select ‘yes’ or ‘no’
@@ -1119,16 +1119,6 @@ accounting-period-check.first-april-to-thirty-first-march                 = 1 Ap
 accounting-period-check.first-april-to-thirty-first-march.hint            = Your books or accounts start on 1 April and are made up to 31 March of the following year (such as, 1 April 2026 to 31 March 2027)
 accounting-period-check.other                                           = Neither of these
 accounting-period-check.error                                           = Select if your accounting period runs from 6 April to 5 April, 1 April to 31 March, or neither of these
-
-## Cannot Sign Up Page
-cannot-sign-up.heading                                                  = You cannot sign up yet
-cannot-sign-up.para-one                                                 = Your business does not use an accounting period that runs from either:
-cannot-sign-up.bullet-one                                               = 1 April to 31 March
-cannot-sign-up.bullet-two                                               = 6 April to 5 April
-cannot-sign-up.para-two                                                 = Making Tax Digital for Income Tax is only available to people who use these business accounting periods.
-cannot-sign-up.para-three                                               = In the future, we may extend this service to more people.
-cannot-sign-up.send-self-assessment                                     = Continue submitting your {0} as normal.
-cannot-sign-up.send-self-assessment.link                                = Self Assessment tax return
 
 ## Sign Up To Pilot Page ##
 sign-up.heading                                                         = You may be able to sign up

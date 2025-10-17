@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package controllers.agent.eligibility
+package controllers.eligibility.individual
 
-import helpers.IntegrationTestConstants.AgentURI
+import helpers.IntegrationTestConstants.{AgentURI, IndividualURI}
 import helpers.agent.ComponentSpecBase
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -25,7 +25,7 @@ import play.api.libs.ws.WSResponse
 
 class SigningUpControllerISpec extends ComponentSpecBase {
 
-  private val path = "/eligibility/client/signing-up"
+  private val path = s"${controllers.eligibility.individual.routes.SigningUpController.show.url}"
   lazy val result: WSResponse = get(path)
   lazy val doc: Document = Jsoup.parse(result.body)
 
@@ -44,7 +44,7 @@ class SigningUpControllerISpec extends ComponentSpecBase {
     "redirect to the start of the agent sign up" in {
       submitResult must have(
         httpStatus(SEE_OTHER),
-        redirectUri(AgentURI.youCanSignUpNow)
+        redirectUri(IndividualURI.youCanSignUpNow)
       )
     }
   }

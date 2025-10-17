@@ -23,6 +23,7 @@ import models.common.AccountingPeriodModel
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.api.i18n.{Messages, MessagesApi}
+import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import utilities.ViewSpec
@@ -57,7 +58,7 @@ class SigningUpControllerViewSpec extends ViewSpec {
       "uses the correct template details" in new TemplateViewTest(view = page,
         title = Heading.heading,
         isAgent = true,
-        backLink = Some(appConfig.govukGuidanceITSASignUpAgentLink),
+        backLink = Some(testBackUrl),
         hasSignOutLink = true,
         error = None)
 
@@ -145,7 +146,7 @@ class SigningUpControllerViewSpec extends ViewSpec {
         "has the correct form" in {
           document.getForm must have(
             method("POST"),
-            action(controllers.eligibility.agent.routes.SigningUpController.submit.url)
+            action("/test-url")
           )
         }
       }
