@@ -34,11 +34,11 @@ class SigningUpControllerISpec extends ComponentSpecBase {
   }
 
   s"POST $path" should {
-    "redirect to the start of the agent sign up" in {
+    "redirect to the start of the individual sign up" in {
       val submitResult = IncomeTaxSubscriptionFrontend.individualSigningUpPost()
       submitResult must have(
         httpStatus(SEE_OTHER),
-        redirectURI(IndividualURI.youCanSignUpNow)
+        redirectURI(IndividualURI.baseURI)
       )
     }
   }

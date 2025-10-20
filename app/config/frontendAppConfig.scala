@@ -106,9 +106,8 @@ trait AppConfig {
 
   val eligibilityFeatureSwitchUrl: String
 
-  def eligibilityFrontendUrl: String
-
   def individualSigningUpUrl: String
+
   def agentSigningUpUrl: String
 
   def betaFeedbackUnauthenticatedUrl: String
@@ -232,11 +231,9 @@ class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Con
 
   override lazy val incomeTaxEligibilityUrl: String = s"${config.baseUrl("income-tax-subscription-eligibility")}/income-tax-subscription-eligibility"
 
-  override lazy val eligibilityFrontendUrl: String = s"${config.getString("income-tax-subscription-eligibility-frontend.url")}/report-quarterly/income-and-expenses/sign-up/eligibility"
+  override lazy val individualSigningUpUrl: String = s"$baseUrl/report-quarterly/income-and-expenses/sign-up/eligibility/signing-up"
 
-  override lazy val individualSigningUpUrl: String = eligibilityFrontendUrl+"/signing-up"
-
-  override lazy val agentSigningUpUrl: String = eligibilityFrontendUrl+"/client/signing-up"
+  override lazy val agentSigningUpUrl: String = s"$baseUrl/report-quarterly/income-and-expenses/sign-up/eligibility/client/signing-up"
 
   override val incomeTaxSelfEmploymentsFrontendUrl: String = {
     s"${config.getString("income-tax-subscription-self-employed-frontend.url")}/report-quarterly/income-and-expenses/sign-up/self-employments"
