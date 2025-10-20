@@ -38,7 +38,7 @@ class SigningUpControllerISpec extends ComponentSpecBase {
       val submitResult = IncomeTaxSubscriptionFrontend.agentSigningUpPost()
       submitResult must have(
         httpStatus(SEE_OTHER),
-        redirectURI(AgentURI.youCanSignUpNow)
+        redirectURI(AgentURI.clientDetailsURI)
       )
     }
   }

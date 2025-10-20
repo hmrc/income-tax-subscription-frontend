@@ -16,9 +16,8 @@
 
 package controllers.eligibility.agent
 
-import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.AgentURI
 import helpers.{ComponentSpecBase, CustomMatchers}
+import helpers.IntegrationTestConstants.AgentURI
 import play.api.test.Helpers._
 
 class IndexControllerISpec extends ComponentSpecBase with CustomMatchers {
@@ -28,7 +27,7 @@ class IndexControllerISpec extends ComponentSpecBase with CustomMatchers {
       val res = IncomeTaxSubscriptionFrontend.agentIndex()
       res must have(
         httpStatus(SEE_OTHER),
-        redirectURI(AgentURI.youCanSignUpNow)
+        redirectURI(AgentURI.signingUp)
       )
     }
   }

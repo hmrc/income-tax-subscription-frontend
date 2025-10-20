@@ -28,7 +28,7 @@ class IndexControllerISpec extends ComponentSpecBase with CustomMatchers {
       val res = IncomeTaxSubscriptionFrontend.individualIndex()
       res must have(
         httpStatus(SEE_OTHER),
-        redirectURI(IndividualURI.youCanSignUpNow)
+        redirectURI(IndividualURI.signingUp)
       )
     }
   }
