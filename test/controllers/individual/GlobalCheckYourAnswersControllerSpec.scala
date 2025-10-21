@@ -45,7 +45,8 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
   with MockSubscriptionOrchestrationService
   with MockNinoService
   with MockUTRService
-  with MockReferenceRetrieval {
+  with MockReferenceRetrieval
+  with MockSessionDataService {
 
   object TestGlobalCheckYourAnswersController extends GlobalCheckYourAnswersController(
     subscriptionService = mockSubscriptionOrchestrationService,
@@ -54,7 +55,8 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
     ninoService = mockNinoService,
     utrService = mockUTRService,
     referenceRetrieval = mockReferenceRetrieval,
-    globalCheckYourAnswers = mock[GlobalCheckYourAnswers]
+    globalCheckYourAnswers = mock[GlobalCheckYourAnswers],
+    sessionDataService = mockSessionDataService
   )(
     auditingService = mockAuditingService,
     authService = mockAuthService,
@@ -78,7 +80,8 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
       ninoService = mockNinoService,
       utrService = mockUTRService,
       referenceRetrieval = mockReferenceRetrieval,
-      globalCheckYourAnswers = mockGlobalCheckYourAnswers
+      globalCheckYourAnswers = mockGlobalCheckYourAnswers,
+      sessionDataService = mockSessionDataService
     )(
       auditingService = mockAuditingService,
       authService = mockAuthService,

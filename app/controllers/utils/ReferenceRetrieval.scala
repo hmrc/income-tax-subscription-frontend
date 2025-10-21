@@ -16,7 +16,8 @@
 
 package controllers.utils
 
-import connectors.httpparser.{GetSessionDataHttpParser, RetrieveReferenceHttpParser, SaveSessionDataHttpParser}
+import connectors.httpparser.{RetrieveReferenceHttpParser, SaveSessionDataHttpParser}
+import models.SessionData.Data
 import models.audits.SignupRetrieveAuditing.SignupRetrieveAuditModel
 import play.api.mvc.Request
 import services._
@@ -33,29 +34,25 @@ class ReferenceRetrieval @Inject()(subscriptionDetailsService: SubscriptionDetai
                                    auditingService: AuditingService)
                                   (implicit ec: ExecutionContext) {
 
-  def getIndividualReference(implicit hc: HeaderCarrier, request: Request[_]): Future[String] = {
-    getReference(arn = None)
+  def getIndividualReference(sessionData: Data = Map())(implicit hc: HeaderCarrier, request: Request[_]): Future[String] = {
+    getReference(arn = None, sessionData)
   }
 
-  def getAgentReference(implicit hc: HeaderCarrier, request: Request[_], userArn: String): Future[String] = {
-    getReference(arn = Some(userArn))
+  def getAgentReference(sessionData: Data = Map())(implicit hc: HeaderCarrier, request: Request[_], userArn: String): Future[String] = {
+    getReference(arn = Some(userArn), sessionData)
   }
 
-  def getReference(arn: Option[String])
+  def getReference(arn: Option[String], sessionData: Data)
                   (implicit hc: HeaderCarrier, request: Request[_]): Future[String] = {
 
-    sessionDataService.fetchReference.flatMap {
-      case Right(Some(reference)) => Future.successful(reference)
-      case Right(None) =>
-        ninoService.getNino flatMap { nino =>
-          utrService.getUTR flatMap { utr =>
+    sessionDataService.fetchReference(sessionData) match {
+      case Some(reference) => Future.successful(reference)
+      case None =>
+        ninoService.getNino(sessionData) flatMap { nino =>
+          utrService.getUTR(sessionData) flatMap { utr =>
             handleReferenceNotFound(nino, utr, arn)
           }
         }
-      case Left(GetSessionDataHttpParser.InvalidJson) =>
-        throw new InternalServerException(s"[ReferenceRetrieval][withReference] - Unable to parse json returned from session")
-      case Left(GetSessionDataHttpParser.UnexpectedStatusFailure(status)) =>
-        throw new InternalServerException(s"[ReferenceRetrieval][withReference] - Error occurred when fetching reference from session. Status: $status")
     }
   }
 

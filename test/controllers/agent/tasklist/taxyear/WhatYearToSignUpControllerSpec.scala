@@ -19,8 +19,8 @@ package controllers.agent.tasklist.taxyear
 import config.featureswitch.FeatureSwitch.EmailCaptureConsent
 import config.featureswitch.FeatureSwitching
 import config.{AppConfig, MockConfig}
+import connectors.httpparser.PostSubscriptionDetailsHttpParser
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
-import connectors.httpparser.{GetSessionDataHttpParser, PostSubscriptionDetailsHttpParser}
 import controllers.ControllerSpec
 import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}
 import forms.agent.AccountingYearForm
@@ -191,15 +191,6 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
 
         intercept[InternalServerException](await(callSubmit(isEditMode = false)))
           .message mustBe "[WhatYearToSignUpController][saveSelectedTaxYear] - Could not save accounting year"
-      }
-    }
-    "there was a problem fetching the email passed flag from session" must {
-      "throw an internal server exception" in {
-        mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
-        mockFetchEmailPassed(Left(GetSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
-
-        intercept[InternalServerException](await(callSubmit(isEditMode = false)))
-          .message mustBe "[WhatYearToSignUpController][fetchEmailPassed] - Could not fetch the email passed session flag"
       }
     }
   }

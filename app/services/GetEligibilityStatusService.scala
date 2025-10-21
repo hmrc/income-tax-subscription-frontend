@@ -21,6 +21,7 @@ import config.featureswitch.FeatureSwitch.SignalControlGatewayEligibility
 import config.featureswitch.FeatureSwitching
 import connectors.individual.eligibility.GetEligibilityStatusConnector
 import models.EligibilityStatus
+import models.SessionData.Data
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import javax.inject.{Inject, Singleton}
@@ -34,22 +35,21 @@ class GetEligibilityStatusService @Inject()(getEligibilityStatusConnector: GetEl
                                            (val appConfig: AppConfig)
                                            (implicit ec: ExecutionContext) extends FeatureSwitching {
 
-  def getEligibilityStatus(implicit hc: HeaderCarrier): Future[EligibilityStatus] = {
-    sessionDataService.fetchEligibilityStatus flatMap {
-      case Right(Some(value)) => Future.successful(value)
-      case Right(None) =>
+  def getEligibilityStatus(sessionData: Data = Map())(implicit hc: HeaderCarrier): Future[EligibilityStatus] = {
+    sessionDataService.fetchEligibilityStatus(sessionData) match {
+      case Some(value) => Future.successful(value)
+      case None =>
         if (isEnabled(SignalControlGatewayEligibility)) {
-          getAndSaveSignalControlGatewayEligibilityResults()
+          getAndSaveSignalControlGatewayEligibilityResults(sessionData)
         } else {
-          getAndSaveControlListEligibilityResults()
+          getAndSaveControlListEligibilityResults(sessionData)
         }
-      case Left(error) => throw new FetchFromSessionException(error.toString)
     }
   }
 
-  private def getAndSaveSignalControlGatewayEligibilityResults()(implicit hc: HeaderCarrier): Future[EligibilityStatus] = {
-    ninoService.getNino flatMap { nino =>
-      utrService.getUTR flatMap { utr =>
+  private def getAndSaveSignalControlGatewayEligibilityResults(sessionData: Data)(implicit hc: HeaderCarrier): Future[EligibilityStatus] = {
+    ninoService.getNino(sessionData) flatMap { nino =>
+      utrService.getUTR(sessionData) flatMap { utr =>
         getEligibilityStatusConnector.getEligibilityStatus(nino, utr) flatMap {
           case Right(value) =>
             sessionDataService.saveEligibilityStatus(value) map {
@@ -62,8 +62,8 @@ class GetEligibilityStatusService @Inject()(getEligibilityStatusConnector: GetEl
     }
   }
 
-  private def getAndSaveControlListEligibilityResults()(implicit hc: HeaderCarrier): Future[EligibilityStatus] = {
-    utrService.getUTR flatMap { utr =>
+  private def getAndSaveControlListEligibilityResults(sessionData: Data)(implicit hc: HeaderCarrier): Future[EligibilityStatus] = {
+    utrService.getUTR(sessionData) flatMap { utr =>
       getEligibilityStatusConnector.getEligibilityStatus(utr) flatMap {
         case Right(value) =>
           sessionDataService.saveEligibilityStatus(value) map {
@@ -75,10 +75,6 @@ class GetEligibilityStatusService @Inject()(getEligibilityStatusConnector: GetEl
     }
   }
 
-  private class FetchFromSessionException(error: String) extends InternalServerException(
-    s"[GetEligibilityStatusService][getEligibilityStatus] - failure fetching eligibility status from session: $error"
-  )
-
   private class FetchFromAPIException(error: String) extends InternalServerException(
     s"[GetEligibilityStatusService][getEligibilityStatus] - failure fetching eligibility status from API: $error"
   )
@@ -86,6 +82,4 @@ class GetEligibilityStatusService @Inject()(getEligibilityStatusConnector: GetEl
   private class SaveToSessionException(error: String) extends InternalServerException(
     s"[GetEligibilityStatusService][getEligibilityStatus] - failure saving eligibility status to session: $error"
   )
-
 }
-

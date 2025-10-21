@@ -19,12 +19,11 @@ package controllers.individual.actions
 import auth.MockAuth
 import common.Constants
 import config.MockConfig
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{mockitoSession, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.libs.json.JsString
 import play.api.mvc.{BodyParsers, Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout, redirectLocation, status}
@@ -65,7 +64,7 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
     "authorising an individual user who has CL250, has a nino, utr, mtditid" must {
       "create an identifier request with the fetched details" in {
         val sessionData = Map(
-          random() -> random()
+          random() -> JsString(random())
         )
         mockSessionData(sessionData)
         mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino)(
@@ -86,7 +85,7 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
     "authorising an organisation user who has CL250, has a nino, utr, mtditid" must {
       "create an identifier request with the fetched details" in {
         val sessionData = Map(
-          random() -> random()
+          random() -> JsString(random())
         )
         mockSessionData(sessionData)
         mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino)(
@@ -107,7 +106,7 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
     "authorising an individual user who has CL250, has a nino, without a utr enrolment, but has a utr in session" must {
       "create an identifier request with the fetched details" in {
         val sessionData = Map(
-          random() -> random()
+          random() -> JsString(random())
         )
         mockSessionData(sessionData)
         mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino)(
@@ -129,7 +128,7 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
     "authorising an individual user who has CL250, has a nino, without a utr enrolment or session and without mtditid" must {
       "create an identifier request with the fetched details" in {
         val sessionData = Map(
-          random() -> random()
+          random() -> JsString(random())
         )
         mockSessionData(sessionData)
         mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino)(
@@ -151,7 +150,7 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
     "authorising an individual user who has higher than CL250" must {
       "create an identifier request with the fetched details" in {
         val sessionData = Map(
-          random() -> random()
+          random() -> JsString(random())
         )
         mockSessionData(sessionData)
         mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino)(
@@ -188,7 +187,7 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
     "authorising an individual user with a confidence level less than 250" must {
       "redirect the user to the identification verification service" in {
         val sessionData = Map(
-          random() -> random()
+          random() -> JsString(random())
         )
         mockSessionData(sessionData)
         mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino)(
@@ -210,7 +209,7 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
     "authorising an assistant" must {
       "redirect to the cannot use service page" in {
         val sessionData = Map(
-          random() -> random()
+          random() -> JsString(random())
         )
         mockSessionData(sessionData)
         mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino)(
@@ -232,7 +231,7 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
     "authorising an agent" must {
       "redirect to the affinity group error page" in {
         val sessionData = Map(
-          random() -> random()
+          random() -> JsString(random())
         )
         mockSessionData(sessionData)
         mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino)(

@@ -24,6 +24,7 @@ import controllers.SignUpBaseController
 import controllers.agent.actions.IdentifierAction
 import controllers.utils.ReferenceRetrieval
 import models.EligibilityStatus
+import models.SessionData.Data
 import models.agent.JourneyStep
 import models.audits.EligibilityAuditing.EligibilityAuditModel
 import play.api.mvc._
@@ -51,12 +52,13 @@ class ConfirmedClientResolver @Inject()(identify: IdentifierAction,
                                         mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   def resolve: Action[AnyContent] = identify.async { implicit request =>
-    throttlingService.throttled(AgentStartOfJourneyThrottle) {
-      getEligibilityStatusService.getEligibilityStatus flatMap {
+    val sessionData = request.sessionData
+    throttlingService.throttled(AgentStartOfJourneyThrottle, sessionData) {
+      getEligibilityStatusService.getEligibilityStatus(sessionData) flatMap {
         case EligibilityStatus(false, false) =>
           for {
-            nino <- ninoService.getNino
-            utr <- utrService.getUTR
+            nino <- ninoService.getNino(sessionData)
+            utr <- utrService.getUTR(sessionData)
             _ <- auditingService.audit(EligibilityAuditModel(
               agentReferenceNumber = Some(request.arn),
               utr = Some(utr),
@@ -74,7 +76,8 @@ class ConfirmedClientResolver @Inject()(identify: IdentifierAction,
           for {
             result <- goToSignUpClient(
               arn = request.arn,
-              nextYearOnly = !thisYear
+              nextYearOnly = !thisYear,
+              sessionData = sessionData
             )
           } yield {
             result.addingToSession(
@@ -85,12 +88,12 @@ class ConfirmedClientResolver @Inject()(identify: IdentifierAction,
       }
   }
 
-  private def goToSignUpClient(arn: String, nextYearOnly: Boolean)
+  private def goToSignUpClient(arn: String, nextYearOnly: Boolean, sessionData: Data)
                               (implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
     for {
-      reference <- referenceRetrieval.getReference(Some(arn))
-      nino <- ninoService.getNino
-      utr <- utrService.getUTR
+      reference <- referenceRetrieval.getReference(Some(arn), sessionData)
+      nino <- ninoService.getNino(sessionData)
+      utr <- utrService.getUTR(sessionData)
       _ <- auditingService.audit(EligibilityAuditModel(
         agentReferenceNumber = Some(arn),
         utr = Some(utr),
@@ -105,7 +108,7 @@ class ConfirmedClientResolver @Inject()(identify: IdentifierAction,
         case PrePopResult.PrePopSuccess =>
           eligibilityInterrupt match {
             case Some(_) =>
-              Redirect(controllers.agent.routes.UsingSoftwareController.show(false))
+              Redirect(controllers.agent.routes.UsingSoftwareController.show())
             case None =>
               if (nextYearOnly) {
                 Redirect(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show)
@@ -118,8 +121,6 @@ class ConfirmedClientResolver @Inject()(identify: IdentifierAction,
             s"[ConfirmedClientResolver] - Failure occurred when pre-populating income source details. Error: $error"
           )
       }
-
     }
   }
-
 }

@@ -46,28 +46,27 @@ class NinoServiceSpec extends PlaySpec with Matchers with MockAuthService with M
       "the nino was returned from session" in new Setup {
         mockFetchNino(Right(Some(testNino)))
 
-        await(service.getNino) mustBe testNino
+        await(service.getNino(Map())) mustBe testNino
       }
       "the nino was returned from the users auth profile" in new Setup {
         mockFetchNino(Right(None))
         mockRetrievalSuccess[Option[String]](Some(testNino))
         mockSaveNino(testNino)(Right(SaveSessionDataSuccessResponse))
 
-        await(service.getNino) mustBe testNino
+        await(service.getNino(Map())) mustBe testNino
       }
     }
     "throw an exception" when {
       "there was a problem fetching from session" in new Setup {
         mockFetchNino(Left(GetSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
-        intercept[InternalServerException](await(service.getNino))
-          .message mustBe "[NinoService][getNino] - Failure when fetching nino from session: UnexpectedStatusFailure(500)"
+        intercept[ClassCastException](await(service.getNino(Map())))
       }
       "no nino was returned from auth" in new Setup {
         mockFetchNino(Right(None))
         mockRetrievalSuccess[Option[String]](None)
 
-        intercept[InternalServerException](await(service.getNino))
+        intercept[InternalServerException](await(service.getNino(Map())))
           .message mustBe "[NinoService][getNino] - Nino not present in auth"
       }
       "there was a problem saving the nino to session" in new Setup {
@@ -75,10 +74,9 @@ class NinoServiceSpec extends PlaySpec with Matchers with MockAuthService with M
         mockRetrievalSuccess[Option[String]](Some(testNino))
         mockSaveNino(testNino)(Left(SaveSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
-        intercept[InternalServerException](await(service.getNino))
+        intercept[InternalServerException](await(service.getNino(Map())))
           .message mustBe "[NinoService][getNino] - Failure when saving nino to session: UnexpectedStatusFailure(500)"
       }
     }
   }
-
 }

@@ -17,27 +17,26 @@
 package controllers.agent.actions
 
 import auth.MockAuth
-import org.eclipse.jetty.server.session.SessionDataStore
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.libs.json.JsString
 import play.api.mvc.{BodyParsers, Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
 import play.api.{Configuration, Environment}
+import services.SessionDataService
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.~
 
+import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import services.SessionDataService
-
-import java.util.UUID
 
 class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with BeforeAndAfterEach with MockAuth {
 
@@ -47,7 +46,7 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
     UUID.randomUUID().toString
 
   private val sessionData = Map(
-    random() -> random()
+    random() -> JsString(random())
   )
 
   when(mockSessionDataService.getAllSessionData()(any(), any())).thenReturn(

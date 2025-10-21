@@ -25,7 +25,6 @@ import models._
 import models.status.MandationStatus.Mandated
 import play.api.mvc._
 import services._
-import uk.gov.hmrc.http.InternalServerException
 import views.html.individual.WhatYouNeedToDo
 
 import javax.inject.{Inject, Singleton}
@@ -46,36 +45,29 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
       for {
-        reference <- referenceRetrieval.getIndividualReference
-        mandationStatus <- mandationStatusService.getMandationStatus
-        eligibilityStatus <- getEligibilityStatusService.getEligibilityStatus
-        usingSoftwareStatus <- sessionDataService.fetchSoftwareStatus
+        sessionData <- sessionDataService.getAllSessionData()
+        reference <- referenceRetrieval.getIndividualReference(sessionData)
+        mandationStatus <- mandationStatusService.getMandationStatus(sessionData)
+        eligibilityStatus <- getEligibilityStatusService.getEligibilityStatus(sessionData)
+        usingSoftwareStatus = sessionDataService.fetchSoftwareStatus(sessionData)
         selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
-        consentStatus <- sessionDataService.fetchConsentStatus
+        consentYesNo = sessionDataService.fetchConsentStatus(sessionData)
       } yield {
         val taxYearSelection: Option[AccountingYear] = selectedTaxYear.map(_.accountingYear)
-        val consentYesNo: Option[YesNo] = consentStatus match {
-          case Left(_) => throw new InternalServerException("[WhatYouNeedToDoController][show] - Could not fetch email consent status")
-          case Right(yesNo) => yesNo
-        }
-        usingSoftwareStatus match {
-          case Left(_) => throw new InternalServerException("[WhatYouNeedToDoController][show] - Could not fetch software status")
-          case Right(selectedSoftwareStatus) =>
-            Ok(whatYouNeedToDo(
-              postAction = routes.WhatYouNeedToDoController.submit,
-              onlyNextYear = eligibilityStatus.eligibleNextYearOnly,
-              mandatedCurrentYear = mandationStatus.currentYearStatus.isMandated,
-              mandatedNextYear = mandationStatus.nextYearStatus.isMandated,
-              isUsingSoftware = selectedSoftwareStatus.contains(Yes),
-              signUpNextTaxYear = taxYearSelection.contains(Next),
-              backUrl = backUrl(
-                eligibleNextYearOnly = eligibilityStatus.eligibleNextYearOnly,
-                mandatedCurrentYear = mandationStatus.currentYearStatus == Mandated,
-                consentStatus = consentYesNo,
-                taxYearSelection = taxYearSelection
-              )
-            ))
-        }
+        Ok(whatYouNeedToDo(
+          postAction = routes.WhatYouNeedToDoController.submit,
+          onlyNextYear = eligibilityStatus.eligibleNextYearOnly,
+          mandatedCurrentYear = mandationStatus.currentYearStatus.isMandated,
+          mandatedNextYear = mandationStatus.nextYearStatus.isMandated,
+          isUsingSoftware = usingSoftwareStatus.contains(Yes),
+          signUpNextTaxYear = taxYearSelection.contains(Next),
+          backUrl = backUrl(
+            eligibleNextYearOnly = eligibilityStatus.eligibleNextYearOnly,
+            mandatedCurrentYear = mandationStatus.currentYearStatus == Mandated,
+            consentStatus = consentYesNo,
+            taxYearSelection = taxYearSelection
+          )
+        ))
       }
   }
 
@@ -105,5 +97,4 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
       }
     }
   }
-
 }

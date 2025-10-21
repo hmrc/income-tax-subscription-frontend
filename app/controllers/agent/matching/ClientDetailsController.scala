@@ -55,6 +55,7 @@ class ClientDetailsController @Inject()(view: ClientDetails,
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
+    val sessionData = request.sessionData
     handleLockOut {
       clientDetailsForm.bindFromRequest().fold(
         formWithErrors =>
@@ -65,7 +66,7 @@ class ClientDetailsController @Inject()(view: ClientDetails,
             isEditMode = isEditMode
           ))),
         clientDetails => {
-          sessionClearingService.clearAgentSession(routes.ConfirmClientController.show())map(_.saveUserDetails(clientDetails))
+          sessionClearingService.clearAgentSession(routes.ConfirmClientController.show(), sessionData).map(_.saveUserDetails(clientDetails))
         }
       )
     }

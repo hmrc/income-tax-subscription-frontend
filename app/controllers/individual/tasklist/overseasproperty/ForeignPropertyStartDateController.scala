@@ -23,7 +23,7 @@ import forms.individual.business.ForeignPropertyStartDateForm.startDateForm
 import models.DateModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
-import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.ImplicitDateFormatter
@@ -35,7 +35,8 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class ForeignPropertyStartDateController @Inject()(view: ForeignPropertyStartDate,
                                                    subscriptionDetailsService: SubscriptionDetailsService,
-                                                   referenceRetrieval: ReferenceRetrieval)
+                                                   referenceRetrieval: ReferenceRetrieval,
+                                                   sessionDataService: SessionDataService)
                                                   (val auditingService: AuditingService,
                                                    val authService: AuthService,
                                                    val appConfig: AppConfig,
@@ -46,7 +47,8 @@ class ForeignPropertyStartDateController @Inject()(view: ForeignPropertyStartDat
   def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
       for {
-        reference <- referenceRetrieval.getIndividualReference
+        sessionData <- sessionDataService.getAllSessionData()
+        reference <- referenceRetrieval.getIndividualReference(sessionData)
         startDate <- subscriptionDetailsService.fetchForeignPropertyStartDate(reference)
       } yield {
         Ok(view(
@@ -59,21 +61,23 @@ class ForeignPropertyStartDateController @Inject()(view: ForeignPropertyStartDat
 
   def submit(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
-      referenceRetrieval.getIndividualReference flatMap { reference =>
-        form.bindFromRequest().fold(
-          formWithErrors => {
-            Future.successful(BadRequest(view(
-              startDateForm = formWithErrors,
-              postAction = routes.ForeignPropertyStartDateController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
-              backUrl = backUrl(isEditMode, isGlobalEdit)
-            )))
-          },
-          startDate =>
-            subscriptionDetailsService.saveForeignPropertyStartDate(reference, startDate) map {
-              case Right(_) => Redirect(routes.OverseasPropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit))
-              case Left(_) => throw new InternalServerException("[ForeignPropertyStartDateController][submit] - Could not save start date")
-            }
-        )
+      sessionDataService.getAllSessionData().flatMap { sessionData =>
+        referenceRetrieval.getIndividualReference(sessionData) flatMap { reference =>
+          form.bindFromRequest().fold(
+            formWithErrors => {
+              Future.successful(BadRequest(view(
+                startDateForm = formWithErrors,
+                postAction = routes.ForeignPropertyStartDateController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
+                backUrl = backUrl(isEditMode, isGlobalEdit)
+              )))
+            },
+            startDate =>
+              subscriptionDetailsService.saveForeignPropertyStartDate(reference, startDate) map {
+                case Right(_) => Redirect(routes.OverseasPropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit))
+                case Left(_) => throw new InternalServerException("[ForeignPropertyStartDateController][submit] - Could not save start date")
+              }
+          )
+        }
       }
   }
 

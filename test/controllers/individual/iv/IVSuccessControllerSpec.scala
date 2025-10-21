@@ -23,26 +23,26 @@ import play.api.http.Status.SEE_OTHER
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, session, status}
-import services.mocks.{MockAuditingService, MockNinoService}
+import services.mocks.{MockAuditingService, MockNinoService, MockSessionDataService}
 import utilities.individual.TestConstants.testNino
 
 import scala.concurrent.Future
 
-class IVSuccessControllerSpec extends ControllerBaseSpec with MockAuditingService with MockNinoService {
+class IVSuccessControllerSpec extends ControllerBaseSpec with MockAuditingService with MockNinoService with MockSessionDataService {
 
   val controllerName: String = "IVSuccessController"
   val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "success" -> new IVSuccessController(appConfig, mockAuthService, mockNinoService, mockAuditingService).success()
+    "success" -> new IVSuccessController(appConfig, mockAuthService, mockNinoService, mockAuditingService, mockSessionDataService).success()
   )
 
   trait Setup {
-    val controller = new IVSuccessController(appConfig, mockAuthService, mockNinoService, mockAuditingService)
+    val controller = new IVSuccessController(appConfig, mockAuthService, mockNinoService, mockAuditingService, mockSessionDataService)
+    mockSessionData()
   }
 
   authorisationTests()
 
   "success" when {
-
     "the user has an iv flag in session" when {
       "the is in claimEnrollment journey state" must {
         "redirect the user to the claim enrolment overview page and remove the iv flag from session" in new Setup {

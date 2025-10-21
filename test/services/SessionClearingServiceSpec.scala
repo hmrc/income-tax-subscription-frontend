@@ -62,19 +62,6 @@ class SessionClearingServiceSpec extends PlaySpec with MockSessionDataService {
       }
     }
     "return an error" when {
-      "the retrieving email passed returns an error" in new Setup {
-        mockFetchEmailPassed(Left(GetSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
-
-        intercept[InternalServerException](await(service.clearAgentSession(testCall)))
-          .message mustBe s"[SessionClearingService][fetchEmailPassed] - Unexpected failure: UnexpectedStatusFailure(500)"
-      }
-      "the retrieving email consent returns an error" in new Setup {
-        mockFetchEmailPassed(Right(None))
-        mockFetchConsentStatus(Left(GetSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
-
-        intercept[InternalServerException](await(service.clearAgentSession(testCall)))
-          .message mustBe s"[SessionClearingService][fetchConsentStatus] - Unexpected failure: UnexpectedStatusFailure(500)"
-      }
       "the deletion of session data returns an error" in new Setup {
         mockFetchEmailPassed(Right(None))
         mockFetchConsentStatus(Right(None))

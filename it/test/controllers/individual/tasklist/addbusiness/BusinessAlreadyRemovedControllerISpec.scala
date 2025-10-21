@@ -26,12 +26,12 @@ class BusinessAlreadyRemovedControllerISpec extends ComponentSpecBase with AuthR
 
   val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
 
-  s"GET ${routes.BusinessAlreadyRemovedController.show.url}" must {
+  s"GET ${routes.BusinessAlreadyRemovedController.show().url}" must {
     "return OK with the page content" in {
       Given("I am authenticated")
       AuthStub.stubAuthSuccess()
 
-      When(s"GET ${routes.BusinessAlreadyRemovedController.show.url} is called")
+      When(s"GET ${routes.BusinessAlreadyRemovedController.show().url} is called")
       val result = IncomeTaxSubscriptionFrontend.showBusinessAlreadyRemoved()
 
       Then("The result should be OK with page content")
@@ -42,7 +42,7 @@ class BusinessAlreadyRemovedControllerISpec extends ComponentSpecBase with AuthR
     }
   }
 
-  s"GET ${routes.BusinessAlreadyRemovedController.show.url}" when {
+  s"GET ${routes.BusinessAlreadyRemovedController.show().url}" when {
     "the user is unauthenticated" should {
       "redirect to login" in {
         AuthStub.stubUnauthorised()

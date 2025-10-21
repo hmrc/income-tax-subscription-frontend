@@ -16,7 +16,6 @@
 
 package controllers.agent
 
-import connectors.httpparser.GetSessionDataHttpParser
 import controllers.ControllerSpec
 import controllers.agent.actions.mocks.{MockConfirmationJourneyRefiner, MockIdentifierAction}
 import models.common.AccountingYearModel
@@ -25,7 +24,6 @@ import models.{Current, Next, No, Yes}
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import services.mocks._
-import uk.gov.hmrc.http.InternalServerException
 import views.agent.mocks.MockSignUpConfirmation
 
 import scala.concurrent.Future
@@ -92,17 +90,6 @@ class ConfirmationControllerSpec extends ControllerSpec
 
         status(result) mustBe OK
         contentType(result) mustBe Some(HTML)
-      }
-    }
-    "throw an internal server exception" when {
-      "there was a problem retrieving the software status" in {
-        mockFetchSelectedTaxYear(Some(AccountingYearModel(Current, confirmed = true)))
-        mockGetMandationService(Voluntary, Voluntary)
-        mockFetchSoftwareStatus(Left(GetSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
-
-        intercept[InternalServerException](await(TestConfirmationController.show(request)))
-          .message mustBe s"[ConfirmationController][show] - failure retrieving software status - UnexpectedStatusFailure($INTERNAL_SERVER_ERROR)"
-
       }
     }
   }

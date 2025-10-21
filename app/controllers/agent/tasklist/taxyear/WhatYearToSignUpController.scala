@@ -105,10 +105,8 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
   }
 
   private def fetchEmailPassed(implicit request: ConfirmedClientRequest[_]): Future[Boolean] = {
-    sessionDataService.fetchEmailPassed map {
-      case Right(result) => result.getOrElse(false)
-      case Left(_) => throw new InternalServerException("[WhatYearToSignUpController][fetchEmailPassed] - Could not fetch the email passed session flag")
-    }
+    val sessionData = request.request.sessionData
+    Future.successful(sessionDataService.fetchEmailPassed(sessionData).getOrElse(false))
   }
 
   def backUrl(isEditMode: Boolean): Option[String] = {

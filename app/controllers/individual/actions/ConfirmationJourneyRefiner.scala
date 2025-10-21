@@ -49,16 +49,16 @@ class ConfirmationJourneyRefiner @Inject()(referenceRetrieval: ReferenceRetrieva
         )
       } match {
       case Some(Confirmation) =>
+        val sessionData = request.sessionData
         for {
-          reference <- referenceRetrieval.getIndividualReference(hc, request)
-          softwareStatus <- sessionDataService.fetchSoftwareStatus
-          mandationStatus <- mandationStatusService.getMandationStatus
+          reference <- referenceRetrieval.getIndividualReference(sessionData)(hc, request)
+          softwareStatus = sessionDataService.fetchSoftwareStatus(sessionData)
+          mandationStatus <- mandationStatusService.getMandationStatus(sessionData)
         } yield {
           val usingSoftware = softwareStatus match {
-            case Left(_) => throw new InternalServerException("[Individual][ConfirmationJourneyRefiner] - Failure fetching the software status from session")
-            case Right(None) => false
-            case Right(Some(No)) => false
-            case Right(Some(Yes)) => true
+            case None => false
+            case Some(No) => false
+            case Some(Yes) => true
           }
 
           Right(ConfirmationRequest(
@@ -77,5 +77,4 @@ class ConfirmationJourneyRefiner @Inject()(referenceRetrieval: ReferenceRetrieva
         Future.successful(Left(NotFound))
     }
   }
-
 }

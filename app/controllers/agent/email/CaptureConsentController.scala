@@ -35,22 +35,16 @@ class CaptureConsentController @Inject()(view: CaptureConsent,
                                          sessionDataService: SessionDataService)
                                         (implicit val ec: ExecutionContext, mcc: MessagesControllerComponents) extends SignUpBaseController {
 
-  def show: Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
-    for {
-      captureConsentStatus <- sessionDataService.fetchConsentStatus
-    } yield {
-      captureConsentStatus match {
-        case Left(_) => throw new InternalServerException("[CaptureConsentController][show] - Could not fetch consent status")
-        case Right(maybeYesNo) =>
-          Ok(view(
-            captureConsentForm = captureConsentForm.fill(maybeYesNo),
-            postAction = controllers.agent.email.routes.CaptureConsentController.submit(),
-            clientName = request.clientDetails.name,
-            clientNino = request.clientDetails.formattedNino,
-            backUrl = controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
-          ))
-      }
-    }
+  def show: Action[AnyContent] = (identify andThen journeyRefiner) { implicit request =>
+    val sessionData = request.request.sessionData
+      val captureConsentStatus = sessionDataService.fetchConsentStatus(sessionData)
+      Ok(view(
+        captureConsentForm = captureConsentForm.fill(captureConsentStatus),
+        postAction = controllers.agent.email.routes.CaptureConsentController.submit(),
+        clientName = request.clientDetails.name,
+        clientNino = request.clientDetails.formattedNino,
+        backUrl = controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+      ))
   }
 
   def submit(): Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>

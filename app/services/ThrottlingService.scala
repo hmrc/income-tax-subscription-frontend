@@ -20,6 +20,7 @@ import config.AppConfig
 import config.featureswitch.FeatureSwitch.ThrottlingFeature
 import config.featureswitch.FeatureSwitching
 import connectors.ThrottlingConnector
+import models.SessionData.Data
 import play.api.Logging
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Call, Result}
@@ -32,14 +33,14 @@ class ThrottlingService @Inject()(throttlingConnector: ThrottlingConnector,
                                   sessionDataService: SessionDataService,
                                   val appConfig: AppConfig) extends Logging with FeatureSwitching {
 
-  def throttled(throttle: Throttle)(success: => Future[Result])
+  def throttled(throttle: Throttle, sessionData: Data = Map())(success: => Future[Result])
                (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Result] = {
 
     if (isEnabled(ThrottlingFeature)) {
-      sessionDataService.fetchThrottlePassed(throttle) flatMap {
-        case Right(Some(_)) =>
+      sessionDataService.fetchThrottlePassed(sessionData, throttle) match {
+        case Some(_) =>
           success
-        case Right(None) =>
+        case None =>
           throttleResult(throttle) flatMap {
             case true =>
               sessionDataService.saveThrottlePassed(throttle) flatMap {
@@ -51,7 +52,6 @@ class ThrottlingService @Inject()(throttlingConnector: ThrottlingConnector,
             case false =>
               Future.successful(Redirect(throttle.callOnFail))
           }
-        case Left(error) => throw new InternalServerException(s"[ThrottlingService][throttled] - Unexpected failure when fetching throttle passed flag: $error")
       }
     } else {
       success
@@ -83,28 +83,14 @@ sealed abstract class ThrottleId(val name: String) {
 
 case object StartOfJourneyThrottleId extends ThrottleId("start-of-journey")
 
-case object EndOfJourneyThrottleId extends ThrottleId("end-of-journey")
-
 case object IndividualStartOfJourneyThrottle extends Throttle {
   override val throttleId: ThrottleId = StartOfJourneyThrottleId
   override val failOpen: Boolean = false
   override val callOnFail: Call = controllers.individual.routes.ThrottlingController.start()
 }
 
-case object IndividualEndOfJourneyThrottle extends Throttle {
-  override val throttleId: ThrottleId = EndOfJourneyThrottleId
-  override val failOpen: Boolean = false
-  override val callOnFail: Call = controllers.individual.routes.ThrottlingController.end()
-}
-
 case object AgentStartOfJourneyThrottle extends Throttle {
   override val throttleId: ThrottleId = StartOfJourneyThrottleId
   override val failOpen: Boolean = false
   override val callOnFail: Call = controllers.agent.routes.ThrottlingController.start()
-}
-
-case object AgentEndOfJourneyThrottle extends Throttle {
-  override val throttleId: ThrottleId = EndOfJourneyThrottleId
-  override val failOpen: Boolean = false
-  override val callOnFail: Call = controllers.agent.routes.ThrottlingController.end()
 }

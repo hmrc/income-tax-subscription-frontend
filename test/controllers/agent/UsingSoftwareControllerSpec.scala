@@ -18,7 +18,6 @@ package controllers.agent
 
 import config.AppConfig
 import config.featureswitch.FeatureSwitching
-import connectors.httpparser.GetSessionDataHttpParser
 import connectors.httpparser.SaveSessionDataHttpParser.{SaveSessionDataSuccessResponse, UnexpectedStatusFailure}
 import controllers.ControllerSpec
 import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}
@@ -110,15 +109,6 @@ class UsingSoftwareControllerSpec extends ControllerSpec
 
         status(result) mustBe OK
         contentType(result) mustBe Some(HTML)
-      }
-    }
-    "throw an InternalServerException" when {
-      "there was a problem fetching the users previous answer" in {
-        mockFetchSoftwareStatus(Left(GetSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
-        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
-
-        intercept[InternalServerException](await(TestUsingSoftwareController.show(false)(request)))
-          .message mustBe "[UsingSoftwareController][show] - Could not fetch software status"
       }
     }
   }

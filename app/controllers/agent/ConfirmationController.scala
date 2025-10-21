@@ -39,10 +39,11 @@ class ConfirmationController @Inject()(view: SignUpConfirmation,
                                       (implicit ec: ExecutionContext, cc: MessagesControllerComponents) extends SignUpBaseController {
 
   val show: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
+    val sessionData = request.request.sessionData
     for {
       taxYearSelection <- subscriptionDetailsService.fetchSelectedTaxYear(request.reference)
-      mandationStatus <- mandationStatusService.getMandationStatus
-      softwareStatus <- sessionDataService.fetchSoftwareStatus
+      mandationStatus <- mandationStatusService.getMandationStatus(sessionData)
+      softwareStatus = sessionDataService.fetchSoftwareStatus(sessionData)
     } yield {
       val isNextYear: Boolean = taxYearSelection.map(_.accountingYear).contains(Next)
       val accountingPeriodModel: AccountingPeriodModel = if (isNextYear) {
@@ -51,20 +52,15 @@ class ConfirmationController @Inject()(view: SignUpConfirmation,
         AccountingPeriodUtil.getCurrentTaxYear
       }
 
-      softwareStatus match {
-        case Left(error) =>
-          throw new InternalServerException(s"[ConfirmationController][show] - failure retrieving software status - $error")
-        case Right(usingSoftwareStatus) =>
-          Ok(view(
-            mandatedCurrentYear = mandationStatus.currentYearStatus.isMandated,
-            mandatedNextYear = mandationStatus.nextYearStatus.isMandated,
-            taxYearSelectionIsNext = isNextYear,
-            userNameMaybe = Some(request.clientDetails.name),
-            individualUserNino = request.clientDetails.formattedNino,
-            accountingPeriodModel = accountingPeriodModel,
-            usingSoftwareStatus = usingSoftwareStatus.contains(Yes)
-          ))
-      }
+      Ok(view(
+        mandatedCurrentYear = mandationStatus.currentYearStatus.isMandated,
+        mandatedNextYear = mandationStatus.nextYearStatus.isMandated,
+        taxYearSelectionIsNext = isNextYear,
+        userNameMaybe = Some(request.clientDetails.name),
+        individualUserNino = request.clientDetails.formattedNino,
+        accountingPeriodModel = accountingPeriodModel,
+        usingSoftwareStatus = softwareStatus.contains(Yes)
+      ))
     }
   }
 

@@ -32,8 +32,10 @@ class ClientCanSignUpControllerISpec extends ComponentSpecBase {
     "return a status of OK" in {
       Given("I setup the wiremock stubs")
       AuthStub.stubAuthSuccess()
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+      SessionDataConnectorStub.stubGetAllSessionData(Map(
+        ITSASessionKeys.NINO -> JsString(testNino),
+        ITSASessionKeys.UTR -> JsString(testUtr)
+      ))
 
       When("GET /client/can-sign-up is called")
       val result: WSResponse = IncomeTaxSubscriptionFrontend.showCanSignUp()
@@ -48,6 +50,10 @@ class ClientCanSignUpControllerISpec extends ComponentSpecBase {
     "the user is unauthenticated" must {
       "redirect the user to login" in {
         AuthStub.stubUnauthorised()
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr)
+        ))
 
         val result = IncomeTaxSubscriptionFrontend.showCanSignUp()
 
@@ -77,8 +83,10 @@ class ClientCanSignUpControllerISpec extends ComponentSpecBase {
       s"return a redirect to ${controllers.agent.routes.UsingSoftwareController.show(false).url}" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr)
+        ))
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[Boolean](
           id = SubscriptionDataKeys.EligibilityInterruptPassed,
           body = true
@@ -140,5 +148,4 @@ class ClientCanSignUpControllerISpec extends ComponentSpecBase {
       }
     }
   }
-
 }

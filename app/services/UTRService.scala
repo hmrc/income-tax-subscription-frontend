@@ -16,18 +16,18 @@
 
 package services
 
-import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
+import models.SessionData.Data
+import uk.gov.hmrc.http.InternalServerException
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 @Singleton
-class UTRService @Inject()(sessionDataService: SessionDataService)
-                          (implicit ec: ExecutionContext) {
+class UTRService @Inject()(sessionDataService: SessionDataService) {
 
-  def getUTR(implicit hc: HeaderCarrier): Future[String] = {
-    sessionDataService.fetchUTR flatMap {
-      case Right(Some(utr)) => Future.successful(utr)
+  def getUTR(sessionData: Data): Future[String] = {
+    sessionDataService.fetchUTR(sessionData) match {
+      case Some(utr) => Future.successful(utr)
       case _ => throw new FetchFromSessionException
     }
   }

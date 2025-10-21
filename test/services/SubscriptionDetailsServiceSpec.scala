@@ -22,7 +22,7 @@ import models.status.MandationStatus.Voluntary
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.matchers.should.Matchers._
 import org.scalatestplus.play.PlaySpec
-import services.mocks.{MockGetEligibilityStatusService, MockIncomeTaxSubscriptionConnector, MockMandationStatusService}
+import services.mocks.{MockGetEligibilityStatusService, MockIncomeTaxSubscriptionConnector, MockMandationStatusService, MockSessionDataService}
 import uk.gov.hmrc.crypto.ApplicationCrypto
 import utilities.{AccountingPeriodUtil, SubscriptionDataKeys}
 
@@ -30,7 +30,8 @@ class SubscriptionDetailsServiceSpec extends PlaySpec
   with Matchers
   with MockMandationStatusService
   with MockIncomeTaxSubscriptionConnector
-  with MockGetEligibilityStatusService {
+  with MockGetEligibilityStatusService
+  with MockSessionDataService {
 
   val test: Map[String, String] = Map.empty
 
@@ -42,13 +43,13 @@ class SubscriptionDetailsServiceSpec extends PlaySpec
     mockIncomeTaxSubscriptionConnector,
     mockMandationStatusService,
     mockGetEligibilityStatusService,
+    mockSessionDataService,
     crypto
   )
 
   val testReference = "test-reference"
 
-  "mock Subscription Details  service" should {
-
+  "mock Subscription Details service" should {
     "return next year when the ELIGIBLE_NEXT_YEAR_ONLY session variable is set" in {
       mockGetSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear)(None)
       mockGetMandationService(Voluntary, Voluntary)

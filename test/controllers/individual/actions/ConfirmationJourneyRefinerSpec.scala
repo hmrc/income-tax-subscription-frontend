@@ -17,7 +17,6 @@
 package controllers.individual.actions
 
 import common.Constants.ITSASessionKeys
-import connectors.httpparser.GetSessionDataHttpParser.UnexpectedStatusFailure
 import models.individual.JourneyStep
 import models.individual.JourneyStep.{Confirmation, PreSignUp, SignUp}
 import models.requests.individual.{ConfirmationRequest, IdentifierRequest}
@@ -25,7 +24,7 @@ import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
 import models.{No, Yes}
 import org.scalatestplus.play.PlaySpec
-import play.api.http.Status.{INTERNAL_SERVER_ERROR, NOT_FOUND, OK}
+import play.api.http.Status.{NOT_FOUND, OK}
 import play.api.mvc.{Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout, status}
@@ -41,6 +40,7 @@ class ConfirmationJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieva
     "the user is in a Confirmation state" must {
       "execute the provided code" when {
         "no software status is returned" in {
+          mockReference()
           mockFetchSoftwareStatus(Right(None))
           mockGetMandationService(Voluntary, Voluntary)
 
@@ -96,19 +96,6 @@ class ConfirmationJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieva
         }
       }
       "throw an internal server exception" when {
-        "fetching the software status returned an error" in {
-          mockFetchSoftwareStatus(Left(UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
-          mockGetMandationService(Voluntary, Voluntary)
-
-          val result: Future[Result] = confirmationJourneyRefiner.invokeBlock(
-            identifierRequest(journeyStep = Some(Confirmation)), { _: ConfirmationRequest[_] =>
-              Future.successful(Results.Ok)
-            }
-          )
-
-          intercept[InternalServerException](await(result))
-            .message mustBe "[Individual][ConfirmationJourneyRefiner] - Failure fetching the software status from session"
-        }
         "utr was not present from the identifier request" in {
           mockFetchSoftwareStatus(Right(None))
           mockGetMandationService(Voluntary, Voluntary)

@@ -50,7 +50,7 @@ class ClientDetailsRetrievalSpec extends PlaySpec with Matchers with MockNinoSer
       "the clients name is present in session" in new Setup {
         mockGetNino(testNino)
 
-        await(service.getClientDetails(request.withSession(
+        await(service.getClientDetails()(request.withSession(
           UserMatchingSessionUtil.firstName -> firstName,
           UserMatchingSessionUtil.lastName -> lastName
         ), implicitly)) mustBe clientDetails
@@ -61,7 +61,7 @@ class ClientDetailsRetrievalSpec extends PlaySpec with Matchers with MockNinoSer
       "the clients name is not present in session" in new Setup {
         mockGetNino(testNino)
 
-        intercept[InternalServerException](await(service.getClientDetails(request, implicitly)))
+        intercept[InternalServerException](await(service.getClientDetails()(request, implicitly)))
           .message mustBe "[ClientDetailsRetrieval][getClientDetails] - Unable to retrieve name from session"
       }
     }

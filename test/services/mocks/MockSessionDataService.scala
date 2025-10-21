@@ -17,7 +17,7 @@
 package services.mocks
 
 import connectors.httpparser.DeleteSessionDataHttpParser.DeleteSessionDataResponse
-import connectors.httpparser.GetSessionDataHttpParser.{GetSessionDataResponse, InvalidJson, UnexpectedStatusFailure}
+import connectors.httpparser.GetSessionDataHttpParser.GetSessionDataResponse
 import connectors.httpparser.SaveSessionDataHttpParser
 import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataResponse
 import models.SessionData.Data
@@ -29,34 +29,35 @@ import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import services.{SessionDataService, Throttle}
+import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.Future
 
 trait MockSessionDataService extends MockitoSugar with BeforeAndAfterEach {
   suite: Suite =>
 
+  implicit class Response[T](response: GetSessionDataResponse[T]) {
+    def toOption(): Option[T] = {
+      response match {
+        case Right(value) => value
+        case Left(_) => None
+      }
+    }
+  }
+
   val mockSessionDataService: SessionDataService = mock[SessionDataService]
 
   override def beforeEach(): Unit = {
     reset(mockSessionDataService)
+    mockSessionData()
     super.beforeEach()
   }
 
   mockSessionData()
 
-  def mockFetchReferenceSuccess(reference: Option[String]): Unit = {
+  def mockFetchReference(reference: Option[String]): Unit = {
     when(mockSessionDataService.fetchReference(ArgumentMatchers.any()))
-      .thenReturn(Future.successful(Right(reference)))
-  }
-
-  def mockFetchReferenceStatusFailure(status: Int): Unit = {
-    when(mockSessionDataService.fetchReference(ArgumentMatchers.any()))
-      .thenReturn(Future.successful(Left(UnexpectedStatusFailure(status))))
-  }
-
-  def mockFetchReferenceJsonFailure(): Unit = {
-    when(mockSessionDataService.fetchReference(ArgumentMatchers.any()))
-      .thenReturn(Future.successful(Left(InvalidJson)))
+      .thenReturn(reference)
   }
 
   def mockSaveReferenceSuccess(reference: String): Unit = {
@@ -70,8 +71,8 @@ trait MockSessionDataService extends MockitoSugar with BeforeAndAfterEach {
   }
 
   def mockFetchThrottlePassed(throttle: Throttle)(result: GetSessionDataResponse[Boolean]): Unit = {
-    when(mockSessionDataService.fetchThrottlePassed(ArgumentMatchers.eq(throttle))(ArgumentMatchers.any()))
-      .thenReturn(Future.successful(result))
+    when(mockSessionDataService.fetchThrottlePassed(ArgumentMatchers.any(), ArgumentMatchers.eq(throttle)))
+      .thenReturn(result.toOption())
   }
 
   def mockSaveThrottlePassed(throttle: Throttle)(result: SaveSessionDataResponse): Unit = {
@@ -81,7 +82,7 @@ trait MockSessionDataService extends MockitoSugar with BeforeAndAfterEach {
 
   def mockFetchMandationStatus(result: GetSessionDataResponse[MandationStatusModel]): Unit = {
     when(mockSessionDataService.fetchMandationStatus(ArgumentMatchers.any()))
-      .thenReturn(Future.successful(result))
+      .thenReturn(result.toOption())
   }
 
   def mockSaveMandationStatus(mandationStatus: MandationStatusModel)(result: SaveSessionDataResponse): Unit = {
@@ -96,7 +97,7 @@ trait MockSessionDataService extends MockitoSugar with BeforeAndAfterEach {
 
   def mockFetchEligibilityStatus(result: GetSessionDataResponse[EligibilityStatus]): Unit = {
     when(mockSessionDataService.fetchEligibilityStatus(ArgumentMatchers.any()))
-      .thenReturn(Future.successful(result))
+      .thenReturn(result.toOption())
   }
 
   def mockSaveEligibilityStatus(eligibilityStatus: EligibilityStatus)(result: SaveSessionDataResponse): Unit = {
@@ -106,7 +107,7 @@ trait MockSessionDataService extends MockitoSugar with BeforeAndAfterEach {
 
   def mockFetchNino(result: GetSessionDataResponse[String]): Unit = {
     when(mockSessionDataService.fetchNino(ArgumentMatchers.any()))
-      .thenReturn(Future.successful(result))
+      .thenReturn(result.toOption())
   }
 
   def mockSaveNino(nino: String)(result: SaveSessionDataResponse): Unit = {
@@ -116,7 +117,7 @@ trait MockSessionDataService extends MockitoSugar with BeforeAndAfterEach {
 
   def mockFetchUTR(result: GetSessionDataResponse[String]): Unit = {
     when(mockSessionDataService.fetchUTR(ArgumentMatchers.any()))
-      .thenReturn(Future.successful(result))
+      .thenReturn(result.toOption())
   }
 
   def mockSaveUTR(utr: String)(result: SaveSessionDataResponse): Unit = {
@@ -126,7 +127,7 @@ trait MockSessionDataService extends MockitoSugar with BeforeAndAfterEach {
 
   def mockFetchSoftwareStatus(result: GetSessionDataResponse[YesNo]): Unit = {
     when(mockSessionDataService.fetchSoftwareStatus(ArgumentMatchers.any()))
-      .thenReturn(Future.successful(result))
+      .thenReturn(result.toOption())
   }
 
   def mockSaveSoftwareStatus(softwareStatus: YesNo)(result: SaveSessionDataResponse): Unit = {
@@ -136,7 +137,7 @@ trait MockSessionDataService extends MockitoSugar with BeforeAndAfterEach {
 
   def mockFetchConsentStatus(result: GetSessionDataResponse[YesNo]): Unit = {
     when(mockSessionDataService.fetchConsentStatus(ArgumentMatchers.any()))
-      .thenReturn(Future.successful(result))
+      .thenReturn(result.toOption())
   }
 
   def mockSaveConsentStatus(consentStatus: YesNo)(result: SaveSessionDataResponse): Unit = {
@@ -146,7 +147,7 @@ trait MockSessionDataService extends MockitoSugar with BeforeAndAfterEach {
 
   def mockFetchEmailPassed(result: GetSessionDataResponse[Boolean]): Unit = {
     when(mockSessionDataService.fetchEmailPassed(ArgumentMatchers.any()))
-      .thenReturn(Future.successful(result))
+      .thenReturn(result.toOption())
   }
 
   def mockSaveEmailPassed(emailPassed: Boolean)(result: SaveSessionDataResponse): Unit = {

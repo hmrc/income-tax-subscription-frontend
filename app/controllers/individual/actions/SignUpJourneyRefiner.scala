@@ -24,6 +24,7 @@ import models.requests.individual.{IdentifierRequest, SignUpRequest}
 import play.api.Logging
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
+import services.SessionDataService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
@@ -31,7 +32,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SignUpJourneyRefiner @Inject()(referenceRetrieval: ReferenceRetrieval)
+class SignUpJourneyRefiner @Inject()(referenceRetrieval: ReferenceRetrieval, sessionDataService: SessionDataService)
                                     (implicit val executionContext: ExecutionContext)
   extends ActionRefiner[IdentifierRequest, SignUpRequest] with Logging {
 
@@ -51,7 +52,8 @@ class SignUpJourneyRefiner @Inject()(referenceRetrieval: ReferenceRetrieval)
             Future.successful(Left(Redirect(controllers.individual.matching.routes.AlreadyEnrolledController.show)))
           case None =>
             for {
-              reference <- referenceRetrieval.getIndividualReference(hc, request)
+              sessionData <- sessionDataService.getAllSessionData()
+              reference <- referenceRetrieval.getIndividualReference(sessionData)(hc, request)
             } yield {
               Right(SignUpRequest(
                 request = request,

@@ -86,8 +86,9 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
                     (implicit request: ConfirmedClientRequest[AnyContent]): Future[Result] = {
     val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
 
-    ninoService.getNino flatMap { nino =>
-      utrService.getUTR flatMap { utr =>
+    val sessionData = request.request.sessionData
+    ninoService.getNino(sessionData) flatMap { nino =>
+      utrService.getUTR(sessionData) flatMap { utr =>
         subscriptionService.createSubscriptionFromTaskList(
           arn = request.arn,
           utr = utr,
@@ -105,7 +106,6 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
       }
     }
   }
-
 
   private def view(postAction: Call,
                    backUrl: String,

@@ -27,7 +27,7 @@ import uk.gov.hmrc.http.InternalServerException
 import views.html.agent.UsingSoftware
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class UsingSoftwareController @Inject()(view: UsingSoftware,
@@ -42,27 +42,26 @@ class UsingSoftwareController @Inject()(view: UsingSoftware,
   extends SignUpBaseController {
 
   def show(editMode: Boolean): Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
+    val sessionData = request.request.sessionData
     for {
-      usingSoftwareStatus <- sessionDataService.fetchSoftwareStatus
-      eligibilityStatus <- eligibilityStatusService.getEligibilityStatus
+      usingSoftwareStatus <- Future.successful(sessionDataService.fetchSoftwareStatus(sessionData))
+      eligibilityStatus <- eligibilityStatusService.getEligibilityStatus(sessionData)
     } yield {
-      usingSoftwareStatus match {
-        case Left(_) => throw new InternalServerException("[UsingSoftwareController][show] - Could not fetch software status")
-        case Right(maybeYesNo) => Ok(view(
-          usingSoftwareForm = usingSoftwareForm.fill(maybeYesNo),
-          postAction = routes.UsingSoftwareController.submit(editMode),
-          clientName = request.clientDetails.name,
-          clientNino = request.clientDetails.formattedNino,
-          backUrl = backUrl(eligibilityStatus.eligibleNextYearOnly, editMode)
-        ))
-      }
+      Ok(view(
+        usingSoftwareForm = usingSoftwareForm.fill(usingSoftwareStatus),
+        postAction = routes.UsingSoftwareController.submit(editMode),
+        clientName = request.clientDetails.name,
+        clientNino = request.clientDetails.formattedNino,
+        backUrl = backUrl(eligibilityStatus.eligibleNextYearOnly, editMode)
+      ))
     }
   }
 
   def submit(editMode: Boolean): Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
+    val sessionData = request.request.sessionData
     usingSoftwareForm.bindFromRequest().fold(
       formWithErrors =>
-        eligibilityStatusService.getEligibilityStatus map { eligibilityStatus =>
+        eligibilityStatusService.getEligibilityStatus(sessionData) map { eligibilityStatus =>
           BadRequest(view(
             usingSoftwareForm = formWithErrors,
             postAction = routes.UsingSoftwareController.submit(editMode),
@@ -74,8 +73,8 @@ class UsingSoftwareController @Inject()(view: UsingSoftware,
       yesNo =>
         for {
           usingSoftwareStatus <- sessionDataService.saveSoftwareStatus(yesNo)
-          eligibilityStatus <- eligibilityStatusService.getEligibilityStatus
-          mandationStatus <- mandationStatusService.getMandationStatus
+          eligibilityStatus <- eligibilityStatusService.getEligibilityStatus(sessionData)
+          mandationStatus <- mandationStatusService.getMandationStatus(sessionData)
         } yield {
 
           val isMandatedCurrentYear: Boolean = mandationStatus.currentYearStatus.isMandated
@@ -111,5 +110,4 @@ class UsingSoftwareController @Inject()(view: UsingSoftware,
       controllers.agent.eligibility.routes.ClientCanSignUpController.show().url
     }
   }
-
 }

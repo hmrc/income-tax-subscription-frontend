@@ -24,7 +24,6 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import config.AppConfig
 import config.featureswitch.FeatureSwitching
-import connectors.stubs.SessionDataConnectorStub.stubGetSessionData
 import forms.agent._
 import forms.individual.business.RemoveBusinessForm
 import helpers.IntegrationTestConstants._
@@ -44,11 +43,10 @@ import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api._
 import play.api.data.Form
 import play.api.http.HeaderNames
-import play.api.http.Status.OK
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.crypto.CookieSigner
-import play.api.libs.json.{JsArray, JsString, Writes}
+import play.api.libs.json.{JsArray, Writes}
 import play.api.libs.ws.{WSClient, WSRequest, WSResponse}
 import play.api.mvc.{Headers, Session}
 import play.api.test.FakeRequest
@@ -101,8 +99,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
   lazy val ws: WSClient = app.injector.instanceOf[WSClient]
 
   implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
-
-  val reference: String = "test-reference"
 
   val cookieSignerCache: Application => CookieSigner = Application.instanceCache[CookieSigner]
   override lazy val cookieSigner: CookieSigner = cookieSignerCache(app)
@@ -171,8 +167,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     super.beforeEach()
     resetWiremock()
     AuditStub.stubAuditing()
-
-    stubGetSessionData(ITSASessionKeys.REFERENCE)(OK, JsString(reference))
   }
 
   override def beforeAll(): Unit = {
@@ -184,7 +178,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     stopWiremock()
     super.afterAll()
   }
-
 
   object IncomeTaxSubscriptionFrontend extends UserMatchingIntegrationRequestSupport {
     val csrfToken: String = UUID.randomUUID().toString
@@ -248,7 +241,8 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     def showCannotTakePart(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse =
       get("/error/cannot-sign-up", sessionData, withClientDetailsConfirmed = false, withJourneyStateSignUp = false)
 
-    def showCanSignUp(sessionData: Map[String, String] = ClientData.basicClientData, hasJourneyState: Boolean = true): WSResponse = get("/can-sign-up", sessionData, withJourneyStateSignUp = hasJourneyState)
+    def showCanSignUp(sessionData: Map[String, String] = ClientData.basicClientData, hasJourneyState: Boolean = true): WSResponse =
+      get("/can-sign-up", sessionData, withJourneyStateSignUp = hasJourneyState)
 
     def submitCanSignUp(sessionData: Map[String, String] = ClientData.basicClientData, hasJourneyState: Boolean = true): WSResponse = post("/can-sign-up", sessionData, withJourneyStateSignUp = hasJourneyState)(Map.empty)
 
@@ -559,7 +553,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
     def selectNth(selector: String, nth: Int): Element = {
       selectSeq(s"$selector").lift(nth - 1) match {
-        case Some(element) => element
+        case Some(e) => e
         case None => fail(s"Could not retrieve $selector number $nth")
       }
     }
@@ -680,5 +674,8 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       element.getErrorSummary.select("ul > li").text mustBe errors.mkString(" ")
     }
   }
+}
 
+object ComponentSpecBase {
+  val reference: String = "test-reference"
 }

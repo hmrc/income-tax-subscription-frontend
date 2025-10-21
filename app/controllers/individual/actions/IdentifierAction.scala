@@ -84,13 +84,10 @@ class IdentifierAction @Inject()(val authConnector: AuthConnector,
     }
   }
 
-  private def fetchUTRFromEnrolmentsOrSession(allEnrolments: Enrolments, sessionData: Data)(implicit hc: HeaderCarrier): Future[Option[String]] = {
+  private def fetchUTRFromEnrolmentsOrSession(allEnrolments: Enrolments, sessionData: Data): Future[Option[String]] = {
     allEnrolments.getEnrolment(Constants.utrEnrolmentName).flatMap(_.identifiers.headOption.map(_.value)) match {
       case Some(value) => Future.successful(Some(value))
-      case None => sessionDataService.fetchUTR map {
-        case Left(_) => throw new InternalServerException("[Individual][IdentifierAction] - Failure checking for utr in session")
-        case Right(maybeUTR) => maybeUTR
-      }
+      case None => Future.successful(sessionDataService.fetchUTR(sessionData))
     }
   }
 

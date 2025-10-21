@@ -16,6 +16,8 @@
 
 package models
 
+import play.api.libs.json.JsValue
+
 object SessionData {
-  type Data = Map[String, String]
+  type Data = Map[String, JsValue]
 }

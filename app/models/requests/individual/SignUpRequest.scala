@@ -16,6 +16,6 @@
 
 package models.requests.individual
 
-import play.api.mvc.{Request, WrappedRequest}
+import play.api.mvc.WrappedRequest
 
-case class SignUpRequest[A](request: Request[A], reference: String, nino: String) extends WrappedRequest[A](request)
+case class SignUpRequest[A](request: IdentifierRequest[A], reference: String, nino: String) extends WrappedRequest[A](request)

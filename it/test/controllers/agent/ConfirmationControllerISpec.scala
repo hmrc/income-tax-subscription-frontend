@@ -20,6 +20,7 @@ import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino}
 import helpers.agent.ComponentSpecBase
+import helpers.agent.ComponentSpecBase.reference
 import helpers.agent.servicemocks.AuthStub
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
@@ -51,17 +52,13 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(
-          responseStatus = OK,
-          responseBody = Json.toJson(MandationStatusModel(Voluntary, Voluntary))
-        )
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(
-          responseStatus = OK,
-          responseBody = Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
-        )
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.HAS_SOFTWARE)(OK, Json.toJson(testOption))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
+          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)),
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.HAS_SOFTWARE -> Json.toJson(testOption),
+          ITSASessionKeys.UTR -> JsString(testUtr)
+        ))
 
         When("I call GET /confirmation")
         val res = IncomeTaxSubscriptionFrontend.showConfirmation(hasSubmitted = true, "Test", "User", "A111111AA")
@@ -105,8 +102,10 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
     "redirect to the add another client route" when {
       "deleting all saved subscription details data was successful" in {
         AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr)
+        ))
         IncomeTaxSubscriptionConnectorStub.stubDeleteAllSubscriptionDetails(reference)(OK)
 
         val res = IncomeTaxSubscriptionFrontend.submitConfirmation()
@@ -120,8 +119,10 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
     "return an internal server error" when {
       "there was a problem deleting data from the subscription details" in {
         AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr)
+        ))
         IncomeTaxSubscriptionConnectorStub.stubDeleteAllSubscriptionDetails(reference)(INTERNAL_SERVER_ERROR)
 
         val res = IncomeTaxSubscriptionFrontend.submitConfirmation()

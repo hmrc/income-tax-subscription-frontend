@@ -33,7 +33,6 @@ import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-
 class IdentifierAction @Inject()(val authConnector: AuthConnector,
                                  val parser: BodyParsers.Default,
                                  val config: Configuration,
