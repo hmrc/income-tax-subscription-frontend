@@ -1,14 +1,14 @@
 
 ## Index route
-GET         /                                                   controllers.eligibility.individual.IndexController.index
+GET         /                                           controllers.eligibility.individual.IndexController.index
 
 ## Signing Up route
-GET         /signing-up                             controllers.eligibility.individual.SigningUpController.show
-POST        /signing-up                             controllers.eligibility.individual.SigningUpController.submit
+GET         /signing-up                                 controllers.eligibility.individual.SigningUpController.show
+POST        /signing-up                                 controllers.eligibility.individual.SigningUpController.submit
 
 ## Index route
-GET         /client                                  controllers.eligibility.agent.IndexController.index
+GET         /client                                     controllers.eligibility.agent.IndexController.index
 
 ## Signing Up route
-GET         /client/signing-up                        controllers.eligibility.agent.SigningUpController.show
-POST        /client/signing-up                        controllers.eligibility.agent.SigningUpController.submit
+GET         /client/signing-up                          controllers.eligibility.agent.SigningUpController.show
+POST        /client/signing-up                          controllers.eligibility.agent.SigningUpController.submit

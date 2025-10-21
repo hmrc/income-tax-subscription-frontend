@@ -231,9 +231,9 @@ class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Con
 
   override lazy val incomeTaxEligibilityUrl: String = s"${config.baseUrl("income-tax-subscription-eligibility")}/income-tax-subscription-eligibility"
 
-  override lazy val individualSigningUpUrl: String = s"$baseUrl/report-quarterly/income-and-expenses/sign-up/eligibility/signing-up"
+  override lazy val individualSigningUpUrl: String = s"${controllers.eligibility.individual.routes.SigningUpController.show.url}"
 
-  override lazy val agentSigningUpUrl: String = s"$baseUrl/report-quarterly/income-and-expenses/sign-up/eligibility/client/signing-up"
+  override lazy val agentSigningUpUrl: String = s"${controllers.eligibility.agent.routes.SigningUpController.show.url}"
 
   override val incomeTaxSelfEmploymentsFrontendUrl: String = {
     s"${config.getString("income-tax-subscription-self-employed-frontend.url")}/report-quarterly/income-and-expenses/sign-up/self-employments"
