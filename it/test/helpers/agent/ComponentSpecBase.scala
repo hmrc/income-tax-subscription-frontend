@@ -43,6 +43,7 @@ import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api._
 import play.api.data.Form
 import play.api.http.HeaderNames
+import play.api.http.Status.OK
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.crypto.CookieSigner
@@ -50,6 +51,7 @@ import play.api.libs.json.{JsArray, Writes}
 import play.api.libs.ws.{WSClient, WSRequest, WSResponse}
 import play.api.mvc.{Headers, Session}
 import play.api.test.FakeRequest
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, Decrypter, Encrypter}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
@@ -177,6 +179,21 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
   override def afterAll(): Unit = {
     stopWiremock()
     super.afterAll()
+  }
+
+  def get(uri: String): WSResponse =
+    await(
+      buildClient(uri)
+        .withHttpHeaders()
+        .get()
+    )
+
+  def post(uri: String)(form: Map[String, Seq[String]] = Map.empty): WSResponse = {
+    await(
+      buildClient(uri)
+        .withHttpHeaders("Csrf-Token" -> "nocheck")
+        .post(form)
+    )
   }
 
   object IncomeTaxSubscriptionFrontend extends UserMatchingIntegrationRequestSupport {
