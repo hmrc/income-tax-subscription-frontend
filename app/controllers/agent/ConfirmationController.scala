@@ -34,8 +34,7 @@ class ConfirmationController @Inject()(view: SignUpConfirmation,
                                        identify: IdentifierAction,
                                        journeyRefiner: ConfirmationJourneyRefiner,
                                        subscriptionDetailsService: SubscriptionDetailsService,
-                                       mandationStatusService: MandationStatusService,
-                                       sessionDataService: SessionDataService)
+                                       mandationStatusService: MandationStatusService)
                                       (implicit ec: ExecutionContext, cc: MessagesControllerComponents) extends SignUpBaseController {
 
   val show: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>

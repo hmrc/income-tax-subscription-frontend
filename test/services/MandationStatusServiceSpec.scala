@@ -54,16 +54,15 @@ class MandationStatusServiceSpec extends PlaySpec
   "getMandationStatus" must {
     "return the mandation status from session" when {
       "available in session" in new Setup {
-        mockGetAllSessionData(SessionData(Map(
+        val sessionData = SessionData(Map(
           ITSASessionKeys.MANDATION_STATUS -> Json.toJson(mandationStatusModel)
-        )))
+        ))
 
-        await(service.getMandationStatus()) mustBe mandationStatusModel
+        await(service.getMandationStatus(sessionData)) mustBe mandationStatusModel
       }
     }
     "return the mandation status from the API and save to the session database" when {
       "the mandation status is not available from session" in new Setup {
-        mockGetAllSessionData(SessionData())
         mockGetNino(testNino)
         mockGetUTR(testUtr)
         mockGetMandationStatus(testNino, testUtr)(Voluntary, Voluntary)

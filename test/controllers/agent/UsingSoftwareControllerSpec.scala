@@ -51,7 +51,6 @@ class UsingSoftwareControllerSpec extends ControllerSpec
   "show" must {
     "return OK with the page content" when {
       "the user is able to sign up for both tax years" in {
-        mockGetAllSessionData(SessionData())
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockView(
           usingSoftwareForm = usingSoftwareForm,
@@ -61,13 +60,12 @@ class UsingSoftwareControllerSpec extends ControllerSpec
           backUrl = controllers.agent.eligibility.routes.ClientCanSignUpController.show().url
         )
 
-        val result: Future[Result] = TestUsingSoftwareController.show(false)(request)
+        val result: Future[Result] = testUsingSoftwareController().show(false)(request)
 
         status(result) mustBe OK
         contentType(result) mustBe Some(HTML)
       }
       "the user is able to sign up for next year only" in {
-        mockGetAllSessionData(SessionData())
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
         mockView(
           usingSoftwareForm = usingSoftwareForm,
@@ -77,15 +75,15 @@ class UsingSoftwareControllerSpec extends ControllerSpec
           backUrl = controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url
         )
 
-        val result: Future[Result] = TestUsingSoftwareController.show(false)(request)
+        val result: Future[Result] = testUsingSoftwareController().show(false)(request)
 
         status(result) mustBe OK
         contentType(result) mustBe Some(HTML)
       }
       "the user has answered 'Yes' on question previously" in {
-        mockGetAllSessionData(SessionData(Map(
+        val sessionData = SessionData(Map(
           ITSASessionKeys.HAS_SOFTWARE -> JsString(YES)
-        )))
+        ))
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockView(
           usingSoftwareForm = usingSoftwareForm.fill(Yes),
@@ -95,15 +93,15 @@ class UsingSoftwareControllerSpec extends ControllerSpec
           backUrl = controllers.agent.eligibility.routes.ClientCanSignUpController.show().url
         )
 
-        val result: Future[Result] = TestUsingSoftwareController.show(false)(request)
+        val result: Future[Result] = testUsingSoftwareController(sessionData).show(false)(request)
 
         status(result) mustBe OK
         contentType(result) mustBe Some(HTML)
       }
       "the user has answered 'No' on question previously" in {
-        mockGetAllSessionData(SessionData(Map(
+        val sessionData = SessionData(Map(
           ITSASessionKeys.HAS_SOFTWARE -> JsString(NO)
-        )))
+        ))
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockView(
           usingSoftwareForm = usingSoftwareForm.fill(No),
@@ -113,7 +111,7 @@ class UsingSoftwareControllerSpec extends ControllerSpec
           backUrl = controllers.agent.eligibility.routes.ClientCanSignUpController.show().url
         )
 
-        val result: Future[Result] = TestUsingSoftwareController.show(false)(request)
+        val result: Future[Result] = testUsingSoftwareController(sessionData).show(false)(request)
 
         status(result) mustBe OK
         contentType(result) mustBe Some(HTML)
@@ -133,7 +131,7 @@ class UsingSoftwareControllerSpec extends ControllerSpec
           backUrl = controllers.agent.eligibility.routes.ClientCanSignUpController.show().url
         )
 
-        val result: Future[Result] = TestUsingSoftwareController.submit(false)(request)
+        val result: Future[Result] = testUsingSoftwareController().submit(false)(request)
 
         status(result) mustBe BAD_REQUEST
         contentType(result) mustBe Some(HTML)
@@ -147,7 +145,7 @@ class UsingSoftwareControllerSpec extends ControllerSpec
           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
           mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
 
-          val result: Future[Result] = TestUsingSoftwareController.submit(false)(
+          val result: Future[Result] = testUsingSoftwareController().submit(false)(
             request.withMethod("POST").withFormUrlEncodedBody(
               UsingSoftwareForm.fieldName -> YesNoMapping.option_yes
             )
@@ -162,7 +160,7 @@ class UsingSoftwareControllerSpec extends ControllerSpec
           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
           mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
 
-          val result: Future[Result] = TestUsingSoftwareController.submit(false)(
+          val result: Future[Result] = testUsingSoftwareController().submit(false)(
             request.withMethod("POST").withFormUrlEncodedBody(
               UsingSoftwareForm.fieldName -> YesNoMapping.option_yes
             )
@@ -179,7 +177,7 @@ class UsingSoftwareControllerSpec extends ControllerSpec
           mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
 
           Seq(false, true).foreach { editMode =>
-            val result: Future[Result] = TestUsingSoftwareController.submit(editMode)(
+            val result: Future[Result] = testUsingSoftwareController().submit(editMode)(
               request.withMethod("POST").withFormUrlEncodedBody(
                 UsingSoftwareForm.fieldName -> YesNoMapping.option_yes
               )
@@ -199,7 +197,7 @@ class UsingSoftwareControllerSpec extends ControllerSpec
         mockSaveSoftwareStatus(No)(Right(SaveSessionDataSuccessResponse))
         mockGetMandationService(Voluntary, Mandated)
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = false))
-        val result: Future[Result] = TestUsingSoftwareController.submit(false)(
+        val result: Future[Result] = testUsingSoftwareController().submit(false)(
           request.withMethod("POST").withFormUrlEncodedBody(
             UsingSoftwareForm.fieldName -> YesNoMapping.option_no
           )
@@ -215,7 +213,7 @@ class UsingSoftwareControllerSpec extends ControllerSpec
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockSaveSoftwareStatus(Yes)(Left(UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
-        val result: Future[Result] = TestUsingSoftwareController.submit(false)(
+        val result: Future[Result] = testUsingSoftwareController().submit(false)(
           request.withMethod("POST").withFormUrlEncodedBody(
             UsingSoftwareForm.fieldName -> YesNoMapping.option_yes
           )
@@ -229,9 +227,9 @@ class UsingSoftwareControllerSpec extends ControllerSpec
 
   val appConfig: AppConfig = mock[AppConfig]
 
-  object TestUsingSoftwareController extends UsingSoftwareController(
+  private def testUsingSoftwareController(sessionData: SessionData = SessionData()) = new UsingSoftwareController(
     mockUsingSoftware,
-    fakeIdentifierAction,
+    fakeIdentifierActionWithSessionData(sessionData),
     fakeConfirmedClientJourneyRefiner,
     mockSessionDataService,
     mockGetEligibilityStatusService,

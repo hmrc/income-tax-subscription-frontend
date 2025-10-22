@@ -51,18 +51,17 @@ class ThrottlingServiceSpec extends MockThrottlingConnector with MockSessionData
         verifyGetThrottleStatusCalls(never)
       }
       "session indicates the user has already passed through the throttle" in {
-        mockGetAllSessionData(SessionData(Map(
+        val sessionData = SessionData(Map(
           ITSASessionKeys.throttlePassed(mockThrottle) -> JsBoolean(true)
-        )))
+        ))
 
-        val result: Future[Result] = throttlingService.throttled(mockThrottle)(fuzzyResult)
+        val result: Future[Result] = throttlingService.throttled(mockThrottle, sessionData)(fuzzyResult)
 
         await(result) mustBe fuzzyResult
 
         verifyGetThrottleStatusCalls(never)
       }
       "the throttle call returned a successful response" in {
-        mockGetAllSessionData(SessionData())
         notThrottled()
         mockSaveThrottlePassed(mockThrottle)(Right(SaveSessionDataSuccessResponse))
 
@@ -73,7 +72,6 @@ class ThrottlingServiceSpec extends MockThrottlingConnector with MockSessionData
         verifyGetThrottleStatusCalls(times(1))
       }
       "the throttle call failed, but the throttle was setup to open on failure" in {
-        mockGetAllSessionData(SessionData())
         throttleFail()
         failOpen()
         mockSaveThrottlePassed(mockThrottle)(Right(SaveSessionDataSuccessResponse))
@@ -87,7 +85,6 @@ class ThrottlingServiceSpec extends MockThrottlingConnector with MockSessionData
     }
     "redirect to the throttle call" when {
       "the throttle call returned false" in {
-        mockGetAllSessionData(SessionData())
         throttled()
 
         val result: Future[Result] = throttlingService.throttled(mockThrottle)(fuzzyResult)
@@ -98,7 +95,6 @@ class ThrottlingServiceSpec extends MockThrottlingConnector with MockSessionData
         verifyGetThrottleStatusCalls(times(1))
       }
       "the throttle call failed, but the throttle was setup to close on failure" in {
-        mockGetAllSessionData(SessionData())
         throttleFail()
         failClosed()
 

@@ -44,7 +44,6 @@ class ConfirmationJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieva
       "execute the provided code" when {
         "no software status is returned" in {
           mockReference()
-          mockGetAllSessionData(SessionData())
           mockGetMandationService(Voluntary, Voluntary)
 
           val result: Future[Result] = confirmationJourneyRefiner.invokeBlock(
@@ -62,13 +61,13 @@ class ConfirmationJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieva
           status(result) mustBe OK
         }
         "a no software status is returned" in {
-          mockGetAllSessionData(SessionData(Map(
+          val sessionData = SessionData(Map(
             ITSASessionKeys.HAS_SOFTWARE -> JsString(NO)
-          )))
+          ))
           mockGetMandationService(Voluntary, Voluntary)
 
           val result: Future[Result] = confirmationJourneyRefiner.invokeBlock(
-            identifierRequest(journeyStep = Some(Confirmation)), { request: ConfirmationRequest[_] =>
+            identifierRequest(journeyStep = Some(Confirmation), sessionData = sessionData), { request: ConfirmationRequest[_] =>
               request.utr mustBe utr
               request.nino mustBe nino
               request.mandationStatus mustBe mandationStatus
@@ -82,13 +81,13 @@ class ConfirmationJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieva
           status(result) mustBe OK
         }
         "a has software status is returned" in {
-          mockGetAllSessionData(SessionData(Map(
+          val sessionData = SessionData(Map(
             ITSASessionKeys.HAS_SOFTWARE -> JsString(YES)
-          )))
+          ))
           mockGetMandationService(Voluntary, Voluntary)
 
           val result: Future[Result] = confirmationJourneyRefiner.invokeBlock(
-            identifierRequest(journeyStep = Some(Confirmation)), { request: ConfirmationRequest[_] =>
+            identifierRequest(journeyStep = Some(Confirmation), sessionData = sessionData), { request: ConfirmationRequest[_] =>
               request.utr mustBe utr
               request.nino mustBe nino
               request.mandationStatus mustBe mandationStatus
@@ -104,7 +103,6 @@ class ConfirmationJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieva
       }
       "throw an internal server exception" when {
         "utr was not present from the identifier request" in {
-          mockGetAllSessionData(SessionData())
           mockGetMandationService(Voluntary, Voluntary)
           
           val result: Future[Result] = confirmationJourneyRefiner.invokeBlock(
@@ -170,12 +168,13 @@ class ConfirmationJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieva
     }
   }
 
-  def identifierRequest(journeyStep: Option[JourneyStep] = None, maybeUtr: Option[String] = Some(utr)): IdentifierRequest[_] = {
+  def identifierRequest(journeyStep: Option[JourneyStep] = None, maybeUtr: Option[String] = Some(utr), sessionData: SessionData = SessionData()): IdentifierRequest[_] = {
     IdentifierRequest(
       request = requestWithSession(journeyStep),
       mtditid = None,
       nino = nino,
-      utr = maybeUtr
+      utr = maybeUtr,
+      sessionData = sessionData
     )
   }
 }

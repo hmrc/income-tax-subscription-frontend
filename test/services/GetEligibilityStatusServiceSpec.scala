@@ -53,17 +53,16 @@ class GetEligibilityStatusServiceSpec extends PlaySpec with TestGetEligibilitySt
         "available in session" in {
           enable(SignalControlGatewayEligibility)
 
-          mockGetAllSessionData(SessionData(Map(
+          val sessionData = SessionData(Map(
             ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(eligibilityStatus)
-          )))
+          ))
 
-          await(TestGetEligibilityStatusService.getEligibilityStatus()) mustBe eligibilityStatus
+          await(TestGetEligibilityStatusService.getEligibilityStatus(sessionData)) mustBe eligibilityStatus
         }
       }
       "return the eligibility status from the API and save to session" when {
         "not available in session" in {
           enable(SignalControlGatewayEligibility)
-          mockGetAllSessionData(SessionData())
           mockGetNino(testNino)
           mockGetUTR(testUtr)
           mockGetEligibilityStatus(testNino, testUtr)(Right(eligibilityStatus))
@@ -77,16 +76,15 @@ class GetEligibilityStatusServiceSpec extends PlaySpec with TestGetEligibilitySt
     "the signal control gateway eligibility feature switch is disabled" must {
       "return the eligibility status from session" when {
         "available in session" in {
-          mockGetAllSessionData(SessionData(Map(
+          val sessionData = SessionData(Map(
             ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(eligibilityStatus)
-          )))
+          ))
 
-          await(TestGetEligibilityStatusService.getEligibilityStatus()) mustBe eligibilityStatus
+          await(TestGetEligibilityStatusService.getEligibilityStatus(sessionData)) mustBe eligibilityStatus
         }
       }
       "return the eligibility status from the API and save to session" when {
         "not available in session" in {
-          mockGetAllSessionData(SessionData())
           mockGetUTR(testUtr)
           mockGetEligibilityStatus(testUtr)(Right(eligibilityStatus))
           mockSaveEligibilityStatus(eligibilityStatus)(Right(SaveSessionDataSuccessResponse))
@@ -97,7 +95,6 @@ class GetEligibilityStatusServiceSpec extends PlaySpec with TestGetEligibilitySt
       "throw an exception" when {
         "there was a problem retrieving the eligibility status from the API" in {
           val httpResponse = HttpResponse(BAD_REQUEST, "")
-          mockGetAllSessionData(SessionData())
           mockGetUTR(testUtr)
           mockGetEligibilityStatus(testUtr)(Left(HttpConnectorError(httpResponse)))
 
@@ -105,7 +102,6 @@ class GetEligibilityStatusServiceSpec extends PlaySpec with TestGetEligibilitySt
             .message mustBe "[GetEligibilityStatusService][getEligibilityStatus] - failure fetching eligibility status from API: status = 400, body = "
         }
         "there was a problem saving the eligibility status to session" in {
-          mockGetAllSessionData(SessionData())
           mockGetEligibilityStatus(testUtr)(Right(eligibilityStatus))
           mockGetUTR(testUtr)
           mockSaveEligibilityStatus(eligibilityStatus)(Left(SaveSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))

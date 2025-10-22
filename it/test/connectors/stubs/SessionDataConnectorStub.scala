@@ -21,7 +21,7 @@ import helpers.agent.ComponentSpecBase.reference
 import helpers.servicemocks.WireMockMethods
 import models.SessionData
 import play.api.http.Status.{NO_CONTENT, OK}
-import play.api.libs.json.{JsString, Json, Writes}
+import play.api.libs.json.{JsString, JsValue, Json, Writes}
 
 object SessionDataConnectorStub extends WireMockMethods {
 
@@ -29,8 +29,8 @@ object SessionDataConnectorStub extends WireMockMethods {
   private def sessionIdDataUri() = s"/income-tax-subscription/session-data/id"
   private def allSessionDataUri = "/income-tax-subscription/session-data/all"
 
-  def stubGetAllSessionData(data: SessionData, addReference: Boolean = true): Unit = {
-    val sessionData = if (data.nonEmpty && addReference)
+  def stubGetAllSessionData(data: Map[String, JsValue], addReference: Boolean = true): Unit = {
+    val map = if (data.nonEmpty && addReference)
       data ++ Map(ITSASessionKeys.REFERENCE -> JsString(reference))
     else
       data
@@ -39,7 +39,7 @@ object SessionDataConnectorStub extends WireMockMethods {
       uri = allSessionDataUri
     ).thenReturn(
       if (data.nonEmpty) OK else NO_CONTENT,
-      Json.toJson(sessionData)
+      Json.toJson(map)
     )
   }
 

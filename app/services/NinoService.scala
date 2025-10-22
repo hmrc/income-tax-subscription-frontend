@@ -27,7 +27,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class NinoService @Inject()(authService: AuthService, sessionDataService: SessionDataService)
                            (implicit ec: ExecutionContext) {
 
-  def getNino(sessionData: SessionData)(implicit hc: HeaderCarrier): Future[String] = {
+  def getNino(sessionData: SessionData = SessionData())(implicit hc: HeaderCarrier): Future[String] = {
     sessionData.fetchNino match {
       case Some(nino) => Future.successful(nino)
       case None => authService.authorised().retrieve(Retrievals.nino) {

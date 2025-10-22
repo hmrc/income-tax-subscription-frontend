@@ -18,12 +18,15 @@ package controllers.utils
 
 import auth.agent.IncomeTaxAgentUser
 import auth.individual.IncomeTaxSAUser
+import common.Constants.ITSASessionKeys
 import connectors.httpparser.RetrieveReferenceHttpParser
+import models.SessionData
 import models.audits.SignupRetrieveAuditing.SignupRetrieveAuditModel
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, when}
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK}
+import play.api.libs.json.JsString
 import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, Request}
 import play.api.test.FakeRequest
@@ -75,9 +78,11 @@ class ReferenceRetrievalSpec extends PlaySpec
   "getIndividualReference" should {
     "return the reference requested" when {
       "the reference was successfully returned from the session store" in {
-        mockFetchReference(Some(reference))
+        val sessionData = SessionData(Map(
+          ITSASessionKeys.REFERENCE -> JsString(reference)
+        ))
 
-        val result = TestReferenceRetrieval.getIndividualReference() flatMap { reference =>
+        val result = TestReferenceRetrieval.getIndividualReference(sessionData) flatMap { reference =>
           Future.successful(Ok(reference))
         }
 
@@ -85,7 +90,6 @@ class ReferenceRetrievalSpec extends PlaySpec
         contentAsString(result) mustBe reference
       }
       "the reference was not found in the session store so retrieved existing reference from subscription data" in {
-        mockFetchReference(None)
         mockGetNino(nino)
         mockGetUTR(utr)
         mockFetchReference(utr)(Right(RetrieveReferenceHttpParser.Existing(reference)))
@@ -101,7 +105,6 @@ class ReferenceRetrievalSpec extends PlaySpec
         contentAsString(result) mustBe reference
       }
       "the reference was not found in the session store so retrieved a newly created reference" in {
-        mockFetchReference(None)
         mockGetNino(nino)
         mockGetUTR(utr)
         mockFetchReference(utr)(Right(RetrieveReferenceHttpParser.Created(reference)))
@@ -116,7 +119,6 @@ class ReferenceRetrievalSpec extends PlaySpec
     }
     "throw an InternalServerException" when {
       "an unexpected status error was returned from the subscription data" in {
-        mockFetchReference(None)
         mockGetNino(nino)
         mockGetUTR(utr)
         mockFetchReference(utr)(Left(RetrieveReferenceHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
@@ -126,7 +128,6 @@ class ReferenceRetrievalSpec extends PlaySpec
         })).message mustBe s"[ReferenceRetrieval][handleReferenceNotFound] - Unexpected status returned: $INTERNAL_SERVER_ERROR"
       }
       "a json parse error was returned when retrieving the reference from subscription data" in {
-        mockFetchReference(None)
         mockGetNino(nino)
         mockGetUTR(utr)
         mockFetchReference(utr)(Left(RetrieveReferenceHttpParser.InvalidJsonFailure))
@@ -136,7 +137,6 @@ class ReferenceRetrievalSpec extends PlaySpec
         })).message mustBe s"[ReferenceRetrieval][handleReferenceNotFound] - Unable to parse json returned"
       }
       "an unexpected status error was returned when saving the reference to session" in {
-        mockFetchReference(None)
         mockGetNino(nino)
         mockGetUTR(utr)
         mockFetchReference(utr)(Right(RetrieveReferenceHttpParser.Created(reference)))
@@ -152,9 +152,11 @@ class ReferenceRetrievalSpec extends PlaySpec
   "getAgentReference" should {
     "return the reference requested" when {
       "the reference was successfully returned from the session store" in {
-        mockFetchReference(Some(reference))
+        val sessionData = SessionData(Map(
+          ITSASessionKeys.REFERENCE -> JsString(reference)
+        ))
 
-        val result = TestReferenceRetrieval.getAgentReference() flatMap { reference =>
+        val result = TestReferenceRetrieval.getAgentReference(sessionData) flatMap { reference =>
           Future.successful(Ok(reference))
         }
 
@@ -162,7 +164,6 @@ class ReferenceRetrievalSpec extends PlaySpec
         contentAsString(result) mustBe reference
       }
       "the reference was not found in the session store so retrieved existing reference from subscription data" in {
-        mockFetchReference(None)
         mockGetNino(nino)
         mockGetUTR(utr)
         mockFetchReference(utr)(Right(RetrieveReferenceHttpParser.Existing(reference)))
@@ -179,7 +180,6 @@ class ReferenceRetrievalSpec extends PlaySpec
         contentAsString(result) mustBe reference
       }
       "the reference was not found in the session store so retrieved a newly created reference" in {
-        mockFetchReference(None)
         mockGetNino(nino)
         mockGetUTR(utr)
         mockFetchReference(utr)(Right(RetrieveReferenceHttpParser.Created(reference)))
@@ -195,7 +195,6 @@ class ReferenceRetrievalSpec extends PlaySpec
     }
     "throw an InternalServerException" when {
       "an unexpected status error was returned from the subscription data" in {
-        mockFetchReference(None)
         mockGetNino(nino)
         mockGetUTR(utr)
         mockFetchReference(utr)(Left(RetrieveReferenceHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
@@ -205,7 +204,6 @@ class ReferenceRetrievalSpec extends PlaySpec
         })).message mustBe s"[ReferenceRetrieval][handleReferenceNotFound] - Unexpected status returned: $INTERNAL_SERVER_ERROR"
       }
       "a json parse error was returned when retrieving the reference from subscription data" in {
-        mockFetchReference(None)
         mockGetNino(nino)
         mockGetUTR(utr)
         mockFetchReference(utr)(Left(RetrieveReferenceHttpParser.InvalidJsonFailure))
@@ -215,7 +213,6 @@ class ReferenceRetrievalSpec extends PlaySpec
         })).message mustBe s"[ReferenceRetrieval][handleReferenceNotFound] - Unable to parse json returned"
       }
       "an unexpected status error was returned when saving the reference to session" in {
-        mockFetchReference(None)
         mockGetNino(nino)
         mockGetUTR(utr)
         mockFetchReference(utr)(Right(RetrieveReferenceHttpParser.Created(reference)))

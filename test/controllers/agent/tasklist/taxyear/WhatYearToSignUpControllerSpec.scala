@@ -27,9 +27,9 @@ import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockI
 import forms.agent.AccountingYearForm
 import models.common.AccountingYearModel
 import models.status.MandationStatus.Voluntary
-import models.{AccountingYear, Current, EligibilityStatus, Next, SessionData}
+import models.{AccountingYear, Current, EligibilityStatus, Next, SessionData, Yes}
 import play.api.http.Status
-import play.api.libs.json.JsBoolean
+import play.api.libs.json.{JsBoolean, JsString}
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import services.mocks._
@@ -54,9 +54,9 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
 
   implicit val appConfig: AppConfig = MockConfig
 
-  object TestWhatYearToSignUpController extends WhatYearToSignUpController(
+  private def testWhatYearToSignUpController(sessionData: SessionData = SessionData()) = new WhatYearToSignUpController(
     whatYearToSignUp,
-    fakeIdentifierAction,
+    fakeIdentifierActionWithSessionData(sessionData),
     fakeConfirmedClientJourneyRefiner,
     mockSubscriptionDetailsService,
     mockSessionDataService,
@@ -71,7 +71,7 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockGetMandationService(Voluntary, Voluntary)
 
-        val result = TestWhatYearToSignUpController.show(isEditMode = false)(request)
+        val result = testWhatYearToSignUpController().show(isEditMode = false)(request)
 
         status(result) must be(Status.OK)
       }
@@ -84,7 +84,7 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockGetMandationService(Voluntary, Voluntary)
 
-        val result = TestWhatYearToSignUpController.show(isEditMode = false)(request)
+        val result = testWhatYearToSignUpController().show(isEditMode = false)(request)
 
         status(result) must be(Status.OK)
       }
@@ -92,11 +92,11 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
   }
 
   "submit" when {
-    def callSubmit(isEditMode: Boolean, taxYear: AccountingYear = Current): Future[Result] = TestWhatYearToSignUpController.submit(isEditMode = isEditMode)(
+    def callSubmit(isEditMode: Boolean, taxYear: AccountingYear = Current, sessionData: SessionData = SessionData()): Future[Result] = testWhatYearToSignUpController(sessionData).submit(isEditMode = isEditMode)(
       request.withMethod("POST").withFormUrlEncodedBody(AccountingYearForm.accountingYear -> taxYear.toString)
     )
 
-    def callSubmitWithErrorForm(isEditMode: Boolean): Future[Result] = TestWhatYearToSignUpController.submit(isEditMode = isEditMode)(
+    def callSubmitWithErrorForm(isEditMode: Boolean): Future[Result] = testWhatYearToSignUpController().submit(isEditMode = isEditMode)(
       request.withMethod("POST").withFormUrlEncodedBody()
     )
 
@@ -128,7 +128,6 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
               enable(EmailCaptureConsent)
 
               mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
-              mockGetAllSessionData(SessionData())
 
               val result: Future[Result] = callSubmit(isEditMode = false)
 
@@ -141,11 +140,11 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
               enable(EmailCaptureConsent)
 
               mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
-              mockGetAllSessionData(SessionData(Map(
+              val sessionData = SessionData(Map(
                 ITSASessionKeys.HAS_SOFTWARE -> JsBoolean(true)
-              )))
+              ))
 
-              val result: Future[Result] = callSubmit(isEditMode = false)
+              val result: Future[Result] = callSubmit(isEditMode = false, sessionData = sessionData)
 
               status(result) mustBe SEE_OTHER
               redirectLocation(result) mustBe Some(controllers.agent.routes.WhatYouNeedToDoController.show().url)
@@ -155,7 +154,6 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
         "the email capture consent feature switch is disabled" must {
           "save the tax year and redirect to the what you need to do page" in {
             mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
-            mockGetAllSessionData(SessionData())
 
             val result: Future[Result] = callSubmit(isEditMode = false)
 
@@ -170,7 +168,6 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
             enable(EmailCaptureConsent)
 
             mockSaveSelectedTaxYear(AccountingYearModel(Next))(Right(PostSubscriptionDetailsSuccessResponse))
-            mockGetAllSessionData(SessionData())
 
             val result: Future[Result] = callSubmit(isEditMode = false, taxYear = Next)
 
@@ -178,7 +175,6 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
             redirectLocation(result) mustBe Some(controllers.agent.routes.WhatYouNeedToDoController.show().url)
           }
           "the email capture consent feature switch is disabled" in {
-            mockGetAllSessionData(SessionData())
             mockSaveSelectedTaxYear(AccountingYearModel(Next))(Right(PostSubscriptionDetailsSuccessResponse))
 
             val result: Future[Result] = callSubmit(isEditMode = false, taxYear = Next)
@@ -202,12 +198,12 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
   "backUrl" when {
     "in edit mode" must {
       s"return ${controllers.agent.routes.GlobalCheckYourAnswersController.show.url}" in {
-        TestWhatYearToSignUpController.backUrl(true) mustBe Some(controllers.agent.routes.GlobalCheckYourAnswersController.show.url)
+        testWhatYearToSignUpController().backUrl(true) mustBe Some(controllers.agent.routes.GlobalCheckYourAnswersController.show.url)
       }
     }
     "not in edit mode" must {
       s"return ${controllers.agent.routes.UsingSoftwareController.show().url}" in {
-        TestWhatYearToSignUpController.backUrl(false) mustBe Some(controllers.agent.routes.UsingSoftwareController.show().url)
+        testWhatYearToSignUpController().backUrl(false) mustBe Some(controllers.agent.routes.UsingSoftwareController.show().url)
       }
     }
   }

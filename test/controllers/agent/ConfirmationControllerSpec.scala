@@ -44,9 +44,9 @@ class ConfirmationControllerSpec extends ControllerSpec
       "the user is mandated for the current tax year" in {
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Current, confirmed = true, editable = false)))
         mockGetMandationService(Mandated, Voluntary)
-        mockGetAllSessionData(SessionData(Map(
+        val sessionData = SessionData(Map(
           ITSASessionKeys.HAS_SOFTWARE -> JsString(NO)
-        )))
+        ))
         mockView(
           mandatedCurrentYear = true,
           mandatedNextYear = false,
@@ -56,7 +56,7 @@ class ConfirmationControllerSpec extends ControllerSpec
           usingSoftware = false
         )
 
-        val result: Future[Result] = TestConfirmationController.show(request)
+        val result: Future[Result] = testConfirmationController(sessionData).show(request)
 
         status(result) mustBe OK
         contentType(result) mustBe Some(HTML)
@@ -64,9 +64,9 @@ class ConfirmationControllerSpec extends ControllerSpec
       "the user is mandated for the next tax year" in {
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Next, confirmed = true, editable = false)))
         mockGetMandationService(Voluntary, Mandated)
-        mockGetAllSessionData(SessionData(Map(
+        val sessionData = SessionData(Map(
           ITSASessionKeys.HAS_SOFTWARE -> JsString(YES)
-        )))
+        ))
         mockView(
           mandatedCurrentYear = false,
           mandatedNextYear = true,
@@ -76,7 +76,7 @@ class ConfirmationControllerSpec extends ControllerSpec
           usingSoftware = true
         )
 
-        val result: Future[Result] = TestConfirmationController.show(request)
+        val result: Future[Result] = testConfirmationController(sessionData).show(request)
 
         status(result) mustBe OK
         contentType(result) mustBe Some(HTML)
@@ -84,9 +84,9 @@ class ConfirmationControllerSpec extends ControllerSpec
       "the user has selected to sign up for the next tax year" in {
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Next, confirmed = true)))
         mockGetMandationService(Voluntary, Voluntary)
-        mockGetAllSessionData(SessionData(Map(
+        val sessionData = SessionData(Map(
           ITSASessionKeys.HAS_SOFTWARE -> JsString(YES)
-        )))
+        ))
         mockView(
           mandatedCurrentYear = false,
           mandatedNextYear = false,
@@ -96,7 +96,7 @@ class ConfirmationControllerSpec extends ControllerSpec
           usingSoftware = true
         )
 
-        val result: Future[Result] = TestConfirmationController.show(request)
+        val result: Future[Result] = testConfirmationController(sessionData).show(request)
 
         status(result) mustBe OK
         contentType(result) mustBe Some(HTML)
@@ -108,20 +108,19 @@ class ConfirmationControllerSpec extends ControllerSpec
     "redirect to the add another client route" in {
       mockDeleteAll()
 
-      val result: Future[Result] = TestConfirmationController.submit(request.withMethod("POST"))
+      val result: Future[Result] = testConfirmationController().submit(request.withMethod("POST"))
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(routes.AddAnotherClientController.addAnother().url)
     }
   }
 
-  object TestConfirmationController extends ConfirmationController(
+  def testConfirmationController(sessionData: SessionData = SessionData()) = new ConfirmationController(
     mockSignUpConfirmation,
-    fakeIdentifierAction,
+    fakeIdentifierActionWithSessionData(sessionData),
     fakeConfirmationJourneyRefiner,
     mockSubscriptionDetailsService,
-    mockMandationStatusService,
-    mockSessionDataService
+    mockMandationStatusService
   )
 
 }
