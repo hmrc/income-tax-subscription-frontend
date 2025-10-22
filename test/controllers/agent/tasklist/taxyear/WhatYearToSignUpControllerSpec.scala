@@ -25,6 +25,7 @@ import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionD
 import controllers.ControllerSpec
 import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}
 import forms.agent.AccountingYearForm
+import models.Yes.YES
 import models.common.AccountingYearModel
 import models.status.MandationStatus.Voluntary
 import models.{AccountingYear, Current, EligibilityStatus, Next, SessionData, Yes}
@@ -141,7 +142,8 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
 
               mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
               val sessionData = SessionData(Map(
-                ITSASessionKeys.HAS_SOFTWARE -> JsBoolean(true)
+                ITSASessionKeys.HAS_SOFTWARE -> JsBoolean(true),
+                ITSASessionKeys.EMAIL_PASSED -> JsBoolean(true)
               ))
 
               val result: Future[Result] = callSubmit(isEditMode = false, sessionData = sessionData)
