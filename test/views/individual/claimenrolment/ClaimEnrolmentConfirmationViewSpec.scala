@@ -34,7 +34,7 @@ class ClaimEnrolmentConfirmationViewSpec extends ViewSpec {
   "The Claim Enrolment Confirmation view" should {
 
     s"have the title '${MessageLookup.Confirmation.title}'" in {
-      val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+      val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
       document.title() must be(MessageLookup.ClaimEnrollmentConfirmation.title + serviceNameGovUk)
     }
 

@@ -68,7 +68,7 @@ class CannotTakePartControllerISpec extends ComponentSpecBase with AuthRedirects
     "return a page" which {
 
       "has the correct title" in new Setup() {
-        val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
+        val serviceNameGovUk = " - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
         doc.title mustBe CannotTakePartMessages.title + serviceNameGovUk
       }
 

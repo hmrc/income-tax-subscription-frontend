@@ -25,7 +25,7 @@ class NotEligibleForIncomeTaxViewSpec extends ViewSpec {
 
   "Cannot Sign Up View" should {
     "have a title" in {
-      document.title mustBe s"${CannotSignUpYetMessages.heading} - Use software to send Income Tax updates - GOV.UK"
+      document.title mustBe s"${CannotSignUpYetMessages.heading} - Sign up for Making Tax Digital for Income Tax - GOV.UK"
     }
 
     "have a heading" in {

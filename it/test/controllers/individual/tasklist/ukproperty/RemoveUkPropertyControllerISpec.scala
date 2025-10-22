@@ -36,7 +36,7 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase {
         Json.toJson(PropertyModel()))
       When("GET /business/remove-uk-property-business is called")
       val res = IncomeTaxSubscriptionFrontend.getRemoveUkProperty
-      val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+      val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
       Then("Should return a OK with the remove Uk property confirmation page")
       res must have(
         httpStatus(OK),

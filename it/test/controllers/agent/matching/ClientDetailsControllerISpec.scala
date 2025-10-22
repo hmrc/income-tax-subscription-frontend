@@ -58,7 +58,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
     "the agent is not locked out" should {
       "show the client details page" in {
         val res = fixture(agentLocked = false)
-        val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
+        val serviceNameGovUk = " - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
         Then("The result must have a status of OK")
         res must have(
           httpStatus(OK),
@@ -115,7 +115,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
 
         When("I call POST /client-details")
         val res = IncomeTaxSubscriptionFrontend.submitClientDetails(newSubmission = None, storedSubmission = None)
-        val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
+        val serviceNameGovUk = " - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
         Then("The result must have a status of BadRequest")
         res must have(
           httpStatus(BAD_REQUEST),

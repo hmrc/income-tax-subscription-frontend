@@ -43,7 +43,7 @@ class AddMTDITOverviewSpec extends ViewSpec {
 
   "Add MTD IT Overview" must {
     "have a title" in new Setup {
-      val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+      val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
       document.title mustBe messages.title + serviceNameGovUk
     }
 

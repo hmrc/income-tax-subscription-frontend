@@ -31,7 +31,7 @@ import utilities.agent.TestConstants.testUtr
 
 class UsingSoftwareControllerISpec extends ComponentSpecBase {
 
-  val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
+  val serviceNameGovUk = " - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
 
   s"GET ${controllers.agent.routes.UsingSoftwareController.show().url}" when {
 

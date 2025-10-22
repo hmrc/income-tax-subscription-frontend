@@ -56,7 +56,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
 
-        val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+        val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
 
         When("GET /final-check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.getGlobalCheckYourAnswers()

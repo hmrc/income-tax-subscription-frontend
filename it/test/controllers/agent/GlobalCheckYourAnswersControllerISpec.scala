@@ -121,7 +121,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
         SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
 
-        val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
+        val serviceNameGovUk = " - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
 
         When("GET /client/final-check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.getAgentGlobalCheckYourAnswers()

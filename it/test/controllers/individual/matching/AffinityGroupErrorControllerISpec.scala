@@ -28,7 +28,7 @@ class AffinityGroupErrorControllerISpec extends ComponentSpecBase {
 
       When("GET /error/user-details is called")
       val res = IncomeTaxSubscriptionFrontend.showAffinityGroupError()
-      val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
+      val serviceNameGovUk = " - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
       Then("Should return a OK with the no matching user page")
       res must have(
         httpStatus(OK),

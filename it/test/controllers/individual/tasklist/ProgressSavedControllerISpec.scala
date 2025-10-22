@@ -45,7 +45,7 @@ class ProgressSavedControllerISpec extends ComponentSpecBase {
         res must have(
           httpStatus(OK),
           pageTitle(
-            s"${messages("business.progress-saved.title")} - Use software to send Income Tax updates - GOV.UK"
+            s"${messages("business.progress-saved.title")} - Sign up for Making Tax Digital for Income Tax - GOV.UK"
           )
         )
       }
@@ -71,7 +71,7 @@ class ProgressSavedControllerISpec extends ComponentSpecBase {
         res must have(
           httpStatus(OK),
           pageTitle(
-            s"${messages("business.progress-saved.title")} - Use software to send Income Tax updates - GOV.UK"
+            s"${messages("business.progress-saved.title")} - Sign up for Making Tax Digital for Income Tax - GOV.UK"
           )
         )
       }
