@@ -52,6 +52,7 @@ import play.api.libs.json.{JsArray, JsString, Writes}
 import play.api.libs.ws.{WSClient, WSRequest, WSResponse}
 import play.api.mvc.{Headers, Session}
 import play.api.test.FakeRequest
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, Decrypter, Encrypter}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
@@ -185,6 +186,20 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     super.afterAll()
   }
 
+  def get(uri: String): WSResponse =
+    await(
+      buildClient(uri)
+        .withHttpHeaders()
+        .get()
+    )
+
+  def post(uri: String)(form: Map[String, Seq[String]] = Map.empty): WSResponse = {
+    await(
+      buildClient(uri)
+        .withHttpHeaders("Csrf-Token" -> "nocheck")
+        .post(form)
+    )
+  }
 
   object IncomeTaxSubscriptionFrontend extends UserMatchingIntegrationRequestSupport {
     val csrfToken: String = UUID.randomUUID().toString

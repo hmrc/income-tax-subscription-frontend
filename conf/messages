@@ -631,7 +631,7 @@ agent.client-can-sign-up.check-another-link                     = check if you c
 cannot-sign-up.heading                                          = You can sign up to Making Tax Digital for Income Tax from the next tax year
 cannot-sign-up.paragraph1                                       = There is something that has prevented you from signing up to the current tax year ({0} to {1}). For example, other income or activities, or the length of time you have been self-employed or a landlord.
 cannot-sign-up.yes-no-radio-helper.heading                      = Would you like to sign up for the next tax year?
-error.cannot-sign-up.invalid                                    = You must select ‘yes’ or ‘no’
+error.cannot-sign-up.invalid                                               = You must select ‘yes’ or ‘no’
 
 # Individual declined sign up
 declined-sign-up-next-year.heading                              = What you need to do
@@ -1091,3 +1091,48 @@ agent.global-check-your-answers.tax-year.current                                
 agent.global-check-your-answers.tax-year.next                                                   = Next tax year
 agent.global-check-your-answers.para2                                                           = By continuing, you’re confirming that the information you have given is correct to the best of your knowledge.
 agent.global-check-your-answers.para3                                                           = When you continue, we’ll sign up your client. This may take a few seconds.
+
+# Individual Signing Up Page
+individual.signing-up.heading                                           = Signing up for Making Tax Digital for Income Tax
+individual.signing-up.before-you-signup.heading                         = Before you sign up
+individual.signing-up.before-you-signup.para-1                          = To sign up, you must be a sole trader or get income from either a UK or foreign property.
+individual.signing-up.before-you-signup.para-2                          = You must also use {0}.
+individual.signing-up.before-you-signup.para-2.link-text                = software that works with Making Tax Digital for Income Tax
+individual.signing-up.before-you-signup.para-2.link-href                = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax
+individual.signing-up.sole-trader.heading                               = Sole trader
+individual.signing-up.sole-trader.para-1                                = You’re a sole trader if you run your own business as an individual and work for yourself. This is also known as being self-employed.
+individual.signing-up.sole-trader.para-2                                = You’re not a sole trader if your only business income is from a limited company.
+individual.signing-up.income-property.heading                           = Income from property
+individual.signing-up.income-property.para-1                            = You can sign up if you get income from property in the UK or from property in another country. For example, letting houses, flats or holiday homes, on a long or short term basis.
+individual.signing-up.identity-verification.heading                            = We may need to check your identity
+individual.signing-up.identity-verification.para-1                             = To confirm your identity, you can either:
+individual.signing-up.identity-verification.bullet-1                           = use an app to match you to your photo ID
+individual.signing-up.identity-verification.bullet-2                           = answer questions about information we hold about you
+
+## Sign Up To Pilot Page ##
+sign-up.heading                                                         = You may be able to sign up
+sign-up.para-1                                                          = Based on your business accounting period, you may be able to sign up for Making Tax Digital for Income Tax.
+sign-up.para-2                                                          = When you continue, we’ll check your tax record and let you know if you can continue to sign up.
+sign-up.inset                                                      = Other allowances or income sources may stop you from signing up
+sign-up.inset.href                                                 = https://www.gov.uk/guidance/sign-up-your-client-for-making-tax-digital-for-income-tax#who-cannot-sign-up-voluntarily
+sign-up.para-3                                                          = To continue, sign in using the Government Gateway user ID you use for your Self Assessment tax return. We’ll check your tax record and let you know if you can continue to sign up.
+
+## Agent Signing Up Page ##
+agent.signing-up.heading                                                = Signing up your clients for Making Tax Digital for Income Tax
+agent.signing-up.before-sign-up.heading                                 = Before you sign up your clients
+agent.signing-up.before-sign-up.para-1                                  = To sign up your clients, you must have their authorisation in your agent services account.
+agent.signing-up.before-sign-up.para-2                                  = Make sure you or your clients use {0}.
+agent.signing-up.before-sign-up.para-2.link-text                        = software that’s compatible with Making Tax Digital for Income Tax
+agent.signing-up.before-sign-up.para-2.link-href                        = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax
+agent.signing-up.before-sign-up.para-3                                  = Make sure your client is a sole trader or gets income from property (inside or outside the UK).
+agent.signing-up.accounting-period.heading                              = Accounting period
+agent.signing-up.accounting-period.para-1                               = Make sure your client uses either:
+agent.signing-up.accounting-period.bullet-1                             = an accounting period that runs from 6 April to 5 April
+agent.signing-up.accounting-period.bullet-2                             = an accounting period that runs from 1 April to 31 March (and their compatible software supports calendar update periods)
+agent.signing-up.accounting-period.para-2                               = From the 2026 to 2027 tax year, this service will be extended to people with any accounting period. You must submit your client’s Self Assessment tax return for the tax years up to 5 April 2025 as normal.
+agent.signing-up.check-sign-up.heading                                  = We will check if you can sign up each client
+agent.signing-up.check-sign-up.para-1                                   = When you continue, you’ll need to enter these details for one of your clients:
+agent.signing-up.check-sign-up.bullet-1                                 = name
+agent.signing-up.check-sign-up.bullet-2                                 = National Insurance number
+agent.signing-up.check-sign-up.bullet-3                                 = date of birth
+agent.signing-up.check-sign-up.para-2                                   = We’ll check that client’s record and tell you if you can sign them up.
