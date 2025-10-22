@@ -37,7 +37,7 @@ class IVSuccessControllerSpec extends ControllerBaseSpec with MockAuditingServic
 
   trait Setup {
     val controller = new IVSuccessController(appConfig, mockAuthService, mockNinoService, mockAuditingService, mockSessionDataService)
-    mockSessionData()
+    mockGetAllSessionData()
   }
 
   authorisationTests()

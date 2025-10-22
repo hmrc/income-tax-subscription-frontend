@@ -19,7 +19,7 @@ package controllers.individual.actions
 import common.Constants
 import common.Constants.ITSASessionKeys
 import config.AppConfig
-import models.SessionData.Data
+import models.SessionData
 import models.requests.individual.IdentifierRequest
 import play.api.mvc.Results._
 import play.api.mvc._
@@ -84,10 +84,10 @@ class IdentifierAction @Inject()(val authConnector: AuthConnector,
     }
   }
 
-  private def fetchUTRFromEnrolmentsOrSession(allEnrolments: Enrolments, sessionData: Data): Future[Option[String]] = {
+  private def fetchUTRFromEnrolmentsOrSession(allEnrolments: Enrolments, sessionData: SessionData): Future[Option[String]] = {
     allEnrolments.getEnrolment(Constants.utrEnrolmentName).flatMap(_.identifiers.headOption.map(_.value)) match {
       case Some(value) => Future.successful(Some(value))
-      case None => Future.successful(sessionDataService.fetchUTR(sessionData))
+      case None => Future.successful(sessionData.fetchUTR)
     }
   }
 

@@ -19,11 +19,12 @@ package services
 import common.Constants.ITSASessionKeys
 import connectors.httpparser.{DeleteSessionDataHttpParser, SaveSessionDataHttpParser}
 import connectors.mocks.MockSessionDataConnector
+import models.SessionData
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.INTERNAL_SERVER_ERROR
-import play.api.libs.json.{JsString, JsValue}
+import play.api.libs.json.JsString
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -37,12 +38,12 @@ class SessionDataServiceSpec extends PlaySpec with MockSessionDataConnector {
 
   val testReference: String = "test-reference"
 
-  private val sessionData: Map[String, JsValue] = Map(
+  private val sessionData = SessionData(Map(
     ITSASessionKeys.REFERENCE -> JsString(testReference)
-  )
+  ))
 
   when(mockSessionDataConnector.getAllSessionData()(any(), any())).thenReturn(
-    Future.successful(Right(Some(sessionData)))
+    Future.successful(Right(Some(sessionData.data)))
   )
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
@@ -52,14 +53,14 @@ class SessionDataServiceSpec extends PlaySpec with MockSessionDataConnector {
       "the connector returns a valid result" in new Setup {
         mockGetSessionData(ITSASessionKeys.REFERENCE)(Right(Some(testReference)))
 
-        service.fetchReference(sessionData) mustBe Some(testReference)
+        sessionData.fetchReference mustBe Some(testReference)
       }
     }
     "return no reference" when {
       "the session data is empty" in new Setup {
         mockGetSessionData(ITSASessionKeys.REFERENCE)(Right(None))
 
-        service.fetchReference(Map()) mustBe None
+        SessionData().fetchReference mustBe None
       }
     }
   }

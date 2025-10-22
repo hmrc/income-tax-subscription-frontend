@@ -24,7 +24,7 @@ import controllers.SignUpBaseController
 import controllers.agent.actions.IdentifierAction
 import controllers.utils.ReferenceRetrieval
 import models.EligibilityStatus
-import models.SessionData.Data
+import models.SessionData
 import models.agent.JourneyStep
 import models.audits.EligibilityAuditing.EligibilityAuditModel
 import play.api.mvc._
@@ -88,7 +88,7 @@ class ConfirmedClientResolver @Inject()(identify: IdentifierAction,
       }
   }
 
-  private def goToSignUpClient(arn: String, nextYearOnly: Boolean, sessionData: Data)
+  private def goToSignUpClient(arn: String, nextYearOnly: Boolean, sessionData: SessionData)
                               (implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
     for {
       reference <- referenceRetrieval.getReference(Some(arn), sessionData)

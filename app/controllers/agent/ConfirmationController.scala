@@ -43,7 +43,7 @@ class ConfirmationController @Inject()(view: SignUpConfirmation,
     for {
       taxYearSelection <- subscriptionDetailsService.fetchSelectedTaxYear(request.reference)
       mandationStatus <- mandationStatusService.getMandationStatus(sessionData)
-      softwareStatus = sessionDataService.fetchSoftwareStatus(sessionData)
+      softwareStatus = sessionData.fetchSoftwareStatus
     } yield {
       val isNextYear: Boolean = taxYearSelection.map(_.accountingYear).contains(Next)
       val accountingPeriodModel: AccountingPeriodModel = if (isNextYear) {

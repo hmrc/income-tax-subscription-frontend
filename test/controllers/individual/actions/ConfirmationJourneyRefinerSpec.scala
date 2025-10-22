@@ -17,14 +17,17 @@
 package controllers.individual.actions
 
 import common.Constants.ITSASessionKeys
+import models.No.NO
+import models.SessionData
+import models.Yes.YES
 import models.individual.JourneyStep
 import models.individual.JourneyStep.{Confirmation, PreSignUp, SignUp}
 import models.requests.individual.{ConfirmationRequest, IdentifierRequest}
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
-import models.{No, Yes}
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.{NOT_FOUND, OK}
+import play.api.libs.json.JsString
 import play.api.mvc.{Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout, status}
@@ -41,7 +44,7 @@ class ConfirmationJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieva
       "execute the provided code" when {
         "no software status is returned" in {
           mockReference()
-          mockFetchSoftwareStatus(Right(None))
+          mockGetAllSessionData(SessionData())
           mockGetMandationService(Voluntary, Voluntary)
 
           val result: Future[Result] = confirmationJourneyRefiner.invokeBlock(
@@ -59,7 +62,9 @@ class ConfirmationJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieva
           status(result) mustBe OK
         }
         "a no software status is returned" in {
-          mockFetchSoftwareStatus(Right(Some(No)))
+          mockGetAllSessionData(SessionData(Map(
+            ITSASessionKeys.HAS_SOFTWARE -> JsString(NO)
+          )))
           mockGetMandationService(Voluntary, Voluntary)
 
           val result: Future[Result] = confirmationJourneyRefiner.invokeBlock(
@@ -77,7 +82,9 @@ class ConfirmationJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieva
           status(result) mustBe OK
         }
         "a has software status is returned" in {
-          mockFetchSoftwareStatus(Right(Some(Yes)))
+          mockGetAllSessionData(SessionData(Map(
+            ITSASessionKeys.HAS_SOFTWARE -> JsString(YES)
+          )))
           mockGetMandationService(Voluntary, Voluntary)
 
           val result: Future[Result] = confirmationJourneyRefiner.invokeBlock(
@@ -97,7 +104,7 @@ class ConfirmationJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieva
       }
       "throw an internal server exception" when {
         "utr was not present from the identifier request" in {
-          mockFetchSoftwareStatus(Right(None))
+          mockGetAllSessionData(SessionData())
           mockGetMandationService(Voluntary, Voluntary)
           
           val result: Future[Result] = confirmationJourneyRefiner.invokeBlock(

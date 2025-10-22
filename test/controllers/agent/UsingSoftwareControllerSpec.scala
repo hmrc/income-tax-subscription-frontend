@@ -16,6 +16,7 @@
 
 package controllers.agent
 
+import common.Constants.ITSASessionKeys
 import config.AppConfig
 import config.featureswitch.FeatureSwitching
 import connectors.httpparser.SaveSessionDataHttpParser.{SaveSessionDataSuccessResponse, UnexpectedStatusFailure}
@@ -24,9 +25,12 @@ import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockI
 import forms.agent.UsingSoftwareForm
 import forms.agent.UsingSoftwareForm.usingSoftwareForm
 import forms.submapping.YesNoMapping
+import models.No.NO
+import models.Yes.YES
 import models.status.MandationStatus.{Mandated, Voluntary}
-import models.{EligibilityStatus, No, Yes}
+import models.{EligibilityStatus, No, SessionData, Yes}
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
+import play.api.libs.json.JsString
 import play.api.mvc.Result
 import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, status}
 import services.mocks.{MockGetEligibilityStatusService, MockMandationStatusService, MockSessionDataService}
@@ -47,11 +51,11 @@ class UsingSoftwareControllerSpec extends ControllerSpec
   "show" must {
     "return OK with the page content" when {
       "the user is able to sign up for both tax years" in {
-        mockFetchSoftwareStatus(Right(None))
+        mockGetAllSessionData(SessionData())
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockView(
           usingSoftwareForm = usingSoftwareForm,
-          postAction = routes.UsingSoftwareController.submit(false),
+          postAction = routes.UsingSoftwareController.submit(),
           clientName = clientDetails.name,
           clientNino = clientDetails.formattedNino,
           backUrl = controllers.agent.eligibility.routes.ClientCanSignUpController.show().url
@@ -63,11 +67,11 @@ class UsingSoftwareControllerSpec extends ControllerSpec
         contentType(result) mustBe Some(HTML)
       }
       "the user is able to sign up for next year only" in {
-        mockFetchSoftwareStatus(Right(None))
+        mockGetAllSessionData(SessionData())
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
         mockView(
           usingSoftwareForm = usingSoftwareForm,
-          postAction = routes.UsingSoftwareController.submit(false),
+          postAction = routes.UsingSoftwareController.submit(),
           clientName = clientDetails.name,
           clientNino = clientDetails.formattedNino,
           backUrl = controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url
@@ -79,11 +83,13 @@ class UsingSoftwareControllerSpec extends ControllerSpec
         contentType(result) mustBe Some(HTML)
       }
       "the user has answered 'Yes' on question previously" in {
-        mockFetchSoftwareStatus(Right(Some(Yes)))
+        mockGetAllSessionData(SessionData(Map(
+          ITSASessionKeys.HAS_SOFTWARE -> JsString(YES)
+        )))
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockView(
           usingSoftwareForm = usingSoftwareForm.fill(Yes),
-          postAction = routes.UsingSoftwareController.submit(false),
+          postAction = routes.UsingSoftwareController.submit(),
           clientName = clientDetails.name,
           clientNino = clientDetails.formattedNino,
           backUrl = controllers.agent.eligibility.routes.ClientCanSignUpController.show().url
@@ -95,11 +101,13 @@ class UsingSoftwareControllerSpec extends ControllerSpec
         contentType(result) mustBe Some(HTML)
       }
       "the user has answered 'No' on question previously" in {
-        mockFetchSoftwareStatus(Right(Some(No)))
+        mockGetAllSessionData(SessionData(Map(
+          ITSASessionKeys.HAS_SOFTWARE -> JsString(NO)
+        )))
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockView(
           usingSoftwareForm = usingSoftwareForm.fill(No),
-          postAction = routes.UsingSoftwareController.submit(false),
+          postAction = routes.UsingSoftwareController.submit(),
           clientName = clientDetails.name,
           clientNino = clientDetails.formattedNino,
           backUrl = controllers.agent.eligibility.routes.ClientCanSignUpController.show().url
@@ -119,7 +127,7 @@ class UsingSoftwareControllerSpec extends ControllerSpec
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockView(
           usingSoftwareForm = usingSoftwareForm.bind(Map.empty[String, String]),
-          postAction = routes.UsingSoftwareController.submit(false),
+          postAction = routes.UsingSoftwareController.submit(),
           clientName = clientDetails.name,
           clientNino = clientDetails.formattedNino,
           backUrl = controllers.agent.eligibility.routes.ClientCanSignUpController.show().url
@@ -198,7 +206,7 @@ class UsingSoftwareControllerSpec extends ControllerSpec
         )
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.agent.routes.NoSoftwareController.show(false).url)
+        redirectLocation(result) mustBe Some(controllers.agent.routes.NoSoftwareController.show().url)
       }
     }
     "an error occurs when saving the software status" should {

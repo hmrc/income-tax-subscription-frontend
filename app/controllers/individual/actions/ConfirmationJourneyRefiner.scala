@@ -52,7 +52,7 @@ class ConfirmationJourneyRefiner @Inject()(referenceRetrieval: ReferenceRetrieva
         val sessionData = request.sessionData
         for {
           reference <- referenceRetrieval.getIndividualReference(sessionData)(hc, request)
-          softwareStatus = sessionDataService.fetchSoftwareStatus(sessionData)
+          softwareStatus = sessionData.fetchSoftwareStatus
           mandationStatus <- mandationStatusService.getMandationStatus(sessionData)
         } yield {
           val usingSoftware = softwareStatus match {

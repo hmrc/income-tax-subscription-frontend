@@ -16,11 +16,15 @@
 
 package controllers.agent
 
+import common.Constants.ITSASessionKeys
 import controllers.ControllerSpec
 import controllers.agent.actions.mocks.{MockConfirmationJourneyRefiner, MockIdentifierAction}
+import models.No.NO
+import models.Yes.YES
 import models.common.AccountingYearModel
 import models.status.MandationStatus.{Mandated, Voluntary}
-import models.{Current, Next, No, Yes}
+import models.{Current, Next, SessionData}
+import play.api.libs.json.JsString
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import services.mocks._
@@ -40,7 +44,9 @@ class ConfirmationControllerSpec extends ControllerSpec
       "the user is mandated for the current tax year" in {
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Current, confirmed = true, editable = false)))
         mockGetMandationService(Mandated, Voluntary)
-        mockFetchSoftwareStatus(Right(Some(No)))
+        mockGetAllSessionData(SessionData(Map(
+          ITSASessionKeys.HAS_SOFTWARE -> JsString(NO)
+        )))
         mockView(
           mandatedCurrentYear = true,
           mandatedNextYear = false,
@@ -58,7 +64,9 @@ class ConfirmationControllerSpec extends ControllerSpec
       "the user is mandated for the next tax year" in {
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Next, confirmed = true, editable = false)))
         mockGetMandationService(Voluntary, Mandated)
-        mockFetchSoftwareStatus(Right(Some(Yes)))
+        mockGetAllSessionData(SessionData(Map(
+          ITSASessionKeys.HAS_SOFTWARE -> JsString(YES)
+        )))
         mockView(
           mandatedCurrentYear = false,
           mandatedNextYear = true,
@@ -76,7 +84,9 @@ class ConfirmationControllerSpec extends ControllerSpec
       "the user has selected to sign up for the next tax year" in {
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Next, confirmed = true)))
         mockGetMandationService(Voluntary, Voluntary)
-        mockFetchSoftwareStatus(Right(Some(Yes)))
+        mockGetAllSessionData(SessionData(Map(
+          ITSASessionKeys.HAS_SOFTWARE -> JsString(YES)
+        )))
         mockView(
           mandatedCurrentYear = false,
           mandatedNextYear = false,

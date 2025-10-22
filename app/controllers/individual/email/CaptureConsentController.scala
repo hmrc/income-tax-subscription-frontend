@@ -37,7 +37,7 @@ class CaptureConsentController @Inject()(view: CaptureConsent,
                                         (implicit val ec: ExecutionContext, mcc: MessagesControllerComponents) extends SignUpBaseController {
   def show: Action[AnyContent] = (identify andThen journeyRefiner) { implicit request =>
     val sessionData = request.request.sessionData
-    val captureConsentStatus = sessionDataService.fetchConsentStatus(sessionData)
+    val captureConsentStatus = sessionData.fetchConsentStatus
     Ok(view(
       captureConsentForm = captureConsentForm.fill(captureConsentStatus),
       postAction = controllers.individual.email.routes.CaptureConsentController.submit(),

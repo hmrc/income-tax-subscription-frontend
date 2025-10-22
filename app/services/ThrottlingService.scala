@@ -20,7 +20,7 @@ import config.AppConfig
 import config.featureswitch.FeatureSwitch.ThrottlingFeature
 import config.featureswitch.FeatureSwitching
 import connectors.ThrottlingConnector
-import models.SessionData.Data
+import models.SessionData
 import play.api.Logging
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Call, Result}
@@ -33,11 +33,11 @@ class ThrottlingService @Inject()(throttlingConnector: ThrottlingConnector,
                                   sessionDataService: SessionDataService,
                                   val appConfig: AppConfig) extends Logging with FeatureSwitching {
 
-  def throttled(throttle: Throttle, sessionData: Data = Map())(success: => Future[Result])
+  def throttled(throttle: Throttle, sessionData: SessionData = SessionData())(success: => Future[Result])
                (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Result] = {
 
     if (isEnabled(ThrottlingFeature)) {
-      sessionDataService.fetchThrottlePassed(sessionData, throttle) match {
+      sessionData.fetchThrottlePassed(throttle) match {
         case Some(_) =>
           success
         case None =>

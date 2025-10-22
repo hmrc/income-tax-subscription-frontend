@@ -21,7 +21,7 @@ import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.{JourneyStateKey, SPSEntityId}
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
-import models.SessionData.Data
+import models.SessionData
 import models.common.subscription.CreateIncomeSourcesModel
 import models.individual.JourneyStep.Confirmation
 import play.api.mvc._
@@ -86,7 +86,7 @@ class GlobalCheckYourAnswersController @Inject()(subscriptionService: Subscripti
     tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
   }
 
-  private def signUp(sessionData: Data, completeDetails: CompleteDetails)
+  private def signUp(sessionData: SessionData, completeDetails: CompleteDetails)
                     (onSuccessfulSignUp: Result)
                     (implicit request: Request[AnyContent]): Future[Result] = {
     val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)

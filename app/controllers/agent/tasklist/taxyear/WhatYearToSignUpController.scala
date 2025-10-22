@@ -106,7 +106,7 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
 
   private def fetchEmailPassed(implicit request: ConfirmedClientRequest[_]): Future[Boolean] = {
     val sessionData = request.request.sessionData
-    Future.successful(sessionDataService.fetchEmailPassed(sessionData).getOrElse(false))
+    Future.successful(sessionData.fetchEmailPassed.getOrElse(false))
   }
 
   def backUrl(isEditMode: Boolean): Option[String] = {

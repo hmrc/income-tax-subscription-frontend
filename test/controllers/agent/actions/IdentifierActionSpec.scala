@@ -17,6 +17,7 @@
 package controllers.agent.actions
 
 import auth.MockAuth
+import models.SessionData
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
@@ -45,9 +46,9 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
   private def random() =
     UUID.randomUUID().toString
 
-  private val sessionData = Map(
+  private val sessionData = SessionData(Map(
     random() -> JsString(random())
-  )
+  ))
 
   when(mockSessionDataService.getAllSessionData()(any(), any())).thenReturn(
     Future.successful(sessionData)

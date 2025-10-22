@@ -18,6 +18,7 @@ package controllers.individual.actions.mocks
 
 import config.MockConfig
 import controllers.individual.actions.IdentifierAction
+import models.SessionData
 import models.requests.individual.IdentifierRequest
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -41,7 +42,7 @@ trait MockIdentifierAction extends MockitoSugar with BeforeAndAfterEach {
   val utr: String = "1234567890"
 
   when(mockSessionDataService.getAllSessionData()(any(), any())).thenReturn(
-    Future.successful(Map())
+    Future.successful(SessionData())
   )
 
   val fakeIdentifierAction: IdentifierAction = new IdentifierAction(

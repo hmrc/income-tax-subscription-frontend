@@ -16,7 +16,7 @@
 
 package services
 
-import models.SessionData.Data
+import models.SessionData
 import uk.gov.hmrc.http.InternalServerException
 
 import javax.inject.{Inject, Singleton}
@@ -25,8 +25,8 @@ import scala.concurrent.Future
 @Singleton
 class UTRService @Inject()(sessionDataService: SessionDataService) {
 
-  def getUTR(sessionData: Data): Future[String] = {
-    sessionDataService.fetchUTR(sessionData) match {
+  def getUTR(sessionData: SessionData): Future[String] = {
+    sessionData.fetchUTR match {
       case Some(utr) => Future.successful(utr)
       case _ => throw new FetchFromSessionException
     }

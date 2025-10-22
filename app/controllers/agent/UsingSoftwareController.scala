@@ -44,7 +44,7 @@ class UsingSoftwareController @Inject()(view: UsingSoftware,
   def show(editMode: Boolean): Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
     val sessionData = request.request.sessionData
     for {
-      usingSoftwareStatus <- Future.successful(sessionDataService.fetchSoftwareStatus(sessionData))
+      usingSoftwareStatus <- Future.successful(sessionData.fetchSoftwareStatus)
       eligibilityStatus <- eligibilityStatusService.getEligibilityStatus(sessionData)
     } yield {
       Ok(view(

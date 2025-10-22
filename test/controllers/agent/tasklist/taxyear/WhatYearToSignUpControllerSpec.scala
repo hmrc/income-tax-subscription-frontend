@@ -16,6 +16,7 @@
 
 package controllers.agent.tasklist.taxyear
 
+import common.Constants.ITSASessionKeys
 import config.featureswitch.FeatureSwitch.EmailCaptureConsent
 import config.featureswitch.FeatureSwitching
 import config.{AppConfig, MockConfig}
@@ -26,8 +27,9 @@ import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockI
 import forms.agent.AccountingYearForm
 import models.common.AccountingYearModel
 import models.status.MandationStatus.Voluntary
-import models.{AccountingYear, Current, EligibilityStatus, Next}
+import models.{AccountingYear, Current, EligibilityStatus, Next, SessionData}
 import play.api.http.Status
+import play.api.libs.json.JsBoolean
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import services.mocks._
@@ -126,7 +128,7 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
               enable(EmailCaptureConsent)
 
               mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
-              mockFetchEmailPassed(Right(None))
+              mockGetAllSessionData(SessionData())
 
               val result: Future[Result] = callSubmit(isEditMode = false)
 
@@ -139,7 +141,9 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
               enable(EmailCaptureConsent)
 
               mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
-              mockFetchEmailPassed(Right(Some(true)))
+              mockGetAllSessionData(SessionData(Map(
+                ITSASessionKeys.HAS_SOFTWARE -> JsBoolean(true)
+              )))
 
               val result: Future[Result] = callSubmit(isEditMode = false)
 
@@ -151,7 +155,7 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
         "the email capture consent feature switch is disabled" must {
           "save the tax year and redirect to the what you need to do page" in {
             mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
-            mockFetchEmailPassed(Right(None))
+            mockGetAllSessionData(SessionData())
 
             val result: Future[Result] = callSubmit(isEditMode = false)
 
@@ -166,7 +170,7 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
             enable(EmailCaptureConsent)
 
             mockSaveSelectedTaxYear(AccountingYearModel(Next))(Right(PostSubscriptionDetailsSuccessResponse))
-            mockFetchEmailPassed(Right(None))
+            mockGetAllSessionData(SessionData())
 
             val result: Future[Result] = callSubmit(isEditMode = false, taxYear = Next)
 
@@ -174,7 +178,7 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
             redirectLocation(result) mustBe Some(controllers.agent.routes.WhatYouNeedToDoController.show().url)
           }
           "the email capture consent feature switch is disabled" in {
-            mockFetchEmailPassed(Right(None))
+            mockGetAllSessionData(SessionData())
             mockSaveSelectedTaxYear(AccountingYearModel(Next))(Right(PostSubscriptionDetailsSuccessResponse))
 
             val result: Future[Result] = callSubmit(isEditMode = false, taxYear = Next)
@@ -202,8 +206,8 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
       }
     }
     "not in edit mode" must {
-      s"return ${controllers.agent.routes.UsingSoftwareController.show(false).url}" in {
-        TestWhatYearToSignUpController.backUrl(false) mustBe Some(controllers.agent.routes.UsingSoftwareController.show(false).url)
+      s"return ${controllers.agent.routes.UsingSoftwareController.show().url}" in {
+        TestWhatYearToSignUpController.backUrl(false) mustBe Some(controllers.agent.routes.UsingSoftwareController.show().url)
       }
     }
   }

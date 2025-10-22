@@ -16,8 +16,56 @@
 
 package models
 
-import play.api.libs.json.JsValue
+import models.status.MandationStatusModel
+import play.api.libs.json.{JsError, JsSuccess, JsValue, Json, Reads}
+import services.Throttle
+import _root_.common.Constants.ITSASessionKeys
 
-object SessionData {
-  type Data = Map[String, JsValue]
+case class SessionData(
+  data: Map[String, JsValue] = Map()
+) {
+  implicit class JsObject(value: JsValue) {
+    def toObject[T](implicit reads: Reads[T]): T = {
+      Json.fromJson[T](value) match {
+        case JsSuccess(value, _) => value
+        case JsError(e) => throw new Exception(s"Invalid Json: $e")
+      }
+    }
+  }
+
+  def fetchReference: Option[String] = {
+    data.get(ITSASessionKeys.REFERENCE).map(_.toObject[String])
+  }
+
+  def fetchThrottlePassed(throttle: Throttle): Option[Boolean] = {
+    data.get(ITSASessionKeys.throttlePassed(throttle)).map(_.toObject[Boolean])
+  }
+
+  def fetchMandationStatus: Option[MandationStatusModel] = {
+    data.get(ITSASessionKeys.MANDATION_STATUS).map(_.toObject[MandationStatusModel])
+  }
+
+  def fetchEligibilityStatus: Option[EligibilityStatus] = {
+    data.get(ITSASessionKeys.ELIGIBILITY_STATUS).map(_.toObject[EligibilityStatus])
+  }
+
+  def fetchNino: Option[String] = {
+    data.get(ITSASessionKeys.NINO).map(_.toObject[String])
+  }
+
+  def fetchUTR: Option[String] = {
+    data.get(ITSASessionKeys.UTR).map(_.toObject[String])
+  }
+
+  def fetchSoftwareStatus: Option[YesNo] = {
+    data.get(ITSASessionKeys.HAS_SOFTWARE).map(_.toObject[YesNo])
+  }
+
+  def fetchConsentStatus: Option[YesNo] = {
+    data.get(ITSASessionKeys.CAPTURE_CONSENT).map(_.toObject[YesNo])
+  }
+
+  def fetchEmailPassed: Option[Boolean] = {
+    data.get(ITSASessionKeys.EMAIL_PASSED).map(_.toObject[Boolean])
+  }
 }

@@ -16,12 +16,15 @@
 
 package services
 
+import common.Constants.ITSASessionKeys
 import connectors.httpparser.DeleteSessionDataHttpParser.DeleteSessionDataSuccessResponse
 import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataSuccessResponse
-import connectors.httpparser.{DeleteSessionDataHttpParser, GetSessionDataHttpParser, SaveSessionDataHttpParser}
-import models.Yes
+import connectors.httpparser.{DeleteSessionDataHttpParser, SaveSessionDataHttpParser}
+import models.SessionData
+import models.Yes.YES
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status._
+import play.api.libs.json.{JsBoolean, JsString}
 import play.api.mvc.{AnyContent, Call}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{INTERNAL_SERVER_ERROR, await, defaultAwaitTimeout}
@@ -44,7 +47,9 @@ class SessionClearingServiceSpec extends PlaySpec with MockSessionDataService {
   "clearAgentSession" must {
     "redirect to correct url" when {
       "clearing session with email passed" in new Setup {
-        mockFetchEmailPassed(Right(Some(true)))
+        mockGetAllSessionData(SessionData(Map(
+          ITSASessionKeys.EMAIL_PASSED -> JsBoolean(true)
+        )))
         mockDeleteSessionAll(Right(DeleteSessionDataSuccessResponse))
         mockSaveEmailPassed(true)(Right(SaveSessionDataSuccessResponse))
 
@@ -52,8 +57,9 @@ class SessionClearingServiceSpec extends PlaySpec with MockSessionDataService {
         res.header.status mustBe SEE_OTHER
       }
       "clearing session with email not passed but consent passed" in new Setup {
-        mockFetchEmailPassed(Right(None))
-        mockFetchConsentStatus(Right(Some(Yes)))
+        mockGetAllSessionData(SessionData(Map(
+          ITSASessionKeys.CAPTURE_CONSENT -> JsString(YES)
+        )))
         mockDeleteSessionAll(Right(DeleteSessionDataSuccessResponse))
         mockSaveEmailPassed(true)(Right(SaveSessionDataSuccessResponse))
 
@@ -63,16 +69,16 @@ class SessionClearingServiceSpec extends PlaySpec with MockSessionDataService {
     }
     "return an error" when {
       "the deletion of session data returns an error" in new Setup {
-        mockFetchEmailPassed(Right(None))
-        mockFetchConsentStatus(Right(None))
+        mockGetAllSessionData(SessionData())
         mockDeleteSessionAll(Left(DeleteSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
         intercept[InternalServerException](await(service.clearAgentSession(testCall)))
           .message mustBe s"[SessionClearingService][deleteSessionData] - Unexpected failure: UnexpectedStatusFailure(500)"
       }
       "the saving of session data returns an error" in new Setup {
-        mockFetchEmailPassed(Right(Some(true)))
-        mockFetchConsentStatus(Right(None))
+        mockGetAllSessionData(SessionData(Map(
+          ITSASessionKeys.EMAIL_PASSED -> JsBoolean(true)
+        )))
         mockDeleteSessionAll(Right(DeleteSessionDataSuccessResponse))
         mockSaveEmailPassed(true)(Left(SaveSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
@@ -81,5 +87,4 @@ class SessionClearingServiceSpec extends PlaySpec with MockSessionDataService {
       }
     }
   }
-
 }

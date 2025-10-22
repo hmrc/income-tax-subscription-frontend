@@ -16,7 +16,7 @@
 
 package services
 
-import models.SessionData.Data
+import models.SessionData
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
@@ -27,8 +27,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class NinoService @Inject()(authService: AuthService, sessionDataService: SessionDataService)
                            (implicit ec: ExecutionContext) {
 
-  def getNino(sessionData: Data)(implicit hc: HeaderCarrier): Future[String] = {
-    sessionDataService.fetchNino(sessionData) match {
+  def getNino(sessionData: SessionData)(implicit hc: HeaderCarrier): Future[String] = {
+    sessionData.fetchNino match {
       case Some(nino) => Future.successful(nino)
       case None => authService.authorised().retrieve(Retrievals.nino) {
         case Some(nino) => sessionDataService.saveNino(nino) map {

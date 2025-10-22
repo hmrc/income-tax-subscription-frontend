@@ -48,8 +48,8 @@ class WhatYouNeedToDoController @Inject()(view: WhatYouNeedToDo,
       eligibilityStatus <- eligibilityStatusService.getEligibilityStatus(sessionData)
       mandationStatus <- mandationStatusService.getMandationStatus(sessionData)
       taxYearSelection <- subscriptionDetailsService.fetchSelectedTaxYear(request.reference)
-      softwareStatus = sessionDataService.fetchSoftwareStatus(sessionData)
-      consentYesNo = sessionDataService.fetchConsentStatus(sessionData)
+      softwareStatus = sessionData.fetchSoftwareStatus
+      consentYesNo = sessionData.fetchConsentStatus
     } yield {
       val isCurrentYear = taxYearSelection.map(_.accountingYear).contains(Current)
       val usingSoftwareStatus: Boolean = softwareStatus match {

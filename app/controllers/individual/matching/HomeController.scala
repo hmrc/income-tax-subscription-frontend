@@ -23,7 +23,7 @@ import controllers.SignUpBaseController
 import controllers.individual.actions.{IdentifierAction, PreSignUpJourneyRefiner}
 import controllers.utils.ReferenceRetrieval
 import models.EligibilityStatus
-import models.SessionData.Data
+import models.SessionData
 import models.audits.EligibilityAuditing.EligibilityAuditModel
 import models.audits.SignupStartedAuditing
 import models.requests.individual.PreSignUpRequest
@@ -80,7 +80,7 @@ class HomeController @Inject()(identity: IdentifierAction,
     }
   }
 
-  private def handleNoSubscriptionFound(sessionData: Data, utr: String)(implicit request: PreSignUpRequest[AnyContent]): Future[Result] = {
+  private def handleNoSubscriptionFound(sessionData: SessionData, utr: String)(implicit request: PreSignUpRequest[AnyContent]): Future[Result] = {
     eligibilityStatusService.getEligibilityStatus(sessionData) flatMap {
       case EligibilityStatus(false, false) =>
         handleIneligible(utr)
@@ -89,7 +89,7 @@ class HomeController @Inject()(identity: IdentifierAction,
     }
   }
 
-  private def handleEligible(sessionData: Data, utr: String, eligibleCurrentYear: Boolean)(implicit request: PreSignUpRequest[AnyContent]): Future[Result] = {
+  private def handleEligible(sessionData: SessionData, utr: String, eligibleCurrentYear: Boolean)(implicit request: PreSignUpRequest[AnyContent]): Future[Result] = {
     eligibilityAudit(
       maybeUTR = Some(utr),
       eligibility = if (eligibleCurrentYear) "eligible" else "eligible - next year only"

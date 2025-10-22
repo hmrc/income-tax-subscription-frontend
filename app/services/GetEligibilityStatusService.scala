@@ -21,7 +21,7 @@ import config.featureswitch.FeatureSwitch.SignalControlGatewayEligibility
 import config.featureswitch.FeatureSwitching
 import connectors.individual.eligibility.GetEligibilityStatusConnector
 import models.EligibilityStatus
-import models.SessionData.Data
+import models.SessionData
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import javax.inject.{Inject, Singleton}
@@ -35,8 +35,8 @@ class GetEligibilityStatusService @Inject()(getEligibilityStatusConnector: GetEl
                                            (val appConfig: AppConfig)
                                            (implicit ec: ExecutionContext) extends FeatureSwitching {
 
-  def getEligibilityStatus(sessionData: Data = Map())(implicit hc: HeaderCarrier): Future[EligibilityStatus] = {
-    sessionDataService.fetchEligibilityStatus(sessionData) match {
+  def getEligibilityStatus(sessionData: SessionData = SessionData())(implicit hc: HeaderCarrier): Future[EligibilityStatus] = {
+    sessionData.fetchEligibilityStatus match {
       case Some(value) => Future.successful(value)
       case None =>
         if (isEnabled(SignalControlGatewayEligibility)) {
@@ -47,7 +47,7 @@ class GetEligibilityStatusService @Inject()(getEligibilityStatusConnector: GetEl
     }
   }
 
-  private def getAndSaveSignalControlGatewayEligibilityResults(sessionData: Data)(implicit hc: HeaderCarrier): Future[EligibilityStatus] = {
+  private def getAndSaveSignalControlGatewayEligibilityResults(sessionData: SessionData)(implicit hc: HeaderCarrier): Future[EligibilityStatus] = {
     ninoService.getNino(sessionData) flatMap { nino =>
       utrService.getUTR(sessionData) flatMap { utr =>
         getEligibilityStatusConnector.getEligibilityStatus(nino, utr) flatMap {
@@ -62,7 +62,7 @@ class GetEligibilityStatusService @Inject()(getEligibilityStatusConnector: GetEl
     }
   }
 
-  private def getAndSaveControlListEligibilityResults(sessionData: Data)(implicit hc: HeaderCarrier): Future[EligibilityStatus] = {
+  private def getAndSaveControlListEligibilityResults(sessionData: SessionData)(implicit hc: HeaderCarrier): Future[EligibilityStatus] = {
     utrService.getUTR(sessionData) flatMap { utr =>
       getEligibilityStatusConnector.getEligibilityStatus(utr) flatMap {
         case Right(value) =>

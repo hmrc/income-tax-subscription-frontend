@@ -35,7 +35,7 @@ class ResetDataController @Inject()(mcc: MessagesControllerComponents,
 
   def resetWithoutIdentifiers: Action[AnyContent] = Action.async { implicit request =>
     sessionDataService.getAllSessionData().flatMap { sessionData =>
-      sessionDataService.fetchUTR(sessionData) match {
+      sessionData.fetchUTR match {
         case Some(utr) => reset(utr)
         case None => Future.successful(Ok("No session data found"))
       }

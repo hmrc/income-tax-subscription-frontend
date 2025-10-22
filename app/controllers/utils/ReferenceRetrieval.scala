@@ -17,7 +17,7 @@
 package controllers.utils
 
 import connectors.httpparser.{RetrieveReferenceHttpParser, SaveSessionDataHttpParser}
-import models.SessionData.Data
+import models.SessionData
 import models.audits.SignupRetrieveAuditing.SignupRetrieveAuditModel
 import play.api.mvc.Request
 import services._
@@ -34,18 +34,18 @@ class ReferenceRetrieval @Inject()(subscriptionDetailsService: SubscriptionDetai
                                    auditingService: AuditingService)
                                   (implicit ec: ExecutionContext) {
 
-  def getIndividualReference(sessionData: Data = Map())(implicit hc: HeaderCarrier, request: Request[_]): Future[String] = {
+  def getIndividualReference(sessionData: SessionData = SessionData())(implicit hc: HeaderCarrier, request: Request[_]): Future[String] = {
     getReference(arn = None, sessionData)
   }
 
-  def getAgentReference(sessionData: Data = Map())(implicit hc: HeaderCarrier, request: Request[_], userArn: String): Future[String] = {
+  def getAgentReference(sessionData: SessionData = SessionData())(implicit hc: HeaderCarrier, request: Request[_], userArn: String): Future[String] = {
     getReference(arn = Some(userArn), sessionData)
   }
 
-  def getReference(arn: Option[String], sessionData: Data)
+  def getReference(arn: Option[String], sessionData: SessionData)
                   (implicit hc: HeaderCarrier, request: Request[_]): Future[String] = {
 
-    sessionDataService.fetchReference(sessionData) match {
+    sessionData.fetchReference match {
       case Some(reference) => Future.successful(reference)
       case None =>
         ninoService.getNino(sessionData) flatMap { nino =>

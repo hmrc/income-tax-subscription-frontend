@@ -19,7 +19,7 @@ package controllers.individual.tasklist
 import auth.individual.SignUpController
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
-import models.SessionData.Data
+import models.SessionData
 import models.audits.SaveAndComebackAuditing
 import models.audits.SaveAndComebackAuditing.SaveAndComeBackAuditModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -73,7 +73,7 @@ class ProgressSavedController @Inject()(progressSavedView: ProgressSaved,
       }
   }
 
-  private def retrieveAuditData(sessionData: Data, reference: String, location: String)(implicit hc: HeaderCarrier): Future[SaveAndComeBackAuditModel] = {
+  private def retrieveAuditData(sessionData: SessionData, reference: String, location: String)(implicit hc: HeaderCarrier): Future[SaveAndComeBackAuditModel] = {
 
     for {
       nino <- ninoService.getNino(sessionData)

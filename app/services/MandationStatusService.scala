@@ -17,7 +17,7 @@
 package services
 
 import connectors.MandationStatusConnector
-import models.SessionData.Data
+import models.SessionData
 import models.status.MandationStatusModel
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
@@ -31,8 +31,8 @@ class MandationStatusService @Inject()(mandationStatusConnector: MandationStatus
                                        sessionDataService: SessionDataService)
                                       (implicit ec: ExecutionContext) {
 
-  def getMandationStatus(sessionData: Data = Map())(implicit hc: HeaderCarrier): Future[MandationStatusModel] = {
-    sessionDataService.fetchMandationStatus(sessionData) match {
+  def getMandationStatus(sessionData: SessionData = SessionData())(implicit hc: HeaderCarrier): Future[MandationStatusModel] = {
+    sessionData.fetchMandationStatus match {
       case Some(mandationStatus) => Future.successful(mandationStatus)
       case None =>
         ninoService.getNino(sessionData) flatMap { nino =>

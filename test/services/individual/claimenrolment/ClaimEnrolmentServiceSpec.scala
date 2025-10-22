@@ -51,7 +51,7 @@ class ClaimEnrolmentServiceSpec extends PlaySpec
     mockEnrolmentService,
     mockSessionDataService
   ) {
-    mockSessionData()
+    mockGetAllSessionData()
   }
 
   implicit val request: Request[AnyContent] = FakeRequest()

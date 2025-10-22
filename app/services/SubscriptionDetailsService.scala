@@ -20,7 +20,7 @@ import connectors.IncomeTaxSubscriptionConnector
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsResponse
 import connectors.httpparser.RetrieveReferenceHttpParser.RetrieveReferenceResponse
 import connectors.httpparser.{DeleteSubscriptionDetailsHttpParser, PostSubscriptionDetailsHttpParser}
-import models.SessionData.Data
+import models.SessionData
 import models._
 import models.common._
 import models.common.business._
@@ -54,11 +54,11 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
   def savePrePopFlag(reference: String, prepop: Boolean)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] =
     incomeTaxSubscriptionConnector.saveSubscriptionDetails[Boolean](reference, PrePopFlag, prepop)
 
-  private def getEligibilityNextYearOnly(sessionData: Data)(implicit hc: HeaderCarrier): Future[Boolean] = {
+  private def getEligibilityNextYearOnly(sessionData: SessionData)(implicit hc: HeaderCarrier): Future[Boolean] = {
     eligibilityStatusService.getEligibilityStatus(sessionData).map(_.eligibleNextYearOnly)
   }
 
-  private def getMandationForCurrentYear(sessionData: Data)(implicit hc: HeaderCarrier): Future[Boolean] = {
+  private def getMandationForCurrentYear(sessionData: SessionData)(implicit hc: HeaderCarrier): Future[Boolean] = {
     mandationStatusService.getMandationStatus(sessionData).map(_.currentYearStatus.isMandated)
   }
 

@@ -20,7 +20,6 @@ import config.AppConfig
 import connectors.httpparser.DeleteSessionDataHttpParser.DeleteSessionDataResponse
 import connectors.httpparser.GetSessionDataHttpParser.GetSessionDataResponse
 import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataResponse
-import models.SessionData.Data
 import play.api.libs.json._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
@@ -48,8 +47,8 @@ class SessionDataConnector @Inject()(appConfig: AppConfig,
     http.GET[GetSessionDataResponse[T]](sessionDataUrl(id))
   }
 
-  def getAllSessionData()(implicit hc: HeaderCarrier, reads: Reads[Data]): Future[GetSessionDataResponse[Data]] = {
-    http.GET[GetSessionDataResponse[Data]](allSessionDataUrl())
+  def getAllSessionData()(implicit hc: HeaderCarrier, reads: Reads[Map[String, JsValue]]): Future[GetSessionDataResponse[Map[String, JsValue]]] = {
+    http.GET[GetSessionDataResponse[Map[String, JsValue]]](allSessionDataUrl())
   }
 
   def saveSessionData[T](id: String, data: T)(implicit hc: HeaderCarrier, writes: Writes[T]): Future[SaveSessionDataResponse] = {

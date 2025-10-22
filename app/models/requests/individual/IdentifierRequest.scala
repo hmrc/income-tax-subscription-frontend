@@ -16,7 +16,13 @@
 
 package models.requests.individual
 
-import models.SessionData.Data
+import models.SessionData
 import play.api.mvc.{Request, WrappedRequest}
 
-case class IdentifierRequest[A](request: Request[A], mtditid: Option[String], nino: String, utr: Option[String], sessionData: Data = Map()) extends WrappedRequest[A](request)
+case class IdentifierRequest[A](
+  request: Request[A],
+  mtditid: Option[String],
+  nino: String,
+  utr: Option[String],
+  sessionData: SessionData = SessionData()
+) extends WrappedRequest[A](request)

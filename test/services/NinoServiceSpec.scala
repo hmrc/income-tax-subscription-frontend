@@ -16,11 +16,14 @@
 
 package services
 
+import common.Constants.ITSASessionKeys
+import connectors.httpparser.SaveSessionDataHttpParser
 import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataSuccessResponse
-import connectors.httpparser.{GetSessionDataHttpParser, SaveSessionDataHttpParser}
+import models.SessionData
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.INTERNAL_SERVER_ERROR
+import play.api.libs.json.JsString
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import services.individual.mocks.MockAuthService
 import services.mocks.MockSessionDataService
@@ -44,37 +47,34 @@ class NinoServiceSpec extends PlaySpec with Matchers with MockAuthService with M
   "getNino" must {
     "return a nino" when {
       "the nino was returned from session" in new Setup {
-        mockFetchNino(Right(Some(testNino)))
+        mockGetAllSessionData(SessionData(Map(
+          ITSASessionKeys.NINO -> JsString(testNino)
+        )))
 
-        await(service.getNino(Map())) mustBe testNino
+        await(service.getNino(SessionData())) mustBe testNino
       }
       "the nino was returned from the users auth profile" in new Setup {
-        mockFetchNino(Right(None))
+        mockGetAllSessionData(SessionData())
         mockRetrievalSuccess[Option[String]](Some(testNino))
         mockSaveNino(testNino)(Right(SaveSessionDataSuccessResponse))
 
-        await(service.getNino(Map())) mustBe testNino
+        await(service.getNino(SessionData())) mustBe testNino
       }
     }
     "throw an exception" when {
-      "there was a problem fetching from session" in new Setup {
-        mockFetchNino(Left(GetSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
-
-        intercept[ClassCastException](await(service.getNino(Map())))
-      }
       "no nino was returned from auth" in new Setup {
-        mockFetchNino(Right(None))
+        mockGetAllSessionData(SessionData())
         mockRetrievalSuccess[Option[String]](None)
 
-        intercept[InternalServerException](await(service.getNino(Map())))
+        intercept[InternalServerException](await(service.getNino(SessionData())))
           .message mustBe "[NinoService][getNino] - Nino not present in auth"
       }
       "there was a problem saving the nino to session" in new Setup {
-        mockFetchNino(Right(None))
+        mockGetAllSessionData(SessionData())
         mockRetrievalSuccess[Option[String]](Some(testNino))
         mockSaveNino(testNino)(Left(SaveSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
-        intercept[InternalServerException](await(service.getNino(Map())))
+        intercept[InternalServerException](await(service.getNino(SessionData())))
           .message mustBe "[NinoService][getNino] - Failure when saving nino to session: UnexpectedStatusFailure(500)"
       }
     }

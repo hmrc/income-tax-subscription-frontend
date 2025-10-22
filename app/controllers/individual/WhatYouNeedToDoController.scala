@@ -49,9 +49,9 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
         reference <- referenceRetrieval.getIndividualReference(sessionData)
         mandationStatus <- mandationStatusService.getMandationStatus(sessionData)
         eligibilityStatus <- getEligibilityStatusService.getEligibilityStatus(sessionData)
-        usingSoftwareStatus = sessionDataService.fetchSoftwareStatus(sessionData)
+        usingSoftwareStatus = sessionData.fetchSoftwareStatus
         selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
-        consentYesNo = sessionDataService.fetchConsentStatus(sessionData)
+        consentYesNo = sessionData.fetchConsentStatus
       } yield {
         val taxYearSelection: Option[AccountingYear] = selectedTaxYear.map(_.accountingYear)
         Ok(whatYouNeedToDo(

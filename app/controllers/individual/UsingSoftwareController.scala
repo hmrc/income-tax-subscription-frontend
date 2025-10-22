@@ -62,7 +62,7 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
       for {
         sessionData <- sessionDataService.getAllSessionData()
       } yield {
-        val usingSoftwareStatus = sessionDataService.fetchSoftwareStatus(sessionData)
+        val usingSoftwareStatus = sessionData.fetchSoftwareStatus
         Ok(view(
           usingSoftwareForm = form.fill(usingSoftwareStatus),
           editMode = editMode
