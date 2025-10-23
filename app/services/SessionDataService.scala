@@ -79,6 +79,6 @@ class SessionDataService @Inject()(sessionDataConnector: SessionDataConnector) {
   }
 
   def saveEmailPassed(emailPassed: Boolean)(implicit hc: HeaderCarrier): Future[SaveSessionDataResponse] = {
-    sessionDataConnector.saveSessionData(ITSASessionKeys.EMAIL_PASSED, emailPassed.toString)
+    sessionDataConnector.saveSessionData(ITSASessionKeys.EMAIL_PASSED, JsBoolean(emailPassed))
   }
 }

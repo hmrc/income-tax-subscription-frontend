@@ -39,7 +39,7 @@ class SessionClearingService @Inject()(sessionDataService: SessionDataService)
     for {
       emailConsentCaptured <- fetchEmailConsentCaptured(sessionData)
       _ <- deleteSessionData
-      _ <- saveEmailConsentCaptured(emailConsentCaptured)
+      _ <- saveEmailConsentCaptured(emailConsentCaptured, sessionData)
     } yield {
       Redirect(nextPage)
         .addingToSession(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name)
@@ -70,12 +70,14 @@ class SessionClearingService @Inject()(sessionDataService: SessionDataService)
     }
   }
 
-  private def saveEmailConsentCaptured(emailConsentCaptured: Boolean)
+  private def saveEmailConsentCaptured(emailConsentCaptured: Boolean, sessionData: SessionData)
                                       (implicit hc: HeaderCarrier): Future[SaveSessionDataSuccess] = {
     if (emailConsentCaptured) {
       sessionDataService.saveEmailPassed(emailPassed = true) map {
         case Left(error) => throw new InternalServerException(s"[SessionClearingService][saveEmailConsentCaptured] - Unexpected failure: $error")
-        case Right(result) => result
+        case Right(result) =>
+          sessionData.saveEmailPassed(true)
+          result
       }
     } else {
       Future.successful(SaveSessionDataSuccessResponse)

@@ -140,7 +140,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
           ITSASessionKeys.EMAIL_PASSED -> JsBoolean(true)
         ))
         SessionDataConnectorStub.stubDeleteAllSessionData(OK)
-        SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.EMAIL_PASSED, "true")(OK)
+        SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.EMAIL_PASSED, true)(OK)
 
         When("I call POST /client-details")
         val res = IncomeTaxSubscriptionFrontend.submitClientDetails(newSubmission = Some(clientDetails), storedSubmission = None)
@@ -165,7 +165,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
           ITSASessionKeys.EMAIL_PASSED -> JsBoolean(true)
         ))
         SessionDataConnectorStub.stubDeleteAllSessionData(OK)
-        SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.EMAIL_PASSED, "true")(OK)
+        SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.EMAIL_PASSED, true)(OK)
 
         When("I call POST /client-details")
         val res = IncomeTaxSubscriptionFrontend.submitClientDetails(newSubmission = Some(clientDetails), storedSubmission = Some(clientDetails))
@@ -191,7 +191,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
           ITSASessionKeys.EMAIL_PASSED -> JsBoolean(true)
         ))
         SessionDataConnectorStub.stubDeleteAllSessionData(OK)
-        SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.EMAIL_PASSED, "true")(OK)
+        SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.EMAIL_PASSED, true)(OK)
 
         When("I call POST /client-details")
         val submittedUserDetails = clientDetails.copy(firstName = "NotMatching")

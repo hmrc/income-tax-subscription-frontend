@@ -53,7 +53,9 @@ class GetEligibilityStatusService @Inject()(getEligibilityStatusConnector: GetEl
         getEligibilityStatusConnector.getEligibilityStatus(nino, utr) flatMap {
           case Right(value) =>
             sessionDataService.saveEligibilityStatus(value) map {
-              case Right(_) => value
+              case Right(_) =>
+                sessionData.saveEligibilityStatus(value)
+                value
               case Left(error) => throw new SaveToSessionException(error.toString)
             }
           case Left(error) => throw new FetchFromAPIException(s"status = ${error.httpResponse.status}, body = ${error.httpResponse.body}")
@@ -67,7 +69,9 @@ class GetEligibilityStatusService @Inject()(getEligibilityStatusConnector: GetEl
       getEligibilityStatusConnector.getEligibilityStatus(utr) flatMap {
         case Right(value) =>
           sessionDataService.saveEligibilityStatus(value) map {
-            case Right(_) => value
+            case Right(_) =>
+              sessionData.saveEligibilityStatus(value)
+              value
             case Left(error) => throw new SaveToSessionException(error.toString)
           }
         case Left(error) => throw new FetchFromAPIException(s"status = ${error.httpResponse.status}, body = ${error.httpResponse.body}")

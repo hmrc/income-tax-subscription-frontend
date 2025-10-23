@@ -17,12 +17,12 @@
 package models
 
 import models.status.MandationStatusModel
-import play.api.libs.json.{JsError, JsSuccess, JsValue, Json, Reads}
+import play.api.libs.json.{JsBoolean, JsError, JsString, JsSuccess, JsValue, Json, Reads}
 import services.Throttle
 import _root_.common.Constants.ITSASessionKeys
 
 case class SessionData(
-  data: Map[String, JsValue] = Map()
+  initial: Map[String, JsValue] = Map()
 ) {
   implicit class JsObject(value: JsValue) {
     def toObject[T](implicit reads: Reads[T]): T = {
@@ -33,39 +33,127 @@ case class SessionData(
     }
   }
 
+  private val current =
+    collection.mutable.Map(initial.toSeq: _*)
+
+  private def deleteKey(key: String): Unit = {
+    current.filterInPlace(
+      (k, _) => k != key
+    )
+  }
+
   def fetchReference: Option[String] = {
-    data.get(ITSASessionKeys.REFERENCE).map(_.toObject[String])
+    current.get(ITSASessionKeys.REFERENCE).map(_.toObject[String])
   }
 
   def fetchThrottlePassed(throttle: Throttle): Option[Boolean] = {
-    data.get(ITSASessionKeys.throttlePassed(throttle)).map(_.toObject[Boolean])
+    current.get(ITSASessionKeys.throttlePassed(throttle)).map(_.toObject[Boolean])
   }
 
   def fetchMandationStatus: Option[MandationStatusModel] = {
-    data.get(ITSASessionKeys.MANDATION_STATUS).map(_.toObject[MandationStatusModel])
+    current.get(ITSASessionKeys.MANDATION_STATUS).map(_.toObject[MandationStatusModel])
   }
 
   def fetchEligibilityStatus: Option[EligibilityStatus] = {
-    data.get(ITSASessionKeys.ELIGIBILITY_STATUS).map(_.toObject[EligibilityStatus])
+    current.get(ITSASessionKeys.ELIGIBILITY_STATUS).map(_.toObject[EligibilityStatus])
   }
 
   def fetchNino: Option[String] = {
-    data.get(ITSASessionKeys.NINO).map(_.toObject[String])
+    current.get(ITSASessionKeys.NINO).map(_.toObject[String])
   }
 
   def fetchUTR: Option[String] = {
-    data.get(ITSASessionKeys.UTR).map(_.toObject[String])
+    current.get(ITSASessionKeys.UTR).map(_.toObject[String])
   }
 
   def fetchSoftwareStatus: Option[YesNo] = {
-    data.get(ITSASessionKeys.HAS_SOFTWARE).map(_.toObject[YesNo])
+    current.get(ITSASessionKeys.HAS_SOFTWARE).map(_.toObject[YesNo])
   }
 
   def fetchConsentStatus: Option[YesNo] = {
-    data.get(ITSASessionKeys.CAPTURE_CONSENT).map(_.toObject[YesNo])
+    current.get(ITSASessionKeys.CAPTURE_CONSENT).map(_.toObject[YesNo])
   }
 
   def fetchEmailPassed: Option[Boolean] = {
-    data.get(ITSASessionKeys.EMAIL_PASSED).map(_.toObject[Boolean])
+    current.get(ITSASessionKeys.EMAIL_PASSED).map(_.toObject[Boolean])
   }
+
+  def saveReference(reference: String): Unit = {
+    current.put(ITSASessionKeys.REFERENCE, JsString(reference))
+  }
+
+  def saveThrottlePassed(throttle: Throttle): Unit = {
+    current.put(ITSASessionKeys.throttlePassed(throttle), JsBoolean(true))
+  }
+
+  def saveMandationStatus(mandationStatus: MandationStatusModel): Unit = {
+    current.put(ITSASessionKeys.MANDATION_STATUS, Json.toJson(mandationStatus))
+  }
+
+  def saveEligibilityStatus(eligibilityStatus: EligibilityStatus): Unit = {
+    current.put(ITSASessionKeys.ELIGIBILITY_STATUS, Json.toJson(eligibilityStatus))
+  }
+
+  def saveNino(nino: String): Unit = {
+    current.put(ITSASessionKeys.NINO, JsString(nino))
+  }
+
+  def saveUTR(utr: String): Unit = {
+    current.put(ITSASessionKeys.UTR, JsString(utr))
+  }
+
+  def saveSoftwareStatus(softwareStatus: YesNo): Unit = {
+    current.put(ITSASessionKeys.HAS_SOFTWARE, Json.toJson(softwareStatus))
+  }
+
+  def saveConsentStatus(consentStatus: YesNo): Unit = {
+    current.put(ITSASessionKeys.CAPTURE_CONSENT, Json.toJson(consentStatus))
+  }
+
+  def saveEmailPassed(emailPassed: Boolean): Unit = {
+    current.put(ITSASessionKeys.EMAIL_PASSED, JsBoolean(emailPassed))
+  }
+
+  def deleteReference(): Unit = {
+    deleteKey(ITSASessionKeys.REFERENCE)
+  }
+
+  def deleteThrottlePassed(throttle: Throttle): Unit = {
+    deleteKey(ITSASessionKeys.throttlePassed(throttle))
+  }
+
+  def deleteMandationStatus(): Unit = {
+    deleteKey(ITSASessionKeys.MANDATION_STATUS)
+  }
+
+  def deleteEligibilityStatus(): Unit = {
+    deleteKey(ITSASessionKeys.ELIGIBILITY_STATUS)
+  }
+
+  def deleteNino(): Unit = {
+    deleteKey(ITSASessionKeys.NINO)
+  }
+
+  def deleteUTR(): Unit = {
+    deleteKey(ITSASessionKeys.UTR)
+  }
+
+  def deleteSoftwareStatus(): Unit = {
+    deleteKey(ITSASessionKeys.HAS_SOFTWARE)
+  }
+
+  def deleteConsentStatus(): Unit = {
+    deleteKey(ITSASessionKeys.CAPTURE_CONSENT)
+  }
+
+  def deleteEmailPassed(): Unit = {
+    deleteKey(ITSASessionKeys.EMAIL_PASSED)
+  }
+
+  def clear(): Unit = {
+    current.clear()
+  }
+
+  def isEmpty: Boolean =
+    current.isEmpty
 }

@@ -25,17 +25,18 @@ import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionD
 import controllers.ControllerSpec
 import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}
 import forms.agent.AccountingYearForm
-import models.Yes.YES
+import models.{AccountingYear, EligibilityStatus, SessionData}
 import models.common.AccountingYearModel
 import models.status.MandationStatus.Voluntary
-import models.{AccountingYear, Current, EligibilityStatus, Next, SessionData, Yes}
 import play.api.http.Status
-import play.api.libs.json.{JsBoolean, JsString}
+import play.api.libs.json.JsBoolean
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import services.mocks._
 import uk.gov.hmrc.http.InternalServerException
 import views.agent.mocks.MockWhatYearToSignUp
+import models.Current
+import models.Next
 
 import scala.concurrent.Future
 

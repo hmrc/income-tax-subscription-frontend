@@ -82,6 +82,7 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
           for {
             sessionData <- sessionDataService.getAllSessionData()
             usingSoftwareStatus <- sessionDataService.saveSoftwareStatus(yesNo)
+            _ = sessionData.saveSoftwareStatus(yesNo)
             eligibilityStatus <- eligibilityStatusService.getEligibilityStatus(sessionData)
             mandationStatus <- mandationStatusService.getMandationStatus(sessionData)
           } yield {

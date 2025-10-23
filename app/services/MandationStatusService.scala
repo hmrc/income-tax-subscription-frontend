@@ -40,7 +40,9 @@ class MandationStatusService @Inject()(mandationStatusConnector: MandationStatus
             mandationStatusConnector.getMandationStatus(nino = nino, utr = utr) flatMap {
               case Right(mandationStatus) =>
                 sessionDataService.saveMandationStatus(mandationStatus) map {
-                  case Right(_) => mandationStatus
+                  case Right(_) =>
+                    sessionData.saveMandationStatus(mandationStatus)
+                    mandationStatus
                   case Left(error) => throw new SaveToSessionException(error.toString)
                 }
               case Left(error) => throw new FetchFromAPIException(error.toString)
