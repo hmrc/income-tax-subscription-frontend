@@ -18,9 +18,9 @@ package services.individual
 
 import common.Constants
 import common.Constants.GovernmentGateway._
-import config.AppConfig
-import connectors.individual.subscription.TaxEnrolmentsConnector
-import models.common.subscription.{EmacEnrolmentRequest, EnrolFailure, EnrolSuccess, EnrolmentKey}
+import connectors.individual.TaxEnrolmentsConnector
+import connectors.individual.httpparsers.AllocateEnrolmentResponseHttpParser.{EnrolFailure, EnrolSuccess}
+import models.common.subscription.{EmacEnrolmentRequest, EnrolmentKey}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
@@ -31,8 +31,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EnrolmentService @Inject()(config: AppConfig,
-                                 enrolmentStoreConnector: TaxEnrolmentsConnector,
+class EnrolmentService @Inject()(enrolmentStoreConnector: TaxEnrolmentsConnector,
                                  authConnector: AuthConnector)(implicit ec: ExecutionContext) {
 
   def enrol(mtditId: String, nino: String)(implicit hc: HeaderCarrier): Future[Either[EnrolFailure, EnrolSuccess.type]] = {

@@ -66,7 +66,7 @@ class SPSCallbackForClaimEnrolControllerSpec extends ControllerBaseSpec with Moc
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.individual.claimenrolment.routes.ClaimEnrolmentConfirmationController.show().url)
-        verifyConfirmPreferencesPostSpsConfirm("mtditid", "testId", Some(1))
+        verifyConfirmPreferencesPostSpsConfirm("testId", "mtditid")
       }
     }
     "mtditid failed to retrieve from claimEnrolmentService" should {

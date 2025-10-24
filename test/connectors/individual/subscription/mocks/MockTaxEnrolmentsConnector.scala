@@ -16,21 +16,28 @@
 
 package connectors.individual.subscription.mocks
 
-import connectors.individual.subscription.TaxEnrolmentsConnector
-import connectors.individual.subscription.httpparsers.AllocateEnrolmentResponseHttpParser.AllocateEnrolmentResponse
-import connectors.individual.subscription.httpparsers.UpsertEnrolmentResponseHttpParser.UpsertEnrolmentResponse
+import connectors.individual.TaxEnrolmentsConnector
+import connectors.individual.httpparsers.AllocateEnrolmentResponseHttpParser.{AllocateEnrolmentResponse, EnrolFailure, EnrolSuccess}
+import connectors.individual.httpparsers.UpsertEnrolmentResponseHttpParser.{KnownFactsFailure, KnownFactsSuccess, UpsertEnrolmentResponse}
 import models.common.subscription._
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.when
+import org.mockito.Mockito._
+import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.UnitTestTrait
 import utilities.individual.TestConstants.{testErrorMessage, testException}
 
 import scala.concurrent.Future
 
-trait MockTaxEnrolmentsConnector extends UnitTestTrait with MockitoSugar {
+trait MockTaxEnrolmentsConnector extends MockitoSugar with BeforeAndAfterEach {
+  suite: Suite =>
+
   val mockTaxEnrolmentsConnector: TaxEnrolmentsConnector = mock[TaxEnrolmentsConnector]
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockTaxEnrolmentsConnector)
+  }
 
   private def mockUpsertEnrolment(enrolmentKey: EnrolmentKey,
                                   enrolmentVerifiers: EnrolmentVerifiers
@@ -52,6 +59,17 @@ trait MockTaxEnrolmentsConnector extends UnitTestTrait with MockitoSugar {
   def mockUpsertEnrolmentException(enrolmentKey: EnrolmentKey,
                                    enrolmentVerifiers: EnrolmentVerifiers): Unit =
     mockUpsertEnrolment(enrolmentKey, enrolmentVerifiers)(Future.failed(testException))
+
+  def verifyUpsertEnrolment(enrolmentKey: EnrolmentKey,
+                            enrolmentVerifiers: EnrolmentVerifiers,
+                            count: Int = 1): Unit = {
+    verify(mockTaxEnrolmentsConnector, times(count))
+      .upsertEnrolment(
+        ArgumentMatchers.eq(enrolmentKey),
+        ArgumentMatchers.eq(enrolmentVerifiers)
+      )(ArgumentMatchers.any())
+  }
+
 
   private def mockAllocateEnrolment(groupId: String,
                                     enrolmentKey: EnrolmentKey,
@@ -78,4 +96,17 @@ trait MockTaxEnrolmentsConnector extends UnitTestTrait with MockitoSugar {
                                      enrolmentKey: EnrolmentKey,
                                      enrolmentRequest: EmacEnrolmentRequest): Unit =
     mockAllocateEnrolment(groupId, enrolmentKey, enrolmentRequest)(Future.failed(testException))
+
+  def verifyAllocateEnrolment(groupId: String,
+                              enrolmentKey: EnrolmentKey,
+                              enrolmentRequest: EmacEnrolmentRequest,
+                              count: Int = 1): Unit = {
+    verify(mockTaxEnrolmentsConnector, times(count))
+      .allocateEnrolment(
+        ArgumentMatchers.eq(groupId),
+        ArgumentMatchers.eq(enrolmentKey),
+        ArgumentMatchers.eq(enrolmentRequest)
+      )(ArgumentMatchers.any())
+  }
+
 }

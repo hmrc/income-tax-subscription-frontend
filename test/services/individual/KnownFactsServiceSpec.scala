@@ -18,29 +18,27 @@ package services.individual
 
 import common.Constants
 import common.Constants.GovernmentGateway._
-import config.featureswitch.FeatureSwitchingImpl
-import config.{AppConfig, MockConfig}
-import models.common.subscription.{EnrolmentKey, EnrolmentVerifiers, KnownFactsFailure, KnownFactsSuccess}
+import connectors.individual.httpparsers.UpsertEnrolmentResponseHttpParser.{KnownFactsFailure, KnownFactsSuccess}
+import connectors.individual.subscription.mocks.MockTaxEnrolmentsConnector
+import models.common.subscription.{EnrolmentKey, EnrolmentVerifiers}
 import org.scalatest.concurrent.ScalaFutures
-import services.individual.mocks.TestKnownFactsService
-import utilities.UnitTestTrait
+import org.scalatestplus.play.PlaySpec
+import uk.gov.hmrc.http.HeaderCarrier
 import utilities.individual.TestConstants._
 
 import scala.concurrent.Future
 
-class KnownFactsServiceSpec extends UnitTestTrait with TestKnownFactsService with ScalaFutures {
+class KnownFactsServiceSpec extends PlaySpec with ScalaFutures with MockTaxEnrolmentsConnector {
 
-  val configuration = MockConfig.configuration
-  override val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-  val featureSwitching = new FeatureSwitchingImpl(appConfig)
+  object TestKnownFactsService extends KnownFactsService(mockTaxEnrolmentsConnector)
 
   "addKnownFacts" should {
 
     def result: Future[Either[KnownFactsFailure, KnownFactsSuccess.type]] =
       TestKnownFactsService.addKnownFacts(testMTDID, testNino)
 
-      val testEnrolmentKey = EnrolmentKey(Constants.mtdItsaEnrolmentName, MTDITID -> testMTDID)
-      val testEnrolmentVerifiers = EnrolmentVerifiers(NINO -> testNino)
+    val testEnrolmentKey = EnrolmentKey(Constants.mtdItsaEnrolmentName, MTDITID -> testMTDID)
+    val testEnrolmentVerifiers = EnrolmentVerifiers(NINO -> testNino)
 
     "return a success from the EnrolmentStoreConnector" in {
       mockUpsertEnrolmentSuccess(testEnrolmentKey, testEnrolmentVerifiers)
@@ -61,5 +59,6 @@ class KnownFactsServiceSpec extends UnitTestTrait with TestKnownFactsService wit
     }
   }
 
+  implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
 }

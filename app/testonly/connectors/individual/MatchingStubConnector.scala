@@ -18,13 +18,13 @@
 
 package testonly.connectors.individual
 
-import connectors.RawResponseReads
 import models.DateModel
 import play.api.Logging
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json, OFormat}
 import testonly.TestOnlyAppConfig
 import testonly.models.UserToStubModel
+import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
 import java.time.LocalDate
@@ -32,7 +32,6 @@ import java.time.format.{DateTimeFormatter, ResolverStyle}
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.language.implicitConversions
-
 
 case class Value(value: String)
 
@@ -99,9 +98,9 @@ object Request {
 @Singleton
 class MatchingStubConnector @Inject()(appConfig: TestOnlyAppConfig,
                                       http: HttpClient)
-                                     (implicit ec: ExecutionContext) extends RawResponseReads with Logging {
+                                     (implicit ec: ExecutionContext) extends Logging {
 
-  lazy val dynamicStubUrl: String = appConfig.matchingStubsURL + "/dynamic-cid"
+  private lazy val dynamicStubUrl: String = appConfig.matchingStubsURL + "/dynamic-cid"
 
   /*
   *  N.B. This creates a stubbed user via the MatchingStubs service

@@ -18,8 +18,8 @@ package connectors.individual.subscription.mocks
 
 import auth.MockHttp
 import config.AppConfig
-import connectors.individual.subscription.SubscriptionConnector
-import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
+import connectors.SubscriptionConnector
+import connectors.httpparser.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import models.common.subscription.{SubscriptionFailureResponse, SubscriptionSuccess}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._

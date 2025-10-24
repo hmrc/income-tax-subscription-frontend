@@ -40,7 +40,7 @@ class AutoEnrolmentService @Inject()(enrolmentStoreProxyConnector: EnrolmentStor
                                     (implicit ec: ExecutionContext) extends Logging {
 
   private def logError(location: String, nino: String, detail: String): Unit = {
-    logger.error(s"[AutoEnrolmentService][$location] - Auto enrolment failed for nino: $nino - $detail")
+    logger.warn(s"[AutoEnrolmentService][$location] - Auto enrolment failed for nino: $nino - $detail")
   }
 
   def autoClaimEnrolment(utr: String, nino: String, mtditid: String)(implicit hc: HeaderCarrier): Future[AutoClaimEnrolmentResponse] = {

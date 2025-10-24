@@ -81,7 +81,7 @@ class ClaimEnrolmentService @Inject()(subscriptionService: SubscriptionService,
   }
 
   private def addKnownFacts(nino: String, mtditid: String)(implicit hc: HeaderCarrier): Future[ClaimEnrolmentResponse] = {
-    knownFactsService.addKnownFacts(mtditId = mtditid, nino = nino) map {
+    knownFactsService.addKnownFacts(mtditid = mtditid, nino = nino) map {
       case Right(_) =>
         Right(ClaimEnrolmentSuccess(nino, mtditid))
       case Left(response) =>

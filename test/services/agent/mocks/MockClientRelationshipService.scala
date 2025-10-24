@@ -19,14 +19,15 @@ package services.agent.mocks
 import connectors.agent.mocks.MockAgentServicesConnector
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
-import org.scalatest.BeforeAndAfterEach
+import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import services.agent.ClientRelationshipService
-import utilities.UnitTestTrait
 
 import scala.concurrent.Future
 
-trait MockClientRelationshipService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
+trait MockClientRelationshipService extends MockitoSugar with BeforeAndAfterEach {
+  suite: Suite =>
+
   val mockClientRelationshipService: ClientRelationshipService = mock[ClientRelationshipService]
 
   override def beforeEach(): Unit = {
@@ -35,19 +36,37 @@ trait MockClientRelationshipService extends UnitTestTrait with MockitoSugar with
   }
 
   def preExistingRelationship(arn: String, nino: String)(isPreExistingRelationship: Boolean): Unit =
-    when(mockClientRelationshipService.isPreExistingRelationship(arn, nino)).thenReturn(Future.successful(isPreExistingRelationship))
+    when(mockClientRelationshipService.isPreExistingRelationship(
+      ArgumentMatchers.eq(arn),
+      ArgumentMatchers.eq(nino)
+    )(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(isPreExistingRelationship))
 
   def preExistingRelationshipFailure(arn: String, nino: String)(failure: Throwable): Unit =
-    when(mockClientRelationshipService.isPreExistingRelationship(arn, nino)).thenReturn(Future.failed(failure))
+    when(mockClientRelationshipService.isPreExistingRelationship(
+      ArgumentMatchers.eq(arn),
+      ArgumentMatchers.eq(nino)
+    )(ArgumentMatchers.any()))
+      .thenReturn(Future.failed(failure))
 
   def preExistingMTDRelationship(arn: String, nino: String)(isPreExistingMTDRelationship: Boolean): Unit =
-    when(mockClientRelationshipService.isMTDPreExistingRelationship(arn, nino)).thenReturn(Future.successful(isPreExistingMTDRelationship))
+    when(mockClientRelationshipService.isMTDPreExistingRelationship(
+      ArgumentMatchers.eq(arn),
+      ArgumentMatchers.eq(nino)
+    )(ArgumentMatchers.any())).thenReturn(Future.successful(Right(isPreExistingMTDRelationship)))
 
   def preExistingMTDRelationshipFailure(arn: String, nino: String)(failure: Throwable): Unit =
-    when(mockClientRelationshipService.isMTDPreExistingRelationship(arn, nino)).thenReturn(Future.failed(failure))
+    when(mockClientRelationshipService.isMTDPreExistingRelationship(
+      ArgumentMatchers.eq(arn),
+      ArgumentMatchers.eq(nino)
+    )(ArgumentMatchers.any())).thenReturn(Future.failed(failure))
 
   def suppAgentRelationship(arn: String, nino: String)(isMTDSuppAgentRelationship: Boolean): Unit =
-    when(mockClientRelationshipService.isMTDSuppAgentRelationship(arn, nino)).thenReturn(Future.successful(isMTDSuppAgentRelationship))
+    when(mockClientRelationshipService.isMTDSuppAgentRelationship(
+      ArgumentMatchers.eq(arn),
+      ArgumentMatchers.eq(nino)
+    )(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(Right(isMTDSuppAgentRelationship)))
 
 
   def verifyCheckPreExistingMTDRelationship(arn: String, nino: String, count: Int = 1): Unit = {

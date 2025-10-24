@@ -16,11 +16,7 @@
 
 package services
 
-import connectors.individual.subscription.httpparsers.CreateIncomeSourcesResponseHttpParser.PostCreateIncomeSourceResponse
-import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
-import connectors.individual.subscription.httpparsers.SignUpIncomeSourcesResponseHttpParser.PostSignUpIncomeSourcesResponse
-import models.common.subscription.SignUpSourcesFailure.SignUpIncomeSourcesFailureResponse
-import models.common.subscription.SignUpSuccessResponse.SignUpSuccessful
+import connectors.httpparser.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import models.common.subscription._
 import org.scalatest.EitherValues
 import org.scalatest.matchers.should.Matchers._
@@ -28,8 +24,6 @@ import play.api.test.Helpers._
 import services.mocks.TestSubscriptionService
 import utilities.individual.TestConstants
 import utilities.individual.TestConstants._
-
-import scala.concurrent.Future
 
 class SubscriptionServiceSpec extends TestSubscriptionService
   with EitherValues {
@@ -59,55 +53,6 @@ class SubscriptionServiceSpec extends TestSubscriptionService
     "return the error if subscription throws an exception" in {
       setupMockGetSubscriptionException(testNino)
       intercept[Exception](call) shouldBe testException
-    }
-  }
-
-  "SubscriptionService.signUpIncomeSources" should {
-
-    def call: PostSignUpIncomeSourcesResponse = await(TestSubscriptionService.signUpIncomeSources(
-      nino = testNino,
-      utr = testUtr,
-      taxYear = testTaxYear
-    ))
-
-    "return the mtdbsa id when the signUp is successful" in {
-      setupMockSignUpIncomeSourcesSuccess(testNino, testUtr, testTaxYear)
-      call.value shouldBe SignUpSuccessful(testMTDID)
-    }
-
-    "return the error if sign up fails on bad request" in {
-      setupMockSignUpIncomeSourcesFailure(testNino, testUtr, testTaxYear)
-      call.left.value shouldBe SignUpIncomeSourcesFailureResponse(BAD_REQUEST)
-    }
-
-    "return the error if subscription throws an exception" in {
-      setupMockSignUpIncomeSourcesException(testNino, testUtr, testTaxYear)
-      intercept[Exception](call) shouldBe testException
-    }
-  }
-
-  "SubscriptionService.createIncomeSourcesFromTaskList" should {
-    def call: Future[PostCreateIncomeSourceResponse] = TestSubscriptionService.createIncomeSourcesFromTaskList(
-      mtdbsa = testMTDID,
-      testCreateIncomeSources
-    )
-
-    "return the list of income source ids when the create is successful" in {
-      setupMockCreateIncomeSourcesFromTaskListSuccess(testMTDID,
-        testCreateIncomeSources)
-      await(call).value shouldBe CreateIncomeSourcesSuccess
-    }
-
-    "return the error if create fails on bad request" in {
-      setupMockCreateIncomeSourcesFromTaskListFailure(testMTDID,
-        testCreateIncomeSources)
-      await(call).left.value shouldBe CreateIncomeSourcesFailure(BAD_REQUEST)
-    }
-
-    "return the error if subscription throws an exception" in {
-      setupMockCreateIncomeSourcesFromTaskListException(testMTDID,
-        testCreateIncomeSources)
-      intercept[Exception](await(call)) shouldBe testException
     }
   }
 
