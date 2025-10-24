@@ -18,7 +18,7 @@ package controllers.agent
 
 import common.Constants.ITSASessionKeys
 import connectors.agent.httpparsers.QueryUsersHttpParser.principalUserIdKey
-import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, MultipleIncomeSourcesSubscriptionAPIStub, SessionDataConnectorStub, UsersGroupsSearchStub}
+import connectors.stubs._
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
 import helpers.WiremockHelper.verifyPost
@@ -26,19 +26,18 @@ import helpers.agent._
 import helpers.agent.servicemocks.{AgentServicesStub, AuthStub}
 import helpers.servicemocks.EnrolmentStoreProxyStub
 import helpers.servicemocks.EnrolmentStoreProxyStub.jsonResponseBody
-import models.common.subscription.{CreateIncomeSourcesModel, SignUpModel}
+import models._
+import models.common.subscription.{CreateIncomeSourcesModel, SignUpRequestModel}
 import models.sps.AgentSPSPayload
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
-import models.{DateModel, EligibilityStatus, Next, Yes}
 import play.api.http.Status._
 import play.api.libs.json.{JsString, Json}
-import utilities.AccountingPeriodUtil
 import utilities.SubscriptionDataKeys._
 
 class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
-  def testSignUpModel(taxYear: String): SignUpModel = SignUpModel(
+  def testSignUpModel(taxYear: AccountingYear): SignUpRequestModel = SignUpRequestModel(
     nino = testNino,
     utr = testUtr,
     taxYear = taxYear
@@ -187,8 +186,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             AgentServicesStub.stubMTDClientRelationship(testARN, testNino, exists = true)
             AgentServicesStub.stubMTDSuppAgentRelationship(testARN, testNino, exists = false)
 
-            MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testSignUpModel(AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear))(OK)
-            MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
+            SignUpAPIStub.stubSignUp(testSignUpModel(Current))(OK, Json.obj("mtdbsa" -> testMtdId))
+            CreateIncomeSourcesAPIStub.stubCreateIncomeSources(
               mtdbsa = testMtdId,
               request = CreateIncomeSourcesModel(
                 nino = testNino,
@@ -257,8 +256,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             AgentServicesStub.stubMTDClientRelationship(testARN, testNino, exists = false)
             AgentServicesStub.stubMTDSuppAgentRelationship(testARN, testNino, exists = true)
 
-            MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testSignUpModel(AccountingPeriodUtil.getNextTaxYear.toLongTaxYear))(OK)
-            MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
+            SignUpAPIStub.stubSignUp(testSignUpModel(Next))(OK, Json.obj("mtdbsa" -> testMtdId))
+            CreateIncomeSourcesAPIStub.stubCreateIncomeSources(
               mtdbsa = testMtdId,
               request = CreateIncomeSourcesModel(
                 nino = testNino,
@@ -309,7 +308,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             ITSASessionKeys.UTR -> JsString(testUtr)
           ))
 
-          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testSignUpModel(AccountingPeriodUtil.getNextTaxYear.toLongTaxYear))(UNPROCESSABLE_ENTITY)
+          SignUpAPIStub.stubSignUp(testSignUpModel(Next))(UNPROCESSABLE_ENTITY)
 
           When("POST /client/final-check-your-answers is called")
           val res = IncomeTaxSubscriptionFrontend.submitAgentGlobalCheckYourAnswers(Some(Yes))()
@@ -349,7 +348,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             ITSASessionKeys.UTR -> JsString(testUtr)
           ))
 
-          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testSignUpModel(AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear))(INTERNAL_SERVER_ERROR)
+          SignUpAPIStub.stubSignUp(testSignUpModel(Current))(INTERNAL_SERVER_ERROR)
 
           When("POST /client/final-check-your-answers is called")
           val res = IncomeTaxSubscriptionFrontend.submitAgentGlobalCheckYourAnswers(Some(Yes))()
@@ -386,8 +385,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             ITSASessionKeys.UTR -> JsString(testUtr)
           ))
 
-          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSignUp(testSignUpModel(AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear))(OK)
-          MultipleIncomeSourcesSubscriptionAPIStub.stubPostSubscriptionForTaskList(
+          SignUpAPIStub.stubSignUp(testSignUpModel(Current))(OK)
+          CreateIncomeSourcesAPIStub.stubCreateIncomeSources(
             mtdbsa = testMtdId,
             request = CreateIncomeSourcesModel(
               nino = testNino,

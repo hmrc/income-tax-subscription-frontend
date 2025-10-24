@@ -16,11 +16,8 @@
 
 package services
 
-import connectors.individual.subscription.httpparsers.CreateIncomeSourcesResponseHttpParser.PostCreateIncomeSourceResponse
-import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
-import connectors.individual.subscription.httpparsers.SignUpIncomeSourcesResponseHttpParser.PostSignUpIncomeSourcesResponse
-import connectors.individual.subscription.{MultipleIncomeSourcesSubscriptionConnector, SubscriptionConnector}
-import models.common.subscription.CreateIncomeSourcesModel
+import connectors.SubscriptionConnector
+import connectors.httpparser.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -28,26 +25,11 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
-class SubscriptionService @Inject()(multipleIncomeSourcesSubscriptionConnector: MultipleIncomeSourcesSubscriptionConnector,
-                                    subscriptionConnector: SubscriptionConnector
-                                   ) extends Logging {
+class SubscriptionService @Inject()(subscriptionConnector: SubscriptionConnector) extends Logging {
 
   def getSubscription(nino: String)(implicit hc: HeaderCarrier): Future[GetSubscriptionResponse] = {
     logger.debug(s"Getting subscription for nino=$nino")
     subscriptionConnector.getSubscription(nino)
-  }
-
-  def signUpIncomeSources(nino: String, utr: String, taxYear: String)(implicit hc: HeaderCarrier): Future[PostSignUpIncomeSourcesResponse] = {
-    logger.debug(s"SignUp IncomeSources request for nino:$nino")
-    multipleIncomeSourcesSubscriptionConnector.signUp(nino, utr, taxYear)
-  }
-
-  def createIncomeSourcesFromTaskList(mtdbsa: String,
-                                      createIncomeSourcesModel: CreateIncomeSourcesModel)
-                                     (implicit hc: HeaderCarrier): Future[PostCreateIncomeSourceResponse] = {
-    logger.debug(s"Create IncomeSources request for MTDSA Id:$mtdbsa from task list")
-
-    multipleIncomeSourcesSubscriptionConnector.createIncomeSourcesFromTaskList(mtdbsa, createIncomeSourcesModel)
   }
 
 }

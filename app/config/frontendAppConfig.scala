@@ -39,7 +39,7 @@ trait AppConfig {
 
   val userMatchingUrl: String
   val clientMatchingUrl: String
-  val signUpIncomeSourcesUrl: String
+  val signUpUrl: String
   val createIncomeSourcesUrl: String
   val authUrl: String
   val preferencesFrontend: String
@@ -153,7 +153,7 @@ class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Con
   override lazy val subscriptionUrl = s"$microServiceUrl/income-tax-subscription/subscription"
   override lazy val userMatchingUrl = s"$microServiceUrl/income-tax-subscription/client-matching"
   override lazy val clientMatchingUrl = s"$microServiceUrl/income-tax-subscription/client-matching"
-  override lazy val signUpIncomeSourcesUrl = s"$microServiceUrl/income-tax-subscription/mis/sign-up"
+  override lazy val signUpUrl = s"$microServiceUrl/income-tax-subscription/mis/sign-up"
   override lazy val createIncomeSourcesUrl = s"$microServiceUrl/income-tax-subscription/mis/create"
   override lazy val channelPreferencesUrl: String = config.baseUrl("channel-preferences")
   override lazy val throttlingUrl = s"$microServiceUrl/income-tax-subscription/throttled"

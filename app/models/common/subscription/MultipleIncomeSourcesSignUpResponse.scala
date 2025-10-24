@@ -31,13 +31,13 @@ object SignUpSuccessResponse {
 
 }
 
-sealed trait SignUpIncomeSourcesFailure extends ConnectorError
+sealed trait SignUpFailureResponse extends ConnectorError
 
-object SignUpSourcesFailure {
+object SignUpFailureResponse {
 
-  case object BadlyFormattedSignUpIncomeSourcesResponse extends SignUpIncomeSourcesFailure
+  case object InvalidJson extends SignUpFailureResponse
 
-  case class SignUpIncomeSourcesFailureResponse(status: Int) extends SignUpIncomeSourcesFailure
+  case class UnexpectedStatus(status: Int) extends SignUpFailureResponse
 
 }
 

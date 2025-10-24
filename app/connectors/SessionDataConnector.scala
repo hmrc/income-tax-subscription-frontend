@@ -59,7 +59,7 @@ class SessionDataConnector @Inject()(appConfig: AppConfig,
     http.DELETE[DeleteSessionDataResponse](sessionDataUrl(id))
   }
 
-  def  deleteAllSessionData(implicit hc: HeaderCarrier): Future[DeleteSessionDataResponse] = {
+  def deleteAllSessionData(implicit hc: HeaderCarrier): Future[DeleteSessionDataResponse] = {
     http.DELETE[DeleteSessionDataResponse](sessionIdDataUrl())
   }
 

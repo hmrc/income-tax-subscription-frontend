@@ -18,14 +18,14 @@ package services.mocks
 
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
-import org.scalatest.BeforeAndAfterEach
+import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import services.SPSService
-import utilities.UnitTestTrait
 
 import scala.concurrent.Future
 
-trait MockSpsService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
+trait MockSpsService extends MockitoSugar with BeforeAndAfterEach {
+  suite: Suite =>
 
   val mockSpsService: SPSService = mock[SPSService]
   val testEntityId = "testEntityId"
@@ -40,10 +40,11 @@ trait MockSpsService extends UnitTestTrait with MockitoSugar with BeforeAndAfter
     when(mockSpsService.confirmPreferences(ArgumentMatchers.eq(testMtditid), ArgumentMatchers.eq(Some(testEntityId)))(ArgumentMatchers.any()))
       .thenReturn(Future.successful(()))
 
-  def verifyConfirmPreferencesPostSpsConfirm(testEntityId: String, testMtditid: String, someCount: Option[Int]): Unit =
-    someCount foreach (count =>
-      verify(mockSpsService, times(count))
-        .confirmPreferences(ArgumentMatchers.eq(testEntityId), ArgumentMatchers.eq(Some(testMtditid)))(
-          ArgumentMatchers.any()))
+  def verifyConfirmPreferencesPostSpsConfirm(testEntityId: String, testMtditid: String, count: Int = 1): Unit =
+    verify(mockSpsService, times(count))
+      .confirmPreferences(
+        ArgumentMatchers.eq(testMtditid),
+        ArgumentMatchers.eq(Some(testEntityId))
+      )(ArgumentMatchers.any())
 
 }

@@ -20,20 +20,20 @@ import models.Current
 import models.common.AccountingYearModel
 import models.common.BusinessAccountingPeriod.SixthAprilToFifthApril
 import models.common.business.Address
-import models.common.subscription.{CreateIncomeSourcesModel, SubscriptionFailureResponse}
+import models.common.subscription.CreateIncomeSourcesModel
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
+import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.GetCompleteDetailsService
 import services.GetCompleteDetailsService._
-import services.individual.mocks.MockSubscriptionOrchestrationService
+import services.individual.SignUpOrchestrationService
 import services.mocks._
 import uk.gov.hmrc.http.InternalServerException
-import utilities.individual.TestConstants.{testNino, testUtr}
+import utilities.individual.TestConstants.{testNino, testSpsEntityId, testUtr}
 import views.html.individual.GlobalCheckYourAnswers
 
 import java.time.LocalDate
@@ -42,14 +42,13 @@ import scala.concurrent.Future
 class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
   with MockAuditingService
   with MockSubscriptionDetailsService
-  with MockSubscriptionOrchestrationService
   with MockNinoService
   with MockUTRService
   with MockReferenceRetrieval
   with MockSessionDataService {
 
   object TestGlobalCheckYourAnswersController extends GlobalCheckYourAnswersController(
-    subscriptionService = mockSubscriptionOrchestrationService,
+    signUpOrchestrationService = mock[SignUpOrchestrationService],
     getCompleteDetailsService = mock[GetCompleteDetailsService],
     subscriptionDetailsService = mockSubscriptionDetailsService,
     ninoService = mockNinoService,
@@ -72,9 +71,10 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
   trait Setup {
     val mockGetCompleteDetailsService: GetCompleteDetailsService = mock[GetCompleteDetailsService]
     val mockGlobalCheckYourAnswers: GlobalCheckYourAnswers = mock[GlobalCheckYourAnswers]
+    val mockSignUpOrchestrationService: SignUpOrchestrationService = mock[SignUpOrchestrationService]
 
     val controller: GlobalCheckYourAnswersController = new GlobalCheckYourAnswersController(
-      subscriptionService = mockSubscriptionOrchestrationService,
+      signUpOrchestrationService = mockSignUpOrchestrationService,
       getCompleteDetailsService = mockGetCompleteDetailsService,
       subscriptionDetailsService = mockSubscriptionDetailsService,
       ninoService = mockNinoService,
@@ -164,7 +164,13 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
           .thenReturn(Future.successful(Right(completeDetails)))
         mockGetNino(testNino)
         mockGetUTR(testUtr)
-        mockSignUpAndCreateIncomeSourcesFromTaskListSuccess(CreateIncomeSourcesModel.createIncomeSources(testNino, completeDetails))
+        when(mockSignUpOrchestrationService.orchestrateSignUp(
+          ArgumentMatchers.eq(testNino),
+          ArgumentMatchers.eq(testUtr),
+          ArgumentMatchers.eq(Current),
+          ArgumentMatchers.eq(CreateIncomeSourcesModel.createIncomeSources(testNino, completeDetails)),
+          ArgumentMatchers.eq(Some(testSpsEntityId))
+        )(ArgumentMatchers.any())).thenReturn(Future.successful(Right(SignUpOrchestrationService.SignUpOrchestrationSuccessful)))
 
         val result: Future[Result] = controller.submit(subscriptionRequest)
 
@@ -179,10 +185,16 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
           .thenReturn(Future.successful(Right(completeDetails)))
         mockGetNino(testNino)
         mockGetUTR(testUtr)
-        mockSignUpAndCreateIncomeSourcesFromTaskListFailure(CreateIncomeSourcesModel.createIncomeSources(testNino, completeDetails))
+        when(mockSignUpOrchestrationService.orchestrateSignUp(
+          ArgumentMatchers.eq(testNino),
+          ArgumentMatchers.eq(testUtr),
+          ArgumentMatchers.eq(Current),
+          ArgumentMatchers.eq(CreateIncomeSourcesModel.createIncomeSources(testNino, completeDetails)),
+          ArgumentMatchers.eq(Some(testSpsEntityId))
+        )(ArgumentMatchers.any())).thenReturn(Future.successful(Left(SignUpOrchestrationService.SignUpFailure)))
 
         intercept[InternalServerException](await(controller.submit(subscriptionRequest)))
-          .message mustBe s"[GlobalCheckYourAnswersController][submit] - failure response received from submission: ${SubscriptionFailureResponse(INTERNAL_SERVER_ERROR)}"
+          .message mustBe s"[GlobalCheckYourAnswersController][submit] - failure response received from submission: ${SignUpOrchestrationService.SignUpFailure}"
       }
     }
   }

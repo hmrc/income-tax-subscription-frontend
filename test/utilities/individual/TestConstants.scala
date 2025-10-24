@@ -18,9 +18,10 @@ package utilities.individual
 
 import common.Constants.GovernmentGateway.MTDITID
 import common.Constants.mtdItsaEnrolmentName
+import connectors.individual.httpparsers.AllocateEnrolmentResponseHttpParser.{EnrolFailure, EnrolSuccess}
+import connectors.individual.httpparsers.UpsertEnrolmentResponseHttpParser.{KnownFactsFailure, KnownFactsSuccess}
 import models.DateModel
 import models.common.business._
-import models.common.subscription.SignUpSourcesFailure.SignUpIncomeSourcesFailureResponse
 import models.common.subscription.SignUpSuccessResponse.{AlreadySignedUp, SignUpSuccessful}
 import models.common.subscription._
 import models.usermatching.{LockedOut, UserMatchFailureResponseModel, UserMatchSuccessResponseModel}
@@ -86,12 +87,6 @@ object TestConstants {
   val testSignUpIncomeSourcesSuccess = Right(SignUpSuccessful(testMTDID))
 
   val testAlreadySignUpIncomeSources = Right(AlreadySignedUp)
-
-  val testSignUpIncomeSourcesFailure = Left(SignUpIncomeSourcesFailureResponse(INTERNAL_SERVER_ERROR))
-
-  val testCreateIncomeSourcesFromTaskListSuccess = Right(CreateIncomeSourcesSuccess)
-
-  val testCreateIncomeSourcesFromTaskListFailure = Left(CreateIncomeSourcesFailure(INTERNAL_SERVER_ERROR))
 
   lazy val testSelfEmploymentData: Seq[SelfEmploymentData] =
     Seq(SelfEmploymentData
