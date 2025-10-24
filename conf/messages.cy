@@ -819,7 +819,7 @@ agent.cannot-report-yet.para1                                   = Mae dal yn bos
 agent.cannot-report-yet.para2                                   = Mae dal yn rhaid i’ch cleient <a class="govuk-link" id="sa" href="{0}">anfon Ffurflen Dreth Hunanasesiad</a>.
 
 ## Agent Sign Up Complete page
-agent.sign-up-complete.title                                    = Rydych wedi cofrestru {0} {1} i ddefnyddio meddalwedd i anfon diweddariadau ynghylch Treth Incwm
+agent.sign-up-complete.title                                    = Rydych wedi cofrestru {0} {1} i ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 agent.sign-up-complete.heading                                  = Cleient wedi’i gofrestru’n llwyddiannus
 agent.sign-up-complete.panel-client                             = Mae {0} {1}
 agent.sign-up-complete.signed-up-for-mtd                        = bellach wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.

@@ -831,7 +831,7 @@ agent.cannot-report-yet.para1                                   = You can still 
 agent.cannot-report-yet.para2                                   = Your client still needs to <a class="govuk-link" id="sa" href="{0}">send a Self Assessment tax return</a>.
 
 ## Agent Sign Up Complete page
-agent.sign-up-complete.title                                    = You have signed up {0} {1} to Sign up your clients for Making Tax Digital for Income Tax
+agent.sign-up-complete.title                                    = You have signed up {0} {1} to use Making Tax Digital for Income Tax
 agent.sign-up-complete.heading                                  = Client sign up complete
 agent.sign-up-complete.panel-client                             = {0} {1}
 agent.sign-up-complete.signed-up-for-mtd                        = is now signed up for Making Tax Digital for Income Tax.
