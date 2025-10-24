@@ -31,7 +31,7 @@ class AgentServicesConnector @Inject()(appConfig: AppConfig,
                                       (implicit ec: ExecutionContext) extends RawResponseReads with Logging {
 
   def agentClientURL(arn: String, nino: String): String = {
-    appConfig.agentMicroserviceUrl + AgentServicesConnector.agentClientURI(arn, nino)
+    appConfig.agentClientRelationshipsUrl + AgentServicesConnector.agentClientURI(arn, nino)
   }
 
   def isPreExistingRelationship(arn: String, nino: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
@@ -45,7 +45,7 @@ class AgentServicesConnector @Inject()(appConfig: AppConfig,
   }
 
   def agentMTDClientURL(arn: String, nino: String): String = {
-    appConfig.agentMicroserviceUrl + AgentServicesConnector.agentMTDClientURI(arn, nino)
+    appConfig.agentClientRelationshipsUrl + AgentServicesConnector.agentMTDClientURI(arn, nino)
   }
 
   def isMTDPreExistingRelationship(arn: String, nino: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
@@ -59,7 +59,7 @@ class AgentServicesConnector @Inject()(appConfig: AppConfig,
   }
 
   def suppAgentClientURL(arn: String, nino: String): String = {
-    appConfig.agentMicroserviceUrl + AgentServicesConnector.suppAgentClientURI(arn, nino)
+    appConfig.agentClientRelationshipsUrl + AgentServicesConnector.suppAgentClientURI(arn, nino)
   }
 
   def isMTDSuppAgentRelationship(arn: String, nino: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
