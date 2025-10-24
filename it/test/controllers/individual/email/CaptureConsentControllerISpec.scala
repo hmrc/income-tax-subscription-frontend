@@ -28,7 +28,7 @@ import play.api.libs.ws.WSResponse
 
 class CaptureConsentControllerISpec extends ComponentSpecBase {
 
-  val serviceNameGovUk = "Use software to send Income Tax updates - GOV.UK"
+  val serviceNameGovUk = "Sign up for Making Tax Digital for Income Tax - GOV.UK"
 
   s"GET ${routes.CaptureConsentController.show().url}" when {
     "the user is not authorised" must {

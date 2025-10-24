@@ -218,7 +218,7 @@ class CaptureConsentControllerISpec extends ComponentSpecBase {
     }
   }
 
-  lazy val serviceNameGovUk = "Use software to report your client’s Income Tax - GOV.UK"
+  lazy val serviceNameGovUk = "Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
 
   def showCaptureConsent(includeState: Boolean = true): WSResponse = {
     IncomeTaxSubscriptionFrontend.get("/capture-consent", ClientData.basicClientData, withJourneyStateSignUp = includeState)

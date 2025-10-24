@@ -31,7 +31,7 @@ import utilities.individual.TestConstants.testNino
 
 class UsingSoftwareControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
-  val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+  val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
 
   s"GET ${controllers.individual.routes.UsingSoftwareController.show().url}" when {
 

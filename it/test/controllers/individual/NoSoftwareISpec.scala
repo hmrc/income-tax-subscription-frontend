@@ -22,7 +22,7 @@ import play.api.http.Status.OK
 
 class NoSoftwareISpec extends ComponentSpecBase {
 
-  val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+  val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
 
   s"GET ${controllers.individual.routes.NoSoftwareController.show().url}" should {
     "return OK and show the No Software page" in {

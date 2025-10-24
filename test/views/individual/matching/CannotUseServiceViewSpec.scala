@@ -40,7 +40,7 @@ class CannotUseServiceViewSpec extends ViewSpecTrait {
   "The Cannot Use Service view" should {
 
     s"have the title '${MessageLookup.AlreadyEnrolled.title}'" in {
-      val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+      val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
       document.title() must be(MessageLookup.CannotUseService.title + serviceNameGovUk)
     }
 

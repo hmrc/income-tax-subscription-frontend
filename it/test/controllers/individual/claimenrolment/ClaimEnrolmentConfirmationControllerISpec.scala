@@ -31,7 +31,7 @@ class ClaimEnrolmentConfirmationControllerISpec extends ComponentSpecBase {
 
         When("GET /claim-enrolment/confirmation is called")
         val res = IncomeTaxSubscriptionFrontend.claimEnrolmentConfirmation()
-        val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+        val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
         Then("Should return a OK with the confirmation page")
         res must have(
           httpStatus(OK),

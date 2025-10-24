@@ -52,7 +52,7 @@ class ClaimEnrolmentAlreadySignedUpViewSpec extends ViewSpecTrait {
   "The Claim Enrolment Already Signed Up view" should {
 
     s"have the title '${MessageLookup.ClaimEnrolmentAlreadySignedUp.title}'" in {
-      val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+      val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
       document.title() must be(MessageLookup.ClaimEnrolmentAlreadySignedUp.title + serviceNameGovUk)
     }
 

@@ -63,7 +63,7 @@ object MessageLookup {
   }
 
   object ProgressSaved {
-    val title = "We have saved your progress - Use software to send Income Tax updates - GOV.UK"
+    val title = "We have saved your progress - Sign up for Making Tax Digital for Income Tax - GOV.UK"
 
     def contentSummary(expirationDate: String) = s"We’ll save your data until $expirationDate"
 
@@ -124,7 +124,7 @@ object MessageLookup {
   }
 
   object ThrottleStartOfJourneyAgent {
-    val title = "We are currently experiencing high levels of demand for this service - Use software to report your client’s Income Tax - GOV.UK"
+    val title = "We are currently experiencing high levels of demand for this service - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
     val heading = "We are currently experiencing high levels of demand for this service"
     val line1 = "You can not sign up your client to the Making Tax Digital for Income Tax service at the moment. If you would still like to access this service, try again shortly or sign out and come back later."
     val tryAgain = "Try again"
@@ -132,7 +132,7 @@ object MessageLookup {
   }
 
   object ThrottleStartOfJourneyIndividual {
-    val title = "There are currently too many people trying to sign up - Use software to send Income Tax updates - GOV.UK"
+    val title = "There are currently too many people trying to sign up - Sign up for Making Tax Digital for Income Tax - GOV.UK"
     val heading = "There are currently too many people trying to sign up"
     val line1 = "You can not finish signing up to the Making Tax Digital for Income Tax at the moment."
     val line2 = "If you want to continue, try again or sign out and come back later."
@@ -141,7 +141,7 @@ object MessageLookup {
   }
 
   object ThrottleEndofJourney {
-    val title = "You cannot complete signing-up at the moment - Use software to send Income Tax updates - GOV.UK"
+    val title = "You cannot complete signing-up at the moment - Sign up for Making Tax Digital for Income Tax - GOV.UK"
     val heading = "You cannot complete signing-up at the moment"
     val line_1 = "There are currently too many people using this service."
     val line_2 = "To finish signing up, try again or sign out and come back later."
@@ -151,7 +151,7 @@ object MessageLookup {
   }
 
   object ThrottleEndofJourneyAgent {
-    val title = "Your sign up cannot be completed right now - Use software to report your client’s Income Tax - GOV.UK"
+    val title = "Your sign up cannot be completed right now - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
     val heading = "Your sign up cannot be completed right now"
     val line_1 = "We are experiencing high levels of applications for this service and cannot complete your client’s sign up at the moment. Don’t worry, the details you have entered will be saved for 30 days."
     val line_2 = "To finish and complete signing up your client, try again or sign out and come back later."

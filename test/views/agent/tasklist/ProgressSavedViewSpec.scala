@@ -26,7 +26,7 @@ class ProgressSavedViewSpec extends ViewSpec {
   private val progressSavedView = app.injector.instanceOf[ProgressSaved]
 
   object ProgressSaved {
-    val title = "Your progress has been saved - Use software to report your client’s Income Tax - GOV.UK"
+    val title = "Your progress has been saved - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
 
     def contentSummary(expirationDate: String) = s"We will keep your client’s data until $expirationDate."
 

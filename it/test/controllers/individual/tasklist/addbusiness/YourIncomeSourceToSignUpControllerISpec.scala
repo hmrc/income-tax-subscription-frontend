@@ -32,7 +32,7 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
     super.beforeEach()
   }
 
-  val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+  val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
 
   s"GET ${routes.YourIncomeSourceToSignUpController.show.url}" should {
     "return SEE_OTHER to login page" when {

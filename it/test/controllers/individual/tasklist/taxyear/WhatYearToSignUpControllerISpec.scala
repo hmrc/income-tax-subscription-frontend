@@ -56,7 +56,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
         val toYear: String = AccountingPeriodUtil.getTaxEndYear(LocalDate.now()).toString
 
         val expectedText = removeHtmlMarkup(messages("business.what-year-to-sign-up.option-1", fromYear, toYear))
-        val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+        val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
         Then("Should return a OK with the What Year To Sign Up page")
         res must have(
           httpStatus(200),
@@ -79,7 +79,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
 
         When("GET /business/what-year-to-sign-up is called")
         val res = IncomeTaxSubscriptionFrontend.accountingYear()
-        val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+        val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
         Then("Should return a OK with the What Year To Sign Up page")
         res must have(
           httpStatus(200),

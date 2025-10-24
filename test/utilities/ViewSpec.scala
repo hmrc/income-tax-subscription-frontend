@@ -65,9 +65,9 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
 
     private val titlePrefix: String = if (error.isDefined) "Error: " else ""
     private val titleSuffix: String = if (isAgent) {
-      " - Use software to report your client’s Income Tax - GOV.UK"
+      " - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
     } else {
-      " - Use software to send Income Tax updates - GOV.UK"
+      " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
     }
 
     document.title mustBe s"$titlePrefix$title$titleSuffix"

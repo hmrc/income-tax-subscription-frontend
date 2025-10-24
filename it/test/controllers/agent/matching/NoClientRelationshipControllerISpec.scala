@@ -82,7 +82,7 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase {
     }
 
     "have a view with the correct title" in new Setup() {
-      val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
+      val serviceNameGovUk = " - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
       doc.title mustBe NoClientRelationshipMessages.title + serviceNameGovUk
     }
 

@@ -30,7 +30,7 @@ import play.api.libs.ws.WSResponse
 import utilities.SubscriptionDataKeys.SelectedTaxYear
 import utilities.individual.TestConstants.testNino
 class AccountingPeriodNonStandardControllerISpec extends ComponentSpecBase {
-  val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+  val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
   s"GET ${controllers.individual.accountingperiod.routes.AccountingPeriodNonStandardController.show.url}" should {
     "show the Non Standard Accounting Period page" in {
       Given("I setup the Wiremock stubs")

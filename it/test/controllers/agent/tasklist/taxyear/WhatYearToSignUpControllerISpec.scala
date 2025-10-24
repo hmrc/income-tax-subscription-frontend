@@ -42,7 +42,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
     disable(EmailCaptureConsent)
   }
 
-  val serviceNameGovUk: String = "Use software to report your client’s Income Tax - GOV.UK"
+  val serviceNameGovUk: String = "Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
 
   "GET /report-quarterly/income-and-expenses/sign-up/client/business/what-year-to-sign-up" when {
     "the Subscription Details Connector returns some data" should {
