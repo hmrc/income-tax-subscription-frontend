@@ -32,7 +32,7 @@ import utilities.SubscriptionDataKeys._
 
 class ConfirmationControllerISpec extends ComponentSpecBase {
 
-  val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+  val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
   val currentTaxYearRange = s"6 April ${AccountingPeriodUtil.getCurrentTaxEndYear - 1} to 5 April ${AccountingPeriodUtil.getCurrentTaxEndYear}"
   val nextTaxYearRange = s"6 April ${AccountingPeriodUtil.getNextTaxEndYear - 1} to 5 April ${AccountingPeriodUtil.getNextTaxEndYear}"
 

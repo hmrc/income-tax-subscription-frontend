@@ -24,7 +24,7 @@ import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 
 class BusinessAlreadyRemovedControllerISpec extends ComponentSpecBase with AuthRedirects {
 
-  val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
+  val serviceNameGovUk = " - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
 
   s"GET ${routes.BusinessAlreadyRemovedController.show.url}" must {
     "return OK with the page content" in {

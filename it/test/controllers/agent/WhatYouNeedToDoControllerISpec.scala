@@ -33,7 +33,7 @@ import utilities.agent.TestConstants.testUtr
 
 class WhatYouNeedToDoControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
-  val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
+  val serviceNameGovUk = " - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
 
   s"GET ${routes.WhatYouNeedToDoController.show().url}" must {
     "return SEE_OTHER to the login page" when {

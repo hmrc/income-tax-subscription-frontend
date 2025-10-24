@@ -45,7 +45,7 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
       res must have(
         httpStatus(OK),
         pageTitle(
-          s"${messages("business.check-your-answers.content.uk-property.title")} - Use software to send Income Tax updates - GOV.UK"
+          s"${messages("business.check-your-answers.content.uk-property.title")} - Sign up for Making Tax Digital for Income Tax - GOV.UK"
         )
       )
     }

@@ -477,12 +477,12 @@ trait ViewSpecTrait extends UnitTestTrait {
 
     if (isAgent) {
       s"$name must have the title '$title'" in {
-        val agentServiceNameGovUK = " - Use software to report your client’s Income Tax - GOV.UK"
+        val agentServiceNameGovUK = " - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
         document.title() mustBe title + agentServiceNameGovUK
       }
     } else {
       s"$name must have the title '$title'" in {
-        val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+        val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
         document.title() mustBe title + serviceNameGovUk
       }
     }

@@ -27,7 +27,7 @@ import utilities.agent.TestConstants.testUtr
 
 class IncomeSourcesIncompleteControllerISpec extends ComponentSpecBase {
 
-  val serviceNameGovUk = "Use software to report your client’s Income Tax - GOV.UK"
+  val serviceNameGovUk = "Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
 
   s"GET ${controllers.agent.tasklist.routes.IncomeSourcesIncompleteController.show.url}" when {
     "the user is unauthenticated" should {

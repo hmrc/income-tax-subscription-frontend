@@ -30,7 +30,7 @@ import utilities.SubscriptionDataKeys
 
 class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
 
-  private val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
+  private val serviceNameGovUk = " - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
 
   s"GET ${routes.YourIncomeSourceToSignUpController.show.url}" should {
     "return OK" when {

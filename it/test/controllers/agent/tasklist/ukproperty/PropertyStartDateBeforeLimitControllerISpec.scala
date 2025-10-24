@@ -33,7 +33,7 @@ class PropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBase {
 
   lazy val controller: PropertyStartDateBeforeLimitController = app.injector.instanceOf[PropertyStartDateBeforeLimitController]
 
-  val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
+  val serviceNameGovUk = " - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
 
   s"GET ${routes.PropertyStartDateBeforeLimitController.show().url}" when {
     "the user is unauthenticated" should {
@@ -124,7 +124,7 @@ class PropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBase {
 
         res must have(
           httpStatus(BAD_REQUEST),
-          pageTitle("Error: " + messages("agent.uk-property.start-date-before-limit.heading") + " - Use software to report your client’s Income Tax - GOV.UK")
+          pageTitle("Error: " + messages("agent.uk-property.start-date-before-limit.heading") + " - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK")
         )
       }
       "throw an exception" when {
