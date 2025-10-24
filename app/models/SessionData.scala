@@ -156,4 +156,9 @@ case class SessionData(
 
   def isEmpty: Boolean =
     current.isEmpty
+
+  def diff(): Map[String, JsValue] =
+    Map(current.filter(
+      e => !initial.get(e._1).contains(e._2)
+    ).toSeq: _*)
 }

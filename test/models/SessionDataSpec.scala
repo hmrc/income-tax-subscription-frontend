@@ -21,6 +21,7 @@ import models.status.MandationStatusModel
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.JsString
 import services.IndividualStartOfJourneyThrottle
+import _root_.common.Constants.ITSASessionKeys
 
 class SessionDataSpec extends PlaySpec {
   
@@ -114,5 +115,17 @@ class SessionDataSpec extends PlaySpec {
     sessionData.isEmpty mustBe false
     sessionData.clear()
     sessionData.isEmpty mustBe true
+  }
+
+  "diff" in {
+    val sessionData = SessionData(Map(
+      ITSASessionKeys.REFERENCE -> JsString("A")
+    ))
+    sessionData.saveReference("B")
+    sessionData.saveNino("C")
+    sessionData.diff mustBe Map(
+      ITSASessionKeys.REFERENCE -> JsString("B"),
+      ITSASessionKeys.NINO -> JsString("C")
+    )
   }
 }
