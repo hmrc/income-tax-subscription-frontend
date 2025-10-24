@@ -27,7 +27,7 @@ import scala.concurrent.Future
 trait MockReferenceRetrieval extends MockitoSugar with BeforeAndAfterEach {
   suite: Suite =>
 
-  val mockReferenceRetrieval: ReferenceRetrieval = mock[ReferenceRetrieval]
+  val   mockReferenceRetrieval: ReferenceRetrieval = mock[ReferenceRetrieval]
   val testReference: String = "test-reference"
 
   override def beforeEach(): Unit = {
@@ -39,19 +39,26 @@ trait MockReferenceRetrieval extends MockitoSugar with BeforeAndAfterEach {
 
   def mockReference(): Unit = {
     when(mockReferenceRetrieval.getIndividualReference(
+      ArgumentMatchers.any()
+    )(
       ArgumentMatchers.any(),
       ArgumentMatchers.any()
     )).thenReturn(Future.successful(testReference))
 
     when(mockReferenceRetrieval.getAgentReference(
+      ArgumentMatchers.any()
+    )(
       ArgumentMatchers.any(),
       ArgumentMatchers.any(),
       ArgumentMatchers.any()
     )).thenReturn(Future.successful(testReference))
 
     when(mockReferenceRetrieval.getReference(
+      ArgumentMatchers.any(),
       ArgumentMatchers.any()
-    )(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(testReference))
+    )(
+      ArgumentMatchers.any(),
+      ArgumentMatchers.any()
+    )).thenReturn(Future.successful(testReference))
   }
-
 }

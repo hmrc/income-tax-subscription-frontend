@@ -25,7 +25,7 @@ import helpers.servicemocks.AuthStub
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
 import models.{EligibilityStatus, Yes, YesNo}
-import play.api.http.Status.{NO_CONTENT, OK, SEE_OTHER}
+import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys.SelectedTaxYear
 
@@ -38,10 +38,11 @@ class WhatYouNeedToDoControllerISpec extends ComponentSpecBase {
       val testSoftwareOption: YesNo = Yes
       Given("I am authenticated")
       AuthStub.stubAuthSuccess()
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.HAS_SOFTWARE)(OK, Json.toJson(testSoftwareOption))
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.CAPTURE_CONSENT)(NO_CONTENT)
+      SessionDataConnectorStub.stubGetAllSessionData(Map(
+        ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
+        ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)),
+        ITSASessionKeys.HAS_SOFTWARE -> Json.toJson(testSoftwareOption)
+      ))
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
 
       When(s"GET ${routes.WhatYouNeedToDoController.show.url} is called")
@@ -56,19 +57,18 @@ class WhatYouNeedToDoControllerISpec extends ComponentSpecBase {
   }
 
   s"POST ${routes.WhatYouNeedToDoController.submit.url}" when {
-      "return a SEE_OTHER to the your income sources page" in {
-        Given("I am authenticated")
-        AuthStub.stubAuthSuccess()
+    "return a SEE_OTHER to the your income sources page" in {
+      Given("I am authenticated")
+      AuthStub.stubAuthSuccess()
 
-        When(s"POST ${routes.WhatYouNeedToDoController.submit.url} is called")
-        val result = IncomeTaxSubscriptionFrontend.submitWhatYouNeedToDo()
+      When(s"POST ${routes.WhatYouNeedToDoController.submit.url} is called")
+      val result = IncomeTaxSubscriptionFrontend.submitWhatYouNeedToDo()
 
-        Then("The result should be SEE_OTHER redirecting to the task list page")
-        result must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(IndividualURI.yourIncomeSourcesURI)
-        )
-      }
+      Then("The result should be SEE_OTHER redirecting to the task list page")
+      result must have(
+        httpStatus(SEE_OTHER),
+        redirectURI(IndividualURI.yourIncomeSourcesURI)
+      )
+    }
   }
-
 }

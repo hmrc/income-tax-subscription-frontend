@@ -29,7 +29,7 @@ import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSubscriptionDetailsService}
+import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSessionDataService, MockSubscriptionDetailsService}
 import utilities.SubscriptionDataKeys
 import views.html.individual.tasklist.overseasproperty.RemoveOverseasPropertyBusiness
 
@@ -39,7 +39,8 @@ class RemoveOverseasPropertyControllerSpec extends ControllerBaseSpec
   with MockAuditingService
   with MockSubscriptionDetailsService
   with MockReferenceRetrieval
-  with MockIncomeTaxSubscriptionConnector {
+  with MockIncomeTaxSubscriptionConnector
+  with MockSessionDataService {
 
   override val controllerName: String = "RemoveOverseasPropertyController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -133,7 +134,8 @@ class RemoveOverseasPropertyControllerSpec extends ControllerBaseSpec
       view,
       mockReferenceRetrieval,
       mockSubscriptionDetailsService,
-      mockIncomeTaxSubscriptionConnector
+      mockIncomeTaxSubscriptionConnector,
+      mockSessionDataService
     )(
       mockAuditingService,
       mockAuthService,
@@ -147,7 +149,8 @@ class RemoveOverseasPropertyControllerSpec extends ControllerBaseSpec
     mockRemoveOverseasProperty,
     mockReferenceRetrieval,
     mockSubscriptionDetailsService,
-    mockIncomeTaxSubscriptionConnector
+    mockIncomeTaxSubscriptionConnector,
+    mockSessionDataService
   )(
     mockAuditingService,
     mockAuthService,

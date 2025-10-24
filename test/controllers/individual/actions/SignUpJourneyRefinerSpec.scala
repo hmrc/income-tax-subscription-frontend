@@ -25,12 +25,12 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
-import services.mocks.MockReferenceRetrieval
+import services.mocks.{MockReferenceRetrieval, MockSessionDataService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class SignUpJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieval {
+class SignUpJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieval with MockSessionDataService {
 
   "SignUpJourneyRefiner" when {
     "the user is in a SignUp state" should {
@@ -97,11 +97,9 @@ class SignUpJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieval {
         redirectLocation(result) mustBe Some(controllers.individual.matching.routes.HomeController.index.url)
       }
     }
-
   }
 
-  lazy val signUpJourneyRefiner: SignUpJourneyRefiner = new SignUpJourneyRefiner(mockReferenceRetrieval)
-
+  lazy val signUpJourneyRefiner: SignUpJourneyRefiner = new SignUpJourneyRefiner(mockReferenceRetrieval, mockSessionDataService)
 
   def requestWithSession(maybeJourneyStep: Option[JourneyStep]): FakeRequest[_] = {
     maybeJourneyStep match {

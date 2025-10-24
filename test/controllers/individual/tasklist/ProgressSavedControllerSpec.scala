@@ -44,7 +44,8 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockReferenceRetrieval
   with MockNinoService
-  with MockUTRService {
+  with MockUTRService
+  with MockSessionDataService {
 
   override val controllerName: String = "ProgressSavedController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
@@ -75,10 +76,12 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
       businessAddress = Some(BusinessAddressModel(Address(Seq("line 1"), Some("ZZ1 1ZZ"))))
     )
   )
+
   private val property = Some(PropertyModel(
     startDate = Some(DateModel("1", "1", "1980")),
     confirmed = true
   ))
+
   private val overseasProperty = Some(OverseasPropertyModel(
     startDate = Some(DateModel("1", "1", "1980")),
     confirmed = true
@@ -121,7 +124,6 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
         status(result) mustBe OK
         contentType(result) mustBe Some(HTML)
         charset(result) mustBe Some(Codec.utf_8.charset)
-
 
         verify(mockedView).apply(meq("Monday, 20 October 2021"), any())(any(), any())
 
@@ -170,7 +172,8 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
       mockNinoService,
       mockUTRService,
       mockSubscriptionDetailsService,
-      mockReferenceRetrieval
+      mockReferenceRetrieval,
+      mockSessionDataService
     )(
       mockAuditingService,
       mockAuthService,

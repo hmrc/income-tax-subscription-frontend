@@ -39,7 +39,7 @@ trait MockClientDetailsRetrieval extends MockitoSugar with BeforeAndAfterEach {
   }
 
   def mockGetClientDetails(name: String, nino: String): Unit = {
-    when(mockClientDetailsRetrieval.getClientDetails(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(
+    when(mockClientDetailsRetrieval.getClientDetails(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(
       Future.successful(ClientDetails(name, nino))
     )
   }

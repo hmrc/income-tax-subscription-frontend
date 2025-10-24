@@ -22,7 +22,7 @@ import controllers.utils.ReferenceRetrieval
 import forms.individual.business.PropertyStartDateBeforeLimitForm
 import models.{No, Yes}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import views.html.individual.tasklist.ukproperty.PropertyStartDateBeforeLimit
 
@@ -33,6 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class PropertyStartDateBeforeLimitController @Inject()(subscriptionDetailsService: SubscriptionDetailsService,
                                                        referenceRetrieval: ReferenceRetrieval,
                                                        view: PropertyStartDateBeforeLimit,
+                                                       sessionDataService: SessionDataService,
                                                        val appConfig: AppConfig,
                                                        val authService: AuthService,
                                                        val auditingService: AuditingService)
@@ -42,7 +43,8 @@ class PropertyStartDateBeforeLimitController @Inject()(subscriptionDetailsServic
   def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
       for {
-        reference <- referenceRetrieval.getIndividualReference
+        sessionData <- sessionDataService.getAllSessionData()
+        reference <- referenceRetrieval.getIndividualReference(sessionData)
         maybePropertyStartDateBeforeLimit <- subscriptionDetailsService.fetchPropertyStartDateBeforeLimit(reference)
       } yield {
         Ok(view(
@@ -62,7 +64,8 @@ class PropertyStartDateBeforeLimitController @Inject()(subscriptionDetailsServic
           backUrl = backUrl(isEditMode, isGlobalEdit)
         ))), { answer =>
           for {
-            reference <- referenceRetrieval.getIndividualReference
+            sessionData <- sessionDataService.getAllSessionData()
+            reference <- referenceRetrieval.getIndividualReference(sessionData)
             saveResult <- subscriptionDetailsService.savePropertyStartDateBeforeLimit(reference, answer)
           } yield {
             saveResult match {

@@ -25,18 +25,19 @@ import models.status.MandationStatus.{Mandated, Voluntary}
 import models.status.MandationStatusModel
 import models._
 import play.api.http.Status._
-import play.api.libs.json.Json
+import play.api.libs.json.{JsString, Json}
 import play.api.libs.ws.WSResponse
 import utilities.SubscriptionDataKeys.SelectedTaxYear
+import utilities.individual.TestConstants.testNino
 class AccountingPeriodNonStandardControllerISpec extends ComponentSpecBase {
   val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
   s"GET ${controllers.individual.accountingperiod.routes.AccountingPeriodNonStandardController.show.url}" should {
     "show the Non Standard Accounting Period page" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Mandated)))
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.HAS_SOFTWARE)(NO_CONTENT)
+      SessionDataConnectorStub.stubGetAllSessionData(Map(
+        ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Mandated))
+      ))
       When(s"GET ${controllers.individual.accountingperiod.routes.AccountingPeriodNonStandardController.show.url}")
       val result = IncomeTaxSubscriptionFrontend.showNonStandardAccountingPeriod()
       Then("The result should be OK with page content")
@@ -54,9 +55,10 @@ class AccountingPeriodNonStandardControllerISpec extends ComponentSpecBase {
         val userInput = Yes
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Mandated)))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
-        SessionDataConnectorStub.stubSaveSessionData[YesNo](ITSASessionKeys.HAS_SOFTWARE, userInput)(OK)
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Mandated)),
+          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)),
+        ))
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[AccountingYearModel](SelectedTaxYear, AccountingYearModel(Next))
         When(s"POST ${controllers.individual.accountingperiod.routes.AccountingPeriodNonStandardController.submit.url} is called")
         val result: WSResponse = IncomeTaxSubscriptionFrontend.submitNonStandardAccountingPeriod(request = Some(userInput))
@@ -72,8 +74,10 @@ class AccountingPeriodNonStandardControllerISpec extends ComponentSpecBase {
         val userInput = No
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Mandated)))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Mandated)),
+          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)),
+        ))
         SessionDataConnectorStub.stubSaveSessionData[YesNo](ITSASessionKeys.HAS_SOFTWARE, userInput)(OK)
         When(s"POST ${controllers.individual.accountingperiod.routes.AccountingPeriodNonStandardController.submit.url} is called")
         val result: WSResponse = IncomeTaxSubscriptionFrontend.submitNonStandardAccountingPeriod(request = Some(userInput))
@@ -88,9 +92,11 @@ class AccountingPeriodNonStandardControllerISpec extends ComponentSpecBase {
       "the user does not select either option" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Mandated)))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK)
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Mandated)),
+          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)),
+          ITSASessionKeys.NINO -> JsString(testNino)
+        ))
         When(s"POST ${controllers.individual.accountingperiod.routes.AccountingPeriodNonStandardController.submit.url} is called")
         val result: WSResponse = IncomeTaxSubscriptionFrontend.submitNonStandardAccountingPeriod(request = None)
         Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
@@ -106,9 +112,11 @@ class AccountingPeriodNonStandardControllerISpec extends ComponentSpecBase {
         val userInput = Yes
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Mandated)))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK)
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Mandated)),
+          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)),
+          ITSASessionKeys.NINO -> JsString(testNino)
+        ))
         When(s"POST ${controllers.individual.accountingperiod.routes.AccountingPeriodNonStandardController.submit.url} is called")
         val result = IncomeTaxSubscriptionFrontend.submitNonStandardAccountingPeriod(request = Some(userInput))
         Then("Should return a INTERNAL_SERVER_ERROR")

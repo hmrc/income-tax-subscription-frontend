@@ -19,20 +19,23 @@ package services
 import common.Constants.ITSASessionKeys
 import connectors.SessionDataConnector
 import connectors.httpparser.DeleteSessionDataHttpParser.DeleteSessionDataResponse
-import connectors.httpparser.GetSessionDataHttpParser.GetSessionDataResponse
 import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataResponse
 import models.status.MandationStatusModel
-import models.{EligibilityStatus, YesNo}
+import models.{EligibilityStatus, SessionData, YesNo}
+import play.api.libs.json._
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SessionDataService @Inject()(sessionDataConnector: SessionDataConnector) {
 
-  def fetchReference(implicit hc: HeaderCarrier): Future[GetSessionDataResponse[String]] = {
-    sessionDataConnector.getSessionData[String](ITSASessionKeys.REFERENCE)
+  def getAllSessionData()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[SessionData] = {
+    sessionDataConnector.getAllSessionData().map {
+      case Right(value) => SessionData(value.getOrElse(Map()))
+      case _ => SessionData()
+    }
   }
 
   def saveReference(reference: String)(implicit hc: HeaderCarrier): Future[SaveSessionDataResponse] = {
@@ -47,68 +50,35 @@ class SessionDataService @Inject()(sessionDataConnector: SessionDataConnector) {
     sessionDataConnector.deleteAllSessionData
   }
 
-  def fetchThrottlePassed(throttle: Throttle)(implicit hc: HeaderCarrier): Future[GetSessionDataResponse[Boolean]] = {
-    sessionDataConnector.getSessionData[Boolean](ITSASessionKeys.throttlePassed(throttle))
-  }
-
   def saveThrottlePassed(throttle: Throttle)(implicit hc: HeaderCarrier): Future[SaveSessionDataResponse] = {
     sessionDataConnector.saveSessionData[Boolean](ITSASessionKeys.throttlePassed(throttle), true)
   }
 
-  def fetchMandationStatus(implicit hc: HeaderCarrier): Future[GetSessionDataResponse[MandationStatusModel]] = {
-    sessionDataConnector.getSessionData[MandationStatusModel](ITSASessionKeys.MANDATION_STATUS)
-  }
-
   def saveMandationStatus(mandationStatus: MandationStatusModel)(implicit hc: HeaderCarrier): Future[SaveSessionDataResponse] = {
-    sessionDataConnector.saveSessionData(ITSASessionKeys.MANDATION_STATUS, mandationStatus)
-  }
-
-  def fetchEligibilityStatus(implicit hc: HeaderCarrier): Future[GetSessionDataResponse[EligibilityStatus]] = {
-    sessionDataConnector.getSessionData[EligibilityStatus](ITSASessionKeys.ELIGIBILITY_STATUS)
+    sessionDataConnector.saveSessionData(ITSASessionKeys.MANDATION_STATUS, Json.toJson(mandationStatus))
   }
 
   def saveEligibilityStatus(eligibilityStatus: EligibilityStatus)(implicit hc: HeaderCarrier): Future[SaveSessionDataResponse] = {
-    sessionDataConnector.saveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, eligibilityStatus)
-  }
-
-  def fetchNino(implicit hc: HeaderCarrier): Future[GetSessionDataResponse[String]] = {
-    sessionDataConnector.getSessionData[String](ITSASessionKeys.NINO)
+    sessionDataConnector.saveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, Json.toJson(eligibilityStatus))
   }
 
   def saveNino(nino: String)(implicit hc: HeaderCarrier): Future[SaveSessionDataResponse] = {
     sessionDataConnector.saveSessionData(ITSASessionKeys.NINO, nino)
   }
 
-  def fetchUTR(implicit hc: HeaderCarrier): Future[GetSessionDataResponse[String]] = {
-    sessionDataConnector.getSessionData[String](ITSASessionKeys.UTR)
-  }
-
   def saveUTR(utr: String)(implicit hc: HeaderCarrier): Future[SaveSessionDataResponse] = {
     sessionDataConnector.saveSessionData(ITSASessionKeys.UTR, utr)
   }
 
-  def fetchSoftwareStatus(implicit hc: HeaderCarrier): Future[GetSessionDataResponse[YesNo]] = {
-    sessionDataConnector.getSessionData[YesNo](ITSASessionKeys.HAS_SOFTWARE)
-  }
-
   def saveSoftwareStatus(softwareStatus: YesNo)(implicit hc: HeaderCarrier): Future[SaveSessionDataResponse] = {
-    sessionDataConnector.saveSessionData(ITSASessionKeys.HAS_SOFTWARE, softwareStatus)
-  }
-
-  def fetchConsentStatus(implicit hc: HeaderCarrier): Future[GetSessionDataResponse[YesNo]] = {
-    sessionDataConnector.getSessionData[YesNo](ITSASessionKeys.CAPTURE_CONSENT)
+    sessionDataConnector.saveSessionData(ITSASessionKeys.HAS_SOFTWARE, Json.toJson(softwareStatus))
   }
 
   def saveConsentStatus(consentStatus: YesNo)(implicit hc: HeaderCarrier): Future[SaveSessionDataResponse] = {
-    sessionDataConnector.saveSessionData(ITSASessionKeys.CAPTURE_CONSENT, consentStatus)
-  }
-
-  def fetchEmailPassed(implicit hc: HeaderCarrier): Future[GetSessionDataResponse[Boolean]] = {
-    sessionDataConnector.getSessionData[Boolean](ITSASessionKeys.EMAIL_PASSED)
+    sessionDataConnector.saveSessionData(ITSASessionKeys.CAPTURE_CONSENT, Json.toJson(consentStatus))
   }
 
   def saveEmailPassed(emailPassed: Boolean)(implicit hc: HeaderCarrier): Future[SaveSessionDataResponse] = {
-    sessionDataConnector.saveSessionData(ITSASessionKeys.EMAIL_PASSED, emailPassed)
+    sessionDataConnector.saveSessionData(ITSASessionKeys.EMAIL_PASSED, JsBoolean(emailPassed))
   }
-
 }

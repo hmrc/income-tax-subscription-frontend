@@ -20,7 +20,7 @@ import config.featureswitch.FeatureSwitch.EmailCaptureConsent
 import connectors.httpparser.SaveSessionDataHttpParser.{SaveSessionDataSuccessResponse, UnexpectedStatusFailure}
 import forms.individual.UsingSoftwareForm
 import models.status.MandationStatus.{Mandated, Voluntary}
-import models.{EligibilityStatus, No, Yes}
+import models.{EligibilityStatus, No, SessionData, Yes}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -83,11 +83,11 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
 
   "show" must {
     "return OK with the page content" in new Setup {
-      mockFetchSoftwareStatus(Right(None))
+      mockGetAllSessionData(SessionData())
       mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
       when(usingSoftware(
         ArgumentMatchers.eq(UsingSoftwareForm.usingSoftwareForm),
-        ArgumentMatchers.eq(routes.UsingSoftwareController.submit(false)),
+        ArgumentMatchers.eq(routes.UsingSoftwareController.submit()),
         ArgumentMatchers.eq(testBackUrl)
       )(any(), any())).thenReturn(HtmlFormat.empty)
 
@@ -175,7 +175,7 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
         val result: Future[Result] = controller.submit(false)(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, No))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.individual.routes.NoSoftwareController.show(false).url)
+        redirectLocation(result) mustBe Some(controllers.individual.routes.NoSoftwareController.show().url)
       }
     }
     "an error occurs when saving the software status" should {

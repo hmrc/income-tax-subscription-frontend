@@ -32,7 +32,9 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase {
   class Setup(clientDetailsConfirmed: Boolean = true) {
     AuthStub.stubAuthSuccess()
 
-    SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+    SessionDataConnectorStub.stubGetAllSessionData(Map(
+      ITSASessionKeys.NINO -> JsString(testNino)
+    ))
 
     val result: WSResponse = IncomeTaxSubscriptionFrontend.getNoClientRelationship(clientDetailsConfirmed)
 

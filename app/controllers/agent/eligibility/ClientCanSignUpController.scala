@@ -37,12 +37,12 @@ class ClientCanSignUpController @Inject()(identify: IdentifierAction,
                                           val ec: ExecutionContext) extends SignUpBaseController {
 
   def show: Action[AnyContent] = (identify andThen journeyRefiner) { implicit request =>
-        Ok(view(
-          routes.ClientCanSignUpController.submit(),
-          backUrl = backUrl,
-          clientName = request.clientDetails.name,
-          clientNino = request.clientDetails.formattedNino
-        ))
+    Ok(view(
+      routes.ClientCanSignUpController.submit(),
+      backUrl = backUrl,
+      clientName = request.clientDetails.name,
+      clientNino = request.clientDetails.formattedNino
+    ))
   }
 
   def submit: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>

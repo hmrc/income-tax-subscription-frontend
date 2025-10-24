@@ -36,7 +36,7 @@ trait MockMandationStatusService extends MockitoSugar with BeforeAndAfterEach {
   }
 
   def mockGetMandationService(currentYear: MandationStatus, nextYear: MandationStatus): Unit = {
-    when(mockMandationStatusService.getMandationStatus(ArgumentMatchers.any())).thenReturn(
+    when(mockMandationStatusService.getMandationStatus(ArgumentMatchers.any())(ArgumentMatchers.any())).thenReturn(
       Future.successful(MandationStatusModel(currentYearStatus = currentYear, nextYearStatus = nextYear))
     )
   }

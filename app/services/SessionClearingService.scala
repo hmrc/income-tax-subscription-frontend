@@ -21,6 +21,7 @@ import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.{CLIENT_DETAILS_CONFIRMED, MTDITID}
 import connectors.httpparser.DeleteSessionDataHttpParser.DeleteSessionDataSuccess
 import connectors.httpparser.SaveSessionDataHttpParser.{SaveSessionDataSuccess, SaveSessionDataSuccessResponse}
+import models.SessionData
 import models.YesNo
 import play.api.mvc.Results.Redirect
 import play.api.mvc._
@@ -34,11 +35,11 @@ import scala.concurrent.{ExecutionContext, Future}
 class SessionClearingService @Inject()(sessionDataService: SessionDataService)
                                       (implicit ec: ExecutionContext) {
 
-  def clearAgentSession(nextPage: Call)(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
+  def clearAgentSession(nextPage: Call, sessionData: SessionData = SessionData())(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
     for {
-      emailConsentCaptured <- fetchEmailConsentCaptured
+      emailConsentCaptured <- fetchEmailConsentCaptured(sessionData)
       _ <- deleteSessionData
-      _ <- saveEmailConsentCaptured(emailConsentCaptured)
+      _ <- saveEmailConsentCaptured(emailConsentCaptured, sessionData)
     } yield {
       Redirect(nextPage)
         .addingToSession(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name)
@@ -47,25 +48,19 @@ class SessionClearingService @Inject()(sessionDataService: SessionDataService)
     }
   }
 
-  private def fetchEmailConsentCaptured(implicit hc: HeaderCarrier): Future[Boolean] = {
-    fetchEmailPassed flatMap {
+  private def fetchEmailConsentCaptured(sessionData: SessionData): Future[Boolean] = {
+    fetchEmailPassed(sessionData).flatMap {
       case Some(_) => Future.successful(true)
-      case None => fetchConsentStatus.map(_.isDefined)
+      case None => fetchConsentStatus(sessionData).map(_.isDefined)
     }
   }
 
-  private def fetchEmailPassed(implicit hc: HeaderCarrier): Future[Option[Boolean]] = {
-    sessionDataService.fetchEmailPassed map {
-      case Left(error) => throw new InternalServerException(s"[SessionClearingService][fetchEmailPassed] - Unexpected failure: $error")
-      case Right(result) => result
-    }
+  private def fetchEmailPassed(sessionData: SessionData): Future[Option[Boolean]] = {
+    Future.successful(sessionData.fetchEmailPassed)
   }
 
-  private def fetchConsentStatus(implicit hc: HeaderCarrier): Future[Option[YesNo]] = {
-    sessionDataService.fetchConsentStatus map {
-      case Left(error) => throw new InternalServerException(s"[SessionClearingService][fetchConsentStatus] - Unexpected failure: $error")
-      case Right(result) => result
-    }
+  private def fetchConsentStatus(sessionData: SessionData): Future[Option[YesNo]] = {
+    Future.successful(sessionData.fetchConsentStatus)
   }
 
   private def deleteSessionData(implicit hc: HeaderCarrier): Future[DeleteSessionDataSuccess] = {
@@ -75,17 +70,17 @@ class SessionClearingService @Inject()(sessionDataService: SessionDataService)
     }
   }
 
-  private def saveEmailConsentCaptured(emailConsentCaptured: Boolean)
+  private def saveEmailConsentCaptured(emailConsentCaptured: Boolean, sessionData: SessionData)
                                       (implicit hc: HeaderCarrier): Future[SaveSessionDataSuccess] = {
     if (emailConsentCaptured) {
       sessionDataService.saveEmailPassed(emailPassed = true) map {
         case Left(error) => throw new InternalServerException(s"[SessionClearingService][saveEmailConsentCaptured] - Unexpected failure: $error")
-        case Right(result) => result
+        case Right(result) =>
+          sessionData.saveEmailPassed(true)
+          result
       }
     } else {
       Future.successful(SaveSessionDataSuccessResponse)
     }
   }
-
-
 }

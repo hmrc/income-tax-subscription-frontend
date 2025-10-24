@@ -35,13 +35,13 @@ trait MockNinoService extends MockitoSugar with BeforeAndAfterEach {
   }
 
   def mockGetNino(nino: String): Unit = {
-    when(mockNinoService.getNino(ArgumentMatchers.any())).thenReturn(
+    when(mockNinoService.getNino(ArgumentMatchers.any())(ArgumentMatchers.any())).thenReturn(
       Future.successful(nino)
     )
   }
 
   def verifyGetNino(): Unit = {
-    verify(mockNinoService).getNino(ArgumentMatchers.any())
+    verify(mockNinoService).getNino(ArgumentMatchers.any())(ArgumentMatchers.any())
   }
 
 }

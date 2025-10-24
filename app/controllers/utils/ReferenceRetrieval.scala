@@ -16,7 +16,8 @@
 
 package controllers.utils
 
-import connectors.httpparser.{GetSessionDataHttpParser, RetrieveReferenceHttpParser, SaveSessionDataHttpParser}
+import connectors.httpparser.{RetrieveReferenceHttpParser, SaveSessionDataHttpParser}
+import models.SessionData
 import models.audits.SignupRetrieveAuditing.SignupRetrieveAuditModel
 import play.api.mvc.Request
 import services._
@@ -33,44 +34,40 @@ class ReferenceRetrieval @Inject()(subscriptionDetailsService: SubscriptionDetai
                                    auditingService: AuditingService)
                                   (implicit ec: ExecutionContext) {
 
-  def getIndividualReference(implicit hc: HeaderCarrier, request: Request[_]): Future[String] = {
-    getReference(arn = None)
+  def getIndividualReference(sessionData: SessionData = SessionData())(implicit hc: HeaderCarrier, request: Request[_]): Future[String] = {
+    getReference(arn = None, sessionData)
   }
 
-  def getAgentReference(implicit hc: HeaderCarrier, request: Request[_], userArn: String): Future[String] = {
-    getReference(arn = Some(userArn))
+  def getAgentReference(sessionData: SessionData = SessionData())(implicit hc: HeaderCarrier, request: Request[_], userArn: String): Future[String] = {
+    getReference(arn = Some(userArn), sessionData)
   }
 
-  def getReference(arn: Option[String])
+  def getReference(arn: Option[String], sessionData: SessionData)
                   (implicit hc: HeaderCarrier, request: Request[_]): Future[String] = {
 
-    sessionDataService.fetchReference.flatMap {
-      case Right(Some(reference)) => Future.successful(reference)
-      case Right(None) =>
-        ninoService.getNino flatMap { nino =>
-          utrService.getUTR flatMap { utr =>
-            handleReferenceNotFound(nino, utr, arn)
+    sessionData.fetchReference match {
+      case Some(reference) => Future.successful(reference)
+      case None =>
+        ninoService.getNino(sessionData) flatMap { nino =>
+          utrService.getUTR(sessionData) flatMap { utr =>
+            handleReferenceNotFound(nino, utr, arn, sessionData)
           }
         }
-      case Left(GetSessionDataHttpParser.InvalidJson) =>
-        throw new InternalServerException(s"[ReferenceRetrieval][withReference] - Unable to parse json returned from session")
-      case Left(GetSessionDataHttpParser.UnexpectedStatusFailure(status)) =>
-        throw new InternalServerException(s"[ReferenceRetrieval][withReference] - Error occurred when fetching reference from session. Status: $status")
     }
   }
 
-  private def handleReferenceNotFound(nino: String, utr: String, arn: Option[String])
+  private def handleReferenceNotFound(nino: String, utr: String, arn: Option[String], sessionData: SessionData)
                                      (implicit hc: HeaderCarrier, request: Request[_]): Future[String] = {
     subscriptionDetailsService.retrieveReference(utr) flatMap {
       case Right(RetrieveReferenceHttpParser.Existing(reference)) =>
         for {
           _ <- auditingService.audit(SignupRetrieveAuditModel(arn, utr, Some(nino)))
-          result <- saveReferenceToSession(reference)
+          result <- saveReferenceToSession(reference, sessionData)
         } yield {
           result
         }
       case Right(RetrieveReferenceHttpParser.Created(reference)) =>
-        saveReferenceToSession(reference)
+        saveReferenceToSession(reference, sessionData)
       case Left(RetrieveReferenceHttpParser.InvalidJsonFailure) =>
         throw new InternalServerException(s"[ReferenceRetrieval][handleReferenceNotFound] - Unable to parse json returned")
       case Left(RetrieveReferenceHttpParser.UnexpectedStatusFailure(status)) =>
@@ -78,10 +75,11 @@ class ReferenceRetrieval @Inject()(subscriptionDetailsService: SubscriptionDetai
     }
   }
 
-  private def saveReferenceToSession(reference: String)
+  private def saveReferenceToSession(reference: String, sessionData: SessionData)
                                     (implicit hc: HeaderCarrier): Future[String] = {
     sessionDataService.saveReference(reference) map {
       case Right(_) =>
+        sessionData.saveReference(reference)
         reference
       case Left(SaveSessionDataHttpParser.UnexpectedStatusFailure(status)) =>
         throw new InternalServerException(s"[ReferenceRetrieval][saveReferenceToSession] - Unexpected status returned: $status")

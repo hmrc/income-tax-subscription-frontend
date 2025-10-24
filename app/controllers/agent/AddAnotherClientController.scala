@@ -29,6 +29,7 @@ class AddAnotherClientController @Inject()(identify: IdentifierAction,
                                           (implicit mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   def addAnother(): Action[AnyContent] = identify.async { implicit request =>
-    sessionClearingService.clearAgentSession(controllers.agent.matching.routes.ClientDetailsController.show())
+    val sessionData = request.sessionData
+    sessionClearingService.clearAgentSession(controllers.agent.matching.routes.ClientDetailsController.show(), sessionData)
   }
 }

@@ -21,6 +21,7 @@ import common.Constants.ITSASessionKeys.JourneyStateKey
 import controllers.SignUpBaseController
 import controllers.agent.actions.IdentifierAction
 import controllers.utils.ReferenceRetrieval
+import models.requests.agent.IdentifierRequest
 import play.api.mvc._
 import services._
 
@@ -50,13 +51,14 @@ class HomeController @Inject()
       }
     }
 
-  private def continueToSignUp(implicit request: Request[AnyContent], userArn: String): Future[Result] = {
-    referenceRetrieval.getAgentReference flatMap { reference =>
+  private def continueToSignUp(implicit request: IdentifierRequest[AnyContent], userArn: String): Future[Result] = {
+    val sessionData = request.sessionData
+    referenceRetrieval.getAgentReference(sessionData) flatMap { reference =>
       subscriptionDetailsService.fetchEligibilityInterruptPassed(reference) flatMap {
         case Some(_) =>
-          Future.successful(Redirect(controllers.agent.routes.UsingSoftwareController.show(false)))
+          Future.successful(Redirect(controllers.agent.routes.UsingSoftwareController.show()))
         case None =>
-          getEligibilityStatusService.getEligibilityStatus map { eligibilityStatus =>
+          getEligibilityStatusService.getEligibilityStatus(sessionData) map { eligibilityStatus =>
             if (eligibilityStatus.eligibleNextYearOnly) {
               Redirect(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show)
             } else {

@@ -26,7 +26,7 @@ import helpers.agent.servicemocks.AuthStub
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
 import models.{EligibilityStatus, Yes, YesNo}
-import play.api.http.Status.{NO_CONTENT, OK, SEE_OTHER}
+import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.libs.json.{JsString, Json}
 import utilities.SubscriptionDataKeys.SelectedTaxYear
 import utilities.agent.TestConstants.testUtr
@@ -51,14 +51,14 @@ class WhatYouNeedToDoControllerISpec extends ComponentSpecBase with FeatureSwitc
     "return OK with the page content" in {
       Given("I am authenticated")
       AuthStub.stubAuthSuccess()
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+      SessionDataConnectorStub.stubGetAllSessionData(Map(
+        ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
+        ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)),
+        ITSASessionKeys.NINO -> JsString(testNino),
+        ITSASessionKeys.UTR -> JsString(testUtr)
+      ))
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
       SessionDataConnectorStub.stubSaveSessionData[YesNo](ITSASessionKeys.HAS_SOFTWARE, Yes)(OK)
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.CAPTURE_CONSENT)(NO_CONTENT)
-
 
       When(s"GET ${routes.WhatYouNeedToDoController.show().url} is called")
       val result = IncomeTaxSubscriptionFrontend.whatYouNeedToDo()
@@ -88,8 +88,10 @@ class WhatYouNeedToDoControllerISpec extends ComponentSpecBase with FeatureSwitc
     "return a SEE_OTHER to the Your Income Sources page" in {
       Given("I am authenticated")
       AuthStub.stubAuthSuccess()
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+      SessionDataConnectorStub.stubGetAllSessionData(Map(
+        ITSASessionKeys.NINO -> JsString(testNino),
+        ITSASessionKeys.UTR -> JsString(testUtr)
+      ))
 
       When(s"POST ${routes.WhatYouNeedToDoController.submit.url} is called")
       val result = IncomeTaxSubscriptionFrontend.submitWhatYouNeedToDo()

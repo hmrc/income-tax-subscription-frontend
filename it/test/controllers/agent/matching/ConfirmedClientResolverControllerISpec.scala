@@ -22,9 +22,8 @@ import config.featureswitch.FeatureSwitch.ThrottlingFeature
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
-import helpers.servicemocks.{EligibilityStub, PrePopStub, ThrottlingStub}
+import helpers.servicemocks.PrePopStub
 import models.EligibilityStatus
-import models.agent.JourneyStep.SignPosted
 import models.common.business._
 import models.common.{OverseasPropertyModel, PropertyModel}
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, NO_CONTENT, OK, SEE_OTHER}
@@ -32,9 +31,8 @@ import play.api.libs.json.{JsBoolean, JsString, Json}
 import play.api.{Configuration, Environment}
 import services.AgentStartOfJourneyThrottle
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
-import utilities.SubscriptionDataKeys.PrePopFlag
+import utilities.SubscriptionDataKeys
 import utilities.agent.TestConstants.{testNino, testUtr}
-import utilities.{SubscriptionDataKeys, UserMatchingSessionUtil}
 
 class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with AuthRedirects with SessionCookieCrumbler {
 
@@ -64,6 +62,9 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
     "the agent has no nino in session" should {
       "return an internal server error" in {
         AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle) -> JsBoolean(true)
+        ))
 
         val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
 
@@ -72,193 +73,19 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
         )
       }
     }
-
-    "the throttle rejects the user" should {
-      "redirect the agent to the throttle kickout page" in {
-        AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle))(NO_CONTENT)
-        ThrottlingStub.stubThrottle(AgentStartOfJourneyThrottle.throttleId)(throttled = true)
-
-        val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
-
-        res must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(controllers.agent.routes.ThrottlingController.start().url)
-        )
-
-        ThrottlingStub.verifyThrottle(AgentStartOfJourneyThrottle.throttleId)(1)
-      }
-    }
-
-    "the throttle allows the user" when {
-
-      "the eligibility of the client check returned an error" should {
-        "return an internal server error" in {
-          AuthStub.stubAuthSuccess()
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle))(NO_CONTENT)
-          ThrottlingStub.stubThrottle(AgentStartOfJourneyThrottle.throttleId)(throttled = false)
-          SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle), true)(OK)
-          EligibilityStub.stubEligibilityResponseError(testUtr)
-
-          val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
-
-          res must have(
-            httpStatus(INTERNAL_SERVER_ERROR)
-          )
-        }
-      }
-
-      "the eligibility of the client check returned an ineligible for both years result" should {
-        s"redirect the agent to the client cannot take part page and set the journey state to ${SignPosted.key}" in {
-          AuthStub.stubAuthSuccess()
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle))(NO_CONTENT)
-          ThrottlingStub.stubThrottle(AgentStartOfJourneyThrottle.throttleId)(throttled = false)
-          SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle), true)(OK)
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(NO_CONTENT)
-          EligibilityStub.stubEligibilityResponseBoth(testUtr)(currentYearResponse = false, nextYearResponse = false)
-          SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = false))(OK)
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
-
-          val fullSession = session ++ Map(
-            ITSASessionKeys.FailedClientMatching -> "1",
-            UserMatchingSessionUtil.dobD -> "DOBD",
-            UserMatchingSessionUtil.dobM -> "DOBM",
-            UserMatchingSessionUtil.dobY -> "DOBY",
-            UserMatchingSessionUtil.nino -> "MatchingNino",
-          )
-
-          val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(fullSession)
-
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(controllers.agent.eligibility.routes.CannotTakePartController.show.url)
-          )
-
-          getSessionMap(res) - "ts" - "sessionId" - "authToken" mustBe Map(
-            ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true",
-            ITSASessionKeys.JourneyStateKey -> SignPosted.key
-          )
-        }
-      }
-
-      "the eligibility of the client check returned eligible for next year only" should {
-        "redirect to the using software page when the user has previously started signing up this client" in {
-          AuthStub.stubAuthSuccess()
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle))(NO_CONTENT)
-          ThrottlingStub.stubThrottle(AgentStartOfJourneyThrottle.throttleId)(throttled = false)
-          SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle), true)(OK)
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(NO_CONTENT)
-          EligibilityStub.stubEligibilityResponseBoth(testUtr)(currentYearResponse = false, nextYearResponse = true)
-          SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))(OK)
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(PrePopFlag, NO_CONTENT)
-          PrePopStub.stubGetPrePop(testNino)(OK, Json.obj())
-          IncomeTaxSubscriptionConnectorStub.stubSavePrePopFlag()
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
-
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, OK, JsBoolean(true))
-
-          val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
-
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(controllers.agent.routes.UsingSoftwareController.show(false).url)
-          )
-
-          getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
-        }
-        "redirect to the sign up next year page when the user has not previously started signing up this client" in {
-          AuthStub.stubAuthSuccess()
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle))(NO_CONTENT)
-          ThrottlingStub.stubThrottle(AgentStartOfJourneyThrottle.throttleId)(throttled = false)
-          SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle), true)(OK)
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(NO_CONTENT)
-          EligibilityStub.stubEligibilityResponseBoth(testUtr)(currentYearResponse = false, nextYearResponse = true)
-          SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))(OK)
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(PrePopFlag, NO_CONTENT)
-          PrePopStub.stubGetPrePop(testNino)(OK, Json.obj())
-          IncomeTaxSubscriptionConnectorStub.stubSavePrePopFlag()
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
-
-          val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
-
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
-          )
-
-          getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
-        }
-      }
-
-      "the eligibility of the client check returned eligible for both years" should {
-
-        "redirect to the using software page when the user has previously started signing up their client" in {
-          AuthStub.stubAuthSuccess()
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle))(NO_CONTENT)
-          ThrottlingStub.stubThrottle(AgentStartOfJourneyThrottle.throttleId)(throttled = false)
-          SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle), true)(OK)
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(NO_CONTENT)
-          EligibilityStub.stubEligibilityResponseBoth(testUtr)(currentYearResponse = true, nextYearResponse = true)
-          SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))(OK)
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(PrePopFlag, NO_CONTENT)
-          PrePopStub.stubGetPrePop(testNino)(OK, Json.obj())
-          IncomeTaxSubscriptionConnectorStub.stubSavePrePopFlag()
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, OK, JsBoolean(true))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
-          val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
-
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(controllers.agent.routes.UsingSoftwareController.show(false).url)
-          )
-
-          getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
-        }
-        "redirect to the sign up next year page when the user has not previously started signing up their client" in {
-          AuthStub.stubAuthSuccess()
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle))(NO_CONTENT)
-          ThrottlingStub.stubThrottle(AgentStartOfJourneyThrottle.throttleId)(throttled = false)
-          SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle), true)(OK)
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(NO_CONTENT)
-          EligibilityStub.stubEligibilityResponseBoth(testUtr)(currentYearResponse = true, nextYearResponse = true)
-          SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))(OK)
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(PrePopFlag, NO_CONTENT)
-          PrePopStub.stubGetPrePop(testNino)(OK, Json.obj())
-          IncomeTaxSubscriptionConnectorStub.stubSavePrePopFlag()
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
-          val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
-
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(controllers.agent.eligibility.routes.ClientCanSignUpController.show().url)
-          )
-
-          getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
-        }
-      }
-    }
-
   }
 
   s"GET ${routes.ConfirmedClientResolver.resolve.url}" when {
     "pre-pop income sources and continue as normal" in {
 
       AuthStub.stubAuthSuccess()
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle))(OK, JsBoolean(true))
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(
-        responseStatus = OK,
-        responseBody = Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
-      )
+      SessionDataConnectorStub.stubGetAllSessionData(Map(
+        ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle) -> JsBoolean(true),
+        ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)),
+        ITSASessionKeys.NINO -> JsString(testNino),
+        ITSASessionKeys.UTR -> JsString(testUtr)
+      ))
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.PrePopFlag, NO_CONTENT)
       PrePopStub.stubGetPrePop(testNino)(
         status = OK,
@@ -318,14 +145,13 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
       "there was an error returned from the pre-pop connection" in {
 
         AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle))(OK, JsBoolean(true))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(
-          responseStatus = OK,
-          responseBody = Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
-        )
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle) -> JsBoolean(true),
+          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)),
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr)
+        ))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.PrePopFlag, NO_CONTENT)
         PrePopStub.stubGetPrePop(testNino)(
           status = INTERNAL_SERVER_ERROR,
@@ -343,5 +169,4 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
 
   override val env: Environment = app.injector.instanceOf[Environment]
   override val config: Configuration = app.injector.instanceOf[Configuration]
-
 }

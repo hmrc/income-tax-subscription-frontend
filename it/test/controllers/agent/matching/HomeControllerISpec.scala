@@ -19,11 +19,12 @@ package controllers.agent.matching
 import auth.agent.{AgentSignUp, AgentUserMatching}
 import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
+import helpers.IntegrationTestConstants.{testNino, testUtr}
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import models.EligibilityStatus
 import play.api.http.Status._
-import play.api.libs.json.{JsBoolean, Json}
+import play.api.libs.json.{JsBoolean, JsString, Json}
 import utilities.SubscriptionDataKeys
 
 class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
@@ -58,12 +59,16 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
           "redirect to the using software page" in {
             AuthStub.stubAuthSuccess()
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, OK, JsBoolean(true))
+            SessionDataConnectorStub.stubGetAllSessionData(Map(
+              ITSASessionKeys.NINO -> JsString(testNino),
+              ITSASessionKeys.UTR -> JsString(testUtr)
+            ))
 
             val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentSignUp))
 
             res must have(
               httpStatus(SEE_OTHER),
-              redirectURI(controllers.agent.routes.UsingSoftwareController.show(false).url)
+              redirectURI(controllers.agent.routes.UsingSoftwareController.show().url)
             )
           }
         }
@@ -72,7 +77,9 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
             "redirect to the cannot sign up this year page" in {
               AuthStub.stubAuthSuccess()
               IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
-              SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true)))
+              SessionDataConnectorStub.stubGetAllSessionData(Map(
+                ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
+              ))
 
               val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentSignUp))
 
@@ -86,7 +93,9 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
             "redirect to the client can sign up page" in {
               AuthStub.stubAuthSuccess()
               IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
-              SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
+              SessionDataConnectorStub.stubGetAllSessionData(Map(
+                ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+              ))
 
               val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentSignUp))
 
@@ -111,6 +120,5 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
         }
       }
     }
-
   }
 }

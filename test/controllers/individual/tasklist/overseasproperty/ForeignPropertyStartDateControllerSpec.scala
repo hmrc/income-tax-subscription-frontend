@@ -25,7 +25,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.individual.mocks.MockAuthService
-import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSubscriptionDetailsService}
+import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSessionDataService, MockSubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import views.individual.mocks.MockOverseasPropertyStartDate
 
@@ -37,7 +37,8 @@ class ForeignPropertyStartDateControllerSpec extends ControllerBaseSpec
   with MockAuthService
   with MockAuditingService
   with MockReferenceRetrieval
-  with MockOverseasPropertyStartDate {
+  with MockOverseasPropertyStartDate
+  with MockSessionDataService {
 
   override val controllerName: String = "ForeignPropertyStartDateController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -48,7 +49,8 @@ class ForeignPropertyStartDateControllerSpec extends ControllerBaseSpec
   object TestForeignPropertyStartDateController extends ForeignPropertyStartDateController(
     foreignPropertyStartDate,
     mockSubscriptionDetailsService,
-    mockReferenceRetrieval
+    mockReferenceRetrieval,
+    mockSessionDataService
   )(
     mockAuditingService,
     mockAuthService,
@@ -217,7 +219,8 @@ class ForeignPropertyStartDateControllerSpec extends ControllerBaseSpec
     val controller = new ForeignPropertyStartDateController(
       foreignPropertyStartDate,
       mockSubscriptionDetailsService,
-      mockReferenceRetrieval
+      mockReferenceRetrieval,
+      mockSessionDataService
     )(
       mockAuditingService,
       mockAuthService,

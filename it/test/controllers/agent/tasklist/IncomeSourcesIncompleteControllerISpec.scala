@@ -58,8 +58,10 @@ class IncomeSourcesIncompleteControllerISpec extends ComponentSpecBase {
       "return OK with the page content" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr)
+        ))
 
         val result = IncomeTaxSubscriptionFrontend.showIncomeSourcesIncomplete()
 
@@ -99,8 +101,10 @@ class IncomeSourcesIncompleteControllerISpec extends ComponentSpecBase {
     "the user is authenticated and in a confirmed client state" should {
       "redirect the user to the your income sources page" in {
         AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr)
+        ))
 
         val result = IncomeTaxSubscriptionFrontend.submitIncomeSourcesIncomplete()
 

@@ -18,11 +18,14 @@ package controllers.individual.actions
 
 import auth.MockAuth
 import common.Constants
+import common.Constants.ITSASessionKeys
 import config.MockConfig
+import models.SessionData
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.libs.json.JsString
 import play.api.mvc.{BodyParsers, Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout, redirectLocation, status}
@@ -35,6 +38,7 @@ import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.http.InternalServerException
 
+import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -61,6 +65,10 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
   "IdentifierAction" when {
     "authorising an individual user who has CL250, has a nino, utr, mtditid" must {
       "create an identifier request with the fetched details" in {
+        val sessionData = SessionData(Map(
+          random() -> JsString(random())
+        ))
+        mockGetAllSessionData(sessionData)
         mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino)(
           new~(new~(new~(new~(Some(Individual), enrolments), Some(User)), ConfidenceLevel.L250), Some(testNino))
         )
@@ -69,6 +77,7 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
           request.nino mustBe testNino
           request.utr mustBe Some(testUtr)
           request.mtditid mustBe Some(testMTDITID)
+          request.sessionData mustBe sessionData
           Results.Ok
         }(FakeRequest())
 
@@ -77,6 +86,10 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
     }
     "authorising an organisation user who has CL250, has a nino, utr, mtditid" must {
       "create an identifier request with the fetched details" in {
+        val sessionData = SessionData(Map(
+          random() -> JsString(random())
+        ))
+        mockGetAllSessionData(sessionData)
         mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino)(
           new~(new~(new~(new~(Some(Organisation), enrolments), Some(User)), ConfidenceLevel.L250), Some(testNino))
         )
@@ -85,6 +98,7 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
           request.nino mustBe testNino
           request.utr mustBe Some(testUtr)
           request.mtditid mustBe Some(testMTDITID)
+          request.sessionData mustBe sessionData
           Results.Ok
         }(FakeRequest())
 
@@ -93,15 +107,19 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
     }
     "authorising an individual user who has CL250, has a nino, without a utr enrolment, but has a utr in session" must {
       "create an identifier request with the fetched details" in {
+        val sessionData = SessionData(Map(
+          ITSASessionKeys.UTR -> JsString(testUtr)
+        ))
+        mockGetAllSessionData(sessionData)
         mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino)(
           new~(new~(new~(new~(Some(Individual), emptyEnrolments), Some(User)), ConfidenceLevel.L250), Some(testNino))
         )
-        mockFetchUTR(Right(Some(testUtr)))
 
         val result: Future[Result] = identifierAction { request =>
           request.nino mustBe testNino
           request.utr mustBe Some(testUtr)
           request.mtditid mustBe None
+          request.sessionData mustBe sessionData
           Results.Ok
         }(FakeRequest())
 
@@ -110,15 +128,19 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
     }
     "authorising an individual user who has CL250, has a nino, without a utr enrolment or session and without mtditid" must {
       "create an identifier request with the fetched details" in {
+        val sessionData = SessionData(Map(
+          random() -> JsString(random())
+        ))
+        mockGetAllSessionData(sessionData)
         mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino)(
           new~(new~(new~(new~(Some(Individual), emptyEnrolments), Some(User)), ConfidenceLevel.L250), Some(testNino))
         )
-        mockFetchUTR(Right(None))
 
         val result: Future[Result] = identifierAction { request =>
           request.nino mustBe testNino
           request.utr mustBe None
           request.mtditid mustBe None
+          request.sessionData mustBe sessionData
           Results.Ok
         }(FakeRequest())
 
@@ -127,15 +149,19 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
     }
     "authorising an individual user who has higher than CL250" must {
       "create an identifier request with the fetched details" in {
+        val sessionData = SessionData(Map(
+          random() -> JsString(random())
+        ))
+        mockGetAllSessionData(sessionData)
         mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino)(
           new~(new~(new~(new~(Some(Individual), emptyEnrolments), Some(User)), ConfidenceLevel.L500), Some(testNino))
         )
-        mockFetchUTR(Right(None))
 
         val result: Future[Result] = identifierAction { request =>
           request.nino mustBe testNino
           request.utr mustBe None
           request.mtditid mustBe None
+          request.sessionData mustBe sessionData
           Results.Ok
         }(FakeRequest())
 
@@ -144,6 +170,7 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
     }
     "authorising an individual user who has CL250, without a nino" must {
       "throw an InternalServerException as the user should have a nino in this scenario" in {
+        mockGetAllSessionData()
         mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino)(
           new~(new~(new~(new~(Some(Individual), emptyEnrolments), Some(User)), ConfidenceLevel.L250), None)
         )
@@ -158,6 +185,10 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
     }
     "authorising an individual user with a confidence level less than 250" must {
       "redirect the user to the identification verification service" in {
+        val sessionData = SessionData(Map(
+          random() -> JsString(random())
+        ))
+        mockGetAllSessionData(sessionData)
         mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino)(
           new~(new~(new~(new~(Some(Individual), emptyEnrolments), Some(User)), ConfidenceLevel.L200), Some(testNino))
         )
@@ -166,6 +197,7 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
           request.nino mustBe testNino
           request.utr mustBe None
           request.mtditid mustBe None
+          request.sessionData mustBe sessionData
           Results.Ok
         }(FakeRequest())
 
@@ -175,6 +207,10 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
     }
     "authorising an assistant" must {
       "redirect to the cannot use service page" in {
+        val sessionData = SessionData(Map(
+          random() -> JsString(random())
+        ))
+        mockGetAllSessionData(sessionData)
         mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino)(
           new~(new~(new~(new~(Some(Individual), emptyEnrolments), Some(Assistant)), ConfidenceLevel.L250), Some(testNino))
         )
@@ -183,6 +219,7 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
           request.nino mustBe testNino
           request.utr mustBe None
           request.mtditid mustBe None
+          request.sessionData mustBe sessionData
           Results.Ok
         }(FakeRequest())
 
@@ -192,6 +229,10 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
     }
     "authorising an agent" must {
       "redirect to the affinity group error page" in {
+        val sessionData = SessionData(Map(
+          random() -> JsString(random())
+        ))
+        mockGetAllSessionData(sessionData)
         mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino)(
           new~(new~(new~(new~(Some(Agent), emptyEnrolments), Some(User)), ConfidenceLevel.L250), Some(testNino))
         )
@@ -200,6 +241,7 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
           request.nino mustBe testNino
           request.utr mustBe None
           request.mtditid mustBe None
+          request.sessionData mustBe sessionData
           Results.Ok
         }(FakeRequest())
 
@@ -209,6 +251,7 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
     }
     "authorisation throws an AuthorisationException" must {
       "redirect the user to login" in {
+        mockGetAllSessionData()
         mockAuthoriseFailure(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino) {
           BearerTokenExpired()
         }
@@ -223,4 +266,6 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
     }
   }
 
+  private def random() =
+    UUID.randomUUID().toString
 }

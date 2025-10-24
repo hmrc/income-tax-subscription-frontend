@@ -22,7 +22,7 @@ import common.Constants.ITSASessionKeys
 import config.AppConfig
 import models.audits.IVOutcomeSuccessAuditing.IVOutcomeSuccessAuditModel
 import play.api.mvc._
-import services.{AuditingService, AuthService, NinoService}
+import services.{AuditingService, AuthService, NinoService, SessionDataService}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -30,15 +30,18 @@ import scala.concurrent.{ExecutionContext, Future}
 class IVSuccessController @Inject()(val appConfig: AppConfig,
                                     val authService: AuthService,
                                     val ninoService: NinoService,
-                                    val auditingService: AuditingService)
+                                    val auditingService: AuditingService,
+                                    sessionDataService: SessionDataService)
                                    (implicit val ec: ExecutionContext,
                                     mcc: MessagesControllerComponents) extends StatelessController {
 
   def success: Action[AnyContent] = Authenticated.asyncUnrestricted { implicit request =>
     _ =>
       if (request.session.get(ITSASessionKeys.IdentityVerificationFlag).nonEmpty) {
-        ninoService.getNino map { nino =>
-          auditingService.audit(IVOutcomeSuccessAuditModel(nino))
+        sessionDataService.getAllSessionData().flatMap { sessionData =>
+          ninoService.getNino(sessionData) map { nino =>
+            auditingService.audit(IVOutcomeSuccessAuditModel(nino))
+          }
         }
       }
       if (request.session.isInState(ClaimEnrolmentJourney)) {

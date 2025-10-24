@@ -17,11 +17,15 @@
 package controllers.agent.actions.mocks
 
 import controllers.agent.actions.IdentifierAction
+import models.SessionData
 import models.requests.agent.IdentifierRequest
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.{BodyParsers, Request, Result}
 import play.api.{Configuration, Environment}
+import services.SessionDataService
 import uk.gov.hmrc.auth.core.AuthConnector
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -32,12 +36,26 @@ trait MockIdentifierAction extends MockitoSugar with BeforeAndAfterEach {
 
   val testARN: String = "test-arn"
 
+
+  private val mockSessionDataService = mock[SessionDataService]
+
+  when(mockSessionDataService.getAllSessionData()(any(), any())).thenReturn(
+    Future.successful(SessionData())
+  )
+
   val fakeIdentifierAction: IdentifierAction = new IdentifierAction(
-    mock[AuthConnector], mock[BodyParsers.Default], mock[Configuration], mock[Environment]
+    mock[AuthConnector], mock[BodyParsers.Default], mock[Configuration], mockSessionDataService, mock[Environment]
   ) {
     override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
       block(IdentifierRequest(request, testARN))
     }
   }
 
+  def fakeIdentifierActionWithSessionData(sessionData: SessionData): IdentifierAction = new IdentifierAction(
+    mock[AuthConnector], mock[BodyParsers.Default], mock[Configuration], mockSessionDataService, mock[Environment]
+  ) {
+    override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
+      block(IdentifierRequest(request, testARN, sessionData))
+    }
+  }
 }

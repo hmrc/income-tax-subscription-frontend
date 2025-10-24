@@ -35,7 +35,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class RemoveSelfEmploymentBusinessController @Inject()(removeBusinessView: RemoveSelfEmploymentBusiness,
                                                        referenceRetrieval: ReferenceRetrieval,
                                                        subscriptionDetailsService: SubscriptionDetailsService,
-                                                       removeBusinessService: RemoveBusinessService)
+                                                       removeBusinessService: RemoveBusinessService,
+                                                       sessionDataService: SessionDataService)
                                                       (val auditingService: AuditingService,
                                                        val authService: AuthService,
                                                        val appConfig: AppConfig)
@@ -44,9 +45,11 @@ class RemoveSelfEmploymentBusinessController @Inject()(removeBusinessView: Remov
 
   def show(businessId: String): Action[AnyContent] = Authenticated.async { implicit request =>
     _ => {
-      referenceRetrieval.getIndividualReference flatMap { reference =>
-        withBusinessData(reference, businessId) { (maybeBusinessNameModel, maybeBusinessTradeNameModel) =>
-          Future.successful(Ok(view(businessId, form, maybeBusinessNameModel, maybeBusinessTradeNameModel)))
+      sessionDataService.getAllSessionData().flatMap { sessionData =>
+        referenceRetrieval.getIndividualReference(sessionData) flatMap { reference =>
+          withBusinessData(reference, businessId) { (maybeBusinessNameModel, maybeBusinessTradeNameModel) =>
+            Future.successful(Ok(view(businessId, form, maybeBusinessNameModel, maybeBusinessTradeNameModel)))
+          }
         }
       }
     }
@@ -54,18 +57,20 @@ class RemoveSelfEmploymentBusinessController @Inject()(removeBusinessView: Remov
 
   def submit(businessId: String): Action[AnyContent] = Authenticated.async { implicit request =>
     _ => {
-      referenceRetrieval.getIndividualReference flatMap { reference =>
-        form.bindFromRequest().fold(
-          formWithErrors => {
-            withBusinessData(reference, businessId) { (maybeBusinessNameModel, maybeBusinessTradeNameModel) =>
-              Future.successful(BadRequest(view(businessId, formWithErrors, maybeBusinessNameModel, maybeBusinessTradeNameModel)))
+      sessionDataService.getAllSessionData().flatMap { sessionData =>
+        referenceRetrieval.getIndividualReference(sessionData) flatMap { reference =>
+          form.bindFromRequest().fold(
+            formWithErrors => {
+              withBusinessData(reference, businessId) { (maybeBusinessNameModel, maybeBusinessTradeNameModel) =>
+                Future.successful(BadRequest(view(businessId, formWithErrors, maybeBusinessNameModel, maybeBusinessTradeNameModel)))
+              }
+            },
+            {
+              case Yes => fetchBusinessesAndRemoveThisBusiness(businessId, reference)
+              case No => Future.successful(Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show))
             }
-          },
-          {
-            case Yes => fetchBusinessesAndRemoveThisBusiness(businessId, reference)
-            case No => Future.successful(Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show))
-          }
-        )
+          )
+        }
       }
     }
   }

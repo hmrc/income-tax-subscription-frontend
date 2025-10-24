@@ -24,7 +24,7 @@ import models.DateModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSubscriptionDetailsService}
+import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSessionDataService, MockSubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import views.individual.mocks.MockPropertyStartDate
 
@@ -35,7 +35,8 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockAuditingService
   with MockReferenceRetrieval
-  with MockPropertyStartDate {
+  with MockPropertyStartDate
+  with MockSessionDataService {
 
   override val controllerName: String = "PropertyStartDateController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -46,7 +47,8 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
   object TestPropertyStartDateController extends PropertyStartDateController(
     propertyStartDate,
     mockSubscriptionDetailsService,
-    mockReferenceRetrieval
+    mockReferenceRetrieval,
+    mockSessionDataService
   )(
     mockAuditingService,
     mockAuthService,
@@ -58,7 +60,8 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
     val controller = new PropertyStartDateController(
       propertyStartDate,
       mockSubscriptionDetailsService,
-      mockReferenceRetrieval
+      mockReferenceRetrieval,
+      mockSessionDataService
     )(
       mockAuditingService,
       mockAuthService,

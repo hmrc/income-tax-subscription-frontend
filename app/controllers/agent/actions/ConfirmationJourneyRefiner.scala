@@ -51,10 +51,11 @@ class ConfirmationJourneyRefiner @Inject()(utrService: UTRService,
         )
       } match {
       case Some(Confirmation) =>
+        val sessionData = request.sessionData
         for {
-          clientDetails <- clientDetailsRetrieval.getClientDetails(request, hc)
-          utr <- utrService.getUTR
-          reference <- referenceRetrieval.getReference(Some(request.arn))(hc, request)
+          clientDetails <- clientDetailsRetrieval.getClientDetails(sessionData)(request, hc)
+          utr <- utrService.getUTR(sessionData)
+          reference <- referenceRetrieval.getReference(Some(request.arn), sessionData)(hc, request)
         } yield {
           Right(ConfirmedClientRequest(
             request = request,

@@ -49,7 +49,9 @@ class SPSCallbackForClaimEnrolControllerISpec extends ComponentSpecBase {
         "link user's enrolment id to SPS and redirect the user to the Claim Enrolment Confirmation page" in {
           AuthStub.stubAuthSuccess()
           SubscriptionStub.stubGetSubscriptionFound()
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.NINO -> JsString(testNino)
+          ))
 
           val res = IncomeTaxSubscriptionFrontend.claimEnrolSpsCallback(
             hasEntityId = true,
@@ -69,7 +71,9 @@ class SPSCallbackForClaimEnrolControllerISpec extends ComponentSpecBase {
         "throw InternalServerException" in {
           AuthStub.stubAuthSuccess()
           SubscriptionStub.stubGetNoSubscription()
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.NINO -> JsString(testNino)
+          ))
 
           val res = IncomeTaxSubscriptionFrontend.claimEnrolSpsCallback(
             hasEntityId = true,

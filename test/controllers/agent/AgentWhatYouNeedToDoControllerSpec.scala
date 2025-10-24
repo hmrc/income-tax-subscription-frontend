@@ -28,11 +28,14 @@ import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.libs.json.JsString
 import play.api.mvc.Result
 import play.api.test.Helpers.{HTML, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.mocks._
 import views.html.agent.WhatYouNeedToDo
+import _root_.common.Constants.ITSASessionKeys
+import models.Yes.YES
 
 import scala.concurrent.Future
 
@@ -82,8 +85,10 @@ class AgentWhatYouNeedToDoControllerSpec
         mockGetMandationService(Voluntary, Voluntary)
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
-        mockFetchSoftwareStatus(Right(Some(Yes)))
-        mockFetchConsentStatus(Right(Some(Yes)))
+        mockGetAllSessionData(SessionData(Map(
+          ITSASessionKeys.HAS_SOFTWARE -> JsString(YES),
+          ITSASessionKeys.CAPTURE_CONSENT -> JsString(YES)
+        )))
 
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
@@ -109,8 +114,9 @@ class AgentWhatYouNeedToDoControllerSpec
         mockGetMandationService(Voluntary, Voluntary)
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
-        mockFetchSoftwareStatus(Right(Some(Yes)))
-        mockFetchConsentStatus(Right(None))
+        mockGetAllSessionData(SessionData(Map(
+          ITSASessionKeys.HAS_SOFTWARE -> JsString(YES)
+        )))
 
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
@@ -121,7 +127,7 @@ class AgentWhatYouNeedToDoControllerSpec
           ArgumentMatchers.any(),
           ArgumentMatchers.eq(clientDetails.name),
           ArgumentMatchers.eq(clientDetails.formattedNino),
-          ArgumentMatchers.eq(Some(routes.UsingSoftwareController.show(false).url)),
+          ArgumentMatchers.eq(Some(routes.UsingSoftwareController.show().url)),
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
@@ -135,8 +141,10 @@ class AgentWhatYouNeedToDoControllerSpec
         mockGetMandationService(Mandated, Voluntary)
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
-        mockFetchSoftwareStatus(Right(Some(Yes)))
-        mockFetchConsentStatus(Right(Some(Yes)))
+        mockGetAllSessionData(SessionData(Map(
+          ITSASessionKeys.HAS_SOFTWARE -> JsString(YES),
+          ITSASessionKeys.CAPTURE_CONSENT -> JsString(YES)
+        )))
 
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
@@ -147,7 +155,7 @@ class AgentWhatYouNeedToDoControllerSpec
           ArgumentMatchers.any(),
           ArgumentMatchers.eq(clientDetails.name),
           ArgumentMatchers.eq(clientDetails.formattedNino),
-          ArgumentMatchers.eq(Some(routes.UsingSoftwareController.show(false).url)),
+          ArgumentMatchers.eq(Some(routes.UsingSoftwareController.show().url)),
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
@@ -161,8 +169,10 @@ class AgentWhatYouNeedToDoControllerSpec
         mockGetMandationService(Voluntary, Mandated)
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
-        mockFetchSoftwareStatus(Right(Some(Yes)))
-        mockFetchConsentStatus(Right(Some(Yes)))
+        mockGetAllSessionData(SessionData(Map(
+          ITSASessionKeys.HAS_SOFTWARE -> JsString(YES),
+          ITSASessionKeys.CAPTURE_CONSENT -> JsString(YES)
+        )))
 
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
@@ -189,8 +199,10 @@ class AgentWhatYouNeedToDoControllerSpec
           mockGetMandationService(Voluntary, Voluntary)
           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
           mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
-          mockFetchSoftwareStatus(Right(Some(Yes)))
-          mockFetchConsentStatus(Right(Some(Yes)))
+          mockGetAllSessionData(SessionData(Map(
+            ITSASessionKeys.HAS_SOFTWARE -> JsString(YES),
+            ITSASessionKeys.CAPTURE_CONSENT -> JsString(YES)
+          )))
 
           when(whatYouNeedToDo(
             ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
@@ -217,8 +229,10 @@ class AgentWhatYouNeedToDoControllerSpec
           mockGetMandationService(Mandated, Mandated)
           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
           mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
-          mockFetchSoftwareStatus(Right(Some(Yes)))
-          mockFetchConsentStatus(Right(Some(Yes)))
+          mockGetAllSessionData(SessionData(Map(
+            ITSASessionKeys.HAS_SOFTWARE -> JsString(YES),
+            ITSASessionKeys.CAPTURE_CONSENT -> JsString(YES)
+          )))
 
           when(whatYouNeedToDo(
             ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
@@ -229,7 +243,7 @@ class AgentWhatYouNeedToDoControllerSpec
             ArgumentMatchers.any(),
             ArgumentMatchers.eq(clientDetails.name),
             ArgumentMatchers.eq(clientDetails.formattedNino),
-            ArgumentMatchers.eq(Some(routes.UsingSoftwareController.show(false).url)),
+            ArgumentMatchers.eq(Some(routes.UsingSoftwareController.show().url)),
 
           )(any(), any())).thenReturn(HtmlFormat.empty)
 
@@ -247,8 +261,9 @@ class AgentWhatYouNeedToDoControllerSpec
           mockGetMandationService(Voluntary, Voluntary)
           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
           mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
-          mockFetchSoftwareStatus(Right(Some(Yes)))
-          mockFetchConsentStatus(Right(None))
+          mockGetAllSessionData(SessionData(Map(
+            ITSASessionKeys.HAS_SOFTWARE -> JsString(YES)
+          )))
 
           when(whatYouNeedToDo(
             ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
@@ -259,7 +274,7 @@ class AgentWhatYouNeedToDoControllerSpec
             ArgumentMatchers.any(),
             ArgumentMatchers.eq(clientDetails.name),
             ArgumentMatchers.eq(clientDetails.formattedNino),
-            ArgumentMatchers.eq(Some(controllers.agent.routes.UsingSoftwareController.show(false).url)),
+            ArgumentMatchers.eq(Some(controllers.agent.routes.UsingSoftwareController.show().url)),
           )(any(), any())).thenReturn(HtmlFormat.empty)
 
           val result: Future[Result] = controller.show(
@@ -274,8 +289,9 @@ class AgentWhatYouNeedToDoControllerSpec
           mockGetMandationService(Voluntary, Mandated)
           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
           mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
-          mockFetchSoftwareStatus(Right(Some(Yes)))
-          mockFetchConsentStatus(Right(None))
+          mockGetAllSessionData(SessionData(Map(
+            ITSASessionKeys.HAS_SOFTWARE -> JsString(YES)
+          )))
 
           when(whatYouNeedToDo(
             ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
@@ -286,7 +302,7 @@ class AgentWhatYouNeedToDoControllerSpec
             ArgumentMatchers.any(),
             ArgumentMatchers.eq(clientDetails.name),
             ArgumentMatchers.eq(clientDetails.formattedNino),
-            ArgumentMatchers.eq(Some(controllers.agent.routes.UsingSoftwareController.show(false).url)),
+            ArgumentMatchers.eq(Some(controllers.agent.routes.UsingSoftwareController.show().url)),
 
           )(any(), any())).thenReturn(HtmlFormat.empty)
 
@@ -324,13 +340,13 @@ class AgentWhatYouNeedToDoControllerSpec
         "the user is eligible for next year only" in new Setup {
           val backUrl: String = controller.backUrl(eligibleNextYearOnly = true, mandatedCurrentYear = false, None, Some(Next))
 
-          backUrl mustBe controllers.agent.routes.UsingSoftwareController.show(false).url
+          backUrl mustBe controllers.agent.routes.UsingSoftwareController.show().url
         }
         "the user is mandated for the current year" in new Setup {
 
           val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, mandatedCurrentYear = true, None, Some(Current))
 
-          backUrl mustBe controllers.agent.routes.UsingSoftwareController.show(false).url
+          backUrl mustBe controllers.agent.routes.UsingSoftwareController.show().url
         }
       }
     }
@@ -340,7 +356,7 @@ class AgentWhatYouNeedToDoControllerSpec
           enable(EmailCaptureConsent)
           val backUrl: String = controller.backUrl(eligibleNextYearOnly = true, mandatedCurrentYear = false, captureConsentStatus = Some(Yes), Some(Next))
 
-          backUrl mustBe controllers.agent.routes.UsingSoftwareController.show(false).url
+          backUrl mustBe controllers.agent.routes.UsingSoftwareController.show().url
         }
       }
       "the user is mandated or signing up for current year" should {

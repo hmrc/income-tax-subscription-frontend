@@ -39,7 +39,7 @@ trait MockGetEligibilityStatusService extends PlaySpec with MockitoSugar with Be
   }
 
   def mockGetEligibilityStatus(result: EligibilityStatus): Unit = {
-    when(mockGetEligibilityStatusService.getEligibilityStatus(ArgumentMatchers.any()))
+    when(mockGetEligibilityStatusService.getEligibilityStatus(ArgumentMatchers.any())(ArgumentMatchers.any()))
       .thenReturn(Future.successful(result))
   }
 }

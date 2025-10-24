@@ -29,7 +29,7 @@ import models.prepop.{PrePopData, PrePopSelfEmployment}
 import models.{DateModel, EligibilityStatus}
 import play.api.http.Status._
 import play.api.libs.json.{JsBoolean, JsString, Json}
-import services.{IndividualStartOfJourneyThrottle, StartOfJourneyThrottleId}
+import services.StartOfJourneyThrottleId
 import utilities.AccountingPeriodUtil
 import utilities.SubscriptionDataKeys.PrePopFlag
 
@@ -71,7 +71,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
     "redirect to the no self assessment page" when {
       "a utr was not found on the users cred, in session or from citizen details" in {
         AuthStub.stubAuthNoUtr()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(NO_CONTENT)
+        SessionDataConnectorStub.stubGetAllSessionData(Map())
         CitizenDetailsStub.stubCIDUserWithNoUtr(testNino)
 
         val res = IncomeTaxSubscriptionFrontend.indexPage()
@@ -88,7 +88,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.throttlePassed(IndividualStartOfJourneyThrottle))(NO_CONTENT)
+        SessionDataConnectorStub.stubGetAllSessionData(Map())
         ThrottlingStub.stubThrottle(StartOfJourneyThrottleId)(throttled = true)
 
         val res = IncomeTaxSubscriptionFrontend.indexPage()
@@ -104,7 +104,9 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
     "redirect to the start of the claim enrolment journey" when {
       "the user is already signed up for MTD ITSA and has no enrolment" in {
         AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.UTR -> JsString(testUtr)
+        ))
         SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
         SubscriptionStub.stubGetSubscriptionFound()
 
@@ -124,7 +126,9 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
         SubscriptionStub.stubGetNoSubscription()
 
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(ineligibleStatus))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(ineligibleStatus)
+        ))
         EligibilityStub.stubEligibilityResponseBoth(testUtr)(currentYearResponse = false, nextYearResponse = false)
         SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, ineligibleStatus)(OK)
 
@@ -144,7 +148,9 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
         SubscriptionStub.stubGetNoSubscription()
 
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(eligibleBothYears))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(eligibleBothYears)
+        ))
 
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(PrePopFlag, NO_CONTENT)
         PrePopStub.stubGetPrePop(testNino)(OK, Json.toJson(fullPrePopData))
@@ -171,7 +177,9 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
         SubscriptionStub.stubGetNoSubscription()
 
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(eligibleNextYearOnly))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(eligibleNextYearOnly)
+        ))
 
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(PrePopFlag, OK, JsBoolean(true))
 
@@ -184,16 +192,6 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
       }
     }
     "return an internal server error" when {
-      "there was a problem when checking if utr was present in session" in {
-        AuthStub.stubAuthNoUtr()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(INTERNAL_SERVER_ERROR)
-
-        val res = IncomeTaxSubscriptionFrontend.indexPage()
-
-        res must have(
-          httpStatus(INTERNAL_SERVER_ERROR)
-        )
-      }
       "there was a problem when checking if the user is already signed up" in {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
@@ -209,12 +207,16 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
       "there was a problem when pre-populating the users income sources" in {
         AuthStub.stubAuthSuccess()
 
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.UTR -> JsString(testUtr)
+        ))
         SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
 
         SubscriptionStub.stubGetNoSubscription()
 
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(eligibleBothYears))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(eligibleBothYears)
+        ))
 
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(PrePopFlag, NO_CONTENT)
         PrePopStub.stubGetPrePop(testNino)(INTERNAL_SERVER_ERROR, Json.obj())
@@ -230,14 +232,16 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
       "fetched from citizen details during the utr lookup" in {
         AuthStub.stubAuthNoUtr()
 
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(NO_CONTENT)
+        SessionDataConnectorStub.stubGetAllSessionData(Map())
         CitizenDetailsStub.stubCIDUserWithNinoAndUtrAndName(testNino, testUtr, testFirstName, testLastName)
 
         SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
 
         SubscriptionStub.stubGetNoSubscription()
 
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(eligibleBothYears))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(eligibleBothYears)
+        ))
 
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(PrePopFlag, OK, JsBoolean(true))
 

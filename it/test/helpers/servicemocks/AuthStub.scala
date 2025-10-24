@@ -17,7 +17,6 @@
 package helpers.servicemocks
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import common.Constants
 import common.Constants._
 import helpers.IntegrationTestConstants._
 import play.api.http.Status._

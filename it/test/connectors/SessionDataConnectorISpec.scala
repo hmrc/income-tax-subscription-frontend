@@ -16,9 +16,10 @@
 
 package connectors
 
-import connectors.httpparser.{DeleteSessionDataHttpParser, GetSessionDataHttpParser, SaveSessionDataHttpParser}
-import connectors.stubs.SessionDataConnectorStub.{stubDeleteSessionData, stubGetSessionData, stubSaveSessionData}
+import connectors.httpparser.{DeleteSessionDataHttpParser, SaveSessionDataHttpParser}
+import connectors.stubs.SessionDataConnectorStub.{stubDeleteSessionData, stubGetAllSessionData, stubSaveSessionData}
 import helpers.ComponentSpecBase
+import models.SessionData
 import play.api.libs.json.{JsValue, Json, OFormat}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -41,38 +42,24 @@ class SessionDataConnectorISpec extends ComponentSpecBase {
     "body" -> "Test Body"
   )
 
-  "getSessionData" should {
+  "getAllSessionData" should {
     "return the provided model" in {
-      stubGetSessionData(id)(OK, dummyModelJson)
+      val sessionData = Map(
+        id -> dummyModelJson
+      )
 
-      val res = connector.getSessionData[DummyModel](id)
+      stubGetAllSessionData(sessionData, false)
 
-      await(res) mustBe Right(Some(dummyModel))
+      val res = await(connector.getAllSessionData())
+
+      res mustBe Right(Some(sessionData))
     }
+    "Return no data" in {
+      stubGetAllSessionData(Map(), false)
 
-    "Return InvalidJson" in {
-      stubGetSessionData(id)(OK, Json.obj())
+      val res = await(connector.getAllSessionData())
 
-      val res = connector.getSessionData[DummyModel](id)
-
-      await(res) mustBe Left(GetSessionDataHttpParser.InvalidJson)
-    }
-
-    "Return None" in {
-      stubGetSessionData(id)(NO_CONTENT, Json.obj())
-
-      val res = connector.getSessionData[DummyModel](id)
-
-      await(res) mustBe Right(None)
-
-    }
-    "Return UnexpectedStatusFailure" in {
-      stubGetSessionData(id)(INTERNAL_SERVER_ERROR, Json.obj())
-
-      val res = connector.getSessionData[DummyModel](id)
-
-      await(res) mustBe Left(GetSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
-
+      res mustBe Right(None)
     }
   }
 
@@ -109,5 +96,4 @@ class SessionDataConnectorISpec extends ComponentSpecBase {
       await(res) mustBe Left(DeleteSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
     }
   }
-
 }

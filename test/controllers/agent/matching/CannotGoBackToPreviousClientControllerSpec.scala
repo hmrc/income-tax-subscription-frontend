@@ -26,7 +26,6 @@ import views.agent.mocks.MockCannotGoBackToPreviousClient
 
 import scala.concurrent.Future
 
-
 class CannotGoBackToPreviousClientControllerSpec extends ControllerSpec
   with MockCannotGoBackToPreviousClient
   with MockIdentifierAction {

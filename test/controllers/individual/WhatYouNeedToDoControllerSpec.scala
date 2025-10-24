@@ -18,12 +18,14 @@ package controllers.individual
 
 import config.featureswitch.FeatureSwitch.EmailCaptureConsent
 import config.featureswitch.FeatureSwitching
+import models.Yes.YES
 import models.status.MandationStatus.{Mandated, Voluntary}
 import models._
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.libs.json.JsString
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
@@ -32,6 +34,7 @@ import utilities.agent.TestModels.{testSelectedTaxYearCurrent, testSelectedTaxYe
 import views.html.individual.WhatYouNeedToDo
 
 import scala.concurrent.Future
+import _root_.common.Constants.ITSASessionKeys
 
 class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
   with MockAuditingService
@@ -86,9 +89,8 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
       "the session contains mandated and eligible for only next year" in new Setup {
         mockGetMandationService(Voluntary, Mandated)
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
-        mockFetchSoftwareStatus(Right(Some(Yes)))
         mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
-        mockFetchConsentStatus(Right(None))
+        mockGetAllSessionData(SessionData())
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(true),
@@ -108,9 +110,8 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
       "the session contains a eligible for both years" in new Setup {
         mockGetMandationService(Voluntary, Voluntary)
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
-        mockFetchSoftwareStatus(Right(Some(Yes)))
         mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
-        mockFetchConsentStatus(Right(None))
+        mockGetAllSessionData(SessionData())
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(false),
@@ -130,9 +131,8 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
       "the session contains a eligible for next year only" in new Setup {
         mockGetMandationService(Voluntary, Voluntary)
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
-        mockFetchSoftwareStatus(Right(Some(Yes)))
         mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
-        mockFetchConsentStatus(Right(None))
+        mockGetAllSessionData(SessionData())
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(true),
@@ -152,9 +152,10 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
       "the session contains a mandated current year flag of true" in new Setup {
         mockGetMandationService(Mandated, Voluntary)
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
-        mockFetchSoftwareStatus(Right(Some(Yes)))
         mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
-        mockFetchConsentStatus(Right(None))
+        mockGetAllSessionData(SessionData(Map(
+          ITSASessionKeys.HAS_SOFTWARE -> JsString(YES)
+        )))
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(false),
@@ -174,9 +175,10 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
       "the session contains a selected software status and tax year " in new Setup {
         mockGetMandationService(Mandated, Voluntary)
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
-        mockFetchSoftwareStatus(Right(Some(Yes)))
         mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
-        mockFetchConsentStatus(Right(None))
+        mockGetAllSessionData(SessionData(Map(
+          ITSASessionKeys.HAS_SOFTWARE -> JsString(YES)
+        )))
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(false),
@@ -225,13 +227,13 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
         "the user is eligible for next year only" in new Setup {
           val backUrl: String = controller.backUrl(eligibleNextYearOnly = true, mandatedCurrentYear = false, None, None)
 
-          backUrl mustBe controllers.individual.routes.UsingSoftwareController.show(false).url
+          backUrl mustBe controllers.individual.routes.UsingSoftwareController.show().url
         }
         "the user is mandated for the current year" in new Setup {
 
           val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, mandatedCurrentYear = true, None, None)
 
-          backUrl mustBe controllers.individual.routes.UsingSoftwareController.show(false).url
+          backUrl mustBe controllers.individual.routes.UsingSoftwareController.show().url
         }
       }
     }
@@ -241,7 +243,7 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
           enable(EmailCaptureConsent)
           val backUrl: String = controller.backUrl(eligibleNextYearOnly = true, mandatedCurrentYear = false, consentStatus = Some(Yes), None)
 
-          backUrl mustBe controllers.individual.routes.UsingSoftwareController.show(false).url
+          backUrl mustBe controllers.individual.routes.UsingSoftwareController.show().url
         }
       }
       "the user is mandated or signing up for current year" should {

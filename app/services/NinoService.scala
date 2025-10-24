@@ -16,6 +16,7 @@
 
 package services
 
+import models.SessionData
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
@@ -26,24 +27,18 @@ import scala.concurrent.{ExecutionContext, Future}
 class NinoService @Inject()(authService: AuthService, sessionDataService: SessionDataService)
                            (implicit ec: ExecutionContext) {
 
-  def getNino(implicit hc: HeaderCarrier): Future[String] = {
-    sessionDataService.fetchNino flatMap {
-      case Right(Some(nino)) => Future.successful(nino)
-      case Right(None) => authService.authorised().retrieve(Retrievals.nino) {
+  def getNino(sessionData: SessionData = SessionData())(implicit hc: HeaderCarrier): Future[String] = {
+    sessionData.fetchNino match {
+      case Some(nino) => Future.successful(nino)
+      case None => authService.authorised().retrieve(Retrievals.nino) {
         case Some(nino) => sessionDataService.saveNino(nino) map {
           case Right(_) => nino
           case Left(error) => throw new SaveToSessionException(error.toString)
         }
         case None => throw new FetchFromAuthException
       }
-      case Left(error) => throw new FetchFromSessionException(error.toString)
     }
-
   }
-
-  private class FetchFromSessionException(error: String) extends InternalServerException(
-    s"[NinoService][getNino] - Failure when fetching nino from session: $error"
-  )
 
   private class FetchFromAuthException extends InternalServerException(
     s"[NinoService][getNino] - Nino not present in auth"
@@ -52,5 +47,4 @@ class NinoService @Inject()(authService: AuthService, sessionDataService: Sessio
   private class SaveToSessionException(error: String) extends InternalServerException(
     s"[NinoService][getNino] - Failure when saving nino to session: $error"
   )
-
 }

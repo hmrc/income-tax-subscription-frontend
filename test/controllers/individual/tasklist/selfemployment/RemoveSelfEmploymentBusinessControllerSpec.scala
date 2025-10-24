@@ -41,7 +41,8 @@ class RemoveSelfEmploymentBusinessControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockReferenceRetrieval
   with MockIncomeTaxSubscriptionConnector
-  with MockRemoveBusinessService {
+  with MockRemoveBusinessService
+  with MockSessionDataService {
 
   override val controllerName: String = "RemoveBusinessController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
@@ -132,7 +133,8 @@ class RemoveSelfEmploymentBusinessControllerSpec extends ControllerBaseSpec
       view,
       mockReferenceRetrieval,
       mockSubscriptionDetailsService,
-      mockRemoveBusinessService
+      mockRemoveBusinessService,
+      mockSessionDataService
     )(
       mockAuditingService,
       mockAuthService,

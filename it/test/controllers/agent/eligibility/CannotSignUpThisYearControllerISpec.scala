@@ -54,8 +54,10 @@ class CannotSignUpThisYearControllerISpec extends ComponentSpecBase {
     "the user is authenticated and in a confirmed client state" must {
       "return OK with the page content" in {
         AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr)
+        ))
 
         val result = IncomeTaxSubscriptionFrontend.showCannotSignUpThisYear()
 
@@ -95,8 +97,10 @@ class CannotSignUpThisYearControllerISpec extends ComponentSpecBase {
     "the user is authenticated and in a confirmed client state" must {
       "redirect the user to the using software page" in {
         AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr)
+        ))
 
         val result = IncomeTaxSubscriptionFrontend.submitCannotSignUpThisYear()
 

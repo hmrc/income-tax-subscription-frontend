@@ -24,7 +24,7 @@ import forms.individual.business.PropertyStartDateForm._
 import models.DateModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
-import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.ImplicitDateFormatter
@@ -36,7 +36,8 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class PropertyStartDateController @Inject()(view: PropertyStartDate,
                                             subscriptionDetailsService: SubscriptionDetailsService,
-                                            referenceRetrieval: ReferenceRetrieval)
+                                            referenceRetrieval: ReferenceRetrieval,
+                                            sessionDataService: SessionDataService)
                                            (val auditingService: AuditingService,
                                             val authService: AuthService,
                                             val appConfig: AppConfig,
@@ -47,7 +48,8 @@ class PropertyStartDateController @Inject()(view: PropertyStartDate,
   def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
       for {
-        reference <- referenceRetrieval.getIndividualReference
+        sessionData <- sessionDataService.getAllSessionData()
+        reference <- referenceRetrieval.getIndividualReference(sessionData)
         startDate <- subscriptionDetailsService.fetchPropertyStartDate(reference)
       } yield {
         Ok(view(
@@ -60,20 +62,22 @@ class PropertyStartDateController @Inject()(view: PropertyStartDate,
 
   def submit(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
-      referenceRetrieval.getIndividualReference flatMap { reference =>
-        form.bindFromRequest().fold(
-          formWithErrors => {
-            Future.successful(BadRequest(view(
-              propertyStartDateForm = formWithErrors,
-              postAction = routes.PropertyStartDateController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
-              backUrl = backUrl(isEditMode, isGlobalEdit))))
-          },
-          startDate =>
-            subscriptionDetailsService.savePropertyStartDate(reference, startDate) map {
-              case Right(_) => Redirect(routes.PropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit))
-              case Left(_) => throw new InternalServerException("[PropertyStartDateController][submit] - Could not save start date")
-            }
-        )
+      sessionDataService.getAllSessionData().flatMap { sessionData =>
+        referenceRetrieval.getIndividualReference(sessionData) flatMap { reference =>
+          form.bindFromRequest().fold(
+            formWithErrors => {
+              Future.successful(BadRequest(view(
+                propertyStartDateForm = formWithErrors,
+                postAction = routes.PropertyStartDateController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
+                backUrl = backUrl(isEditMode, isGlobalEdit))))
+            },
+            startDate =>
+              subscriptionDetailsService.savePropertyStartDate(reference, startDate) map {
+                case Right(_) => Redirect(routes.PropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit))
+                case Left(_) => throw new InternalServerException("[PropertyStartDateController][submit] - Could not save start date")
+              }
+          )
+        }
       }
   }
 

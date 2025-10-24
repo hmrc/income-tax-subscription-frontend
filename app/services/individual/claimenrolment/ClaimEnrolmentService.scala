@@ -24,7 +24,7 @@ import services.agent.CheckEnrolmentAllocationService
 import services.agent.CheckEnrolmentAllocationService.{EnrolmentAlreadyAllocated, EnrolmentStoreProxyInvalidJsonResponse, UnexpectedEnrolmentStoreProxyFailure}
 import services.individual.claimenrolment.ClaimEnrolmentService._
 import services.individual.{EnrolmentService, KnownFactsService}
-import services.{NinoService, SubscriptionService}
+import services.{NinoService, SessionDataService, SubscriptionService}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -34,24 +34,29 @@ class ClaimEnrolmentService @Inject()(subscriptionService: SubscriptionService,
                                       ninoService: NinoService,
                                       checkEnrolmentAllocationService: CheckEnrolmentAllocationService,
                                       knownFactsService: KnownFactsService,
-                                      enrolmentService: EnrolmentService)(implicit ec: ExecutionContext) {
+                                      enrolmentService: EnrolmentService,
+                                      sessionDataService: SessionDataService)(implicit ec: ExecutionContext) {
 
   def claimEnrolment(implicit hc: HeaderCarrier): Future[ClaimEnrolmentResponse] = {
-    ninoService.getNino flatMap { nino =>
-      val claimEnrolmentResult = for {
-        mtditid <- EitherT(getMtditid(nino))
-        _ <- EitherT(getEnrolmentAllocation(nino, mtditid))
-        _ <- EitherT(addKnownFacts(nino, mtditid))
-        allocationResult <- EitherT(allocateEnrolment(nino, mtditid))
-      } yield allocationResult
+    sessionDataService.getAllSessionData().flatMap { sessionData =>
+      ninoService.getNino(sessionData) flatMap { nino =>
+        val claimEnrolmentResult = for {
+          mtditid <- EitherT(getMtditid(nino))
+          _ <- EitherT(getEnrolmentAllocation(nino, mtditid))
+          _ <- EitherT(addKnownFacts(nino, mtditid))
+          allocationResult <- EitherT(allocateEnrolment(nino, mtditid))
+        } yield allocationResult
 
-      claimEnrolmentResult.value
+        claimEnrolmentResult.value
+      }
     }
   }
 
   def getMtditidFromSubscription(implicit hc: HeaderCarrier): Future[Either[ClaimEnrolmentFailure, String]] = {
-    ninoService.getNino flatMap { nino =>
-      getMtditid(nino)
+    sessionDataService.getAllSessionData().flatMap { sessionData =>
+      ninoService.getNino(sessionData) flatMap { nino =>
+        getMtditid(nino)
+      }
     }
   }
 

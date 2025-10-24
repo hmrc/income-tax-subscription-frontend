@@ -21,7 +21,7 @@ import _root_.common.Constants.ITSASessionKeys._
 import auth.individual.{JourneyState, SignUp, ClaimEnrolment => ClaimEnrolmentJourney}
 import config.AppConfig
 import config.featureswitch.{FeatureSwitch, FeatureSwitching}
-import connectors.stubs.SessionDataConnectorStub.stubGetSessionData
+import connectors.stubs.SessionDataConnectorStub.stubGetAllSessionData
 import forms.individual._
 import forms.individual.accountingperiod.{AccountingPeriodForm, AccountingPeriodNonStandardForm}
 import forms.individual.business._
@@ -46,7 +46,6 @@ import play.api.libs.crypto.CookieSigner
 import play.api.libs.json.{JsArray, JsString, JsValue, Writes}
 import play.api.libs.ws.WSResponse
 import play.api.test.FakeRequest
-import play.api.test.Helpers.OK
 import play.twirl.api.TwirlHelperImports.twirlJavaCollectionToScala
 import uk.gov.hmrc.crypto.{ApplicationCrypto, Decrypter, Encrypter}
 import utilities.UUIDProvider
@@ -127,7 +126,9 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
     resetWiremock()
     AuditStub.stubAuditing()
 
-    stubGetSessionData(REFERENCE)(OK, JsString(reference))
+    stubGetAllSessionData(Map(
+      REFERENCE -> JsString(reference)
+    ))
   }
 
   override def beforeAll(): Unit = {

@@ -59,7 +59,10 @@ class CaptureConsentControllerISpec extends ComponentSpecBase {
       "return the page with content" when {
         "the user previously selected yes" in {
           AuthStub.stubAuthSuccess()
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.CAPTURE_CONSENT)(OK, JsString(Yes.toString))
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.CAPTURE_CONSENT -> JsString(Yes.toString)
+          ))
+
           val result = IncomeTaxSubscriptionFrontend.showCaptureConsent()
 
           result must have(
@@ -70,24 +73,15 @@ class CaptureConsentControllerISpec extends ComponentSpecBase {
         }
         "the user previously selected no" in {
           AuthStub.stubAuthSuccess()
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.CAPTURE_CONSENT)(OK, JsString(No.toString))
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.CAPTURE_CONSENT -> JsString(No.toString)
+          ))
           val result = IncomeTaxSubscriptionFrontend.showCaptureConsent()
 
           result must have(
             httpStatus(OK),
             pageTitle(s"${messages("individual.capture-consent.heading")} - $serviceNameGovUk"),
             radioButtonSet(id = "yes-no", selectedRadioButton = Some(No.toString))
-          )
-        }
-        "the user previously selected nothing" in {
-          AuthStub.stubAuthSuccess()
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.CAPTURE_CONSENT)(NO_CONTENT)
-          val result = IncomeTaxSubscriptionFrontend.showCaptureConsent()
-
-          result must have(
-            httpStatus(OK),
-            pageTitle(s"${messages("individual.capture-consent.heading")} - $serviceNameGovUk"),
-            radioButtonSet(id = "yes-no", selectedRadioButton = None)
           )
         }
       }
@@ -98,7 +92,7 @@ class CaptureConsentControllerISpec extends ComponentSpecBase {
     "the user is not authorised" must {
       "redirect the user to login" in {
         AuthStub.stubUnauthorised()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.CAPTURE_CONSENT)(OK)
+        SessionDataConnectorStub.stubGetAllSessionData(Map())
         val result = IncomeTaxSubscriptionFrontend.submitCaptureConsent(None)()
 
         result must have(
@@ -110,7 +104,7 @@ class CaptureConsentControllerISpec extends ComponentSpecBase {
     "the user does not have any state" must {
       "redirect to home" in {
         AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.CAPTURE_CONSENT)(OK)
+        SessionDataConnectorStub.stubGetAllSessionData(Map())
         val result = IncomeTaxSubscriptionFrontend.submitCaptureConsent(None)(includeState = false)
 
         result must have(
