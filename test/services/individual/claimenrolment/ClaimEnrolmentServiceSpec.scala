@@ -27,7 +27,7 @@ import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import services.agent.CheckEnrolmentAllocationService.{EnrolmentAlreadyAllocated, EnrolmentNotAllocated, EnrolmentStoreProxyInvalidJsonResponse, UnexpectedEnrolmentStoreProxyFailure}
 import services.individual.claimenrolment.ClaimEnrolmentService._
 import services.individual.mocks.{MockEnrolmentService, MockKnownFactsService}
-import services.mocks.{MockCheckEnrolmentAllocationService, MockNinoService, MockSubscriptionService}
+import services.mocks.{MockCheckEnrolmentAllocationService, MockNinoService, MockSessionDataService, MockSubscriptionService}
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import uk.gov.hmrc.auth.core._
 import utilities.individual.TestConstants.{testEnrolmentKey, testGroupId, testMTDID, testNino}
@@ -40,15 +40,19 @@ class ClaimEnrolmentServiceSpec extends PlaySpec
   with MockCheckEnrolmentAllocationService
   with MockKnownFactsService
   with MockNinoService
-  with MockEnrolmentService {
+  with MockEnrolmentService
+  with MockSessionDataService {
 
   object TestClaimEnrolmentService extends ClaimEnrolmentService(
     mockSubscriptionService,
     mockNinoService,
     mockCheckEnrolmentAllocationService,
     mockKnownFactsService,
-    mockEnrolmentService
-  )
+    mockEnrolmentService,
+    mockSessionDataService
+  ) {
+    mockGetAllSessionData()
+  }
 
   implicit val request: Request[AnyContent] = FakeRequest()
   private val fullEnrolments: Enrolments = Enrolments(Set(

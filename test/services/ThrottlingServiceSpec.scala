@@ -16,10 +16,13 @@
 
 package services
 
+import common.Constants.ITSASessionKeys
 import config.featureswitch.FeatureSwitch.ThrottlingFeature
 import config.featureswitch.FeatureSwitching
 import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataSuccessResponse
+import models.SessionData
 import org.mockito.Mockito.{never, times}
+import play.api.libs.json.JsBoolean
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import services.mocks.{MockSessionDataService, MockThrottlingConnector}
@@ -48,16 +51,17 @@ class ThrottlingServiceSpec extends MockThrottlingConnector with MockSessionData
         verifyGetThrottleStatusCalls(never)
       }
       "session indicates the user has already passed through the throttle" in {
-        mockFetchThrottlePassed(mockThrottle)(Right(Some(true)))
+        val sessionData = SessionData(Map(
+          ITSASessionKeys.throttlePassed(mockThrottle) -> JsBoolean(true)
+        ))
 
-        val result: Future[Result] = throttlingService.throttled(mockThrottle)(fuzzyResult)
+        val result: Future[Result] = throttlingService.throttled(mockThrottle, sessionData)(fuzzyResult)
 
         await(result) mustBe fuzzyResult
 
         verifyGetThrottleStatusCalls(never)
       }
       "the throttle call returned a successful response" in {
-        mockFetchThrottlePassed(mockThrottle)(Right(None))
         notThrottled()
         mockSaveThrottlePassed(mockThrottle)(Right(SaveSessionDataSuccessResponse))
 
@@ -68,7 +72,6 @@ class ThrottlingServiceSpec extends MockThrottlingConnector with MockSessionData
         verifyGetThrottleStatusCalls(times(1))
       }
       "the throttle call failed, but the throttle was setup to open on failure" in {
-        mockFetchThrottlePassed(mockThrottle)(Right(None))
         throttleFail()
         failOpen()
         mockSaveThrottlePassed(mockThrottle)(Right(SaveSessionDataSuccessResponse))
@@ -82,7 +85,6 @@ class ThrottlingServiceSpec extends MockThrottlingConnector with MockSessionData
     }
     "redirect to the throttle call" when {
       "the throttle call returned false" in {
-        mockFetchThrottlePassed(mockThrottle)(Right(None))
         throttled()
 
         val result: Future[Result] = throttlingService.throttled(mockThrottle)(fuzzyResult)
@@ -93,7 +95,6 @@ class ThrottlingServiceSpec extends MockThrottlingConnector with MockSessionData
         verifyGetThrottleStatusCalls(times(1))
       }
       "the throttle call failed, but the throttle was setup to close on failure" in {
-        mockFetchThrottlePassed(mockThrottle)(Right(None))
         throttleFail()
         failClosed()
 

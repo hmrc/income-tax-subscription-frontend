@@ -55,8 +55,10 @@ class PropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBase {
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(PropertyModel(
             startDateBeforeLimit = Some(false)
           )))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.NINO -> JsString(testNino),
+            ITSASessionKeys.UTR -> JsString(testUtr)
+          ))
 
           val res = IncomeTaxSubscriptionFrontend.ukPropertyStartDateBeforeLimit()
 
@@ -71,8 +73,10 @@ class PropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBase {
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(PropertyModel(
             startDateBeforeLimit = Some(true)
           )))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.NINO -> JsString(testNino),
+            ITSASessionKeys.UTR -> JsString(testUtr)
+          ))
 
           val res = IncomeTaxSubscriptionFrontend.ukPropertyStartDateBeforeLimit()
 
@@ -85,8 +89,10 @@ class PropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBase {
         "the question has not been answered" in {
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.NINO -> JsString(testNino),
+            ITSASessionKeys.UTR -> JsString(testUtr)
+          ))
 
           val res = IncomeTaxSubscriptionFrontend.ukPropertyStartDateBeforeLimit()
 
@@ -117,8 +123,10 @@ class PropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBase {
       "return BAD_REQUEST when nothing is submitted" in {
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr)
+        ))
 
         val res = IncomeTaxSubscriptionFrontend.submitUkPropertyStartDateBeforeLimit()(None)
 
@@ -131,8 +139,10 @@ class PropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBase {
         "failed the save uk property start date before limit" in {
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.NINO -> JsString(testNino),
+            ITSASessionKeys.UTR -> JsString(testUtr)
+          ))
           IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetailsFailure(Property)
 
 
@@ -148,8 +158,10 @@ class PropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBase {
           "not in edit mode" in {
             AuthStub.stubAuthSuccess()
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
-            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+            SessionDataConnectorStub.stubGetAllSessionData(Map(
+              ITSASessionKeys.NINO -> JsString(testNino),
+              ITSASessionKeys.UTR -> JsString(testUtr)
+            ))
             IncomeTaxSubscriptionConnectorStub.stubSaveProperty(PropertyModel(startDateBeforeLimit = Some(true)))
             IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
@@ -163,8 +175,10 @@ class PropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBase {
           "in edit mode" in {
             AuthStub.stubAuthSuccess()
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
-            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+            SessionDataConnectorStub.stubGetAllSessionData(Map(
+              ITSASessionKeys.NINO -> JsString(testNino),
+              ITSASessionKeys.UTR -> JsString(testUtr)
+            ))
             IncomeTaxSubscriptionConnectorStub.stubSaveProperty(PropertyModel(startDateBeforeLimit = Some(true)))
             IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
@@ -178,8 +192,10 @@ class PropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBase {
           "in global edit mode" in {
             AuthStub.stubAuthSuccess()
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
-            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+            SessionDataConnectorStub.stubGetAllSessionData(Map(
+              ITSASessionKeys.NINO -> JsString(testNino),
+              ITSASessionKeys.UTR -> JsString(testUtr)
+            ))
             IncomeTaxSubscriptionConnectorStub.stubSaveProperty(PropertyModel(startDateBeforeLimit = Some(true)))
             IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
@@ -198,8 +214,10 @@ class PropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBase {
           "in not edit mode" in {
             AuthStub.stubAuthSuccess()
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
-            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+            SessionDataConnectorStub.stubGetAllSessionData(Map(
+              ITSASessionKeys.NINO -> JsString(testNino),
+              ITSASessionKeys.UTR -> JsString(testUtr)
+            ))
             IncomeTaxSubscriptionConnectorStub.stubSaveProperty(PropertyModel(startDateBeforeLimit = Some(false)))
             IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
@@ -215,8 +233,10 @@ class PropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBase {
           "in edit mode" in {
             AuthStub.stubAuthSuccess()
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
-            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+            SessionDataConnectorStub.stubGetAllSessionData(Map(
+              ITSASessionKeys.NINO -> JsString(testNino),
+              ITSASessionKeys.UTR -> JsString(testUtr)
+            ))
             IncomeTaxSubscriptionConnectorStub.stubSaveProperty(PropertyModel(startDateBeforeLimit = Some(false)))
             IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
@@ -232,8 +252,10 @@ class PropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBase {
           "in global edit mode" in {
             AuthStub.stubAuthSuccess()
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
-            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+            SessionDataConnectorStub.stubGetAllSessionData(Map(
+              ITSASessionKeys.NINO -> JsString(testNino),
+              ITSASessionKeys.UTR -> JsString(testUtr)
+            ))
             IncomeTaxSubscriptionConnectorStub.stubSaveProperty(PropertyModel(startDateBeforeLimit = Some(false)))
             IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 

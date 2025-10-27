@@ -21,6 +21,7 @@ import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.{JourneyStateKey, SPSEntityId}
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
+import models.SessionData
 import models.common.subscription.CreateIncomeSourcesModel
 import models.individual.JourneyStep.Confirmation
 import play.api.mvc._
@@ -40,7 +41,8 @@ class GlobalCheckYourAnswersController @Inject()(signUpOrchestrationService: Sig
                                                  ninoService: NinoService,
                                                  utrService: UTRService,
                                                  referenceRetrieval: ReferenceRetrieval,
-                                                 globalCheckYourAnswers: GlobalCheckYourAnswers)
+                                                 globalCheckYourAnswers: GlobalCheckYourAnswers,
+                                                 sessionDataService: SessionDataService)
                                                 (val auditingService: AuditingService,
                                                  val authService: AuthService,
                                                  val appConfig: AppConfig)
@@ -49,15 +51,17 @@ class GlobalCheckYourAnswersController @Inject()(signUpOrchestrationService: Sig
 
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
-      referenceRetrieval.getIndividualReference flatMap { reference =>
-        subscriptionDetailsService.fetchAccountingPeriod(reference) flatMap { maybeAccountingPeriod =>
-          withCompleteDetails(reference) { completeDetails =>
-            Future.successful(Ok(globalCheckYourAnswers(
-              postAction = routes.GlobalCheckYourAnswersController.submit,
-              backUrl = backUrl,
-              completeDetails = completeDetails,
-              maybeAccountingPeriod = maybeAccountingPeriod
-            )))
+      sessionDataService.getAllSessionData().flatMap { sessionData =>
+        referenceRetrieval.getIndividualReference(sessionData) flatMap { reference =>
+          subscriptionDetailsService.fetchAccountingPeriod(reference) flatMap { maybeAccountingPeriod =>
+            withCompleteDetails(reference) { completeDetails =>
+              Future.successful(Ok(globalCheckYourAnswers(
+                postAction = routes.GlobalCheckYourAnswersController.submit,
+                backUrl = backUrl,
+                completeDetails = completeDetails,
+                maybeAccountingPeriod = maybeAccountingPeriod
+              )))
+            }
           }
         }
       }
@@ -65,11 +69,15 @@ class GlobalCheckYourAnswersController @Inject()(signUpOrchestrationService: Sig
 
   def submit: Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
-      referenceRetrieval.getIndividualReference flatMap { reference =>
-        withCompleteDetails(reference) { completeDetails =>
-          signUp(completeDetails)(
-            onSuccessfulSignUp = Redirect(controllers.individual.routes.ConfirmationController.show)
-          )
+      sessionDataService.getAllSessionData().flatMap { sessionData =>
+        referenceRetrieval.getIndividualReference(sessionData) flatMap { reference =>
+          withCompleteDetails(reference) { completeDetails =>
+            sessionDataService.getAllSessionData().flatMap { sessionData =>
+              signUp(sessionData, completeDetails)(
+                onSuccessfulSignUp = Redirect(controllers.individual.routes.ConfirmationController.show)
+              )
+            }
+          }
         }
       }
   }
@@ -78,15 +86,14 @@ class GlobalCheckYourAnswersController @Inject()(signUpOrchestrationService: Sig
     tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
   }
 
-  private def signUp(completeDetails: CompleteDetails)
+  private def signUp(sessionData: SessionData, completeDetails: CompleteDetails)
                     (onSuccessfulSignUp: Result)
                     (implicit request: Request[AnyContent]): Future[Result] = {
-
     val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
     val session = request.session
 
-    ninoService.getNino flatMap { nino =>
-      utrService.getUTR flatMap { utr =>
+    ninoService.getNino(sessionData) flatMap { nino =>
+      utrService.getUTR(sessionData) flatMap { utr =>
         signUpOrchestrationService.orchestrateSignUp(
           nino = nino,
           utr = utr,

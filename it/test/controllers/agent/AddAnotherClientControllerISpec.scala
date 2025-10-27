@@ -21,9 +21,8 @@ import connectors.stubs.SessionDataConnectorStub
 import helpers.IntegrationTestConstants.basGatewaySignIn
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
-import models.Yes
-import play.api.http.Status.{INTERNAL_SERVER_ERROR, NO_CONTENT, OK, SEE_OTHER}
-import play.api.libs.json.{JsBoolean, JsString}
+import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
+import play.api.libs.json.JsBoolean
 
 class AddAnotherClientControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
@@ -43,36 +42,11 @@ class AddAnotherClientControllerISpec extends ComponentSpecBase with SessionCook
     "redirect to the enter client details page" when {
       "email passed is present in session" in {
         AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.EMAIL_PASSED)(OK, JsBoolean(true))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.EMAIL_PASSED -> JsBoolean(true)
+        ))
         SessionDataConnectorStub.stubDeleteAllSessionData(OK)
         SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.EMAIL_PASSED, true)(OK)
-
-        val result = IncomeTaxSubscriptionFrontend.getAddAnotherClient
-
-        result must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(controllers.agent.matching.routes.ClientDetailsController.show().url)
-        )
-      }
-      "capture consent is present in session" in {
-        AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.EMAIL_PASSED)(NO_CONTENT)
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.CAPTURE_CONSENT)(OK, JsString(Yes.toString))
-        SessionDataConnectorStub.stubDeleteAllSessionData(OK)
-        SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.EMAIL_PASSED, true)(OK)
-
-        val result = IncomeTaxSubscriptionFrontend.getAddAnotherClient
-
-        result must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(controllers.agent.matching.routes.ClientDetailsController.show().url)
-        )
-      }
-      "neither email passed or capture consent is present in session" in {
-        AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.EMAIL_PASSED)(NO_CONTENT)
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.CAPTURE_CONSENT)(NO_CONTENT)
-        SessionDataConnectorStub.stubDeleteAllSessionData(OK)
 
         val result = IncomeTaxSubscriptionFrontend.getAddAnotherClient
 
@@ -83,30 +57,11 @@ class AddAnotherClientControllerISpec extends ComponentSpecBase with SessionCook
       }
     }
     "return an internal server error" when {
-      "there was a problem fetching the email passed session flag" in {
-        AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.EMAIL_PASSED)(INTERNAL_SERVER_ERROR)
-
-        val result = IncomeTaxSubscriptionFrontend.getAddAnotherClient
-
-        result must have(
-          httpStatus(INTERNAL_SERVER_ERROR)
-        )
-      }
-      "there was a problem fetching the capture consent session flag" in {
-        AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.EMAIL_PASSED)(NO_CONTENT)
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.CAPTURE_CONSENT)(INTERNAL_SERVER_ERROR)
-
-        val result = IncomeTaxSubscriptionFrontend.getAddAnotherClient
-
-        result must have(
-          httpStatus(INTERNAL_SERVER_ERROR)
-        )
-      }
       "there was a problem deleting session data" in {
         AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.EMAIL_PASSED)(OK, JsBoolean(true))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.EMAIL_PASSED -> JsBoolean(true)
+        ))
         SessionDataConnectorStub.stubDeleteAllSessionData(INTERNAL_SERVER_ERROR)
 
         val result = IncomeTaxSubscriptionFrontend.getAddAnotherClient
@@ -117,7 +72,9 @@ class AddAnotherClientControllerISpec extends ComponentSpecBase with SessionCook
       }
       "there was a problem when saving the email passed session flag" in {
         AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.EMAIL_PASSED)(OK, JsBoolean(true))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.EMAIL_PASSED -> JsBoolean(true)
+        ))
         SessionDataConnectorStub.stubDeleteAllSessionData(OK)
         SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.EMAIL_PASSED, true)(INTERNAL_SERVER_ERROR)
 
@@ -129,5 +86,4 @@ class AddAnotherClientControllerISpec extends ComponentSpecBase with SessionCook
       }
     }
   }
-
 }

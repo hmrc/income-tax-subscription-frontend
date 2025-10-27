@@ -136,7 +136,7 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
 
     def selectNth(selector: String, nth: Int): Element = {
       selectSeq(selector).lift(nth - 1) match {
-        case Some(element) => element
+        case Some(e) => e
         case None => fail(s"Could not retrieve $selector number $nth")
       }
     }

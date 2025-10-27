@@ -17,30 +17,49 @@
 package controllers.agent.actions
 
 import auth.MockAuth
+import models.SessionData
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.libs.json.JsString
 import play.api.mvc.{BodyParsers, Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
 import play.api.{Configuration, Environment}
+import services.SessionDataService
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.~
 
+import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-
 class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with BeforeAndAfterEach with MockAuth {
+
+  private val mockSessionDataService = mock[SessionDataService]
+
+  private def random() =
+    UUID.randomUUID().toString
+
+  private val sessionData = SessionData(Map(
+    random() -> JsString(random())
+  ))
+
+  when(mockSessionDataService.getAllSessionData()(any(), any())).thenReturn(
+    Future.successful(sessionData)
+  )
 
   val identifierAction: IdentifierAction = new IdentifierAction(
     authConnector = mockAuth,
     parser = app.injector.instanceOf[BodyParsers.Default],
     config = app.injector.instanceOf[Configuration],
-    env = app.injector.instanceOf[Environment]
+    env = app.injector.instanceOf[Environment],
+    sessionDataService = mockSessionDataService
   )
 
   "IdentifierAction" when {
@@ -52,6 +71,7 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
 
         val result: Future[Result] = identifierAction { request =>
           request.arn mustBe "test-arn"
+          request.sessionData mustBe sessionData
           Results.Ok
         }(FakeRequest())
 
@@ -101,6 +121,4 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
       }
     }
   }
-
-
 }

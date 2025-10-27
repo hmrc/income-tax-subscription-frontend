@@ -36,7 +36,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
                                            accountingPeriodService: AccountingPeriodService,
                                            referenceRetrieval: ReferenceRetrieval,
-                                           subscriptionDetailsService: SubscriptionDetailsService)
+                                           subscriptionDetailsService: SubscriptionDetailsService,
+                                           sessionDataService: SessionDataService)
                                           (val auditingService: AuditingService,
                                            val authService: AuthService,
                                            val appConfig: AppConfig)
@@ -55,43 +56,47 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
-      referenceRetrieval.getIndividualReference flatMap { reference =>
-        subscriptionDetailsService.fetchSelectedTaxYear(reference) map {
-          case Some(taxYearModel) if !taxYearModel.editable =>
-            Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
-          case accountingYearModel =>
-            Ok(view(
-              accountingYearForm = AccountingYearForm.accountingYearForm.fill(accountingYearModel.map(_.accountingYear)),
-              isEditMode = isEditMode
-            ))
+      sessionDataService.getAllSessionData().flatMap { sessionData =>
+        referenceRetrieval.getIndividualReference(sessionData) flatMap { reference =>
+          subscriptionDetailsService.fetchSelectedTaxYear(reference) map {
+            case Some(taxYearModel) if !taxYearModel.editable =>
+              Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
+            case accountingYearModel =>
+              Ok(view(
+                accountingYearForm = AccountingYearForm.accountingYearForm.fill(accountingYearModel.map(_.accountingYear)),
+                isEditMode = isEditMode
+              ))
+          }
         }
       }
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
-      referenceRetrieval.getIndividualReference flatMap { reference =>
-        AccountingYearForm.accountingYearForm.bindFromRequest().fold(
-          formWithErrors =>
-            Future.successful(BadRequest(view(accountingYearForm = formWithErrors, isEditMode = isEditMode))),
-          accountingYear => {
-            subscriptionDetailsService.saveSelectedTaxYear(reference, AccountingYearModel(accountingYear)) map {
-              case Right(_) =>
-                if (isEditMode) {
-                  Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
-                } else {
-                  accountingYear match {
-                    case Current =>
-                      Redirect(controllers.individual.accountingperiod.routes.AccountingPeriodController.show)
-                    case _ =>
-                      Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
+      sessionDataService.getAllSessionData().flatMap { sessionData =>
+        referenceRetrieval.getIndividualReference(sessionData) flatMap { reference =>
+          AccountingYearForm.accountingYearForm.bindFromRequest().fold(
+            formWithErrors =>
+              Future.successful(BadRequest(view(accountingYearForm = formWithErrors, isEditMode = isEditMode))),
+            accountingYear => {
+              subscriptionDetailsService.saveSelectedTaxYear(reference, AccountingYearModel(accountingYear)) map {
+                case Right(_) =>
+                  if (isEditMode) {
+                    Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
+                  } else {
+                    accountingYear match {
+                      case Current =>
+                        Redirect(controllers.individual.accountingperiod.routes.AccountingPeriodController.show)
+                      case _ =>
+                        Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
+                    }
                   }
-                }
-              case Left(_) =>
-                throw new InternalServerException("[WhatYearToSignUpController][submit] - Could not save accounting year")
+                case Left(_) =>
+                  throw new InternalServerException("[WhatYearToSignUpController][submit] - Could not save accounting year")
+              }
             }
-          }
-        )
+          )
+        }
       }
   }
 

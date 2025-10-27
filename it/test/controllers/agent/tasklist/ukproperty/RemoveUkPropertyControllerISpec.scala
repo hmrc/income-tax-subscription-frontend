@@ -45,8 +45,10 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase {
     "return OK when a uk property is retrieved" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+      SessionDataConnectorStub.stubGetAllSessionData(Map(
+        ITSASessionKeys.NINO -> JsString(testNino),
+        ITSASessionKeys.UTR -> JsString(testUtr)
+      ))
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK,
         Json.toJson(PropertyModel()))
 
@@ -63,8 +65,10 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase {
     "redirect to Business Already Removed page when no uk property is retrieved" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+      SessionDataConnectorStub.stubGetAllSessionData(Map(
+        ITSASessionKeys.NINO -> JsString(testNino),
+        ITSASessionKeys.UTR -> JsString(testUtr)
+      ))
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT,
         Json.toJson(PropertyModel()))
 
@@ -96,8 +100,10 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase {
       "the user submits the 'yes' answer" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr)
+        ))
         IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetails(Property)
         IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetails(SubscriptionDataKeys.IncomeSourceConfirmation)
 
@@ -117,8 +123,10 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase {
       "the user submits the 'no' answer" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr)
+        ))
 
         When("POST client/business/remove-uk-property-business is called")
         val res = IncomeTaxSubscriptionFrontend.submitClientRemoveUkProperty(Map("yes-no" -> Seq("No")))
@@ -137,8 +145,10 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase {
       "no option was selected on the client remove Uk property page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr)
+        ))
 
         When("POST /business/remove-uk-property-business is called")
         val res = IncomeTaxSubscriptionFrontend.submitClientRemoveUkProperty(Map("yes-no" -> Seq("")))
@@ -156,8 +166,10 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase {
       "the UK property cannot be removed" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr)
+        ))
         IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetailsFailure(Property)
 
         When("POST /business/remove-uk-property-business is called")

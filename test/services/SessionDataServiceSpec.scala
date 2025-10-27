@@ -17,12 +17,18 @@
 package services
 
 import common.Constants.ITSASessionKeys
-import connectors.httpparser.{DeleteSessionDataHttpParser, GetSessionDataHttpParser, SaveSessionDataHttpParser}
+import connectors.httpparser.{DeleteSessionDataHttpParser, SaveSessionDataHttpParser}
 import connectors.mocks.MockSessionDataConnector
+import models.SessionData
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.INTERNAL_SERVER_ERROR
+import play.api.libs.json.JsString
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.http.HeaderCarrier
+
+import scala.concurrent.Future
 
 class SessionDataServiceSpec extends PlaySpec with MockSessionDataConnector {
 
@@ -32,6 +38,14 @@ class SessionDataServiceSpec extends PlaySpec with MockSessionDataConnector {
 
   val testReference: String = "test-reference"
 
+  private val sessionData = SessionData(Map(
+    ITSASessionKeys.REFERENCE -> JsString(testReference)
+  ))
+
+  when(mockSessionDataConnector.getAllSessionData()(any(), any())).thenReturn(
+    Future.successful(Right(Some(sessionData.data)))
+  )
+
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   "fetchReference" must {
@@ -39,21 +53,14 @@ class SessionDataServiceSpec extends PlaySpec with MockSessionDataConnector {
       "the connector returns a valid result" in new Setup {
         mockGetSessionData(ITSASessionKeys.REFERENCE)(Right(Some(testReference)))
 
-        await(service.fetchReference) mustBe Right(Some(testReference))
+        sessionData.fetchReference mustBe Some(testReference)
       }
     }
     "return no reference" when {
-      "the connector returns no data" in new Setup {
+      "the session data is empty" in new Setup {
         mockGetSessionData(ITSASessionKeys.REFERENCE)(Right(None))
 
-        await(service.fetchReference) mustBe Right(None)
-      }
-    }
-    "return an error" when {
-      "the connector returns an error" in new Setup {
-        mockGetSessionData(ITSASessionKeys.REFERENCE)(Left(GetSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
-
-        await(service.fetchReference) mustBe Left(GetSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
+        SessionData().fetchReference mustBe None
       }
     }
   }
@@ -91,5 +98,4 @@ class SessionDataServiceSpec extends PlaySpec with MockSessionDataConnector {
       }
     }
   }
-
 }

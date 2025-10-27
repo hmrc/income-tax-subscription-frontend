@@ -68,11 +68,13 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
           PreferencesFrontendConnectorStub.stubGetOptedInStatus(Some(true))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.HAS_SOFTWARE)(OK, JsString(Yes.toString))
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.NINO -> JsString(testNino),
+            ITSASessionKeys.UTR -> JsString(testUtr),
+            ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
+            ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)),
+            ITSASessionKeys.HAS_SOFTWARE -> JsString(Yes.toString)
+          ))
 
           val result = IncomeTaxSubscriptionFrontend.confirmation()
 
@@ -86,11 +88,13 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearNext))
           PreferencesFrontendConnectorStub.stubGetOptedInStatus(Some(true))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.HAS_SOFTWARE)(OK, JsString(Yes.toString))
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.NINO -> JsString(testNino),
+            ITSASessionKeys.UTR -> JsString(testUtr),
+            ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
+            ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)),
+            ITSASessionKeys.HAS_SOFTWARE -> JsString(Yes.toString)
+          ))
 
           val result = IncomeTaxSubscriptionFrontend.confirmation()
 
@@ -129,7 +133,5 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
         )
       }
     }
-
   }
-
 }

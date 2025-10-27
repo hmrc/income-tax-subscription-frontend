@@ -22,6 +22,7 @@ import forms.agent.email.CaptureConsentForm
 import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino, testUtr}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
+import models.YesNo.format
 import models.{No, Yes, YesNo}
 import play.api.http.Status._
 import play.api.libs.json.JsString
@@ -58,9 +59,11 @@ class CaptureConsentControllerISpec extends ComponentSpecBase {
       "return the page with content" when {
         "the user previously selected yes" in {
           AuthStub.stubAuthSuccess()
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.CAPTURE_CONSENT)(OK, JsString(Yes.toString))
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.NINO -> JsString(testNino),
+            ITSASessionKeys.UTR -> JsString(testUtr),
+            ITSASessionKeys.CAPTURE_CONSENT -> JsString(Yes.toString)
+          ))
           val result = showCaptureConsent()
 
           result must have(
@@ -72,29 +75,17 @@ class CaptureConsentControllerISpec extends ComponentSpecBase {
         }
         "the user previously selected no" in {
           AuthStub.stubAuthSuccess()
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.CAPTURE_CONSENT)(OK, JsString(No.toString))
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.NINO -> JsString(testNino),
+            ITSASessionKeys.UTR -> JsString(testUtr),
+            ITSASessionKeys.CAPTURE_CONSENT -> JsString(No.toString)
+          ))
           val result = showCaptureConsent()
 
           result must have(
             httpStatus(OK),
             pageTitle(s"${messages("agent.capture-consent.heading")} - $serviceNameGovUk"),
             radioButtonSet(id = "yes-no", selectedRadioButton = Some(No.toString)),
-            backUrl(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
-          )
-        }
-        "the user previously selected nothing" in {
-          AuthStub.stubAuthSuccess()
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.CAPTURE_CONSENT)(NO_CONTENT)
-          val result = showCaptureConsent()
-
-          result must have(
-            httpStatus(OK),
-            pageTitle(s"${messages("agent.capture-consent.heading")} - $serviceNameGovUk"),
-            radioButtonSet(id = "yes-no", selectedRadioButton = None),
             backUrl(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
           )
         }
@@ -106,9 +97,11 @@ class CaptureConsentControllerISpec extends ComponentSpecBase {
     "the user is not authorised" must {
       "redirect the user to login" in {
         AuthStub.stubUnauthorised()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.CAPTURE_CONSENT)(OK)
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.CAPTURE_CONSENT -> JsString(Yes.toString)
+        ))
         val result = submitCaptureConsent(None)()
 
         result must have(
@@ -120,9 +113,11 @@ class CaptureConsentControllerISpec extends ComponentSpecBase {
     "the user does not have any state" must {
       "redirect to home" in {
         AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.CAPTURE_CONSENT)(OK)
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.CAPTURE_CONSENT -> JsString(Yes.toString)
+        ))
         val result = submitCaptureConsent(None)(includeState = false)
 
         result must have(
@@ -137,8 +132,10 @@ class CaptureConsentControllerISpec extends ComponentSpecBase {
           val userInput: YesNo = Yes
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.NINO -> JsString(testNino),
+            ITSASessionKeys.UTR -> JsString(testUtr)
+          ))
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.CAPTURE_CONSENT, userInput)(OK)
 
           When(s"POST ${controllers.agent.email.routes.CaptureConsentController.submit().url} is called")
@@ -158,8 +155,10 @@ class CaptureConsentControllerISpec extends ComponentSpecBase {
           val userInput: YesNo = No
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.NINO -> JsString(testNino),
+            ITSASessionKeys.UTR -> JsString(testUtr)
+          ))
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.CAPTURE_CONSENT, userInput)(OK)
 
           When(s"POST ${controllers.agent.email.routes.CaptureConsentController.submit().url} is called")
@@ -180,8 +179,10 @@ class CaptureConsentControllerISpec extends ComponentSpecBase {
 
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.NINO -> JsString(testNino),
+            ITSASessionKeys.UTR -> JsString(testUtr)
+          ))
 
           When(s"POST ${controllers.agent.email.routes.CaptureConsentController.submit().url} is called")
           val result = submitCaptureConsent(request = None)()

@@ -25,7 +25,7 @@ import models.{No, Yes, YesNo}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import utilities.SubscriptionDataKeys
 import views.html.individual.tasklist.overseasproperty.RemoveOverseasPropertyBusiness
@@ -36,7 +36,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class RemoveOverseasPropertyController @Inject()(removeOverseasProperty: RemoveOverseasPropertyBusiness,
                                                  referenceRetrieval: ReferenceRetrieval,
                                                  subscriptionDetailsService: SubscriptionDetailsService,
-                                                 incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector)
+                                                 incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector,
+                                                 sessionDataService: SessionDataService)
                                                 (val auditingService: AuditingService,
                                                  val authService: AuthService,
                                                  val appConfig: AppConfig)
@@ -45,12 +46,14 @@ class RemoveOverseasPropertyController @Inject()(removeOverseasProperty: RemoveO
 
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
-      referenceRetrieval.getIndividualReference flatMap { reference =>
-        subscriptionDetailsService.fetchOverseasProperty(reference) map {
-          case Some(_) =>
-            Ok(view(form))
-          case None =>
-            Redirect(controllers.individual.tasklist.addbusiness.routes.BusinessAlreadyRemovedController.show())
+      sessionDataService.getAllSessionData().flatMap { sessionData =>
+        referenceRetrieval.getIndividualReference(sessionData) flatMap { reference =>
+          subscriptionDetailsService.fetchOverseasProperty(reference) map {
+            case Some(_) =>
+              Ok(view(form))
+            case None =>
+              Redirect(controllers.individual.tasklist.addbusiness.routes.BusinessAlreadyRemovedController.show())
+          }
         }
       }
   }
@@ -59,16 +62,22 @@ class RemoveOverseasPropertyController @Inject()(removeOverseasProperty: RemoveO
     _ =>
       form.bindFromRequest().fold(
         hasErrors => Future.successful(BadRequest(view(form = hasErrors))), {
-          case Yes => referenceRetrieval.getIndividualReference flatMap { reference =>
-            incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, SubscriptionDataKeys.OverseasProperty) flatMap {
-              case Right(_) => incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, SubscriptionDataKeys.IncomeSourceConfirmation).map {
-                case Right(_) => Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
-                case Left(_) => throw new InternalServerException("[RemoveOverseasPropertyController][submit] - Failure to delete income source confirmation")
+          case Yes =>
+            sessionDataService.getAllSessionData().flatMap { sessionData =>
+              referenceRetrieval.getIndividualReference(sessionData) flatMap { reference =>
+                incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, SubscriptionDataKeys.OverseasProperty) flatMap {
+                  case Right(_) =>
+                    incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, SubscriptionDataKeys.IncomeSourceConfirmation).map {
+                      case Right(_) => Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
+                      case Left(_) => throw new InternalServerException("[RemoveOverseasPropertyController][submit] - Failure to delete income source confirmation")
+                    }
+                  case Left(_) =>
+                    throw new InternalServerException("[RemoveOverseasPropertyController][submit] - Could not remove overseas property")
+                }
               }
-              case Left(_) => throw new InternalServerException("[RemoveOverseasPropertyController][submit] - Could not remove overseas property")
             }
-          }
-          case No => Future.successful(Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show))
+          case No =>
+            Future.successful(Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show))
         }
       )
   }

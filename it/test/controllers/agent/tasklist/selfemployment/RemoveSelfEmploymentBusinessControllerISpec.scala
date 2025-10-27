@@ -45,8 +45,10 @@ class RemoveSelfEmploymentBusinessControllerISpec extends ComponentSpecBase {
     "return OK" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+      SessionDataConnectorStub.stubGetAllSessionData(Map(
+        ITSASessionKeys.NINO -> JsString(testNino),
+        ITSASessionKeys.UTR -> JsString(testUtr)
+      ))
       IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
 
       When("GET business/remove-business is called")
@@ -64,13 +66,14 @@ class RemoveSelfEmploymentBusinessControllerISpec extends ComponentSpecBase {
       "the Sole trader business cannot be retrieved" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr)
+        ))
         IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
 
         When("GET business/remove-business is called")
         val res = IncomeTaxSubscriptionFrontend.getRemoveBusiness(id = "unknown")
-
 
         res must have(
           httpStatus(SEE_OTHER)
@@ -86,8 +89,10 @@ class RemoveSelfEmploymentBusinessControllerISpec extends ComponentSpecBase {
       "the user submits the 'yes' answer" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr)
+        ))
         IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
         IncomeTaxSubscriptionConnectorStub.stubSaveSoleTraderBusinessDetails(Seq.empty)
         IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetails(SoleTraderBusinessesKey)
@@ -106,8 +111,10 @@ class RemoveSelfEmploymentBusinessControllerISpec extends ComponentSpecBase {
       "the user submits the 'no' answer" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr)
+        ))
         IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
         IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
@@ -126,8 +133,10 @@ class RemoveSelfEmploymentBusinessControllerISpec extends ComponentSpecBase {
       "invalid data is submitted" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr)
+        ))
         IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
 
         When("POST business/remove-business is called")
@@ -144,8 +153,10 @@ class RemoveSelfEmploymentBusinessControllerISpec extends ComponentSpecBase {
       "failed to delete business" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr)
+        ))
         IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
         IncomeTaxSubscriptionConnectorStub.stubSaveSoleTraderBusinessDetails(Seq.empty)
         IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetailsFailure(SoleTraderBusinessesKey)

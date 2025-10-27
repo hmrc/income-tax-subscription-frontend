@@ -35,7 +35,9 @@ class CannotTakePartControllerISpec extends ComponentSpecBase with AuthRedirects
 
   class Setup(sessionData: Map[String, String] = ClientData.clientDataWithNinoAndUTR ++ Map(JourneyStateKey -> AgentUserMatching.name)) {
     AuthStub.stubAuthSuccess()
-    SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+    SessionDataConnectorStub.stubGetAllSessionData(Map(
+      ITSASessionKeys.NINO -> JsString(testNino)
+    ))
 
     val result: WSResponse = IncomeTaxSubscriptionFrontend.showCannotTakePart(sessionData)
     lazy val doc: Document = Jsoup.parse(result.body)

@@ -23,6 +23,7 @@ import controllers.SignUpBaseController
 import controllers.individual.actions.{IdentifierAction, PreSignUpJourneyRefiner}
 import controllers.utils.ReferenceRetrieval
 import models.EligibilityStatus
+import models.SessionData
 import models.audits.EligibilityAuditing.EligibilityAuditModel
 import models.audits.SignupStartedAuditing
 import models.requests.individual.PreSignUpRequest
@@ -68,31 +69,33 @@ class HomeController @Inject()(identity: IdentifierAction,
   }
 
   private def handlePresentUTR(utr: String)(implicit request: PreSignUpRequest[AnyContent]): Future[Result] = {
-    throttlingService.throttled(IndividualStartOfJourneyThrottle) {
-      subscriptionService.getSubscription(request.nino) flatMap {
-        case Right(Some(_)) => Future.successful(Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show))
-        case Right(None) => handleNoSubscriptionFound(utr)
-        case Left(error) => throw new InternalServerException(s"[HomeController][handlePresentUTR] - Error fetching subscription: $error")
+    sessionDataService.getAllSessionData().flatMap { sessionData =>
+      throttlingService.throttled(IndividualStartOfJourneyThrottle, sessionData) {
+        subscriptionService.getSubscription(request.nino) flatMap {
+          case Right(Some(_)) => Future.successful(Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show))
+          case Right(None) => handleNoSubscriptionFound(sessionData, utr)
+          case Left(error) => throw new InternalServerException(s"[HomeController][handlePresentUTR] - Error fetching subscription: $error")
+        }
       }
     }
   }
 
-  private def handleNoSubscriptionFound(utr: String)(implicit request: PreSignUpRequest[AnyContent]): Future[Result] = {
-    eligibilityStatusService.getEligibilityStatus flatMap {
+  private def handleNoSubscriptionFound(sessionData: SessionData, utr: String)(implicit request: PreSignUpRequest[AnyContent]): Future[Result] = {
+    eligibilityStatusService.getEligibilityStatus(sessionData) flatMap {
       case EligibilityStatus(false, false) =>
         handleIneligible(utr)
       case EligibilityStatus(eligibleCurrentYear, _) =>
-        handleEligible(utr, eligibleCurrentYear)
+        handleEligible(sessionData, utr, eligibleCurrentYear)
     }
   }
 
-  private def handleEligible(utr: String, eligibleCurrentYear: Boolean)(implicit request: PreSignUpRequest[AnyContent]): Future[Result] = {
+  private def handleEligible(sessionData: SessionData, utr: String, eligibleCurrentYear: Boolean)(implicit request: PreSignUpRequest[AnyContent]): Future[Result] = {
     eligibilityAudit(
       maybeUTR = Some(utr),
       eligibility = if (eligibleCurrentYear) "eligible" else "eligible - next year only"
     ) flatMap { _ =>
       for {
-        reference <- referenceRetrieval.getIndividualReference
+        reference <- referenceRetrieval.getIndividualReference(sessionData)
         prePopResult <- prePopDataService.prePopIncomeSources(reference, request.nino)
       } yield {
         prePopResult match {
