@@ -60,16 +60,13 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
   def show(editMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
       for {
-        usingSoftwareStatus <- sessionDataService.fetchSoftwareStatus
+        sessionData <- sessionDataService.getAllSessionData()
       } yield {
-        usingSoftwareStatus match {
-          case Left(_) => throw new InternalServerException("[UsingSoftwareController][show] - Could not fetch software status")
-          case Right(maybeYesNo) =>
-            Ok(view(
-              usingSoftwareForm = form.fill(maybeYesNo),
-              editMode = editMode
-            ))
-        }
+        val usingSoftwareStatus = sessionData.fetchSoftwareStatus
+        Ok(view(
+          usingSoftwareForm = form.fill(usingSoftwareStatus),
+          editMode = editMode
+        ))
       }
   }
 
@@ -83,9 +80,10 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
           ))),
         yesNo =>
           for {
+            sessionData <- sessionDataService.getAllSessionData()
             usingSoftwareStatus <- sessionDataService.saveSoftwareStatus(yesNo)
-            eligibilityStatus <- eligibilityStatusService.getEligibilityStatus
-            mandationStatus <- mandationStatusService.getMandationStatus
+            eligibilityStatus <- eligibilityStatusService.getEligibilityStatus(sessionData)
+            mandationStatus <- mandationStatusService.getMandationStatus(sessionData)
           } yield {
             val isMandatedCurrentYear: Boolean = mandationStatus.currentYearStatus.isMandated
             val isEligibleNextYearOnly: Boolean = eligibilityStatus.eligibleNextYearOnly

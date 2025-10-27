@@ -31,7 +31,7 @@ class CannotGoBackToPreviousClientControllerISpec extends ComponentSpecBase {
       val res = IncomeTaxSubscriptionFrontend.showCannotGoBackToPreviousClient()
 
 
-      val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
+      val serviceNameGovUk = " - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
       Then("Should return a OK with the Cannot Go Back To Previous Client page")
       res must have(
         httpStatus(200),

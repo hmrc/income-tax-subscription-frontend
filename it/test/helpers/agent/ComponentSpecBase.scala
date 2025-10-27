@@ -24,7 +24,6 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import config.AppConfig
 import config.featureswitch.FeatureSwitching
-import connectors.stubs.SessionDataConnectorStub.stubGetSessionData
 import forms.agent._
 import forms.individual.business.RemoveBusinessForm
 import helpers.IntegrationTestConstants._
@@ -48,7 +47,7 @@ import play.api.http.Status.OK
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.crypto.CookieSigner
-import play.api.libs.json.{JsArray, JsString, Writes}
+import play.api.libs.json.{JsArray, Writes}
 import play.api.libs.ws.{WSClient, WSRequest, WSResponse}
 import play.api.mvc.{Headers, Session}
 import play.api.test.FakeRequest
@@ -103,8 +102,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
   implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
-  val reference: String = "test-reference"
-
   val cookieSignerCache: Application => CookieSigner = Application.instanceCache[CookieSigner]
   override lazy val cookieSigner: CookieSigner = cookieSignerCache(app)
 
@@ -142,19 +139,16 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
     "microservice.services.auth.host" -> mockHost,
     "microservice.services.auth.port" -> mockPort,
-    "microservice.services.session-cache.host" -> mockHost,
-    "microservice.services.session-cache.port" -> mockPort,
-    "microservice.services.subscription-service.host" -> mockHost,
-    "microservice.services.subscription-service.port" -> mockPort,
+    "microservice.services.income-tax-subscription.host" -> mockHost,
+    "microservice.services.income-tax-subscription.port" -> mockPort,
     "microservice.services.authenticator.host" -> mockHost,
     "microservice.services.authenticator.port" -> mockPort,
-    "microservice.services.agent-microservice.host" -> mockHost,
-    "microservice.services.agent-microservice.port" -> mockPort,
+    "microservice.services.agent-client-relationships.host" -> mockHost,
+    "microservice.services.agent-client-relationships.port" -> mockPort,
     "microservice.services.tax-enrolments.host" -> mockHost,
     "microservice.services.tax-enrolments.port" -> mockPort,
     "microservice.services.income-tax-subscription-eligibility.host" -> mockHost,
     "microservice.services.income-tax-subscription-eligibility.port" -> mockPort,
-    "income-tax-subscription-eligibility-frontend.url" -> mockUrl,
     "auditing.enabled" -> "true",
     "auditing.consumer.baseUri.host" -> mockHost,
     "auditing.consumer.baseUri.port" -> mockPort,
@@ -172,8 +166,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     super.beforeEach()
     resetWiremock()
     AuditStub.stubAuditing()
-
-    stubGetSessionData(ITSASessionKeys.REFERENCE)(OK, JsString(reference))
   }
 
   override def beforeAll(): Unit = {
@@ -263,7 +255,8 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     def showCannotTakePart(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse =
       get("/error/cannot-sign-up", sessionData, withClientDetailsConfirmed = false, withJourneyStateSignUp = false)
 
-    def showCanSignUp(sessionData: Map[String, String] = ClientData.basicClientData, hasJourneyState: Boolean = true): WSResponse = get("/can-sign-up", sessionData, withJourneyStateSignUp = hasJourneyState)
+    def showCanSignUp(sessionData: Map[String, String] = ClientData.basicClientData, hasJourneyState: Boolean = true): WSResponse =
+      get("/can-sign-up", sessionData, withJourneyStateSignUp = hasJourneyState)
 
     def submitCanSignUp(sessionData: Map[String, String] = ClientData.basicClientData, hasJourneyState: Boolean = true): WSResponse = post("/can-sign-up", sessionData, withJourneyStateSignUp = hasJourneyState)(Map.empty)
 
@@ -574,7 +567,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
     def selectNth(selector: String, nth: Int): Element = {
       selectSeq(s"$selector").lift(nth - 1) match {
-        case Some(element) => element
+        case Some(e) => e
         case None => fail(s"Could not retrieve $selector number $nth")
       }
     }
@@ -695,5 +688,8 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       element.getErrorSummary.select("ul > li").text mustBe errors.mkString(" ")
     }
   }
+}
 
+object ComponentSpecBase {
+  val reference: String = "test-reference"
 }

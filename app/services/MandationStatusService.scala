@@ -17,6 +17,7 @@
 package services
 
 import connectors.MandationStatusConnector
+import models.SessionData
 import models.status.MandationStatusModel
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
@@ -30,29 +31,25 @@ class MandationStatusService @Inject()(mandationStatusConnector: MandationStatus
                                        sessionDataService: SessionDataService)
                                       (implicit ec: ExecutionContext) {
 
-  def getMandationStatus(implicit hc: HeaderCarrier): Future[MandationStatusModel] = {
-    sessionDataService.fetchMandationStatus flatMap {
-      case Right(Some(mandationStatus)) => Future.successful(mandationStatus)
-      case Right(None) =>
-        ninoService.getNino flatMap { nino =>
-          utrService.getUTR flatMap { utr =>
+  def getMandationStatus(sessionData: SessionData = SessionData())(implicit hc: HeaderCarrier): Future[MandationStatusModel] = {
+    sessionData.fetchMandationStatus match {
+      case Some(mandationStatus) => Future.successful(mandationStatus)
+      case None =>
+        ninoService.getNino(sessionData) flatMap { nino =>
+          utrService.getUTR(sessionData) flatMap { utr =>
             mandationStatusConnector.getMandationStatus(nino = nino, utr = utr) flatMap {
               case Right(mandationStatus) =>
                 sessionDataService.saveMandationStatus(mandationStatus) map {
-                  case Right(_) => mandationStatus
+                  case Right(_) =>
+                    mandationStatus
                   case Left(error) => throw new SaveToSessionException(error.toString)
                 }
               case Left(error) => throw new FetchFromAPIException(error.toString)
             }
           }
         }
-      case Left(error) => throw new FetchFromSessionException(error.toString)
     }
   }
-
-  private class FetchFromSessionException(error: String) extends InternalServerException(
-    s"[MandationStatusService][getMandationStatus] - Failure when fetching mandation status from session: $error"
-  )
 
   private class FetchFromAPIException(error: String) extends InternalServerException(
     s"[MandationStatusService][getMandationStatus] - Failure when fetching mandation status from API: $error"

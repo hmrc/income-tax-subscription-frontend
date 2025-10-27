@@ -39,7 +39,8 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
   with MockGetEligibilityStatusService
   with MockReferenceRetrieval
   with MockAuditingService
-  with FeatureSwitching {
+  with FeatureSwitching
+  with MockSessionDataService {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -56,7 +57,8 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
     whatYearToSignUp,
     mockAccountingPeriodService,
     mockReferenceRetrieval,
-    mockSubscriptionDetailsService
+    mockSubscriptionDetailsService,
+    mockSessionDataService
   )(
     mockAuditingService,
     mockAuthService,

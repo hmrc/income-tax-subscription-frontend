@@ -51,7 +51,7 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
   val action: Call = testCall
   val taxYearEnd: Int = 2020
 
-  val titleSuffix = " - Use software to report your client’s Income Tax - GOV.UK"
+  val titleSuffix = " - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
   private def document(overseasPropertyStartDateForm: Form[DateModel] = OverseasPropertyStartDateForm.overseasPropertyStartDateForm(
     minStartDate = LocalDate.now(),
     maxStartDate = LocalDate.now(),

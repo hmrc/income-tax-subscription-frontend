@@ -27,7 +27,7 @@ import utilities.agent.TestConstants.testUtr
 
 class NoSoftwareControllerISpec extends ComponentSpecBase {
 
-  val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
+  val serviceNameGovUk = " - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
 
   s"GET ${controllers.agent.routes.NoSoftwareController.show()}" should {
     "return SEE_OTHER to the login page when the user is unauthenticated" in {
@@ -44,10 +44,12 @@ class NoSoftwareControllerISpec extends ComponentSpecBase {
     "return OK and show the No Software page" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+      SessionDataConnectorStub.stubGetAllSessionData(Map(
+        ITSASessionKeys.NINO -> JsString(testNino),
+        ITSASessionKeys.UTR -> JsString(testUtr)
+      ))
 
-      When(s"GET ${controllers.agent.routes.NoSoftwareController.show(false)}")
+      When(s"GET ${controllers.agent.routes.NoSoftwareController.show()}")
       val result = IncomeTaxSubscriptionFrontend.showNoSoftware()
       Then("The result should be OK with page content")
       result must have(

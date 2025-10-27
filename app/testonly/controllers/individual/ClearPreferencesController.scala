@@ -21,7 +21,7 @@ import config.AppConfig
 import play.api.data.Form
 import play.api.mvc._
 import play.twirl.api.Html
-import services.{AuditingService, AuthService, NinoService}
+import services.{AuditingService, AuthService, NinoService, SessionDataService}
 import testonly.connectors.individual.ClearPreferencesConnector
 import testonly.form.individual.ClearPreferencesForm.clearPreferenceForm
 import testonly.models.preferences.{ClearPreferencesModel, ClearPreferencesResult, Cleared, NoPreferences}
@@ -36,7 +36,8 @@ class ClearPreferencesController @Inject()(val auditingService: AuditingService,
                                            clearPreferences: ClearPreferences,
                                            ninoService: NinoService,
                                            val authService: AuthService,
-                                           clearPreferencesConnector: ClearPreferencesConnector)
+                                           clearPreferencesConnector: ClearPreferencesConnector,
+                                           sessionDataService: SessionDataService)
                                           (implicit val ec: ExecutionContext,
                                            val appConfig: AppConfig,
                                            mcc: MessagesControllerComponents) extends StatelessController {
@@ -51,10 +52,12 @@ class ClearPreferencesController @Inject()(val auditingService: AuditingService,
 
   val clear: Action[AnyContent] = Authenticated.asyncUnrestricted { implicit request =>
     _ =>
-      ninoService.getNino flatMap { nino =>
-        clearUser(nino) map {
-          case Cleared(_) => Ok("Preferences cleared")
-          case NoPreferences(_) => Ok("No preferences found")
+      sessionDataService.getAllSessionData().flatMap { sessionData =>
+        ninoService.getNino(sessionData) flatMap { nino =>
+          clearUser(nino) map {
+            case Cleared(_) => Ok("Preferences cleared")
+            case NoPreferences(_) => Ok("No preferences found")
+          }
         }
       }
   }
@@ -80,5 +83,4 @@ class ClearPreferencesController @Inject()(val auditingService: AuditingService,
         }
     )
   }
-
 }

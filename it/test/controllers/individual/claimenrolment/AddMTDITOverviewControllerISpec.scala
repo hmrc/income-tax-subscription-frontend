@@ -35,7 +35,7 @@ class AddMTDITOverviewControllerISpec extends ComponentSpecBase  with SessionCoo
 
         When("GET /claim-enrolment/overview is called")
         val res = IncomeTaxSubscriptionFrontend.addMTDITOverview()
-        val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+        val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
         Then("Should return a OK with the AddMTDITOverview page")
         res must have(
           httpStatus(OK),

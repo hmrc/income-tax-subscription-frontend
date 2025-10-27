@@ -18,14 +18,14 @@ package controllers.agent.matching
 
 import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
-import helpers.IntegrationTestConstants.{AgentURI, testARN}
+import helpers.IntegrationTestConstants.{AgentURI, testARN, testNino, testUtr}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.{AgentLockoutStub, AuthStub}
 import helpers.{IntegrationTestModels, UserMatchingIntegrationResultSupport}
 import models.usermatching.UserDetailsModel
 import org.jsoup.Jsoup
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
-import play.api.libs.json.JsBoolean
+import play.api.libs.json.{JsBoolean, JsString}
 import play.api.libs.ws.WSResponse
 
 
@@ -35,6 +35,10 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
     def fixture(agentLocked: Boolean): WSResponse = {
       Given("I setup the wiremock stubs")
       AuthStub.stubAuthSuccess()
+      SessionDataConnectorStub.stubGetAllSessionData(Map(
+        ITSASessionKeys.NINO -> JsString(testNino),
+        ITSASessionKeys.UTR -> JsString(testUtr)
+      ))
 
       if (agentLocked) AgentLockoutStub.stubAgentIsLocked(testARN)
       else AgentLockoutStub.stubAgentIsNotLocked(testARN)
@@ -58,7 +62,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
     "the agent is not locked out" should {
       "show the client details page" in {
         val res = fixture(agentLocked = false)
-        val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
+        val serviceNameGovUk = " - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
         Then("The result must have a status of OK")
         res must have(
           httpStatus(OK),
@@ -115,7 +119,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
 
         When("I call POST /client-details")
         val res = IncomeTaxSubscriptionFrontend.submitClientDetails(newSubmission = None, storedSubmission = None)
-        val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
+        val serviceNameGovUk = " - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
         Then("The result must have a status of BadRequest")
         res must have(
           httpStatus(BAD_REQUEST),
@@ -132,7 +136,9 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         AuthStub.stubAuthSuccess()
         val clientDetails: UserDetailsModel = IntegrationTestModels.testClientDetails
         AgentLockoutStub.stubAgentIsNotLocked(testARN)
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.EMAIL_PASSED)(OK, JsBoolean(true))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.EMAIL_PASSED -> JsBoolean(true)
+        ))
         SessionDataConnectorStub.stubDeleteAllSessionData(OK)
         SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.EMAIL_PASSED, true)(OK)
 
@@ -155,7 +161,9 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         AuthStub.stubAuthSuccess()
         AgentLockoutStub.stubAgentIsNotLocked(testARN)
         val clientDetails: UserDetailsModel = IntegrationTestModels.testClientDetails
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.EMAIL_PASSED)(OK, JsBoolean(true))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.EMAIL_PASSED -> JsBoolean(true)
+        ))
         SessionDataConnectorStub.stubDeleteAllSessionData(OK)
         SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.EMAIL_PASSED, true)(OK)
 
@@ -179,7 +187,9 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         val clientDetails = IntegrationTestModels.testClientDetails
         AgentLockoutStub.stubAgentIsNotLocked(testARN)
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionDeleteAll()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.EMAIL_PASSED)(OK, JsBoolean(true))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.EMAIL_PASSED -> JsBoolean(true)
+        ))
         SessionDataConnectorStub.stubDeleteAllSessionData(OK)
         SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.EMAIL_PASSED, true)(OK)
 

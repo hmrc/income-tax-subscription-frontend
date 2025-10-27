@@ -1,7 +1,7 @@
 ## Base ##
-base.service-name                                               = Defnyddio meddalwedd i anfon diweddariadau Treth Incwm
-base.title-pattern                                              = {0} - Defnyddio meddalwedd i anfon diweddariadau Treth Incwm - GOV.UK
-base.title-pattern.error                                        = Gwall: {0} - Defnyddio meddalwedd i anfon diweddariadau Treth Incwm - GOV.UK
+base.service-name                                               = Cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+base.title-pattern                                              = {0} - Cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm - GOV.UK
+base.title-pattern.error                                        = Gwall: {0} - Cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm - GOV.UK
 base.back                                                       = Yn ôl
 base.continue                                                   = Yn eich blaen
 base.continue-sign-up                                           = Parhau i gofrestru
@@ -538,9 +538,9 @@ mtdit-overview.link2                                            = cyfrif treth b
 
 
 ## Agent Base ##
-agent.base.service-name                                         = Defnyddiwch feddalwedd i roi gwybod am Dreth Incwm eich cleient
-agent.base.title-pattern                                        = {0} - Defnyddiwch feddalwedd i roi gwybod am Dreth Incwm eich cleient - GOV.UK
-agent.base.title-pattern.error                                  = Gwall: {0} - Defnyddiwch feddalwedd i roi gwybod am Dreth Incwm eich cleient - GOV.UK
+agent.base.service-name                                         = Cofrestrwch eich cleientiaid ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+agent.base.title-pattern                                        = {0} - Cofrestrwch eich cleientiaid ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm - GOV.UK
+agent.base.title-pattern.error                                  = Gwall: {0} - Cofrestrwch eich cleientiaid ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm - GOV.UK
 agent.base.back                                                 = Yn ôl
 agent.base.continue                                             = Yn eich blaen
 agent.base.sign-up-another-client                               = Cofrestru cleient arall
@@ -819,7 +819,7 @@ agent.cannot-report-yet.para1                                   = Mae dal yn bos
 agent.cannot-report-yet.para2                                   = Mae dal yn rhaid i’ch cleient <a class="govuk-link" id="sa" href="{0}">anfon Ffurflen Dreth Hunanasesiad</a>.
 
 ## Agent Sign Up Complete page
-agent.sign-up-complete.title                                    = Rydych wedi cofrestru {0} {1} i ddefnyddio meddalwedd i anfon diweddariadau ynghylch Treth Incwm
+agent.sign-up-complete.title                                    = Rydych wedi cofrestru {0} {1} i ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 agent.sign-up-complete.heading                                  = Cleient wedi’i gofrestru’n llwyddiannus
 agent.sign-up-complete.panel-client                             = Mae {0} {1}
 agent.sign-up-complete.signed-up-for-mtd                        = bellach wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.

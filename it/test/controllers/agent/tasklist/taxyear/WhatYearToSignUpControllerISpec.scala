@@ -26,7 +26,7 @@ import helpers.agent.servicemocks.AuthStub
 import models.common.AccountingYearModel
 import models.status.MandationStatus.{Mandated, Voluntary}
 import models.status.MandationStatusModel
-import models.{Current, EligibilityStatus, Next}
+import models.{Current, EligibilityStatus}
 import play.api.http.Status._
 import play.api.libs.json.{JsBoolean, JsString, Json}
 import utilities.SubscriptionDataKeys.SelectedTaxYear
@@ -42,7 +42,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
     disable(EmailCaptureConsent)
   }
 
-  val serviceNameGovUk: String = "Use software to report your client’s Income Tax - GOV.UK"
+  val serviceNameGovUk: String = "Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
 
   "GET /report-quarterly/income-and-expenses/sign-up/client/business/what-year-to-sign-up" when {
     "the Subscription Details Connector returns some data" should {
@@ -50,10 +50,12 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(Some(testAccountingYearCurrent)))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
+          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+        ))
 
         When("GET /client/business/what-year-to-sign-up is called")
         val res = IncomeTaxSubscriptionFrontend.accountingYear()
@@ -75,10 +77,12 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Mandated, Voluntary)))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.NINO -> JsString(testNino),
+            ITSASessionKeys.UTR -> JsString(testUtr),
+            ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Mandated, Voluntary)),
+            ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+          ))
 
           When("GET /client/business/what-year-to-sign-up is called")
           val res = IncomeTaxSubscriptionFrontend.accountingYear(Map(
@@ -96,10 +100,12 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true)))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.NINO -> JsString(testNino),
+            ITSASessionKeys.UTR -> JsString(testUtr),
+            ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Mandated, Voluntary)),
+            ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+          ))
 
           When("GET /client/business/what-year-to-sign-up is called")
           val res = IncomeTaxSubscriptionFrontend.accountingYear(Map(
@@ -121,10 +127,12 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Voluntary)))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
+          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+        ))
 
         When("GET /client/business/what-year-to-sign-up is called")
         val res = IncomeTaxSubscriptionFrontend.accountingYear()
@@ -183,8 +191,10 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
     "in edit mode" must {
       "redirect to the global check your answers page" in {
         AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr)
+        ))
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SelectedTaxYear, AccountingYearModel(Current))
 
         val result = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = true, request = Some(Current))
@@ -199,8 +209,10 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
       "no option is selected" must {
         "return a bad request with the page content" in {
           AuthStub.stubAuthSuccess()
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.NINO -> JsString(testNino),
+            ITSASessionKeys.UTR -> JsString(testUtr)
+          ))
 
           val result = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = true, request = None)
 
@@ -213,32 +225,16 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
       }
       "current tax year is selected" when {
         "the email capture consent feature switch is enabled" when {
-          "the email passed flag is not present in session" must {
-            "save the tax year and redirect to the capture consent page" in {
-              enable(EmailCaptureConsent)
-
-              AuthStub.stubAuthSuccess()
-              SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
-              SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-              SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.EMAIL_PASSED)(NO_CONTENT)
-              IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SelectedTaxYear, AccountingYearModel(Current))
-
-              val result = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, request = Some(Current))
-
-              result must have(
-                httpStatus(SEE_OTHER),
-                redirectURI(controllers.agent.email.routes.CaptureConsentController.show().url)
-              )
-            }
-          }
           "the email passed flag is present in session" should {
             "save the tax year and redirect to the what you need to do page" in {
               enable(EmailCaptureConsent)
 
               AuthStub.stubAuthSuccess()
-              SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
-              SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-              SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.EMAIL_PASSED)(OK, JsBoolean(true))
+              SessionDataConnectorStub.stubGetAllSessionData(Map(
+                ITSASessionKeys.NINO -> JsString(testNino),
+                ITSASessionKeys.UTR -> JsString(testUtr),
+                ITSASessionKeys.EMAIL_PASSED -> JsBoolean(true)
+              ))
               IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SelectedTaxYear, AccountingYearModel(Current))
 
               val result = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, request = Some(Current))
@@ -250,79 +246,16 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
             }
           }
         }
-        "the email capture consent feature switch is disabled" must {
-          "save the tax year and redirect to the what you need to do page" in {
-            AuthStub.stubAuthSuccess()
-            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
-            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.EMAIL_PASSED)(NO_CONTENT)
-            IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SelectedTaxYear, AccountingYearModel(Current))
-
-            val result = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, request = Some(Current))
-
-            result must have(
-              httpStatus(SEE_OTHER),
-              redirectURI(controllers.agent.routes.WhatYouNeedToDoController.show().url)
-            )
-          }
-        }
-      }
-      "next tax year is selected" must {
-        "save the tax year and redirect to the capture consent page" when {
-          "the email capture consent feature switch is enabled" in {
-            enable(EmailCaptureConsent)
-
-            AuthStub.stubAuthSuccess()
-            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
-            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.EMAIL_PASSED)(NO_CONTENT)
-            IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SelectedTaxYear, AccountingYearModel(Next))
-
-            val result = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, request = Some(Next))
-
-            result must have(
-              httpStatus(SEE_OTHER),
-              redirectURI(controllers.agent.routes.WhatYouNeedToDoController.show().url)
-            )
-          }
-          "the email capture consent feature switch is disabled" in {
-            AuthStub.stubAuthSuccess()
-            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
-            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-            SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.EMAIL_PASSED)(NO_CONTENT)
-            IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SelectedTaxYear, AccountingYearModel(Next))
-
-            val result = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, request = Some(Next))
-
-            result must have(
-              httpStatus(SEE_OTHER),
-              redirectURI(controllers.agent.routes.WhatYouNeedToDoController.show().url)
-            )
-          }
-        }
       }
     }
     "there was a problem saving the tax year selection" must {
       "return an internal server error page" in {
         AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr)
+        ))
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetailsFailure(SelectedTaxYear)
-
-        val result = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, request = Some(Current))
-
-        result must have(
-          httpStatus(INTERNAL_SERVER_ERROR)
-        )
-      }
-    }
-    "there was a problem fetching the email passed flag from session" must {
-      "return an internal server error page" in {
-        AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.EMAIL_PASSED)(INTERNAL_SERVER_ERROR)
-        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SelectedTaxYear, AccountingYearModel(Current))
 
         val result = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, request = Some(Current))
 

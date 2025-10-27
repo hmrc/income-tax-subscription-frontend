@@ -39,7 +39,7 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
 
         When("GET /property-start-date is called")
         val res = IncomeTaxSubscriptionFrontend.propertyStartDate()
-        val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+        val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
         Then("Should return a OK with the property start page with populated start date")
         res must have(
           httpStatus(OK),
@@ -55,7 +55,7 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
 
         When("GET /property-start-date is called")
         val res = IncomeTaxSubscriptionFrontend.propertyStartDate()
-        val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+        val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
         Then("Should return a OK with the property start date page with no start date")
         res must have(
           httpStatus(OK),

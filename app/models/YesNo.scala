@@ -24,7 +24,7 @@ sealed trait YesNo {
 }
 
 object Yes extends YesNo {
-  private[models] val YES = "Yes"
+  val YES: String = "Yes"
 
   override def toString: String = YES
 
@@ -32,7 +32,7 @@ object Yes extends YesNo {
 }
 
 object No extends YesNo {
-  private[models] val NO = "No"
+  val NO: String = "No"
 
   override def toString: String = NO
 

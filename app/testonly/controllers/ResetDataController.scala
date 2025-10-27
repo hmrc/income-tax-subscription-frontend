@@ -34,10 +34,11 @@ class ResetDataController @Inject()(mcc: MessagesControllerComponents,
                                    (implicit ec: ExecutionContext) extends FrontendController(mcc) {
 
   def resetWithoutIdentifiers: Action[AnyContent] = Action.async { implicit request =>
-    sessionDataService.fetchUTR flatMap {
-      case Right(Some(utr)) => reset(utr)
-      case Right(None) => Future.successful(Ok("No session data found"))
-      case Left(_) => Future.successful(Ok("Error occurred when fetching utr from session, unable to reset data"))
+    sessionDataService.getAllSessionData().flatMap { sessionData =>
+      sessionData.fetchUTR match {
+        case Some(utr) => reset(utr)
+        case None => Future.successful(Ok("No session data found"))
+      }
     }
   }
 

@@ -16,27 +16,35 @@
 
 package models.individual.subscription
 
-import models.common.subscription.SignUpModel
+import models.common.subscription.SignUpRequestModel
+import models.{AccountingYear, Current, Next}
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.{JsObject, Json}
+import utilities.AccountingPeriodUtil
 
 class SignUpModelSpec extends PlaySpec {
 
-  val model: SignUpModel = SignUpModel(
+  def model(taxYear: AccountingYear): SignUpRequestModel = SignUpRequestModel(
     nino = "test-nino",
     utr = "test-utr",
-    taxYear = "2024-25"
+    taxYear = taxYear
   )
 
-  val json: JsObject = Json.obj(
+  def json(taxYear: String): JsObject = Json.obj(
     "nino" -> "test-nino",
     "utr" -> "test-utr",
-    "taxYear" -> "2024-25"
+    "taxYear" -> taxYear
   )
 
   "SignUpModel" must {
-    "write to json as expected" in {
-      Json.toJson(model) mustBe json
+    "write to json as expected" when {
+      "tax year is the current year" in {
+        Json.toJson(model(Current)) mustBe json(AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear)
+      }
+      "tax year is the next tax year" in {
+        Json.toJson(model(Next)) mustBe json(AccountingPeriodUtil.getNextTaxYear.toLongTaxYear)
+      }
+
     }
   }
 

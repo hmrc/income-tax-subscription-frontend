@@ -16,16 +16,18 @@
 
 package controllers.agent
 
-import connectors.httpparser.GetSessionDataHttpParser
+import common.Constants.ITSASessionKeys
 import controllers.ControllerSpec
 import controllers.agent.actions.mocks.{MockConfirmationJourneyRefiner, MockIdentifierAction}
+import models.No.NO
+import models.Yes.YES
 import models.common.AccountingYearModel
 import models.status.MandationStatus.{Mandated, Voluntary}
-import models.{Current, Next, No, Yes}
+import models.{Current, Next, SessionData}
+import play.api.libs.json.JsString
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import services.mocks._
-import uk.gov.hmrc.http.InternalServerException
 import views.agent.mocks.MockSignUpConfirmation
 
 import scala.concurrent.Future
@@ -42,7 +44,9 @@ class ConfirmationControllerSpec extends ControllerSpec
       "the user is mandated for the current tax year" in {
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Current, confirmed = true, editable = false)))
         mockGetMandationService(Mandated, Voluntary)
-        mockFetchSoftwareStatus(Right(Some(No)))
+        val sessionData = SessionData(Map(
+          ITSASessionKeys.HAS_SOFTWARE -> JsString(NO)
+        ))
         mockView(
           mandatedCurrentYear = true,
           mandatedNextYear = false,
@@ -52,7 +56,7 @@ class ConfirmationControllerSpec extends ControllerSpec
           usingSoftware = false
         )
 
-        val result: Future[Result] = TestConfirmationController.show(request)
+        val result: Future[Result] = testConfirmationController(sessionData).show(request)
 
         status(result) mustBe OK
         contentType(result) mustBe Some(HTML)
@@ -60,7 +64,9 @@ class ConfirmationControllerSpec extends ControllerSpec
       "the user is mandated for the next tax year" in {
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Next, confirmed = true, editable = false)))
         mockGetMandationService(Voluntary, Mandated)
-        mockFetchSoftwareStatus(Right(Some(Yes)))
+        val sessionData = SessionData(Map(
+          ITSASessionKeys.HAS_SOFTWARE -> JsString(YES)
+        ))
         mockView(
           mandatedCurrentYear = false,
           mandatedNextYear = true,
@@ -70,7 +76,7 @@ class ConfirmationControllerSpec extends ControllerSpec
           usingSoftware = true
         )
 
-        val result: Future[Result] = TestConfirmationController.show(request)
+        val result: Future[Result] = testConfirmationController(sessionData).show(request)
 
         status(result) mustBe OK
         contentType(result) mustBe Some(HTML)
@@ -78,7 +84,9 @@ class ConfirmationControllerSpec extends ControllerSpec
       "the user has selected to sign up for the next tax year" in {
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Next, confirmed = true)))
         mockGetMandationService(Voluntary, Voluntary)
-        mockFetchSoftwareStatus(Right(Some(Yes)))
+        val sessionData = SessionData(Map(
+          ITSASessionKeys.HAS_SOFTWARE -> JsString(YES)
+        ))
         mockView(
           mandatedCurrentYear = false,
           mandatedNextYear = false,
@@ -88,21 +96,10 @@ class ConfirmationControllerSpec extends ControllerSpec
           usingSoftware = true
         )
 
-        val result: Future[Result] = TestConfirmationController.show(request)
+        val result: Future[Result] = testConfirmationController(sessionData).show(request)
 
         status(result) mustBe OK
         contentType(result) mustBe Some(HTML)
-      }
-    }
-    "throw an internal server exception" when {
-      "there was a problem retrieving the software status" in {
-        mockFetchSelectedTaxYear(Some(AccountingYearModel(Current, confirmed = true)))
-        mockGetMandationService(Voluntary, Voluntary)
-        mockFetchSoftwareStatus(Left(GetSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
-
-        intercept[InternalServerException](await(TestConfirmationController.show(request)))
-          .message mustBe s"[ConfirmationController][show] - failure retrieving software status - UnexpectedStatusFailure($INTERNAL_SERVER_ERROR)"
-
       }
     }
   }
@@ -111,20 +108,19 @@ class ConfirmationControllerSpec extends ControllerSpec
     "redirect to the add another client route" in {
       mockDeleteAll()
 
-      val result: Future[Result] = TestConfirmationController.submit(request.withMethod("POST"))
+      val result: Future[Result] = testConfirmationController().submit(request.withMethod("POST"))
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(routes.AddAnotherClientController.addAnother().url)
     }
   }
 
-  object TestConfirmationController extends ConfirmationController(
+  def testConfirmationController(sessionData: SessionData = SessionData()) = new ConfirmationController(
     mockSignUpConfirmation,
-    fakeIdentifierAction,
+    fakeIdentifierActionWithSessionData(sessionData),
     fakeConfirmationJourneyRefiner,
     mockSubscriptionDetailsService,
-    mockMandationStatusService,
-    mockSessionDataService
+    mockMandationStatusService
   )
 
 }

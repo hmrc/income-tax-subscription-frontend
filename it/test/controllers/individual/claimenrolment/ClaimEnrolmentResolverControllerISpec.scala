@@ -36,7 +36,9 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
       EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testMTDITEnrolmentKey)(NO_CONTENT)
       TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
       TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, CREATED)
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+      SessionDataConnectorStub.stubGetAllSessionData(Map(
+        ITSASessionKeys.NINO -> JsString(testNino)
+      ))
 
       When("GET /claim-enrolment/resolve is called")
       val res = IncomeTaxSubscriptionFrontend.claimEnrolmentResolver()
@@ -54,7 +56,9 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       SubscriptionStub.stubGetNoSubscription()
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+      SessionDataConnectorStub.stubGetAllSessionData(Map(
+        ITSASessionKeys.NINO -> JsString(testNino)
+      ))
 
 
       When("GET /claim-enrolment/resolve is called")
@@ -73,7 +77,9 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
       AuthStub.stubAuthSuccess()
       SubscriptionStub.stubGetSubscriptionFound()
       EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testMTDITEnrolmentKey)(OK)
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+      SessionDataConnectorStub.stubGetAllSessionData(Map(
+        ITSASessionKeys.NINO -> JsString(testNino)
+      ))
       
       When("GET /claim-enrolment/resolve is called")
       val res = IncomeTaxSubscriptionFrontend.claimEnrolmentResolver()
@@ -89,8 +95,9 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
     "nino could not be retrieved from the user's cred" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthNoNino()
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-
+      SessionDataConnectorStub.stubGetAllSessionData(Map(
+        ITSASessionKeys.NINO -> JsString(testNino)
+      ))
 
       When("GET /claim-enrolment/resolve is called")
       val res = IncomeTaxSubscriptionFrontend.claimEnrolmentResolver()
@@ -104,7 +111,9 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       SubscriptionStub.stubGetSubscriptionFail()
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+      SessionDataConnectorStub.stubGetAllSessionData(Map(
+        ITSASessionKeys.NINO -> JsString(testNino)
+      ))
 
       When("GET /claim-enrolment/resolve is called")
       val res = IncomeTaxSubscriptionFrontend.claimEnrolmentResolver()
@@ -120,7 +129,9 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
       AuthStub.stubAuthSuccess()
       SubscriptionStub.stubGetSubscriptionFound()
       EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentJsError(testMTDITEnrolmentKey)
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+      SessionDataConnectorStub.stubGetAllSessionData(Map(
+        ITSASessionKeys.NINO -> JsString(testNino)
+      ))
 
       When("GET /claim-enrolment/resolve is called")
       val res = IncomeTaxSubscriptionFrontend.claimEnrolmentResolver()
@@ -136,7 +147,9 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
       AuthStub.stubAuthSuccess()
       SubscriptionStub.stubGetSubscriptionFound()
       EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testMTDITEnrolmentKey)(INTERNAL_SERVER_ERROR)
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+      SessionDataConnectorStub.stubGetAllSessionData(Map(
+        ITSASessionKeys.NINO -> JsString(testNino)
+      ))
 
       When("GET /claim-enrolment/resolve is called")
       val res = IncomeTaxSubscriptionFrontend.claimEnrolmentResolver()
@@ -153,7 +166,9 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
       SubscriptionStub.stubGetSubscriptionFound()
       EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testMTDITEnrolmentKey)(NO_CONTENT)
       TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, INTERNAL_SERVER_ERROR)
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+      SessionDataConnectorStub.stubGetAllSessionData(Map(
+        ITSASessionKeys.NINO -> JsString(testNino)
+      ))
 
       When("GET /claim-enrolment/resolve is called")
       val res = IncomeTaxSubscriptionFrontend.claimEnrolmentResolver()
@@ -171,7 +186,9 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
       EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testMTDITEnrolmentKey)(NO_CONTENT)
       TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
       TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, INTERNAL_SERVER_ERROR)
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+      SessionDataConnectorStub.stubGetAllSessionData(Map(
+        ITSASessionKeys.NINO -> JsString(testNino)
+      ))
 
       When("GET /claim-enrolment/resolve is called")
       val res = IncomeTaxSubscriptionFrontend.claimEnrolmentResolver()

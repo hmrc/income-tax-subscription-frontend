@@ -1,7 +1,7 @@
 ## Base ##
-base.service-name                                               = Use software to send Income Tax updates
-base.title-pattern                                              = {0} - Use software to send Income Tax updates - GOV.UK
-base.title-pattern.error                                        = Error: {0} - Use software to send Income Tax updates - GOV.UK
+base.service-name                                               = Sign up for Making Tax Digital for Income Tax
+base.title-pattern                                              = {0} - Sign up for Making Tax Digital for Income Tax - GOV.UK
+base.title-pattern.error                                        = Error: {0} - Sign up for Making Tax Digital for Income Tax - GOV.UK
 base.back                                                       = Back
 base.continue                                                   = Continue
 base.continue-sign-up                                           = Continue to sign up
@@ -491,7 +491,7 @@ error.user-details.date-of-birth.month-year.invalid             = The date must 
 error.user-details.date-of-birth.year.length                    = The year must be in four digits. For example, 2020.
 
 ## Stub User Details ##
-stub.user.details.title                                         = User stubbing service - Use software to send Income Tax updates - GOV.UK
+stub.user.details.title                                         = User stubbing service - Sign up for Making Tax Digital for Income Tax - GOV.UK
 stub.user.details.heading                                       = User stubbing service
 stub.user.details.line-1                                        = We will check these details with information we currently have.
 stub.user.details.field-1                                       = First name
@@ -561,9 +561,9 @@ mtdit-overview.inset                                            = You need to us
 mtdit-overview.link2                                            = business tax account
 
 ## Agent Base ##
-agent.base.service-name                                         = Use software to report your client’s Income Tax
-agent.base.title-pattern                                        = {0} - Use software to report your client’s Income Tax - GOV.UK
-agent.base.title-pattern.error                                  = Error: {0} - Use software to report your client’s Income Tax - GOV.UK
+agent.base.service-name                                         = Sign up your clients for Making Tax Digital for Income Tax
+agent.base.title-pattern                                        = {0} - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK
+agent.base.title-pattern.error                                  = Error: {0} - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK
 agent.base.back                                                 = Back
 agent.base.continue                                             = Continue
 agent.base.update                                               = Update
@@ -831,7 +831,7 @@ agent.cannot-report-yet.para1                                   = You can still 
 agent.cannot-report-yet.para2                                   = Your client still needs to <a class="govuk-link" id="sa" href="{0}">send a Self Assessment tax return</a>.
 
 ## Agent Sign Up Complete page
-agent.sign-up-complete.title                                    = You have signed up {0} {1} to use software to send Income Tax updates
+agent.sign-up-complete.title                                    = You have signed up {0} {1} to use Making Tax Digital for Income Tax
 agent.sign-up-complete.heading                                  = Client sign up complete
 agent.sign-up-complete.panel-client                             = {0} {1}
 agent.sign-up-complete.signed-up-for-mtd                        = is now signed up for Making Tax Digital for Income Tax.

@@ -23,7 +23,7 @@ import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 
 class EmailCaptureControllerISpec extends ComponentSpecBase {
 
-  val serviceNameGovUk = "Use software to send Income Tax updates - GOV.UK"
+  val serviceNameGovUk = "Sign up for Making Tax Digital for Income Tax - GOV.UK"
 
   s"GET ${routes.EmailCaptureController.show().url}" when {
     "the user is not authorised" must {

@@ -32,7 +32,9 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase {
   class Setup(clientDetailsConfirmed: Boolean = true) {
     AuthStub.stubAuthSuccess()
 
-    SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
+    SessionDataConnectorStub.stubGetAllSessionData(Map(
+      ITSASessionKeys.NINO -> JsString(testNino)
+    ))
 
     val result: WSResponse = IncomeTaxSubscriptionFrontend.getNoClientRelationship(clientDetailsConfirmed)
 
@@ -80,7 +82,7 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase {
     }
 
     "have a view with the correct title" in new Setup() {
-      val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
+      val serviceNameGovUk = " - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
       doc.title mustBe NoClientRelationshipMessages.title + serviceNameGovUk
     }
 

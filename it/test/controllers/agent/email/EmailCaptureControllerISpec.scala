@@ -57,8 +57,10 @@ class EmailCaptureControllerISpec extends ComponentSpecBase {
     "the user is authorised and in a confirmed client state" must {
       "return OK with the page content" in {
         AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr)
+        ))
 
         val result = showEmailCapture()
 
@@ -99,8 +101,10 @@ class EmailCaptureControllerISpec extends ComponentSpecBase {
       "redirect to the What You Need To Do page" when {
         "a valid email is submitted" in {
           AuthStub.stubAuthSuccess()
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.NINO -> JsString(testNino),
+            ITSASessionKeys.UTR -> JsString(testUtr)
+          ))
 
           val result = submitEmailCapture(Some(testValidEmail))()
 
@@ -113,8 +117,10 @@ class EmailCaptureControllerISpec extends ComponentSpecBase {
       "return a BAD_REQUEST" when {
         "the email address is missing" in {
           AuthStub.stubAuthSuccess()
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.NINO -> JsString(testNino),
+            ITSASessionKeys.UTR -> JsString(testUtr)
+          ))
 
           val result = submitEmailCapture(None)()
 
@@ -126,8 +132,10 @@ class EmailCaptureControllerISpec extends ComponentSpecBase {
         }
         "the email address is too long" in {
           AuthStub.stubAuthSuccess()
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.NINO -> JsString(testNino),
+            ITSASessionKeys.UTR -> JsString(testUtr)
+          ))
 
           val result = submitEmailCapture(Some("a" * 245 + "@email.com"))()
 
@@ -139,8 +147,10 @@ class EmailCaptureControllerISpec extends ComponentSpecBase {
         }
         "the email address is invalid" in {
           AuthStub.stubAuthSuccess()
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.NINO -> JsString(testNino),
+            ITSASessionKeys.UTR -> JsString(testUtr)
+          ))
 
           val result = submitEmailCapture(Some("a@b.c."))()
 
@@ -154,7 +164,7 @@ class EmailCaptureControllerISpec extends ComponentSpecBase {
     }
   }
 
-  lazy val serviceNameGovUk = "Use software to report your client’s Income Tax - GOV.UK"
+  lazy val serviceNameGovUk = "Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
   lazy val testValidEmail = "test@email.com"
 
   def showEmailCapture(includeState: Boolean = true): WSResponse = {

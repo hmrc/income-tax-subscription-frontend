@@ -57,7 +57,7 @@ class NoSAControllerSpec extends ControllerBaseSpec {
     }
 
     s"have the title '${MessageLookup.NoSA.Agent.title}'" in {
-      val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
+      val serviceNameGovUk = " - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
       document.title() must be(MessageLookup.NoSA.Agent.title + serviceNameGovUk)
     }
   }

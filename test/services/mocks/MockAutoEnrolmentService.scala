@@ -17,7 +17,7 @@
 package services.mocks
 
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito._
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import services.agent.AutoEnrolmentService
@@ -42,6 +42,14 @@ trait MockAutoEnrolmentService extends MockitoSugar with BeforeAndAfterEach {
       ArgumentMatchers.eq(nino),
       ArgumentMatchers.eq(mtditid)
     )(ArgumentMatchers.any[HeaderCarrier])) thenReturn Future.successful(response)
+  }
+
+  def verifyAutoClaimEnrolment(utr: String, nino: String, mtditid: String, count: Int = 1): Unit = {
+    verify(mockAutoEnrolmentService, times(count)).autoClaimEnrolment(
+      ArgumentMatchers.eq(utr),
+      ArgumentMatchers.eq(nino),
+      ArgumentMatchers.eq(mtditid)
+    )(ArgumentMatchers.any())
   }
 
 }

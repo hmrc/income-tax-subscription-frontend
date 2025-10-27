@@ -29,7 +29,7 @@ import utilities.SubscriptionDataKeys.OverseasProperty
 
 class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
 
-  val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+  val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
 
   s"GET ${routes.RemoveOverseasPropertyController.show.url}" should {
     s"return $OK" in {

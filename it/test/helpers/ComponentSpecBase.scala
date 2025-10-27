@@ -21,7 +21,7 @@ import _root_.common.Constants.ITSASessionKeys._
 import auth.individual.{JourneyState, SignUp, ClaimEnrolment => ClaimEnrolmentJourney}
 import config.AppConfig
 import config.featureswitch.{FeatureSwitch, FeatureSwitching}
-import connectors.stubs.SessionDataConnectorStub.stubGetSessionData
+import connectors.stubs.SessionDataConnectorStub.stubGetAllSessionData
 import forms.individual._
 import forms.individual.accountingperiod.{AccountingPeriodForm, AccountingPeriodNonStandardForm}
 import forms.individual.business._
@@ -46,7 +46,6 @@ import play.api.libs.crypto.CookieSigner
 import play.api.libs.json.{JsArray, JsString, JsValue, Writes}
 import play.api.libs.ws.WSResponse
 import play.api.test.FakeRequest
-import play.api.test.Helpers.OK
 import play.twirl.api.TwirlHelperImports.twirlJavaCollectionToScala
 import uk.gov.hmrc.crypto.{ApplicationCrypto, Decrypter, Encrypter}
 import utilities.UUIDProvider
@@ -80,10 +79,8 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
     "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
     "microservice.services.auth.host" -> mockHost,
     "microservice.services.auth.port" -> mockPort,
-    "microservice.services.subscription-service.host" -> mockHost,
-    "microservice.services.subscription-service.port" -> mockPort,
-    "microservice.services.session-cache.host" -> mockHost,
-    "microservice.services.session-cache.port" -> mockPort,
+    "microservice.services.income-tax-subscription.host" -> mockHost,
+    "microservice.services.income-tax-subscription.port" -> mockPort,
     "microservice.services.preferences.host" -> mockHost,
     "microservice.services.preferences.port" -> mockPort,
     "microservice.services.preferences-frontend.host" -> mockHost,
@@ -94,14 +91,10 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
     "auditing.consumer.baseUri.port" -> mockPort,
     "microservice.services.government-gateway.host" -> mockHost,
     "microservice.services.government-gateway.port" -> mockPort,
-    "microservice.services.gg-authentication.host" -> mockHost,
-    "microservice.services.gg-authentication.port" -> mockPort,
     "microservice.services.authenticator.host" -> mockHost,
     "microservice.services.authenticator.port" -> mockPort,
     "microservice.services.citizen-details.host" -> mockHost,
     "microservice.services.citizen-details.port" -> mockPort,
-    "microservice.services.address-lookup-frontend.host" -> mockHost,
-    "microservice.services.address-lookup-frontend.port" -> mockPort,
     "microservice.services.tax-enrolments.host" -> mockHost,
     "microservice.services.tax-enrolments.port" -> mockPort,
     "microservice.services.income-tax-subscription-eligibility.host" -> mockHost,
@@ -133,7 +126,9 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
     resetWiremock()
     AuditStub.stubAuditing()
 
-    stubGetSessionData(REFERENCE)(OK, JsString(reference))
+    stubGetAllSessionData(Map(
+      REFERENCE -> JsString(reference)
+    ))
   }
 
   override def beforeAll(): Unit = {

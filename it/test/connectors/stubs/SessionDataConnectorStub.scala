@@ -16,19 +16,31 @@
 
 package connectors.stubs
 
+import common.Constants.ITSASessionKeys
+import helpers.agent.ComponentSpecBase.reference
 import helpers.servicemocks.WireMockMethods
-import play.api.libs.json.{JsValue, Json, Writes}
+import models.SessionData
+import play.api.http.Status.{NO_CONTENT, OK}
+import play.api.libs.json.{JsString, JsValue, Json, Writes}
 
 object SessionDataConnectorStub extends WireMockMethods {
 
   private def sessionDataUri(id: String) = s"/income-tax-subscription/session-data/id/$id"
   private def sessionIdDataUri() = s"/income-tax-subscription/session-data/id"
+  private def allSessionDataUri = "/income-tax-subscription/session-data/all"
 
-  def stubGetSessionData(id: String)(responseStatus: Int, responseBody: JsValue = Json.obj()): Unit = {
+  def stubGetAllSessionData(data: Map[String, JsValue], addReference: Boolean = true): Unit = {
+    val map = if (data.nonEmpty && addReference)
+      data ++ Map(ITSASessionKeys.REFERENCE -> JsString(reference))
+    else
+      data
     when(
       method = GET,
-      uri = sessionDataUri(id)
-    ).thenReturn(responseStatus, responseBody)
+      uri = allSessionDataUri
+    ).thenReturn(
+      if (data.nonEmpty) OK else NO_CONTENT,
+      Json.toJson(map)
+    )
   }
 
   def stubSaveSessionData[T](id: String, data: T)(responseStatus: Int)(implicit writes: Writes[T]): Unit = {
@@ -52,5 +64,4 @@ object SessionDataConnectorStub extends WireMockMethods {
       uri = sessionIdDataUri()
     ).thenReturn(responseStatus)
   }
-
 }

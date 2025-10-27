@@ -30,7 +30,7 @@ class ClientAlreadySubscribedControllerISpec extends ComponentSpecBase {
 
       When("GET /error/client-already-subscribed is called")
       val res = IncomeTaxSubscriptionFrontend.clientAlreadySubscribed()
-      val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
+      val serviceNameGovUk = " - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
       Then("Should return a OK with the client already subscribed page")
       res must have(
         httpStatus(OK),

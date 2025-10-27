@@ -16,13 +16,16 @@
 
 package services
 
+import common.Constants.ITSASessionKeys
+import connectors.httpparser.SaveSessionDataHttpParser
 import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataSuccessResponse
-import connectors.httpparser.{GetSessionDataHttpParser, SaveSessionDataHttpParser}
+import models.SessionData
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.INTERNAL_SERVER_ERROR
+import play.api.libs.json.Json
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import services.mocks.{MockMandationStatusConnector, MockNinoService, MockSessionDataService, MockUTRService}
 import uk.gov.hmrc.http.InternalServerException
@@ -51,49 +54,43 @@ class MandationStatusServiceSpec extends PlaySpec
   "getMandationStatus" must {
     "return the mandation status from session" when {
       "available in session" in new Setup {
-        mockFetchMandationStatus(Right(Some(mandationStatusModel)))
+        val sessionData = SessionData(Map(
+          ITSASessionKeys.MANDATION_STATUS -> Json.toJson(mandationStatusModel)
+        ))
 
-        await(service.getMandationStatus) mustBe mandationStatusModel
+        await(service.getMandationStatus(sessionData)) mustBe mandationStatusModel
       }
     }
     "return the mandation status from the API and save to the session database" when {
       "the mandation status is not available from session" in new Setup {
-        mockFetchMandationStatus(Right(None))
         mockGetNino(testNino)
         mockGetUTR(testUtr)
         mockGetMandationStatus(testNino, testUtr)(Voluntary, Voluntary)
         mockSaveMandationStatus(mandationStatusModel)(Right(SaveSessionDataSuccessResponse))
 
-        await(service.getMandationStatus) mustBe mandationStatusModel
+        await(service.getMandationStatus()) mustBe mandationStatusModel
       }
     }
     "throw an exception" when {
-      "there was a problem retrieving mandation status from session" in new Setup {
-        mockFetchMandationStatus(Left(GetSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
-
-        intercept[InternalServerException](await(service.getMandationStatus))
-          .message mustBe "[MandationStatusService][getMandationStatus] - Failure when fetching mandation status from session: UnexpectedStatusFailure(500)"
-      }
       "there was a problem retrieving mandation status from the API" in new Setup {
-        mockFetchMandationStatus(Right(None))
+        mockGetAllSessionData(SessionData())
         mockGetNino(testNino)
         mockGetUTR(testUtr)
         mockFailedGetMandationStatus()
 
-        intercept[InternalServerException](await(service.getMandationStatus))
+        intercept[InternalServerException](await(service.getMandationStatus()))
           .message mustBe "[MandationStatusService][getMandationStatus] - Failure when fetching mandation status from API: ErrorModel(500,Something went wrong)"
       }
       "there was a problem saving mandation status to session" in new Setup {
-        mockFetchMandationStatus(Right(None))
+        mockGetAllSessionData(SessionData())
         mockGetNino(testNino)
         mockGetUTR(testUtr)
         mockGetMandationStatus(testNino, testUtr)(Voluntary, Voluntary)
         mockSaveMandationStatus(mandationStatusModel)(Left(SaveSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
-        intercept[InternalServerException](await(service.getMandationStatus))
+        intercept[InternalServerException](await(service.getMandationStatus()))
           .message mustBe "[MandationStatusService][getMandationStatus] - Failure when saving mandation status to session: UnexpectedStatusFailure(500)"
       }
     }
   }
-
 }

@@ -27,7 +27,7 @@ import utilities.agent.TestConstants.testUtr
 
 class IncomeSourcesIncompleteControllerISpec extends ComponentSpecBase {
 
-  val serviceNameGovUk = "Use software to report your client’s Income Tax - GOV.UK"
+  val serviceNameGovUk = "Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
 
   s"GET ${controllers.agent.tasklist.routes.IncomeSourcesIncompleteController.show.url}" when {
     "the user is unauthenticated" should {
@@ -58,8 +58,10 @@ class IncomeSourcesIncompleteControllerISpec extends ComponentSpecBase {
       "return OK with the page content" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr)
+        ))
 
         val result = IncomeTaxSubscriptionFrontend.showIncomeSourcesIncomplete()
 
@@ -99,8 +101,10 @@ class IncomeSourcesIncompleteControllerISpec extends ComponentSpecBase {
     "the user is authenticated and in a confirmed client state" should {
       "redirect the user to the your income sources page" in {
         AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr)
+        ))
 
         val result = IncomeTaxSubscriptionFrontend.submitIncomeSourcesIncomplete()
 

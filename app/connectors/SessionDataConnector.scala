@@ -39,8 +39,16 @@ class SessionDataConnector @Inject()(appConfig: AppConfig,
     appConfig.microServiceUrl + s"/income-tax-subscription/session-data/id"
   }
 
+  private def allSessionDataUrl(): String = {
+    s"${appConfig.microServiceUrl}/income-tax-subscription/session-data/all"
+  }
+
   def getSessionData[T](id: String)(implicit hc: HeaderCarrier, reads: Reads[T]): Future[GetSessionDataResponse[T]] = {
     http.GET[GetSessionDataResponse[T]](sessionDataUrl(id))
+  }
+
+  def getAllSessionData()(implicit hc: HeaderCarrier, reads: Reads[Map[String, JsValue]]): Future[GetSessionDataResponse[Map[String, JsValue]]] = {
+    http.GET[GetSessionDataResponse[Map[String, JsValue]]](allSessionDataUrl())
   }
 
   def saveSessionData[T](id: String, data: T)(implicit hc: HeaderCarrier, writes: Writes[T]): Future[SaveSessionDataResponse] = {
@@ -51,7 +59,7 @@ class SessionDataConnector @Inject()(appConfig: AppConfig,
     http.DELETE[DeleteSessionDataResponse](sessionDataUrl(id))
   }
 
-  def  deleteAllSessionData(implicit hc: HeaderCarrier): Future[DeleteSessionDataResponse] = {
+  def deleteAllSessionData(implicit hc: HeaderCarrier): Future[DeleteSessionDataResponse] = {
     http.DELETE[DeleteSessionDataResponse](sessionIdDataUrl())
   }
 

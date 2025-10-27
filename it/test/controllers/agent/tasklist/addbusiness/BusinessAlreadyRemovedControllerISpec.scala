@@ -24,14 +24,14 @@ import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 
 class BusinessAlreadyRemovedControllerISpec extends ComponentSpecBase with AuthRedirects {
 
-  val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
+  val serviceNameGovUk = " - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
 
-  s"GET ${routes.BusinessAlreadyRemovedController.show.url}" must {
+  s"GET ${routes.BusinessAlreadyRemovedController.show().url}" must {
     "return OK with the page content" in {
       Given("I am authenticated")
       AuthStub.stubAuthSuccess()
 
-      When(s"GET ${routes.BusinessAlreadyRemovedController.show.url} is called")
+      When(s"GET ${routes.BusinessAlreadyRemovedController.show().url} is called")
       val result = IncomeTaxSubscriptionFrontend.showBusinessAlreadyRemoved()
 
       Then("The result should be OK with page content")
@@ -42,7 +42,7 @@ class BusinessAlreadyRemovedControllerISpec extends ComponentSpecBase with AuthR
     }
   }
 
-  s"GET ${routes.BusinessAlreadyRemovedController.show.url}" when {
+  s"GET ${routes.BusinessAlreadyRemovedController.show().url}" when {
     "the agent is unauthenticated" should {
       "redirect to login" in {
         AuthStub.stubUnauthorised()

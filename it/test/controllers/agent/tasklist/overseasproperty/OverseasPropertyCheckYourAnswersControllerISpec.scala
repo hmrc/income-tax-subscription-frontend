@@ -37,8 +37,10 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(OverseasPropertyModel()))
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-      SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+      SessionDataConnectorStub.stubGetAllSessionData(Map(
+        ITSASessionKeys.NINO -> JsString(testNino),
+        ITSASessionKeys.UTR -> JsString(testUtr)
+      ))
 
       When("GET business/overseas-property-check-your-answers is called")
       val res = IncomeTaxSubscriptionFrontend.getOverseasPropertyCheckYourAnswers(
@@ -52,7 +54,7 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
       res must have(
         httpStatus(OK),
         pageTitle(
-          s"${messages("agent.overseas-property.check-your-answers.title")} - Use software to report your client’s Income Tax - GOV.UK"
+          s"${messages("agent.overseas-property.check-your-answers.title")} - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
         )
       )
     }
@@ -70,8 +72,10 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testProperty))
         IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(expectedProperty)
         IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr)
+        ))
 
         When("POST business/overseas-property-check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers(
@@ -93,8 +97,10 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
       "the client has answered partial questions for overseas property" in {
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(OverseasPropertyModel()))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr)
+        ))
 
         When("POST business/overseas-property-check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers(
@@ -119,8 +125,10 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr)
+        ))
 
         When("POST business/overseas-property-check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers(
@@ -142,8 +150,10 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK,
           Json.toJson(OverseasPropertyModel(startDate = Some(DateModel("10", "11", "2021")))))
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetailsFailure(OverseasProperty)
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK, JsString(testNino))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.UTR)(OK, JsString(testUtr))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr)
+        ))
 
         When("POST business/overseas-property-check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyCheckYourAnswers(

@@ -31,7 +31,7 @@ class NoSAControllerISpec extends ComponentSpecBase {
 
         When("GET /register-for-SA is called")
         val res = IncomeTaxSubscriptionFrontend.noSA()
-        val serviceNameGovUk = " - Use software to report your client’s Income Tax - GOV.UK"
+        val serviceNameGovUk = " - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
         Then("Should return a OK with the error main income page")
         res must have(
           httpStatus(OK),

@@ -24,7 +24,7 @@ import play.api.http.Status._
 
 class AccountingPeriodNotSupportedControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
-  val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+  val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
 
   s"GET ${controllers.individual.accountingperiod.routes.AccountingPeriodNotSupportedController.show.url}" when {
     "user is not authorised" must {

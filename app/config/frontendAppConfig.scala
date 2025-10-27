@@ -39,7 +39,7 @@ trait AppConfig {
 
   val userMatchingUrl: String
   val clientMatchingUrl: String
-  val signUpIncomeSourcesUrl: String
+  val signUpUrl: String
   val createIncomeSourcesUrl: String
   val authUrl: String
   val preferencesFrontend: String
@@ -59,7 +59,7 @@ trait AppConfig {
   val btaBaseUrl: String
   val agentServicesUrl: String
   val agentServicesAccountHomeUrl: String
-  val agentMicroserviceUrl: String
+  val agentClientRelationshipsUrl: String
   val authenticatorUrl: String
   val hasEnabledTestOnlyRoutes: Boolean
   val identityVerificationURL: String
@@ -133,7 +133,7 @@ class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Con
   val contextRoute = "/report-quarterly/income-and-expenses/sign-up"
 
   //Authentication/Authorisation Config
-  override lazy val ggSignInContinueUrl = s"$baseUrl$contextRoute/index"
+  override lazy val ggSignInContinueUrl = s"$baseUrl$contextRoute"
   override lazy val authUrl: String = config.baseUrl("auth")
 
   // sign out
@@ -149,11 +149,11 @@ class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Con
   override lazy val contactFormServiceIdentifier = "MTDIT"
 
   // protected microservice
-  override lazy val microServiceUrl: String = config.baseUrl("subscription-service")
+  override lazy val microServiceUrl: String = config.baseUrl("income-tax-subscription")
   override lazy val subscriptionUrl = s"$microServiceUrl/income-tax-subscription/subscription"
   override lazy val userMatchingUrl = s"$microServiceUrl/income-tax-subscription/client-matching"
   override lazy val clientMatchingUrl = s"$microServiceUrl/income-tax-subscription/client-matching"
-  override lazy val signUpIncomeSourcesUrl = s"$microServiceUrl/income-tax-subscription/mis/sign-up"
+  override lazy val signUpUrl = s"$microServiceUrl/income-tax-subscription/mis/sign-up"
   override lazy val createIncomeSourcesUrl = s"$microServiceUrl/income-tax-subscription/mis/create"
   override lazy val channelPreferencesUrl: String = config.baseUrl("channel-preferences")
   override lazy val throttlingUrl = s"$microServiceUrl/income-tax-subscription/throttled"
@@ -205,7 +205,7 @@ class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Con
 
   override lazy val agentServicesAccountHomeUrl: String = config.getString("agent-services-frontend.url")
 
-  override lazy val agentMicroserviceUrl: String = config.baseUrl("agent-microservice")
+  override lazy val agentClientRelationshipsUrl: String = config.baseUrl("agent-client-relationships")
 
   /*
   *  This checks to see if the testOnlyDoNotUseInAppConf route is set in configuration instead of the default prod.Routes

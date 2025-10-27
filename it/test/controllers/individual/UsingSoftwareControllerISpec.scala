@@ -25,12 +25,13 @@ import models.status.MandationStatus.{Mandated, Voluntary}
 import models.status.MandationStatusModel
 import models.{EligibilityStatus, No, Yes, YesNo}
 import play.api.http.Status._
-import play.api.libs.json.Json
+import play.api.libs.json.{JsString, Json}
 import play.api.libs.ws.WSResponse
+import utilities.individual.TestConstants.testNino
 
 class UsingSoftwareControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
-  val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+  val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
 
   s"GET ${controllers.individual.routes.UsingSoftwareController.show().url}" when {
 
@@ -40,10 +41,11 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase with FeatureSwitchi
         val testOption: YesNo = Yes
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Mandated)))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true)))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.HAS_SOFTWARE)(OK, Json.toJson(testOption))
-
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Mandated)),
+          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true)),
+          ITSASessionKeys.HAS_SOFTWARE -> Json.toJson(testOption)
+        ))
 
         When(s"GET ${controllers.individual.routes.UsingSoftwareController.show().url}")
         val result = IncomeTaxSubscriptionFrontend.showUsingSoftware()
@@ -56,96 +58,56 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase with FeatureSwitchi
         )
       }
     }
-
-    "the Session Details Connector returns no data for Has Software" should {
-
-      "show the Using Software page without a radio option selected" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Mandated)))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.HAS_SOFTWARE)(NO_CONTENT)
-
-
-        When(s"GET ${controllers.individual.routes.UsingSoftwareController.show().url}")
-        val result = IncomeTaxSubscriptionFrontend.showUsingSoftware()
-
-        Then("The result should be OK with page content")
-        result must have(
-          httpStatus(OK),
-          pageTitle(messages("individual.using-software.heading") + serviceNameGovUk),
-          radioButtonSet(id = "yes-no", selectedRadioButton = None),
-          radioButtonSet(id = "yes-no-2", selectedRadioButton = None)
-        )
-      }
-    }
-
-    "the session Details Connector return an error" should {
-
-      "return INTERNAL_SERVER_ERROR" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Mandated)))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.HAS_SOFTWARE)(INTERNAL_SERVER_ERROR)
-
-
-        When(s"GET ${controllers.individual.routes.UsingSoftwareController.show().url}")
-        val result = IncomeTaxSubscriptionFrontend.showUsingSoftware()
-
-        Then("Should return a INTERNAL_SERVER_ERROR")
-        result must have(
-          httpStatus(INTERNAL_SERVER_ERROR)
-        )
-      }
-    }
   }
 
   s"POST ${controllers.individual.routes.UsingSoftwareController.submit().url}" when {
+    s"return a redirect to ${controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url}" when {
+      "the user selects the Yes radio button" in {
+        val userInput = Yes
 
-      s"return a redirect to ${controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url}" when {
-        "the user selects the Yes radio button" in {
-          val userInput = Yes
+        Given("I setup the wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Mandated)),
+          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+        ))
+        SessionDataConnectorStub.stubSaveSessionData[YesNo](ITSASessionKeys.HAS_SOFTWARE, userInput)(OK)
 
-          Given("I setup the wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Mandated)))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
-          SessionDataConnectorStub.stubSaveSessionData[YesNo](ITSASessionKeys.HAS_SOFTWARE, userInput)(OK)
+        When(s"POST ${controllers.individual.routes.UsingSoftwareController.submit().url} is called")
+        val result: WSResponse = IncomeTaxSubscriptionFrontend.submitUsingSoftware(request = Some(userInput))
 
-          When(s"POST ${controllers.individual.routes.UsingSoftwareController.submit().url} is called")
-          val result: WSResponse = IncomeTaxSubscriptionFrontend.submitUsingSoftware(request = Some(userInput))
+        Then("Should return SEE_OTHER to the What Year to Sign Up controller")
 
-          Then("Should return SEE_OTHER to the What Year to Sign Up controller")
-
-          result must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
-          )
-        }
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
+        )
       }
+    }
 
-      s"return a redirect to ${controllers.individual.routes.NoSoftwareController.show().url}" when {
-        "the user selects the No radio button" in {
-          val userInput = No
+    s"return a redirect to ${controllers.individual.routes.NoSoftwareController.show().url}" when {
+      "the user selects the No radio button" in {
+        val userInput = No
 
-          Given("I setup the wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Mandated)))
-          SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
-          SessionDataConnectorStub.stubSaveSessionData[YesNo](ITSASessionKeys.HAS_SOFTWARE, userInput)(OK)
+        Given("I setup the wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Mandated)),
+          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+        ))
+        SessionDataConnectorStub.stubSaveSessionData[YesNo](ITSASessionKeys.HAS_SOFTWARE, userInput)(OK)
 
-          When(s"POST ${controllers.individual.routes.UsingSoftwareController.submit().url} is called")
-          val result: WSResponse = IncomeTaxSubscriptionFrontend.submitUsingSoftware(request = Some(userInput))
+        When(s"POST ${controllers.individual.routes.UsingSoftwareController.submit().url} is called")
+        val result: WSResponse = IncomeTaxSubscriptionFrontend.submitUsingSoftware(request = Some(userInput))
 
-          Then("Should return SEE_OTHER to the What Year to Sign Up Controller")
+        Then("Should return SEE_OTHER to the What Year to Sign Up Controller")
 
-          result must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(controllers.individual.routes.NoSoftwareController.show().url)
-          )
-        }
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(controllers.individual.routes.NoSoftwareController.show().url)
+        )
       }
+    }
 
     "return BAD_REQUEST and display an error box on screen without redirecting" when {
 
@@ -153,9 +115,11 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase with FeatureSwitchi
 
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Mandated)))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK)
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Mandated)),
+          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)),
+          ITSASessionKeys.NINO -> JsString(testNino)
+        ))
 
         When(s"POST ${controllers.individual.routes.UsingSoftwareController.submit().url} is called")
         val result: WSResponse = IncomeTaxSubscriptionFrontend.submitUsingSoftware(request = None)
@@ -176,9 +140,11 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase with FeatureSwitchi
         val userInput = Yes
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.MANDATION_STATUS)(OK, Json.toJson(MandationStatusModel(Voluntary, Mandated)))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.ELIGIBILITY_STATUS)(OK, Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)))
-        SessionDataConnectorStub.stubGetSessionData(ITSASessionKeys.NINO)(OK)
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Mandated)),
+          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)),
+          ITSASessionKeys.NINO -> JsString(testNino)
+        ))
 
         When(s"POST ${controllers.individual.routes.UsingSoftwareController.submit().url} is called")
         val result = IncomeTaxSubscriptionFrontend.submitUsingSoftware(request = Some(userInput))

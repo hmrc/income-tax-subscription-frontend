@@ -41,7 +41,7 @@ class ServiceNameViewSpec extends ViewSpecTrait {
   "layout" must {
     "have a service name" when {
       "passing in an individual service name" in {
-        val serviceName = "Use software to send Income Tax updates"
+        val serviceName = "Sign up for Making Tax Digital for Income Tax"
         val serviceUrl = appConfig.govukGuidanceITSASignUpIndivLink
         document(isAgent = false).getElementsByClass("govuk-header__service-name").text() mustBe serviceName
         document(isAgent = false).getElementsByClass("govuk-header__service-name").attr("href") mustBe serviceUrl
@@ -49,7 +49,7 @@ class ServiceNameViewSpec extends ViewSpecTrait {
       }
 
       "passing in an agent service name" in {
-        val serviceName = "Use software to report your client’s Income Tax"
+        val serviceName = "Sign up your clients for Making Tax Digital for Income Tax"
         val serviceUrl = appConfig.govukGuidanceITSASignUpAgentLink
         document(isAgent = true).getElementsByClass("govuk-header__service-name").text() mustBe serviceName
         document(isAgent = true).getElementsByClass("govuk-header__service-name").attr("href") mustBe serviceUrl

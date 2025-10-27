@@ -30,7 +30,7 @@ class CannotUseServiceControllerISpec extends ComponentSpecBase {
 
       When("GET /error/cannot-use-service is called")
       val res = IncomeTaxSubscriptionFrontend.cannotUseService()
-      val serviceNameGovUk = " - Use software to send Income Tax updates - GOV.UK"
+      val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
       Then("Should return a OK with the cannot use service page")
       res must have(
         httpStatus(OK),
