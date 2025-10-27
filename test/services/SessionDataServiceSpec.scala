@@ -43,7 +43,7 @@ class SessionDataServiceSpec extends PlaySpec with MockSessionDataConnector {
   ))
 
   when(mockSessionDataConnector.getAllSessionData()(any(), any())).thenReturn(
-    Future.successful(Right(Some(sessionData.initial)))
+    Future.successful(Right(Some(sessionData.data)))
   )
 
   implicit val hc: HeaderCarrier = HeaderCarrier()

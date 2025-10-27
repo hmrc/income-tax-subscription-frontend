@@ -16,116 +16,70 @@
 
 package models
 
+import _root_.common.Constants.ITSASessionKeys
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
 import org.scalatestplus.play.PlaySpec
-import play.api.libs.json.JsString
+import play.api.libs.json.{JsBoolean, JsString, Json}
 import services.IndividualStartOfJourneyThrottle
-import _root_.common.Constants.ITSASessionKeys
 
 class SessionDataSpec extends PlaySpec {
-  
-  private val sessionData = SessionData()
 
-  "Reference" in {
-    val reference = "A/1234-B"
-    sessionData.fetchReference mustBe None
-    sessionData.saveReference(reference)
+  private val reference = "A/1234-B"
+  private val throttle = IndividualStartOfJourneyThrottle
+  private val msndationStatus = MandationStatusModel(Voluntary, Voluntary)
+  private val eligibilityStatus = EligibilityStatus(false, false)
+  private val nino = "AB012345C"
+  private val utr = "0123456789"
+  private val softwareStatus = Yes
+  private val consentStatus = Yes
+  private val emailPassed = true
+
+  private val sessionData = SessionData(Map(
+    ITSASessionKeys.REFERENCE -> JsString(reference),
+    ITSASessionKeys.throttlePassed(throttle) -> JsBoolean(true),
+    ITSASessionKeys.MANDATION_STATUS -> Json.toJson(msndationStatus),
+    ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(eligibilityStatus),
+    ITSASessionKeys.NINO -> JsString(nino),
+    ITSASessionKeys.UTR -> JsString(utr),
+    ITSASessionKeys.HAS_SOFTWARE -> JsString(softwareStatus.toString),
+    ITSASessionKeys.CAPTURE_CONSENT -> JsString(consentStatus.toString),
+    ITSASessionKeys.EMAIL_PASSED -> JsBoolean(emailPassed)
+  ))
+
+  "fetchReference" in {
     sessionData.fetchReference mustBe Some(reference)
-    sessionData.deleteReference()
-    sessionData.fetchReference mustBe None
   }
 
-  "ThrottlePassed" in {
-    val throttle = IndividualStartOfJourneyThrottle
-    sessionData.fetchThrottlePassed(throttle) mustBe None
-    sessionData.saveThrottlePassed(throttle)
+  "fetchThrottlePassed" in {
     sessionData.fetchThrottlePassed(throttle) mustBe Some(true)
-    sessionData.deleteThrottlePassed(throttle)
-    sessionData.fetchThrottlePassed(throttle) mustBe None
   }
 
-  "MandationStatus" in {
-    val msndationStatus = MandationStatusModel(Voluntary, Voluntary)
-    sessionData.fetchMandationStatus mustBe None
-    sessionData.saveMandationStatus(msndationStatus)
+  "fetchMandationStatus" in {
     sessionData.fetchMandationStatus mustBe Some(msndationStatus)
-    sessionData.deleteMandationStatus()
-    sessionData.fetchMandationStatus mustBe None
   }
 
-  "EligibilityStatus" in {
-    val eligibilityStatus = EligibilityStatus(false, false)
-    sessionData.fetchEligibilityStatus mustBe None
-    sessionData.saveEligibilityStatus(eligibilityStatus)
+  "fetchEligibilityStatus" in {
     sessionData.fetchEligibilityStatus mustBe Some(eligibilityStatus)
-    sessionData.deleteEligibilityStatus()
-    sessionData.fetchEligibilityStatus mustBe None
   }
 
-  "Nino" in {
-    val nino = "AB012345C"
-    sessionData.fetchNino mustBe None
-    sessionData.saveNino(nino)
+  "fetchNino" in {
     sessionData.fetchNino mustBe Some(nino)
-    sessionData.deleteNino()
-    sessionData.fetchNino mustBe None
   }
 
-  "UTR" in {
-    val utr = "0123456789"
-    sessionData.fetchUTR mustBe None
-    sessionData.saveUTR(utr)
+  "fetchUTR" in {
     sessionData.fetchUTR mustBe Some(utr)
-    sessionData.deleteUTR()
-    sessionData.fetchUTR mustBe None
   }
 
-  "SoftwareStatus" in {
-    val softwareStatus = Yes
-    sessionData.fetchSoftwareStatus mustBe None
-    sessionData.saveSoftwareStatus(softwareStatus)
+  "fetchSoftwareStatus" in {
     sessionData.fetchSoftwareStatus mustBe Some(softwareStatus)
-    sessionData.deleteSoftwareStatus()
-    sessionData.fetchSoftwareStatus mustBe None
   }
 
-  "ConsentStatus" in {
-    val consentStatus = Yes
-    sessionData.fetchConsentStatus mustBe None
-    sessionData.saveConsentStatus(consentStatus)
+  "fetchConsentStatus" in {
     sessionData.fetchConsentStatus mustBe Some(consentStatus)
-    sessionData.deleteConsentStatus()
-    sessionData.fetchConsentStatus mustBe None
   }
 
-  "EmailPassed" in {
-    val emailPassed = true
-    sessionData.fetchEmailPassed mustBe None
-    sessionData.saveEmailPassed(emailPassed)
+  "fetchEmailPassed" in {
     sessionData.fetchEmailPassed mustBe Some(emailPassed)
-    sessionData.deleteEmailPassed()
-    sessionData.fetchEmailPassed mustBe None
-  }
-
-  "clear" in {
-    val sessionData = SessionData(Map(
-      "A" -> JsString("A")
-    ))
-    sessionData.isEmpty mustBe false
-    sessionData.clear()
-    sessionData.isEmpty mustBe true
-  }
-
-  "diff" in {
-    val sessionData = SessionData(Map(
-      ITSASessionKeys.REFERENCE -> JsString("A")
-    ))
-    sessionData.saveReference("B")
-    sessionData.saveNino("C")
-    sessionData.diff mustBe Map(
-      ITSASessionKeys.REFERENCE -> JsString("B"),
-      ITSASessionKeys.NINO -> JsString("C")
-    )
   }
 }
