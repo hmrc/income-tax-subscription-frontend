@@ -41,7 +41,6 @@ class MandationStatusService @Inject()(mandationStatusConnector: MandationStatus
               case Right(mandationStatus) =>
                 sessionDataService.saveMandationStatus(mandationStatus) map {
                   case Right(_) =>
-                    sessionData.saveMandationStatus(mandationStatus)
                     mandationStatus
                   case Left(error) => throw new SaveToSessionException(error.toString)
                 }

@@ -50,24 +50,24 @@ class ReferenceRetrieval @Inject()(subscriptionDetailsService: SubscriptionDetai
       case None =>
         ninoService.getNino(sessionData) flatMap { nino =>
           utrService.getUTR(sessionData) flatMap { utr =>
-            handleReferenceNotFound(nino, utr, arn, sessionData)
+            handleReferenceNotFound(nino, utr, arn)
           }
         }
     }
   }
 
-  private def handleReferenceNotFound(nino: String, utr: String, arn: Option[String], sessionData: SessionData)
+  private def handleReferenceNotFound(nino: String, utr: String, arn: Option[String])
                                      (implicit hc: HeaderCarrier, request: Request[_]): Future[String] = {
     subscriptionDetailsService.retrieveReference(utr) flatMap {
       case Right(RetrieveReferenceHttpParser.Existing(reference)) =>
         for {
           _ <- auditingService.audit(SignupRetrieveAuditModel(arn, utr, Some(nino)))
-          result <- saveReferenceToSession(reference, sessionData)
+          result <- saveReferenceToSession(reference)
         } yield {
           result
         }
       case Right(RetrieveReferenceHttpParser.Created(reference)) =>
-        saveReferenceToSession(reference, sessionData)
+        saveReferenceToSession(reference)
       case Left(RetrieveReferenceHttpParser.InvalidJsonFailure) =>
         throw new InternalServerException(s"[ReferenceRetrieval][handleReferenceNotFound] - Unable to parse json returned")
       case Left(RetrieveReferenceHttpParser.UnexpectedStatusFailure(status)) =>
@@ -75,11 +75,10 @@ class ReferenceRetrieval @Inject()(subscriptionDetailsService: SubscriptionDetai
     }
   }
 
-  private def saveReferenceToSession(reference: String, sessionData: SessionData)
+  private def saveReferenceToSession(reference: String)
                                     (implicit hc: HeaderCarrier): Future[String] = {
     sessionDataService.saveReference(reference) map {
       case Right(_) =>
-        sessionData.saveReference(reference)
         reference
       case Left(SaveSessionDataHttpParser.UnexpectedStatusFailure(status)) =>
         throw new InternalServerException(s"[ReferenceRetrieval][saveReferenceToSession] - Unexpected status returned: $status")

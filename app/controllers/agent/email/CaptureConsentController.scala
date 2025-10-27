@@ -61,7 +61,6 @@ class CaptureConsentController @Inject()(view: CaptureConsent,
       yesNo =>
         for {
           captureConsentStatus <- sessionDataService.saveConsentStatus(yesNo)
-          _ = sessionData.saveConsentStatus(yesNo)
         } yield {
 
           captureConsentStatus match {

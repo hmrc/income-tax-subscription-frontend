@@ -21,8 +21,7 @@ import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.{CLIENT_DETAILS_CONFIRMED, MTDITID}
 import connectors.httpparser.DeleteSessionDataHttpParser.DeleteSessionDataSuccess
 import connectors.httpparser.SaveSessionDataHttpParser.{SaveSessionDataSuccess, SaveSessionDataSuccessResponse}
-import models.SessionData
-import models.YesNo
+import models.{SessionData, YesNo}
 import play.api.mvc.Results.Redirect
 import play.api.mvc._
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
@@ -39,7 +38,7 @@ class SessionClearingService @Inject()(sessionDataService: SessionDataService)
     for {
       emailConsentCaptured <- fetchEmailConsentCaptured(sessionData)
       _ <- deleteSessionData
-      _ <- saveEmailConsentCaptured(emailConsentCaptured, sessionData)
+      _ <- saveEmailConsentCaptured(emailConsentCaptured)
     } yield {
       Redirect(nextPage)
         .addingToSession(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name)
@@ -70,13 +69,12 @@ class SessionClearingService @Inject()(sessionDataService: SessionDataService)
     }
   }
 
-  private def saveEmailConsentCaptured(emailConsentCaptured: Boolean, sessionData: SessionData)
+  private def saveEmailConsentCaptured(emailConsentCaptured: Boolean)
                                       (implicit hc: HeaderCarrier): Future[SaveSessionDataSuccess] = {
     if (emailConsentCaptured) {
       sessionDataService.saveEmailPassed(emailPassed = true) map {
         case Left(error) => throw new InternalServerException(s"[SessionClearingService][saveEmailConsentCaptured] - Unexpected failure: $error")
         case Right(result) =>
-          sessionData.saveEmailPassed(true)
           result
       }
     } else {

@@ -20,8 +20,7 @@ import config.AppConfig
 import config.featureswitch.FeatureSwitch.SignalControlGatewayEligibility
 import config.featureswitch.FeatureSwitching
 import connectors.individual.eligibility.GetEligibilityStatusConnector
-import models.EligibilityStatus
-import models.SessionData
+import models.{EligibilityStatus, SessionData}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import javax.inject.{Inject, Singleton}
@@ -53,9 +52,7 @@ class GetEligibilityStatusService @Inject()(getEligibilityStatusConnector: GetEl
         getEligibilityStatusConnector.getEligibilityStatus(nino, utr) flatMap {
           case Right(value) =>
             sessionDataService.saveEligibilityStatus(value) map {
-              case Right(_) =>
-                sessionData.saveEligibilityStatus(value)
-                value
+              case Right(_) => value
               case Left(error) => throw new SaveToSessionException(error.toString)
             }
           case Left(error) => throw new FetchFromAPIException(s"status = ${error.httpResponse.status}, body = ${error.httpResponse.body}")
@@ -69,9 +66,7 @@ class GetEligibilityStatusService @Inject()(getEligibilityStatusConnector: GetEl
       getEligibilityStatusConnector.getEligibilityStatus(utr) flatMap {
         case Right(value) =>
           sessionDataService.saveEligibilityStatus(value) map {
-            case Right(_) =>
-              sessionData.saveEligibilityStatus(value)
-              value
+            case Right(_) => value
             case Left(error) => throw new SaveToSessionException(error.toString)
           }
         case Left(error) => throw new FetchFromAPIException(s"status = ${error.httpResponse.status}, body = ${error.httpResponse.body}")

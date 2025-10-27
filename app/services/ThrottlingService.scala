@@ -45,7 +45,6 @@ class ThrottlingService @Inject()(throttlingConnector: ThrottlingConnector,
             case true =>
               sessionDataService.saveThrottlePassed(throttle) flatMap {
                 case Right(_) =>
-                  sessionData.saveThrottlePassed(throttle)
                   success
                 case Left(_) =>
                   throw new InternalServerException(s"[ThrottlingService][throttled] - Unexpected failure when saving throttle pass: ${throttle.throttleId}")

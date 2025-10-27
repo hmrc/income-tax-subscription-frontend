@@ -73,7 +73,6 @@ class UsingSoftwareController @Inject()(view: UsingSoftware,
       yesNo =>
         for {
           usingSoftwareStatus <- sessionDataService.saveSoftwareStatus(yesNo)
-          _ = sessionData.saveSoftwareStatus(yesNo)
           eligibilityStatus <- eligibilityStatusService.getEligibilityStatus(sessionData)
           mandationStatus <- mandationStatusService.getMandationStatus(sessionData)
         } yield {
