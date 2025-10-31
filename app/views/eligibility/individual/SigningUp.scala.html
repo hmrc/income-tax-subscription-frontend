@@ -15,7 +15,7 @@
  *@
 
 @import views.html.templates.PrincipalMainTemplate
-@import views.html.helpers.{ContinueButton, PageHeadingHelper}
+@import views.html.helpers.{ContinueButton, PageHeadingHelper, BulletList}
 @import models.common.AccountingPeriodModel
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 
@@ -23,7 +23,8 @@
   mainTemplate: PrincipalMainTemplate,
   form: FormWithCSRF,
   continueButton: ContinueButton,
-  hmrcNewTabLinkHelper: HmrcNewTabLinkHelper
+  hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
+  bulletList: BulletList
 )
 
 @(postAction: Call, currentTaxYear: AccountingPeriodModel, nextTaxYear: AccountingPeriodModel, backUrl: String)(implicit request: Request[_], messages: Messages)
@@ -52,11 +53,10 @@
 
 @identityCheck = {
     <h2 class="govuk-heading-m">@messages("individual.signing-up.identity-verification.heading")</h2>
-    <p class="govuk-body">@messages("individual.signing-up.identity-verification.para-1")</p>
-    <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("individual.signing-up.identity-verification.bullet-1")</li>
-        <li>@messages("individual.signing-up.identity-verification.bullet-2")</li>
-    </ul>
+    @bulletList(messages("individual.signing-up.identity-verification.para-1"),Seq(
+        messages("individual.signing-up.identity-verification.bullet-1"),
+        messages("individual.signing-up.identity-verification.bullet-2")
+    ))
 }
 
 @mainTemplate(title = messages("individual.signing-up.heading"), backLink = Some(backUrl), showSignOutLink = false) {

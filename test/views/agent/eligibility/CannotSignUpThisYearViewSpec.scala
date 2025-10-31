@@ -75,7 +75,7 @@ class CannotSignUpThisYearViewSpec extends ViewSpec {
     }
 
     "have a second bullet list" which {
-      def bulletList: Element = mainContent.selectNth("ol.govuk-list--bullet", 1)
+      def bulletList: Element = mainContent.selectNth("ul.govuk-list--bullet", 1)
 
       "has a first point" in {
         bulletList.selectNth("li", 1).text mustBe CannotSignUpMessages.bullet1
@@ -94,7 +94,7 @@ class CannotSignUpThisYearViewSpec extends ViewSpec {
     }
 
     "have a third bullet list" which {
-      def bulletList: Element = mainContent.selectNth("ol.govuk-list--bullet", 2)
+      def bulletList: Element = mainContent.selectNth("ul.govuk-list--bullet", 2)
 
       "has a first point" in {
         bulletList.selectNth("li", 1).text mustBe CannotSignUpMessages.bullet3

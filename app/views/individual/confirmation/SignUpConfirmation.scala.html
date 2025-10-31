@@ -22,13 +22,15 @@
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 @import config.featureswitch.FeatureSwitchingImpl
 @import config.featureswitch.FeatureSwitch.EmailCaptureConsent
+@import views.html.helpers.BulletList
 
 @this(
     principalMainTemplate: PrincipalMainTemplate,
     govukPanel: GovukPanel,
     accountingPeriodHelper: AccountingPeriodHelper,
     hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
-    featureSwitching: FeatureSwitchingImpl
+    featureSwitching: FeatureSwitchingImpl,
+    bulletList: BulletList
 )
 
 @(mandatedCurrentYear: Boolean, taxYearSelectionIsNext: Boolean, individualUserNameMaybe: Option[String], individualUserNino: String, preference: Option[Boolean], usingSoftwareStatus: Boolean)(implicit request: Request[_], messages: Messages)
@@ -101,13 +103,12 @@ classes = "govuk-!-margin-bottom-4"
 </p>
 
 <p class="govuk-body">@messages("sign-up-confirmation.what-you-must-do.yes.this.year")</p>
-<p class="govuk-body">@messages("sign-up-confirmation.what-you-must-do.para1")</p>
-<ul class="govuk-list govuk-list--bullet">
-  <li>@messages("sign-up-confirmation.what-you-must-do.bullet1")</li>
-  <li>@messages("sign-up-confirmation.what-you-must-do.bullet2")</li>
-  <li>@messages("sign-up-confirmation.what-you-must-do.bullet3")</li>
-  <li>@messages("sign-up-confirmation.what-you-must-do.bullet5")</li>
-</ul>
+@bulletList(messages("sign-up-confirmation.what-you-must-do.para1"),Seq(
+messages("sign-up-confirmation.what-you-must-do.bullet1"),
+messages("sign-up-confirmation.what-you-must-do.bullet2"),
+messages("sign-up-confirmation.what-you-must-do.bullet3"),
+messages("sign-up-confirmation.what-you-must-do.bullet5")
+))
 <p class="govuk-body">@messages("sign-up-confirmation.what-you-must-do.para2")</p>
 
 @reportPreviousTaxYear

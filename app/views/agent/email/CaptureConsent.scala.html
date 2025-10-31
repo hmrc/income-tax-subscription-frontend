@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import views.html.helpers.{ContinueButton, YesNoRadioHelper, PageHeadingHelper}
+@import views.html.helpers.{ContinueButton, YesNoRadioHelper, PageHeadingHelper, BulletList}
 @import views.html.templates.AgentMainTemplate
 @import play.api.data.Form
 @import forms.individual.email.CaptureConsentForm.fieldName
@@ -24,7 +24,8 @@
     yesNoRadioHelper: YesNoRadioHelper,
     continueButton: ContinueButton,
     pageHeadingHelper: PageHeadingHelper,
-    form : FormWithCSRF
+    form : FormWithCSRF,
+    bulletList: BulletList
 )
 
 @(captureConsentForm: Form[YesNo], postAction: Call, clientName: String, clientNino: String, backUrl: String)(implicit request: Request[_], messages: Messages)
@@ -39,26 +40,23 @@
 
         <h2 class="govuk-heading-m">@messages("agent.capture-consent.contact-about.heading")</h2>
 
-        <p class="govuk-body">@messages("agent.capture-consent.contact-about.ask.para")</p>
-        <ul class="govuk-list govuk-list--bullet">
-            <li>@messages("agent.capture-consent.contact-about.ask.bullet-one")</li>
-            <li>@messages("agent.capture-consent.contact-about.ask.bullet-two")</li>
-            <li>@messages("agent.capture-consent.contact-about.ask.bullet-three")</li>
-        </ul>
+        @bulletList(messages("agent.capture-consent.contact-about.ask.para"),Seq(
+            messages("agent.capture-consent.contact-about.ask.bullet-one"),
+            messages("agent.capture-consent.contact-about.ask.bullet-two"),
+            messages("agent.capture-consent.contact-about.ask.bullet-three")
+        ))
 
-        <p class="govuk-body">@messages("agent.capture-consent.contact-about.update.para")</p>
-        <ul class="govuk-list govuk-list--bullet">
-            <li>@messages("agent.capture-consent.contact-about.update.bullet-one")</li>
-            <li>@messages("agent.capture-consent.contact-about.update.bullet-two")</li>
-            <li>@messages("agent.capture-consent.contact-about.update.bullet-three")</li>
-            <li>@messages("agent.capture-consent.contact-about.update.bullet-four")</li>
-        </ul>
+        @bulletList(messages("agent.capture-consent.contact-about.update.para"),Seq(
+            messages("agent.capture-consent.contact-about.update.bullet-one"),
+            messages("agent.capture-consent.contact-about.update.bullet-two"),
+            messages("agent.capture-consent.contact-about.update.bullet-three"),
+            messages("agent.capture-consent.contact-about.update.bullet-four")
+        ))
 
-        <p class="govuk-body">@messages("agent.capture-consent.contact-about.never.para")</p>
-        <ul class="govuk-list govuk-list--bullet">
-            <li>@messages("agent.capture-consent.contact-about.never.bullet-one")</li>
-            <li>@messages("agent.capture-consent.contact-about.never.bullet-two")</li>
-        </ul>
+        @bulletList(messages("agent.capture-consent.contact-about.never.para"),Seq(
+            messages("agent.capture-consent.contact-about.never.bullet-one"),
+            messages("agent.capture-consent.contact-about.never.bullet-two")
+        ))
 
         <p class="govuk-body">@messages("agent.capture-consent.para-two")</p>
 
