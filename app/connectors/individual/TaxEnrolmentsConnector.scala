@@ -20,18 +20,23 @@ import config.AppConfig
 import connectors.individual.httpparsers.AllocateEnrolmentResponseHttpParser._
 import connectors.individual.httpparsers.UpsertEnrolmentResponseHttpParser._
 import models.common.subscription.{EmacEnrolmentRequest, EnrolmentKey, EnrolmentVerifiers}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import play.api.libs.json.Json
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TaxEnrolmentsConnector @Inject()(appConfig: AppConfig,
-                                       httpClient: HttpClient)(implicit ec: ExecutionContext) {
+                                       http: HttpClientV2)(implicit ec: ExecutionContext) {
   def upsertEnrolment(enrolmentKey: EnrolmentKey,
                       verifiers: EnrolmentVerifiers
                      )(implicit hc: HeaderCarrier): Future[UpsertEnrolmentResponse] = {
     val url = appConfig.upsertEnrolmentUrl(enrolmentKey.asString)
-    httpClient.PUT[EnrolmentVerifiers, UpsertEnrolmentResponse](url, verifiers)
+    http
+      .put(url"$url")
+      .withBody(Json.toJson(verifiers))
+      .execute[UpsertEnrolmentResponse]
   }
 
   def allocateEnrolment(groupId: String,
@@ -39,6 +44,9 @@ class TaxEnrolmentsConnector @Inject()(appConfig: AppConfig,
                         enrolmentRequest: EmacEnrolmentRequest
                        )(implicit hc: HeaderCarrier): Future[AllocateEnrolmentResponse] = {
     val url = appConfig.allocateEnrolmentUrl(groupId, enrolmentKey.asString)
-    httpClient.POST[EmacEnrolmentRequest, AllocateEnrolmentResponse](url, enrolmentRequest)
+    http
+      .post(url"${url}")
+      .withBody(Json.toJson(enrolmentRequest))
+      .execute[AllocateEnrolmentResponse]
   }
 }

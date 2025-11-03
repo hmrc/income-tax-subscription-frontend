@@ -23,6 +23,7 @@ import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.BAD_REQUEST
+import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import utilities.UnitTestTrait
 import utilities.individual.TestConstants.testException
@@ -64,7 +65,7 @@ trait TestCitizenDetailsConnector extends UnitTestTrait with MockitoSugar with B
 
   object TestCitizenDetailsConnector extends CitizenDetailsConnector(
     appConfig,
-    app.injector.instanceOf[HttpClient]
+    app.injector.instanceOf[HttpClientV2]
   )
 
 }

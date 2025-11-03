@@ -20,26 +20,27 @@ package testonly.controllers.individual
 
 import auth.individual.SignUpController
 import config.AppConfig
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.{AuditingService, AuthService}
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HttpClient, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HttpResponse, StringContextOps}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 
 /**
-  * This controller is used to update the confidence level for users logging in via GG
-  * This is necessary as it is currently not possible to set NINO or confidence level in GG Stubs
-  * But we need to stub out the enrolment calls which we cannot simulate solely using the auth stubs
-  */
+ * This controller is used to update the confidence level for users logging in via GG
+ * This is necessary as it is currently not possible to set NINO or confidence level in GG Stubs
+ * But we need to stub out the enrolment calls which we cannot simulate solely using the auth stubs
+ */
 @Singleton
 class AuthUpdateController @Inject()(val auditingService: AuditingService,
                                      val authService: AuthService,
                                      val appConfig: AppConfig,
-                                     http: HttpClient)
+                                     http: HttpClientV2)
                                     (implicit val ec: ExecutionContext,
                                      mcc: MessagesControllerComponents) extends SignUpController {
 
@@ -50,7 +51,7 @@ class AuthUpdateController @Inject()(val auditingService: AuditingService,
 
   val update: Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
-      val confidencePatch = http.PATCH[JsObject, HttpResponse](updateURL, Json.obj("confidenceLevel" -> 200))
+      val confidencePatch = http.patch(url"${updateURL}").withBody(Json.obj("confidenceLevel" -> 200)).execute[HttpResponse]
       confidencePatch.flatMap(_ => updated)
   }
 

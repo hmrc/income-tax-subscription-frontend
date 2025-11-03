@@ -20,7 +20,7 @@ import config.AppConfig
 import connectors.individual.eligibility.httpparsers.GetEligibilityStatusHttpParser._
 import models.EligibilityStatus
 import uk.gov.hmrc.http.client.HttpClientV2
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, StringContextOps}
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 import utilities.HttpResult.HttpResult
 
 import javax.inject.{Inject, Singleton}

@@ -22,13 +22,14 @@ import play.api.Logging
 import play.api.http.Status
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.client.HttpClientV2
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AgentServicesConnector @Inject()(appConfig: AppConfig,
-                                       http: HttpClient)
+                                       http: HttpClientV2)
                                       (implicit ec: ExecutionContext) extends Logging {
 
   def agentClientURL(arn: String, nino: String): String = {
@@ -38,11 +39,14 @@ class AgentServicesConnector @Inject()(appConfig: AppConfig,
   def isPreExistingRelationship(arn: String, nino: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
     val url = agentClientURL(arn, nino)
 
-    http.GET[HttpResponse](url).map {
-      case res if res.status == Status.OK => true
-      case res if res.status == Status.NOT_FOUND => false
-      case res => throw new InternalServerException(s"[AgentServicesConnector][isPreExistingRelationship] failure, status: ${res.status} body=${res.body}")
-    }
+    http
+      .get(url"${url}")
+      .execute[HttpResponse]
+      .map {
+        case res if res.status == Status.OK => true
+        case res if res.status == Status.NOT_FOUND => false
+        case res => throw new InternalServerException(s"[AgentServicesConnector][isPreExistingRelationship] failure, status: ${res.status} body=${res.body}")
+      }
   }
 
   def agentMTDClientURL(arn: String, nino: String): String = {
@@ -52,13 +56,16 @@ class AgentServicesConnector @Inject()(appConfig: AppConfig,
   def isMTDPreExistingRelationship(arn: String, nino: String)(implicit hc: HeaderCarrier): Future[Either[RelationshipCheckFailure, Boolean]] = {
     val url = agentMTDClientURL(arn, nino)
 
-    http.GET[HttpResponse](url).map {
-      case res if res.status == Status.OK => Right(true)
-      case res if res.status == Status.NOT_FOUND => Right(false)
-      case res =>
-        logger.warn(s"[AgentServicesConnector][isMTDPreExistingRelationship] failure, status: ${res.status} body=${res.body}")
-        Left(UnexpectedStatus(res.status))
-    }
+    http
+      .get(url"${url}")
+      .execute[HttpResponse]
+      .map {
+        case res if res.status == Status.OK => Right(true)
+        case res if res.status == Status.NOT_FOUND => Right(false)
+        case res =>
+          logger.warn(s"[AgentServicesConnector][isMTDPreExistingRelationship] failure, status: ${res.status} body=${res.body}")
+          Left(UnexpectedStatus(res.status))
+      }
   }
 
   def suppAgentClientURL(arn: String, nino: String): String = {
@@ -68,12 +75,15 @@ class AgentServicesConnector @Inject()(appConfig: AppConfig,
   def isMTDSuppAgentRelationship(arn: String, nino: String)(implicit hc: HeaderCarrier): Future[Either[RelationshipCheckFailure, Boolean]] = {
     val url = suppAgentClientURL(arn, nino)
 
-    http.GET[HttpResponse](url).map {
-      case res if res.status == Status.OK => Right(true)
-      case res =>
-        logger.warn(s"[AgentServicesConnector][isMTDSuppAgentRelationship] - Unexpected status returned - ${res.status}")
-        Left(UnexpectedStatus(res.status))
-    }
+    http
+      .get(url"${url}")
+      .execute[HttpResponse]
+      .map {
+        case res if res.status == Status.OK => Right(true)
+        case res =>
+          logger.warn(s"[AgentServicesConnector][isMTDSuppAgentRelationship] - Unexpected status returned - ${res.status}")
+          Left(UnexpectedStatus(res.status))
+      }
   }
 }
 
