@@ -16,10 +16,12 @@
 
 @import config.AppConfig
 @import views.html.templates.PrincipalMainTemplate
+@import views.html.helpers.UnorderedList
 
 @this(
 
-principalMainTemplate: PrincipalMainTemplate
+principalMainTemplate: PrincipalMainTemplate,
+ulList: UnorderedList
 
 )
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -42,4 +44,19 @@ principalMainTemplate: PrincipalMainTemplate
      </a>
    </li>
 </ul>
+
+@ulList(leadIn=messages("claim-enrolment.claim-already-signed-up.content"), Seq(
+HtmlContent(
+s"""<a class="govuk-link" href=$$@appConfig.haveSaUtr id="checkSaAccount2">
+    @messages("claim-enrolment.claim-already-signed-up.content.link1")
+</a>"""
+),
+HtmlContent(
+s"""<a class="govuk-link" href=$$@appConfig.wrongCredentials id="retrieveSaAccountDetails2">
+    @messages("claim-enrolment.claim-already-signed-up.content.link2")
+</a>"""
+)
+
+))
+
 }

@@ -16,14 +16,14 @@
 
 @import play.api.data.Form
 @import views.html.templates.PrincipalMainTemplate
-@import views.html.helpers.{ContinueButton, BulletList}
+@import views.html.helpers.{ContinueButton, UnorderedList}
 @import uk.gov.hmrc.play.language.LanguageUtils
 
 @this(
   mainTemplate: PrincipalMainTemplate,
   continueButton: ContinueButton,
   form: FormWithCSRF,
-  bulletList: BulletList
+  ulList: UnorderedList
 )
 
 @(postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
@@ -34,11 +34,11 @@
 
     <p class="govuk-body">@messages("individual.you-can-sign-up-now.paragraph-1")</p>
 
-    @bulletList(messages("individual.you-can-sign-up-now.paragraph-2"),Seq(
-        messages("individual.you-can-sign-up-now.bullet-1"),
-        messages("individual.you-can-sign-up-now.bullet-2"),
-        messages("individual.you-can-sign-up-now.bullet-3"),
-        messages("individual.you-can-sign-up-now.bullet-4")
+    @ulList(leadIn=messages("individual.you-can-sign-up-now.paragraph-2"),Seq(
+        Text(messages("individual.you-can-sign-up-now.bullet-1")),
+        Text(messages("individual.you-can-sign-up-now.bullet-2")),
+        Text(messages("individual.you-can-sign-up-now.bullet-3")),
+        Text(messages("individual.you-can-sign-up-now.bullet-4"))
     ))
 
     <p class="govuk-body">@messages("individual.you-can-sign-up-now.paragraph-3")</p>

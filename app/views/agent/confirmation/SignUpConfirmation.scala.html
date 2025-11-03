@@ -15,7 +15,7 @@
  *@
 
 @import config.AppConfig
-@import views.html.helpers.{UpdateDeadlineTable,BulletList}
+@import views.html.helpers.{UpdateDeadlineTable, UnorderedList}
 @import views.html.templates.AgentMainTemplate
 @import models.common.AccountingPeriodModel
 @import uk.gov.hmrc.play.language.LanguageUtils
@@ -35,7 +35,7 @@
     hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
     appConfig: AppConfig,
     featureSwitching: FeatureSwitchingImpl,
-    bulletList: BulletList
+    ulList: UnorderedList
 )
 
 @(mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, taxYearSelectionIsNext : Boolean, userNameMaybe: Option[String], individualUserNino: String, accountingPeriodModel: AccountingPeriodModel, usingSoftwareStatus: Boolean)(implicit request: Request[_], messages: Messages)
@@ -120,13 +120,15 @@
 
 <p class="govuk-body">@messages("agent.sign-up-confirmation.what-you-must-do.yes.this.year")</p>
 
-@bulletList(messages("agent.sign-up-confirmation.what-you-must-do.para2"),Seq(
-    messages("agent.sign-up-confirmation.what-you-must-do.bullet1"),
-    messages("agent.sign-up-confirmation.what-you-must-do.bullet2"),
-    messages("agent.sign-up-confirmation.what-you-must-do.bullet3"),
-    messages("agent.sign-up-confirmation.what-you-must-do.current.year.bullet4"),
-    messages("agent.sign-up-confirmation.what-you-must-do.bullet5")
-),false)
+
+@ulList(leadIn=messages("agent.sign-up-confirmation.what-you-must-do.para2"),Seq(
+    Text(messages("agent.sign-up-confirmation.what-you-must-do.bullet1")),
+    Text(messages("agent.sign-up-confirmation.what-you-must-do.bullet2")),
+    Text(messages("agent.sign-up-confirmation.what-you-must-do.bullet3")),
+    Text(messages("agent.sign-up-confirmation.what-you-must-do.current.year.bullet4")),
+    Text(messages("agent.sign-up-confirmation.what-you-must-do.bullet5"))
+))
+
 <p class="govuk-body">@messages("agent.sign-up-confirmation.what-you-must-do.para3")</p>
 }
 
@@ -142,13 +144,13 @@
     args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("agent.sign-up-confirmation.what-you-must-do.no.this.year.link.text"), Some(messages("agent.sign-up-confirmation.what-you-must-do.no.this.year.link.href"))))))
 </p>
 
-@bulletList(messages("agent.sign-up-confirmation.what-you-must-do.para2"),Seq(
-    messages("agent.sign-up-confirmation.what-you-must-do.bullet1"),
-    messages("agent.sign-up-confirmation.what-you-must-do.bullet2"),
-    messages("agent.sign-up-confirmation.what-you-must-do.bullet3"),
-    messages("agent.sign-up-confirmation.what-you-must-do.current.year.bullet4"),
-    messages("agent.sign-up-confirmation.what-you-must-do.bullet5")
-),false)
+@ulList(leadIn=messages("agent.sign-up-confirmation.what-you-must-do.para2"),Seq(
+    Text(messages("agent.sign-up-confirmation.what-you-must-do.bullet1")),
+    Text(messages("agent.sign-up-confirmation.what-you-must-do.bullet2")),
+    Text(messages("agent.sign-up-confirmation.what-you-must-do.bullet3")),
+    Text(messages("agent.sign-up-confirmation.what-you-must-do.current.year.bullet4")),
+    Text(messages("agent.sign-up-confirmation.what-you-must-do.bullet5"))
+))
 <p class="govuk-body">@messages("agent.sign-up-confirmation.what-you-must-do.para3")</p>
 }
 
@@ -161,12 +163,12 @@
 
 <p class="govuk-body">@messages("agent.sign-up-confirmation.what-you-must-do.yes.next.year", (AccountingPeriodUtil.getCurrentTaxEndYear).toString)</p>
 
-@bulletList(messages("agent.sign-up-confirmation.what-you-must-do.para2"),Seq(
-    messages("agent.sign-up-confirmation.what-you-must-do.bullet1"),
-    messages("agent.sign-up-confirmation.what-you-must-do.bullet2"),
-    messages("agent.sign-up-confirmation.what-you-must-do.bullet3"),
-    messages("agent.sign-up-confirmation.what-you-must-do.bullet5")
-),false)
+@ulList(leadIn=messages("agent.sign-up-confirmation.what-you-must-do.para2"),Seq(
+    Text(messages("agent.sign-up-confirmation.what-you-must-do.bullet1")),
+    Text(messages("agent.sign-up-confirmation.what-you-must-do.bullet2")),
+    Text(messages("agent.sign-up-confirmation.what-you-must-do.bullet3")),
+    Text(messages("agent.sign-up-confirmation.what-you-must-do.bullet5"))
+))
 <p class="govuk-body">@messages("agent.sign-up-confirmation.what-you-must-do.para3")</p>
 }
 
@@ -187,12 +189,13 @@
     ))
 </p>
 
-@bulletList(messages("agent.sign-up-confirmation.what-you-must-do.para2"),Seq(
-    messages("agent.sign-up-confirmation.what-you-must-do.bullet1"),
-    messages("agent.sign-up-confirmation.what-you-must-do.bullet2"),
-    messages("agent.sign-up-confirmation.what-you-must-do.bullet3"),
-    messages("agent.sign-up-confirmation.what-you-must-do.bullet5")
-),false)
+@ulList(leadIn=messages("agent.sign-up-confirmation.what-you-must-do.para2"),Seq(
+    Text(messages("agent.sign-up-confirmation.what-you-must-do.bullet1")),
+    Text(messages("agent.sign-up-confirmation.what-you-must-do.bullet2")),
+    Text(messages("agent.sign-up-confirmation.what-you-must-do.bullet3")),
+    Text(messages("agent.sign-up-confirmation.what-you-must-do.bullet5"))
+))
+
 <p class="govuk-body">@messages("agent.sign-up-confirmation.what-you-must-do.para3")</p>
 }
 

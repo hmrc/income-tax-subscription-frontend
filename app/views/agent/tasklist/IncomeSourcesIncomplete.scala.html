@@ -15,7 +15,7 @@
  *@
 
 @import config.AppConfig
-@import views.html.helpers.{ContinueButton, PageHeadingHelper,BulletList}
+@import views.html.helpers.{ContinueButton, PageHeadingHelper,UnorderedList}
 @import views.html.templates.AgentMainTemplate
 @import utilities.UserMatchingSessionUtil.ClientDetails
 
@@ -24,7 +24,7 @@
     continueButton: ContinueButton,
     pageHeadingHelper: PageHeadingHelper,
     form: FormWithCSRF,
-    bulletList: BulletList
+    ulList: UnorderedList
 )
 
 @(postAction: Call, backUrl: String, clientDetails: ClientDetails)(implicit request: Request[_], messages: Messages)
@@ -39,10 +39,10 @@
 
     <p class="govuk-body">@messages("agent.income-sources-incomplete.para-one")</p>
 
-    @bulletList(messages("agent.income-sources-incomplete.para-two"),Seq(
-        messages("agent.income-sources-incomplete.bullet-one"),
-        messages("agent.income-sources-incomplete.bullet-two")
-    ),false)
+    @ulList(leadIn=messages("agent.income-sources-incomplete.para-two"),Seq(
+        Text(messages("agent.income-sources-incomplete.bullet-one")),
+        Text(messages("agent.income-sources-incomplete.bullet-two"))
+    ))
 
 
     <p class="govuk-body">@messages("agent.income-sources-incomplete.para-three")</p>

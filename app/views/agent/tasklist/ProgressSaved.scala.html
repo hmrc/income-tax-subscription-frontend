@@ -16,11 +16,12 @@
 
 @import views.html.templates.AgentMainTemplate
 @import utilities.UserMatchingSessionUtil.ClientDetails
-@import views.html.helpers.NotificationBanner
+@import views.html.helpers.{NotificationBanner,UnorderedList}
 
 @this(
     mainTemplate: AgentMainTemplate,
-    govukNotificationBanner : GovukNotificationBanner
+    govukNotificationBanner : GovukNotificationBanner,
+    ulList: UnorderedList
 )
 
 @(

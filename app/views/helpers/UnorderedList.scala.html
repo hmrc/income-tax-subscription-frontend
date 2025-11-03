@@ -15,15 +15,12 @@
  *@
 
 @this()
-@(leadIn: String, bulletPoints: Seq[String], renderHtml:Boolean=false)
+@(leadIn: String, bulletPoints: Seq[Content])
 
 <p class="govuk-body">@leadIn</p>
 <ul class="govuk-list govuk-list--bullet">
-    @for(point <- bulletPoints) {
-        @if(renderHtml){
-            <li>@Html(point)</li>
-        }else{
-            <li>@point</li>
-        }
+    @bulletPoints.map{ item =>
+    <li>@item.asHtml</li>
     }
+
 </ul>

@@ -15,7 +15,7 @@
  *@
 
 @import views.html.templates.AgentMainTemplate
-@import views.html.helpers.{ContinueButton, PageHeadingHelper, BulletList}
+@import views.html.helpers.{ContinueButton, PageHeadingHelper, UnorderedList}
 @import models.common.AccountingPeriodModel
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 
@@ -24,7 +24,7 @@
         form: FormWithCSRF,
         hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
         continueButton: ContinueButton,
-        bulletList: BulletList
+        ulList: UnorderedList
 )
 
 @(postAction:Call, currentTaxYear: AccountingPeriodModel, nextTaxYear: AccountingPeriodModel, backUrl: String)(implicit request: Request[_], messages: Messages)
@@ -44,9 +44,9 @@
 @accountingPeriod = {
   <h2 class="govuk-heading-m">@messages("agent.signing-up.accounting-period.heading")</h2>
 
-  @bulletList(messages("agent.signing-up.accounting-period.para-1"),Seq(
-    messages("agent.signing-up.accounting-period.bullet-1"),
-    messages("agent.signing-up.accounting-period.bullet-2")
+  @ulList(leadIn=messages("agent.signing-up.accounting-period.para-1"),Seq(
+    Text(messages("agent.signing-up.accounting-period.bullet-1")),
+    Text(messages("agent.signing-up.accounting-period.bullet-2"))
   ))
     <p class="govuk-body">@messages("agent.signing-up.accounting-period.para-2")</p>
 }
@@ -54,10 +54,10 @@
 @checkSignUp = {
   <h2 class="govuk-heading-m">@messages("agent.signing-up.check-sign-up.heading")</h2>
 
-  @bulletList(messages("agent.signing-up.check-sign-up.para-1"),Seq(
-    messages("agent.signing-up.check-sign-up.bullet-1"),
-    messages("agent.signing-up.check-sign-up.bullet-2"),
-    messages("agent.signing-up.check-sign-up.bullet-3")
+  @ulList(leadIn=messages("agent.signing-up.check-sign-up.para-1"),Seq(
+    Text(messages("agent.signing-up.check-sign-up.bullet-1")),
+    Text(messages("agent.signing-up.check-sign-up.bullet-2")),
+    Text(messages("agent.signing-up.check-sign-up.bullet-3"))
   ))
   <p class="govuk-body">@messages("agent.signing-up.check-sign-up.para-2")</p>
 }

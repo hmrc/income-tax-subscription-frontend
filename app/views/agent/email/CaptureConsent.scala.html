@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import views.html.helpers.{ContinueButton, YesNoRadioHelper, PageHeadingHelper, BulletList}
+@import views.html.helpers.{ContinueButton, YesNoRadioHelper, PageHeadingHelper, UnorderedList}
 @import views.html.templates.AgentMainTemplate
 @import play.api.data.Form
 @import forms.individual.email.CaptureConsentForm.fieldName
@@ -25,7 +25,7 @@
     continueButton: ContinueButton,
     pageHeadingHelper: PageHeadingHelper,
     form : FormWithCSRF,
-    bulletList: BulletList
+    ulList: UnorderedList
 )
 
 @(captureConsentForm: Form[YesNo], postAction: Call, clientName: String, clientNino: String, backUrl: String)(implicit request: Request[_], messages: Messages)
@@ -40,22 +40,22 @@
 
         <h2 class="govuk-heading-m">@messages("agent.capture-consent.contact-about.heading")</h2>
 
-        @bulletList(messages("agent.capture-consent.contact-about.ask.para"),Seq(
-            messages("agent.capture-consent.contact-about.ask.bullet-one"),
-            messages("agent.capture-consent.contact-about.ask.bullet-two"),
-            messages("agent.capture-consent.contact-about.ask.bullet-three")
+        @ulList(leadIn=messages("agent.capture-consent.contact-about.ask.para"),Seq(
+            Text(messages("agent.capture-consent.contact-about.ask.bullet-one")),
+            Text(messages("agent.capture-consent.contact-about.ask.bullet-two")),
+            Text(messages("agent.capture-consent.contact-about.ask.bullet-three"))
         ))
 
-        @bulletList(messages("agent.capture-consent.contact-about.update.para"),Seq(
-            messages("agent.capture-consent.contact-about.update.bullet-one"),
-            messages("agent.capture-consent.contact-about.update.bullet-two"),
-            messages("agent.capture-consent.contact-about.update.bullet-three"),
-            messages("agent.capture-consent.contact-about.update.bullet-four")
+        @ulList(leadIn=messages("agent.capture-consent.contact-about.update.para"),Seq(
+            Text(messages("agent.capture-consent.contact-about.update.bullet-one")),
+            Text(messages("agent.capture-consent.contact-about.update.bullet-two")),
+            Text(messages("agent.capture-consent.contact-about.update.bullet-three")),
+            Text(messages("agent.capture-consent.contact-about.update.bullet-four"))
         ))
 
-        @bulletList(messages("agent.capture-consent.contact-about.never.para"),Seq(
-            messages("agent.capture-consent.contact-about.never.bullet-one"),
-            messages("agent.capture-consent.contact-about.never.bullet-two")
+        @ulList(leadIn=messages("agent.capture-consent.contact-about.never.para"),Seq(
+            Text(messages("agent.capture-consent.contact-about.never.bullet-one")),
+            Text(messages("agent.capture-consent.contact-about.never.bullet-two"))
         ))
 
         <p class="govuk-body">@messages("agent.capture-consent.para-two")</p>

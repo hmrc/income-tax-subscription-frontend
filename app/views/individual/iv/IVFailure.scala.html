@@ -14,13 +14,13 @@
  * limitations under the License.
  *@
 
-@import views.html.helpers.{SignOutButton,BulletList}
+@import views.html.helpers.{SignOutButton,UnorderedList}
 @import views.html.templates.PrincipalMainTemplate
 
 @this(
     mainTemplate: PrincipalMainTemplate,
     signOutButton: SignOutButton,
-    bulletList:BulletList
+    ulList: UnorderedList
 )
 
 @()(implicit request: Request[_], messages: Messages)
@@ -31,10 +31,10 @@
 
     <h1 class="govuk-heading-xl">@messages("iv-failure.heading")</h1>
 
-    @bulletList(messages("iv-failure.cannot-access"),Seq(
-        messages("iv-failure.took-too-long"),
-        messages("iv-failure.failed-questions"),
-        messages("iv-failure.could-not-match-details")
+    @ulList(messages("iv-failure.cannot-access"),Seq(
+        Text(messages("iv-failure.took-too-long")),
+        Text(messages("iv-failure.failed-questions")),
+        Text(messages("iv-failure.could-not-match-details"))
     ))
 
     @signOutButton()

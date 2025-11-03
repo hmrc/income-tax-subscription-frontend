@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import views.html.helpers.{ContinueButton, YesNoRadioHelper, PageHeadingHelper,BulletList}
+@import views.html.helpers.{ContinueButton, YesNoRadioHelper, PageHeadingHelper,UnorderedList}
 @import views.html.templates.PrincipalMainTemplate
 @import play.api.data.Form
 @import forms.individual.email.CaptureConsentForm.fieldName
@@ -24,7 +24,7 @@ mainTemplate: PrincipalMainTemplate,
 yesNoRadioHelper: YesNoRadioHelper,
 continueButton: ContinueButton,
 form : FormWithCSRF,
-bulletList:BulletList
+ulList: UnorderedList
 )
 
 @(captureConsentForm: Form[YesNo], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
@@ -37,22 +37,22 @@ bulletList:BulletList
 
     <h2 class="govuk-heading-m">@messages("individual.capture-consent.subheading")</h2>
 
-    @bulletList(messages("individual.capture-consent.para-2"),Seq(
-        messages("individual.capture-consent.bullet-1"),
-        messages("individual.capture-consent.bullet-2"),
-        messages("individual.capture-consent.bullet-3")
+    @ulList(leadIn=messages("individual.capture-consent.para-2"),Seq(
+        Text(messages("individual.capture-consent.bullet-1")),
+        Text(messages("individual.capture-consent.bullet-2")),
+        Text(messages("individual.capture-consent.bullet-3"))
     ))
 
-    @bulletList(messages("individual.capture-consent.para-3"),Seq(
-        messages("individual.capture-consent.bullet-4"),
-        messages("individual.capture-consent.bullet-5"),
-        messages("individual.capture-consent.bullet-6"),
-        messages("individual.capture-consent.bullet-7")
+    @ulList(leadIn=messages("individual.capture-consent.para-3"),Seq(
+        Text(messages("individual.capture-consent.bullet-4")),
+        Text(messages("individual.capture-consent.bullet-5")),
+        Text(messages("individual.capture-consent.bullet-6")),
+        Text(messages("individual.capture-consent.bullet-7"))
     ))
 
-    @bulletList(messages("individual.capture-consent.para-4"),Seq(
-        messages("individual.capture-consent.bullet-8"),
-        messages("individual.capture-consent.bullet-9")
+    @ulList(leadIn=messages("individual.capture-consent.para-4"),Seq(
+        Text(messages("individual.capture-consent.bullet-8")),
+        Text(messages("individual.capture-consent.bullet-9"))
     ))
 
     <p class="govuk-body">@messages("individual.capture-consent.para-5")</p>
