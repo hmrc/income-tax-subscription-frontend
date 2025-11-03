@@ -17,25 +17,28 @@
 package connectors
 
 import config.AppConfig
-import connectors.httpparser.PostMandationStatusParser.{PostMandationStatusResponse, mandationStatusResponseHttpReads}
+import connectors.httpparser.PostMandationStatusParser._
 import models.status.MandationStatusRequest
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import play.api.libs.json.Json
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class MandationStatusConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient)
+class MandationStatusConnector @Inject()(appConfig: AppConfig, http: HttpClientV2)
                                         (implicit ec: ExecutionContext) {
 
   def getMandationStatus(nino: String, utr: String)
                         (implicit hc: HeaderCarrier): Future[PostMandationStatusResponse] = {
     val requestBody = MandationStatusRequest(nino, utr)
 
-    httpClient.POST[MandationStatusRequest, PostMandationStatusResponse](
-      url = appConfig.mandationStatusUrl,
-      body = requestBody
-    )
+    http
+      .post(url"${appConfig.mandationStatusUrl}")
+      .withBody(Json.toJson(requestBody))
+      .execute[PostMandationStatusResponse]
+
   }
 
 }

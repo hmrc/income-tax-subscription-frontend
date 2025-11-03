@@ -19,20 +19,22 @@ package connectors
 import config.AppConfig
 import connectors.httpparser.CreateIncomeSourcesResponseHttpParser._
 import models.common.subscription.CreateIncomeSourcesModel
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import play.api.libs.json.Json
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreateIncomeSourcesConnector @Inject()(appConfig: AppConfig, http: HttpClient)
+class CreateIncomeSourcesConnector @Inject()(appConfig: AppConfig, http: HttpClientV2)
                                             (implicit ec: ExecutionContext) {
 
   def createIncomeSources(mtdbsa: String, request: CreateIncomeSourcesModel)
                          (implicit hc: HeaderCarrier): Future[CreateIncomeSourcesResponse] =
-    http.POST[CreateIncomeSourcesModel, CreateIncomeSourcesResponse](
-      url = s"${appConfig.createIncomeSourcesUrl}/$mtdbsa",
-      body = request
-    )
+    http
+      .post(url"${s"${appConfig.createIncomeSourcesUrl}/$mtdbsa"}")
+      .withBody(Json.toJson(request))
+      .execute[CreateIncomeSourcesResponse]
 
 }

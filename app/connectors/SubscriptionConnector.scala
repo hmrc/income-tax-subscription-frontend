@@ -18,20 +18,21 @@ package connectors
 
 import config.AppConfig
 import connectors.httpparser.GetSubscriptionResponseHttpParser._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SubscriptionConnector @Inject()(val appConfig: AppConfig,
-                                      val http: HttpClient)
+                                      val http: HttpClientV2)
                                      (implicit ec: ExecutionContext) {
 
   def subscriptionUrl(nino: String): String = appConfig.subscriptionUrl + SubscriptionConnector.subscriptionUri(nino)
 
   def getSubscription(nino: String)(implicit hc: HeaderCarrier): Future[GetSubscriptionResponse] = {
-    http.GET[GetSubscriptionResponse](subscriptionUrl(nino))
+    http.get(url"${subscriptionUrl(nino)}").execute[GetSubscriptionResponse]
   }
 
 }
