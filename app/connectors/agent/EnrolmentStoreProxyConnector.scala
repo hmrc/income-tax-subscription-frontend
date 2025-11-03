@@ -17,7 +17,6 @@
 package connectors.agent
 
 import config.AppConfig
-import connectors.agent.EnrolmentStoreProxyConnector.principalQueryKey
 import connectors.agent.httpparsers.AllocateEnrolmentResponseHttpParser.AllocateEnrolmentResponse
 import connectors.agent.httpparsers.AssignEnrolmentToUserHttpParser.AssignEnrolmentToUserResponse
 import connectors.agent.httpparsers.EnrolmentStoreProxyHttpParser.EnrolmentStoreProxyResponse
@@ -26,7 +25,6 @@ import connectors.agent.httpparsers.UpsertEnrolmentResponseHttpParser.UpsertEnro
 import models.common.subscription.EnrolmentKey
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.client.HttpClientV2
-import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import javax.inject.{Inject, Singleton}
