@@ -21,7 +21,7 @@
 @this(
 
 principalMainTemplate: PrincipalMainTemplate,
-ulList: UnorderedList
+ul: UnorderedList
 
 )
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -30,10 +30,13 @@ ulList: UnorderedList
 
 <h1 class="govuk-heading-xl">@messages("claim-enrolment.claim-already-signed-up.title")</h1>
 
-@ulList(leadIn=messages("claim-enrolment.claim-already-signed-up.content"),Seq(
-    HtmlContent(alreadySignedUpContentLink1),
-    HtmlContent(wrongCredential)
-))
+@ul(
+    leadIn=messages("claim-enrolment.claim-already-signed-up.content"),
+    Seq(
+        HtmlContent(alreadySignedUpContentLink1),
+        HtmlContent(wrongCredential)
+    )
+)
 }
 
 @alreadySignedUpContentLink1() = {

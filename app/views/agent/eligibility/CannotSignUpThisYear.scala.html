@@ -29,7 +29,7 @@
     form: FormWithCSRF,
     pageHeadingHelper: PageHeadingHelper,
     govukInsetText: GovukInsetText,
-    ulList: UnorderedList
+    ul: UnorderedList
 )
 
 @(postAction: Call, clientDetails: ClientDetails)(implicit request: Request[_], messages: Messages)
@@ -63,17 +63,23 @@
 
     <p class="govuk-body">@messages("agent.cannot-sign-up.para2")</p>
 
-    @ulList(leadIn=messages("agent.cannot-sign-up.para3"),Seq(
-        Text(messages("agent.cannot-sign-up.bullet1")),
-        Text(messages("agent.cannot-sign-up.bullet2"))
-    ))
+    @ul(
+        leadIn=messages("agent.cannot-sign-up.para3"),
+        Seq(
+            Text(messages("agent.cannot-sign-up.bullet1")),
+            Text(messages("agent.cannot-sign-up.bullet2"))
+        )
+    )
 
     <h2 class="govuk-heading-m">@messages("agent.cannot-sign-up.subheading2")</h2>
 
-    @ulList(leadIn=messages("agent.cannot-sign-up.para4"),Seq(
-        Text(messages("agent.cannot-sign-up.bullet3")),
-        Text(messages("agent.cannot-sign-up.bullet4"))
-    ))
+    @ul(
+        leadIn=messages("agent.cannot-sign-up.para4"),
+        Seq(
+            Text(messages("agent.cannot-sign-up.bullet3")),
+            Text(messages("agent.cannot-sign-up.bullet4"))
+        )
+    )
 
     @form(action = postAction) {
         <div class="govuk-form-group">

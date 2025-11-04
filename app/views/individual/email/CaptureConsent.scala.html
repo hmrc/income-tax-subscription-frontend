@@ -24,7 +24,7 @@ mainTemplate: PrincipalMainTemplate,
 yesNoRadioHelper: YesNoRadioHelper,
 continueButton: ContinueButton,
 form : FormWithCSRF,
-ulList: UnorderedList
+ul: UnorderedList
 )
 
 @(captureConsentForm: Form[YesNo], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
@@ -37,23 +37,32 @@ ulList: UnorderedList
 
     <h2 class="govuk-heading-m">@messages("individual.capture-consent.subheading")</h2>
 
-    @ulList(leadIn=messages("individual.capture-consent.para-2"),Seq(
-        Text(messages("individual.capture-consent.bullet-1")),
-        Text(messages("individual.capture-consent.bullet-2")),
-        Text(messages("individual.capture-consent.bullet-3"))
-    ))
+    @ul(
+        leadIn=messages("individual.capture-consent.para-2"),
+        Seq(
+            Text(messages("individual.capture-consent.bullet-1")),
+            Text(messages("individual.capture-consent.bullet-2")),
+            Text(messages("individual.capture-consent.bullet-3"))
+        )
+    )
 
-    @ulList(leadIn=messages("individual.capture-consent.para-3"),Seq(
-        Text(messages("individual.capture-consent.bullet-4")),
-        Text(messages("individual.capture-consent.bullet-5")),
-        Text(messages("individual.capture-consent.bullet-6")),
-        Text(messages("individual.capture-consent.bullet-7"))
-    ))
+    @ul(
+        leadIn=messages("individual.capture-consent.para-3"),
+        Seq(
+            Text(messages("individual.capture-consent.bullet-4")),
+            Text(messages("individual.capture-consent.bullet-5")),
+            Text(messages("individual.capture-consent.bullet-6")),
+            Text(messages("individual.capture-consent.bullet-7"))
+        )
+    )
 
-    @ulList(leadIn=messages("individual.capture-consent.para-4"),Seq(
-        Text(messages("individual.capture-consent.bullet-8")),
-        Text(messages("individual.capture-consent.bullet-9"))
-    ))
+    @ul(
+        leadIn=messages("individual.capture-consent.para-4"),
+        Seq(
+            Text(messages("individual.capture-consent.bullet-8")),
+            Text(messages("individual.capture-consent.bullet-9"))
+        )
+    )
 
     <p class="govuk-body">@messages("individual.capture-consent.para-5")</p>
 

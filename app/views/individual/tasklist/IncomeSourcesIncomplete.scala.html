@@ -22,7 +22,7 @@
     mainTemplate: PrincipalMainTemplate,
     continueButton: ContinueButton,
     form: FormWithCSRF,
-    ulList: UnorderedList
+    ul: UnorderedList
 )
 
 @(postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
@@ -33,10 +33,13 @@
 
     <p class="govuk-body">@messages("individual.income-sources-incomplete.para1")</p>
 
-    @ulList(leadIn=messages("individual.income-sources-incomplete.para2"),Seq(
-        Text(messages("individual.income-sources-incomplete.bullet1")),
-        Text(messages("individual.income-sources-incomplete.bullet2"))
-    ))
+    @ul(
+        leadIn=messages("individual.income-sources-incomplete.para2"),
+        Seq(
+            Text(messages("individual.income-sources-incomplete.bullet1")),
+            Text(messages("individual.income-sources-incomplete.bullet2"))
+        )
+    )
 
     <p class="govuk-body">@messages("individual.income-sources-incomplete.para3")</p>
 

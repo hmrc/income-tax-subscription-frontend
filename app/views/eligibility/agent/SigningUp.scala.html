@@ -24,7 +24,7 @@
         form: FormWithCSRF,
         hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
         continueButton: ContinueButton,
-        ulList: UnorderedList
+        ul: UnorderedList
 )
 
 @(postAction:Call, currentTaxYear: AccountingPeriodModel, nextTaxYear: AccountingPeriodModel, backUrl: String)(implicit request: Request[_], messages: Messages)
@@ -44,21 +44,28 @@
 @accountingPeriod = {
   <h2 class="govuk-heading-m">@messages("agent.signing-up.accounting-period.heading")</h2>
 
-  @ulList(leadIn=messages("agent.signing-up.accounting-period.para-1"),Seq(
-    Text(messages("agent.signing-up.accounting-period.bullet-1")),
-    Text(messages("agent.signing-up.accounting-period.bullet-2"))
-  ))
+  @ul(
+    leadIn=messages("agent.signing-up.accounting-period.para-1"),
+    Seq(
+        Text(messages("agent.signing-up.accounting-period.bullet-1")),
+        Text(messages("agent.signing-up.accounting-period.bullet-2"))
+    )
+  )
     <p class="govuk-body">@messages("agent.signing-up.accounting-period.para-2")</p>
 }
 
 @checkSignUp = {
   <h2 class="govuk-heading-m">@messages("agent.signing-up.check-sign-up.heading")</h2>
 
-  @ulList(leadIn=messages("agent.signing-up.check-sign-up.para-1"),Seq(
-    Text(messages("agent.signing-up.check-sign-up.bullet-1")),
-    Text(messages("agent.signing-up.check-sign-up.bullet-2")),
-    Text(messages("agent.signing-up.check-sign-up.bullet-3"))
-  ))
+  @ul(
+    leadIn=messages("agent.signing-up.check-sign-up.para-1"),
+    Seq(
+        Text(messages("agent.signing-up.check-sign-up.bullet-1")),
+        Text(messages("agent.signing-up.check-sign-up.bullet-2")),
+        Text(messages("agent.signing-up.check-sign-up.bullet-3"))
+    )
+  )
+
   <p class="govuk-body">@messages("agent.signing-up.check-sign-up.para-2")</p>
 }
 

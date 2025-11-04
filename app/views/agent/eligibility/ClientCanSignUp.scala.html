@@ -22,7 +22,7 @@
     form : FormWithCSRF,
     pageHeadingHelper: PageHeadingHelper,
     continueButton: ContinueButton,
-    ulList:UnorderedList
+    ul:UnorderedList
 )
 
 @(postAction: Call, backUrl: String, clientName: String, clientNino: String)(implicit request: Request[_], messages: Messages)
@@ -41,17 +41,23 @@
 
     <p class="govuk-body">@messages("agent.client-can-sign-up.para2")</p>
 
-    @ulList(leadIn=messages("agent.client-can-sign-up.para3"), Seq(
-        Text(messages("agent.client-can-sign-up.bullet1")),
-        Text(messages("agent.client-can-sign-up.bullet2"))
-    ))
+    @ul(
+        leadIn=messages("agent.client-can-sign-up.para3"),
+        Seq(
+            Text(messages("agent.client-can-sign-up.bullet1")),
+            Text(messages("agent.client-can-sign-up.bullet2"))
+        )
+    )
 
     <h2 class="govuk-heading-m">@messages("agent.client-can-sign-up.subheading2")</h2>
 
-    @ulList(leadIn=messages("agent.client-can-sign-up.para4"),Seq(
-        Text(messages("agent.client-can-sign-up.bullet3")),
-        Text(messages("agent.client-can-sign-up.bullet4"))
-    ))
+    @ul(
+        leadIn=messages("agent.client-can-sign-up.para4"),
+        Seq(
+            Text(messages("agent.client-can-sign-up.bullet3")),
+            Text(messages("agent.client-can-sign-up.bullet4"))
+        )
+    )
 
     @form(action = postAction) {
 

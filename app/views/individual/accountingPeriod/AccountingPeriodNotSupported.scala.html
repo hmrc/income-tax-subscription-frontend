@@ -15,8 +15,12 @@
  *@
 
 @import views.html.templates.PrincipalMainTemplate
+@import views.html.helpers.UnorderedList
 
-@this(mainTemplate: PrincipalMainTemplate)
+@this(
+    mainTemplate: PrincipalMainTemplate,
+    ul: UnorderedList
+)
 
 @(backUrl: String)(implicit request: Request[_], messages: Messages)
 
@@ -24,12 +28,13 @@
 
     <h1 class="govuk-heading-l">@messages("accounting-period-not-supported.heading")</h1>
 
-    <p class="govuk-body">@messages("accounting-period-not-supported.para-one")</p>
-
-    <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("accounting-period-not-supported.bullet-one")</li>
-        <li>@messages("accounting-period-not-supported.bullet-two")</li>
-    </ul>
+    @ul(
+        leadIn= messages("accounting-period-not-supported.para-one"),
+        Seq(
+            Text(messages("accounting-period-not-supported.bullet-one")),
+            Text(messages("accounting-period-not-supported.bullet-two"))
+        )
+    )
 
     <p class="govuk-body">@messages("accounting-period-not-supported.para-two")</p>
 

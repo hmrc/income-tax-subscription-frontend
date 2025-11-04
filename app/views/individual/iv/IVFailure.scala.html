@@ -20,7 +20,7 @@
 @this(
     mainTemplate: PrincipalMainTemplate,
     signOutButton: SignOutButton,
-    ulList: UnorderedList
+    ul: UnorderedList
 )
 
 @()(implicit request: Request[_], messages: Messages)
@@ -31,11 +31,14 @@
 
     <h1 class="govuk-heading-xl">@messages("iv-failure.heading")</h1>
 
-    @ulList(messages("iv-failure.cannot-access"),Seq(
-        Text(messages("iv-failure.took-too-long")),
-        Text(messages("iv-failure.failed-questions")),
-        Text(messages("iv-failure.could-not-match-details"))
-    ))
+    @ul(
+        leadIn=messages("iv-failure.cannot-access"),
+        Seq(
+            Text(messages("iv-failure.took-too-long")),
+            Text(messages("iv-failure.failed-questions")),
+            Text(messages("iv-failure.could-not-match-details"))
+        )
+    )
 
     @signOutButton()
 

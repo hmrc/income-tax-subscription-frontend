@@ -24,7 +24,7 @@
   form: FormWithCSRF,
   continueButton: ContinueButton,
   hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
-  ulList: UnorderedList
+  ul: UnorderedList
 )
 
 @(postAction: Call, currentTaxYear: AccountingPeriodModel, nextTaxYear: AccountingPeriodModel, backUrl: String)(implicit request: Request[_], messages: Messages)
@@ -53,10 +53,13 @@
 
 @identityCheck = {
     <h2 class="govuk-heading-m">@messages("individual.signing-up.identity-verification.heading")</h2>
-    @ulList(leadIn=messages("individual.signing-up.identity-verification.para-1"),Seq(
-        Text(messages("individual.signing-up.identity-verification.bullet-1")),
-        Text(messages("individual.signing-up.identity-verification.bullet-2"))
-    ))
+    @ul(
+        leadIn=messages("individual.signing-up.identity-verification.para-1"),
+        Seq(
+            Text(messages("individual.signing-up.identity-verification.bullet-1")),
+            Text(messages("individual.signing-up.identity-verification.bullet-2"))
+        )
+    )
 }
 
 @mainTemplate(title = messages("individual.signing-up.heading"), backLink = Some(backUrl), showSignOutLink = false) {

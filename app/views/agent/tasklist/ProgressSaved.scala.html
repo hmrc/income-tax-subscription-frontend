@@ -21,7 +21,7 @@
 @this(
     mainTemplate: AgentMainTemplate,
     govukNotificationBanner : GovukNotificationBanner,
-    ulList: UnorderedList
+    ul: UnorderedList
 )
 
 @(
@@ -43,10 +43,13 @@
 
   <h1 class="govuk-heading-l">@messages("agent.business.progress-saved.content.subheading")</h1>
 
-  @ulList(leadIn=messages("agent.business.progress-saved.content.paragraph1"), Seq(
-    HtmlContent(continueSignUpLink),
-    HtmlContent(signUpAnotherClient)
-  ))
+  @ul(
+    leadIn=messages("agent.business.progress-saved.content.paragraph1"),
+    Seq(
+        HtmlContent(continueSignUpLink),
+        HtmlContent(signUpAnotherClient)
+    )
+  )
 
   <p class="govuk-body">
     @Html(messages("agent.business.progress-saved.content.paragraph2"))

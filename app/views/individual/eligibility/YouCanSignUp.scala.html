@@ -23,7 +23,7 @@
   mainTemplate: PrincipalMainTemplate,
   continueButton: ContinueButton,
   form: FormWithCSRF,
-  ulList: UnorderedList
+  ul: UnorderedList
 )
 
 @(postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
@@ -34,12 +34,15 @@
 
     <p class="govuk-body">@messages("individual.you-can-sign-up-now.paragraph-1")</p>
 
-    @ulList(leadIn=messages("individual.you-can-sign-up-now.paragraph-2"),Seq(
-        Text(messages("individual.you-can-sign-up-now.bullet-1")),
-        Text(messages("individual.you-can-sign-up-now.bullet-2")),
-        Text(messages("individual.you-can-sign-up-now.bullet-3")),
-        Text(messages("individual.you-can-sign-up-now.bullet-4"))
-    ))
+    @ul(
+        leadIn=messages("individual.you-can-sign-up-now.paragraph-2"),
+        Seq(
+            Text(messages("individual.you-can-sign-up-now.bullet-1")),
+            Text(messages("individual.you-can-sign-up-now.bullet-2")),
+            Text(messages("individual.you-can-sign-up-now.bullet-3")),
+            Text(messages("individual.you-can-sign-up-now.bullet-4"))
+        )
+    )
 
     <p class="govuk-body">@messages("individual.you-can-sign-up-now.paragraph-3")</p>
 

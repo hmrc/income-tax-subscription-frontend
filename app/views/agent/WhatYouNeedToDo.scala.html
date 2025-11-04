@@ -15,7 +15,7 @@
  *@
 
 @import views.html.templates.AgentMainTemplate
-@import views.html.helpers.{ContinueButton, PageHeadingHelper}
+@import views.html.helpers.{ContinueButton, PageHeadingHelper, UnorderedList}
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 @import utilities.AccountingPeriodUtil
 @import uk.gov.hmrc.play.language.LanguageUtils
@@ -29,7 +29,8 @@
     languageUtils: LanguageUtils,
     govukInsetText : GovukInsetText,
     pageHeadingHelper: PageHeadingHelper,
-    govukWarningText: GovukWarningText
+    govukWarningText: GovukWarningText,
+    ul: UnorderedList
 )
 
 @(postAction:Call, eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, taxYearSelectionIsCurrent: Boolean, usingSoftwareStatus: Boolean, clientName: String, clientNino: String, backUrl: Option[String])(implicit request: Request[_], messages: Messages)
@@ -51,11 +52,8 @@
 }
 
 @bodyContent = {
-
-    @if(taxYearSelectionIsCurrent) {
-        <p class="govuk-body">@messages("agent.voluntary.what-you-need-to-do.para-1-current")</p>
-    } else {
-        @nextYearPara
+    @if(!taxYearSelectionIsCurrent){
+        <p class="govuk-body">@messages("agent.voluntary.what-you-need-to-do.para-1-next")</p>
     }
 
     <ol class="govuk-list govuk-list--bullet">
@@ -79,6 +77,25 @@
 
         <li>@messages("agent.voluntary.what-you-need-to-do.bullet-5")</li>
     </ol>
+    @ul(
+        leadIn =
+            if(taxYearSelectionIsCurrent){
+                messages("agent.voluntary.what-you-need-to-do.para-1-current")
+            }else{
+                if(mandatedCurrentYear || mandatedNextYear) {
+                    messages("agent.voluntary.what-you-need-to-do.para-2-must", (AccountingPeriodUtil.getNextTaxEndYear - 1).toString)
+                } else {
+                    messages("agent.voluntary.what-you-need-to-do.para-2-should", (AccountingPeriodUtil.getNextTaxEndYear - 1).toString)
+                }
+            } ,
+        Seq(
+            HtmlContent(isUsingSoftware),
+            Text(messages("agent.voluntary.what-you-need-to-do.bullet-2")),
+            Text(messages("agent.voluntary.what-you-need-to-do.bullet-3")),
+            HtmlContent(isCurrentTaxYearSelection),
+            Text(messages("agent.voluntary.what-you-need-to-do.bullet-5"))
+
+    ))
 
     <p class="govuk-body">@Html(messages(
         key = "agent.voluntary.what-you-need-to-do.para-3",
@@ -99,14 +116,18 @@
 }
 
 
-@nextYearPara = {
-    <p class="govuk-body">@messages("agent.voluntary.what-you-need-to-do.para-1-next")</p>
-
-    <p class="govuk-body">
-        @if(mandatedCurrentYear || mandatedNextYear) {
-            @messages("agent.voluntary.what-you-need-to-do.para-2-must", (AccountingPeriodUtil.getNextTaxEndYear - 1).toString)
-        } else {
-            @messages("agent.voluntary.what-you-need-to-do.para-2-should", (AccountingPeriodUtil.getNextTaxEndYear - 1).toString)
+@isCurrentTaxYearSelection={
+    @if(taxYearSelectionIsCurrent) {
+        messages("agent.voluntary.what-you-need-to-do.bullet-4-current-year")
         }
-    </p>
-}
+    }
+
+@isUsingSoftware={
+    @if(usingSoftwareStatus) {
+        @messages("agent.voluntary.what-you-need-to-do.bullet-1-has-software")
+    } else {
+        @hmrcNewTabLinkHelper(NewTabLinkHelper(
+            text = messages("agent.voluntary.what-you-need-to-do.bullet-1-no-software"),
+            href = Some(messages("agent.voluntary.what-you-need-to-do.bullet-1-no-software-link"))
+    ))
+}}
