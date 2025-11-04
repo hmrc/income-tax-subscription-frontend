@@ -18,20 +18,21 @@ package connectors.usermatching
 
 import config.AppConfig
 import connectors.usermatching.httpparsers.CitizenDetailsResponseHttpParser._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CitizenDetailsConnector @Inject()(appConfig: AppConfig,
-                                        http: HttpClient)
+                                        http: HttpClientV2)
                                        (implicit ec: ExecutionContext) {
 
   def lookupCitizenDetailsUrl(nino: String): String = appConfig.citizenDetailsURL + CitizenDetailsConnector.lookupCitizenDetailsUri(nino)
 
   def lookupCitizenDetails(nino: String)(implicit hc: HeaderCarrier): Future[GetCitizenDetailsResponse] =
-    http.GET[GetCitizenDetailsResponse](lookupCitizenDetailsUrl(nino))
+    http.get(url"${lookupCitizenDetailsUrl(nino)}").execute[GetCitizenDetailsResponse]
 }
 
 object CitizenDetailsConnector {

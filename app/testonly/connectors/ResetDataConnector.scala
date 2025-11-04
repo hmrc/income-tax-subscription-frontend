@@ -19,19 +19,20 @@ package testonly.connectors
 import play.api.http.Status.OK
 import testonly.TestOnlyAppConfig
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ResetDataConnector @Inject()(appConfig: TestOnlyAppConfig,
-                                   http: HttpClient)
+                                   http: HttpClientV2)
                                   (implicit ec: ExecutionContext) {
 
   def resetDataUrl(utr: String): String = s"${appConfig.protectedMicroServiceTestOnlyUrl}/remove-data/$utr"
 
   def reset(utr: String)(implicit hc: HeaderCarrier): Future[Boolean] =
-    http.DELETE[HttpResponse](resetDataUrl(utr)) map { response =>
+    http.delete(url"${resetDataUrl(utr)}").execute[HttpResponse] map { response =>
       response.status match {
         case OK => true
         case _ => false

@@ -19,20 +19,21 @@ package testonly.connectors
 import play.api.libs.json.{JsObject, Json}
 import testonly.TestOnlyAppConfig
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 
 import java.util.UUID
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class EnrolmentStoreStubConnector @Inject()(appConfig: TestOnlyAppConfig,
-                                            http: HttpClient)
+                                            http: HttpClientV2)
                                            (implicit ec: ExecutionContext) {
 
   lazy val enrolmentStoreUrl: String = appConfig.enrolmentStoreStubUrl + "/enrolment-store-stub/data"
 
   def updateEnrolments(credId: String)(implicit hc: HeaderCarrier): Future[HttpResponse] =
-    http.POST[JsObject, HttpResponse](enrolmentStoreUrl, updateEnrolmentsRequest(credId))
+    http.post(url"${enrolmentStoreUrl}").withBody(Json.toJson(updateEnrolmentsRequest(credId))).execute[HttpResponse]
 
   private def updateEnrolmentsRequest(credId: String): JsObject =
     Json.obj(

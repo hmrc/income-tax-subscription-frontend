@@ -19,26 +19,27 @@ package connectors.individual.eligibility
 import config.AppConfig
 import connectors.individual.eligibility.httpparsers.GetEligibilityStatusHttpParser._
 import models.EligibilityStatus
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 import utilities.HttpResult.HttpResult
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class GetEligibilityStatusConnector @Inject()(appConfig: AppConfig, http: HttpClient)
+class GetEligibilityStatusConnector @Inject()(appConfig: AppConfig, http: HttpClientV2)
                                              (implicit ec: ExecutionContext) {
 
   def eligibilityUrl(sautr: String): String = s"${appConfig.incomeTaxEligibilityUrl}/eligibility/utr/$sautr"
 
   def getEligibilityStatus(sautr: String)(implicit hc: HeaderCarrier): Future[HttpResult[EligibilityStatus]] = {
-    http.GET(eligibilityUrl(sautr))
+    http.get(url"${eligibilityUrl(sautr)}").execute
   }
 
   def eligibilityUrl(nino: String, sautr: String): String = s"${appConfig.incomeTaxEligibilityUrl}/eligibility/nino/$nino/utr/$sautr"
 
   def getEligibilityStatus(nino: String, sautr: String)(implicit hc: HeaderCarrier): Future[HttpResult[EligibilityStatus]] = {
-    http.GET(eligibilityUrl(nino, sautr))
+    http.get(url"${eligibilityUrl(nino, sautr)}").execute
   }
 
 }

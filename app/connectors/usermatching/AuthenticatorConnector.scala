@@ -20,14 +20,16 @@ import config.AppConfig
 import connectors.usermatching.httpparsers.MatchUserHttpParser._
 import models.usermatching.{UserDetailsModel, UserMatchRequestModel}
 import play.api.Logging
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import play.api.libs.json.Json
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
+import uk.gov.hmrc.http.client.HttpClientV2
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AuthenticatorConnector @Inject()(appConfig: AppConfig,
-                                       val http: HttpClient)
+                                       val http: HttpClientV2)
                                       (implicit ec: ExecutionContext) extends Logging {
 
   lazy val matchingEndpoint: String = appConfig.authenticatorUrl + "/authenticator/match"
@@ -35,14 +37,18 @@ class AuthenticatorConnector @Inject()(appConfig: AppConfig,
   def matchUser(userDetails: UserDetailsModel)(implicit hc: HeaderCarrier): Future[MatchUserResponse] = {
     val request: UserMatchRequestModel = UserMatchRequestModel(userDetails)
 
-    http.POST[UserMatchRequestModel, MatchUserResponse](matchingEndpoint, request).map {
-      case Right(result) =>
-        logger.debug("AuthenticatorConnector.matchUser response received: " + result)
-        Right(result)
-      case Left(error) =>
-        logger.warn(s"AuthenticatorConnector.matchUser unexpected response from authenticator: ${error.errors}")
-        Left(error)
-    }
+    http
+      .post(url"$matchingEndpoint")
+      .withBody(Json.toJson(request))
+      .execute[MatchUserResponse]
+      .map {
+        case Right(result) =>
+          logger.debug("AuthenticatorConnector.matchUser response received: " + result)
+          Right(result)
+        case Left(error) =>
+          logger.warn(s"AuthenticatorConnector.matchUser unexpected response from authenticator: ${error.errors}")
+          Left(error)
+      }
   }
 
 }

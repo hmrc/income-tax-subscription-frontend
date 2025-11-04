@@ -22,8 +22,8 @@ import play.api.http.Status.OK
 import play.api.libs.json.{JsSuccess, Json}
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
-import uk.gov.hmrc.http.HttpClient
-import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
+import uk.gov.hmrc.http.{HttpResponse, StringContextOps}
+import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.play.partials.HeaderCarrierForPartialsConverter
 
 import java.net.URLEncoder
@@ -31,31 +31,34 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PreferencesFrontendConnector @Inject()(appConfig: AppConfig, http: HttpClient, crypto: ApplicationCrypto)
+class PreferencesFrontendConnector @Inject()(appConfig: AppConfig, http: HttpClientV2, crypto: ApplicationCrypto)
                                             (implicit ec: ExecutionContext) extends HeaderCarrierForPartialsConverter with Logging {
 
+  val url: String = activateUrl(
+    returnUrl = encryptAndEncodeString("/"),
+    returnLinkText = encryptAndEncodeString("")
+  )
+
   def getOptedInStatus(implicit request: Request[AnyContent]): Future[Option[Boolean]] = {
-    http.PUT(
-      url = activateUrl(
-        returnUrl = encryptAndEncodeString("/"),
-        returnLinkText = encryptAndEncodeString("")
-      ),
-      body = Json.obj()
-    ) map { response =>
-      response.status match {
-        case OK => (response.json \ "optedIn").validate[Boolean] match {
-          case JsSuccess(optedIn, _) =>
-            Some(optedIn)
-          case _ =>
-            logger.error("[PreferencesFrontendConnector][getOptedInStatus] - Could not retrieve optedIn value")
+    http
+      .put(url"$url")
+      .withBody(Json.obj())
+      .execute[HttpResponse]
+      .map { response =>
+        response.status match {
+          case OK => (response.json \ "optedIn").validate[Boolean] match {
+            case JsSuccess(optedIn, _) =>
+              Some(optedIn)
+            case _ =>
+              logger.error("[PreferencesFrontendConnector][getOptedInStatus] - Could not retrieve optedIn value")
+              None
+          }
+          case status =>
+            logger.warn(s"[PreferencesFrontendConnector][getOptedInStatus] - Unexpected status returned - $status")
             None
         }
-        case status =>
-          logger.warn(s"[PreferencesFrontendConnector][getOptedInStatus] - Unexpected status returned - $status")
-          None
-      }
 
-    }
+      }
   }
 
   private def activateUrl(returnUrl: String, returnLinkText: String): String = {
