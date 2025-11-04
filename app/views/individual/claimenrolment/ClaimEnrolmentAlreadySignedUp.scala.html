@@ -29,34 +29,21 @@ ulList: UnorderedList
 @principalMainTemplate(title = messages("claim-enrolment.claim-already-signed-up.title")) {
 
 <h1 class="govuk-heading-xl">@messages("claim-enrolment.claim-already-signed-up.title")</h1>
-<p class="govuk-body" id="claimAlreadySignedInBody">
-    @messages("claim-enrolment.claim-already-signed-up.content")
-</p>
-<ul class="govuk-list govuk-list--bullet">
-   <li>
-     <a class="govuk-link" href="@appConfig.haveSaUtr" id="checkSaAccount">
-       @messages("claim-enrolment.claim-already-signed-up.content.link1")
-     </a>
-   </li>
-   <li>
-     <a class="govuk-link" href="@appConfig.wrongCredentials" id="retrieveSaAccountDetails">
-       @messages("claim-enrolment.claim-already-signed-up.content.link2")
-     </a>
-   </li>
-</ul>
 
-@ulList(leadIn=messages("claim-enrolment.claim-already-signed-up.content"), Seq(
-HtmlContent(
-s"""<a class="govuk-link" href=$$@appConfig.haveSaUtr id="checkSaAccount2">
-    @messages("claim-enrolment.claim-already-signed-up.content.link1")
-</a>"""
-),
-HtmlContent(
-s"""<a class="govuk-link" href=$$@appConfig.wrongCredentials id="retrieveSaAccountDetails2">
-    @messages("claim-enrolment.claim-already-signed-up.content.link2")
-</a>"""
-)
-
+@ulList(leadIn=messages("claim-enrolment.claim-already-signed-up.content"),Seq(
+    HtmlContent(alreadySignedUpContentLink1),
+    HtmlContent(alreadySignedUpContentLink2)
 ))
+}
 
+@alreadySignedUpContentLink1() = {
+<a class="govuk-link" href="@appConfig.haveSaUtr" id="checkSaAccount">
+    @messages("claim-enrolment.claim-already-signed-up.content.link1")
+</a>
+}
+
+@alreadySignedUpContentLink2() = {
+<a class="govuk-link" href="@appConfig.wrongCredentials" id="retrieveSaAccountDetails">
+    @messages("claim-enrolment.claim-already-signed-up.content.link2")
+</a>
 }
