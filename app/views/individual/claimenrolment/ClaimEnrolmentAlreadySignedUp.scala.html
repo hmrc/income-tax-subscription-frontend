@@ -32,7 +32,7 @@ ulList: UnorderedList
 
 @ulList(leadIn=messages("claim-enrolment.claim-already-signed-up.content"),Seq(
     HtmlContent(alreadySignedUpContentLink1),
-    HtmlContent(alreadySignedUpContentLink2)
+    HtmlContent(wrongCredential)
 ))
 }
 
@@ -42,7 +42,7 @@ ulList: UnorderedList
 </a>
 }
 
-@alreadySignedUpContentLink2() = {
+@wrongCredential()() = {
 <a class="govuk-link" href="@appConfig.wrongCredentials" id="retrieveSaAccountDetails">
     @messages("claim-enrolment.claim-already-signed-up.content.link2")
 </a>
