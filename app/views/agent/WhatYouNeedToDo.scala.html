@@ -56,27 +56,7 @@
         <p class="govuk-body">@messages("agent.voluntary.what-you-need-to-do.para-1-next")</p>
     }
 
-    <ol class="govuk-list govuk-list--bullet">
 
-        <li>@if(usingSoftwareStatus) {
-                @messages("agent.voluntary.what-you-need-to-do.bullet-1-has-software")
-            } else {
-                @hmrcNewTabLinkHelper(NewTabLinkHelper(
-                    text = messages("agent.voluntary.what-you-need-to-do.bullet-1-no-software"),
-                    href = Some(messages("agent.voluntary.what-you-need-to-do.bullet-1-no-software-link"))
-                ))
-            }
-        </li>
-
-        <li>@messages("agent.voluntary.what-you-need-to-do.bullet-2")</li>
-        <li>@messages("agent.voluntary.what-you-need-to-do.bullet-3")</li>
-
-        @if(taxYearSelectionIsCurrent) {
-            <li>@messages("agent.voluntary.what-you-need-to-do.bullet-4-current-year")</li>
-        }
-
-        <li>@messages("agent.voluntary.what-you-need-to-do.bullet-5")</li>
-    </ol>
     @ul(
         leadIn =
             if(taxYearSelectionIsCurrent){
