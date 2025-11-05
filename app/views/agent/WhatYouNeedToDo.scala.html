@@ -68,14 +68,8 @@
                     messages("agent.voluntary.what-you-need-to-do.para-2-should", (AccountingPeriodUtil.getNextTaxEndYear - 1).toString)
                 }
             } ,
-        Seq(
-            HtmlContent(isUsingSoftware),
-            Text(messages("agent.voluntary.what-you-need-to-do.bullet-2")),
-            Text(messages("agent.voluntary.what-you-need-to-do.bullet-3")),
-            HtmlContent(isCurrentTaxYearSelection),
-            Text(messages("agent.voluntary.what-you-need-to-do.bullet-5"))
-
-    ))
+conditionalSeq
+)
 
     <p class="govuk-body">@Html(messages(
         key = "agent.voluntary.what-you-need-to-do.para-3",
@@ -96,11 +90,6 @@
 }
 
 
-@isCurrentTaxYearSelection={
-    @if(taxYearSelectionIsCurrent) {
-        messages("agent.voluntary.what-you-need-to-do.bullet-4-current-year")
-        }
-    }
 
 @isUsingSoftware={
     @if(usingSoftwareStatus) {
@@ -111,3 +100,14 @@
             href = Some(messages("agent.voluntary.what-you-need-to-do.bullet-1-no-software-link"))
     ))
 }}
+
+
+@conditionalSeq=@{
+Seq(
+    Some(HtmlContent(isUsingSoftware)),
+    Some(Text(messages("agent.voluntary.what-you-need-to-do.bullet-2"))),
+    Some(Text(messages("agent.voluntary.what-you-need-to-do.bullet-3"))),
+    if (taxYearSelectionIsCurrent) Some(Text(messages("agent.voluntary.what-you-need-to-do.bullet-4-current-year"))) else None,
+    Some(Text(messages("agent.voluntary.what-you-need-to-do.bullet-5")))
+).flatten
+}

@@ -161,39 +161,39 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
 
         "has a first point" when {
           "user has compatible software" in {
-            hasSoftwareScenarios.foreach(_.selectHead("ol.govuk-list--bullet")
+            hasSoftwareScenarios.foreach(_.selectHead("ul.govuk-list--bullet")
               .selectNth("li", 1).text mustBe WhatYouNeedToDoMessages.BulletOne.hasSoftware)
           }
 
           "user has no compatible software with link" in {
-            noSoftwareScenarios.foreach(_.selectHead("ol.govuk-list--bullet")
+            noSoftwareScenarios.foreach(_.selectHead("ul.govuk-list--bullet")
               .selectNth("li", 1).text mustBe WhatYouNeedToDoMessages.BulletOne.noSoftwareText)
 
-            noSoftwareScenarios.foreach(_.selectHead("ol.govuk-list--bullet").selectNth("li", 1)
+            noSoftwareScenarios.foreach(_.selectHead("ul.govuk-list--bullet").selectNth("li", 1)
               .selectHead("a").attr("href") mustBe WhatYouNeedToDoMessages.BulletOne.noSoftwareLink)
           }
         }
 
         "has a second point" in {
-          allScenarios.foreach(_.selectHead("ol.govuk-list--bullet").selectNth("li", 2).text mustBe WhatYouNeedToDoMessages.bulletTwo)
+          allScenarios.foreach(_.selectHead("ul.govuk-list--bullet").selectNth("li", 2).text mustBe WhatYouNeedToDoMessages.bulletTwo)
         }
 
         "has a third point" in {
-          allScenarios.foreach(_.selectHead("ol.govuk-list--bullet").selectNth("li", 3).text mustBe WhatYouNeedToDoMessages.bulletThree)
+          allScenarios.foreach(_.selectHead("ul.govuk-list--bullet").selectNth("li", 3).text mustBe WhatYouNeedToDoMessages.bulletThree)
         }
 
         "has a fourth point" when {
           "user is signing up for current tax year" in {
-            currentTaxYearScenarios.foreach(_.selectHead("ol.govuk-list--bullet").selectNth("li", 4).text mustBe WhatYouNeedToDoMessages.bulletFourCTYOnly)
+            currentTaxYearScenarios.foreach(_.selectHead("ul.govuk-list--bullet").selectNth("li", 4).text mustBe WhatYouNeedToDoMessages.bulletFourCTYOnly)
 
           }
           "user is signing up for next tax year" in {
-            nextTaxYearScenarios.foreach(_.selectHead("ol.govuk-list--bullet").selectNth("li", 4).text mustBe WhatYouNeedToDoMessages.bulletFive)
+            nextTaxYearScenarios.foreach(_.selectHead("ul.govuk-list--bullet").selectNth("li", 4).text mustBe WhatYouNeedToDoMessages.bulletFive)
           }
         }
 
         "has a fifth point when user is signing up for current tax year" in {
-          currentTaxYearScenarios.foreach(_.selectHead("ol.govuk-list--bullet").selectNth("li", 5).text mustBe WhatYouNeedToDoMessages.bulletFive)
+          currentTaxYearScenarios.foreach(_.selectHead("ul.govuk-list--bullet").selectNth("li", 5).text mustBe WhatYouNeedToDoMessages.bulletFive)
         }
       }
 
