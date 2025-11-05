@@ -16,7 +16,7 @@
 
 @import config.AppConfig
 @import views.html.templates.PrincipalMainTemplate
-@import views.html.helpers.ContinueButton
+@import views.html.helpers.{ContinueButton, UnorderedList}
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 @import uk.gov.hmrc.play.language.LanguageUtils
 @import utilities.AccountingPeriodUtil
@@ -29,7 +29,8 @@
     form: FormWithCSRF,
     languageUtils: LanguageUtils,
     govukWarningText: GovukWarningText,
-    hmrcNewTabLinkHelper: HmrcNewTabLinkHelper
+    hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
+    ul: UnorderedList
 )
 
 @(postAction: Call, onlyNextYear: Boolean, mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, isUsingSoftware:Boolean, signUpNextTaxYear: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages)
@@ -47,36 +48,23 @@
 @bodyContent = {
 
     <h1 class="govuk-heading-xl">@messages("what-you-need-to-do.heading")</h1>
-
-    @if(signUpNextTaxYear) {
+    @if(signUpNextTaxYear){
         <p class="govuk-body">@messages("individual.what-you-need-to-do.para-1.next")</p>
-        <p class="govuk-body">@nextTaxYearPara2</p>
-    } else {
-        <p class="govuk-body">@currentTaxYearPara</p>
     }
 
-    <ol class="govuk-list govuk-list--bullet">
-        @if(isUsingSoftware) {
-            <li>@messages("individual.what-you-need-to-do.bullet-1.has-software")</li>
-        } else {
-            <li>
-                @hmrcNewTabLinkHelper(
-                NewTabLinkHelper(
-                messages("individual.what-you-need-to-do.bullet-1.no-software"),
-                Some(messages("individual.what-you-need-to-do.bullet-1.no-software.href"))
-                ))
+    @ul(
+        leadIn= if(signUpNextTaxYear){
+                    if(mandatedCurrentYear || mandatedNextYear) {
+                        messages("individual.what-you-need-to-do.para-2.must", (AccountingPeriodUtil.getNextTaxEndYear - 1).toString)
+                    } else {
+                        messages("individual.what-you-need-to-do.para-2.should", (AccountingPeriodUtil.getNextTaxEndYear - 1).toString)
+                    }
+                }else{
+                    messages("individual.what-you-need-to-do.para-1.current")
+                } ,
+        conditionalSeq
 
-            </li>
-        }
-
-        <li>@messages("individual.what-you-need-to-do.bullet-2")</li>
-        <li>@messages("individual.what-you-need-to-do.bullet-3")</li>
-
-        @if(! signUpNextTaxYear) {
-        <li>@messages("individual.what-you-need-to-do.bullet-4.current")</li>
-        }
-        <li>@messages("individual.what-you-need-to-do.bullet-5")</li>
-    </ol>
+    )
 
     <p class="govuk-body">@Html(messages(
         key = "individual.what-you-need-to-do.para-3",
@@ -95,20 +83,27 @@
     <p class="govuk-body">@messages("individual.what-you-need-to-do.para-6")</p>
 }
 
-@currentTaxYearPara = @{
-    messages("individual.what-you-need-to-do.para-1.current")
-}
 
-@nextTaxYearPara2 = @{
-    if(mandatedCurrentYear || mandatedNextYear) {
-        messages("individual.what-you-need-to-do.para-2.must", (AccountingPeriodUtil.getNextTaxEndYear - 1).toString)
+@usingSoftware={
+    @if(isUsingSoftware) {
+        @messages("individual.what-you-need-to-do.bullet-1.has-software")
     } else {
-        messages("individual.what-you-need-to-do.para-2.should", (AccountingPeriodUtil.getNextTaxEndYear - 1).toString)
-    }
+        @hmrcNewTabLinkHelper(
+            NewTabLinkHelper(
+            messages("individual.what-you-need-to-do.bullet-1.no-software"),
+            Some(messages("individual.what-you-need-to-do.bullet-1.no-software.href"))
+        ))
+}}
+
+@conditionalSeq=@{
+    Seq(
+        Some(HtmlContent(usingSoftware)),
+        Some(Text(messages("individual.what-you-need-to-do.bullet-2"))),
+        Some(Text(messages("individual.what-you-need-to-do.bullet-3"))),
+        if (! signUpNextTaxYear) Some(Text(messages("agent.voluntary.what-you-need-to-do.bullet-4-current-year"))) else None,
+        Some(Text(messages("individual.what-you-need-to-do.bullet-5")))
+    ).flatten
 }
-
-
-
 
 
 
