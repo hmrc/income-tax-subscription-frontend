@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import views.html.helpers.{ContinueButton, YesNoRadioHelper, PageHeadingHelper}
+@import views.html.helpers.{ContinueButton, YesNoRadioHelper, PageHeadingHelper, UnorderedList}
 @import views.html.templates.PrincipalMainTemplate
 @import forms.individual.accountingperiod.AccountingPeriodNonStandardForm._
 
@@ -22,7 +22,8 @@
 mainTemplate: PrincipalMainTemplate,
 yesNoRadioHelper: YesNoRadioHelper,
 continueButton: ContinueButton,
-form : FormWithCSRF
+form : FormWithCSRF,
+ul: UnorderedList
 )
 
 @(nonStandardAccountingPeriodForm: Form[YesNo], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
@@ -32,11 +33,13 @@ form : FormWithCSRF
   @form(action = postAction) {
 
     <h1 class="govuk-heading-l">@messages("accounting-period-non-standard.heading")</h1>
-    <p class="govuk-body">@messages("accounting-period-non-standard.para-one")</p>
-    <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("accounting-period-non-standard.bullet-one")</li>
-        <li>@messages("accounting-period-non-standard.bullet-two")</li>
-    </ul>
+    @ul(
+        leadIn = messages("accounting-period-non-standard.para-one"),
+        Seq(
+            Text(messages("accounting-period-non-standard.bullet-one")),
+            Text(messages("accounting-period-non-standard.bullet-two"))
+        )
+    )
 
     @yesNoRadioHelper(
         field = nonStandardAccountingPeriodForm(fieldName),

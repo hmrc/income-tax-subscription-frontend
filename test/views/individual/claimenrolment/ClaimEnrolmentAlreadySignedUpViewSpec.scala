@@ -72,7 +72,7 @@ class ClaimEnrolmentAlreadySignedUpViewSpec extends ViewSpecTrait {
       }
 
       s"has some content '${MessageLookup.ClaimEnrolmentAlreadySignedUp.content}'" in {
-        val content = document.select("p[id=claimAlreadySignedInBody]")
+        val content = document.select("p[class=govuk-body]")
         content.text() must startWith(MessageLookup.ClaimEnrolmentAlreadySignedUp.content)
       }
     }

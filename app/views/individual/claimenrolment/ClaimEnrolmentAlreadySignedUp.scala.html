@@ -16,10 +16,12 @@
 
 @import config.AppConfig
 @import views.html.templates.PrincipalMainTemplate
+@import views.html.helpers.UnorderedList
 
 @this(
 
-principalMainTemplate: PrincipalMainTemplate
+principalMainTemplate: PrincipalMainTemplate,
+ul: UnorderedList
 
 )
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -27,19 +29,24 @@ principalMainTemplate: PrincipalMainTemplate
 @principalMainTemplate(title = messages("claim-enrolment.claim-already-signed-up.title")) {
 
 <h1 class="govuk-heading-xl">@messages("claim-enrolment.claim-already-signed-up.title")</h1>
-<p class="govuk-body" id="claimAlreadySignedInBody">
-    @messages("claim-enrolment.claim-already-signed-up.content")
-</p>
-<ul class="govuk-list govuk-list--bullet">
-   <li>
-     <a class="govuk-link" href="@appConfig.haveSaUtr" id="checkSaAccount">
-       @messages("claim-enrolment.claim-already-signed-up.content.link1")
-     </a>
-   </li>
-   <li>
-     <a class="govuk-link" href="@appConfig.wrongCredentials" id="retrieveSaAccountDetails">
-       @messages("claim-enrolment.claim-already-signed-up.content.link2")
-     </a>
-   </li>
-</ul>
+
+@ul(
+    leadIn=messages("claim-enrolment.claim-already-signed-up.content"),
+    Seq(
+        HtmlContent(alreadySignedUpContentLink1),
+        HtmlContent(wrongCredential)
+    )
+)
+}
+
+@alreadySignedUpContentLink1() = {
+<a class="govuk-link" href="@appConfig.haveSaUtr" id="checkSaAccount">
+    @messages("claim-enrolment.claim-already-signed-up.content.link1")
+</a>
+}
+
+@wrongCredential()() = {
+<a class="govuk-link" href="@appConfig.wrongCredentials" id="retrieveSaAccountDetails">
+    @messages("claim-enrolment.claim-already-signed-up.content.link2")
+</a>
 }

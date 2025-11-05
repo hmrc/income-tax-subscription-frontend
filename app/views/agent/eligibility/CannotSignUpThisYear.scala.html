@@ -17,7 +17,7 @@
 @import views.html.templates.AgentMainTemplate
 @import models.common.AccountingPeriodModel
 @import uk.gov.hmrc.play.language.LanguageUtils
-@import views.html.helpers.{ContinueButton, PageHeadingHelper}
+@import views.html.helpers.{ContinueButton, PageHeadingHelper, UnorderedList}
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 @import utilities.AccountingPeriodUtil
 @import utilities.UserMatchingSessionUtil.ClientDetails
@@ -28,7 +28,8 @@
     continueButton: ContinueButton,
     form: FormWithCSRF,
     pageHeadingHelper: PageHeadingHelper,
-    govukInsetText: GovukInsetText
+    govukInsetText: GovukInsetText,
+    ul: UnorderedList
 )
 
 @(postAction: Call, clientDetails: ClientDetails)(implicit request: Request[_], messages: Messages)
@@ -62,21 +63,23 @@
 
     <p class="govuk-body">@messages("agent.cannot-sign-up.para2")</p>
 
-    <p class="govuk-body">@messages("agent.cannot-sign-up.para3")</p>
-
-    <ol class="govuk-list govuk-list--bullet">
-        <li>@messages("agent.cannot-sign-up.bullet1")</li>
-        <li>@messages("agent.cannot-sign-up.bullet2")</li>
-    </ol>
+    @ul(
+        leadIn=messages("agent.cannot-sign-up.para3"),
+        Seq(
+            Text(messages("agent.cannot-sign-up.bullet1")),
+            Text(messages("agent.cannot-sign-up.bullet2"))
+        )
+    )
 
     <h2 class="govuk-heading-m">@messages("agent.cannot-sign-up.subheading2")</h2>
 
-    <p class="govuk-body">@messages("agent.cannot-sign-up.para4")</p>
-
-    <ol class="govuk-list govuk-list--bullet">
-        <li>@messages("agent.cannot-sign-up.bullet3")</li>
-        <li>@messages("agent.cannot-sign-up.bullet4")</li>
-    </ol>
+    @ul(
+        leadIn=messages("agent.cannot-sign-up.para4"),
+        Seq(
+            Text(messages("agent.cannot-sign-up.bullet3")),
+            Text(messages("agent.cannot-sign-up.bullet4"))
+        )
+    )
 
     @form(action = postAction) {
         <div class="govuk-form-group">
