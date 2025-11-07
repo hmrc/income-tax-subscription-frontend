@@ -28,7 +28,7 @@
         hmrcNewTabLinkHelper: HmrcNewTabLinkHelper
 )
 
-@(clientName: String, clientNino: String)(implicit request: Request[_], messages: Messages)
+@(clientName: String, clientNino: String, exemptionReason: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = messages("agent.cannot-take-part.heading")) {
 

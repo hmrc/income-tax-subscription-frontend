@@ -20,20 +20,31 @@ import controllers.SignUpBaseController
 import controllers.agent.actions.{IdentifierAction, SignPostedJourneyRefiner}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import views.html.agent.eligibility.CannotTakePart
+import services.GetEligibilityStatusService
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class CannotTakePartController @Inject()(view: CannotTakePart,
                                          identify: IdentifierAction,
+                                         getEligibilityStatusService: GetEligibilityStatusService,
                                          journeyRefiner: SignPostedJourneyRefiner)
-                                        (implicit cc: MessagesControllerComponents) extends SignUpBaseController {
+                                        (implicit cc: MessagesControllerComponents,  ec: ExecutionContext) extends SignUpBaseController {
 
-  val show: Action[AnyContent] = (identify andThen journeyRefiner) { implicit request =>
-    Ok(view(
-      clientName = request.clientDetails.name,
-      clientNino = request.clientDetails.formattedNino
-    ))
-  }
+  val show: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
+    for {
+      eligibilityStatus <- getEligibilityStatusService.getEligibilityStatus
+    } yield {
+      val maybeReason = eligibilityStatus.exceptionReason.getOrElse("unknown")
 
+      Ok(view(
+        clientName = request.clientDetails.name,
+        clientNino = request.clientDetails.formattedNino,
+        exemptionReason = maybeReason
+      )).addingToSession(
+        "exemptionReason" -> maybeReason
+      )
+      }
+    }
 }

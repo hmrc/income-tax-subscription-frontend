@@ -82,9 +82,9 @@ class HomeController @Inject()(identity: IdentifierAction,
 
   private def handleNoSubscriptionFound(sessionData: SessionData, utr: String)(implicit request: PreSignUpRequest[AnyContent]): Future[Result] = {
     eligibilityStatusService.getEligibilityStatus(sessionData) flatMap {
-      case EligibilityStatus(false, false) =>
+      case EligibilityStatus(false, false, _) =>
         handleIneligible(utr)
-      case EligibilityStatus(eligibleCurrentYear, _) =>
+      case EligibilityStatus(eligibleCurrentYear, _, _) =>
         handleEligible(sessionData, utr, eligibleCurrentYear)
     }
   }
@@ -139,14 +139,23 @@ class HomeController @Inject()(identity: IdentifierAction,
   }
 
   private def handleIneligible(utr: String)(implicit request: PreSignUpRequest[AnyContent]): Future[Result] = {
-    eligibilityAudit(
+    for {
+      eligibilityStatus <-  eligibilityStatusService.getEligibilityStatus
+    _ <- eligibilityAudit(
       maybeUTR = Some(utr),
       eligibility = "ineligible",
-      failureReason = Some("control-list-ineligible")
-    ) map { _ =>
-      Redirect(controllers.individual.controllist.routes.NotEligibleForIncomeTaxController.show())
+      failureReason = eligibilityStatus.exceptionReason
+    )
+    } yield {
+      val maybeReason = eligibilityStatus.exceptionReason.getOrElse("control-list-ineligible")
+
+      Redirect(
+        controllers.individual.controllist.routes.NotEligibleForIncomeTaxController.show()
+      ).addingToSession(
+        "exemptionReason" -> maybeReason
+      )
+     }
     }
-  }
 
   private def eligibilityAudit(maybeUTR: Option[String], eligibility: String, failureReason: Option[String] = None)
                               (implicit request: PreSignUpRequest[AnyContent]): Future[AuditResult] = {

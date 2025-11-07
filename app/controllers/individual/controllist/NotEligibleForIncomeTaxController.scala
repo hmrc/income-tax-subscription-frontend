@@ -34,6 +34,7 @@ class NotEligibleForIncomeTaxController @Inject()(val notEligibleForIncomeTax: N
                                                   mcc: MessagesControllerComponents) extends StatelessController {
 
   val show: Action[AnyContent] = Authenticated.asyncUnrestricted { implicit request =>
-    _ => Future.successful(Ok(notEligibleForIncomeTax()))
+    val maybeReason: Option[String] = request.session.get("exemptionReason")
+    _ => Future.successful(Ok(notEligibleForIncomeTax(maybeReason)))
   }
 }
