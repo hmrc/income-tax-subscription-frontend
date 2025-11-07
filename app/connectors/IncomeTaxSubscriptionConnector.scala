@@ -23,14 +23,15 @@ import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionD
 import connectors.httpparser.RetrieveReferenceHttpParser._
 import play.api.libs.json._
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class IncomeTaxSubscriptionConnector @Inject()(appConfig: AppConfig,
-                                               http: HttpClient)
+                                               http: HttpClientV2)
                                               (implicit ec: ExecutionContext) {
 
   private def subscriptionURL(reference: String, id: String): String =
@@ -45,21 +46,21 @@ class IncomeTaxSubscriptionConnector @Inject()(appConfig: AppConfig,
   }
 
   def deleteAll(reference: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
-    http.DELETE[HttpResponse](deleteURL(reference))
+    http.delete(url"${deleteURL(reference)}").execute[HttpResponse]
   }
 
   def deleteSubscriptionDetails(reference: String, key: String)
                                (implicit hc: HeaderCarrier): Future[DeleteSubscriptionDetailsResponse] = {
-    http.DELETE[DeleteSubscriptionDetailsResponse](subscriptionURL(reference, key))
+    http.delete(url"${subscriptionURL(reference, key)}").execute[DeleteSubscriptionDetailsResponse]
   }
 
   def saveSubscriptionDetails[T](reference: String, id: String, data: T)
                                 (implicit hc: HeaderCarrier, writes: Writes[T]): Future[PostSubscriptionDetailsResponse] = {
-    http.POST[JsValue, PostSubscriptionDetailsResponse](subscriptionURL(reference, id), Json.toJson(data))
+    http.post(url"${subscriptionURL(reference, id)}").withBody(Json.toJson(data)).execute[PostSubscriptionDetailsResponse]
   }
 
   def getSubscriptionDetails[T](reference: String, id: String)(implicit hc: HeaderCarrier, reads: Reads[T]): Future[Option[T]] = {
-    http.GET[Option[T]](subscriptionURL(reference, id))
+    http.get(url"${subscriptionURL(reference, id)}").execute[Option[T]]
   }
 
   def getSubscriptionDetailsSeq[T](reference: String, id: String)(implicit hc: HeaderCarrier, reads: Reads[T]): Future[Seq[T]] = {
@@ -67,7 +68,7 @@ class IncomeTaxSubscriptionConnector @Inject()(appConfig: AppConfig,
   }
 
   def retrieveReference(utr: String)(implicit hc: HeaderCarrier): Future[RetrieveReferenceResponse] = {
-    http.POST[JsObject, RetrieveReferenceResponse](retrieveReferenceUrl, Json.obj("utr" -> utr))
+    http.post(url"${retrieveReferenceUrl}").withBody(Json.toJson(Json.obj("utr" -> utr))).execute[RetrieveReferenceResponse]
   }
 
 }

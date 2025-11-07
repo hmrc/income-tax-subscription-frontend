@@ -20,24 +20,23 @@ import config.AppConfig
 import connectors.httpparser.SignUpResponseHttpParser._
 import models.AccountingYear
 import models.common.subscription.SignUpRequestModel
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import play.api.libs.json.Json
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SignUpConnector @Inject()(appConfig: AppConfig, http: HttpClient)
+class SignUpConnector @Inject()(appConfig: AppConfig, http: HttpClientV2)
                                (implicit ec: ExecutionContext) {
 
   def signUp(nino: String, utr: String, taxYear: AccountingYear)
             (implicit hc: HeaderCarrier): Future[SignUpResponse] =
-    http.POST[SignUpRequestModel, SignUpResponse](
-      url = appConfig.signUpUrl,
-      body = SignUpRequestModel(
+    http.post(url"${appConfig.signUpUrl}")
+      .withBody(Json.toJson(SignUpRequestModel(
         nino = nino,
         utr = utr,
-        taxYear = taxYear
-      )
-    )
-
+        taxYear = taxYear)))
+      .execute[SignUpResponse]
 }

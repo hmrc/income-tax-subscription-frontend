@@ -25,7 +25,8 @@ import play.api.libs.json.{JsValue, Json, OFormat}
 import testonly.TestOnlyAppConfig
 import testonly.models.UserToStubModel
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 
 import java.time.LocalDate
 import java.time.format.{DateTimeFormatter, ResolverStyle}
@@ -97,7 +98,7 @@ object Request {
 
 @Singleton
 class MatchingStubConnector @Inject()(appConfig: TestOnlyAppConfig,
-                                      http: HttpClient)
+                                      http: HttpClientV2)
                                      (implicit ec: ExecutionContext) extends Logging {
 
   private lazy val dynamicStubUrl: String = appConfig.matchingStubsURL + "/dynamic-cid"
@@ -109,23 +110,27 @@ class MatchingStubConnector @Inject()(appConfig: TestOnlyAppConfig,
   *  Currently this is hardcoded in the Request object as "ITSA-AGENT"
   */
   def newUser(userData: UserData)(implicit hc: HeaderCarrier): Future[Boolean] = {
-    http.POST[Request, HttpResponse](dynamicStubUrl, Request(userData)).flatMap {
-      response =>
-        response.status match {
-          case CREATED =>
-            logger.info("MatchingStubConnector.newUser successful")
-            Future.successful(true)
-          case status =>
-            logger.warn(
-              s"""MatchingStubConnector.newUser failure:
-                 | Request {
-                 |   dynamicStubUrl: $dynamicStubUrl
-                 |   json: ${UserData.format.writes(userData): JsValue}
-                 | }
-                 | Response: status=$status, body=${response.body}""".stripMargin)
-            Future.successful(false)
-        }
-    }
+    http
+      .post(url"${dynamicStubUrl}")
+      .withBody(Json.toJson(Request(userData)))
+      .execute[HttpResponse]
+      .flatMap {
+        response =>
+          response.status match {
+            case CREATED =>
+              logger.info("MatchingStubConnector.newUser successful")
+              Future.successful(true)
+            case status =>
+              logger.warn(
+                s"""MatchingStubConnector.newUser failure:
+                   | Request {
+                   |   dynamicStubUrl: $dynamicStubUrl
+                   |   json: ${UserData.format.writes(userData): JsValue}
+                   | }
+                   | Response: status=$status, body=${response.body}""".stripMargin)
+              Future.successful(false)
+          }
+      }
   }
 
 }

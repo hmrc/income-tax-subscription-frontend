@@ -21,14 +21,15 @@ import connectors.httpparser.DeleteSessionDataHttpParser.DeleteSessionDataRespon
 import connectors.httpparser.GetSessionDataHttpParser.GetSessionDataResponse
 import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataResponse
 import play.api.libs.json._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SessionDataConnector @Inject()(appConfig: AppConfig,
-                                     http: HttpClient)
+                                     http: HttpClientV2)
                                     (implicit ec: ExecutionContext) {
 
   private def sessionDataUrl(id: String): String = {
@@ -44,23 +45,23 @@ class SessionDataConnector @Inject()(appConfig: AppConfig,
   }
 
   def getSessionData[T](id: String)(implicit hc: HeaderCarrier, reads: Reads[T]): Future[GetSessionDataResponse[T]] = {
-    http.GET[GetSessionDataResponse[T]](sessionDataUrl(id))
+    http.get(url"${sessionDataUrl(id)}").execute[GetSessionDataResponse[T]]
   }
 
   def getAllSessionData()(implicit hc: HeaderCarrier, reads: Reads[Map[String, JsValue]]): Future[GetSessionDataResponse[Map[String, JsValue]]] = {
-    http.GET[GetSessionDataResponse[Map[String, JsValue]]](allSessionDataUrl())
+    http.get(url"${allSessionDataUrl()}").execute[GetSessionDataResponse[Map[String, JsValue]]]
   }
 
   def saveSessionData[T](id: String, data: T)(implicit hc: HeaderCarrier, writes: Writes[T]): Future[SaveSessionDataResponse] = {
-    http.POST[JsValue, SaveSessionDataResponse](sessionDataUrl(id), Json.toJson(data))
+    http.post(url"${sessionDataUrl(id)}").withBody(Json.toJson(data)).execute[SaveSessionDataResponse]
   }
 
   def deleteSessionData(id: String)(implicit hc: HeaderCarrier): Future[DeleteSessionDataResponse] = {
-    http.DELETE[DeleteSessionDataResponse](sessionDataUrl(id))
+    http.delete(url"${sessionDataUrl(id)}").execute[DeleteSessionDataResponse]
   }
 
   def deleteAllSessionData(implicit hc: HeaderCarrier): Future[DeleteSessionDataResponse] = {
-    http.DELETE[DeleteSessionDataResponse](sessionIdDataUrl())
+    http.delete(url"${sessionIdDataUrl()}").execute[DeleteSessionDataResponse]
   }
 
 }

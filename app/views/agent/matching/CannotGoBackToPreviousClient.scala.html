@@ -16,9 +16,11 @@
 
 @import config.AppConfig
 @import views.html.templates.AgentMainTemplate
+@import views.html.helpers.UnorderedList
 
 @this(
-    mainTemplate: AgentMainTemplate
+    mainTemplate: AgentMainTemplate,
+    ul: UnorderedList
 )
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -31,11 +33,14 @@
     <p class="govuk-body">@messages("agent.cannot-go-back-previous-client.para1")</p>
     <p class="govuk-body">@messages("agent.cannot-go-back-previous-client.para2")</p>
 
-    <ul class="govuk-list govuk-list--bullet">
-      <li>@Html(messages("agent.cannot-go-back-previous-client.agent-service-account", appConfig.agentServicesAccountHomeUrl))</li>
-      <li>@Html(messages("agent.cannot-go-back-previous-client.re-enter-client-details", controllers.agent.routes.AddAnotherClientController.addAnother().url))</li>
-      <li>@Html(messages("agent.cannot-go-back-previous-client.sign-up-another-client", controllers.agent.routes.AddAnotherClientController.addAnother().url))</li>
-    </ul>
+    @ul(
+        leadIn=messages("agent.cannot-go-back-previous-client.para2"),
+        Seq(
+            HtmlContent(messages("agent.cannot-go-back-previous-client.agent-service-account", appConfig.agentServicesAccountHomeUrl)),
+            HtmlContent(messages("agent.cannot-go-back-previous-client.re-enter-client-details", controllers.agent.routes.AddAnotherClientController.addAnother().url)),
+            HtmlContent(messages("agent.cannot-go-back-previous-client.sign-up-another-client", controllers.agent.routes.AddAnotherClientController.addAnother().url))
+        )
+    )
 }
 
 

@@ -20,16 +20,17 @@ import config.AppConfig
 import models.sps.AgentSPSPayload
 import play.api.Logging
 import play.api.libs.json.Format.GenericFormat
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.Json
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AgentSPSConnector @Inject()(appConfig: AppConfig,
-                                  http: HttpClient)
+                                  http: HttpClientV2)
                                  (implicit ec: ExecutionContext) extends Logging {
 
   def postSpsConfirm(arn: String, nino: String, sautr: String, itsaId: String)(implicit hc: HeaderCarrier): Future[Unit] = {
@@ -37,13 +38,14 @@ class AgentSPSConnector @Inject()(appConfig: AppConfig,
     val enrolmentIRSA = s"IR-SA~UTR~$sautr"
     val enrolmentMTDITID = s"HMRC-MTD-IT~MTDITID~$itsaId"
 
-    http.POST[JsValue, HttpResponse](
-      url = appConfig.channelPreferencesUrl + s"/channel-preferences/enrolment",
-      body = Json.toJson(AgentSPSPayload(arn, nino, enrolmentIRSA, enrolmentMTDITID))
-    ).map(_ => ()).recover { _ =>
-      logger.warn("[AgentSPSConnector][postSpsConfirm] - Failure when confirming sps preference")
-      ()
-    }
+    http
+      .post(url"${appConfig.channelPreferencesUrl + s"/channel-preferences/enrolment"}")
+      .withBody(Json.toJson(AgentSPSPayload(arn, nino, enrolmentIRSA, enrolmentMTDITID)))
+      .execute[HttpResponse]
+      .map(_ => ()).recover { _ =>
+        logger.warn("[AgentSPSConnector][postSpsConfirm] - Failure when confirming sps preference")
+        ()
+      }
   }
 
 }

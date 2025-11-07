@@ -17,24 +17,26 @@
 package testonly.connectors
 
 import config.AppConfig
+import play.api.libs.json.Json
 import testonly.models.FeatureSwitchSetting
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class EligibilityFeatureSwitchConnector @Inject()(http: HttpClient, appConfig: AppConfig)
+class EligibilityFeatureSwitchConnector @Inject()(http: HttpClientV2, appConfig: AppConfig)
                                                  (implicit ec: ExecutionContext) {
 
   def getEligibilityFeatureSwitches(implicit hc: HeaderCarrier): Future[Map[String, Boolean]] = for {
-    featureSwitches <- http.GET[Set[FeatureSwitchSetting]](appConfig.eligibilityFeatureSwitchUrl)
+    featureSwitches <- http.get(url"${appConfig.eligibilityFeatureSwitchUrl}").execute[Set[FeatureSwitchSetting]]
   } yield {
     featureSwitches map { case FeatureSwitchSetting(name, isEnabled) => name -> isEnabled }
-    }.toMap
+  }.toMap
 
   def submitEligibilityFeatureSwitches(featureSwitches: Set[FeatureSwitchSetting])
                                       (implicit hc: HeaderCarrier): Future[HttpResponse] =
-    http.POST[Set[FeatureSwitchSetting], HttpResponse](appConfig.eligibilityFeatureSwitchUrl, featureSwitches)
+    http.post(url"${appConfig.eligibilityFeatureSwitchUrl}").withBody(Json.toJson(featureSwitches)).execute[HttpResponse]
 
 }

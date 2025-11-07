@@ -17,34 +17,32 @@
 package connectors.agent
 
 import config.AppConfig
-import connectors.agent.EnrolmentStoreProxyConnector.principalQueryKey
 import connectors.agent.httpparsers.AllocateEnrolmentResponseHttpParser.AllocateEnrolmentResponse
 import connectors.agent.httpparsers.AssignEnrolmentToUserHttpParser.AssignEnrolmentToUserResponse
 import connectors.agent.httpparsers.EnrolmentStoreProxyHttpParser.EnrolmentStoreProxyResponse
 import connectors.agent.httpparsers.QueryUsersHttpParser.QueryUsersResponse
 import connectors.agent.httpparsers.UpsertEnrolmentResponseHttpParser.UpsertEnrolmentResponse
 import models.common.subscription.EnrolmentKey
-import play.api.libs.json.{JsObject, Json}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import play.api.libs.json.Json
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EnrolmentStoreProxyConnector @Inject()(http: HttpClient,
+class EnrolmentStoreProxyConnector @Inject()(http: HttpClientV2,
                                              appConfig: AppConfig)(implicit ec: ExecutionContext) {
 
   def getAllocatedEnrolments(enrolmentKey: EnrolmentKey)(implicit hc: HeaderCarrier): Future[EnrolmentStoreProxyResponse] = {
-    http.GET[EnrolmentStoreProxyResponse](
-      url = appConfig.getAllocatedEnrolmentUrl(enrolmentKey),
-      queryParams = Seq(principalQueryKey)
-    )
+    val base = appConfig.getAllocatedEnrolmentUrl(enrolmentKey)
+    http
+      .get(url"$base?type=principal")
+      .execute[EnrolmentStoreProxyResponse]
   }
 
   def getUserIds(utr: String)(implicit hc: HeaderCarrier): Future[QueryUsersResponse] = {
-    http.GET[QueryUsersResponse](
-      url = appConfig.queryUsersUrl(utr)
-    )
+    http.get(url"${appConfig.queryUsersUrl(utr)}").execute[QueryUsersResponse]
   }
 
   def upsertEnrolment(mtditid: String,
@@ -60,11 +58,10 @@ class EnrolmentStoreProxyConnector @Inject()(http: HttpClient,
         )
       )
     )
-    http.PUT[JsObject, UpsertEnrolmentResponse](
-      url = appConfig.upsertEnrolmentEnrolmentStoreUrl(enrolmentKey),
-      body = requestBody
-    )
-
+    http
+      .put(url"${appConfig.upsertEnrolmentEnrolmentStoreUrl(enrolmentKey)}")
+      .withBody(Json.toJson(requestBody))
+      .execute[UpsertEnrolmentResponse]
   }
 
   def allocateEnrolmentWithoutKnownFacts(groupId: String,
@@ -78,10 +75,10 @@ class EnrolmentStoreProxyConnector @Inject()(http: HttpClient,
       "type" -> "principal",
       "action" -> "enrolAndActivate"
     )
-    http.POST[JsObject, AllocateEnrolmentResponse](
-      url = appConfig.allocateEnrolmentEnrolmentStoreUrl(groupId, enrolmentKey),
-      body = requestBody
-    )
+    http
+      .post(url"${appConfig.allocateEnrolmentEnrolmentStoreUrl(groupId, enrolmentKey)}")
+      .withBody(Json.toJson(requestBody))
+      .execute[AllocateEnrolmentResponse]
   }
 
 
@@ -90,9 +87,9 @@ class EnrolmentStoreProxyConnector @Inject()(http: HttpClient,
                      )(implicit hc: HeaderCarrier): Future[AssignEnrolmentToUserResponse] = {
     val enrolmentKey = s"HMRC-MTD-IT~MTDITID~$mtdid"
 
-    http.POSTEmpty[AssignEnrolmentToUserResponse](
-      url = appConfig.assignEnrolmentUrl(credentialId, enrolmentKey)
-    )
+    http
+      .post(url"${appConfig.assignEnrolmentUrl(credentialId, enrolmentKey)}")
+      .execute[AssignEnrolmentToUserResponse]
   }
 }
 

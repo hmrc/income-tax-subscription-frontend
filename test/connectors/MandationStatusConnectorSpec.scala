@@ -16,51 +16,80 @@
 
 package connectors
 
-import auth.MockHttp
-import connectors.httpparser.PostMandationStatusParser.PostMandationStatusResponse
+import com.github.tomakehurst.wiremock.client.WireMock._
+import config.AppConfig
 import models.ErrorModel
 import models.status.MandationStatus.Voluntary
-import models.status.{MandationStatusModel, MandationStatusRequest}
-import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.when
+import models.status.MandationStatusModel
 import org.scalatest.matchers.must.Matchers
-import play.api.http.Status.INTERNAL_SERVER_ERROR
+import org.scalatest.wordspec.AnyWordSpec
+import play.api.Application
+import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK}
+import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.Json
 import play.api.mvc.Request
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.test.{HttpClientV2Support, WireMockSupport}
 
-import scala.concurrent.Future
+import scala.concurrent.ExecutionContext
 
-class MandationStatusConnectorSpec extends MockHttp with Matchers {
+class MandationStatusConnectorSpec extends AnyWordSpec with Matchers with WireMockSupport with HttpClientV2Support {
+
+  private lazy val app: Application = new GuiceApplicationBuilder()
+    .configure(
+      "microservice.services.income-tax-subscription.host" -> wireMockHost,
+      "microservice.services.income-tax-subscription.port" -> wireMockPort,
+      "microservice.services.income-tax-subscription.protocol" -> "http"
+    )
+    .build()
+
+  override def beforeEach(): Unit = super.beforeEach()
+
+  private val appConfig = app.injector.instanceOf[AppConfig]
+
   implicit val request: Request[_] = FakeRequest()
-  val connector = new MandationStatusConnector(appConfig, mockHttp)
+  implicit val hc: HeaderCarrier = HeaderCarrier()
+  implicit val ec: ExecutionContext = app.injector.instanceOf[ExecutionContext]
+
+  private val connector = new MandationStatusConnector(appConfig, httpClientV2)
 
   val headers = Seq()
 
   "getMandationStatus" should {
     "retrieve the user mandation status" when {
       "the status-determination-service returns a successful response" in {
-        when(mockHttp.POST[MandationStatusRequest, PostMandationStatusResponse](
-          ArgumentMatchers.eq(appConfig.mandationStatusUrl),
-          ArgumentMatchers.eq(MandationStatusRequest("test-nino", "test-utr")),
-          ArgumentMatchers.any()
-        )(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
-          .thenReturn(Future.successful(Right(MandationStatusModel(currentYearStatus = Voluntary, nextYearStatus = Voluntary))))
+        val responseJson = Json.toJson(MandationStatusModel(currentYearStatus = Voluntary, nextYearStatus = Voluntary))
 
-        await(
-          connector.getMandationStatus("test-nino", "test-utr")
-        ) mustBe Right(MandationStatusModel(currentYearStatus = Voluntary, nextYearStatus = Voluntary))
+        stubFor(
+          post(urlEqualTo("/income-tax-subscription/itsa-status"))
+            .withRequestBody(equalToJson("""{"nino":"test-nino","utr":"test-utr"}""", true, true))
+            .willReturn(
+              aResponse()
+                .withStatus(OK)
+                .withHeader("Content-Type", "application/json")
+                .withBody(responseJson.toString())
+            )
+        )
+
+        await(connector.getMandationStatus("test-nino", "test-utr")
+        ) mustBe Right(MandationStatusModel(Voluntary, Voluntary))
       }
     }
 
     "return an error" when {
       "the status-determination-service returns a failed response" in {
-        when(mockHttp.POST[MandationStatusRequest, PostMandationStatusResponse](
-          ArgumentMatchers.eq(appConfig.mandationStatusUrl),
-          ArgumentMatchers.eq(MandationStatusRequest("test-nino", "test-utr")),
-          ArgumentMatchers.any()
-        )(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
-          .thenReturn(Future.successful(Left(ErrorModel(INTERNAL_SERVER_ERROR, """{"code":"code","reason":"reason"}"""))))
+        stubFor(
+          post(urlEqualTo("/income-tax-subscription/itsa-status"))
+            .withRequestBody(equalToJson("""{"nino":"test-nino","utr":"test-utr"}"""))
+            .willReturn(
+              aResponse()
+                .withStatus(INTERNAL_SERVER_ERROR)
+                .withHeader("Content-Type", "application/json")
+                .withBody("""{"code":"code","reason":"reason"}""")
+            )
+        )
 
         await(
           connector.getMandationStatus("test-nino", "test-utr")

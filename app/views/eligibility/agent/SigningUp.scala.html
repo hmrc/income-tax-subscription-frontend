@@ -15,7 +15,7 @@
  *@
 
 @import views.html.templates.AgentMainTemplate
-@import views.html.helpers.{ContinueButton, PageHeadingHelper}
+@import views.html.helpers.{ContinueButton, PageHeadingHelper, UnorderedList}
 @import models.common.AccountingPeriodModel
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 
@@ -23,7 +23,8 @@
         mainTemplate: AgentMainTemplate,
         form: FormWithCSRF,
         hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
-        continueButton: ContinueButton
+        continueButton: ContinueButton,
+        ul: UnorderedList
 )
 
 @(postAction:Call, currentTaxYear: AccountingPeriodModel, nextTaxYear: AccountingPeriodModel, backUrl: String)(implicit request: Request[_], messages: Messages)
@@ -42,22 +43,29 @@
 
 @accountingPeriod = {
   <h2 class="govuk-heading-m">@messages("agent.signing-up.accounting-period.heading")</h2>
-  <p class="govuk-body">@messages("agent.signing-up.accounting-period.para-1")</p>
-  <ul class="govuk-list govuk-list--bullet">
-    <li>@messages("agent.signing-up.accounting-period.bullet-1")</li>
-    <li>@messages("agent.signing-up.accounting-period.bullet-2")</li>
-  </ul>
+
+  @ul(
+    leadIn=messages("agent.signing-up.accounting-period.para-1"),
+    Seq(
+        Text(messages("agent.signing-up.accounting-period.bullet-1")),
+        Text(messages("agent.signing-up.accounting-period.bullet-2"))
+    )
+  )
     <p class="govuk-body">@messages("agent.signing-up.accounting-period.para-2")</p>
 }
 
 @checkSignUp = {
   <h2 class="govuk-heading-m">@messages("agent.signing-up.check-sign-up.heading")</h2>
-  <p class="govuk-body">@messages("agent.signing-up.check-sign-up.para-1")</p>
-  <ul class="govuk-list govuk-list--bullet">
-    <li>@messages("agent.signing-up.check-sign-up.bullet-1")</li>
-    <li>@messages("agent.signing-up.check-sign-up.bullet-2")</li>
-    <li>@messages("agent.signing-up.check-sign-up.bullet-3")</li>
-  </ul>
+
+  @ul(
+    leadIn=messages("agent.signing-up.check-sign-up.para-1"),
+    Seq(
+        Text(messages("agent.signing-up.check-sign-up.bullet-1")),
+        Text(messages("agent.signing-up.check-sign-up.bullet-2")),
+        Text(messages("agent.signing-up.check-sign-up.bullet-3"))
+    )
+  )
+
   <p class="govuk-body">@messages("agent.signing-up.check-sign-up.para-2")</p>
 }
 

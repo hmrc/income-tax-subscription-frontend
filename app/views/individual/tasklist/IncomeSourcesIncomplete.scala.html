@@ -15,13 +15,14 @@
  *@
 
 @import views.html.templates.PrincipalMainTemplate
-@import views.html.helpers.ContinueButton
+@import views.html.helpers.{ContinueButton, UnorderedList}
 
 
 @this(
     mainTemplate: PrincipalMainTemplate,
     continueButton: ContinueButton,
-    form: FormWithCSRF
+    form: FormWithCSRF,
+    ul: UnorderedList
 )
 
 @(postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
@@ -32,11 +33,13 @@
 
     <p class="govuk-body">@messages("individual.income-sources-incomplete.para1")</p>
 
-    <p class="govuk-body">@messages("individual.income-sources-incomplete.para2")</p>
-    <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("individual.income-sources-incomplete.bullet1")</li>
-        <li>@messages("individual.income-sources-incomplete.bullet2")</li>
-    </ul>
+    @ul(
+        leadIn=messages("individual.income-sources-incomplete.para2"),
+        Seq(
+            Text(messages("individual.income-sources-incomplete.bullet1")),
+            Text(messages("individual.income-sources-incomplete.bullet2"))
+        )
+    )
 
     <p class="govuk-body">@messages("individual.income-sources-incomplete.para3")</p>
 

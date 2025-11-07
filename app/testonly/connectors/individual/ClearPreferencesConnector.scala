@@ -18,18 +18,19 @@ package testonly.connectors.individual
 
 import testonly.TestOnlyAppConfig
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ClearPreferencesConnector @Inject()(appConfig: TestOnlyAppConfig,
-                                          http: HttpClient)
+                                          http: HttpClientV2)
                                          (implicit ec: ExecutionContext) {
 
   private val clearPreferencesURL: String => String = (nino: String) => appConfig.entityResolverURL + s"/test-only/entity-resolver-admin/paye/$nino"
 
-  def clear(nino: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = http.DELETE(clearPreferencesURL(nino))
+  def clear(nino: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = http.delete(url"${clearPreferencesURL(nino)}").execute[HttpResponse]
 
 }

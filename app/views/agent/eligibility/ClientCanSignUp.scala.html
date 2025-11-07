@@ -15,13 +15,14 @@
  *@
 
 @import views.html.templates.AgentMainTemplate
-@import views.html.helpers.{ContinueButton, PageHeadingHelper}
+@import views.html.helpers.{ContinueButton, PageHeadingHelper, UnorderedList}
 
 @this(
     mainTemplate: AgentMainTemplate,
     form : FormWithCSRF,
     pageHeadingHelper: PageHeadingHelper,
-    continueButton: ContinueButton
+    continueButton: ContinueButton,
+    ul:UnorderedList
 )
 
 @(postAction: Call, backUrl: String, clientName: String, clientNino: String)(implicit request: Request[_], messages: Messages)
@@ -40,21 +41,23 @@
 
     <p class="govuk-body">@messages("agent.client-can-sign-up.para2")</p>
 
-    <p class="govuk-body">@messages("agent.client-can-sign-up.para3")</p>
-
-    <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("agent.client-can-sign-up.bullet1")</li>
-        <li>@messages("agent.client-can-sign-up.bullet2")</li>
-    </ul>
+    @ul(
+        leadIn=messages("agent.client-can-sign-up.para3"),
+        Seq(
+            Text(messages("agent.client-can-sign-up.bullet1")),
+            Text(messages("agent.client-can-sign-up.bullet2"))
+        )
+    )
 
     <h2 class="govuk-heading-m">@messages("agent.client-can-sign-up.subheading2")</h2>
 
-    <p class="govuk-body">@messages("agent.client-can-sign-up.para4")</p>
-
-    <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-6">
-        <li>@messages("agent.client-can-sign-up.bullet3")</li>
-        <li>@messages("agent.client-can-sign-up.bullet4")</li>
-    </ul>
+    @ul(
+        leadIn=messages("agent.client-can-sign-up.para4"),
+        Seq(
+            Text(messages("agent.client-can-sign-up.bullet3")),
+            Text(messages("agent.client-can-sign-up.bullet4"))
+        )
+    )
 
     @form(action = postAction) {
 

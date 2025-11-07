@@ -18,20 +18,18 @@ package connectors
 
 import config.AppConfig
 import connectors.httpparser.GetPrePopDataParser.{GetPrePopDataResponse, getPrePopDataResponseHttpReads}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PrePopConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient)
+class PrePopConnector @Inject()(appConfig: AppConfig, http: HttpClientV2)
                                (implicit ec: ExecutionContext) {
 
   def getPrePopData(nino: String)
                    (implicit hc: HeaderCarrier): Future[GetPrePopDataResponse] = {
-    httpClient.GET[GetPrePopDataResponse](
-      url = appConfig.prePopUrl(nino)
-    )
+    http.get(url"${appConfig.prePopUrl(nino)}").execute[GetPrePopDataResponse]
   }
 
 }

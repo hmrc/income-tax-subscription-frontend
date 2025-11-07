@@ -20,19 +20,20 @@ import config.AppConfig
 import play.api.http.Status.OK
 import services.ThrottleId
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ThrottlingConnector @Inject()(appConfig: AppConfig, http: HttpClient)
+class ThrottlingConnector @Inject()(appConfig: AppConfig, http: HttpClientV2)
                                    (implicit ec: ExecutionContext) {
 
   def throttlingUrl: String = appConfig.throttlingUrl
 
   def getThrottleStatus(throttleId: ThrottleId)(implicit hc: HeaderCarrier): Future[Boolean] = {
-    http.POSTEmpty[HttpResponse](s"$throttlingUrl?throttleId=$throttleId")
+    http.post(url"${s"$throttlingUrl?throttleId=$throttleId"}").execute[HttpResponse]
       .map(result => result.status == OK)
   }
 
