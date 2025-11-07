@@ -100,6 +100,6 @@ object AgentServicesConnector {
     s"/agent-client-relationships/agent/$arn/service/HMRC-MTD-IT/client/ni/$nino"
 
   def suppAgentClientURI(arn: String, nino: String): String =
-    s"/agent-client-relationships/agent/$arn/service/HMRC-MTD-SUPP/client/ni/$nino"
+    s"/agent-client-relationships/agent/$arn/service/HMRC-MTD-IT-SUPP/client/ni/$nino"
 
 }
