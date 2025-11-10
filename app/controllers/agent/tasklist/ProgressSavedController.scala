@@ -16,16 +16,15 @@
 
 package controllers.agent.tasklist
 
+import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import models.audits.SaveAndComebackAuditing
 import models.audits.SaveAndComebackAuditing.SaveAndComeBackAuditModel
 import models.requests.agent.ConfirmedClientRequest
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import play.api.{Configuration, Environment}
 import services.{AuditingService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
-import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import utilities.{AccountingPeriodUtil, CacheExpiryDateProvider, CurrentDateProvider}
 import views.html.agent.tasklist.ProgressSaved
 
@@ -39,9 +38,9 @@ class ProgressSavedController @Inject()(identify: IdentifierAction,
                                         cacheExpiryDateProvider: CacheExpiryDateProvider,
                                         currentDateProvider: CurrentDateProvider,
                                         subscriptionDetailsService: SubscriptionDetailsService,
-                                        view: ProgressSaved)
-                                       (val config: Configuration, val env: Environment)
-                                       (implicit mcc: MessagesControllerComponents, ec: ExecutionContext) extends SignUpBaseController with AuthRedirects {
+                                        view: ProgressSaved,
+                                        val appConfig: AppConfig)
+                                       (implicit mcc: MessagesControllerComponents, ec: ExecutionContext) extends SignUpBaseController {
 
   def show(location: Option[String] = None): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     subscriptionDetailsService.fetchLastUpdatedTimestamp(request.reference) flatMap {
@@ -53,14 +52,14 @@ class ProgressSavedController @Inject()(identify: IdentifierAction,
           } yield {
             Ok(view(
               expirationDate = cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime),
-              signInUrl = ggLoginUrl,
+              signInUrl = appConfig.ggLoginUrl,
               clientDetails = request.clientDetails
             ))
           }
           case None =>
             Future.successful(Ok(view(
               expirationDate = cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime),
-              signInUrl = ggLoginUrl,
+              signInUrl = appConfig.ggLoginUrl,
               clientDetails = request.clientDetails
             )))
         }

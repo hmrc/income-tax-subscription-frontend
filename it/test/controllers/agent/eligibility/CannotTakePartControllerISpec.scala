@@ -28,10 +28,8 @@ import org.jsoup.nodes.{Document, Element}
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.libs.json.JsString
 import play.api.libs.ws.WSResponse
-import play.api.{Configuration, Environment}
-import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 
-class CannotTakePartControllerISpec extends ComponentSpecBase with AuthRedirects with SessionCookieCrumbler {
+class CannotTakePartControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
   class Setup(sessionData: Map[String, String] = ClientData.clientDataWithNinoAndUTR ++ Map(JourneyStateKey -> AgentUserMatching.name)) {
     AuthStub.stubAuthSuccess()
@@ -88,6 +86,4 @@ class CannotTakePartControllerISpec extends ComponentSpecBase with AuthRedirects
 
   }
 
-  override val env: Environment = app.injector.instanceOf[Environment]
-  override val config: Configuration = app.injector.instanceOf[Configuration]
 }

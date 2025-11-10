@@ -9,14 +9,14 @@ object AppDependencies {
   private val testScope = "test"
   private val integrationTestScope = "it"
 
-  private val bootstrapPlayVersion     = "8.3.0"
-  private val playPartialsVersion      = "9.1.0"
-  private val playHmrcFrontendVersion  = "12.1.0"
+  private val bootstrapPlayVersion     = "10.4.0"
+  private val playPartialsVersion      = "10.2.0"
+  private val playHmrcFrontendVersion  = "12.20.0"
   private val domainVersion            = "11.0.0"
   private val catsVersion              = "2.10.0"
-  private val cryptoJsonVersion        = "8.2.0"
+  private val cryptoJsonVersion        = "8.4.0"
 
-  private val jsoupVersion             = "1.15.3"
+  private val jsoupVersion             = "1.21.2"
 
   val compile: Seq[ModuleID] = Seq(
     ws,

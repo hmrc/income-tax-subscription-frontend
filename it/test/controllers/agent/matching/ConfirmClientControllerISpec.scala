@@ -106,7 +106,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           Then("The result must have a status of INTERNAL_SERVER_ERROR")
           res must have(
             httpStatus(INTERNAL_SERVER_ERROR),
-            pageTitle("Sorry, we are experiencing technical difficulties - 500")
+            pageTitle("Sorry, there is a problem with the service")
           )
         }
       }
