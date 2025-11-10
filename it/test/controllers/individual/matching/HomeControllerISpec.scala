@@ -259,9 +259,9 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
     }
   }
 
-  lazy val ineligibleStatus: EligibilityStatus = EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = false)
-  lazy val eligibleNextYearOnly: EligibilityStatus = EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true)
-  lazy val eligibleBothYears: EligibilityStatus = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)
+  lazy val ineligibleStatus: EligibilityStatus = EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = false, exceptionReason = None)
+  lazy val eligibleNextYearOnly: EligibilityStatus = EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exceptionReason = None)
+  lazy val eligibleBothYears: EligibilityStatus = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None)
 
   lazy val fullPrePopData: PrePopData = PrePopData(
     selfEmployment = Some(Seq(prePopSelfEmployment))
