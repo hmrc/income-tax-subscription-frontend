@@ -33,7 +33,7 @@ class CannotTakePartViewSpec extends ViewSpec {
   val page: HtmlFormat.Appendable = view(
     clientName = clientName,
     clientNino = clientNino,
-    exemptionReason = exemptionReason
+    exemptionReason = Some(exemptionReason)
   )
 
   val document: Document = Jsoup.parse(page.body)

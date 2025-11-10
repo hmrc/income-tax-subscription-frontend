@@ -34,7 +34,7 @@ class CannotTakePartController @Inject()(view: CannotTakePart,
 
   val show: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     for {
-      eligibilityStatus <- getEligibilityStatusService.getEligibilityStatus
+      eligibilityStatus <- getEligibilityStatusService.getEligibilityStatus()
     } yield {
       val maybeReason = eligibilityStatus.exceptionReason
       Ok(view(

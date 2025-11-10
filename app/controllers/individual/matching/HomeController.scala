@@ -140,7 +140,7 @@ class HomeController @Inject()(identity: IdentifierAction,
 
   private def handleIneligible(utr: String)(implicit request: PreSignUpRequest[AnyContent]): Future[Result] = {
     for {
-      eligibilityStatus <-  eligibilityStatusService.getEligibilityStatus
+      eligibilityStatus <-  eligibilityStatusService.getEligibilityStatus()
     _ <- eligibilityAudit(
       maybeUTR = Some(utr),
       eligibility = "ineligible",
