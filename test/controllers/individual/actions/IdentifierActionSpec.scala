@@ -29,7 +29,6 @@ import play.api.libs.json.JsString
 import play.api.mvc.{BodyParsers, Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout, redirectLocation, status}
-import play.api.{Configuration, Environment}
 import services.mocks.MockSessionDataService
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
 import uk.gov.hmrc.auth.core._
@@ -47,8 +46,6 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
   val identifierAction: IdentifierAction = new IdentifierAction(
     authConnector = mockAuth,
     parser = app.injector.instanceOf[BodyParsers.Default],
-    config = app.injector.instanceOf[Configuration],
-    env = app.injector.instanceOf[Environment]
   )(MockConfig, mockSessionDataService)
 
   val testUtr: String = "1234567890"
@@ -261,7 +258,7 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
         }(FakeRequest(method = "GET", path = "/test-url"))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some("/bas-gateway/sign-in?continue_url=%2Ftest-url&origin=income-tax-subscription-frontend")
+        redirectLocation(result) mustBe Some(s"/bas-gateway/sign-in?continue_url=%2Ftest-url&origin=${MockConfig.appName}")
       }
     }
   }

@@ -29,14 +29,14 @@ class SessionTimeoutControllerSpec extends ControllerBaseSpec {
 
   override val controllerName: String = "SessionTimeoutController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
-  implicit lazy val config:Configuration = app.injector.instanceOf[Configuration]
+  implicit lazy val config: Configuration = app.injector.instanceOf[Configuration]
 
   private val sessionTimeoutView = mock[Timeout]
 
   when(sessionTimeoutView()(any(), any()))
     .thenReturn(HtmlFormat.empty)
 
-  object TestSessionTimeoutController extends SessionTimeoutController(sessionTimeoutView, mockMessagesControllerComponents, config, env)
+  object TestSessionTimeoutController extends SessionTimeoutController(sessionTimeoutView, mockMessagesControllerComponents, appConfig)
 
   "Calling the timeout action of the SessionTimeoutController" should {
 

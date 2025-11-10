@@ -37,7 +37,7 @@ class SessionTimeoutControllerSpec extends AgentControllerBaseSpec {
   when(agentTimeoutView()(any(), any()))
     .thenReturn(HtmlFormat.empty)
 
-  object TestSessionTimeoutController extends SessionTimeoutController(agentTimeoutView, mockMessagesControllerComponents)(config, env)
+  object TestSessionTimeoutController extends SessionTimeoutController(agentTimeoutView, mockMessagesControllerComponents, appConfig)
 
   "Calling the timeout action of the SessionTimeoutController" should {
 

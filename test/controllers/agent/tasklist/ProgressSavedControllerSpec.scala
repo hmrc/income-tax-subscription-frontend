@@ -16,6 +16,8 @@
 
 package controllers.agent.tasklist
 
+import config.AppConfig
+import config.MockConfig.appConfig.ggLoginUrl
 import controllers.ControllerSpec
 import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}
 import models.audits.SaveAndComebackAuditing.SaveAndComeBackAuditModel
@@ -142,10 +144,9 @@ class ProgressSavedControllerSpec extends ControllerSpec
       cacheExpiryDateProvider = mockCacheExpiryDateProvider,
       currentDateProvider = mockCurrentDateProvider,
       subscriptionDetailsService = mockSubscriptionDetailsService,
-      view = mockView
-    )(mockConfiguration, mockEnvironment) {
-      override def ggLoginUrl: String = "/"
-    }
+      view = mockView,
+      appConfig = mock[AppConfig]
+    )
   }
 
   lazy val dateTime: LocalDateTime = LocalDateTime.of(LocalDate.now, LocalTime.of(0, 0))

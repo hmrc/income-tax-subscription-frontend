@@ -55,7 +55,7 @@ trait MockConfig extends UnitTestTrait with AppConfig {
   override lazy val govukGuidanceITSASignUpIndivLink: String = "https://www.gov.uk/guidance/sign-up-your-business-for-making-tax-digital-for-income-tax"
   override lazy val govukGuidanceITSASignUpAgentLink: String = "https://www.gov.uk/guidance/sign-up-your-client-for-making-tax-digital-for-income-tax"
   override lazy val govukGuidanceITSAWhoCanSignUpVoluntarily: String = "https://www.gov.uk/guidance/sign-up-your-business-for-making-tax-digital-for-income-tax#who-can-sign-up-voluntarily"
-  override lazy val individualSigningUpUrl: String =s"$baseUrl/report-quarterly/income-and-expenses/sign-up/eligibility/signing-up"
+  override lazy val individualSigningUpUrl: String = s"$baseUrl/report-quarterly/income-and-expenses/sign-up/eligibility/signing-up"
   override lazy val agentSigningUpUrl: String = s"$baseUrl/report-quarterly/income-and-expenses/sign-up/eligibility/client/signing-up"
 
 
@@ -98,6 +98,16 @@ trait MockConfig extends UnitTestTrait with AppConfig {
   override val incomeTaxSelfEmploymentsFrontendInitialiseUrl: String = s"$incomeTaxSelfEmploymentsFrontendUrl/details"
   override val incomeTaxSelfEmploymentsFrontendClientInitialiseUrl: String = s"$incomeTaxSelfEmploymentsFrontendUrl/client/details"
 
+  override lazy val ggLoginUrl: String = "/bas-gateway/sign-in"
+
+  override def redirectToLogin(continueUrl: String): play.api.mvc.Result =
+    play.api.mvc.Results.Redirect(
+      url = ggLoginUrl,
+      queryStringParams = Map(
+        "continue_url" -> Seq(continueUrl),
+        "origin" -> Seq(appName)
+      )
+    )
   override def getAllocatedEnrolmentUrl(enrolmentKey: EnrolmentKey): String = ???
 
   override def queryUsersUrl(utr: String): String = ???

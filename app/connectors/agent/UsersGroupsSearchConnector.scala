@@ -18,17 +18,18 @@ package connectors.agent
 
 import config.FrontendAppConfig
 import connectors.agent.httpparsers.GetUsersForGroupHttpParser._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class UsersGroupsSearchConnector @Inject()(val http: HttpClient, appConfig: FrontendAppConfig)
+class UsersGroupsSearchConnector @Inject()(val http: HttpClientV2, appConfig: FrontendAppConfig)
                                           (implicit ec: ExecutionContext) {
 
-  def getUsersForGroup(groupID: String)(implicit hc:HeaderCarrier): Future[GetUsersForGroupResponse] = {
-    http.GET(appConfig.getUsersForGroupUrl(groupID))
+  def getUsersForGroup(groupID: String)(implicit hc: HeaderCarrier): Future[GetUsersForGroupResponse] = {
+    http.get(url"${appConfig.getUsersForGroupUrl(groupID)}").execute
   }
 
 }
