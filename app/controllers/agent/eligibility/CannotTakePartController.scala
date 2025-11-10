@@ -36,15 +36,12 @@ class CannotTakePartController @Inject()(view: CannotTakePart,
     for {
       eligibilityStatus <- getEligibilityStatusService.getEligibilityStatus
     } yield {
-      val maybeReason = eligibilityStatus.exceptionReason.getOrElse("unknown")
-
+      val maybeReason = eligibilityStatus.exceptionReason
       Ok(view(
         clientName = request.clientDetails.name,
         clientNino = request.clientDetails.formattedNino,
         exemptionReason = maybeReason
-      )).addingToSession(
-        "exemptionReason" -> maybeReason
-      )
+      ))
       }
     }
 }
