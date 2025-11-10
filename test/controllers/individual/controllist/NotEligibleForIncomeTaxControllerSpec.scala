@@ -33,7 +33,7 @@ class NotEligibleForIncomeTaxControllerSpec extends ControllerBaseSpec with Mock
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
   val mockNotEligibleForIncomeTax: NotEligibleForIncomeTax = mock[NotEligibleForIncomeTax]
-  when(mockNotEligibleForIncomeTax()(ArgumentMatchers.any(), ArgumentMatchers.any()))
+  when(mockNotEligibleForIncomeTax(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
     .thenReturn(HtmlFormat.empty)
 
   object TestCannotUseServiceController extends NotEligibleForIncomeTaxController(

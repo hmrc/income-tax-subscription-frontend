@@ -53,7 +53,7 @@ class NotEligibleForIncomeTaxViewSpec extends ViewSpec {
 
   }
 
-  private def document = Jsoup.parse(view().body)
+  private def document = Jsoup.parse(view(exemptionReason = None).body)
 
   object CannotSignUpYetMessages {
     val heading = "You cannot sign up yet"
