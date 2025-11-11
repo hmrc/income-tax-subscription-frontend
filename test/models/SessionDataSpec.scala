@@ -28,7 +28,7 @@ class SessionDataSpec extends PlaySpec {
   private val reference = "A/1234-B"
   private val throttle = IndividualStartOfJourneyThrottle
   private val msndationStatus = MandationStatusModel(Voluntary, Voluntary)
-  private val eligibilityStatus = EligibilityStatus(false, false)
+  private val eligibilityStatus = EligibilityStatus(false, false, None)
   private val nino = "AB012345C"
   private val utr = "0123456789"
   private val softwareStatus = Yes

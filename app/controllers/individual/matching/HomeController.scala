@@ -82,9 +82,9 @@ class HomeController @Inject()(identity: IdentifierAction,
 
   private def handleNoSubscriptionFound(sessionData: SessionData, utr: String)(implicit request: PreSignUpRequest[AnyContent]): Future[Result] = {
     eligibilityStatusService.getEligibilityStatus(sessionData) flatMap {
-      case EligibilityStatus(false, false) =>
+      case EligibilityStatus(false, false, _) =>
         handleIneligible(utr)
-      case EligibilityStatus(eligibleCurrentYear, _) =>
+      case EligibilityStatus(eligibleCurrentYear, _, _) =>
         handleEligible(sessionData, utr, eligibleCurrentYear)
     }
   }

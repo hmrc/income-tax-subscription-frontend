@@ -54,7 +54,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
-          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason= None))
         ))
 
         val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
@@ -100,7 +100,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
               ITSASessionKeys.NINO -> JsString(testNino),
               ITSASessionKeys.UTR -> JsString(testUtr),
               ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
-              ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+              ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason= None))
             ))
 
             SignUpAPIStub.stubSignUp(testSignUpModel(Current))(OK, Json.obj("mtdbsa" -> testMtdId))
@@ -161,7 +161,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
               ITSASessionKeys.NINO -> JsString(testNino),
               ITSASessionKeys.UTR -> JsString(testUtr),
               ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
-              ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+              ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason= None))
             ))
 
             SignUpAPIStub.stubSignUp(testSignUpModel(Current))(UNPROCESSABLE_ENTITY)
@@ -205,7 +205,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
               ITSASessionKeys.NINO -> JsString(testNino),
               ITSASessionKeys.UTR -> JsString(testUtr),
               ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
-              ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+              ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason= None))
             ))
 
             SignUpAPIStub.stubSignUp(testSignUpModel(Next))(OK, Json.obj("mtdbsa" -> testMtdId))
@@ -264,7 +264,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
               ITSASessionKeys.NINO -> JsString(testNino),
               ITSASessionKeys.UTR -> JsString(testUtr),
               ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
-              ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+              ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason= None))
             ))
 
             SignUpAPIStub.stubSignUp(testSignUpModel(Next))(UNPROCESSABLE_ENTITY)

@@ -55,7 +55,7 @@ class ConfirmedClientResolver @Inject()(identify: IdentifierAction,
     val sessionData = request.sessionData
     throttlingService.throttled(AgentStartOfJourneyThrottle, sessionData) {
       getEligibilityStatusService.getEligibilityStatus(sessionData) flatMap {
-        case EligibilityStatus(false, false) =>
+        case EligibilityStatus(false, false, _) =>
           for {
             nino <- ninoService.getNino(sessionData)
             utr <- utrService.getUTR(sessionData)
@@ -72,7 +72,7 @@ class ConfirmedClientResolver @Inject()(identify: IdentifierAction,
               .removingFromSession(FailedClientMatching)
               .clearUserDetailsExceptName
           }
-        case EligibilityStatus(thisYear, _) =>
+        case EligibilityStatus(thisYear, _, _) =>
           for {
             result <- goToSignUpClient(
               arn = request.arn,
