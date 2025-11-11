@@ -139,23 +139,14 @@ class HomeController @Inject()(identity: IdentifierAction,
   }
 
   private def handleIneligible(utr: String)(implicit request: PreSignUpRequest[AnyContent]): Future[Result] = {
-    for {
-      eligibilityStatus <-  eligibilityStatusService.getEligibilityStatus()
-    _ <- eligibilityAudit(
+    eligibilityAudit(
       maybeUTR = Some(utr),
       eligibility = "ineligible",
-      failureReason = eligibilityStatus.exceptionReason
-    )
-    } yield {
-      val maybeReason = eligibilityStatus.exceptionReason.getOrElse("control-list-ineligible")
-
-      Redirect(
-        controllers.individual.controllist.routes.NotEligibleForIncomeTaxController.show()
-      ).addingToSession(
-        "exemptionReason" -> maybeReason
-      )
-     }
+      failureReason = Some("control-list-ineligible")
+    ) map { _ =>
+      Redirect(controllers.individual.controllist.routes.NotEligibleForIncomeTaxController.show())
     }
+  }
 
   private def eligibilityAudit(maybeUTR: Option[String], eligibility: String, failureReason: Option[String] = None)
                               (implicit request: PreSignUpRequest[AnyContent]): Future[AuditResult] = {

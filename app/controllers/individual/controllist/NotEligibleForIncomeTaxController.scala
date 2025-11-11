@@ -19,7 +19,7 @@ package controllers.individual.controllist
 import auth.individual.StatelessController
 import config.AppConfig
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AuditingService, AuthService}
+import services.{AuditingService, AuthService, GetEligibilityStatusService, SessionDataService}
 import views.html.individual.matching.NotEligibleForIncomeTax
 
 import javax.inject.{Inject, Singleton}
@@ -28,13 +28,21 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class NotEligibleForIncomeTaxController @Inject()(val notEligibleForIncomeTax: NotEligibleForIncomeTax,
                                                   val auditingService: AuditingService,
-                                                  val authService: AuthService)
+                                                  val authService: AuthService,
+                                                  val sessionDataService: SessionDataService,
+                                                  val getEligibilityStatusService: GetEligibilityStatusService)
                                                  (implicit val ec: ExecutionContext,
                                                   val appConfig: AppConfig,
                                                   mcc: MessagesControllerComponents) extends StatelessController {
 
   val show: Action[AnyContent] = Authenticated.asyncUnrestricted { implicit request =>
-    val maybeReason: Option[String] = request.session.get("exemptionReason")
-    _ => Future.successful(Ok(notEligibleForIncomeTax(maybeReason)))
+    _ =>
+      for {
+        sessionData <- sessionDataService.getAllSessionData()
+        eligibilityStatus <- getEligibilityStatusService.getEligibilityStatus(sessionData)
+      } yield {
+        val maybeReason = eligibilityStatus.exceptionReason
+        Ok(notEligibleForIncomeTax(maybeReason))
+      }
   }
 }

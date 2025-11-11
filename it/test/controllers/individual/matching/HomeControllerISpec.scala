@@ -129,7 +129,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(ineligibleStatus)
         ))
-        EligibilityStub.stubEligibilityResponseBoth(testUtr)(currentYearResponse = false, nextYearResponse = false)
+        EligibilityStub.stubEligibilityResponseBoth(testUtr)(currentYearResponse = false, nextYearResponse = false, exceptionReason = None)
         SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, ineligibleStatus)(OK)
 
         val res = IncomeTaxSubscriptionFrontend.indexPage()

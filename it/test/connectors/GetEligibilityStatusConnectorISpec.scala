@@ -37,7 +37,7 @@ class GetEligibilityStatusConnectorISpec extends ComponentSpecBase {
   "getEligibilityStatus(sautr)" must {
     "return an eligibility status" when {
       "receiving an OK status with valid json" in {
-        stubEligibilityResponseBoth(utr)(currentYearResponse = true, nextYearResponse = true)
+        stubEligibilityResponseBoth(utr)(currentYearResponse = true, nextYearResponse = true, exceptionReason= None)
 
         val result: Future[HttpResult[EligibilityStatus]] = connector.getEligibilityStatus(utr)
 

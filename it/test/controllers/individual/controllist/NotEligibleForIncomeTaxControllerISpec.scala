@@ -16,9 +16,14 @@
 
 package controllers.individual.controllist
 
+import common.Constants.ITSASessionKeys
+import connectors.stubs.SessionDataConnectorStub
 import helpers.ComponentSpecBase
+import helpers.IntegrationTestConstants.testNino
 import helpers.servicemocks.AuthStub
+import models.EligibilityStatus
 import play.api.http.Status.OK
+import play.api.libs.json.{JsString, Json}
 
 class NotEligibleForIncomeTaxControllerISpec extends ComponentSpecBase {
 
@@ -27,6 +32,10 @@ class NotEligibleForIncomeTaxControllerISpec extends ComponentSpecBase {
     "show the cannot use service yet page" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
+      SessionDataConnectorStub.stubGetAllSessionData(Map(
+        ITSASessionKeys.NINO -> JsString(testNino),
+        ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(false,false,None))
+      ))
 
       When("GET /cannot-use-service-yet")
       val res = IncomeTaxSubscriptionFrontend.notEligibleForIncomeTax()
