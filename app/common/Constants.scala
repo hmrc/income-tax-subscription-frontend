@@ -48,7 +48,6 @@ object Constants {
     val REFERENCE = "reference"
     val ELIGIBILITY_STATUS = "ELIGIBILITY_STATUS"
     val MANDATION_STATUS = "MANDATION_STATUS"
-    val Exception_Reason = "EXCEPTION_REASON"
 
     val HAS_SOFTWARE = "HAS_SOFTWARE"
     val CAPTURE_CONSENT = "CAPTURE_CONSENT"

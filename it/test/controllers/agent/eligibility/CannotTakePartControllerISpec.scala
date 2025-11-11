@@ -18,9 +18,9 @@ package controllers.agent.eligibility
 
 import auth.agent.AgentUserMatching
 import common.Constants.ITSASessionKeys
-import common.Constants.ITSASessionKeys.{Exception_Reason, JourneyStateKey}
+import common.Constants.ITSASessionKeys.JourneyStateKey
 import connectors.stubs.SessionDataConnectorStub
-import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino, testUtr}
+import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino}
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import models.EligibilityStatus
