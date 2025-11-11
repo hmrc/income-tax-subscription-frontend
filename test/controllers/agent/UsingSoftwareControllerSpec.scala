@@ -51,7 +51,7 @@ class UsingSoftwareControllerSpec extends ControllerSpec
   "show" must {
     "return OK with the page content" when {
       "the user is able to sign up for both tax years" in {
-        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
         mockView(
           usingSoftwareForm = usingSoftwareForm,
           postAction = routes.UsingSoftwareController.submit(),
@@ -66,7 +66,7 @@ class UsingSoftwareControllerSpec extends ControllerSpec
         contentType(result) mustBe Some(HTML)
       }
       "the user is able to sign up for next year only" in {
-        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
+         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exceptionReason = None))
         mockView(
           usingSoftwareForm = usingSoftwareForm,
           postAction = routes.UsingSoftwareController.submit(),
@@ -84,7 +84,7 @@ class UsingSoftwareControllerSpec extends ControllerSpec
         val sessionData = SessionData(Map(
           ITSASessionKeys.HAS_SOFTWARE -> JsString(YES)
         ))
-        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
         mockView(
           usingSoftwareForm = usingSoftwareForm.fill(Yes),
           postAction = routes.UsingSoftwareController.submit(),
@@ -102,7 +102,7 @@ class UsingSoftwareControllerSpec extends ControllerSpec
         val sessionData = SessionData(Map(
           ITSASessionKeys.HAS_SOFTWARE -> JsString(NO)
         ))
-        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
         mockView(
           usingSoftwareForm = usingSoftwareForm.fill(No),
           postAction = routes.UsingSoftwareController.submit(),
@@ -122,7 +122,7 @@ class UsingSoftwareControllerSpec extends ControllerSpec
   "submit" when {
     "the users submission is invalid" should {
       "return a bad request with the page content" in {
-        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
         mockView(
           usingSoftwareForm = usingSoftwareForm.bind(Map.empty[String, String]),
           postAction = routes.UsingSoftwareController.submit(),
@@ -142,7 +142,7 @@ class UsingSoftwareControllerSpec extends ControllerSpec
         "the user is eligible for next year only" in {
 
           mockGetMandationService(Voluntary, Voluntary)
-          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
+           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exceptionReason = None))
           mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
 
           val result: Future[Result] = testUsingSoftwareController().submit(false)(
@@ -157,7 +157,7 @@ class UsingSoftwareControllerSpec extends ControllerSpec
         "the user is mandated for the current tax year" in {
 
           mockGetMandationService(Mandated, Voluntary)
-          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
           mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
 
           val result: Future[Result] = testUsingSoftwareController().submit(false)(
@@ -173,7 +173,7 @@ class UsingSoftwareControllerSpec extends ControllerSpec
       "redirect to the what year to sign up page" when {
         "the user is able to sign up for both tax years" in {
           mockGetMandationService(Voluntary, Voluntary)
-          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
           mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
 
           Seq(false, true).foreach { editMode =>
@@ -196,7 +196,7 @@ class UsingSoftwareControllerSpec extends ControllerSpec
       "redirect to the no software page" in {
         mockSaveSoftwareStatus(No)(Right(SaveSessionDataSuccessResponse))
         mockGetMandationService(Voluntary, Mandated)
-        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = false))
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = false, exceptionReason = None))
         val result: Future[Result] = testUsingSoftwareController().submit(false)(
           request.withMethod("POST").withFormUrlEncodedBody(
             UsingSoftwareForm.fieldName -> YesNoMapping.option_no
@@ -210,7 +210,7 @@ class UsingSoftwareControllerSpec extends ControllerSpec
     "an error occurs when saving the software status" should {
       "throw an internal server exception" in {
         mockGetMandationService(Voluntary, Mandated)
-        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
         mockSaveSoftwareStatus(Yes)(Left(UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
         val result: Future[Result] = testUsingSoftwareController().submit(false)(

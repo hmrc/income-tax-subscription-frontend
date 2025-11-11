@@ -17,32 +17,30 @@
 package controllers.agent.actions
 
 import common.Constants
+import config.AppConfig
 import models.requests.agent.IdentifierRequest
+import play.api.Logging
 import play.api.mvc.Results._
 import play.api.mvc._
-import play.api.{Configuration, Environment, Logging}
 import services.SessionDataService
 import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IdentifierAction @Inject()(val authConnector: AuthConnector,
-                                 val parser: BodyParsers.Default,
-                                 val config: Configuration,
                                  sessionDataService: SessionDataService,
-                                 val env: Environment)
+                                 val parser: BodyParsers.Default,
+                                 appConfig: AppConfig)
                                 (implicit val executionContext: ExecutionContext)
   extends ActionBuilder[IdentifierRequest, AnyContent]
     with ActionFunction[Request, IdentifierRequest]
     with AuthorisedFunctions
-    with AuthRedirects
     with Logging {
 
   override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
@@ -67,7 +65,7 @@ class IdentifierAction @Inject()(val authConnector: AuthConnector,
     } recover {
       case _: AuthorisationException =>
         logger.info(s"[Agent][IdentifierAction] - Authorisation exception from auth caught. Redirecting user to login.")
-        toGGLogin(request.path)
+        appConfig.redirectToLogin(request.path)
     }
   }
 }

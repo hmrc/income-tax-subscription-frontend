@@ -16,13 +16,12 @@
 
 package controllers.agent.tasklist.addbusiness
 
+import config.MockConfig.appConfig.ggLoginUrl
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import play.api.http.Status.{OK, SEE_OTHER}
-import play.api.{Configuration, Environment}
-import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 
-class BusinessAlreadyRemovedControllerISpec extends ComponentSpecBase with AuthRedirects {
+class BusinessAlreadyRemovedControllerISpec extends ComponentSpecBase {
 
   val serviceNameGovUk = " - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
 
@@ -57,6 +56,4 @@ class BusinessAlreadyRemovedControllerISpec extends ComponentSpecBase with AuthR
     }
   }
 
-  override val env: Environment = app.injector.instanceOf[Environment]
-  override val config: Configuration = app.injector.instanceOf[Configuration]
 }

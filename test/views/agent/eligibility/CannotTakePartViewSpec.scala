@@ -26,12 +26,14 @@ class CannotTakePartViewSpec extends ViewSpec {
 
   val clientName: String = "FirstName LastName"
   val clientNino: String = "AA 11 11 11 A"
+  val exemptionReason: String = ""
 
   private val view = app.injector.instanceOf[CannotTakePart]
 
   val page: HtmlFormat.Appendable = view(
     clientName = clientName,
-    clientNino = clientNino
+    clientNino = clientNino,
+    exemptionReason = Some(exemptionReason)
   )
 
   val document: Document = Jsoup.parse(page.body)

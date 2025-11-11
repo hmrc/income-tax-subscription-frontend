@@ -30,7 +30,7 @@
     signOutButton: SignOutButton
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@(exemptionReason: Option[String])(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = messages("cannot-sign-up-yet.title")) {
 

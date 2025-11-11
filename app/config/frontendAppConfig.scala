@@ -18,6 +18,8 @@ package config
 
 import models.common.subscription.EnrolmentKey
 import play.api.Configuration
+import play.api.mvc.Result
+import play.api.mvc.Results.Redirect
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -72,6 +74,10 @@ trait AppConfig {
   val matchingAttempts: Int
   val matchingLockOutSeconds: Int
   val urBannerUrl: String
+
+  def redirectToLogin(continueUrl: String): Result
+
+  def ggLoginUrl: String
 
   def getAllocatedEnrolmentUrl(enrolmentKey: EnrolmentKey): String
 
@@ -140,6 +146,22 @@ class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Con
   override lazy val ggUrl: String = config.getString(s"government-gateway.url")
 
   override def ggSignOutUrl(redirectionUrl: String = ggSignInContinueUrl): String = s"$ggUrl/bas-gateway/sign-out-without-state?continue=$redirectionUrl"
+
+  def redirectToLogin(continueUrl: String): Result = {
+    val basGatewayBaseUrl = config.getString("bas-gateway-frontend.url")
+    val basGatewaySignInURI = "/bas-gateway/sign-in"
+    val origin = config.getString("appName")
+
+    Redirect(
+      url = basGatewayBaseUrl + basGatewaySignInURI,
+      queryStringParams = Map(
+        "continue_url" -> Seq(continueUrl),
+        "origin" -> Seq(origin)
+      )
+    )
+  }
+
+  override lazy val ggLoginUrl: String = s"${config.getString("bas-gateway-frontend.url")}/bas-gateway/sign-in"
 
   // BTA link
   override lazy val btaUrl: String = config.getString(s"bta.url")

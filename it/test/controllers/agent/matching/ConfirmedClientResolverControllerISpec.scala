@@ -18,6 +18,7 @@ package controllers.agent.matching
 
 import auth.agent.{AgentSignUp, AgentUserMatching}
 import common.Constants.ITSASessionKeys
+import config.MockConfig.appConfig.ggLoginUrl
 import config.featureswitch.FeatureSwitch.ThrottlingFeature
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.agent.servicemocks.AuthStub
@@ -28,13 +29,11 @@ import models.common.business._
 import models.common.{OverseasPropertyModel, PropertyModel}
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, NO_CONTENT, OK, SEE_OTHER}
 import play.api.libs.json.{JsBoolean, JsString, Json}
-import play.api.{Configuration, Environment}
 import services.AgentStartOfJourneyThrottle
-import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import utilities.SubscriptionDataKeys
 import utilities.agent.TestConstants.{testNino, testUtr}
 
-class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with AuthRedirects with SessionCookieCrumbler {
+class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
   val session: Map[String, String] = Map(
     ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name
@@ -81,7 +80,7 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
       AuthStub.stubAuthSuccess()
       SessionDataConnectorStub.stubGetAllSessionData(Map(
         ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle) -> JsBoolean(true),
-        ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)),
+        ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason= None)),
         ITSASessionKeys.NINO -> JsString(testNino),
         ITSASessionKeys.UTR -> JsString(testUtr)
       ))
@@ -147,7 +146,7 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle) -> JsBoolean(true),
-          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true)),
+          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason= None)),
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.UTR -> JsString(testUtr)
         ))
@@ -167,6 +166,4 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Auth
     }
   }
 
-  override val env: Environment = app.injector.instanceOf[Environment]
-  override val config: Configuration = app.injector.instanceOf[Configuration]
 }

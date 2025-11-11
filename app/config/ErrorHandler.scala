@@ -16,44 +16,41 @@
 
 package config
 
+import play.api.Logging
 import play.api.i18n.MessagesApi
-import play.api.mvc.Results._
-import play.api.mvc.{Request, RequestHeader, Result}
-import play.api.{Configuration, Environment, Logging}
+import play.api.mvc.{RequestHeader, Result, Results}
 import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.{AuthorisationException, InsufficientEnrolments}
 import uk.gov.hmrc.http.NotFoundException
-import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
 import views.html.templates.ErrorTemplate
 
 import javax.inject.Inject
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class ErrorHandler @Inject()(val errorTemplate: ErrorTemplate,
                              val appConfig: AppConfig,
-                             val messagesApi: MessagesApi,
-                             val config: Configuration,
-                             val env: Environment
-                            ) extends FrontendErrorHandler with AuthRedirects with Logging {
+                             val messagesApi: MessagesApi)
+                            (implicit val ec: ExecutionContext) extends FrontendErrorHandler with Logging {
 
   override def onServerError(request: RequestHeader, exception: Throwable): Future[Result] = {
-    Future.successful(resolveError(request, exception))
+    resolveError(request, exception)
   }
 
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html =
-    errorTemplate(pageTitle, heading, message)(implicitly, implicitly)
+  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: RequestHeader): Future[Html] = {
+    Future.successful(errorTemplate(pageTitle, heading, message))
+  }
 
-  override def resolveError(rh: RequestHeader, ex: Throwable): Result = {
+  override def resolveError(rh: RequestHeader, ex: Throwable): Future[Result] = {
     ex match {
       case _: InsufficientEnrolments =>
         logger.debug("[AuthenticationPredicate][async] No HMRC-MTD-IT Enrolment and/or No NINO.")
         super.resolveError(rh, ex)
       case _: AuthorisationException =>
         logger.debug("[AuthenticationPredicate][async] Unauthorised request. Redirect to Sign In.")
-        toGGLogin(rh.path)
+        Future.successful(appConfig.redirectToLogin(rh.path))
       case _: NotFoundException =>
-        NotFound(notFoundTemplate(Request(rh, "")))
+        notFoundTemplate(rh).map(html => Results.NotFound(html))
       case _ =>
         logger.error(s"[ErrorHandler][resolveError] Internal Server Error, (${rh.method})(${rh.uri})", ex)
         super.resolveError(rh, ex)

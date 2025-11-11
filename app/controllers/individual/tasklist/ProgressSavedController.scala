@@ -26,7 +26,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.api.{Configuration, Environment}
 import services._
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
-import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import utilities.{AccountingPeriodUtil, CacheExpiryDateProvider, CurrentDateProvider}
 import views.html.individual.tasklist.ProgressSaved
 
@@ -48,7 +47,7 @@ class ProgressSavedController @Inject()(progressSavedView: ProgressSaved,
                                        (implicit val ec: ExecutionContext,
                                         val config: Configuration,
                                         val env: Environment,
-                                        mcc: MessagesControllerComponents) extends SignUpController with AuthRedirects {
+                                        mcc: MessagesControllerComponents) extends SignUpController {
 
   def show(location: Option[String] = None): Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
@@ -97,5 +96,5 @@ class ProgressSavedController @Inject()(progressSavedView: ProgressSaved,
     }
   }
 
-  val signInUrl: String = ggLoginUrl
+  val signInUrl: String = appConfig.ggLoginUrl
 }

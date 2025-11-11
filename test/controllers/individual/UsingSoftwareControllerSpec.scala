@@ -84,7 +84,7 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
   "show" must {
     "return OK with the page content" in new Setup {
       mockGetAllSessionData(SessionData())
-      mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+      mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
       when(usingSoftware(
         ArgumentMatchers.eq(UsingSoftwareForm.usingSoftwareForm),
         ArgumentMatchers.eq(routes.UsingSoftwareController.submit()),
@@ -103,7 +103,7 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
     "the users submission is invalid" should {
       "return a bad request with the page content" in new Setup {
         mockGetMandationService(Voluntary, Mandated)
-        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
         when(usingSoftware(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.submit(false)(subscriptionRequest)
@@ -116,7 +116,7 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
       "redirect to the what you need to do page" when {
         "the user is eligible for next year only" in new Setup {
           mockGetMandationService(Voluntary, Voluntary)
-          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true))
+           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exceptionReason = None))
           mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
 
           val result: Future[Result] = controller.submit(false)(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, Yes))
@@ -126,7 +126,7 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
         }
         "the email capture consent feature switch is disabled and the user is mandated for the current tax year" in new Setup {
           mockGetMandationService(Mandated, Voluntary)
-          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
           mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
 
           val result: Future[Result] = controller.submit(false)(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, Yes))
@@ -139,7 +139,7 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
         "the email capture consent feature switch is enabled and the user is mandated for the current tax year" in new Setup {
           enable(EmailCaptureConsent)
           mockGetMandationService(Mandated, Voluntary)
-          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
           mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
 
           val result: Future[Result] = controller.submit(false)(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, Yes))
@@ -151,7 +151,7 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
       "redirect to the what year to sign up page" when {
         "the user is able to sign up for both tax years" in new Setup {
           mockGetMandationService(Voluntary, Voluntary)
-          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
           mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
 
           Seq(false, true).foreach { editMode =>
@@ -170,7 +170,7 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
       "redirect to the no software page" in new Setup {
         mockSaveSoftwareStatus(No)(Right(SaveSessionDataSuccessResponse))
         mockGetMandationService(Voluntary, Voluntary)
-        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
 
         val result: Future[Result] = controller.submit(false)(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, No))
 
@@ -182,7 +182,7 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
       "throw an internal server exception" in new Setup {
         mockSaveSoftwareStatus(Yes)(Left(UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
         mockGetMandationService(Voluntary, Voluntary)
-        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true))
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
 
         val result: Future[Result] = controller.submit(false)(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, Yes))
 
