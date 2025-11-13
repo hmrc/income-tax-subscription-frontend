@@ -145,6 +145,7 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
           ArgumentMatchers.eq(routes.GlobalCheckYourAnswersController.submit),
           ArgumentMatchers.eq(tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url),
           ArgumentMatchers.eq(completeDetails),
+          ArgumentMatchers.any(),
           ArgumentMatchers.any()
         )(ArgumentMatchers.any(), ArgumentMatchers.any()))
           .thenReturn(HtmlFormat.empty)
