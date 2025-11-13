@@ -92,19 +92,14 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
               case Left(_) =>
                 throw new InternalServerException("[UsingSoftwareController][submit] - Could not save using software answer")
               case Right(_) =>
-                yesNo match {
-                  case Yes =>
-                    if (editMode) {
-                      Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
-                    } else if (isEnabled(EmailCaptureConsent) && isMandatedCurrentYear) {
-                      Redirect(controllers.individual.email.routes.CaptureConsentController.show())
-                    } else if (isMandatedCurrentYear || isEligibleNextYearOnly) {
-                      Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
-                    } else {
-                      Redirect(controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show())
-                    }
-                  case No =>
-                    Redirect(controllers.individual.routes.NoSoftwareController.show(editMode))
+                if (editMode) {
+                  Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
+                } else if (isEnabled(EmailCaptureConsent) && isMandatedCurrentYear) {
+                  Redirect(controllers.individual.email.routes.CaptureConsentController.show())
+                } else if (isMandatedCurrentYear || isEligibleNextYearOnly) {
+                  Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
+                } else {
+                  Redirect(controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show())
                 }
               }
           }

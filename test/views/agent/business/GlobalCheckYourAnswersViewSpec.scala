@@ -64,7 +64,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
         summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
           SummaryListRowValues(
             key = GlobalCheckYourAnswersMessages.UsingSoftwareSection.key,
-            value = Some(GlobalCheckYourAnswersMessages.UsingSoftwareSection.value),
+            value = Some(""),
             actions = Seq(
               SummaryListActionValues(
                 href = controllers.agent.routes.UsingSoftwareController.show(editMode = true).url,
@@ -391,7 +391,8 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     postAction = testCall,
     backUrl = testBackUrl,
     completeDetails = completeDetails,
-    clientDetails = clientDetails
+    clientDetails = clientDetails,
+    softwareStatus = None
   )
 
   def document(

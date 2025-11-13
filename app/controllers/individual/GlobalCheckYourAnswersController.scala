@@ -59,7 +59,8 @@ class GlobalCheckYourAnswersController @Inject()(signUpOrchestrationService: Sig
                 postAction = routes.GlobalCheckYourAnswersController.submit,
                 backUrl = backUrl,
                 completeDetails = completeDetails,
-                maybeAccountingPeriod = maybeAccountingPeriod
+                maybeAccountingPeriod = maybeAccountingPeriod,
+                softwareStatus = sessionData.fetchSoftwareStatus
               )))
             }
           }

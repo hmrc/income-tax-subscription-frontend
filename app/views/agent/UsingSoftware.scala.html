@@ -24,7 +24,7 @@
     yesNoRadioHelper: YesNoRadioHelper,
     continueButton: ContinueButton,
     pageHeadingHelper: PageHeadingHelper,
-    form : FormWithCSRF,
+    form: FormWithCSRF,
     hmrcNewTabLinkHelper: HmrcNewTabLinkHelper
 )
 
@@ -47,10 +47,12 @@
     </p>
 
     @yesNoRadioHelper(
-      field = usingSoftwareForm(fieldName),
-      legend = messages("agent.using-software.subheading"),
-      headingClasses = "govuk-fieldset__legend--m",
-      isPageHeading = false
+        field = usingSoftwareForm(fieldName),
+        legend = messages("agent.using-software.subheading"),
+        headingClasses = "govuk-fieldset__legend--m",
+        isPageHeading = false,
+        noText = Some(messages("agent.using-software.no")),
+        inline = false
     )
     @continueButton()
   }

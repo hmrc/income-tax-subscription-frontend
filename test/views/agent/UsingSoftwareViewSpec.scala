@@ -91,7 +91,9 @@ class UsingSoftwareViewSpec extends ViewSpec {
           isHeading = false,
           isLegendHidden = false,
           hint = None,
-          errorMessage = None
+          errorMessage = None,
+          inline = false,
+          noText = Some(UsingSoftware.radioNo)
         )
       }
 
@@ -124,6 +126,7 @@ class UsingSoftwareViewSpec extends ViewSpec {
     val linkText = "Find software that works with Making Tax Digital for Income Tax (opens in new tab)"
     val linkHref = "https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax"
     val radioName = "yes-no"
+    val radioNo: String = "No, I’ll get software after I sign up my client"
   }
 
 }

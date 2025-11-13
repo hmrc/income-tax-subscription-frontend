@@ -65,7 +65,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
         summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
           SummaryListRowValues(
             key = GlobalCheckYourAnswersMessages.CompatibleSoftware.key,
-            value = Some(GlobalCheckYourAnswersMessages.CompatibleSoftware.yes),
+            value = Some(""),
             actions = Seq(
               SummaryListActionValues(
                 href = controllers.individual.routes.UsingSoftwareController.show(editMode = true).url,
@@ -400,7 +400,8 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     postAction = testCall,
     backUrl = testBackUrl,
     completeDetails = completeDetails,
-    maybeAccountingPeriod = None
+    maybeAccountingPeriod = None,
+    softwareStatus = None
   )
 
   def document(details: CompleteDetails = completeDetails()): Document = Jsoup.parse(page(

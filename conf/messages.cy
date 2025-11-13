@@ -341,7 +341,7 @@ individual.using-software.link                                          = Dod o 
 individual.using-software.link-href                                     = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax.cy
 individual.using-software.form-legend                                   = A ydych yn defnyddio meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm?
 individual.using-software.form-error                                    = Dewiswch ‘Iawn’ os ydych yn defnyddio meddalwedd i gadw cofnodion digidol a bod y feddalwedd honno’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-
+individual.using-software.no                                            = Na, byddaf yn cael meddalwedd ar ôl i mi gofrestru
 
 ## No Software Signpost Out Page ##
 individual.no-software.heading                  = Mae angen i chi gael meddalwedd sy’n cydweddu
@@ -625,6 +625,7 @@ agent.using-software.subheading                                 = A ydych chi ne
 agent.using-software.link                                       = Dod o hyd i feddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 agent.using-software.link-href                                  = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax.cy
 agent.using-software.form-error                                 = Dewiswch ‘Iawn’ os ydych chi neu’ch cleient yn defnyddio meddalwedd i gadw cofnodion digidol a bod meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+agent.using-software.no                                         = Na, byddaf yn cael meddalwedd ar ôl i mi gofrestru fy nghleient
 
 ## Agent No Software Page ##
 agent.no-software.heading                                        = Mae angen i chi gael meddalwedd sy’n cydweddu

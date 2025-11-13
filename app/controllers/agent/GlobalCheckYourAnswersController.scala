@@ -21,6 +21,7 @@ import config.AppConfig
 import config.featureswitch.FeatureSwitching
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
+import models.SessionData
 import models.agent.JourneyStep.Confirmation
 import models.common.subscription.CreateIncomeSourcesModel
 import models.requests.agent.ConfirmedClientRequest
@@ -58,7 +59,8 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
             postAction = routes.GlobalCheckYourAnswersController.submit,
             backUrl = backUrl,
             completeDetails = completeDetails,
-            clientDetails = request.clientDetails
+            clientDetails = request.clientDetails,
+            sessionData = request.request.sessionData
           )
         )
       )
@@ -107,13 +109,15 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
   private def view(postAction: Call,
                    backUrl: String,
                    completeDetails: CompleteDetails,
-                   clientDetails: ClientDetails)
+                   clientDetails: ClientDetails,
+                   sessionData: SessionData)
                   (implicit request: Request[AnyContent]): Html = {
     globalCheckYourAnswers(
       postAction = postAction,
       backUrl = backUrl,
       completeDetails = completeDetails,
-      clientDetails = clientDetails
+      clientDetails = clientDetails,
+      sessionData.fetchSoftwareStatus
     )
   }
 
