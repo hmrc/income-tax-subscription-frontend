@@ -20,7 +20,7 @@
     radioHelper: RadioHelper
 )
 
-@(field: Field, legend: String, isPageHeading: Boolean = true, headingClasses: String = "govuk-visually-hidden", hint: Option[String] = None, inline: Boolean = true, yesHint: Option[Text] = None, noHint: Option[Text] = None)(implicit messages: Messages)
+@(field: Field, legend: String, isPageHeading: Boolean = true, headingClasses: String = "govuk-visually-hidden", hint: Option[String] = None, inline: Boolean = true, yesHint: Option[Text] = None, noHint: Option[Text] = None, yesText: Option[String] = None, noText: Option[String] = None)(implicit messages: Messages)
 
 @radioHelper(
     field = field,
@@ -31,7 +31,7 @@
     inline = inline,
     radioItems = Seq(
         RadioItem(
-            content = Text(Yes.toMessageString),
+            content = Text(yesText.getOrElse(Yes.toMessageString)),
             value = Some(Yes.toString),
             hint = yesHint.map { content =>
                 Hint(
@@ -41,7 +41,7 @@
             }
         ),
         RadioItem(
-            content = Text(No.toMessageString),
+            content = Text(noText.getOrElse(No.toMessageString)),
             value = Some(No.toString),
             hint = noHint.map { content =>
                 Hint(

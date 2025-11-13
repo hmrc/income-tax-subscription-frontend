@@ -607,7 +607,10 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
                                                    yesHintId: Option[String] = None,
                                                    yesHint: Option[Text] = None,
                                                    noHintId: Option[String] = None,
-                                                   noHint: Option[Text] = None)
+                                                   noHint: Option[Text] = None,
+                                                   inline: Boolean = true,
+                                                   yesText: Option[String] = None,
+                                                   noText: Option[String] = None)
     : Assertion = {
       mustHaveRadioInput(selector
       )(name = name,
@@ -619,7 +622,7 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
         radioContents = Seq(
           RadioItem(
             id = Some(name),
-            content = Text(Yes.toMessageString),
+            content = Text(yesText.getOrElse(Yes.toMessageString)),
             value = Some(Yes.toString),
             hint = yesHint map { hint =>
               Hint(
@@ -630,7 +633,7 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
           ),
           RadioItem(
             id = Some(s"$name-2"),
-            content = Text(No.toMessageString),
+            content = Text(noText.getOrElse(No.toMessageString)),
             value = Some(No.toString),
             hint = noHint map { hint =>
               Hint(
@@ -640,7 +643,7 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
             }
           )
         ),
-        isInline = true
+        isInline = inline
       )
     }
 
