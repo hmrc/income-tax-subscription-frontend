@@ -17,6 +17,7 @@
 @import config.AppConfig
 @import models._
 @import models.common.{IncomeSources => _, SoleTraderBusinesses => _, _}
+@import models.YesNo
 @import services.AccountingPeriodService
 @import services.GetCompleteDetailsService._
 @import utilities.{AccountingPeriodUtil, ImplicitDateFormatterImpl}
@@ -39,7 +40,8 @@
 @(postAction: Call,
     backUrl: String,
     completeDetails: CompleteDetails,
-    clientDetails: ClientDetails
+    clientDetails: ClientDetails,
+    softwareStatus: Option[YesNo]
 )(implicit request: Request[_], messages: Messages)
 
 @import implicitDateFormatter.LongDate
@@ -54,7 +56,7 @@
 
     <p class="govuk-body">@messages("agent.global-check-your-answers.para")</p>
 
-    @usingSoftwareSection()
+    @usingSoftwareSection(softwareStatus)
 
     @taxYearSection(completeDetails.taxYear)
 
@@ -83,12 +85,18 @@
 
 }
 
-@usingSoftwareSection() = {
+@usingSoftwareSection(softwareStatus: Option[YesNo]) = {
     @govukSummaryList(SummaryList(
         rows = Seq(
             SummaryListRow(
                 key = Key(content = Text(messages("agent.global-check-your-answers.using-software"))),
-                value = Value(content = Text(messages("base.yes"))),
+                value = Value(content = Text(
+                    softwareStatus match {
+                        case Some(Yes) => messages("base.yes")
+                        case Some(No) => messages("agent.using-software.no")
+                        case _ => ""
+                    }
+                )),
                 actions = Some(Actions(
                     items = Seq(
                         ActionItem(

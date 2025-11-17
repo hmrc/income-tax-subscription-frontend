@@ -66,9 +66,6 @@ POST        /business/what-year-to-sign-up                      controllers.agen
 GET         /using-software                                     controllers.agent.UsingSoftwareController.show(editMode: Boolean ?= false)
 POST        /using-software                                     controllers.agent.UsingSoftwareController.submit(editMode: Boolean ?= false)
 
-# No to using Software
-GET         /no-compatible-software                             controllers.agent.NoSoftwareController.show(editMode: Boolean ?= false)
-
 # Capture consent routes
 GET         /capture-consent                                    controllers.agent.email.CaptureConsentController.show()
 POST        /capture-consent                                    controllers.agent.email.CaptureConsentController.submit()

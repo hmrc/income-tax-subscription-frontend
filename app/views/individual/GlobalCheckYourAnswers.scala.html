@@ -45,7 +45,8 @@
         postAction: Call,
         backUrl: String,
         completeDetails: CompleteDetails,
-        maybeAccountingPeriod: Option[BusinessAccountingPeriod]
+        maybeAccountingPeriod: Option[BusinessAccountingPeriod],
+        softwareStatus: Option[YesNo]
 )(implicit request: Request[_], messages: Messages)
 
 @import implicitDateFormatter.LongDate
@@ -58,7 +59,7 @@
 
     @accountingPeriod(maybeAccountingPeriod)
 
-    @compatibleSoftwareSection()
+    @compatibleSoftwareSection(softwareStatus)
 
     @taxYearSection(completeDetails.taxYear)
 
@@ -86,12 +87,18 @@
 
 }
 
-@compatibleSoftwareSection() = {
+@compatibleSoftwareSection(softwareStatus: Option[YesNo]) = {
     @govukSummaryList(SummaryList(
         rows = Seq(
             SummaryListRow(
                 key = Key(content = Text(messages("individual.global-check-your-answers.compatible-software.label"))),
-                value = Value(content = Text(Yes.toMessageString)),
+                value = Value(content = Text(
+                    softwareStatus match {
+                        case Some(Yes) => messages("base.yes")
+                        case Some(No) => messages("individual.using-software.no")
+                        case _ => ""
+                    }
+                )),
                 actions = Some(Actions(
                     items = Seq(
                         ActionItem(

@@ -116,7 +116,7 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
       "redirect to the what you need to do page" when {
         "the user is eligible for next year only" in new Setup {
           mockGetMandationService(Voluntary, Voluntary)
-           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exceptionReason = None))
+          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exceptionReason = None))
           mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
 
           val result: Future[Result] = controller.submit(false)(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, Yes))
@@ -150,32 +150,22 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
       }
       "redirect to the what year to sign up page" when {
         "the user is able to sign up for both tax years" in new Setup {
-          mockGetMandationService(Voluntary, Voluntary)
-          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
-          mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
+          Seq(Yes, No).foreach { answer =>
+            mockGetMandationService(Voluntary, Voluntary)
+            mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
+            mockSaveSoftwareStatus(answer)(Right(SaveSessionDataSuccessResponse))
 
-          Seq(false, true).foreach { editMode =>
-            val result: Future[Result] = controller.submit(editMode)(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, Yes))
+            Seq(false, true).foreach { editMode =>
+              val result: Future[Result] = controller.submit(editMode)(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, Yes))
 
-            status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(editMode match {
-              case false => controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
-              case true => controllers.individual.routes.GlobalCheckYourAnswersController.show.url
-            })
+              status(result) mustBe SEE_OTHER
+              redirectLocation(result) mustBe Some(editMode match {
+                case false => controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+                case true => controllers.individual.routes.GlobalCheckYourAnswersController.show.url
+              })
+            }
           }
         }
-      }
-    }
-    "the user submits 'No'" should {
-      "redirect to the no software page" in new Setup {
-        mockSaveSoftwareStatus(No)(Right(SaveSessionDataSuccessResponse))
-        mockGetMandationService(Voluntary, Voluntary)
-        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
-
-        val result: Future[Result] = controller.submit(false)(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, No))
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.individual.routes.NoSoftwareController.show().url)
       }
     }
     "an error occurs when saving the software status" should {

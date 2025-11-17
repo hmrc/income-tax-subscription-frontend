@@ -115,32 +115,6 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
       }
     }
 
-    s"return a redirect to ${controllers.agent.routes.NoSoftwareController.show().url}" when {
-      "the user submit(false)s the No radio button" in {
-        val userInput = No
-
-        Given("I setup the wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetAllSessionData(Map(
-          ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Mandated)),
-          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason= None)),
-          ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
-        ))
-        SessionDataConnectorStub.stubSaveSessionData[YesNo](ITSASessionKeys.HAS_SOFTWARE, userInput)(OK)
-
-        When(s"POST ${controllers.agent.routes.UsingSoftwareController.submit().url} is called")
-        val result: WSResponse = IncomeTaxSubscriptionFrontend.submitUsingSoftware(request = Some(userInput))
-
-        Then("Should return SEE_OTHER to the no software page")
-
-        result must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(controllers.agent.routes.NoSoftwareController.show().url)
-        )
-      }
-    }
-
     "return BAD_REQUEST and display an error box on screen without redirecting" when {
       "the user does not select either option" in {
         Given("I setup the wiremock stubs")

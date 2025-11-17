@@ -53,7 +53,6 @@ POST        /what-you-need-to-do                                 controllers.ind
 GET         /using-software                                      controllers.individual.UsingSoftwareController.show(editMode: Boolean ?= false)
 POST        /using-software                                      controllers.individual.UsingSoftwareController.submit(editMode: Boolean ?= false)
 
-GET         /no-compatible-software                              controllers.individual.NoSoftwareController.show(editMode: Boolean ?= false)
 ################## Business Routes
 
 #What Tax Year To Sign Up Routes

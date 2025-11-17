@@ -20,11 +20,11 @@
 @import forms.individual.UsingSoftwareForm.fieldName
 
 @this(
-mainTemplate: PrincipalMainTemplate,
-yesNoRadioHelper: YesNoRadioHelper,
-continueButton: ContinueButton,
-form : FormWithCSRF,
-hmrcNewTabLinkHelper: HmrcNewTabLinkHelper
+    mainTemplate: PrincipalMainTemplate,
+    yesNoRadioHelper: YesNoRadioHelper,
+    continueButton: ContinueButton,
+    form: FormWithCSRF,
+    hmrcNewTabLinkHelper: HmrcNewTabLinkHelper
 )
 
 @(usingSoftwareForm: Form[YesNo], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
@@ -49,7 +49,9 @@ hmrcNewTabLinkHelper: HmrcNewTabLinkHelper
         field = usingSoftwareForm(fieldName),
         legend = messages("individual.using-software.form-legend"),
         headingClasses = "govuk-fieldset__legend--m",
-        isPageHeading = false
+        isPageHeading = false,
+        noText = Some(messages("individual.using-software.no")),
+        inline = false
     )
     @continueButton()
   }
