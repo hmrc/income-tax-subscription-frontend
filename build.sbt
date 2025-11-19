@@ -46,7 +46,7 @@ lazy val microservice = Project(AppDependencies.appName, file("."))
   )
   .settings(
     scalacOptions += "-Wconf:src=routes/.*:s",
-    scalacOptions += "-Wconf:cat=unused-imports&src=html/.*:s",
+    scalacOptions += "-Wconf:msg=unused import&src=html/.*:s",
     scalacOptions += "-Wconf:msg=Flag.*repeatedly:s",
     scalacOptions ++= Seq("-deprecation", "-feature", "-explain", "-explain-cyclic")
   )

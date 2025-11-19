@@ -93,12 +93,12 @@ trait AppConfig {
 
   def assignEnrolmentUrl(userId: String, enrolmentKey: String): String
 
-  val signUpToSaLink: String
-  val agentSignUpUrl: String
+  def signUpToSaLink: String
+  def agentSignUpUrl: String
 
-  val backendFeatureSwitchUrl: String
+  def backendFeatureSwitchUrl: String
 
-  val incomeTaxEligibilityUrl: String
+  def incomeTaxEligibilityUrl: String
 
   def incomeTaxSelfEmploymentsFrontendUrl: String
 
@@ -110,7 +110,7 @@ trait AppConfig {
 
   def incomeTaxSelfEmploymentsFrontendClientInitialiseUrl: String
 
-  val eligibilityFeatureSwitchUrl: String
+  def eligibilityFeatureSwitchUrl: String
 
   def individualSigningUpUrl: String
 
@@ -181,7 +181,7 @@ class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Con
   override lazy val throttlingUrl = s"$microServiceUrl/income-tax-subscription/throttled"
   override lazy val mandationStatusUrl = s"$microServiceUrl/income-tax-subscription/itsa-status"
 
-  override def prePopUrl(nino: String): String = s"$microServiceUrl/income-tax-subscription/pre-pop/$nino"
+  def prePopUrl(nino: String): String = s"$microServiceUrl/income-tax-subscription/pre-pop/$nino"
 
   //agent frontend
   private lazy val agentFrontendUrl: String = config.getString("income-tax-subscription-agent-frontend.url")
