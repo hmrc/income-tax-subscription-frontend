@@ -22,9 +22,10 @@ import connectors.agent.mocks.{MockEnrolmentStoreProxyConnector, MockUsersGroups
 import models.common.subscription.EnrolmentKey
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import play.api.test.Helpers._
-import services.agent.AutoEnrolmentService.AutoClaimEnrolmentResponse
-import services.agent.{AssignEnrolmentToUserService, AutoEnrolmentService, CheckEnrolmentAllocationService}
+import play.api.test.Helpers.*
+import services.agent.AutoEnrolmentServiceModel.AutoClaimEnrolmentResponse
+import services.agent.AutoEnrolmentServiceModel.*
+import services.agent.{AssignEnrolmentToUserService, AutoEnrolmentService, AutoEnrolmentServiceModel, CheckEnrolmentAllocationService, CheckEnrolmentAllocationServiceModel}
 import services.mocks.{MockAssignEnrolmentToUserService, MockCheckEnrolmentAllocationService}
 import uk.gov.hmrc.auth.core.{Assistant, CredentialRole, User}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -60,10 +61,10 @@ class AutoEnrolmentServiceSpec extends AnyWordSpec
 
   "autoClaimEnrolment" must {
 
-    s"return ${AutoEnrolmentService.EnrolmentAssigned}" when {
+    s"return ${AutoEnrolmentServiceModel.EnrolmentAssigned}" when {
       "all calls are successful" in {
         mockEnrolmentStoreUpsertEnrolment(testMtditid, testNino)(Right(UpsertEnrolmentResponseHttpParser.UpsertEnrolmentSuccess))
-        mockGetGroupIdForEnrolment(testSAEnrolment)(Left(CheckEnrolmentAllocationService.EnrolmentAlreadyAllocated(testGroupId)))
+        mockGetGroupIdForEnrolment(testSAEnrolment)(Left(CheckEnrolmentAllocationServiceModel.EnrolmentAlreadyAllocated(testGroupId)))
         mockGetUserIds(testUtr)(Right(QueryUsersHttpParser.UsersFound(Set(testUserId1, testUserId2))))
         mockGetUsersForGroups(testGroupId)(Right(GetUsersForGroupHttpParser.UsersFound(Map[String, CredentialRole](
           testUserId1 -> User,
@@ -74,89 +75,89 @@ class AutoEnrolmentServiceSpec extends AnyWordSpec
 
         val result: Future[AutoClaimEnrolmentResponse] = TestAutoEnrolmentService.autoClaimEnrolment(utr = testUtr, nino = testNino, mtditid = testMtditid)
 
-        await(result) mustBe Right(AutoEnrolmentService.EnrolmentAssigned)
+        await(result) mustBe Right(AutoEnrolmentServiceModel.EnrolmentAssigned)
         verifyEnrolmentStoreUpsertEnrolment(testMtditid, testNino)
       }
     }
 
-    s"return ${AutoEnrolmentService.UpsertEnrolmentFailure("error message")}" when {
+    s"return ${AutoEnrolmentServiceModel.UpsertEnrolmentFailure("error message")}" when {
       "upserting enrolment failed" in {
         mockEnrolmentStoreUpsertEnrolment(testMtditid, testNino)(Left(UpsertEnrolmentResponseHttpParser.UpsertEnrolmentFailure(
           INTERNAL_SERVER_ERROR, "error message"
         )))
         val result: Future[AutoClaimEnrolmentResponse] = TestAutoEnrolmentService.autoClaimEnrolment(utr = testUtr, nino = testNino, mtditid = testMtditid)
 
-        await(result) mustBe Left(AutoEnrolmentService.UpsertEnrolmentFailure("error message"))
+        await(result) mustBe Left(AutoEnrolmentServiceModel.UpsertEnrolmentFailure("error message"))
         verifyEnrolmentStoreUpsertEnrolment(testMtditid, testNino)
       }
     }
 
-    s"return ${AutoEnrolmentService.EnrolmentNotAllocated}" when {
+    s"return ${AutoEnrolmentServiceModel.EnrolmentNotAllocated}" when {
       "the enrolment is not allocated to a group" in {
         mockEnrolmentStoreUpsertEnrolment(testMtditid, testNino)(Right(UpsertEnrolmentResponseHttpParser.UpsertEnrolmentSuccess))
-        mockGetGroupIdForEnrolment(testSAEnrolment)(Right(CheckEnrolmentAllocationService.EnrolmentNotAllocated))
+        mockGetGroupIdForEnrolment(testSAEnrolment)(Right(CheckEnrolmentAllocationServiceModel.EnrolmentNotAllocated))
 
         val result: Future[AutoClaimEnrolmentResponse] = TestAutoEnrolmentService.autoClaimEnrolment(utr = testUtr, nino = testNino, mtditid = testMtditid)
 
-        await(result) mustBe Left(AutoEnrolmentService.EnrolmentNotAllocated)
+        await(result) mustBe Left(AutoEnrolmentServiceModel.EnrolmentNotAllocated)
         verifyEnrolmentStoreUpsertEnrolment(testMtditid, testNino)
       }
     }
 
-    s"return ${AutoEnrolmentService.EnrolmentStoreProxyFailure(INTERNAL_SERVER_ERROR)}" when {
+    s"return ${AutoEnrolmentServiceModel.EnrolmentStoreProxyFailure(INTERNAL_SERVER_ERROR)}" when {
       "the check enrolment allocation service returns an unexpected status error" in {
         mockEnrolmentStoreUpsertEnrolment(testMtditid, testNino)(Right(UpsertEnrolmentResponseHttpParser.UpsertEnrolmentSuccess))
-        mockGetGroupIdForEnrolment(testSAEnrolment)(Left(CheckEnrolmentAllocationService.UnexpectedEnrolmentStoreProxyFailure(INTERNAL_SERVER_ERROR)))
+        mockGetGroupIdForEnrolment(testSAEnrolment)(Left(CheckEnrolmentAllocationServiceModel.UnexpectedEnrolmentStoreProxyFailure(INTERNAL_SERVER_ERROR)))
 
         val result: Future[AutoClaimEnrolmentResponse] = TestAutoEnrolmentService.autoClaimEnrolment(utr = testUtr, nino = testNino, mtditid = testMtditid)
 
-        await(result) mustBe Left(AutoEnrolmentService.EnrolmentStoreProxyFailure(INTERNAL_SERVER_ERROR))
+        await(result) mustBe Left(AutoEnrolmentServiceModel.EnrolmentStoreProxyFailure(INTERNAL_SERVER_ERROR))
         verifyEnrolmentStoreUpsertEnrolment(testMtditid, testNino)
       }
     }
 
-    s"return ${AutoEnrolmentService.EnrolmentStoreProxyInvalidJsonResponse}" when {
+    s"return ${AutoEnrolmentServiceModel.EnrolmentStoreProxyInvalidJsonResponse}" when {
       "the check enrolment allocation service returns an invalid json error" in {
         mockEnrolmentStoreUpsertEnrolment(testMtditid, testNino)(Right(UpsertEnrolmentResponseHttpParser.UpsertEnrolmentSuccess))
-        mockGetGroupIdForEnrolment(testSAEnrolment)(Left(CheckEnrolmentAllocationService.EnrolmentStoreProxyInvalidJsonResponse))
+        mockGetGroupIdForEnrolment(testSAEnrolment)(Left(CheckEnrolmentAllocationServiceModel.EnrolmentStoreProxyInvalidJsonResponse))
 
         val result: Future[AutoClaimEnrolmentResponse] = TestAutoEnrolmentService.autoClaimEnrolment(utr = testUtr, nino = testNino, mtditid = testMtditid)
 
-        await(result) mustBe Left(AutoEnrolmentService.EnrolmentStoreProxyInvalidJsonResponse)
+        await(result) mustBe Left(AutoEnrolmentServiceModel.EnrolmentStoreProxyInvalidJsonResponse)
         verifyEnrolmentStoreUpsertEnrolment(testMtditid, testNino)
       }
     }
 
-    s"return ${AutoEnrolmentService.NoUsersFound}" when {
+    s"return ${AutoEnrolmentServiceModel.NoUsersFound}" when {
       "no users are assigned to the enrolment" in {
         mockEnrolmentStoreUpsertEnrolment(testMtditid, testNino)(Right(UpsertEnrolmentResponseHttpParser.UpsertEnrolmentSuccess))
-        mockGetGroupIdForEnrolment(testSAEnrolment)(Left(CheckEnrolmentAllocationService.EnrolmentAlreadyAllocated(testGroupId)))
+        mockGetGroupIdForEnrolment(testSAEnrolment)(Left(CheckEnrolmentAllocationServiceModel.EnrolmentAlreadyAllocated(testGroupId)))
         mockGetUserIds(testUtr)(Right(QueryUsersHttpParser.NoUsersFound))
 
         val result: Future[AutoClaimEnrolmentResponse] = TestAutoEnrolmentService.autoClaimEnrolment(utr = testUtr, nino = testNino, mtditid = testMtditid)
 
-        await(result) mustBe Left(AutoEnrolmentService.NoUsersFound)
+        await(result) mustBe Left(AutoEnrolmentServiceModel.NoUsersFound)
         verifyEnrolmentStoreUpsertEnrolment(testMtditid, testNino)
       }
     }
 
-    s"return ${AutoEnrolmentService.EnrolmentStoreProxyConnectionFailure}" when {
+    s"return ${AutoEnrolmentServiceModel.EnrolmentStoreProxyConnectionFailure}" when {
       "an error response is returned when getting users assigned to enrolment" in {
         mockEnrolmentStoreUpsertEnrolment(testMtditid, testNino)(Right(UpsertEnrolmentResponseHttpParser.UpsertEnrolmentSuccess))
-        mockGetGroupIdForEnrolment(testSAEnrolment)(Left(CheckEnrolmentAllocationService.EnrolmentAlreadyAllocated(testGroupId)))
+        mockGetGroupIdForEnrolment(testSAEnrolment)(Left(CheckEnrolmentAllocationServiceModel.EnrolmentAlreadyAllocated(testGroupId)))
         mockGetUserIds(testUtr)(Left(QueryUsersHttpParser.EnrolmentStoreProxyConnectionFailure(INTERNAL_SERVER_ERROR)))
 
         val result: Future[AutoClaimEnrolmentResponse] = TestAutoEnrolmentService.autoClaimEnrolment(utr = testUtr, nino = testNino, mtditid = testMtditid)
 
-        await(result) mustBe Left(AutoEnrolmentService.EnrolmentStoreProxyConnectionFailure)
+        await(result) mustBe Left(AutoEnrolmentServiceModel.EnrolmentStoreProxyConnectionFailure)
         verifyEnrolmentStoreUpsertEnrolment(testMtditid, testNino)
       }
     }
 
-    s"return ${AutoEnrolmentService.NoAdminUsers}" when {
+    s"return ${AutoEnrolmentServiceModel.NoAdminUsers}" when {
       "none of the users assigned to the enrolment are admins" in {
         mockEnrolmentStoreUpsertEnrolment(testMtditid, testNino)(Right(UpsertEnrolmentResponseHttpParser.UpsertEnrolmentSuccess))
-        mockGetGroupIdForEnrolment(testSAEnrolment)(Left(CheckEnrolmentAllocationService.EnrolmentAlreadyAllocated(testGroupId)))
+        mockGetGroupIdForEnrolment(testSAEnrolment)(Left(CheckEnrolmentAllocationServiceModel.EnrolmentAlreadyAllocated(testGroupId)))
         mockGetUserIds(testUtr)(Right(QueryUsersHttpParser.UsersFound(Set(testUserId1, testUserId2))))
         mockGetUsersForGroups(testGroupId)(Right(GetUsersForGroupHttpParser.UsersFound(Map[String, CredentialRole](
           testUserId1 -> Assistant,
@@ -165,29 +166,29 @@ class AutoEnrolmentServiceSpec extends AnyWordSpec
 
         val result: Future[AutoClaimEnrolmentResponse] = TestAutoEnrolmentService.autoClaimEnrolment(utr = testUtr, nino = testNino, mtditid = testMtditid)
 
-        await(result) mustBe Left(AutoEnrolmentService.NoAdminUsers)
+        await(result) mustBe Left(AutoEnrolmentServiceModel.NoAdminUsers)
         verifyEnrolmentStoreUpsertEnrolment(testMtditid, testNino)
       }
     }
 
-    s"return ${AutoEnrolmentService.UsersGroupSearchFailure}" when {
+    s"return ${AutoEnrolmentServiceModel.UsersGroupSearchFailure}" when {
       "users group search returns an error response" in {
         mockEnrolmentStoreUpsertEnrolment(testMtditid, testNino)(Right(UpsertEnrolmentResponseHttpParser.UpsertEnrolmentSuccess))
-        mockGetGroupIdForEnrolment(testSAEnrolment)(Left(CheckEnrolmentAllocationService.EnrolmentAlreadyAllocated(testGroupId)))
+        mockGetGroupIdForEnrolment(testSAEnrolment)(Left(CheckEnrolmentAllocationServiceModel.EnrolmentAlreadyAllocated(testGroupId)))
         mockGetUserIds(testUtr)(Right(QueryUsersHttpParser.UsersFound(Set(testUserId1, testUserId2))))
         mockGetUsersForGroups(testGroupId)(Left(GetUsersForGroupHttpParser.UsersGroupsSearchConnectionFailure(INTERNAL_SERVER_ERROR)))
 
         val result: Future[AutoClaimEnrolmentResponse] = TestAutoEnrolmentService.autoClaimEnrolment(utr = testUtr, nino = testNino, mtditid = testMtditid)
 
-        await(result) mustBe Left(AutoEnrolmentService.UsersGroupSearchFailure)
+        await(result) mustBe Left(AutoEnrolmentServiceModel.UsersGroupSearchFailure)
         verifyEnrolmentStoreUpsertEnrolment(testMtditid, testNino)
       }
     }
 
-    s"return ${AutoEnrolmentService.EnrolAdminIdFailure(testUserId1, "error message")}" when {
+    s"return ${AutoEnrolmentServiceModel.EnrolAdminIdFailure(testUserId1, "error message")}" when {
       "the enrolment failed to be allocated to the group" in {
         mockEnrolmentStoreUpsertEnrolment(testMtditid, testNino)(Right(UpsertEnrolmentResponseHttpParser.UpsertEnrolmentSuccess))
-        mockGetGroupIdForEnrolment(testSAEnrolment)(Left(CheckEnrolmentAllocationService.EnrolmentAlreadyAllocated(testGroupId)))
+        mockGetGroupIdForEnrolment(testSAEnrolment)(Left(CheckEnrolmentAllocationServiceModel.EnrolmentAlreadyAllocated(testGroupId)))
         mockGetUserIds(testUtr)(Right(QueryUsersHttpParser.UsersFound(Set(testUserId1, testUserId2))))
         mockGetUsersForGroups(testGroupId)(Right(GetUsersForGroupHttpParser.UsersFound(Map[String, CredentialRole](
           testUserId1 -> User,
@@ -197,15 +198,15 @@ class AutoEnrolmentServiceSpec extends AnyWordSpec
 
         val result: Future[AutoClaimEnrolmentResponse] = TestAutoEnrolmentService.autoClaimEnrolment(utr = testUtr, nino = testNino, mtditid = testMtditid)
 
-        await(result) mustBe Left(AutoEnrolmentService.EnrolAdminIdFailure(testUserId1, "error message"))
+        await(result) mustBe Left(AutoEnrolmentServiceModel.EnrolAdminIdFailure(testUserId1, "error message"))
         verifyEnrolmentStoreUpsertEnrolment(testMtditid, testNino)
       }
     }
 
-    s"return ${AutoEnrolmentService.EnrolmentAssignmentFailureForIds(Set(testUserId2))}" when {
+    s"return ${AutoEnrolmentServiceModel.EnrolmentAssignmentFailureForIds(Set(testUserId2))}" when {
       s"failed to assign $testUserId2 to the enrolment" in {
         mockEnrolmentStoreUpsertEnrolment(testMtditid, testNino)(Right(UpsertEnrolmentResponseHttpParser.UpsertEnrolmentSuccess))
-        mockGetGroupIdForEnrolment(testSAEnrolment)(Left(CheckEnrolmentAllocationService.EnrolmentAlreadyAllocated(testGroupId)))
+        mockGetGroupIdForEnrolment(testSAEnrolment)(Left(CheckEnrolmentAllocationServiceModel.EnrolmentAlreadyAllocated(testGroupId)))
         mockGetUserIds(testUtr)(Right(QueryUsersHttpParser.UsersFound(Set(testUserId1, testUserId2))))
         mockGetUsersForGroups(testGroupId)(Right(GetUsersForGroupHttpParser.UsersFound(Map[String, CredentialRole](
           testUserId1 -> User,
@@ -216,7 +217,7 @@ class AutoEnrolmentServiceSpec extends AnyWordSpec
 
         val result: Future[AutoClaimEnrolmentResponse] = TestAutoEnrolmentService.autoClaimEnrolment(utr = testUtr, nino = testNino, mtditid = testMtditid)
 
-        await(result) mustBe Left(AutoEnrolmentService.EnrolmentAssignmentFailureForIds(Set(testUserId2)))
+        await(result) mustBe Left(AutoEnrolmentServiceModel.EnrolmentAssignmentFailureForIds(Set(testUserId2)))
         verifyEnrolmentStoreUpsertEnrolment(testMtditid, testNino)
       }
     }

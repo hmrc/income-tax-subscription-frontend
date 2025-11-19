@@ -17,7 +17,8 @@
 package models.common
 
 import models.DateModel
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{__, Json, OFormat, OWrites, Reads}
+import play.api.libs.functional.syntax._
 
 case class OverseasPropertyModel(
                                   startDateBeforeLimit: Option[Boolean] = None,
@@ -33,5 +34,13 @@ case class OverseasPropertyModel(
 }
 
 object OverseasPropertyModel {
-  implicit val format: OFormat[OverseasPropertyModel] = Json.format[OverseasPropertyModel]
+  implicit val reads: Reads[OverseasPropertyModel] = (
+    (__ \ "startDateBeforeLimit").readNullable[Boolean] and
+      (__ \ "startDate").readNullable[DateModel] and
+      (__ \ "confirmed").read[Boolean]
+    )(OverseasPropertyModel.apply _)
+  
+  implicit val writes: OWrites[OverseasPropertyModel] = Json.writes[OverseasPropertyModel]
+
+  implicit val format: OFormat[OverseasPropertyModel] = OFormat(reads, writes)
 }

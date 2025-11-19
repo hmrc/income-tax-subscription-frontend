@@ -25,7 +25,7 @@ import connectors.agent.{EnrolmentStoreProxyConnector, UsersGroupsSearchConnecto
 import models.ConnectorError
 import models.common.subscription.EnrolmentKey
 import play.api.Logging
-import services.agent.AutoEnrolmentService._
+import services.agent.AutoEnrolmentServiceModel._
 import uk.gov.hmrc.auth.core.User
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -65,12 +65,12 @@ class AutoEnrolmentService @Inject()(enrolmentStoreProxyConnector: EnrolmentStor
       case Right(_) =>
         functionError("Enrolment not allocated")
         Left(EnrolmentNotAllocated)
-      case Left(CheckEnrolmentAllocationService.EnrolmentAlreadyAllocated(groupId)) =>
+      case Left(CheckEnrolmentAllocationServiceModel.EnrolmentAlreadyAllocated(groupId)) =>
         Right(groupId)
-      case Left(CheckEnrolmentAllocationService.UnexpectedEnrolmentStoreProxyFailure(status)) =>
+      case Left(CheckEnrolmentAllocationServiceModel.UnexpectedEnrolmentStoreProxyFailure(status)) =>
         functionError(s"Enrolment store proxy call failed with status: $status")
         Left(EnrolmentStoreProxyFailure(status))
-      case Left(CheckEnrolmentAllocationService.EnrolmentStoreProxyInvalidJsonResponse) =>
+      case Left(CheckEnrolmentAllocationServiceModel.EnrolmentStoreProxyInvalidJsonResponse) =>
         functionError("Enrolment store proxy invalid json")
         Left(EnrolmentStoreProxyInvalidJsonResponse)
     }
@@ -120,10 +120,10 @@ class AutoEnrolmentService @Inject()(enrolmentStoreProxyConnector: EnrolmentStor
 
     EitherT(enrolmentStoreProxyConnector.upsertEnrolment(mtditid = mtditid, nino = nino)) transform {
       case Right(UpsertEnrolmentResponseHttpParser.UpsertEnrolmentSuccess) =>
-        Right(AutoEnrolmentService.UpsertEnrolmentSuccess)
+        Right(AutoEnrolmentServiceModel.UpsertEnrolmentSuccess)
       case Left(UpsertEnrolmentResponseHttpParser.UpsertEnrolmentFailure(status, message)) =>
         functionError(s"Failed to upsert enrolment with status: $status, message: $message")
-        Left(AutoEnrolmentService.UpsertEnrolmentFailure(message))
+        Left(AutoEnrolmentServiceModel.UpsertEnrolmentFailure(message))
     }
   }
 
@@ -134,10 +134,10 @@ class AutoEnrolmentService @Inject()(enrolmentStoreProxyConnector: EnrolmentStor
 
     EitherT(enrolmentStoreProxyConnector.allocateEnrolmentWithoutKnownFacts(groupId = groupId, credentialId = credentialId, mtditid = mtditid)) transform {
       case Right(AllocateEnrolmentResponseHttpParser.EnrolSuccess) =>
-        Right(AutoEnrolmentService.EnrolSuccess)
+        Right(AutoEnrolmentServiceModel.EnrolSuccess)
       case Left(AllocateEnrolmentResponseHttpParser.EnrolFailure(message)) =>
         functionError(s"Failed to allocate enrolment to group, message: $message")
-        Left(AutoEnrolmentService.EnrolAdminIdFailure(credentialId, message))
+        Left(AutoEnrolmentServiceModel.EnrolAdminIdFailure(credentialId, message))
     }
   }
 
@@ -148,16 +148,16 @@ class AutoEnrolmentService @Inject()(enrolmentStoreProxyConnector: EnrolmentStor
 
     EitherT(assignEnrolmentToUserService.assignEnrolment(userIds = credentialIds, mtditid = mtditid)) transform {
       case Right(AssignEnrolmentToUserService.EnrolmentAssignedToUsers) =>
-        Right(AutoEnrolmentService.EnrolmentAssigned)
+        Right(AutoEnrolmentServiceModel.EnrolmentAssigned)
       case Left(AssignEnrolmentToUserService.EnrolmentAssignmentFailed(failedIds)) =>
         functionError(s"Failed to assign enrolment to users, ${failedIds.size} out of ${credentialIds.size} failed")
-        Left(AutoEnrolmentService.EnrolmentAssignmentFailureForIds(failedIds))
+        Left(AutoEnrolmentServiceModel.EnrolmentAssignmentFailureForIds(failedIds))
     }
   }
 
 }
 
-object AutoEnrolmentService {
+object AutoEnrolmentServiceModel {
 
   type AutoClaimEnrolmentResponse = Either[AutoClaimEnrolmentFailure, AutoClaimEnrolmentSuccess]
 

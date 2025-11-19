@@ -21,8 +21,8 @@ import connectors.{CreateIncomeSourcesConnector, SignUpConnector}
 import models.AccountingYear
 import models.common.subscription.CreateIncomeSourcesModel
 import models.common.subscription.SignUpSuccessResponse.{AlreadySignedUp, SignUpSuccessful}
-import services.agent.AutoEnrolmentService.AutoClaimEnrolmentResponse
-import services.agent.SignUpOrchestrationService._
+import services.agent.AutoEnrolmentServiceModel.AutoClaimEnrolmentResponse
+import services.agent.SignUpOrchestrationServiceModel._
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
@@ -96,7 +96,7 @@ class SignUpOrchestrationService @Inject()(signUpConnector: SignUpConnector,
 }
 
 
-object SignUpOrchestrationService {
+object SignUpOrchestrationServiceModel {
 
   type SignUpOrchestrationResponse = Either[SignUpOrchestrationFailure, SignUpOrchestrationSuccessful.type]
 

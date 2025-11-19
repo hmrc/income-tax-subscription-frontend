@@ -47,7 +47,7 @@ class ConfirmationJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieva
           mockGetMandationService(Voluntary, Voluntary)
 
           val result: Future[Result] = confirmationJourneyRefiner.invokeBlock(
-            identifierRequest(journeyStep = Some(Confirmation)), { request: ConfirmationRequest[_] =>
+            identifierRequest(journeyStep = Some(Confirmation)), { (request: ConfirmationRequest[_]) =>
               request.utr mustBe utr
               request.nino mustBe nino
               request.mandationStatus mustBe mandationStatus
@@ -67,7 +67,7 @@ class ConfirmationJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieva
           mockGetMandationService(Voluntary, Voluntary)
 
           val result: Future[Result] = confirmationJourneyRefiner.invokeBlock(
-            identifierRequest(journeyStep = Some(Confirmation), sessionData = sessionData), { request: ConfirmationRequest[_] =>
+            identifierRequest(journeyStep = Some(Confirmation), sessionData = sessionData), { (request: ConfirmationRequest[_]) =>
               request.utr mustBe utr
               request.nino mustBe nino
               request.mandationStatus mustBe mandationStatus
@@ -87,7 +87,7 @@ class ConfirmationJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieva
           mockGetMandationService(Voluntary, Voluntary)
 
           val result: Future[Result] = confirmationJourneyRefiner.invokeBlock(
-            identifierRequest(journeyStep = Some(Confirmation), sessionData = sessionData), { request: ConfirmationRequest[_] =>
+            identifierRequest(journeyStep = Some(Confirmation), sessionData = sessionData), { (request: ConfirmationRequest[_]) =>
               request.utr mustBe utr
               request.nino mustBe nino
               request.mandationStatus mustBe mandationStatus
@@ -106,7 +106,7 @@ class ConfirmationJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieva
           mockGetMandationService(Voluntary, Voluntary)
           
           val result: Future[Result] = confirmationJourneyRefiner.invokeBlock(
-            identifierRequest(journeyStep = Some(Confirmation), maybeUtr = None), { _: ConfirmationRequest[_] =>
+            identifierRequest(journeyStep = Some(Confirmation), maybeUtr = None), { (_: ConfirmationRequest[_]) =>
               Future.successful(Results.Ok)
             }
           )
@@ -119,7 +119,7 @@ class ConfirmationJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieva
     "the user is in a PreSignUp state" must {
       "return not found" in {
         val result: Future[Result] = confirmationJourneyRefiner.invokeBlock(
-          identifierRequest(journeyStep = Some(PreSignUp)), { _: ConfirmationRequest[_] =>
+          identifierRequest(journeyStep = Some(PreSignUp)), { (_: ConfirmationRequest[_]) =>
             Future.successful(Results.Ok)
           }
         )
@@ -130,7 +130,7 @@ class ConfirmationJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieva
     "the user is in a SignUp state" must {
       "return not found" in {
         val result: Future[Result] = confirmationJourneyRefiner.invokeBlock(
-          identifierRequest(journeyStep = Some(SignUp)), { _: ConfirmationRequest[_] =>
+          identifierRequest(journeyStep = Some(SignUp)), { (_: ConfirmationRequest[_]) =>
             Future.successful(Results.Ok)
           }
         )
@@ -141,7 +141,7 @@ class ConfirmationJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieva
     "the user has no state" must {
       "return not found" in {
         val result: Future[Result] = confirmationJourneyRefiner.invokeBlock(
-          identifierRequest(journeyStep = None), { _: ConfirmationRequest[_] =>
+          identifierRequest(journeyStep = None), { (_: ConfirmationRequest[_]) =>
             Future.successful(Results.Ok)
           }
         )

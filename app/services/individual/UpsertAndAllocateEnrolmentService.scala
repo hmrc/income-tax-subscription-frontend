@@ -21,7 +21,7 @@ import common.Constants
 import common.Constants.GovernmentGateway._
 import connectors.individual.TaxEnrolmentsConnector
 import models.common.subscription.{EmacEnrolmentRequest, EnrolmentKey, EnrolmentVerifiers}
-import services.individual.UpsertAndAllocateEnrolmentService._
+import services.individual.UpsertAndAllocateEnrolmentServiceModel._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
@@ -74,7 +74,7 @@ class UpsertAndAllocateEnrolmentService @Inject()(taxEnrolmentsConnector: TaxEnr
 
 }
 
-object UpsertAndAllocateEnrolmentService {
+object UpsertAndAllocateEnrolmentServiceModel {
 
   type UpsertAndAllocateEnrolmentResponse = Either[UpsertAndAllocateEnrolmentFailure, UpsertAndAllocateEnrolmentSuccess.type]
 

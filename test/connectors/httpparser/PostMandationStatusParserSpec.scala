@@ -49,8 +49,8 @@ class PostPostMandationStatusParserSpec extends UnitTestTrait {
 
         val expectedError = "Invalid Json for mandationStatusResponseHttpReads: " +
           "List(" +
-          "(/nextYearStatus,List(JsonValidationError(List(error.path.missing),List()))), " +
-          "(/currentYearStatus,List(JsonValidationError(List(error.path.missing),List())))" +
+          "(/nextYearStatus,List(JsonValidationError(List(error.path.missing),ArraySeq()))), " +
+          "(/currentYearStatus,List(JsonValidationError(List(error.path.missing),ArraySeq())))" +
           ")"
 
         PostMandationStatusParser.mandationStatusResponseHttpReads.read("POST", "test-url", response) mustBe

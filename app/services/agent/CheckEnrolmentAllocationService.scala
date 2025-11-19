@@ -19,7 +19,7 @@ package services.agent
 import connectors.agent.EnrolmentStoreProxyConnector
 import connectors.agent.httpparsers.EnrolmentStoreProxyHttpParser
 import models.common.subscription.EnrolmentKey
-import services.agent.CheckEnrolmentAllocationService._
+import services.agent.CheckEnrolmentAllocationServiceModel._
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
@@ -38,7 +38,7 @@ class CheckEnrolmentAllocationService @Inject()(enrolmentStoreProxyConnector: En
   }
 }
 
-object CheckEnrolmentAllocationService {
+object CheckEnrolmentAllocationServiceModel {
 
   type CheckEnrolmentAllocationResponse = Either[CheckEnrolmentAllocationFailure, EnrolmentNotAllocated.type]
 

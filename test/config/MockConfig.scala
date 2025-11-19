@@ -47,21 +47,21 @@ trait MockConfig extends UnitTestTrait with AppConfig {
   override val preferencesFrontendRedirect: String = ""
   override val baseUrl: String = ""
   override val authUrl: String = ""
-  override lazy val authenticatorUrl: String = ""
+  override val authenticatorUrl: String = ""
   override val userMatchingUrl = "/income-tax-subscription/user-matching"
-  override lazy val ggUrl = ""
-  override lazy val urBannerUrl: String = " "
-  override lazy val govukGuidanceLink: String = " "
-  override lazy val govukGuidanceITSASignUpIndivLink: String = "https://www.gov.uk/guidance/sign-up-your-business-for-making-tax-digital-for-income-tax"
-  override lazy val govukGuidanceITSASignUpAgentLink: String = "https://www.gov.uk/guidance/sign-up-your-client-for-making-tax-digital-for-income-tax"
-  override lazy val govukGuidanceITSAWhoCanSignUpVoluntarily: String = "https://www.gov.uk/guidance/sign-up-your-business-for-making-tax-digital-for-income-tax#who-can-sign-up-voluntarily"
+  override val ggUrl = ""
+  override val urBannerUrl: String = " "
+  override val govukGuidanceLink: String = " "
+  override val govukGuidanceITSASignUpIndivLink: String = "https://www.gov.uk/guidance/sign-up-your-business-for-making-tax-digital-for-income-tax"
+  override val govukGuidanceITSASignUpAgentLink: String = "https://www.gov.uk/guidance/sign-up-your-client-for-making-tax-digital-for-income-tax"
+  override val govukGuidanceITSAWhoCanSignUpVoluntarily: String = "https://www.gov.uk/guidance/sign-up-your-business-for-making-tax-digital-for-income-tax#who-can-sign-up-voluntarily"
   override lazy val individualSigningUpUrl: String = s"$baseUrl/report-quarterly/income-and-expenses/sign-up/eligibility/signing-up"
   override lazy val agentSigningUpUrl: String = s"$baseUrl/report-quarterly/income-and-expenses/sign-up/eligibility/client/signing-up"
 
 
   override def ggSignOutUrl(redirectionUrl: String = ggSignInContinueUrl): String = s"$ggUrl/bas-gateway/sign-out-without-state?continue=$redirectionUrl"
 
-  override lazy val btaUrl = "https://www.tax.service.gov.uk/business-account"
+  override val btaUrl = "https://www.tax.service.gov.uk/business-account"
   override val matchingAttempts: Int = 3
   override val matchingLockOutSeconds: Int = 60
 
@@ -76,11 +76,11 @@ trait MockConfig extends UnitTestTrait with AppConfig {
 
   override val agentSignUpUrl: String = "/report-quarterly/income-and-expenses/sign-up/client"
 
-  override lazy val agentServicesUrl: String = "/agent-subscription"
+  override val agentServicesUrl: String = "/agent-subscription"
 
-  override lazy val agentServicesAccountHomeUrl: String = "/agent-services-account"
+  override val agentServicesAccountHomeUrl: String = "/agent-services-account"
 
-  override lazy val backendFeatureSwitchUrl = "income-tax-subscription/"
+  override val backendFeatureSwitchUrl = "income-tax-subscription/"
 
   override def upsertEnrolmentUrl(enrolmentKey: String): String = "tax-enrolments/"
 
@@ -88,9 +88,9 @@ trait MockConfig extends UnitTestTrait with AppConfig {
 
   override val betaFeedbackUnauthenticatedUrl: String = "/feedback"
 
-  override lazy val incomeTaxEligibilityUrl: String = "/income-tax-subscription-incometax.eligibility"
+  override val incomeTaxEligibilityUrl: String = "/income-tax-subscription-incometax.eligibility"
 
-  override lazy val eligibilityFeatureSwitchUrl: String = s"$incomeTaxEligibilityUrl/test-only/feature-switch"
+  override val eligibilityFeatureSwitchUrl: String = s"$incomeTaxEligibilityUrl/test-only/feature-switch"
 
   override val incomeTaxSelfEmploymentsFrontendUrl: String = "/report-quarterly/income-and-expenses/sign-up/self-employments"
   override val incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl: String = "/report-quarterly/income-and-expenses/sign-up/self-employments/details/business-check-your-answers"

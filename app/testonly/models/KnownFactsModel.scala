@@ -19,4 +19,12 @@ package testonly.models
 
 case class KnownFactsModel(nino: String, mtditid: String)
 
+object KnownFactsModel {
+  def unapply(knownFactsModel: KnownFactsModel): Option[(String, String)] =
+    Some((
+      knownFactsModel.nino,
+      knownFactsModel.mtditid
+    ))
+
+}
 

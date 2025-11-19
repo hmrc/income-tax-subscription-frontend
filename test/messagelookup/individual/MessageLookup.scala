@@ -62,16 +62,6 @@ object MessageLookup {
     val title = "Confirmation page"
   }
 
-  object ProgressSaved {
-    val title = "We have saved your progress - Sign up for Making Tax Digital for Income Tax - GOV.UK"
-
-    def contentSummary(expirationDate: String) = s"We’ll save your data until $expirationDate"
-
-    val subheading = "What happens next"
-    val paragraph1 = "If you sign out, you’ll need to sign in again using the same Government Gateway user ID."
-    val paragraph2 = "Or you can continue signing up"
-  }
-
   object AffinityGroup {
     val title = "You can’t use this service"
     val heading = "You can’t use this service"

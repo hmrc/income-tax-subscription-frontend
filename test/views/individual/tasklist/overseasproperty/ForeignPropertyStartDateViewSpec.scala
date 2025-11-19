@@ -28,7 +28,7 @@ import views.html.individual.tasklist.overseasproperty.ForeignPropertyStartDate
 
 class ForeignPropertyStartDateViewSpec extends ViewSpec {
 
-  "PropertyStartDate" must {
+  "ForeignPropertyStartDate" must {
     "use the correct template" when {
       "there is no error" in new TemplateViewTest(
         view = page(

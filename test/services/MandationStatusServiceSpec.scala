@@ -23,6 +23,7 @@ import models.SessionData
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
 import org.scalatest.matchers.must.Matchers
+import play.api.test.Helpers.*
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.libs.json.Json

@@ -21,7 +21,7 @@ import models.common.AccountingPeriodModel
 import models.common.business._
 import models.common.subscription.{OverseasProperty, SoleTraderBusinesses, UkProperty}
 import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.domain.Generator
+import uk.gov.hmrc.domain._
 import utilities.AccountingPeriodUtil
 
 import java.net.URLEncoder
@@ -32,14 +32,14 @@ object IntegrationTestConstants {
 
   private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
 
-  lazy val testNino: String = new Generator().nextNino.nino
+  lazy val testNino: String = new NinoGenerator().nextNino.nino
   lazy val testFormattedNino: String = testNino match {
     case ninoRegex(startLetters, firstDigits, secondDigits, thirdDigits, finalLetter) =>
       s"$startLetters $firstDigits $secondDigits $thirdDigits $finalLetter"
     case other => other
   }
   lazy val staticTestNino = "AA111111A"
-  lazy val testUtr: String = new Generator().nextAtedUtr.utr
+  lazy val testUtr: String = new AtedUtrGenerator().nextAtedUtr.utr
   lazy val testUtrEnrolmentKey: String = s"IR-SA~UTR~$testUtr"
   lazy val testMtdId = "XE0001234567890"
   lazy val testMtdId2 = "XE0001234567892"
@@ -51,7 +51,7 @@ object IntegrationTestConstants {
 
   val SessionId = s"stubbed-${UUID.randomUUID}"
   val userId = s"/auth/oid/1234567890"
-  lazy val testARN: String = new Generator().nextAtedUtr.utr //Not a valid ARN, for test purposes only
+  lazy val testARN: String = new AtedUtrGenerator().nextAtedUtr.utr //Not a valid ARN, for test purposes only
   val testUserIdEncoded: String = URLEncoder.encode(userId, "UTF-8")
 
   lazy val testFirstName: String = Math.random().toString

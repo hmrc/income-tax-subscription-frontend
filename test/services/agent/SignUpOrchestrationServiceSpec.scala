@@ -45,7 +45,7 @@ class SignUpOrchestrationServiceSpec extends PlaySpec
 
         val result = TestSignUpOrchestrationService.orchestrateSignUp(arn, nino, utr, taxYear, createIncomeSourcesModel)
 
-        await(result) mustBe Right(SignUpOrchestrationService.SignUpOrchestrationSuccessful)
+        await(result) mustBe Right(SignUpOrchestrationServiceModel.SignUpOrchestrationSuccessful)
 
         verifySignUp(nino, utr, taxYear)
         verifyCreateIncomeSources(mtditid, createIncomeSourcesModel, count = 0)
@@ -56,13 +56,13 @@ class SignUpOrchestrationServiceSpec extends PlaySpec
       "sign up and creation of income sources was successful" in {
         mockSignUp(nino, utr, taxYear)(Right(SignUpSuccessful(mtditid)))
         mockCreateIncomeSources(mtditid, createIncomeSourcesModel)(Right(CreateIncomeSourcesResponseHttpParser.CreateIncomeSourcesSuccess))
-        mockAutoClaimEnrolment(utr, nino, mtditid)(Right(AutoEnrolmentService.EnrolSuccess))
+        mockAutoClaimEnrolment(utr, nino, mtditid)(Right(AutoEnrolmentServiceModel.EnrolSuccess))
         preExistingMTDRelationship(arn, nino)(isPreExistingMTDRelationship = true)
         mockAgentSpsConnectorSuccess(arn, utr, nino, mtditid)
 
         val result = TestSignUpOrchestrationService.orchestrateSignUp(arn, nino, utr, taxYear, createIncomeSourcesModel)
 
-        await(result) mustBe Right(SignUpOrchestrationService.SignUpOrchestrationSuccessful)
+        await(result) mustBe Right(SignUpOrchestrationServiceModel.SignUpOrchestrationSuccessful)
 
         verifySignUp(nino, utr, taxYear)
         verifyCreateIncomeSources(mtditid, createIncomeSourcesModel)
@@ -73,12 +73,12 @@ class SignUpOrchestrationServiceSpec extends PlaySpec
       "the auto claim enrolment process was not successful" in {
         mockSignUp(nino, utr, taxYear)(Right(SignUpSuccessful(mtditid)))
         mockCreateIncomeSources(mtditid, createIncomeSourcesModel)(Right(CreateIncomeSourcesResponseHttpParser.CreateIncomeSourcesSuccess))
-        mockAutoClaimEnrolment(utr, nino, mtditid)(Left(AutoEnrolmentService.EnrolmentNotAllocated))
+        mockAutoClaimEnrolment(utr, nino, mtditid)(Left(AutoEnrolmentServiceModel.EnrolmentNotAllocated))
         preExistingMTDRelationship(arn, nino)(isPreExistingMTDRelationship = true)
 
         val result = TestSignUpOrchestrationService.orchestrateSignUp(arn, nino, utr, taxYear, createIncomeSourcesModel)
 
-        await(result) mustBe Right(SignUpOrchestrationService.SignUpOrchestrationSuccessful)
+        await(result) mustBe Right(SignUpOrchestrationServiceModel.SignUpOrchestrationSuccessful)
 
         verifySignUp(nino, utr, taxYear)
         verifyCreateIncomeSources(mtditid, createIncomeSourcesModel)
@@ -89,14 +89,14 @@ class SignUpOrchestrationServiceSpec extends PlaySpec
       "there was no relationship found for mtd" in {
         mockSignUp(nino, utr, taxYear)(Right(SignUpSuccessful(mtditid)))
         mockCreateIncomeSources(mtditid, createIncomeSourcesModel)(Right(CreateIncomeSourcesResponseHttpParser.CreateIncomeSourcesSuccess))
-        mockAutoClaimEnrolment(utr, nino, mtditid)(Right(AutoEnrolmentService.EnrolSuccess))
+        mockAutoClaimEnrolment(utr, nino, mtditid)(Right(AutoEnrolmentServiceModel.EnrolSuccess))
         preExistingMTDRelationship(arn, nino)(isPreExistingMTDRelationship = false)
         suppAgentRelationship(arn, nino)(isMTDSuppAgentRelationship = true)
         mockAgentSpsConnectorSuccess(arn, utr, nino, mtditid)
 
         val result = TestSignUpOrchestrationService.orchestrateSignUp(arn, nino, utr, taxYear, createIncomeSourcesModel)
 
-        await(result) mustBe Right(SignUpOrchestrationService.SignUpOrchestrationSuccessful)
+        await(result) mustBe Right(SignUpOrchestrationServiceModel.SignUpOrchestrationSuccessful)
 
         verifySignUp(nino, utr, taxYear)
         verifyCreateIncomeSources(mtditid, createIncomeSourcesModel)
@@ -108,14 +108,14 @@ class SignUpOrchestrationServiceSpec extends PlaySpec
       "there was no relationship found for mtd supporting" in {
         mockSignUp(nino, utr, taxYear)(Right(SignUpSuccessful(mtditid)))
         mockCreateIncomeSources(mtditid, createIncomeSourcesModel)(Right(CreateIncomeSourcesResponseHttpParser.CreateIncomeSourcesSuccess))
-        mockAutoClaimEnrolment(utr, nino, mtditid)(Right(AutoEnrolmentService.EnrolSuccess))
+        mockAutoClaimEnrolment(utr, nino, mtditid)(Right(AutoEnrolmentServiceModel.EnrolSuccess))
         preExistingMTDRelationship(arn, nino)(isPreExistingMTDRelationship = false)
         suppAgentRelationship(arn, nino)(isMTDSuppAgentRelationship = false)
         mockAgentSpsConnectorSuccess(arn, utr, nino, mtditid)
 
         val result = TestSignUpOrchestrationService.orchestrateSignUp(arn, nino, utr, taxYear, createIncomeSourcesModel)
 
-        await(result) mustBe Right(SignUpOrchestrationService.SignUpOrchestrationSuccessful)
+        await(result) mustBe Right(SignUpOrchestrationServiceModel.SignUpOrchestrationSuccessful)
 
         verifySignUp(nino, utr, taxYear)
         verifyCreateIncomeSources(mtditid, createIncomeSourcesModel)
@@ -131,7 +131,7 @@ class SignUpOrchestrationServiceSpec extends PlaySpec
 
         val result = TestSignUpOrchestrationService.orchestrateSignUp(arn, nino, utr, taxYear, createIncomeSourcesModel)
 
-        await(result) mustBe Left(SignUpOrchestrationService.SignUpFailure)
+        await(result) mustBe Left(SignUpOrchestrationServiceModel.SignUpFailure)
 
         verifySignUp(nino, utr, taxYear)
         verifyCreateIncomeSources(mtditid, createIncomeSourcesModel, count = 0)
@@ -145,14 +145,14 @@ class SignUpOrchestrationServiceSpec extends PlaySpec
       "an error was returned from the create income sources connector" in {
         mockSignUp(nino, utr, taxYear)(Right(SignUpSuccessful(mtditid)))
         mockCreateIncomeSources(mtditid, createIncomeSourcesModel)(Left(CreateIncomeSourcesResponseHttpParser.UnexpectedStatus(INTERNAL_SERVER_ERROR)))
-        mockAutoClaimEnrolment(utr, nino, mtditid)(Right(AutoEnrolmentService.EnrolSuccess))
+        mockAutoClaimEnrolment(utr, nino, mtditid)(Right(AutoEnrolmentServiceModel.EnrolSuccess))
         preExistingMTDRelationship(arn, nino)(isPreExistingMTDRelationship = false)
         suppAgentRelationship(arn, nino)(isMTDSuppAgentRelationship = true)
         mockAgentSpsConnectorSuccess(arn, utr, nino, mtditid)
 
         val result = TestSignUpOrchestrationService.orchestrateSignUp(arn, nino, utr, taxYear, createIncomeSourcesModel)
 
-        await(result) mustBe Left(SignUpOrchestrationService.CreateIncomeSourcesFailure)
+        await(result) mustBe Left(SignUpOrchestrationServiceModel.CreateIncomeSourcesFailure)
 
         verifySignUp(nino, utr, taxYear)
         verifyCreateIncomeSources(mtditid, createIncomeSourcesModel)

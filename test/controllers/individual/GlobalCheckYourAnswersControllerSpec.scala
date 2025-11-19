@@ -30,6 +30,7 @@ import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, red
 import play.twirl.api.HtmlFormat
 import services.GetCompleteDetailsService
 import services.GetCompleteDetailsService._
+import services.individual.SignUpOrchestrationServiceModel
 import services.individual.SignUpOrchestrationService
 import services.mocks._
 import uk.gov.hmrc.http.InternalServerException
@@ -171,7 +172,7 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
           ArgumentMatchers.eq(Current),
           ArgumentMatchers.eq(CreateIncomeSourcesModel.createIncomeSources(testNino, completeDetails)),
           ArgumentMatchers.eq(Some(testSpsEntityId))
-        )(ArgumentMatchers.any())).thenReturn(Future.successful(Right(SignUpOrchestrationService.SignUpOrchestrationSuccessful)))
+        )(ArgumentMatchers.any())).thenReturn(Future.successful(Right(SignUpOrchestrationServiceModel.SignUpOrchestrationSuccessful)))
 
         val result: Future[Result] = controller.submit(subscriptionRequest)
 
@@ -192,10 +193,10 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
           ArgumentMatchers.eq(Current),
           ArgumentMatchers.eq(CreateIncomeSourcesModel.createIncomeSources(testNino, completeDetails)),
           ArgumentMatchers.eq(Some(testSpsEntityId))
-        )(ArgumentMatchers.any())).thenReturn(Future.successful(Left(SignUpOrchestrationService.SignUpFailure)))
+        )(ArgumentMatchers.any())).thenReturn(Future.successful(Left(SignUpOrchestrationServiceModel.SignUpFailure)))
 
         intercept[InternalServerException](await(controller.submit(subscriptionRequest)))
-          .message mustBe s"[GlobalCheckYourAnswersController][submit] - failure response received from submission: ${SignUpOrchestrationService.SignUpFailure}"
+          .message mustBe s"[GlobalCheckYourAnswersController][submit] - failure response received from submission: ${SignUpOrchestrationServiceModel.SignUpFailure}"
       }
     }
   }

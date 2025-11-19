@@ -33,7 +33,7 @@ lazy val scoverageSettings = {
 }
 
 ThisBuild / majorVersion := 1
-ThisBuild / scalaVersion := "2.13.16"
+ThisBuild / scalaVersion := "3.3.6"
 lazy val microservice = Project(AppDependencies.appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin)
@@ -47,7 +47,8 @@ lazy val microservice = Project(AppDependencies.appName, file("."))
   .settings(
     scalacOptions += "-Wconf:src=routes/.*:s",
     scalacOptions += "-Wconf:cat=unused-imports&src=html/.*:s",
-    scalacOptions ++= Seq("-deprecation", "-feature"),
+    scalacOptions += "-Wconf:msg=Flag.*repeatedly:s",
+    scalacOptions ++= Seq("-deprecation", "-feature", "-explain", "-explain-cyclic")
   )
   .settings(
     libraryDependencies ++= (AppDependencies.compile ++ AppDependencies.test),

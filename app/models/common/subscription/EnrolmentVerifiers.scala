@@ -21,7 +21,7 @@ import play.api.libs.json.{Json, Writes}
 case class EnrolmentVerifiers(verifiers: (String, String)*)
 
 object EnrolmentVerifiers {
-  implicit val writer: Writes[EnrolmentVerifiers] = Writes[EnrolmentVerifiers] { enrolmentVerifiers: EnrolmentVerifiers =>
+  implicit val writer: Writes[EnrolmentVerifiers] = Writes[EnrolmentVerifiers] { (enrolmentVerifiers: EnrolmentVerifiers) =>
     Json.obj(
       "verifiers" -> enrolmentVerifiers.verifiers.map { case (key, value) =>
         Json.obj(

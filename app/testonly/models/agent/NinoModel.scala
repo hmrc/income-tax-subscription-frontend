@@ -17,3 +17,8 @@
 package testonly.models.agent
 
 case class NinoModel(nino: String)
+
+object NinoModel {
+  def unapply(ninoModel: NinoModel): Option[String] = Some(ninoModel.nino)
+  
+}

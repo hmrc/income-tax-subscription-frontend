@@ -178,26 +178,13 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
       await(defaultPredicates(authorisedRequest)(blankUser).left.value) mustBe wrongAffinity
     }
 
-    "redirect to iv when the user doesn't have high enough confidence level" when {
-      Seq(ConfidenceLevel.L200, ConfidenceLevel.L250) foreach { level =>
-        s"the required confidence level is $level" in {
-          val confidenceLevelAppConfig: AppConfig = new FrontendAppConfig(injectedServicesConfig, injectedConfiguration) {
-            override lazy val identityVerificationRequiredConfidenceLevel: ConfidenceLevel = level
-          }
-
-          val authPredicates: AuthPredicates = new AuthPredicates {
-            val appConfig: AppConfig = confidenceLevelAppConfig
-            val auditingService: AuditingService = mockAuditingService
-          }
-
+    "redirect to iv when the user doesn't have high enough confidence level" in {
           val result = await(authPredicates.defaultPredicates(authorisedRequest)(
             predicateUserConfidence50).left.value
           )
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(confidenceLevelAppConfig.identityVerificationURL)
-        }
+          redirectLocation(result) mustBe Some(injectedConfig.identityVerificationURL)
       }
-    }
   }
 
   "subscriptionPredicates" should {
@@ -213,26 +200,13 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
       await(subscriptionPredicates(authorisedRequest)(enrolledPredicateUser).left.value) mustBe alreadyEnrolled
     }
 
-    "redirect to iv when the user doesn't have high enough confidence level" when {
-      Seq(ConfidenceLevel.L200, ConfidenceLevel.L250) foreach { level =>
-        s"the required confidence level is $level" in {
-          val confidenceLevelAppConfig: AppConfig = new FrontendAppConfig(injectedServicesConfig, injectedConfiguration) {
-            override lazy val identityVerificationRequiredConfidenceLevel: ConfidenceLevel = level
-          }
-
-          val authPredicates: AuthPredicates = new AuthPredicates {
-            val appConfig: AppConfig = confidenceLevelAppConfig
-            val auditingService: AuditingService = mockAuditingService
-          }
-
+    "redirect to iv when the user doesn't have high enough confidence level" in {
           val result = await(authPredicates.subscriptionPredicates(authorisedRequest)(
             predicateUserConfidence50).left.value
           )
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(confidenceLevelAppConfig.identityVerificationURL)
+          redirectLocation(result) mustBe Some(injectedConfig.identityVerificationURL)
         }
-      }
-    }
 
     "redirect to home when the user has no sps entity id" in {
       val result = subscriptionPredicates(authorisedRequestWithoutSPSEntityId)(defaultPredicateUser).left.value
@@ -248,25 +222,12 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
     "return the claim enrolment overview page where the request session does not contain the ClaimEnrolment state" in {
       await(claimEnrolmentPredicates(homelessAuthorisedRequest)(defaultPredicateUser).left.value) mustBe claimEnrolmentRoute
     }
-    "redirect to iv when the user doesn't have high enough confidence level" when {
-      Seq(ConfidenceLevel.L200, ConfidenceLevel.L250) foreach { level =>
-        s"the required confidence level is $level" in {
-          val confidenceLevelAppConfig: AppConfig = new FrontendAppConfig(injectedServicesConfig, injectedConfiguration) {
-            override lazy val identityVerificationRequiredConfidenceLevel: ConfidenceLevel = level
-          }
-
-          val authPredicates: AuthPredicates = new AuthPredicates {
-            val appConfig: AppConfig = confidenceLevelAppConfig
-            val auditingService: AuditingService = mockAuditingService
-          }
-
+    "redirect to iv when the user doesn't have high enough confidence level" in {
           val result = await(authPredicates.claimEnrolmentPredicates(authorisedRequest)(
             predicateUserConfidence50).left.value
           )
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(confidenceLevelAppConfig.identityVerificationURL)
-        }
-      }
+          redirectLocation(result) mustBe Some(injectedConfig.identityVerificationURL)
     }
   }
 

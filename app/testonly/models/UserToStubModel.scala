@@ -26,6 +26,15 @@ case class UserToStubModel(firstName: String, lastName: String, nino: String, sa
 
 object UserToStubModel {
   implicit val format: OFormat[UserToStubModel] = Json.format[UserToStubModel]
+
+  def unapply(userToStubModel: UserToStubModel): Option[(String, String, String, Option[String], DateModel)] =
+    Some((
+      userToStubModel.firstName,
+      userToStubModel.lastName,
+      userToStubModel.nino,
+      userToStubModel.sautr,
+      userToStubModel.dateOfBirth
+    ))
 }
 
 // $COVERAGE-ON$

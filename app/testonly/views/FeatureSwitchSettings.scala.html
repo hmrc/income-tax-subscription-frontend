@@ -34,7 +34,7 @@ form: FormWithCSRF)
             <div class="govuk-form-group">
                 @for(switch <- switchNames) {
                     <div class="govuk-checkboxes__item">
-                        <input class="govuk-checkboxes__input" type="checkbox" id="@switch._1.name" name="@switch._1.name" value="true" @{if(switch._2){"Checked"}}>
+                        <input class="govuk-checkboxes__input" type="checkbox" id="@switch._1.name" name="@switch._1.name" value="true" @if(switch._2){"Checked"}>
                         <label class="govuk-label govuk-checkboxes__label" for="@switch._1.name">@switch._1.displayText</label>
                     </div>
                 }

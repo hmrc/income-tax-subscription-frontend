@@ -36,7 +36,7 @@ class PreSignUpJourneyRefinerSpec extends PlaySpec {
       "redirect to the already enrolled page" when {
         "the user already has an MTDITID on their cred" in {
           val result: Future[Result] = preSignUpJourneyRefiner.invokeBlock(
-            identifierRequest(journeyStep = Some(PreSignUp), Some(testEntityId), Some(testUtr), Some(testMTDITID)), { _: PreSignUpRequest[_] =>
+            identifierRequest(journeyStep = Some(PreSignUp), Some(testEntityId), Some(testUtr), Some(testMTDITID)), { (_: PreSignUpRequest[_]) =>
               Future.successful(Results.Ok)
             }
           )
@@ -48,7 +48,7 @@ class PreSignUpJourneyRefinerSpec extends PlaySpec {
       "execute the provided code" when {
         "the user does not have an MTDITID" in {
           val result: Future[Result] = preSignUpJourneyRefiner.invokeBlock(
-            identifierRequest(journeyStep = Some(PreSignUp), Some(testEntityId), Some(testUtr), None), { request: PreSignUpRequest[_] =>
+            identifierRequest(journeyStep = Some(PreSignUp), Some(testEntityId), Some(testUtr), None), { (request: PreSignUpRequest[_]) =>
               request.nino mustBe testNino
               request.utr mustBe Some(testUtr)
 
@@ -64,7 +64,7 @@ class PreSignUpJourneyRefinerSpec extends PlaySpec {
       "redirect to the using software page" when {
         "the user has an sps entity id in session indicating they already have passed through SPS" in {
           val result: Future[Result] = preSignUpJourneyRefiner.invokeBlock(
-            identifierRequest(journeyStep = Some(SignUp), Some(testEntityId), Some(testUtr), None), { _: PreSignUpRequest[_] =>
+            identifierRequest(journeyStep = Some(SignUp), Some(testEntityId), Some(testUtr), None), { (_: PreSignUpRequest[_]) =>
               Future.successful(Results.Ok)
             }
           )
@@ -76,7 +76,7 @@ class PreSignUpJourneyRefinerSpec extends PlaySpec {
       "redirect to the sps handoff" when {
         "the user does not have an sps entity id" in {
           val result: Future[Result] = preSignUpJourneyRefiner.invokeBlock(
-            identifierRequest(journeyStep = Some(SignUp), None, Some(testUtr), None), { _: PreSignUpRequest[_] =>
+            identifierRequest(journeyStep = Some(SignUp), None, Some(testUtr), None), { (_: PreSignUpRequest[_]) =>
               Future.successful(Results.Ok)
             }
           )
@@ -89,7 +89,7 @@ class PreSignUpJourneyRefinerSpec extends PlaySpec {
     "the user is in a Confirmation state" should {
       "redirect to the confirmation page" in {
         val result: Future[Result] = preSignUpJourneyRefiner.invokeBlock(
-          identifierRequest(journeyStep = Some(Confirmation), Some(testEntityId), Some(testUtr), None), { _: PreSignUpRequest[_] =>
+          identifierRequest(journeyStep = Some(Confirmation), Some(testEntityId), Some(testUtr), None), { (_: PreSignUpRequest[_]) =>
             Future.successful(Results.Ok)
           }
         )
@@ -101,7 +101,7 @@ class PreSignUpJourneyRefinerSpec extends PlaySpec {
     "the user has no state" should {
       "redirect to the index route with the PreSignUp state" in {
         val result: Future[Result] = preSignUpJourneyRefiner.invokeBlock(
-          identifierRequest(journeyStep = None, Some(testEntityId), Some(testUtr), None), { _: PreSignUpRequest[_] =>
+          identifierRequest(journeyStep = None, Some(testEntityId), Some(testUtr), None), { (_: PreSignUpRequest[_]) =>
             Future.successful(Results.Ok)
           }
         )

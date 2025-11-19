@@ -21,7 +21,7 @@ import org.mockito.Mockito._
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import services.agent.AutoEnrolmentService
-import services.agent.AutoEnrolmentService.AutoClaimEnrolmentResponse
+import services.agent.AutoEnrolmentServiceModel.AutoClaimEnrolmentResponse
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future

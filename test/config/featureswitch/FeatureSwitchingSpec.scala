@@ -16,8 +16,9 @@
 
 package config.featureswitch
 
-import config.FrontendAppConfig
-import config.featureswitch.FeatureSwitch._
+import config.featureswitch.FeatureSwitch.ThrottlingFeature
+import config.{AppConfig, FrontendAppConfig}
+import config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
@@ -29,7 +30,9 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
 
   val servicesConfig: ServicesConfig = app.injector.instanceOf[ServicesConfig]
   val mockConfig: Configuration = mock[Configuration]
-  override val appConfig: FrontendAppConfig = new FrontendAppConfig(servicesConfig, mockConfig)
+  val featureSwitching: FeatureSwitching = new FeatureSwitching {
+    override val appConfig: FrontendAppConfig = new FrontendAppConfig(servicesConfig, mockConfig)
+  }
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -67,6 +70,7 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
     }
 
     "return true if Throttle feature switch is not in sys.props but is set to on in config" in {
+      enable(ThrottlingFeature)
       when(mockConfig.getOptional[String]("feature-switch.throttle")).thenReturn(Some(FEATURE_SWITCH_ON))
       isEnabled(ThrottlingFeature) mustBe true
     }

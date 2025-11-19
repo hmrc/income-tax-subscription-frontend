@@ -49,6 +49,7 @@ import play.api.test.FakeRequest
 import play.twirl.api.TwirlHelperImports.twirlJavaCollectionToScala
 import uk.gov.hmrc.crypto.{ApplicationCrypto, Decrypter, Encrypter}
 import utilities.UUIDProvider
+import play.api.libs.ws.WSBodyWritables.writeableOf_urlEncodedForm
 
 import java.time.LocalDate
 import java.util.UUID
@@ -69,7 +70,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
   }
 
   val cookieSignerCache: Application => CookieSigner = Application.instanceCache[CookieSigner]
-  override lazy val cookieSigner: CookieSigner = cookieSignerCache(app)
+  override val cookieSigner: CookieSigner = cookieSignerCache(app)
 
   implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
@@ -119,7 +120,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
   implicit lazy val crypto: Encrypter with Decrypter = app.injector.instanceOf[ApplicationCrypto].JsonCrypto
 
-  implicit lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+  override implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
