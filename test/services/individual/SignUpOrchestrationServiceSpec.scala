@@ -25,8 +25,6 @@ import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import services.individual.mocks.MockUpsertAndAllocateEnrolmentService
-import services.individual.SignUpOrchestrationServiceModel._
-import services.individual.UpsertAndAllocateEnrolmentServiceModel._
 import services.mocks.MockSpsService
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.AccountingPeriodUtil
@@ -46,7 +44,7 @@ class SignUpOrchestrationServiceSpec extends PlaySpec
 
         val result = TestSignUpOrchestrationService.orchestrateSignUp(nino, utr, taxYear, createIncomeSourcesModel, Some(entityId))
 
-        await(result) mustBe Right(SignUpOrchestrationServiceModel.SignUpOrchestrationSuccessful)
+        await(result) mustBe Right(SignUpOrchestrationService.SignUpOrchestrationSuccessful)
 
         verifySignUp(nino, utr, taxYear)
         verifyCreateIncomeSources(mtditid, createIncomeSourcesModel, count = 0)
@@ -56,12 +54,12 @@ class SignUpOrchestrationServiceSpec extends PlaySpec
       "sign up and creation of income sources was successful" in {
         mockSignUp(nino, utr, taxYear)(Right(SignUpSuccessful(mtditid)))
         mockCreateIncomeSources(mtditid, createIncomeSourcesModel)(Right(CreateIncomeSourcesResponseHttpParser.CreateIncomeSourcesSuccess))
-        mockUpsertAndAllocateEnrolment(mtditid, nino)(Right(UpsertAndAllocateEnrolmentServiceModel.UpsertAndAllocateEnrolmentSuccess))
+        mockUpsertAndAllocateEnrolment(mtditid, nino)(Right(UpsertAndAllocateEnrolmentService.UpsertAndAllocateEnrolmentSuccess))
         mockConfirmPreference(entityId, mtditid)
 
         val result = TestSignUpOrchestrationService.orchestrateSignUp(nino, utr, taxYear, createIncomeSourcesModel, Some(entityId))
 
-        await(result) mustBe Right(SignUpOrchestrationServiceModel.SignUpOrchestrationSuccessful)
+        await(result) mustBe Right(SignUpOrchestrationService.SignUpOrchestrationSuccessful)
 
         verifySignUp(nino, utr, taxYear)
         verifyCreateIncomeSources(mtditid, createIncomeSourcesModel)
@@ -71,11 +69,11 @@ class SignUpOrchestrationServiceSpec extends PlaySpec
       "there was a problem upserting and allocating the enrolment" in {
         mockSignUp(nino, utr, taxYear)(Right(SignUpSuccessful(mtditid)))
         mockCreateIncomeSources(mtditid, createIncomeSourcesModel)(Right(CreateIncomeSourcesResponseHttpParser.CreateIncomeSourcesSuccess))
-        mockUpsertAndAllocateEnrolment(mtditid, nino)(Left(UpsertAndAllocateEnrolmentServiceModel.AllocateEnrolmentFailure))
+        mockUpsertAndAllocateEnrolment(mtditid, nino)(Left(UpsertAndAllocateEnrolmentService.AllocateEnrolmentFailure))
 
         val result = TestSignUpOrchestrationService.orchestrateSignUp(nino, utr, taxYear, createIncomeSourcesModel, Some(entityId))
 
-        await(result) mustBe Right(SignUpOrchestrationServiceModel.SignUpOrchestrationSuccessful)
+        await(result) mustBe Right(SignUpOrchestrationService.SignUpOrchestrationSuccessful)
 
         verifySignUp(nino, utr, taxYear)
         verifyCreateIncomeSources(mtditid, createIncomeSourcesModel)
@@ -89,7 +87,7 @@ class SignUpOrchestrationServiceSpec extends PlaySpec
 
         val result = TestSignUpOrchestrationService.orchestrateSignUp(nino, utr, taxYear, createIncomeSourcesModel, Some(entityId))
 
-        await(result) mustBe Left(SignUpOrchestrationServiceModel.SignUpFailure)
+        await(result) mustBe Left(SignUpOrchestrationService.SignUpFailure)
 
         verifySignUp(nino, utr, taxYear)
         verifyCreateIncomeSources(mtditid, createIncomeSourcesModel, count = 0)
@@ -101,12 +99,12 @@ class SignUpOrchestrationServiceSpec extends PlaySpec
       "an error was returned from the create income sources connector" in {
         mockSignUp(nino, utr, taxYear)(Right(SignUpSuccessful(mtditid)))
         mockCreateIncomeSources(mtditid, createIncomeSourcesModel)(Left(CreateIncomeSourcesResponseHttpParser.UnexpectedStatus(INTERNAL_SERVER_ERROR)))
-        mockUpsertAndAllocateEnrolment(mtditid, nino)(Right(UpsertAndAllocateEnrolmentServiceModel.UpsertAndAllocateEnrolmentSuccess))
+        mockUpsertAndAllocateEnrolment(mtditid, nino)(Right(UpsertAndAllocateEnrolmentService.UpsertAndAllocateEnrolmentSuccess))
         mockConfirmPreference(entityId, mtditid)
 
         val result = TestSignUpOrchestrationService.orchestrateSignUp(nino, utr, taxYear, createIncomeSourcesModel, Some(entityId))
 
-        await(result) mustBe Left(SignUpOrchestrationServiceModel.CreateIncomeSourcesFailure)
+        await(result) mustBe Left(SignUpOrchestrationService.CreateIncomeSourcesFailure)
 
         verifySignUp(nino, utr, taxYear)
         verifyCreateIncomeSources(mtditid, createIncomeSourcesModel)

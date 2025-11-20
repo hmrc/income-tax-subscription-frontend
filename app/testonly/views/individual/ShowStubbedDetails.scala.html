@@ -16,15 +16,14 @@
 
 @import testonly.models.UserToStubModel
 @import views.html.templates.PrincipalMainTemplate
-@import views.html.helpers.{ContinueButton, DateHelper}
+@import views.html.helpers.ContinueButton
 
 @import java.time.format.{DateTimeFormatter, ResolverStyle}
 
 @this(
 mainTemplate: PrincipalMainTemplate,
 form: FormWithCSRF,
-continueButton: ContinueButton,
-dateHelper: DateHelper
+continueButton: ContinueButton
 )
 
 @(userToStubModel: UserToStubModel, postAction: Call)(implicit request: Request[_], messages: Messages)

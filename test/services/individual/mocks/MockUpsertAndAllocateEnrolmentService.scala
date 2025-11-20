@@ -21,7 +21,7 @@ import org.mockito.Mockito._
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import services.individual.UpsertAndAllocateEnrolmentService
-import services.individual.UpsertAndAllocateEnrolmentServiceModel.UpsertAndAllocateEnrolmentResponse
+import services.individual.UpsertAndAllocateEnrolmentService.UpsertAndAllocateEnrolmentResponse
 
 import scala.concurrent.Future
 

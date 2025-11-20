@@ -16,9 +16,8 @@
 
 package config.featureswitch
 
+import config.FrontendAppConfig
 import config.featureswitch.FeatureSwitch.ThrottlingFeature
-import config.{AppConfig, FrontendAppConfig}
-import config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock

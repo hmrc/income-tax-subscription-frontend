@@ -153,7 +153,6 @@ class ConfirmationJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieva
 
   lazy val confirmationJourneyRefiner: ConfirmationJourneyRefiner = new ConfirmationJourneyRefiner(
     mockReferenceRetrieval,
-    mockSessionDataService,
     mockMandationStatusService
   )
 

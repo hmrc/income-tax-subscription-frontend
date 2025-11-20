@@ -17,9 +17,7 @@
 package models.common.business
 
 import models.common.{EncryptingAddress, SoleTraderBusiness}
-import play.api.libs.json._
-import play.api.libs.json.{__, Json, OFormat, OWrites, Reads}
-import play.api.libs.functional.syntax._
+import play.api.libs.json.*
 
 case class SelfEmploymentData(id: String,
                               startDateBeforeLimit: Option[Boolean] = None,
@@ -49,17 +47,5 @@ case class SelfEmploymentData(id: String,
 }
 
 object SelfEmploymentData {
-  implicit val reads: Reads[SelfEmploymentData] = (
-      (__ \ "id").read[String] and
-      (__ \ "startDateBeforeLimit").readNullable[Boolean] and
-      (__ \ "businessStartDate").readNullable[BusinessStartDate] and
-      (__ \ "businessName").readNullable[BusinessNameModel] and
-      (__ \ "businessTradeName").readNullable[BusinessTradeNameModel] and
-      (__ \ "businessAddress").readNullable[BusinessAddressModel] and
-      (__ \ "confirmed").read[Boolean]
-    )(SelfEmploymentData.apply _)
-
-  implicit val writes: OWrites[SelfEmploymentData] = Json.writes[SelfEmploymentData]
-
-  implicit val format: OFormat[SelfEmploymentData] = OFormat(reads, writes)
+  implicit val format: Format[SelfEmploymentData] = Json.format[SelfEmploymentData]
 }

@@ -45,7 +45,6 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
   with MockIdentifierAction
   with MockConfirmedClientJourneyRefiner
   with MockSubscriptionDetailsService
-  with MockSessionDataService
   with MockAccountingPeriodService
   with FeatureSwitching {
 
@@ -61,7 +60,6 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
     fakeIdentifierActionWithSessionData(sessionData),
     fakeConfirmedClientJourneyRefiner,
     mockSubscriptionDetailsService,
-    mockSessionDataService,
     mockAccountingPeriodService
   )(appConfig)
 

@@ -21,7 +21,7 @@ import cats.implicits._
 import common.Constants.{mtdItsaEnrolmentIdentifierKey, mtdItsaEnrolmentName}
 import models.common.subscription.EnrolmentKey
 import services.agent.CheckEnrolmentAllocationService
-import services.agent.CheckEnrolmentAllocationServiceModel.{EnrolmentAlreadyAllocated, EnrolmentStoreProxyInvalidJsonResponse, UnexpectedEnrolmentStoreProxyFailure}
+import services.agent.CheckEnrolmentAllocationService.{EnrolmentAlreadyAllocated, EnrolmentStoreProxyInvalidJsonResponse, UnexpectedEnrolmentStoreProxyFailure}
 import services.individual.claimenrolment.ClaimEnrolmentService._
 import services.individual.{EnrolmentService, KnownFactsService}
 import services.{NinoService, SessionDataService, SubscriptionService}

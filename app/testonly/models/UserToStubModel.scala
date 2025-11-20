@@ -17,6 +17,7 @@
 package testonly.models
 
 //$COVERAGE-OFF$Disabling scoverage on this model as it is only intended to be used by the test only controller
+
 import models.DateModel
 import play.api.libs.json.{Json, OFormat}
 
@@ -26,15 +27,6 @@ case class UserToStubModel(firstName: String, lastName: String, nino: String, sa
 
 object UserToStubModel {
   implicit val format: OFormat[UserToStubModel] = Json.format[UserToStubModel]
-
-  def unapply(userToStubModel: UserToStubModel): Option[(String, String, String, Option[String], DateModel)] =
-    Some((
-      userToStubModel.firstName,
-      userToStubModel.lastName,
-      userToStubModel.nino,
-      userToStubModel.sautr,
-      userToStubModel.dateOfBirth
-    ))
 }
 
 // $COVERAGE-ON$

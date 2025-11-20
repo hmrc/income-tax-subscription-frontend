@@ -40,7 +40,7 @@ class UpsertAndAllocateEnrolmentServiceSpec extends PlaySpec with MockTaxEnrolme
 
         val result = TestUpsertAndAllocateEnrolmentService.upsertAndAllocate(testMTDITID, testNino)
 
-        await(result) mustBe Right(UpsertAndAllocateEnrolmentServiceModel.UpsertAndAllocateEnrolmentSuccess)
+        await(result) mustBe Right(UpsertAndAllocateEnrolmentService.UpsertAndAllocateEnrolmentSuccess)
 
         verifyUpsertEnrolment(testEnrolmentKey, testEnrolmentVerifiers)
         verifyAllocateEnrolment(testGroupId, testEnrolmentKey, testEnrolmentRequest)
@@ -53,7 +53,7 @@ class UpsertAndAllocateEnrolmentServiceSpec extends PlaySpec with MockTaxEnrolme
 
           val result = TestUpsertAndAllocateEnrolmentService.upsertAndAllocate(testMTDITID, testNino)
 
-          await(result) mustBe Left(UpsertAndAllocateEnrolmentServiceModel.UpsertKnownFactsFailure)
+          await(result) mustBe Left(UpsertAndAllocateEnrolmentService.UpsertKnownFactsFailure)
 
           verifyUpsertEnrolment(testEnrolmentKey, testEnrolmentVerifiers)
           verifyAllocateEnrolment(testGroupId, testEnrolmentKey, testEnrolmentRequest, count = 0)
@@ -66,7 +66,7 @@ class UpsertAndAllocateEnrolmentServiceSpec extends PlaySpec with MockTaxEnrolme
 
           val result = TestUpsertAndAllocateEnrolmentService.upsertAndAllocate(testMTDITID, testNino)
 
-          await(result) mustBe Left(UpsertAndAllocateEnrolmentServiceModel.NoGroupIdFailure)
+          await(result) mustBe Left(UpsertAndAllocateEnrolmentService.NoGroupIdFailure)
 
           verifyUpsertEnrolment(testEnrolmentKey, testEnrolmentVerifiers)
           verifyAllocateEnrolment(testGroupId, testEnrolmentKey, testEnrolmentRequest, count = 0)
@@ -79,7 +79,7 @@ class UpsertAndAllocateEnrolmentServiceSpec extends PlaySpec with MockTaxEnrolme
 
           val result = TestUpsertAndAllocateEnrolmentService.upsertAndAllocate(testMTDITID, testNino)
 
-          await(result) mustBe Left(UpsertAndAllocateEnrolmentServiceModel.NoCredentialsFailure)
+          await(result) mustBe Left(UpsertAndAllocateEnrolmentService.NoCredentialsFailure)
 
           verifyUpsertEnrolment(testEnrolmentKey, testEnrolmentVerifiers)
           verifyAllocateEnrolment(testGroupId, testEnrolmentKey, testEnrolmentRequest, count = 0)
@@ -93,7 +93,7 @@ class UpsertAndAllocateEnrolmentServiceSpec extends PlaySpec with MockTaxEnrolme
 
           val result = TestUpsertAndAllocateEnrolmentService.upsertAndAllocate(testMTDITID, testNino)
 
-          await(result) mustBe Left(UpsertAndAllocateEnrolmentServiceModel.AllocateEnrolmentFailure)
+          await(result) mustBe Left(UpsertAndAllocateEnrolmentService.AllocateEnrolmentFailure)
 
           verifyUpsertEnrolment(testEnrolmentKey, testEnrolmentVerifiers)
           verifyAllocateEnrolment(testGroupId, testEnrolmentKey, testEnrolmentRequest)

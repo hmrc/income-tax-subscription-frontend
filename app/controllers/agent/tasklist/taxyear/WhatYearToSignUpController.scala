@@ -29,7 +29,7 @@ import models.{AccountingYear, Current}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.Html
-import services._
+import services.*
 import uk.gov.hmrc.http.InternalServerException
 import views.html.agent.tasklist.taxyear.WhatYearToSignUp
 
@@ -41,7 +41,6 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
                                            identify: IdentifierAction,
                                            journeyRefiner: ConfirmedClientJourneyRefiner,
                                            subscriptionDetailsService: SubscriptionDetailsService,
-                                           sessionDataService: SessionDataService,
                                            accountingPeriodService: AccountingPeriodService)
                                           (val appConfig: AppConfig)
                                           (implicit mcc: MessagesControllerComponents,

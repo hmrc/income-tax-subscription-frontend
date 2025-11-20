@@ -88,7 +88,7 @@ class SelfEmploymentDataSpec extends PlaySpec {
         Json.fromJson[SelfEmploymentData](minimalJson - "id") mustBe JsError(__ \ "id", "error.path.missing")
       }
       "confirmed is not present in the json" in {
-        Json.fromJson[SelfEmploymentData](minimalJson - "confirmed") mustBe JsError(__ \ "confirmed", "error.path.missing")
+        Json.fromJson[SelfEmploymentData](minimalJson - "confirmed") mustBe JsSuccess(minimalModel)
       }
     }
 

@@ -71,7 +71,7 @@ object UserToStubForm extends LocalDateMapping {
         requiredKey = errorMessage,
         invalidYearKey = errorMessage)
         .transform(DateModel.dateConvert, DateModel.dateConvert)
-    )(UserToStubModel.apply)(UserToStubModel.unapply)
+    )(UserToStubModel.apply)(o => Some(Tuple.fromProductTyped(o)))
   )
 
 }

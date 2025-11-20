@@ -24,8 +24,8 @@ import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR}
 import play.api.mvc.{AnyContent, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
-import services.agent.CheckEnrolmentAllocationServiceModel.{EnrolmentAlreadyAllocated, EnrolmentNotAllocated, EnrolmentStoreProxyInvalidJsonResponse, UnexpectedEnrolmentStoreProxyFailure}
-import services.individual.claimenrolment.ClaimEnrolmentService.*
+import services.agent.CheckEnrolmentAllocationService.{EnrolmentAlreadyAllocated, EnrolmentNotAllocated, EnrolmentStoreProxyInvalidJsonResponse, UnexpectedEnrolmentStoreProxyFailure}
+import services.individual.claimenrolment.ClaimEnrolmentService._
 import services.individual.mocks.{MockEnrolmentService, MockKnownFactsService}
 import services.mocks.{MockCheckEnrolmentAllocationService, MockNinoService, MockSessionDataService, MockSubscriptionService}
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual

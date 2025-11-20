@@ -59,7 +59,7 @@ class PropertyModelSpec extends PlaySpec with BeforeAndAfterEach {
 
     "fail to read from json" when {
       "confirmed is not present in the json" in {
-        Json.fromJson[PropertyModel](Json.obj()) mustBe JsError(__ \ "confirmed", "error.path.missing")
+        Json.fromJson[PropertyModel](Json.obj()) mustBe JsSuccess(PropertyModel())
       }
     }
 

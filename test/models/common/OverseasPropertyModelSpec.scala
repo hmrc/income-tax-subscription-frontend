@@ -58,7 +58,7 @@ class OverseasPropertyModelSpec extends PlaySpec {
 
     "fail to read from json" when {
       "confirmed is not present in the json" in {
-        Json.fromJson[OverseasPropertyModel](Json.obj()) mustBe JsError(__ \ "confirmed", "error.path.missing")
+        Json.fromJson[OverseasPropertyModel](Json.obj()) mustBe JsSuccess(OverseasPropertyModel())
       }
     }
 

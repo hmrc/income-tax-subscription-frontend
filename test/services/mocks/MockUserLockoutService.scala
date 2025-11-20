@@ -99,8 +99,7 @@ trait TestUserLockoutService extends MockUserLockoutConnector
 
   object TestUserLockoutService extends UserLockoutService(
     appConfig,
-    mockUserLockoutConnector,
-    mockSubscriptionDetailsService
+    mockUserLockoutConnector
   )
 
 }

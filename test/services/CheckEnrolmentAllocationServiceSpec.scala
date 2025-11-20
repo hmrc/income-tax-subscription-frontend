@@ -23,7 +23,7 @@ import models.common.subscription.EnrolmentKey
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.test.Helpers.*
-import services.agent.{CheckEnrolmentAllocationService, CheckEnrolmentAllocationServiceModel}
+import services.agent.CheckEnrolmentAllocationService
 import uk.gov.hmrc.domain.*
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -48,7 +48,7 @@ class CheckEnrolmentAllocationServiceSpec extends AnyWordSpec with Matchers
 
         val res = TestCheckEnrolmentAllocationService.getGroupIdForEnrolment(testEnrolment)
 
-        await(res) shouldBe Right(CheckEnrolmentAllocationServiceModel.EnrolmentNotAllocated)
+        await(res) shouldBe Right(CheckEnrolmentAllocationService.EnrolmentNotAllocated)
       }
     }
     "EnrolmentStoreProxy returns EnrolmentAlreadyAllocated" should {
@@ -60,7 +60,7 @@ class CheckEnrolmentAllocationServiceSpec extends AnyWordSpec with Matchers
 
         val res = TestCheckEnrolmentAllocationService.getGroupIdForEnrolment(testEnrolment)
 
-        await(res) shouldBe Left(CheckEnrolmentAllocationServiceModel.EnrolmentAlreadyAllocated(testGroupId))
+        await(res) shouldBe Left(CheckEnrolmentAllocationService.EnrolmentAlreadyAllocated(testGroupId))
       }
     }
     "EnrolmentStoreProxy returns an unexpected failure" should {
@@ -71,7 +71,7 @@ class CheckEnrolmentAllocationServiceSpec extends AnyWordSpec with Matchers
 
         val res = TestCheckEnrolmentAllocationService.getGroupIdForEnrolment(testEnrolment)
 
-        await(res) shouldBe Left(CheckEnrolmentAllocationServiceModel.UnexpectedEnrolmentStoreProxyFailure(BAD_REQUEST))
+        await(res) shouldBe Left(CheckEnrolmentAllocationService.UnexpectedEnrolmentStoreProxyFailure(BAD_REQUEST))
       }
     }
     "EnrolmentStoreProxy returns invalid json" should {
@@ -82,7 +82,7 @@ class CheckEnrolmentAllocationServiceSpec extends AnyWordSpec with Matchers
 
         val res = TestCheckEnrolmentAllocationService.getGroupIdForEnrolment(testEnrolment)
 
-        await(res) shouldBe Left(CheckEnrolmentAllocationServiceModel.EnrolmentStoreProxyInvalidJsonResponse)
+        await(res) shouldBe Left(CheckEnrolmentAllocationService.EnrolmentStoreProxyInvalidJsonResponse)
       }
     }
   }

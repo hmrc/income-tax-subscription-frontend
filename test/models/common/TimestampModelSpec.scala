@@ -18,7 +18,6 @@ package models.common
 
 import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers.*
-import org.scalatest.matchers.must.Matchers.mustBe
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.libs.json.{JsResult, Json}
