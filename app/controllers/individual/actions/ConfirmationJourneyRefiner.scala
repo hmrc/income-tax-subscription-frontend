@@ -19,13 +19,13 @@ package controllers.individual.actions
 import common.Constants.ITSASessionKeys
 import controllers.utils.ReferenceRetrieval
 import models.individual.JourneyStep
-import models.individual.JourneyStep._
+import models.individual.JourneyStep.*
 import models.requests.individual.{ConfirmationRequest, IdentifierRequest}
 import models.{No, Yes}
 import play.api.Logging
 import play.api.mvc.Results.NotFound
 import play.api.mvc.{ActionRefiner, Result}
-import services.{MandationStatusService, SessionDataService}
+import services.MandationStatusService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
@@ -34,7 +34,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ConfirmationJourneyRefiner @Inject()(referenceRetrieval: ReferenceRetrieval,
-                                           sessionDataService: SessionDataService,
                                            mandationStatusService: MandationStatusService)
                                           (implicit val executionContext: ExecutionContext)
   extends ActionRefiner[IdentifierRequest, ConfirmationRequest] with Logging {

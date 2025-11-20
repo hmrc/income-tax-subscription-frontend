@@ -23,7 +23,7 @@ import services.{AuditingService, AuthService, GetEligibilityStatusService, Sess
 import views.html.individual.matching.NotEligibleForIncomeTax
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class NotEligibleForIncomeTaxController @Inject()(val notEligibleForIncomeTax: NotEligibleForIncomeTax,

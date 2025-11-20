@@ -26,7 +26,7 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.libs.json.Json
-import play.api.test.Helpers.{await, defaultAwaitTimeout}
+import play.api.test.Helpers.*
 import services.mocks.{MockMandationStatusConnector, MockNinoService, MockSessionDataService, MockUTRService}
 import uk.gov.hmrc.http.InternalServerException
 

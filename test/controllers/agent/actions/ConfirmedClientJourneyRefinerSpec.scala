@@ -60,7 +60,7 @@ class ConfirmedClientJourneyRefinerSpec extends PlaySpec
         mockReference()
 
         val result: Future[Result] = confirmedClientJourneyRefiner.invokeBlock(
-          identifierRequest(Some(JourneyStep.ConfirmedClient)), { confirmedClientRequest: ConfirmedClientRequest[_] =>
+          identifierRequest(Some(JourneyStep.ConfirmedClient)), { (confirmedClientRequest: ConfirmedClientRequest[_]) =>
 
             confirmedClientRequest.utr mustBe utr
             confirmedClientRequest.clientDetails mustBe clientDetails
@@ -77,7 +77,7 @@ class ConfirmedClientJourneyRefinerSpec extends PlaySpec
     "redirect to the cannot go back page" when {
       "the request has no state" in {
         val result: Future[Result] = confirmedClientJourneyRefiner.invokeBlock(
-          identifierRequest(None), { _: ConfirmedClientRequest[_] =>
+          identifierRequest(None), { (_: ConfirmedClientRequest[_]) =>
             Future.successful(Results.Ok)
           }
         )
@@ -87,7 +87,7 @@ class ConfirmedClientJourneyRefinerSpec extends PlaySpec
       }
       "the request has a client details state" in {
         val result: Future[Result] = confirmedClientJourneyRefiner.invokeBlock(
-          identifierRequest(Some(JourneyStep.ClientDetails)), { _: ConfirmedClientRequest[_] =>
+          identifierRequest(Some(JourneyStep.ClientDetails)), { (_: ConfirmedClientRequest[_]) =>
             Future.successful(Results.Ok)
           }
         )
@@ -97,7 +97,7 @@ class ConfirmedClientJourneyRefinerSpec extends PlaySpec
       }
       "the request has a sign posted state" in {
         val result: Future[Result] = confirmedClientJourneyRefiner.invokeBlock(
-          identifierRequest(Some(JourneyStep.SignPosted)), { _: ConfirmedClientRequest[_] =>
+          identifierRequest(Some(JourneyStep.SignPosted)), { (_: ConfirmedClientRequest[_]) =>
             Future.successful(Results.Ok)
           }
         )
@@ -110,7 +110,7 @@ class ConfirmedClientJourneyRefinerSpec extends PlaySpec
     "redirect to the confirmation page" when {
       "the request has a confirmation state" in {
         val result: Future[Result] = confirmedClientJourneyRefiner.invokeBlock(
-          identifierRequest(Some(JourneyStep.Confirmation)), { _: ConfirmedClientRequest[_] =>
+          identifierRequest(Some(JourneyStep.Confirmation)), { (_: ConfirmedClientRequest[_]) =>
             Future.successful(Results.Ok)
           }
         )

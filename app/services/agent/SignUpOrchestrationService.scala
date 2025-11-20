@@ -22,7 +22,6 @@ import models.AccountingYear
 import models.common.subscription.CreateIncomeSourcesModel
 import models.common.subscription.SignUpSuccessResponse.{AlreadySignedUp, SignUpSuccessful}
 import services.agent.AutoEnrolmentService.AutoClaimEnrolmentResponse
-import services.agent.SignUpOrchestrationService._
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
@@ -36,6 +35,7 @@ class SignUpOrchestrationService @Inject()(signUpConnector: SignUpConnector,
                                            agentSPSConnector: AgentSPSConnector)
                                           (implicit ec: ExecutionContext) {
 
+  import services.agent.SignUpOrchestrationService._
   def orchestrateSignUp(arn: String,
                         nino: String,
                         utr: String,

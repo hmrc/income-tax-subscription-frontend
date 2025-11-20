@@ -31,8 +31,7 @@ case class LockoutUpdate(status: LockoutStatus, updatedCount: Option[Int])
 
 @Singleton
 class UserLockoutService @Inject()(appConfig: AppConfig,
-                                   userLockoutConnector: UserLockoutConnector,
-                                   subscriptionDetailsService: SubscriptionDetailsService) extends Logging {
+                                   userLockoutConnector: UserLockoutConnector) extends Logging {
 
   def getLockoutStatus(token: String)(implicit hc: HeaderCarrier): Future[LockoutStatusResponse] = {
     val encodedToken = encodeToken(token)

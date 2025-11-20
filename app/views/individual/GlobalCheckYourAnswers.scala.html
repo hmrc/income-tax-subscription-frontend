@@ -17,13 +17,11 @@
 @import models.common.{IncomeSources => _, SoleTraderBusinesses => _, _}
 @import models._
 @import models.common.business.SelfEmploymentData
-@import services.AccountingPeriodService
-@import views.html.helpers.ReadyToSignUpButton
 @import services.GetCompleteDetailsService._
 @import services.GetCompleteDetailsService.IncomeSources
 @import utilities.AccountingPeriodUtil
 @import utilities.ImplicitDateFormatterImpl
-@import views.html.helpers.{ContinueButton, CheckYourAnswers, CheckYourAnswersRow, SaveAndContinueButtonHelper}
+@import views.html.helpers.{CheckYourAnswers, CheckYourAnswersRow, SaveAndContinueButtonHelper}
 @import views.html.templates.PrincipalMainTemplate
 @import config.AppConfig
 @import utilities.AccountingPeriodUtil
@@ -31,11 +29,8 @@
 
 @this(
         mainTemplate: PrincipalMainTemplate,
-        continueButton: ContinueButton,
         govukSummaryList : GovukSummaryList,
         implicitDateFormatter: ImplicitDateFormatterImpl,
-        accountingPeriodService: AccountingPeriodService,
-        readyToSignUpButton: ReadyToSignUpButton,
         saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
         form: FormWithCSRF,
         appConfig: AppConfig

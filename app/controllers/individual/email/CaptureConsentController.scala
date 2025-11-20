@@ -46,7 +46,6 @@ class CaptureConsentController @Inject()(view: CaptureConsent,
   }
 
   def submit(): Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
-    val sessionData = request.request.sessionData
     captureConsentForm.bindFromRequest().fold(
       formWithErrors =>
         Future.successful(BadRequest(view(

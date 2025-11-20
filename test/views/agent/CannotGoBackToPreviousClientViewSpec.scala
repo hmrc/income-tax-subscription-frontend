@@ -17,7 +17,6 @@
 package views.agent
 
 import config.MockConfig
-import config.MockConfig.mockMessages.messages
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
@@ -28,6 +27,8 @@ import views.html.agent.matching.CannotGoBackToPreviousClient
 class CannotGoBackToPreviousClientViewSpec extends ViewSpec {
 
   private val cannotGoBackToPreviousClient: CannotGoBackToPreviousClient = app.injector.instanceOf[CannotGoBackToPreviousClient]
+
+  val messages = config.MockConfig.mockMessages
 
   "cannot go back to previous client" must {
     "have the correct template details" when {

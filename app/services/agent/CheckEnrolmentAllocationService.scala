@@ -19,7 +19,6 @@ package services.agent
 import connectors.agent.EnrolmentStoreProxyConnector
 import connectors.agent.httpparsers.EnrolmentStoreProxyHttpParser
 import models.common.subscription.EnrolmentKey
-import services.agent.CheckEnrolmentAllocationService._
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
@@ -28,6 +27,8 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CheckEnrolmentAllocationService @Inject()(enrolmentStoreProxyConnector: EnrolmentStoreProxyConnector)
                                                (implicit ec: ExecutionContext) {
+  
+  import services.agent.CheckEnrolmentAllocationService._
   def getGroupIdForEnrolment(enrolmentKey: EnrolmentKey)(implicit hc: HeaderCarrier): Future[CheckEnrolmentAllocationResponse] = {
     enrolmentStoreProxyConnector.getAllocatedEnrolments(enrolmentKey) map {
       case Right(EnrolmentStoreProxyHttpParser.EnrolmentNotAllocated) => Right(EnrolmentNotAllocated)

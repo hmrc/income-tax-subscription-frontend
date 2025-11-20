@@ -25,7 +25,6 @@ import connectors.agent.{EnrolmentStoreProxyConnector, UsersGroupsSearchConnecto
 import models.ConnectorError
 import models.common.subscription.EnrolmentKey
 import play.api.Logging
-import services.agent.AutoEnrolmentService._
 import uk.gov.hmrc.auth.core.User
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -39,6 +38,8 @@ class AutoEnrolmentService @Inject()(enrolmentStoreProxyConnector: EnrolmentStor
                                      usersGroupsSearchConnector: UsersGroupsSearchConnector)
                                     (implicit ec: ExecutionContext) extends Logging {
 
+  import services.agent.AutoEnrolmentService._
+  
   private def logError(location: String, nino: String, detail: String): Unit = {
     logger.warn(s"[AutoEnrolmentService][$location] - Auto enrolment failed for nino: $nino - $detail")
   }

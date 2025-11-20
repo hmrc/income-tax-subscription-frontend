@@ -26,7 +26,7 @@ import models.common.subscription.SignUpSuccessResponse.{AlreadySignedUp, SignUp
 import models.common.subscription._
 import models.usermatching.{LockedOut, UserMatchFailureResponseModel, UserMatchSuccessResponseModel}
 import play.api.http.Status.INTERNAL_SERVER_ERROR
-import uk.gov.hmrc.domain.Generator
+import uk.gov.hmrc.domain._
 import utilities.TestModels._
 
 import java.net.URLEncoder
@@ -35,7 +35,7 @@ import java.util.UUID
 
 object TestConstants {
 
-  lazy val testNino: String = new Generator().nextNino.nino
+  lazy val testNino: String = new NinoGenerator().nextNino.nino
   lazy val testId: String = "testId"
   lazy val testUtr: String = UUID.randomUUID().toString
   lazy val testFullName: String = UUID.randomUUID().toString + " " + UUID.randomUUID().toString

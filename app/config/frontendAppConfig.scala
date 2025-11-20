@@ -28,52 +28,52 @@ import javax.inject.{Inject, Singleton}
 
 trait AppConfig {
 
-  val configuration: Configuration
-  val appName: String
+  def configuration: Configuration
+  def appName: String
 
-  val contactFormServiceIdentifier: String
-  val ggSignInContinueUrl: String
-  val subscriptionUrl: String
-  val throttlingUrl: String
-  val mandationStatusUrl: String
+  def contactFormServiceIdentifier: String
+  def ggSignInContinueUrl: String
+  def subscriptionUrl: String
+  def throttlingUrl: String
+  def mandationStatusUrl: String
 
   def prePopUrl(nino: String): String
 
-  val userMatchingUrl: String
-  val clientMatchingUrl: String
-  val signUpUrl: String
-  val createIncomeSourcesUrl: String
-  val authUrl: String
-  val preferencesFrontend: String
-  val preferencesFrontendRedirect: String
-  val baseUrl: String
-  val ggUrl: String
-  val microServiceUrl: String
-  val timeoutWarningInSeconds: String
-  val timeoutInSeconds: String
-  val channelPreferencesUrl: String
+  def userMatchingUrl: String
+  def clientMatchingUrl: String
+  def signUpUrl: String
+  def createIncomeSourcesUrl: String
+  def authUrl: String
+  def preferencesFrontend: String
+  def preferencesFrontendRedirect: String
+  def baseUrl: String
+  def ggUrl: String
+  def microServiceUrl: String
+  def timeoutWarningInSeconds: String
+  def timeoutInSeconds: String
+  def channelPreferencesUrl: String
 
   def ggSignOutUrl(redirectionUrl: String = ggSignInContinueUrl): String
 
-  val btaUrl: String
-  val wrongCredentials: String
-  val haveSaUtr: String
-  val btaBaseUrl: String
-  val agentServicesUrl: String
-  val agentServicesAccountHomeUrl: String
-  val agentClientRelationshipsUrl: String
-  val authenticatorUrl: String
-  val hasEnabledTestOnlyRoutes: Boolean
-  val identityVerificationURL: String
-  val identityVerificationRequiredConfidenceLevel: ConfidenceLevel
-  val govukGuidanceLink: String
-  val govukGuidanceITSASignUpIndivLink: String
-  val govukGuidanceITSASignUpAgentLink: String
-  val govukGuidanceITSAWhoCanSignUpVoluntarily: String
-  val citizenDetailsURL: String
-  val matchingAttempts: Int
-  val matchingLockOutSeconds: Int
-  val urBannerUrl: String
+  def btaUrl: String
+  def wrongCredentials: String
+  def haveSaUtr: String
+  def btaBaseUrl: String
+  def agentServicesUrl: String
+  def agentServicesAccountHomeUrl: String
+  def agentClientRelationshipsUrl: String
+  def authenticatorUrl: String
+  def hasEnabledTestOnlyRoutes: Boolean
+  def identityVerificationURL: String
+  def identityVerificationRequiredConfidenceLevel: ConfidenceLevel
+  def govukGuidanceLink: String
+  def govukGuidanceITSASignUpIndivLink: String
+  def govukGuidanceITSASignUpAgentLink: String
+  def govukGuidanceITSAWhoCanSignUpVoluntarily: String
+  def citizenDetailsURL: String
+  def matchingAttempts: Int
+  def matchingLockOutSeconds: Int
+  def urBannerUrl: String
 
   def redirectToLogin(continueUrl: String): Result
 
@@ -93,12 +93,12 @@ trait AppConfig {
 
   def assignEnrolmentUrl(userId: String, enrolmentKey: String): String
 
-  val signUpToSaLink: String
-  val agentSignUpUrl: String
+  def signUpToSaLink: String
+  def agentSignUpUrl: String
 
-  val backendFeatureSwitchUrl: String
+  def backendFeatureSwitchUrl: String
 
-  val incomeTaxEligibilityUrl: String
+  def incomeTaxEligibilityUrl: String
 
   def incomeTaxSelfEmploymentsFrontendUrl: String
 
@@ -110,7 +110,7 @@ trait AppConfig {
 
   def incomeTaxSelfEmploymentsFrontendClientInitialiseUrl: String
 
-  val eligibilityFeatureSwitchUrl: String
+  def eligibilityFeatureSwitchUrl: String
 
   def individualSigningUpUrl: String
 
@@ -127,7 +127,7 @@ trait AppConfig {
 @Singleton
 class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Configuration) extends AppConfig {
 
-  val appName: String = config.getString("appName")
+  lazy val appName: String = config.getString("appName")
 
   // AutoEnrolment links
   private lazy val usersGroupsSearchUrl: String = config.baseUrl("users-groups-search")
@@ -135,7 +135,7 @@ class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Con
   def getUsersForGroupUrl(groupId: String): String = s"$usersGroupsSearchUrl/users-groups-search/groups/$groupId/users"
 
   // Frontend Config
-  lazy val baseUrl: String = config.getString("base.url")
+  override lazy val baseUrl: String = config.getString("base.url")
   val contextRoute = "/report-quarterly/income-and-expenses/sign-up"
 
   //Authentication/Authorisation Config
@@ -181,7 +181,7 @@ class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Con
   override lazy val throttlingUrl = s"$microServiceUrl/income-tax-subscription/throttled"
   override lazy val mandationStatusUrl = s"$microServiceUrl/income-tax-subscription/itsa-status"
 
-  override def prePopUrl(nino: String): String = s"$microServiceUrl/income-tax-subscription/pre-pop/$nino"
+  def prePopUrl(nino: String): String = s"$microServiceUrl/income-tax-subscription/pre-pop/$nino"
 
   //agent frontend
   private lazy val agentFrontendUrl: String = config.getString("income-tax-subscription-agent-frontend.url")
@@ -193,8 +193,8 @@ class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Con
   override lazy val preferencesFrontendRedirect: String = config.getString("preferences-frontend.url")
 
   override lazy val btaBaseUrl: String = config.getString("bta.baseUrl")
-  override val wrongCredentials: String = s"$btaBaseUrl/business-account/wrong-credentials"
-  override val haveSaUtr: String = s"$btaBaseUrl/business-account/add-tax/self-assessment/have-sa-utr"
+  override lazy val wrongCredentials: String = s"$btaBaseUrl/business-account/wrong-credentials"
+  override lazy val haveSaUtr: String = s"$btaBaseUrl/business-account/add-tax/self-assessment/have-sa-utr"
 
   override lazy val identityVerificationRequiredConfidenceLevel: ConfidenceLevel = {
     ConfidenceLevel.fromInt(config.getInt("identity-verification-frontend.target-confidence-level")).getOrElse(
@@ -257,23 +257,23 @@ class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Con
 
   override lazy val agentSigningUpUrl: String = s"${controllers.eligibility.agent.routes.SigningUpController.show.url}"
 
-  override val incomeTaxSelfEmploymentsFrontendUrl: String = {
+  override lazy val incomeTaxSelfEmploymentsFrontendUrl: String = {
     s"${config.getString("income-tax-subscription-self-employed-frontend.url")}/report-quarterly/income-and-expenses/sign-up/self-employments"
   }
 
-  override val incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl: String = {
+  override lazy val incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl: String = {
     s"${config.getString("income-tax-subscription-self-employed-frontend.url")}/report-quarterly/income-and-expenses/sign-up/self-employments/details/business-check-your-answers"
   }
 
-  override val agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl: String = {
+  override lazy val agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl: String = {
     s"${config.getString("income-tax-subscription-self-employed-frontend.url")}/report-quarterly/income-and-expenses/sign-up/self-employments/client/details/business-check-your-answers"
   }
 
-  override val incomeTaxSelfEmploymentsFrontendInitialiseUrl: String = {
+  override lazy val incomeTaxSelfEmploymentsFrontendInitialiseUrl: String = {
     s"$incomeTaxSelfEmploymentsFrontendUrl/details"
   }
 
-  override val incomeTaxSelfEmploymentsFrontendClientInitialiseUrl: String = {
+  override lazy val incomeTaxSelfEmploymentsFrontendClientInitialiseUrl: String = {
     s"$incomeTaxSelfEmploymentsFrontendUrl/client/details"
   }
 

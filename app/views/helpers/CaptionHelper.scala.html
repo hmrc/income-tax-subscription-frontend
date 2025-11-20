@@ -16,12 +16,14 @@
 
 @this()
 
-@(caption: String, isSection: Boolean = true)(implicit messages: Messages)
+@(caption: String, isSection: Boolean)(implicit messages: Messages)
 
-@visuallyHiddenText = @{
-    <span class="govuk-visually-hidden">{messages("base.section-caption.hidden")} </span>
+@visuallyHiddenText ={
+    @if(isSection){
+        <span class="govuk-visually-hidden">@messages("base.section-caption.hidden")</span>
+    }
 }
 
-<h2 class="govuk-caption-l hmrc-caption-l">@{if(isSection) visuallyHiddenText}@caption</h2>
+<h2 class="govuk-caption-l hmrc-caption-l">@visuallyHiddenText @caption</h2>
 
 

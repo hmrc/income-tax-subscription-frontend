@@ -21,7 +21,6 @@ import models.AccountingYear
 import models.common.subscription.SignUpSuccessResponse.{AlreadySignedUp, SignUpSuccessful}
 import models.common.subscription._
 import services.SPSService
-import services.individual.SignUpOrchestrationService.{CreateIncomeSourcesFailure, SignUpFailure, SignUpOrchestrationResponse, SignUpOrchestrationSuccessful}
 import services.individual.UpsertAndAllocateEnrolmentService.UpsertAndAllocateEnrolmentResponse
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -35,6 +34,7 @@ class SignUpOrchestrationService @Inject()(signUpConnector: SignUpConnector,
                                            spsService: SPSService)
                                           (implicit ec: ExecutionContext) {
 
+  import services.individual.SignUpOrchestrationService._
   def orchestrateSignUp(nino: String,
                         utr: String,
                         taxYear: AccountingYear,

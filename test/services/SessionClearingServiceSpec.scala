@@ -23,11 +23,11 @@ import connectors.httpparser.{DeleteSessionDataHttpParser, SaveSessionDataHttpPa
 import models.SessionData
 import models.Yes.YES
 import org.scalatestplus.play.PlaySpec
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.{JsBoolean, JsString}
 import play.api.mvc.{AnyContent, Call}
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{INTERNAL_SERVER_ERROR, await, defaultAwaitTimeout}
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import services.mocks.MockSessionDataService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 

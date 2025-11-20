@@ -37,18 +37,17 @@ class CaptureConsentController @Inject()(view: CaptureConsent,
 
   def show: Action[AnyContent] = (identify andThen journeyRefiner) { implicit request =>
     val sessionData = request.request.sessionData
-      val captureConsentStatus = sessionData.fetchConsentStatus
-      Ok(view(
-        captureConsentForm = captureConsentForm.fill(captureConsentStatus),
-        postAction = controllers.agent.email.routes.CaptureConsentController.submit(),
-        clientName = request.clientDetails.name,
-        clientNino = request.clientDetails.formattedNino,
-        backUrl = controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
-      ))
+    val captureConsentStatus = sessionData.fetchConsentStatus
+    Ok(view(
+      captureConsentForm = captureConsentForm.fill(captureConsentStatus),
+      postAction = controllers.agent.email.routes.CaptureConsentController.submit(),
+      clientName = request.clientDetails.name,
+      clientNino = request.clientDetails.formattedNino,
+      backUrl = controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+    ))
   }
 
   def submit(): Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
-    val sessionData = request.request.sessionData
     captureConsentForm.bindFromRequest().fold(
       formWithErrors =>
         Future.successful(BadRequest(view(

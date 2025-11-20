@@ -14,12 +14,10 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import views.html.helpers.ButtonHelper
 
 @this(
-  buttonHelper: ButtonHelper,
-  appConfig: AppConfig
+  buttonHelper: ButtonHelper
 )
 
 @(isIndividual: Boolean, saveAndContinueText: Option[String] = None, saveAndReturnReference: Option[String], additionalClasses: Option[String] = None)(implicit messages: Messages)

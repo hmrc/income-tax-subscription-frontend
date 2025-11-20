@@ -306,7 +306,7 @@ trait ViewSpecTrait extends UnitTestTrait {
         if (eles.isEmpty) fail(s"$name does not have an input field with name=$name\ncurrent list of inputs:\n[${element.select("input")}]")
         if (eles.size() > 1) fail(s"$name have multiple input fields with name=$name")
         val ele = eles.head
-        ele.tag() mustBe "input"
+        ele.tagName mustBe "input"
         ele.attr("type") mustBe "hidden"
       }
 
@@ -442,8 +442,8 @@ trait ViewSpecTrait extends UnitTestTrait {
         case None => throw new IllegalArgumentException("creation of name failed: element is Empty")
         case Some(ele) =>
           new ElementTest {
-            override lazy val name: String = n
-            override lazy val element: Element = ele()
+            override val name: String = n
+            override val element: Element = ele()
           }
       }
     }
@@ -459,7 +459,7 @@ trait ViewSpecTrait extends UnitTestTrait {
                  isAgent: Boolean = false) extends ElementTest {
 
     lazy val document: Document = Jsoup.parse(page.body)
-    override lazy val element: Element = Option(document.getElementById("content")).getOrElse(document.getElementById("main-content"))
+    override val element: Element = Option(document.getElementById("content")).getOrElse(document.getElementById("main-content"))
 
     if (showSignOutInBanner) {
       s"$name must have a sign out link in the banner" in {

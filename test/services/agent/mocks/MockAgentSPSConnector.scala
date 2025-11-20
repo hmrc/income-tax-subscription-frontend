@@ -18,11 +18,10 @@ package services.agent.mocks
 
 import connectors.agent.AgentSPSConnector
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.http.Status.OK
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, InternalServerException}
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import scala.concurrent.Future
 
@@ -51,7 +50,7 @@ trait MockAgentSPSConnector extends MockitoSugar with BeforeAndAfterEach {
       ArgumentMatchers.eq(utr),
       ArgumentMatchers.eq(mtditid)
     )(ArgumentMatchers.any[HeaderCarrier]))
-      .thenReturn(Future.successful(HttpResponse(OK, "")))
+      .thenReturn(Future.successful(()))
   }
 
   def mockAgentSpsConnectorFailure(arn: String, utr: String, nino: String, mtditid: String): Unit = {

@@ -21,7 +21,6 @@ import common.Constants
 import common.Constants.GovernmentGateway._
 import connectors.individual.TaxEnrolmentsConnector
 import models.common.subscription.{EmacEnrolmentRequest, EnrolmentKey, EnrolmentVerifiers}
-import services.individual.UpsertAndAllocateEnrolmentService._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
@@ -35,6 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class UpsertAndAllocateEnrolmentService @Inject()(taxEnrolmentsConnector: TaxEnrolmentsConnector,
                                                   authConnector: AuthConnector)(implicit ec: ExecutionContext) {
 
+  import services.individual.UpsertAndAllocateEnrolmentService._
   def upsertAndAllocate(mtditid: String, nino: String)(implicit hc: HeaderCarrier): Future[UpsertAndAllocateEnrolmentResponse] = {
     val enrolmentKey = EnrolmentKey(Constants.mtdItsaEnrolmentName, MTDITID -> mtditid)
 

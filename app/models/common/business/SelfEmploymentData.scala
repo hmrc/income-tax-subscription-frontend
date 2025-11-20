@@ -17,7 +17,7 @@
 package models.common.business
 
 import models.common.{EncryptingAddress, SoleTraderBusiness}
-import play.api.libs.json._
+import play.api.libs.json.*
 
 case class SelfEmploymentData(id: String,
                               startDateBeforeLimit: Option[Boolean] = None,
@@ -47,7 +47,5 @@ case class SelfEmploymentData(id: String,
 }
 
 object SelfEmploymentData {
-
   implicit val format: Format[SelfEmploymentData] = Json.format[SelfEmploymentData]
-
 }

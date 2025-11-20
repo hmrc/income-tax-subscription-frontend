@@ -37,7 +37,7 @@ class SignUpJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieval with
       "redirect to already enrolled controller" when {
         "the user has an MTDITID" in {
           val result: Future[Result] = signUpJourneyRefiner.invokeBlock(
-            identifierRequest(journeyStep = Some(SignUp), Some("test-mtditid")), { _: SignUpRequest[_] =>
+            identifierRequest(journeyStep = Some(SignUp), Some("test-mtditid")), { (_: SignUpRequest[_]) =>
               Future.successful(Results.Ok)
             }
           )
@@ -49,7 +49,7 @@ class SignUpJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieval with
       "execute the provided code" when {
         "the user does not have an MTDITID" in {
           val result: Future[Result] = signUpJourneyRefiner.invokeBlock(
-            identifierRequest(journeyStep = Some(SignUp)), { _: SignUpRequest[_] =>
+            identifierRequest(journeyStep = Some(SignUp)), { (_: SignUpRequest[_]) =>
               Future.successful(Results.Ok)
             }
           )
@@ -62,7 +62,7 @@ class SignUpJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieval with
     "the user is in a Confirmation state" should {
       "redirect to the confirmation page" in {
         val result: Future[Result] = signUpJourneyRefiner.invokeBlock(
-          identifierRequest(journeyStep = Some(Confirmation)), { _: SignUpRequest[_] =>
+          identifierRequest(journeyStep = Some(Confirmation)), { (_: SignUpRequest[_]) =>
             Future.successful(Results.Ok)
           }
         )
@@ -75,7 +75,7 @@ class SignUpJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieval with
     "the user is in a PreSignUp state" should {
       "redirect to the home controller" in {
         val result: Future[Result] = signUpJourneyRefiner.invokeBlock(
-          identifierRequest(journeyStep = Some(PreSignUp)), { _: SignUpRequest[_] =>
+          identifierRequest(journeyStep = Some(PreSignUp)), { (_: SignUpRequest[_]) =>
             Future.successful(Results.Ok)
           }
         )
@@ -88,7 +88,7 @@ class SignUpJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieval with
     "the user does not have a journey state" should {
       "redirect to the home controller" in {
         val result: Future[Result] = signUpJourneyRefiner.invokeBlock(
-          identifierRequest(journeyStep = None), { _: SignUpRequest[_] =>
+          identifierRequest(journeyStep = None), { (_: SignUpRequest[_]) =>
             Future.successful(Results.Ok)
           }
         )

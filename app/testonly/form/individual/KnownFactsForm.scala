@@ -58,7 +58,7 @@ object KnownFactsForm {
     mapping(
       nino -> oText.toText.verifying(ninoEmpty andThen ninoInvalid),
       mtdid -> oText.toText.verifying(mtdidEmpty andThen mtdidInvalid)
-    )(KnownFactsModel.apply)(KnownFactsModel.unapply)
+    )(KnownFactsModel.apply)(o => Some(Tuple.fromProductTyped(o)))
   )
 
 }

@@ -18,10 +18,10 @@ package utilities.agent
 
 import models.DateModel
 import models.common.business.{Address, BusinessAddressModel, BusinessStartDate, SelfEmploymentData}
-import models.common.subscription._
+import models.common.subscription.*
 import play.api.http.Status.INTERNAL_SERVER_ERROR
-import uk.gov.hmrc.domain.Generator
-import utilities.TestModels._
+import uk.gov.hmrc.domain.*
+import utilities.TestModels.*
 import utilities.individual
 
 import java.util.UUID
@@ -33,7 +33,7 @@ object TestConstants {
   lazy val testUtr: String = individual.TestConstants.testUtr
   lazy val testMTDID: String = individual.TestConstants.testMTDID
   //Not a valid MTDID, for test purposes only
-  lazy val testARN: String = new Generator().nextAtedUtr.utr //Not a valid ARN, for test purposes only
+  lazy val testARN: String = new AtedUtrGenerator().nextAtedUtr.utr //Not a valid ARN, for test purposes only
 
   val testSoleTraderBusinessesThisYear = SoleTraderBusinesses(testAccountingPeriodThisYear, testSelfEmploymentData)
   val testUkPropertyThisYear = UkProperty(startDateBeforeLimit = None, testAccountingPeriodThisYear, testValidStartDate)

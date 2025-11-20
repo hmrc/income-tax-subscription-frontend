@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import views.html.templates.PrincipalMainTemplate
 @import views.html.helpers.{ContinueButton, UnorderedList}
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
@@ -23,12 +22,8 @@
 
 @this(
     mainTemplate: PrincipalMainTemplate,
-    appConfig: AppConfig,
     continueButton: ContinueButton,
-    govukInsetText: GovukInsetText,
     form: FormWithCSRF,
-    languageUtils: LanguageUtils,
-    govukWarningText: GovukWarningText,
     hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
     ul: UnorderedList
 )

@@ -22,7 +22,7 @@ import connectors.agent.mocks.{MockEnrolmentStoreProxyConnector, MockUsersGroups
 import models.common.subscription.EnrolmentKey
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.agent.AutoEnrolmentService.AutoClaimEnrolmentResponse
 import services.agent.{AssignEnrolmentToUserService, AutoEnrolmentService, CheckEnrolmentAllocationService}
 import services.mocks.{MockAssignEnrolmentToUserService, MockCheckEnrolmentAllocationService}

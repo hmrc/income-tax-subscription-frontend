@@ -17,6 +17,7 @@
 package testonly.models
 
 //$COVERAGE-OFF$Disabling scoverage on this model as it is only intended to be used by the test only controller
+
 import models.DateModel
 import play.api.libs.json.{Json, OFormat}
 

@@ -15,7 +15,7 @@
  *@
 
 @import config.AppConfig
-@import views.html.helpers.{ButtonHelper, SignOutLink}
+@import views.html.helpers.ButtonHelper
 @import views.html.templates.PrincipalMainTemplate
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcNewTabLinkHelper
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
@@ -24,7 +24,6 @@
         principalMainTemplate: PrincipalMainTemplate,
         buttonHelper: ButtonHelper,
         hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
-        signOutLink: SignOutLink,
         form: FormWithCSRF
 )
 @(postAction: Call)(implicit request: Request[_], messages: Messages)
