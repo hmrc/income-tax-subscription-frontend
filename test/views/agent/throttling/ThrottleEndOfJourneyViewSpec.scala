@@ -23,6 +23,8 @@ import play.api.mvc.Call
 import play.twirl.api.Html
 import utilities.ViewSpec
 import views.html.agent.throttling.ThrottleEndOfJourney
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class ThrottleEndOfJourneyViewSpec extends ViewSpec {
 
@@ -49,7 +51,7 @@ class ThrottleEndOfJourneyViewSpec extends ViewSpec {
       document1.select("main").select("p").first.text() mustBe messages.line_1
     }
     "have a line_2" in {
-      document1.select("main").select("p").next().first().text() mustBe messages.line_2
+      document1.select("main").select("p").next().first().text() mustBe messages.line_2 + " " + LocalDate.now().plusDays(30).format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
     }
     "have a continueButton" in {
       document1.select("main").select("button").first().text() mustBe messages.continueButton
