@@ -17,6 +17,10 @@
 @import views.html.helpers.ContinueButton
 @import views.html.templates.AgentMainTemplate
 
+@import java.time.LocalDate
+@import java.time.format.DateTimeFormatter
+@import java.util.Locale
+
 @this(
     mainTemplate: AgentMainTemplate,
     form: FormWithCSRF,
@@ -30,7 +34,10 @@
 
    <p class="govuk-body">@messages("agent.throttle-end.line-1")</p>
 
-    <p class="govuk-body">@messages("agent.throttle-end.line-2")</p>
+    <p class="govuk-body">@messages("agent.throttle-end.line-2", {
+    val locale = if(messages.lang.code == "cy") Locale.forLanguageTag("cy") else Locale.UK
+    LocalDate.now().plusDays(30).format(DateTimeFormatter.ofPattern("d MMMM yyyy", locale))
+    })</p>
 
    <div class="form-group">
       @form(action = postAction) {

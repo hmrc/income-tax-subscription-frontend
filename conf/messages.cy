@@ -1027,10 +1027,10 @@ throttle-end.line-1                                                = Mae gormod 
 throttle-end.line-2                                                = I orffen cofrestru, rhowch gynnig arall arni neu allgofnodwch a dod yn ôl yn hwyrach.
 throttle-end.line-3                                                = Mae’r manylion rydych wedi’u nodi hyd yma wedi’u cadw am 30 diwrnod.
 
-agent.throttle-end.title                                           = Ni ellir cwblhau’ch cofrestriad ar hyn o bryd
-agent.throttle-end.heading                                         = Ni ellir cwblhau’ch cofrestriad ar hyn o bryd
-agent.throttle-end.line-1                                          = Rydym yn gweld nifer fawr o geisiadau ar gyfer y gwasanaeth hwn ac ni allwn gwblhau cofrestriad eich cleient ar hyn o bryd. Peidiwch â phoeni – bydd y manylion rydych wedi’u nodi yn cael eu cadw am 30 diwrnod.
-agent.throttle-end.line-2                                          = I orffen cofrestru’ch cleient, rhowch gynnig arall arni neu allgofnodwch a dod yn ôl yn nes ymlaen.
+agent.throttle-end.title                                           = Mae problem wedi codi
+agent.throttle-end.heading                                         = Mae problem wedi codi
+agent.throttle-end.line-1                                          = Rydym yn profi lefelau uchel o geisiadau ar gyfer Gwneud Treth yn Ddigidol ar gyfer Treth Incwm. Ni allwn gwblhau cofrestru eich cleient ar hyn o bryd.
+agent.throttle-end.line-2                                          = Byddwn yn cadw’ch data tan {0}
 
 # Global Check Your Answers
 individual.global-check-your-answers.heading                                                    = Gwiriwch eich atebion
