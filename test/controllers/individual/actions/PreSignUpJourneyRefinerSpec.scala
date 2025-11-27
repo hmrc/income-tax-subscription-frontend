@@ -61,29 +61,14 @@ class PreSignUpJourneyRefinerSpec extends PlaySpec {
       }
     }
     "the user is in a SignUp state" should {
-      "redirect to the using software page" when {
-        "the user has an sps entity id in session indicating they already have passed through SPS" in {
-          val result: Future[Result] = preSignUpJourneyRefiner.invokeBlock(
-            identifierRequest(journeyStep = Some(SignUp), Some(testEntityId), Some(testUtr), None), { _: PreSignUpRequest[_] =>
-              Future.successful(Results.Ok)
-            }
-          )
+      "continue as normal" in {
+        val result: Future[Result] = preSignUpJourneyRefiner.invokeBlock(
+          identifierRequest(journeyStep = Some(SignUp), None, Some(testUtr), None), { _: PreSignUpRequest[_] =>
+            Future.successful(Results.Ok)
+          }
+        )
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.individual.routes.UsingSoftwareController.show(false).url)
-        }
-      }
-      "redirect to the sps handoff" when {
-        "the user does not have an sps entity id" in {
-          val result: Future[Result] = preSignUpJourneyRefiner.invokeBlock(
-            identifierRequest(journeyStep = Some(SignUp), None, Some(testUtr), None), { _: PreSignUpRequest[_] =>
-              Future.successful(Results.Ok)
-            }
-          )
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url)
-        }
+        status(result) mustBe OK
       }
     }
     "the user is in a Confirmation state" should {

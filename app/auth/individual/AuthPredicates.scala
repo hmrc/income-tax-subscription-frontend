@@ -149,7 +149,7 @@ trait AuthPredicates extends Results with FrontendHeaderCarrierProvider with Log
   val homePredicates: AuthPredicate[IncomeTaxSAUser] = administratorRolePredicate |+| timeoutPredicate |+| affinityPredicate |+| mtdidPredicate |+| ivPredicate
 
   val subscriptionPredicates: AuthPredicate[IncomeTaxSAUser] = administratorRolePredicate |+|
-    defaultPredicates |+| mtdidPredicate |+| signUpJourneyPredicate |+| spsEntityIdPredicate
+    defaultPredicates |+| mtdidPredicate |+| signUpJourneyPredicate
 
   val claimEnrolmentPredicates: AuthPredicate[IncomeTaxSAUser] = administratorRolePredicate |+| affinityPredicate |+|
     ivPredicate |+| claimEnrolmentJourneyPredicate

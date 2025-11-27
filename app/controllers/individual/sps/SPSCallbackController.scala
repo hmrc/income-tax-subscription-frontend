@@ -37,7 +37,7 @@ class SPSCallbackController @Inject()(val auditingService: AuditingService,
     _ =>
       entityId match {
         case Some(entityId) =>
-          val result = Redirect(controllers.individual.routes.UsingSoftwareController.show(false))
+          val result = Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
           result.addingToSession(
             ITSASessionKeys.SPSEntityId -> entityId
           )
