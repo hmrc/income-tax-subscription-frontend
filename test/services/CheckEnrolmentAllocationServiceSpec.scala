@@ -22,9 +22,9 @@ import connectors.agent.mocks.MockEnrolmentStoreProxyConnector
 import models.common.subscription.EnrolmentKey
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.agent.CheckEnrolmentAllocationService
-import uk.gov.hmrc.domain.Generator
+import uk.gov.hmrc.domain.*
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.util.UUID
@@ -42,7 +42,7 @@ class CheckEnrolmentAllocationServiceSpec extends AnyWordSpec with Matchers
   "getGroupIdForEnrolment" when {
     "EnrolmentStoreProxy returns EnrolmentNotAllocated" should {
       "returns EnrolmentNotAllocated" in {
-        lazy val testUtr: String = new Generator().nextAtedUtr.utr
+        lazy val testUtr: String = new AtedUtrGenerator().nextAtedUtr.utr
         lazy val testEnrolment: EnrolmentKey = EnrolmentKey(utrEnrolmentName, utrEnrolmentIdentifierKey -> testUtr)
         mockGetAllocatedEnrolment(testEnrolment)(Right(EnrolmentStoreProxyHttpParser.EnrolmentNotAllocated))
 
@@ -53,7 +53,7 @@ class CheckEnrolmentAllocationServiceSpec extends AnyWordSpec with Matchers
     }
     "EnrolmentStoreProxy returns EnrolmentAlreadyAllocated" should {
       "return EnrolmentAlreadyAllocated" in {
-        lazy val testUtr: String = new Generator().nextAtedUtr.utr
+        lazy val testUtr: String = new AtedUtrGenerator().nextAtedUtr.utr
         lazy val testEnrolment: EnrolmentKey = EnrolmentKey(utrEnrolmentName, utrEnrolmentIdentifierKey -> testUtr)
         val testGroupId: String = UUID.randomUUID.toString
         mockGetAllocatedEnrolment(testEnrolment)(Right(EnrolmentStoreProxyHttpParser.EnrolmentAlreadyAllocated(testGroupId)))
@@ -65,7 +65,7 @@ class CheckEnrolmentAllocationServiceSpec extends AnyWordSpec with Matchers
     }
     "EnrolmentStoreProxy returns an unexpected failure" should {
       "return Failure" in {
-        lazy val testUtr: String = new Generator().nextAtedUtr.utr
+        lazy val testUtr: String = new AtedUtrGenerator().nextAtedUtr.utr
         lazy val testEnrolment: EnrolmentKey = EnrolmentKey(utrEnrolmentName, utrEnrolmentIdentifierKey -> testUtr)
         mockGetAllocatedEnrolment(testEnrolment)(Left(EnrolmentStoreProxyHttpParser.EnrolmentStoreProxyFailure(BAD_REQUEST)))
 
@@ -76,7 +76,7 @@ class CheckEnrolmentAllocationServiceSpec extends AnyWordSpec with Matchers
     }
     "EnrolmentStoreProxy returns invalid json" should {
       "return InvalidJson response" in {
-        lazy val testUtr: String = new Generator().nextAtedUtr.utr
+        lazy val testUtr: String = new AtedUtrGenerator().nextAtedUtr.utr
         lazy val testEnrolment: EnrolmentKey = EnrolmentKey(utrEnrolmentName, utrEnrolmentIdentifierKey -> testUtr)
         mockGetAllocatedEnrolment(testEnrolment)(Left(EnrolmentStoreProxyHttpParser.InvalidJsonResponse))
 

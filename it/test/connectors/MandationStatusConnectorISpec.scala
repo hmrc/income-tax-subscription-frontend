@@ -21,7 +21,9 @@ import helpers.servicemocks.MandationStatusStub.{stubGetMandationStatus, stubGet
 import models.ErrorModel
 import models.status.MandationStatus.Voluntary
 import models.status.{MandationStatusModel, MandationStatusRequest}
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.must.Matchers.*
+import org.scalatest.matchers.should.Matchers.*
+import org.scalatest.matchers.should.Matchers.shouldBe
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK}
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -51,7 +53,7 @@ class MandationStatusConnectorISpec extends ComponentSpecBase {
 
         val result = connector.getMandationStatus("test-nino", "test-utr")
 
-        result.futureValue shouldBe Left(ErrorModel(OK, "Invalid Json for mandationStatusResponseHttpReads: List((,List(JsonValidationError(List(error.expected.jsobject),List()))))"))
+        result.futureValue shouldBe Left(ErrorModel(OK, "Invalid Json for mandationStatusResponseHttpReads: List((,List(JsonValidationError(List(error.expected.jsobject),ArraySeq()))))"))
       }
     }
 

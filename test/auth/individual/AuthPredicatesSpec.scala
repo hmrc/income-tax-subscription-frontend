@@ -18,19 +18,19 @@ package auth.individual
 
 import auth.individual.AuthPredicate.AuthPredicateSuccess
 import common.Constants.ITSASessionKeys
-import config.{AppConfig, FrontendAppConfig}
+import config.AppConfig
 import org.mockito.Mockito.reset
 import org.scalatest.EitherValues
 import org.scalatest.concurrent.ScalaFutures
 import play.api.Configuration
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.AuditingService
 import services.individual.mocks.MockAuthService
-import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.http.NotFoundException
-import uk.gov.hmrc.http.SessionKeys._
+import uk.gov.hmrc.http.SessionKeys.*
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import utilities.UnitTestTrait
 import utilities.individual.TestConstants.testCredId
@@ -54,7 +54,7 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
     val auditingService: AuditingService = mockAuditingService
   }
 
-  import authPredicates._
+  import authPredicates.*
 
   private def testUser(affinityGroup: Option[AffinityGroup], credentialRole: Option[CredentialRole], confidenceLevel: ConfidenceLevel, userId: String,
                        enrolments: Enrolment*): IncomeTaxSAUser = new IncomeTaxSAUser(
@@ -178,25 +178,12 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
       await(defaultPredicates(authorisedRequest)(blankUser).left.value) mustBe wrongAffinity
     }
 
-    "redirect to iv when the user doesn't have high enough confidence level" when {
-      Seq(ConfidenceLevel.L200, ConfidenceLevel.L250) foreach { level =>
-        s"the required confidence level is $level" in {
-          val confidenceLevelAppConfig: AppConfig = new FrontendAppConfig(injectedServicesConfig, injectedConfiguration) {
-            override lazy val identityVerificationRequiredConfidenceLevel: ConfidenceLevel = level
-          }
-
-          val authPredicates: AuthPredicates = new AuthPredicates {
-            val appConfig: AppConfig = confidenceLevelAppConfig
-            val auditingService: AuditingService = mockAuditingService
-          }
-
-          val result = await(authPredicates.defaultPredicates(authorisedRequest)(
-            predicateUserConfidence50).left.value
-          )
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(confidenceLevelAppConfig.identityVerificationURL)
-        }
-      }
+    "redirect to iv when the user doesn't have high enough confidence level" in {
+      val result = await(authPredicates.defaultPredicates(authorisedRequest)(
+        predicateUserConfidence50).left.value
+      )
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(injectedConfig.identityVerificationURL)
     }
   }
 
@@ -213,25 +200,12 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
       await(subscriptionPredicates(authorisedRequest)(enrolledPredicateUser).left.value) mustBe alreadyEnrolled
     }
 
-    "redirect to iv when the user doesn't have high enough confidence level" when {
-      Seq(ConfidenceLevel.L200, ConfidenceLevel.L250) foreach { level =>
-        s"the required confidence level is $level" in {
-          val confidenceLevelAppConfig: AppConfig = new FrontendAppConfig(injectedServicesConfig, injectedConfiguration) {
-            override lazy val identityVerificationRequiredConfidenceLevel: ConfidenceLevel = level
-          }
-
-          val authPredicates: AuthPredicates = new AuthPredicates {
-            val appConfig: AppConfig = confidenceLevelAppConfig
-            val auditingService: AuditingService = mockAuditingService
-          }
-
-          val result = await(authPredicates.subscriptionPredicates(authorisedRequest)(
-            predicateUserConfidence50).left.value
-          )
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(confidenceLevelAppConfig.identityVerificationURL)
-        }
-      }
+    "redirect to iv when the user doesn't have high enough confidence level" in {
+      val result = await(authPredicates.subscriptionPredicates(authorisedRequest)(
+        predicateUserConfidence50).left.value
+      )
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(injectedConfig.identityVerificationURL)
     }
   }
 
@@ -242,25 +216,12 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
     "return the claim enrolment overview page where the request session does not contain the ClaimEnrolment state" in {
       await(claimEnrolmentPredicates(homelessAuthorisedRequest)(defaultPredicateUser).left.value) mustBe claimEnrolmentRoute
     }
-    "redirect to iv when the user doesn't have high enough confidence level" when {
-      Seq(ConfidenceLevel.L200, ConfidenceLevel.L250) foreach { level =>
-        s"the required confidence level is $level" in {
-          val confidenceLevelAppConfig: AppConfig = new FrontendAppConfig(injectedServicesConfig, injectedConfiguration) {
-            override lazy val identityVerificationRequiredConfidenceLevel: ConfidenceLevel = level
-          }
-
-          val authPredicates: AuthPredicates = new AuthPredicates {
-            val appConfig: AppConfig = confidenceLevelAppConfig
-            val auditingService: AuditingService = mockAuditingService
-          }
-
-          val result = await(authPredicates.claimEnrolmentPredicates(authorisedRequest)(
-            predicateUserConfidence50).left.value
-          )
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(confidenceLevelAppConfig.identityVerificationURL)
-        }
-      }
+    "redirect to iv when the user doesn't have high enough confidence level" in {
+      val result = await(authPredicates.claimEnrolmentPredicates(authorisedRequest)(
+        predicateUserConfidence50).left.value
+      )
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(injectedConfig.identityVerificationURL)
     }
   }
 

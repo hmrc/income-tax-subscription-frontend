@@ -17,7 +17,7 @@
 package controllers.agent.actions
 
 import auth.MockAuth
-import config.{AppConfig, MockConfig}
+import config.MockConfig
 import models.SessionData
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -30,7 +30,7 @@ import play.api.mvc.{BodyParsers, Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
 import services.SessionDataService
-import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.~

@@ -66,7 +66,7 @@ class UsingSoftwareControllerSpec extends ControllerSpec
         contentType(result) mustBe Some(HTML)
       }
       "the user is able to sign up for next year only" in {
-         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exceptionReason = None))
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exceptionReason = None))
         mockView(
           usingSoftwareForm = usingSoftwareForm,
           postAction = routes.UsingSoftwareController.submit(),
@@ -142,7 +142,7 @@ class UsingSoftwareControllerSpec extends ControllerSpec
         "the user is eligible for next year only" in {
 
           mockGetMandationService(Voluntary, Voluntary)
-           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exceptionReason = None))
+          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exceptionReason = None))
           mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
 
           val result: Future[Result] = testUsingSoftwareController().submit(false)(

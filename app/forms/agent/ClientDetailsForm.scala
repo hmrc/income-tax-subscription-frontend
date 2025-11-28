@@ -74,6 +74,7 @@ object ClientDetailsForm extends LocalDateMapping {
         requiredKey = s"agent.error.$dobErrorContext.required",
         invalidYearKey = s"agent.error.$dobErrorContext.year.length")
         .transform(DateModel.dateConvert, DateModel.dateConvert).verifying(dateInPast)
-    )(UserDetailsModel.apply)(UserDetailsModel.unapply)
+    )(UserDetailsModel.apply)(o => Some(Tuple.fromProductTyped(o)))
+
   )
 }

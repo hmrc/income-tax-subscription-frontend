@@ -18,7 +18,7 @@
 @import play.api.data.Form
 @import models.common._
 @import models.common.business._
-@import views.html.helpers.{ContinueButton, SaveAndContinueButtonHelper}
+@import views.html.helpers.SaveAndContinueButtonHelper
 @import views.html.templates.PrincipalMainTemplate
 @import uk.gov.hmrc.hmrcfrontend.views.html.components._
 @import utilities.AccountingPeriodUtil
@@ -26,7 +26,6 @@
 
 @this(
     mainTemplate: PrincipalMainTemplate,
-    continueButton: ContinueButton,
     appConfig: AppConfig,
     form: FormWithCSRF,
     saveAndContinueButtonHelper: SaveAndContinueButtonHelper,

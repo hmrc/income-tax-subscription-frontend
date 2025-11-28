@@ -24,6 +24,8 @@ case class SoleTraderBusinesses(businesses: Seq[SoleTraderBusiness])
 
 object SoleTraderBusinesses {
 
+  def unapply(soleTraderBusinesses: SoleTraderBusinesses): Option[Seq[SoleTraderBusiness]] = Some(soleTraderBusinesses.businesses)
+
   def encryptedFormat(implicit crypto: Encrypter with Decrypter): OFormat[SoleTraderBusinesses] = {
     implicit val soleTraderBusinessFormat: OFormat[SoleTraderBusiness] = SoleTraderBusiness.encryptedFormat
     (__ \ "businesses").format[Seq[SoleTraderBusiness]].bimap(SoleTraderBusinesses.apply, unlift(SoleTraderBusinesses.unapply))

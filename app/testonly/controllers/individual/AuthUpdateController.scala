@@ -25,6 +25,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.{AuditingService, AuthService}
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.client.HttpClientV2
+import play.api.libs.ws.writeableOf_JsValue
 import uk.gov.hmrc.http.{HttpResponse, StringContextOps}
 
 import javax.inject.{Inject, Singleton}

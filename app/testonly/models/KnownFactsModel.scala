@@ -18,5 +18,3 @@ package testonly.models
 
 
 case class KnownFactsModel(nino: String, mtditid: String)
-
-

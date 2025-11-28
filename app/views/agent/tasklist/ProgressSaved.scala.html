@@ -16,7 +16,7 @@
 
 @import views.html.templates.AgentMainTemplate
 @import utilities.UserMatchingSessionUtil.ClientDetails
-@import views.html.helpers.{NotificationBanner,UnorderedList}
+@import views.html.helpers.{SuccessNotificationBanner, UnorderedList}
 
 @this(
     mainTemplate: AgentMainTemplate,
@@ -46,8 +46,8 @@
   @ul(
     leadIn=messages("agent.business.progress-saved.content.paragraph1"),
     Seq(
-        HtmlContent(continueSignUpLink),
-        HtmlContent(signUpAnotherClient)
+        HtmlContent(continueSignUpLink()),
+        HtmlContent(signUpAnotherClient())
     )
   )
 

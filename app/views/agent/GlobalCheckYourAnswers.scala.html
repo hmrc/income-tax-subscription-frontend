@@ -18,22 +18,19 @@
 @import models._
 @import models.common.{IncomeSources => _, SoleTraderBusinesses => _, _}
 @import models.YesNo
-@import services.AccountingPeriodService
 @import services.GetCompleteDetailsService._
 @import utilities.{AccountingPeriodUtil, ImplicitDateFormatterImpl}
 @import utilities.UserMatchingSessionUtil.ClientDetails
-@import views.html.helpers.{PageHeadingHelper, SaveAndContinueButtonHelper, SignUpMyClientButton}
+@import views.html.helpers.{PageHeadingHelper, SaveAndContinueButtonHelper}
 @import views.html.templates.AgentMainTemplate
 
 @this(
     mainTemplate: AgentMainTemplate,
     appConfig: AppConfig,
-    signUpMyClientButton: SignUpMyClientButton,
     saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
     pageHeadingHelper: PageHeadingHelper,
     govukSummaryList : GovukSummaryList,
     implicitDateFormatter: ImplicitDateFormatterImpl,
-    accountingPeriodService: AccountingPeriodService,
     form: FormWithCSRF
 )
 

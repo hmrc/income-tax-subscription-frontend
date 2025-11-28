@@ -17,11 +17,10 @@
 package controllers.agent.tasklist
 
 import config.AppConfig
-import config.MockConfig.appConfig.ggLoginUrl
 import controllers.ControllerSpec
 import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}
 import models.audits.SaveAndComebackAuditing.SaveAndComeBackAuditModel
-import models.common.business._
+import models.common.business.*
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel, TimestampModel}
 import models.{Current, DateModel}
 import org.mockito.ArgumentMatchers
@@ -30,7 +29,7 @@ import play.api.http.Status.OK
 import play.api.mvc.Result
 import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, status}
 import play.api.{Configuration, Environment}
-import services.mocks._
+import services.mocks.*
 import uk.gov.hmrc.http.InternalServerException
 import utilities.{AccountingPeriodUtil, CacheExpiryDateProvider, MockCurrentDateProvider}
 import views.agent.tasklist.mocks.MockProgressSaved

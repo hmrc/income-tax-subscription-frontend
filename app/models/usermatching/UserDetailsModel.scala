@@ -31,6 +31,7 @@ case class UserDetailsModel(firstName: String, lastName: String, nino: String, d
 
 object UserDetailsModel {
   implicit val format: OFormat[UserDetailsModel] = Json.format[UserDetailsModel]
+
   implicit class StringNinoUtil(string: String) {
     @inline def stripSpaces: String = string.toUpperCase().replace(" ", "")
 

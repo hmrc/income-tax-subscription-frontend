@@ -17,7 +17,7 @@
 package models.common
 
 import models.DateModel
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{Json, OFormat, OWrites, Reads}
 
 case class OverseasPropertyModel(
                                   startDateBeforeLimit: Option[Boolean] = None,

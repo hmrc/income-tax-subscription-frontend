@@ -29,7 +29,7 @@ import services.individual.claimenrolment.ClaimEnrolmentService._
 import services.individual.mocks.{MockEnrolmentService, MockKnownFactsService}
 import services.mocks.{MockCheckEnrolmentAllocationService, MockNinoService, MockSessionDataService, MockSubscriptionService}
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
-import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.auth.core.*
 import utilities.individual.TestConstants.{testEnrolmentKey, testGroupId, testMTDID, testNino}
 
 import scala.concurrent.Future

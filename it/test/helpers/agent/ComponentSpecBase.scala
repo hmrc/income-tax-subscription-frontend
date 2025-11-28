@@ -57,6 +57,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utilities.UserMatchingSessionUtil.{firstName, lastName}
 import utilities.{UUIDProvider, UserMatchingSessionUtil}
+import play.api.libs.ws.WSBodyWritables.writeableOf_urlEncodedForm
 
 import java.time.LocalDate
 import java.util.UUID
@@ -103,7 +104,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
   implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
   val cookieSignerCache: Application => CookieSigner = Application.instanceCache[CookieSigner]
-  override lazy val cookieSigner: CookieSigner = cookieSignerCache(app)
+  override val cookieSigner: CookieSigner = cookieSignerCache(app)
 
   lazy val wmConfig: WireMockConfiguration = wireMockConfig().port(wiremockPort)
   lazy val wireMockServer = new WireMockServer(wmConfig)
@@ -160,7 +161,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     "microservice.services.channel-preferences.port" -> mockPort
   )
 
-  implicit lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+  override implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
   override def beforeEach(): Unit = {
     super.beforeEach()

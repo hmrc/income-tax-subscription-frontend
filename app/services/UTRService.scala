@@ -23,7 +23,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
-class UTRService @Inject()(sessionDataService: SessionDataService) {
+class UTRService @Inject() {
 
   def getUTR(sessionData: SessionData): Future[String] = {
     sessionData.fetchUTR match {

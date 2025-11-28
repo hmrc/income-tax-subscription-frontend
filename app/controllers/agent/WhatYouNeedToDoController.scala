@@ -21,10 +21,10 @@ import config.featureswitch.FeatureSwitch.EmailCaptureConsent
 import config.featureswitch.FeatureSwitching
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
-import models._
+import models.*
 import models.status.MandationStatus.Mandated
-import play.api.mvc._
-import services._
+import play.api.mvc.*
+import services.*
 import views.html.agent.WhatYouNeedToDo
 
 import javax.inject.{Inject, Singleton}

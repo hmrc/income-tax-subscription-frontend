@@ -18,4 +18,9 @@ package testonly.models.preferences
 
 case class ClearPreferencesModel(nino: String)
 
+object ClearPreferencesModel {
+  def unapply(clearPreferencesModel: ClearPreferencesModel): Option[String] = Some(clearPreferencesModel.nino)
+
+}
+
 

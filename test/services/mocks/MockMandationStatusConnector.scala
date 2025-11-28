@@ -25,6 +25,8 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import utilities.UnitTestTrait
+import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
 
 trait MockMandationStatusConnector extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
 
@@ -36,13 +38,12 @@ trait MockMandationStatusConnector extends UnitTestTrait with MockitoSugar with 
   }
 
   def mockGetMandationStatus(nino: String, utr: String)(current: MandationStatus, next: MandationStatus): Unit = {
-    when(mockMandationStatusConnector.getMandationStatus(ArgumentMatchers.eq(nino), ArgumentMatchers.eq(utr))(ArgumentMatchers.any()))
-      .thenReturn(Right(MandationStatusModel(current, next)))
+    when(mockMandationStatusConnector.getMandationStatus(ArgumentMatchers.eq(nino), ArgumentMatchers.eq(utr))(ArgumentMatchers.any[HeaderCarrier]()))
+      .thenReturn(Future.successful(Right(MandationStatusModel(current, next))))
   }
 
   def mockFailedGetMandationStatus(): Unit = {
-    when(mockMandationStatusConnector.getMandationStatus(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any()))
-      .thenReturn(Left(ErrorModel(INTERNAL_SERVER_ERROR, "Something went wrong")))
+    when(mockMandationStatusConnector.getMandationStatus(ArgumentMatchers.any[String](), ArgumentMatchers.any[String]())(ArgumentMatchers.any[HeaderCarrier]()))
+      .thenReturn(Future.successful(Left(ErrorModel(INTERNAL_SERVER_ERROR, "Something went wrong"))))
   }
-
 }

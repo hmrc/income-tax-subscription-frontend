@@ -24,20 +24,20 @@ import models.status.MandationStatusModel
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.Result
-import services.{MandationStatusService, SessionDataService}
+import services.MandationStatusService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 trait MockConfirmationJourneyRefiner extends MockitoSugar with BeforeAndAfterEach with MockIdentifierAction {
   suite: Suite =>
-  
+
   val reference: String = "test-reference"
 
   val mandationStatus: MandationStatusModel = MandationStatusModel(Voluntary, Voluntary)
 
   val fakeConfirmationJourneyRefiner: ConfirmationJourneyRefiner = new ConfirmationJourneyRefiner(
-    mock[ReferenceRetrieval], mock[SessionDataService], mock[MandationStatusService]
+    mock[ReferenceRetrieval], mock[MandationStatusService]
   ) {
     override def refine[A](request: IdentifierRequest[A]): Future[Either[Result, ConfirmationRequest[A]]] = {
       Future.successful(Right(ConfirmationRequest(request, reference, nino, utr, usingSoftware = true, mandationStatus)))
