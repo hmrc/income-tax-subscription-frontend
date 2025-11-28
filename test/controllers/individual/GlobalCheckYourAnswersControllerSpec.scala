@@ -143,7 +143,6 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
 
         when(mockGlobalCheckYourAnswers(
           ArgumentMatchers.eq(routes.GlobalCheckYourAnswersController.submit),
-          ArgumentMatchers.eq(tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url),
           ArgumentMatchers.eq(completeDetails),
           ArgumentMatchers.any(),
           ArgumentMatchers.any()
@@ -197,12 +196,6 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
         intercept[InternalServerException](await(controller.submit(subscriptionRequest)))
           .message mustBe s"[GlobalCheckYourAnswersController][submit] - failure response received from submission: ${SignUpOrchestrationService.SignUpFailure}"
       }
-    }
-  }
-
-  "backUrl" when {
-    "go to the YourIncomeSources page" in new Setup {
-      controller.backUrl mustBe controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
     }
   }
 

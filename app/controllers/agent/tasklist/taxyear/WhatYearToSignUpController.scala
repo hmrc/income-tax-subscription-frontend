@@ -29,7 +29,7 @@ import models.{AccountingYear, Current}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.Html
-import services.*
+import services._
 import uk.gov.hmrc.http.InternalServerException
 import views.html.agent.tasklist.taxyear.WhatYearToSignUp
 
@@ -112,7 +112,7 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
     if (isEditMode) {
       Some(controllers.agent.routes.GlobalCheckYourAnswersController.show.url)
     } else {
-      Some(controllers.agent.routes.UsingSoftwareController.show(false).url)
+      Some(controllers.agent.routes.UsingSoftwareController.show().url)
     }
   }
 

@@ -38,7 +38,6 @@
 
 @(
         postAction: Call,
-        backUrl: String,
         completeDetails: CompleteDetails,
         maybeAccountingPeriod: Option[BusinessAccountingPeriod],
         softwareStatus: Option[YesNo]
@@ -46,7 +45,7 @@
 
 @import implicitDateFormatter.LongDate
 
-@mainTemplate(title = messages("individual.global-check-your-answers.heading"), backLink = Some(backUrl)) {
+@mainTemplate(title = messages("individual.global-check-your-answers.heading"), useJSBack = true) {
 
     <h1 class="govuk-heading-l">@messages("individual.global-check-your-answers.heading")</h1>
 

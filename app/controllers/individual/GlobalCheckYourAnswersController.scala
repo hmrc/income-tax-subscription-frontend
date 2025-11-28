@@ -57,7 +57,6 @@ class GlobalCheckYourAnswersController @Inject()(signUpOrchestrationService: Sig
             withCompleteDetails(reference) { completeDetails =>
               Future.successful(Ok(globalCheckYourAnswers(
                 postAction = routes.GlobalCheckYourAnswersController.submit,
-                backUrl = backUrl,
                 completeDetails = completeDetails,
                 maybeAccountingPeriod = maybeAccountingPeriod,
                 softwareStatus = sessionData.fetchSoftwareStatus
@@ -81,10 +80,6 @@ class GlobalCheckYourAnswersController @Inject()(signUpOrchestrationService: Sig
           }
         }
       }
-  }
-
-  def backUrl: String = {
-    tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
   }
 
   private def signUp(sessionData: SessionData, completeDetails: CompleteDetails)
@@ -118,7 +113,9 @@ class GlobalCheckYourAnswersController @Inject()(signUpOrchestrationService: Sig
                                  (implicit request: Request[AnyContent]): Future[Result] = {
     getCompleteDetailsService.getCompleteSignUpDetails(reference) flatMap {
       case Right(completeDetails) => f(completeDetails)
-      case Left(_) => Future.successful(Redirect(backUrl))
+      case Left(_) => Future.successful(Redirect(
+        tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
+      ))
     }
   }
 

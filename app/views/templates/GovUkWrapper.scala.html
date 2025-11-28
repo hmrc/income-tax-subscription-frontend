@@ -29,7 +29,7 @@
     hmrcStandardPage: HmrcStandardPage
 )
 
-@(title: String, serviceName: Option[String], serviceUrl: String, optForm: Option[Form[_]] = None, backLink: Option[String] = None, backLinkContent: Option[String] = None, showSignOutLink: Boolean = true, fullWidth: Boolean = false, additionalScripts: Option[Html] = None)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
+@(title: String, serviceName: Option[String], serviceUrl: String, optForm: Option[Form[_]] = None, backLink: Option[String] = None, backLinkContent: Option[String] = None, showSignOutLink: Boolean = true, fullWidth: Boolean = false, additionalScripts: Option[Html] = None, useJSBack: Boolean = false)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
 
 @hmrcStandardPage(HmrcStandardPageParams(
     serviceURLs = ServiceURLs(
@@ -49,21 +49,25 @@
     backLink = backLink.map(url => BackLink(href = url, content = backLinkContent.map(Text.apply).getOrElse(Empty)))
 ))(content)
 
-
 @content = {
 
-@optForm.map { form =>
-    @if(form.hasErrors) {
-        @govukErrorSummary(ErrorSummary(
-            errorList = form.errors.asTextErrorLinks,
-            title = Text(messages("base.error-heading"))
-        ))
+    @if(useJSBack) {
+        <a href="#" class="govuk-back-link" data-module="hmrc-back-link">Back</a>
+        <p>
     }
-}
 
-@contentBlock
+    @optForm.map { form =>
+        @if(form.hasErrors) {
+            @govukErrorSummary(ErrorSummary(
+                errorList = form.errors.asTextErrorLinks,
+                title = Text(messages("base.error-heading"))
+            ))
+        }
+    }
 
-@hmrcReportTechnicalIssueHelper()
+    @contentBlock
+
+    @hmrcReportTechnicalIssueHelper()
 
 }
 
