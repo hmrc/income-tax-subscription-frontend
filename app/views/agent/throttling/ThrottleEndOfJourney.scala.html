@@ -17,20 +17,28 @@
 @import views.html.helpers.ContinueButton
 @import views.html.templates.AgentMainTemplate
 
+@import java.time.LocalDate
+@import utilities.ImplicitDateFormatter
+
 @this(
     mainTemplate: AgentMainTemplate,
     form: FormWithCSRF,
-    continueButton: ContinueButton
+    continueButton: ContinueButton,
+    implicitDateFormatter: ImplicitDateFormatter
 )
 
 @(postAction: Call)(implicit request: Request[_], messages: Messages)
+
+@import implicitDateFormatter.LongDate
 
 @mainTemplate(title = messages("agent.throttle-end.title"), showSignOutLink = true) {
    <h1 class="govuk-heading-l">@messages("agent.throttle-end.heading")</h1>
 
    <p class="govuk-body">@messages("agent.throttle-end.line-1")</p>
 
-    <p class="govuk-body">@messages("agent.throttle-end.line-2")</p>
+   <p class="govuk-body">@Messages("agent.throttle-end.line-2",
+       (LocalDate.now().plusDays(30)).toLongDate
+    )</p>
 
    <div class="form-group">
       @form(action = postAction) {
