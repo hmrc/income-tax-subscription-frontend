@@ -1030,10 +1030,10 @@ throttle-end.heading                                               = You cannot 
 throttle-end.line-1                                                = There are currently too many people using this service.
 throttle-end.line-2                                                = To finish signing up, try again or sign out and come back later.
 throttle-end.line-3                                                = The details you’ve already entered have been saved for 30 days.
-agent.throttle-end.title                                           = Your sign up cannot be completed right now
-agent.throttle-end.heading                                         = Your sign up cannot be completed right now
-agent.throttle-end.line-1                                          = We are experiencing high levels of applications for this service and cannot complete your client’s sign up at the moment. Don’t worry, the details you have entered will be saved for 30 days.
-agent.throttle-end.line-2                                          = To finish and complete signing up your client, try again or sign out and come back later.
+agent.throttle-end.title                                           = There is a problem
+agent.throttle-end.heading                                         = There is a problem
+agent.throttle-end.line-1                                          = We are experiencing high levels of applications for Making Tax Digital for Income Tax and cannot complete your client’s sign up at the moment.
+agent.throttle-end.line-2                                          = We’ll save the data you have entered until {0}.
 
 # Global Check Your Answers
 individual.global-check-your-answers.heading                                                    = Check your answers before signing up
