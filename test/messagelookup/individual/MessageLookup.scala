@@ -144,7 +144,7 @@ object MessageLookup {
     val title = "There is a problem - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
     val heading = "There is a problem"
     val line_1 = "We are experiencing high levels of applications for Making Tax Digital for Income Tax and cannot complete your client’s sign up at the moment."
-    def line_2(date: String) = s"We’ll save the data you have entered until $date"
+    def line_2(date: String) = s"We’ll save the data you have entered until $date."
     val continueButton = "Try again"
     val signOutText = "Sign out"
   }
