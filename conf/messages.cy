@@ -1030,7 +1030,7 @@ throttle-end.line-3                                                = Mae’r man
 agent.throttle-end.title                                           = Mae problem wedi codi
 agent.throttle-end.heading                                         = Mae problem wedi codi
 agent.throttle-end.line-1                                          = Rydym yn profi lefelau uchel o geisiadau ar gyfer Gwneud Treth yn Ddigidol ar gyfer Treth Incwm. Ni allwn gwblhau cofrestru eich cleient ar hyn o bryd.
-agent.throttle-end.line-2                                          = Byddwn yn cadw’ch data tan {0}
+agent.throttle-end.line-2                                          = Byddwn yn cadw’ch data tan {0}.
 
 # Global Check Your Answers
 individual.global-check-your-answers.heading                                                    = Gwiriwch eich atebion
