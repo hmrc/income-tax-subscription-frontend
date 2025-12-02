@@ -38,7 +38,6 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       ),
       title = GlobalCheckYourAnswersMessages.heading,
       isAgent = false,
-      backLink = Some(testBackUrl),
       hasSignOutLink = true,
       error = None
     )
@@ -48,7 +47,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     }
 
     "have a first paragraph" in {
-      document().mainContent.selectNth("p", 1).text mustBe GlobalCheckYourAnswersMessages.paraOne
+      document().mainContent.selectNth("p", 2).text mustBe GlobalCheckYourAnswersMessages.paraOne
     }
 
     "have a print information link" in {
@@ -366,11 +365,11 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     }
 
     "have a second paragraph" in {
-      document().mainContent.selectNth("p", 2).text mustBe GlobalCheckYourAnswersMessages.paraTwo
+      document().mainContent.selectNth("p", 3).text mustBe GlobalCheckYourAnswersMessages.paraTwo
     }
 
     "have a third paragraph" in {
-      document().mainContent.selectNth("p", 3).text mustBe GlobalCheckYourAnswersMessages.paraThree
+      document().mainContent.selectNth("p", 4).text mustBe GlobalCheckYourAnswersMessages.paraThree
     }
 
     "have a form" which {
@@ -391,14 +390,12 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
         saveAndComeBackLater.attr("href") mustBe controllers.individual.tasklist.routes.ProgressSavedController.show(location = Some("global-check-your-answers")).url
       }
     }
-
   }
 
   val globalCheckYourAnswers: GlobalCheckYourAnswers = app.injector.instanceOf[GlobalCheckYourAnswers]
 
   def page(completeDetails: CompleteDetails): Html = globalCheckYourAnswers(
     postAction = testCall,
-    backUrl = testBackUrl,
     completeDetails = completeDetails,
     maybeAccountingPeriod = None,
     softwareStatus = None

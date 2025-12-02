@@ -25,7 +25,6 @@ import views.html.individual.eligibility.YouCanSignUp
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
-
 @Singleton
 class YouCanSignUpController @Inject()(view: YouCanSignUp)
                                       (val auditingService: AuditingService,
@@ -37,7 +36,7 @@ class YouCanSignUpController @Inject()(view: YouCanSignUp)
   def show: Action[AnyContent] = Authenticated { implicit request =>
     _ =>
       Ok(view(
-        postAction = controllers.individual.sps.routes.SPSHandoffController.redirectToSPS,
+        postAction = controllers.individual.routes.UsingSoftwareController.show(),
         backUrl = backUrl
       ))
   }

@@ -136,7 +136,7 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
         val result: Future[Result] = controller.submit(subscriptionRequest)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.individual.routes.GlobalCheckYourAnswersController.show.url)
+        redirectLocation(result) mustBe Some(controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url)
 
         verifySaveIncomeSourceConfirmation()
       }
@@ -151,7 +151,7 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
         val result: Future[Result] = controller.submit(subscriptionRequest)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.individual.routes.GlobalCheckYourAnswersController.show.url)
+        redirectLocation(result) mustBe Some(controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url)
 
         verifySaveIncomeSourceConfirmation()
       }
@@ -166,7 +166,7 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
         val result: Future[Result] = controller.submit(subscriptionRequest)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.individual.routes.GlobalCheckYourAnswersController.show.url)
+        redirectLocation(result) mustBe Some(controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url)
 
         verifySaveIncomeSourceConfirmation()
       }
@@ -181,7 +181,7 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
         val result: Future[Result] = controller.submit(subscriptionRequest)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.individual.routes.GlobalCheckYourAnswersController.show.url)
+        redirectLocation(result) mustBe Some(controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url)
 
         verifySaveIncomeSourceConfirmation()
       }

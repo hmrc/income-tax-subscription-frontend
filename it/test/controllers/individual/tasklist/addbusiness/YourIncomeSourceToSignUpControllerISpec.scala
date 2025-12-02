@@ -18,7 +18,7 @@ package controllers.individual.tasklist.addbusiness
 
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.IndividualURI.globalCheckYourAnswersURI
+import helpers.IntegrationTestConstants.IndividualURI.{apaHandOffControllerUrI, globalCheckYourAnswersURI, spsHandoffURI}
 import helpers.IntegrationTestConstants.basGatewaySignIn
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.AuthStub
@@ -104,10 +104,10 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         When(s"POST ${routes.YourIncomeSourceToSignUpController.submit.url} is called")
         val res = IncomeTaxSubscriptionFrontend.submitYourIncomeSources()
 
-        Then("Should return a SEE_OTHER to the declaration page")
+        Then("Should return a SEE_OTHER to the sps handoff page")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(globalCheckYourAnswersURI)
+          redirectURI(apaHandOffControllerUrI)
         )
 
         IncomeTaxSubscriptionConnectorStub.verifySaveSubscriptionDetails[Boolean](SubscriptionDataKeys.IncomeSourceConfirmation, true, Some(1))

@@ -54,7 +54,7 @@ class CannotSignUpThisYearControllerISpec extends ComponentSpecBase {
 
         result must have(
           httpStatus(SEE_OTHER),
-          redirectURI(controllers.individual.sps.routes.SPSHandoffController.redirectToSPS.url)
+          redirectURI(controllers.individual.routes.UsingSoftwareController.show().url)
         )
       }
     }

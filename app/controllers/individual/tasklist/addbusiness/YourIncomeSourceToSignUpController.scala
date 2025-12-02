@@ -52,7 +52,7 @@ class YourIncomeSourceToSignUpController @Inject()(identify: IdentifierAction,
     subscriptionDetailsService.fetchAllIncomeSources(request.reference) flatMap { incomeSources =>
       if (incomeSources.isComplete) {
         subscriptionDetailsService.saveIncomeSourcesConfirmation(request.reference) map {
-          case Right(_) => Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
+          case Right(_) => Redirect(controllers.individual.sps.routes.SPSHandoffController.redirectToSPS)
           case Left(_) => throw new InternalServerException("[YourIncomeSourceToSignUpController][submit] - failed to save income sources confirmation")
         }
       } else {
@@ -64,6 +64,4 @@ class YourIncomeSourceToSignUpController @Inject()(identify: IdentifierAction,
   def backUrl: String = {
     controllers.individual.routes.WhatYouNeedToDoController.show.url
   }
-
-
 }
